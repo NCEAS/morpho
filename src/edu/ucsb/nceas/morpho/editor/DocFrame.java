@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-08 22:24:42 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-06-08 23:49:00 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1056,6 +1056,7 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 	void EditingExit_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		this.hide();
+		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 	  String xmlout = writeXMLString(rootNode);
 		controller.fireEditingCompleteEvent(this, xmlout);
 	}
