@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-09 23:10:15 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-05-11 23:12:12 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,6 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.table.*;
 import java.io.*;
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -38,252 +34,135 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.helpers.DefaultHandler;
 import com.arbortext.catalog.*;
 import java.util.Vector;
-// import java.util.PropertyResourceBundle;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Stack;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
-public class LocalQuery extends Thread 
+public class LocalQuery extends DefaultHandler
 {
+  /** The string representation of the pathquery (XML format) */
+  private String queryString;
+  
+  /** A reference to the container framework */
+  private ClientFramework framework = null;
+
+  /** The configuration options object reference from the framework */
+  private ConfigXML config = null;
     
     static Hashtable dom_collection;
     static Hashtable doctype_collection;
     String local_xml_directory;
     String local_dtd_directory;
     String xmlcatalogfile; 
-    String xpathExpression;
-    String[] xpathExpressions = null;   // use for multiple queries
-    boolean Andflag = false;           // how to combine multiple queries (Or is default)
+//    String xpathExpression;
     String xmlFileFolder;
-    JTable RSTable = null;
     String[] headers = {"File Name", "Document Type", "Node Name", "Text"};
-    DefaultTableModel dtm;
-    JButton Halt = null; //supplied by calling routine
-    String Haltname;
-    boolean stopFlag = false;
-    boolean AndResultFlag;
     Vector returnFields;
     Vector doctypes2bsearched;
     Vector dt2bReturned;
     String currentDoctype;
-    int numcolsdelete = 3;
     
-    static {
-        dom_collection = new Hashtable();
-        doctype_collection = new Hashtable();
-    }
     
-public LocalQuery() {
-    this(null);
-    ConfigXML config = new ConfigXML("lib/config.xml");
-    returnFields = config.get("returnfield");
-    doctypes2bsearched = config.get("doctype");
-    dt2bReturned = config.get("returndoc");
-    local_dtd_directory = config.get("local_dtd_directory", 0);
-    local_xml_directory = config.get("local_xml_directory", 0);
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    }
-    else {
-        cnt = returnFields.size();
-    }
-    
-    headers = new String[4+cnt];  // assume at least 4 fields returned
-    headers[0] = "Doc ID";
-    headers[1] = "Document Name";
-    headers[2] = "Document Type";
-    headers[3] = "Document Title";
-    for (int i=0;i<cnt;i++) {
-        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
-    
-        dtm = new DefaultTableModel(headers,0);
-        RSTable = new JTable(dtm);
-        TableColumnModel tcm = RSTable.getColumnModel();
-        removeFirstNColumns(tcm,numcolsdelete);
-        
- //   PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
- //   local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
- //   local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    local_xml_directory = local_xml_directory.trim();
-    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory.trim();
+  boolean Andflag = false;
+  boolean AndResultFlag;
 
-		//{{INIT_CONTROLS
-		//}}
+  private boolean containsExtendedSQL=false;
+  private String meta_file_id;
+  private String queryTitle;
+  private Vector doctypeList;
+  private Vector returnFieldList;
+  private Vector ownerList;
+  private Vector siteList;
+  private QueryGroup query = null;
+
+  private Stack elementStack;
+  private Stack queryStack;
+  private String currentValue;
+  private String currentPathexpr;
+  private String parserName = null;
+  private String accNumberSeparator = null;
+   
+  static {
+    dom_collection = new Hashtable();
+    doctype_collection = new Hashtable();
+  }
+    
+public LocalQuery(Reader queryspec, ClientFramework framework) {
+  super();
+ // this.framework = framework;
+  this.config = framework.getConfiguration();   
+
+  loadConfigurationParameters();
+      
+  local_xml_directory = local_xml_directory.trim();
+  xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
+  xmlFileFolder = local_xml_directory.trim();
+
+    // Initialize the members
+    doctypeList = new Vector();
+    elementStack = new Stack();
+    queryStack   = new Stack();
+    returnFieldList = new Vector();
+    ownerList = new Vector();
+    siteList = new Vector();
+    this.framework = framework;
+    this.config = framework.getConfiguration();
+
+
+    // Store the text of the initial query
+    StringBuffer qtext = new StringBuffer();
+    int len = 0;
+    char[] characters = new char[512];
+    try {
+      while ((len = queryspec.read(characters, 0, 512)) != -1) {
+        qtext.append(characters);
+        characters = new char[512];
+      }
+    } catch (IOException ioe) {
+      framework.debug(4, "Error reading the query.");
+    }
+    queryString = qtext.toString();
+
+    // Initialize the parser and read the queryspec
+    XMLReader parser = initializeParser();
+    if (parser == null) {
+      framework.debug(1, "SAX parser not instantiated properly.");
+    }
+    try {
+      parser.parse(new InputSource(new StringReader(queryString.trim())));
+    } catch (IOException ioe) {
+      framework.debug(4, "Error reading the query during parsing.");
+    } catch (SAXException e) {
+      framework.debug(4, "Error parsing Query (" + 
+                      e.getClass().getName() +").");
+      framework.debug(4, e.getMessage());
+    }
 	}
 
-public LocalQuery(String xpathstring) {
-    ConfigXML config = new ConfigXML("lib/config.xml");
-    returnFields = config.get("returnfield");
-    doctypes2bsearched = config.get("doctype");
-    dt2bReturned = config.get("returndoc");
-    local_dtd_directory = config.get("local_dtd_directory", 0);
-    local_xml_directory = config.get("local_xml_directory", 0);
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    }
-    else {
-        cnt = returnFields.size();
-    }
-    
-    headers = new String[4+cnt];  // assume at least 4 fields returned
-    headers[0] = "Doc ID";
-    headers[1] = "Document Name";
-    headers[2] = "Document Type";
-    headers[3] = "Document Title";
-    for (int i=0;i<cnt;i++) {
-        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
-        dtm = new DefaultTableModel(headers,0);
-        RSTable = new JTable(dtm);
-        TableColumnModel tcm = RSTable.getColumnModel();
-        removeFirstNColumns(tcm,numcolsdelete);
-
-//    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-//    local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
-//    local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    local_xml_directory = local_xml_directory.trim();
-    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-//    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory.trim();
-    this.xpathExpression = xpathstring;
-}
-
-public LocalQuery(String xpathstring, JButton button) {
-    ConfigXML config = new ConfigXML("lib/config.xml");
-    returnFields = config.get("returnfield");
-    doctypes2bsearched = config.get("doctype");
-    dt2bReturned = config.get("returndoc");
-    local_dtd_directory = config.get("local_dtd_directory", 0);
-    local_xml_directory = config.get("local_xml_directory", 0);
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    }
-    else {
-        cnt = returnFields.size();
-    }
-    
-    headers = new String[4+cnt];  // assume at least 4 fields returned
-    headers[0] = "Doc ID";
-    headers[1] = "Document Name";
-    headers[2] = "Document Type";
-    headers[3] = "Document Title";
-    for (int i=0;i<cnt;i++) {
-        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
-    Halt = button;
-        dtm = new DefaultTableModel(headers,0);
-        RSTable = new JTable(dtm);
-        TableColumnModel tcm = RSTable.getColumnModel();
-        removeFirstNColumns(tcm,numcolsdelete);
-
-//    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-//    local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
-//    local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    local_xml_directory = local_xml_directory.trim();
-    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-//    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory.trim();
-    this.xpathExpression = xpathstring;
-}
-    
-public LocalQuery(String[] xpathstrings, boolean and_flag, JButton button) {
-    ConfigXML config = new ConfigXML("lib/config.xml");
-    returnFields = config.get("returnfield");
-    doctypes2bsearched = config.get("doctype");
-    dt2bReturned = config.get("returndoc");
-    local_dtd_directory = config.get("local_dtd_directory", 0);
-    local_xml_directory = config.get("local_xml_directory", 0);
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    }
-    else {
-        cnt = returnFields.size();
-    }
-    
-    headers = new String[4+cnt];  // assume at least 4 fields returned
-    headers[0] = "Doc ID";
-    headers[1] = "Document Name";
-    headers[2] = "Document Type";
-    headers[3] = "Document Title";
-    for (int i=0;i<cnt;i++) {
-        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
-    Halt = button;
-        dtm = new DefaultTableModel(headers,0);
-        RSTable = new JTable(dtm);
-        TableColumnModel tcm = RSTable.getColumnModel();
-        removeFirstNColumns(tcm,numcolsdelete);
-
-//    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-//    local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
-//    local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    local_xml_directory = local_xml_directory.trim();
-    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-//    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory.trim();
-    this.xpathExpressions = xpathstrings;
-    setAndFlag(and_flag);
-}
-
-public void setAndFlag(boolean flg) {
-    Andflag = flg;   
-}
-
-public void setSearch(String match){
-    xpathExpression = "//*[contains(text(),\""+match+"\")]";
-}
-
-public void setSearch(String type, String match){
-    if(type.equalsIgnoreCase("contains")) {
-        xpathExpression = "//*[contains(text(),\""+match+"\")]";
-    }
-    else if (type.equalsIgnoreCase("doesn't contain")) {
-        xpathExpression = "//*[not(contains(text(),\""+match+"\"))]";
-    }
-    else if (type.equalsIgnoreCase("is")) {
-        xpathExpression = "//*[text() = \""+match+"\"]";
-    }
-    else if (type.equalsIgnoreCase("is not")) {
-        xpathExpression = "//*[not(text() = \""+match+"\")]";
-    }
-    else if(type.equalsIgnoreCase("starts with")) {
-        xpathExpression = "//*[starts-with(text(),\""+match+"\")]";
-    }
-    
-    else xpathExpression = "//*[contains(text(),\""+match+"\")]";
-}
-
-public static String getPath(String type, String match){
-    if(type.equalsIgnoreCase("contains")) {
-        return ("//*[contains(text(),\""+match+"\")]");
-    }
-    else if (type.equalsIgnoreCase("doesn't contain")) {
-        return ("//*[not(contains(text(),\""+match+"\"))]");
-    }
-    else if (type.equalsIgnoreCase("is")) {
-        return ("//*[text() = \""+match+"\"]");
-    }
-    else if (type.equalsIgnoreCase("is not")) {
-        return ("//*[not(text() = \""+match+"\")]");
-    }
-    else if(type.equalsIgnoreCase("starts with")) {
-        return ("//*[starts-with(text(),\""+match+"\")]");
-    }
-    
-    else return ("//*[contains(text(),\""+match+"\")]");
-}
+  /**
+   * construct an instance of the LocalQuery class 
+   *
+   * @param queryspec the XML representation of the query (should conform
+   *                  to pathquery.dtd) as a String
+   * @param parserName the fully qualified name of a Java Class implementing
+   *                  the org.xml.sax.Parser interface
+   */
+  public LocalQuery( String queryspec, ClientFramework framework)
+         //throws IOException 
+  {
+    this(new StringReader(queryspec), framework);
+  }
 
 public void setXmlcatalogfile(String str) {
     this.xmlcatalogfile = str;
@@ -293,207 +172,100 @@ public void setXmlFileFolder(String str) {
     this.xmlFileFolder = str;
 }
 
-public void setXpathExpression(String str) {
-    this.xpathExpression = str;
-}
-    
-public JTable getRSTable() {
-    return RSTable;
-}
     
     
     
-void queryAll()
-	{
-	    Node root;
-        long starttime, curtime, fm;
-        if (Halt!=null) {
-            Haltname = Halt.getText();
-            Halt.setText("Halt");
+    
+void queryAll(String xpathExpression) {
+  Node root;
+  long starttime, curtime, fm;
+  DOMParser parser = new DOMParser();
+  CatalogEntityResolver cer = new CatalogEntityResolver();
+  try {
+    System.out.println("xmlcatalogfile is: "+xmlcatalogfile);
+    Catalog myCatalog = new Catalog();
+    System.out.println("new catalog created!");
+    myCatalog.loadSystemCatalogs();
+    System.out.println("loadSystemCatalogs completed!");
+    myCatalog.parseCatalog(xmlcatalogfile);
+    cer.setCatalog(myCatalog);
+  }
+  catch (Exception e) {System.out.println("Problem creating Catalog!" + e.toString());}
+  parser.setEntityResolver(cer);
+  starttime = System.currentTimeMillis();
+  StringWriter sw = new StringWriter();
+
+  File xmldir = new File(local_xml_directory);
+  Vector filevector = new Vector();
+  getFiles(xmldir, filevector);
+  
+  // iterate over all the files that are in the local xml directory
+  for (int i=0;i<filevector.size();i++) {
+    File currentfile = (File)filevector.elementAt(i);
+    String filename = currentfile.getPath();
+
+    if (currentfile.isFile()) {
+          // above line skips subdirectories
+      if (dom_collection.containsKey(filename)){
+        // checks to see if doc has already been placed in DOM cache
+        root = ((Document)dom_collection.get(filename)).getDocumentElement();
+        if (doctype_collection.containsKey(filename)) {
+          currentDoctype = ((String)doctype_collection.get(filename));   
         }
-        DOMParser parser = new DOMParser();
-        CatalogEntityResolver cer = new CatalogEntityResolver();
-        try {
-          System.out.println("xmlcatalogfile is: "+xmlcatalogfile);
-          Catalog myCatalog = new Catalog();
-            System.out.println("new catalog created!");
-            myCatalog.loadSystemCatalogs();
-            System.out.println("loadSystemCatalogs completed!");
-            myCatalog.parseCatalog(xmlcatalogfile);
-            cer.setCatalog(myCatalog);
-        }
-        catch (Exception e) {System.out.println("Problem creating Catalog!" + e.toString());}
-        parser.setEntityResolver(cer);
-        starttime = System.currentTimeMillis();
-	    StringWriter sw = new StringWriter();
-        
-        
-	    File xmldir = new File(local_xml_directory);
-	    Vector filevector = new Vector();
-	    getFiles(xmldir, filevector);
-	    
-//	    String[] files = xmldir.list();
-	    
-	    for (int i=0;i<filevector.size();i++)
-        {
-//            String filename = files[i];
-//            File currentfile = new File(xmldir, filename);
-            File currentfile = (File)filevector.elementAt(i);
-            String filename = currentfile.getPath();
-            if (stopFlag) break;
-            if (currentfile.isFile())
-            
-            {
-              if (dom_collection.containsKey(filename)){
-                root = ((Document)dom_collection.get(filename)).getDocumentElement();
-                if (doctype_collection.containsKey(filename)) {
-                    currentDoctype = ((String)doctype_collection.get(filename));   
-                }
-              }
-              else {
-                InputSource in;
-                try
-                {
-                    in = new InputSource(new FileInputStream(filename));
-                }
-                catch (FileNotFoundException fnf)
-                {
-                    System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
-                    fnf.printStackTrace();
-                    return;
-                }
-                try
-                    {
-                    parser.parse(in);
-                    }
-                catch(Exception e1)
-                    {
-                        System.err.println("Parsing " + filename + " threw: " + e1.toString());
-                        e1.printStackTrace();
-                        continue;
-                    }
+      }
+      else {
+        InputSource in;
+          try {
+            in = new InputSource(new FileInputStream(filename));
+          }
+          catch (FileNotFoundException fnf) {
+            System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
+            fnf.printStackTrace();
+            return;
+          }
+          try {
+            parser.parse(in);
+          }
+          catch(Exception e1) {
+            System.err.println("Parsing " + filename + " threw: " + e1.toString());
+            e1.printStackTrace();
+            continue;
+          }
 
       // Get the documentElement from the parser, which is what the selectNodeList method expects
-                Document current_doc = parser.getDocument();
-//                Node root = parser.getDocument().getDocumentElement();
-                root = parser.getDocument().getDocumentElement();
-                dom_collection.put(filename,current_doc);
-                String temp = getDocTypeFromDOM(current_doc);
-                if (temp==null) temp = root.getNodeName();
-                doctype_collection.put(filename,temp);
-                currentDoctype = temp;
-              }     
-                String rootname = root.getNodeName();
-                NodeList nl = null;
-                try {
-                   boolean search_flag = true;
-                // first see if current doctype is in list of doctypes to be searched
-                 if ((doctypes2bsearched.contains("any"))||(doctypes2bsearched.contains(currentDoctype))) {
-                 }
-                 else {
-                    search_flag = false;
-                 }
-                if (search_flag) { 
+          Document current_doc = parser.getDocument();
+          root = parser.getDocument().getDocumentElement();
+          dom_collection.put(filename,current_doc);
+          String temp = getDocTypeFromDOM(current_doc);
+          if (temp==null) temp = root.getNodeName();
+          doctype_collection.put(filename,temp);
+          currentDoctype = temp;
+      }
+      
+      String rootname = root.getNodeName();
+      NodeList nl = null;
+      try {
+        boolean search_flag = true;
+          // first see if current doctype is in list of doctypes to be searched
+        if ((doctypes2bsearched.contains("any"))
+                ||(doctypes2bsearched.contains(currentDoctype))) {
+                 
+        }
+        else {
+          search_flag = false;
+        }
+        if (search_flag) { 
                 
-                if (xpathExpressions == null) {   // a single xpath expression
-                if (stopFlag) break;
-                    // Use the simple XPath API to select a node.
-                    nl = XPathAPI.selectNodeList(root, xpathExpression);
-     /*               String[] rss = new String[4];
-                    for (int ii=0;ii<nl.getLength();ii++) {
-                        if (stopFlag) break;
-                        rss[0] = filename;
-                        rss[1] = rootname;
-                        rss[2] = nl.item(ii).getNodeName();
-                        Node cn = nl.item(ii).getFirstChild();  // assume 1st child is text node
-                        if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                            rss[3] = cn.getNodeValue().trim();
-                        }
-                        else { rss[3]="";}
-                    dtm.addRow(rss);
-      */
-                  if (nl.getLength()>0) {
-                    addRowsToTable(filename);
-                  }
-                    
-                }
-                else {   // multiple expressions are handled here
-                    if (stopFlag) break;
-                    if (!Andflag) {
-                        for (int k=0;k<xpathExpressions.length;k++) {
-                            if (xpathExpressions[k].length()>0) {
-                                xpathExpression = xpathExpressions[k];
-                            nl = XPathAPI.selectNodeList(root, xpathExpression);
-            /*                String[] rss = new String[4];
-                            for (int ii=0;ii<nl.getLength();ii++) {
-                                if (stopFlag) break;
-                                rss[0] = filename;
-                                rss[1] = rootname;
-                                rss[2] = nl.item(ii).getNodeName();
-                                Node cn = nl.item(ii).getFirstChild();  // assume 1st child is text node
-                                if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                                    rss[3] = cn.getNodeValue().trim();
-                                }
-                                else { rss[3]="";}
-                                dtm.addRow(rss);
-             */                   
-                  if (nl.getLength()>0) {
-                    addRowsToTable(filename);
-                  }
-                            
-                            }
-                        }
-                    } // end !Andflag
-                    if (Andflag) {   //handle "AND" here
-                        AndResultFlag = true;
-                        NodeList[] nls = new NodeList[xpathExpressions.length];
-                        for (int k=0;k<xpathExpressions.length;k++) {
-                            if (xpathExpressions[k].length()>0) {
-                                xpathExpression = xpathExpressions[k];
-                                nl = XPathAPI.selectNodeList(root, xpathExpression);
-                                if (nl.getLength()==0) {  // one of search conditions failed
-                                    AndResultFlag = false;
-                                  //  break;
-                                }
-                            nls[k] = nl;
-                            }
-                        } // end xpathExpressions loop
-            if (AndResultFlag) {   
-                for (int kkk=0;kkk<xpathExpressions.length;kkk++) {
-                    nl = nls[kkk];
-     /*               if (nl!=null) {
-                    String[] rss = new String[4];
-                    for (int ii=0;ii<nl.getLength();ii++) {
-                        if (stopFlag) break;
-                            rss[0] = filename;
-                            rss[1] = rootname;
-                            rss[2] = nl.item(ii).getNodeName();
-                            Node cn = nl.item(ii).getFirstChild();  // assume 1st child is text node
-                            if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                                rss[3] = cn.getNodeValue().trim();
-                            }
-                            else { rss[3]="";}
-                            dtm.addRow(rss);
-                    }
-                    }
-       */
-       
-                  if (nl.getLength()>0) {
-                    addRowsToTable(filename);
-                  }
-                }
-                
-            }
-          }
-          
-        } // end multiple expression 'else'
-    
+          // Use the simple XPath API to obtain a node list.
+          nl = XPathAPI.selectNodeList(root, xpathExpression);
+
         
-                }  
+        }  
       }
       catch (Exception e2)
       {
-        System.err.println("selectNodeList threw: " + e2.toString() + " perhaps your xpath didn't select any nodes");
+        System.err.println("selectNodeList threw: " + e2.toString() 
+          + " perhaps your xpath didn't select any nodes");
         e2.printStackTrace();
         return;
       }
@@ -506,30 +278,21 @@ void queryAll()
         }
         
  
-    if (Halt!=null) {
-        Halt.setText(Haltname);
-    }
       curtime = System.currentTimeMillis();
       System.out.println("total time: "+(int)(curtime-starttime));
     }
   
-  public void setStopFlag() {
-    stopFlag = true;
-  } 
   
-  public void run() {
-    queryAll();  
-  }
+ // public void run() {
+ //   queryAll();  
+ // }
     
-	//{{DECLARE_CONTROLS
-	//}}
-	
   private void addRowsToTable(String hitfilename) {
     Vector temp = getResultSetDocs(hitfilename);
     for (Enumeration e = temp.elements();e.hasMoreElements();) {
         String fn = (String)e.nextElement();
         String[] row = createRSRow(fn);
-        dtm.addRow(row);
+//        dtm.addRow(row);
     }   
   }
   
@@ -631,7 +394,6 @@ void queryAll()
 	                ret = ddd.getName();   
 	            }
 	        }
-
 	return ret;
 	}
 	
@@ -659,7 +421,7 @@ void queryAll()
         for (Enumeration e=rsdocs.elements();e.hasMoreElements();) {
             String name = (String)e.nextElement();
             String[] rowdata = createRSRow(name);
-            dtm.addRow(rowdata);   
+//            dtm.addRow(rowdata);   
         }
    }
    
@@ -676,22 +438,124 @@ void queryAll()
         return last;
    }
  
-  
-  private void removeTableColumn( TableColumnModel tcm, int index) {
-        int cnt = tcm.getColumnCount();
-        if (index<cnt) {
-            TableColumn tc = tcm.getColumn(index);
-            tcm.removeColumn(tc);
-        }
-  }
-  
-  private void removeFirstNColumns(TableColumnModel tcm, int n) {
-        // n is the number of leading columns to remove
-        for (int i=0;i<n;i++) {
-            removeTableColumn(tcm,0);
-        }
+ //------------------------------------------------------------------------
+  /**
+   * Set up the SAX parser for reading the XML serialized query
+   */
+  private XMLReader initializeParser() {
+    XMLReader parser = null;
+
+    // Set up the SAX document handlers for parsing
+    try {
+
+      // Get an instance of the parser
+      parser = XMLReaderFactory.createXMLReader(parserName);
+
+      // Set the ContentHandler to this instance
+      parser.setContentHandler(this);
+
+      // Set the error Handler to this instance
+      parser.setErrorHandler(this);
+
+    } catch (Exception e) {
+       framework.debug(1, "Error in Query.initializeParser " + e.toString());
+    }
+
+    return parser;
   }
 
+  /**
+   * callback method used by the SAX Parser when the start tag of an 
+   * element is detected. Used in this context to parse and store
+   * the query information in class variables.
+   */
+  public void startElement (String uri, String localName, 
+                            String qName, Attributes atts) 
+         throws SAXException {
+    BasicNode currentNode = new BasicNode(localName);
+    // add attributes to BasicNode here
+    if (atts != null) {
+      int len = atts.getLength();
+      for (int i = 0; i < len; i++) {
+        currentNode.setAttribute(atts.getLocalName(i), atts.getValue(i));
+      }
+    }
+
+    elementStack.push(currentNode); 
+    if (currentNode.getTagName().equals("querygroup")) {
+      QueryGroup currentGroup = new QueryGroup(
+                                currentNode.getAttribute("operator"));
+      if (query == null) {
+        query = currentGroup;
+      } else {
+        QueryGroup parentGroup = (QueryGroup)queryStack.peek();
+        parentGroup.addChild(currentGroup);
+      }
+      queryStack.push(currentGroup);
+    }
+  }
+
+  /**
+   * callback method used by the SAX Parser when the end tag of an 
+   * element is detected. Used in this context to parse and store
+   * the query information in class variables.
+   */
+  public void endElement (String uri, String localName,
+                          String qName) throws SAXException {
+    BasicNode leaving = (BasicNode)elementStack.pop(); 
+    if (leaving.getTagName().equals("queryterm")) {
+      boolean isCaseSensitive = (new Boolean(
+              leaving.getAttribute("casesensitive"))).booleanValue();
+      QueryTerm currentTerm = null;
+      if (currentPathexpr == null) {
+        currentTerm = new QueryTerm(isCaseSensitive,
+                      leaving.getAttribute("searchmode"),currentValue);
+      } else {
+        currentTerm = new QueryTerm(isCaseSensitive,
+                      leaving.getAttribute("searchmode"),currentValue,
+                      currentPathexpr);
+      }
+      QueryGroup currentGroup = (QueryGroup)queryStack.peek();
+      currentGroup.addChild(currentTerm);
+      currentValue = null;
+      currentPathexpr = null;
+    } else if (leaving.getTagName().equals("querygroup")) {
+      QueryGroup leavingGroup = (QueryGroup)queryStack.pop();
+    }
+  }
+
+  /**
+   * callback method used by the SAX Parser when the text sequences of an 
+   * xml stream are detected. Used in this context to parse and store
+   * the query information in class variables.
+   */
+  public void characters(char ch[], int start, int length) {
+
+    String inputString = new String(ch, start, length);
+    BasicNode currentNode = (BasicNode)elementStack.peek(); 
+    String currentTag = currentNode.getTagName();
+    if (currentTag.equals("meta_file_id")) {
+      meta_file_id = inputString;
+    } else if (currentTag.equals("querytitle")) {
+      queryTitle = inputString;
+    } else if (currentTag.equals("value")) {
+      currentValue = inputString;
+    } else if (currentTag.equals("pathexpr")) {
+      currentPathexpr = inputString;
+    } else if (currentTag.equals("returndoctype")) {
+      doctypeList.add(inputString);
+    } else if (currentTag.equals("returnfield")) {
+      returnFieldList.add(inputString);
+      containsExtendedSQL = true;
+    } else if (currentTag.equals("owner")) {
+      ownerList.add(inputString);
+    } else if (currentTag.equals("site")) {
+      siteList.add(inputString);
+    }
+  }
+ 
+  
+// -------------------------------------------------------------------------
 // given a QueryTerm, construct a XPath expression
 //
 String QueryTermToXPath(QueryTerm qt) {
@@ -705,8 +569,11 @@ String QueryTermToXPath(QueryTerm qt) {
 	String pathExpression = qt.getPathExpression();
 
 	// construct path part of XPath
+	if (pathExpression==null) {
+	  xpath = "//*"; 
+	}
 	// is path absolute or relative
-	if (pathExpression.startsWith("/")) {      // absolute
+	else if (pathExpression.startsWith("/")) {      // absolute
     xpath =	 pathExpression;
 	}
 	else {
@@ -768,7 +635,8 @@ return xpath;
 // in a Vector; a null return indicates that no datacollections have been found
 Vector executeXPathQuery(String xpath) {
   Vector ret = new Vector();
-  
+  ret.addElement(xpath);
+  System.out.println(xpath);
   return ret;
 }
 
@@ -786,6 +654,7 @@ Vector executeLocal(QueryGroup qg, Vector res) {
 		if (child instanceof QueryTerm) {
       String xpath = QueryTermToXPath((QueryTerm)child);
       currentResults = executeXPathQuery(xpath);
+      if (currentResults==null) System.out.println("current is null!");
 			if ((currentResults==null)&&(qg.getOperator().equalsIgnoreCase("intersect"))) {
                          	// exit loop since one the results sets is null
 				rs = null;
@@ -805,6 +674,7 @@ Vector executeLocal(QueryGroup qg, Vector res) {
 				}
 			}
 			if (qg.getOperator().equalsIgnoreCase("union")) {
+				if (rs==null) rs = (Vector)currentResults.clone(); // 1st time
         Enumeration q = currentResults.elements();
 				while(q.hasMoreElements()) {
 					Object obj = q.nextElement();
@@ -820,5 +690,54 @@ Vector executeLocal(QueryGroup qg, Vector res) {
 	}
 return rs;
 }   
+
+  /**
+   * Load the configuration parameters that we need
+   */
+  private void loadConfigurationParameters()
+  {
+    parserName = config.get("saxparser", 0);
+    accNumberSeparator = config.get("accNumberSeparator", 0);
+    String searchLocalString = config.get("searchlocal", 0);
+//    searchLocal = (new Boolean(searchLocalString)).booleanValue();
+    returnFields = config.get("returnfield");
+    doctypes2bsearched = config.get("doctype");
+    dt2bReturned = config.get("returndoc");
+    local_dtd_directory = config.get("local_dtd_directory", 0);
+    local_xml_directory = config.get("local_xml_directory", 0);
+  }
+
+  /** Main routine for testing */
+  static public void main(String[] args) 
+  {
+    if (args.length < 1) {
+      System.err.println("Wrong number of arguments!!!");
+      System.err.println("USAGE: java LocalQuery <xmlfile>");
+      return;
+    } else {
+      int i = 0;
+      boolean useXMLIndex = true;
+      String xmlfile  = args[i];
+
+      try {
+        ClientFramework cf = new ClientFramework(
+                              new ConfigXML("lib/config.xml"));
+        
+        FileReader xml = new FileReader(new File(xmlfile));
+         
+        LocalQuery qspec = new LocalQuery(xml, cf);
+        
+        Vector test = qspec.executeLocal(qspec.query, null);
+        Enumeration www = test.elements();
+        while (www.hasMoreElements()) {
+          System.out.println((String)www.nextElement());  
+        }
+         
+       } catch (IOException e) {
+         System.err.println(e.getMessage());
+       }
+     }
+  }
+   
    
 }
