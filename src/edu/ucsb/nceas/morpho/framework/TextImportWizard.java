@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-21 04:08:49 $'
- * '$Revision: 1.33 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-05-10 22:43:10 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,12 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.Enumeration;
+import java.text.DateFormat;
 
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 
@@ -56,6 +58,12 @@ import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
  */
 public class TextImportWizard extends javax.swing.JFrame
 {
+  
+  /**
+   * flag indicating that user has returned to first screen using "back" button
+   */
+  boolean hasReturnedFromScreen2;
+
   
   /**
    * flag indicating that multiple, sequential delimiters should be ignored
@@ -498,11 +506,12 @@ public class TextImportWizard extends javax.swing.JFrame
     {
       File ff = new File(dataFileName);
       TableNameTextField.setText(ff.getName());
-      filename = dataFileName;
+      filename = dataFileName; 
       parsefile(filename);
       createLinesTable();
       resultsBuffer = new StringBuffer();
       stepNumber = 1;
+      hasReturnedFromScreen2 = false;
       StepNumberLabel.setText("Step #"+stepNumber+" of 3");
       CardLayout cl = (CardLayout)ControlsPanel.getLayout();
       cl.show(ControlsPanel, "card"+stepNumber);
@@ -941,37 +950,44 @@ public void startImport(String file) {
     }            
 	
 	private void parseDelimited() {
-	  if (lines!=null) {
+
+        if (lines!=null) {
 	    int start = startingLine;  // startingLine is 1-based not 0-based
-	    if (labelsInStartingLine) {
-	      colTitles = getColumnValues(lines[startingLine-1]);
-	    }
-	    else {
-	      colTitles = getColumnValues(lines[startingLine-1]);  // use just to get # of cols
-	      int temp = colTitles.size();
-	      colTitles = new Vector();
-	      for (int l=0;l<temp;l++) {
-	        colTitles.addElement("Column "+(l+1));  
-	      }
-	      start--;  // include first line
-	    }
-	    vec = new Vector();
-	    Vector vec1 = new Vector();
-	    int numcols = colTitles.size();
-	    resultsBuffer.append("Number of columns assumed: "+numcols+"\n");
-	    for (int i=start;i<nlines;i++) {
-	      vec1 = getColumnValues(lines[i]);
-	      boolean missing = false;
-	      while (vec1.size()<numcols) {
-	        vec1.addElement("");
-	        missing = true;
-	      }
-	      if (missing) {
-	        resultsBuffer.append("Insufficient number of items in row "+(i+1)+"\n"+" Empty strings added!"+"\n"+"\n"); 
-	      }
-	      vec.addElement(vec1);
-	    }
-	  
+        int numcols  = 0;          // init
+        if (hasReturnedFromScreen2 && isScreen1Unchanged() & colTitles!=null){
+            //don't redefine column headings etc - keep user's previous values, 
+            // since nothing has changed. In this case colTitles is already set:
+            numcols  = colTitles.size();
+        } else {
+            if (labelsInStartingLine) {
+              colTitles = getColumnValues(lines[startingLine-1]);
+            }
+            else {
+              colTitles = getColumnValues(lines[startingLine-1]);  // use just to get # of cols
+              int temp = colTitles.size();
+              colTitles = new Vector();
+              for (int l=0;l<temp;l++) {
+                colTitles.addElement("Column "+(l+1));  
+              }
+              start--;  // include first line
+            }
+            vec = new Vector();
+            Vector vec1 = new Vector();
+            numcols = colTitles.size();
+            resultsBuffer.append("Number of columns assumed: "+numcols+"\n");
+            for (int i=start;i<nlines;i++) {
+              vec1 = getColumnValues(lines[i]);
+              boolean missing = false;
+              while (vec1.size()<numcols) {
+                vec1.addElement("");
+                missing = true;
+              }
+              if (missing) {
+                resultsBuffer.append("Insufficient number of items in row "+(i+1)+"\n"+" Empty strings added!"+"\n"+"\n"); 
+              }
+              vec.addElement(vec1);
+            }
+        }
 	    buildTable(colTitles, vec);
 	    colDataInfo = new Vector();   // vector of ColumnData objects
 	    for (int k=0;k<numcols;k++) {
@@ -1160,8 +1176,6 @@ public void startImport(String file) {
 	}
 	
 
-
-
 	void NextButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		stepNumber++;
@@ -1181,6 +1195,10 @@ public void startImport(String file) {
 	void BackButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		stepNumber--;
+        if (stepNumber==1){
+            saveScreen1Settings();
+            hasReturnedFromScreen2=true;
+        }
 		if (stepNumber<3) FinishButton.setEnabled(false);
 		if (stepNumber>1) {
 		  NextButton.setEnabled(true);
@@ -1266,7 +1284,46 @@ public void startImport(String file) {
 	}
 
 
+  /*
+   *    Called if user is returning to screen 1 from screen 2 - 
+   *    Saves the screen 1 settings so we can tell if anything has been changed 
+   *    when user hits "next" again
+   */
+
+  String[] screen1Settings = new String[2];
+  
+  private final int IMPORT_START_ROW    = 0;
+  private final int LABELS_IN_START_ROW = 1;
+
+  private void saveScreen1Settings(){
+    
+    screen1Settings[IMPORT_START_ROW]   = StartingLineTextField.getText();
+    screen1Settings[LABELS_IN_START_ROW]= (ColumnLabelsCheckBox.isSelected())?
+                                                              "true" : "false";
+ }
+  
+  
+  /*
+   *    Called if user is returning to screen 1 from screen 2 - 
+   *    Chaecks latest screen 1 settings against the saved original settings so 
+   *    we can tell if anything has been changed.  
+   *
+   *    Returns true if settings *NOT* changed (ie "isScreen1Unchanged" is true)
+   */
+  String labelsInStartLine_Status = null;
+
+  private boolean isScreen1Unchanged(){
+      
+    labelsInStartLine_Status=(ColumnLabelsCheckBox.isSelected())?"true":"false";
+
+    return (
+      screen1Settings[IMPORT_START_ROW].equals(StartingLineTextField.getText())
+      && screen1Settings[LABELS_IN_START_ROW].equals(labelsInStartLine_Status));
+  }
  
+
+  
+  
  /*-----------------------------------
   * routines for trying to guess the delimiter being used
   *
@@ -1317,6 +1374,7 @@ public void startImport(String file) {
       return mostfreqindex;
    }
 
+   
   /**
    * guesses a delimiter based on frequency of appearance of common delimites
    */
@@ -1412,10 +1470,15 @@ public void startImport(String file) {
     return res;
   }
   
+  //DateFormat dateFormat = DateFormat.getDateInstance();  //see isDate() method
   boolean isDate(String s) {
     boolean res = true;
     try {
-      long III = Date.parse(s);
+      long III = Date.parse(s);   //--- DEPRECATED
+      //Date III = dateFormat.parse(s);     //--- This should replace the above 
+                                            //(deprecated) method call, but it 
+                                            //DOESN'T WORK in the same way - 
+                                            //ie results are different!
     }
     catch (Exception w) {
       res = false;
@@ -1736,17 +1799,15 @@ public void startImport(String file) {
     }
 	}
 
+   
 	void StartingLineTextField_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		String str = StartingLineTextField.getText();
+ 		String str = StartingLineTextField.getText();
 		if (isInteger(str)) {
-		  startingLine = (Integer.valueOf(str)).intValue();  
+          startingLine = (Integer.valueOf(str)).intValue();
+ 		} else {
+		  StartingLineTextField.setText(String.valueOf(startingLine));
 		}
-		else {
-		  startingLine = 1;
-		  StartingLineTextField.setText("1");
-		}
-			 
 	}
 
 	class SymFocus extends java.awt.event.FocusAdapter
@@ -1780,8 +1841,7 @@ public void startImport(String file) {
 		  startingLine = (Integer.valueOf(str)).intValue();  
 		}
 		else {
-		  startingLine = 1;
-		  StartingLineTextField.setText("1");
+		  StartingLineTextField.setText(String.valueOf(startingLine));
 		}			 
 	}
 	
@@ -1811,8 +1871,8 @@ public void startImport(String file) {
 
 	void ColumnLabelsCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
 	{
-    labelsInStartingLine = ColumnLabelsCheckBox.isSelected();
-  }
+        labelsInStartingLine = ColumnLabelsCheckBox.isSelected();
+    }
   
   
   
