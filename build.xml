@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.79 2003-12-16 23:56:16 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.80 2003-12-31 17:37:40 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -22,7 +22,7 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
-      <property name="cvsroot" value=":ext:tao@cvs.ecoinformatics.org:/cvs" />
+      <property name="cvsroot" value=":ext:higgins@cvs.ecoinformatics.org:/cvs" />
       <property name="eml-module" value="eml" />
       <property name="eml-tag" value="JavaHelp" />
       <property name="eml.doc.dir" value="simpledocs" />
@@ -148,6 +148,28 @@
      </copy>
    
    </target>
+
+
+   <target name="utils_update" depends="prepare">
+     <!-- checkout utilities moduel -->
+     <echo>Enter CVS password: </echo>
+     <cvs cvsRoot="${cvsroot}"
+          package="utilities"
+          dest="${build.dir}" />
+     <ant inheritAll="false" dir="${build.dir}/utilities" target="jar" />
+     <delete file="${utilities}" />
+     <copy file="${build.dir}/utilities/build/utilities.jar" todir="${libdir}" />
+   </target>
+
+   
+   <target name="eml_update" depends="prepare">
+     <!-- checkout utilities moduel -->
+     <echo>Enter CVS password: </echo>
+     <cvs cvsRoot="${cvsroot}"
+          package="eml"
+          dest="${build.dir}" />
+   </target>
+
    
    <target name="helpjar" depends="emldoc">
      <echo>Please download JavaHelp before running help target!</echo>
