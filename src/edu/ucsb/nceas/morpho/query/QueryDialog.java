@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.17 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-27 19:20:50 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -635,6 +635,20 @@ public class QueryDialog extends JDialog
    */
   private void handleExecuteButtonAction(java.awt.event.ActionEvent event)
   {
+    String metacatflag = "true";
+    String localflag = "true";
+    if (!catalogSearchCheckBox.isSelected()) {
+        metacatflag = "false";
+    }
+    if (!localSearchCheckBox.isSelected()) {
+      if (catalogSearchCheckBox.isSelected()) {
+        localflag = "false";
+      }
+    }
+    ConfigXML profile = framework.getProfile();
+    profile.set("searchmetacat", 0, metacatflag);
+    profile.set("searchlocal",0,localflag);
+    
     savedQuery = buildQuery();
     searchStarted = true;
     setVisible(false);
