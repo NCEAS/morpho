@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:52:54 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-11 22:31:09 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,9 +289,13 @@ public class Methods extends AbstractWizardPage{
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
     MethodsPage nextMethodsPage = null;
+    
+    
 
     String title = titleField.getText().trim();
+    
     if (title!=null) {
+      if (title.length()<1) return null;
       returnMap.put(xPathRoot + "/methodStep/description/section/title", title);
     }
 
