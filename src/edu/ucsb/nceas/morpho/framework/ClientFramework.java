@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-07 21:14:07 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2001-05-08 00:29:14 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,7 +149,6 @@ public class ClientFramework extends javax.swing.JFrame
 
     // Set up the framework's menus and toolbars, and services
     initializeActions();
-    registerServices();
 
     // Load all of the plugins, their menus, and toolbars
     loadPlugins();
@@ -359,7 +358,7 @@ public class ClientFramework extends javax.swing.JFrame
 
   /**
    * This method is called by plugins to register a particular service that
-   * the plugin can perform.  The service is identified by the class name
+   * the plugin can perform.  The service is identified by the class 
    * of an interface that the service implements.
    *
    * @param serviceInterface the interface representing this service
@@ -376,31 +375,6 @@ public class ClientFramework extends javax.swing.JFrame
       servicesRegistry.put(serviceInterface, provider);
     }
   }
-
-  /**
-   * This method is called by plugins to request a particular service that
-   * the plugin can perform.  The service request is encapsulated in a
-   * ServiceRequest object.  The plugin receives directly the return data
-   * in a ServiceResponse object.
-   *
-   * @param request the service request and associated data
-   * @throws ServiceNotHandledException
-   */
-/*
-  public void requestService(ServiceRequest request)
-              throws ServiceNotHandledException
-  {
-    String serviceName = request.getServiceName();
-    if (servicesRegistry.containsKey(serviceName)) {
-      PluginInterface serviceHandler = 
-                      (PluginInterface)servicesRegistry.get(serviceName);
-      serviceHandler.handleServiceRequest(request);
-    } else {
-      throw (new ServiceNotHandledException("Service does not exist: " +
-                                            serviceName));
-    }
-  }
-*/
 
   /**
    * This method is called by plugins to determine if a particular 
@@ -434,61 +408,6 @@ public class ClientFramework extends javax.swing.JFrame
       throw (new ServiceNotHandledException("No such service registered."));
     }
   }
-
-  /**
-   * This method is called by the framework when the plugin should 
-   * register any services that it handles.  The plugin should then
-   * call the framework's 'addService' method for each service it can
-   * handle.
-   */
-  private void registerServices()
-  {
-/*
-    debug(9, "Entered ClientFramework::registerServices");
-    try {
-      this.addService(DataPackageInterface.class, this);
-    } catch (ServiceExistsException see) {
-      debug(6, "Service registration failed for DataPackageInterface.");
-      debug(6, see.toString());
-    }
-*/
-  }
-
-  /**
-   * This is the general dispatch method that is called by the framework
-   * whenever a plugin is expected to handle a service request.  The
-   * details of the request and data for the request are contained in
-   * the ServiceRequest object.
-   *
-   * @param request request details and data
-   */
-/*
-  public void handleServiceRequest(ServiceRequest request) 
-              throws ServiceNotHandledException
-  {
-    String serviceName = request.getServiceName();
-    if (serviceName.equals("LogService")) {
-      String message = (String)request.getDataObject("Message");
-      debug(1, message);
-    } else {
-      throw (new ServiceNotHandledException(serviceName));
-    }
-  }
-*/
-
-  /**
-   * This method is called by a service provider that is handling 
-   *  a service request that originated with the plugin.  Data
-   * from the ServiceRequest is handed back to the source plugin in
-   * the ServiceResponse object.
-   *
-   * @param response response details and data
-   */
-/*
-  public void handleServiceResponse(ServiceResponse response)
-  {
-  }
-*/
 
   /**
    * Set up the actions for menus and toolbars
@@ -574,7 +493,7 @@ public class ClientFramework extends javax.swing.JFrame
     addMenu("Window", new Integer(6));
 
     // HELP MENU ACTIONS
-    helpMenuActions = new Action[2];
+    helpMenuActions = new Action[1];
     Action aboutItemAction = new AbstractAction("About...") {
       public void actionPerformed(ActionEvent e) {
         SplashFrame sf = new SplashFrame();
@@ -586,7 +505,7 @@ public class ClientFramework extends javax.swing.JFrame
                     new ImageIcon(getClass().getResource("about.gif")));
     aboutItemAction.putValue("menuPosition", new Integer(1));
     helpMenuActions[0] = aboutItemAction;
-
+/*
     Action testServiceAction = new AbstractAction("Test Service") {
       public void actionPerformed(ActionEvent e) {
         testService();
@@ -598,7 +517,7 @@ public class ClientFramework extends javax.swing.JFrame
     testServiceAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     testServiceAction.putValue("menuPosition", new Integer(2));
     helpMenuActions[1] = testServiceAction;
-
+*/
     addMenu("Help", new Integer(9), helpMenuActions);
 
     // Set up the toolbar for the application
@@ -673,17 +592,9 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
-  private void testService()
-  {
-    try {
-      ServiceProvider provider = getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dai = (DataPackageInterface)provider;
-      dai.openDataPackage("a", "b");
-    } catch (ServiceNotHandledException snhe) {
-      debug(6, snhe.getMessage());
-    }
-  }
-
+  /** 
+   * Create a new connection to metacat
+   */
   private void establishConnection()
   {
     ConnectionFrame cf = new ConnectionFrame(this);
@@ -1045,10 +956,5 @@ public class ClientFramework extends javax.swing.JFrame
       //Ensure the application exits with an error condition.
       System.exit(1);
     }
-  }
-
-  public void openDataPackage(String location, String identifier)
-  {
-    debug(9, "Test service implementation succeeded.");
   }
 }
