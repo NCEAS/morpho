@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 21:31:32 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-01-27 22:57:26 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ import java.awt.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.datastore.MetacatDownloadException;
 
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
