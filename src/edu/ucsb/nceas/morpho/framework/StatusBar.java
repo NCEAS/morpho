@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-02 15:09:23 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-12 01:21:27 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,11 @@ public class StatusBar extends JPanel
 
   //width of padding space between icons
   private static final int PADDING  = 5;
+
+  //width of padding space to right of icons 
+  // - used to avoid resize handle on Mac OSX
+  private static final int RHS_PADDING  = 15;
+  //Ultimately - could test to see if this is MAC L&F, and if not, set this to 0
               
   /**
    *  Constructor - creates the StatusBar and initializes its state
@@ -132,6 +137,7 @@ public class StatusBar extends JPanel
     iconPanel.add(loginStatusLabel);
     iconPanel.add(Box.createHorizontalStrut(PADDING));
     iconPanel.add(sslStatusLabel);
+    iconPanel.add(Box.createHorizontalStrut(RHS_PADDING));
     this.add(BorderLayout.EAST, iconPanel);
     
     ToolTipManager.sharedInstance().registerComponent(connectStatusLabel);
