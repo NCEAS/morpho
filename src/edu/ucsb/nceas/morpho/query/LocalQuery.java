@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-14 19:16:15 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-05-14 22:16:28 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,12 @@ public class LocalQuery extends DefaultHandler
    */
   static Hashtable doctype_collection;
   
+  /**
+   * hash table with docids as key and a Vector of package IDs
+   * as the values
+   */
+  static Hashtable dataPackage_collection; 
+  
   /** The string representation of the pathquery (XML format) */
   private String queryString;
   
@@ -129,6 +135,8 @@ public class LocalQuery extends DefaultHandler
   static {
     dom_collection = new Hashtable();
     doctype_collection = new Hashtable();
+    dataPackage_collection = new Hashtable();
+    buildPackageList();
   }
     
 /**
@@ -156,6 +164,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
     returnFieldList = new Vector();
     ownerList = new Vector();
     siteList = new Vector();
+
 
 
     // Store the text of the initial query
@@ -202,12 +211,10 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
     this(new StringReader(queryspec), framework);
   }
 
-
-
-    
-    
-    
-    
+ /**
+  *  loops recursively over all files in the 'local_xml_directory'
+  *  and applies XPath search
+  */
   Vector queryAll(String xpathExpression) {
     Vector package_IDs = new Vector();
     Node root;
@@ -330,66 +337,16 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
  //   queryAll();  
  // }
     
-  private void addRowsToTable(String hitfilename) {
-    Vector temp = getResultSetDocs(hitfilename);
-    for (Enumeration e = temp.elements();e.hasMoreElements();) {
-        String fn = (String)e.nextElement();
-        String[] row = createRSRow(fn);
-//        dtm.addRow(row);
-    }   
-  }
   
-  // given the filename of a doc where a 'hit' has occured, return a vector of names of related docs	
-  private Vector getResultSetDocs(String filename) {
-    Vector result = new Vector();
-    String currentDoctype = getDoctypeFor(filename);
-    if (!dt2bReturned.contains("any")) {
-    //first see if the current doc type is in return list
-    if (dt2bReturned.contains(currentDoctype)) {
-        result.addElement(filename);   
-    }
-    // now check if objects of relationship are of types to be returned
-    Vector objs = getRelationshipObjects(filename);
-    for (Enumeration e=objs.elements();e.hasMoreElements();) {
-        String obj = (String)e.nextElement();
-        if (dt2bReturned.contains(obj)) {
-            result.addElement(obj);          
-        }
-    // now check if subjects of each object are of types to be returned i.e. backtracking
-        Vector subs = getRelationshipSubjects(obj);  
-        for (Enumeration w=objs.elements();w.hasMoreElements();) {
-            String sub = (String)w.nextElement();
-            if (dt2bReturned.contains(sub)) {
-                result.addElement(sub);          
-            }
-        }
-    }
-    }
-    else { // no dt2bReturned types
-        result.addElement(filename);   
-    }
-  return result;  
-  }
 
 	private String getDoctypeFor(String filename) {
-	    String ret = "";
-	    if (doctype_collection.containsKey(filename)) {
-	        ret = (String)doctype_collection.get(filename);   
-	    }
+	  String ret = "";
+	  if (doctype_collection.containsKey(filename)) {
+	    ret = (String)doctype_collection.get(filename);   
+	  }
 	return ret;
 	}
 	
-	private Vector getRelationshipSubjects(String obj) {
-	    Vector ret = new Vector();
-	    
-	    return ret;
-	}
-	
-	private Vector getRelationshipObjects(String sub) {
-	    Vector ret = new Vector();
-	    
-	    return ret;
-	}
 	
 	private String[] createRSRow(String filename) {
 	    int cols = 4 + returnFields.size();
@@ -427,7 +384,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
 	return val;    
 	}
 	
-	private String getDocTypeFromDOM(Document doc){
+	static private String getDocTypeFromDOM(Document doc){
 	    String ret = null;
 	        DocumentType ddd = doc.getDoctype();
 	        ret = ddd.getPublicId();
@@ -443,7 +400,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
 	
    // given a directory, return a vector of files it contains
    // including subdirectories
-   private void getFiles(File directoryFile, Vector vec) {
+   static private void getFiles(File directoryFile, Vector vec) {
 	    String[] files = directoryFile.list();
 	    
 	    for (int i=0;i<files.length;i++)
@@ -459,17 +416,9 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
         }
    }
  
-   private void addToRS(String filename) {
-        Vector rsdocs = getResultSetDocs(filename);
-        for (Enumeration e=rsdocs.elements();e.hasMoreElements();) {
-            String name = (String)e.nextElement();
-            String[] rowdata = createRSRow(name);
-//            dtm.addRow(rowdata);   
-        }
-   }
    
 // use to get the last element in a path string
-   private String getLastPathElement(String str) {
+   static private String getLastPathElement(String str) {
         String last = "";
         int ind = str.lastIndexOf("\\");
         if (ind==-1) {
@@ -481,7 +430,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
         return last;
    }
  
- //------------------------------------------------------------------------
+ // SAX Parser methods-----------------------------------------------------------
   /**
    * Set up the SAX parser for reading the XML serialized query
    */
@@ -597,21 +546,13 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
     }
   }
  
- /** routine to get the package(s) that any document is contained in 
-  *  returns a vector since a document can be in multiple packages
-  *  current just returns itself
-  */
-  private Vector getPackageID(String docid) {
-    Vector ret = new Vector();
-    ret.addElement(docid);  // temp
-    return ret;
-  }
 // -------------------------------------------------------------------------
 
 
 
-// given a QueryTerm, construct a XPath expression
-//
+/* given a QueryTerm, construct a XPath expression
+*
+*/
 String QueryTermToXPath(QueryTerm qt) {
 	String xpath;
   boolean caseSensitive = qt.isCaseSensitive();
@@ -685,18 +626,20 @@ return xpath;
 
 
 
-// executes a single xpath query and returns a set of result objects
-// in a Vector; a null return indicates that no datacollections have been found
+/* executes a single xpath query and returns a set of result objects
+ * in a Vector; a null return indicates that no datacollections have been found
+ */
 Vector executeXPathQuery(String xpath) {
   Vector ret = queryAll(xpath);
   System.out.println(xpath);
   return ret;
 }
 
-// local Query execution 
-// recursive handling of QueryTerms 
-// Vector res is the result set when started
-// it is used here to pass current results for recursion
+/* local Query execution 
+ * recursive handling of QueryTerms 
+ * Vector res is the result set when started
+ * it is used here to pass current results for recursion
+ */
 Vector executeLocal(QueryGroup qg, Vector res) { 
 	Vector rs = res;
 	Vector currentResults = null;
@@ -792,5 +735,168 @@ return rs;
      }
   }
    
-   
+ /** routine to get the package(s) that any document is contained in 
+  *  returns a vector since a document can be in multiple packages
+  *  current just returns itself
+  */
+  private Vector getPackageID(String docid) {
+    Vector ret = (Vector)dataPackage_collection.get(docid);
+ //   ret.addElement(docid);  // temp
+    return ret;
+  }
+
+ /** build hashtable of package elements
+  *  called by buildPackageList
+  */
+  static private void addToPackageList(Node nd, String fn) {
+    String subject = "";
+    String object = "";
+    Node root = nd;
+    NodeList nl = null;
+    String xpathExpression = "//triple";
+    try{
+      nl = XPathAPI.selectNodeList(root, xpathExpression);
+    }
+    catch (Exception ee) {
+      System.out.println("Error in building PackageList!");  
+    }
+    if ((nl!=null)&&(nl.getLength()>0)) {
+  //  System.out.println("Node list length = "+nl.getLength());
+      for (int m=0;m<nl.getLength();m++) {
+      NodeList nlchildren = (nl.item(m)).getChildNodes();
+        for (int n=0;n<nlchildren.getLength();n++) {
+          if (nlchildren.item(n).getNodeType()!=Node.TEXT_NODE) {
+        // System.out.println("localName = "+(nlchildren.item(n)).getLocalName());
+            if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("subject")) {
+              nd = nlchildren.item(n).getFirstChild();
+              subject = nd.getNodeValue().trim();
+//        System.out.println("sub = "+subject);
+            }
+//            if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("relationship")) {
+//              nd = nlchildren.item(n).getFirstChild();
+//              relationship = nd.getNodeValue().trim();   
+//            }
+            if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("object")) {
+              nd = nlchildren.item(n).getFirstChild();
+              object = nd.getNodeValue().trim();   
+            }
+          }
+        }
+        // add subject to the collection
+        if (dataPackage_collection.containsKey(subject)) {    // already in collection
+          Vector curvec = (Vector)dataPackage_collection.get(subject);
+          curvec.addElement(fn);
+        }
+        else {  // new
+          Vector vec = new Vector();
+          vec.addElement(fn); 
+          dataPackage_collection.put(subject, vec);
+        }
+        // add object to the collection
+        if (dataPackage_collection.containsKey(object)) {    // already in collection
+          Vector curvec = (Vector)dataPackage_collection.get(object);
+          curvec.addElement(fn);
+        }
+        else {  // new
+          Vector vec = new Vector();
+          vec.addElement(fn); 
+          dataPackage_collection.put(object, vec);
+        }
+      }
+    }
+  }
+ 
+  /* Builds package list by looping over all files
+   * in the local XML directory
+   * Uses XPath to find all <triple> elements and builds list
+   */
+  static private void buildPackageList() {
+    Node root;
+    long starttime, curtime, fm;
+    DOMParser parser = new DOMParser();
+    // first set up the catalog system for handling locations of DTDs
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try {
+      //System.out.println("xmlcatalogfile is: "+xmlcatalogfile);
+      Catalog myCatalog = new Catalog();
+      //System.out.println("new catalog created!");
+      myCatalog.loadSystemCatalogs();
+      //System.out.println("loadSystemCatalogs completed!");
+      myCatalog.parseCatalog("./lib/catalog/catalog");
+      cer.setCatalog(myCatalog);
+    }
+    catch (Exception e) {System.out.println("Problem creating Catalog!" + e.toString());}
+    parser.setEntityResolver(cer);
+    // set start time variable
+    starttime = System.currentTimeMillis();
+    StringWriter sw = new StringWriter();
+
+    File xmldir = new File("./XMLworkFolder");
+    Vector filevector = new Vector();
+    // get a list of all files to be searched
+    getFiles(xmldir, filevector);
+  
+    // iterate over all the files that are in the local xml directory
+    for (int i=0;i<filevector.size();i++) {
+      File currentfile = (File)filevector.elementAt(i);
+      String filename = currentfile.getPath();
+      
+      // skips subdirectories
+      if (currentfile.isFile()) {
+          // checks to see if doc has already been placed in DOM cache
+          // if so, no need to parse again
+        if (dom_collection.containsKey(filename)){
+          root = ((Document)dom_collection.get(filename)).getDocumentElement();
+ //         if (doctype_collection.containsKey(filename)) {
+ //           currentDoctype = ((String)doctype_collection.get(filename));   
+ //         }
+        }
+        else {
+          InputSource in;
+            try {
+              in = new InputSource(new FileInputStream(filename));
+            }
+            catch (FileNotFoundException fnf) {
+              System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
+              fnf.printStackTrace();
+              continue;
+            }
+            try {
+              parser.parse(in);
+            }
+            catch(Exception e1) {
+              System.err.println("Parsing " + filename + " threw: " + e1.toString());
+              e1.printStackTrace();
+              continue;
+            }
+
+        // Get the documentElement from the parser, which is what the selectNodeList 
+              //method expects
+          Document current_doc = parser.getDocument();
+          root = parser.getDocument().getDocumentElement();
+          dom_collection.put(filename,current_doc);
+          String temp = getDocTypeFromDOM(current_doc);
+          if (temp==null) temp = root.getNodeName();
+          doctype_collection.put(filename,temp);
+  //        currentDoctype = temp;
+        } // end else
+      
+      addToPackageList(root, getLastPathElement(filename));  
+      
+      }
+      else
+      {
+        System.out.println("Bad input args: " + filename + ", " );
+      }
+   } // end of 'for' loop over all files
+        
+ 
+    curtime = System.currentTimeMillis();
+    
+    System.out.println("Build Package List Completed");
+  }
+  
+  
 }
+   
+
