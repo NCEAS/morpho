@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:45:18 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-29 18:29:13 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,5 +41,8 @@ public interface EditingCompleteListener
    */
   public void editingCompleted(String xmlString, String id, String location);
   
-
+  /**
+   * this method handles canceled editing
+   */
+  public void editingCanceled(String xmlString, String id, String location);
 }
