@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 20:21:48 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2001-12-03 21:47:10 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -846,6 +846,8 @@ public class EntityGUI extends javax.swing.JFrame
     }
   }
   
-  
+public DataPackageGUI getDataPackageGui() {
+    return this.parent;
+}
 
 }
