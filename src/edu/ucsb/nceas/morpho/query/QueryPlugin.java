@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:39 $'
- * '$Revision: 1.90 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-26 18:14:47 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
-    searchItemAction.setMenu("Search", 3);
+    searchItemAction.setMenu("Search", 2);
     searchItemAction.setToolbarPosition(2);
     controller.addGuiAction(searchItemAction);
     
@@ -130,7 +130,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
     refreshItemAction.setToolTipText("Refresh...");
     refreshItemAction.setMenuItemPosition(1);
-    refreshItemAction.setMenu("Search", 3);
+    refreshItemAction.setMenu("Search", 2);
     refreshItemAction.setToolbarPosition(3);
     controller.addGuiAction(refreshItemAction);
     
@@ -143,7 +143,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Save16.gif")));
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
-    saveQueryItemAction.setMenu("Search", 3);
+    saveQueryItemAction.setMenu("Search", 2);
     saveQueryItemAction.setToolbarPosition(4);
     controller.addGuiAction(saveQueryItemAction);
         
@@ -155,7 +155,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setToolTipText("Revise search");
     reviseSearchItemAction.setMenuItemPosition(3);
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    reviseSearchItemAction.setMenu("Search", 3);
+    reviseSearchItemAction.setMenu("Search", 2);
     reviseSearchItemAction.setToolbarPosition(5);
     controller.addGuiAction(reviseSearchItemAction);
 
@@ -169,7 +169,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                   getResource("/toolbarButtonGraphics/general/Open16.gif")));
     openDialogBoxAction.setMenuItemPosition(0);
     openDialogBoxAction.setToolTipText("Open...");
-    openDialogBoxAction.setMenu("File", 1);
+    openDialogBoxAction.setMenu("File", 0);
     openDialogBoxAction.setToolbarPosition(1);
     controller.addGuiAction(openDialogBoxAction);
         
@@ -179,7 +179,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     synchronizeAction.setMenuItemPosition(6);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    synchronizeAction.setMenu("File", 1);
+    synchronizeAction.setMenu("File", 0);
     //synchronizeAction.setToolbarPosition(1);
     controller.addGuiAction(synchronizeAction);
     
@@ -189,7 +189,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     deleteDialogAction.setMenuItemPosition(8);
     deleteDialogAction.setToolTipText("Delete...");
     deleteDialogAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    deleteDialogAction.setMenu("File", 1);
+    deleteDialogAction.setMenu("File", 0);
     //deleteDialogAction.setToolbarPosition(1);
     controller.addGuiAction(deleteDialogAction);
     
@@ -198,7 +198,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                             new ExportCommand(null, ExportCommand.REGULAR));
     exportAction.setMenuItemPosition(10);
     exportAction.setToolTipText("Export data package...");
-    exportAction.setMenu("File", 1);
+    exportAction.setMenu("File", 0);
     //exportAction.setToolbarPosition(1);
     controller.addGuiAction(exportAction);
     
@@ -208,7 +208,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     exportZipAction.setMenuItemPosition(11);
     exportZipAction.setToolTipText("Export data package into zip file...");
     //exportZipAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    exportZipAction.setMenu("File", 1);
+    exportZipAction.setMenu("File", 0);
     //exportZipAction.setToolbarPosition(1);
     controller.addGuiAction(exportZipAction);
     
