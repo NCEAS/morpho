@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-12 18:29:08 $'
- * '$Revision: 1.37 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-13 05:54:26 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -889,18 +889,10 @@ public class Morpho
 
 
                 //Create a frame with a welcome screen until a plugin takes over
-                MorphoFrame initialFrame = 
-                                        controller.addWindow(INITIALFRAMENAME);
-
-                initialFrame.setMainContentPane(new InitialScreen(morpho));
+                makeWelcomeWindow();
                 
-                initialFrame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
-                                     (int)UISettings.DEFAULT_WINDOW_HEIGHT);
-
-                // make the Morpho visible.
+                //get rid of the splash window
                 sf.dispose();
-
-                initialFrame.setVisible(true);
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -1300,11 +1292,27 @@ public class Morpho
      UIController controller = UIController.getInstance();
      // Close other window
      controller.removeAllWindows();     
-     // Add a blank window
-     MorphoFrame initialFrame = controller.addWindow(INITIALFRAMENAME);
-     initialFrame.setVisible(true);
-    
+     // Add a new startup window
+     makeWelcomeWindow();
    }
+   
+   
+     /*
+      * This method creates an initial frame with welcome screen content
+      */
+    private static void makeWelcomeWindow()
+    {
+      UIController controller = UIController.getInstance();
+      
+      MorphoFrame initialFrame = controller.addWindow(INITIALFRAMENAME);
+     
+      initialFrame.setMainContentPane(new InitialScreen(thisStaticInstance,
+                                                        initialFrame));
+     
+      initialFrame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
+                          (int)UISettings.DEFAULT_WINDOW_HEIGHT);
+      initialFrame.setVisible(true);
+    }
 
     /**
      * use to dynamically create an object from its name at run time uses
