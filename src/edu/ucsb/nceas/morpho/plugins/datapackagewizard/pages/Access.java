@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-12-22 18:03:53 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,14 +67,16 @@ public class Access extends AbstractWizardPage {
   public final String subtitle   = " ";
 
   private JLabel radioLabel;
+  private JPanel radioPanel;
+  private final String xPathRoot  = "/eml:eml/dataset/access/";
 
+  private boolean publicReadAccess = true;
   private final String[] buttonsText = new String[] {
       "YES",
       "NO"
   };
 
   public Access() {
-
     init();
   }
 
@@ -97,7 +99,20 @@ public class Access extends AbstractWizardPage {
 
     topBox.add(desc);
 
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, null);
+    ActionListener listener = new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+        if (e.getActionCommand().equals(buttonsText[0])) {
+          publicReadAccess = true;
+        }
+        if (e.getActionCommand().equals(buttonsText[1])) {
+          publicReadAccess = false;
+        }
+     }
+   };
+
+    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
     topBox.add(radioPanel);
 
     this.add(topBox, BorderLayout.NORTH);
@@ -147,11 +162,20 @@ public class Access extends AbstractWizardPage {
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
+  private OrderedMap returnMap = new OrderedMap();
+
   public OrderedMap getPageData() {
 
-    return null;
-  }
+    returnMap.clear();
 
+    if(publicReadAccess){
+/*    returnMap.put(xPathRoot + "../@order", "denyFirst"); */
+      returnMap.put(xPathRoot + "allow[1]/principal", "public");
+      returnMap.put(xPathRoot + "allow[1]/permission", "read");
+    }
+
+    return returnMap;
+  }
 
 
 

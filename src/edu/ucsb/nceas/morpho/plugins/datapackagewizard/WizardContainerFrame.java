@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-21 06:08:12 $'
- * '$Revision: 1.27 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-22 18:03:53 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,6 +149,7 @@ public class WizardContainerFrame extends JFrame {
 
     setpageTitle(newPage.getTitle());
     setpageSubtitle(getCurrentPage().getSubtitle());
+    stepLabel.setText("Step " + getCurrentPage().getPageNumber() + " of " + WizardSettings.NUMBER_OF_STEPS );
 
     middlePanel.removeAll();
 
@@ -350,10 +351,6 @@ public class WizardContainerFrame extends JFrame {
 
     int GENERAL
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GENERAL));
-    int PROJECT_INTRO
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT_INTRO));
-    int PROJECT
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
     int KEYWORDS
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.KEYWORDS));
     int PARTY_CREATOR
@@ -362,8 +359,13 @@ public class WizardContainerFrame extends JFrame {
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_CONTACT));
     int PARTY_ASSOCIATED
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_ASSOCIATED));
+    int PROJECT
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
     int USAGE_RIGHTS
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.USAGE_RIGHTS));
+    int ACCESS
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ACCESS));
+
     int DATA_LOCATION
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_LOCATION));
     int TEXT_IMPORT_WIZARD
@@ -383,21 +385,6 @@ public class WizardContainerFrame extends JFrame {
       if (titleObj!=null) wizData.put(titleXPath,
                                       XMLUtilities.normalize(titleObj));
     }
-//PROJECT_INTRO:
-
-
-//PROJECT:
-
-
-//CREATOR:
-    if (PARTY_CREATOR>=0)       {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
-    }
-
-//ASSOCIATED PARTY:
-    if (PARTY_ASSOCIATED>=0)    {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
-    }
 
 //ABSTRACT:
     if (generalMap!=null)       {
@@ -413,14 +400,34 @@ public class WizardContainerFrame extends JFrame {
       addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
     }
 
-//INTELLECTUAL RIGHTS:
-    if (USAGE_RIGHTS>=0)        {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
+//CREATOR:
+    if (PARTY_CREATOR>=0)       {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
+    }
+
+//ASSOCIATED PARTY:
+    if (PARTY_ASSOCIATED>=0)    {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
     }
 
 //CONTACT:
     if (PARTY_CONTACT>=0)       {
       addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CONTACT)),wizData);
+    }
+
+//PROJECT:
+    if (PROJECT>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PROJECT)),wizData);
+    }
+
+//INTELLECTUAL RIGHTS:
+    if (USAGE_RIGHTS>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
+    }
+
+//ACCESS:
+    if (ACCESS>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(ACCESS)),wizData);
     }
 
     if (TEXT_IMPORT_WIZARD>=0)  {
@@ -448,7 +455,7 @@ public class WizardContainerFrame extends JFrame {
 
 
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
-    Log.debug(45, wizData.toString());
+    Log.debug(10, wizData.toString());
 
     ////////////////////////////////////////////////////////////////////////////
     // this is the end of the page processing - wizData OrderedMap should now

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-18 17:27:20 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-22 18:03:53 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Iterator;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -75,6 +76,8 @@ public class Project extends AbstractWizardPage {
   private JPanel noDataPanel;
   private JPanel currentPanel;
   private JLabel radioLabel;
+
+  private final String xPathRoot  = "/eml:eml/dataset/project/";
 
   private final String[] buttonsText = new String[] {
       "This project is part of a larger, umbrella research project"
@@ -324,8 +327,50 @@ public class Project extends AbstractWizardPage {
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
+  private OrderedMap returnMap = new OrderedMap();
   public OrderedMap getPageData() {
-    return null;
+
+    returnMap.clear();
+
+    if (currentPanel == dataPanel) {
+      if ( !(titleField.getText().trim().equals("")) ) {
+        returnMap.put(xPathRoot + "title", titleField.getText().trim());
+      }
+
+      if ( !(fundingField.getText().trim().equals("")) ) {
+        returnMap.put(xPathRoot + "funding/patra", fundingField.getText().trim());
+      }
+
+      int index = 1;
+      Object  nextRowObj      = null;
+      List    nextRowList     = null;
+      Object  nextUserObject  = null;
+      OrderedMap  nextNVPMap  = null;
+      PartyPage nextPartyPage = null;
+
+      List rowLists = partiesList.getListOfRowLists();
+
+      if (rowLists==null) return null;
+
+      for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+
+        nextRowObj = it.next();
+        if (nextRowObj==null) continue;
+
+        nextRowList = (List)nextRowObj;
+        //column 3 is user object - check it exists and isn't null:
+        if (nextRowList.size()<4)     continue;
+        nextUserObject = nextRowList.get(3);
+        if (nextUserObject==null) continue;
+
+        nextPartyPage = (PartyPage)nextUserObject;
+
+        nextNVPMap = nextPartyPage.getPageData(xPathRoot + "personnel[" + (index++) + "]");
+        returnMap.putAll(nextNVPMap);
+      }
+
+    }
+    return returnMap;
   }
 
   /**
