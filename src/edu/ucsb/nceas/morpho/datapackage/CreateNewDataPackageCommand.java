@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-09 23:06:20 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-09 23:31:53 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ public class CreateNewDataPackageCommand implements Command
             ServiceProvider provider = 
                        services.getServiceProvider(DataPackageInterface.class);
             DataPackageInterface dataPackage = (DataPackageInterface)provider;
-            dataPackage.openNewDataPackage(adp, null, "eml:eml");
+            dataPackage.openNewDataPackage(adp, null);
           
           } catch (ServiceNotHandledException snhe) {
         

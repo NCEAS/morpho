@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-09 23:06:20 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-09 23:31:53 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public interface DataPackageWizardInterface {
   
   
   /**
-   *  method to start the wizard
+   *  method to start the Package wizard
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
@@ -76,7 +76,7 @@ public interface DataPackageWizardInterface {
 
   
   /**
-   *  method to start the wizard
+   *  method to start the Entity wizard
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-11-24 18:15:34 $'
- * '$Revision: 1.18 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-09 23:31:53 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,8 +69,8 @@ public interface DataPackageInterface
    * @param identifier the unique identifier to use to open the data
    * @param coordinator the coordinator for butterfly flapping
    */
-  public void openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator,
-                    String doctype);
+  public void openNewDataPackage( AbstractDataPackage adp, 
+                                  ButterflyFlapCoordinator coordinator);
                     
   /** 
    * This method is called to open a data package that resides either

@@ -6,9 +6,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-01 22:57:25 $'
- * '$Revision: 1.5 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-09 23:31:53 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,7 +308,7 @@ public class SaveDialog extends JDialog
     ServiceProvider provider = 
                 services.getServiceProvider(DataPackageInterface.class);
     DataPackageInterface dataPackage = (DataPackageInterface)provider;
-    dataPackage.openNewDataPackage(adp, null, "eml:eml");
+    dataPackage.openNewDataPackage(adp, null);
     UIController controller = UIController.getInstance();
     controller.removeWindow(morphoFrame);
     morphoFrame.dispose();

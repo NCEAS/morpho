@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-05 23:25:25 $'
- * '$Revision: 1.61 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-09 23:31:53 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -598,8 +598,7 @@ public class DataPackagePlugin
    *  This method is to be used to display a newly created AbstractDataPackage
    *  location and identifier have not yet been established
    */
-  public void openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator,
-                       String doctype)
+  public void openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
   {
     Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
     boolean metacat = false;
