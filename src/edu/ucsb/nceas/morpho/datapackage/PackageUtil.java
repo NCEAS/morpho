@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-22 21:37:24 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-02-13 00:45:05 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import org.xml.sax.InputSource;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
 
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
@@ -96,64 +97,22 @@ public class PackageUtil
   public static NodeList getPathContent(File f, String path, 
                                         Morpho morpho)
   {
-    if(f == null)
-    {
-      return null;
+    Document doc;
+    try{
+      doc = getDoc(f, morpho);
     }
-   
-    DocumentBuilder parser = Morpho.createDomParser();
-    InputSource in;
-    FileInputStream fs;
-    
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    try 
-    {
-      Catalog myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
-      ConfigXML config = morpho.getConfiguration();
-      String catalogPath = // config.getConfigDirectory() + File.separator +
-                                       config.get("local_catalog_path", 0);
-      ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      URL catalogURL = cl.getResource(catalogPath);
-        
-      myCatalog.parseCatalog(catalogURL.toString());
-      cer.setCatalog(myCatalog);
-    } 
-    catch (Exception e) 
-    {
-      Log.debug(11, "Problem creating Catalog in " +
-                   "packagewizardshell.handleFinishAction!" + e.toString());
-    }
-    
-    parser.setEntityResolver(cer);
-    
-    try
-    { 
-      fs = new FileInputStream(f);
-      in = new InputSource(fs);
-    }
-    catch(FileNotFoundException fnf)
-    {
-      fnf.printStackTrace();
-      return null;
-    }
-    
-    Document doc = null;
-    try
-    {
-      doc = parser.parse(in);
-      fs.close();
-    }
-    catch(Exception e1)
-    {
-      System.err.println("File: " + f.getPath() + " : parse threw (1): " + 
+    catch(Exception e1) {
+          System.err.println("File: " + f.getPath() + " : parse threw (1): " + 
                          e1.toString());
-      return null;
-    }
+      return null;    }
     
     try
     {
+      long start_time_xpath = System.currentTimeMillis();
       NodeList docNodeList = XPathAPI.selectNodeList(doc, path);
+      long stop_time = System.currentTimeMillis();
+ //     Log.debug(10,"Time for prenode search: "+(start_time_xpath-start_time));
+ //     Log.debug(10,"Time for nodesearch: "+(stop_time-start_time_xpath));
       return docNodeList;
     }
     catch(TransformerException se)
@@ -174,6 +133,16 @@ public class PackageUtil
                                                                SAXException, 
                                                                Exception
   {
+    long start_time = System.currentTimeMillis();
+    String fileName = file.getName();
+    String parent = file.getParent();
+    int lastsep = parent.lastIndexOf(File.separator);
+    parent = parent.substring(lastsep+1);
+    fileName = parent+"."+fileName;
+    if (LocalQuery.dom_collection.containsKey(fileName)) {
+      return ((Document)LocalQuery.dom_collection.get(fileName));
+    }
+            
     DocumentBuilder parser = Morpho.createDomParser();
     Document doc;
     InputSource in;
@@ -221,7 +190,9 @@ public class PackageUtil
     {
       throw new Exception(e1.getMessage());
     }
-    
+    long stop_time = System.currentTimeMillis();
+    Log.debug(10,"Time for getDoc: "+(stop_time-start_time));
+
     return doc;
   }
  

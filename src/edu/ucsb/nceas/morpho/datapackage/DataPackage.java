@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-09 23:32:12 $'
- * '$Revision: 1.106 $'
+ *     '$Date: 2003-02-13 00:45:05 $'
+ * '$Revision: 1.107 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,6 +111,12 @@ public class DataPackage implements XMLFactoryInterface
   private final String EXPORTSYLE ="export";
   private final String EXPORTSYLEEXTENSION =".css";
   
+  Hashtable entity2PhysicalFile;
+  Hashtable entity2AttributeFile;
+  Hashtable entity2DataFile;
+  
+  
+  
   /**
    * Create a new data package object with an id, location and associated
    * relations.
@@ -123,6 +129,9 @@ public class DataPackage implements XMLFactoryInterface
   public DataPackage(String location, String identifier, Vector relations, 
                      Morpho morpho, boolean accessCheckFlag)
   {
+    entity2PhysicalFile = new Hashtable();
+    entity2AttributeFile = new Hashtable();
+    entity2DataFile = new Hashtable();
     //-open file named identifier
     //-read the triples out of it, create a triplesCollection
     //-start caching the files referenced in the triplesCollection
@@ -135,6 +144,7 @@ public class DataPackage implements XMLFactoryInterface
     Log.debug(11, "Creating new DataPackage Object");
     Log.debug(11, "id: " + this.id);
     Log.debug(11, "location: " + location);
+    
     
     fileSysDataStore  = new FileSystemDataStore(morpho);
     metacatDataStore  = new MetacatDataStore(morpho);
@@ -1773,7 +1783,10 @@ public class DataPackage implements XMLFactoryInterface
   }
   
   public File getPhysicalFile(String entityID) {
-    File physicalfile = null;
+     if (entity2PhysicalFile.containsKey(entityID)) {
+      return ((File)entity2PhysicalFile.get(entityID));
+    }
+   File physicalfile = null;
     boolean localloc = false;
     boolean metacatloc = false;
     if(location.equals(DataPackageInterface.BOTH))
@@ -1796,10 +1809,13 @@ public class DataPackage implements XMLFactoryInterface
         Triple triple = (Triple)triplesV.elementAt(i);
         String sub = triple.getSubject();
          physicalfile = getFileType(sub, "physical");
-         if (physicalfile!=null) return physicalfile;
-         
+         if (physicalfile!=null) {
+           if (!entity2PhysicalFile.contains(entityID)) {
+             entity2PhysicalFile.put(entityID, physicalfile);
+           }
+           return physicalfile;
+         }
     }
-    
     return physicalfile;
   }
   
@@ -1835,6 +1851,9 @@ public class DataPackage implements XMLFactoryInterface
 
   
   public File getAttributeFile(String entityID) {
+    if (entity2AttributeFile.containsKey(entityID)) {
+      return ((File)entity2AttributeFile.get(entityID));
+    }
     File attributefile = null;
     boolean localloc = false;
     boolean metacatloc = false;
@@ -1858,10 +1877,14 @@ public class DataPackage implements XMLFactoryInterface
         Triple triple = (Triple)triplesV.elementAt(i);
         String sub = triple.getSubject();
          attributefile = getFileType(sub, "attribute");
-         if (attributefile!=null) return attributefile;
+         if (attributefile!=null) {
+           if (!entity2AttributeFile.contains(entityID)) {
+             entity2AttributeFile.put(entityID, attributefile);
+           }
+           return attributefile;
+         }
     }
 
-    
     return attributefile;
   }
 
@@ -1936,6 +1959,9 @@ public class DataPackage implements XMLFactoryInterface
   }
 
   public File getDataFile(String entityID) {
+    if (entity2DataFile.containsKey(entityID)) {
+      return ((File)entity2DataFile.get(entityID));
+    }
     File datafile = null;
     boolean localloc = false;
     boolean metacatloc = false;
@@ -1989,6 +2015,11 @@ public class DataPackage implements XMLFactoryInterface
               }
             }
           }
+        }
+      }
+      if (datafile!=null) {
+        if (!entity2DataFile.contains(entityID)) {
+          entity2DataFile.put(entityID, datafile);
         }
       }
     return datafile;
@@ -2076,6 +2107,17 @@ public class DataPackage implements XMLFactoryInterface
   
   private File getFileType(String id, String typeString) {
 //    ConfigXML config = morpho.getConfiguration();
+/*    if (getFileTypeHash.containsKey(id)) {
+      if ((File)getFileTypeHash.get(id)!=nullfile) {
+        System.out.println("hash hit 1");
+        return ((File)getFileTypeHash.get(id));
+      }
+      else {
+        System.out.println("hash hit null");
+        return null;
+      }
+    }
+*/    
     String catalogPath = //config.getConfigDirectory() + File.separator +
                                      config.get("local_catalog_path", 0);
     File subfile;
@@ -2127,13 +2169,22 @@ public class DataPackage implements XMLFactoryInterface
         } 
       }
       catch (Exception ww) {}
-      System.out.println("Name: "+name);
+ //     System.out.println("Name: "+name);
       if (name.indexOf(typeString)>-1)   // i.e. PublicId contains typeString
       {
+//        getFileTypeHash.put(id, subfile);
         return subfile;
       } else {
         subfile = null;
       }
+      // save in hash
+/*      if (subfile !=null) {
+        getFileTypeHash.put(id, subfile);
+      }
+      else {
+        getFileTypeHash.put(id, nullfile);
+      }
+*/      
       return subfile;
   }
   
