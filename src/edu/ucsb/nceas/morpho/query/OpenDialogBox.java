@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-06 23:17:51 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-09-11 23:01:28 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -243,7 +243,7 @@ public class OpenDialogBox extends JDialog
            contentPane.remove(ownerPanel);
          }
          ownerPanel = resultPanel;
-         contentPane.add(BorderLayout.CENTER, resultPanel);
+         contentPane.add(BorderLayout.CENTER, ownerPanel);
          validate();
         
      } 
