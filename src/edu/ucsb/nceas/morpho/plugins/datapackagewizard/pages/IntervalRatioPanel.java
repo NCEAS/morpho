@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 18:40:02 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-10-22 20:30:54 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ import java.awt.event.ItemListener;
 
 
 
-class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
+public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 
   private JLabel     unitsPickListLabel;
   private JLabel     precisionLabel;
