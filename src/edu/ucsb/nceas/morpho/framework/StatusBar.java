@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-05-22 17:27:48 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-05-22 22:22:29 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.Box;
-
+import javax.swing.ToolTipManager;
 
 /**
  *  A graphical status bar for displaying information about network and login 
@@ -150,6 +150,12 @@ public class StatusBar extends JPanel
     iconPanel.add(Box.createHorizontalStrut(PADDING));
     iconPanel.add(sslStatusLabel);
     statusBar.add(BorderLayout.EAST, iconPanel);
+    
+    ToolTipManager.sharedInstance().registerComponent(connectStatusLabel);
+    ToolTipManager.sharedInstance().registerComponent(loginStatusLabel);
+    ToolTipManager.sharedInstance().registerComponent(sslStatusLabel);
+    ToolTipManager.sharedInstance().setInitialDelay(10);
+    ToolTipManager.sharedInstance().setDismissDelay(1000);
   }
 
 
