@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 21:23:35 $'
- * '$Revision: 1.20.2.7 $'
+ *     '$Date: 2004-04-16 18:10:57 $'
+ * '$Revision: 1.20.2.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -868,6 +868,8 @@ public class Query extends DefaultHandler {
         public Object construct()
        {
          resultWindow.setBusy(true);
+         // disable mouse listener
+         resultDisplayPanel.setEnableMouseListener(false);
          if (!searchLocal)
          {
             Log.debug(30, "(3) Executing metacat query...");
@@ -910,6 +912,8 @@ public class Query extends DefaultHandler {
            resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
                                    + " data sets found");
          }
+         //enable mouse listener in result panel
+         resultDisplayPanel.setEnableMouseListener(true);
          resultWindow.setBusy(false);
 
        }
@@ -1048,7 +1052,7 @@ public class Query extends DefaultHandler {
          int len = 0;
          char[] characters = new char[512];
          while ((len = returnStream.read(characters, 0, 512)) != -1) {
-	   System.out.print(characters);
+           System.out.print(characters);
          }
 */
 /*

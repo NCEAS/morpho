@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 01:31:50 $'
- * '$Revision: 1.69.2.3 $'
+ *     '$Date: 2004-04-16 18:10:57 $'
+ * '$Revision: 1.69.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,6 +129,9 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 
   private int vers = -1;
   private String packageName = "";
+
+  //this variable to indicate disable the mouse listener in streaming search
+  private boolean enableMouseListener = true;
 
 
 
@@ -317,11 +320,13 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       {
         public void mouseClicked(MouseEvent e)
         {
-          if (2 == e.getClickCount())
+          if (enableMouseListener)
           {
-             //doOpenDataPackage();
-             // Using OpenPackageCommand to open package
-             doDoubleClickOpen();
+            if (2 == e.getClickCount()) {
+              //doOpenDataPackage();
+              // Using OpenPackageCommand to open package
+              doDoubleClickOpen();
+            }
           }
         }
       });
@@ -438,7 +443,23 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     return vers;
   }
 
+  /**
+   * Enable or disable mouse listner
+   * @param enable boolean  the value of true or false
+   */
+  public void setEnableMouseListener(boolean enable)
+  {
+    enableMouseListener = enable;
+  }
 
+  /**
+   * Get current of value of enable mouse listener
+   * @return boolean
+   */
+  public boolean getEnableMouseListener()
+  {
+    return enableMouseListener;
+  }
   /*
    * This method picks column sizes depend on the length of talbe and the
    * value for every column in an array.
@@ -609,93 +630,86 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 
     public void mousePressed(MouseEvent e)
     {
-      //select the clicked row first
-      table.clearSelection();
-      int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
-      selectedRow = selrow;
-      table.setRowSelectionInterval(selrow, selrow);
-      Vector resultV = results.getResultsVector();
-      Vector rowV = (Vector)resultV.elementAt(selrow);
-
-      // If the panel need a mediator
-      if (mediator != null)
+      if(enableMouseListener)
       {
-        // If select a row, open button will enable
-        mediator.enableOpenButton();
-      }
+        //select the clicked row first
+        table.clearSelection();
+        int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
+        selectedRow = selrow;
+        table.setRowSelectionInterval(selrow, selrow);
+        Vector resultV = results.getResultsVector();
+        Vector rowV = (Vector) resultV.elementAt(selrow);
 
+        // If the panel need a mediator
+        if (mediator != null) {
+          // If select a row, open button will enable
+          mediator.enableOpenButton();
+        }
 
-      docid = (String)rowV.elementAt(6);
-      selectedId = docid;
-      Log.debug(30, "selectedId is: "+docid);
-      localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
-      metacatLoc = ((Boolean)rowV.elementAt(10)).booleanValue();
-      packageName = getIdWithoutVersion(selectedId);
-      Log.debug(30, "the package name is: "+packageName);
-      vers = getNumberOfPrevVersions(selectedId);
-      Log.debug(30, "the number of previous version is: "+vers);
-      doctype = (String)rowV.elementAt(8);
-      // Fire state change event only in morpho frame
-      if (dialog == null)
-      {
+        docid = (String) rowV.elementAt(6);
+        selectedId = docid;
+        Log.debug(30, "selectedId is: " + docid);
+        localLoc = ( (Boolean) rowV.elementAt(9)).booleanValue();
+        metacatLoc = ( (Boolean) rowV.elementAt(10)).booleanValue();
+        packageName = getIdWithoutVersion(selectedId);
+        Log.debug(30, "the package name is: " + packageName);
+        vers = getNumberOfPrevVersions(selectedId);
+        Log.debug(30, "the number of previous version is: " + vers);
+        doctype = (String) rowV.elementAt(8);
+        // Fire state change event only in morpho frame
+        if (dialog == null) {
 
-        StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-        // select a data package event
-        monitor.notifyStateChange(
-                          new StateChangeEvent(
-                          pane,
-                          StateChangeEvent.SEARCH_RESULT_SELECTED));
-        if (localLoc ^ metacatLoc)
-        {
+          StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+          // select a data package event
+          monitor.notifyStateChange(
+              new StateChangeEvent(
+              pane,
+              StateChangeEvent.SEARCH_RESULT_SELECTED));
+          if (localLoc ^ metacatLoc) {
             // unsynchronized package
             monitor.notifyStateChange(
-                      new StateChangeEvent(
-                      pane,
-                      StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED));
-        }
-        else
-        {
+                new StateChangeEvent(
+                pane,
+                StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED));
+          }
+          else {
             // synchronized package
             monitor.notifyStateChange(
-                      new StateChangeEvent(
-                      pane,
-                      StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED));
-        }
+                new StateChangeEvent(
+                pane,
+                StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED));
+          }
 
-
-        if (vers > 0)
-        {
+          if (vers > 0) {
             // mutipleversion package
             monitor.notifyStateChange(
-                      new StateChangeEvent(
-                      pane,
-                      StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS));
-        }
-        else
-        {
+                new StateChangeEvent(
+                pane,
+                StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS));
+          }
+          else {
             // one version package
             monitor.notifyStateChange(
-                      new StateChangeEvent(
-                      pane,
-                      StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS));
+                new StateChangeEvent(
+                pane,
+                StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS));
+          }
+
+        } // if dialg == null
+
+        if (e.isPopupTrigger()) {
+          trigger = true;
         }
-
-      }// if dialg == null
-
-
-      if (e.isPopupTrigger())
-      {
-        trigger = true;
-      }
+      }//if enable
     }
 
     public void mouseReleased(MouseEvent e)
     {
-      // Don't show popup in dilog
-      //if (dialog == null)
-      //{
-        maybeShowPopup(e);
-      //}
+        if (enableMouseListener)
+        {
+          maybeShowPopup(e);
+        }
+
     }
 
     private void maybeShowPopup(MouseEvent e)
@@ -716,7 +730,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         // delete menu always enable
         deleteMenu.setEnabled(true);
 
-	      trigger = false;
+              trigger = false;
         popup.show(e.getComponent(), e.getX(), e.getY());
 
       }
