@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.4.0
+Version: 1.5.0alpha1.0
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -17,6 +17,8 @@ Contributors:
     Matthew Brooke (brooke@nceas.ucsb.edu)
     Jing Tao (tao@nceas.ucsb.edu)
     Christy Bowles (bowles@nceas.ucsb.edu)
+    Saurabh Garg (sgarg@nceas.ucsb.edu)
+    Perumal Sambasivam (sambasiv@nceas.ucsb.edu)
 
 This is Morpho, a data management application for managing ecological data.
 Morpho allows researchers to describe their data using a comprehensive and
@@ -32,7 +34,31 @@ Morpho's main features include:
   2. Compliance with Ecological Metadata Language
   3. Powerful metadata search for data on the network or locally
   4. Comprehensive revision control for changing data and metadata
-  5. Easy-to-use collaboration features via the KNB system
+  5. Easy-to-use collaboration features via the KNB system      
+
+**************************************************
+ATTENTION ! --  ATTENTION !  -- ATTENTION !  (December 23, 2003)
+
+This in an ALPHA Version of a considerable changed Morpho application!
+It operates differently than previous versions and is still considered
+fragile and may well have a number of 'bugs'.
+
+Many sections of Morpho Version 1.5 has been completely rewritten to work with
+EML 2.0.0 (and newer versions of EML). EML 2.0.0 is a considerable change from
+the so-called 'Beta6' version used in previous versions of Morpho. Previously, eml
+modules were separate documents linked by references to IDs in a set of 'triples'.
+In EML 2.0.0, all metadata is stored in a single XML document. This change resulted
+in the need for considerable changes in the Morpho code.
+
+A significant effort has also been spent in creating a new DataPackageWizard to
+make it easier for a user to create a package without learning all the details of
+EML 2.0.0. Not all the forms planned for this wizard are currently installed.
+
+Note that 'Help' information has not yet been updated. Thus the current Help system
+describes previous version and not the current version.
+
+
+**************************************************
 
 Further documentation is available under the help menu in Morpho (after it has been installed), or in the "docs"subdirectory of the Morpho installation (after it has been installed), or on the KNB website  (http://knb.ecoinformatics.org/software/morpho/).
 
