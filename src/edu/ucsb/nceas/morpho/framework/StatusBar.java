@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-05-21 21:52:52 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-05-22 17:27:48 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,15 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-//import java.net.*;
-//import java.util.*;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Component;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.Box;
 
 
 /**
@@ -49,10 +51,6 @@ public class StatusBar extends JPanel
                                 = "connect_yes.gif";
   private final String CONN_NO_ICONPATH 
                                 = "connect_no.gif";
-//  private final String CONN_YES_ICONPATH 
-//                                = "/toolbarButtonGraphics/general/Cut16.gif";
-//  private final String CONN_NO_ICONPATH 
-//                                = "/toolbarButtonGraphics/general/Cut16.gif";
   private final String LOGIN_YES_ICONPATH 
                                 = "login_yes.gif";
   private final String LOGIN_NO_ICONPATH 
@@ -74,48 +72,35 @@ public class StatusBar extends JPanel
                                 = "using secure connection";
   private final String SSL_NO_TEXT 
                                 = "NOT using secure connection";
-
-                              
+  
+  //color of status bar text message 
   private final Color TEXT_COLOR = new Color(102,102,153);
-              
-  private static final int STATUSBAR_WIDTH  = 600;
-  private static final int STATUSBAR_HEIGHT = 22;
 
+  //width of padding space between icons
+  private static final int PADDING  = 5;
+              
 
   
   /**
    *  private Constructor - singleton class - we want only one StatusBar  
    *  instance to exist, since they should all show the same status
    *
-   *  @param cf   a pointer to the client framework
-   *
    *  @throws     java.lang.Exception if a null argument is received
    */
-  private StatusBar(ClientFramework cf) throws Exception {
-    
-    if (cf==null) { 
-      throw new Exception(
-                "StatusBar.getInstance() received an invalid (NULL) argument "); 
-    } else {
-      this.clientFramework = cf;
-      initializeComponents();
-    }
-  }
+  private StatusBar() { initializeComponents(); }
 
   
   /**
    * Get a pointer to the single instance of the StatusBar
    *
-   *  @param cf   a reference to the main ClientFramework object
-   *
    *  @return     a pointer to the single instance of the StatusBar
    *
    *  @throws     java.lang.Exception if a null argument is received
    */ 
-  public static StatusBar getInstance(ClientFramework cf) throws Exception {
+  public static StatusBar getInstance() {
     
     if (statusBar==null) { 
-      statusBar = new StatusBar(cf); 
+      statusBar = new StatusBar(); 
       buildStatusBar();
     }
     return statusBar;
@@ -123,31 +108,9 @@ public class StatusBar extends JPanel
   
   
   /**
-   * Set up the status icons on the status bar
-   */ 
-  private static void buildStatusBar(){
-
-    statusBar.setPreferredSize(STATUSBAR_DIMENSIONS);
-    statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.X_AXIS));
-    
-    statusBar.add(Box.createHorizontalStrut(10));
-    statusBar.add(messageLabel);
-    statusBar.add(Box.createHorizontalGlue());
-    statusBar.add(Box.createHorizontalStrut(10));
-    statusBar.add(connectStatusLabel);
-    statusBar.add(Box.createHorizontalStrut(10));
-    statusBar.add(loginStatusLabel);
-    statusBar.add(Box.createHorizontalStrut(10));
-    statusBar.add(sslStatusLabel);
-    statusBar.add(Box.createHorizontalStrut(10));
-  }
-
-  /**
    * Set up the status icons and their labels, and init them all to "no"
    */ 
   private void initializeComponents(){
-    
-    STATUSBAR_DIMENSIONS = new Dimension(STATUSBAR_WIDTH, STATUSBAR_HEIGHT);
     
     connect_YesIcon = new ImageIcon(getClass().getResource(CONN_YES_ICONPATH));
     connect_NoIcon  = new ImageIcon(getClass().getResource(CONN_NO_ICONPATH));
@@ -155,21 +118,41 @@ public class StatusBar extends JPanel
     login_NoIcon    = new ImageIcon(getClass().getResource(LOGIN_NO_ICONPATH));
     ssl_YesIcon     = new ImageIcon(getClass().getResource(SSL_YES_ICONPATH));
     ssl_NoIcon      = new ImageIcon(getClass().getResource(SSL_NO_ICONPATH));
-    
+
     messageLabel       = new JLabel("");
-    connectStatusLabel = new JLabel();                            
-    loginStatusLabel   = new JLabel();                            
+    connectStatusLabel = new JLabel();
+    loginStatusLabel   = new JLabel();
     sslStatusLabel     = new JLabel();
 
     messageLabel.setForeground( TEXT_COLOR );
-    
     messageLabel.setFont(new Font("Dialog", Font.PLAIN , 12));
-    
+
     setConnectStatus(false);
     setLoginStatus(false);
     setSSLStatus(false);
   }
-  
+
+
+  /**
+   * Set up the status icons on the status bar
+   */ 
+  private static void buildStatusBar(){
+
+    statusBar.setLayout(new BorderLayout());
+
+    statusBar.add(BorderLayout.WEST, Box.createHorizontalStrut(PADDING));
+    statusBar.add(BorderLayout.CENTER, messageLabel);
+
+    JPanel iconPanel = new JPanel();
+    iconPanel.add(connectStatusLabel);
+    iconPanel.add(Box.createHorizontalStrut(PADDING));
+    iconPanel.add(loginStatusLabel);
+    iconPanel.add(Box.createHorizontalStrut(PADDING));
+    iconPanel.add(sslStatusLabel);
+    statusBar.add(BorderLayout.EAST, iconPanel);
+  }
+
+
   /**
    * Sets the "connection status" icon 
    *
@@ -249,7 +232,6 @@ public class StatusBar extends JPanel
   private static JLabel     connectStatusLabel;
   private static JLabel     loginStatusLabel;
   private static JLabel     sslStatusLabel;
-  private static Dimension  STATUSBAR_DIMENSIONS;
   
   private ImageIcon         connect_YesIcon;
   private ImageIcon         connect_NoIcon;
@@ -257,5 +239,6 @@ public class StatusBar extends JPanel
   private ImageIcon         login_NoIcon;
   private ImageIcon         ssl_YesIcon;
   private ImageIcon         ssl_NoIcon;
+
 }
 

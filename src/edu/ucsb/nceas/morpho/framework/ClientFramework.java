@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-05-21 21:59:19 $'
- * '$Revision: 1.92 $'
+ *     '$Date: 2002-05-22 17:27:48 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,9 +182,8 @@ public class ClientFramework extends javax.swing.JFrame
 		//}}
 
     // get StatusBar instance, initialize and add to interface:
-    try { statusBar = StatusBar.getInstance(this); }
-		catch (Exception e) { debug(5, "Error creating status bar: "+e); }
-    getContentPane().add(BorderLayout.SOUTH, statusBar);
+    statusBar = StatusBar.getInstance();
+		getContentPane().add(BorderLayout.SOUTH, statusBar);
   
     //{{INIT_MENUS
 		//}}
