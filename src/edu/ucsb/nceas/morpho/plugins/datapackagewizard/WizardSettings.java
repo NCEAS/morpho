@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 22:28:15 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-08-06 05:44:56 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,11 +112,15 @@ public class WizardSettings {
   protected static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS  
                                       = new Dimension(2000,20);
 
+                                      
+  public static final  Dimension LIST_BUTTON_DIMS  
+                                      = new Dimension(100,30);
+                                      
   protected static final String FINISH_BUTTON_TEXT  = "Finish";
   
   protected static final String NEXT_BUTTON_TEXT    = "Next >";
   
-  protected static final String PREV_BUTTON_TEXT    = "< Prev";
+  protected static final String PREV_BUTTON_TEXT    = "< Back";
   
   protected static final String CANCEL_BUTTON_TEXT  = "Cancel";
 

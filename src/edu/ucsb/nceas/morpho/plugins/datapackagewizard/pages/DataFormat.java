@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-04 23:19:08 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-06 05:44:56 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,11 +68,11 @@ public class DataFormat extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private String orientationSimple;
-  private String orientationComplex;
-  
   private final String COLUMN_MAJOR = "column";
   private final String ROW_MAJOR    = "row";
+  
+  private String orientationSimple  = COLUMN_MAJOR;
+  private String orientationComplex = COLUMN_MAJOR;
   
   private String formatXPath;
   private final String TEXT_BASE_XPATH
@@ -92,7 +92,7 @@ public class DataFormat extends AbstractWizardPage{
   private JLabel desc2;
   private final String[] buttonsText = new String[] {
       "Simple delimited text format (uses one of a series of delimiters to indicate the ends of fields)",
-      "Complex text format (delimited fields, fixed width fields, and mixtures of the two, possibly with single records being distributed across multiple physical lines)",
+      "Complex text format (delimited fields, fixed width fields, and mixtures of the two)",
       "Non-text or proprietary formatted object that is externally defined (e.g. 'Microsoft Excel')",
       "Binary raster image file"
     };
@@ -114,7 +114,7 @@ public class DataFormat extends AbstractWizardPage{
   private String delim_comma     = null;
   private String delim_space     = null;
   private String delim_semicolon = null;
-  private String delim_other     = null;
+  private boolean delim_other    = false;
   
     
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -207,6 +207,7 @@ public class DataFormat extends AbstractWizardPage{
   
   private JLabel delimiterLabel;
   
+  
   private JPanel getSimpleTextpanel() {
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
@@ -254,20 +255,31 @@ public class DataFormat extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private JLabel      fileNameLabelOnline;
-  private JTextField  fileNameFieldOnline;
-  private JLabel      urlLabelOnline;
-  private JTextField  urlFieldOnline;
+//  private JLabel      fileNameLabelOnline;
+//  private JTextField  fileNameFieldOnline;
+//  private JLabel      urlLabelOnline;
+//  private JTextField  urlFieldOnline;
   
   
   private JPanel getComplexTextPanel() {
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
     
-//    WidgetFactory.addTitledBorder(panel, buttonsText[1]);
-//    
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-//  
+    WidgetFactory.addTitledBorder(panel, buttonsText[1]);
+    
+    panel.add(WidgetFactory.makeDefaultSpacer());
+  
+    panel.add(WidgetFactory.makeHTMLLabel(
+              "Define the delimited fields and/or fixed width fields "
+              +"that describe how the data is structured:", 1));
+  
+    String[] colNames = new String[] { 
+      "Fixed-Width or Delimited?", 
+      "Width or Delimiter Character:" 
+    };
+    panel.add(WidgetFactory.makeList(colNames, 4, true, false,       
+                                                            true, true, true));
+  
 //    ////
 //    JPanel fileNamePanel = WidgetFactory.makePanel(1);
 //    
@@ -312,30 +324,33 @@ public class DataFormat extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private JLabel      fileNameLabelOffline;
-  private JTextField  fileNameFieldOffline; 
+  private JLabel      proprietaryLabel;
+  private JTextField  proprietaryField; 
   
   private JPanel getProprietaryPanel() {
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
     
-//    WidgetFactory.addTitledBorder(panel, buttonsText[2]);
-//    
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-//  
-//    ////
-//    JPanel fileNamePanel = WidgetFactory.makePanel(1);
-//    
-//    fileNameLabelOffline = WidgetFactory.makeLabel("File Name:", true);
-//
-//    fileNamePanel.add(fileNameLabelOffline);
-//    
-//    fileNameFieldOffline = WidgetFactory.makeOneLineTextField();
-//    fileNamePanel.add(fileNameFieldOffline);
-//    
-//    panel.add(fileNamePanel);
-//        
-//    panel.add(WidgetFactory.makeDefaultSpacer());
+    WidgetFactory.addTitledBorder(panel, buttonsText[2]);
+    
+    panel.add(WidgetFactory.makeDefaultSpacer());
+  
+    ////
+    JPanel proprietaryPanel = WidgetFactory.makePanel(1);
+    
+    proprietaryLabel = WidgetFactory.makeLabel("File Name:", true);
+
+    proprietaryPanel.add(proprietaryLabel);
+    
+    proprietaryField = WidgetFactory.makeOneLineTextField();
+    proprietaryPanel.add(proprietaryField);
+    
+    panel.add(proprietaryPanel);
+        
+    panel.add(WidgetFactory.makeDefaultSpacer());
+    panel.add(Box.createGlue());
+
+
 //    
 //    panel.add(WidgetFactory.makeHTMLLabel(
 //      "How would you like to enter the information describing "
@@ -380,9 +395,10 @@ public class DataFormat extends AbstractWizardPage{
   public void onLoadAction() {
 
     WidgetFactory.unhiliteComponent(desc2);
-    WidgetFactory.unhiliteComponent(fileNameLabelOnline);
-    WidgetFactory.unhiliteComponent(urlLabelOnline);
-    WidgetFactory.unhiliteComponent(fileNameLabelOffline);
+//    WidgetFactory.unhiliteComponent(fileNameLabelOnline);
+    WidgetFactory.unhiliteComponent(proprietaryLabel);
+//    WidgetFactory.unhiliteComponent(urlLabelOnline);
+
     
   }
   
@@ -412,43 +428,40 @@ public class DataFormat extends AbstractWizardPage{
 
     } else if (formatXPath==SIMPLE_TEXT_XPATH) {
 
-    if (delim_tab==null && delim_comma==null && delim_space==null 
-                        && delim_semicolon==null && delim_other==null) {
+      if (delim_tab==null && delim_comma==null && delim_space==null 
+                          && delim_semicolon==null && delim_other==false) {
       
-      WidgetFactory.hiliteComponent(delimiterLabel);
-      return false;
-    }
+        WidgetFactory.hiliteComponent(delimiterLabel);
+        return false;
+      }
+      if (delim_other==true) {
+      
+        String otherTxt = otherDelimTextFieldSimple.getText();
+        if (otherTxt==null || otherTxt.equals("")) {
+      
+          WidgetFactory.hiliteComponent(otherDelimTextFieldSimple);
+          otherDelimTextFieldSimple.requestFocus();
+          return false;
+        }
+      }
     
 
 //    } else if (formatXPath==COMPLEX_TEXT_XPATH) {
-//
-//      if (fileNameFieldOnline.getText().trim().equals("")) {
-//      
-//        WidgetFactory.hiliteComponent(fileNameLabelOnline);
-//        fileNameFieldOnline.requestFocus();
-//        return false;
-//      }
-//    
-//      if (urlFieldOnline.getText().trim().equals("")) {
-//      
-//        WidgetFactory.hiliteComponent(urlLabelOnline);
-//        urlFieldOnline.requestFocus();
-//        return false;
-//      }
-//      
-//    } else if (formatXPath==PROPRIETARY_XPATH) {
-//    
-//    
-//      if (fileNameFieldOffline.getText().trim().equals("")) {
-//      
-//        WidgetFactory.hiliteComponent(fileNameLabelOffline);
-//        fileNameFieldOffline.requestFocus();
-//        return false;
-//      }
-//    
+
+    } else if (formatXPath==PROPRIETARY_XPATH) {
+
+        if (proprietaryField.getText().trim().equals("")) {
+
+          WidgetFactory.hiliteComponent(proprietaryLabel);
+          proprietaryField.requestFocus();
+          
+          return false;
+        }
+        
+  
+  
 //    } else if (formatXPath==RASTER_XPATH) {
-//    
-//    
+
     }
     return true;
   }
@@ -477,41 +490,79 @@ public class DataFormat extends AbstractWizardPage{
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationSimple);
       
       int index=0;
+      StringBuffer buff = new StringBuffer();
       
-      if (delim_tab!=null) returnMap.put(SIMPLE_TEXT_XPATH+"["+(index++)+"]", 
-                                                                    delim_tab);
+      if (delim_tab!=null) {
+        
+        buff.delete(0,buff.length());
+        buff.append(SIMPLE_TEXT_XPATH);
+        buff.append("[");
+        buff.append(index++);
+        buff.append("]");
+        returnMap.put(buff.toString(), delim_tab);
+      }
+      
+      if (delim_comma!=null) {
+        
+        buff.delete(0,buff.length());
+        buff.append(SIMPLE_TEXT_XPATH);
+        buff.append("[");
+        buff.append(index++);
+        buff.append("]");
+        returnMap.put(buff.toString(), delim_comma);
+      }
     
-      if (delim_comma!=null) returnMap.put(SIMPLE_TEXT_XPATH+"["+(index++)+"]", 
-                                                                    delim_comma);
+      if (delim_space!=null) {
+        
+        buff.delete(0,buff.length());
+        buff.append(SIMPLE_TEXT_XPATH);
+        buff.append("[");
+        buff.append(index++);
+        buff.append("]");
+        returnMap.put(buff.toString(), delim_space);
+      }
     
-      if (delim_space!=null) returnMap.put(SIMPLE_TEXT_XPATH+"["+(index++)+"]", 
-                                                                    delim_space);
+      if (delim_semicolon!=null) {
+        
+        buff.delete(0,buff.length());
+        buff.append(SIMPLE_TEXT_XPATH);
+        buff.append("[");
+        buff.append(index++);
+        buff.append("]");
+        returnMap.put(buff.toString(), delim_semicolon);
+      }
     
-      if (delim_semicolon!=null) returnMap.put(SIMPLE_TEXT_XPATH+"["+(index++)+"]", 
-                                                                delim_semicolon);
-    
-      if (delim_other!=null) returnMap.put(SIMPLE_TEXT_XPATH+"["+(index++)+"]", 
-                                                                    delim_other);
+      if (delim_other==true) {
+        
+        buff.delete(0,buff.length());
+        buff.append(SIMPLE_TEXT_XPATH);
+        buff.append("[");
+        buff.append(index++);
+        buff.append("]");
+        returnMap.put(buff.toString(), otherDelimTextFieldSimple.getText());
+         // do not ".trim()"!!!
+      }
+                                         
     
 //    } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
-//    
-//      returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
-//      returnMap.put(formatXPath, urlFieldOnline.getText().trim());
-//      
-//    } else if (formatXPath==PROPRIETARY_XPATH)  {
-//    
-//      returnMap.put(OBJECTNAME_XPATH, fileNameFieldOffline.getText().trim());
+
+    } else if (formatXPath==PROPRIETARY_XPATH)  {
+
+      returnMap.put(PROPRIETARY_XPATH, proprietaryField.getText().trim());
+    
+//    } else if (formatXPath==RASTER_XPATH) {
+
     }
     return returnMap;
   }
   
   
+  private final JTextField otherDelimTextFieldSimple
+                                          = WidgetFactory.makeOneLineTextField();
   
   private JPanel getDelimiterCheckBoxPanel() {
   
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    
-    final JTextField otherDelimTextField = WidgetFactory.makeOneLineTextField();
     
     JPanel cbPanel = WidgetFactory.makeCheckBoxPanel(delimiterCheckBoxesText, -1,
       new ItemListener() {
@@ -543,19 +594,17 @@ public class DataFormat extends AbstractWizardPage{
 
           } else if (cmd.indexOf(delimiterCheckBoxesText[4])==0) {
 
-            delim_other     = (stateChange==ItemEvent.SELECTED)? 
-                                                    otherDelimTextField.getText()
-                                                  : null;
+            delim_other = (stateChange==ItemEvent.SELECTED);
           }
         }
       });
     panel.add(cbPanel);
     
-    otherDelimTextField.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
-    otherDelimTextField.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
+    otherDelimTextFieldSimple.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
+    otherDelimTextFieldSimple.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
     JPanel otherPanel = new JPanel();
     otherPanel.setLayout(new BoxLayout(otherPanel, BoxLayout.X_AXIS));
-    otherPanel.add(otherDelimTextField);
+    otherPanel.add(otherDelimTextFieldSimple);
     otherPanel.add(Box.createGlue());
     panel.add(otherPanel);
     

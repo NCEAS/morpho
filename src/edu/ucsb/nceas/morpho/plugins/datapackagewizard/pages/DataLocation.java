@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-04 23:19:44 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-08-06 05:44:56 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,6 +147,7 @@ public class DataLocation extends AbstractWizardPage{
           currentPanel = onlinePanel;
           distribXPath = ONLINE_XPATH;
           instance.add(onlinePanel, BorderLayout.CENTER);
+          fileNameFieldOnline.requestFocus();
           
         } else if (e.getActionCommand().equals(buttonsText[2])) {
         
@@ -154,6 +155,7 @@ public class DataLocation extends AbstractWizardPage{
           currentPanel = offlinePanel;
           distribXPath = OFFLINE_XPATH;
           instance.add(offlinePanel, BorderLayout.CENTER);
+          fileNameFieldOffline.requestFocus();
           
         } else if (e.getActionCommand().equals(buttonsText[3])) {
         

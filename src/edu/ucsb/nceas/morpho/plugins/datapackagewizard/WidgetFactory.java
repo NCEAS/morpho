@@ -30,6 +30,7 @@ public class WidgetFactory {
   public static JTextArea makeTextArea( String text, 
                                         int numberOfRows, boolean isEditable) {
     
+    if (text==null) text="";
     JTextArea area = new JTextArea(text);
     area.setRows(numberOfRows);
     area.setFont(WizardSettings.WIZARD_CONTENT_FONT);
@@ -46,6 +47,7 @@ public class WidgetFactory {
   
   public static JLabel makeHTMLLabel(String text, int numberOfLines) {
   
+    if (text==null) text="";
     buff.delete(0, buff.length());
     buff.append("<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">");
     buff.append(text);
@@ -66,6 +68,7 @@ public class WidgetFactory {
   public static JLabel makeLabel( String text, 
                                   boolean hiliteRequired, Dimension dims) {
     
+    if (text==null) text="";
     JLabel label = new JLabel(text);
     
     setPrefMaxSizes(label, dims);
@@ -95,6 +98,7 @@ public class WidgetFactory {
 
   public static JTextField makeOneLineTextField(String initialValue) {
     
+    if (initialValue==null) initialValue="";
     JTextField field = new JTextField();
     setPrefMaxSizes(field, WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     field.setText(initialValue);
@@ -105,6 +109,7 @@ public class WidgetFactory {
   
   public static void addTitledBorder(JComponent component, String title) {
     
+    if (title==null) title="";
     component.setBorder(BorderFactory.createTitledBorder(
               BorderFactory.createLineBorder(
                                   WizardSettings.WIZARD_CONTENT_TEXT_COLOR, 1),
@@ -186,6 +191,7 @@ public class WidgetFactory {
   public static JPanel makeRadioPanel(String[] buttonsText, 
                                   int selectedIndex, ActionListener listener) {
 
+    if (buttonsText==null) buttonsText = new String[] { "" };
     JPanel radioPanel = new JPanel(new GridLayout(0, 1));
     
     int totalButtons = buttonsText.length;
@@ -214,6 +220,7 @@ public class WidgetFactory {
   public static JPanel makeCheckBoxPanel(String[] boxesText, 
                                   int selectedIndex, ItemListener listener) {
 
+    if (boxesText==null) boxesText = new String[] { "" };
     JPanel cbPanel = new JPanel(new GridLayout(0, 1));
     
     int totalBoxes = boxesText.length;
@@ -235,6 +242,17 @@ public class WidgetFactory {
   }
   
   
+  public static CustomList makeList(String[] colNames, int displayRows, 
+                                    boolean showAddButton, 
+                                    boolean showEditButton,       
+                                    boolean showDeleteButton, 
+                                    boolean showMoveUpButton,     
+                                    boolean showMoveDownButton) {
+
+    return new CustomList(colNames, displayRows, showAddButton, showEditButton,       
+                        showDeleteButton, showMoveUpButton, showMoveDownButton);
+  }
+  
 
   // ***************************************************************************
 
@@ -248,7 +266,7 @@ public class WidgetFactory {
   }  
   
   
-  private static void setPrefMaxSizes(JComponent component, Dimension dims) {
+  public static void setPrefMaxSizes(JComponent component, Dimension dims) {
   
     component.setPreferredSize(dims);
     component.setMaximumSize(dims);
