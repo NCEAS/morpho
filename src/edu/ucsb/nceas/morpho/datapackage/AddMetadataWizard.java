@@ -1,13 +1,13 @@
 /**
- *  '$RCSfile: NewPackageMetadataWizard.java,v $'
+ *  '$RCSfile: AddMetadataWizard.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-07-23 16:01:33 $'
- * '$Revision: 1.16 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-24 16:57:40 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,10 +55,10 @@ import com.arbortext.catalog.*;
 /**
  * A graphical window for adding new files to a package
  */
-public class NewPackageMetadataWizard extends JFrame
-                                      implements ActionListener,
-                                                 EditingCompleteListener, 
-                                                 WindowListener
+public class AddMetadataWizard extends JFrame
+                               implements ActionListener,
+                                          EditingCompleteListener, 
+                                          WindowListener
 {
   ConfigXML config;
   ClientFramework framework = null;
@@ -100,14 +100,14 @@ public class NewPackageMetadataWizard extends JFrame
    *
    * @param cont the container framework that created this ProfileDialog
    */
-  public NewPackageMetadataWizard(ClientFramework cont) {
+  public AddMetadataWizard(ClientFramework cont) {
     this(cont, true, null);
   }
 
   /**
    * Construct the dialog
    */
-  public NewPackageMetadataWizard(ClientFramework cont, boolean modal,
+  public AddMetadataWizard(ClientFramework cont, boolean modal,
                                   DataPackage dataPackage)
   {
     //super((Frame)cont, modal);
@@ -577,7 +577,7 @@ public class NewPackageMetadataWizard extends JFrame
               }
               catch (Exception e)
               {
-                ClientFramework.debug(0, "Error in NewPackageMetadataWizard." +
+                ClientFramework.debug(0, "Error in AddMetadataWizard." +
                                       "editingComplete(): " + e.getMessage());
                 return;
               }
@@ -1059,7 +1059,7 @@ public class NewPackageMetadataWizard extends JFrame
         }
         catch (Exception e)
         {
-          ClientFramework.debug(0, "Error in NewPackageMetadataWizard." +
+          ClientFramework.debug(0, "Error in AddMetadataWizard." +
                                 "editingComplete(): " + e.getMessage());
           return;
         }

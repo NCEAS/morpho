@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 21:06:00 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2001-07-24 16:57:40 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -732,7 +732,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     else if(command.equals("Add"))
     {
       //ClientFramework.debug(9, "Adding-doesn't work yet!");
-      NewPackageMetadataWizard npmw = new NewPackageMetadataWizard(framework,
+      AddMetadataWizard npmw = new AddMetadataWizard(framework,
                                                                    false, 
                                                                    dataPackage);
       this.dispose();                                                          
