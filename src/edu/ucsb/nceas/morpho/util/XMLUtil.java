@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-06-02 16:18:16 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-04-20 16:59:21 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,19 +55,22 @@ public class XMLUtil
                     str.append("&quot;");
                     break;
                 }
+/*  handled in default
                 case '\r':
 		            case '\t':
                 case '\n': {
-                    if (false) {
+                    if (true) {
                         str.append("&#");
                         str.append(Integer.toString(ch));
                         str.append(';');
                         break;
-                    }
+                    } else {
                     // else, default append char
+                    str.append(" ");
 			              break;
-                }
-                default: {
+                    }
+               }
+*/                 default: {
                     if ((ch<128)&&(ch>31)) {
                       str.append(ch);
                     } 
