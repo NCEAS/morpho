@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-07 17:45:23 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-06-07 22:29:13 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,12 +37,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class DataPackageGUI extends javax.swing.JFrame 
-                                  //implements ActionListener, ItemListener
+                            implements ActionListener, EditingCompleteListener
 {
   private ClientFramework framework;
   private ConfigXML config;
   Container contentPane;
   private DataPackage dataPackage;
+  private JList otherFileList;
   
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
@@ -189,23 +190,27 @@ public class DataPackageGUI extends javax.swing.JFrame
   
   private JPanel createListPanel(Vector v)
   { 
-    JList otherFileList = new JList(v);
+    otherFileList = new JList(v);
     otherFileList.setVisibleRowCount(10);
     JScrollPane otherFileScrollPane = new JScrollPane(otherFileList);
     JButton otherFileAdd = new JButton("Add");
+    otherFileAdd.addActionListener(this);
     JButton otherFileRemove = new JButton("Remove");
+    otherFileRemove.addActionListener(this);
+    JButton otherFileEdit = new JButton("Edit");
+    otherFileEdit.addActionListener(this);
     JPanel otherFileButtonPanel = new JPanel();
     otherFileButtonPanel.setLayout(new BoxLayout(otherFileButtonPanel, 
                                                 BoxLayout.X_AXIS));
     otherFileButtonPanel.add(otherFileAdd);
     otherFileButtonPanel.add(otherFileRemove);
+    otherFileButtonPanel.add(otherFileEdit);
     JPanel otherFileButtonList = new JPanel();
     otherFileButtonList.setLayout(new BoxLayout(otherFileButtonList,
                                                BoxLayout.Y_AXIS));
     otherFileButtonList.add(new JLabel("Package Members"));
     otherFileButtonList.add(otherFileScrollPane);
     otherFileButtonList.add(otherFileButtonPanel);
-    
     
     JPanel listPanel = new JPanel();
     listPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -219,6 +224,91 @@ public class DataPackageGUI extends javax.swing.JFrame
     listPanel.add(otherFileButtonList);
     
     return listPanel; 
+  }
+  
+  /**
+   * Handles actions from all components in the Container  
+   */
+  public void actionPerformed(ActionEvent e) 
+  {
+    String command = e.getActionCommand();
+    framework.debug(9, "action fired: " + command);
+    EditorInterface editor;
+    
+    if(command.equals("Edit"))
+    {
+      System.out.println("Editing");
+      try
+      {
+        ServiceProvider provider = 
+                        framework.getServiceProvider(EditorInterface.class);
+        editor = (EditorInterface)provider;
+      }
+      catch(Exception ee)
+      {
+        framework.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
+        ee.printStackTrace();
+        return;
+      }
+      String item = (String)otherFileList.getSelectedValue();
+      String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
+      System.out.println("id: " + id);
+      File xmlFile;
+      try
+      {
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        xmlFile = fsds.openFile(id);
+      }
+      catch(Exception eee)
+      {
+        try
+        {
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          xmlFile = mds.openFile(id);
+        }
+        catch(Exception eeee)
+        {
+          framework.debug(0, "Error opening selected file: " + 
+                             eeee.getMessage());
+          return;
+        }
+      }
+      
+      StringBuffer sb = new StringBuffer();
+      try
+      {
+        FileReader fr = new FileReader(xmlFile);
+        int c = fr.read();
+        while(fr.ready() && c != -1)
+        {
+          sb.append((char)c);
+          c = fr.read();
+        }
+        System.out.println(sb.toString());
+        fr.close();
+      }
+      catch(Exception eeeee)
+      {
+        framework.debug(0, "Error reading file : " + id + " " + 
+                           eeeee.getMessage());
+        return;
+      }
+      
+      editor.openEditor(sb.toString(), this);
+    }
+    else if(command.equals("Add"))
+    {
+      System.out.println("Adding");
+    }
+    else if(command.equals("Remove"))
+    {
+      System.out.println("Removing");
+    }
+  }
+  
+  public void editingCompleted(String xmlString)
+  {
+    System.out.println("editing complete: " + xmlString);
   }
   
   public static void main(String[] args)
