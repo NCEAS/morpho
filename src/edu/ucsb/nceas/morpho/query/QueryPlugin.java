@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 17:16:27 $'
- * '$Revision: 1.84 $'
+ *     '$Date: 2002-08-27 00:06:01 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     
     //searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Action for refresh
-    RefreshCommand refreshCommand = new RefreshCommand();
+    RefreshCommand refreshCommand = new RefreshCommand(null);
     GUIAction refreshItemAction = 
                     new GUIAction("Refresh", null, refreshCommand);
     refreshItemAction.setSmallIcon(new ImageIcon(getClass().
