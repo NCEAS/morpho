@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:49 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2001-05-02 17:41:36 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ import com.symantec.itools.javax.swing.borders.LineBorder;
  * "PluginInterface" interface.
  */
 public class ClientFramework extends javax.swing.JFrame 
-                             implements PluginInterface
 {
   /** The hardcoded XML configuration file */
   private static String configFile = "lib/config.xml";
@@ -59,8 +58,7 @@ public class ClientFramework extends javax.swing.JFrame
   static int debug_level = 0;
   // redirects standard out and err streams
   static boolean log_file = false;
-  String xmlcatalogfile = null;
-  String MetaCatServletURL = null;
+  String metacatURL = null;
   ConfigXML config;
   private boolean connected = false;
   edu.ucsb.nceas.morpho.query.LocalQuery lq = null;
@@ -73,7 +71,8 @@ public class ClientFramework extends javax.swing.JFrame
   Hashtable servicesRegistry = null;
   Hashtable windowsRegistry = null;
   ClientFramework framework = null;
-  JTable table;
+  private boolean pluginsLoaded = false;
+  //JTable table;
 
   // Used by addNotify
   boolean frameSizeAdjusted = false;
@@ -82,7 +81,7 @@ public class ClientFramework extends javax.swing.JFrame
   java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
   java.awt.FileDialog openFileDialog = new java.awt.FileDialog(this);
   javax.swing.JPanel ToolBarPanel = new javax.swing.JPanel();
-  javax.swing.JToolBar JToolBar1 = new javax.swing.JToolBar();
+  javax.swing.JToolBar morphoToolbar = new javax.swing.JToolBar();
 
   javax.swing.JPanel ContentPanel = new javax.swing.JPanel();
   javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
@@ -92,7 +91,7 @@ public class ClientFramework extends javax.swing.JFrame
   javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
   com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 =
     new com.symantec.itools.javax.swing.borders.LineBorder();
-  javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
+  javax.swing.JMenuBar morphoMenuBar = new javax.swing.JMenuBar();
 
   //}}
 
@@ -104,9 +103,9 @@ public class ClientFramework extends javax.swing.JFrame
    * @param sTitle the title for the new frame.
    * @see #JFrame1()
    */
-  public ClientFramework(String sTitle)
+  public ClientFramework(String sTitle, ConfigXML config)
   {
-    this();
+    this(config);
     setTitle(sTitle);
   }
 
@@ -114,8 +113,10 @@ public class ClientFramework extends javax.swing.JFrame
    * Creates a new instance of ClientFramework
    * @see #JFrame1()
    */
-  public ClientFramework()
+  public ClientFramework(ConfigXML config)
   {
+    this.config = config;
+
     // Create the list of menus for use by the framework and plugins
     menuList = new Hashtable();
     menuOrder = new TreeMap();
@@ -132,7 +133,7 @@ public class ClientFramework extends javax.swing.JFrame
     // what Visual Cafe can generate, or Visual Cafe may be unable to back
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
-    setJMenuBar(JMenuBar1);
+    setJMenuBar(morphoMenuBar);
     setTitle("Morpho - Data Management for Ecologists");
     setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
@@ -146,9 +147,9 @@ public class ClientFramework extends javax.swing.JFrame
     ToolBarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     getContentPane().add(BorderLayout.NORTH, ToolBarPanel);
     ToolBarPanel.setBounds(0, 0, 744, 36);
-    JToolBar1.setAlignmentY(0.222222F);
-    ToolBarPanel.add(JToolBar1);
-    JToolBar1.setBounds(0, 0, 834, 36);
+    morphoToolbar.setAlignmentY(0.222222F);
+    ToolBarPanel.add(morphoToolbar);
+    morphoToolbar.setBounds(0, 0, 834, 36);
 
     ContentPanel.setLayout(new BorderLayout(0, 0));
     getContentPane().add(BorderLayout.CENTER, ContentPanel);
@@ -167,28 +168,11 @@ public class ClientFramework extends javax.swing.JFrame
     this.addWindowListener(aSymWindow);
     //}}
 
-    // Get the configuration file information
-    try
-    {
-      config = new ConfigXML(configFile);
-      String local_dtd_directory = config.get("local_dtd_directory", 0);
-      xmlcatalogfile = local_dtd_directory + "/catalog";
-      MetaCatServletURL = config.get("MetaCatServletURL", 0);
-      
-      String temp_uname = config.get("username", 0);
-      userName = (temp_uname != null) ? temp_uname : "public";
-      debug_level = (new Integer(config.get("debug_level", 0))).intValue();
-      debug(9, "Debug_level set to: " + debug_level);
-    }
-    catch(Exception e)
-    {
-      System.out.println("Could not locate properties file!");
-    }
+    // Get the configuration file information needed by the framework
+    loadConfigurationParameters();
 
     // Set up the framework's menus and toolbars, and services
     initializeActions();
-    loadPluginMenusAndToolbars(this);
-    this.registerServices();
 
     // Load all of the plugins, their menus, and toolbars
     loadPlugins();
@@ -213,27 +197,19 @@ public class ClientFramework extends javax.swing.JFrame
 	                createObject((String) (q.nextElement()));
 
         // Set a reference to the framework in the Plugin
-        plugin.setFramework(this);
-
-	// Create a panel to display the plugin if requested
-        Container newTab = plugin.registerTabPane();
-        if (newTab != null) 
-        {
-	  JTabbedPane1.addTab(newTab.getName(), newTab);
-        }
-
-        // Allow the plugin to add menus and toolbar items
-        loadPluginMenusAndToolbars(plugin);
-        Set menusInOrder = menuOrder.entrySet();
-        Iterator it = menusInOrder.iterator();
-        while (it.hasNext()) {
-          JMenu currentMenu = (JMenu)((Map.Entry)it.next()).getValue();
-          JMenuBar1.add(currentMenu);
-        }
-
-        // Allow the plugin to register services it can perform
-        plugin.registerServices();
+        plugin.initialize(this);
       }
+
+      // After all plugins have a chance to add their menus, create the
+      // menu bar so that the menus are created in the right order
+      Set menusInOrder = menuOrder.entrySet();
+      Iterator it = menusInOrder.iterator();
+      while (it.hasNext()) {
+        JMenu currentMenu = (JMenu)((Map.Entry)it.next()).getValue();
+        morphoMenuBar.add(currentMenu);
+      }
+      
+      pluginsLoaded = true;
     }
     catch(ClassCastException cce)
     {
@@ -242,70 +218,113 @@ public class ClientFramework extends javax.swing.JFrame
   }
 
   /**
-   * Load the menus and toolboxes for a particular plugin
+   * Set the content pane of the main Morpho window to display the
+   * component indicated.  Note that this will replace the current content
+   * pane, and so only one plugin should call this routine.
+   *
+   * @param comp the component to display
    */
-  private void loadPluginMenusAndToolbars(PluginInterface plugin)
+  public void setMainContentPane(Component comp) 
   {
-    // Get the list of menus from the plugin components
-    Hashtable menus = plugin.registerMenus();
-
-    // Loop through the menus and create them
-    for (Enumeration e = menus.keys(); e.hasMoreElements(); ) {
-      Integer currentMenuPosition = (Integer)e.nextElement();
-      String currentMenuName = (String)menus.get(currentMenuPosition);
-
-      JMenu currentMenu = null;
-      // Check if the menu exists already here
-      if (menuList.containsKey(currentMenuName)) {
-        currentMenu = (JMenu)menuList.get(currentMenuName);
-      } else {
-        currentMenu = new JMenu(); 
-        currentMenu.setText(currentMenuName);
-        currentMenu.setActionCommand(currentMenuName);
-        //currentMenu.setMnemonic((int)'H');
-        menuList.put(currentMenuName, currentMenu);
-        menuOrder.put(currentMenuPosition, currentMenu);
-      }
-
-      // Get the menu items (Actions) and add them to the menus
-      Action menuActions[] = plugin.registerMenuActions(currentMenuName);
-      if (menuActions != null) {
-        for (int j=0; j < menuActions.length; j++) {
-          Action currentAction = menuActions[j];
-          String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
-          Integer menuPosition = (Integer)currentAction.getValue("menuPosition");
-          int menuPos = (menuPosition != null) ? menuPosition.intValue() : -1;
-
-          if (menuPos >= 0) {
-            // Insert menus at the specified position
-            int menuCount = currentMenu.getMenuComponentCount();
-            if (menuPos > menuCount) {
-              menuPos = menuCount;
-            }
-            
-            if (hasDefaultSep != null &&
-              hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
-              currentMenu.insertSeparator(menuPos++);
-            }
-            currentMenu.insert(currentAction, menuPos);
+	// Create a panel to display the plugin if requested
+        if (comp != null) {
+          if (JTabbedPane1.getTabCount() > 0) {
+            JTabbedPane1.setComponentAt(0, comp);
+            JTabbedPane1.setTitleAt(0, comp.getName());
           } else {
-	    // Append everything else at the bottom of the menu
-            if (hasDefaultSep != null &&
-              hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
-              currentMenu.addSeparator();
-            }
-            currentMenu.add(currentAction);
+	    JTabbedPane1.addTab(comp.getName(), comp);
           }
+        } else {
+          debug(9, "Component was null so I could not set it!");
         }
+  }
+
+  /**
+   * This method is called by plugins to register a menu that
+   * the plugin wants created, but that currently has no items.
+   *
+   * @param menuName the name of the menu to be added to the framework
+   * @param menuPosition the position of the menu to be added to the framework
+   */
+  public void addMenu(String menuName, Integer menuPosition)
+  {
+    addMenu(menuName, menuPosition, null);
+  }
+
+  /**
+   * This method is called by plugins to register a menu and its
+   * associated Actions. If the menu already exists, the actions
+   * are added to it.
+   *
+   * @param menuName the name of the menu to which to add the action
+   * @param menuPosition the  position of the menu on the menu bar
+   * @param menuActions an array of Actions to be added to the menu
+   */
+  public void addMenu(String menuName, Integer menuPosition, 
+                      Action[] menuActions)
+  {
+    JMenu currentMenu = null;
+    // Check if the menu exists already here, otherwise create it
+    if (menuList.containsKey(menuName)) {
+      currentMenu = (JMenu)menuList.get(menuName);
+    } else {
+      currentMenu = new JMenu(); 
+      currentMenu.setText(menuName);
+      currentMenu.setActionCommand(menuName);
+      //currentMenu.setMnemonic((int)'H');
+      menuList.put(menuName, currentMenu);
+      menuOrder.put(menuPosition, currentMenu);
+
+      // After the initial plugin loading, menus can only be appended
+      // to the end of the menu bar
+      if (pluginsLoaded) {
+        morphoMenuBar.add(currentMenu);
       }
     }
 
-    // Get the toolbar Actions and add them to the toolbar
-    Action toolbarActions[] = plugin.registerToolbarActions();
+    // Get the menu items (Actions) and add them to the menu
+    if (menuActions != null) {
+      for (int j=0; j < menuActions.length; j++) {
+        Action currentAction = menuActions[j];
+        String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
+        Integer itemPosition = (Integer)currentAction.getValue("menuPosition");
+        int menuPos = (itemPosition != null) ? itemPosition.intValue() : -1;
+
+        if (menuPos >= 0) {
+          // Insert menus at the specified position
+          int menuCount = currentMenu.getMenuComponentCount();
+          if (menuPos > menuCount) {
+            menuPos = menuCount;
+          }
+          
+          if (hasDefaultSep != null &&
+            hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
+            currentMenu.insertSeparator(menuPos++);
+          }
+          currentMenu.insert(currentAction, menuPos);
+        } else {
+          // Append everything else at the bottom of the menu
+          if (hasDefaultSep != null &&
+            hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
+            currentMenu.addSeparator();
+          }
+          currentMenu.add(currentAction);
+        }
+      }
+    }
+  }
+
+  /**
+   * This method is called by plugins to register a toolbar Action. 
+   *
+   * @param toolbarActions an array of Actions to be added to the toolbar
+   */
+  public void addToolbarActions(Action[] toolbarActions)
+  {
     if (toolbarActions != null) {
       for (int j=0; j < toolbarActions.length; j++) {
         Action currentAction = toolbarActions[j];
-        JToolBar1.add(currentAction);
+        morphoToolbar.add(currentAction);
       }
     }
   }
@@ -400,6 +419,7 @@ public class ClientFramework extends javax.swing.JFrame
   public void requestService(ServiceRequest request)
               throws ServiceNotHandledException
   {
+/*
     String serviceName = request.getServiceName();
     if (servicesRegistry.containsKey(serviceName)) {
       PluginInterface serviceHandler = 
@@ -409,6 +429,7 @@ public class ClientFramework extends javax.swing.JFrame
       throw (new ServiceNotHandledException("Service does not exist: " +
                                             serviceName));
     }
+*/
   }
 
   /**
@@ -427,57 +448,6 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
-  /** 
-   * The plugin must store a reference to the ClientFramework 
-   * in order to be able to call the services available through 
-   * the framework
-   */
-  public void setFramework(ClientFramework cf) 
-  {
-    framework = cf;
-  }
-
-  /**
-   * This method is called on component initialization to generate a list
-   * of the names of the menus, indexed by display position, that the component 
-   * wants added to the framework.  If a menu already exists (from another 
-   * component or the framework itself), the position will be determined by 
-   * the earlier registration of the menu.
-   */
-  public Hashtable registerMenus() {
-    Hashtable listOfMenus = new Hashtable();
-    listOfMenus.put(new Integer(1), "File");
-    listOfMenus.put(new Integer(2), "Edit");
-    listOfMenus.put(new Integer(6), "Window");
-    listOfMenus.put(new Integer(9), "Help");
-    return listOfMenus;
-  }
-
-  /**
-   * The plugin must return the Actions that should be associated 
-   * with a particular menu. They will be appended onto the bottom of the menu
-   * in most cases.
-   */
-  public Action[] registerMenuActions(String menu) {
-    Action actionList[] = null;
-    if (menu.equals("File")) {
-      actionList = fileMenuActions;
-    } else if (menu.equals("Edit")) {
-      actionList = editMenuActions;
-    } else if (menu.equals("Help")) {
-      actionList = helpMenuActions;
-    }
-    return actionList;
-  }
-
-  /**
-   * The plugin must return the list of Actions to be associated with the
-   * toolbar for the framework. 
-   */ 
-  public Action[] registerToolbarActions() {
-    return containerToolbarActions;;
-  }
-
   /**
    * This method is called by the framework when the plugin should 
    * register any services that it handles.  The plugin should then
@@ -486,6 +456,7 @@ public class ClientFramework extends javax.swing.JFrame
    */
   public void registerServices()
   {
+/*
     debug(9, "Entered ClientFramework::registerServices");
     try {
       this.addService("LogService", this);
@@ -493,16 +464,7 @@ public class ClientFramework extends javax.swing.JFrame
       debug(6, "Service registration failed for LogService.");
       debug(6, see.toString());
     }
-  }
-
-  /**
-   * This method is called by the framework when the plugin should 
-   * register a UI tab pane that is to be incorporated into the main
-   * user interface.
-   */
-  public Container registerTabPane()
-  {
-    return null;
+*/
   }
 
   /**
@@ -562,6 +524,7 @@ public class ClientFramework extends javax.swing.JFrame
     connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Log In");
     connectItemAction.putValue("menuPosition", new Integer(0));
     fileMenuActions[1] = connectItemAction;
+    addMenu("File", new Integer(1), fileMenuActions);
 
     // EDIT MENU ACTIONS
     editMenuActions = new Action[4];
@@ -615,8 +578,12 @@ public class ClientFramework extends javax.swing.JFrame
     prefsItemAction.putValue("menuPosition", new Integer(5));
     editMenuActions[3] = prefsItemAction;
 
+    addMenu("Edit", new Integer(2), editMenuActions);
+
+    addMenu("Window", new Integer(6));
+
     // HELP MENU ACTIONS
-    helpMenuActions = new Action[2];
+    helpMenuActions = new Action[1];
     Action aboutItemAction = new AbstractAction("About...") {
       public void actionPerformed(ActionEvent e) {
         SplashFrame sf = new SplashFrame();
@@ -628,7 +595,7 @@ public class ClientFramework extends javax.swing.JFrame
                     new ImageIcon(getClass().getResource("about.gif")));
     aboutItemAction.putValue("menuPosition", new Integer(1));
     helpMenuActions[0] = aboutItemAction;
-
+/*
     Action testServiceAction = new AbstractAction("Test Log Service") {
       public void actionPerformed(ActionEvent e) {
         testLogService();
@@ -640,12 +607,15 @@ public class ClientFramework extends javax.swing.JFrame
     testServiceAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     testServiceAction.putValue("menuPosition", new Integer(2));
     helpMenuActions[1] = testServiceAction;
+*/
+    addMenu("Help", new Integer(9), helpMenuActions);
 
     // Set up the toolbar for the application
     containerToolbarActions = new Action[3];
     containerToolbarActions[0] = cutItemAction;
     containerToolbarActions[1] = copyItemAction;
     containerToolbarActions[2] = pasteItemAction;
+    addToolbarActions(containerToolbarActions);
   }
 
   /**
@@ -712,6 +682,7 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
+/*
   private void testLogService()
   {
     ServiceRequest req = new ServiceRequest((PluginInterface)this,
@@ -723,6 +694,7 @@ public class ClientFramework extends javax.swing.JFrame
       debug(1, snhe.toString());
     }
   }
+*/
 
   private void establishConnection()
   {
@@ -793,7 +765,8 @@ public class ClientFramework extends javax.swing.JFrame
                           for the operation
    * @return InputStream as returned by Metacat
    */
-  public InputStream getMetacatInputStream(Properties prop, boolean requiresLogin)
+  public InputStream getMetacatInputStream(Properties prop, 
+                                           boolean requiresLogin)
   {
     if (requiresLogin) {
       if (!connected) {
@@ -816,9 +789,9 @@ public class ClientFramework extends javax.swing.JFrame
     // Now contact metacat and send the request
     try
     {
-      String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-      debug(9, "Sending data to: " + MetaCatServletURL);
-      URL url = new URL(MetaCatServletURL);
+      //String metacatURL = config.get("MetaCatServletURL", 0);
+      debug(9, "Sending data to: " + metacatURL);
+      URL url = new URL(metacatURL);
       HttpMessage msg = new HttpMessage(url);
       returnStream = msg.sendPostMessage(prop);
     }
@@ -994,6 +967,18 @@ public class ClientFramework extends javax.swing.JFrame
   } 
 
   /**
+   * Load configuration parameters from the config file as needed
+   */
+  private void loadConfigurationParameters()
+  {
+    metacatURL = config.get("MetaCatServletURL", 0);
+    String temp_uname = config.get("username", 0);
+    userName = (temp_uname != null) ? temp_uname : "public";
+    debug_level = (new Integer(config.get("debug_level", 0))).intValue();
+    debug(9, "Debug_level set to: " + debug_level);
+  }
+
+  /**
    * The entry point for this application.
    * Sets the Look and Feel to the System Look and Feel.
    * Creates a new JFrame1 and makes it visible.
@@ -1014,18 +999,21 @@ public class ClientFramework extends javax.swing.JFrame
       SplashFrame sf = new SplashFrame(true);
       sf.setVisible(true);
 
-      // Create a new instance of our application's frame
-      ClientFramework clf = new ClientFramework();
+      // Open the configuration file
+      ConfigXML config = new ConfigXML(configFile);
 
-      Date expiration = new Date(101, 5, 1);
-      Date warning = new Date(101, 4, 1);
+      // Create a new instance of our application's frame
+      ClientFramework clf = new ClientFramework(config);
+
+      Date expiration = new Date(101, 12, 1);
+      Date warning = new Date(101, 11, 1);
       Date now = new Date();
       if (now.after(expiration))
       {
 	clf.debug(1, "This beta version of Morpho has expired! " +
            "See http://knb.ecoinformatics.org/ for a newer version.");
 	JOptionPane.showMessageDialog(null,
-           "This beta version of Morpho has expired! " +
+           "This beta version of Morpho has expired!\n" +
            "See http://knb.ecoinformatics.org/ for a newer version.");
 	System.exit(1);
       }
@@ -1034,33 +1022,27 @@ public class ClientFramework extends javax.swing.JFrame
 	if (now.after(warning))
 	{
 	  clf.debug(1, "This beta version of Morpho will expire on " +
-            "May 1, 2001. See http://knb.ecoinformatics.org/ for a " +
+            "Dec 1, 2001. See http://knb.ecoinformatics.org/ for a " +
             "newer version.");
 	  JOptionPane.showMessageDialog(null,
-            "This beta version of Morpho will expire on May 1, 2001. " +
+            "This beta version of Morpho will expire on Dec 1, 2001.\n" +
             "See http://knb.ecoinformatics.org/ for a newer version.");
 	}
 
         // make the ClientFramework visible.
 	clf.setVisible(true);
 	sf.dispose();
-        // ConnectionFrame cf = new ConnectionFrame(clf);
-        // cf.setVisible(true);
-	ConfigXML config = new ConfigXML(configFile);
+
+        // Set up logging as appropriate
 	String log_file_setting = config.get("log_file", 0);
-	if (log_file_setting != null)
-	{
-	  if (log_file_setting.equalsIgnoreCase("true"))
-	  {
+	if (log_file_setting != null) {
+	  if (log_file_setting.equalsIgnoreCase("true")) {
 	    log_file = true;
-	  }
-	  else
-	  {
+	  } else {
 	    log_file = false;
 	  }
 	}
-	if (log_file)
-	{
+	if (log_file) {
 	  FileOutputStream err = new FileOutputStream("stderr.log");
 	  // Constructor PrintStream(OutputStream) has been deprecated.
 	  PrintStream errPrintStream = new PrintStream(err);
@@ -1068,7 +1050,6 @@ public class ClientFramework extends javax.swing.JFrame
 	  System.setOut(errPrintStream);
 	}
       }
-
     }
     catch(Throwable t)
     {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:50 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-02 17:41:37 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,81 +27,24 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import javax.swing.Action;
-import java.awt.Container;
+import java.awt.Component;
 import java.util.Hashtable;
 
 /**
  * All component plugins that are to be included in the ClientFramework
  * must implement this interface so that the services of the ClientFramework
  * such as menu and toolbar actions, and session control, are available to
- * the plugin component
+ * the plugin component.
  */
 public interface PluginInterface
 {
 
   /** 
-   * The plugin must store a reference to the ClientFramework 
-   * in order to be able to call the services available through 
-   * the framework
+   * This method is called after the Plugin has been created in order
+   * to allow the plugin a chance to initialize variables, create menus
+   * and toolbars, and store a reference to the framework.  The plugin 
+   * must store a reference to the ClientFramework in order to be able 
+   * to call the services available through the framework.
    */
-  public void setFramework(ClientFramework cf);
-
-  /**
-   * This method is called on component initialization to generate a list
-   * of the names of the menus, indexed by display position, that the component 
-   * wants added to the framework.  If a menu already exists (from another 
-   * component or the framework itself), the position will be determined by 
-   * the earlier registration of the menu.
-   */
-  public Hashtable registerMenus();
-
-  /**
-   * The plugin must return the Actions that should be associated 
-   * with a particular menu. They will be appended onto the bottom of the menu
-   * in most cases.
-   */
-  public Action[] registerMenuActions(String menu);
-
-  /**
-   * The plugin must return the list of Actions to be associated with the
-   * toolbar for the framework. 
-   */
-  public Action[] registerToolbarActions();
-
-  /**
-   * This method is called by the framework when the plugin should 
-   * register a UI tab pane that is to be incorporated into the main
-   * user interface.
-   */
-  public Container registerTabPane();
-
-  /**
-   * This method is called by the framework when the plugin should 
-   * register any services that it handles.  The plugin should then
-   * call the framework's 'addService' method for each service it can
-   * handle.
-   */
-  public void registerServices();
-
-  /**
-   * This is the general dispatch method that is called by the framework
-   * whenever a plugin is expected to handle a service request.  The
-   * details of the request and data for the request are contained in
-   * the ServiceRequest object.
-   *
-   * @param request request details and data
-   */
-  public void handleServiceRequest(ServiceRequest request) 
-              throws ServiceNotHandledException;
-
-  /**
-   * This method is called by a service provider that is handling 
-   * a service request that originated with the plugin.  Data
-   * from the ServiceRequest is handed back to the source plugin in
-   * the ServiceResponse object.
-   *
-   * @param response response details and data
-   */
-  public void handleServiceResponse(ServiceResponse response);
-
+  public void initialize(ClientFramework cf);
 }

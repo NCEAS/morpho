@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:51 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2001-05-02 17:41:37 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -865,11 +865,12 @@ public class QueryBean extends Container implements PluginInterface
    * in order to be able to call the services available through 
    * the framework
    */
-  public void setFramework(ClientFramework cf)
+  public void initialize(ClientFramework cf)
   {
     this.framework = cf;
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
+    framework.setMainContentPane(this);
   }
 
   /**
@@ -911,9 +912,9 @@ public class QueryBean extends Container implements PluginInterface
    * register a UI tab pane that is to incorporated into the main
    * user interface.
    */
-  public Container registerTabPane()
+  public Component registerTabPane()
   {
-    return (Container)this; 
+    return (Component)this; 
   } 
     
   /**

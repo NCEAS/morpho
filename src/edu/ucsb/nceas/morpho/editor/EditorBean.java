@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:49 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-02 17:41:36 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class EditorBean extends Container implements PluginInterface
    * in order to be able to call the services available through 
    * the framework
    */
-  public void setFramework(ClientFramework cf) 
+  public void initialize(ClientFramework cf) 
   {
     this.framework = cf;
     me.setFramework(cf);
