@@ -39,36 +39,47 @@
 </tr>
 
 <tr>
-<td colspan="2" WIDTH="100%">The metadata editor is used to display and
-possibly edit all the details of the structured metadata documents used
-by Morpho. Several examples of editor windows are shown below:
+<p>
+<td colspan="2" WIDTH="100%">The "general purpose" description editor
+is used to display and possibly edit all the details of the structured metadata
+documents used by Morpho. 
+
+<p>Examples of editor windows are shown below. The first shows
+general information about a Data Package, and the second shows
+details of the abstract for the dataset.
+<p><img SRC="./images/editor3_eco.gif" height=479 width=638><br><br>
+<p><img SRC="./images/editor2_eco.gif" height=479 width=638><br><br>
+
 <p>Each type of data description document (i.e each metadata type) has
 some structure which is indicated by the hierarchical outline on the left.
-Item in the outline are color coded to indicate which items are required
-and which can be repeated. When an item in this outline is selected, a
-form based view of the information that is contained in the selected item
+Items in the outline are color coded to indicate which items are required
+and which can be repeated. The legend for this color-coding is found at
+the bottom-left of the screen. 
+<p>When an item is selected in this outline, a
+form based view of the information contained in the selected item
 is shown on the right side of the window. A 'right-click' on any item in
 the outline displays a popup menu (as shown below) which allows the user
-various actions. These include duplicating an item, deleting an item, or
-copy and pasting items. Note that all of these operations include not only
+to choose among several options. These include duplicating an item, deleting an item, or
+copy and pasting items. Note that all of these operations will include not only
 the selected item, but also all of the item's 'children' in the indicated
 hierarchy.
+<p><img SRC="./images/editor1_eco.gif" height=479 width=638><br><br>
+
 <p>Most of the fields on the right side of the editor screen are editable.
 One can just click on the field of interest and enter text. The 'tab key'
 will move the selection to the next editable field. Note that non-required
 fields that are empty will not be saved when changes are made, but will
 appear again as empty fields when the document is opened again in the editor.
-<p><img SRC="./images/editor2_eco.gif" height=479 width=638><br><br>
-<p><img SRC="./images/editor3_eco.gif" height=479 width=638><br><br>
-<p><img SRC="./images/editor1_eco.gif" height=479 width=638><br><br>
+
 <br>&nbsp;
 <p><u>Technical Notes</u>:
 <br>For those who are interested in technical details, the Morpho editor
 is an XML editor. It works by first reading an XML file and building an
-outline (tree) view of the XML document. If the XML document indicates
-that its structure should follow a certain form by specifying a DTD, then
+outline (tree) view of the XML document. XML files can have formalized templates
+called 'DTD's, which describe how the document can be constructed.  If the
+XML document indicates that its structure should conform to a DTD, then
 the DTD is scanned and a single instance of any optional nodes not present
-in the original is added to the hierarchy. Finally, if the editor has addional
+in the original is added to the hierarchy. Finally, if the editor has additional
 data about the document type, it will add that data as custom displays
 or help information about the node, as is shown in the above examples.
 The editor can thus be customized to display the XML data in a variety
