@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-21 23:46:10 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2001-05-22 16:04:00 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,7 +291,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
             }
             catch (FileNotFoundException fnf) {
               System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
-              fnf.printStackTrace();
+//              fnf.printStackTrace();
               continue;
             }
             try {
@@ -299,7 +299,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
             }
             catch(Exception e1) {
               System.err.println("Parsing " + filename + " threw: " + e1.toString());
-              e1.printStackTrace();
+      //        e1.printStackTrace();
               continue;
             }
 
@@ -343,7 +343,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
         {
           System.err.println("selectNodeList threw: " + e2.toString() 
             + " perhaps your xpath didn't select any nodes");
-          e2.printStackTrace();
+//          e2.printStackTrace();
           continue;
         }
       }
@@ -900,7 +900,7 @@ return rs;
             }
             catch (FileNotFoundException fnf) {
               System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
-              fnf.printStackTrace();
+//              fnf.printStackTrace();
               continue;
             }
             try {
@@ -908,7 +908,7 @@ return rs;
             }
             catch(Exception e1) {
               System.err.println("Parsing " + filename + " threw: " + e1.toString());
-              e1.printStackTrace();
+//              e1.printStackTrace();
               continue;
             }
 
