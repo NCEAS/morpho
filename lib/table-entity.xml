@@ -194,215 +194,42 @@ help="The table entity element is a descriptor of one entity in the dataset iden
 
       <dsgpolyo
       help="Data Set G-Polygon Outer G-Ring, the closed nonintersecting boundary of an interior area.">
+    
+        <grngpoin help="A single geographic location.">
+          <gringlat help="The lat">
+          </gringlat>
 
-      </dsgpolyo>
+          <gringlon help="The longitude of a point of the g-ring.">
+          </gringlon>
+        </grngpoin>
+     
+        <gring
+        help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
+
+        </gring>
+
+      </dsgpolyo> 
+
+      <dsgpolyx
+            help="Data Set G-Polygon Exclusion G-Ring, the closed nonintersecting boundary of a void area (or hole in an interior area).">
+        <grngpoin help="A single geographic location.">
+          <gringlat help="The lat">
+          </gringlat>
+
+          <gringlon help="The longitude of a point of the g-ring.">
+          </gringlon>
+        </grngpoin>
+     
+        <gring
+        help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
+
+        </gring>
+
+       </dsgpolyx>
     </dsgpoly>
 
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <gring
-    help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
-
-    </gring>
-
-    <dsgpolyx
-    help="Data Set G-Polygon Exclusion G-Ring, the closed nonintersecting boundary of a void area (or hole in an interior area).">
-
-    </dsgpolyx>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <gring
-    help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
-
-    </gring>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <gring
-    help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
-
-    </gring>
-
-    <keywtax help="The taxonomic keyword fields provide locations for keywords and the               thesaurii from which they are formally defined that are specific to the               taxonomic extent of the dataset or resource.">
-      <taxonkt
-      help="Reference to a formally registered thesaurus or similar authoritative source of taxonomic keywords.">
-
-      </taxonkt>
-
-      <taxonkey
-      help="Common use words or phrases describing the taxonomy covered by the data set.">
-
-      </taxonkey>
-    </keywtax>
-
-    <taxonsys
-    help="Documentation of taxonomic sources, procedures, and treatments.">
-      <classsys
-      help="Information about the classification system or authority used.">
-        <classcit
-        help="Relevant literature for documenting the used classification system.">
-
-          <citeinfo>
-          </citeinfo>
-
-          <classmod
-          help="A description of any modifications or exceptions made to the classification system or authority used.">
-
-          </classmod>
-        </classcit>
-      </classsys>
-
-      <idref
-      help="Information on any nonauthoritative materials (e.g. field guides) useful for reconstructing the actual identification process.">
-
-        <citeinfo>
-        </citeinfo>
-      </idref>
-
-      <ider
-      help="Information about the individual(s) responsible for the identification(s) of the specimens or sightings, etc.">
-
-        <cntinfo
-        help="Information about the individual(s) responsible for the identification(s) of the specimens or sightings, etc.">
-
-        </cntinfo>
-      </ider>
-
-      <taxonpro
-      help="Description of the methods used for the taxonomic identification.">
-      </taxonpro>
-
-      <taxoncom
-      help="Information concerning the proportions and treatment of unidentified materials ; estimates of the importance, and identities of misidentifications, uncertain determinations, synonyms or other incorrect usages; taxa not well treated or requiring further work; and expertise of field workers.">
-
-      </taxoncom>
-
-      <vouchers
-      help="Information on the types of specimen, the repository, and the individuals who identified the vouchers.">
-
-        <specimen
-        help="A word or phrase describing the type of specimen collected.">
-        </specimen>
-
-        <reposit
-        help="Information about the curator or contact person and/or agency responsible for the specimens.">
-
-          <cntinfo>
-          </cntinfo>
-        </reposit>
-      </vouchers>
-    </taxonsys>
-
-    <taxongen
-    help="A description of the range of taxa addressed in the data set or collection.">
-
-    </taxongen>
-
-    <taxoncl
-    help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-
-      <taxonrn
-      help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
-
-      </taxonrn>
-
-      <taxonrv
-      help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
-
-      </taxonrv>
-
-      <common
-      help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
-
-      </common>
-    </taxoncl>
-
-    <taxoncl
-    help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-
-      <taxonrn
-      help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
-
-      </taxonrn>
-
-      <taxonrv
-      help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
-
-      </taxonrv>
-
-      <common
-      help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
-
-      </common>
-    </taxoncl>
   </geographicCov>
+
 
   <taxonomicCov
   help="This element describes the taxonomic extent of data in the dataset. This can be a list of species, or a group of species at a higher taxonomic rank (such as genus or family).">
