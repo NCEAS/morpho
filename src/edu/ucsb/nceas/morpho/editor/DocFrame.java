@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-20 22:53:36 $'
- * '$Revision: 1.153 $'
+ *     '$Date: 2004-02-20 23:27:09 $'
+ * '$Revision: 1.154 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -998,12 +998,12 @@ public class DocFrame extends javax.swing.JFrame
         addXMLAttributeNodes(rootNode);
       }
     }
-      
+    treeValueFlag=false;   // added to speed up display
     treeModel.reload();
     tree.setModel(treeModel);
 
     tree.expandRow(4);
-//    tree.expandRow(2);
+    treeValueFlag=false;  // added to speed up display    
     tree.setSelectionRow(0);
     headLabel.setText("Morpho Editor");
     logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));
