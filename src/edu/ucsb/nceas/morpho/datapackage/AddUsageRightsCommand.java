@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-23 20:45:39 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,10 @@ public class AddUsageRightsCommand implements Command {
 
   private final String DATAPACKAGE_RIGHTS_GENERIC_NAME = "intellectualRights";
 
+  //generic name for lookup in eml listings
+  private final String USAGE_SUBTREE_NODENAME = "/intellectualRights/";
+
+
   public AddUsageRightsCommand() {}
 
 
@@ -65,24 +69,7 @@ public class AddUsageRightsCommand implements Command {
    */
   public void execute(ActionEvent event) {
 
-    dataViewContainerPanel = null;
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-
-    if (morphoFrame == null) {
-
-      Log.debug(20, "AddUsageRightsCommand - morphoFrame==null");
-      Log.debug(5, "Unable to open usage details!");
-      return;
-    }
-    dataViewContainerPanel = morphoFrame.getDataViewContainerPanel();
-
-    if (dataViewContainerPanel==null) {
-
-      Log.debug(20, "AddUsageRightsCommand - dataViewContainerPanel==null");
-      Log.debug(5, "Unable to open usage details!");
-      return;
-    }
-    adp = dataViewContainerPanel.getAbstractDataPackage();
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     if (showUsageDialog()) {
 
@@ -107,6 +94,7 @@ public class AddUsageRightsCommand implements Command {
     } catch (ServiceNotHandledException se) {
 
       Log.debug(6, se.getMessage());
+      se.printStackTrace();
     }
 
     if (dpwPlugin == null) return false;
@@ -119,7 +107,9 @@ public class AddUsageRightsCommand implements Command {
     if (usageRoot!=null) {
       existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(usageRoot);
     }
-    usagePage.setPageData(existingValuesMap, null);
+    Log.debug(45, "sending previous data to usage page -\n\n" + existingValuesMap);
+
+    usagePage.setPageData(existingValuesMap, USAGE_SUBTREE_NODENAME);
 
     ModalDialog dialog = new ModalDialog(usagePage,
                             UIController.getInstance().getCurrentActiveWindow(),
@@ -132,24 +122,21 @@ public class AddUsageRightsCommand implements Command {
 
   private void insertUsage() {
 
-    OrderedMap map = usagePage.getPageData("/");
+    OrderedMap map = usagePage.getPageData(USAGE_SUBTREE_NODENAME);
 
-Log.debug(45, "got usage details from usage page -\n\n" + map.toString());
+    Log.debug(45, "\n insertProject() Got usage details from usage page -\n\n"
+              + map.toString());
 
     if (map==null || map.isEmpty()) {
       Log.debug(5, "Unable to get usage details from input!");
       return;
     }
-    if (usageRoot==null) {
-      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-      Document doc = impl.createDocument("", "intellectualRights", null);
 
-      usageRoot = doc.getDocumentElement();
+    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    Document doc = impl.createDocument("", "intellectualRights", null);
 
-    } else {
+    usageRoot = doc.getDocumentElement();
 
-      XMLUtilities.removeAllChildren(usageRoot);
-    }
 
     try {
       XMLUtilities.getXPathMapAsDOMTree(map, usageRoot);
@@ -161,12 +148,21 @@ Log.debug(45, "got usage details from usage page -\n\n" + map.toString());
                 +"map = " + map
                 +" and usageRoot = " + usageRoot);
       w.printStackTrace();
+      return;
     }
-    // add to the datapackage
-    adp.insertSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, usageRoot, 0);
 
-Log.debug(45, "added usage details to package -\n\n"
-        + XMLUtilities.getDOMTreeAsString(usageRoot));
+    //delete old project from datapackage
+    adp.deleteSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, 0);
+
+    // add to the datapackage
+    Node check = adp.insertSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, usageRoot, 0);
+
+    if (check != null) {
+      Log.debug(45, "added new usage details to package...");
+    } else {
+      Log.debug(5,
+                "** ERROR: Unable to add new usage details to package... **");
+    }
   }
 
 

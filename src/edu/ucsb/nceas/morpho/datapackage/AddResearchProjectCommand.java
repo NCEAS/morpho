@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 20:02:17 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-03-23 20:45:39 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,22 +151,15 @@ public class AddResearchProjectCommand implements Command {
       return;
     }
     //delete old project from datapackage
-    Node check = adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
-
-    if (check != null) {
-      Log.debug(45, "deleted old project details from package...");
-    } else {
-      Log.debug(5,
-                "** ERROR: Unable to delete old project details from package **");
-    }
+    adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
 
     // add to the datapackage
-    check = adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, projectRoot, 0);
+    Node check = adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, projectRoot, 0);
 
     if (check != null) {
       Log.debug(45, "added new project details to package...");
     } else {
-      Log.debug(5, "Unable to add new project details to package...");
+      Log.debug(5, "** ERROR: Unable to add new project details to package **");
     }
   }
 
