@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-05 19:05:33 $'
- * '$Revision: 1.1.2.3 $'
+ *     '$Date: 2002-07-05 22:58:29 $'
+ * '$Revision: 1.1.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ import edu.ucsb.nceas.morpho.framework.*;
 /**
  * A basic JFC 1.1 based application.
  */
-public class DataPackageViewer extends javax.swing.JFrame
+public class DataPackageViewer extends javax.swing.JFrame implements javax.swing.event.ChangeListener
 {
   
   /**
@@ -58,8 +58,12 @@ public class DataPackageViewer extends javax.swing.JFrame
   JTabbedPane TabbedEntitiesPanel;
   JSplitPane EntityPanel;
   JPanel EntityMetadataPanel;
+  JPanel currentDataPanel;
   
   Vector entityItems;
+  
+  int lastTabSelected = 0;
+  
   public Hashtable listValueHash = new Hashtable();
 
 	public DataPackageViewer()
@@ -92,6 +96,7 @@ public class DataPackageViewer extends javax.swing.JFrame
 		EntityPanel.setOneTouchExpandable(true);
     
     TabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
+    TabbedEntitiesPanel.addChangeListener(this);
     //TabbedEntitiesPanel.addTab("First Entity", EntityPanel);
     
 		JSplitPane vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,DataPackageInfoPanel,TabbedEntitiesPanel);
@@ -283,30 +288,45 @@ public class DataPackageViewer extends javax.swing.JFrame
       currentEntityMetadataPanel.add(BorderLayout.CENTER, entityInfoPanel);                                     
       currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
 
-   //   currentEntityMetadataPanel.add(BorderLayout.CENTER, entityEdit.entityPanel);
-//    }
-/*    
-    String item = "";
-    item = TabbedEntitiesPanel.getTitleAt(TabbedEntitiesPanel.getSelectedIndex());
+
+      EntityPanel.setDividerLocation(200);
+      this.entityFile = entityEdit.entityFile;
+    
+      // create the data display panel (usually a table) using DataViewer class
+      String fn = dp.getDataFileName(id);    
+      File fphysical = dp.getPhysicalFile(id);
+      File fattribute = dp.getAttributeFile(id);
+//      System.out.println("eml-attribute: "+fattribute.getName());
+      File f = dp.getDataFile(id);
+      String dataString = "";
+    }
+    if ((entityItems!=null) && (entityItems.size()>0)) {
+      setDataViewer(0);
+    }
+  }
+  
+  public void setFramework(ClientFramework cf) {
+    this.framework = cf;
+  }
+  
+  /**
+   * creates the data display and puts it into the center of the window
+   * This needs to be dynamically done as tabs are selected due to large memory usage
+   */
+  private void setDataViewer(int index) {
+    JSplitPane entireDataPanel = (JSplitPane)(TabbedEntitiesPanel.getComponentAt(lastTabSelected));
+    JSplitPane tableDataPanel = (JSplitPane)entireDataPanel.getRightComponent();
+    JPanel currentDataPanel1 = (JPanel)tableDataPanel.getLeftComponent();
+    currentDataPanel1.removeAll();
+    lastTabSelected = index;
+    String item = (String)entityItems.elementAt(index);
     String id = (String)listValueHash.get(item);
-    
-    String location = dp.getLocation();
-    EntityGUI entityEdit = new EntityGUI(dp, id, location, null, 
-                                           framework);
-    entityEdit.show();
-    EntityMetadataPanel.add(BorderLayout.CENTER, entityEdit.entityPanel);
- */
-    EntityPanel.setDividerLocation(200);
-    this.entityFile = entityEdit.entityFile;
-    
-    // create the data display panel (usually a table) using DataViewer class
     String fn = dp.getDataFileName(id);    
     File fphysical = dp.getPhysicalFile(id);
-//      System.out.println("eml-physical: "+fphysical.getName());
     File fattribute = dp.getAttributeFile(id);
-//      System.out.println("eml-attribute: "+fattribute.getName());
     File f = dp.getDataFile(id);
     String dataString = "";
+    
     DataViewer dv = new DataViewer(framework, "DataFile: "+fn, f);
     dv.setDataID(dp.getDataFileID(id));
     dv.setPhysicalFile(fphysical);
@@ -317,15 +337,12 @@ public class DataPackageViewer extends javax.swing.JFrame
     dv.parseFile();
     JPanel tablePanel = dv.DataViewerPanel;
     
-    JSplitPane TableDataPanel = (JSplitPane)((currentEntityPanel).getRightComponent());
+    JSplitPane EntireDataPanel = (JSplitPane)(TabbedEntitiesPanel.getComponentAt(index));
+    JSplitPane TableDataPanel = (JSplitPane)EntireDataPanel.getRightComponent();
     JPanel currentDataPanel = (JPanel)TableDataPanel.getLeftComponent();
     currentDataPanel.setLayout(new BorderLayout(0,0));
     currentDataPanel.add(BorderLayout.CENTER,tablePanel);
-    }
-  }
-  
-  public void setFramework(ClientFramework cf) {
-    this.framework = cf;
+   
   }
   
   private JSplitPane createEntityPanel() {
@@ -347,5 +364,15 @@ public class DataPackageViewer extends javax.swing.JFrame
     
   return EntityPanel;
   }
+
+	public void stateChanged(javax.swing.event.ChangeEvent event)
+		{
+			Object object = event.getSource();
+			if (object == TabbedEntitiesPanel) {
+				int k = TabbedEntitiesPanel.getSelectedIndex();
+        setDataViewer(k);
+		  }
+	}
+
   
 }
