@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-09 21:27:07 $'
- * '$Revision: 1.1.2.3 $'
+ *     '$Date: 2002-08-15 23:11:13 $'
+ * '$Revision: 1.1.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 import javax.swing.event.*;
+import java.lang.Class;
 
 
 public class PersistentTableModel extends javax.swing.table.AbstractTableModel
@@ -92,9 +93,8 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
         numCols = colNames.size();  
       }
       else {
-        String firstRecord = (String)pv.elementAt(firstRow);
-        Vector vals = getColumnValues(firstRecord);
-        numCols = vals.size();
+        String[] firstRecord = (String[])pv.elementAt(firstRow);
+        numCols = firstRecord.length;
       }
       return numCols;
     }
@@ -108,10 +108,9 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     {
         Object ocell;
             Object obj = pv.elementAt(rowIndex);
-            String record = (String)obj;
-            Vector vals = getColumnValues(record);
-            if (vals.size()>(columnIndex)) {
-                ocell = vals.elementAt(columnIndex);
+            String[] record = (String[])obj;
+            if (record.length>columnIndex) {
+                ocell = record[columnIndex];
             }
             else {
                 ocell = "";
@@ -120,41 +119,36 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     }
 
 	/**
-	 * parses a line of text data into a Vector of column data for that row
+	 * converts an array to a vector
 	 * 
-	 * @param str a line of string data from input
+	 * @param str a String array of data for each column in a row
 	 * @return a vector with each elements being column data for the row
 	 */
-	private Vector getColumnValues(String str) {
-	    String sDelim = getDelimiterString();
-	    String oldToken = "";
-	    String token = "";
-	    Vector res = new Vector();
-	    boolean ignoreConsequtiveDelimiters = false;
-	    if (ignoreConsequtiveDelimiters) {
-	      StringTokenizer st = new StringTokenizer(str, sDelim, false);
-	      while( st.hasMoreTokens() ) {
-	        token = st.nextToken().trim();
-	        res.addElement(token);
-	      }
-	    }
-	    else {
-	      StringTokenizer st = new StringTokenizer(str, sDelim, true);
-	      while( st.hasMoreTokens() ) {
-	        token = st.nextToken().trim();
-	        if (!inDelimiterList(token, sDelim)) {
-	            res.addElement(token);
-	        }
-	        else {
-	            if ((inDelimiterList(oldToken,sDelim))&&(inDelimiterList(token,sDelim))) {
-	                res.addElement("");
-                }
-	        }
-	        oldToken = token;
-	      }
-	    }
-	    return res;
+	private Vector columnValuesAsVector(String[] str) {
+	  Vector res = new Vector();
+    int imax = getColumnCount();
+    if (imax<str.length) imax = str.length;
+    for (int i=0;i<imax;i++) {
+      if (i<str.length) {
+        res.addElement(str[i]);
+      }
+      else {
+        res.addElement("");
+      }
+    }
+	  return res;
 	}
+  
+  /**
+	* converts an vector to an array
+	*/ 
+  private String[] columnValuesAsArray(Vector vec) {
+    String[] res = new String[vec.size()];
+    for (int i=0;i<vec.size();i++) {
+      res[i] = (String)vec.elementAt(i);
+    }
+    return res;
+  }
 
 	private boolean inDelimiterList(String token, String delim) {
 	    boolean result = false;
@@ -187,18 +181,35 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
    * set sortdir = -1 for descending
    */
   public void sort (int colnum, int sortdir) {
+    String[] o1Str;
+    String[] o2Str;
+    String token1;
+    String token2;
     final int cn = colnum;
     final int sdir = sortdir;
-    Collections.sort(pv.objectList, new Comparator() {
+ 		long start = System.currentTimeMillis();
+   Collections.sort(pv.objectList, new Comparator() {
+        String[] o1Str;
+        String[] o2Str;
+        String token1;
+        String token2;
       public int compare(Object o1, Object o2) {
         int res = 0;
         try{
-          String o1Str = (String)pv.obj.readObject(((Long)o1).longValue());
-          Vector o1vec = getColumnValues(o1Str);
-          String token1 = (String)o1vec.elementAt(cn);
-          String o2Str = (String)pv.obj.readObject(((Long)o2).longValue());
-          Vector o2vec = getColumnValues(o2Str);
-          String token2 = (String)o2vec.elementAt(cn);
+          if (Long.class.isInstance(o1)) {
+            o1Str = (String[])pv.obj.readObject(((Long)o1).longValue());
+          }
+          else {
+            o1Str = (String[])o1;
+          }
+          token1 = o1Str[cn];
+          if (Long.class.isInstance(o2)) {
+            o2Str = (String[])pv.obj.readObject(((Long)o2).longValue());
+          }
+          else {
+            o2Str = (String[])o2;
+          }
+          token2 = o2Str[cn];
           res = token1.compareTo(token2);
           res = sdir*res;
         }
@@ -206,15 +217,21 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 	    return res;
       }
     });
-    
+   
+   	long stop = System.currentTimeMillis();
+		int time = (int)(stop-start);
+    System.out.println("Time = "+time);
+
     fireTableStructureChanged();   
   }
   
   public void setValueAt(Object obj, int row, int col) {
- //   System.out.println("vals "+setColumnValue(row, col, obj));
-    setColumnValues(row, setColumnValue(row, col, obj));  
+    String[] rowA = (String[])pv.elementAt(row);
+    rowA[col] = (String)obj;
+    pv.setElementAt(rowA, row);
   }
-  
+ 
+/* 
   private void setColumnValues(int rowIndex, Object recordVals) {
     pv.setElementAt((String)recordVals, rowIndex);  
   }
@@ -232,6 +249,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     recordString = recordString.substring(0,recordString.length()-1);
     return recordString;
   }
+  */
   
   /**
    *  add a row to the end of the data
@@ -239,11 +257,10 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
    */
   public void addRow(Vector vec) {
     while (vec.size()<getColumnCount()) vec.addElement(" ");
-    String record = "";
-    for (int i=0;i<getColumnCount()-1;i++) {
-      record = record + (String)vec.elementAt(i) + delimiter;
+    String[] record = new String[getColumnCount()];
+    for (int i=0;i<getColumnCount();i++) {
+      record[i] = (String)vec.elementAt(i);
     }
-    record = record + (String)vec.elementAt(getColumnCount()-1);
     pv.addElement(record);
     fireTableRowsInserted(pv.size(),pv.size());
   }
@@ -254,11 +271,10 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
    */
   public void insertRow(int row, Vector vec) {
     while (vec.size()<getColumnCount()) vec.addElement(" ");
-    String record = "";
-    for (int i=0;i<getColumnCount()-1;i++) {
-      record = record + (String)vec.elementAt(i) + delimiter;
+    String[] record = new String[getColumnCount()];
+    for (int i=0;i<getColumnCount();i++) {
+      record[i] = (String)vec.elementAt(i);
     }
-    record = record + (String)vec.elementAt(getColumnCount()-1);
     pv.insertElementAt(record, row);
     fireTableRowsInserted(row,row);
   }
@@ -280,18 +296,15 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     PersistentVector newpv = new PersistentVector();
     for (int i=firstRow;i<getRowCount();i++) {
       Object obj = pv.elementAt(i);
-      String record = (String)obj;
-      Vector vals = getColumnValues(record);
-      record = "";
-      for (int j=0;j<vals.size();j++) {
-        record = record + (String)vals.elementAt(j)+ delimiter;  
-      }
-      record = record + "";
-      newpv.addElement(record);
+      String[] record = (String[])obj;
+      Vector vals = columnValuesAsVector(record);
+      vals.addElement("");
+      String[] newRecord = columnValuesAsArray(vals);
+      newpv.addElement(newRecord);
     }
     pv.delete();
     pv = newpv;  
-    setFieldDelimiter("#x09");
+    pv.setFieldDelimiter("#x09");
     fireTableStructureChanged();
   }
   
@@ -303,19 +316,15 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     PersistentVector newpv = new PersistentVector();
     for (int i=firstRow;i<getRowCount();i++) {
       Object obj = pv.elementAt(i);
-      String record = (String)obj;
-      Vector vals = getColumnValues(record);
+      String[] record = (String[])obj;
+      Vector vals = columnValuesAsVector(record);
       vals.insertElementAt("",colnum);
-      record = "";
-      for (int j=0;j<vals.size()-1;j++) {
-        record = record + (String)vals.elementAt(j)+ delimiter;  
-      }
-      record = record + (String)vals.elementAt(vals.size()-1);
-      newpv.addElement(record);
+      String[] newRecord = columnValuesAsArray(vals);
+      newpv.addElement(newRecord);
     }
     pv.delete();
     pv = newpv;  
-    setFieldDelimiter("#x09");
+    pv.setFieldDelimiter("#x09");
     fireTableStructureChanged();
   }
   
@@ -323,22 +332,18 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
    * deletes the indicated column
    */
    public void deleteColumn(int col) {
-      PersistentVector newpv = new PersistentVector();
+    PersistentVector newpv = new PersistentVector();
     for (int i=firstRow;i<getRowCount();i++) {
       Object obj = pv.elementAt(i);
-      String record = (String)obj;
-      Vector vals = getColumnValues(record);
+      String[] record = (String[])obj;
+      Vector vals = columnValuesAsVector(record);
       vals.removeElementAt(col);
-      record = "";
-      for (int j=0;j<vals.size()-1;j++) {
-        record = record + (String)vals.elementAt(j)+ delimiter;  
-      }
-      record = record + (String)vals.elementAt(vals.size()-1);
-      newpv.addElement(record);
+      String[] newRecord = columnValuesAsArray(vals);
+      newpv.addElement(newRecord);
     }
     pv.delete();
     pv = newpv;  
-    setFieldDelimiter("#x09");
+    pv.setFieldDelimiter("#x09");
     fireTableStructureChanged();   
    }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-09 21:27:07 $'
- * '$Revision: 1.17.2.5 $'
+ *     '$Date: 2002-08-15 23:11:12 $'
+ * '$Revision: 1.17.2.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -689,6 +689,7 @@ public class DataViewer extends javax.swing.JPanel
 	  vec = new Vector();
     table = new JTable();
     pv = new PersistentVector();
+    pv.setFieldDelimiter(field_delimiter);
     pv.init(dataFile, num_header_lines);
     ptm = new PersistentTableModel(pv, column_labels);
     ptm.setFieldDelimiter(field_delimiter);
