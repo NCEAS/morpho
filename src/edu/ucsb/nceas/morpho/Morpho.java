@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-01 16:45:22 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-11-19 16:37:16 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,11 +175,13 @@ public class Morpho
         startPing();
         finishPing(true);
 
+// Timer disabled (DFH) to avoid threading problem which stops downloads of
+// large data sets        
         //start a Timer to check periodically whether metacat remains available
         //over the network...
-        Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
-        timer.setRepeats(true);
-        timer.start();
+ //       Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
+ //       timer.setRepeats(true);
+ //       timer.start();
     }
 
     /**
