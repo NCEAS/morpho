@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.9 2000-11-20 17:44:38 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.10 2000-11-30 19:43:43 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -184,6 +184,9 @@ public class DataGuideBean extends java.awt.Container
 		DGBfly.setIconTextGap(0);
 		JPanel9.add(DGBfly);
 		DGBfly.setBounds(198,17,0,0);
+		DGconfig.setText("Config");
+		JPanel9.add(DGconfig);
+		DGconfig.setBounds(0,0,35,40);
 		{
 			String[] tempString = new String[2];
 			tempString[0] = "First Item";
@@ -219,6 +222,7 @@ public class DataGuideBean extends java.awt.Container
 		DGSearch.addActionListener(lSymAction);
 		SymPropertyChange lSymPropertyChange = new SymPropertyChange();
 		DGSearch.addPropertyChangeListener(lSymPropertyChange);
+		DGconfig.addActionListener(lSymAction);
 		//}}
 		popupListener = new PopupListener();
 		ShowmenuItem = new JMenuItem("Display Document");
@@ -294,6 +298,7 @@ public class DataGuideBean extends java.awt.Container
 	javax.swing.JPanel JPanel9 = new javax.swing.JPanel();
 	javax.swing.JButton DGSearch = new javax.swing.JButton();
 	javax.swing.JLabel DGBfly = new javax.swing.JLabel();
+	javax.swing.JButton DGconfig = new javax.swing.JButton();
 	com.symantec.itools.javax.swing.models.StringListModel stringListModel1 = new com.symantec.itools.javax.swing.models.StringListModel();
 	com.symantec.itools.javax.swing.models.StringComboBoxModel stringComboBoxModel1 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
 	//}}
@@ -510,6 +515,8 @@ public void LogOut() {
 				ShowMenuItem_actionPerformed(event);
 			else if (object == EditmenuItem) 
 				EditMenuItem_actionPerformed(event);
+			else if (object == DGconfig)
+				DGconfig_actionPerformed(event);
 		}
 	}
 
@@ -999,5 +1006,18 @@ return "NONE";
 		else {
 	     DGBfly.setIcon(BflyMove);
 		}	 
+	}
+
+	void DGconfig_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		try {
+			// QueryConfigDialog Create and show as modal
+			{
+				QueryConfigDialog QueryConfigDialog1 = new QueryConfigDialog();
+				QueryConfigDialog1.setModal(true);
+				QueryConfigDialog1.show();
+			}
+		} catch (java.lang.Exception e) {
+		}
 	}
 }

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.27 2000-11-28 00:20:34 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.28 2000-11-30 19:43:43 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -131,9 +131,10 @@ public class QueryBean extends AbstractQueryBean
 		Bfly.setIconTextGap(0);
 		QueryControls.add(Bfly);
 		Bfly.setBounds(0,25,0,0);
-		config.setText("config");
+		config.setText("Config");
+		config1.setText("Config");
 		QueryControls.add(config);
-		config.setBounds(0,0,35,40);
+		config1.setBounds(0,0,35,40);
 		{
 			String[] tempString = new String[8];
 			tempString[0] = "eml-access";
@@ -380,6 +381,8 @@ public class QueryBean extends AbstractQueryBean
 		Bfly1.setIconTextGap(0);
 		QueryControls1.add(Bfly1);
 		Bfly1.setBounds(0,25,0,0);
+		QueryControls1.add(config1);
+		config1.setBounds(0,0,35,40);
 		QueryChoicesPanel11.setLayout(new BorderLayout(0,0));
 		RefineQueryPanel1.add(BorderLayout.CENTER, QueryChoicesPanel11);
 		QueryChoicesPanel11.setBounds(0,0,-84,242);
@@ -675,6 +678,7 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton.addPropertyChangeListener(lSymPropertyChange);
 		SearchButton1.addPropertyChangeListener(lSymPropertyChange);
 		config.addActionListener(lSymAction);
+		config1.addActionListener(lSymAction);
 		//}}
 
 		popupListener = new PopupListener();
@@ -735,6 +739,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JButton SearchButton = new javax.swing.JButton();
 	javax.swing.JLabel Bfly = new javax.swing.JLabel();
 	javax.swing.JButton config = new javax.swing.JButton();
+	javax.swing.JButton config1 = new javax.swing.JButton();
 	javax.swing.JPanel QueryChoicesPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel ChoicesPanel2 = new javax.swing.JPanel();
 	javax.swing.JPanel TextChoices11 = new javax.swing.JPanel();
@@ -953,9 +958,11 @@ public class QueryBean extends AbstractQueryBean
 				ShowMenuItem_actionPerformed(event);
 			else if (object == EditmenuItem) 
 				EditMenuItem_actionPerformed(event);
-			if (object == SearchButton1)
+			else if (object == SearchButton1)
 				SearchButton1_actionPerformed(event);
 			else if (object == config)
+				config_actionPerformed(event);
+			else if (object == config1)
 				config_actionPerformed(event);
 			
 		}
