@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.60 2002-10-29 22:56:48 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.61 2002-10-30 16:43:22 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -263,6 +263,7 @@
    <target name="docs" depends="init">
      <mkdir dir="${build.docs}"/> 
      <mkdir dir="${build.docs}/user"/>
+     <mkdir dir="${build.docs}/user/advanced"/>
      <mkdir dir="${build.docs}/licenses"/>
      <copy file="./docs/README.txt" todir="${build.docs}"/>
      <copy todir="${build.docs}/licenses" filtering="no">
@@ -279,7 +280,13 @@
        <fileset dir="./docs/user">
          <include name="*.html"/>
        </fileset>
+     </copy> 
+     <copy todir="${build.docs}/user/advanced" filtering="yes">
+       <fileset dir="./docs/user/advanced">
+         <include name="*.html"/>
+       </fileset>
      </copy>
+
    </target>
 
    <target name="jdoc" depends="init">
