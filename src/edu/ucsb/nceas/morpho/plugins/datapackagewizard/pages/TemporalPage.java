@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 21:59:31 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-01-21 04:37:12 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,8 +157,7 @@ public class TemporalPage extends AbstractWizardPage {
     topPanel.add(WidgetFactory.makeDefaultSpacer());
 
     descLabel = WidgetFactory.makeHTMLLabel(
-        "<p><b>Choose access type:</b> Choose to allow or deny the user the "
-        +"below defined permission.</p>", 1);
+        "<p><b>Choose date type:</b>", 1);
     topPanel.add(descLabel);
     topPanel.add(typeRadioOuterPanel);
 
@@ -333,7 +332,7 @@ public class TemporalPage extends AbstractWizardPage {
       int month = calendar.get(Calendar.MONTH) + 1;
       int day = calendar.get(Calendar.DAY_OF_MONTH) + 1;
 
-      if(returnType != YEAR_ONLY){
+      if(c.getMonthChooser().isEnabled()){
         if (month < 10) {
           dateString = dateString + "0" + month + "-";
         }
@@ -344,7 +343,7 @@ public class TemporalPage extends AbstractWizardPage {
         dateString = dateString + "01" + "-";
       }
 
-      if(returnType != ALL){
+      if(!c.getDayChooser().isEnabled()){
         dateString = dateString + "01";
       } else {
         if (day < 10) {
@@ -359,6 +358,7 @@ public class TemporalPage extends AbstractWizardPage {
     }
     return df.format(calendar.getTime());
   }
+
 
   private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
     WidgetFactory.setPrefMaxSizes(component, dims);
@@ -391,7 +391,7 @@ public class TemporalPage extends AbstractWizardPage {
     if(currentPanel == singlePointPanel){
       surrogate.add(" " + singleTimeTF.getText().trim());
     } else {
-      surrogate.add(startTimeTF.getText().trim() + "-" +
+      surrogate.add(" " + startTimeTF.getText().trim() + "-" +
                     endTimeTF.getText().trim());
     }
     return surrogate;
@@ -425,10 +425,10 @@ public class TemporalPage extends AbstractWizardPage {
                     calendarToString(singleTimeCalendar, YYYYMMDD));
 
     } else {
-      returnMap.put(xPathRoot + "/startDateTime/calendarDate",
+      returnMap.put(xPathRoot + "/startDate/calendarDate",
                     calendarToString(startTimeCalendar, YYYYMMDD));
 
-      returnMap.put(xPathRoot + "/endDateTime/calendarDate",
+      returnMap.put(xPathRoot + "/endDate/calendarDate",
                     calendarToString(endTimeCalendar, YYYYMMDD));
     }
 

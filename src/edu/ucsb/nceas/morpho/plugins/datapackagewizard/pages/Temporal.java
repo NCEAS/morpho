@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 21:59:31 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-01-21 04:37:12 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -214,9 +214,9 @@ public class Temporal extends AbstractWizardPage{
    */
 
   private OrderedMap returnMap = new OrderedMap();
-  //
-  public OrderedMap getPageData() {
 
+  //
+  public OrderedMap getPageData(String xPath) {
     returnMap.clear();
     int index = 1;
     Object  nextRowObj      = null;
@@ -242,10 +242,22 @@ public class Temporal extends AbstractWizardPage{
 
       nextTemporalPage = (TemporalPage)nextUserObject;
 
-      nextNVPMap = nextTemporalPage.getPageData(xPathRoot + (index++) + "]");
+      nextNVPMap = nextTemporalPage.getPageData(xPath + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
+
+    // clear the list so that next time old variables dont show up again.
+    timespanList.removeAllRows();
+
+
     return returnMap;
+
+  }
+
+
+  //
+  public OrderedMap getPageData() {
+    return getPageData(xPathRoot);
   }
 
 
