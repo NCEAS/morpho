@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 20:04:28 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2003-12-10 22:26:23 $'
+  * '$Revision: 1.6 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@
     */
 -->
 
-  <xsl:param name="qformat">knb</xsl:param>
+  <xsl:param name="qformat">default</xsl:param>
 
 
 <!--
@@ -67,7 +67,7 @@
     *   value is dataset
     */
 -->
-  <xsl:param name="displaymodule">entity</xsl:param>
+  <xsl:param name="displaymodule">dataset</xsl:param>
 
 
 <!--
@@ -114,7 +114,7 @@
     */
 -->
 
-    <xsl:param name="stylePath">.</xsl:param>
+    <xsl:param name="stylePath">lib/style/</xsl:param>
 
 
 <!--
@@ -137,7 +137,7 @@
 <!-- type of entity, data table or spacial raster or others-->
     <xsl:param name="entitytype"></xsl:param>
 <!-- the index of entity in same entity type -->
-    <xsl:param name="entityindex">3</xsl:param>
+    <xsl:param name="entityindex"/>
 <!-- the index of attribute in same entity -->
     <xsl:param name="attributeindex"/>
 <!-- the index of physical part in entity part-->
