@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 00:14:01 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2002-08-27 23:52:07 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,16 +104,16 @@ public class ResultPanel extends JPanel
   private JPopupMenu popup;
   /**menu items for the popup menu*/
   private JMenuItem openMenu = null;
-  private JMenuItem openPreviousVersion = new JMenuItem("Open Previous Version");
+  private JMenuItem openPreviousVersion = null;
 
   private JMenuItem uploadMenu = null;
-  private JMenuItem downloadMenu = new JMenuItem("Download from Metacat");
-  private JMenuItem deleteLocalMenu = new JMenuItem("Delete Local Copy");
-  private JMenuItem deleteMetacatMenu = new JMenuItem("Delete Metacat Copy");
-  private JMenuItem deleteAllMenu = new JMenuItem("Delete Both Copies");
+  private JMenuItem downloadMenu = null;
+  private JMenuItem deleteLocalMenu = null;
+  private JMenuItem deleteMetacatMenu = null;
+  private JMenuItem deleteAllMenu = null;
   private JMenuItem refreshMenu = null;
-  private JMenuItem exportMenu = new JMenuItem("Export...");
-  private JMenuItem exportToZipMenu = new JMenuItem("Export to ZIP...");
+  private JMenuItem exportMenu = null;
+  private JMenuItem exportToZipMenu = null;
   /**a string to keep track of the selected row's id*/
   private String selectedId = "";
   /**the location of the data package*/
@@ -126,10 +126,10 @@ public class ResultPanel extends JPanel
   int threadCount = 0;
   int selectedRow = -1;
   
-  int vers;
-  String packageName = "";
+  private int vers = -1;
+  private String packageName = "";
   
- // DynamicMenuAction dynamicmenuhandler;
+
   
   /**
    * Construct a new ResultPanel and display the result set.  By default
@@ -251,8 +251,12 @@ public class ResultPanel extends JPanel
       openMenu = new JMenuItem(openAction);
       popup.add(openMenu);
       
-      openPreviousVersion.setEnabled(false);
+      // Create a OpenPreviousVersion action
+      GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
+                            new OpenPreviousVersionCommand(dialog, null));
+      openPreviousVersion = new JMenuItem(openPreviousAction);
       popup.add(openPreviousVersion);
+      openPreviousAction.setEnabled(false);
       
       // Create a refresh action
       GUIAction refreshAction = new GUIAction("Refresh", null, 
@@ -262,23 +266,51 @@ public class ResultPanel extends JPanel
       
       popup.add(new JSeparator());
       
-      // Create a upload action
+      // Create a new JMenu SynChronize...
+      JMenu synchronize = new JMenu("Sychronize...");
+      // Create a upload action and add it to synchronize
       GUIAction uploadAction = new GUIAction("Local to network", null,
                                 new LocalToNetworkCommand(dialog));
       uploadMenu = new JMenuItem(uploadAction);
-      popup.add(uploadMenu);
+      synchronize.add(uploadMenu);
+      // Create a download action
+      GUIAction downloadAction = new GUIAction("Network to Local", null,
+                       new NetworkToLocalCommand(dialog));
+      downloadMenu = new JMenuItem(downloadAction);
+      synchronize.add(downloadMenu);
+      // Add synchronize to pop
+      popup.add(synchronize);
+      popup.add(new JSeparator());
       
-      popup.add(downloadMenu);
+      // Create a new JMenu Delete
+      JMenu delete = new JMenu("Delete...");
+      GUIAction deleteLocalAction = new GUIAction("Local", null,
+                         new DeleteCommand(dialog, DataPackageInterface.LOCAL));
+      deleteLocalMenu = new JMenuItem(deleteLocalAction);
+      delete.add(deleteLocalMenu);
+      GUIAction deleteNetworkAction = new GUIAction("Network", null,
+                       new DeleteCommand(dialog, DataPackageInterface.METACAT));
+      deleteMetacatMenu = new JMenuItem(deleteNetworkAction);
+      delete.add(deleteMetacatMenu);
+      GUIAction deleteBothAction = new GUIAction("Both", null,
+                       new DeleteCommand(dialog, DataPackageInterface.BOTH));
+      deleteAllMenu = new JMenuItem(deleteBothAction);
+      delete.add(deleteAllMenu);
+      popup.add(delete);
       popup.add(new JSeparator());
-      popup.add(deleteLocalMenu);
-      popup.add(deleteMetacatMenu);
-      popup.add(deleteAllMenu);
-      popup.add(new JSeparator());
+      
+      // Create export
+      GUIAction exportAction = new GUIAction("Export...", null, 
+                            new ExportCommand(dialog, ExportCommand.REGULAR));
+      exportMenu = new JMenuItem(exportAction);
       popup.add(exportMenu);
+      GUIAction exportToZipAction = new GUIAction("Export to Zip...", null, 
+                            new ExportCommand(dialog, ExportCommand.ZIP));
+      exportToZipMenu = new JMenuItem(exportToZipAction);
       popup.add(exportToZipMenu);
       
-      MenuAction menuhandler = new MenuAction();
-      //openMenu.addActionListener(menuhandler);
+      /*MenuAction menuhandler = new MenuAction();
+      openMenu.addActionListener(menuhandler);
       uploadMenu.addActionListener(menuhandler);
       downloadMenu.addActionListener(menuhandler);
       deleteLocalMenu.addActionListener(menuhandler);
@@ -287,9 +319,9 @@ public class ResultPanel extends JPanel
       refreshMenu.addActionListener(menuhandler);
       exportMenu.addActionListener(menuhandler);
       exportToZipMenu.addActionListener(menuhandler);
-      openPreviousVersion.addActionListener(menuhandler);
+      openPreviousVersion.addActionListener(menuhandler);*/
       
-//      dynamicmenuhandler = new DynamicMenuAction();
+
       
       MouseListener popupListener = new PopupListener();
       table.addMouseListener(popupListener);
@@ -367,7 +399,22 @@ public class ResultPanel extends JPanel
     return localLoc;
   }
   
+  /**
+   * Get the package name (docid without version). This method is for 
+   * openPreviousVersionCommand
+   */
+  public String getPackageName()
+  {
+    return packageName;
+  }
   
+  /**
+   * Get the version number. This method is for OpenPrevisouVrsionCommand
+   */
+  public int getVersion()
+  {
+    return vers;
+  }
   
   /*
    * This method picks column sizes depend on the length of talbe and the 
@@ -484,253 +531,6 @@ public class ResultPanel extends JPanel
     }
   }
 
-  /**
-   * Handle actions from the panel's components
-   */
-  private class ActionHandler implements ActionListener
-  {
-    public void actionPerformed(ActionEvent event)
-    {
-      Object object = event.getSource();
-      if (object == reviseButton) {
-        reviseQuery();
-      } else if (object == refreshButton) {
-//        refreshQuery();
-        doRefreshQuery();
-      } else if (object == saveButton) {
-        saveQuery();
-      }
-    }
-  }
-  
-  /**
-   * exports the datapackage to a different location
-   * @param id the id of the datapackage to export
-   */
-  private void exportDataset(String id)
-  {
-    String curdir = System.getProperty("user.dir");
-    JFileChooser filechooser = new JFileChooser(curdir);
-//    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    filechooser.setDialogTitle("Export Datapackage to Selected Directory");
-    filechooser.setApproveButtonText("Export");
-    filechooser.setApproveButtonMnemonic('E');
-    filechooser.setApproveButtonToolTipText("Choose a directory to export " +
-                                            "this Datapackage to.");
-    String msg = "ALERT: Please select a DIRECTORY, not a file in the File Dialog which will appear next!";
- 
-    File exportDir;
-    int result = filechooser.showSaveDialog(this);
-    
-    exportDir = filechooser.getCurrentDirectory();
-    if (result==JFileChooser.APPROVE_OPTION) {
-      //now we know where to export the files to, so export them.
-      DataPackageInterface dataPackage;
-      try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                   services.getServiceProvider(DataPackageInterface.class);
-        dataPackage = (DataPackageInterface)provider;
-      } 
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-        return;
-      }
-    
-      String location = "";
-      //figure out where this thing is.
-      if(metacatLoc && localLoc)
-      {
-        location = DataPackage.BOTH;
-      }
-      else if(metacatLoc && !localLoc)
-      {
-        location = DataPackage.METACAT;
-      }
-      else if(!metacatLoc && localLoc)
-      {
-        location = DataPackage.LOCAL;
-      }
-    
-      //export it.
-      dataPackage.export(selectedId, exportDir.toString(), location);
-    }
-  }
-  
-  /**
-   * exports the datapackage to a different location in a zip file
-   * @param id the id of the datapackage to export
-   */
-  private void exportDatasetToZip(String id)
-  {
-    String curdir = System.getProperty("user.dir");
-    curdir = curdir + System.getProperty("file.separator") + id + ".zip";
-    File zipFile = new File(curdir);
-    JFileChooser filechooser = new JFileChooser(curdir);
-    filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    filechooser.setDialogTitle("Export Datapackage to Selected Zip File");
-    filechooser.setApproveButtonText("Export");
-    filechooser.setApproveButtonMnemonic('E');
-    filechooser.setApproveButtonToolTipText("Choose a file to export " +
-                                            "this Datapackage to.");
-    filechooser.setSelectedFile(zipFile);                                        
-    //filechooser.updateUI();
-    File exportDir;
-    int result = filechooser.showSaveDialog(this);
-    exportDir = filechooser.getSelectedFile();
-    if (result==JFileChooser.APPROVE_OPTION) {
-      //now we know where to export the files to, so export them.
-      DataPackageInterface dataPackage;
-      try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                   services.getServiceProvider(DataPackageInterface.class);
-        dataPackage = (DataPackageInterface)provider;
-      } 
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-        return;
-      }
-    
-      String location = "";
-      //figure out where this thing is.
-      if(metacatLoc && localLoc)
-      {
-        location = DataPackage.BOTH;
-      }
-      else if(metacatLoc && !localLoc)
-      {
-        location = DataPackage.METACAT;
-      }
-      else if(!metacatLoc && localLoc)
-      {
-        location = DataPackage.LOCAL;
-      }
-    
-      //export it.
-      dataPackage.exportToZip(selectedId, exportDir.toString(), location);
-    }
-  }
-  
-  /**
-   * Event handler for the right click popup menu
-   */
-  class MenuAction implements java.awt.event.ActionListener 
-  {
-    
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
-			
-      Object object = event.getSource();
-      String docid = selectedId;
-      DataPackageInterface dataPackage;
-      try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-        dataPackage = (DataPackageInterface)provider;
-      } 
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-        return;
-      }
-			if (object == openMenu)
-      { 
-        
-        doOpenDataPackage();
-        //open the current selection in the package editor
-      }
-      else if (object == openPreviousVersion)
-      {
-        if (vers>0) {
-          OpenPreviousDialog opd = new OpenPreviousDialog(packageName,vers,morpho,localLoc );
-          opd.setVisible(true);
-        }
-      }
-			else if (object == uploadMenu)
-      { 
-        doUpload();
-      }
-			else if (object == downloadMenu)
-      { 
-        doDownload();
-        
-      }
-			else if (object == deleteLocalMenu)
-		  { 
-		    doDeleteLocal();
-      }
-			else if (object == deleteMetacatMenu)
-			{ 
-			  doDeleteMetacat();
-			  
-      }
-			else if (object == deleteAllMenu)
-			{ 
-			  doDeleteAll();
-      }
-      else if (object == exportMenu)
-      {
-        doExport();
-        
- /*       Log.debug(20, "Exporting dataset");
-        exportDataset(docid);
- */
-      }
-      else if (object == exportToZipMenu)
-      {
-        doExportToZip();
-      }
-//      refreshQuery();
-      getParent().invalidate();
-      getParent().repaint();
-		}
-  }
-
-  /**
-   * Event handler for the right click popup menu dynamic menus
-   * i.e. those for previous version of a datapackage
-   */
-  class DynamicMenuAction implements java.awt.event.ActionListener 
-  {
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
-			Object object = event.getSource();
-			JMenuItem jmi = (JMenuItem)object;
-      Log.debug(30, "Event String:"+jmi.getText());
-
-      DataPackageInterface dataPackage;
-      try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-        dataPackage = (DataPackageInterface)provider;
-      } 
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-        return;
-      }
-      String location = "";
-      if (localLoc) location = "local";
-      else {
-        location = "metacat";
-      }
-      dataPackage.openDataPackage(location, jmi.getText(), null);
-
-      getParent().invalidate();
-      getParent().repaint();
-		}
-  }
-  
-  
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
     // on the PC; use the trigger flag to record a trigger, but do not show popup until the
@@ -755,18 +555,7 @@ public class ResultPanel extends JPanel
         mediator.enableOpenButton();
       }
     
-      /*//System.out.println("resultsV: " + resultV.toString());
-      for(int i=0; i<resultV.size(); i++)
-      {
-        Vector v = (Vector)resultV.elementAt(i);
-        //System.out.println(i + "\n--------------------------");
-        for(int j=0; j<v.size(); j++)
-        {
-          //System.out.print(j + ": " + v.elementAt(j).toString() + " ");
-        }
-        //System.out.println();
-      }
-      System.out.println("\nrow: " + selrow + " rowV: " + rowV.toString());*/
+   
       docid = (String)rowV.elementAt(6);
       selectedId = docid;
       localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
@@ -939,244 +728,7 @@ private void doDownload() {
     worker.start();  //required for SwingWorker 3
 }
 
-private void doDeleteLocal() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          
-          
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in upload");
-            return null;
-          }
-          
-          
-		    //delete the local package
-        Log.debug(20, "Deleteing the local package.");
-        String message = "Are you sure you want to delete \nthe package from " +
-                         "your local file system?";
-        int choice = JOptionPane.YES_OPTION;
-        choice = JOptionPane.showConfirmDialog(null, message, 
-                               "Morpho", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          dataPackage.delete(docid, DataPackage.LOCAL);
-          refreshQuery();
-        }
-          
-          return null;  
-        }
 
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
-
-private void doDeleteMetacat() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in upload");
-            return null;
-          }
-          
-          
-			   //delete the object on metacat
-         Log.debug(20, "Deleteing the metacat package.");
-         String message = "Are you sure you want to delete \nthe package from " +
-                         "Metacat? You \nwill not be able to upload \nit " +
-                         "again with the same identifier.";
-         int choice = JOptionPane.YES_OPTION;
-         choice = JOptionPane.showConfirmDialog(null, message, 
-                               "Morpho", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-         if(choice == JOptionPane.YES_OPTION)
-         {
-           dataPackage.delete(docid, DataPackage.METACAT);
-           refreshQuery();
-          
-         }
-          
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
-  
-private void doDeleteAll() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in upload");
-            return null;
-          }
-          
-			  //delete both of the objects
-        Log.debug(20, "Deleting both copies of the package.");
-        String message = "Are you sure you want to delete \nthe package from " +
-                         "Metacat and your \nlocal file system? " +
-                         "Deleting a package\n cannot be undone!";
-        int choice = JOptionPane.YES_OPTION;
-        choice = JOptionPane.showConfirmDialog(null, message, 
-                               "Morpho", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          dataPackage.delete(docid, DataPackage.BOTH);
-          refreshQuery();
-        }
-          
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
-
-private void doExport() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in upload");
-            return null;
-          }
-          
-			  //do export
-          Log.debug(20, "Exporting dataset");
-          exportDataset(docid);
-
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
-
-private void doExportToZip() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in upload");
-            return null;
-          }
-          
-			  //do exportToZip
-          Log.debug(20, "Exporting dataset to zip file");
-          exportDatasetToZip(docid);
-
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
 
   public void doOpenDataPackage() {
    
