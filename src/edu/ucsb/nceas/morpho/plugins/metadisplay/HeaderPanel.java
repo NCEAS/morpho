@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 18:38:50 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-12-18 19:53:55 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,12 @@ import java.awt.Dimension;
 import java.awt.BorderLayout;
 
 import javax.swing.Box;
+import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -66,7 +68,8 @@ public class HeaderPanel extends JPanel
     private static final String PATH_SEPARATOR      = ">>";
  
 
-    private JButton backButton;
+    private eJButton backButton;
+    private eJButton closeButton;
     
     /**
     *  constructor
@@ -108,7 +111,7 @@ public class HeaderPanel extends JPanel
         //add back button:
         GUIAction backAction 
             = new GUIAction(BACK_BUTTON_TEXT, null,new BackCommand(controller));
-        backButton = new JButton(backAction);
+        backButton = new eJButton(backAction);
         backButton.setBackground(UISettings.BACKBUTTON_COLOR);
         backButton.setForeground(UISettings.BACKBUTTON_TEXT_COLOR);
         backButton.setFocusPainted(false);
@@ -126,7 +129,7 @@ public class HeaderPanel extends JPanel
         GUIAction closeAction 
             = new GUIAction(CLOSE_BUTTON_TEXT, null, 
                                                 new CloseCommand(controller));
-        JButton closeButton = new JButton(closeAction);
+        closeButton = new eJButton(closeAction);
         closeButton.setBackground(UISettings.CLOSEBUTTON_COLOR);
         closeButton.setForeground(UISettings.CLOSEBUTTON_TEXT_COLOR);
         closeButton.setFocusPainted(false);
@@ -168,11 +171,14 @@ public class HeaderPanel extends JPanel
         //add edit button:
         GUIAction editAction
             = new GUIAction(EDIT_BUTTON_TEXT, null,new EditCommand(controller));
-        JButton editButton = new JButton(editAction);
+        eJButton editButton = new eJButton(editAction);
         editButton.setBackground(UISettings.EDITBUTTON_COLOR);
         editButton.setForeground(UISettings.EDITBUTTON_TEXT_COLOR);
         editButton.setFocusPainted(false);
         editButton.setFont(UISettings.BUTTON_FONT);
+        editButton.setPreferredSize(closeButton.getPreferredSize());
+        editButton.setMinimumSize(closeButton.getMinimumSize());
+        editButton.setMaximumSize(closeButton.getMaximumSize());
         Box buttonBox = Box.createVerticalBox();
         buttonBox.add(Box.createVerticalGlue());
         buttonBox.add(editButton);
@@ -234,6 +240,21 @@ public class HeaderPanel extends JPanel
     
     private JPanel  titleBar;
     private JLabel  titleTextLabel;
+
+    //INNER CLASS - EXTENDS JBUTTON SO WE CAN CONTROL BG COLOR ON MAC OSX
+    // (OTHERWISE, OSX IGNORES BGCOLOR, WHICH MAKES TEXT UNREADABLE)
+    class eJButton extends JButton 
+    {
+        Color enabledForeGroundColor;
+        
+        eJButton(Action a) {
+            super(a);
+            super.setUI(new javax.swing.plaf.metal.MetalButtonUI());
+            UIManager.put(  "Button.disabledText",
+                            UISettings.BUTTON_DISABLED_TEXT_COLOR);
+            UIManager.put(  "Button.margin",
+                            UISettings.METAVIEW_BUTTON_INSETS);
+            updateUI();
+        }
+    }
 }
-
-
