@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-24 06:29:32 $'
- * '$Revision: 1.1 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-23 17:14:52 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.Morpho;
+
 /**
  * This service allows plugins to request that the query results be
  * refreshed when they have made a change that should affect the resultset.
@@ -41,4 +44,13 @@ public interface QueryRefreshInterface
    * made that should be propogated to the query result screens.
    */
   public void refresh();
+  
+  /**
+   * This mehod will be called when Morpho switch to another profile. Old saved
+   * queries will be removed from search menu and new saved queries will be 
+   * adde into search menu.
+   * @param newMorpho new Morpho object after switch profile
+   */
+  public void updateSavedQueryMenuItems(Morpho newMorpho);
+   
 }
