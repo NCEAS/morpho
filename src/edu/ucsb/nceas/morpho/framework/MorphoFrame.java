@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-15 15:45:37 $'
- * '$Revision: 1.1.2.8 $'
+ *     '$Date: 2002-08-15 19:44:52 $'
+ * '$Revision: 1.1.2.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,6 +134,10 @@ public class MorphoFrame extends JFrame
         // Register listeners
         this.addWindowListener(
             new WindowAdapter() {
+                public void windowActivated(WindowEvent e) 
+                {
+                    UIController.getInstance().refreshWindows();
+                } 
                 public void windowClosing(WindowEvent event)
                 {
                     Object object = event.getSource();
@@ -149,11 +153,11 @@ public class MorphoFrame extends JFrame
                     updateProgressIndicatorLocation();
                 } 
             }); 
-
         // Size the window properly
         pack();
     }
-
+    
+ 
     /**
      * Create a new instance and set its default size
      */
