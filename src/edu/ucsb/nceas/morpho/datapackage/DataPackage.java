@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-07 21:14:07 $'
- * '$Revision: 1.3 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-05-08 15:18:27 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.util.Hashtable;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import java.awt.event.ActionEvent;
 
 public class DataPackage 
        implements PluginInterface, ServiceProvider, DataPackageInterface
@@ -80,8 +81,8 @@ public class DataPackage
     accNum = new IdContainer(cf);
 
     // Add menus, and toolbars
-    //framework.addMenu("File", new Integer(1), menuActions);
-    //framework.addToolbarActions(toolbarActions);
+    framework.addMenu("File", new Integer(1), menuActions);
+    framework.addToolbarActions(toolbarActions);
 
     // Register Services
     try {
@@ -100,29 +101,37 @@ public class DataPackage
    */
   private void initializeActions() {
     // Set up the menus for the application
-/*
-    menuActions = new Action[3];
-    Action searchItemAction = new AbstractAction("Search...") {
-      public void actionPerformed(ActionEvent e) {
+
+    menuActions = new Action[2];
+    Action searchItemAction = new AbstractAction("New Data Package") 
+    {
+      public void actionPerformed(ActionEvent e) 
+      {
         framework.debug(1, "Action fired: Search Dialog :-)");
       }
     };
+    
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
     searchItemAction.putValue("menuPosition", new Integer(0));
     menuActions[0] = searchItemAction;
-
-    Action reviseItemAction = new AbstractAction("Revise...") {
-      public void actionPerformed(ActionEvent e) {
+////////////////////////////////////////////////////////////////////////////
+    Action reviseItemAction = new AbstractAction("Open Data Package") 
+    {
+      public void actionPerformed(ActionEvent e) 
+      {
         framework.debug(1, "Action fired: Revise Search :-)");
       }
     };
+    
     reviseItemAction.putValue(Action.SHORT_DESCRIPTION, 
                               "Revise current search");
     reviseItemAction.putValue("menuPosition", new Integer(1));
     menuActions[1] = reviseItemAction;
-
-    Action refreshItemAction = new AbstractAction("Refresh") {
-      public void actionPerformed(ActionEvent e) {
+////////////////////////////////////////////////////////////////////////////
+    /*Action refreshItemAction = new AbstractAction("Refresh") 
+    {
+      public void actionPerformed(ActionEvent e) 
+      {
         framework.debug(1, "Action fired: Refresh Search :-)");
       }
     };
@@ -132,13 +141,14 @@ public class DataPackage
     refreshItemAction.putValue(Action.DEFAULT, 
                                ClientFramework.SEPARATOR_PRECEDING);
     menuActions[2] = refreshItemAction;
-
+    */
+////////////////////////////////////////////////////////////////////////////
     // Set up the toolbar for the application
-    toolbarActions = new Action[3];
+    toolbarActions = new Action[2];
     toolbarActions[0] = searchItemAction;
     toolbarActions[1] = reviseItemAction;
-    toolbarActions[2] = refreshItemAction;
-*/
+    //toolbarActions[2] = refreshItemAction;
+
   }
 
   /**
@@ -151,7 +161,7 @@ public class DataPackage
 
   public void openDataPackage(String location, String identifier)
   {
-    framework.debug(9, "Got service request to open: " + identifier +
-                    " from " + location + ".");
+    framework.debug(9, "DataPackage: Got service request to open: " + 
+                    identifier + " from " + location + ".");
   }
 }
