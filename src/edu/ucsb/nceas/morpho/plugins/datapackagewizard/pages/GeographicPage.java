@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-08 16:53:57 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-08 23:06:56 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -500,11 +500,13 @@ public class GeographicPage extends AbstractUIPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    lmp.removeMap();
     if (covDescField.getText().trim().equals("")) {
       WidgetFactory.hiliteComponent(covDescLabel);
       covDescField.requestFocus();
       return false;
+    } else {
+      WidgetFactory.unhiliteComponent(covDescLabel);
+      lmp.removeMap();
     }
     return true;
   }
