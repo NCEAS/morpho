@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-11 19:53:06 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2002-03-12 19:19:24 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,14 +233,14 @@ public class LocalQuery
       if (currentfile.isFile()) {
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
-        ClientFramework.debug(30,"current id: "+docid);
+//        ClientFramework.debug(30,"current id: "+docid);
         if (dom_collection.containsKey(docid)){
           root = ((Document)dom_collection.get(docid)).getDocumentElement();
           if (doctype_collection.containsKey(docid)) {
             currentDoctype = ((String)doctype_collection.get(docid));   
           }
         } else {
-          ClientFramework.debug(30,"parsing "+docid);
+ //         ClientFramework.debug(30,"parsing "+docid);
           InputSource in;
           try {
             in = new InputSource(new FileInputStream(filename));
@@ -281,7 +281,7 @@ public class LocalQuery
              
                 
             // Use the simple XPath API to obtain a node list.
-            ClientFramework.debug(30,"starting XPathSearch: "+xpathExpression);
+ //           ClientFramework.debug(30,"starting XPathSearch: "+xpathExpression);
             boolean allHits = false;
             // there is no sense in actually returning all the text nodes
             // this, if we are searching for any text node, skip the selectNodeList
@@ -293,7 +293,7 @@ public class LocalQuery
             else {
               nl = XPathAPI.selectNodeList(root, xpathExpression);
             }
-            ClientFramework.debug(30,"ending XPathSearch");
+ //           ClientFramework.debug(30,"ending XPathSearch");
             // if nl has no elements, then the document does not contain the
             // XPath expression of interest; otherwise, get the
             // corresponding dataPackage
