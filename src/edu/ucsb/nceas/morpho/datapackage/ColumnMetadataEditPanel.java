@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:20:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-26 22:30:15 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,12 +41,31 @@ import edu.ucsb.nceas.morpho.framework.*;
 public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements javax.swing.event.ChangeListener
 {
 
+  // assorted components that need to be global to retreive data 
   JRadioButton enumButton;
   JRadioButton textButton;
   JRadioButton numButton;
   JPanel textPanel;
   JPanel numPanel;
   JPanel enumPanel;
+  JTextField nameTextField;
+  JTextField labelTextField;
+  JTextArea definitionTextArea;
+  JTextField unitTextField;
+  JComboBox typeComboBox;
+  JTextField missingValueTextField;
+  JTextField precisionTextField;
+  JTextField minimumTextField;
+  JTextField maximumTextField;
+  JTextField textDefinitionTextField;
+  JTextField textPatternTextField;
+  JTextField textSourceTextField;
+  JTable table;
+  
+/**
+ * A persistent vector which stores the data in the table
+ */
+  PersistentVector pv;
   
   int labelWidth = 80;
   
@@ -76,7 +95,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     nameLabel.setPreferredSize(new Dimension(labelWidth,20));
     nameLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField nameTextField = new JTextField();
+    nameTextField = new JTextField();
     nameTextField.setMaximumSize(new Dimension(3000,20));
     namePanel.add(nameLabel);
     namePanel.add(nameTextField);
@@ -99,7 +118,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     labelLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     labelLabel.setPreferredSize(new Dimension(labelWidth,20));
     labelLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField labelTextField = new JTextField();
+    labelTextField = new JTextField();
     labelTextField.setMaximumSize(new Dimension(3000,20));
     labelPanel.add(labelLabel);
     labelPanel.add(labelTextField);
@@ -124,7 +143,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     definitionLabel.setPreferredSize(new Dimension(labelWidth,20));
     definitionLabel.setMaximumSize(new Dimension(labelWidth,20));
     JScrollPane jsp = new JScrollPane();
-    JTextArea definitionTextArea = new JTextArea();
+    definitionTextArea = new JTextArea();
     definitionTextArea.setLineWrap(true);
 		definitionTextArea.setWrapStyleWord(true);
     jsp.getViewport().add(definitionTextArea);
@@ -144,7 +163,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     unitLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     unitLabel.setPreferredSize(new Dimension(labelWidth,20));
     unitLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField unitTextField = new JTextField();
+    unitTextField = new JTextField();
     unitTextField.setMaximumSize(new Dimension(3000,20));
     unitPanel.add(unitLabel);
     unitPanel.add(unitTextField);
@@ -160,7 +179,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     typeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     typeLabel.setPreferredSize(new Dimension(labelWidth,20));
     typeLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JComboBox typeComboBox = new JComboBox(getSchemaDatatypeList());
+    typeComboBox = new JComboBox(getSchemaDatatypeList());
     typeComboBox.setMaximumSize(new Dimension(3000,30));
     typePanel.add(typeLabel);
     typePanel.add(typeComboBox);
@@ -183,7 +202,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     missingValueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     missingValueLabel.setPreferredSize(new Dimension(labelWidth,20));
     missingValueLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField missingValueTextField = new JTextField();
+    missingValueTextField = new JTextField();
     missingValueTextField.setMaximumSize(new Dimension(3000,20));
     missingValuePanel.add(missingValueLabel);
     missingValuePanel.add(missingValueTextField);
@@ -203,7 +222,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     precisionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     precisionLabel.setPreferredSize(new Dimension(labelWidth,20));
     precisionLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField precisionTextField = new JTextField();
+    precisionTextField = new JTextField();
     precisionTextField.setMaximumSize(new Dimension(3000,20));
     precisionPanel.add(precisionLabel);
     precisionPanel.add(precisionTextField);
@@ -321,10 +340,10 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     enumPanel.setPreferredSize(new Dimension(3000,100));
     JScrollPane enumScrollPane = new JScrollPane();
     enumPanel.add(BorderLayout.CENTER,enumScrollPane);
-    JTable table = new JTable();
-    PersistentVector pv = new PersistentVector();
+    table = new JTable();
+    pv = new PersistentVector();
     for (int j=0;j<100;j++) {
-      String[] vals = {""+j, "", ""};
+      String[] vals = {"", "", ""};
       pv.addElement(vals);
     }
     Vector colLabels = new Vector();
@@ -358,7 +377,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     minimumLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     minimumLabel.setPreferredSize(new Dimension(labelWidth,20));
     minimumLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField minimumTextField = new JTextField();
+    minimumTextField = new JTextField();
     minimumTextField.setMaximumSize(new Dimension(3000,20));
     minimumPanel.add(minimumLabel);
     minimumPanel.add(minimumTextField);
@@ -373,7 +392,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     maximumLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     maximumLabel.setPreferredSize(new Dimension(labelWidth,20));
     maximumLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField maximumTextField = new JTextField();
+    maximumTextField = new JTextField();
     maximumTextField.setMaximumSize(new Dimension(3000,20));
     maximumPanel.add(maximumLabel);
     maximumPanel.add(maximumTextField);
@@ -397,7 +416,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     textDefinitionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     textDefinitionLabel.setPreferredSize(new Dimension(labelWidth,20));
     textDefinitionLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField textDefinitionTextField = new JTextField();
+    textDefinitionTextField = new JTextField();
     textDefinitionTextField.setMaximumSize(new Dimension(3000,20));
     textDefinitionPanel.add(textDefinitionLabel);
     textDefinitionPanel.add(textDefinitionTextField);
@@ -423,7 +442,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     textPatternLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     textPatternLabel.setPreferredSize(new Dimension(labelWidth,20));
     textPatternLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField textPatternTextField = new JTextField();
+    textPatternTextField = new JTextField();
     textPatternTextField.setMaximumSize(new Dimension(3000,20));
     textPatternPanel.add(textPatternLabel);
     textPatternPanel.add(textPatternTextField);
@@ -450,7 +469,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     textSourceLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     textSourceLabel.setPreferredSize(new Dimension(labelWidth,20));
     textSourceLabel.setMaximumSize(new Dimension(labelWidth,20));
-    JTextField textSourceTextField = new JTextField();
+    textSourceTextField = new JTextField();
     textSourceTextField.setMaximumSize(new Dimension(3000,20));
     textSourcePanel.add(textSourceLabel);
     textSourcePanel.add(textSourceTextField);
@@ -460,6 +479,80 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     
     
     return attrPanel;
+  }
+  
+  
+  public String output() {
+    return createAttributeStringBuffer().toString();  
+  }
+  
+  /*
+   * combine information in components to create an attribute tree
+   * in xml format in StringBuffer
+   */
+  StringBuffer createAttributeStringBuffer() {
+    StringBuffer attribute = new StringBuffer();
+    String temp = "<attribute>\n";
+    attribute.append(temp);
+    
+    temp = "<attributeName>"+normalize(nameTextField.getText())+"</attributeName>\n";
+    attribute.append(temp);
+    
+    temp = "<attributeLabel>"+normalize(labelTextField.getText())+"</attributeLabel>\n";
+    attribute.append(temp);
+
+    temp = "<attributeDefinition>"+normalize(definitionTextArea.getText())
+                                                     +"</attributeDefinition>\n";
+    attribute.append(temp);
+
+    temp = "<unit>"+unitTextField.getText()+"</unit>\n";
+    attribute.append(temp);
+   
+    temp = "<dataType>"+normalize(typeComboBox.getSelectedItem().toString())
+                                                +"</dataType>\n";
+    attribute.append(temp);
+    
+    attribute.append("<attributeDomain>\n");
+    if (enumButton.isSelected()) {
+      attribute.append("<enumeratedDomain>\n");
+      for (int j=0;j<pv.size();j++) {
+        String[] rec = (String[])pv.elementAt(j);
+        if (rec[0].length()>0) {
+          temp = "<code>"+normalize(rec[0])+"</code>\n";
+          attribute.append(temp);
+          temp = "<definition>"+normalize(rec[1])+"</definition>\n";
+          attribute.append(temp);
+          temp = "<source>"+normalize(rec[2])+"</source>\n";
+          attribute.append(temp);
+        }
+      }
+    attribute.append("</enumeratedDomain>\n");
+    }
+    else if (textButton.isSelected()) {
+      attribute.append("<textDomain>\n");  
+        temp = "<minimum>"+normalize(minimumTextField.getText())+"</minimum>\n";
+        attribute.append(temp);
+        temp = "<maximum>"+normalize(maximumTextField.getText())+"</maximum>\n";
+        attribute.append(temp);
+      attribute.append("</textDomain>\n");  
+    }
+    else if (numButton.isSelected()) {
+      attribute.append("<numericDomain>\n");  
+        temp = "<definition>"+normalize(textDefinitionTextField.getText())+"</definition>\n";
+        attribute.append(temp);
+        temp = "<pattern>"+normalize(textPatternTextField.getText())+"</pattern>\n";
+        attribute.append(temp);
+        temp = "<source>"+normalize(textSourceTextField.getText())+"</source>\n";
+        attribute.append(temp);
+      attribute.append("</numericDomain>\n");  
+    }
+    
+    
+    attribute.append("</attributeDomain>\n");
+
+    attribute.append("</attribute>");
+    
+    return attribute;
   }
 
  // Vector of XMLSchema primative types
@@ -486,4 +579,66 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     res.addElement("NOTATION");   
     return res;
   }
+  
+      /**
+     * Normalizes the given string.
+     *
+     * @param s  Description of Parameter
+     * @return   Description of the Returned Value
+     */
+    private String normalize(String s)
+    {
+        StringBuffer str = new StringBuffer();
+
+        int len = (s != null) ? s.length() : 0;
+        for (int i = 0; i < len; i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '<':
+                {
+                    str.append("&lt;");
+                    break;
+                }
+                case '>':
+                {
+                    str.append("&gt;");
+                    break;
+                }
+                case '&':
+                {
+                    str.append("&amp;");
+                    break;
+                }
+                case '"':
+                {
+                    str.append("&quot;");
+                    break;
+                }
+                case '\r':
+                case '\t':
+                case '\n':
+                {
+                    if (false) {
+                        str.append("&#");
+                        str.append(Integer.toString(ch));
+                        str.append(';');
+                        break;
+                    }
+                    // else, default append char
+                    break;
+                }
+                default:
+                {
+                    str.append(ch);
+                }
+            }
+        }
+        String res = str.toString();
+        res = res.trim();
+        if (res.length() == 0) {
+            res = " ";
+        }
+        return res;
+    }
+
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-22 22:30:43 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-26 22:30:15 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
-    vertSplit.setDividerLocation(42);
+    vertSplit.setDividerLocation(45);
     this.setVisible(true);
  
   }
