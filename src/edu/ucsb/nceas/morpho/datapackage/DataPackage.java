@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-25 20:16:23 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2001-07-25 21:38:39 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,6 @@ public class DataPackage
    * used to signify that this package is stored on metacat and locally.
    */
   public static final String BOTH = "localmetacat";
-  
   
   /**
    * Create a new data package object with an id, location and associated
@@ -537,7 +536,6 @@ public class DataPackage
       !location.equals(DataPackage.METACAT))
     { //if it is not already on metacat, send it there.
       Vector ids = this.getAllIdentifiers();
-      System.out.println("ids: " + ids.toString());
       Hashtable files = new Hashtable();
       FileSystemDataStore fsds = new FileSystemDataStore(framework);
       MetacatDataStore mds = new MetacatDataStore(framework);
@@ -555,7 +553,6 @@ public class DataPackage
         }
       }
       
-      System.out.println("files: " + files.toString());
       Enumeration keys = files.keys();
       while(keys.hasMoreElements())
       { //send each file to metacat.  it's type needs to be checked to see
@@ -583,10 +580,31 @@ public class DataPackage
         try
         {
           framework.debug(20, "Uploading " + key);
+          AccessionNumber a = new AccessionNumber(framework);
+          Vector idVec = a.getParts(key);
+          String scope = (String)idVec.elementAt(0);
+          String id = (String)idVec.elementAt(1);
+          String rev = (String)idVec.elementAt(2);
+          String sep = (String)idVec.elementAt(3);
+          Integer revI = new Integer(rev);
+          int revi = revI.intValue();
+          
           if(beginFile.indexOf("<?xml") != -1)
           { //its an xml file
-            
-            mds.newFile(key, new FileReader(f), true);
+            for(int i=1; i<=revi; i++)
+            { //we have to put all of the old versions in metacat first so that
+              //the lineage is intact
+              String accnum = scope + sep + id + sep + i;
+              File g = fsds.openFile(accnum);
+              if(i == 1)
+              {
+                mds.newFile(accnum, new FileReader(g), true);
+              }
+              else
+              {
+                mds.saveFile(accnum, new FileReader(g), true);
+              }
+            }
           }
           else
           { //its a data file

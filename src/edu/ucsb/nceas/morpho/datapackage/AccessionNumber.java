@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-24 21:10:59 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-07-25 21:38:39 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,5 +217,27 @@ public class AccessionNumber
     
     return PackageUtil.printDoctype(doc) + 
            PackageUtil.print(doc.getDocumentElement());
+  }
+  
+  /**
+   * Returns a vector with all components of the accession number.  The vector
+   * looks like:
+   * [scope, id, rev, separator]
+   * ex: [nceas, 5, 2, .]
+   * @param id the id to return the parts of
+   */
+  public Vector getParts(String id)
+  {
+    String separator = profile.get("separator", 0);
+    String scope = id.substring(0, id.indexOf(separator));
+    String idpart = id.substring(id.indexOf(separator)+1, 
+                                 id.lastIndexOf(separator));
+    String rev = id.substring(id.lastIndexOf(separator) + 1, id.length());
+    Vector v = new Vector();
+    v.addElement(scope);
+    v.addElement(idpart);
+    v.addElement(rev);
+    v.addElement(separator);
+    return v;
   }
 }
