@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-12 19:24:34 $'
- * '$Revision: 1.88 $'
+ *     '$Date: 2002-04-02 17:54:34 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,13 +91,13 @@ public class ClientFramework extends javax.swing.JFrame
   boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-  javax.swing.JPanel toolbarPanel = new javax.swing.JPanel();
-  javax.swing.JToolBar morphoToolbar = new javax.swing.JToolBar();
-  javax.swing.JMenuBar morphoMenuBar = new javax.swing.JMenuBar();
-  //}}
+	javax.swing.JPanel toolbarPanel = new javax.swing.JPanel();
+	javax.swing.JToolBar morphoToolbar = new javax.swing.JToolBar();
+	javax.swing.JMenuBar morphoMenuBar = new javax.swing.JMenuBar();
+	//}}
 
   //{{DECLARE_MENUS
-  //}}
+	//}}
 
   /**
    * Creates a new instance of ClientFramework with the given title.
@@ -139,20 +139,21 @@ public class ClientFramework extends javax.swing.JFrame
     // what Visual Cafe can generate, or Visual Cafe may be unable to back
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
-    setJMenuBar(morphoMenuBar);
-    setTitle("Morpho - Data Management for Ecologists");
-    setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
-    getContentPane().setLayout(new BorderLayout(0, 0));
-    setVisible(false);
-
-    toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    getContentPane().add(BorderLayout.NORTH, toolbarPanel);
-    morphoToolbar.setAlignmentY(0.222222F);
-    toolbarPanel.add(morphoToolbar);
-    //}}
+		setJMenuBar(morphoMenuBar);
+		setTitle("Morpho - Data Management for Ecologists");
+		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
+		getContentPane().setLayout(new BorderLayout(0,0));
+		setSize(0,0);
+		setVisible(false);
+		toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		getContentPane().add(BorderLayout.NORTH, toolbarPanel);
+		morphoToolbar.setAlignmentY(0.222222F);
+		toolbarPanel.add(morphoToolbar);
+		//$$ morphoMenuBar.move(0,0);
+		//}}
 
     //{{INIT_MENUS
-    //}}
+		//}}
 
     //{{REGISTER_LISTENERS
     SymWindow aSymWindow = new SymWindow();
@@ -1412,6 +1413,10 @@ public class ClientFramework extends javax.swing.JFrame
       // Set system property to use HTTPClient or ssl protocol
       System.setProperty("java.protocol.handler.pkgs","HTTPClient");
       
+      // Set the keystore used
+      System.setProperty("javax.net.ssl.trustStore", "./lib/morphocacerts");
+
+
       // add provider for SSL support
       java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
       
