@@ -4,12 +4,11 @@
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-16 01:29:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,40 +114,38 @@ public class AttributePage extends AbstractWizardPage {
   private final String[] buttonsText
       = {
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"NOMINAL:&nbsp;&nbsp;&nbsp;numbers have been assigned only for "
-          +"categorizing a variable. "
+          +"NOMINAL:&nbsp;&nbsp;&nbsp;unordered categories or text strings " 
+					+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+          + "e.g: Male, Female"
+          +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+          +WizardSettings.HTML_NO_TABLE_CLOSING,
+
+          WizardSettings.HTML_NO_TABLE_OPENING
+          +"ORDINAL:&nbsp;&nbsp;&nbsp;ordered categories "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-          +"e.g: assigning 1 for male and 2 for female"
+          +"e.g: Low, High"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"ORDINAL:&nbsp;&nbsp;&nbsp;can determine order of categories, "
-          +"but not magnitude of their differences. "
+          +"INTERVAL:&nbsp;&nbsp;values from a scale with equidistant points "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-          +"e.g: ranking system: 1=good,2=fair,3=poor."
+          +"e.g: 12.2 meters"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"INTERVAL:&nbsp;&nbsp;data consist of equidistant points on a "
-          +"scale."+WizardSettings.HTML_EXAMPLE_FONT_OPENING
-          +"e.g: Celsius scale (no "
-          +"natural zero point; 20C is not twice as hot as 10C)"
+          +"RATIO:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval scale "
+					+"with a meaningful zero point "
+          +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+					+"e.g: 273 Kelvin"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"RATIO:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data which "
-          +"has equidistant points <b>and</b> a meaningful zero point. "
-          +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: length in meters"
-          +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-          +WizardSettings.HTML_NO_TABLE_CLOSING,
-
-          WizardSettings.HTML_NO_TABLE_OPENING
-          +"DATE-TIME: values that comply with the Gregorian calendar "
-          +"system."+WizardSettings.HTML_EXAMPLE_FONT_OPENING
-          +"e.g:  2002-10-14T09:13:45"
+          +"DATE-TIME: date or time values from the Gregorian calendar "
+          +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+          +"e.g: 2002-10-14"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING
         };
@@ -217,12 +214,12 @@ public class AttributePage extends AbstractWizardPage {
 
     ////
     JPanel attribNamePanel = WidgetFactory.makePanel(1);
-    attribNameLabel = WidgetFactory.makeLabel("Attribute name:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+    attribNameLabel = WidgetFactory.makeLabel("Attribute name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribNamePanel.add(attribNameLabel);
     attribNameField = WidgetFactory.makeOneLineTextField();
     attribNamePanel.add(attribNameField);
     middlePanel.add(attribNamePanel);
-
+		
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////////////////////////////////////////////////////////////////////////////
@@ -231,7 +228,7 @@ public class AttributePage extends AbstractWizardPage {
     // WidgetFactory.makeHTMLLabel() is required because the Java HTML rendering
     // on JLabels seems to be buggy - using WidgetFactory.makeHTMLLabel() yields
     // labels that resize themselves depending which radiobutton is chosen :-(
-    Dimension infoDim = new Dimension(WizardSettings.DIALOG_WIDTH,40);
+    Dimension infoDim = new Dimension(WizardSettings.DIALOG_WIDTH,30);
     JPanel infoPanel  = new JPanel();
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
 
@@ -251,10 +248,11 @@ public class AttributePage extends AbstractWizardPage {
     infoPanel.add(infoLabel);
     infoPanel.add(Box.createGlue());
     middlePanel.add(infoPanel);
-
+		//middlePanel.add(Box.createGlue());
+		
     JPanel attribDefinitionPanel = WidgetFactory.makePanel(2);
 
-    attribDefinitionLabel = WidgetFactory.makeLabel("Definition", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+    attribDefinitionLabel = WidgetFactory.makeLabel("Definition:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribDefinitionLabel.setVerticalAlignment(SwingConstants.TOP);
     attribDefinitionLabel.setAlignmentY(SwingConstants.TOP);
     attribDefinitionPanel.add(attribDefinitionLabel);
@@ -320,6 +318,8 @@ public class AttributePage extends AbstractWizardPage {
     currentPanel  = getEmptyPanel();
 
     middlePanel.add(currentPanel);
+		
+		 //middlePanel.add(Box.createVerticalGlue());
 
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
     ordinalPanel  = getNomOrdPanel(MEASUREMENTSCALE_ORDINAL);
@@ -342,6 +342,7 @@ public class AttributePage extends AbstractWizardPage {
     middlePanel.remove(currentPanel);
     currentPanel = panel;
     middlePanel.add(currentPanel);
+		//middlePanel.add(Box.createGlue());
     ((WizardPageSubPanelAPI)currentPanel).onLoadAction();
     currentPanel.validate();
     currentPanel.repaint();
@@ -592,17 +593,16 @@ public class AttributePage extends AbstractWizardPage {
 	if(o1 != null) return "Ordinal";
 	o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
 	if(o1 != null) return "Ordinal";
-
-	o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
-	if(o1 != null) return "Interval";
-	o1 = map.get(AttributeSettings.Interval_xPath+"/numericDomain/numberType");
-	if(o1 != null) return "Interval";
-
 	o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
 	if(o1 != null) return "Ratio";
 	o1 = map.get(AttributeSettings.Ratio_xPath+"/numericDomain/numberType");
 	if(o1 != null) return "Ratio";
-
+	
+	o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
+	if(o1 != null) return "Interval";
+	o1 = map.get(AttributeSettings.Interval_xPath+"/numericDomain/numberType");
+	if(o1 != null) return "Interval";
+	
 	o1 = map.get(AttributeSettings.DateTime_xPath+"/formatString");
 	if(o1 != null) return "Datetime";
 	o1 = map.get(AttributeSettings.DateTime_xPath+"/dateTimePrecision");

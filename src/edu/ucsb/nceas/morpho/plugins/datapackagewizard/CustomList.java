@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.28 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-16 01:29:18 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,7 +193,7 @@ public class CustomList extends JPanel {
     initList(colNames, displayRows, columnEditors);
 
     initButtons();
-    doEnablesDisables(-1);
+    doEnablesDisables(new int[] {-1});
   }
 
   private void initList(String[] colNames, int displayRows,
@@ -242,9 +242,10 @@ public class CustomList extends JPanel {
     });
     this.add(scrollPane, BorderLayout.CENTER);
 
-    this.setBorder(new EmptyBorder(0,WizardSettings.COMPONENT_PADDING,
-                                       2*WizardSettings.COMPONENT_PADDING,
-                                       WizardSettings.COMPONENT_PADDING));
+    this.setBorder(new EmptyBorder(0, 0, 
+													//WizardSettings.COMPONENT_PADDING,
+                                       2*WizardSettings.COMPONENT_PADDING, 0));
+                                       //WizardSettings.COMPONENT_PADDING));
 
     addAction = new AddAction(table, this);
 //    addAction.addRowNoCustomAction();
@@ -265,7 +266,7 @@ public class CustomList extends JPanel {
           Log.debug(45,"      - ListSelectionEvent first index  = "+e.getFirstIndex());
           Log.debug(45,"      - ListSelectionEvent last  index  = "+e.getLastIndex());
           Log.debug(45,"      - getSelectedRowIndex  = "+getSelectedRowIndex());
-          doEnablesDisables(getSelectedRowIndex());
+          doEnablesDisables(table.getSelectedRows());
         }
       });
 
@@ -359,6 +360,38 @@ public class CustomList extends JPanel {
     }
   }
 
+	public void setColumnWidthPercentages(double columnWidths[])
+	{
+		final double  minFactor = 0.5;
+    final double  maxFactor = 2;
+		int i;
+		int len = columnWidths.length;
+		if(len != table.getColumnCount()) {
+			System.out.println("lengths not equals");
+			return;
+		}
+			
+		double sum = 0;
+		for(i = 0; i< len; i++)  
+			sum += columnWidths[i];
+		
+		// total percentage must sum to 100 %.
+		if(sum != 100.0) {
+			System.out.println("Sum not equal to 100%");
+			return;
+		}
+		
+		double totalWidth = scrollPane.getViewport().getSize().getWidth();
+		for(i=0; i < len; i++)
+		{
+			TableColumn column = table.getColumnModel().getColumn(i);
+			int width = (int) (((double)columnWidths[i] / 100.0) * totalWidth);
+			System.out.println("Setting width of column " + i + " = " + width +" , totalwidth =" + totalWidth);
+			column.setPreferredWidth(width);
+			column.setMinWidth((int)width);
+      column.setMaxWidth((int)width);
+		}
+	}
 
   private int getHeaderWidth(int colNumber, TableColumn column) {
 
@@ -460,11 +493,11 @@ public class CustomList extends JPanel {
 
   private boolean selectionExists = true;
   //
-  private void doEnablesDisables(int selRow) {
+  private void doEnablesDisables(int[] selRows) {
 
-    Log.debug(45, "\n\n>>>> doEnablesDisables(): selRow = "+selRow);
+    Log.debug(45, "\n\n>>>> doEnablesDisables(): selRows count = "+selRows.length);
 
-    selectionExists = (selRow > -1);
+    selectionExists = (selRows.length > 0);
 
     // ADD always available:
     //if (showAddButton) addButton.setEnabled(true);
@@ -480,11 +513,11 @@ public class CustomList extends JPanel {
 
     // MOVE UP available only if a row selected *and* it's not row 0:
     if (showMoveUpButton) moveUpButton.setEnabled(selectionExists
-                                        && selRow > 0);
+                                        && selRows[0] > 0);
 
     // MOVE DOWN available only if a row selected *and* it's not last row:
     if (showMoveDownButton) moveDownButton.setEnabled(selectionExists
-                                        && selRow < (table.getRowCount() - 1));
+                              		&& selRows[selRows.length-1] < (table.getRowCount() - 1));
   }
 
 
@@ -1108,11 +1141,13 @@ class DeleteAction extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
 
     Log.debug(45, "CustomList DELETE action");
-    int row = table.getSelectedRow();
-    if (row < 0) return;
+    int[] rows = table.getSelectedRows();
+    if (rows.length == 0) return;
+		
     parentList.fireEditingStopped();
-
-    parentList.removeRow(row);
+		
+		for(int i = 0; i< rows.length; i++)
+			parentList.removeRow(rows[i] - i);
 
 
     //execute the user's custom action:
@@ -1145,13 +1180,15 @@ class MoveUpAction extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
 
     Log.debug(45, "CustomList MOVE UP action");
-    int row = table.getSelectedRow();
-    if (row < 0) return;
-    parentList.fireEditingStopped();
-
-    model.moveRow(row, row, row - 1);
+    int rows[] = table.getSelectedRows();
+    if (rows.length == 0) return;
+    
+		parentList.fireEditingStopped();
+		
+		for(int i = 0; i < rows.length; i++)
+			model.moveRow(rows[i], rows[i], rows[i] - 1);
     table.tableChanged(parentList.getTableModelEvent());
-    table.setRowSelectionInterval(row - 1, row - 1);
+    //table.setRowSelectionInterval(row - 1, row - 1);
     table.repaint();
   }
 }
@@ -1173,13 +1210,15 @@ class MoveDownAction extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
 
     Log.debug(45, "CustomList MOVE DOWN action");
-    int row = table.getSelectedRow();
-    if (row < 0) return;
+    int rows[] = table.getSelectedRows();
+    if (rows.length < 0) return;
+		
     parentList.fireEditingStopped();
-
-    model.moveRow(row, row, row + 1);
+		
+		for (int i = rows.length-1 ; i >= 0; i--)
+			model.moveRow(rows[i], rows[i], rows[i] + 1);
     table.tableChanged(parentList.getTableModelEvent());
-    table.setRowSelectionInterval(row + 1, row + 1);
+    //table.setRowSelectionInterval(row + 1, row + 1);
   }
 }
 
@@ -1201,7 +1240,7 @@ class CustomJTable extends JTable  {
 
       super(new DefaultTableModel(rowVect, colNamesVec));
       this.editors = editors;
-      super.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      super.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       defaultCellEditor.setClickCountToStart(1);
 
       columnsEditableFlags = new boolean[colNamesVec.size()];
@@ -1289,6 +1328,23 @@ class CustomJTable extends JTable  {
             }
           };
       }
+			if (colClass.getName().equals("javax.swing.JLabel")) {
+	       final JLabel origLabel = (JLabel)(editors[col]);
+				 return new TableCellRenderer() {
+
+            public Component getTableCellRendererComponent( JTable table,
+                                                            Object value,
+                                                            boolean isSelected,
+                                                            boolean hasFocus,
+                                                            int row,
+                                                            int column) {
+
+              JLabel cell = new JLabel(origLabel.getText());
+							cell.setHorizontalAlignment(origLabel.getHorizontalAlignment());
+							return cell;
+						 }
+				 };
+			}
 
       return defaultRenderer;
     }

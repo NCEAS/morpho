@@ -4,9 +4,9 @@
 *              National Center for Ecological Analysis and Synthesis
 *    Release: @release@
 *
-*   '$Author: brooke $'
-*     '$Date: 2003-12-15 20:19:47 $'
-* '$Revision: 1.1 $'
+*   '$Author: sambasiv $'
+*     '$Date: 2003-12-16 01:29:18 $'
+* '$Revision: 1.2 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -260,14 +260,17 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				Step1_TopTitleLabel.setText("This set of screens will create metadata based on the content of the specified data file");
 				Step1_TopTitlePanel.add(Step1_TopTitleLabel);
 				Step1_TopTitleLabel.setForeground(java.awt.Color.black);
+				Step1_TopTitleLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 				Step1_TableNamePanel.setAlignmentY(0.473684F);
 				Step1_TableNamePanel.setAlignmentX(0.0F);
 				Step1_TableNamePanel.setLayout(new BoxLayout(Step1_TableNamePanel,BoxLayout.X_AXIS));
 				Step1ControlsPanel.add(Step1_TableNamePanel);
 				Step1_NameLabel.setText(" Table Name: ");
+				Step1_NameLabel.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 				Step1_TableNamePanel.add(Step1_NameLabel);
 				Step1_NameLabel.setForeground(java.awt.Color.black);
 				Step1_NameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+			  Step1_TableDescriptionLabel.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 				Step1_TableNamePanel.add(TableNameTextField);
 				Step1_TableDescriptionPanel.setAlignmentY(0.473684F);
 				Step1_TableDescriptionPanel.setAlignmentX(0.0F);

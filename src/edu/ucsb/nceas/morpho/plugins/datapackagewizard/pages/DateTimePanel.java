@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-12-16 01:29:18 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,12 +111,12 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     Dimension dims = new Dimension(width, height);
 
     this.setPreferredSize(dims);
-    this.setMaximumSize(dims);
+    //this.setMaximumSize(dims);
     
     ////////////////////////
     
     JPanel formatStringPanel = WidgetFactory.makePanel();
-    formatStringLabel    = WidgetFactory.makeLabel("Format:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+    formatStringLabel    = WidgetFactory.makeLabel("Format:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     formatStringPanel.add(formatStringLabel);
     formatStringField = WidgetFactory.makeOneLineTextField();
     formatStringPanel.add(formatStringField);
@@ -137,7 +137,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     ////////////////////////
     
     JPanel precisionPanel = WidgetFactory.makePanel();
-    precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+    precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
     precisionField = WidgetFactory.makeOneLineTextField();
     precisionPanel.add(precisionField);
@@ -149,7 +149,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
         +"Precision of a date or time measurement, interpreted in the "
         +"smallest units represented by the datetime format."
         +"&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
-        +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: 0.1 or 0.01"
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: 0.1 "
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,40)) );
 
@@ -174,7 +174,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     JPanel boundsPanel = new JPanel();
     boundsPanel.setLayout(new BoxLayout(boundsPanel, BoxLayout.X_AXIS));
     
-    boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS));
+    boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
     
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
@@ -258,7 +258,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     WidgetFactory.unhiliteComponent(formatStringLabel);
 
     String precision = precisionField.getText().trim();
-    if (precision.equals("")  || !(WizardSettings.isFloat(precision))) {
+    if (precision.equals(""))  {
 
       WidgetFactory.hiliteComponent(precisionLabel);
       precisionField.requestFocus();

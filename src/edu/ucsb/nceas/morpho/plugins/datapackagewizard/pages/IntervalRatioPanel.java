@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-12-16 01:29:18 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Component;
+import java.awt.Font;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -95,6 +96,11 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
                         "integer", 
                         "real" 
                     };
+										
+	private String[] boundsPickListValues = new String[] {
+												"<",
+												"<="
+										};
   
 //////////////////////////////////////////////////
 //
@@ -159,13 +165,13 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     Dimension dims = new Dimension(width, height);
 
     this.setPreferredSize(dims);
-    this.setMaximumSize(dims);
+    //this.setMaximumSize(dims);
     
     ////////////////////////
     unitsPickList = new UnitsPickList();
     
     JPanel pickListPanel = WidgetFactory.makePanel();
-    unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+    unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     pickListPanel.add(unitsPickListLabel);
     pickListPanel.add(unitsPickList);
  
@@ -175,7 +181,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     ////////////////////////
     
     JPanel precisionPanel = WidgetFactory.makePanel();
-    precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+    precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
     precisionField = WidgetFactory.makeOneLineTextField();
     precisionPanel.add(precisionField);
@@ -217,7 +223,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     numberTypePickList.setPreferredSize(new Dimension(200,10));
     
     JPanel numberTypePanel = WidgetFactory.makePanel();
-    numberTypeLabel = WidgetFactory.makeLabel("Number Type:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+    numberTypeLabel = WidgetFactory.makeLabel("Number Type:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     numberTypePanel.add(numberTypeLabel);
     numberTypePanel.add(numberTypePickList);
 
@@ -225,8 +231,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     numericDomainGrid.add(numberTypePanel);
 
     ///////////////////////////
-        
-    JPanel boundsPanel = WidgetFactory.makePanel();
+    
+    JPanel boundsPanel = WidgetFactory.makePanel(3);
 
     boundsLabel = WidgetFactory.makeLabel("    Bounds:", false);
     final Dimension boundsLabelDim 
@@ -235,12 +241,21 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     boundsLabel.setPreferredSize(boundsLabelDim);
     boundsLabel.setMaximumSize(boundsLabelDim);
     boundsPanel.add(boundsLabel);
-    
-    String[] colNames     = new String[] {  "Min.", "excl?", 
-                                            "Max.", "excl?"};
-                                            
-    Object[] colTemplates = new Object[] {  new JTextField(), new JCheckBox(), 
-                                            new JTextField(), new JCheckBox()};
+    boundsPanel.add(Box.createHorizontalGlue());
+		
+    String[] colNames     = new String[] {  "Min.", "", "",
+                                            "", "Max."};
+		JLabel valueLabel = new JLabel("value", null, JLabel.CENTER);
+		JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+		//combobox1.setFont(new Font("Dialog",20,Font.BOLD));
+		JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+		//combobox2.setFont(new Font("Dialog",12,Font.BOLD));                                           
+    Object[] colTemplates = new Object[] {  new JTextField(),
+														combobox1, 
+														valueLabel, 
+														combobox2,
+														new JTextField()
+													};
     
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
@@ -267,7 +282,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,20)) );
     
-    this.add(boundsHelpGrid);
+    //this.add(boundsHelpGrid);
     
   }
   
@@ -475,7 +490,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
           nextExcl = nextRow.get(1);
 
-          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+          if (nextExcl!=null && ((JComboBox)nextExcl).getSelectedIndex()==0 ) {
       
             returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
         
@@ -486,15 +501,15 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
         }
       }
       
-      if (nextRow.get(2)!=null) {
+      if (nextRow.get(3)!=null) {
       
-        nextMax = (String)(nextRow.get(2));
+        nextMax = (String)(nextRow.get(3));
         if (!nextMax.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
           
-          nextExcl = nextRow.get(3);
+          nextExcl = nextRow.get(4);
 
-          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+          if (nextExcl!=null && ((JComboBox)nextExcl).getSelectedIndex()==0) {
       
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
         

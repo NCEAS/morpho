@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-11-19 01:42:19 $'
-* '$Revision: 1.11 $'
+*     '$Date: 2003-12-16 01:29:18 $'
+* '$Revision: 1.12 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		Dimension dims = new Dimension(width, height);
 		
 		this.setPreferredSize(dims);
-		this.setMaximumSize(dims);
+		//this.setMaximumSize(dims);
 		
 		final String TEXT_HELP 
 		= WizardSettings.HTML_NO_TABLE_OPENING
@@ -189,7 +189,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		
 		
 		JPanel pickListPanel = WidgetFactory.makePanel();
-		chooseLabel = WidgetFactory.makeLabel("CHOOSE:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+		chooseLabel = WidgetFactory.makeLabel("CHOOSE:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 		pickListPanel.add(chooseLabel);
 		pickListPanel.add(domainPickList);
 		
@@ -244,7 +244,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		topHorizPanel.setLayout(new GridLayout(1,2));
 		
 		JPanel defFieldPanel = WidgetFactory.makePanel();
-		textDefinitionLabel = WidgetFactory.makeLabel("Definition:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+		textDefinitionLabel = WidgetFactory.makeLabel("Definition:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 		defFieldPanel.add(textDefinitionLabel);
 		textDefinitionField = WidgetFactory.makeOneLineTextField();
 		defFieldPanel.add(textDefinitionField);
@@ -268,7 +268,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		middleHorizPanel.setLayout(new GridLayout(1,2));
 		
 		JPanel srcFieldPanel = WidgetFactory.makePanel();
-		srcFieldPanel.add(WidgetFactory.makeLabel("Source:", false, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS));
+		srcFieldPanel.add(WidgetFactory.makeLabel("Source:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
 		textSourceField = WidgetFactory.makeOneLineTextField();
 		srcFieldPanel.add(textSourceField);
 		
@@ -293,7 +293,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		Object[] colTemplates = new Object[] { new JTextField() };
 		
 		JPanel patternPanel = WidgetFactory.makePanel();
-		patternPanel.add(WidgetFactory.makeLabel("Pattern(s)", false, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS));
+		patternPanel.add(WidgetFactory.makeLabel("Pattern(s):", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
 		String[] colNames = new String[] { "Pattern(s) (optional):" };
 		
 		textPatternsList 
@@ -329,18 +329,21 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		panel.add(WidgetFactory.makeHalfSpacer());
 		
 		Object[] colTemplates 
-		= new Object[] { new JTextField(), new JTextField(), new JTextField() };
+		= new Object[] { new JTextField(), new JTextField()};
 		
 		String[] colNames 
-		= new String[] { "Code", "Definition", "Source (optional)" };
+		= new String[] { "Code", "Definition" };
 		
 		JPanel enumPanel = WidgetFactory.makePanel();
-		enumDefinitionLabel = WidgetFactory.makeLabel("Definitions", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
+		enumDefinitionLabel = WidgetFactory.makeLabel("Definitions:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 		enumPanel.add(enumDefinitionLabel);
 		
 		enumDefinitionList 
 		= WidgetFactory.makeList( colNames, colTemplates, 2,
 		true, false, false, true, false, false);
+		
+		double[] columnWidthPercentages = new double[] { 33.0, 67.0};
+		enumDefinitionList.setColumnWidthPercentages(columnWidthPercentages);
 		
 		enumDefinitionList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		enumPanel.add(enumDefinitionList);
@@ -582,11 +585,12 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 			resultsMap.put( buff.toString() + "definition", 
 			((String)srcObj).trim());
 			
-			srcObj = nextRow.get(2);
+			/*srcObj = nextRow.get(2);
 			if (srcObj==null) continue;
 			srcStr = ((String)srcObj).trim();
 			if (!srcStr.equals(EMPTY_STRING)) resultsMap.put( buff.toString() + "source",
 				srcStr);
+			*/
 		}
 	}
 	
