@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-11 06:18:18 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-12-12 00:37:41 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.util;
 
 import java.awt.Insets;
+import java.awt.Cursor;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
@@ -65,6 +67,7 @@ public class HyperlinkButton extends JButton{
     private void initButton(){
     
         styleText();
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
         setFocusPainted(false); 
         setBorderPainted(false); 
         setContentAreaFilled(false); 
