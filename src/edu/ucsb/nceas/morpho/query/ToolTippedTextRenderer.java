@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-09 23:47:17 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-13 00:23:09 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,11 @@ import javax.swing.table.TableCellRenderer;
       this.setForeground(table.getForeground());
     }
     // add tooltip 
-    setToolTipText(value.toString());
+    if ( value != null )
+    {
+      setToolTipText(value.toString());
+    }
+    
     return this;
   }
 
