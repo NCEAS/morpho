@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-29 18:51:51 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-01-05 22:15:01 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,8 @@ public class DataPackageFactory
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
     Log.debug(1,"DocTypeInfo: " + type);
-    if (type.equals("eml:eml")) {
+//    if (type.equals("eml:eml")) {
+    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
       Log.debug(1,"Creating new eml2.0.0 package");
       dp = new EML200DataPackage();
       Log.debug(1,"loading new eml2.0.0 DOM");
@@ -143,7 +144,8 @@ public class DataPackageFactory
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
     Log.debug(40,"DocTypeInfo: " + type);
-    if (type.equals("eml:eml")) {
+//    if (type.equals("eml:eml")) {
+    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
       Log.debug(20,"Creating new eml2.0.0 package");
       dp = new EML200DataPackage();
       Log.debug(40,"loading new eml2.0.0 DOM");
@@ -181,7 +183,8 @@ public class DataPackageFactory
     AbstractDataPackage dp = null;
     String doctype = getDocType(node);
     Log.debug(50, "doctype: "+doctype);
-    if(doctype.indexOf("eml-2.0.0")>-1) {
+    if(doctype.indexOf("eml-2.0")>-1) {
+      // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
       dp = new EML200DataPackage();
     
       try{
@@ -209,6 +212,9 @@ public class DataPackageFactory
    *  (i.e. a DocType element in the xml) then the publicID is stored, if available. If not
    *  then the systemId. If no docType, then look for the nameSpace of the root element; otherwise
    *  record the root element name
+   *
+   *  This method avoids creating a DOM in case the XML doc is very large (i.e. contains inline
+   *  data)
    */
   private static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in,2);
@@ -240,12 +246,22 @@ public class DataPackageFactory
       StringTokenizer st = new StringTokenizer(temp," ");
       String temp1 = st.nextToken();
       
-      // collect all the NS declarations
-      Vector ns_vec = new Vector();
-      int start = -1;
-      // should correlate NS declarations with NS abbreviation in root node element name
-      // for now, just return the root node name
-      docType = temp1;
+      // if node name has a : then it has a namespace declaration
+      int colon_pos = temp1.indexOf(":");
+      if (colon_pos>-1) {
+        String ns_abrev = temp1.substring(0,colon_pos);
+        int ns_dec_pos = temp.indexOf("xmlns:"+ns_abrev+"=\"");
+        if (ns_dec_pos>-1) {
+          int len = ("xmlns:"+ns_abrev+"=\"").length();
+          int end = temp.indexOf("\"", ns_dec_pos+len+1);
+          String ns = temp.substring(ns_dec_pos, end+1);
+          String ns1 = ns.substring(ns.indexOf("\"")+1,ns.length()-1);
+          Log.debug(40, "namespace: "+ ns1);
+          docType = ns1;
+        }
+      } else {
+        docType = temp1;
+      }
     }
     return docType;
   }
