@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-12 22:06:02 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2001-07-18 04:46:52 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1492,7 +1492,7 @@ private Vector sameParent(Vector list) {
             String rooteditor = (String)(inputni.attr).get("rooteditor");
             if (rooteditor!=null) {
                 inputni.setRootEditor(rooteditor);
-                inputni.attr.remove(rooteditor);
+                inputni.attr.remove("rooteditor");
             }
             String help = (String)(inputni.attr).get("help");
             if (help!=null) {
