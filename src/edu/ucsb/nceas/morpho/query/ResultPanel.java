@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 19:20:14 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2003-10-13 21:19:48 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   /**the location of the data package*/
   boolean metacatLoc = false;
   boolean localLoc = false;
+  private String doctype = "";
   private Dimension preferredSize;
   
   ImageIcon bfly;
@@ -370,6 +371,14 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   }
   
   /**
+   *  get the doctype
+   */
+  public String getDocType()
+  {
+    return doctype;
+  }
+  
+  /**
    * Get the metacatLoc
    */
   public boolean getMetacatLocation()
@@ -594,8 +603,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       Log.debug(30, "the package name is: "+packageName);
       vers = getNumberOfPrevVersions(selectedId);
       Log.debug(30, "the number of previous version is: "+vers);
-      
-    
+      doctype = (String)rowV.elementAt(8);
       // Fire state change event only in morpho frame
       if (dialog == null)
       {

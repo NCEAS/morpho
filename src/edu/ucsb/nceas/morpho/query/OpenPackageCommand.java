@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-18 01:02:22 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-10-13 21:19:48 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,9 @@ import javax.swing.JDialog;
  */
 public class OpenPackageCommand implements Command, ButterflyFlapCoordinator 
 {
-    
+  /** the doctype */ 
+  private String doctype = "";
+  
   /** A reference to the resultPanel */
    private ResultPanel resultPanel = null;
   
@@ -102,6 +104,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
       {
         location = DataPackageInterface.LOCAL;
       }
+      this.doctype = resultPanel.getDocType();
       
       // close the openDialogBox
       if ( open != null)
