@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-29 01:28:44 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-29 05:08:42 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,14 +110,14 @@ public class StateChangeEvent extends ChangeEvent
      *  Public constant to denote that a datapackage has been opened, and that 
      *  the local and network versions of the package are *not* in sync 
      */
-    public static String CREATE_DATAPACKAGE_FRAME_UNSYNCRONIZED 
+    public static String CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED 
         = "unsynchronizedCreateDataPackageFrame";
 
     /**
      *  Public constant to denote that a datapackage has been opened, and that 
      *  the local and network versions of the package *are* in sync 
      */
-    public static String CREATE_DATAPACKAGE_FRAME_SYNCRONIZED 
+    public static String CREATE_DATAPACKAGE_FRAME_SYNCHRONIZED 
         = "synchronizedCreateDataPackageFrame";
 
 
@@ -141,7 +141,7 @@ public class StateChangeEvent extends ChangeEvent
      *  been selected, and that the local and network versions of the selected 
      *  package are *not* in sync 
      */
-    public static String SEARCH_RESULT_SELECTED_UNSYNCRONIZED 
+    public static String SEARCH_RESULT_SELECTED_UNSYNCHRONIZED 
         = "unsynchronizedSearchResultSelected";
  
     /**
@@ -149,7 +149,7 @@ public class StateChangeEvent extends ChangeEvent
      *  been selected, and that the local and network versions of the selected 
      *  package *are* in sync 
      */
-    public static String SEARCH_RESULT_SELECTED_SYNCRONIZED 
+    public static String SEARCH_RESULT_SELECTED_SYNCHRONIZED 
         = "synchronizedSearchResultSelected";
 
     /**

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 00:26:49 $'
- * '$Revision: 1.64 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-29 05:08:41 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -303,7 +303,7 @@ public class ResultPanel extends JPanel
       //}//if
       
     
-      MouseListener popupListener = new PopupListener();
+      MouseListener popupListener = new PopupListener(this);
       table.addMouseListener(popupListener);
       
       // Listen for mouse events to see if the user double-clicks
@@ -515,6 +515,12 @@ public class ResultPanel extends JPanel
     // mouse released event (DFH)
     boolean trigger = false;
     String docid = "";
+    ResultPanel pane = null;
+    
+    public PopupListener(ResultPanel panel)
+    {
+      pane = panel;
+    }
     
     public void mousePressed(MouseEvent e) 
     {
@@ -539,6 +545,54 @@ public class ResultPanel extends JPanel
       localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
       metacatLoc = ((Boolean)rowV.elementAt(10)).booleanValue();
       Log.debug(30, "selectedId is: "+docid);
+      
+      // Fire state change event only in morpho frame
+      if (dialog == null)
+      {
+      
+        StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+        // select a data package event
+        monitor.notifyStateChange(
+                          new StateChangeEvent( 
+                          pane, 
+                          StateChangeEvent.SEARCH_RESULT_SELECTED));
+        if (localLoc ^ metacatLoc)
+        {
+          // unsynchronized package
+          monitor.notifyStateChange(
+                      new StateChangeEvent( 
+                      pane, 
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED));
+        }
+        else
+        {
+          // synchronized package
+          monitor.notifyStateChange(
+                      new StateChangeEvent( 
+                      pane, 
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED));
+        }
+        
+        int versions = getNumberOfPrevVersions();
+        if (versions > 0)
+        {
+          // mutipleversion package
+          monitor.notifyStateChange(
+                      new StateChangeEvent( 
+                      pane, 
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS));
+        }
+        else
+        {
+          // one version package
+          monitor.notifyStateChange(
+                      new StateChangeEvent( 
+                      pane, 
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS));
+        }
+      }// if dialg == null
+      
+      
       if (e.isPopupTrigger()) 
       {
         trigger = true;

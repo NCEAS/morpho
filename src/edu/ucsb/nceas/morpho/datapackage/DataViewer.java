@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-29 01:30:13 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2002-09-29 05:08:41 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -791,6 +791,7 @@ public class DataViewer extends javax.swing.JPanel
                  new StateChangeEvent( 
                  this, 
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+         
         }
         else if (text_flag) {
           // try building a table
@@ -801,6 +802,7 @@ public class DataViewer extends javax.swing.JPanel
                    new StateChangeEvent( 
                    this, 
                    StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
+              
               /*tcuta.setSource(table);
               tca.setSource(table);
               tpa.setTarget(table);*/
@@ -815,6 +817,7 @@ public class DataViewer extends javax.swing.JPanel
                   new StateChangeEvent( 
                   this, 
                   StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
+              
               //MouseListener popupListener = new PopupListener();
               //table.addMouseListener(popupListener);              
             }
@@ -824,6 +827,7 @@ public class DataViewer extends javax.swing.JPanel
                  new StateChangeEvent( 
                  this, 
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+                
             }
           }
         }
@@ -835,6 +839,7 @@ public class DataViewer extends javax.swing.JPanel
                  new StateChangeEvent( 
                  this, 
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+        
         }
       }
       

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 04:08:11 $'
- * '$Revision: 1.96 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-29 05:08:41 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,6 +217,19 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openPreviousAction.setMenuItemPosition(3);
     openPreviousAction.setToolTipText("Open a previous version...");
     openPreviousAction.setMenu("File", 0);
+    openPreviousAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS, 
+                      true, GUIAction.EVENT_GLOBAL);
+    openPreviousAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS, 
+                      true, GUIAction.EVENT_GLOBAL);
+    openPreviousAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS, 
+                      false, GUIAction.EVENT_GLOBAL);
+    openPreviousAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS, 
+                      false, GUIAction.EVENT_GLOBAL);
+    openPreviousAction.setEnabled(false);
     controller.addGuiAction(openPreviousAction);
     
     // Synchronize action
@@ -226,7 +239,19 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     synchronizeAction.setMenu("File", 0);
-    //synchronizeAction.setToolbarPosition(1);
+    synchronizeAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED, 
+                      true, GUIAction.EVENT_GLOBAL);
+    synchronizeAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED, 
+                      true, GUIAction.EVENT_GLOBAL);
+    synchronizeAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME_SYNCHRONIZED, 
+                      false, GUIAction.EVENT_GLOBAL);
+    synchronizeAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED, 
+                      false, GUIAction.EVENT_GLOBAL);
+    synchronizeAction.setEnabled(false);
     controller.addGuiAction(synchronizeAction);
     
     // DeleteDialogAction
@@ -235,8 +260,15 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     deleteDialogAction.setMenuItemPosition(11);
     deleteDialogAction.setToolTipText("Delete...");
     deleteDialogAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    deleteDialogAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_LOCAL);
+    deleteDialogAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_SELECTED, 
+                      true, GUIAction.EVENT_GLOBAL);
+    deleteDialogAction.setEnabled(false);
     deleteDialogAction.setMenu("File", 0);
-    //deleteDialogAction.setToolbarPosition(1);
+    
     controller.addGuiAction(deleteDialogAction);
     
     // Export action
@@ -245,7 +277,13 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     exportAction.setMenuItemPosition(13);
     exportAction.setToolTipText("Export data package...");
     exportAction.setMenu("File", 0);
-    //exportAction.setToolbarPosition(1);
+    exportAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_LOCAL);
+    exportAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_SELECTED, 
+                      true, GUIAction.EVENT_GLOBAL);
+    exportAction.setEnabled(false);
     controller.addGuiAction(exportAction);
     
     // Export to zip action
@@ -253,9 +291,14 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                              new ExportCommand(null, ExportCommand.ZIP));
     exportZipAction.setMenuItemPosition(14);
     exportZipAction.setToolTipText("Export data package into zip file...");
-    //exportZipAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     exportZipAction.setMenu("File", 0);
-    //exportZipAction.setToolbarPosition(1);
+    exportZipAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_LOCAL);
+    exportZipAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_SELECTED, 
+                      true, GUIAction.EVENT_GLOBAL);
+    exportZipAction.setEnabled(false);
     controller.addGuiAction(exportZipAction);
     
   }

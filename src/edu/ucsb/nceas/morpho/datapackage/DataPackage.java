@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-12 16:05:04 $'
- * '$Revision: 1.76 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-29 05:08:41 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -581,6 +581,23 @@ public class DataPackage implements XMLFactoryInterface
   {
     return this.id;
   }
+  
+  /**
+   * Method to determine if the this pakcage has mutiple versions
+   */
+  public boolean hasMutipleVersions()
+  {
+      boolean flag = false;
+      int versions = 0;
+      int index = id.lastIndexOf(".");
+      String ver = id.substring(index+1,id.length());
+      versions = (new Integer(ver)).intValue();
+      if (versions>1)
+      {
+        flag = true;
+      }
+      return flag;
+  }
     
   /**
    * returns the access file's id from the package
@@ -690,6 +707,7 @@ public class DataPackage implements XMLFactoryInterface
   {
     return upload(true);
   }
+  
   
   /**
    * Uploads a local package to metacat
