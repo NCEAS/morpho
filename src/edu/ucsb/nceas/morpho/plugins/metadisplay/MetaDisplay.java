@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 01:27:28 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-10-30 04:53:21 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -667,6 +667,12 @@ public class MetaDisplay implements MetaDisplayInterface,
         }
         return returnProps;
     }
+    
+    protected MetaDisplayUI getMetaDisplayUI() 
+    {
+        return this.ui;
+    }
+    
 }
 
 

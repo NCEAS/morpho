@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 01:29:58 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-10-30 04:53:21 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import  edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import  edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import  edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 public class BackCommand implements Command {
@@ -60,7 +61,7 @@ public class BackCommand implements Command {
             return;
         }
         StateChangeMonitor.getInstance().notifyStateChange(
-                new StateChangeEvent(null, 
+                new StateChangeEvent((Component)(controller.getMetaDisplayUI()), 
                                      StateChangeEvent.METAVIEWER_HISTORY_BACK));
     }
 }
