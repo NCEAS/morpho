@@ -86,7 +86,7 @@ public class WidgetFactory {
 
     setPrefMaxSizes(label, dims);
     label.setMinimumSize(dims);
-    label.setAlignmentX(1.0f);
+    label.setAlignmentX(SwingConstants.LEADING);
     label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
     label.setBorder(BorderFactory.createMatteBorder(1,3,1,3, (Color)null));

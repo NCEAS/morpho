@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-30 17:08:47 $'
- * '$Revision: 1.32 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-06 22:16:15 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -368,7 +368,7 @@ public class WizardContainerFrame extends JFrame {
   /**
    *  The action to be executed when the "Finish" button is pressed.
    */
-  private void finishAction() {
+  public void finishAction() {
 
     // * * * F I N I S H * * *
     pageStack.push(this.getCurrentPage());
