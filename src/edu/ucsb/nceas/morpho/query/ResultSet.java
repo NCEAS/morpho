@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-23 07:07:49 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-05-24 18:50:37 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -555,33 +555,35 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public void merge(ResultSet r2)
   {
-    // Create a hash of our docids for easy comparison
-    Hashtable docidList = new Hashtable();
-    int numColumns = getColumnCount();
-    for (int i=0; i < getRowCount(); i++) {
-      Vector rowVector = (Vector)resultsVector.get(i);
-      String currentDocid = (String)rowVector.get(numColumns+2);
-      docidList.put(currentDocid, new Integer(i));
-    }
-
-    // Step through all of the rows of the results in r2 and
-    // see if there is a docid match
-    Vector r2Rows = r2.getResultsVector();
-    Enumeration ee = r2Rows.elements();
-    while (ee.hasMoreElements()) {
-      Vector row = (Vector)ee.nextElement();
-      String currentDocid = (String)row.get(numColumns+2);
-      // if docids match, change the icon and location flags
-      if (docidList.containsKey(currentDocid)) {
-        framework.debug(9, "Merging row: " + currentDocid);
-        int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
-        Vector originalRow = (Vector)resultsVector.get(rowIndex);
-        originalRow.set(0, bothIcon);
-        originalRow.set(numColumns+5, new Boolean(true));
-        originalRow.set(numColumns+6, new Boolean(true));
-      } else {
-        framework.debug(9, "Adding row: " + currentDocid);
-        resultsVector.addElement(row);
+    if (r2 != null) {
+      // Create a hash of our docids for easy comparison
+      Hashtable docidList = new Hashtable();
+      int numColumns = getColumnCount();
+      for (int i=0; i < getRowCount(); i++) {
+        Vector rowVector = (Vector)resultsVector.get(i);
+        String currentDocid = (String)rowVector.get(numColumns+2);
+        docidList.put(currentDocid, new Integer(i));
+      }
+  
+      // Step through all of the rows of the results in r2 and
+      // see if there is a docid match
+      Vector r2Rows = r2.getResultsVector();
+      Enumeration ee = r2Rows.elements();
+      while (ee.hasMoreElements()) {
+        Vector row = (Vector)ee.nextElement();
+        String currentDocid = (String)row.get(numColumns+2);
+        // if docids match, change the icon and location flags
+        if (docidList.containsKey(currentDocid)) {
+          framework.debug(9, "Merging row: " + currentDocid);
+          int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
+          Vector originalRow = (Vector)resultsVector.get(rowIndex);
+          originalRow.set(0, bothIcon);
+          originalRow.set(numColumns+5, new Boolean(true));
+          originalRow.set(numColumns+6, new Boolean(true));
+        } else {
+          framework.debug(9, "Adding row: " + currentDocid);
+          resultsVector.addElement(row);
+        }
       }
     }
   }

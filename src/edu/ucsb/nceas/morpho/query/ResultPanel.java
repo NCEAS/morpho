@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-23 07:07:49 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-24 18:50:37 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -259,7 +259,7 @@ public class ResultPanel extends JPanel
    */
   public void reviseQuery()
   {
-    System.err.println("Open the Query Dialog!");
+    framework.debug(9, "Open the Query Dialog!");
     // QueryDialog Create and show as modal
     QueryDialog queryDialog1 = new QueryDialog(framework);
     queryDialog1.setQuery(results.getQuery());
