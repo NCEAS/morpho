@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-29 23:37:12 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-04-02 21:50:26 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
 /**
  * Display a ResultSet in a table view in window using an embedded
@@ -45,6 +47,9 @@ public class ResultFrame extends JFrame
 
   /** A reference to the framework */
   ClientFramework framework;
+  
+  ImageIcon flapping;
+  
 
   /**
    * Construct a new ResultFrame and display the result set
@@ -67,15 +72,26 @@ public class ResultFrame extends JFrame
     super();
     this.framework = cf;
 
-    super.setTitle(results.getQuery().getQueryTitle());
-    setName(results.getQuery().getQueryTitle());
+    if (results!=null) {
+      super.setTitle(results.getQuery().getQueryTitle());
+      setName(results.getQuery().getQueryTitle());
+    }
     setSize(700,600);
     setBackground(Color.white);
+    
+    try {
+      flapping = new javax.swing.ImageIcon(getClass().getResource("Btfly4.gif"));
+    } catch (Exception w) {
+        System.out.println("Error in loading images");
+    }
+    
 
     // Create the result panel and add it to the frame
-    resultDisplayPanel = new ResultPanel(results, true, true, fontSize);
-    getContentPane().setLayout(new BorderLayout());
-    getContentPane().add(resultDisplayPanel, BorderLayout.CENTER);
+    if (results!=null) {
+      resultDisplayPanel = new ResultPanel(results, true, true, fontSize);
+      getContentPane().setLayout(new BorderLayout());
+      getContentPane().add(resultDisplayPanel, BorderLayout.CENTER);
+    }
 
     // Register a listener to watch for the window to close
     addWindowListener(new CloseListener());
@@ -118,4 +134,28 @@ public class ResultFrame extends JFrame
     framework.removeWindow(this);
     framework.addWindow(this);
   }
+
+  public void addResultPanel(ResultSet results) {
+      resultDisplayPanel = new ResultPanel(results, true, true, 12);
+      resultDisplayPanel.setVisible(true);
+      getContentPane().removeAll();
+      getContentPane().setLayout(new BorderLayout());
+      getContentPane().add(resultDisplayPanel, BorderLayout.CENTER);
+      this.validate();
+  }
+  
+  public void addWorking() {
+      getContentPane().removeAll();
+      getContentPane().setLayout(new BorderLayout());
+      JLabel working = new JLabel("Working !!!");
+      working.setForeground(Color.red);
+      working.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
+      working.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+      working.setIcon(flapping);
+      
+      getContentPane().add(working, BorderLayout.CENTER);
+      this.validate();
+  }
+
 }
+

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:35 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2002-04-02 21:50:26 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 public class QueryPlugin implements PluginInterface, ConnectionListener,
                                     ServiceProvider, QueryRefreshInterface
@@ -178,8 +179,13 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     if (queryDialog1.isSearchStarted()) {
       Query query = queryDialog1.getQuery();
       if (query != null) {
-        ResultSet rs = query.execute();
+//        ResultSet rs = query.execute();
+        ResultSet rs = null;
         ResultFrame rsf = new ResultFrame(framework, rs);
+        rsf.addWorking();
+        doQuery(rsf, query);
+//        rs = query.execute();
+//        rsf.addResultPanel(rs);
       }
     }
   }
@@ -244,4 +250,27 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   {
       refreshOwnerPanel();
   }
+  
+private void doQuery(final ResultFrame rsf, final Query query) {
+  
+  final SwingWorker worker = new SwingWorker() {
+        ResultSet frs;
+        public Object construct() {
+          frs = query.execute();
+        
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          rsf.setTitle(frs.getQuery().getQueryTitle());
+          rsf.setName(frs.getQuery().getQueryTitle());
+          
+          rsf.addResultPanel(frs);
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+  
+  
 }
