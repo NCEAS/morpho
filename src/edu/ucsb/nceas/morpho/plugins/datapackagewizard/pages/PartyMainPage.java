@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 10:26:20 $'
- * '$Revision: 1.36 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-09 19:51:12 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -468,7 +468,8 @@ public class PartyMainPage
       if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
 
       PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
-          DataPackageWizardInterface.PARTY_PERSONNEL);
+//          DataPackageWizardInterface.PARTY_PERSONNEL);
+          this.role);
 
       boolean checkParty = nextParty.setPageData(nextPersonnelMap,
                                                  personnelXPathRoot
