@@ -4,12 +4,12 @@
  *             application (searchs local collection of XML files
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
- *    Authors: Dan Higgins
+ *    Authors: Dan Higgins, Matt Jones
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-17 01:23:24 $'
- * '$Revision: 1.31.2.2 $'
+ *     '$Date: 2001-04-17 01:31:22 $'
+ * '$Revision: 1.31.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
 
 
 package edu.ucsb.nceas.dtclient;
-
 
 import java.awt.*;
 import java.awt.event.*;
@@ -56,6 +55,7 @@ public class ClientFramework extends javax.swing.JFrame
   // following static block will reset the mdehome config variable to the
   // current working dir if it is currently set to 'settocwd'
   // to be used when first installed
+/*
   static
   {
     try
@@ -79,6 +79,7 @@ public class ClientFramework extends javax.swing.JFrame
     {
     }
   }
+*/
 
   String userName = "public";
   String passWord = "none";
@@ -259,17 +260,17 @@ public class ClientFramework extends javax.swing.JFrame
     JTabbedPane1.setToolTipText("Select tab of interest");
     JPanel1.add(BorderLayout.CENTER, JTabbedPane1);
     JTabbedPane1.setBounds(0, 0, 0, 0);
-    EditorPanel.setLayout(new BorderLayout(0, 0));
-    JTabbedPane1.add(EditorPanel);
-    EditorPanel.setBounds(0, 0, 0, 0);
-    EditorPanel.setVisible(false);
-    EditorPanel.add(BorderLayout.CENTER, mdeBean1);
-    QueryPanel.setLayout(new BorderLayout(0, 0));
-    JTabbedPane1.add(QueryPanel);
-    QueryPanel.setBounds(0, 0, 0, 0);
-    QueryPanel.setVisible(false);
-    queryBean1.setExpertMode(false);
-    QueryPanel.add(BorderLayout.CENTER, queryBean1);
+    //MBJEXCISE//EditorPanel.setLayout(new BorderLayout(0, 0));
+    //MBJEXCISE//JTabbedPane1.add(EditorPanel);
+    //MBJEXCISE//EditorPanel.setBounds(0, 0, 0, 0);
+    //MBJEXCISE//EditorPanel.setVisible(false);
+    //MBJEXCISE//EditorPanel.add(BorderLayout.CENTER, mdeBean1);
+    //MBJEXCISE//QueryPanel.setLayout(new BorderLayout(0, 0));
+    //MBJEXCISE//JTabbedPane1.add(QueryPanel);
+    //MBJEXCISE//QueryPanel.setBounds(0, 0, 0, 0);
+    //MBJEXCISE//QueryPanel.setVisible(false);
+    //MBJEXCISE//queryBean1.setExpertMode(false);
+    //MBJEXCISE//QueryPanel.add(BorderLayout.CENTER, queryBean1);
 /*    DataViewerPanel.setLayout(new BorderLayout(0,0));
     JTabbedPane1.add(DataViewerPanel);
     DataViewerPanel.setBounds(0,0,0,0);
@@ -288,10 +289,10 @@ public class ClientFramework extends javax.swing.JFrame
     DataViewerPanel.add(BorderLayout.SOUTH,JLabel1);
     JLabel1.setBounds(0,0,20,40);
 */
-    JTabbedPane1.setSelectedComponent(EditorPanel);
-    JTabbedPane1.setSelectedIndex(0);
-    JTabbedPane1.setTitleAt(0, "");
-    JTabbedPane1.setTitleAt(1, "");
+    //MBJEXCISE//JTabbedPane1.setSelectedComponent(EditorPanel);
+    //MBJEXCISE//JTabbedPane1.setSelectedIndex(0);
+    //MBJEXCISE//JTabbedPane1.setTitleAt(0, "");
+    //MBJEXCISE//JTabbedPane1.setTitleAt(1, "");
     //JTabbedPane1.setTitleAt(2,"");
     //$$ lineBorder1.move(240,481);
     //$$ stringListModel1.move(72,406);
@@ -413,10 +414,10 @@ public class ClientFramework extends javax.swing.JFrame
 
     // Set the tab titles -- these should be dynamically set
     // from the client.properties rather than hardcoded
-    JTabbedPane1.setSelectedComponent(QueryPanel);
+    //MBJEXCISE//JTabbedPane1.setSelectedComponent(QueryPanel);
     JTabbedPane1.setSelectedIndex(1);
-    JTabbedPane1.setTitleAt(0, "Edit Document");
-    JTabbedPane1.setTitleAt(1, "Search Document");
+    //MBJEXCISE//JTabbedPane1.setTitleAt(0, "Edit Document");
+    //MBJEXCISE//JTabbedPane1.setTitleAt(1, "Search Document");
     // JTabbedPane1.setTitleAt(2,"Browse Data");
 
     // Load all of the plugins, their menus, and toolbars
@@ -713,9 +714,9 @@ public class ClientFramework extends javax.swing.JFrame
   javax.swing.JCheckBox CatalogSearchCheckBox = new javax.swing.JCheckBox();
   javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
   javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
-  javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
-  javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
-  javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
+  //MBJEXCISE//javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
+  //MBJEXCISE//javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
+  //MBJEXCISE//javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
   javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
   javax.swing.JLabel dataPict = new javax.swing.JLabel();
   javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
