@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-01 00:38:45 $'
- * '$Revision: 1.22 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-08 17:02:09 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ public class Summary extends AbstractUIPage {
         + WizardSettings.FINISH_BUTTON_TEXT + "\", you "
         +"will see your new package description information displayed in the "
         +"Morpho main screen.  If you want to add data tables to your package, "
-        +"select the \"Create New Datatable\" option on the \"Data\" menu</p>";
+        +"select the \"Create New Datatable\" option in the \"Data\" menu</p>";
 
     } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
 
@@ -189,7 +189,8 @@ public class Summary extends AbstractUIPage {
       final DataPackageInterface finalDataPackagePlugin = dataPackagePlugin;
 
       GUIAction newDataTableAction
-        = new GUIAction("or click here to finish this wizard and add a new data table now...",
+        = new GUIAction("or click here to finish this wizard and add a new " +
+                        "data table now.",
                         null,
                         new Command() {
 
