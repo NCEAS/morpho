@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-05 23:46:31 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-03-06 18:00:30 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -606,13 +606,16 @@ public class DataViewer extends javax.swing.JFrame
         MetacatDataStore mds = new MetacatDataStore(framework);
         String oldid = dataID;
         newid = a.incRev(dataID);
+        Vector parts = a.getParts(newid);
+        String newFileName = (String)parts.elementAt(1)+(String)parts.elementAt(3)
+                                 +(String)parts.elementAt(2);
   //      newid = a.getNextId();
         System.out.println("oldid: " + oldid + " newid: " + newid);          
         
         try{
           // save to a temporary file
           StringReader sr = new StringReader(dataString);
-          File tempfile = new File(tempdir + "/metacat.noid");
+          File tempfile = new File(tempdir + "/" + newFileName);
           FileWriter fw = new FileWriter(tempfile);
           BufferedWriter bfw = new BufferedWriter(fw);
           int c = sr.read();
