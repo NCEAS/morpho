@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-23 22:45:58 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2004-02-24 19:08:09 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,9 +162,11 @@ public class XMLPanels extends Component
     // panel is the surrounding panel for this node
     // check to see if there is a special editor for this node
       NodeInfo inf = (NodeInfo)(node.getUserObject());
-      if (inf.getName().equals("references")) {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode)node.getRoot();
-        DefaultMutableTreeNode kid = (DefaultMutableTreeNode)node.getFirstChild();
+      DefaultMutableTreeNode refsNode = getRefsNode(node);
+//      if (inf.getName().equals("references")) {
+      if (refsNode!=null) {
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode)refsNode.getRoot();
+        DefaultMutableTreeNode kid = (DefaultMutableTreeNode)refsNode.getFirstChild();
         NodeInfo kidni = (NodeInfo)(kid.getUserObject());
         String referencedId  = kidni.getPCValue();
         DefaultMutableTreeNode referencedNode = getReferencedNode(root,referencedId);
@@ -430,5 +432,22 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
     }
     return null; // didn't find a match
   }    
+
+  /**
+   *  Checks to see if a child of the input node has the name 'references'
+   *  If so, return that child; otherwise, return null
+   */
+  private DefaultMutableTreeNode getRefsNode(DefaultMutableTreeNode node) {
+    DefaultMutableTreeNode ret = null;
+    Enumeration enum = node.children();
+    while (enum.hasMoreElements()) {
+      DefaultMutableTreeNode kid = (DefaultMutableTreeNode)enum.nextElement();
+      String name = ((NodeInfo)kid.getUserObject()).getName();
+      if (name.equals("references")) {
+        return kid;
+      }
+    }
+    return ret;
+  }
     
 }
