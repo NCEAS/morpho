@@ -6,9 +6,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-05 17:25:58 $'
- * '$Revision: 1.36 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-06 22:50:52 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ public class Project extends AbstractUIPage {
   private String xPathRoot = PROJECT_ROOT;
 
   private final String[] buttonsText = new String[] {
-      "This project is part of a larger, umbrella research project"
+      "This project is part of a larger umbrella research project."
   };
 
   private JLabel      titleLabel;
@@ -116,12 +116,12 @@ public class Project extends AbstractUIPage {
     //topBox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<b>Is your project part of a larger, umbrella research project?</b> "
+        "<b>Is your project part of a larger umbrella research project?</b> "
         +"Data may be collected as part of a large research program with many "
         +"sub-projects or they may be associated with a single, independent "
         +"investigation. For example, a large NSF grant may provide funds for "
-        +"several PIs to collect data at various locations. In this case it is "
-        +"important to be able to reference sub-projects to the larger project.", 4);
+        +"several primary investigators to collect data at various locations. ",
+        4);
 
     topBox.add(WidgetFactory.makeHalfSpacer());
     topBox.add(desc);
@@ -181,9 +181,8 @@ public class Project extends AbstractUIPage {
     panel.add(WidgetFactory.makeHalfSpacer());
     JPanel fundingPanel = WidgetFactory.makePanel(1);
     JLabel fundingDesc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the funding source(s) that supported data collection.</b> The "
-      +"funding is used to provide information about funding sources for the "
-      +"project such as agency name, grant and contract numbers.", 2);
+      "<b>Enter the funding sources that support this project.</b> This"
+      + " may include agency names and grant or contract numbers.", 2);
 
     panel.add(fundingDesc);
     fundingLabel = WidgetFactory.makeLabel(" Funding Source", false);
@@ -196,9 +195,8 @@ public class Project extends AbstractUIPage {
     panel.add(WidgetFactory.makeHalfSpacer());
     ////
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the Personnel information</b> The full name of the person(s) or "
-      +"organization(s) responsible for the project, such as agency name, grant "
-      +"and contact numbers.", 2);
+      "<b>Enter the personnel information</b>. The full name of the people or "
+      +"organizations responsible for the project.", 2);
     panel.add(desc);
     JPanel vPanel = WidgetFactory.makeVerticalPanel(9);
     minRequiredLabel = WidgetFactory.makeLabel(
