@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-28 04:18:10 $'
- * '$Revision: 1.67 $'
+ *     '$Date: 2001-12-05 19:39:29 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,6 +117,7 @@ public class DocFrame extends javax.swing.JFrame
     Catalog myCatalog;
     String dtdfile;
     int numlevels = 15;
+    boolean templateFlag = false;
     
     JSplitPane DocControlPanel;
     
@@ -364,9 +365,10 @@ public class DocFrame extends javax.swing.JFrame
    *   This constructor actual handles the creation of a tree and panel for displaying
    *   and editing the information is an XML document, as represented in the String 'doctext'
    */
-	public DocFrame(ClientFramework cf, String sTitle, String doctext) 
+	public DocFrame(ClientFramework cf, String sTitle, String doctext, boolean flag) 
 	{
 	  this();
+	  this.templateFlag = flag;
 	  setTitle("Morpho Editor");
 	  this.framework = cf;
 	  counter++;
@@ -422,18 +424,26 @@ public class DocFrame extends javax.swing.JFrame
 
 	        // the treeUnion method will 'merge' the input document with
 	        // a template XML document created using the DTD parser from the DTD doc
-	      treeUnion(rootNode,dtdtree.rootNode);
+	  if (!templateFlag) {   // 
+	            treeUnion(rootNode,dtdtree.rootNode);
+	        
             // treeTrim will remove nodes in the input that are not in the DTD
             // remove the following line if this is not wanted
         if (trimNodesNotInDTDflag) {
           treeTrim(rootNode,dtdtree.rootNode);
         }
       }
-		}
+      }
+	}
 		
-		
+	if (!templateFlag) {	
 		treeModel.reload();
 		tree.setModel(treeModel);
+	}
+	else {
+        DefaultTreeModel dftm = new DefaultTreeModel(dtdtree.rootNode);
+        tree.setModel(dftm);
+	}
 		tree.expandRow(1);
 		tree.expandRow(2);
     tree.setSelectionRow(0);
@@ -444,7 +454,20 @@ public class DocFrame extends javax.swing.JFrame
 	  * id and location parameters used to create it
 	  */
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location) {
-	  this(cf, sTitle, doctext);
+	  this(cf, sTitle, doctext, false);
+	  if (id!=null) {
+	    setTitle("Morpho Editor:"+id+" - "+location);
+	    setName("Morpho Editor"+counter+":"+id);
+	  }
+	  this.id = id;
+	  this.location = location;
+	}
+
+	/** this version of the constructor is needed so that each DocFrame can 'remember' the
+	  * id and location parameters used to create it; includes template flag
+	  */
+	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location, boolean templFlag) {
+	  this(cf, sTitle, doctext, templFlag);
 	  if (id!=null) {
 	    setTitle("Morpho Editor:"+id+" - "+location);
 	    setName("Morpho Editor"+counter+":"+id);

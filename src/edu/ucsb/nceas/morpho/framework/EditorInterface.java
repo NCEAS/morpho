@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 22:12:54 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-12-05 19:39:48 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,15 @@ public interface EditorInterface
  public void openEditor(String xmltext, String id, String location,
                         EditingCompleteListener listener);
  
+  /**
+   * This method is called to open a XML editor with the indicated
+   * xmltext and an editingCompletedListener to be notified when
+   * the editing is completed. In this case, only the template
+   * based on the DocType is returned (i.e. no merging with existing
+   * data) For use in creating new docs.
+   */
+ public void openEditor(String xmltext, String id, String location,
+                        EditingCompleteListener listener, boolean template);
                         
   /**
    * This method is called to open a XML editor with the indicated

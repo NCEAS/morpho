@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-22 22:30:02 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-12-05 19:39:28 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,7 +176,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   }
   
   public void openEditor(String xmlText) {
-    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText);
+    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, false);
     editorframe.setController(this);
     editorframe.setVisible(true);
     framework.addWindow(editorframe);
@@ -185,6 +185,19 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   public void openEditor(String xmlText, String id, String location, 
                          EditingCompleteListener listener) {
     DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, id, location);
+    editorframe.setController(this);
+    editorframe.setVisible(true);
+    this.id = id;
+    this.location = location;
+    if (framework!=null) {
+      framework.addWindow(editorframe);
+    }
+    docframes.put(editorframe, listener);
+  }
+
+  public void openEditor(String xmlText, String id, String location, 
+                         EditingCompleteListener listener, boolean template) {
+    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, id, location, template );
     editorframe.setController(this);
     editorframe.setVisible(true);
     this.id = id;
