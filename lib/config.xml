@@ -128,6 +128,18 @@
       <visible>no</visible>
     </file>
     <file>
+      <name>Physical</name>
+      <label>Physical Object Description</label>
+      <xmlfiletype>-//ecoinformatics.org//eml-physical-2.0.0beta4//EN</xmlfiletype>
+      <rootnode>eml-physical</rootnode>
+      <tooltip>Description of the physical form of a data file.</tooltip>
+      <displaypath>FIXED:Physical Information</displaypath>
+      <editexisting>no</editexisting>
+      <idpath>/eml-physical/identifier</idpath>
+      <visible>no</visible>
+      <relatedto>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</relatedto>
+    </file>
+    <file>
       <name>Project</name>
       <label>Project Description (Warning: Very Slow)</label>
       <xmlfiletype>-//ecoinformatics.org//eml-project-2.0.0beta4//EN</xmlfiletype>
@@ -171,5 +183,5 @@
   <uid_tag>uid</uid_tag>
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
-  <current_profile></current_profile>
+  <current_profile>higgins</current_profile>
 </config>
