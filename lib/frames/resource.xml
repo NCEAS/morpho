@@ -28,7 +28,7 @@
     </group>
     
     <group label="Originator Information" type="panel">
-      <group repeatable="yes" size="480x850" field="originator">
+      <group label="Originator" repeatable="yes" size="480x850" field="originator">
         <combobox label="Originators Role" field="roleCode" size="10" allowNull="false" repeatable="yes" defaulttext="originator">
           <item name="Content Provider" value="contentProvider"/>
           <item name="Custodian Steward" value="custodianSteward"/>
@@ -46,8 +46,8 @@
         <textbox label="Salutation" field="individualName/salutation" size="5" />
         <textbox label="Given Name" field="individualName/givenName" size="10" />
         <textbox label="Sur Name" field="individualName/surName" size="10" allowNull="false"/>
+        <textbox label="Sur Name" field="individualName/surName" size="10" allowNull="false"/>
         <textbox label="User Id" field="individualName/userid" size="10" />
-        <textbox label="User Id Authentication System" field="individualName/@systemType" size="10" />
         <textbox label="Organization" field="organizationName" size="10" repeatable="yes"/>
         <textbox label="Position" field="positionName" size="10" />
         <group label="Contact Information" field="contactInfo" size="480x450" repeatable="yes" type="pathgrouping">
