@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:47:41 $'
- * '$Revision: 1.109 $'
+ *     '$Date: 2003-04-28 20:41:37 $'
+ * '$Revision: 1.110 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1113,6 +1113,7 @@ public class DocFrame extends javax.swing.JFrame
             DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
             // simple node comparison
             String nodename = ((NodeInfo)node.getUserObject()).getName();
+            if (nodename.startsWith("attribute")) nodename = "attribute";
             if (controller != null) {
                 nodeCopy = 
                     (DefaultMutableTreeNode)controller.getClipboardObject();
@@ -1120,7 +1121,8 @@ public class DocFrame extends javax.swing.JFrame
             if (nodeCopy != null) {
                 String savenodename = 
                     ((NodeInfo)localcopy.getUserObject()).getName();
-                if (nodename.equals(savenodename)) {
+                    if (savenodename.startsWith("attribute")) savenodename = "attribute";
+               if (nodename.equals(savenodename)) {
                     DefaultMutableTreeNode parent = 
                         (DefaultMutableTreeNode)node.getParent();
                     int indx = parent.getIndex(node);
@@ -1166,9 +1168,11 @@ public class DocFrame extends javax.swing.JFrame
             DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
             // simple node comparison
             String nodename = ((NodeInfo)node.getUserObject()).getName();
+            if (nodename.startsWith("attribute")) nodename = "attribute";
             if (nodeCopy != null) {
                 String savenodename = 
                     ((NodeInfo)localcopy.getUserObject()).getName();
+                    if (savenodename.startsWith("attribute")) savenodename = "attribute";
                 if (nodename.equals(savenodename)) {
                     DefaultMutableTreeNode parent = 
                         (DefaultMutableTreeNode)node.getParent();
@@ -2658,7 +2662,15 @@ public class DocFrame extends javax.swing.JFrame
                                  (!card.equals("ONE"))) {
                             PastemenuItem.setEnabled(true);
                         }
+                        if ((nodename.startsWith("attribute"))&&
+                           (savenodename.startsWith("attribute"))) {
+                            PastemenuItem.setEnabled(true);
+                        }
                         if (nodename.equals(savenodename)) {
+                            ReplacemenuItem.setEnabled(true);
+                        }
+                        if ((nodename.startsWith("attribute"))&&
+                           (savenodename.startsWith("attribute"))) {
                             ReplacemenuItem.setEnabled(true);
                         }
                     }
