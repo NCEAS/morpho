@@ -97,3 +97,21 @@ PUBLIC "eml-physical-2.0" "eml-physical-2.0.dtd"
 PUBLIC "-//NCEAS//eml-physical-2.0//EN" "eml-physical-2.0.dtd"
 SYSTEM "urn:nceas:test-eml-physical-2.0" "eml-physical-2.0.dtd"
 SYSTEM "eml-physical-2.0.dtd" "eml-physical-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-project-2.0" "eml-project-2.0.dtd"
+PUBLIC "-//NCEAS//eml-project-2.0//EN" "eml-project-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-project-2.0" "eml-project-2.0.dtd"
+SYSTEM "eml-project-2.0.dtd" "eml-project-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-protocol-2.0" "eml-protocol-2.0.dtd"
+PUBLIC "-//NCEAS//eml-protocol-2.0//EN" "eml-protocol-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-protocol-2.0" "eml-protocol-2.0.dtd"
+SYSTEM "eml-protocol-2.0.dtd" "eml-protocol-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-literature-2.0" "eml-literature-2.0.dtd"
+PUBLIC "-//NCEAS//eml-literature-2.0//EN" "eml-literature-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-literature-2.0" "eml-literature-2.0.dtd"
+SYSTEM "eml-literature-2.0.dtd" "eml-literature-2.0.dtd"
