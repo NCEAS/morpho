@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-30 01:20:56 $'
- * '$Revision: 1.8 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-02 20:49:47 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import javax.swing.Icon;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
+import java.util.Hashtable;
 
 /**
  *  Class       GUIAction
@@ -41,7 +42,8 @@ import java.awt.event.ActionEvent;
  *  The Swing component generally adds this object to itself as 
  *  an ActionListener automatically.
  */
-public class GUIAction extends AbstractAction {
+public class GUIAction extends AbstractAction implements StateChangeListener
+{
 
     /** 
      *  Constructor
@@ -56,9 +58,10 @@ public class GUIAction extends AbstractAction {
         defaultIcon = icon;
         command=cmd;
         setEnabled(true);
+        enabledList = new Hashtable();
+        commandList = new Hashtable();
     }
 
-    
     /** 
      *  gets the default Icon for this action object
      *
@@ -67,7 +70,6 @@ public class GUIAction extends AbstractAction {
     public Icon getDefaultIcon(){
         return defaultIcon;
     }
-    
     
     /**
      * sets the text to be displayed as a mouse-over tooltip
@@ -114,7 +116,36 @@ public class GUIAction extends AbstractAction {
      
     }
    
-   /** 
+    /** 
+     *  Sets the menu and its position for this action
+     *
+     *  @param menuName the name of the menu in which to embed this action
+     *  @param position the position of the menu
+     */
+    public void setMenu(String menuName, int position) {
+        this.menuName = menuName;
+        this.menuPosition = position;
+    }
+    
+    /** 
+     *  Get the menu name for this action
+     *
+     * @return the name of the menu for this action
+     */
+    public String getMenuName() {
+        return menuName;
+    }
+    
+    /** 
+     *  Get the menu position for this action
+     *
+     * @return the position of the menu for this action
+     */
+    public int getMenuPosition() {
+        return menuPosition;
+    }
+    
+    /** 
      *  sets the menu item position for this action
      *
      *  @param position the position of memu item
@@ -176,10 +207,66 @@ public class GUIAction extends AbstractAction {
       this.command = cmd;
     }//setCommand
 
-        
+    /**
+     * Set the state of this action to the enabled value if a state change
+     * matching changedState occurs.
+     *
+     * @param changedState the name of the state change
+     * @param enabled boolean value indicating whether the action should 
+     *                be enabled
+     */
+    public void setEnabledOnStateChange(String changedState, boolean enabled)
+    {
+        enabledList.put(changedState, new Boolean(enabled));
+        StateChangeMonitor.getInstance().addStateChangeListener(changedState,
+                (StateChangeListener)this);
+    }
+
+    /**
+     * Set the state of this action to the enabled value if a state change
+     * matching changedState occurs.
+     *
+     * @param changedState the name of the state change
+     * @param command Command that should be set upon a state change
+     */
+    public void setCommandOnStateChange(String changedState, Command command)
+    {
+        commandList.put(changedState, command);
+        StateChangeMonitor.getInstance().addStateChangeListener(changedState,
+                (StateChangeListener)this);
+    }
+
+    /**
+     * Handle a state change.  This results in a change to the enabled state
+     * of the action, or a change in the command, depending on which 
+     * state changes have been registered for this action previously.
+     *
+     * @param event the StateChangeEvent that has occurred
+     */
+    public void handleStateChange(StateChangeEvent event)
+    {
+        String changedState = event.getChangedState();
+
+        // Check and handle the enabled state changes
+        if (enabledList.containsKey(changedState)) {
+            boolean enabled = 
+                ((Boolean)enabledList.get(changedState)).booleanValue();
+            setEnabled(enabled);
+        }
+
+        // Check and handle the command state changes
+        if (commandList.containsKey(changedState)) {
+            Command newCommand = (Command)commandList.get(changedState);
+            setCommand(newCommand);
+        }
+    }
+
 // * * *  V A R I A B L E S  * * *
 
     private Command command;
     private Icon defaultIcon;
-    
+    private String menuName;
+    private int menuPosition;
+    private Hashtable enabledList; 
+    private Hashtable commandList; 
 }
