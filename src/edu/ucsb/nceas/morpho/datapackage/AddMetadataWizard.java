@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-11-01 00:33:28 $'
- * '$Revision: 1.34 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-11-01 01:33:23 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -838,7 +838,7 @@ public class AddMetadataWizard extends JFrame
         relationship.indexOf("\\") != -1)
       { //strip out the path info
         int slashindex = relationship.lastIndexOf("/") + 1;
-        if(slashindex == -1)
+        if(slashindex == 0)
         {
           slashindex = relationship.lastIndexOf("\\") + 1;
         }
@@ -1006,7 +1006,7 @@ public class AddMetadataWizard extends JFrame
         relationship.indexOf("\\") != -1)
       { //strip out the path info
         int slashindex = relationship.lastIndexOf("/") + 1;
-        if(slashindex == -1)
+        if(slashindex == 0)
         {
           slashindex = relationship.lastIndexOf("\\") + 1;
         }
