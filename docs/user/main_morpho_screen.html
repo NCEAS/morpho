@@ -4,13 +4,13 @@
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.7 [en] (Win98; I) [Netscape]">
    <title>The Knowledge Network for Biocomplexity</title>
-<link rel="stylesheet" type="text/css" href="default.css">
+<link rel="stylesheet" type="text/css" href="../default.css">
 </head>
 <body>
 &nbsp;
 <table class="tabledefault" >
 <tr>
-<td ROWSPAN="2"><img SRC="./images/KNBLogo.gif" ></td>
+    <td ROWSPAN="2"><img SRC="images/KNBLogo.gif" width="101" height="66" ></td>
 
 <td COLSPAN="7">
 <div class="title">Morpho</div>
@@ -20,13 +20,13 @@
 </tr>
 
 <tr>
-  <td><a href="@server@" class="toollink">KNB Home&nbsp;</a></td>
-  <td><a href="@server@/data.html" class="toollink">Data&nbsp;</a></td>
-  <td><a href="@server@/people.html" class="toollink">People&nbsp;</a></td>
-  <td><a href="@server@/informatics" class="toollink">Informatics&nbsp;</a></td>
-  <td><a href="@server@/biodiversity" class="toollink">Biocomplexity&nbsp;</a></td>
-  <td><a href="@server@/education" class="toollink">Education&nbsp;</a></td>
-  <td><a href="@server@/software" class="toollink">Software&nbsp;</a></td>
+  <td><a href="../@server@" class="toollink">KNB Home&nbsp;</a></td>
+  <td><a href="../@server@/data.html" class="toollink">Data&nbsp;</a></td>
+  <td><a href="../@server@/people.html" class="toollink">People&nbsp;</a></td>
+  <td><a href="../@server@/informatics" class="toollink">Informatics&nbsp;</a></td>
+  <td><a href="../@server@/biodiversity" class="toollink">Biocomplexity&nbsp;</a></td>
+  <td><a href="../@server@/education" class="toollink">Education&nbsp;</a></td>
+  <td><a href="../@server@/software" class="toollink">Software&nbsp;</a></td>
 </tr>
 </table>
 
@@ -35,123 +35,161 @@
 <p><!-- put text after this -->
 <table BORDER=0 CELLSPACING=0 CELLPADDING=4 WIDTH="100%" class="tablepanel" >
 <tr class="tablehead">
-<td colspan="2"><b>The Main Morpho Screen</b></td>
+    <td colspan="2"><b>The 'Blank' Morpho Screen</b></td>
 </tr>
 
-<tr>
-<td colspan="2" WIDTH="100%">
-<br><P>The first time you login the main morpho screen looks like the image below. 
-<br></P>
-<p><img SRC="./images/morpho_main.gif" BORDER=0 height=439 width=601 align=BOTTOM><br><br>
-
-The main morpho screen is divided up into two functional sections:
-<ul>
-<li>Menu (File, Edit, Search, Window, Help) and a toolbar containing icons.</li>
-<br>
-<img src="./images/search_icon.gif" width="24" height="24">  The search icon begins the data package search process.<br>
-<img src="./images/new_package_icon.gif" width="24" height="24">  The new data package icon begins the process required to create your own data package.<br><br>
-<li>Data package - "My Data" display area. A fictitious data package is displayed to help the new user.  As new packages are created and downloaded they will be shown here.</li>
-</ul></p>
-
-<a name="package"></a>
-<div class="helpsub">Data Packages</div>
-<p>Morpho uses the term "Data Package" to describe a set of metadata and /or data, and is represented by a row in the "My Data" area.  This data package is either stored locally and /or on a metacat server.  The data package icons and their definitions are illustrated in the table below.
-<table celpadding=0 cellspacing=0 border=1 width=500>
- <tr>
-  <td>
-    <p><b>Data Package Icon </b></p>
-  </td>
-  <td>
-   <p><b>Data Package Definition</b></p>
-  </td>
- </tr>
- <tr>
-  <td>
-    <p><img src="./images/local-metadata.gif" width=56 height=53></p>
-  </td>
-  <td>
-   <p>Data Package consists only of metadata, and is stored locally on your PC. The box represents a data package, and the folder represents a directory on your PC.</p>
-  </td>
- </tr>
- <tr>
-  <td>
-    <p><img src="./images/local-metadata+data.gif" width=56 height=53></p>
-  </td>
-  <td>
-   <p>Data Package consists of both metadata and data (blue sheet). Stored locally.</p>
-  </td>
- </tr>
- <tr>
-  <td>
-    <p><img src="./images/network-metadata.gif" width=56 height=53></p>
-  </td>
-  <td>
-   <p>Data Package consists of metadata, and is <i>only</i> stored on a Metacat (the networked graphic). This package icon appears when a search query returns a successful result from a metacat server.</p>
-  </td>
- </tr>
- <tr>
-  <td>
-    <p><img src="./images/network-metadata+data.gif" width=56 height=53></p>
-  </td>
-  <td>
-   <p>Data Package consists of metadata and data. Stored <i>only</i> on a Metacat. Displayed from a sucessful search.</p>
-  </td>
- </tr>
- <tr>
-  <td>
-    <p><img src="./images/local+network-metadata.gif" width=56 height=53></p>
-  </td>
-  <td>
-   <p>Data Package consists of metadata and is located <i>both</i> locally and on a Metacat.</p>
-  </td>
- </tr>
- <tr>
-  <td>
-    <p><img src="./images/local+network-metadata+data.gif" width=56 height=53></p>
-  </td>
-  <td>
-   <p>Data Package contains metadata and data, and is located <i>both</i> locally and on Metacat.</p>
-  </td>
- </tr>
-</table>
-<br><p>Data packages, while created locally, can be uploaded to a Metacat server to become a shared Metacat Data Package.  Data Packages are uploaded by right clicking on a Data Package Row.</p>
-
-<p><img SRC="./images/morpho_uploading.gif" height=441 width=599<br><br><br>
-<font color="yellow"> <font size=+3><b>!</b></font></font> Notice the other options:
-<ul>
-<li>Open the Data Package to view the metadata (and data if present).</li>
-<li>Refesh the screen.</li>
-<li>Delete the local copy.</li>   
-<li>Export the metadata/data to a local directory.</li>
-<li>Export to a ZIP file.</li>
-</ul></p>
-
-<br>&nbsp;
-<a name="search"></a>
-<div class="helpsub">Search Interface</div>
-<br>
-<p><img src="./images/search_icon.gif" width="24" height="24">  Click the search icon or use the search menu to begin the data package search process.<br>
-<p><img src="./images/search_menu.gif" width="219" height="56"><br>
-<br>
-<img SRC="./images/search_interface.gif" height=587 width=603<br><br><br>
-
-<p> The search interface allows you to name the query ("Query Title") in order to save it for repeated use.  The "catalog" and "local" checkboxes imply your search will occur both locally and on a Metacat server.  The tabs (Subject, Taxonomic, Spatial, Options) provide more detailed search criteria.  After entering your search criteria your results are displayed as in the example below. </p> 
-
-<p><img SRC="./images/download.gif" height=400 width=593<br><br><br>
-Similarly to uploading a data package, you can download a data package to your local PC from a Metacat by right-clicking and selecting "Download from Metacat". Notice you also have the option to delete data packages.  You are only allowed to delete files that you have created, or for which you have special permissions.  See more on <i>permissions</i></p> 
-
-</p>
-  </td>
+  <tr> 
+    <td colspan="2" WIDTH="100%"><br>
+      The first time you login the main morpho screen looks like the image below. 
+      <br>
+      <p><img src="images/main2.jpg" width="664" height="388"><br>
+        <br>
+        This morpho screen has several features: 
+      <li>Menu (File, Edit, Search, Data, Window, Help) and a toolbar containing 
+        icons. <br>
+        <img src="images/search_icon.gif" width="24" height="24"> The search 
+        icon begins the data package search process.<br>
+        <img src="images/new_package_icon.gif" width="24" height="24"> The 
+        new data package icon begins the process required to create your own data 
+        package<br>
+        <img src="images/openicon.jpg" width="24" height="26"> The open package icon 
+        allows you to open a data package that is saved locally.<br>
+        <p></p>
+      <li>Network icons (lower right of screen).</li>
+      <br>
+      <table width="37%" border="1">
+        <tr> 
+          <td width="38%">Network Connection</td>
+          <td width="62%"> 
+            <table width="100%">
+              <tr> 
+                <td><img src="images/conn.jpg" width="32" height="22"> Network connection 
+                  available</td>
+              </tr>
+              <tr> 
+                <td><img src="images/unconn.jpg" width="30" height="20"> Network connection 
+                  not available</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr> 
+          <td width="38%">Logged In</td>
+          <td width="62%"> 
+            <table width="100%">
+              <tr> 
+                <td><img src="images/log.jpg" width="18" height="21"> Logged into 
+                  network</td>
+              </tr>
+              <tr> 
+                <td><img src="images/nonet.jpg" width="21" height="21">Not logged 
+                  into network</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr> 
+          <td width="38%">Security</td>
+          <td width="62%"> 
+            <table width="100%">
+              <tr> 
+                <td><img src="images/secure.jpg" width="14" height="16"> Using secure 
+                  connection</td>
+              </tr>
+              <tr> 
+                <td> <img src="images/nosec.jpg" width="20" height="20"> Not using 
+                  secure connection</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <p></p>
+      <p></p>
+      <p></p>
+      <a name="package"></a> 
+      <div class="helpsub">Data Packages</div>
+      <p>Morpho uses the term "Data Package" to describe a set of metadata and 
+        /or data, and is represented by a &quot;Data Package&quot; screen, illustrated 
+        below. 
+      <p>This screen consists of several parts, illustrated below. The toolbar 
+        and menu are at the top of the screen. Below, there are three windows: 
+        the package window with documentation about the package, the data window 
+        with tabs to view different tables within the package, and a table documentation 
+        window with documentation for the table and table attributes (variables). 
+        All windows are adjustable using the bars that divide them. 
+      <p>This data package is either stored locally and /or on a metacat server. 
+        Data packages, while created locally, can be uploaded to a Metacat server 
+        to become a shared Metacat Data Package. Data Packages are uploaded by 
+        choosing File, then Synchronize.
+      <p><img src="images/package%20copy.jpg" width="939" height="550"><br>
+        <br>
+        <font color="yellow"> </font>
+      <p></p>
+      <p>Open an Existing Data Package:</p>
+      <p>:<img src="images/open%20copy.jpg" width="974" height="297"></p>
+      <ul>
+        <li>Select the open icon <img src="images/openicon.jpg" width="24" height="26"> 
+          or from the File menu, choose &quot;open&quot;.</li>
+        <li>Select a data package to open (or open the sample package titled &quot;Population 
+          sampling data for zoo...&quot;)</li>
+        <li>Click the &quot;open&quot; button. (Or you can right click on the 
+          package and choose &quot;open&quot;)</li>
+      </ul>
+      <br>
+      &nbsp; <a name="search"></a> 
+      <div class="helpsub">Search Interface</div>
+      <br>
+      <p><img src="images/search_icon.gif" width="24" height="24"> Click 
+        the search icon or use the search menu to begin the data package search 
+        process.<br>
+      <p><img src="images/search_menu.gif" width="219" height="56"><br>
+        <br>
+        <img src="images/searchscreen.jpg" width="586" height="332"> <br>
+        <br>
+        <br>
+      <p> The search interface allows you to name the query ("Query Title") in 
+        order to save it for repeated use. The "catalog" and "local" checkboxes 
+        imply your search will occur both locally and on a Metacat server. The 
+        tabs (Subject, Taxonomic, Spatial, Options) provide more detailed search 
+        criteria. After entering your search criteria your results are displayed 
+        as in the example below. </p>
+      <p><img src="images/searchresult.jpg" width="887" height="226"><br>
+      </p>
+      <p>Search Icons:<br>
+      </p>
+      <ul>
+        <li><img src="images/refresh.jpg" width="24" height="26"> Refresh<br>
+        </li>
+        <li><img src="images/saveicon.jpg" width="24" height="26"> Save search<br>
+        </li>
+        <li><img src="images/revise.jpg" width="25" height="25"> Revise</li>
+      </ul>
+      <p>The icons in the first column of the search result screen tell you if 
+        the package contains: </p>
+      <ul>
+        <li><img src="images/dataicon.jpg" width="21" height="23"> Data and documentation 
+        </li>
+        <li><img src="images/metadataicon.jpg" width="23" height="25"> Documentation 
+          only </li>
+      </ul>
+      Similarly to uploading a data package, you can download a data package to 
+      your local PC from a Metacat by right-clicking and selecting "Synchronize" 
+      or through the same option on the file menu. Notice you also have the option 
+      to delete data packages. You are only allowed to delete files that you have 
+      created, or for which you have special permissions. See more on <i>permissions</i>
+<p></p> 
+      <p></p>
+    </td>
  </tr>
  <tr>
    <td align=center valign=top width="50%">
-   <P><a href="index.html" class="sitelink">Help Home</a><br><P>&nbsp;
+   <P><a href="images/index.html" class="sitelink">Help Home</a><br><P>&nbsp;
    </td>
-   <td align=center valign=top width="50%">
-    <a href="getting_started.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=10 border=0 alt=Previous>Previous</a>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="packagesteps.html" class="sitelink">Create a Data Package<img src="./images/next.gif" vspace=0 hspace=10 border=0 alt=Next></a>
-   </td>
+    <td align=center valign=top width="50%"> <a href="../getting_started.html" class="sitelink"><img src="images/previous.gif" vspace=0 hspace=10 border=0 alt=Previous>Previous</a> 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="packagesteps.html" class="sitelink">Create 
+      a Data Package<img src="images/next.gif" vspace=0 hspace=10 border=0 alt=Next></a> 
+    </td>
   </tr>
 </table>
 </body>
