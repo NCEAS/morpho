@@ -13,7 +13,7 @@ public class SplashFrame extends javax.swing.JFrame
 		//{{INIT_CONTROLS
 		getContentPane().setLayout(new BorderLayout(0,0));
 		getContentPane().setBackground(java.awt.Color.white);
-		setSize(390,267);
+		setSize(427,266);
 		/* Center the Frame */
 		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
 		Rectangle frameDim = getBounds();
@@ -23,41 +23,56 @@ public class SplashFrame extends javax.swing.JFrame
 		setVisible(false);
 		JPanel3.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,JPanel3);
-		JPanel3.setBounds(0,0,390,242);
+		JPanel3.setBounds(0,0,427,241);
+		JPanel1.setLayout(new BorderLayout(0,0));
+		JPanel3.add(BorderLayout.NORTH,JPanel1);
+		JPanel1.setBounds(0,0,427,60);
 		JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		JLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel3.setText("KDI Desktop Client");
-		JPanel3.add(BorderLayout.NORTH,JLabel3);
-		JLabel3.setForeground(java.awt.Color.red);
-		JLabel3.setFont(new Font("Dialog", Font.PLAIN, 24));
-		JLabel3.setBounds(0,0,390,28);
-		JPanel3.add(JScrollPane1);
-		JScrollPane1.setBounds(0,28,390,199);
+		JLabel3.setText("MORPHO");
+		JPanel1.add(BorderLayout.CENTER,JLabel3);
+		JLabel3.setForeground(java.awt.Color.blue);
+		JLabel3.setFont(new Font("Dialog", Font.BOLD, 36));
+		JLabel3.setBounds(0,0,427,44);
+		JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel1.setText("Data Managment for Ecologists");
+		JPanel1.add(BorderLayout.SOUTH,JLabel1);
+		JLabel1.setForeground(java.awt.Color.black);
+		JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
+		JLabel1.setBounds(0,44,427,16);
+		JScrollPane1.setOpaque(true);
+		JPanel3.add(BorderLayout.CENTER,JScrollPane1);
+		JScrollPane1.setBounds(0,60,427,166);
 		JTextArea1.setEditable(false);
 		JTextArea1.setWrapStyleWord(true);
 		JTextArea1.setLineWrap(true);
 		JScrollPane1.getViewport().add(JTextArea1);
-		JTextArea1.setBounds(0,0,387,196);
+		JTextArea1.setBounds(0,0,424,163);
 		String temp = "This material is based upon work supported by ";
 		temp = temp + "the National Science Foundation under Grant No. DEB99-80154 and ";
 		temp = temp + "Grant No. DBI99-04777. Also supported by the National Center for Ecological Analysis ";
 		temp = temp + "and Synthesis, a Center funded by NSF (Grant #DEB-94-21535),";
-		temp = temp + "the University of California - Santa Barbara, the California Resources Agency, ";
-        temp = temp + "and the California Environmental Protection Agency. ";
+		temp = temp + "the University of California - Santa Barbara, ";
+        temp = temp + "and the State of California. ";
 		temp = temp + "Any opinions, findings and conclusions or recommendations expressed in this material ";
 		temp = temp + "are those of the author(s) and do not necessarily reflect the views ";
 		temp = temp + "of the National Science Foundation (NSF).";
+		temp = temp + "\n\n Participating organizations include the National Center for Ecological Analysis";
+        temp = temp + " and Synthesis (NCEAS), the Long Term Ecological Research Network (LTER), ";
+        temp = temp + "Texas Tech University, and the San Diego Supercomputer Center";
+		temp = temp + "\n\n Participating individuals include Matt Jones, Dan Higgins, Jivka Bojilova, Chad Berkley, ";
+		temp = temp + "Ruldolf Nottrott, and others";
 		JTextArea1.setText(temp);
 		JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel8.setText("Version 0.7 - Sept 2000");
+		JLabel8.setText("Version 0.75 - Sept 2000");
 		JPanel3.add(BorderLayout.SOUTH,JLabel8);
 		JLabel8.setForeground(java.awt.Color.black);
 		JLabel8.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel8.setBounds(0,227,390,15);
+		JLabel8.setBounds(0,226,427,15);
 		CloseButton.setText("Close");
 		CloseButton.setActionCommand("Close");
 		getContentPane().add(BorderLayout.SOUTH,CloseButton);
-		CloseButton.setBounds(0,242,390,25);
+		CloseButton.setBounds(0,241,427,25);
 		//}}
 
 		//{{INIT_MENUS
@@ -71,7 +86,7 @@ public class SplashFrame extends javax.swing.JFrame
      try {
 	//	NCEASIcon = new ImageIcon(getClass().getResource("NCEASlogo.gif"));
 	//	NSFIcon = new ImageIcon(getClass().getResource("nsf_logo.gif"));
-	    BFlyIcon = new ImageIcon(getClass().getResource("btrfly_lrg.gif"));
+	    BFlyIcon = new ImageIcon(getClass().getResource("Morphoblue.gif"));
 		JLabel3.setIcon(BFlyIcon);
 		JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 	 }
@@ -122,7 +137,9 @@ public class SplashFrame extends javax.swing.JFrame
 
 	//{{DECLARE_CONTROLS
 	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
+	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
 	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
 	javax.swing.JLabel JLabel8 = new javax.swing.JLabel();

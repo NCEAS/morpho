@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.15 2000-09-25 20:02:34 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.16 2000-09-26 15:08:01 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -83,7 +83,7 @@ public class ClientFramework extends javax.swing.JFrame
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
 		setJMenuBar(JMenuBar1);
-		setTitle("NCEAS Metadata Desktop Client");
+		setTitle("MORPHO - Data Management for Ecologists");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(744,525);
@@ -204,9 +204,15 @@ public class ClientFramework extends javax.swing.JFrame
 		JTabbedPane1.add(DataViewerPanel);
 		DataViewerPanel.setBounds(2,27,739,459);
 		DataViewerPanel.setVisible(false);
+		JTextArea1.setEditable(false);
+		JTextArea1.setWrapStyleWord(true);
+		JTextArea1.setText("Eventually this tab will display an assortment of tools for viewing and manipulating data collections (i.e. metadata and data)");
+		JTextArea1.setLineWrap(true);
+		DataViewerPanel.add(JTextArea1);
+		JTextArea1.setBounds(0,0,20,40);
 		UnderConstruction.setText("Under Construction!!!");
 		UnderConstruction.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		DataViewerPanel.add(BorderLayout.CENTER,UnderConstruction);
+		DataViewerPanel.add(BorderLayout.NORTH,UnderConstruction);
 		UnderConstruction.setForeground(java.awt.Color.red);
 		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
 		UnderConstruction.setBounds(0,0,739,459);
@@ -251,6 +257,7 @@ public class ClientFramework extends javax.swing.JFrame
 		fileMenu.add(PreviewXML);
 		fileMenu.add(JSeparator1);
 		ConnectMenuItem.setText("Connect...");
+		ConnectMenuItem.setActionCommand("Connect...");
 		fileMenu.add(ConnectMenuItem);
 		fileMenu.add(JSeparator3);
 		exitItem.setText("Exit");
@@ -455,6 +462,7 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
 	javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
 	javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
+	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
 	javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 = new com.symantec.itools.javax.swing.borders.LineBorder();
 	javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
@@ -496,7 +504,7 @@ public class ClientFramework extends javax.swing.JFrame
 	    	// Show a confirmation dialog
 	    	int reply = JOptionPane.showConfirmDialog(this, 
 	    	                                          "Do you really want to exit?", 
-	    	                                          "NCEAS Desktop Client - Exit" , 
+	    	                                          "MORPHO - Exit" , 
 	    	                                          JOptionPane.YES_NO_OPTION, 
 	    	                                          JOptionPane.QUESTION_MESSAGE);
 			// If the confirmation was affirmative, handle exiting.
