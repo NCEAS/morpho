@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 07:31:20 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-04-02 22:29:18 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,7 +247,7 @@ public class PartyMainPage
    */
   private void showNewPartyDialog() {
 
-    int predicate = 1 + partiesList.getSelectedRowIndex();
+    int predicate = 2 + partiesList.getSelectedRowIndex();
     if (predicate < 1) predicate = 1 + partiesList.getRowCount();
 
     PartyPage partyPage =  (PartyPage) WizardPageLibrary.getPage(role);
@@ -266,7 +266,7 @@ public class PartyMainPage
       //add new party to datapackage...
       DataPackageWizardPlugin.addPageDataToDOM(
           UIController.getInstance().getCurrentAbstractDataPackage(), partyPage,
-          "/" + DATAPACKAGE_PARTY_GENERIC_NAME + "[" + (predicate) + "]",
+          "/" + DATAPACKAGE_PARTY_GENERIC_NAME,
           DATAPACKAGE_PARTY_GENERIC_NAME, predicate);
     }
     if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
@@ -278,8 +278,8 @@ public class PartyMainPage
    */
   private void showEditPartyDialog() {
 
-    int predicate = 1 + partiesList.getSelectedRowIndex();
-    if (predicate < 1)predicate = 1 + partiesList.getRowCount();
+    int predicate = 2 + partiesList.getSelectedRowIndex();
+    if (predicate < 1) predicate = 1 + partiesList.getRowCount();
 
     List selRowList = partiesList.getSelectedRowList();
 

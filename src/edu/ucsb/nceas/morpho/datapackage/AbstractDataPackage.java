@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 01:09:56 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2004-04-02 22:29:18 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -481,6 +481,20 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   * convenience method to check if requested subtree exists (as identified
+   * by genericName String and int index).
+   *
+   * @param genericName String
+   * @param index int
+   * @return returns true if requested subtree exists (as identified
+   * by genericName String and int index). Returns false otherwise
+   */
+  public boolean subtreeExists(String genericName, int index) {
+
+    return (null != this.getSubtree(genericName, index));
+  }
+
 
   /**
    * returns cloned root Node of subtree identified by genericName String and int
@@ -659,6 +673,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * found, so caller can determine whether insertion was successful
    */
   public Node insertSubtree(String genericName, Node subtreeRootNode, int index) {
+
     Document thisDom = getMetadataNode().getOwnerDocument();
     Node newSubtree = thisDom.importNode(subtreeRootNode, true); // 'true' imports children
     Node subTreeNode = getSubtreeNoClone(genericName, 0);
@@ -731,6 +746,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * caller can determine whether insertion was successful
    */
   public Node deleteSubtree(String genericName, int index) {
+
     NodeList nodelist = null;
     String genericNamePath = "";
     try{
@@ -743,7 +759,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
       else {
         if (index<nodelist.getLength()) {
-          // create a deep cloned version
+
           Node node = nodelist.item(index);
           Node parnode = node.getParentNode();
           if (parnode==null) return null;
@@ -753,7 +769,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
     } catch (Exception e) {
-      Log.debug(50, "Exception in deleteSubtree!"+e);
+      Log.debug(15, "Exception in deleteSubtree!"+e);
       e.printStackTrace();
       return null;
     }
@@ -783,19 +799,23 @@ public abstract class AbstractDataPackage extends MetadataObject
 
     //if deletion worked, then add new subtree
     if (deleted != null) {
+      //if node identified by genericName and index already exists,
+      //insertSubtree() adds node before existing node..
       added = this.insertSubtree(genericName, newSubtreeRootNode, index);
     } else {
-      Log.debug(15, "** ERROR in replaceSubtree! - delete was unsuccessful "
-                + "- returning NULL");
+      Log.debug(15, "** ERROR in replaceSubtree! - delete was unsuccessful. "
+                +"Are you sure the node exists? - returning NULL");
       return null;
     }
 
     // if add wasn't successful, return deleted subtree to its former location
     if (added == null) {
 
-      added = this.insertSubtree(genericName, deleted, index);
       Log.debug(15, "** ERROR in replaceSubtree! - add was unsuccessful "
                 + "- trying to undo delete...");
+
+      added = this.insertSubtree(genericName, deleted, index);
+
       if (added != null) Log.debug(15, "** ...undo was successful...");
       else               Log.debug(15, "** ...UNDO FAILED - DATAPACKAGE NOT "
                                    +"RETURNED TO ORIGINAL STATE!!!...");

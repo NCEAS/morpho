@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 07:31:19 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2004-04-02 22:29:18 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     int lastPredicateIdx = rootNodeName.lastIndexOf("[");
     if (lastPredicateIdx < 0) lastPredicateIdx = rootNodeName.length();
     rootNodeName = rootNodeName.substring(lastSlashIdx, lastPredicateIdx);
-    Log.debug(5, "rootNodeName=" + rootNodeName);
+    Log.debug(45, "rootNodeName=" + rootNodeName);
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
     Document doc = impl.createDocument("", rootNodeName, null);
@@ -275,27 +275,41 @@ public class DataPackageWizardPlugin implements PluginInterface,
     }
     Node check = null;
 
-    if (adp.getSubtree(subtreeGenericName, predicate - 1) == null) {
+    boolean subtreeExists = adp.subtreeExists(subtreeGenericName, predicate - 1);
+    Log.debug(45,
+              "\naddPageDataToDOM() checked to see if subtree already exists"
+              +"\nsubtreeGenericName - "+subtreeGenericName
+              +"\nindex - "+(predicate - 1)
+              +"\nsubtreeExists? - "+subtreeExists);
+
+    if (subtreeExists) {
+
+      //existing, so replace...
+      Log.debug(45,
+                "addPageDataToDOM() replacing existing subtree in package...");
+      check = adp.replaceSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
+
+    } else {
+
       //not existing, so add to the datapackage
       Log.debug(45, "addPageDataToDOM() adding subtree to package...");
       Log.debug(45, "subtreeGenericName="+subtreeGenericName);
       Log.debug(45, "subtreeRoot="+XMLUtilities.getDOMTreeAsString(subtreeRoot));
       Log.debug(45, "predicate - 1="+(predicate - 1));
       check = adp.insertSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
-    } else {
-      //existing, so replace...
-      Log.debug(45,
-                "addPageDataToDOM() replacing existing subtree in package...");
-      check = adp.replaceSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
     }
+
     if (check == null) {
 
       Log.debug(5, "** ERROR: Unable to add new details to package **\n");
-      Log.debug(15, "addPageDataToDOM(): ADP.replaceSubtree() returned NULL");
+      Log.debug(15, "addPageDataToDOM(): "
+                + ((subtreeExists)? "ADP.replaceSubtree()" : "ADP.insertSubtree()")
+                + "returned NULL");
       return false;
     }
 
-    Log.debug(45, "...new project details successfully added/replaced");
+    Log.debug(45, "...new project details successfully "
+              + ((subtreeExists)? "replaced" : "added") );
     return true;
   }
 

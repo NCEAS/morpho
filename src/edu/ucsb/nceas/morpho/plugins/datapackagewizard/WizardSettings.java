@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 07:31:19 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2004-04-02 22:29:18 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,6 +254,7 @@ public class WizardSettings {
   +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
   +"   <dataset> "
   +"   <title> </title> "
+  +"   <creator> </creator>"
   +"   </dataset> "
   +"</eml:eml>";
 
