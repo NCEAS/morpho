@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Matt Jones
  *
- *     Version: '$Id: PluginInterface.java,v 1.1 2000-09-29 05:44:56 jones Exp $'
+ *     Version: '$Id: PluginInterface.java,v 1.2 2000-11-30 19:45:04 higgins Exp $'
  */
 package edu.ucsb.nceas.dtclient;
 
@@ -42,4 +42,11 @@ public interface PluginInterface
    * toolbar for the framework. 
    */ 
   public Action[] registerToolbarActions();
+  
+  
+  /** 
+  * The plugin must be able to get an instance of ClientFramework
+  * added by DFH, Nov 2000
+  */
+  public void setContainer(Object o);
 }

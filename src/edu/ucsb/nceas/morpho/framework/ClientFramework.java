@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.26 2000-10-13 17:35:54 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.27 2000-11-30 19:45:04 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -230,7 +230,7 @@ public class ClientFramework extends javax.swing.JFrame
 		QueryPanel.setVisible(false);
 		queryBean1.setExpertMode(false);
 		QueryPanel.add(BorderLayout.CENTER,queryBean1);
-		DataViewerPanel.setLayout(new BorderLayout(0,0));
+/*		DataViewerPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(DataViewerPanel);
 		DataViewerPanel.setBounds(0,0,0,0);
 		DataViewerPanel.setVisible(false);
@@ -245,11 +245,12 @@ public class ClientFramework extends javax.swing.JFrame
 		JLabel1.setText("Eventually this tab will display an assortment of tools for viewing and manipulating data collections (i.e. metadata and data)");
 		DataViewerPanel.add(BorderLayout.SOUTH,JLabel1);
 		JLabel1.setBounds(0,0,20,40);
-		JTabbedPane1.setSelectedComponent(EditorPanel);
+*/
+JTabbedPane1.setSelectedComponent(EditorPanel);
 		JTabbedPane1.setSelectedIndex(0);
 		JTabbedPane1.setTitleAt(0,"");
 		JTabbedPane1.setTitleAt(1,"");
-		JTabbedPane1.setTitleAt(2,"");
+//		JTabbedPane1.setTitleAt(2,"");
 		//$$ lineBorder1.move(240,481);
 		//$$ stringListModel1.move(72,406);
 		//$$ stringComboBoxModel1.move(48,481);
@@ -352,7 +353,7 @@ public class ClientFramework extends javax.swing.JFrame
 		JTabbedPane1.setSelectedIndex(1);
 		JTabbedPane1.setTitleAt(0,"Edit Document");
 		JTabbedPane1.setTitleAt(1,"Search Document");
-		JTabbedPane1.setTitleAt(2,"Browse Data");
+//		JTabbedPane1.setTitleAt(2,"Browse Data");
 
                 // Load all of the plugins, their menus, and toolbars
                 loadPlugins();
@@ -408,14 +409,31 @@ public class ClientFramework extends javax.swing.JFrame
    * menus and toolboxes for the plugins.
    */
   private void loadPlugins() {
+ /*     JPanel pluginPanel2 = new JPanel();
+      pluginPanel2.setLayout(new BorderLayout(0,0));
+      JTabbedPane1.add(pluginPanel2);
+      pluginPanel2.setVisible(true);
+      edu.ucsb.nceas.dsbrowser.DataSetBrowser temp = new edu.ucsb.nceas.dsbrowser.DataSetBrowser();
+      temp.setVisible(true);
+      pluginPanel2.add(BorderLayout.CENTER,temp);
+  
+      // Set the tab title (should get dynamically from the client.properties
+      JTabbedPane1.setTitleAt(2,"Data Viewer");
+*/
 
+    Vector plugins = new Vector(); // eventually load from config file
+    plugins.addElement("edu.ucsb.nceas.dsbrowser.DataSetBrowser");
+    plugins.addElement("edu.ucsb.nceas.editor.EditorBean");
+    
     // Dynamically load the plugins and their associated
     // menus and toolbars
 
     // First, create the new bean plugin
     try {
+      for (Enumeration q = plugins.elements();q.hasMoreElements();)
+      {
       PluginInterface plugin = (PluginInterface)
-        createObject("edu.ucsb.nceas.editor.EditorBean");
+        createObject((String)(q.nextElement()));
 
       // Create a panel to contain the plugin
       JPanel pluginPanel = new JPanel();
@@ -424,8 +442,6 @@ public class ClientFramework extends javax.swing.JFrame
       pluginPanel.setVisible(false);
       pluginPanel.add(BorderLayout.CENTER,(Container)plugin);
   
-      // Set the tab title (should get dynamically from the client.properties
-      JTabbedPane1.setTitleAt(3,"Demo Editor");
 
       // Get the list of menus from the plugin components
 //      String menus[] = plugin.registerMenus();
@@ -472,6 +488,10 @@ public class ClientFramework extends javax.swing.JFrame
 //        Action currentAction = toolbarActions[j];
 //        JToolBar1.add(currentAction);
 //      }
+      }
+      // Set the tab title (should get dynamically from the client.properties
+      JTabbedPane1.setTitleAt(3,"Demo Editor");
+      JTabbedPane1.setTitleAt(2,"Data Viewer");
 
     } catch (ClassCastException cce) {
       System.err.println("Error loading plugin: wrong class!");
@@ -512,8 +532,8 @@ public class ClientFramework extends javax.swing.JFrame
 			ClientFramework clf = new ClientFramework();
 			clf.setVisible(true);
 			sf.dispose();
-			ConnectionFrame cf = new ConnectionFrame(clf);
-			cf.setVisible(true);
+//			ConnectionFrame cf = new ConnectionFrame(clf);
+//			cf.setVisible(true);
             PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
             String log_file_setting =(String)options.handleGetObject("log_file");     // DFH
 			if (log_file_setting!=null)
