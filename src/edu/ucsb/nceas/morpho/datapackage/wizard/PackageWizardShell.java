@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-23 17:13:49 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2001-07-23 18:17:18 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -487,14 +487,23 @@ public class PackageWizardShell extends javax.swing.JFrame
     packageFiles.addElement(fvec);
     
     // now create a triple for the ACL relating it to datapackage file
+    Vector aclTriples = new Vector();
     Triple aclt = null;
     for(int m=0; m<frameWizards.size(); m++) {
-        // loop to find the triple file
+        // link the ACL to ALL metadata files
+        WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
+        if ((wfc2.id!=null)&&(!(wfc2.id).equals("NULLDATAFILE"))) {
+          aclt = new Triple(newid, "isRelatedTo", wfc2.id);
+          aclTriples.addElement(aclt);
+        }
+        
+ /*       // loop to find the triple file
         WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
         if(((String)wfc2.attributes.get("name")).equals(triplesFile)) {
             aclt = new Triple(newid, "isRelatedTo", wfc2.id);
             break;
         }
+ */
     }
     
     
@@ -571,9 +580,16 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
     }
     // add acl triple
-    if (aclt!=null) {
-        tc.addTriple(aclt);
+//    if (aclt!=null) {
+//        tc.addTriple(aclt);
+//    }
+    // add acl triples
+    if (aclTriples!=null) {
+      for (int kk=0;kk<aclTriples.size();kk++) {
+        tc.addTriple((Triple)aclTriples.elementAt(kk));  
+      }
     }
+    
     
     triples = tc;
     
