@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-05-30 17:35:07 $'
- * '$Revision: 1.46 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-30 17:52:09 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ public class ClientFramework extends javax.swing.JFrame
   private String userName = "public";
   private String passWord = "none";
   private static boolean debug = true;
-  static int debug_level = 0;
+  private static int debug_level = 9;
   // redirects standard out and err streams
   static boolean log_file = false;
   private String metacatURL = null;
@@ -957,7 +957,7 @@ public class ClientFramework extends javax.swing.JFrame
    * @param severity the severity of the debug message
    * @param message the message to log
    */
-  public void debug (int severity, String message)
+  public static void debug(int severity, String message)
   {
     if (debug) {
       if (debug_level > 0 && severity <= debug_level) {
