@@ -37,11 +37,8 @@ Morpho's main features include:
   5. Easy-to-use collaboration features via the KNB system      
 
 **************************************************
-ATTENTION ! --  ATTENTION !  -- ATTENTION !  (December 23, 2003)
+ATTENTION ! --  ATTENTION !  -- ATTENTION !  (April 15, 2003)
 
-This in an ALPHA Version of a considerable changed Morpho application!
-It operates differently than previous versions and is still considered
-fragile and may well have a number of 'bugs'.
 
 Many sections of Morpho Version 1.5 has been completely rewritten to work with
 EML 2.0.0 (and newer versions of EML). EML 2.0.0 is a considerable change from
@@ -50,12 +47,12 @@ modules were separate documents linked by references to IDs in a set of 'triples
 In EML 2.0.0, all metadata is stored in a single XML document. This change resulted
 in the need for considerable changes in the Morpho code.
 
-A significant effort has also been spent in creating a new DataPackageWizard to
+A significant effort has also been spent in creating a new Data Package Wizard to
 make it easier for a user to create a package without learning all the details of
-EML 2.0.0. Not all the forms planned for this wizard are currently installed.
+EML 2.0.0. The user can also edit many of the features of a document using forms
+the Data Package Wizard called up from the Documentation menu.
 
-Note that 'Help' information has not yet been updated. Thus the current Help system
-describes previous version and not the current version.
+
 
 
 **************************************************
@@ -65,9 +62,9 @@ Further documentation is available under the help menu in Morpho (after it has b
 INSTALLATION
 ------------
 1. Uninstall old versions of Morpho.
-Windows may get confused when there are multiple versions of Morpho installed, so we recommend that you uninstall previous version using the Windows control panel "Add/Remove Programs" before proceeding with the installation.
+Windows may get confused when there are multiple versions of Morpho installed, so we recommend that you uninstall previous version using the Windows control panel "Add/Remove Programs" before proceeding with the installation. Note, however, that previously created data packages will NOT be deleted because they are stored in a separate directory. Older packages will contnue to be available when new versions of Morpho are installed.
 
-2. Download the new version, along with Java. Morpho is a Java application. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine running Morpho, preferably  version 1.3 or later.  Morpho can be downloaded with Java for your convenience, or it can be obtained from Sun (http://java.sun.com). With Java the Morpho distribution is a much larger download, so if you already have Java 1.3 or later installed, its better to download the Morpho-only distribution. [Note: Java 1.4 has now been released by Sun. Morpho appears to work with this new release, but has not been exhaustively tested.]
+2. Download the new version, along with Java. Morpho is a Java application. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine running Morpho, preferably  version 1.3 or later.  Morpho can be downloaded with Java for your convenience, or it can be obtained from Sun (http://java.sun.com). With Java the Morpho distribution is a much larger download, so if you already have Java 1.3 or later installed, its better to download the Morpho-only distribution. [Note: Java 1.4 is currently the prefrerred version of Java for use with Morpho.]
 
 3. Run the installer application
 Download the installation executable and run it on your desired platform. For windows this requires simply double-clicking on the executable file that you downloaded, but may vary depending on your operating system.
@@ -98,13 +95,16 @@ Known Bugs and Feature Requests
 -------------------------------
 See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of the know issues with Morpho, and a list ofthe new features that have been requested.  Submit reports of new bugs to this address as well.
 
-There is a known problem with downloading very large datafiles (with more than ~500,000 records) from the network with Moprho 1.2.0. 
-
-The large dataset problem has been fixed in Morpho 1.3.0.
 
 
 Version History
 -------------------------------
+***
+Version 1.5
+
+Version 1.5 is a major update from previous versions with numerous changes in both interface features and internal logical structure. Many of these changes were made in providing full support for eml 2.0.0 which is considerably changed from the eml version previously supported (Beta 6). [Note that older eml packages are automatically converted to eml 2.0.0 and displayed as such. Actual conversion of the package will only occur when the owner saves the converted data.]
+
+This version also has a completely new Wizard for creating new data packages. This wizard also allows one to use the awizard forms for editing some parts of existing documents.
 
 ***
 Version 1.4
@@ -163,9 +163,9 @@ With some video cards, Java windows will sometimes not be displayed properly. In
 
 Notes for Macintosh Users
 -------------------------
-There are two versions of Morpho available for use with Macintosh computers. One version is for the new OS X operating system and the other is for the older OS 8 and OS 9 systems. This difference is due to the fact that newer versions of the Java Virtual Machine used to execute Morpho are not available for the older Macintosh operating system. For Macintosh systems older than OS X, only Java 1.18 is available, while Java 1.3 is included as part of the Mac OS X installation. 
+There are two versions of Morpho available for use with Macintosh computers. One version is for the new OS X operating system and the other is for the older OS 8 and OS 9 systems. This difference is due to the fact that newer versions of the Java Virtual Machine used to execute Morpho are not available for the older Macintosh operating system. For Macintosh systems older than OS X, only Java 1.18 is available, while Java 1.4 is included as part of the Mac OS X installation. 
 
-Most of Morpho works with the older versions of Java. (Exceptions include some key stroke equivalents for some menu commands, and the ability to save and re-execute queries from menus. There may also be some memory limitations when  working with large amounts of data/metadata.) However, Morpho is 2-3 times faster when run under OS X using the newer Java Virtual Machine! For that reason alone, IT IS RECOMMENDED THAT THE OS X VERSION OF MORPHO SHOULD BE USED WHENEVER POSSIBLE.   
+The latest version of Morpho will only execute on Macintosh systems using OS X.  IT IS RECOMMENDED THAT THE OS X VERSION OF MORPHO SHOULD BE USED WHENEVER POSSIBLE, since only obsolete versions are available for the older operationg systems.   
 
 Also, on the Macintosh, pressing the <Control> key down while clicking is the equivalent of a click of the right mouse button under Windows. Thus "<Control>+ Click" should be used to bring up popup menus when running Morpho on a  Macintosh.
 
