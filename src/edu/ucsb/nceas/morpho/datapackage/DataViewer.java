@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-12 03:21:43 $'
- * '$Revision: 1.117 $'
+ *     '$Date: 2004-04-14 15:42:22 $'
+ * '$Revision: 1.118 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 
 /*
@@ -829,6 +830,8 @@ public class DataViewer extends javax.swing.JPanel
           showDataView = false;
           dataFile = null;
           buildTable();
+//          table.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+          table.setBackground(table.getParent().getBackground());
           table.setEnabled(false);
           /*StateChangeMonitor.getInstance().notifyStateChange(
                  new StateChangeEvent(
