@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-26 08:04:13 $'
-  * '$Revision: 1.7 $'
+  *     '$Date: 2002-10-30 22:28:52 $'
+  * '$Revision: 1.8 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
         <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
         
         <tr><td class="{$subHeaderStyle}" colspan="2">
-            Attribute structure description<br />
+            Attribute structure description (Column <xsl:value-of select="$selected_attribute"/>)<br />
             (Identifier: <xsl:value-of select="eml-attribute/identifier"/>
             <xsl:if test="normalize-space(./@system)!=''">
               ; &#160;Catalog System:<xsl:value-of select="./@system"/>
@@ -51,7 +51,7 @@
         )</td></tr>
         <xsl:for-each select="eml-attribute/attribute">
           <xsl:choose>
-            <xsl:when test="contains($selected_attribute, (position()-1)) or $selected_attribute&lt;0 or normalize-space($selected_attribute)=''">
+            <xsl:when test="($selected_attribute=(position()-1)) or $selected_attribute&lt;0 or normalize-space($selected_attribute)=''">
         <tr>
             <td class="{$firstColStyle}" width="{$firstColWidth}">Attribute Name</td>
             <td class="{$secondColStyle}" width="{$secondColWidth}"><xsl:value-of select="attributeName"/>&#160;</td>
