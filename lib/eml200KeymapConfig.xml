@@ -7,7 +7,7 @@
     <parties>(/eml:eml/dataset/creator)|(/eml:eml/dataset/metadataProvider)|(/eml:eml/dataset/associatedParty)|(/eml:eml/dataset/contact)|(/eml:eml/dataset/publisher)|(/eml:eml/dataset/project/personnel)</parties>
     <creator>/eml:eml/dataset/creator</creator>
     <contact>/eml:eml/dataset/contact</contact>
-    <associatedParty>/eml:eml/dataset/creator</associatedParty>
+    <associatedParty>/eml:eml/dataset/associatedParty</associatedParty>
     <personnel>/eml:eml/dataset/project/personnel</personnel>
     <title>/eml:eml/dataset/title</title>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
@@ -75,6 +75,29 @@
   </insertionList>
   <insertionList name="creator">
     <prevNode>/eml:eml/dataset/title</prevNode>
+  </insertionList>
+  <insertionList name="contact">
+    <prevNode>/eml:eml/dataset/maintenance</prevNode>
+    <prevNode>/eml:eml/dataset/purpose</prevNode>
+    <prevNode>/eml:eml/dataset/coverage</prevNode>
+    <prevNode>/eml:eml/dataset/distribution</prevNode>
+    <prevNode>/eml:eml/dataset/intellectualRights</prevNode>
+    <prevNode>/eml:eml/dataset/additionalInfo</prevNode>
+    <prevNode>/eml:eml/dataset/keywordSet</prevNode>
+    <prevNode>/eml:eml/dataset/abstract</prevNode>
+    <prevNode>/eml:eml/dataset/series</prevNode>
+    <prevNode>/eml:eml/dataset/language</prevNode>
+    <prevNode>/eml:eml/dataset/pubDate</prevNode>
+    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
+    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+    <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>
+  <insertionList name="associatedParty">
+    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+    <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>
+  <insertionList name="personnel">
+    <prevNode>/eml:eml/dataset/project/title</prevNode>
   </insertionList>
   <insertionList name="methods">
     <prevNode>/eml:eml/dataset/pubPlace</prevNode>
