@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: higgins $'
-  *     '$Date: 2003-10-16 16:52:15 $'
-  * '$Revision: 1.2 $'
+  *     '$Date: 2003-12-03 23:27:09 $'
+  * '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by

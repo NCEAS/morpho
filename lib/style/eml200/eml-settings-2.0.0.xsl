@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: higgins $'
-  *     '$Date: 2003-10-16 16:52:15 $'
-  * '$Revision: 1.2 $'
+  *     '$Date: 2003-12-03 23:27:09 $'
+  * '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,8 @@
     */
 -->
 
-  <xsl:param name="qformat">default</xsl:param>
-  
+  <xsl:param name="qformat">@default-style@</xsl:param>
+
 
 <!--
     /**
@@ -68,11 +68,42 @@
     */
 -->
   <xsl:param name="displaymodule">dataset</xsl:param>
-  
 
 
 <!--
     /**
+    *   To show the links for the Entities in the dataset display module.
+    */
+-->
+  <xsl:param name="withEntityLinks">1</xsl:param>
+
+
+<!--
+    /**
+    *   To show the link for Additional Metadata in the dataset display module.
+    */
+-->
+  <xsl:param name="withAdditionalMetadataLink">1</xsl:param>
+
+
+<!--
+    /**
+    *   To show the link for the Original XML in the dataset display module.
+    */
+-->
+  <xsl:param name="withOriginalXMLLink">1</xsl:param>
+
+
+<!--
+    /**
+    *   To show the Attributes table in the entity display.
+    */
+-->
+  <xsl:param name="withAttributes">1</xsl:param>
+
+
+<!--
+   /**
     *   the path of the directory where the XSL and CSS files reside - starts
     *   with context name, eg: /myContextRoot/styleDirectory.
     *   (As found in "http://hostname:port/myContextRoot/styleDirectory").
@@ -83,15 +114,32 @@
     */
 -->
 
-<!--<xsl:param name="stylePath">@style-path@</xsl:param>-->
-    <xsl:param name="stylePath">@style-path@</xsl:param> 
+    <xsl:param name="stylePath">@style-skins-path@</xsl:param>
+
+
+<!--
+   /*
+    *   the path of the directory where the common javascript and css files
+    *   reside - i.e the files that are not skin-specific. Starts
+    *   with context name, eg: /myContextRoot/styleCommonDirectory.
+    *   (As found in "http://hostname:port/myContextRoot/styleCommonDirectory").
+    *
+    *   EXAMPLE
+    *       <xsl:param name="styleCommonPath">/brooke/style/common</xsl:param>
+    */
+-->
+
+    <xsl:param name="styleCommonPath">@style-common-path@</xsl:param>
+
 
 <!--the docid of xml which is processed-->
     <xsl:param name="docid"/>
 <!-- type of entity, data table or spacial raster or others-->
-    <xsl:param name="entitytype"/>
+    <xsl:param name="entitytype"></xsl:param>
 <!-- the index of entity in same entity type -->
     <xsl:param name="entityindex"/>
+<!-- the index of attribute in same entity -->
+    <xsl:param name="attributeindex"/>
 <!-- the index of physical part in entity part-->
     <xsl:param name="physicalindex"/>
 <!-- the index of distribution in physical part  -->
@@ -100,13 +148,13 @@
     <xsl:param name="distributionlevel"/>
 <!-- the index of attribute in attribute list-->
     <xsl:param name="attributeindex"/>
-<!-- the index of additional metadata-->    
+<!-- the index of additional metadata-->
     <xsl:param name="additionalmetadataindex"/>
 <!-- attribute set to get rid of cell spacing-->
     <xsl:attribute-set name="cellspacing">
       <xsl:attribute name="cellpadding">0</xsl:attribute>
       <xsl:attribute name="cellspacing">0</xsl:attribute>
-    </xsl:attribute-set>    
+    </xsl:attribute-set>
 
 
 <!--
@@ -125,8 +173,8 @@
     */
 -->
 
-    <xsl:param name="tripleURI"><![CDATA[@html-path@/servlet/metacat?action=read&qformat=@default-style@&docid=]]></xsl:param>
-    
+    <xsl:param name="tripleURI"><![CDATA[@html-path@/servlet/metacat?action=read&qformat=]]><xsl:value-of select="$qformat" /><![CDATA[&docid=]]></xsl:param>
+
     <!-- URL for xmlformat-->
     <xsl:param name="xmlURI"><![CDATA[@html-path@/servlet/metacat?action=read&qformat=xml&docid=]]></xsl:param>
 
@@ -157,6 +205,10 @@
 <!--    the style for major rows containing subsection titles etc. -->
   <xsl:param name="subHeaderStyle" select="'tablehead'"/>
 
+<!--    the style for major rows containing links, such as additional metadata, 
+        original xml file etc. -->
+  <xsl:param name="linkedHeaderStyle" select="'linkedHeaderStyle'"/>
+
 <!--    the width for the first column (but see note above) -->
   <xsl:param name="firstColWidth" select="'15%'"/>
 
@@ -169,11 +221,42 @@
 <!-- the style for the second column -->
   <xsl:param name="secondColStyle" select="'secondCol'"/>
 
+<!-- the style for the attribute table -->
+  <xsl:param name="tableattributeStyle" select="'tableattribute'"/>
+
+<!-- the style for the border -->
+  <xsl:param name="borderStyle" select="'bordered'"/>
+
+<!-- the style for the even col in attributes table -->
+  <xsl:param name="colevenStyle" select="'coleven'"/>
+
+<!-- the style for the inner even col in attributes table -->
+  <xsl:param name="innercolevenStyle" select="'innercoleven'"/>
+
+<!-- the style for the odd col in attributes table -->
+  <xsl:param name="coloddStyle" select="'colodd'"/>
+
+<!-- the style for the inner odd col in attributes table -->
+  <xsl:param name="innercoloddStyle" select="'innercolodd'"/>
+
+
+<!-- the default alignment style for the wrapper around the main tables -->
+  <xsl:param name="mainTableAligmentStyle" select="'mainTableAligmentStyle'"/>
+
+<!-- the default style for the main container table -->
+  <xsl:param name="mainContainerTableStyle" select="'mainContainerTableStyle'"/>
+
+<!-- the default style for all other tables -->
+  <xsl:param name="tabledefaultStyle" select="'tabledefault'"/>
+
+<!-- the style for table party -->
+  <xsl:param name="tablepartyStyle" select="'tableparty'"/>
+
 <!-- Some html pages use a nested table in the second column.
      Some of these nested tables set their first column to
      the following width: -->
   <xsl:param name="secondColIndent" select="'10%'"/>
-  
+
 <!-- the first column width of attribute table-->
   <xsl:param name="attributefirstColWidth" select="'15%'"/>
 

@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: higgins $'
-  *     '$Date: 2003-10-16 16:52:15 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2003-12-03 23:27:09 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -30,17 +30,17 @@
   * suitable for rendering with modern web browsers.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
- 
+
 
   <xsl:output method="html" encoding="iso-8859-1"/>
   <!-- This module is for datatable module-->
-  
+
   <xsl:template name="otherEntity">
       <xsl:param name="otherentityfirstColStyle"/>
       <xsl:param name="otherentitysubHeaderStyle"/>
       <xsl:param name="docid"/>
       <xsl:param name="entityindex"/>
-      <table xsl:use-attribute-sets="cellspacing" class="tabledefault" width="100%">
+      <table xsl:use-attribute-sets="cellspacing" class="{$tabledefaultStyle}" width="100%">
         <xsl:choose>
          <xsl:when test="references!=''">
           <xsl:variable name="ref_id" select="references"/>
@@ -48,7 +48,7 @@
           <xsl:for-each select="$references">
             <xsl:call-template name="otherEntityCommon">
              <xsl:with-param name="otherentityfirstColStyle" select="$otherentityfirstColStyle"/>
-             <xsl:with-param name="otherentitysubHeaderStyle" select="$otherentitysubHeaderStyle"/>  
+             <xsl:with-param name="otherentitysubHeaderStyle" select="$otherentitysubHeaderStyle"/>
              <xsl:with-param name="docid" select="$docid"/>
              <xsl:with-param name="entityindex" select="$entityindex"/>
             </xsl:call-template>
@@ -57,7 +57,7 @@
         <xsl:otherwise>
            <xsl:call-template name="otherEntityCommon">
              <xsl:with-param name="otherentityfirstColStyle" select="$otherentityfirstColStyle"/>
-             <xsl:with-param name="otherentitysubHeaderStyle" select="$otherentitysubHeaderStyle"/>  
+             <xsl:with-param name="otherentitysubHeaderStyle" select="$otherentitysubHeaderStyle"/>
              <xsl:with-param name="docid" select="$docid"/>
              <xsl:with-param name="entityindex" select="$entityindex"/>
             </xsl:call-template>
@@ -65,7 +65,7 @@
       </xsl:choose>
       </table>
   </xsl:template>
-  
+
   <xsl:template name="otherEntityCommon">
     <xsl:param name="otherentityfirstColStyle"/>
     <xsl:param name="otherentitysubHeaderStyle"/>
@@ -114,7 +114,7 @@
         </xsl:call-template>
          </td></tr>
      </xsl:for-each>
-   
+
     <xsl:if test="coverage">
        <tr><td class="{$otherentitysubHeaderStyle}" colspan="2">
         Coverage Description:
@@ -151,14 +151,16 @@
         </xsl:call-template>
       </td></tr>
     </xsl:for-each>
+    <xsl:if test="$withAttributes='1'">
     <xsl:for-each select="attributeList">
       <xsl:call-template name="otherEntityAttributeList">
         <xsl:with-param name="otherentityfirstColStyle" select="$otherentityfirstColStyle"/>
-        <xsl:with-param name="otherentitysubHeaderStyle" select="$otherentitysubHeaderStyle"/>  
+        <xsl:with-param name="otherentitysubHeaderStyle" select="$otherentitysubHeaderStyle"/>
         <xsl:with-param name="docid" select="$docid"/>
         <xsl:with-param name="entityindex" select="$entityindex"/>
       </xsl:call-template>
     </xsl:for-each>
+    </xsl:if>
      <!-- Here to display distribution info-->
     <xsl:for-each select="physical">
        <xsl:call-template name="otherEntityShowDistribution">
@@ -170,7 +172,7 @@
        </xsl:call-template>
     </xsl:for-each>
   </xsl:template>
- 
+
   <xsl:template name="otherEntityShowDistribution">
      <xsl:param name="otherentityfirstColStyle"/>
      <xsl:param name="otherentitysubHeaderStyle"/>
@@ -194,8 +196,8 @@
       </td></tr>
     </xsl:for-each>
   </xsl:template>
-  
-  
+
+
   <xsl:template name="otherEntityAttributeList">
     <xsl:param name="otherentityfirstColStyle"/>
     <xsl:param name="otherentitysubHeaderStyle"/>
@@ -214,7 +216,7 @@
        </td>
     </tr>
   </xsl:template>
-  
-  
+
+
 
 </xsl:stylesheet>
