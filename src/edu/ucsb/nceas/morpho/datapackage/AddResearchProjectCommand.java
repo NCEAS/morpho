@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 06:03:17 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-19 00:06:53 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,12 +46,14 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import javax.xml.transform.TransformerException;
+import java.util.Map;
 
 /**
  * Class to handle add project command
  */
 public class AddResearchProjectCommand implements Command {
 
+  private final String DATAPACKAGE_PROJECT_GENERIC_NAME = "project";
 
   public AddResearchProjectCommand() {}
 
@@ -66,8 +68,16 @@ public class AddResearchProjectCommand implements Command {
     resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 
-    if (morphoFrame != null) resultPane = morphoFrame.getDataViewContainerPanel();
+    if (morphoFrame != null) {
 
+      resultPane = morphoFrame.getDataViewContainerPanel();
+      adp = resultPane.getAbstractDataPackage();
+
+    } else {
+      Log.debug(5, "Unable to open project details!");
+      Log.debug(20, "AddResearchProjectCommand - morphoFrame==null");
+      return;
+    }
 
     // make sure resulPanel is not null
     if (resultPane==null) return;
@@ -75,7 +85,7 @@ public class AddResearchProjectCommand implements Command {
     if (showProjectDialog()) {
 
       try {
-        insertNewProject();
+        insertProject();
       } catch (Exception w) {
         Log.debug(20, "Exception trying to modify project DOM");
       }
@@ -91,14 +101,24 @@ public class AddResearchProjectCommand implements Command {
       sc = ServiceController.getInstance();
       dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
           DataPackageWizardInterface.class);
-    }
-    catch (ServiceNotHandledException se) {
-      Log.debug(6, se.getMessage());
+
+    } catch (ServiceNotHandledException se) {
+
+        Log.debug(6, se.getMessage());
     }
 
     if (dpwPlugin == null) return false;
 
     projectPage = dpwPlugin.getPage(DataPackageWizardInterface.PROJECT);
+
+    OrderedMap existingValuesMap = null;
+    projectRoot = adp.getSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+
+    if (projectRoot!=null) {
+      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(projectRoot);
+    }
+    projectPage.setPageData(existingValuesMap);
+
     ModalDialog dialog = new ModalDialog(projectPage,
                             UIController.getInstance().getCurrentActiveWindow(),
                             UISettings.POPUPDIALOG_WIDTH,
@@ -108,30 +128,49 @@ public class AddResearchProjectCommand implements Command {
   }
 
 
-  private void insertNewProject() {
+  private void insertProject() {
 
-    OrderedMap map = projectPage.getPageData();
-    AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+    OrderedMap map = projectPage.getPageData("/");
 
-    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-    Document doc = impl.createDocument("", "project", null);
+Log.debug(5, "got project details from Project page -\n\n" + map.toString());
 
-    Node root = doc.getDocumentElement();
+    if (map==null || map.isEmpty()) {
+      Log.debug(5, "Unable to get project details from input!");
+      return;
+    }
+    if (projectRoot==null) {
+      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+      Document doc = impl.createDocument("", "project", null);
+
+      projectRoot = doc.getDocumentElement();
+
+    } else {
+
+      XMLUtilities.removeAllChildren(projectRoot);
+    }
 
     try {
-      XMLUtilities.getXPathMapAsDOMTree(map, root);
-
-// how do we add this to the datapackage???
-//      adp.insertCoverage(root);
-      Log.debug(5, "Need to add project details to package!");
+      XMLUtilities.getXPathMapAsDOMTree(map, projectRoot);
 
     } catch (TransformerException w) {
       Log.debug(5, "Unable to add project details to package!");
+      Log.debug(20, "TransformerException (" + w + ") calling "
+                +"XMLUtilities.getXPathMapAsDOMTree(map, projectRoot) with \n"
+                +"map = " + map
+                +" and projectRoot = " + projectRoot);
       w.printStackTrace();
     }
+    // add to the datapackage
+    adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, projectRoot, 0);
+
+Log.debug(5, "added project details to package -\n\n"
+        + XMLUtilities.getDOMTreeAsString(projectRoot));
   }
 
-  private MorphoFrame morphoFrame = null;
+
+  private Node projectRoot;
+  private AbstractDataPackage adp;
+  private MorphoFrame morphoFrame;
   private DataViewContainerPanel resultPane;
   private AbstractUIPage projectPage;
 }

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 06:03:17 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-03-19 00:06:53 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,13 @@ public class Project extends AbstractUIPage {
   private JPanel noDataPanel;
   private JPanel currentPanel;
 
-  private final String xPathRoot  = "/eml:eml/dataset/project/";
+  private final String XPATH_ROOT          = "/eml:eml/dataset[1]/";
+
+  private final String PROJECT_ROOT        = "project[1]/";
+  private final String TITLE_REL_XPATH     = PROJECT_ROOT + "title[1]";
+  private final String FUNDING_REL_XPATH   = PROJECT_ROOT + "funding[1]/para[1]";
+  private final String PERSONNEL_REL_XPATH = PROJECT_ROOT + "personnel[";
+
 
   private final String[] buttonsText = new String[] {
       "This project is part of a larger, umbrella research project"
@@ -327,17 +333,25 @@ public class Project extends AbstractUIPage {
    *  gets the Map object that contains all the key/value paired
    *  settings for this particular wizard page
    *
-   *  @return   data the Map object that contains all the
+   * @param rootXPath the root xpath to prepend to all the xpaths returned by
+   *   this method
+   *
+   * @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap returnMap = new OrderedMap();
-  public OrderedMap getPageData() {
+
+  public OrderedMap getPageData(String rootXPath) {
+
+    if (rootXPath==null) rootXPath = "";
+    rootXPath = rootXPath.trim();
+    if (!rootXPath.endsWith("/")) rootXPath += "/";
 
     returnMap.clear();
 
     if (currentPanel == dataPanel) {
       if ( !(titleField.getText().trim().equals("")) ) {
-        returnMap.put(xPathRoot + "title", titleField.getText().trim());
+        returnMap.put(rootXPath + TITLE_REL_XPATH, titleField.getText().trim());
       }
 
       int index = 1;
@@ -364,14 +378,17 @@ public class Project extends AbstractUIPage {
 
         nextPartyPage = (PartyPage)nextUserObject;
 
-        nextNVPMap = nextPartyPage.getPageData(xPathRoot + "personnel[" + (index++) + "]");
+        nextNVPMap = nextPartyPage.getPageData(rootXPath + PERSONNEL_REL_XPATH
+                                               + (index++) + "]");
         returnMap.putAll(nextNVPMap);
       }
 
       if ( !(fundingField.getText().trim().equals("")) ) {
-        returnMap.put(xPathRoot + "funding/para", fundingField.getText().trim());
+        returnMap.put(rootXPath + FUNDING_REL_XPATH, fundingField.getText().trim());
       }
     }
+    if (!hiddenFieldsMap.isEmpty()) returnMap.putAll(hiddenFieldsMap);
+
     return returnMap;
   }
 
@@ -380,15 +397,12 @@ public class Project extends AbstractUIPage {
    * gets the Map object that contains all the key/value paired settings for
    * this particular wizard page
    *
-   * @param rootXPath the root xpath to prepend to all the xpaths returned by
-   *   this method
    * @return data the Map object that contains all the key/value paired
    *   settings for this particular wizard page
    */
-  public OrderedMap getPageData(String rootXPath) {
+  public OrderedMap getPageData() {
 
-    throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+    return getPageData(XPATH_ROOT);
   }
 
   /**
@@ -426,7 +440,55 @@ public class Project extends AbstractUIPage {
    *
    *  @return the serial number of the page
    */
- public String getPageNumber() { return pageNumber; }
+  public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap data) { }
+
+
+  private OrderedMap hiddenFieldsMap = new OrderedMap();
+
+  public void setPageData(OrderedMap data) {
+
+    if (data==null || data.isEmpty()) return;
+
+    hiddenFieldsMap.clear();
+
+    Iterator it = data.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath    = null;
+    Object nextValObj   = null;
+    String nextVal      = null;
+
+    while (it.hasNext()){
+
+      nextXPathObj = it.next();
+      if (nextXPathObj==null) continue;
+      nextXPath = (String)nextXPathObj;
+
+      nextValObj = data.get(nextXPathObj);
+      nextVal = (nextValObj==null)? "" : ((String)nextValObj).trim();
+
+      // remove everything up to and including the last occurrence of
+      // PROJECT_ROOT to get relative xpaths, in case we're handling a
+      // project elsewhere in the tree...
+      nextVal = nextVal.substring(nextVal.lastIndexOf(PROJECT_ROOT)
+                                  + PROJECT_ROOT.length());
+
+      if (nextXPath.equalsIgnoreCase(TITLE_REL_XPATH)) {
+
+        titleField.setText(nextVal);
+
+      } else if (nextXPath.equalsIgnoreCase(FUNDING_REL_XPATH)) {
+
+        fundingField.setText(nextVal);
+
+      } else if (nextXPath.equalsIgnoreCase(PERSONNEL_REL_XPATH)) {
+
+        titleField.setText(nextVal);
+
+      } else {
+
+        hiddenFieldsMap.put(nextXPathObj, nextValObj);
+      }
+    }
+  }
 }
