@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-19 19:08:22 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-19 23:49:49 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -279,7 +279,6 @@ public abstract class AbstractDataPackage extends MetadataObject
         return null;
       }
       Node[] attr = XMLUtilities.getNodeListAsNodeArray(attributeNodes);
-      Log.debug(1,"attribute array size is: "+attr.length);
       return XMLUtilities.getNodeListAsNodeArray(attributeNodes);      
     }
     catch (Exception w) {
@@ -288,5 +287,28 @@ public abstract class AbstractDataPackage extends MetadataObject
     return null;
   }
 
+  public String getAttributeName(int entityIndex, int attributeIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] attributes = getAttributeArray(entityIndex);
+    if ((attributes==null)||(attributes.length<1)) return "no attributes!";
+    Node attribute = attributes[attributeIndex];
+    String attrXpath = "";
+    try {
+      attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='attribute']/name")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting entity description"+w.toString());
+    }
+    return temp;
+  }
+  
 }
 
