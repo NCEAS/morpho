@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-03 18:47:43 $'
- * '$Revision: 1.5 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-07 23:43:18 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import com.arbortext.catalog.*;
 import java.io.*;
 import java.util.Vector;
 import java.util.Hashtable;
+import javax.swing.*;
 
 /**
  * This class is designed to store configuration information in
@@ -412,7 +413,12 @@ public class ConfigXML
    * @param nd node (usually the document root)
    */
   public void saveDOM(Node nd)
-  {
+  { 
+    File outfile = new File(fileName);
+   if (!outfile.canWrite()) {
+	JOptionPane.showMessageDialog(null, "Cannot Save configuration information to "+fileName+ " !", "alert",  JOptionPane.ERROR_MESSAGE);
+    }
+   else {
     try
     {
       out = new PrintWriter(new FileWriter(fileName));
@@ -422,7 +428,8 @@ public class ConfigXML
     }
     out.println("<?xml version=\"1.0\"?>");
     print(nd);
-    out.close();
+    out.close(); 
+   }
   }
 
   /**
