@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-22 02:01:08 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-04-27 00:33:56 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -819,8 +819,13 @@ public class CitationPage extends AbstractUIPage {
     o1 = map.get(xPath + "/article[1]/journal[1]");
     if(o1 != null) return "Article";
 
-    o1 = map.get(xPath + "/report[1]/publisher[1]/organizationName[1]");
+		o1 = map.get(xPath + "/report[1]/publisher[1]/organizationName[1]");
     if(o1 != null) return "Report";
+    o1 = map.get(xPath + "/report[1]/reportNumber[1]");
+    if(o1 != null) return "Report";
+		o1 = map.get(xPath + "/report[1]/totalPages[1]");
+    if(o1 != null) return "Report";
+		
 
     return "";
   }
