@@ -184,7 +184,7 @@
       <tooltip>Description of constaints</tooltip>
       <displaypath>FIXED:Constraint Information</displaypath>
       <editexisting>no</editexisting>
-      <idpath>/eml-constaint/identifier</idpath>
+      <idpath>/eml-constraint/identifier</idpath>
     </file>
     <file>
       <name>Protocol</name>
