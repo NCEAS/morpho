@@ -127,7 +127,7 @@ of nodes inside choice elements were handled incorrectly.
 ---
 Version 1.0.5 of Morpho fixes some additional bugs in the editor, especially
 with CHOICE nodes. Changes for speeding up several function have also been made.
-
+Also inceased the memory the JVM asks for to 128M from 64M.
 
 Legalese
 --------
