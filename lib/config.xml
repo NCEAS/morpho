@@ -183,5 +183,5 @@
   <uid_tag>uid</uid_tag>
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
-  <current_profile></current_profile>
+  <current_profile>berkley</current_profile>
 </config>

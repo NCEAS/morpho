@@ -1,47 +1,412 @@
-<?xml version="1.0"?>
-<dataset rooteditor="edu.ucsb.nceas.morpho.editor.DataPackagePanel">
-  <identifier editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="The unique identifier of this metadata file or object."></identifier>
-  <shortName help="A short name that describes the resource, sometimes a filename."></shortName>
-  <title help="A brief description of the resource, providing enough detail to differentiate it from other similar resources."></title>
-  <originator help="The 'originator' element provides the full name of the person, organization, or position associated with the resource.">
-      <individualName help="The full name of the person being described">
-        <salutation help="The salutation field is used in addressing an individual with a particular title, such as Dr., Ms., Mrs., Mr., etc."> </salutation>
-        <givenName help="The given name field is used for the first name of the individual associated with the resource."> </givenName>
-        <surName help="The surname field is used for the last name of the individual associated with the resource.">berkley</surName>
-      </individualName>
-      <organizationName help="This field is intended to describe which institution or overall organization is associated with the resource being described."> </organizationName>
-      <positionName help="The name of the title or position associated with the resource."> </positionName>
-     <address help="The full address information for a given responsible party entry.">
-      <deliveryPoint help="The delivery point field is used for the physical address for postal communication."></deliveryPoint>
-      <city help="The city field is used for the city name of the contact associated with a particular resource."></city>
-      <administrativeArea help="The administrative area field is the equivalent of a state in the U.S., or province in Canada."></administrativeArea>
-      <postalCode help="The postal code is equivalent to a U.S. zip code"></postalCode>
-      <country help="The country field is used for the name of the contact's country.">USA</country>
-    </address>
-    <phone help="Information about the contact's telephone"></phone>
-    <electronicMailAddress help="The electronic mail address is the email address for the party."> </electronicMailAddress>
-    <onlineLink help="A link to associated online information, usually a web site."></onlineLink>
-    <role>originator</role>
-  </originator>
-  <pubdate> </pubdate>
-  <pubplace> </pubplace>
-  <series> </series>
-  <abstract help="This field provides a container for one or more paragraph fields that give a brief overview of the resource that is being documented.">
-    <paragraph editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel" help="This field is intended for the text of an abstract that gives a brief overview of the resource."> </paragraph>
-  </abstract>
-  <keywordSet help="The 'keywordSet' element is a container for the keyword and keywordThesaurus fields.">
-    <keyword help="This field names a keyword or keyphrase that concisely describes the resource" keywordType=""></keyword>
-    <keywordThesaurus help="The name of a thesaurus from which the keyword is derived."></keywordThesaurus>
-  </keywordSet>
-  <additionalInfo help="Any extra information pertitent to the resource.">
-    <paragraph editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel"> </paragraph>
-  </additionalInfo>
-  <triple help="The definition of a relationship between component objects in a resource package">
-    <subject editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="Subject is the identifier of the metadata object or file that is the actor in the triple."> </subject>
-    <relationship editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="Relationship is a descriptive phrase that specifies the how the subject of the triple is related to the object."> </relationship>
-    <object editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="Object is the identifier of the metadata or data object that is acted upon according to the relationship in the triple."> </object>
-  </triple>
-  <temporalCoverage help="This element specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates."> </temporalCoverage>
-  <geographicCoverage help="Geographic Coverage is a container for spatial information about a project, a resource, or an entity within a resource."> </geographicCoverage>
-  <taxonomicCoverage help="Taxonomic Coverage is a container for Taxonomic information about a project, a resource, or an entity within a resource."> </taxonomicCoverage>
+
+<dataset help="The dataset element defines extend the ResourceBase complexType
+          in order to provide information that is specific to describing
+          a set of data.  Therefore, dataset elements contain all of the
+          general resource elements, but also specific dataset elements." >
+
+<identifier help="The identifier field provides a unique identifier for this
+              metadata documentation.  It will most likely be part of a 
+              sequence of numbers or letters that are meaningful in a 
+              larger context, such as a metadata catalog. That larger
+              system can be identified in the &quot;system&quot; attribute. Multiple
+              identifiers can be listed corresponding to different catalog
+              systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel" >
+
+</identifier>
+
+<shortName help="The 'shortName' field provides a concise name that 
+              describes the resource that is being documented. It is 
+              the appropriate place to store a filename associated with 
+              other storage systems." >
+
+</shortName>
+
+<title help="The 'title' field provides a description of the
+              resource that is being documented that is long enough
+              to differentiate it from other similar resources.  Multiple
+              titles may be provided, particularly when trying to express
+              the title in more than one language (use the &quot;xml:lang&quot;
+              attribute to indicate the language if not English/en)." >
+
+</title>
+
+<originator help="The 'originator' element provides the full name of the
+              person, organization, or position associated with the resource.  
+              Typically, the originator role is set to &quot;owner&quot; 
+              to indicate the list of parties who &quot;own&quot; the resource, 
+              but other roles such as &quot;principal investigator&quot;, &quot;author&quot;, 
+              and &quot;editor&quot; are provided." >
+<individualName help="The responsible party field contains the full name of the person
+                that is associated with the resource.  This field contains
+                subfields that break the persons name down into first and last
+                name, and the values are entered into those field containers." >
+<salutation help="The salutation field is used in addressing an individual with a
+              particular title, such as Dr., Ms., Mrs., Mr., etc." >
+
+</salutation>
+
+<givenName help="The given name field is used for the first name of the individual
+              associated with the resource." >
+
+</givenName>
+
+<surName help="The surname field is used for the last name of the individual
+              associated with the resource." >
+
+</surName>
+</individualName>
+
+<organizationName help="The responsible party field contains the full name of the
+                organization that is associated with the resource.  This field
+                is intended to describe which institution or overall
+                organization is associated with the resource being described." >
+
+</organizationName>
+
+<positionName help="This field is intended to be used instead of a particular person
+                or full organization name.  If the associated person that holds
+                the role changes frequently, then Position Name would be used
+                for consistency." >
+
+</positionName>
+
+<address help="The address field is a container for multiple subfields that
+              describe the physical or electronic address of the 
+              responsible party for a resource." >
+<deliveryPoint help="The delivery point field is used for the physical address for
+              postal communication.  This field is used to accomodate the many
+              different international conventions  that are the equivalent 
+              to a U.S. 'street address'." >
+
+</deliveryPoint>
+
+<city help="The city field is used for the city name of the contact associated
+              with a particular resource." >
+
+</city>
+
+<administrativeArea help="The administrative area field is the equivalent of a 'state' in
+              the U.S., or Province in Canada.  This field is intended to 
+              accomodate the many types of international administrative areas." >
+
+</administrativeArea>
+
+<postalCode help="The postal code is equivalent to a U.S. zip code, or the number
+              used for routing to an international address.  The U.S. postal
+              code should include the 5 digit code plus the 4 digit extension." >
+
+</postalCode>
+
+<country help="The country field is used for the name of the contact's country." >
+
+</country>
+</address>
+
+<phone help="The phone field describes information about the responsible
+              party's telephone, be it a voice phone, fax, or TTD/TTY 
+              type telephone.  This field contains an attribute used
+              to identify the type." >
+
+</phone>
+
+<electronicMailAddress help="The electronic mail address is the email address for the 
+              party.  It is intended to be an Internet SMTP email
+              address, which should consist of a username folowed by the 
+              @ symbol, followd by the email server domain name address.
+              Other address types are allowable." >
+
+</electronicMailAddress>
+
+<onlineLink help="A link to associated online information, usually a web site.
+              When the party represents an organization, this is the URL
+              to a website or other online information about the organization.
+              If the party is an individual, it might be their personal web
+              site or other related online information about the party." >
+
+</onlineLink>
+
+<role help="The role field is intended to provide some context about the
+              person or organization that is associated with the resource.
+              Since there may be many people associated, such as  multiple 
+              principal investigators, data collectors, curators, etc., this 
+              field provides a means of describing how the individual or 
+              organization is associated with the resource." >
+
+</role>
+</originator>
+
+<pubDate help="The 'pubDate' field represents the date that the resource was
+              published.  The format should be represented as: CCYY-MM-DD, 
+              which denotes the full year, month, and day." >
+
+</pubDate>
+
+<pubPlace help="the 'pubPlace' field is the location where the resource was
+              published, which may be different from where the resource was
+              created." >
+
+</pubPlace>
+
+<series help="This field describes the series of resources that include the
+              resource being described.  For example, a volume of a 
+              journal may be part of a series of the journal for a 
+              particular year." >
+
+</series>
+
+<abstract help="This field provides a container for one or more paragraph 
+              fields that give a brief overview of the resource 
+              that is being documented." >
+
+<paragraph help="This field is intended for the text of an abstract
+                    that gives a brief overview of the resource.  There
+                    may be one or more paragraphs within the abstract." editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel" >
+
+</paragraph>
+
+</abstract>
+
+<keywordSet help="The 'keywordSet' element is a container for the 'keyword' and
+              'keywordThesaurus' fields.  Each keywordSet field can contain
+              one or more keywords and a name of a thesaurus for the set of
+              keywords. Each keyword field should contain one and only one 
+              keyword (i.e., keywords should not be separated by commas or
+              other delimiters)." >
+
+<keyword help="This field names a keyword or keyphrase that concisely 
+                    describes the resource or is related to the resource.
+                    Each keyword field should contain one and only one 
+                    keyword (i.e., keywords should not be separated by commas or
+                    other delimiters)." >
+
+</keyword>
+
+<keywordThesaurus help="This field provides the name of the official keyword
+                    thesaurus from which keyword was derived.  The keyword
+                    thesauri are usually discipline specific." >
+
+</keywordThesaurus>
+
+</keywordSet>
+
+<additionalInfo help="This field provides any information that is not 
+              characterized by the other resource metadata fields." >
+
+<paragraph help="This field is intended for the text 
+                    that gives additional information about the resource.  
+                    There may be one or more paragraphs." editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel" >
+
+</paragraph>
+
+</additionalInfo>
+
+<rights help="Typically, a Rights element will contain a rights management statement for the resource, or reference  a service providing such information. Rights information often encompasses Intellectual Property Rights (IPR), Copyright, and various Property Rights.  In the case of a data set, rights might incude requirements for use, requirements for attribution, or other requirements the owner would like to impose." >
+
+<paragraph help="This field is intended for the text 
+                    that gives additional information about the resource.  
+                    There may be one or more paragraphs." editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel" >
+
+</paragraph>
+
+</rights>
+
+<onlineURL help="A URL (Uniform Resource Locator) from which this resource can be downloaded.  This includes any information needed to access this site, such as connection information." >
+
+</onlineURL>
+
+<offlineMedium help="the medium on which this resource is distributed 
+digitally, such as 3.5&quot; floppy disk, or various tape media types, or 'hardcopy'" >
+
+<medName help="Name of the medium on which this resource is distributed.  Can be various digital media such as tapes and disks, or printed media which can collectively be termed 'hardcopy'." >
+
+</medName>
+
+<medDensity help="the density of the digital medium if this is 
+                                  relevant.  Used mainly for floppy disks 
+                                  or tape." >
+
+</medDensity>
+
+<medDensityUnits help="if a density is given numerically, the units 
+                                  should be given here." >
+
+</medDensityUnits>
+
+<medVol help="the total volume of the storage medium on 
+                                  which this resource is shipped." >
+
+</medVol>
+
+<medFormat help="the file system format of the medium on 
+                                  which the resource is shipped" >
+
+</medFormat>
+
+<medNote help="any additional pertitant information about the
+                                  media" >
+
+</medNote>
+
+</offlineMedium>
+
+<triple help="The triple element lists all relationships in the resource,
+              which effectively enumerates the components of the resource.
+              The relationships are in the form of:" >
+
+<subject help="Subject is the identifier of the metadata object or file 
+                    that is the actor in the triple." editor="edu.ucsb.nceas.morpho.editor.LockedPanel" >
+
+</subject>
+
+<relationship help="Relationship is a descriptive phrase that specifies the 
+                    how the subject of the triple is related to the object.  
+                    This is typically meant to label the type of descriptor 
+                    that a metadata file (the subject) represents for a data
+                    file (the object).  This allows one to express concepts
+                    such as &quot;knb.32.3 lists access control rules for knb.2.2&quot;." editor="edu.ucsb.nceas.morpho.editor.LockedPanel" >
+
+</relationship>
+
+<object help="Object is the identifier of the metadata or data object 
+                    that is acted upon according to the relationship in the
+                    triple." editor="edu.ucsb.nceas.morpho.editor.LockedPanel" >
+
+</object>
+
+</triple>
+
+<temporalCov help="This element describes the temporal extent of the
+                    resource expressed in a start date and a stop date." >
+
+</temporalCov>
+
+<geographicCov help="This element describes the geographic area which data are 
+                    collected in the entity: descriptive paragraph of text or
+                    Cartesian coordinates of the area." >
+<descgeog help="Short description of the geographic areal domain of the data set." >
+
+</descgeog>
+
+<bounding help="The limits of coverage of a data set expressed by latitude 
+                   and longitude values in the order western-most, eastern-most, 
+                   northern-most, and southern-most.  For data sets that include 
+                   a complete band of latitude around the earth, the West 
+                   Bounding Coordinate shall be assigned the value -180.0, and 
+                   the East Bounding Coordinate shall be assigned the value 180.0" >
+
+<westbc help="Western-most coordinate of the limit of coverage 
+                         expressed in latitude" >
+
+</westbc>
+
+<eastbc help="Eastern-most coordinate of the limit of coverage 
+                         expressed in latitude" >
+
+</eastbc>
+
+<northbc help="Northern-most coordinate of the limit of coverage expressed 
+                         in longitude" >
+
+</northbc>
+
+<southbc help="Southern-most coordinate of the limit of coverage expressed in longitude" >
+
+</southbc>
+
+<boundalt help="The limits of coverage of a data set expressed by altitude." >
+
+<altmin help="The minimum altitude extent of coverage." >
+
+</altmin>
+
+<almax help="The maximum altitude extent of coverage." >
+
+</almax>
+
+<altunits help="Units in which altitude is measured." >
+
+</altunits>
+
+</boundalt>
+
+</bounding>
+
+<dsgpoly help="Data Set G-Polygon coordinates defining the outline of an area covered by a data set." >
+
+<dsgpolyo help="Data Set G-Polygon Outer G-Ring, the closed nonintersecting boundary of an interior area." >
+
+</dsgpolyo>
+
+<dsgpolyx help="Data Set G-Polygon Exclusion G-Ring, the closed nonintersecting boundary of a void area (or hole in an interior area)." >
+
+</dsgpolyx>
+
+</dsgpoly>
+</geographicCov>
+
+<taxonomicCov help="This element describes the taxonomic extent of data
+                    in the dataset.  This can be a list of species, or 
+                    a group of species at a higher taxonomic rank (such
+                    as genus or family)." >
+<keywtax help="" >
+
+<taxonkt help="Reference to a formally registered thesaurus or similar authoritative source of taxonomic keywords." >
+
+</taxonkt>
+
+<taxonkey help="Common use words or phrases describing the taxonomy covered by the data set." >
+
+</taxonkey>
+
+</keywtax>
+
+<taxonsys help="Documentation of taxonomic sources, procedures, and treatments." >
+
+<classsys help="Information about the classification system or authority used." >
+
+<classcit help="Relevant literature for documenting the used classification system." >
+
+</classcit>
+
+<classmod help="A description of any modifications or exceptions made to the classification system or authority used." >
+
+</classmod>
+
+</classsys>
+
+<idref help="Information on any nonauthoritative materials (e.g. field guides) useful for reconstructing the actual identification process." >
+
+</idref>
+
+<ider help="Information about the individual(s) responsible for the identification(s) of the specimens or sightings, etc." >
+
+</cntinfo>
+
+<taxonpro help="Description of the methods used for the taxonomic identification." >
+
+</taxonpro>
+
+<taxoncom help="Information concerning the proportions and treatment of unidentified materials ; estimates of the importance, and identities of misidentifications, uncertain determinations, synonyms or other incorrect usages; taxa not well treated or requiring further work; and expertise of field workers." >
+
+</taxoncom>
+
+<vouchers help="Information on the types of specimen, the repository, and the individuals who identified the vouchers." >
+
+<specimen help="A word or phrase describing the type of specimen collected." >
+
+</specimen>
+
+<reposit help="Information about the curator or contact person and/or agency responsible for the specimens." >
+
+</cntinfo>
+
+</reposit>
+
+</vouchers>
+
+<taxongen help="A description of the range of taxa addressed in the data set or collection." >
+
+</taxongen>
+</taxonomicCov>
+
 </dataset>
