@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-26 00:10:05 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2001-04-26 17:32:11 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -760,45 +760,60 @@ public class ClientFramework extends javax.swing.JFrame
   }
 
   /**
+   * Send a request to Metacat
+   *
+   * @param prop the properties to be sent to Metacat
+   * @return a string as returned by Metacat
+   */
+  public String sendToMetacat(Properties prop)
+  {
+    String response = null;
+
+    // Now contact metacat and send the request
+    try
+    {
+      String MetaCatServletURL = config.get("MetaCatServletURL", 0);
+      debug(9, "Sending data to: " + MetaCatServletURL);
+      URL url = new URL(MetaCatServletURL);
+      HttpMessage msg = new HttpMessage(url);
+      InputStreamReader returnStream = 
+                        new InputStreamReader(msg.sendPostMessage(prop));
+      StringWriter sw = new StringWriter();
+      int len;
+      char[] characters = new char[512];
+      while ((len = returnStream.read(characters, 0, 512)) != -1)
+      {
+	sw.write(characters, 0, len);
+      }
+      returnStream.close();
+      response = sw.toString();
+      sw.close();
+      debug(5, response);
+    }
+    catch(Exception e)
+    {
+      debug(1, "Fatal error sending data to Metacat.");
+    }
+    return response;
+  }
+
+  /**
    * Log into metacat
    */
   public boolean logIn()
   {
-    String res = null;
-
     Properties prop = new Properties();
     prop.put("action", "login");
     prop.put("qformat", "xml");
+    prop.put("username", userName);
+    prop.put("password", passWord);
 
     // Now contact metacat
-    try
-    {
-      String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-      debug(9, "Trying: " + MetaCatServletURL);
-      URL url = new URL(MetaCatServletURL);
-      HttpMessage msg = new HttpMessage(url);
-      prop.put("username", userName);
-      prop.put("password", passWord);
-      InputStream returnStream = msg.sendPostMessage(prop);
-      StringWriter sw = new StringWriter();
-      int c;
-      while ((c = returnStream.read()) != -1)
-      {
-	sw.write(c);
-      }
-      returnStream.close();
-      res = sw.toString();
-      sw.close();
-      debug(5, res);
-      if (res.indexOf("<login>") != -1) {
-        connected = true;
-      } else {
-        connected = false;
-      }
-    }
-    catch(Exception e)
-    {
-      debug(1, "Error logging into system");
+    String response = sendToMetacat(prop);
+    if (response.indexOf("<login>") != -1) {
+      connected = true;
+    } else {
+      connected = false;
     }
     return connected;
   }
@@ -812,32 +827,9 @@ public class ClientFramework extends javax.swing.JFrame
     prop.put("action", "logout");
     prop.put("qformat", "xml");
 
-    // Now try to write the document to the database
-    try
-    {
-      String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-      debug(9, "Trying: " + MetaCatServletURL);
-      URL url = new URL(MetaCatServletURL);
-      HttpMessage msg = new HttpMessage(url);
-      InputStream returnStream = msg.sendPostMessage(prop);
-      StringWriter sw = new StringWriter();
-      int c;
-      while ((c = returnStream.read()) != -1)
-      {
-	sw.write(c);
-      }
-      returnStream.close();
-      String res = sw.toString();
-      sw.close();
-      debug(5, res);
-      connected = false;
-      //JOptionPane.showMessageDialog(this, "Connection closed.");
-    }
-    catch(Exception e)
-    {
-      debug(1, "Error logging out of system");
-      debug(1, e.toString());
-    }
+    String response = sendToMetacat(prop);
+    connected = false;
+    //JOptionPane.showMessageDialog(this, "Connection closed.");
   }
 
   /**

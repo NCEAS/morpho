@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-26 00:10:05 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-04-26 17:32:12 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,6 +296,7 @@ public class ConnectionFrame extends javax.swing.JFrame
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     container.logOut();
+    ConnectionResultsTextArea.setText("You are no longer connected.");
     DisconnectButton.setEnabled(false);
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-26 15:55:43 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2001-04-26 17:32:12 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,9 +65,8 @@ import org.apache.xalan.xslt.XSLTInputSource;
 import org.apache.xalan.xslt.XSLTResultTarget;
 import org.apache.xalan.xslt.XSLTProcessor;
 import org.apache.xalan.xpath.xml.*;
-//import edu.ucsb.nceas.querybean.DataGuideBean;
 
-public class QueryBean extends AbstractQueryBean implements PluginInterface
+public class QueryBean extends Container implements PluginInterface
 {
   /** A reference to the container framework */
   ClientFramework framework = null;
@@ -85,19 +84,15 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
   // Tabbed panel that contains the QueryBean
   JTabbedPane tabbedPane = null;
 
-  String userName = "public";
-  String passWord = "none";
   boolean searchlocal = true;
   boolean searchnetwork = true;
-  String xmlcatalogfile = null;
   String MetaCatServletURL = null;
   ImageIcon BflyStill;
   ImageIcon BflyMove;
 
   LocalQuery lq = null;
-    String[] searchmode =
-  {
-  "contains", "contains-not", "is", "is-not", "starts-with", "ends-with"};
+  String[] searchmode = { "contains", "contains-not", "is", 
+                          "is-not", "starts-with", "ends-with"};
   JTable table;
   MouseListener popupListener;
 
@@ -111,17 +106,13 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     //{{INIT_CONTROLS
     setLayout(new BorderLayout(0, 0));
     setSize(0, 0);
-//    setLayout(null);
-//    setSize(729,492);
     TopQueryPanel.setLayout(new BorderLayout(0, 0));
     TopQueryPanel.setFont(new Font("Dialog", Font.PLAIN, 12));
     TopQueryPanel.setBounds(0, 0, 0, 0);
-//    TopQueryPanel.setBounds(0,0,729,492);
     add(BorderLayout.CENTER, TopQueryPanel);
     TopQueryPanel.add(BorderLayout.CENTER, QueryChoiceTabs);
     QueryChoiceTabs.setFont(new Font("Dialog", Font.PLAIN, 12));
     QueryChoiceTabs.setBounds(0, 0, 0, 0);
-//    QueryChoiceTabs.setBounds(0,0,729,492);
     SubjectPanel.setBorder(etchedBorder1);
     SubjectPanel.setLayout(new BorderLayout(0, 0));
     QueryChoiceTabs.add(SubjectPanel);
@@ -131,18 +122,11 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     Query.setLayout(new BorderLayout(0, 0));
     SubjectPanel.add(BorderLayout.NORTH, Query);
     Query.setBounds(2, 2, -9, 99);
-//    Query.setBounds(2,2,720,294);
-//    Query.setMinimumSize(new Dimension(688,150));
-//    Query.setMaximumSize(new Dimension(688,150));
-//    Query.setPreferredSize(new Dimension(688,160));
     Query1.setPreferredSize(new Dimension(688, 160));
     Query2.setPreferredSize(new Dimension(688, 240));
-//    QueryTypePanel.setBounds(2,2,716,33);
-//    TextChoiceButtonPanel.setBounds(5,5,408,23);
     RefineQueryPanel.setLayout(new BorderLayout(0, 0));
     Query.add(BorderLayout.CENTER, RefineQueryPanel);
     RefineQueryPanel.setBounds(2, 2, -13, 95);
-//    RefineQueryPanel.setBounds(2,35,716,257);
     QueryControls.setAlignmentX(0.0F);
     QueryControls.setLayout(new BoxLayout(QueryControls, BoxLayout.Y_AXIS));
     RefineQueryPanel.add(BorderLayout.EAST, QueryControls);
@@ -171,7 +155,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[7] = "eml-variable";
       DocTypeListModel.setItems(tempString);
     }
-    //$$ DocTypeListModel.move(0,493);
     {
       String[]tempString = new String[6];
       tempString[0] = "contains";
@@ -182,7 +165,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[5] = "ends with";
       MatchTypesModel.setItems(tempString);
     }
-    //$$ MatchTypesModel.move(24,493);
     {
       String[]tempString = new String[6];
       tempString[0] = "contains";
@@ -193,7 +175,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[5] = "ends with";
       MatchTypesModel2.setItems(tempString);
     }
-    //$$ MatchTypesModel2.move(48,493);
     {
       String[]tempString = new String[6];
       tempString[0] = "contains";
@@ -204,7 +185,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[5] = "ends with";
       MatchTypesModel3.setItems(tempString);
     }
-    //$$ MatchTypesModel3.move(72,493);
     {
       String[]tempString = new String[6];
       tempString[0] = "contains";
@@ -215,7 +195,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[5] = "ends with";
       MatchTypesModel4.setItems(tempString);
     }
-    //$$ MatchTypesModel4.move(96,493);
     {
       String[]tempString = new String[6];
       tempString[0] = "contains";
@@ -226,7 +205,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[5] = "ends with";
       MatchTypesModel5.setItems(tempString);
     }
-    //$$ MatchTypesModel5.move(120,493);
     {
       String[]tempString = new String[6];
       tempString[0] = "contains";
@@ -237,7 +215,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[5] = "ends with";
       MatchTypesModel6.setItems(tempString);
     }
-    //$$ MatchTypesModel6.move(144,493);
     {
       String[]tempString = new String[13];
       tempString[0] = "eml-dataset";
@@ -255,9 +232,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[12] = " relations";
       eml_dataset.setItems(tempString);
     }
-    //$$ eml_dataset.move(168,493);
-    //$$ etchedBorder1.move(216,493);
-//    TextMatch2.setSelectedIndex(0);
     {
       String[]tempString = new String[10];
       tempString[0] = "eml-accesst";
@@ -272,7 +246,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
       tempString[9] = " relations";
       eml_access.setItems(tempString);
     }
-    //$$ eml_access.move(192,493);
     QueryChoicesPanel1.setLayout(new BorderLayout(0, 0));
     RefineQueryPanel.add(BorderLayout.CENTER, QueryChoicesPanel1);
     QueryChoicesPanel1.setBounds(0, 0, -88, 95);
@@ -738,12 +711,12 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     {
     }
 
+    // Set the name of the panel (used by the framework)
     setName("Search");
+
+    // Create the menus and toolbar actions
     initializeActions();
 
-    setVisible(true);
-   
-    //       setExpertMode(false);
     invalidate();
     setVisible(true);
   }
@@ -1019,16 +992,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
   }
 */
 
-  public void setUserName(String name)
-  {
-    userName = name;
-  }
-
-  public void setPassWord(String ps)
-  {
-    passWord = ps;
-  }
-
   class SymItem implements java.awt.event.ItemListener
   {
     public void itemStateChanged(java.awt.event.ItemEvent event)
@@ -1144,8 +1107,8 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
 
   void TestSearch_actionPerformed(java.awt.event.ActionEvent event)
   {
-    System.out.println("Current user: " + userName);
-    getOwnerDocs(userName);
+    System.out.println("Current user: " + framework.getUserName());
+    getOwnerDocs(framework.getUserName());
   }
 
   public void getOwnerDocs(String name)
@@ -1730,9 +1693,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     Properties prop = new Properties();
     prop.put("action", "squery");
     prop.put("query", queryXML);
-
-    String respType = "xml";
-    prop.put("qformat", respType);
+    prop.put("qformat", "xml");
     try
     {
       System.err.println("Trying: " + MetaCatServletURL);
@@ -1772,8 +1733,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
 
     prop.put("returndoc", "-//NCEAS//resource//EN");
 
-    String respType = "xml";
-    prop.put("qformat", respType);
+    prop.put("qformat", "xml");
     try
     {
       System.err.println("Trying: " + MetaCatServletURL);
@@ -1809,8 +1769,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     Properties prop = new Properties();
     prop.put("action", "query");
     prop.put("anyfield", query);
-    String respType = "xml";
-    prop.put("qformat", respType);
+    prop.put("qformat", "xml");
     try
     {
       System.err.println("Trying: " + MetaCatServletURL);
