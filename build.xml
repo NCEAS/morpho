@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.23 2001-06-22 16:01:55 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.24 2001-06-22 22:48:58 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -17,7 +17,7 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.0alpha2"/>
+      <property name="release" value="0.0.0alpha3"/>
 
       <filter token="release" value="${release}"/>
 
@@ -34,12 +34,14 @@
       <property name="build.data" value="${build.dir}/data"/>
       <property name="build.javadocs" value="${build.dir}/docs/apiDocs"/>
 
-      <property name="morpho.dir" value="./morpho_runtime"/>
+      <property name="dist.dir" value="./dist"/>
+      <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
       <property name="morpho.lib" value="${morpho.dir}/lib"/>
       <property name="morpho.lib.catalog" value="${morpho.lib}/catalog"/>
       <property name="morpho.lib.frames" value="${morpho.lib}/frames"/>
       <property name="morpho.lib.sampledata" value="${morpho.lib}/sampledata"/>
       <property name="morpho.lib.style" value="${morpho.lib}/style"/>
+      <property name="morpho.src" value="${morpho.dir}/src"/>
       
 
       <property name="xml4j" 
@@ -114,7 +116,8 @@
       <echo message="Install complete. Use the morpho script to run it." />
    </target>
 
-   <target name="build_runtime" depends="install">
+   <target name="dist" depends="install">
+      <mkdir dir="${dist.dir}"/>
       <delete dir="${morpho.dir}" />
       <mkdir dir="${morpho.dir}"/>
       <mkdir dir="${morpho.lib}"/>
@@ -138,8 +141,9 @@
       <copy todir="${morpho.lib.style}">
         <fileset dir="./lib/style"/>
       </copy>
-      <copy file="./lib/config.xml.fresh" todir="${morpho.lib}"/>
-      <move file="${morpho.lib}/config.xml.fresh" tofile="${morpho.lib}/config.xml"/>
+      <delete file="./lib/config.xml" />
+      <cvs command="update lib/config.xml" />
+      <copy file="./lib/config.xml" todir="${morpho.lib}"/>
       <copy file="./lib/dataset.xml" todir="${morpho.lib}"/>
       <copy file="./lib/default-profile.xml" todir="${morpho.lib}"/>
       <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
@@ -148,12 +152,33 @@
       <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xerces.jar" todir="${morpho.lib}"/> 
        
-      <delete file="./lib/morpho.zip"/>
-      <zip zipfile="./lib/morpho.zip" basedir="${morpho.dir}"/>
+      <delete file="./lib/morpho-${release}.zip"/>
+      <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
+      <delete file="./lib/morpho-${release}.tar.gz" />
+      <tar tarfile="./lib/morpho-${release}.tar" basedir="${dist.dir}"/>
+      <gzip zipfile="./lib/morpho-${release}.tar.gz" 
+                src="./lib/morpho-${release}.tar"/>
+      <delete file="./lib/morpho-${release}.tar" />
+  </target> 
+
+  <target name="distsrc" depends="dist">
+      <mkdir dir="${morpho.src}"/>
+      <copy todir="${morpho.src}">
+        <fileset dir="./src"/>
+      </copy>
+
+      <delete file="./lib/morpho-src-${release}.zip"/>
+      <zip zipfile="./lib/morpho-src-${release}.zip" basedir="${dist.dir}"/>
+      <delete file="./lib/morpho-src-${release}.tar.gz" />
+      <tar tarfile="./lib/morpho-src-${release}.tar" basedir="${dist.dir}"/>
+      <gzip zipfile="./lib/morpho-src-${release}.tar.gz" 
+                src="./lib/morpho-src-${release}.tar"/>
+      <delete file="./lib/morpho-src-${release}.tar" />
   </target> 
 
    <target name="clean" depends="init">
        <delete dir="${build.dir}" />
+       <delete dir="${morpho.dir}" />
    </target>
 
    <target name="jdoc" depends="init">
