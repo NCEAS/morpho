@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 22:30:56 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-04-01 02:23:27 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
+import javax.xml.transform.TransformerException;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -346,6 +347,7 @@ public  class EML200DataPackage extends AbstractDataPackage
       Node rootNode = getMetadataNode();
       NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+refID+"']");
       // there should be a single node with the id (otherwise doc is eml invalid)
+      if (refs2==null) return null;
       Node referencedNode = (refs2.item(0));
       // 'referencedNode' is the first order reference
       // next line calls to see if further references occur
@@ -358,8 +360,9 @@ public  class EML200DataPackage extends AbstractDataPackage
       doc.replaceChild(importedClone, tempRoot);
       return importedClone;
 
-    } catch (Exception w) {
-      Log.debug(25, "Exception trying to follow references (in getSubtreeAtReference)!");
+    } catch (TransformerException w) {
+      Log.debug(25, "TransformerException trying to follow references (in getSubtreeAtReference)! "+w);
+      w.printStackTrace();
     }
     return null;
 
