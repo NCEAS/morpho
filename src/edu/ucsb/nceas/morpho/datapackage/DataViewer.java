@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 00:56:53 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2002-09-24 22:55:07 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
@@ -97,13 +98,16 @@ public class DataViewer extends javax.swing.JPanel
   /**popup menu for right clicks*/
   private JPopupMenu popup;
   /**menu items for the popup menu*/
-  private JMenuItem createNewDatatable = new JMenuItem("Create New Datatable...");
+  private JMenuItem addDocumentation = null;
+  private GUIAction addDocumentationAction = null;
+  private JMenuItem createNewDatatable = null;
+  private GUIAction createNewDatatableAction = null;
   private JMenuItem sortBySelectedColumn = new JMenuItem("Sort by Selected Column");
-  private JMenuItem insertRowAfter = new JMenuItem("insert Row After Selected Row");
-  private JMenuItem insertRowBefore = new JMenuItem("insert Row Before Selected Row");
+  private JMenuItem insertRowAfter = new JMenuItem("Insert Row After Selected Row");
+  private JMenuItem insertRowBefore = new JMenuItem("Insert Row Before Selected Row");
   private JMenuItem deleteRow = new JMenuItem("Delete Selected Row");
-  private JMenuItem insertColumnBefore = new JMenuItem("insert Column Before Selected Column");
-  private JMenuItem insertColumnAfter = new JMenuItem("insert Column After Selected Column");
+  private JMenuItem insertColumnBefore = new JMenuItem("Insert Column Before Selected Column");
+  private JMenuItem insertColumnAfter = new JMenuItem("Insert Column After Selected Column");
   private JMenuItem deleteColumn = new JMenuItem("Delete Selected Column");
   private JMenuItem editColumnMetadata = new JMenuItem("Edit Column Metadata");
 
@@ -112,13 +116,14 @@ public class DataViewer extends javax.swing.JPanel
   // (JComponents all have a single 'parent'. This means that the components
   // cannot be reused (because they have only one parent container)
   // One thus needs to duplicate the menu items for the Menu and Popup
-  private JMenuItem createNewDatatable1 = new JMenuItem("Create New Datatable...");
+  private JMenuItem addDocumentation1 = null;
+  private JMenuItem createNewDatatable1 = null;
   private JMenuItem sortBySelectedColumn1 = new JMenuItem("Sort by Selected Column");
-  private JMenuItem insertRowAfter1 = new JMenuItem("insert Row After Selected Row");
-  private JMenuItem insertRowBefore1 = new JMenuItem("insert Row Before Selected Row");
+  private JMenuItem insertRowAfter1 = new JMenuItem("Insert Row After Selected Row");
+  private JMenuItem insertRowBefore1 = new JMenuItem("Insert Row Before Selected Row");
   private JMenuItem deleteRow1 = new JMenuItem("Delete Selected Row");
-  private JMenuItem insertColumnBefore1 = new JMenuItem("insert Column Before Selected Column");
-  private JMenuItem insertColumnAfter1 = new JMenuItem("insert Column After Selected Column");
+  private JMenuItem insertColumnBefore1 = new JMenuItem("Insert Column Before Selected Column");
+  private JMenuItem insertColumnAfter1 = new JMenuItem("Insert Column After Selected Column");
   private JMenuItem deleteColumn1 = new JMenuItem("Delete Selected Column");
   private JMenuItem editColumnMetadata1 = new JMenuItem("Edit Column Metadata");
 
@@ -335,6 +340,14 @@ public class DataViewer extends javax.swing.JPanel
 	
 //Build the popup menu for the right click functionality
     popup = new JPopupMenu();
+    // Create a add documentation menu item
+    addDocumentationAction = new GUIAction("Add Documentation...", null, 
+                                          new AddDocumentationCommand());
+    addDocumentation = new JMenuItem(addDocumentationAction);
+    popup.add(addDocumentation);
+    createNewDatatableAction = new GUIAction("Create New Datatable...", null,
+                                                new ImportDataCommand());
+    createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
     popup.add(new JSeparator());
     popup.add(sortBySelectedColumn);
@@ -350,7 +363,7 @@ public class DataViewer extends javax.swing.JPanel
     popup.add(editColumnMetadata);
     
     MenuAction menuhandler = new MenuAction();
-    createNewDatatable.addActionListener(menuhandler);
+    //createNewDatatable.addActionListener(menuhandler);
     sortBySelectedColumn.addActionListener(menuhandler);
     insertRowAfter.addActionListener(menuhandler);
     insertRowBefore.addActionListener(menuhandler);
@@ -359,7 +372,7 @@ public class DataViewer extends javax.swing.JPanel
     insertColumnBefore.addActionListener(menuhandler);
     deleteColumn.addActionListener(menuhandler);
     editColumnMetadata.addActionListener(menuhandler);
-    createNewDatatable1.addActionListener(menuhandler);
+    //createNewDatatable1.addActionListener(menuhandler);
     sortBySelectedColumn1.addActionListener(menuhandler);
     insertRowAfter1.addActionListener(menuhandler);
     insertRowBefore1.addActionListener(menuhandler);
@@ -1056,15 +1069,7 @@ public class DataViewer extends javax.swing.JPanel
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
 			Object object = event.getSource();
-			if (object == createNewDatatable) {
-        MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
-        thisFrame.setVisible(false);
-        AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
-                                                      dp,thisFrame);
-        amw.setVisible(true);
-        //thisFrame.dispose();
-      }
-      else if ((object == sortBySelectedColumn)||(object == sortBySelectedColumn1)) {
+			if ((object == sortBySelectedColumn)||(object == sortBySelectedColumn1)) {
         int sel = table.getSelectedColumn();
         if (sel>-1) {
           ptm.sort(sel, sortdirection);
@@ -1284,6 +1289,9 @@ public class DataViewer extends javax.swing.JPanel
     else {
       JMenu menu = mb.getMenu(3); // the 'Data' menu
       menu.removeAll();
+      addDocumentation1 = new JMenuItem(addDocumentationAction);
+      menu.add(addDocumentation1);
+      createNewDatatable1 = new JMenuItem(createNewDatatableAction);
       menu.add(createNewDatatable1);
       menu.add(new JSeparator());
       menu.add(sortBySelectedColumn1);
