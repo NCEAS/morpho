@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 15:53:44 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-09-12 20:07:09 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,12 +57,12 @@ public class HeaderPanel extends JPanel
 {
     
     // * * * * * * * *  D E F A U L T   T E X T   L A B E L S   * * * * * * * * 
-    private static final String BACK_BUTTON_TEXT = "< back";
-    private static final String EDIT_BUTTON_TEXT = "edit";
-    private static final String CLOSE_BUTTON_TEXT = "hide X";
-    private static final String TITLEBAR_INIT_TEXT = "Metadata View";
-    private static final String PATH_INIT_TEXT = "You are here:\n";
-    private static final String PATH_SEPARATOR = ">>";
+    private static final String BACK_BUTTON_TEXT    = "< back";
+    private static final String EDIT_BUTTON_TEXT    = "edit";
+    private static final String CLOSE_BUTTON_TEXT   = "hide X";
+    private static final String TITLEBAR_INIT_TEXT  = "Metadata View";
+    private static final String PATH_INIT_TEXT      = "You are here:\n";
+    private static final String PATH_SEPARATOR      = ">>";
  
 
     // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
@@ -104,6 +104,7 @@ public class HeaderPanel extends JPanel
     private final static Color CLOSEBUTTON_COLOR    = TITLEBAR_COLOR;
     private final static Color EDITBUTTON_COLOR     = TITLEBAR_COLOR;
 
+    private JButton backButton;
     
     /**
     *  constructor
@@ -145,7 +146,7 @@ public class HeaderPanel extends JPanel
         //add back button:
         GUIAction backAction 
             = new GUIAction(BACK_BUTTON_TEXT, null,new BackCommand(controller));
-        JButton backButton = new JButton(backAction);
+        backButton = new JButton(backAction);
         backButton.setBackground(BACKBUTTON_COLOR);
         backButton.setForeground(BACKBUTTON_TEXT_COLOR);
         backButton.setFocusPainted(false);
@@ -224,6 +225,20 @@ public class HeaderPanel extends JPanel
         this.add(bottomLine, BorderLayout.SOUTH);
     }
 
+    /**
+     *   set enabled/disabled state of Back Button (primarily to allow disabling 
+     *   when there is no previous page in History to go back to)
+     *
+     *   @param enabled  A <code>boolean</code> value - <ul>
+     *                   <li><code>true</code> enables the button, </li>
+     *                   <li><code>false</code> disables it</li></ul>
+     */
+    protected void setBackButtonEnabled(boolean enabled) 
+    {
+        backButton.setEnabled(enabled);
+        titleBar.invalidate();
+    }
+    
     /**
     *  set color of title bar (ie main part of header above path bar)
     *   this may need to be called for example to change titlebar color for 
