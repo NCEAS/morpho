@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.3 2000-08-07 23:43:23 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.4 2000-08-23 17:31:50 higgins Exp $'
  */
 
 
@@ -199,7 +199,7 @@ public void writeInfo() {
 
     // Have the XSLTProcessor processor object transform "foo.xml" to
     // System.out, using the XSLT instructions found in "foo.xsl".
-    processor.process(new XSLTInputSource(file.getAbsolutePath()),
+    processor.process(new XSLTInputSource("file:///"+file.getCanonicalPath()),
                       new XSLTInputSource("eml-dataset-display.xsl"),
                       new XSLTResultTarget("html.out"));
     File html = new File("html.out");

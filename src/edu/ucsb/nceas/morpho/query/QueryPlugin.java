@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.11 2000-08-23 16:18:39 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.12 2000-08-23 17:31:50 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -966,7 +966,7 @@ public class QueryBean extends AbstractQueryBean
 //                        System.out.println("Row " + selectedRow
 //                                           + " is now selected.");
                         String filename = (String)table.getModel().getValueAt(selectedRow, 0);
-                        File file = new File("xmlfiles/"+filename);
+                        File file = new File(filename);
                         DocFrame df = new DocFrame(file);
                         df.setVisible(true);
                         df.writeInfo();
@@ -1063,7 +1063,7 @@ public class QueryBean extends AbstractQueryBean
 //                        System.out.println("Row " + selectedRow
 //                                           + " is now selected.");
                         String filename = (String)table.getModel().getValueAt(selectedRow, 0);
-                        File file = new File("xmlfiles/"+filename);
+                        File file = new File(filename);
                         DocFrame df = new DocFrame(file);
                         df.setVisible(true);
                         df.writeInfo();
@@ -1142,6 +1142,8 @@ public class QueryBean extends AbstractQueryBean
 		    pqx.add_queryterm(TextValue2.getText(),"/eml-dataset/originator/party/party_individual/surname","contains",true);
 //		    pqx.end_querygroup();
 		}
+		pqx.end_query();
+		
 	 }
 	 if (QueryChoiceTabs.getSelectedIndex()==1) {
 		pqx.add_querygroup(op);
