@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-14 23:01:41 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2002-01-24 23:39:42 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -506,8 +506,9 @@ public class TextImportWizard extends javax.swing.JFrame
     //assign the filename and get the wizard started.
     if(dataFileName != null)
     {
+      File ff = new File(dataFileName);
+      TableNameTextField.setText(ff.getName());
       filename = dataFileName;
-      TableNameTextField.setText(filename);
       parsefile(filename);
       createLinesTable();
       resultsBuffer = new StringBuffer();
