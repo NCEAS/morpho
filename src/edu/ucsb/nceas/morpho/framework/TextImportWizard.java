@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:48:00 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2003-09-11 22:51:21 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
 
+import edu.ucsb.nceas.utilities.*;
 /**
  * 'Text Import Wizard' is modeled after
  * the text import wizard in Excel. Its  purpose is to automatically 
@@ -1143,7 +1144,7 @@ public void startImport(String file) {
 	  finishFlag = true;
     if(listener != null)
     {
-      listener.importComplete();
+      listener.importComplete(createEml2NVPairs());
     }
     this.dispose();
 	}
@@ -1814,6 +1815,72 @@ public void startImport(String file) {
       XMLBuffer.append("</eml-physical>\n");
 	  return XMLBuffer.toString();
     }
+    
+  /**
+   *  Create a set (OrderedMap) of Name/Value pairs for eml2 corresponding to 
+   *  the entity/attribute/physical parts of the eml2 tree created by the TextImportWizard.
+   *  Note: The TextImportWizard creates only text based 'dataTable' entities
+   */
+  public OrderedMap createEml2NVPairs() {
+    String header = "/eml:eml/dataset/dataTable/";
+    OrderedMap om = new OrderedMap();
+    om.put(header + "entityName", XMLUtil.normalize(TableNameTextField.getText()));
+    om.put(header + "entityDescription", XMLUtil.normalize(TableDescriptionTextField.getText()));
+  // physical NV pairs are inserted here
+    om.put(header+"physical/"+"objectName",filename);
+	  long filesize = (new File(filename)).length();
+	  String filesizeString = (new Long(filesize)).toString();
+    om.put(header+"physical/"+"size",filesizeString);
+    om.put(header+"physical/"+"size/@unit","byte");
+	  int numHeaderLines = startingLine;
+	  if (!labelsInStartingLine) numHeaderLines = numHeaderLines-1;
+    om.put(header+"physical/dataFormat/textFormat/"+"numHeaderLines", ""+numHeaderLines);
+    om.put(header+"physical/dataFormat/textFormat/"+"recordDelimiter", "#x0A");
+	  String delimit = getDelimiterStringAsText();
+    om.put(header+"physical/dataFormat/textFormat/simpleDelimited/"+"fieldDelimiter", delimit);
+    om.put(header+"physical/distribution/online/"+"url", "file://"+filename);
+  // attributeInfo is required here
+    for (int i=0;i<colTitles.size();i++) {
+      ColumnData cd = (ColumnData)colDataInfo.elementAt(i);
+      om.put(header+"attributeList/attribute/"+"attributeName"+"["+(i+1)+"]",XMLUtil.normalize(cd.colName));
+      om.put(header+"attributeList/attribute/"+"attributeLabel"+"["+(i+1)+"]",XMLUtil.normalize(cd.colTitle));
+      om.put(header+"attributeList/attribute/"+"attributeDefinition"+"["+(i+1)+"]",XMLUtil.normalize(cd.colDefinition));
+      // set measurementScale based on datatype
+      if ((cd.colType.equals("integer"))||(cd.colType.equals("float"))
+          ||(cd.colType.equals("decimal"))||(cd.colType.equals("double"))) {
+        om.put(header+"attributeList/attribute/"+"measurementScale/interval/"
+              +"unit/standardUnit"+"["+(i+1)+"]",XMLUtil.normalize(cd.colUnits));
+        om.put(header+"attributeList/attribute/"+"measurementScale/interval/"
+              +"precision"+"["+(i+1)+"]","???");
+        om.put(header+"attributeList/attribute/"+"measurementScale/interval/numericDomain/"
+              +"numberType"+"["+(i+1)+"]",XMLUtil.normalize(cd.colType));
+        om.put(header+"attributeList/attribute/"+"measurementScale/interval/numericDomain/"
+              +"bounds/minimum"+"["+(i+1)+"]",""+cd.colMin);
+        om.put(header+"attributeList/attribute/"+"measurementScale/interval/numericDomain/"
+              +"bounds/maximum"+"["+(i+1)+"]",""+cd.colMax);
+        
+      }
+      else if(cd.colType.equals("date")) {
+        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
+              +"formatString"+"["+(i+1)+"]","???");
+        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
+              +"dataTimePrecision"+"["+(i+1)+"]","???");
+        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
+              +"dataTimeDomain/bounds/minimum"+"["+(i+1)+"]","???");
+        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
+              +"dataTimeDomain/bounds/maximum"+"["+(i+1)+"]","???");
+      }
+      else { //assume a string
+ 
+      }
+    }
+    int temp = 0;
+    if (labelsInStartingLine) temp = 1;
+    int numrecs = nlines_actual - startingLine +1 + temp;
+	  String numRecords = (new Integer(numrecs)).toString();
+    om.put(header + "numberOfRecords", XMLUtil.normalize(numRecords));
+    return om;
+  }
 
 	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
