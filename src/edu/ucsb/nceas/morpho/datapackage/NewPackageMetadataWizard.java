@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-06 15:26:05 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-07-06 18:45:15 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -903,6 +903,19 @@ public class NewPackageMetadataWizard extends JFrame
       e.printStackTrace();
       return;
     }
+    
+    try
+    {
+    FileReader fr = new FileReader(newxmlFile);
+    int c = fr.read();
+    while(c != -1)
+    {
+      System.out.print((char)c);
+      c = fr.read();
+    }
+    }
+    catch(Exception e)
+    {}
     
     if(locLocal)
     { //save the real files locally.

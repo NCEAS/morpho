@@ -59,6 +59,15 @@
       <editexisting>yes</editexisting>
     </file>
     <file>
+      <name>Access</name>
+      <label>Access Permissions</label>
+      <xmlfiletype>-//NCEAS//eml-access-2.0//EN</xmlfiletype>
+      <rootnode>acl</rootnode>
+      <tooltip>Access control information for this data package.</tooltip>
+      <displaypath>//principal</displaypath>
+      <editexisting>yes</editexisting>
+    </file>
+    <file>
       <name>DATAFILE</name>
       <label>DATAFILE</label>
       <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
