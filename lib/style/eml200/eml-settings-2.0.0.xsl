@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-24 01:15:04 $'
-  * '$Revision: 1.9 $'
+  *     '$Date: 2004-03-23 23:50:38 $'
+  * '$Revision: 1.10 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,13 @@
 -->
   <xsl:param name="withOriginalXMLLink">0</xsl:param>
 
+
+<!--
+    /**
+    *   To show any html links (emails and webpage).
+    */
+-->
+  <xsl:param name="withHTMLLinks">0</xsl:param>
 
 <!--
     /**
