@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-26 19:30:14 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2002-03-28 23:38:33 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -668,23 +668,7 @@ public class DataPackage
         String key = (String)keys.nextElement();
         //get the file
         File f = (File)files.get(key);
-        String beginFile = "";
-        //check its type
-        try
-        {
-          FileInputStream fis = new FileInputStream(f);
-          for(int i=0; i<10; i++)
-          { //read 10 bytes of the file
-            //if they contain the text '<?xml' assume that it is a metadata file
-            //this is a bad assumption but it works for now...
-            beginFile += (char)fis.read();
-          }
-        }
-        catch(Exception e)
-        {
-          framework.debug(0, "Error reading file in package.");
-        }
-        
+
         try
         {
           framework.debug(20, "Uploading " + key);
@@ -697,7 +681,8 @@ public class DataPackage
           Integer revI = new Integer(rev);
           int revi = revI.intValue();
           
-          if(beginFile.indexOf("<?xml") != -1)
+//          if(beginFile.indexOf("<?xml") != -1)
+          if (!isDataFile(key)) 
           { //its an xml file
             for(int i=1; i<=revi; i++)
             { //we have to put all of the old versions in metacat first so that
@@ -766,6 +751,7 @@ public class DataPackage
     Hashtable updatedIds = new Hashtable();
     Hashtable updatedFiles = new Hashtable();
     AccessionNumber accNum = new AccessionNumber(framework);
+    String newId = "";
     for(int i=0; i<fileIds.size(); i++)
     {
       String fileId = (String)fileIds.elementAt(i);
@@ -773,32 +759,74 @@ public class DataPackage
       if(!fileId.equals(this.id))
       { //we want to save the package file for last so we can update all 
         //of the ids in the triples.
-        String newId = accNum.getNextId();
+        newId = accNum.getNextId();
         updatedIds.put(fileId, newId); //keep a record of what we changed
-        try
-        {
-          File f = PackageUtil.openFile(fileId, framework);
-          FileInputStream fis = new FileInputStream(f);
-          int c = fis.read();
-          while(c != -1)
-          { //read the file into a stringbuffer
-            sb.append((char)c);
-            c = fis.read();
+        
+        if (!isDataFile(fileId)) {  // not a datafile; string use OK
+          try
+          {
+            File f = PackageUtil.openFile(fileId, framework);
+            FileInputStream fis = new FileInputStream(f);
+            int c = fis.read();
+            while(c != -1)
+            { //read the file into a stringbuffer
+              sb.append((char)c);
+              c = fis.read();
+            }
+          }
+          catch(Exception e)
+          {
+            framework.debug(0, "Error reading file " + fileId + " in package." +
+                          "DataPackage.incrementPackageIds()");
+          }
+          String fileString = sb.toString();
+          fileString = replaceTextInString(fileString, fileId, newId);
+          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(framework);
+      
+          //save the file
+          fsds.newFile(newId, new StringReader(fileString)); //new local file
+          try
+          {
+            mds.newFile(newId, new StringReader(fileString)); //new metacat file
+          }
+          catch(MetacatUploadException mue)
+          {
+            framework.debug(0, "Error uploading file " + fileId + " to metacat" +
+                        " in DataPackage.incrementPackageIds(): " +
+                        mue.getMessage());
           }
         }
-        catch(Exception e)
-        {
-          framework.debug(0, "Error reading file " + fileId + " in package." +
-                          "DataPackage.incrementPackageIds()");
+      
+        else {  // it is a datafile
+          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(framework);
+      
+          //save the file
+          File f = null;
+          try {
+            f = PackageUtil.openFile(fileId, framework);
+            fsds.newDataFile(newId, new FileInputStream(f)); //new local file
+          }
+          catch (Exception w) {
+            framework.debug(0, "Problem writing new local data file");
+          }
+          
+          try
+          {
+            mds.newDataFile(newId, f); //new metacat file
+          }
+          catch(MetacatUploadException mue)
+          {
+            framework.debug(0, "Error uploading file " + newId + " to metacat" +
+                        " in DataPackage.incrementPackageIds(): " +
+                        mue.getMessage());
+          }
         }
-        String fileString = sb.toString();
-        fileString = replaceTextInString(fileString, fileId, newId);
-        //so now we have the file with all of the ids in the text replaced
-        updatedFiles.put(newId, fileString);
-        //put it in a hashtable to be saved later.
       }
-    }
+    } // end loop over files in package
     
+    // now deal with the package file itself
     StringBuffer sb = new StringBuffer();
     try
     {
@@ -836,8 +864,26 @@ public class DataPackage
     String newPackageId = accNum.getNextId();
     packageFileString = replaceTextInString(packageFileString,
                                             this.id, newPackageId);
-    updatedFiles.put(newPackageId, packageFileString);
-    
+//    updatedFiles.put(newPackageId, packageFileString);
+
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    MetacatDataStore mds = new MetacatDataStore(framework);
+      
+    //save the file
+    fsds.newFile(newPackageId, new StringReader(packageFileString)); //new local file
+    try
+    {
+      mds.newFile(newPackageId, new StringReader(packageFileString)); //new metacat file
+    }
+    catch(MetacatUploadException mue)
+    {
+      framework.debug(0, "Error uploading file " + newPackageId + " to metacat" +
+                        " in DataPackage.incrementPackageIds(): " +
+                        mue.getMessage());
+    }
+
+/*
+//------      
     //now we should have the complete package updated.  we need to go through
     //and save all of the files.
     Enumeration packageids = updatedFiles.keys();
@@ -845,7 +891,6 @@ public class DataPackage
     {
       String fileid = (String)packageids.nextElement();
       String filestring = (String)updatedFiles.get(fileid);
-      
       FileSystemDataStore fsds = new FileSystemDataStore(framework);
       MetacatDataStore mds = new MetacatDataStore(framework);
       
@@ -862,7 +907,8 @@ public class DataPackage
                         mue.getMessage());
       }
     }
-    
+ //-------- 
+*/    
     //create a new package
     DataPackage dp = new DataPackage(this.location, newPackageId, null, 
                                      framework);
@@ -1353,6 +1399,28 @@ public class DataPackage
      catch (Exception e) {} 
      return text; 
    } 
+   
+  /*
+   * find out if the doc with the given id is a data doc
+   * using the triple relationship
+   */
+   public boolean isDataFile(String id) {
+      boolean res = false;
+      Vector triplesV = triples.getCollection();
+      for(int i=0; i<triplesV.size(); i++)
+      {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String subject = triple.getSubject();
+        if (subject.trim().equals(id.trim())) {
+          String relationship = triple.getRelationship();
+          if(relationship.indexOf("isDataFileFor") != -1) {
+            res = true;
+            return res;
+          }
+        }
+      }
+      return res;
+   }
   
   /*
    * find out if there are datafiles associated with the given entity ID
