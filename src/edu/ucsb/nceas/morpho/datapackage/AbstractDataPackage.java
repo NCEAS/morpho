@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-23 17:31:09 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2004-01-23 18:28:55 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1545,14 +1545,16 @@ public abstract class AbstractDataPackage extends MetadataObject
    * is assumed that the data file has been assigned an id and stored in the
    * temp directory if it has not been saved to one of the stores
    */
-  public void serializeData() {
+  public boolean serializeData() {
+    boolean res = true;
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
 //Log.debug(1, "About to check entityArray!");
     if (entityArray == null) {
-      return; // there is no data!
+      res = false;
+      return res; // there is no data!
     }
     for (int i = 0; i < entityArray.length; i++) {
       String urlinfo = getDistributionUrl(i, 0, 0);
@@ -1575,7 +1577,8 @@ public abstract class AbstractDataPackage extends MetadataObject
         // should have trimmed 'other'
       }
       if (urlinfo.length() == 0) {
-        return;
+        res = false;
+        return res;
       }
       // if we reach here, urlinfo should be the id in a string
       try {
@@ -1617,14 +1620,17 @@ public abstract class AbstractDataPackage extends MetadataObject
         catch (Exception ex) {
           Log.debug(5, "Some problem while writing data files has occurred!");
           ex.printStackTrace();
+          res = false;
         }
       }
       catch (Exception q) {
         // some other problem has occured
         Log.debug(5, "Some problem with saving data files has occurred!");
         q.printStackTrace();
+        res = false;
       }
     }
+    return res;
   }
 
   /**
