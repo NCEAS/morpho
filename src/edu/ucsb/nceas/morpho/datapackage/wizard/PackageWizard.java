@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2002-01-10 21:06:30 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2002-01-10 21:40:15 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1477,8 +1477,8 @@ public class PackageWizard extends javax.swing.JFrame
         
         if(button != null)
         { //if this item is repeatable add the button  
-          button.setText("<html><font color=\"" + getColor(label.getForeground().toString()) + 
-                         "\">" + label.getText() + "</font></html>");
+          button.setText("<html><b><font color=\"" + getColor(label.getForeground().toString()) + 
+                         "\">" + label.getText() + "</font></b></html>");
           layoutpanel.add(button, BorderLayout.WEST);
         }
         else
@@ -1660,8 +1660,8 @@ public class PackageWizard extends javax.swing.JFrame
         
         if(button != null)
         {
-          button.setText("<html><font color=\"" + getColor(label.getForeground().toString()) + 
-                         "\">" + label.getText() + "</font></html>");
+          button.setText("<html><b><font color=\"" + getColor(label.getForeground().toString()) + 
+                         "\">" + label.getText() + "</font></b></html>");
           layoutpanel.add(button, BorderLayout.WEST);
           //parentPanel.add(button);
         }
