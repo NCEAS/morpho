@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-02 17:41:37 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2001-05-02 21:39:02 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,7 +171,7 @@ public class QueryPlugin implements PluginInterface
     menuActions = new Action[3];
     Action searchItemAction = new AbstractAction("Search...") {
       public void actionPerformed(ActionEvent e) {
-        framework.debug(1, "Action fired: Search :-)");
+        framework.debug(1, "Action fired: Search Dialog :-)");
       }
     };
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
@@ -356,13 +356,9 @@ public class QueryPlugin implements PluginInterface
     }
   }
 
-/*
-  public void setTabbedPane(JTabbedPane tp)
-  {
-    //ownerPanel = tp;
-  }
-*/
-
+  /**
+   * Load the configuration parameters that we need
+   */
   private void loadConfigurationParameters()
   {
     //MetaCatServletURL = config.get("MetaCatServletURL", 0);
