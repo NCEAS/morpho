@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:51:15 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -51,7 +51,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-public class Summary extends AbstractWizardPage {
+public class Summary extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String nextPageID = null;
@@ -142,8 +142,8 @@ public class Summary extends AbstractWizardPage {
 
     String ID = mainWizFrame.getFirstPageID();
     if (ID==null) return "";
-		if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
-			return "data table";
+    if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
+      return "data table";
     else return "data package";
   }
 
@@ -189,7 +189,7 @@ public class Summary extends AbstractWizardPage {
       final DataPackageInterface finalDataPackagePlugin = dataPackagePlugin;
 
       GUIAction newDataTableAction
-        = new GUIAction("or click here to add a new data table now...",
+        = new GUIAction("or click here to finish this wizard and add a new data table now...",
                         null,
                         new Command() {
 
@@ -279,8 +279,8 @@ public class Summary extends AbstractWizardPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-		return true;
-	}
+    return true;
+  }
 
 
   /**

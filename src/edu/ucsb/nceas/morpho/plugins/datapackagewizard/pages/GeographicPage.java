@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-15 18:27:57 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -63,7 +63,7 @@ import javax.swing.event.ListSelectionEvent;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 
-public class GeographicPage extends AbstractWizardPage {
+public class GeographicPage extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
   public final String nextPageID = DataPackageWizardInterface.TEMPORAL;
@@ -72,22 +72,22 @@ public class GeographicPage extends AbstractWizardPage {
 
   public final String title      = "Geographic Information";
   public final String subtitle   = "";
-  
+
   private JTextArea   covDescField;
   private JLabel covDescLabel;
   private JLabel regionSelectionLabel;
   private JList regionList;
   private LiveMapPanel lmp;
-  
+
   private boolean deleteFlag = false;
 
   private String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage";
 
   private ConfigXML locationsXML = null;
-	
-	// use to indicate that text in the ooverage Description field has been changed by user
-	private boolean covDescFieldChangedFlag = false;
-  
+
+  // use to indicate that text in the ooverage Description field has been changed by user
+  private boolean covDescFieldChangedFlag = false;
+
   public GeographicPage() {
 
     init();
@@ -120,9 +120,9 @@ public class GeographicPage extends AbstractWizardPage {
     JScrollPane jscrl = new JScrollPane(covDescField);
     covDescPanel.add(jscrl);
 
-		SymFocus aSymFocus = new SymFocus();
-		covDescField.addFocusListener(aSymFocus);
-		
+    SymFocus aSymFocus = new SymFocus();
+    covDescField.addFocusListener(aSymFocus);
+
     covDescPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(covDescPanel);
 
@@ -139,12 +139,12 @@ public class GeographicPage extends AbstractWizardPage {
 
 
     JPanel bboxPanel = WidgetFactory.makePanel();
-    
+
     JLabel bboxLabel = WidgetFactory.makeLabel(" Bounding Box:", true);
     bboxLabel.setVerticalAlignment(SwingConstants.TOP);
     bboxLabel.setAlignmentY(SwingConstants.TOP);
     bboxPanel.add(bboxLabel);
-    
+
     lmp = new LiveMapPanel(true);
     bboxPanel.add(lmp);
 
@@ -162,7 +162,7 @@ public class GeographicPage extends AbstractWizardPage {
     regionSelectionLabel.setAlignmentY(SwingConstants.TOP);
     regionSelectionPanel.add(regionSelectionLabel);
 
-    
+
     Vector names = getLocationNames();
     final DefaultListModel model = new DefaultListModel();
     for (int i=0;i<names.size();i++) {
@@ -179,7 +179,7 @@ public class GeographicPage extends AbstractWizardPage {
     regionSelectionPanel.add(jscr2);
 
     JLabel selectHelpLabel = getLabel("Click button to display selected region.");
-    
+
     JButton selectButton = new JButton("Select");
     selectButton.setPreferredSize(new Dimension(60,24));
     selectButton.setMaximumSize(new Dimension(60,24));
@@ -215,19 +215,19 @@ public class GeographicPage extends AbstractWizardPage {
     addButton.setFocusPainted(false);
     addButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        
+
         String btnString1 = "Enter";
         String btnString2 = "Cancel";
         Object[] options = {btnString1, btnString2};
 
-        JOptionPane optionPane = new JOptionPane(array, 
+        JOptionPane optionPane = new JOptionPane(array,
                                     JOptionPane.QUESTION_MESSAGE,
                                     JOptionPane.YES_NO_OPTION,
                                     null,
                                     options,
-                                    options[0]);        
+                                    options[0]);
         JDialog dialog = optionPane.createDialog(currentInstance,
-				   "Add Current Selection to Named Region List?");
+           "Add Current Selection to Named Region List?");
         dialog.show();
         String selectedValue = (String)(optionPane.getValue());
         if ((selectedValue!=null)&&(selectedValue.equals("Enter"))) {
@@ -236,8 +236,8 @@ public class GeographicPage extends AbstractWizardPage {
             Log.debug(1, "Sorry, but a Name must be entered.");
           } else {
             // create new location here
-            addLocation(inputName, (covDescField.getText()).trim(), 
-                                lmp.getNorth(), lmp.getWest(), 
+            addLocation(inputName, (covDescField.getText()).trim(),
+                                lmp.getNorth(), lmp.getWest(),
                                 lmp.getSouth(), lmp.getEast());
             model.addElement(inputName);
           }
@@ -270,11 +270,11 @@ public class GeographicPage extends AbstractWizardPage {
 //    JPanel buttonSubpanel1 = new JPanel();
     JPanel buttonSubpanel2 = new JPanel();
     JPanel buttonSubpanel3 = new JPanel();
-    
+
 //    buttonSubpanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 //    buttonSubpanel1.add(selectButton);
 //    buttonSubpanel1.add(selectHelpLabel);
-    
+
     buttonSubpanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
     buttonSubpanel2.add(addButton);
     buttonSubpanel2.add(addHelpLabel);
@@ -286,57 +286,57 @@ public class GeographicPage extends AbstractWizardPage {
 //    buttonPanel.add(buttonSubpanel1);
     buttonPanel.add(buttonSubpanel2);
     buttonPanel.add(buttonSubpanel3);
-    
-    
-    
-    
+
+
+
+
     regionPanel.add(regionSelectionPanel);
     regionPanel.add(buttonPanel);
 
     vbox.add(regionPanel);
 
 //    vbox.add(WidgetFactory.makeDefaultSpacer());
-    
+
   ////////////////////////////////////////////////////////////////////////////
 
 //    vbox.add(WidgetFactory.makeDefaultSpacer());
-  
+
 
   }
-  
+
   public void setXPathRoot(String xpath) {
-    xPathRoot = xpath; 
+    xPathRoot = xpath;
   }
 
   class RegionSelectionHandler implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent eee) {
-		  boolean setTextFlag = true;
+      boolean setTextFlag = true;
       if (deleteFlag) return;
       String selection = (String)regionList.getSelectedValue();
-			if (covDescField.hasFocus()) return;
-			if ((covDescFieldChangedFlag)&&(covDescField.getText().length()>0) ) {
-				 int res = JOptionPane.showConfirmDialog(covDescField, "Replace existing description",
-				            "Confirm:", JOptionPane.YES_NO_OPTION);
-				 if (res==JOptionPane.YES_OPTION) {
-					 setTextFlag = true;
+      if (covDescField.hasFocus()) return;
+      if ((covDescFieldChangedFlag)&&(covDescField.getText().length()>0) ) {
+         int res = JOptionPane.showConfirmDialog(covDescField, "Replace existing description",
+                    "Confirm:", JOptionPane.YES_NO_OPTION);
+         if (res==JOptionPane.YES_OPTION) {
+           setTextFlag = true;
          }
          else {
-					 setTextFlag = false;
-         }						
-			}
+           setTextFlag = false;
+         }
+      }
  //     Log.debug(1,"Selection: "+selection);
       double n = (new Double(getNorth(selection))).doubleValue();
       double w = (new Double(getWest(selection))).doubleValue();
       double s = (new Double(getSouth(selection))).doubleValue();
       double e = (new Double(getEast(selection))).doubleValue();
-      lmp.setBoundingBox(n, w, s, e);  
-			if (setTextFlag) {
+      lmp.setBoundingBox(n, w, s, e);
+      if (setTextFlag) {
         covDescField.setText(getDescription(selection));
-		    covDescFieldChangedFlag = false;
-			}
+        covDescFieldChangedFlag = false;
+      }
     }
   }
-  
+
   /**
    *  gets info for location list from file
    */
@@ -346,11 +346,11 @@ public class GeographicPage extends AbstractWizardPage {
       Vector vec = locationsXML.getValuesForPath("name");
       return vec;
     } catch (Exception w) {
-      Log.debug(5, "problem reading locations file!");      
+      Log.debug(5, "problem reading locations file!");
     }
     return null;
   }
-  
+
   private String getNorth(String locname) {
     String res = "";
     if (locationsXML!=null) {
@@ -391,62 +391,62 @@ public class GeographicPage extends AbstractWizardPage {
     }
     return res;
   }
-	
-	/**
-	 *  Create a dom subtree with a new location
-	 */
-	private Node createNewLocation( String name, String desc, double north, double west,
-	                        double south, double east) {
-		Node head = null;												
-		if (locationsXML!=null) {
-			Document doc = locationsXML.getDocument();
-			head = doc.createElement("location");
-			Node temp = doc.createElement("name");
-			Node temp1 = doc.createTextNode(name);
-			temp.appendChild(temp1);
-			head.appendChild(temp);
-			
-			temp = doc.createElement("description");
-			temp1 = doc.createTextNode(desc);
-			temp.appendChild(temp1);
-			head.appendChild(temp);
 
-			temp = doc.createElement("north");
-			temp1 = doc.createTextNode((new Double(north)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
+  /**
+   *  Create a dom subtree with a new location
+   */
+  private Node createNewLocation( String name, String desc, double north, double west,
+                          double south, double east) {
+    Node head = null;
+    if (locationsXML!=null) {
+      Document doc = locationsXML.getDocument();
+      head = doc.createElement("location");
+      Node temp = doc.createElement("name");
+      Node temp1 = doc.createTextNode(name);
+      temp.appendChild(temp1);
+      head.appendChild(temp);
 
-			temp = doc.createElement("west");
-			temp1 = doc.createTextNode((new Double(west)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
+      temp = doc.createElement("description");
+      temp1 = doc.createTextNode(desc);
+      temp.appendChild(temp1);
+      head.appendChild(temp);
 
-			temp = doc.createElement("south");
-			temp1 = doc.createTextNode((new Double(south)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
+      temp = doc.createElement("north");
+      temp1 = doc.createTextNode((new Double(north)).toString());
+      temp.appendChild(temp1);
+      head.appendChild(temp);
 
-			temp = doc.createElement("east");
-			temp1 = doc.createTextNode((new Double(east)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
-			
-		}
-		return head;
-	}
-	
-	/**
-	 *  adds a location to the config file
-	 */
-	public void addLocation( String name, String desc, double north, double west,
-	                        double south, double east) {
-		if (locationsXML!=null) {												
-	    Node nd = createNewLocation(name, desc, north, west, south, east);
-      Node root = locationsXML.getRoot();	
-      root.appendChild(nd);	
-			locationsXML.save();
-    }											
-	}
+      temp = doc.createElement("west");
+      temp1 = doc.createTextNode((new Double(west)).toString());
+      temp.appendChild(temp1);
+      head.appendChild(temp);
+
+      temp = doc.createElement("south");
+      temp1 = doc.createTextNode((new Double(south)).toString());
+      temp.appendChild(temp1);
+      head.appendChild(temp);
+
+      temp = doc.createElement("east");
+      temp1 = doc.createTextNode((new Double(east)).toString());
+      temp.appendChild(temp1);
+      head.appendChild(temp);
+
+    }
+    return head;
+  }
+
+  /**
+   *  adds a location to the config file
+   */
+  public void addLocation( String name, String desc, double north, double west,
+                          double south, double east) {
+    if (locationsXML!=null) {
+      Node nd = createNewLocation(name, desc, north, west, south, east);
+      Node root = locationsXML.getRoot();
+      root.appendChild(nd);
+      locationsXML.save();
+    }
+  }
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -491,12 +491,12 @@ public class GeographicPage extends AbstractWizardPage {
   private OrderedMap returnMap = new OrderedMap();
 
   public OrderedMap getPageData() {
-    return getPageData(xPathRoot);  
+    return getPageData(xPathRoot);
   }
 
   public OrderedMap getPageData(String xPathRoot) {
     returnMap.clear();
-    
+
     returnMap.put(xPathRoot + "/geographicDescription",
                     covDescField.getText().trim());
 
@@ -508,11 +508,11 @@ public class GeographicPage extends AbstractWizardPage {
 
     returnMap.put(xPathRoot + "/boundingCoordinates/northBoundingCoordinate" ,
                     (new Double(lmp.getNorth())).toString());
-                    
+
     returnMap.put(xPathRoot + "/boundingCoordinates/southBoundingCoordinate" ,
                     (new Double(lmp.getSouth())).toString());
 
-                    
+
                     return returnMap;
   }
 
@@ -555,19 +555,19 @@ public class GeographicPage extends AbstractWizardPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap map) { 
+  public void setPageData(OrderedMap map) {
     double n = 89.0;
     double w = -179.0;
     double s = -89.0;
     double e = 179.0;
-	  String name = (String)map.get(xPathRoot + "/geographicDescription[1]");
-		if(name != null) map = stripIndexOneFromMapKeys(map);
-    
+    String name = (String)map.get(xPathRoot + "/geographicDescription[1]");
+    if(name != null) map = stripIndexOneFromMapKeys(map);
+
     name = (String)map.get(xPathRoot + "/geographicDescription");
     if (name!=null) {
       covDescField.setText(name);
     }
-    
+
     name = (String)map.get(xPathRoot + "/boundingCoordinates/northBoundingCoordinate");
     if (name!=null) {
       Double N = new Double(name);
@@ -598,9 +598,9 @@ public class GeographicPage extends AbstractWizardPage {
     }
     if ((e==w)&&(n==s)) lmp.setTool("PT");
     lmp.setBoundingBox(n, w, s, e);
-  
+
   }
-  
+
   private JLabel getLabel(String text) {
     if (text==null) text="";
     JLabel label = new JLabel(text);
@@ -611,7 +611,7 @@ public class GeographicPage extends AbstractWizardPage {
 
     return label;
   }
-  
+
   /**
    *  @return a List contaiing 2 String elements - one for each column of the
    *  2-col list in which this surrogate is displayed
@@ -629,69 +629,69 @@ public class GeographicPage extends AbstractWizardPage {
                   "; South: "+(new Double(lmp.getSouth())).toString()
                   + "; -----" + covDescField.getText().trim();
     surrogate.add(temp);
-    
+
     return surrogate;
   }
-	
-	
+
+
     /**
-   *  This is a static main method configured to test the class 
+   *  This is a static main method configured to test the class
    */
-  static public void main(String args[]) {			
+  static public void main(String args[]) {
 
     JFrame frame = new JFrame("Demo/Test");
     frame.setSize(800, 600);
     frame.getContentPane().setLayout(new BorderLayout());
     GeographicPage geo = new GeographicPage();
-    
+
 //		geo.addLocation("Test", "Test Location", 1.0, 2.0, 3.0, 4.0);
     frame.getContentPane().add(geo, BorderLayout.CENTER);
     frame.setVisible(true);
 
   }
 
-  	 private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
+     private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
 
-		 OrderedMap newMap = new OrderedMap();
-		 Iterator it = map.keySet().iterator();
-		 while(it.hasNext()) {
-			 String key = (String) it.next();
-			 String val = (String)map.get(key);
-			 int pos;
-			 if((pos = key.indexOf("[1]")) < 0) {
-				 newMap.put(key, val);
-				 continue;
-			 }
-			 String newKey = "";
-			 for(;pos != -1; pos = key.indexOf("[1]")){
-				 newKey += key.substring(0,pos);
-				 key = key.substring(pos + 3);
-			 }
-			 newKey += key;
-			 newMap.put(newKey, val);
-		 }
-		 return newMap;
-	 }
-	 
-	 
-	class SymFocus extends java.awt.event.FocusAdapter
-	{
-		private String startingString = "";
-		
-		public void focusLost(java.awt.event.FocusEvent event)
-		{
+     OrderedMap newMap = new OrderedMap();
+     Iterator it = map.keySet().iterator();
+     while(it.hasNext()) {
+       String key = (String) it.next();
+       String val = (String)map.get(key);
+       int pos;
+       if((pos = key.indexOf("[1]")) < 0) {
+         newMap.put(key, val);
+         continue;
+       }
+       String newKey = "";
+       for(;pos != -1; pos = key.indexOf("[1]")){
+         newKey += key.substring(0,pos);
+         key = key.substring(pos + 3);
+       }
+       newKey += key;
+       newMap.put(newKey, val);
+     }
+     return newMap;
+   }
+
+
+  class SymFocus extends java.awt.event.FocusAdapter
+  {
+    private String startingString = "";
+
+    public void focusLost(java.awt.event.FocusEvent event)
+    {
 //			System.out.println("FocusLost fired!");
-			String currentString = covDescField.getText();
-			if ((!startingString.equals(currentString))&&
-			    (currentString.length()>0)) {
-			  covDescFieldChangedFlag = true;
-			}
-		}
-    
-    public void focusGained(java.awt.event.FocusEvent event) {
-			startingString = covDescField.getText();
+      String currentString = covDescField.getText();
+      if ((!startingString.equals(currentString))&&
+          (currentString.length()>0)) {
+        covDescFieldChangedFlag = true;
+      }
     }
 
-	}
+    public void focusGained(java.awt.event.FocusEvent event) {
+      startingString = covDescField.getText();
+    }
+
+  }
 
 }

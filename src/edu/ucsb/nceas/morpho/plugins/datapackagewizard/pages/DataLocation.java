@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-15 18:27:12 $'
- * '$Revision: 1.30 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -65,7 +65,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 
-public class DataLocation extends AbstractWizardPage {
+public class DataLocation extends AbstractUIPage {
 
   private final String pageID       = DataPackageWizardInterface.DATA_LOCATION;
   private String nextPageID         = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
@@ -110,10 +110,10 @@ public class DataLocation extends AbstractWizardPage {
     "DESCRIBE - include only a metadata description of a web-accessible, archived or inaccessible data file"
   };
 
-	private final static int CREATE_CHOICE = 0;
-	private final static int IMPORT_CHOICE = 1;
-	private final static int DESCRIBE_CHOICE = 2;
-	
+  private final static int CREATE_CHOICE = 0;
+  private final static int IMPORT_CHOICE = 1;
+  private final static int DESCRIBE_CHOICE = 2;
+
   private final String Q2_TITLE_IMPORT
                         = "How do you want to enter the metadata description?";
   private final String[] Q2_LABELS_IMPORT = new String[] {
@@ -138,19 +138,19 @@ public class DataLocation extends AbstractWizardPage {
 
   private final Dimension Q3_RADIOPANEL_DIMS = new Dimension(120, 300);
 
-	private WizardContainerFrame mainWizFrame;
-	
-	// first radio Panel - CREATE/IMPORT/DESCRIBE
-	private JPanel mainRadioPanel;
-	
-	private JPanel q2RadioPanel_import;
+  private WizardContainerFrame mainWizFrame;
+
+  // first radio Panel - CREATE/IMPORT/DESCRIBE
+  private JPanel mainRadioPanel;
+
+  private JPanel q2RadioPanel_import;
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
   public DataLocation(WizardContainerFrame mainWizFrame) {
 
-		this.mainWizFrame = mainWizFrame;
-		
+    this.mainWizFrame = mainWizFrame;
+
     INLINE_OR_ONLINE = WizardSettings.ONLINE;
 
     String inOnString
@@ -318,8 +318,8 @@ public class DataLocation extends AbstractWizardPage {
         instance.repaint();
       }
     };
-		
-		mainRadioPanel = getRadioPanel( Q1_TITLE, Q1_LABELS, q1Listener, 0, true); 
+
+    mainRadioPanel = getRadioPanel( Q1_TITLE, Q1_LABELS, q1Listener, 0, true);
 
     topBox.add(mainRadioPanel);
 
@@ -521,30 +521,30 @@ public class DataLocation extends AbstractWizardPage {
     WidgetFactory.unhiliteComponent(urlLabelOnline);
     WidgetFactory.unhiliteComponent(objNameLabel);
     WidgetFactory.unhiliteComponent(medNameLabel);
-		
-		String prevPageID = mainWizFrame.getPreviousPageID();
-		if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
-			
-			// allow only import
-			Container radioPanel = (Container)mainRadioPanel.getComponent(1);
-			Container middlePanel = (Container) radioPanel.getComponent(1);
-			
-			// for CREATE
-			JRadioButton jrb = (JRadioButton)middlePanel.getComponent(CREATE_CHOICE); 
+
+    String prevPageID = mainWizFrame.getPreviousPageID();
+    if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
+
+      // allow only import
+      Container radioPanel = (Container)mainRadioPanel.getComponent(1);
+      Container middlePanel = (Container) radioPanel.getComponent(1);
+
+      // for CREATE
+      JRadioButton jrb = (JRadioButton)middlePanel.getComponent(CREATE_CHOICE);
       jrb.setEnabled(false);
-			// for DESCRIBE
-			jrb = (JRadioButton)middlePanel.getComponent(DESCRIBE_CHOICE);
+      // for DESCRIBE
+      jrb = (JRadioButton)middlePanel.getComponent(DESCRIBE_CHOICE);
       jrb.setEnabled(false);
-			
-			// select the IMPORT_CHOICE
-			jrb = (JRadioButton)middlePanel.getComponent(IMPORT_CHOICE);
-			jrb.setSelected(true);
-			setQ2(q2RadioPanel_import);
+
+      // select the IMPORT_CHOICE
+      jrb = (JRadioButton)middlePanel.getComponent(IMPORT_CHOICE);
+      jrb.setSelected(true);
+      setQ2(q2RadioPanel_import);
       setQ3(blankPanel);
       setLastEvent(IMPORT);
-			
 
-		}
+
+    }
   }
 
 
@@ -1121,8 +1121,8 @@ class FileChooserWidget extends JPanel {
   private JTextField fileNameField;
   private JButton    fileNameButton;
   private String     importFileURL;
-  
-  static private File lastDataDir = null; 
+
+  static private File lastDataDir = null;
 
   public FileChooserWidget(String label, String descText, String initialText) {
 

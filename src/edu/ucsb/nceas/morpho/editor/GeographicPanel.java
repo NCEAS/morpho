@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-05 19:45:46 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.GeographicPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,22 +77,22 @@ public class GeographicPanel extends JPanel
     jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
     jp.setAlignmentX(Component.LEFT_ALIGNMENT);
     jp.setMaximumSize(new Dimension(800,600));
-    final AbstractWizardPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
+    final AbstractUIPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
     jp.add(awp);
-    
+
     NodeInfo ni = (NodeInfo)node.getUserObject();
     ni.setSelected(true);
-    
+
     DocFrame df = DocFrame.currentDocFrameInstance;
     final Node domNode = df.writeToDOM(node);
     // domNode is now the DOM tree equivalent of the original JTree subtree in node
     // The parts of this DOM tree that are NOT handled by the attribute panel need to be preserved
     // so that when data from the panel is merged back, information is not lost.
     final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
-    
+
     ((GeographicPage)awp).setXPathRoot("/geographicCoverage");
     awp.setPageData(om);
- 
+
     JPanel controlsPanel = new JPanel();
     JButton saveButton = new JButton("Save");
     saveButton.addActionListener( new ActionListener() {
@@ -111,16 +111,16 @@ public class GeographicPanel extends JPanel
           parent.remove(index);
           parent.insert(root, index);
           DocFrame df1 = DocFrame.currentDocFrameInstance;
-					DefaultMutableTreeNode fn = df1.findTemplateNodeByName("geographicCoverage");
-					if (fn!=null) {
-					  df1.treeUnion(root, fn);
-					}
-					df1.addXMLAttributeNodes(root);
-					df1.setAttributeNames(root);
-					NodeInfo nir = (NodeInfo)(root.getUserObject());
-					nir.setChoice(false);
-					nir.setCheckboxFlag(false);
-					(df1.treeModel).reload();
+          DefaultMutableTreeNode fn = df1.findTemplateNodeByName("geographicCoverage");
+          if (fn!=null) {
+            df1.treeUnion(root, fn);
+          }
+          df1.addXMLAttributeNodes(root);
+          df1.setAttributeNames(root);
+          NodeInfo nir = (NodeInfo)(root.getUserObject());
+          nir.setChoice(false);
+          nir.setCheckboxFlag(false);
+          (df1.treeModel).reload();
         } catch (Exception e) {
           Log.debug(20, "Problem in GeographicPanel");
         }
@@ -129,16 +129,16 @@ public class GeographicPanel extends JPanel
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-				awp.setPageData(om);
+        awp.setPageData(om);
       }
     });
     controlsPanel.add(saveButton);
     controlsPanel.add(cancelButton);
     jp.add(controlsPanel);
-    
-    
+
+
     jp.setVisible(true);
-    
+
   }
 
 }

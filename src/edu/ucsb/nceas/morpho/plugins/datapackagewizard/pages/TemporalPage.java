@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 00:52:25 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -62,7 +62,7 @@ import com.toedter.calendar.JCalendar;
  * <p>This is the actual temporal dialog page, where the user enters temporal
  * range limits</p>
  */
-public class TemporalPage extends AbstractWizardPage {
+public class TemporalPage extends AbstractUIPage {
 
   private final String pageID     = DataPackageWizardInterface.TEMPORAL_PAGE;
   private final String nextPageID = "";

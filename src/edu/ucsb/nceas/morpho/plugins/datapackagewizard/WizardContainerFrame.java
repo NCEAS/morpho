@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:11:33 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,9 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -64,9 +67,9 @@ import javax.swing.border.EmptyBorder;
 import org.w3c.dom.Node;
 
 /**
- *  provides a top-level container for AbstractWizardPage objects. The top (title) panel
+ *  provides a top-level container for AbstractUIPage objects. The top (title) panel
  *  and bottom button panel (including the navigation buttons) are all part of
- *  this class, with the AbstractWizardPage content being nested inside a central area
+ *  this class, with the AbstractUIPage content being nested inside a central area
  */
 public class WizardContainerFrame extends JFrame {
 
@@ -128,7 +131,7 @@ public class WizardContainerFrame extends JFrame {
       return;
     }
 
-    AbstractWizardPage pageForID = WizardPageLibrary.getPage(pageID);
+    AbstractUIPage pageForID = WizardPageLibrary.getPage(pageID);
 
     if (pageForID == null) {
       Log.debug(15,"setCurrentPage: page library does NOT contain ID: "+pageID);
@@ -146,7 +149,7 @@ public class WizardContainerFrame extends JFrame {
    *
    * @param newPage the wizard content for the center pane
    */
-  public void setCurrentPage(AbstractWizardPage newPage) {
+  public void setCurrentPage(AbstractUIPage newPage) {
 
     if (newPage==null) {
       Log.debug(45,"setCurrentPage called with NULL WizardPage");
@@ -178,7 +181,7 @@ public class WizardContainerFrame extends JFrame {
    *
    *  @return the wizard content from the center pane
    */
-  public AbstractWizardPage getCurrentPage() {
+  public AbstractUIPage getCurrentPage() {
 
     return this.currentPage;
   }
@@ -416,7 +419,7 @@ public class WizardContainerFrame extends JFrame {
 
   public String getPreviousPageID() {
     if(pageStack.isEmpty()) return "";
-    AbstractWizardPage page = (AbstractWizardPage) pageStack.peek();
+    AbstractUIPage page = (AbstractUIPage) pageStack.peek();
     if(page == null) return "";
     return page.getPageID();
   }
@@ -519,7 +522,7 @@ public class WizardContainerFrame extends JFrame {
     OrderedMap generalMap = null;
     if (GENERAL>=0)             {
 
-      generalMap = ((WizardPage)(pagesList.get(GENERAL))).getPageData();
+      generalMap = ((AbstractUIPage)(pagesList.get(GENERAL))).getPageData();
       final String titleXPath = "/eml:eml/dataset/title[1]";
       Object titleObj = generalMap.get(titleXPath);
       if (titleObj!=null) wizData.put(titleXPath,
@@ -528,12 +531,12 @@ public class WizardContainerFrame extends JFrame {
 
     //CREATOR:
     if (PARTY_CREATOR>=0)       {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(PARTY_CREATOR)),wizData);
     }
 
     //ASSOCIATED PARTY:
     if (PARTY_ASSOCIATED>=0)    {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
     }
 
     //ABSTRACT:
@@ -547,58 +550,58 @@ public class WizardContainerFrame extends JFrame {
 
     //KEYWORDS:
     if (KEYWORDS>=0)            {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(KEYWORDS)),wizData);
     }
 
     //INTELLECTUAL RIGHTS:
     if (USAGE_RIGHTS>=0)        {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(USAGE_RIGHTS)),wizData);
     }
 
     //GEOGRAPHIC:
     if (GEOGRAPHIC>=0)        {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(GEOGRAPHIC)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(GEOGRAPHIC)),wizData);
     }
 
     //TEMPORAL:
     if (TEMPORAL>=0)        {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(TEMPORAL)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(TEMPORAL)),wizData);
     }
 
     //CONTACT:
     if (PARTY_CONTACT>=0)       {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CONTACT)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(PARTY_CONTACT)),wizData);
     }
 
     //PROJECT:
     if (PROJECT>=0)        {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PROJECT)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(PROJECT)),wizData);
     }
 
                 //METHODS:
                 if (METHODS>=0)        {
-                        addPageDataToResultsMap((WizardPage)(pagesList.get(METHODS)),wizData);
+                        addPageDataToResultsMap((AbstractUIPage)(pagesList.get(METHODS)),wizData);
                 }
 
     //ACCESS:
     if (ACCESS>=0)        {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(ACCESS)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(ACCESS)),wizData);
     }
 
     if (TEXT_IMPORT_WIZARD>=0)  {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(TEXT_IMPORT_WIZARD)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(TEXT_IMPORT_WIZARD)),wizData);
     }
 
     if (ENTITY>=0)              {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(ENTITY)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(ENTITY)),wizData);
     }
 
     if (DATA_FORMAT>=0)         {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_FORMAT)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(DATA_FORMAT)),wizData);
     }
 
     if (DATA_LOCATION>=0)       {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
+      addPageDataToResultsMap((AbstractUIPage)(pagesList.get(DATA_LOCATION)),wizData);
     }
     // now add unique ID's to all dataTables and attributes
     addIDs(
@@ -762,7 +765,7 @@ public class WizardContainerFrame extends JFrame {
    * @param nextPage WizardPage
    * @param resultsMap OrderedMap
    */
-  private void addPageDataToResultsMap( WizardPage nextPage,
+  private void addPageDataToResultsMap( AbstractUIPage nextPage,
                                         OrderedMap resultsMap) {
 
     String nextKey = null;
@@ -796,7 +799,7 @@ public class WizardContainerFrame extends JFrame {
 
     if (pageStack.isEmpty()) return;
 
-    AbstractWizardPage previousPage = (AbstractWizardPage)pageStack.pop();
+    AbstractUIPage previousPage = (AbstractUIPage)pageStack.pop();
     if (previousPage==null) {
       Log.debug(15,"previousAction - popped a NULL page from stack");
       return;
@@ -1011,7 +1014,7 @@ public class WizardContainerFrame extends JFrame {
   private JButton nextButton;
   private JButton prevButton;
   private JButton finishButton;
-  private AbstractWizardPage currentPage;
+  private AbstractUIPage currentPage;
   private Stack pageStack;
   private WizardPageLibrary pageLib;
   private boolean showPageCount;

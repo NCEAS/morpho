@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:09:24 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,8 +128,8 @@ public class EditColumnMetaDataCommand implements Command
 
     }//if
 
-    if(attributes == null || attrIndex == -1)
-    {
+    if(attributes == null || attrIndex == -1) {
+
       Log.debug(16, " Couldnt get the attributes in	EditColumnMetaDataCommand for attrIndex = " + attrIndex);
       return;
     }
@@ -143,11 +143,12 @@ public class EditColumnMetaDataCommand implements Command
     try {
       sc = ServiceController.getInstance();
       dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
+
     } catch (ServiceNotHandledException se) {
       Log.debug(6, se.getMessage());
     }
-    if(dpwPlugin == null)
-      return;
+    if(dpwPlugin == null) return;
+
     AttributePage attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
     attributePage.setPageData(map);
     String firstKey = (String)map.keySet().iterator().next();

@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-17 19:34:58 $'
- * '$Revision: 1.18 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,14 +46,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-public class PartyPage
-    extends AbstractWizardPage {
+
+public class PartyPage extends AbstractUIPage {
 
   // define standard variables describing the page
 
@@ -629,43 +629,33 @@ public class PartyPage
    *  @return PartyPage Object if referedPage was created in same DP.
    *          Otherwise returns null
    */
-  private PartyPage partyInSameDP(PartyPage referedPage) {
+  private PartyPage partyInSameDP(PartyPage referedPage){
 
-    // get the responsiblePartyList descibed in DataPackageWizardInterface. So
-    // this list is just the parties that were created in this DP
     List dpList = DataPackageWizardInterface.responsiblePartyList;
 
-    Iterator it = dpList.iterator();
-    while (it.hasNext()) {
-      // get all the parties entered in the list and check if any is equal to
-      // given referedPage
-      List row = (List) it.next();
-      PartyPage page = (PartyPage) row.get(3);
+  Iterator it = dpList.iterator();
+  while(it.hasNext()) {
+    List row = (List) it.next();
+    PartyPage page = (PartyPage)row.get(3);
 
-      // check for all the textfields - cannot do partyPage.equals(partyPage)
-      // because roles could be different
-      if (referedPage.getsalutationFieldText().equals(page.
-          getsalutationFieldText()) &&
-          referedPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
-          referedPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
-          referedPage.getorganizationFieldText().equals(page.
-          getorganizationFieldText()) &&
-          referedPage.getpositionNameFieldText().equals(page.
-          getpositionNameFieldText()) &&
-          referedPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
-          referedPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
-          referedPage.getcityFieldText().equals(page.getcityFieldText()) &&
-          referedPage.getstateFieldText().equals(page.getstateFieldText()) &&
-          referedPage.getzipFieldText().equals(page.getzipFieldText()) &&
-          referedPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
-          referedPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
-          referedPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
-          referedPage.getemailFieldText().equals(page.getemailFieldText()) &&
-          referedPage.geturlFieldText().equals(page.geturlFieldText())) {
-        return page;
-      }
+    if(referedPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
+    referedPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
+    referedPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
+    referedPage.getorganizationFieldText().equals(page.getorganizationFieldText()) &&
+    referedPage.getpositionNameFieldText().equals(page.getpositionNameFieldText()) &&
+    referedPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
+    referedPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
+    referedPage.getcityFieldText().equals(page.getcityFieldText()) &&
+    referedPage.getstateFieldText().equals(page.getstateFieldText()) &&
+    referedPage.getzipFieldText().equals(page.getzipFieldText()) &&
+    referedPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
+    referedPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
+    referedPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
+    referedPage.getemailFieldText().equals(page.getemailFieldText()) &&
+    referedPage.geturlFieldText().equals(page.geturlFieldText())){
+      return page;
     }
-    // none of pages matched with referedPage
+  }
     return null;
   }
 
@@ -1483,25 +1473,25 @@ public class PartyPage
 
   private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
 
-    OrderedMap newMap = new OrderedMap();
-    Iterator it = map.keySet().iterator();
-    while (it.hasNext()) {
-      String key = (String) it.next();
-      String val = (String) map.get(key);
-      int pos;
-      if ( (pos = key.indexOf("[1]")) < 0) {
-        newMap.put(key, val);
-        continue;
-      }
-      String newKey = "";
-      for (; pos != -1; pos = key.indexOf("[1]")) {
-        newKey += key.substring(0, pos);
-        key = key.substring(pos + 3);
-      }
-      newKey += key;
-      newMap.put(newKey, val);
-    }
-    return newMap;
-  }
+     OrderedMap newMap = new OrderedMap();
+     Iterator it = map.keySet().iterator();
+     while(it.hasNext()) {
+       String key = (String) it.next();
+       String val = (String)map.get(key);
+       int pos;
+       if((pos = key.indexOf("[1]")) < 0) {
+         newMap.put(key, val);
+         continue;
+       }
+       String newKey = "";
+       for(;pos != -1; pos = key.indexOf("[1]")){
+         newKey += key.substring(0,pos);
+         key = key.substring(pos + 3);
+       }
+       newKey += key;
+       newMap.put(newKey, val);
+     }
+     return newMap;
+   }
 
 }

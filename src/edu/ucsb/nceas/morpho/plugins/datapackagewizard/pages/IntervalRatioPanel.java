@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-19 20:06:00 $'
- * '$Revision: 1.27 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
@@ -90,12 +90,12 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
                         "real"
                     };
 
-	private String[] boundsPickListValues = new String[] {
-												"<",
-												"<="
-										};
+  private String[] boundsPickListValues = new String[] {
+                        "<",
+                        "<="
+                    };
 
-	private JButton addButton, delButton;
+  private JButton addButton, delButton;
 //////////////////////////////////////////////////
 //
 //from eml-entity.xsd:
@@ -137,7 +137,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
    *
    * @param page the parent wizard page
    */
-  public IntervalRatioPanel(AbstractWizardPage page) {
+  public IntervalRatioPanel(AbstractUIPage page) {
 
     super();
     init();
@@ -218,85 +218,85 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     JPanel numericDomainGrid = new JPanel(new GridLayout(1,2));
     numericDomainGrid.add(numberTypePanel);
-		numericDomainGrid.add(this.getLabel(""));
+    numericDomainGrid.add(this.getLabel(""));
 
-		this.add(Box.createGlue());
+    this.add(Box.createGlue());
     this.add(numericDomainGrid);
 
     ///////////////////////////
     JPanel boundsGrid = new JPanel(new GridLayout(1,2));
 
-		JPanel boundsPanel = WidgetFactory.makePanel(3);;
+    JPanel boundsPanel = WidgetFactory.makePanel(3);;
 
     boundsLabel = WidgetFactory.makeLabel("Bounds:", false,
-						WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+            WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     boundsPanel.add(boundsLabel);
 
-		String[] colNames     = new String[] {  "Min.", "", "",
+    String[] colNames     = new String[] {  "Min.", "", "",
                                             "", "Max."};
-		JLabel valueLabel = new JLabel("value", null, JLabel.CENTER);
-		JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
-		JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
-		Object[] colTemplates = new Object[] {  new JTextField(),
-														combobox1,
-														valueLabel,
-														combobox2,
-														new JTextField()
-													};
+    JLabel valueLabel = new JLabel("value", null, JLabel.CENTER);
+    JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+    JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+    Object[] colTemplates = new Object[] {  new JTextField(),
+                            combobox1,
+                            valueLabel,
+                            combobox2,
+                            new JTextField()
+                          };
 
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         false, false, false, false, false, false);
 
-		boundsPanel.add(boundsList);
+    boundsPanel.add(boundsList);
 
-		boundsGrid.add(boundsPanel);
+    boundsGrid.add(boundsPanel);
 
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
 
-		addButton = new JButton("Add");
-		addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    addButton = new JButton("Add");
+    addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
-		delButton = new JButton("Delete");
-		delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		delButton.setEnabled(false);
+    delButton = new JButton("Delete");
+    delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    delButton.setEnabled(false);
 
-		addButton.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				boundsList.fireAddAction();
-				if(boundsList.getRowCount() > 0)
-					delButton.setEnabled(true);
-			}
-		});
+    addButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        boundsList.fireAddAction();
+        if(boundsList.getRowCount() > 0)
+          delButton.setEnabled(true);
+      }
+    });
 
-		delButton.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				boundsList.fireDeleteAction();
-				if(boundsList.getRowCount() == 0)
-					delButton.setEnabled(false);
-			}
-		});
+    delButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        boundsList.fireDeleteAction();
+        if(boundsList.getRowCount() == 0)
+          delButton.setEnabled(false);
+      }
+    });
 
-		buttonPanel.add(addButton);
-		buttonPanel.add(delButton);
-		buttonPanel.add(Box.createVerticalGlue());
+    buttonPanel.add(addButton);
+    buttonPanel.add(delButton);
+    buttonPanel.add(Box.createVerticalGlue());
 
-		JPanel outerButtonPanel = new JPanel();
-		outerButtonPanel.setLayout(new BoxLayout(outerButtonPanel, BoxLayout.X_AXIS));
-		outerButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
-		outerButtonPanel.add(buttonPanel);
+    JPanel outerButtonPanel = new JPanel();
+    outerButtonPanel.setLayout(new BoxLayout(outerButtonPanel, BoxLayout.X_AXIS));
+    outerButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+    outerButtonPanel.add(buttonPanel);
 
-		boundsGrid.add(outerButtonPanel);
+    boundsGrid.add(outerButtonPanel);
 
 
-		this.add(Box.createVerticalGlue());
-		this.add(Box.createGlue());
+    this.add(Box.createVerticalGlue());
+    this.add(Box.createGlue());
     this.add(boundsGrid);
-		//this.add(Box.createGlue());
+    //this.add(Box.createGlue());
     /////////////////
 
 
@@ -304,17 +304,17 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
   }
 
-	private JLabel getLabel(String text) {
+  private JLabel getLabel(String text) {
 
-		if (text==null) text= "";
-		JLabel label = new JLabel(text);
+    if (text==null) text= "";
+    JLabel label = new JLabel(text);
 
-		label.setAlignmentX(1.0f);
-		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
+    label.setAlignmentX(1.0f);
+    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
 
-		return label;
-	}
+    return label;
+  }
   /**
    *  The action to be executed when the panel is displayed. May be empty
    */
@@ -341,8 +341,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     boundsList.deleteEmptyRows( CustomList.AND,
                                 new short[] { CustomList.EMPTY_STRING_TRIM,
                                               CustomList.IGNORE,
-																							CustomList.IGNORE,
-																							CustomList.IGNORE,
+                                              CustomList.IGNORE,
+                                              CustomList.IGNORE,
                                               CustomList.EMPTY_STRING_TRIM } );
 
     if (unitsPickList.getSelectedUnit().trim().equals("")) {
@@ -488,13 +488,13 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     xPathRoot = xPathRoot + "/numericDomain/bounds[";
     int index = 0;
-		boundsList.fireEditingStopped();
+    boundsList.fireEditingStopped();
     List rowLists = boundsList.getListOfRowLists();
     String nextMin = null;
     String nextMax = null;
     Object nextExcl = null;
 
-		for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
@@ -510,7 +510,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
         if (!nextMin.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
           nextExcl = nextRow.get(1);
-					if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
+          if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
 
             returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
 
@@ -532,116 +532,116 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
           if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
 
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
-						
+
           } else {
 
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "false");
-						
+
           }
         }
-      } 
+      }
     }
     return returnMap;
   }
 
   /**
-   *  sets the Data in the IntervalRatio Panel. This is called by the setData() 
-	 *  function of AttributePage.
+   *  sets the Data in the IntervalRatio Panel. This is called by the setData()
+   *  function of AttributePage.
 
    *  @param  xPathRoot - this is the relative xPath of the current attribute
    *
-   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in 
-	 *							this map are absolute xPath and not the relative xPaths
+   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in
+   *							this map are absolute xPath and not the relative xPaths
    *
    **/
 
-	 public void setPanelData( String xPathRoot, OrderedMap map) {
-		 
-		 String unit = (String)map.get( xPathRoot + "/unit/standardUnit");
-		 
-		 if(unit != null && !unit.equals("")) {
-			 String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
-			 int totUnitTypes = unitTypesArray.length;
-			 String[] unitsOfThisType = null;
-			 
-			 for (int i=0; i < totUnitTypes; i++) {
-				 
-				 unitsOfThisType
-				 = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
-				 int pos = -1;
-				 if((pos = isPresentInList(unit, unitsOfThisType)) >= 0) {
-					 unitsPickList.setSelectedUnit(i+1, pos);
-					 break;
-				 }
-			 }
-		 }
-		 
-		 String precision = (String)map.get(  xPathRoot + "/precision");
-		 if(precision != null)
-			 precisionField.setText(precision);
-		 
-		 String type = (String)map.get( xPathRoot + "/numericDomain/numberType");
-		 if(type != null)
-			 numberTypePickList.setSelectedItem(type);
-		 
-		 int index = 1;
-		 
-		 while(true) {
-			 List row = new ArrayList();
-			 Object min = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum");
-			 if(index ==1 && min == null)
-				 min = map.get(xPathRoot + "/numericDomain/bounds/minimum");
-				 if(min != null) {
-					 row.add((String)min);
-					 Object  excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
-					 if(index == 1 && excl == null)
-						 excl = map.get(xPathRoot + "/numericDomain/bounds/minimum/@exclusive");
-					 
-					 if(excl != null && ((String)excl).equals("true"))
-						 row.add("<");
-					 else
-						 row.add("<=");
-					 
-				 }
-				 else {
-					 row.add("");
-					 row.add("<");
-				 }
-				 row.add("value");
-				 Object max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
-				 if(index ==1 && max == null)
-					 max = map.get(xPathRoot + "/numericDomain/bounds/maximum");
-					 if(max != null) {
-						 Object excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
-						 if(index == 1 && excl == null)
-							 excl = map.get(xPathRoot + "/numericDomain/bounds/maximum/@exclusive");
-						 if(excl != null && ((String)excl).equals("true"))
-							 row.add("<");
-						 else
-							 row.add("<=");
-						 
-						 row.add((String)max);
-					 }
-					 else {
-						 row.add("<");
-						 row.add("");
-					 }
-					 if(min == null && max == null)
-						 break;
-					 else
-						 boundsList.addRow(row);
-					 index++;
-		 }
-		 boundsList.fireEditingStopped();
-		 return;
-	 }
+   public void setPanelData( String xPathRoot, OrderedMap map) {
 
-	 private int isPresentInList(String unitType, String[] unitsOfThisType) {
-		 
-		 // Assuming that the units of a particular type are arranged in alphabetical order
-		 // if not, a linear search needs to be done instead of the binary search
-		 return Arrays.binarySearch(unitsOfThisType, unitType);
-	 }
+     String unit = (String)map.get( xPathRoot + "/unit/standardUnit");
+
+     if(unit != null && !unit.equals("")) {
+       String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
+       int totUnitTypes = unitTypesArray.length;
+       String[] unitsOfThisType = null;
+
+       for (int i=0; i < totUnitTypes; i++) {
+
+         unitsOfThisType
+         = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
+         int pos = -1;
+         if((pos = isPresentInList(unit, unitsOfThisType)) >= 0) {
+           unitsPickList.setSelectedUnit(i+1, pos);
+           break;
+         }
+       }
+     }
+
+     String precision = (String)map.get(  xPathRoot + "/precision");
+     if(precision != null)
+       precisionField.setText(precision);
+
+     String type = (String)map.get( xPathRoot + "/numericDomain/numberType");
+     if(type != null)
+       numberTypePickList.setSelectedItem(type);
+
+     int index = 1;
+
+     while(true) {
+       List row = new ArrayList();
+       Object min = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum");
+       if(index ==1 && min == null)
+         min = map.get(xPathRoot + "/numericDomain/bounds/minimum");
+         if(min != null) {
+           row.add((String)min);
+           Object  excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
+           if(index == 1 && excl == null)
+             excl = map.get(xPathRoot + "/numericDomain/bounds/minimum/@exclusive");
+
+           if(excl != null && ((String)excl).equals("true"))
+             row.add("<");
+           else
+             row.add("<=");
+
+         }
+         else {
+           row.add("");
+           row.add("<");
+         }
+         row.add("value");
+         Object max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
+         if(index ==1 && max == null)
+           max = map.get(xPathRoot + "/numericDomain/bounds/maximum");
+           if(max != null) {
+             Object excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
+             if(index == 1 && excl == null)
+               excl = map.get(xPathRoot + "/numericDomain/bounds/maximum/@exclusive");
+             if(excl != null && ((String)excl).equals("true"))
+               row.add("<");
+             else
+               row.add("<=");
+
+             row.add((String)max);
+           }
+           else {
+             row.add("<");
+             row.add("");
+           }
+           if(min == null && max == null)
+             break;
+           else
+             boundsList.addRow(row);
+           index++;
+     }
+     boundsList.fireEditingStopped();
+     return;
+   }
+
+   private int isPresentInList(String unitType, String[] unitsOfThisType) {
+
+     // Assuming that the units of a particular type are arranged in alphabetical order
+     // if not, a linear search needs to be done instead of the binary search
+     return Arrays.binarySearch(unitsOfThisType, unitType);
+   }
 
 }
 
@@ -697,8 +697,8 @@ class UnitsPickList extends JPanel {
           } else {
             unitsList.setSelectedIndex(0);
           }
-					if(unitsList.isShowing())
-						unitsList.showPopup();
+          if(unitsList.isShowing())
+            unitsList.showPopup();
         }
       });
 
@@ -746,10 +746,10 @@ class UnitsPickList extends JPanel {
   }
 
   public void setSelectedUnit(int unitPos, int typePos) {
-	  unitTypesList.setSelectedIndex(unitPos);
-		unitsList.setEnabled(true);
-		unitsList.setSelectedIndex(typePos);
-	  return;
+    unitTypesList.setSelectedIndex(unitPos);
+    unitsList.setEnabled(true);
+    unitsList.setSelectedIndex(typePos);
+    return;
   }
 
   private UnitTypesListItem[] getUnitTypesArray() {
@@ -784,25 +784,25 @@ class UnitsPickList extends JPanel {
 
   public void setData(int unitTypeIndex, int unitIndex) {
 
-	UnitTypesListItem[] listItemsArray = getUnitTypesArray();
-	if(listItemsArray == null) return;
-	int length = listItemsArray.length;
-	if(length < unitTypeIndex ) return;
+  UnitTypesListItem[] listItemsArray = getUnitTypesArray();
+  if(listItemsArray == null) return;
+  int length = listItemsArray.length;
+  if(length < unitTypeIndex ) return;
 
-	unitTypesList.setSelectedIndex(unitTypeIndex);
-	unitsList.setModel( listItemsArray[unitTypeIndex].getComboBoxModel());
+  unitTypesList.setSelectedIndex(unitTypeIndex);
+  unitsList.setModel( listItemsArray[unitTypeIndex].getComboBoxModel());
   unitsList.setEnabled(true);
-	unitsList.setSelectedIndex(unitIndex);
-	unitsList.setPopupVisible(false);
-	
-	return;
+  unitsList.setSelectedIndex(unitIndex);
+  unitsList.setPopupVisible(false);
+
+  return;
   }
 
   public void getData(int[] indicesArray) {
 
-	  indicesArray[0] = unitTypesList.getSelectedIndex();
-	  indicesArray[1] = unitsList.getSelectedIndex();
-	  return;
+    indicesArray[0] = unitTypesList.getSelectedIndex();
+    indicesArray[1] = unitsList.getSelectedIndex();
+    return;
   }
 }
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:18 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -51,7 +51,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class KeywordsPage extends AbstractWizardPage {
+public class KeywordsPage extends AbstractUIPage {
 
   private final String pageID     = DataPackageWizardInterface.KEYWORDS_PAGE;
   private final String nextPageID = "";
@@ -83,7 +83,7 @@ public class KeywordsPage extends AbstractWizardPage {
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[1]";
 
   public KeywordsPage() {
-	  init();
+    init();
   }
 
   /**
@@ -245,7 +245,7 @@ public class KeywordsPage extends AbstractWizardPage {
   private OrderedMap returnMap = new OrderedMap();
   //
   public OrderedMap getPageData() {
-	  return getPageData(xPathRoot);
+    return getPageData(xPathRoot);
   }
 
   public OrderedMap getPageData(String xPathRoot) {

@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:53:08 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -69,7 +69,7 @@ import javax.swing.JLabel;
 
 
 
-public class CodeImportSummary extends AbstractWizardPage {
+public class CodeImportSummary extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
   public String nextPageID 			 = DataPackageWizardInterface.CODE_IMPORT_PAGE;
@@ -129,23 +129,23 @@ public class CodeImportSummary extends AbstractWizardPage {
     String ID = mainWizFrame.getFirstPageID();
 
     if (ID==null) return "";
-		int remaining = mainWizFrame.getAttributeImportCount();
-		if(remaining > 0) {
-			return "<p>Proceed to define or import data tables for the other attributes</p>";
-		} else {
-			return "<p>All necessary imports have been completed</p>";
-		}
-	}
-  
-	
+    int remaining = mainWizFrame.getAttributeImportCount();
+    if(remaining > 0) {
+      return "<p>Proceed to define or import data tables for the other attributes</p>";
+    } else {
+      return "<p>All necessary imports have been completed</p>";
+    }
+  }
+
+
   private String getActionName() {
 
     String ID = mainWizFrame.getFirstPageID();
     if (ID==null) return "";
-		if(ID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
-			return "import the codes for the attribute <i>" + mainWizFrame.getCurrentImportAttributeName() + "</i>";
-    else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) 
-			return "create your new data table";
+    if(ID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
+      return "import the codes for the attribute <i>" + mainWizFrame.getCurrentImportAttributeName() + "</i>";
+    else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
+      return "create your new data table";
     else return "create your new data package";
   }
 
@@ -153,174 +153,174 @@ public class CodeImportSummary extends AbstractWizardPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-		
-		String firstPageID = mainWizFrame.getFirstPageID();
-		String prevID = mainWizFrame.getPreviousPageID();
-		String currentAttrName = "";
-		
-		if(prevID.equals(DataPackageWizardInterface.CODE_DEFINITION)) {
-			
-			// need to update attribute in entity(if reqd) and remove attribute
-			currentAttrName = mainWizFrame.getCurrentImportAttributeName();
-			if(mainWizFrame.isCurrentImportNewTable())
-				updateAttributeInNewTable();
-			mainWizFrame.removeAttributeForImport();
-			desc1.setText(
+
+    String firstPageID = mainWizFrame.getFirstPageID();
+    String prevID = mainWizFrame.getPreviousPageID();
+    String currentAttrName = "";
+
+    if(prevID.equals(DataPackageWizardInterface.CODE_DEFINITION)) {
+
+      // need to update attribute in entity(if reqd) and remove attribute
+      currentAttrName = mainWizFrame.getCurrentImportAttributeName();
+      if(mainWizFrame.isCurrentImportNewTable())
+        updateAttributeInNewTable();
+      mainWizFrame.removeAttributeForImport();
+      desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p> The new data table has been created and the codes for the attribute " +
-			"<i> "+ currentAttrName + "</i> have been imported</p>"
+      "<i> "+ currentAttrName + "</i> have been imported</p>"
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
-			
-		} else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
-			
-			String firstPage = mainWizFrame.getFirstPageID();
-			currentAttrName = mainWizFrame.getCurrentImportAttributeName();
-			if(mainWizFrame.isCurrentImportNewTable())
-				updateAttributeInNewTable();
-			mainWizFrame.removeAttributeForImport();
-			// just a summary of import. No further imports
-			desc1.setText(
+
+    } else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
+
+      String firstPage = mainWizFrame.getFirstPageID();
+      currentAttrName = mainWizFrame.getCurrentImportAttributeName();
+      if(mainWizFrame.isCurrentImportNewTable())
+        updateAttributeInNewTable();
+      mainWizFrame.removeAttributeForImport();
+      // just a summary of import. No further imports
+      desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p>All the information required to import the codes for the attribute " +
-			"<i> "+ currentAttrName + "</i> has been collected</p>"
+      "<i> "+ currentAttrName + "</i> has been collected</p>"
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
-			
-		} else if( prevID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD)) {
-			
-			// this is a new data table creation. Need to store this DOM to return it.
-			
-			Node newDOM = mainWizFrame.collectDataFromPages();
-			mainWizFrame.setDOMToReturn(null);
-			if(adp == null)
-				adp = getADP();
-			
-			Node entNode = null;
-			String entityXpath = "";
-			try{
-				entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
-				"/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-				NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
-				entityXpath);
-				entNode = entityNodes.item(0);
-			}
-			catch (Exception w) {
-				Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
-			}
-			
-			//              Entity entity = new Entity(newDOM);
-			edu.ucsb.nceas.morpho.datapackage.Entity entityNode = 
-			new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
-			
-			Log.debug(30,"Adding Entity object to AbstractDataPackage..");
-			adp.addEntity(entityNode);
-			
-			// ---DFH
-			Morpho morpho = Morpho.thisStaticInstance;
-			AccessionNumber an = new AccessionNumber(morpho);
-			String curid = adp.getAccessionNumber();
-			String newid = null;
-			if (!curid.equals("")) {
-				newid = an.incRev(curid);
-			} else {
-				newid = an.getNextId();
-			}
-			adp.setAccessionNumber(newid);
-			adp.setLocation("");  // we've changed it and not yet saved
-			
-			
-		}
-		
-		desc4.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
+
+    } else if( prevID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD)) {
+
+      // this is a new data table creation. Need to store this DOM to return it.
+
+      Node newDOM = mainWizFrame.collectDataFromPages();
+      mainWizFrame.setDOMToReturn(null);
+      if(adp == null)
+        adp = getADP();
+
+      Node entNode = null;
+      String entityXpath = "";
+      try{
+        entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
+        "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
+        NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
+        entityXpath);
+        entNode = entityNodes.item(0);
+      }
+      catch (Exception w) {
+        Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
+      }
+
+      //              Entity entity = new Entity(newDOM);
+      edu.ucsb.nceas.morpho.datapackage.Entity entityNode =
+      new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
+
+      Log.debug(30,"Adding Entity object to AbstractDataPackage..");
+      adp.addEntity(entityNode);
+
+      // ---DFH
+      Morpho morpho = Morpho.thisStaticInstance;
+      AccessionNumber an = new AccessionNumber(morpho);
+      String curid = adp.getAccessionNumber();
+      String newid = null;
+      if (!curid.equals("")) {
+        newid = an.incRev(curid);
+      } else {
+        newid = an.getNextId();
+      }
+      adp.setAccessionNumber(newid);
+      adp.setLocation("");  // we've changed it and not yet saved
+
+
+    }
+
+    desc4.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
                   +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);
-		
-		updateButtonsStatus();
-		
-		
+
+    updateButtonsStatus();
+
+
   }
-	
-	private AbstractDataPackage getADP() {
-		
-		DataViewContainerPanel resultPane = null;
-		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-		AbstractDataPackage dp = null;
+
+  private AbstractDataPackage getADP() {
+
+    DataViewContainerPanel resultPane = null;
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    AbstractDataPackage dp = null;
     if (morphoFrame != null) {
        resultPane = AddDocumentationCommand.
                           getDataViewContainerPanelFromMorphoFrame(morphoFrame);
     }
     if ( resultPane != null) {
        dp = resultPane.getAbstractDataPackage();
-		}
-		
-		if(dp == null) {
-			Log.debug(16, " Abstract Data Package is null in CodeImportSummary Page");
-		}
-		return dp;
-	}
-	
-	private void updateAttributeInNewTable() {
-		
-		OrderedMap map = mainWizFrame.getCurrentImportMap();
-		adp = getADP();
-		if(adp == null)
-			return;
-		String eName = mainWizFrame.getCurrentImportEntityName();
-		String aName = mainWizFrame.getCurrentImportAttributeName();
-		String xPath = mainWizFrame.getCurrentImportXPath();
-		
-		int entityIndex = adp.getEntityIndex(eName);
-		int attrIndex = adp.getAttributeIndex(entityIndex, aName);
-		
-		
-		String firstKey = (String)map.keySet().iterator().next();
-		
-		if(!firstKey.startsWith("/attribute")) {
-			OrderedMap newMap = new OrderedMap();
-			Iterator it1 = map.keySet().iterator();
-			while(it1.hasNext()) {
-				String k = (String)it1.next();
-				// get index of first '/' after 'attributeList'
-				int idx1 = k.indexOf("/attributeList") + new String("/attributeList").length();
-				// get the substring following the '/'. this starts with 'attribute'
-				String tk = k.substring(idx1 + 1); //
-				int idx2 = tk.indexOf("/");
-				// remove the existing 'attribute' and add 'attribute' so that we handle cases
-				// like 'attribute[2]'
-				String newKey = "/attribute" + tk.substring(idx2); 
-				newMap.put(newKey, (String)map.get(k));
-			}
-			map = newMap;
-			xPath = "/attribute";
-		}
-		
-		// get the ID of old attribute and set it for the new one
-		String oldID = adp.getAttributeID(entityIndex, attrIndex);
-		map.put(xPath + "/@id", oldID);
-		
-		/*System.out.println("New Keys in CIS page are - ");
-		Iterator it = map.keySet().iterator();
-		while(it.hasNext()) {
-			String kk = (String) it.next();
-			System.out.println(kk + " - " + (String)map.get(kk));
-		}*/
-		
-		Attribute attr = new Attribute(map);
-		
-		adp.deleteAttribute(entityIndex, attrIndex);
-		adp.insertAttribute(entityIndex, attr, attrIndex);
-		
-	}
-	
-	
-	private void updateButtonsStatus() {
-		
-		if(mainWizFrame.getAttributeImportCount() > 0) {
-			mainWizFrame.setButtonsStatus(true, true, false);
-		} else {
-			mainWizFrame.setButtonsStatus(true, false, true);
-		}
-	}
-	
-	
+    }
+
+    if(dp == null) {
+      Log.debug(16, " Abstract Data Package is null in CodeImportSummary Page");
+    }
+    return dp;
+  }
+
+  private void updateAttributeInNewTable() {
+
+    OrderedMap map = mainWizFrame.getCurrentImportMap();
+    adp = getADP();
+    if(adp == null)
+      return;
+    String eName = mainWizFrame.getCurrentImportEntityName();
+    String aName = mainWizFrame.getCurrentImportAttributeName();
+    String xPath = mainWizFrame.getCurrentImportXPath();
+
+    int entityIndex = adp.getEntityIndex(eName);
+    int attrIndex = adp.getAttributeIndex(entityIndex, aName);
+
+
+    String firstKey = (String)map.keySet().iterator().next();
+
+    if(!firstKey.startsWith("/attribute")) {
+      OrderedMap newMap = new OrderedMap();
+      Iterator it1 = map.keySet().iterator();
+      while(it1.hasNext()) {
+        String k = (String)it1.next();
+        // get index of first '/' after 'attributeList'
+        int idx1 = k.indexOf("/attributeList") + new String("/attributeList").length();
+        // get the substring following the '/'. this starts with 'attribute'
+        String tk = k.substring(idx1 + 1); //
+        int idx2 = tk.indexOf("/");
+        // remove the existing 'attribute' and add 'attribute' so that we handle cases
+        // like 'attribute[2]'
+        String newKey = "/attribute" + tk.substring(idx2);
+        newMap.put(newKey, (String)map.get(k));
+      }
+      map = newMap;
+      xPath = "/attribute";
+    }
+
+    // get the ID of old attribute and set it for the new one
+    String oldID = adp.getAttributeID(entityIndex, attrIndex);
+    map.put(xPath + "/@id", oldID);
+
+    /*System.out.println("New Keys in CIS page are - ");
+    Iterator it = map.keySet().iterator();
+    while(it.hasNext()) {
+      String kk = (String) it.next();
+      System.out.println(kk + " - " + (String)map.get(kk));
+    }*/
+
+    Attribute attr = new Attribute(map);
+
+    adp.deleteAttribute(entityIndex, attrIndex);
+    adp.insertAttribute(entityIndex, attr, attrIndex);
+
+  }
+
+
+  private void updateButtonsStatus() {
+
+    if(mainWizFrame.getAttributeImportCount() > 0) {
+      mainWizFrame.setButtonsStatus(true, true, false);
+    } else {
+      mainWizFrame.setButtonsStatus(true, false, true);
+    }
+  }
+
+
   private String getDataLocation() {
 
     String summaryText = WizardSettings.getSummaryText();
@@ -354,14 +354,14 @@ public class CodeImportSummary extends AbstractWizardPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-		
-		if(nextPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
-			WizardPageLibrary.reInitialize();
-			mainWizFrame.reInitializePageStack();
-		}
-		
-		return true; 
-	}
+
+    if(nextPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
+      WizardPageLibrary.reInitialize();
+      mainWizFrame.reInitializePageStack();
+    }
+
+    return true;
+  }
 
 
   /**

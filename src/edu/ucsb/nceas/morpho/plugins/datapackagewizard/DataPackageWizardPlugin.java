@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:47:25 $'
- * '$Revision: 1.23 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
@@ -100,8 +102,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public void startPackageWizard(DataPackageWizardListener listener) {
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
                       "New Data Package Wizard");
-	responsiblePartyList.clear();
-	PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
+  responsiblePartyList.clear();
+  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   }
 
 
@@ -118,20 +120,20 @@ public class DataPackageWizardPlugin implements PluginInterface,
                       "New Datatable Wizard");
   }
 
-	/**
+  /**
    *  method to start the wizard at a given page
    *
-	 *	@param pageID	 the ID of the page from where the wizard is to be started
-	 *
+   *	@param pageID	 the ID of the page from where the wizard is to be started
+   *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Entity Wizard has finished
    */
 
 
-	public void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
+  public void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
 
-		startWizardAtPage(pageID, false, listener, title);
-	}
+    startWizardAtPage(pageID, false, listener, title);
+  }
 
   private void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {
@@ -155,7 +157,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *
    *  @return  the corresponding WizardPage with this ID
    */
-  public AbstractWizardPage getPage(String pageID) {
+  public AbstractUIPage getPage(String pageID) {
 
     return WizardPageLibrary.getPage(pageID);
   }

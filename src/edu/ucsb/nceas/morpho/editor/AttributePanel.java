@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-08 23:54:25 $'
- * '$Revision: 1.9 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,13 +75,13 @@ import org.apache.xerces.dom.DOMImplementationImpl;
  */
 public class AttributePanel extends JPanel
 {
-  
+
   SymFocus aSymFocus = new SymFocus();
-  AbstractWizardPage awp2;
+  AbstractUIPage awp2;
   DefaultMutableTreeNode node;
   Node domNode;
   DefaultMutableTreeNode parent;
-  
+
   public AttributePanel(DefaultMutableTreeNode node) {
     this.node = node;
     parent = (DefaultMutableTreeNode)node.getParent();
@@ -90,20 +90,20 @@ public class AttributePanel extends JPanel
     jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
     jp.setAlignmentX(Component.LEFT_ALIGNMENT);
     jp.setMaximumSize(new Dimension(800,600));
-    final AbstractWizardPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
+    final AbstractUIPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
     jp.add(awp);
     awp2 = awp;
-    setFocusLostForAllSubcomponents(awp); 
+    setFocusLostForAllSubcomponents(awp);
     DocFrame df = DocFrame.currentDocFrameInstance;
     domNode = df.writeToDOM(node);
     // domNode is now the DOM tree equivalent of the original JTree subtree in node
     // The parts of this DOM tree that are NOT handled by the attribute panel need to be preserved
     // so that when data from the panel is merged back, information is not lost.
     final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
-    
+
     ((AttributePage)awp).setXPathRoot("/attribute");
     awp.setPageData(om);
- 
+
     JPanel controlsPanel = new JPanel();
     JButton saveButton = new JButton("Save");
     saveButton.addActionListener( new ActionListener() {
@@ -130,16 +130,16 @@ public class AttributePanel extends JPanel
           parent.remove(index);
           parent.insert(root, index);
           DocFrame df1 = DocFrame.currentDocFrameInstance;
-					DefaultMutableTreeNode fn = df1.findTemplateNodeByName("attribute");
-					if (fn!=null) {
-					  df1.treeUnion(root, fn);
-					}
-					df1.addXMLAttributeNodes(root);
-					df1.setAttributeNames(root);
-					NodeInfo nir = (NodeInfo)(root.getUserObject());
-					nir.setChoice(false);
-					nir.setCheckboxFlag(false);
-					(df1.treeModel).reload();
+          DefaultMutableTreeNode fn = df1.findTemplateNodeByName("attribute");
+          if (fn!=null) {
+            df1.treeUnion(root, fn);
+          }
+          df1.addXMLAttributeNodes(root);
+          df1.setAttributeNames(root);
+          NodeInfo nir = (NodeInfo)(root.getUserObject());
+          nir.setChoice(false);
+          nir.setCheckboxFlag(false);
+          (df1.treeModel).reload();
         } catch (Exception e) {
           Log.debug(20, "Problem in AttributePanel");
           e.printStackTrace();
@@ -149,15 +149,15 @@ public class AttributePanel extends JPanel
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-				awp.setPageData(om);
+        awp.setPageData(om);
       }
     });
     controlsPanel.add(saveButton);
     controlsPanel.add(cancelButton);
 //    jp.add(controlsPanel);
-    
+
     jp.setVisible(true);
-    
+
   }
 
   void saveAction() {
@@ -184,15 +184,15 @@ public class AttributePanel extends JPanel
       parent.insert(root, index);
       node = root;
       DocFrame df1 = DocFrame.currentDocFrameInstance;
-			DefaultMutableTreeNode fn = df1.findTemplateNodeByName("attribute");
-			if (fn!=null) {
-			  df1.treeUnion(root, fn);
-		  }
-			df1.addXMLAttributeNodes(root);
-			df1.setAttributeNames(root);
-			NodeInfo nir = (NodeInfo)(root.getUserObject());
-			nir.setChoice(false);
-			nir.setCheckboxFlag(false);
+      DefaultMutableTreeNode fn = df1.findTemplateNodeByName("attribute");
+      if (fn!=null) {
+        df1.treeUnion(root, fn);
+      }
+      df1.addXMLAttributeNodes(root);
+      df1.setAttributeNames(root);
+      NodeInfo nir = (NodeInfo)(root.getUserObject());
+      nir.setChoice(false);
+      nir.setCheckboxFlag(false);
 //			(df1.treeModel).reload();
     }catch (Exception e) {
         Log.debug(20, "Problem in AttributePanel: "+e);
@@ -200,67 +200,67 @@ public class AttributePanel extends JPanel
     }
    }
   }
-  
-	class SymFocus extends java.awt.event.FocusAdapter
-	{
-		public void focusLost(java.awt.event.FocusEvent event)
-		{
-			Object object = event.getSource();
+
+  class SymFocus extends java.awt.event.FocusAdapter
+  {
+    public void focusLost(java.awt.event.FocusEvent event)
+    {
+      Object object = event.getSource();
       if (object instanceof JRadioButton) {
 //        Log.debug(10, "RadioButton");
         setFocusLostForAllSubcomponents(awp2);
       }
-			saveAction();   
-		}
-    
+      saveAction();
+    }
+
     public void focusGained(java.awt.event.FocusEvent event) {
       DocFrame df = DocFrame.currentDocFrameInstance;
       df.setTreeValueFlag(false);
-			TreePath tp = new TreePath(node.getPath());
-			df.tree.setSelectionPath(tp);
-			df.tree.scrollPathToVisible(tp);
+      TreePath tp = new TreePath(node.getPath());
+      df.tree.setSelectionPath(tp);
+      df.tree.scrollPathToVisible(tp);
     }
 
-	}
+  }
 
-	public void setFocusLostForAllSubcomponents(Container panel) {
-	    Vector ret = getAllComponents(panel);
+  public void setFocusLostForAllSubcomponents(Container panel) {
+      Vector ret = getAllComponents(panel);
 //		System.out.println("Total number of components: "+ret.size());
-		for (int i=0; i<ret.size();i++) {
-		  Component temp = (Component)(ret.elementAt(i));
+    for (int i=0; i<ret.size();i++) {
+      Component temp = (Component)(ret.elementAt(i));
       temp.removeFocusListener(aSymFocus);
-		  temp.addFocusListener(aSymFocus);   
-		}
-	}
-	
-	public Vector getAllComponents(Container panel) {
-	  Vector ret = new Vector();  
-	  Component[] cont = panel.getComponents();
-	  // this is the loop over the top level container;
-	  // containers within this container may hold additional components
-	  for (int i=0;i<cont.length;i++) {
-	    ret.addElement(cont[i]);
-	  }
-	  getChildComponents(cont, ret);
-	  return ret;
-	}
-	
-	private void getChildComponents(Component[] comps, Vector vec) {
+      temp.addFocusListener(aSymFocus);
+    }
+  }
+
+  public Vector getAllComponents(Container panel) {
+    Vector ret = new Vector();
+    Component[] cont = panel.getComponents();
+    // this is the loop over the top level container;
+    // containers within this container may hold additional components
+    for (int i=0;i<cont.length;i++) {
+      ret.addElement(cont[i]);
+    }
+    getChildComponents(cont, ret);
+    return ret;
+  }
+
+  private void getChildComponents(Component[] comps, Vector vec) {
     try{
-	    for (int i=0;i<comps.length;i++) {
-	      Component[] innercomp = ((Container)comps[i]).getComponents();
+      for (int i=0;i<comps.length;i++) {
+        Component[] innercomp = ((Container)comps[i]).getComponents();
         if (innercomp==null) return;
-	      for (int j=0;j<innercomp.length;j++) {
-	        vec.addElement(innercomp[j]);
-	      }
-	      if (innercomp.length>0) {
-	        getChildComponents(innercomp, vec);
-	      }
-	    }
+        for (int j=0;j<innercomp.length;j++) {
+          vec.addElement(innercomp[j]);
+        }
+        if (innercomp.length>0) {
+          getChildComponents(innercomp, vec);
+        }
+      }
     } catch (Exception w) {;}
     // note: the try/catch here was added to get this code to woirk under Java 1.3
     // (It works under 1.4 without thes blocks) Reason: who knows?????
-	}
-  
+  }
+
 }
 

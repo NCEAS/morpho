@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:54:42 $'
- * '$Revision: 1.24 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,10 @@ import java.util.HashMap;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.*;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+
 /**
  *  Class       WizardPageLibrary
  *  - a container for all the wizard pages, that can be retrieved by ID using
@@ -52,7 +56,7 @@ public class WizardPageLibrary {
    *
    *  @return  the corresponding WizardPage with this ID
    */
-  public static AbstractWizardPage getPage(String pageID) {
+  public static AbstractUIPage getPage(String pageID) {
 
     if(pageID.equals(DataPackageWizardInterface.ATTRIBUTE_PAGE)) return new AttributePage();
     if(pageID.equals(DataPackageWizardInterface.KEYWORDS_PAGE)) return new KeywordsPage();
@@ -61,9 +65,9 @@ public class WizardPageLibrary {
     if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE)) return new AccessPage();
     if(pageID.equals(DataPackageWizardInterface.TEMPORAL_PAGE)) return new TemporalPage();
     if(pageID.equals(DataPackageWizardInterface.GEOGRAPHIC_PAGE)) return new GeographicPage();
-		if(pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) return new CodeImportPage(container);
-		if(pageID.equals(DataPackageWizardInterface.CODE_DEFINITION)) return new CodeDefinition(container);
-    if (containsPageID(pageID)) return (AbstractWizardPage)pages.get(pageID);
+    if(pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) return new CodeImportPage(container);
+    if(pageID.equals(DataPackageWizardInterface.CODE_DEFINITION)) return new CodeDefinition(container);
+    if (containsPageID(pageID)) return (AbstractUIPage)pages.get(pageID);
 
     return null;
   }
@@ -121,7 +125,7 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.METHODS,            new Methods());
     pages.put(DataPackageWizardInterface.SUMMARY,            new Summary(container));
     pages.put(DataPackageWizardInterface.CODE_IMPORT_SUMMARY,new CodeImportSummary(container));
-    
+
   }
 
 

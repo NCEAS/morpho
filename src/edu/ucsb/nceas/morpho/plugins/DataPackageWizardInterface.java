@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:46:18 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import java.util.List;
 import java.util.ArrayList;
 /**
@@ -102,5 +102,5 @@ public interface DataPackageWizardInterface {
    *
    *  @return  the corresponding WizardPage with this ID
    */
-  public AbstractWizardPage getPage(String pageID);
+  public AbstractUIPage getPage(String pageID);
 }

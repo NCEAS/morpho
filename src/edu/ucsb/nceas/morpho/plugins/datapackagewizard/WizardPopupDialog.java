@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:09:24 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-03-17 21:13:00 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.UISettings;
+
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -53,14 +55,14 @@ public class WizardPopupDialog extends JDialog {
   public static final short CANCEL_OPTION  = 20;
   public static final short CLOSED_OPTION  = 30;
 
-  protected AbstractWizardPage wizardPage;
+  protected AbstractUIPage wizardPage;
 
-  public WizardPopupDialog(AbstractWizardPage page) {
+  public WizardPopupDialog(AbstractUIPage page) {
 
     this(page, true);
   }
 
-  public WizardPopupDialog(AbstractWizardPage page, boolean showNow) {
+  public WizardPopupDialog(AbstractUIPage page, boolean showNow) {
 
     super(getDialogParent(), true);
     this.parent = getDialogParent();

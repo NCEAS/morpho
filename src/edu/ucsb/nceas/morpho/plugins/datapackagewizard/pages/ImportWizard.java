@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:51 $'
- * '$Revision: 1.20 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.TextImportWizardEml2;
@@ -41,7 +41,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import java.io.File;
 
 
-public class ImportWizard extends     AbstractWizardPage
+public class ImportWizard extends     AbstractUIPage
                           implements  TextImportListener {
 
   public final String pageID     = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
@@ -79,7 +79,7 @@ public class ImportWizard extends     AbstractWizardPage
     // a "cancel"), start up the import wizard.
     if (!importCompletedOK) {
 
-      AbstractWizardPage locationPage
+      AbstractUIPage locationPage
           = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
       File dataFileObj = ((DataLocation)locationPage).getDataFile();
 

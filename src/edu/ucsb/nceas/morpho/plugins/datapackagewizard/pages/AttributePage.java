@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-16 23:00:46 $'
- * '$Revision: 1.19 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 21:13:01 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -70,7 +70,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 
-public class AttributePage extends AbstractWizardPage {
+public class AttributePage extends AbstractUIPage {
 
   private final String pageID     = DataPackageWizardInterface.ATTRIBUTE_PAGE;
   private final String nextPageID = "";
@@ -191,13 +191,13 @@ public class AttributePage extends AbstractWizardPage {
   private final Dimension HELP_DIALOG_SIZE = new Dimension(400, 500);
 
   private String storageType = "";
-  
+
   public AttributePage() {
 
     initNames();
     init();
   }
-  
+
   public void setXPathRoot(String xpr) {
     xPathRoot = xpr;
   }
@@ -218,18 +218,18 @@ public class AttributePage extends AbstractWizardPage {
   }
 
 
-	public boolean isImportNeeded() {
-		if(measurementScale.equalsIgnoreCase("nominal")) {
-			return ((NominalOrdinalPanel)nominalPanel).isImportNeeded();
-		}
-		
-		if(measurementScale.equalsIgnoreCase("ordinal")) {
-			return ((NominalOrdinalPanel)ordinalPanel).isImportNeeded();
-		}
-		
-		return false;
-	}
-	
+  public boolean isImportNeeded() {
+    if(measurementScale.equalsIgnoreCase("nominal")) {
+      return ((NominalOrdinalPanel)nominalPanel).isImportNeeded();
+    }
+
+    if(measurementScale.equalsIgnoreCase("ordinal")) {
+      return ((NominalOrdinalPanel)ordinalPanel).isImportNeeded();
+    }
+
+    return false;
+  }
+
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -311,7 +311,7 @@ public class AttributePage extends AbstractWizardPage {
 
 
     ////////////////////////////////////////////
-		
+
     ActionListener listener = new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
@@ -355,79 +355,79 @@ public class AttributePage extends AbstractWizardPage {
                                 //"Select and define a Measurement Scale:"
                                 "Category:", true,
                                 WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-																
-		measScaleLabel.setAlignmentY(measScaleLabel.CENTER_ALIGNMENT);
-		
+
+    measScaleLabel.setAlignmentY(measScaleLabel.CENTER_ALIGNMENT);
+
     JButton helpButton = new JButton("Help");
     helpButton.setMinimumSize(new Dimension(35,15));
     helpButton.setMaximumSize(new Dimension(35,15));
-		helpButton.setMargin(new Insets(0, 2, 1, 2));
+    helpButton.setMargin(new Insets(0, 2, 1, 2));
     helpButton.setEnabled(true);
     helpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     helpButton.setFocusPainted(false);
     helpButton.setToolTipText("More Information about the Categories");
-		Point loc1 = getLocation();
-		
+    Point loc1 = getLocation();
+
     helpButton.addActionListener( new ActionListener() {
       private JDialog helpDialog = null;
       public void actionPerformed(ActionEvent ae) {
 
         if(helpDialog == null) {
           helpDialog = new CategoryHelpDialog();
-				}
-				Point loc = getLocationOnScreen();
-				int wd = getWidth();
-				int ht = getHeight();
-				int dwd = HELP_DIALOG_SIZE.width;
-				int dht = HELP_DIALOG_SIZE.height;
-				helpDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
-				helpDialog.setSize(HELP_DIALOG_SIZE);
-				helpDialog.setVisible(true);
-				helpDialog.toFront();
-				
+        }
+        Point loc = getLocationOnScreen();
+        int wd = getWidth();
+        int ht = getHeight();
+        int dwd = HELP_DIALOG_SIZE.width;
+        int dht = HELP_DIALOG_SIZE.height;
+        helpDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
+        helpDialog.setSize(HELP_DIALOG_SIZE);
+        helpDialog.setVisible(true);
+        helpDialog.toFront();
+
       }
     });
-		
-		JPanel categoryPanel = new JPanel();
-		categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.Y_AXIS));
-		
-		JPanel helpButtonPanel = new JPanel();
-		helpButtonPanel.setLayout(new BoxLayout(helpButtonPanel, BoxLayout.X_AXIS));
-		helpButtonPanel.add(helpButton);
-		helpButtonPanel.add(Box.createHorizontalGlue());
-		helpButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,3,0,0));
-		
-		categoryPanel.add(measScaleLabel);
-		categoryPanel.add(WidgetFactory.makeHalfSpacer());
-		categoryPanel.add(helpButtonPanel);
-		
-		categoryPanel.setMinimumSize(new Dimension(90, 45));
-		categoryPanel.setMaximumSize(new Dimension(90, 45));
-		
-		JPanel outerCategoryPanel = new JPanel(new BorderLayout());
-		outerCategoryPanel.add(categoryPanel, BorderLayout.CENTER);
-		outerCategoryPanel.add(Box.createGlue(), BorderLayout.SOUTH);
-		outerCategoryPanel.add(Box.createGlue(), BorderLayout.NORTH);
-		
-		radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
-		JPanel outerRadioPanel = new JPanel();
+
+    JPanel categoryPanel = new JPanel();
+    categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.Y_AXIS));
+
+    JPanel helpButtonPanel = new JPanel();
+    helpButtonPanel.setLayout(new BoxLayout(helpButtonPanel, BoxLayout.X_AXIS));
+    helpButtonPanel.add(helpButton);
+    helpButtonPanel.add(Box.createHorizontalGlue());
+    helpButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,3,0,0));
+
+    categoryPanel.add(measScaleLabel);
+    categoryPanel.add(WidgetFactory.makeHalfSpacer());
+    categoryPanel.add(helpButtonPanel);
+
+    categoryPanel.setMinimumSize(new Dimension(90, 45));
+    categoryPanel.setMaximumSize(new Dimension(90, 45));
+
+    JPanel outerCategoryPanel = new JPanel(new BorderLayout());
+    outerCategoryPanel.add(categoryPanel, BorderLayout.CENTER);
+    outerCategoryPanel.add(Box.createGlue(), BorderLayout.SOUTH);
+    outerCategoryPanel.add(Box.createGlue(), BorderLayout.NORTH);
+
+    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
+    JPanel outerRadioPanel = new JPanel();
     outerRadioPanel.setLayout(new BoxLayout(outerRadioPanel, BoxLayout.X_AXIS));
-		outerRadioPanel.add(categoryPanel);
-		outerRadioPanel.add(radioPanel);
-		
+    outerRadioPanel.add(categoryPanel);
+    outerRadioPanel.add(radioPanel);
+
     topMiddlePanel.add(outerRadioPanel);
-		
-		/////////////////////////////////////////////////////
-		
+
+    /////////////////////////////////////////////////////
+
     middlePanel.add(topMiddlePanel);
 
-		currentPanel  = getEmptyPanel();
+    currentPanel  = getEmptyPanel();
 
     middlePanel.add(currentPanel);
 
     middlePanel.add(Box.createGlue());
 
-		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
+    topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
     topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
 
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
@@ -437,7 +437,7 @@ public class AttributePage extends AbstractWizardPage {
     dateTimePanel = getDateTimePanel();
 
 
-		refreshUI();
+    refreshUI();
   }
 
   private void setMeasurementScale(String scale) {
@@ -451,23 +451,23 @@ public class AttributePage extends AbstractWizardPage {
   private void setMeasurementScaleUI(JPanel panel) {
 
     topMiddlePanel.setMinimumSize(new Dimension(0,0));
-		middlePanel.remove(currentPanel);
-		//middlePanel.remove(topMiddlePanel);
+    middlePanel.remove(currentPanel);
+    //middlePanel.remove(topMiddlePanel);
 
     currentPanel = panel;
-		//middlePanel.add(topMiddlePanel);
+    //middlePanel.add(topMiddlePanel);
     middlePanel.add(currentPanel);
-		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
+    topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
     topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
 
-		((WizardPageSubPanelAPI)currentPanel).onLoadAction();
+    ((WizardPageSubPanelAPI)currentPanel).onLoadAction();
 
     currentPanel.invalidate();
 
     currentPanel.repaint();
     topMiddlePanel.validate();
     topMiddlePanel.repaint();
-		middlePanel.validate();
+    middlePanel.validate();
     middlePanel.repaint();
   }
 
@@ -534,7 +534,7 @@ public class AttributePage extends AbstractWizardPage {
    */
   public void refreshUI() {
 
-		currentPanel.validate();
+    currentPanel.validate();
     currentPanel.repaint();
     middlePanel.validate();
     middlePanel.repaint();
@@ -705,7 +705,7 @@ public class AttributePage extends AbstractWizardPage {
     if (attribDef!=null && !attribDef.equals("")) {
       returnMap.put(xPath + "/attributeDefinition", attribDef);
     }
-    
+
     if(storageType !=null && !storageType.equals("")) {
       returnMap.put(xPath + "/storageType", storageType);
     }
@@ -723,58 +723,58 @@ public class AttributePage extends AbstractWizardPage {
 
   private String findMeasurementScale(OrderedMap map) {
 
-	///// check for Nominal
-	
+  ///// check for Nominal
+
   Object o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
   if(o1 != null) return "Nominal";
-	boolean b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
-	if(b1) return "Nominal";
+  boolean b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
+  if(b1) return "Nominal";
   o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain[1]/definition");
   if(o1 != null) return "Nominal";
-	o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
+  o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
   if(o1 != null) return "Nominal";
-	b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
-	
-	if(b1) return "Nominal";
+  b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
+
+  if(b1) return "Nominal";
   o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain/definition");
   if(o1 != null) return "Nominal";
 
-	///// check for Ordinal
-	
+  ///// check for Ordinal
+
   o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
   if(o1 != null) return "Ordinal";
-	b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
-	if(b1) return "Ordinal";
+  b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
+  if(b1) return "Ordinal";
   o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain[1]/definition");
   if(o1 != null) return "Ordinal";
-	o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
+  o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
   if(o1 != null) return "Ordinal";
-	b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
-	if(b1) return "Ordinal";
+  b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
+  if(b1) return "Ordinal";
   o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain/definition");
   if(o1 != null) return "Ordinal";
 
-	///// check for Ratio
-	
+  ///// check for Ratio
+
   o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/unit/standardUnit");
   if(o1 != null) return "Ratio";
   o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/numericDomain/numberType");
   if(o1 != null) return "Ratio";
 
-	///// check for Interval
-	
+  ///// check for Interval
+
   o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/unit/standardUnit");
   if(o1 != null) return "Interval";
   o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/numericDomain/numberType");
   if(o1 != null) return "Interval";
 
-	///// check for DateTime
-	
+  ///// check for DateTime
+
   o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/formatString");
   if(o1 != null) return "Datetime";
   o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/dateTimePrecision");
   if(o1 != null) return "Datetime";
-	
+
   return "";
   }
 
@@ -792,14 +792,14 @@ public class AttributePage extends AbstractWizardPage {
    */
   public void setPageData(OrderedMap map) {
 //Log.debug(1, "map: "+map);
-    
-		 String name = (String)map.get(xPathRoot + "/attributeName[1]");
-		 if(name != null)
-			 map = stripIndexOneFromMapKeys(map);
 
-		 String mScale = findMeasurementScale(map);
-		 
-		 //String xPathRoot = AttributeSettings.Attribute_xPath;
+     String name = (String)map.get(xPathRoot + "/attributeName[1]");
+     if(name != null)
+       map = stripIndexOneFromMapKeys(map);
+
+     String mScale = findMeasurementScale(map);
+
+     //String xPathRoot = AttributeSettings.Attribute_xPath;
      name = (String)map.get(xPathRoot + "/attributeName");
      if(name != null)
        attribNameField.setText(name);
@@ -813,16 +813,16 @@ public class AttributePage extends AbstractWizardPage {
        attribDefinitionField.setText(defn);
 
      storageType = (String)map.get(xPathRoot + "/storageType");
-		 if(storageType == null) storageType = "";
-       
+     if(storageType == null) storageType = "";
+
      if(mScale == null || mScale.equals(""))
        return;
 
      measurementScale = mScale;
 
-		 int componentNum = -1;
+     int componentNum = -1;
      if(measurementScale.equalsIgnoreCase("nominal")) {
-			 setMeasurementScaleUI(nominalPanel);
+       setMeasurementScaleUI(nominalPanel);
        setMeasurementScale(measScaleElemNames[0]);
        componentNum = 0;
      }
@@ -856,38 +856,38 @@ public class AttributePage extends AbstractWizardPage {
 
      }
 
-		 ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
+     ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
      ((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
      ((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
      ((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
      ((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
 
-		 refreshUI();
-		 return;
+     refreshUI();
+     return;
    }
 
-	 private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
+   private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
 
-		 OrderedMap newMap = new OrderedMap();
-		 Iterator it = map.keySet().iterator();
-		 while(it.hasNext()) {
-			 String key = (String) it.next();
-			 String val = (String)map.get(key);
-			 int pos;
-			 if((pos = key.indexOf("[1]")) < 0) {
-				 newMap.put(key, val);
-				 continue;
-			 }
-			 String newKey = "";
-			 for(;pos != -1; pos = key.indexOf("[1]")){
-				 newKey += key.substring(0,pos);
-				 key = key.substring(pos + 3);
-			 }
-			 newKey += key;
-			 newMap.put(newKey, val);
-		 }
-		 return newMap;
-	 }
+     OrderedMap newMap = new OrderedMap();
+     Iterator it = map.keySet().iterator();
+     while(it.hasNext()) {
+       String key = (String) it.next();
+       String val = (String)map.get(key);
+       int pos;
+       if((pos = key.indexOf("[1]")) < 0) {
+         newMap.put(key, val);
+         continue;
+       }
+       String newKey = "";
+       for(;pos != -1; pos = key.indexOf("[1]")){
+         newKey += key.substring(0,pos);
+         key = key.substring(pos + 3);
+       }
+       newKey += key;
+       newMap.put(newKey, val);
+     }
+     return newMap;
+   }
 
   /**
    *  gets the HTML representation of the attribute values
@@ -1216,7 +1216,7 @@ public class AttributePage extends AbstractWizardPage {
       CategoryHelpDialog() {
         super();
         init();
-				setVisible(false);
+        setVisible(false);
       }
 
       void init() {

@@ -26,7 +26,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -61,7 +61,7 @@ import java.awt.event.ActionEvent;
 
 import java.util.Iterator;
 
-public class CodeImportPage extends AbstractWizardPage {
+public class CodeImportPage extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_PAGE;
   public String nextPageID = DataPackageWizardInterface.DATA_LOCATION;
@@ -72,29 +72,29 @@ public class CodeImportPage extends AbstractWizardPage {
 
   private WizardContainerFrame mainWizFrame;
   private OrderedMap resultsMap;
-	
-	private String[] importChoiceText = {"The table containing the definitions has already been imported into Morpho",
-	"The table containing the definitions needs to be imported into Morpho"};
+
+  private String[] importChoiceText = {"The table containing the definitions has already been imported into Morpho",
+  "The table containing the definitions needs to be imported into Morpho"};
 
   private boolean importCompletedOK = false;
-	
-	private CodeDefnPanel importPanel = null;
-	private JPanel radioPanel;
-	
-	private JTextField attrField;
-	private JTextField entityField;
-  
-	private JLabel choiceLabel;
-	
-	private short importChoice = 0;
-	private static final short IMPORT_DONE = 10;
-	private static final short INVOKE_TIW = 20;
-	
-	
+
+  private CodeDefnPanel importPanel = null;
+  private JPanel radioPanel;
+
+  private JTextField attrField;
+  private JTextField entityField;
+
+  private JLabel choiceLabel;
+
+  private short importChoice = 0;
+  private static final short IMPORT_DONE = 10;
+  private static final short INVOKE_TIW = 20;
+
+
   public CodeImportPage(WizardContainerFrame mainWizFrame) {
 
     this.mainWizFrame = mainWizFrame;
-		
+
     init();
   }
 
@@ -103,157 +103,157 @@ public class CodeImportPage extends AbstractWizardPage {
    are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
-		
-		setLayout(new BorderLayout());
-		
-		JPanel infoPanel = new JPanel();
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-		JLabel label = WidgetFactory.makeHTMLLabel("Import Codes and Definitions for the following Attribute - ", 1, false);
-		
-		JLabel attrLabel = WidgetFactory.makeLabel("Attribute Name:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		attrField = WidgetFactory.makeOneLineTextField();
-		attrField.setEditable(false);
-		
-		JPanel attrPanel = WidgetFactory.makePanel();
-		attrPanel.add(attrLabel);
-		attrPanel.add(attrField);
-		
-		JLabel entityLabel = WidgetFactory.makeLabel("Entity Name:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		entityField = WidgetFactory.makeOneLineTextField();
-		entityField.setEditable(false);
-		
-		JPanel entityPanel = WidgetFactory.makePanel();
-		entityPanel.add(entityLabel);
-		entityPanel.add(entityField);
-		
-		infoPanel.add(label);
-		infoPanel.add(WidgetFactory.makeDefaultSpacer());
-		infoPanel.add(attrPanel);
-		infoPanel.add(WidgetFactory.makeDefaultSpacer());
-		infoPanel.add(entityPanel);
-		infoPanel.add(WidgetFactory.makeDefaultSpacer());
-		
-		choiceLabel = WidgetFactory.makeHTMLLabel("Select one of the following",1,true);
-		infoPanel.add(choiceLabel);
-		infoPanel.add(WidgetFactory.makeDefaultSpacer());
-		
-		ActionListener listener = new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				
-				Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-				
-				if (e.getActionCommand().equals(importChoiceText[0])) {
-					if(importPanel == null) {
-						importPanel = new CodeDefnPanel(true);
-						CodeImportPage.this.add(importPanel, BorderLayout.CENTER);
-						CodeImportPage.this.validate();
-						CodeImportPage.this.repaint();
-					}
-					importPanel.setVisible(true);
-					importChoice = IMPORT_DONE;
-				} else if (e.getActionCommand().equals(importChoiceText[1])) {
-					if(importPanel != null)
-						importPanel.setVisible(false);
-					importChoice = INVOKE_TIW;
-				}
-			}
-		};
-		
-		radioPanel = WidgetFactory.makeRadioPanel(importChoiceText, -1, listener);
-		
-		infoPanel.add(radioPanel);
-		
-		add(infoPanel, BorderLayout.NORTH);
-		
-		//add(importPanel, BorderLayout.CENTER);
-		//importPanel.setVisible(false);
-	}
 
-	public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap map, String xPath, boolean newTable) {
-		
-		mainWizFrame.addAttributeForImport(entityName, attributeName, scale, map, xPath, newTable);
-	}
-	
+    setLayout(new BorderLayout());
+
+    JPanel infoPanel = new JPanel();
+    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+    JLabel label = WidgetFactory.makeHTMLLabel("Import Codes and Definitions for the following Attribute - ", 1, false);
+
+    JLabel attrLabel = WidgetFactory.makeLabel("Attribute Name:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attrField = WidgetFactory.makeOneLineTextField();
+    attrField.setEditable(false);
+
+    JPanel attrPanel = WidgetFactory.makePanel();
+    attrPanel.add(attrLabel);
+    attrPanel.add(attrField);
+
+    JLabel entityLabel = WidgetFactory.makeLabel("Entity Name:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    entityField = WidgetFactory.makeOneLineTextField();
+    entityField.setEditable(false);
+
+    JPanel entityPanel = WidgetFactory.makePanel();
+    entityPanel.add(entityLabel);
+    entityPanel.add(entityField);
+
+    infoPanel.add(label);
+    infoPanel.add(WidgetFactory.makeDefaultSpacer());
+    infoPanel.add(attrPanel);
+    infoPanel.add(WidgetFactory.makeDefaultSpacer());
+    infoPanel.add(entityPanel);
+    infoPanel.add(WidgetFactory.makeDefaultSpacer());
+
+    choiceLabel = WidgetFactory.makeHTMLLabel("Select one of the following",1,true);
+    infoPanel.add(choiceLabel);
+    infoPanel.add(WidgetFactory.makeDefaultSpacer());
+
+    ActionListener listener = new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+
+        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+
+        if (e.getActionCommand().equals(importChoiceText[0])) {
+          if(importPanel == null) {
+            importPanel = new CodeDefnPanel(true);
+            CodeImportPage.this.add(importPanel, BorderLayout.CENTER);
+            CodeImportPage.this.validate();
+            CodeImportPage.this.repaint();
+          }
+          importPanel.setVisible(true);
+          importChoice = IMPORT_DONE;
+        } else if (e.getActionCommand().equals(importChoiceText[1])) {
+          if(importPanel != null)
+            importPanel.setVisible(false);
+          importChoice = INVOKE_TIW;
+        }
+      }
+    };
+
+    radioPanel = WidgetFactory.makeRadioPanel(importChoiceText, -1, listener);
+
+    infoPanel.add(radioPanel);
+
+    add(infoPanel, BorderLayout.NORTH);
+
+    //add(importPanel, BorderLayout.CENTER);
+    //importPanel.setVisible(false);
+  }
+
+  public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap map, String xPath, boolean newTable) {
+
+    mainWizFrame.addAttributeForImport(entityName, attributeName, scale, map, xPath, newTable);
+  }
+
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-		
-		String attr = mainWizFrame.getCurrentImportAttributeName();
-		String entity = mainWizFrame.getCurrentImportEntityName();
-		
-		attrField.setText(attr);
-		entityField.setText(entity);
-		
-		String prevPageID = mainWizFrame.getPreviousPageID();
-		
-		if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
-			
-			
-			// create the new data table. Need to store this DOM to return it.
-			Node newDOM = mainWizFrame.collectDataFromPages();
-			mainWizFrame.setDOMToReturn(null);
-			
-			AbstractDataPackage	adp = getADP();
-			if(adp == null) {
-				Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
-				return;
-			}
-			
-			Node entNode = null;
-			String entityXpath = "";
-			try{
-				entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
-				"/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-				NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
-				entityXpath);
-				entNode = entityNodes.item(0);
-			}
-			catch (Exception w) {
-				Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
-			}
-			
-			//              Entity entity = new Entity(newDOM);
-			edu.ucsb.nceas.morpho.datapackage.Entity entityNode = 
-			new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
-			
-			Log.debug(30,"Adding Entity object to AbstractDataPackage..");
-			adp.addEntity(entityNode);
-			
-			// ---DFH
-			Morpho morpho = Morpho.thisStaticInstance;
-			AccessionNumber an = new AccessionNumber(morpho);
-			String curid = adp.getAccessionNumber();
-			String newid = null;
-			if (!curid.equals("")) {
-				newid = an.incRev(curid);
-			} else {
-				newid = an.getNextId();
-			}
-			adp.setAccessionNumber(newid);
-			adp.setLocation("");  // we've changed it and not yet saved
-			mainWizFrame.reInitializePageStack();
-		}
-		
-	}
 
-	private AbstractDataPackage getADP() {
+    String attr = mainWizFrame.getCurrentImportAttributeName();
+    String entity = mainWizFrame.getCurrentImportEntityName();
 
-		AbstractDataPackage adp = null;
-		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-		DataViewContainerPanel resultPane = null;
-		if (morphoFrame != null) {
-			resultPane = AddDocumentationCommand.
-			getDataViewContainerPanelFromMorphoFrame(morphoFrame);
-		}//if
-		// make sure resulPanel is not null
-		if ( resultPane != null) {
-			adp = resultPane.getAbstractDataPackage();
-		}
-		return adp;
-	}
-  
+    attrField.setText(attr);
+    entityField.setText(entity);
+
+    String prevPageID = mainWizFrame.getPreviousPageID();
+
+    if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
+
+
+      // create the new data table. Need to store this DOM to return it.
+      Node newDOM = mainWizFrame.collectDataFromPages();
+      mainWizFrame.setDOMToReturn(null);
+
+      AbstractDataPackage	adp = getADP();
+      if(adp == null) {
+        Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
+        return;
+      }
+
+      Node entNode = null;
+      String entityXpath = "";
+      try{
+        entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
+        "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
+        NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
+        entityXpath);
+        entNode = entityNodes.item(0);
+      }
+      catch (Exception w) {
+        Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
+      }
+
+      //              Entity entity = new Entity(newDOM);
+      edu.ucsb.nceas.morpho.datapackage.Entity entityNode =
+      new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
+
+      Log.debug(30,"Adding Entity object to AbstractDataPackage..");
+      adp.addEntity(entityNode);
+
+      // ---DFH
+      Morpho morpho = Morpho.thisStaticInstance;
+      AccessionNumber an = new AccessionNumber(morpho);
+      String curid = adp.getAccessionNumber();
+      String newid = null;
+      if (!curid.equals("")) {
+        newid = an.incRev(curid);
+      } else {
+        newid = an.getNextId();
+      }
+      adp.setAccessionNumber(newid);
+      adp.setLocation("");  // we've changed it and not yet saved
+      mainWizFrame.reInitializePageStack();
+    }
+
+  }
+
+  private AbstractDataPackage getADP() {
+
+    AbstractDataPackage adp = null;
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    DataViewContainerPanel resultPane = null;
+    if (morphoFrame != null) {
+      resultPane = AddDocumentationCommand.
+      getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+    }//if
+    // make sure resulPanel is not null
+    if ( resultPane != null) {
+      adp = resultPane.getAbstractDataPackage();
+    }
+    return adp;
+  }
+
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    */
@@ -263,51 +263,51 @@ public class CodeImportPage extends AbstractWizardPage {
   }
 
   /**
-   *  The action to be executed when the "Next" button is pressed. 
+   *  The action to be executed when the "Next" button is pressed.
    *
    *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-		
-		if(importChoice != IMPORT_DONE && importChoice != INVOKE_TIW) {
-			WidgetFactory.hiliteComponent(choiceLabel);
-			return false;
-		}
-		WidgetFactory.unhiliteComponent(choiceLabel);
-		
-		if(importChoice == IMPORT_DONE) {
-			if(importPanel.validateUserInput()) {
-				OrderedMap map = mainWizFrame.getCurrentImportMap();
-				String relativeXPath = mainWizFrame.getCurrentImportXPath();
-				String scale = mainWizFrame.getCurrentImportScale().toLowerCase();
-				String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
-				if(!map.containsKey(path + "/entityReference")) {
-					Log.debug(15, "Error in CodeImportPage!! map doesnt have the key - "+path);
-					
-				} else {
-					map.remove(path + "/entityReference");
-					map.remove(path + "/valueAttributeReference");
-					map.remove(path + "/definitionAttributeReference");
-					OrderedMap importMap = importPanel.getPanelData(path);
-					map.putAll(importMap);
-					
-				}
-				if(mainWizFrame.getAttributeImportCount() > 1) {
-					nextPageID = pageID;
-					mainWizFrame.removeAttributeForImport();
-				}
-				else
-					nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
-				
-				return true;
-			} else
-				return false;
-		} else {
-			this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;
-			return true;
-		}
-		
+
+    if(importChoice != IMPORT_DONE && importChoice != INVOKE_TIW) {
+      WidgetFactory.hiliteComponent(choiceLabel);
+      return false;
+    }
+    WidgetFactory.unhiliteComponent(choiceLabel);
+
+    if(importChoice == IMPORT_DONE) {
+      if(importPanel.validateUserInput()) {
+        OrderedMap map = mainWizFrame.getCurrentImportMap();
+        String relativeXPath = mainWizFrame.getCurrentImportXPath();
+        String scale = mainWizFrame.getCurrentImportScale().toLowerCase();
+        String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
+        if(!map.containsKey(path + "/entityReference")) {
+          Log.debug(15, "Error in CodeImportPage!! map doesnt have the key - "+path);
+
+        } else {
+          map.remove(path + "/entityReference");
+          map.remove(path + "/valueAttributeReference");
+          map.remove(path + "/definitionAttributeReference");
+          OrderedMap importMap = importPanel.getPanelData(path);
+          map.putAll(importMap);
+
+        }
+        if(mainWizFrame.getAttributeImportCount() > 1) {
+          nextPageID = pageID;
+          mainWizFrame.removeAttributeForImport();
+        }
+        else
+          nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+
+        return true;
+      } else
+        return false;
+    } else {
+      this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;
+      return true;
+    }
+
   }
 
   /**
