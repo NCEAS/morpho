@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-12 00:00:14 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2003-09-12 16:47:19 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1842,51 +1842,51 @@ public void startImport(String file) {
   // attributeInfo is required here
     for (int i=0;i<colTitles.size();i++) {
       ColumnData cd = (ColumnData)colDataInfo.elementAt(i);
-      om.put(header+"attributeList/attribute/"+"attributeName"+"["+(i+1)+"]",XMLUtil.normalize(cd.colName));
-      om.put(header+"attributeList/attribute/"+"attributeLabel"+"["+(i+1)+"]",XMLUtil.normalize(cd.colTitle));
-      om.put(header+"attributeList/attribute/"+"attributeDefinition"+"["+(i+1)+"]",XMLUtil.normalize(cd.colDefinition));
+      om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"attributeName",XMLUtil.normalize(cd.colName));
+      om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"attributeLabel",XMLUtil.normalize(cd.colTitle));
+      om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"attributeDefinition",XMLUtil.normalize(cd.colDefinition));
       // set measurementScale based on datatype
       if ((cd.colType.equals("integer"))||(cd.colType.equals("float"))
           ||(cd.colType.equals("decimal"))||(cd.colType.equals("double"))) {
-        om.put(header+"attributeList/attribute/"+"measurementScale/interval/"
-              +"unit/standardUnit"+"["+(i+1)+"]",XMLUtil.normalize(cd.colUnits));
-        om.put(header+"attributeList/attribute/"+"measurementScale/interval/"
-              +"precision"+"["+(i+1)+"]","???");
-        om.put(header+"attributeList/attribute/"+"measurementScale/interval/numericDomain/"
-              +"numberType"+"["+(i+1)+"]",XMLUtil.normalize(cd.colType));
-        om.put(header+"attributeList/attribute/"+"measurementScale/interval/numericDomain/"
-              +"bounds/minimum"+"["+(i+1)+"]",""+cd.colMin);
-        om.put(header+"attributeList/attribute/"+"measurementScale/interval/numericDomain/"
-              +"bounds/maximum"+"["+(i+1)+"]",""+cd.colMax);
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/"
+              +"unit/standardUnit",XMLUtil.normalize(cd.colUnits));
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/"
+              +"precision","???");
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
+              +"numberType",XMLUtil.normalize(cd.colType));
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
+              +"bounds/minimum",""+cd.colMin);
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
+              +"bounds/maximum",""+cd.colMax);
       }
       else if(cd.colType.equals("date")) {
-        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
-              +"formatString"+"["+(i+1)+"]","???");
-        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
-              +"dataTimePrecision"+"["+(i+1)+"]","???");
-        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
-              +"dataTimeDomain/bounds/minimum"+"["+(i+1)+"]","???");
-        om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
-              +"dataTimeDomain/bounds/maximum"+"["+(i+1)+"]","???");
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
+              +"formatString","???");
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
+              +"dataTimePrecision","???");
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
+              +"dataTimeDomain/bounds/minimum","???");
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
+              +"dataTimeDomain/bounds/maximum","???");
       }
       else { //assume a string
         if (cd.enumChoice) {
           for (int k=0;k<cd.enumCodeVector.size();k++) {
-            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain/"
-                  +"codeDefinition/code"+"["+(k+1)+"]",(String)cd.enumCodeVector.elementAt(k));
-            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain/"
-                  +"codeDefinition/definition"+"["+(k+1)+"]",(String)cd.enumDefinitionVector.elementAt(k));
-            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain/"
-                  +"codeDefinition/source"+"["+(k+1)+"]",(String)cd.enumSourceVector.elementAt(k));
+            om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain"
+                  +"["+(k+1)+"]/"+"codeDefinition/code",(String)cd.enumCodeVector.elementAt(k));
+            om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain"
+                  +"["+(k+1)+"]/"+"codeDefinition/definition",(String)cd.enumDefinitionVector.elementAt(k));
+            om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain"
+                  +"["+(k+1)+"]/"+"codeDefinition/source",(String)cd.enumSourceVector.elementAt(k));
           }
         }
         else { // simple text
           if (cd.colTextDefinition.length()>0) {
-            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/textDomain/"
+            om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/nominal/nonNumericDomain/textDomain/"
                   +"definition"+"["+(i+1)+"]",cd.colTextDefinition);
           }
           else{
-            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/textDomain/"
+            om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/nominal/nonNumericDomain/textDomain/"
                   +"definition"+"["+(i+1)+"]","any text");
           }
         }
