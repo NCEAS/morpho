@@ -1,9 +1,9 @@
 @echo off
 REM # 
 REM # '$RCSfile: morpho.bat,v $'
-REM # '$Author: tao $'
-REM # '$Date: 2002-11-21 01:36:18 $'
-REM # '$Revision: 1.23 $'
+REM # '$Author: higgins $'
+REM # '$Date: 2002-11-21 17:44:12 $'
+REM # '$Revision: 1.24 $'
 REM # 
 REM #  Script for launching morpho from windows systems
 REM #
@@ -22,11 +22,11 @@ SET   ITS=lib\itislib.jar
 SET   JSE=lib\jsse.jar
 SET   JCE=lib\jcert.jar
 SET   JNE=lib\jnet.jar
-SET   LAF=lib\kunststoff.jar  
+SET   LAF=lib\kunststoff.jar
 SET   LMP=lib\liveMap.jar
 
 
-SET CPATH=.;%LMP%;%XMLP%;%API%;%XALAN%;%DMC%;%CFG%;%JLF%;%JHELP%;%HTP%;%ITS%;%JSE%;%JCE%;%JNE%;%LAF%;%HELP%
+SET CPATH=.;%LMP%;%XMLP%;%API%;%XALAN%;%DMC%;%CFG%;%JLF%;%JHELP%;%HTP%;%ITS%;%JSE%;%JCE%;%JNE%;%LAF%;%HELP%;%JHELP%
 
 echo ----------------------------------
 
