@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-05 18:32:45 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-07 20:33:54 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,9 +135,6 @@ public class AddTemporalCovCommand implements Command {
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
-    // note that the location of 'insertCurrentData' is significant
-    // it must occur after the creation of the ModalDialog so that 'onLoadAction' is fired
-    // and the list is emptied
     boolean pageCanHandleAllData = insertCurrentData();
     if (pageCanHandleAllData) {
       wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
@@ -209,28 +206,4 @@ public class AddTemporalCovCommand implements Command {
     return res;
   }
 
-  /**
-   *  method to display the new package after changes have been made
-   */
-/*  public void showNewPackage(AbstractDataPackage adp) {
-      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      morphoFrame.setVisible(false);
-    
-      try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                services.getServiceProvider(DataPackageInterface.class);
-        DataPackageInterface dataPackage = (DataPackageInterface)provider;
-        dataPackage.openNewDataPackage(adp, null);
-        UIController controller = UIController.getInstance();
-        controller.removeWindow(morphoFrame);
-        morphoFrame.dispose();
-      }
-      catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
-        morphoFrame.setVisible(true);
-      }
-    
-  }
-*/  
-}
+ }
