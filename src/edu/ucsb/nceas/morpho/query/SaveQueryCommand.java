@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:06:27 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-23 00:22:36 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ public class SaveQueryCommand implements Command
       savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
                             "Execute saved search");
       menuActions[0] = savedSearchItemAction;
-      UIController.getInstance().addMenu("Search", new Integer(3), menuActions);
+      UIController.getInstance().addMenu("Search", new Integer(4), menuActions);
       savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
     } else {
       // The menu already exists, so update its title and query object
