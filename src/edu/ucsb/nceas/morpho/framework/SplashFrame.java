@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-22 20:59:16 $'
- * '$Revision: 1.23 $'
+ *   '$Author: jones $'
+ *     '$Date: 2004-04-12 20:27:20 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,9 @@ public class SplashFrame extends javax.swing.JFrame
                                      "Jing Tao",
                                      "Christy Bowles",
                                      "Saurabh Garg",
-                                     "Perumal Sambasivam"
+                                     "Perumal Sambasivam",
+                                     "Andrea Chadden",
+                                     "Rick Reeves",
                                     };
   private static String[] orgs = { 
                  "National Center for Ecological Analysis and Synthesis",
