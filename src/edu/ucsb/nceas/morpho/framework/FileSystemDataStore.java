@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 21:06:01 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-07-10 22:07:20 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,18 +121,36 @@ public class FileSystemDataStore extends DataStore
         }
       }
       
-      StringWriter swriter = new StringWriter();
-      FileWriter writer = new FileWriter(savefile);
+      //save a temp file so that the id can be put in the file.
+      File tempfile = new File(tempdir + "/tmp/local.noid");
+      tempfile.createNewFile();
+      FileWriter fw = new FileWriter(tempfile);
       int c = file.read();
       while(c != -1)
       {
-        writer.write(c); //write out everything in the reader
+        fw.write(c); //write out everything in the reader
         c = file.read();
+      }
+      fw.flush();
+      fw.close();
+      String fileWithId = insertIdInFile(tempfile, name); //put the id in
+      
+      //now that the id has been put in the file, we can save it.
+      StringReader sr = new StringReader(fileWithId);
+      while(!sr.ready())
+      {
+        int x = 1;
+      }
+      FileWriter writer = new FileWriter(savefile);
+      int d = sr.read();
+      System.out.println("writing file: ");
+      while(d != -1)
+      {
+        writer.write(d); //write out everything in the reader
+        d = sr.read();
       }
       writer.flush();
       writer.close();
-      String s = insertIdInFile(savefile, name);
-      System.out.println("==============================s: " + s);
       return savefile;
     }
     catch(Exception e)

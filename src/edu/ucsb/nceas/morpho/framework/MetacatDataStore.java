@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 18:04:32 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-07-10 22:07:20 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,9 +194,9 @@ public class MetacatDataStore extends DataStore
   private File saveFile(String name, Reader file, boolean publicAccess, 
                        String action) 
                        throws MetacatUploadException
-  {//-attempt to write file to metacat
-   //-if successfull, write file to cache, return pointer to that file
-   //-if not successfull, throw exception, display metacat error.
+  { //-attempt to write file to metacat
+    //-if successfull, write file to cache, return pointer to that file
+    //-if not successfull, throw exception, display metacat error.
     String access = "no";
     StringBuffer fileText = new StringBuffer();
     StringBuffer messageBuf = new StringBuffer();
@@ -208,20 +208,34 @@ public class MetacatDataStore extends DataStore
     
     try
     {
+      /*
       int c = file.read();
       while(c != -1)
       {
         fileText.append((char)c);
         c = file.read();
       }
-      
-
       //System.out.println(fileText.toString());
+      */
+      
+      //save a temp file so that the id can be put in the file.
+      File tempfile = new File(tempdir + "/tmp/metacat.noid");
+      tempfile.createNewFile();
+      FileWriter fw = new FileWriter(tempfile);
+      int c = file.read();
+      while(c != -1)
+      {
+        fw.write(c); //write out everything in the reader
+        c = file.read();
+      }
+      fw.flush();
+      fw.close();
+      String filetext = insertIdInFile(tempfile, name); //put the id in
       
       Properties prop = new Properties();
       prop.put("action", action);
       prop.put("public", access);
-      prop.put("doctext", fileText.toString());
+      prop.put("doctext", filetext);
       prop.put("docid", name);
       ClientFramework.debug(11, "sending docid: " + name + " to metacat");
       ClientFramework.debug(11, "action: " + action);

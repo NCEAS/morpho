@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 21:06:01 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-07-10 22:07:20 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,7 +152,7 @@ public abstract class DataStore implements DataStoreInterface
                                          idpath.length()).trim();
     debug(19, "idNodeName: " + idNodeName);
     if(idNL.getLength() != 0)
-    { //the path already exists, change the value
+    { //the path exists, change the value
       for(int i=0; i<idNL.getLength(); i++)
       {
         Node n = idNL.item(i);
@@ -163,12 +163,9 @@ public abstract class DataStore implements DataStoreInterface
         }
       }
     }
-    else
-    { //the path does not exist, create it and add the value
-      
-    }
     
-    return PackageUtil.print(doc.getDocumentElement());
+    return PackageUtil.printDoctype(doc) + 
+           PackageUtil.print(doc.getDocumentElement());
   }
   
   abstract public File openFile(String name) throws FileNotFoundException, 
