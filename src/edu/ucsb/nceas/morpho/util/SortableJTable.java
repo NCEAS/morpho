@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-02 23:09:17 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-16 16:49:01 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,9 +92,9 @@ public class SortableJTable extends JTable implements MouseListener
   }
   
   /**
-   * Mouse event handler
+   * Mouse click event handler
    */
-  public void mouseReleased(MouseEvent event)
+  public void mouseClicked(MouseEvent event) 
   {
     TableColumnModel colModel = getColumnModel();
     int index = colModel.getColumnIndexAtX(event.getX());
@@ -107,14 +107,14 @@ public class SortableJTable extends JTable implements MouseListener
         sortedColumnAscending = !sortedColumnAscending;
      }
      sortedColumnIndex = index;
-    
-      model.sortTableByColumn(modelIndex, sortedColumnAscending);
-      
-    
+     // Sort table
+     model.sortTableByColumn(modelIndex, sortedColumnAscending);
+     validate();
   }
+  public void mouseReleased(MouseEvent event)
+  {}
   
   public void mousePressed(MouseEvent event) {}
-  public void mouseClicked(MouseEvent event) {}
   public void mouseEntered(MouseEvent event) {}
   public void mouseExited(MouseEvent event) {}
   
