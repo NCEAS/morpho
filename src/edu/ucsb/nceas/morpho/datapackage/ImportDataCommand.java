@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 21:19:13 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-16 19:36:18 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,8 +108,6 @@ public class ImportDataCommand implements Command
 
               if(newDOM != null) {
 
-                Log.debug(45, "\n\n********** Entity Wizard finished: DOM:");
-                Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
                 Log.debug(30,"Entity Wizard complete - creating Entity object..");
 
                 // DFH --- Note: newDOM is root node (eml:eml), not the entity node
@@ -135,6 +133,22 @@ public class ImportDataCommand implements Command
 
                 adp.setLocation("");  // we've changed it and not yet saved
 
+                // there may be some additionalMetadata in the newDOM
+                // e.g. some info about consequtive delimiters
+                // so should add this to the end of the adp
+                try{
+                  NodeList ameta = XMLUtilities.getNodeListWithXPath(newDOM, "/eml:eml/additionalMetadata");
+                  if (ameta!=null) {
+                    for (int i=0;i<ameta.getLength();i++) {
+                      Node ametaNode = ameta.item(i);
+                      Node movedNode = (adp.getMetadataNode().getOwnerDocument()).importNode(ametaNode, true);
+                      adp.getMetadataNode().appendChild(movedNode);
+                    }
+                  }
+                }
+                catch (Exception ee) {
+                  Log.debug(5, "Error in trying to copy additionalMetadata"+ee.getMessage());
+                }
               }
 
               try
