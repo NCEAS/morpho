@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-01 02:37:16 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ import javax.swing.JLabel;
 public class PartyIntro extends AbstractUIPage{
 
   public final String pageID = DataPackageWizardInterface.PARTY_INTRO;
-  public final String nextPageID = DataPackageWizardInterface.PARTY_CREATOR;
+  public final String nextPageID = DataPackageWizardInterface.PARTY_CREATOR_PAGE;
   public final String title = "People and Organizations";
   public final String subtitle = "";
   public final String pageNumber = "4";

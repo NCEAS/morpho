@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-30 20:35:19 $'
- * '$Revision: 1.18 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-01 02:37:16 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,16 +44,28 @@ public interface DataPackageWizardInterface {
     *	the getPage() method by passing the appropriate page ID.
   **/
 
+ // NOTE TO SELF - these are strings rather than ints/shorts because they
+ //are used as Map keys in WizardPageLibrary
+
   public static final String INTRODUCTION       = "INTRODUCTION";
-  public static final String PROJECT_INTRO      = "PROJECT_INTRO";
   public static final String PROJECT            = "PROJECT";
   public static final String GENERAL            = "GENERAL";
   public static final String KEYWORDS           = "KEYWORDS";
   public static final String KEYWORDS_PAGE      = "KEYWORDS_PAGE";
+
   public static final String PARTY_INTRO        = "PARTY_INTRO";
+
+  //used to denote listings pages that launch dialogs
+  public static final String PARTY_CREATOR_PAGE    = "PARTY_CREATOR_PAGE";
+  public static final String PARTY_CONTACT_PAGE    = "PARTY_CONTACT_PAGE";
+  public static final String PARTY_ASSOCIATED_PAGE = "PARTY_ASSOCIATED_PAGE";
+
+  //used to denote dialogs and roles
   public static final String PARTY_CREATOR      = "PARTY_CREATOR";
   public static final String PARTY_CONTACT      = "PARTY_CONTACT";
   public static final String PARTY_ASSOCIATED   = "PARTY_ASSOCIATED";
+  public static final String PARTY_PERSONNEL    = "PARTY_PERSONNEL";
+
   public static final String GEOGRAPHIC         = "GEOGRAPHIC";
   public static final String GEOGRAPHIC_PAGE    = "GEOGRAPHIC_PAGE";
   public static final String TAXONOMIC          = "TAXONOMIC";
@@ -66,7 +78,6 @@ public interface DataPackageWizardInterface {
   public static final String ENTITY             = "ENTITY";
   public static final String ATTRIBUTE_PAGE     = "ATTRIBUTE_PAGE";
   public static final String CODE_IMPORT_PAGE   = "CODE_IMPORT_PAGE";
-  public static final String PARTY_PAGE         = "PARTY_PAGE";
   public static final String METHODS            = "METHODS";
   public static final String METHODS_PAGE       = "METHODS_PAGE";
   public static final String ACCESS             = "ACCESS";
@@ -74,7 +85,7 @@ public interface DataPackageWizardInterface {
   public static final String SUMMARY            = "SUMMARY";
   public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
   public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
-	public static final String CITATION_PAGE	   	= "CITATION";
+  public static final String CITATION_PAGE	   	= "CITATION";
 
 
   /**

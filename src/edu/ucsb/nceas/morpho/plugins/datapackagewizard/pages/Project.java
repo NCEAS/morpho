@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-31 00:29:32 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-04-01 02:37:16 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -250,8 +250,8 @@ public class Project extends AbstractUIPage {
      *
      */
      private void showNewPartyDialog() {
-       PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
-       partyPage.setRole(PartyPage.PERSONNEL);
+
+       PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PERSONNEL);
        ModalDialog wpd = new ModalDialog(partyPage,
                                 WizardContainerFrame.getDialogParent(),
                                 UISettings.POPUPDIALOG_WIDTH,
@@ -541,14 +541,12 @@ public class Project extends AbstractUIPage {
       if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
 
       PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
-          DataPackageWizardInterface.PARTY_PAGE);
-
-      nextParty.setRole(PartyPage.PERSONNEL);
+          DataPackageWizardInterface.PARTY_PERSONNEL);
 
       boolean checkParty = nextParty.setPageData(nextPersonnelMap,
                                                  this.xPathRoot
                                                  + PERSONNEL_REL_XPATH
-                                                 + (partyPredicate++) + "]/");
+                                                 + (partyPredicate++) + "]");
 
       if (!checkParty) partyRetVal = false;
       List newRow = nextParty.getSurrogate();

@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-30 18:41:54 $'
- * '$Revision: 1.52 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-01 02:37:16 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 
 /**
  *  provides a top-level container for AbstractUIPage objects. The top (title) panel
@@ -82,6 +84,8 @@ public class WizardContainerFrame
 
   private InputMap imap;
   private ActionMap amap;
+
+  private AbstractDataPackage tempDataPackage = new EML200DataPackage();
 
   /**
    * Constructor
@@ -869,6 +873,7 @@ public class WizardContainerFrame
     setCurrentPage(previousPage);
   }
 
+
   /**
     Function to clear the current page stack
    */
@@ -882,6 +887,7 @@ public class WizardContainerFrame
     return;
   }
 
+
   /**
    *  The action to be executed when the "Cancel" button is pressed
    */
@@ -893,6 +899,7 @@ public class WizardContainerFrame
     // now clean up
     doCleanUp();
   }
+
 
   private void doCleanUp() {
 
@@ -954,12 +961,12 @@ public class WizardContainerFrame
    */
   public static JFrame getDialogParent() {
 
-    if (WizardContainerFrame.frame.isShowing()) {
+    if (WizardContainerFrame.frame!=null
+        && WizardContainerFrame.frame.isShowing()) {
 
       dialogParent = WizardContainerFrame.frame;
 
-    }
-    else {
+    } else {
 
       dialogParent = UIController.getInstance().getCurrentActiveWindow();
     }

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 00:09:15 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-04-01 02:37:16 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,31 +61,32 @@ public class PartyMainPage
   public String description;
   public String xPathRoot;
 
-  private final String[] colNames = {
-      "Party", "Role", "Address"};
+  private final String[] colNames = { "Party", "Role", "Address" };
   private final Object[] editors = null; //makes non-directly-editable
-  public final String title = "Dataset Associated Parties";
-  public final short role;
+  public final String title = "People Associated With This DataPackage";
+  public final String role;
 
-  public static int RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   private JLabel minRequiredLabel;
   private CustomList partiesList;
   private boolean oneOrMoreRequired;
 
-  public PartyMainPage(short role) {
+
+  /**
+   *  Constructor - determines what type of dialog (what role):
+   *
+   * @param role short - PartyPage.CREATOR, PartyPage.CREATOR,
+   * PartyPage.PERSONNEL or PartyPage.ASSOCIATED
+   */
+  public PartyMainPage(String role) {
+
     this.role = role;
     initRole();
     init();
-
-    // A empty row is added to responsiblePartyList if none exists.
-    // This is done so that the dropdown list on PartyPage has
-    // no entry as the first option
-    if (WidgetFactory.partyRefsListForAllPkgs.size() == 0) {
-      List newRow = new ArrayList();
-      for (int i=0; i<4; i++) newRow.add("");
-      WidgetFactory.partyRefsListForAllPkgs.add(newRow);
-    }
   }
+
+
+
+
 
   /**
    * Initiates various parameters of PartyMainPage based on value of variable
@@ -93,81 +94,78 @@ public class PartyMainPage
    */
   private void initRole() {
 
-    switch (role) {
-      case PartyPage.CREATOR:
+    if (role.equals(DataPackageWizardInterface.PARTY_CREATOR)) {
 
-        oneOrMoreRequired = true;
-        pageID = DataPackageWizardInterface.PARTY_CREATOR;
-        nextPageID = DataPackageWizardInterface.PARTY_CONTACT;
-        pageNumber = "5";
-        subtitle = "Owners";
-        xPathRoot = "/eml:eml/dataset/creator[";
-        description =
-            "<p><b>Enter information about the Owners</b>: This is information about the "
-            +
-            "persons or organizations certified for the data. The list of data "
-            +
-            "owners should include all people and organizations who should be cited "
-            + "for the data. Select Add to add an owner"
-            + "<br></br></p>";
-        break;
+      oneOrMoreRequired = true;
+      pageID = DataPackageWizardInterface.PARTY_CREATOR_PAGE;
+      nextPageID = DataPackageWizardInterface.PARTY_CONTACT_PAGE;
+      pageNumber = "5";
+      subtitle = "Owners";
+      xPathRoot = "/eml:eml/dataset/creator[";
+      description =
+          "<p><b>Enter information about the Owners</b>: This is information about the "
+          +
+          "persons or organizations certified for the data. The list of data "
+          +
+          "owners should include all people and organizations who should be cited "
+          + "for the data. Select Add to add an owner"
+          + "<br></br></p>";
 
-      case PartyPage.CONTACT:
+    } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
 
-        oneOrMoreRequired = true;
-        pageID = DataPackageWizardInterface.PARTY_CONTACT;
-        nextPageID = DataPackageWizardInterface.PARTY_ASSOCIATED;
-        pageNumber = "6";
-        subtitle = "Contacts";
-        xPathRoot = "/eml:eml/dataset/contact[";
-        description =
-            "<p><b>Enter information about the Contacts</b>: This is information about the "
-            +
-            "person or organizations who are the contacts for this dataset. This is "
-            +
-            "the person or institution to contact with questions about the use or "
-            +
-            "interpretation of a data package. This may or may not be same as the owner."
-            + "<br></br></p>";
-        break;
+      oneOrMoreRequired = true;
+      pageID = DataPackageWizardInterface.PARTY_CONTACT_PAGE;
+      nextPageID = DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE;
+      pageNumber = "6";
+      subtitle = "Contacts";
+      xPathRoot = "/eml:eml/dataset/contact[";
+      description =
+          "<p><b>Enter information about the Contacts</b>: This is information about the "
+          +
+          "person or organizations who are the contacts for this dataset. This is "
+          +
+          "the person or institution to contact with questions about the use or "
+          +
+          "interpretation of a data package. This may or may not be same as the owner."
+          + "<br></br></p>";
 
-      case PartyPage.ASSOCIATED:
+    } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
 
-        oneOrMoreRequired = false;
-        pageID = DataPackageWizardInterface.PARTY_ASSOCIATED;
-        nextPageID = DataPackageWizardInterface.PROJECT;
-        pageNumber = "7";
-        subtitle = "Associated Parties";
-        xPathRoot = "/eml:eml/dataset/associatedParty[";
-        description =
-            "<p><b>Enter information about Associated People and Organizations</b>: "
-            + "This is information about the people or organizations "
-            + "who should be associated with the resource. These "
-            +
-            "parties might play various roles in the creation or maintenance of "
-            +
-            "the resource, and these roles should be indicated in the \"role\" "
-            + "element.<br></br></p>";
-        break;
+      oneOrMoreRequired = false;
+      pageID = DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE;
+      nextPageID = DataPackageWizardInterface.PROJECT;
+      pageNumber = "7";
+      subtitle = "Associated Parties";
+      xPathRoot = "/eml:eml/dataset/associatedParty[";
+      description =
+          "<p><b>Enter information about Associated People and Organizations</b>: "
+          + "This is information about the people or organizations "
+          + "who should be associated with the resource. These "
+          +
+          "parties might play various roles in the creation or maintenance of "
+          +
+          "the resource, and these roles should be indicated in the \"role\" "
+          + "element.<br></br></p>";
 
-      case PartyPage.PERSONNEL:
-        oneOrMoreRequired = true;
-        subtitle = "Personnel";
-        xPathRoot = "/eml:eml/dataset/project/personnel[";
-        description =
-            "<p>b>Enter information about Personnel</b>: This is information about "
-            +
-            "the people or organizations who should be associated with the resource. These "
-            +
-            "parties might play various roles in the creation or maintenance of "
-            +
-            "the resource, and these roles should be indicated in the \"role\" "
-            + "element.<br></br></p>";
-        break;
+//    } else if (role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) {
+//
+//      oneOrMoreRequired = true;
+//      subtitle = "Personnel";
+//      xPathRoot = "/eml:eml/dataset/project/personnel[";
+//      description =
+//          "<p>b>Enter information about Personnel</b>: This is information about "
+//          +
+//          "the people or organizations who should be associated with the resource. These "
+//          +
+//          "parties might play various roles in the creation or maintenance of "
+//          +
+//          "the resource, and these roles should be indicated in the \"role\" "
+//          + "element.<br></br></p>";
 
-      default:
-        Log.debug(5, "Unrecognized role parameter passed to PartyPage: " + role);
-        return;
+    } else {
+
+      Log.debug(5, "Unrecognized role parameter passed to PartyPage: " + role);
+      return;
     }
   }
 
@@ -236,39 +234,28 @@ public class PartyMainPage
     });
   }
 
+
   /**
    * A method to show new Party Page Dialog
    */
   private void showNewPartyDialog() {
 
-    PartyPage partyPage = (PartyPage) WizardPageLibrary.getPage(
-        DataPackageWizardInterface.PARTY_PAGE);
-    partyPage.setRole(role);
-    ModalDialog wpd
-        = new ModalDialog(partyPage,
-                          WizardContainerFrame.getDialogParent(),
-                          UISettings.POPUPDIALOG_WIDTH,
-                          UISettings.POPUPDIALOG_HEIGHT);
+    PartyPage partyPage =  (PartyPage) WizardPageLibrary.getPage(role);
+
+    ModalDialog wpd = new ModalDialog(partyPage,
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT);
+
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = partyPage.getSurrogate();
       newRow.add(partyPage);
       partiesList.addRow(newRow);
-
-//      partyPage.addToPartyRefsLists();
-
-//      if (!partyPage.isReference) {
-//        WidgetFactory.getPartyRefsListForCurrentPkg().add(newRow);
-//        if (!partyPage.referDiffDP) {
-//          WidgetFactory.partyRefsListForAllPkgs.add(newRow);
-//        }
-//      }
     }
-
-    if (oneOrMoreRequired) {
-      WidgetFactory.unhiliteComponent(minRequiredLabel);
-    }
+    if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
+
 
   /**
    * A method to edit exsisting Party Page dialog
@@ -296,9 +283,6 @@ public class PartyMainPage
       List newRow = editPartyPage.getSurrogate();
       newRow.add(editPartyPage);
       partiesList.replaceSelectedRow(newRow);
-      if (!editPartyPage.isReference) {
-        WidgetFactory.partyRefsListForAllPkgs.add(newRow);
-      }
     }
   }
 
@@ -383,11 +367,6 @@ public class PartyMainPage
 
       nextPartyPage = (PartyPage) nextUserObject;
 
-//      if (nextPartyPage.isReference &&
-//          !listContains(rowLists, nextPartyPage.referredPage)) {
-//        continue;
-//      }
-
       nextNVPMap = nextPartyPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
@@ -460,6 +439,7 @@ public class PartyMainPage
 //    return false;
 //  }
 
+
   /**
    *  gets the unique ID for this wizard page
    *
@@ -468,6 +448,7 @@ public class PartyMainPage
   public String getPageID() {
     return pageID;
   }
+
 
   /**
    *  gets the title for this wizard page
@@ -478,6 +459,7 @@ public class PartyMainPage
     return title;
   }
 
+
   /**
    *  gets the subtitle for this wizard page
    *
@@ -486,6 +468,7 @@ public class PartyMainPage
   public String getSubtitle() {
     return subtitle;
   }
+
 
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
@@ -497,6 +480,7 @@ public class PartyMainPage
   public String getNextPageID() {
     return nextPageID;
   }
+
 
   /**
    *  Returns the serial number of the page

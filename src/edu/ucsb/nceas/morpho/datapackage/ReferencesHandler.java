@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-31 00:29:32 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-04-01 02:37:16 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,7 @@ public class ReferencesHandler {
    *
    * @param dataPkg the AbstractDataPackage from whence the references should
    *   be obtained. If this is null, an empty Map is returned
+   * @param suppressRefID String
    * @return a List of ReferenceMapping objects containing all the IDs
    *   currently in the DataPackage that point to subtree root-nodes
    *   corresponding to the genericName used to instantiate this
@@ -284,8 +285,8 @@ public class ReferencesHandler {
 
     }
     dropdown.setModel(new DefaultComboBoxModel(refMappings));
-    dropdown.invalidate();
     dropdown.validate();
+    dropdown.repaint();
   }
 
 

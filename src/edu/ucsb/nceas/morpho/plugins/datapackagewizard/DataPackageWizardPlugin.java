@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-26 00:19:54 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2004-04-01 02:37:16 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,16 +54,11 @@ public class DataPackageWizardPlugin implements PluginInterface,
                                                 ServiceProvider,
                                                 DataPackageWizardInterface {
 
-  private static WizardContainerFrame dpWiz;
 
   /**
    *  Constructor
    */
-  public DataPackageWizardPlugin() {
-
-    dpWiz = new WizardContainerFrame();
-    dpWiz.setVisible(false);
-  }
+  public DataPackageWizardPlugin() { }
 
 
   /**
@@ -96,8 +91,6 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
                       "New Data Package Wizard");
-
-    PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   }
 
 
@@ -136,7 +129,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *   back when the Entity Wizard has finished
    * @param title String
    */
-  private void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
+  private void startWizardAtPage(
+    String pageID, DataPackageWizardListener listener, String title) {
 
     startWizardAtPage(pageID, false, listener, title);
   }
@@ -145,7 +139,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   private void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {
 
-    WizardPageLibrary.reInitialize();
+    WizardContainerFrame dpWiz = new WizardContainerFrame();
     dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
                   WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
@@ -204,6 +198,5 @@ public class DataPackageWizardPlugin implements PluginInterface,
         }
       }
     );
-    dpWiz.setVisible(true);
   }
 }
