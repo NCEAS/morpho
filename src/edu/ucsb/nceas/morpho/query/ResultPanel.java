@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-28 22:07:27 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2002-04-01 22:31:52 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,6 +105,9 @@ public class ResultPanel extends JPanel
   /**the location of the data package*/
   boolean metacatLoc = false;
   boolean localLoc = false;
+  
+  ImageIcon flapping;
+  int threadCount = 0;
   
   /**
    * Construct a new ResultPanel and display the result set.  By default
@@ -223,6 +226,13 @@ public class ResultPanel extends JPanel
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
     
+      try {
+      flapping = new javax.swing.ImageIcon(getClass().getResource("Btfly4.gif"));
+      } catch (Exception w) {
+        System.out.println("Error in loading images");
+      }
+    
+    
       //Build the popup menu for the right click functionality
       popup = new JPopupMenu();
       popup.add(openMenu);
@@ -260,7 +270,8 @@ public class ResultPanel extends JPanel
         {
           if (2 == e.getClickCount()) 
           {
-            openResultRecord(table);
+ //           openResultRecord(table);
+            doOpenDataPackage();
           }
         }
       });
@@ -478,12 +489,17 @@ public class ResultPanel extends JPanel
         return;
       }
 			if (object == openMenu)
-      { //open the current selection in the package editor
-        ClientFramework.debug(20, "Opening package.");
+      { 
+        doOpenDataPackage();
+        //open the current selection in the package editor
+/*        ClientFramework.debug(20, "Opening package.");
         openResultRecord(table);
+*/
       }
 			else if (object == uploadMenu)
-      { //upload the current selection to metacat
+      { 
+        doUpload();
+  /*      //upload the current selection to metacat
         ClientFramework.debug(20, "Uploading package.");
         try
         {
@@ -523,15 +539,23 @@ public class ResultPanel extends JPanel
             return;
           }
         }
+        
+ */       
       }
 			else if (object == downloadMenu)
-      { //download the current selection to the local disk
+      { 
+        doDownload();
+        
+ /*       //download the current selection to the local disk
         ClientFramework.debug(20, "Downloading package.");
         dataPackage.download(docid);
         refreshQuery();
+ */       
       }
 			else if (object == deleteLocalMenu)
-		  { //delete the local package
+		  { 
+		    doDeleteLocal();
+/*		    //delete the local package
         ClientFramework.debug(20, "Deleteing the local package.");
         String message = "Are you sure you want to delete \nthe package from " +
                          "your local file system?";
@@ -545,9 +569,13 @@ public class ResultPanel extends JPanel
           dataPackage.delete(docid, DataPackage.LOCAL);
           refreshQuery();
         }
+*/        
       }
 			else if (object == deleteMetacatMenu)
-			{ //delete the object on metacat
+			{ 
+			  doDeleteMetacat();
+			  
+/*			  //delete the object on metacat
         ClientFramework.debug(20, "Deleteing the metacat package.");
         String message = "Are you sure you want to delete \nthe package from " +
                          "Metacat? You \nwill not be able to upload \nit " +
@@ -563,9 +591,12 @@ public class ResultPanel extends JPanel
           refreshQuery();
           
         }
+*/       
       }
 			else if (object == deleteAllMenu)
-			{ //delete both of the objects
+			{ 
+			  doDeleteAll();
+/*			  //delete both of the objects
         ClientFramework.debug(20, "Deleting both copies of the package.");
         String message = "Are you sure you want to delete \nthe package from " +
                          "Metacat and your \nlocal file system? " +
@@ -580,16 +611,22 @@ public class ResultPanel extends JPanel
           dataPackage.delete(docid, DataPackage.BOTH);
           refreshQuery();
         }
+  */      
       }
       else if (object == exportMenu)
       {
-        ClientFramework.debug(20, "Exporting dataset");
+        doExport();
+        
+ /*       ClientFramework.debug(20, "Exporting dataset");
         exportDataset(docid);
+ */
       }
       else if (object == exportToZipMenu)
       {
-        ClientFramework.debug(20, "Exporting dataset to zip file");
+        doExportToZip();
+/*        ClientFramework.debug(20, "Exporting dataset to zip file");
         exportDatasetToZip(docid);
+*/
       }
 //      refreshQuery();
       getParent().invalidate();
@@ -852,6 +889,409 @@ public class ResultPanel extends JPanel
     }
     return list;
   }
+  
+ 
+private void doUpload() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          
+          
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+          { //upload the current selection to metacat
+            ClientFramework.debug(20, "Uploading package.");
+            try
+            {
+              dataPackage.upload(docid, false);
+              refreshQuery();
+            }
+            catch(MetacatUploadException mue)
+            {
+              //ask the user if he is sure he wants to overwrite the package
+              //if he is do it, otherwise return
+              String message = "A conflict has been found in one or more of the " +
+                "identifiers \nin your package.  It is possible that you or \n" + 
+                "someone else has made a change on the server that has not \n" +
+                "been reflected on your local copy. If you proceed, you may \n" +
+                "overwrite package information.  If you proceed the identifier \n"+
+                "for this package will be changed.  Are you sure you want to \n" +
+                "proceed with the upload?";
+              int choice = JOptionPane.YES_OPTION;
+              choice = JOptionPane.showConfirmDialog(null, message, 
+                                 "Morpho", 
+                                 JOptionPane.YES_NO_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+              if(choice == JOptionPane.YES_OPTION)
+              {
+                try
+                {
+                  dataPackage.upload(docid, true);
+                  refreshQuery();
+                }
+                catch(MetacatUploadException mue2)
+                {
+                  framework.debug(0, mue2.getMessage());
+                }
+              }
+              else
+              {
+                return null;
+              }
+            }
+          }
+          
+        return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+
+  
+}
+ 
+  
+private void doDownload() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+ 
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+          
+        //download the current selection to the local disk
+        ClientFramework.debug(20, "Downloading package.");
+        dataPackage.download(docid);
+        refreshQuery();
+          
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+
+private void doDeleteLocal() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+          
+		    //delete the local package
+        ClientFramework.debug(20, "Deleteing the local package.");
+        String message = "Are you sure you want to delete \nthe package from " +
+                         "your local file system?";
+        int choice = JOptionPane.YES_OPTION;
+        choice = JOptionPane.showConfirmDialog(null, message, 
+                               "Morpho", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          dataPackage.delete(docid, DataPackage.LOCAL);
+          refreshQuery();
+        }
+          
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+
+private void doDeleteMetacat() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+          
+			   //delete the object on metacat
+         ClientFramework.debug(20, "Deleteing the metacat package.");
+         String message = "Are you sure you want to delete \nthe package from " +
+                         "Metacat? You \nwill not be able to upload \nit " +
+                         "again with the same identifier.";
+         int choice = JOptionPane.YES_OPTION;
+         choice = JOptionPane.showConfirmDialog(null, message, 
+                               "Morpho", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+         if(choice == JOptionPane.YES_OPTION)
+         {
+           dataPackage.delete(docid, DataPackage.METACAT);
+           refreshQuery();
+          
+         }
+          
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+  
+private void doDeleteAll() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+			  //delete both of the objects
+        ClientFramework.debug(20, "Deleting both copies of the package.");
+        String message = "Are you sure you want to delete \nthe package from " +
+                         "Metacat and your \nlocal file system? " +
+                         "Deleting a package\n cannot be undone!";
+        int choice = JOptionPane.YES_OPTION;
+        choice = JOptionPane.showConfirmDialog(null, message, 
+                               "Morpho", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          dataPackage.delete(docid, DataPackage.BOTH);
+          refreshQuery();
+        }
+          
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+
+private void doExport() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+			  //do export
+          ClientFramework.debug(20, "Exporting dataset");
+          exportDataset(docid);
+
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+
+private void doExportToZip() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+			  //do exportToZip
+          ClientFramework.debug(20, "Exporting dataset to zip file");
+          exportDatasetToZip(docid);
+
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+
+private void doOpenDataPackage() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          
+          String docid = selectedId;
+          DataPackageInterface dataPackage;
+          try 
+          {
+            ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+            dataPackage = (DataPackageInterface)provider;
+          } 
+          catch (ServiceNotHandledException snhe) 
+          {
+            framework.debug(6, "Error in upload");
+            return null;
+          }
+          
+			  //do open
+          ClientFramework.debug(20, "Opening package.");
+          openResultRecord(table);
+        
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
   
   
 }
