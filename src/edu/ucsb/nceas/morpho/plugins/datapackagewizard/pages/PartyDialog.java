@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 23:41:11 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-06 04:20:38 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -229,15 +229,6 @@ public class PartyDialog extends WizardPopupDialog {
     component.setMinimumSize(dims);
   }
   
-  /**
-   *  resets all textfields etc to blank or original values
-   */
-  public void resetContent() {
-  
-    // reset all textfields etc to blank or original values
-  }
-  
-
   
   /** 
    *  The action to be executed when the "OK" button is pressed. If no onAdvance 
@@ -261,8 +252,15 @@ public class PartyDialog extends WizardPopupDialog {
     String positionName = positionNameField.getText().trim();
     if (positionName!=null && !(positionName.equals(""))) positionOK = true;
     
-    if (lastNameOK || organizationOK || positionOK) return true;
-    else {
+    if (lastNameOK || organizationOK || positionOK) {
+    
+      WidgetFactory.unhiliteComponent(lastNameLabel);
+      WidgetFactory.unhiliteComponent(organizationLabel);
+      WidgetFactory.unhiliteComponent(positionNameLabel);
+      return true;
+      
+    } else {
+    
       WidgetFactory.hiliteComponent(lastNameLabel);
       WidgetFactory.hiliteComponent(organizationLabel);
       WidgetFactory.hiliteComponent(positionNameLabel);
@@ -301,13 +299,13 @@ public class PartyDialog extends WizardPopupDialog {
   
     String positionName = positionNameField.getText().trim();
     if (positionName!=null) {
-      if (partyBuff.length()>0) partyBuff.append(", ");
+      if (partyBuff.length()>0 && hasNoTrailingComma(partyBuff)) partyBuff.append(", ");
       partyBuff.append(positionName);
     }
 
     String organization = organizationField.getText().trim();
     if (organization!=null) {
-      if (partyBuff.length()>0) partyBuff.append(", ");
+      if (partyBuff.length()>0 && hasNoTrailingComma(partyBuff)) partyBuff.append(", ");
       partyBuff.append(organization);
     }
     surrogate.add(partyBuff.toString());
@@ -327,31 +325,31 @@ public class PartyDialog extends WizardPopupDialog {
     
     String address2   = address1Field.getText().trim();
     if (address2!=null) {
-      if (addressBuff.length()>0) addressBuff.append(", ");
+      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
       addressBuff.append(address2);
     }
     
     String city   = cityField.getText().trim();
     if (city!=null) {
-      if (addressBuff.length()>0) addressBuff.append(", ");
+      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
       addressBuff.append(city);
     }
     
     String state   = stateField.getText().trim();
     if (state!=null) {
-      if (addressBuff.length()>0) addressBuff.append(", ");
+      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
       addressBuff.append(state);
     }
     
     String zip   = zipField.getText().trim();
     if (zip!=null) {
-      if (addressBuff.length()>0) addressBuff.append(", ");
+      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
       addressBuff.append(zip);
     }
     
     String country   = countryField.getText().trim();
     if (country!=null) {
-      if (addressBuff.length()>0) addressBuff.append(", ");
+      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
       addressBuff.append(country);
     }
     
@@ -360,6 +358,12 @@ public class PartyDialog extends WizardPopupDialog {
     return surrogate;
   }
 
+  // returns true if stringbuffer does NOT end with ", "
+  private boolean hasNoTrailingComma(StringBuffer buff) {
+  
+    return !(buff.lastIndexOf(", ")==buff.length() - 2);
+  }
+  
 
   /** 
    *  gets the Map object that contains all the key/value paired

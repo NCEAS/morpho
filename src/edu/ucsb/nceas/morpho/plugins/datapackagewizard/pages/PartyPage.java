@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-06 01:36:34 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-06 04:20:38 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+
 import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -57,26 +59,27 @@ public class PartyPage extends AbstractWizardPage{
   public String pageID;
   public String nextPageID;
   
+  private final String[] colNames =  {"Party", "Role", "Address"};
+  private final Object[] editors  =   null; //makes non-directly-editable
   public final String title      = "Dataset Associated Parties:";
+  public final short role;
   
   public String subtitle;
   public String description;
   public String xPathRoot;
   
-  private final String[] colNames =  {"Party", "Role", "Address"};
-  private final Object[] editors  =   null; //makes non-directly-editable
-
   private JLabel      minRequiredLabel;
   private CustomList  partiesList;
   private boolean     oneOrMoreRequired;
     
   public PartyPage(short role) { 
 
-    initRole(role);
+    this.role = role;
+    initRole();
     init(); 
   }
   
-  private void initRole(short role) { 
+  private void initRole() { 
   
     switch (role) {
   
@@ -193,7 +196,7 @@ public class PartyPage extends AbstractWizardPage{
   private void showNewPartyDialog() {
     
     PartyDialog partyDialog 
-            = new PartyDialog(WizardContainerFrame.frame, PartyDialog.CREATOR);
+            = new PartyDialog(WizardContainerFrame.frame, role);
 
     if (partyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
     
@@ -201,7 +204,7 @@ public class PartyPage extends AbstractWizardPage{
       newRow.add(partyDialog);
       partiesList.addRow(newRow);
     }
-    WidgetFactory.unhiliteComponent(minRequiredLabel);
+    if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
   
 
@@ -219,7 +222,7 @@ public class PartyPage extends AbstractWizardPage{
     editPartyDialog.resetBounds();
     editPartyDialog.setVisible(true);
     
-    if (editPartyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
+    if (editPartyDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
     
       List newRow = editPartyDialog.getSurrogate();
       newRow.add(editPartyDialog);
@@ -231,9 +234,7 @@ public class PartyPage extends AbstractWizardPage{
   /** 
    *  The action to be executed when the page is displayed. May be empty
    */
-  public void onLoadAction() {
-    
-  }
+  public void onLoadAction() {}
   
   
   /** 

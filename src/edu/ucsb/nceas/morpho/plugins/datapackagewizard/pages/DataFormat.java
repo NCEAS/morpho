@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 01:05:00 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-06 04:20:38 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -471,7 +471,7 @@ public class DataFormat extends AbstractWizardPage{
   
     listResultsMap.clear();
     
-    int index=0;
+    int index=1;
     StringBuffer buff = new StringBuffer();
     List rowLists = list.getListOfRowLists();
     String fixedDelimStr = null;
@@ -525,7 +525,7 @@ public class DataFormat extends AbstractWizardPage{
   
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationSimple);
       
-      int index=0;
+      int index=1;
       StringBuffer buff = new StringBuffer();
       
       if (delim_tab!=null) {

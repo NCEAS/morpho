@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 01:05:00 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-06 04:20:38 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,12 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
 public abstract class WizardPopupDialog extends JDialog {
 
+  public short USER_RESPONSE;
   
+  public static final short OK_OPTION      = 10;
+  public static final short CANCEL_OPTION  = 20;
+  public static final short CLOSED_OPTION  = 30;
+
   public WizardPopupDialog(JFrame parent) {
     
     super(parent, true);
@@ -174,12 +179,8 @@ public abstract class WizardPopupDialog extends JDialog {
   }
 
 
-  // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * *
+  // * * *  P R I V A T E   V A R I A B L E S  * * * * * * * * * * * * * * * * *
 
-  public short USER_RESPONSE;
-  public static final short OK_OPTION      = 10;
-  public static final short CANCEL_OPTION  = 20;
-  public static final short CLOSED_OPTION  = 30;
   
   private int PADDING = WizardSettings.PADDING;
   private JFrame parent;
