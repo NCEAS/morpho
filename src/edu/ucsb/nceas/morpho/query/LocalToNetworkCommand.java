@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-02 20:32:10 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,9 @@ public class LocalToNetworkCommand implements Command
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
    
+  /** A flag indicate the frame 'type, search result or data packag*/
+   private String morphoFrameType = null;
+   
   /** A refernce to the ResultPanel */
    private ResultPanel resultPane = null;
   
@@ -73,17 +76,26 @@ public class LocalToNetworkCommand implements Command
    * @param myOpenDialog the open dialog which will be applied synchronize
    * @param dialog a synchronize dialog need to be destroied
    * @param myFrame the parent frame of synchronize dialog
+   * @param frameType the parent frame'type, search result or package
    * @param selectId the id of data package need to be synchronized
    * @param myInLocal if the datapackage has a local copy
    * @param myInNetwork if the datapackage has a network copy
    */
   public LocalToNetworkCommand(OpenDialogBox myOpenDialog, JDialog box, 
-   MorphoFrame myFrame, String selectId, boolean myInLocal, boolean myInNetwork)
+                               MorphoFrame myFrame, String frameType,
+                               String selectId, boolean myInLocal, 
+                               boolean myInNetwork)
   {
     if (myOpenDialog != null)
     {
+      // this is for open dialog
       openDialog = myOpenDialog;
       comeFromOpenDialog = true;
+    }
+    else
+    {
+      // for morpho frame
+      morphoFrameType = frameType;
     }
     synchronizeDialog = box;
     morphoFrame = myFrame;
@@ -107,7 +119,7 @@ public class LocalToNetworkCommand implements Command
           synchronizeDialog.dispose();
           synchronizeDialog = null;
         }
-        doUpload(selectDocId, openDialog, comeFromOpenDialog, morphoFrame);
+        doUpload(openDialog, comeFromOpenDialog, morphoFrame);
     }
    
   }//execute
@@ -116,29 +128,18 @@ public class LocalToNetworkCommand implements Command
    * Using SwingWorket class to open a package
    *
    */
- private void doUpload(final String docid, final OpenDialogBox open, 
-                                 final boolean hasOpen, final MorphoFrame frame) 
+ private void doUpload(final OpenDialogBox open, final boolean hasOpen, 
+                       final MorphoFrame frame) 
  {
   final SwingWorker worker = new SwingWorker() 
   {
+        DataPackageInterface dataPackage;
+        
         // A variable to indicate it reach refresh command or not
         // This is for butterfly flapping, if reach refresh, butterfly will
         // stop flapping by refresh        
         boolean refreshFlag = false;
         public Object construct() {
-          frame.setBusy(true);
-          DataPackageInterface dataPackage;
-          // Create a refresh command 
-          RefreshCommand refresh = null; 
-          if (hasOpen)
-          {
-            refresh = new RefreshCommand(open);
-          }
-          else
-          {
-            refresh = new RefreshCommand(frame);
-          }
-          
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -151,14 +152,37 @@ public class LocalToNetworkCommand implements Command
             Log.debug(6, "Error in upload");
             return null;
           }
-          
-          { //upload the current selection to metacat
+          frame.setBusy(true);
+          // Create a refresh command 
+          RefreshCommand refresh = null; 
+          if (hasOpen)
+          {
+            refresh = new RefreshCommand(open);
+          }
+          else
+          {
+            refresh = new RefreshCommand(frame);
+          }
+      
+           //upload the current selection to metacat
             Log.debug(20, "Uploading package.");
             try
             {
-              dataPackage.upload(docid, false);
+              dataPackage.upload(selectDocId, false);
               refreshFlag = true;
-              refresh.execute(null);
+              
+              if ( comeFromOpenDialog || (morphoFrameType != null &&
+                      morphoFrameType.equals(morphoFrame.SEARCHRESULTFRAME)))
+              {
+                // for search result   
+                refresh.execute(null);
+              }
+              else if (morphoFrameType != null &&
+                     morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
+              {
+                // for data package frame
+                refreshDataPackageFrame();
+              }
             }
             catch(MetacatUploadException mue)
             {
@@ -192,9 +216,24 @@ public class LocalToNetworkCommand implements Command
               {
                 try
                 {
-                  dataPackage.upload(docid, true);
+                  // a new id or orignal id will be returned.
+                  Log.debug(30, "the docid before upload: "+selectDocId);
+                  selectDocId = dataPackage.upload(selectDocId, true);
+                  Log.debug(30, "docid after upload: "+selectDocId);
                   refreshFlag = true;
-                  refresh.execute(null);
+                  // for search result 
+                  if ( comeFromOpenDialog || (morphoFrameType != null &&
+                      morphoFrameType.equals(morphoFrame.SEARCHRESULTFRAME)))
+                  {
+                    refresh.execute(null);
+                  }
+                  else if (morphoFrameType != null &&
+                     morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
+                  {
+                   
+                    // for data package frame
+                    refreshDataPackageFrame();
+                  }
                 }
                 catch(MetacatUploadException mue2)
                 {
@@ -208,11 +247,25 @@ public class LocalToNetworkCommand implements Command
                 return null;
               }
             }
-          }
+          
           
         return null;  
         }
 
+        /*
+         * Method to refresh a open datackage 
+         */
+        private void refreshDataPackageFrame()
+        {
+          // the location of data package after synchronize
+          String location = DataPackageInterface.BOTH;
+          dataPackage.openDataPackage(location, selectDocId, null, null);
+          
+          // Distroy old frame
+          UIController.getInstance().removeWindow(frame);
+          frame.dispose();
+        }
+        
         //Runs on the event-dispatching thread.
         public void finished() 
         {
