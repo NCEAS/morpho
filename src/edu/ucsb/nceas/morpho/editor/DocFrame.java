@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-17 18:53:09 $'
- * '$Revision: 1.150 $'
+ *     '$Date: 2004-02-20 16:32:50 $'
+ * '$Revision: 1.151 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1488,14 +1488,13 @@ public class DocFrame extends javax.swing.JFrame
       DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
       // simple node comparison
       String nodename = ((NodeInfo)node.getUserObject()).getName();
-      if (nodename.startsWith("attribute-")) nodename = "attribute";
       if (controller != null) {
         nodeCopy = (DefaultMutableTreeNode)controller.getClipboardObject();
       }
       if (nodeCopy != null) {
         String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
-        if (savenodename.startsWith("attribute-")) savenodename = "attribute";
-        if (nodename.equals(savenodename)) {
+        if (savenodename.startsWith("attribute-")) savenodename = "attribute-";
+        if (nodename.startsWith(savenodename)) {
           DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
           int indx = parent.getIndex(node);
           parent.insert(localcopy, indx + 1);
@@ -2949,6 +2948,7 @@ Log.debug(20, xmlout);
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     trimNoInfoNodes(rootNode);
     TrimTreeButton.setEnabled(false);
+    UntrimTreeButton.setEnabled(true);
     treeModel.reload();
     tree.expandRow(1);
     tree.setSelectionRow(0);
@@ -2972,6 +2972,7 @@ Log.debug(20, xmlout);
     mergeMissingFlag = true;
     initDoc(null, xmlout);
     TrimTreeButton.setEnabled(true);
+    UntrimTreeButton.setEnabled(false);
   }
 
   /**
@@ -3377,8 +3378,12 @@ Log.debug(20, xmlout);
           if (nodeCopy != null) {
             String nodename = ((NodeInfo)selectedNode.getUserObject()).getName();
             String savenodename = ((NodeInfo)nodeCopy.getUserObject()).getName();
-            String card = ((NodeInfo)nodeCopy.getUserObject()).getCardinality();
-            if ((nodename.equals(savenodename))&&(!card.equals("ONE"))) {
+            String card = ((NodeInfo)selectedNode.getUserObject()).getCardinality();
+            DefaultMutableTreeNode parent = (DefaultMutableTreeNode)selectedNode.getParent();
+            NodeInfo parni = (NodeInfo)parent.getUserObject();
+            if (((nodename.equals(savenodename))&&(!card.equals("ONE"))) || 
+               (parni.getName().indexOf("CHOICE")>-1)&&(!parni.getCardinality().equals("ONE")) )
+            {
               PastemenuItem.setEnabled(true);
             }
             if ((nodename.startsWith("attribute"))&&(savenodename.startsWith("attribute"))) {
