@@ -6,7 +6,7 @@ import java.io.*;
 /** Represents an element defined with the ELEMENT DTD tag
  *
  * @author Mark Wutka
- * @version $Revision: 1.2 $ $Date: 2001-01-19 20:56:39 $ by $Author: higgins $
+ * @version $Revision: 1.3 $ $Date: 2001-06-06 22:44:57 $ by $Author: higgins $
  */
 public class DTDElement implements DTDOutput
 {

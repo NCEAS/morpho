@@ -7,7 +7,7 @@ import java.net.*;
 /** Parses a DTD file and returns a DTD object
  *
  * @author Mark Wutka
- * @version $Revision: 1.2 $ $Date: 2001-01-15 02:21:26 $ by $Author: higgins $
+ * @version $Revision: 1.3 $ $Date: 2001-06-06 22:44:57 $ by $Author: higgins $
  */
 public class DTDParser implements EntityExpansion
 {
