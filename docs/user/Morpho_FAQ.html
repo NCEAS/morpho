@@ -80,22 +80,29 @@
         of Morpho?</a></span></strong></font></p>
       <p><font size="+1"><strong>10. <a href="#profiledelete">How do I delete a profile?</a></strong></font></p>
       <p><font size="+1"><strong>11. <a href="#extract">How can I add  automatically
-              extract data documentation from a data file?</a></strong><br>
+        extract data documentation from a data file for entry into Morpho?</a></strong></font></p>
+      <p><font size="+1"><strong>12. <a href="#synchronizingQ">What is the difference between synchronizing a data
+        package and saving a data package to the network?</a></strong></font></p>
+      <p><font size="+1"><strong>13. <a href="#savedsearchQ">How do I delete a saved search?</a></strong></font></p>
+      <p><font size="+1"><strong>14. <a href="#shortcutQ">What are the keyboard shortcuts available in Morpho?</a></strong><br>
         </font></p></td>
     </tr>
     <tr>
       <td><p>&nbsp;</p>        <p><b><font size="+1"><a name="helpQ"></a>1. How do I get help?<br>
             <br>
-          </font></b><font size="+1">If Morpho is running, you should be able to
-              use the "Help" menu located
+          </font></b><font size="+1">If Morpho is running, you should be able
+          to use the "Help" menu located
               at the top of each window. You can also open the "docs/user" directory
               in the directory where Morpho was installed and
-        then open the file "index.html" in your browser (usually by double clicking on
-        the file name). This will display the same help files as you would see when using
+        then open the file "index.html" in your browser (usually by double clicking
+        on the file name). This will display the same help files as you would
+        see when using
         Morpho's Help menu. The Morpho User Guide,
-        found under the "Help" menu, contains information on a variety of topics and
-        uses of Morpho. Examine the index to determine where to get
-        help.</font></p>
+        found under the "Help" menu, contains information on a variety of topics
+        and uses of Morpho. Examine the index of the Morpho User Guide to determine
+        where to find information you need. Also, check the Frequently Asked
+        Questions section for answers to some of the more common questions. If
+        you cannot find the help you need using these resources, then email morpho-dev@ecoinformatics.org.</font></p>
         <p>&nbsp;</p></td>
     </tr>
     <tr>
@@ -105,23 +112,21 @@
     my local data packages when I upgrade to a newer version of Morpho?</font></b><font size="+1"><br>
     <br>
     If you have used a previous version of Morpho, then you may have local data
-    packages stored in a "<span style="font-family: monospace;">profiles</span>" directory
+    packages stored in a &quot;profiles&quot; directory
     inside the main Morpho data directory. The location where the "profiles" directory
     is created and accessed is in a subdirectory
-    within the user's "home" directory. [On Windows 2000 or XP machines, the home
-    directory is named after the user name (e.g. "higgins") and is located inside
-    the "<span style="font-family: monospace;">Documents and
-    Settings</span>" folder, usually under <span
- style="font-family: monospace;">C:\</span>] A directory named "<span
- style="font-family: monospace;">.morpho</span>" is created inside the user's
-    home directory and the new <span style="font-family: monospace;">"profiles" </span>subdirectory
+    within the user's "home" directory. On Windows 2000 or XP machines, the
+    home directory is named after the user name (e.g. "higgins") and is located
+    inside the &quot;Documents and Settings&quot; folder, usually under C:\. A
+    directory named &quot;.morpho&quot; is created inside the user's
+    home directory and the new &quot;profiles&quot; subdirectory
     is created there when Morpho is first
-    executed. There is a subdirectory under <span
- style="font-family: monospace;">"profiles" </span>with the profile name and
-    another subdirectory under that with the name <span
- style="font-family: monospace;">"data"</span> where local data for that profile
-    is actually stored .&nbsp; Note that this is (usually) not the same directory
-    as the one where the Morpho executable is installed. You should thus be able
+    executed. There is a subdirectory under &quot;profiles&quot; with the profile name
+    and another subdirectory under that with the name &quot;data&quot; where local data
+    for that profile is actually stored. Note that this is (usually) not
+    the same directory as the one where the Morpho executable is installed. You
+    should
+    thus be able
     to uninstall Morpho and update it to newer versions without fear of losing
     any locally stored data packages.</font></p>
         <p>&nbsp;</p></td>
@@ -131,15 +136,15 @@
   package?</font></b><font size="+1"><b></b><br>
   <br>
   Complex, geospatially indexed images can be included and described in eml 2.0
-  using the "spatialRaster" or "spatialVector" entity
+  and newer versions using the "spatialRaster" or "spatialVector" entity
   modules.&nbsp; However, Morpho currently has no features directly supporting
-  these modules. Nevertheless, images that are stored in .gif or .jpeg formats
-  (standards for web
+  these modules. Later versions of Morpho will have this feature. Nevertheless,
+  images that are stored in .gif or .jpeg formats (standards for web
   pages) can be added to data packages as "dataTable" elements (even though they
-  are not really &quot;dataTables&quot;). To add such an image to an existing package using
-  the "Create/Import New Datatable..." command under the "Data" menu. Choose
-  the "Import" and then "Manual" radio buttons Then select the image file that
-  you wish to include. Then click the "Next" button.&nbsp; Select the "Non-text
+  are not really &quot;dataTables&quot;). To add such an image to an existing
+  package using the "Create/Import New Datatable..." command under the "Data" menu.
+  Choose the "Import" and then "Manual" radio buttons. Then select the image
+  file that you wish to include. Then click the "Next" button.&nbsp; Select the "Non-text
   or proprietary formatted file" radio
   button and then select "other".&nbsp; You should then type "image", ".gif", ".jpeg",
   or ".jpg" in the text box below the "other" button. This tells Morpho to display
@@ -147,36 +152,43 @@
   the Wizard as with any other data file. You will need to fill out at least
   the minimal information
   indicated on several of the next screens.</font></p>
-      <p>&nbsp;</p></td>
+        <p>&nbsp;</p></td>
     </tr>
     <tr>
       <td><p><b><font size="+1"><a name="lookandfeel"></a>4. Can I customize Morpho in any way?<br>
           </font></b><font size="+1"><br>
-          In versions 1.3 and earlier,. there is no command within the Morpho
-            program to set any preferences. (In Morph 1.4.0, there is a "Set preferences..." menu
-  item in the "File" menu. That menu item makes it unnecessary to change the
-  configuration file as described here.) There are some preferences (and additional
-  data) that are read from the 'config.xml' file that is stored in the ".morpho" directory
-  in the user's home directory. Only a few of these should be set by the user.
-  These include:<br>
-  <br>
+          In Morph 1.4.0 and later versions,
+          there is a "Set preferences..." menu item in the "File" menu. That
+          menu allows the user to change the look and feel of the Morpho windows,
+          as well as change other options. However, in versions 1.3 and earlier,
+          there is no command within the Morpho program to set any preferences,
+          therefore you would need to set them manually, as described below:</font></p>
+        <p>&nbsp;</p>
+        <p><font size="+1">There are some preferences (and additional
+      data) that are read from the &quot;config.xml&quot; file that is stored in the ".morpho" directory
+      in the user's home directory. Only a few of these should be set by the
+      user. These include:<br>
+      <br>
 &lt;lookAndFeel&gt;&lt;/lookAndFeel&gt; &nbsp;--- &nbsp;As shown on the left,
-there is nothing between the pair of "lookAndFeel" tags in the default config.xml
-file. This causes the look of the Morpho display to mimic that of the current
-operating system - e.g. Windows, Mac, etc. You can see a different look by changing
-the tag set to be "&lt;lookAndFeel&gt;kunststoff&lt;/lookAndFeel&gt;". This will
-cause a variety of minor changes in the look of buttons, scroll bars, etc. The "kunststoff" is
-a customized look-and-feel created for Java applications.<br>
-  <br>
+    there is nothing between the pair of "lookAndFeel" tags in the default config.xml
+    file. This causes the look of the Morpho display to mimic that of the current
+    operating system - e.g. Windows, Mac, etc. You can see a different look by changing
+    the tag set to be "&lt;lookAndFeel&gt;kunststoff&lt;/lookAndFeel&gt;". This will
+    cause a variety of minor changes in the look of buttons, scroll bars, etc. The "kunststoff" is
+    a customized look-and-feel created for Java applications.<br>
+      <br>
 &lt;log_file&gt;false&lt;/log_file&gt; --- Changing the value within these tags
-from "false" to "true" will send all error messages to a log file. This may be
-useful if you are having problems.&nbsp; Note that in version 1.5, the default
-setting for this parameter has been set to "true". Messages are thus automatically
-written to the log file (which is written to the Morpho startup directory and
-called "stderr.log"). If problems occur, this log file can be examined (or sent
-to the Morpho developers) to help determine the cause of the problem. Note that
-the log file is rewritten every time Morpho starts up, so you will need to rename
-it&nbsp; if you want to save the results.</font></p>
+    from "false" to "true" will send all error messages to a log file. This may
+    be useful if you are having problems.&nbsp; Note that in version 1.5 and
+    later, the default setting for this parameter has been set to "true". Messages
+    are thus automatically written to the log file (which is written to the Morpho
+    startup
+    directory and
+    called "stderr.log"). If problems occur, this log file can be examined (or
+    sent to the Morpho developers) to help determine the cause of the problem.
+    Note that
+    the log file is rewritten every time Morpho starts up, so you will need to
+    rename it&nbsp; if you want to save the results.</font></p>
         <p>&nbsp;</p>        <p><font size="+1">&lt;metacat_url&gt;http://metacat.nceas.ucsb.edu/knb/servlet/metacat&lt;/metacat_url&gt; ---
       The url of the network server where data is stored is set here. You may
         need to change this if you are using a custom server.</font></p>
@@ -189,7 +201,8 @@ it&nbsp; if you want to save the results.</font></p>
           There may be some confusion because the Export command asks you to
     select a "directory", not a file. Select a directory where you want the package
     exported to. On the Mac, you may need to actually type in the name of directory
-    after selecting its parent directory.</font></p>
+    after selecting its parent directory. The exported metadata and data (if
+    your data package includes data) will be exported to the directory you selected.</font></p>
         <p>&nbsp;</p></td>
     </tr>
     <tr>
@@ -203,11 +216,13 @@ it&nbsp; if you want to save the results.</font></p>
   only) is to execute the batch file "morpho.bat" which is located in the directory
   where Morpho was installed. When launched using the batch file, a background
   command window will appear and a number of messages will appear in this window
-  while Morpho is running. You can also see all these messages in a log file that
-  is created when the "&lt;log_file&gt;" parameter is set to "true" in the configuration
-  file
-  (see <a href="#lookandfeel">FAQ question #4</a>).</font></p>
-      <p>&nbsp;</p></td>
+  while Morpho is running. These can give you hints about problems. You can also
+  see all these messages in a log file that is created when the "&lt;log_file&gt;" parameter
+  is set to "true" in
+  the configuration file
+  (see <a href="#lookandfeel">FAQ question #4</a> for instructions on accessing
+  the config.xml file).</font></p>
+        <p>&nbsp;</p></td>
     </tr>
     <tr>
       <td><p><b><font size="+1"><b><font size="+1"><a name="systemreqQ"></a></font></b>7. What are the system requirements for running Morpho?</font></b><font size="+1"><b></b><br>
@@ -241,7 +256,9 @@ it&nbsp; if you want to save the results.</font></p>
   data will end up in the first cell if the data being pasted uses a different
   delimiter
   that the existing data (e.g. pasting from
-  Excel when the existing data is comma-delimited).</font></p>
+  Excel when the existing data is comma-delimited). Alternately, you may add
+  data using the Data Table Wizard, explained in the <a href="Adding_Data_to_a_Data_Package.htm">Adding
+  Data to a Data Package</a>  section.</font></p>
         <p>&nbsp;</p></td>
     </tr>
     <tr>
@@ -251,10 +268,12 @@ it&nbsp; if you want to save the results.</font></p>
                 <br>
                 Previous versions of Morpho worked with a now obsolete version
                 of EML called "Beta
-    6".&nbsp; Morpho 1.5 will still read these older packages, but it will automatically
-    convert them to the newer EML 2.0 format for display. These older data packages&nbsp; will
-    not be converted to EML 2.0 until the owner saves them, at which time a new
-    ID will also be assigned.</font></p>
+    6".&nbsp; Morpho versions 1.5 and later will still read these older packages,
+    but it will automatically convert them to the newer EML 2.0 (or later versions
+    of EML) format for display. These
+    older data packages will
+    not be converted to EML 2.0 (or later) until the owner saves them, at which
+    time a new ID will also be assigned.</font></p>
         <p>&nbsp;</p></td>
     </tr>
     <tr>
@@ -265,44 +284,102 @@ it&nbsp; if you want to save the results.</font></p>
             you no longer need in Morpho itself. Instead, you delete the file
             (saved on your computer) that corresponds with the profile you would
             like to delete. These profile files are located in the profiles folder,
-      which can be found in the &quot;.morpho&quot; folder.</font></p>
-      <p>&nbsp;</p></td>
+      which can be found in the &quot;.morpho&quot; folder. Delete the entire
+      profile folder for the profile you wish to delete - be warned however that
+      by deleting the profile folder you are also deleting all the local copies
+      of data packages that were created or saved using that profile. Therefore
+      data loss may happen unless you have previously extracted the data package
+      and saved it elsewhere on your computer, or unless you have saved the data
+      package to a network server, like metacat.</font></p>
+        <p>&nbsp;</p></td>
     </tr>
     <tr>
       <td><p class="tablepanel"><font size="+1"><strong><a name="extract"></a>11.
               How can I automatically extract data documentation from a data
-              file?</strong></font></p>
+              file for entry into Morpho?</strong></font></p>
+        <p>&nbsp;</p>
+        <p class="tablepanel"><font size="+1">Begin by opening the data package
+            you would like to add data to, or by creating a new data package
+            using the New Datapackage Wizard. Next, open the New Datatable Wizard,
+            which can be found under the &quot;Data&quot; menu by clicking &quot;Create/Import
+            New Datatable&quot;, or can be accessed on the last screen of the
+            New Datapackage Wizard. Choose either &quot;Import&quot; or &quot;Describe&quot; under &quot;What
+            do you want to do?&quot;. You can then choose &quot;Automatic&quot; to
+            have Morpho automatically extract documentation from the data file. </font></p>
+        <p class="tablepanel">&nbsp;</p>
+        <p class="tablepanel"><font size="+1">Note that at this time, Morpho
+            can only extract documentation from a data file that is in text format.
+            For data files saved in other formats, you can often change that
+            format into text format. For example, if you have data tables created
+            in Microsoft Access, you can click on each datatable in that database
+            and export it as a text file (under File -&gt; Export...). These
+            text files can then be added one at a time to Morpho, and the documentation
+            extracted automatically. If you have data in an Excel workbook, you
+            can simply save each data sheet as a text file using &quot;Save As&quot; and
+            choosing a text format from the &quot;Save as type&quot; menu. Chart
+            objects in Excel cannot be saved as text files. Also, documentation
+            cannot be automatically extracted from image files. For these and
+            other types of data files, you should manually enter their documentation
+      in the New Datatable Wizard.</font></p></td>
+    </tr>
+    <tr>
+      <td><p><font size="+1"><strong><a name="synchronizingQ" id="synchronizingQ"></a>12. What is the difference between synchronizing a
+      data package and saving a data package to the network?</strong></font></p>
       <p>&nbsp;</p>
-      <p class="tablepanel"><font size="+1">Begin by opening the data
-          package you would like to add data to, or by creating a new data
-          package
-          using the New Datapackage Wizard. Next, open the New Datatable
-          Wizard, which can be found under the &quot;Data&quot; menu
-          by
-          clicking
-          &quot;Create/Import
-      New Datatable&quot;, or can be accessed on the last screen of the New Datapackage
-      Wizard. Choose either &quot;Import&quot; or &quot;Describe&quot; under &quot;What do you want to
-      do?&quot;. You can then choose &quot;Automatic&quot; to have Morpho automatically extract
-      documentation from the data file. </font></p>
-      <p class="tablepanel">&nbsp;</p>
-      <p class="tablepanel"><font size="+1">Note that at this time, Morpho can
-            only extract documentation from a data file that is in text format.
-          For data files saved in other formats, you can often change that format
-          into text format. For example, if you have a data tables
-      created in Microsoft Access, you can click on each datatable in that database
-      and export it as a text file (under File -&gt; Export...). These text files
-          can then be added one at a time to Morpho, and the documentation extracted
-          automatically.
-          If
-          you
-          have data in an
-          Excel workbook, you can simply save each data sheet as a text file
-          using &quot;Save As&quot; and choosing a text format from the &quot;Save as type&quot;
-          menu. Chart objects
-      in Excel cannot be saved as text files. Also, documentation cannot be automatically
-      extracted from image files. For these and other types of data files, you
-      should manually enter their documentation in the New Datatable Wizard.</font></p></td>
+      <p><font size="+1">When synchronizing a data package, you can either save
+      a local copy of a data package to the network, or save a copy of a data
+          package from the network to your local machine. Synchronizing will
+          make the network
+          and your
+          local
+      machine have the same copy (of the data package(s) you choose to synchronize).
+      When saving a data package, you can essentially achieve the same result
+      as synchronizing. You can save a local data package to the network (as
+          well as locally after making edits), or you can save a network data
+          package locally (or back to the network after making edits). One difference
+          between the two choices is that the synchronize command is made available
+          when you right-click on a data package in a search results box,
+          whereas the save command is only available after you have opened a
+          data package. </font></p>
+      <p>&nbsp;</p></td>
+    </tr>
+    <tr>
+      <td><p class="tablepanel"><font size="+1"><strong><a name="savedsearchQ" id="savedsearchQ"></a>13.
+              How do I delete a saved search?</strong></font></p>
+        <p class="tablepanel">&nbsp;</p>
+        <p class="tablepanel"><font size="+1">T</font><font size="+1">here is
+            no direct way in Morpho to delete a saved search. One can, however,
+            look in the .morpho/profiles/&lt;profilename&gt; directory and delete
+            the &quot;queries&quot; subdirectory (or one of the files in it)
+            to remove all queries (or one of them).</font></p>
+      <p class="tablepanel">&nbsp;</p></td>
+    </tr>
+    <tr>
+      <td><p class="tablepanel"><font size="+1"><strong><a name="shortcutQ"></a>14. What are the keyboard
+              shortcuts available in Morpho?</strong></font></p>
+        <p class="tablepanel"><font size="+1">In Morpho, you can use the following
+        keyboard shortcuts:</font></p>
+        <ul>
+          <li><font size="+1">Ctrl X to cut text</font></li>
+          <li><font size="+1">Ctrl </font><font size="+1">C to copy text</font></li>
+          <li><font size="+1">Ctrl V to paste text</font></li>
+          <li><font size="+1">Ctrl I to insert table rows one at a time into
+              a data table (see <a href="#pastedata">FAQ question #8</a> for
+              more detail).</font></li>
+        </ul>        
+        <p class="tablepanel"><font size="+1">In the Data Package Wizard, you
+        can also use the following keys to quickly navigate through the wizard:</font></p>
+        <ul>
+          <li><font size="+1">Left and right arrows take you forward and back
+              through the steps in the wizard</font></li>
+          <li><font size="+1">Esc exits the wizard</font></li>
+          <li><font size="+1">Tab allows you to move from one field to the next</font></li>
+          <li><font size="+1">Enter</font><font size="+1"> brings you to the
+              next required field, and can also be used to open new windows (such
+          as the owner details window in step 5 of the Data Package Wizard).</font></li>
+        </ul>        
+        <p><font size="+1">Additional keyboard shortcuts may be implemented in
+            later versions of Morpho.</font></p></td>
     </tr>
   </tbody>
 </table>
