@@ -4,12 +4,12 @@
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Saurabh Garg
+ *    Authors: Dan Higgins
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-20 19:39:08 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-01-21 20:14:48 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,362 +26,161 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.query.LiveMapPanel;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.util.Iterator;
+import java.util.List;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import javax.swing.*;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Vector;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
+import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
-public class Geographic extends AbstractWizardPage {
+public class Geographic extends AbstractWizardPage{
 
-  public final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
-  public final String nextPageID = DataPackageWizardInterface.SUMMARY;
-  public final String pageNumber = "1";
-//////////////////////////////////////////////////////////
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public final String title      = "Geographic Information";
-  public final String subtitle   = "";
-  
-  private JTextArea   covDescField;
-  private JLabel regionSelectionLabel;
-  private JList regionList;
-  private LiveMapPanel lmp;
+  private final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
+  private final String nextPageID = DataPackageWizardInterface.TEMPORAL;
+  private final String title      = "Geographic Coverage";
+  private final String subtitle   = "";
+  private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage[";
+  private final String pageNumber  = "0";
 
-  private ConfigXML locationsXML = null;
-  
-  public Geographic() {
+  private final String[] colNames =  {"Geographic Coverages"};
+  private final Object[] editors  =   null; //makes non-directly-editable
 
-    init();
-  }
+  private CustomList  geographicspanList;
+
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+  public Geographic() { init(); }
+
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
-   are displayed only in this frame (doesn't include prev/next buttons etc)
+   * are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
+
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JPanel vbox = this;
 
-//DFH    vbox.add(WidgetFactory.makeHalfSpacer());
-
-    JLabel coverageDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Enter a description of the geographic coverage.</b> Enter a general "
-        +"description of the geographic area in which the data were collected. "
-        +"This can be a simple place name (e.g., Santa Barbara) or a fuller description.", 2);
-    vbox.add(coverageDesc);
-
-    JPanel covDescPanel = WidgetFactory.makePanel();
-
-    JLabel covDescLabel = WidgetFactory.makeLabel(" Description:", true);
-    covDescLabel.setVerticalAlignment(SwingConstants.TOP);
-    covDescLabel.setAlignmentY(SwingConstants.TOP);
-    covDescPanel.add(covDescLabel);
-
-    covDescField = WidgetFactory.makeTextArea("", 6, true);
-    JScrollPane jscrl = new JScrollPane(covDescField);
-    covDescPanel.add(jscrl);
-
-    covDescPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
-    vbox.add(covDescPanel);
-
-//DFH    vbox.add(WidgetFactory.makeDefaultSpacer());
-
-    JLabel bbDesc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Set the geographic coordinates which bound the coverage</b> Latitude and longitude"
-       +"values are used to create a 'bounding box' containing the region of interest. "
-       +"Drag or click on the map. Then edit the text boxes if necessary. "
-       +"[Default entries are in fractional degrees. To enter in degreea/minutes/seconds, simply "
-       +"type a space between the degrees, minutes, and seconds values]</p>", 3);
-    vbox.add(bbDesc);
-
-
-    JPanel bboxPanel = WidgetFactory.makePanel();
-    
-    JLabel bboxLabel = WidgetFactory.makeLabel(" Bounding Box:", true);
-    bboxLabel.setVerticalAlignment(SwingConstants.TOP);
-    bboxLabel.setAlignmentY(SwingConstants.TOP);
-    bboxPanel.add(bboxLabel);
-    
-    lmp = new LiveMapPanel(true);
-    bboxPanel.add(lmp);
-
-    bboxPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
-    vbox.add(bboxPanel);
-
-  ////////////////////////////////////////////////////////////////////////////
-
-    JPanel regionPanel = new JPanel();
-    regionPanel.setLayout(new GridLayout(1,2));
-    JPanel regionSelectionPanel = WidgetFactory.makePanel(4);
-
-    regionSelectionLabel = WidgetFactory.makeLabel(" Named Regions:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-    regionSelectionLabel.setVerticalAlignment(SwingConstants.TOP);
-    regionSelectionLabel.setAlignmentY(SwingConstants.TOP);
-    regionSelectionPanel.add(regionSelectionLabel);
-
-    
-    Vector names = getLocationNames();
-    final DefaultListModel model = new DefaultListModel();
-    for (int i=0;i<names.size();i++) {
-      model.addElement(names.elementAt(i));
-    }
-    regionList = new JList(model);
-    regionList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    regionList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
-    regionList.setSelectedIndex(0);
-    JScrollPane jscr2 = new JScrollPane(regionList);
-    regionSelectionPanel.add(jscr2);
-
-    JLabel selectHelpLabel = getLabel("Click button to display selected region.");
-    
-    JButton selectButton = new JButton("Select");
-    selectButton.setPreferredSize(new Dimension(60,24));
-    selectButton.setMaximumSize(new Dimension(60,24));
-    selectButton.setMargin(new Insets(0, 2, 1, 2));
-    selectButton.setEnabled(true);
-    selectButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    selectButton.setFocusPainted(false);
-    selectButton.addActionListener( new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
-        String selection = (String)regionList.getSelectedValue();
-//        Log.debug(1,"Selection: "+selection);
-        double n = (new Double(getNorth(selection))).doubleValue();
-        double w = (new Double(getWest(selection))).doubleValue();
-        double s = (new Double(getSouth(selection))).doubleValue();
-        double e = (new Double(getEast(selection))).doubleValue();
-        lmp.setBoundingBox(n, w, s, e);
-      }
-    });
-
-    final Geographic currentInstance = this;
-    final JTextField textField = new JTextField(20);
-    final String msg1 = "Enter short name to appear in list.";
-    final Object[] array = {msg1, textField};
-    final String descText = (covDescField.getText()).trim();
-    JLabel addHelpLabel = getLabel("Click to add current selection to list.");
-    JButton addButton = new JButton("Add");
-    addButton.setPreferredSize(new Dimension(60,24));
-    addButton.setMaximumSize(new Dimension(60,24));
-    addButton.setMargin(new Insets(0, 2, 1, 2));
-    addButton.setEnabled(true);
-    addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    addButton.setFocusPainted(false);
-    addButton.addActionListener( new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
-        
-        String btnString1 = "Enter";
-        String btnString2 = "Cancel";
-        Object[] options = {btnString1, btnString2};
-
-        JOptionPane optionPane = new JOptionPane(array, 
-                                    JOptionPane.QUESTION_MESSAGE,
-                                    JOptionPane.YES_NO_OPTION,
-                                    null,
-                                    options,
-                                    options[0]);        
-        JDialog dialog = optionPane.createDialog(currentInstance, "Add Current Selection to Named Region List");
-        dialog.show();
-        String selectedValue = (String)(optionPane.getValue());
-        if ((selectedValue!=null)&&(selectedValue.equals("Enter"))) {
-          String inputName = (textField.getText()).trim();
-          if (inputName.length()==0) {
-            Log.debug(1, "Sorry, but a Name must be entered.");
-          } else {
-            // create new location here
-          
-            addLocation(inputName, descText, lmp.getNorth(), lmp.getWest(), 
-                                lmp.getSouth(), lmp.getEast());
-            model.addElement(inputName);
-          }
-        }
-      }
-    });
-
-    JLabel deleteHelpLabel = getLabel("Click to remove selected region from list.");
-    JButton deleteButton = new JButton("Delete");
-    deleteButton.setPreferredSize(new Dimension(60,24));
-    deleteButton.setMaximumSize(new Dimension(60,24));
-    deleteButton.setMargin(new Insets(0, 2, 1, 2));
-    deleteButton.setEnabled(true);
-    deleteButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    deleteButton.setFocusPainted(false);
-    deleteButton.addActionListener( new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
-        int selindex = regionList.getSelectedIndex();
-        model.remove(selindex);
-        locationsXML.removeNode("location", selindex);
-        locationsXML.save();
-      }
-    });
-
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new GridLayout(4, 1));
-    JPanel buttonSubpanel1 = new JPanel();
-    JPanel buttonSubpanel2 = new JPanel();
-    JPanel buttonSubpanel3 = new JPanel();
-    
-    buttonSubpanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
-    buttonSubpanel1.add(selectButton);
-    buttonSubpanel1.add(selectHelpLabel);
-    
-    buttonSubpanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
-    buttonSubpanel2.add(addButton);
-    buttonSubpanel2.add(addHelpLabel);
-
-    buttonSubpanel3.setLayout(new FlowLayout(FlowLayout.LEFT));
-    buttonSubpanel3.add(deleteButton);
-    buttonSubpanel3.add(deleteHelpLabel);
-
-    buttonPanel.add(buttonSubpanel1);
-    buttonPanel.add(buttonSubpanel2);
-    buttonPanel.add(buttonSubpanel3);
-    
-    
-    
-    
-    regionPanel.add(regionSelectionPanel);
-    regionPanel.add(buttonPanel);
-
-    vbox.add(regionPanel);
-
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    
+
+    JLabel desc = WidgetFactory.makeHTMLLabel(
+      "<b>Enter information about the Spatial Coverage.</b> You can describe a "
+      +"geographic region associated with your data and specify a point or bounding "
+      +"box describing the location in latitude/logitude pairs.", 3);
+    vbox.add(desc);
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+
+    geographicspanList = WidgetFactory.makeList(colNames, editors, 4,
+                                    true, true, false, true, true, true );
+
+    geographicspanList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
+                             WizardSettings.PADDING, 2*WizardSettings.PADDING));
+
+    vbox.add(geographicspanList);
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+
+    initActions();
   }
 
-  
+
   /**
-   *  gets info for location list from file
+   *  Custom actions to be initialized for list buttons
    */
-  private Vector getLocationNames() {
-    try{
-      locationsXML = new ConfigXML("./lib/locations.xml");
-      Vector vec = locationsXML.getValuesForPath("name");
-      return vec;
-    } catch (Exception w) {
-      Log.debug(5, "problem reading locations file!");      
-    }
-    return null;
-  }
-  
-  private String getNorth(String locname) {
-    String res = "";
-    if (locationsXML!=null) {
-     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../north");
-     res = (String)vec.firstElement();
-    }
-    return res;
-  }
-  private String getWest(String locname) {
-    String res = "";
-    if (locationsXML!=null) {
-     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../west");
-     res = (String)vec.firstElement();
-    }
-    return res;
-  }
-  private String getSouth(String locname) {
-    String res = "";
-    if (locationsXML!=null) {
-     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../south");
-     res = (String)vec.firstElement();
-    }
-    return res;
-  }
-  private String getEast(String locname) {
-    String res = "";
-    if (locationsXML!=null) {
-     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../east");
-     res = (String)vec.firstElement();
-    }
-    return res;
-  }
-	
-	/**
-	 *  Create a dom subtree with a new location
-	 */
-	private Node createNewLocation( String name, String desc, double north, double west,
-	                        double south, double east) {
-		Node head = null;												
-		if (locationsXML!=null) {
-			Document doc = locationsXML.getDocument();
-			head = doc.createElement("location");
-			Node temp = doc.createElement("name");
-			Node temp1 = doc.createTextNode(name);
-			temp.appendChild(temp1);
-			head.appendChild(temp);
-			
-			temp = doc.createElement("description");
-			temp1 = doc.createTextNode(desc);
-			temp.appendChild(temp1);
-			head.appendChild(temp);
+  private void initActions() {
 
-			temp = doc.createElement("north");
-			temp1 = doc.createTextNode((new Double(north)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
+    geographicspanList.setCustomAddAction(
 
-			temp = doc.createElement("west");
-			temp1 = doc.createTextNode((new Double(west)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
+      new AbstractAction() {
 
-			temp = doc.createElement("south");
-			temp1 = doc.createTextNode((new Double(south)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
+        public void actionPerformed(ActionEvent e) {
 
-			temp = doc.createElement("east");
-			temp1 = doc.createTextNode((new Double(east)).toString());
-			temp.appendChild(temp1);
-			head.appendChild(temp);
-			
-		}
-		return head;
-	}
-	
-	/**
-	 *  adds a location to the config file
-	 */
-	public void addLocation( String name, String desc, double north, double west,
-	                        double south, double east) {
-		if (locationsXML!=null) {												
-	    Node nd = createNewLocation(name, desc, north, west, south, east);
-      Node root = locationsXML.getRoot();	
-      root.appendChild(nd);	
-			locationsXML.save();
-    }											
-	}
+          Log.debug(45, "\nGeographic: CustomAddAction called");
+          showNewGeographicDialog();
+        }
+      });
+
+    geographicspanList.setCustomEditAction(
+
+      new AbstractAction() {
+
+        public void actionPerformed(ActionEvent e) {
+
+          Log.debug(45, "\nGeographic: CustomEditAction called");
+          showEditGeographicDialog();
+        }
+      });
+  }
+
+  private void showNewGeographicDialog() {
+
+    GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
+    WizardPopupDialog wpd = new WizardPopupDialog(geographicPage, WizardContainerFrame.frame, false);
+    wpd.setVisible(true);
+
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+
+      List newRow = geographicPage.getSurrogate();
+      newRow.add(geographicPage);
+      geographicspanList.addRow(newRow);
+    }
+  }
+
+
+  private void showEditGeographicDialog() {
+
+    List selRowList = geographicspanList.getSelectedRowList();
+    if (selRowList==null || selRowList.size() < 2) return;
+
+    Object dialogObj = selRowList.get(1);
+
+    if (dialogObj==null || !(dialogObj instanceof GeographicPage)) return;
+Log.debug(1, "CCCC");
+    GeographicPage editGeographicPage = (GeographicPage)dialogObj;
+
+    WizardPopupDialog wpd = new WizardPopupDialog(editGeographicPage, WizardContainerFrame.frame, false);
+    wpd.resetBounds();
+    wpd.setVisible(true);
+
+
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+
+      List newRow = editGeographicPage.getSurrogate();
+      newRow.add(editGeographicPage);
+      geographicspanList.replaceSelectedRow(newRow);
+    }
+  }
+
+
+
+
+
 
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
+
   }
 
 
@@ -389,8 +188,7 @@ public class Geographic extends AbstractWizardPage {
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
-  public void onRewindAction() {
-  }
+  public void onRewindAction() {}
 
 
   /**
@@ -402,46 +200,56 @@ public class Geographic extends AbstractWizardPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+
     return true;
   }
 
 
   /**
-   *  gets the Map object that contains all the key/value paired
+   *  gets the Map object that contains all the temporal/value paired
    *  settings for this particular wizard page
    *
    *  @return   data the Map object that contains all the
-   *            key/value paired settings for this particular wizard page
+   *            temporal/value paired settings for this particular wizard page
    */
-  private OrderedMap returnMap = new OrderedMap();
 
+  private OrderedMap returnMap = new OrderedMap();
+  //
   public OrderedMap getPageData() {
     returnMap.clear();
-    
-    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/geographicDescription[1]",
-                    covDescField.getText().trim());
+    int index = 1;
+    Object  nextRowObj      = null;
+    List    nextRowList     = null;
+    Object  nextUserObject  = null;
+    OrderedMap  nextNVPMap  = null;
+    GeographicPage nextGeographicPage = null;
 
-    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
-                    +"westBoundingCoordinate[1]" ,
-                    (new Double(lmp.getWest())).toString());
+    List rowLists = geographicspanList.getListOfRowLists();
 
-    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
-                    +"eastBoundingCoordinate[1]" ,
-                    (new Double(lmp.getEast())).toString());
+    if (rowLists==null) return null;
 
-    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
-                    +"northBoundingCoordinate[1]" ,
-                    (new Double(lmp.getNorth())).toString());
-                    
-    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
-                    +"southBoundingCoordinate[1]" ,
-                    (new Double(lmp.getSouth())).toString());
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
-                    
-                    return returnMap;
+      nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+      nextRowList = (List)nextRowObj;
+      //column 2 is user object - check it exists and isn't null:
+      if (nextRowList.size()<2)     continue;
+      nextUserObject = nextRowList.get(1);
+      if (nextUserObject==null) continue;
+
+      nextGeographicPage = (GeographicPage)nextUserObject;
+
+      nextNVPMap = nextGeographicPage.getPageData(xPathRoot + (index++) + "]");
+      returnMap.putAll(nextNVPMap);
+    }
+    return returnMap;
   }
 
 
+
+
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
   /**
@@ -482,33 +290,5 @@ public class Geographic extends AbstractWizardPage {
   public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }
-  
-  private JLabel getLabel(String text) {
-    if (text==null) text="";
-    JLabel label = new JLabel(text);
-
-    label.setAlignmentX(1.0f);
-    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
-
-    return label;
-  }
-  
-	
-	
-    /**
-   *  This is a static main method configured to test the class 
-   */
-  static public void main(String args[]) {
-    JFrame frame = new JFrame("Demo/Test");
-    frame.setSize(800, 600);
-    frame.getContentPane().setLayout(new BorderLayout());
-    Geographic geo = new Geographic();
-    
-//		geo.addLocation("Test", "Test Location", 1.0, 2.0, 3.0, 4.0);
-    frame.getContentPane().add(geo, BorderLayout.CENTER);
-    frame.setVisible(true);
-
-  }
-
 }
+
