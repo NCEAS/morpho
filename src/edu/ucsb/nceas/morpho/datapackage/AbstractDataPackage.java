@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-23 23:33:35 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-24 23:17:03 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -311,6 +311,35 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
+  public String getAttributeDataType(int entityIndex, int attributeIndex) {
+    String temp = "";
+    return temp;
+  }
+
+  public String getAttributeUnit(int entityIndex, int attributeIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] attributes = getAttributeArray(entityIndex);
+    if ((attributes==null)||(attributes.length<1)) return "no attributes!";
+    Node attribute = attributes[attributeIndex];
+    String attrXpath = "";
+    try {
+      attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='attribute']/unit")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
+      if (aNodes==null) return "aNodes is null !";
+      if (aNodes.item(0)==null) return "";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting attribute unit -- "+w.toString());
+    }
+    return temp;
+  }
+  
   
   public Node[] getPhysicalArray(int entityIndex) {
     if(entityIndex>(entityArray.length-1)){
@@ -374,13 +403,13 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='physical']/isText")).getNodeValue();
       boolean isText = XMLUtilities.isXPathEvalABoolean(physical, physXpath);
       if (isText) {
+            // !!!! apparently this is true even if node does NOT exist; investigate!
         XObject xobj = XPathAPI.eval(physical, physXpath);
         boolean val = xobj.bool();
         if (val){
           return "text";
-        } else return "NOT Text";
+        } //else return "NOT Text";
       }
-      else {
         // not text, try another xpath
         physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='physical']/format")).getNodeValue();
@@ -388,7 +417,6 @@ public abstract class AbstractDataPackage extends MetadataObject
         if (aNodes==null) return "aNodes is null !";
         Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
         temp = child.getNodeValue();
-      }
     }
     catch (Exception w) {
       Log.debug(4,"exception in getting physical objectName description"+w.toString());
