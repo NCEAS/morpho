@@ -1,14 +1,14 @@
 # 
 #  '$RCSfile: README.txt,v $'
 #   '$Author: jones $'
-# '$Revision: 1.8 $'
-#     '$Date: 2001-07-21 01:00:16 $'
+# '$Revision: 1.9 $'
+#     '$Date: 2001-07-23 17:16:20 $'
 #
 
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.0.0 Beta 1 Release - Aug 1, 2001
+Version: 1.0.0beta1 Release - Aug 1, 2001
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -49,6 +49,39 @@ the KNB, which can be obtained for testing purposes by writing to
 
 See the KNB website (http://knb.ecoinformatics.org) for more information and
 other software tools.
+
+Major Known Bugs (see http://bugzilla.ecoinformatics.org)
+---------------------------------------------------------
+237 exclude old revisions of packages from results display 
+257 package wizard error when data file selected 
+224 default ACL for data packages 
+241 Package Wizard does not upload data files 
+
+244 need refresh mechanism for query screen 
+245 need right click menu for query results 
+255 Migrate to EML 2 beta DTDs for all Morpho uses 
+202 new config management/profile feature for morpho framework 
+250 add additional attribute metadata to display 
+251 add return and escape defaults on wizard 
+252 reformat table entity display 
+253 use profile info for default text in wizard 
+116 need data set parser module 
+115 need short-term dataset parser implementation 
+212 jar file handling for data packages 
+217 need simple spatial search 
+201 add https support to client framework 
+ 88 need ability to manipulate access control lists 
+166 Update options handling 
+206 need help system for morpho 
+211 Data entity editor and display 
+236 improve handling of query options 
+239 search dialog allows user to uncheck both catalog and local 
+254 Look up id sequence on morpho startup 
+123 saved resultsets, cached documents 
+205 cut/copy/paste 
+165 taxonomic search facility 
+256 allow toolbar to display alternative widgets
+
 
 Legalese
 --------
