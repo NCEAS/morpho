@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-10 18:33:23 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-12-12 00:24:02 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1221,10 +1221,10 @@ public void startImport(String file) {
 
 	private String getDelimiterStringAsText() {
 	  String str = "";
-	  if (TabCheckBox.isSelected()) str = str+"tab ";
-	  if (CommaCheckBox.isSelected()) str = str + "comma ";
-	  if (SpaceCheckBox.isSelected()) str = str + "space ";
-	  if (SemicolonCheckBox.isSelected()) str = str +"semicolon ";
+	  if (TabCheckBox.isSelected()) str = str+"&#x09;";
+	  if (CommaCheckBox.isSelected()) str = str + "&#x2C;";
+	  if (SpaceCheckBox.isSelected()) str = str + "&#x20;";
+	  if (SemicolonCheckBox.isSelected()) str = str +"&#x3B;";
 	  if (OtherCheckBox.isSelected()) {
 	    String temp = OtherTextField.getText();
 	    if (temp.length()>0) {
@@ -1965,7 +1965,7 @@ public void startImport(String file) {
 	    if (cd.colType.equals("Integers")||(cd.colType.equals("Floating Point"))) {
 	        XMLBuffer.append("             <rangeDomain>\n");
 	        XMLBuffer.append("                <minimum>"+cd.colMin +"</minimum>\n");
-	        XMLBuffer.append("                <maximum>"+cd.colMin +"</maximum>\n");
+	        XMLBuffer.append("                <maximum>"+cd.colMax +"</maximum>\n");
 	        XMLBuffer.append("             </rangeDomain>\n");
 	    }
 	    else if(cd.useEnumerationList) {
@@ -2032,7 +2032,7 @@ public void startImport(String file) {
       XMLBuffer.append("    <format> Text</format>\n");  // text import wizard only handles text 
       XMLBuffer.append("    <size unit=\"bytes\">"+filesizeString+"</size>\n");  
       XMLBuffer.append("    <numHeaderLines>"+numHeaderLines+"</numHeaderLines>\n");  
-      XMLBuffer.append("    <recordDelimiter>"+"end of line"+"</recordDelimiter>\n"); 
+      XMLBuffer.append("    <recordDelimiter>"+"&#x0A;"+"</recordDelimiter>\n"); 
       XMLBuffer.append("    <fieldDelimiter>"+delimit+"</fieldDelimiter>\n"); 
       XMLBuffer.append("</eml-physical>\n");
 	  return XMLBuffer.toString();
