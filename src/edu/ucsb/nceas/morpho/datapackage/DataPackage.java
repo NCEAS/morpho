@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-29 21:54:21 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2002-02-05 21:59:08 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1162,16 +1162,18 @@ public class DataPackage
         
         fileV.addElement(openfile);
         FileInputStream fis = new FileInputStream(openfile);
+        BufferedInputStream bfis = new BufferedInputStream(fis);
         FileOutputStream fos = new FileOutputStream(f);
-        int c = fis.read();
+        BufferedOutputStream bfos = new BufferedOutputStream(fos);
+        int c = bfis.read();
         while(c != -1)
         { //copy the files to the source directory
-          fos.write(c);
-          c = fis.read();
+          bfos.write(c);
+          c = bfis.read();
         }
-        fos.flush();
-        fis.close();
-        fos.close();
+        bfos.flush();
+        bfis.close();
+        bfos.close();
       }
       
       //copy the data file to the root of the package with its original name
@@ -1248,8 +1250,10 @@ public class DataPackage
           XSLTInputSource xis = new XSLTInputSource(fis);
           StringWriter docstring = new StringWriter();
           String stylesheet = config.get("genericStylesheet", 0);
+          File stylefile = new File(stylesheet);
+          FileReader sis = new FileReader(stylefile);
           processor.process(xis,
-                            new XSLTInputSource(stylesheet),
+                            new XSLTInputSource(sis),
                             new XSLTResultTarget(docstring));
           htmldoc.append(docstring.toString());
           htmldoc.append("<br><br><hr><br><br>");
@@ -1285,15 +1289,16 @@ public class DataPackage
       htmldoc.append("</body></html>");
       File htmlfile = new File(packagePath + "/metadata.html");
       FileOutputStream fos = new FileOutputStream(htmlfile);
+      BufferedOutputStream bfos = new BufferedOutputStream(fos);
       StringReader sr = new StringReader(htmldoc.toString());
       int c = sr.read();
       while(c != -1)
       {
-        fos.write(c);
+        bfos.write(c);
         c = sr.read();
       }
-      fos.flush();
-      fos.close();
+      bfos.flush();
+      bfos.close();
     }
     catch(Exception e)
     {
