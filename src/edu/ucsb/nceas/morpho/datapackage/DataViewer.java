@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 19:46:02 $'
- * '$Revision: 1.101 $'
+ *     '$Date: 2004-03-11 02:45:53 $'
+ * '$Revision: 1.102 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -658,7 +658,7 @@ public class DataViewer extends javax.swing.JPanel
             headerLabel.setText(entityDescription);
           }
           Node[] attributeArray = adp.getAttributeArray(entityIndex);
-          if (attributeArray.length==0) {
+          if (attributeArray == null || attributeArray.length==0) {
             Log.debug(15, "Attribute information about the data is missing!");
             missing_metadata_flag = true;
           } else {

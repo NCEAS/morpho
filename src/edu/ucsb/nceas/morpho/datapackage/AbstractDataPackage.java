@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-09 20:05:03 $'
- * '$Revision: 1.62 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-11 02:45:53 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -571,6 +571,8 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEntityName(int entNum) {
     String temp = "";
+		if(entNum < 0)
+				return "No such entity!";
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       return "No such entity!";
     }
@@ -682,6 +684,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
 	public int getAttributeCountForAnEntity(int entityIndex) {
 		
+		if(entityIndex < 0)
+				return 0;
+		
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return 0;
     }
@@ -731,6 +736,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEntityDescription(int entNum) {
     String temp = "";
+		if(entNum < 0)
+				return "No such entity!";
+		
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       return "No such entity!";
     }
@@ -765,8 +773,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEntityID(int entNum) {
     String id = "";
+		if(entNum < 0)
+				return "";
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
-      return "No such entity!";
+      return "";
     }
     Node entity = (entityArray[entNum]).getNode();
 		NamedNodeMap nnm = entity.getAttributes();
@@ -801,6 +811,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 
   public void setEntityID(int entNum, String ID) {
     
+		if(entNum < 0)
+			return;
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       return;
     }
@@ -923,8 +935,12 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  than stored as a class member.
    */
   public Node[] getAttributeArray(int entityIndex) {
-    if (entityIndex > (entityArray.length - 1)) {
-      Log.debug(1, "entity index > number of entities");
+    
+		if(entityIndex < 0)
+				return null;
+		
+		if (entityIndex > (entityArray.length - 1)) {
+      Log.debug(15, "entity index > number of entities");
       return null;
     }
     String attributeXpath = "";
@@ -934,7 +950,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       NodeList attributeNodes = XMLUtilities.getNodeListWithXPath( (entityArray[
           entityIndex]).getNode(), attributeXpath);
       if (attributeNodes == null) {
-        Log.debug(1, "attributeList is null!");
+        Log.debug(15, "attributeList is null for entity " + entityIndex);
         return null;
       }
       Node[] attr = XMLUtilities.getNodeListAsNodeArray(attributeNodes);
@@ -1036,11 +1052,16 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getAttributeName(int entityIndex, int attributeIndex) {
     String temp = "";
+		if(entityIndex < 0)
+				return "No such entity!";
+		if(attributeIndex < 0)
+				return "no attributes!";
+			
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return "No such entity!";
     }
     Node[] attributes = getAttributeArray(entityIndex);
-    if ( (attributes == null) || (attributes.length < 1)) {
+    if ( (attributes == null) || (attributes.length < (attributeIndex + 1))) {
       return "no attributes!";
     }
     Node attribute = attributes[attributeIndex];
@@ -1074,7 +1095,10 @@ public abstract class AbstractDataPackage extends MetadataObject
   public int getAttributeIndex(int entityIndex, String attributeName) {
 		
     String temp = "";
-    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+		if(entityIndex < 0)
+				return -1;
+		
+		if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return -1;
     }
     Node[] attributes = getAttributeArray(entityIndex);
@@ -1112,12 +1136,17 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getAttributeID(int entityIndex, int attributeIndex) {
     String id = "";
-    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
-      return "No such entity!";
+		if(entityIndex < 0)
+				return "";
+		if(attributeIndex < 0)
+				return "";
+			
+    if ( (entityArray == null) || (entityArray.length < (entityIndex + 1))  ) {
+      return "";
     }
     Node[] attributes = getAttributeArray(entityIndex);
-    if ( (attributes == null) || (attributes.length < attributeIndex)) {
-      return "no attributes!";
+    if ( (attributes == null) || (attributes.length < (attributeIndex + 1))) {
+      return "";
     }
     Node attribute = attributes[attributeIndex];
     NamedNodeMap nnm = attribute.getAttributes();
@@ -1144,11 +1173,16 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getAttributeDataType(int entityIndex, int attributeIndex) {
     String temp = "";
-    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+		if(entityIndex < 0)
+				return "No such entity!";
+		if(attributeIndex < 0)
+				return "no attributes!";
+		
+    if ( (entityArray == null) || (entityArray.length < (entityIndex + 1))) {
       return "No such entity!";
     }
     Node[] attributes = getAttributeArray(entityIndex);
-    if ( (attributes == null) || (attributes.length < 1)) {
+    if ( (attributes == null) || (attributes.length < (attributeIndex + 1))) {
       return "no attributes!";
     }
     Node attribute = attributes[attributeIndex];
@@ -1206,11 +1240,15 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getAttributeUnit(int entityIndex, int attributeIndex) {
     String temp = "";
+		if(entityIndex < 0)
+				return "No such entity!";
+		if(attributeIndex < 0)
+				return "no attributes!";
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return "No such entity!";
     }
     Node[] attributes = getAttributeArray(entityIndex);
-    if ( (attributes == null) || (attributes.length < 1)) {
+    if ( (attributes == null) || (attributes.length < (attributeIndex + 1))) {
       return "no attributes!";
     }
     Node attribute = attributes[attributeIndex];
@@ -1536,6 +1574,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEncodingMethod(int entityIndex, int physicalIndex) {
     String temp = "";
+		if(entityIndex < 0)
+				return "No such entity!";
+		if(physicalIndex < 0)
+				return "no such physical!";
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return "No such entity!";
     }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-06 01:31:14 $'
- * '$Revision: 1.79 $'
+ *     '$Date: 2004-03-11 02:45:53 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -303,15 +303,9 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     addTaxonomicCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
-                            false, GUIAction.EVENT_LOCAL);
-    addTaxonomicCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
-                            false, GUIAction.EVENT_LOCAL);
-    addTaxonomicCovColumn.setEnabledOnStateChange(
-                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                   false, GUIAction.EVENT_LOCAL);
-    controller.addGuiAction(addTaxonomicCovColumn);
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+		controller.addGuiAction(addTaxonomicCovColumn);
 		
     i= i+2; // separator will take a position so add 2
     GUIAction addTemporalCovColumn = new GUIAction("Add Temporal Information..",
@@ -324,14 +318,8 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     addTemporalCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
-                            false, GUIAction.EVENT_LOCAL);
-    addTemporalCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
-                            false, GUIAction.EVENT_LOCAL);
-    addTemporalCovColumn.setEnabledOnStateChange(
-                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                   false, GUIAction.EVENT_LOCAL);
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addTemporalCovColumn);
 		
     i= i+2; // separator will take a position so add 2
