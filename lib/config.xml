@@ -109,7 +109,7 @@
     <file>
       <name>Software</name>
       <label>Software Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-software-2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-software-2.0.1beta4//EN</xmlfiletype>
       <rootnode>software</rootnode>
       <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
       <displaypath>//shortName</displaypath>
