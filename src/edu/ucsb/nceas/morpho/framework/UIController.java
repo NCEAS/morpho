@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:38 $'
- * '$Revision: 1.15 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-26 18:15:51 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -403,7 +403,7 @@ public class UIController
             }
         };
         GUIAction action = new GUIAction(title, null, command);
-        action.setMenu("Window", 5);
+        action.setMenu("Window", 4);
         action.setToolTipText("Select Window");
         windowList.put(action, window);
         addGuiAction(action);
