@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-02 23:14:47 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-04-03 04:29:07 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,9 @@ public class ExternalRefsPage extends AbstractUIPage
   private String currentDataPackageID;
   private Node referencedSubtree;
   private QueryRefreshInterface queryRefreshInterface;
+  // select columns
+  private String[] columnNames = {QueryRefreshInterface.TITLE,
+                                  QueryRefreshInterface.DOCID};
 
   ExternalRefsPage()
   {
@@ -120,7 +123,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
       public Object construct() {
 
-        resultsModel = queryPlugin.doOwnerQueryForCurrentUser();
+        resultsModel = queryPlugin.doOwnerQueryForCurrentUser(columnNames);
 
         return null;
       }

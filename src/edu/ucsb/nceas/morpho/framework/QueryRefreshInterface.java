@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-02 23:14:47 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-04-03 04:29:07 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,8 +94,9 @@ public interface QueryRefreshInterface
    * performs a local query to get the documents owned by the user, as
    * identified by the current profile
    * @return AbstractTableModel containing results
+   * @param headName  the columns selected
    * (@see edu.ucsb.nceas.morpho.query.ResultSet)
    */
-  public ColumnSortableTableModel doOwnerQueryForCurrentUser();
+  public ColumnSortableTableModel doOwnerQueryForCurrentUser(String[] headName);
 
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-02 23:14:47 $'
- * '$Revision: 1.106 $'
+ *     '$Date: 2004-04-03 04:29:07 $'
+ * '$Revision: 1.107 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,8 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 
 import javax.swing.ImageIcon;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
@@ -386,14 +388,92 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    * performs a local query to get the documents owned by the user, as
    * identified by the current profile
    * @return AbstractTableModel containing results
+   * @param headNames the select column names
    * (@see edu.ucsb.nceas.morpho.query.ResultSet)
    */
-  public ColumnSortableTableModel doOwnerQueryForCurrentUser() {
+  public ColumnSortableTableModel doOwnerQueryForCurrentUser(String[] headNames){
 
     OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
     Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
-    return (ColumnSortableTableModel)(ownerQuery.execute());
+    HeadResultSet originalSet = (HeadResultSet)ownerQuery.execute();
+    Query query = originalSet.getQuery();
+    String source = "local";
+    Vector resultVector = originalSet.getResultsVector();
+    Morpho morpho = originalSet.getMorpho();
+    // new vector which will store the subset of original vector
+    //Vector newVector = new Vector();
+    // new hash mapping between column name and vector
+    //Hashtable mapping = new Hashtable();
+    // create selected column index vector and set mapping
+    //Vector selectedColumn = selectColumnIndex(headNames, mapping, originalSet);
+    //copy the vector and set mapping hashtable
+    //newVector = copyVector(resultVector, selectedColumn);
+
+    // create a new headresultset base on the new vector
+    HeadResultSet newResultSet = new HeadResultSet(
+                                           query, source, resultVector, morpho);
+    // reset the header name
+    newResultSet.setHeader(headNames);
+    // reset the mapping
+    //newResultSet.setMapping(mapping);
+    return (ColumnSortableTableModel) newResultSet;
+    //return (ColumnSortableTableModel) originalSet;
   }
 
+  /*
+   *
+   */
+  private Vector selectColumnIndex(String[] headNames, Hashtable mapping,
+                                   HeadResultSet originalSet)
+  {
+    Vector columnIndex = new Vector();
+    int count = 0;
+    for (int k=0; k< headNames.length; k++)
+    {
+       int index = originalSet.lookupResultsVectorIndex(headNames[k]);
+       if (index != -1)
+       {
+         // put index into a array
+         columnIndex.add(new Integer(index));
+         mapping.put(headNames[k], new Integer(count));
+         count ++;
+       }
+    }
+    return columnIndex;
+  }
 
+  /*
+   * The result set vector is two dimension
+   * Java vector is row orented, but we need to select a cloumn.
+   * So this method will copy selected cloumn from two dimention vector to
+   * another two dimention vector.
+   */
+  private Vector copyVector(Vector orginalVector, Vector selectedColumn)
+  {
+     Vector newVector = new Vector();
+      // go throgh the two dimention vector
+      for (int i = 0; i < orginalVector.size(); i++)
+      {
+
+        Vector rowVector = (Vector) orginalVector.elementAt(i);
+        Vector newRowVector = new Vector();
+        // go through the row vector
+        for (int j = 0; j < rowVector.size(); j++)
+        {
+          // go through the selected column
+          for(int k = 0; k < selectedColumn.size(); k++)
+          {
+            Integer obj = (Integer)selectedColumn.elementAt(k);
+            if ( j == obj.intValue())
+            {
+              newRowVector.add(rowVector.elementAt(j));
+            } //if
+          } //for
+        } //for
+        //add newRowVector into new dimentsion vector
+         newVector.add(newRowVector);
+      }//for
+
+     return newVector;
+  }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-02 23:14:47 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2004-04-03 04:29:07 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   private Hashtable triple;
   /** a collection of triple Hashtables, used during SAX parsing */
   private Vector tripleList;
+  // A hash table to store mapping between column name and resultSVector Index
+  private Hashtable mapColumnNameAndVectorIndex = new Hashtable();
 
   /** The icon for representing local storage. */
   public static ImageIcon localIcon = null;
@@ -130,6 +132,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public static ImageIcon packageIcon = null;
   /** The icon for representing pakcage and data file */
   public static ImageIcon packageDataIcon = null;
+
   /** The icon for representing both local and metacat storage. */
   //private ImageIcon bothIcon = null;
   /** The icon for representing local storage with data. */
@@ -189,6 +192,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
 
     initIcons();
     init(query, source, morpho);
+    initMapping();
     this.resultsVector = vec;
   }
 
@@ -201,6 +205,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
 
     initIcons();
     init(query, source, morpho);
+    initMapping();
     Log.debug(30, "(2.41) Creating result set ...");
      resultsVector = new Vector();
 
@@ -283,6 +288,30 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     =new ImageIcon(getClass().getResource("local+network-metadata+data.gif"));*/
   }
 
+  /*
+   * Initial mapping bewteen coloumn name and vector index
+   */
+  private void initMapping()
+  {
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.HASDATA, new Integer(PACKAGEICONINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.TITLE, new Integer(TITLEINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.DOCID, new Integer(DOCIDINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.SURNAME, new Integer(SURNAMEINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.KEYWORDS, new Integer(KEYWORDSINDEX));
+    mapColumnNameAndVectorIndex.put(
+               QueryRefreshInterface.LASTMODIFIED, new Integer(UPDATEDATEINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.LOCAL, new Integer(ISLOCALINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.NET, new Integer(ISMETACATINDEX));
+
+  }
+
   /**
    *  get the resultsVector
    */
@@ -355,6 +384,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     return morpho;
   }
 
+  /**
+   * This method will change the clonum name of model
+   * @param anotherHeader String[]
+   */
   public void setHeader(String [] anotherHeader)
   {
     headers = new String[anotherHeader.length];
@@ -362,6 +395,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     {
       headers[i] = anotherHeader[i];
     }
+  }
+
+  /**
+   * This method will set a mapping table
+   * @param hash Hashtable
+   */
+  public void setMapping(Hashtable hash)
+  {
+    mapColumnNameAndVectorIndex = hash;
   }
 
   /**
@@ -376,40 +418,28 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    *      6                       ISLOCALINDEX(9)
    *      7                       ISMETACATINDEX(10)
    */
-  protected int lookupResultsVectorIndex(int headerIndex)
+  public int lookupResultsVectorIndex(int headerIndex)
   {
     // get the column name (head)
     String head = headers[headerIndex];
-    // A hash table to store mapping between column name and resultSVector Index
-    Hashtable mapColumnNameAndVectorIndex = new Hashtable();
-    mapColumnNameAndVectorIndex.put(
-                  QueryRefreshInterface.HASDATA, new Integer(PACKAGEICONINDEX));
-    mapColumnNameAndVectorIndex.put(
-                  QueryRefreshInterface.TITLE, new Integer(TITLEINDEX));
-    mapColumnNameAndVectorIndex.put(
-                  QueryRefreshInterface.DOCID, new Integer(DOCIDINDEX));
-    mapColumnNameAndVectorIndex.put(
-                  QueryRefreshInterface.SURNAME, new Integer(SURNAMEINDEX));
-    mapColumnNameAndVectorIndex.put(
-                  QueryRefreshInterface.KEYWORDS, new Integer(KEYWORDSINDEX));
-    mapColumnNameAndVectorIndex.put(
-               QueryRefreshInterface.LASTMODIFIED, new Integer(UPDATEDATEINDEX));
-    mapColumnNameAndVectorIndex.put(
-                  QueryRefreshInterface.LOCAL, new Integer(ISLOCALINDEX));
-    mapColumnNameAndVectorIndex.put(
-                  QueryRefreshInterface.NET, new Integer(ISMETACATINDEX));
-    // lookup the hashtable
-    int vectorIndex = -1;
-    Object obj = mapColumnNameAndVectorIndex.get(head);
-    if (obj != null)
-    {
-       Integer value = (Integer)obj;
-       vectorIndex = value.intValue();
-    }
-    Log.debug(30, "the index of vector is " + vectorIndex);
-    return vectorIndex;
+    return lookupResultsVectorIndex(head);
 
   }//lookupResultsVectorIndex
+
+  public int lookupResultsVectorIndex(String headName)
+ {
+   int vectorIndex = -1;
+   Object obj = mapColumnNameAndVectorIndex.get(headName);
+   if (obj != null)
+   {
+      Integer value = (Integer)obj;
+      vectorIndex = value.intValue();
+   }
+   Log.debug(30, "the index of vector is " + vectorIndex + " for " + headName);
+   return vectorIndex;
+
+ }//lookupResultsVectorIndex
+
 
   /**
    * Return the Class for each column so that they can be
