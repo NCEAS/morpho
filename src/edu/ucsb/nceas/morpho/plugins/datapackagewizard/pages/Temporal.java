@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:37:44 $'
- * '$Revision: 1.9 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-23 01:08:58 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,6 +132,11 @@ public class Temporal extends AbstractWizardPage{
       });
   }
 
+
+  /**
+   *  Function for showing New Temporal Dialogue. This funtion is used
+   *  by the CustomList widget
+   */
   private void showNewTemporalDialog() {
 
     TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
@@ -147,6 +152,10 @@ public class Temporal extends AbstractWizardPage{
   }
 
 
+  /**
+   *  Function for editing the Temporal Dialogue already entered
+   *  in the CustomList. This funtion is used by the CustomList widget
+   */
   private void showEditTemporalDialog() {
 
     List selRowList = timespanList.getSelectedRowList();
@@ -170,10 +179,6 @@ public class Temporal extends AbstractWizardPage{
       timespanList.replaceSelectedRow(newRow);
     }
   }
-
-
-
-
 
 
   /**
@@ -205,28 +210,30 @@ public class Temporal extends AbstractWizardPage{
   }
 
 
+
+  private OrderedMap returnMap = new OrderedMap();
+
   /**
    *  gets the Map object that contains all the temporal/value paired
    *  settings for this particular wizard page
    *
+   *  @ param xPath String that is appended to all keys in the map returned
    *  @return   data the Map object that contains all the
    *            temporal/value paired settings for this particular wizard page
    */
-
-  private OrderedMap returnMap = new OrderedMap();
-
-  //
   public OrderedMap getPageData(String xPath) {
+
     returnMap.clear();
-    int index = 1;
+
+    int     index           = 1;
     Object  nextRowObj      = null;
     List    nextRowList     = null;
     Object  nextUserObject  = null;
-    OrderedMap  nextNVPMap  = null;
-    TemporalPage nextTemporalPage = null;
+
+    OrderedMap   nextNVPMap        = null;
+    TemporalPage nextTemporalPage  = null;
 
     List rowLists = timespanList.getListOfRowLists();
-
     if (rowLists==null) return null;
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
@@ -248,20 +255,21 @@ public class Temporal extends AbstractWizardPage{
 
     // clear the list so that next time old variables dont show up again.
     timespanList.removeAllRows();
-
-
     return returnMap;
-
   }
 
 
-  //
+  /**
+   *  gets the Map object that contains all the temporal/value paired
+   *  settings for this particular wizard page
+   *
+   *  @return   data the Map object that contains all the
+   *            temporal/value paired settings for this particular wizard page
+   */
   public OrderedMap getPageData() {
+
     return getPageData(xPathRoot);
   }
-
-
-
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 

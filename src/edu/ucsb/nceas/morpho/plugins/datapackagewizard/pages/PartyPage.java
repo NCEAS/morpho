@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:18 $'
- * '$Revision: 1.9 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-23 01:08:58 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,8 +68,10 @@ public class PartyPage extends AbstractWizardPage {
 
   private final String xPathRoot = "/eml:eml/dataset/creator[1]";
 
-  private short  role;
-  private String roleString;
+  private short      role;
+  private String     roleString;
+  private String currentRole;
+
   private JLabel     roleLabel;
   private JComboBox  rolePickList;
   private JTextField salutationField;
@@ -92,8 +94,8 @@ public class PartyPage extends AbstractWizardPage {
   private JTextField faxField;
   private JTextField emailField;
   private JTextField urlField;
-  private JPanel rolePanel;
-  private JPanel middlePanel;
+  private JPanel     rolePanel;
+  private JPanel     middlePanel;
 
   private final String[] roleArray
                               = new String[]{ "",
@@ -109,7 +111,8 @@ public class PartyPage extends AbstractWizardPage {
                                               "Distributor",
                                               "User"};
 
-  private String currentRole;
+  private String     refereceIdString;
+  private String     referedIdString;
   public boolean isReference;
 
   public PartyPage() {
@@ -399,14 +402,21 @@ public class PartyPage extends AbstractWizardPage {
         JComboBox source = (JComboBox)e.getSource();
         if(source.getSelectedIndex() == 0){
           isReference = false;
+          referedIdString = null;
+
           instance.setEditable(true);
           instance.setValue(null);
         } else {
-          isReference = true;
           int index = source.getSelectedIndex();
           instance.setEditable(false);
           List currentList = (List)WidgetFactory.responsiblePartyList.get(index);
-          instance.setValue((PartyPage)currentList.get(3));
+
+          PartyPage referedPage = (PartyPage)currentList.get(3);
+          referedPage.setRefID("rp." +  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT++);
+
+          referedIdString = "rp." +  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT;
+
+          instance.setValue(referedPage);
         }
       }
     };
@@ -426,6 +436,7 @@ public class PartyPage extends AbstractWizardPage {
     listPanel.add(listCombo);
     middlePanel.add(listPanel);
   }
+
 
   private void setValue(PartyPage Page) {
     if(Page == null){
@@ -578,6 +589,16 @@ public class PartyPage extends AbstractWizardPage {
    */
 
   public void onLoadAction() {
+  }
+
+
+  /**
+   *  sets the referenceID for this wizard page
+   *
+   *  @param String refID
+   */
+  public void setRefID(String refID){
+    refereceIdString = refID;
   }
 
   /**
@@ -857,6 +878,10 @@ public class PartyPage extends AbstractWizardPage {
 
     returnMap.clear();
     String nextText = null;
+
+    if (notNullAndNotEmpty(refereceIdString)){
+      returnMap.put(xPathRoot + "@id", refereceIdString);
+    }
 
     nextText = salutationField.getText().trim();
     if (notNullAndNotEmpty(nextText)) {

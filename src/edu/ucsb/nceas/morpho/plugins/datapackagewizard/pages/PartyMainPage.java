@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:18 $'
- * '$Revision: 1.10 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-23 01:08:58 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,22 +56,22 @@ public class PartyMainPage extends AbstractWizardPage{
   public String pageID;
   public String nextPageID;
   public String pageNumber;
-
-  private final String[] colNames =  {"Party", "Role", "Address"};
-  private final Object[] editors  =   null; //makes non-directly-editable
-  public final String title      = "Dataset Associated Parties";
-  public final short role;
-
   public String subtitle;
   public String description;
   public String xPathRoot;
 
+  private final String[] colNames   =  {"Party", "Role", "Address"};
+  private final Object[] editors    =   null; //makes non-directly-editable
+  public  final String   title      = "Dataset Associated Parties";
+  public  final short    role;
+
+  public static int   RESPONSIBLE_PARTY_REFERENCE_COUNT     = 0;
   private JLabel      minRequiredLabel;
   private CustomList  partiesList;
   private boolean     oneOrMoreRequired;
 
-  public PartyMainPage(short role) {
 
+  public PartyMainPage(short role) {
     this.role = role;
     initRole();
     init();
@@ -220,18 +220,6 @@ public class PartyMainPage extends AbstractWizardPage{
           showEditPartyDialog();
         }
       });
-
-/*    partiesPickList.setCustomAddAction(
-
-      new AbstractAction() {
-
-        public void actionPerformed(ActionEvent e) {
-
-           Log.debug(45, "\nPartyPage: CustomAddAction called");
-           showAddPartyDialog();
-         }
-       });
- */
   }
 
 
@@ -278,32 +266,6 @@ public class PartyMainPage extends AbstractWizardPage{
       }
     }
   }
-
-
-/*  private void showAddPartyDialog() {
-
-    //List selRowList = partiesPickList.getSelectedRowList();
-
-    if (selRowList==null || selRowList.size() < 4) return;
-
-    Object dialogObj = selRowList.get(3);
-
-    if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
-    PartyPage editPartyPage = (PartyPage)dialogObj;
-    editPartyPage.modifyEditPage(role);
-    WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
-    wpd.resetBounds();
-    wpd.setVisible(true);
-
-    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
-      List newRow = editPartyPage.getSurrogate();
-      newRow.add(editPartyPage);
-      partiesList.addRow(newRow);
-      //partiesPickList.addRow(newRow);
-    }
-
-    if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
-  } */
 
 
   /**

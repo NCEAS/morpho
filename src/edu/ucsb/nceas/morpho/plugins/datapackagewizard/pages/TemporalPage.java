@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-21 04:37:12 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-01-23 01:08:58 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
-import java.util.Date;
 import java.awt.Color;
 import java.text.DateFormat;
 
@@ -314,6 +313,20 @@ public class TemporalPage extends AbstractWizardPage {
     return outerPanel;
   }
 
+
+  /**
+   *  Function returns a string which specifies the date which
+   *  JCalendar c has. These can be returned in four formats based on
+   *  returntype specified. YEAR_ONLY format takes the year from c and
+   *  set month to January and Date to 01. MONTH_YEAR format takes the
+   *  year and month from JCalendar c and the date is set to 01. ALL takes
+   *  all three values from  JCalendar c. YYYYMMDD returns a string which
+   *  specifies the date from JCalendar c as YYYY-MM-DD
+   *
+   *  @param c JCalendar
+   *  @param returnType int
+   *  @return String
+   */
   private String calendarToString(JCalendar c, int returnType){
     Calendar calendar = c.getCalendar();
     DateFormat df = DateFormat.getDateInstance(DateFormat.LONG,
@@ -425,10 +438,10 @@ public class TemporalPage extends AbstractWizardPage {
                     calendarToString(singleTimeCalendar, YYYYMMDD));
 
     } else {
-      returnMap.put(xPathRoot + "/startDate/calendarDate",
+      returnMap.put(xPathRoot + "/rangeOfDates/beginDate/calendarDate",
                     calendarToString(startTimeCalendar, YYYYMMDD));
 
-      returnMap.put(xPathRoot + "/endDate/calendarDate",
+      returnMap.put(xPathRoot + "/rangeOfDates/endDate/calendarDate",
                     calendarToString(endTimeCalendar, YYYYMMDD));
     }
 
