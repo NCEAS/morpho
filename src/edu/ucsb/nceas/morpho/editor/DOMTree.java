@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-06 18:02:41 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-10-07 02:00:04 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,6 +99,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import edu.ucsb.nceas.utilities.*;
 
 import java.util.Hashtable;
 
@@ -240,21 +242,23 @@ public class DOMTree
             
             // is there anything to do?
             if (document == null) { return; }
-
+            Node rnode = document.getDocumentElement();
             // iterate over children of this node
-            NodeList nodes = document.getChildNodes();
+            NodeList nodes = rnode.getChildNodes();
             int len = (nodes != null) ? nodes.getLength() : 0;
             MutableTreeNode root = (MutableTreeNode)getRoot();
+            MutableTreeNode rt = buildRootNode(rnode, root);
+            setRoot(rt);
             for (int i = 0; i < len; i++) {
                 Node node = nodes.item(i);
                 switch (node.getNodeType()) {
                     case Node.DOCUMENT_NODE: {
-                        root = insertDocumentNode(node, root);
+                        root = insertDocumentNode(node, rt);
                         break;
                         }
 
                     case Node.ELEMENT_NODE: {
-                        insertElementNode(node, root);
+                        insertElementNode(node, rt);
                         break;
                         }
 
@@ -346,6 +350,35 @@ public class DOMTree
 
             } // insertElementNode(Node,MutableTreeNode):MutableTreeNode
 
+        /** build root node. */
+        private MutableTreeNode buildRootNode(Node what, MutableTreeNode where) {
+
+            // build up name
+            StringBuffer name = new StringBuffer();
+            name.append(what.getLocalName());
+            NamedNodeMap attrs = what.getAttributes();
+            Hashtable ht = new Hashtable();
+            int attrCount = (attrs != null) ? attrs.getLength() : 0;
+            for (int i = 0; i < attrCount; i++) {
+                Node attr = attrs.item(i);
+                ht.put(attr.getNodeName(),attr.getNodeValue());
+            }
+
+            
+            nodeMap.put(where, what);
+            invNodeMap.put(what, where);
+
+            NodeInfo ni = new NodeInfo(name.toString());   //DFH
+            if (ht!=null) {
+              ni.attr = ht;
+            }
+            MutableTreeNode node = new DefaultMutableTreeNode(ni);  //DFH
+            
+            return node;
+
+        } 
+            
+            
         /** Inserts a text node. */
         private MutableTreeNode insertTextNode(Node what, MutableTreeNode where) {
             String value = what.getNodeValue().trim();
