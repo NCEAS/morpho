@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-14 20:53:57 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-14 20:59:31 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.framework;
+package edu.ucsb.nceas.morpho.plugins;
 
 /**
  * This exception is thrown when a requested document cannot be found
