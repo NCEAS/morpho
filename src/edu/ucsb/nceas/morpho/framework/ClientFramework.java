@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-05-18 15:55:02 $'
- * '$Revision: 1.44 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-23 07:07:48 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ public class ClientFramework extends javax.swing.JFrame
       for (Enumeration q = plugins.elements(); q.hasMoreElements();)
       {
         // Start by creating the new bean plugin
-	      PluginInterface plugin = (PluginInterface)
+	PluginInterface plugin = (PluginInterface)
 	                createObject((String) (q.nextElement()));
 
         // Set a reference to the framework in the Plugin
@@ -452,7 +452,8 @@ public class ClientFramework extends javax.swing.JFrame
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Cut the selection and put it on the Clipboard");
     cutItemAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().getResource("cut.gif")));
+                    new ImageIcon(getClass().
+          getResource("/toolbarButtonGraphics/general/Cut16.gif")));
     cutItemAction.putValue("menuPosition", new Integer(1));
     cutItemAction.setEnabled(false);
     editMenuActions[0] = cutItemAction;
@@ -465,7 +466,8 @@ public class ClientFramework extends javax.swing.JFrame
     copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Copy the selection and put it on the Clipboard");
     copyItemAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().getResource("copy.gif")));
+                    new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Copy16.gif")));
     copyItemAction.putValue("menuPosition", new Integer(2));
     copyItemAction.setEnabled(false);
     editMenuActions[1] = copyItemAction;
@@ -478,7 +480,8 @@ public class ClientFramework extends javax.swing.JFrame
     pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Paste the selection.");
     pasteItemAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().getResource("paste.gif")));
+                    new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Paste16.gif")));
     pasteItemAction.putValue("menuPosition", new Integer(3));
     pasteItemAction.setEnabled(false);
     editMenuActions[2] = pasteItemAction;
@@ -490,6 +493,9 @@ public class ClientFramework extends javax.swing.JFrame
     };
     prefsItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Open the Preferences dialog.");
+    prefsItemAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Preferences16.gif")));
     prefsItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     prefsItemAction.putValue("menuPosition", new Integer(5));
     editMenuActions[3] = prefsItemAction;
@@ -508,7 +514,8 @@ public class ClientFramework extends javax.swing.JFrame
     };
     aboutItemAction.putValue(Action.SHORT_DESCRIPTION, "About Morpho");
     aboutItemAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().getResource("about.gif")));
+                    new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/About16.gif")));
     aboutItemAction.putValue("menuPosition", new Integer(1));
     helpMenuActions[0] = aboutItemAction;
 /*
@@ -518,8 +525,6 @@ public class ClientFramework extends javax.swing.JFrame
       }
     };
     testServiceAction.putValue(Action.SHORT_DESCRIPTION, "Test");
-    testServiceAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().getResource("about.gif")));
     testServiceAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     testServiceAction.putValue("menuPosition", new Integer(2));
     helpMenuActions[1] = testServiceAction;

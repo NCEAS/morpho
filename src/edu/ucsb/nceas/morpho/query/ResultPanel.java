@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-22 19:45:58 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-23 07:07:49 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
  */
 
 package edu.ucsb.nceas.morpho.query;
+
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -50,6 +52,9 @@ public class ResultPanel extends JPanel
 {
   /** A reference to the ResultSet being displayed */
   private ResultSet results = null;
+
+  /** A reference to the framework */
+  private ClientFramework framework = null;
 
   /** The table used to display the results */
   JTable table = null;
@@ -111,6 +116,7 @@ public class ResultPanel extends JPanel
     this.results = results;
     this.hasRefreshButton = showRefresh;
     this.hasReviseButton = showRevise;
+    this.framework = results.getFramework();
 
     setLayout(new BorderLayout());
     setBackground(Color.white);
@@ -132,7 +138,8 @@ public class ResultPanel extends JPanel
       recordCountLabel.setFont(new Font(null, Font.BOLD, 18));
       headerBox.add(recordCountLabel);
       headerBox.add(Box.createHorizontalStrut(4));
-      refreshButton = new JButton("Refresh");
+      refreshButton = new JButton("Refresh", new ImageIcon( getClass().
+          getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
       if (hasRefreshButton) {
         headerBox.add(refreshButton);
         headerBox.add(Box.createHorizontalStrut(4));
@@ -211,7 +218,10 @@ public class ResultPanel extends JPanel
       cellWidth = comp.getPreferredSize().width;
       column.setPreferredWidth(Math.max(headerWidth, cellWidth));
       if (cellWidth < 100 && i > 0) {
-        column.setMinWidth(100);
+        column.setMinWidth(cellWidth+100);
+      } else if (0 == i) {
+        // Special rule to size the icon column correctly
+        column.setMinWidth(cellWidth+20);
       }
     }
   } 
@@ -250,6 +260,16 @@ public class ResultPanel extends JPanel
   public void reviseQuery()
   {
     System.err.println("Open the Query Dialog!");
+    // QueryDialog Create and show as modal
+    QueryDialog queryDialog1 = new QueryDialog(framework);
+    queryDialog1.setQuery(results.getQuery());
+    queryDialog1.setModal(true);
+    queryDialog1.show();
+    Query query = queryDialog1.getQuery();
+    if (query != null) {
+      ResultSet newResults = query.execute();
+      setResults(newResults);
+    }
   } 
 
   /**
@@ -257,8 +277,8 @@ public class ResultPanel extends JPanel
    */
   public void refreshQuery()
   {
-    Query savedQuery = results.getQuery();
-    ResultSet newResults = savedQuery.execute();
+    Query query = results.getQuery();
+    ResultSet newResults = query.execute();
     setResults(newResults);
   } 
 

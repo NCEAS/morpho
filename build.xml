@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.16 2001-05-08 15:09:51 berkley Exp $'
+  *    File Info: '$Id: build.xml,v 1.17 2001-05-23 07:07:47 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -45,10 +45,12 @@
                 value="${libdir}/dtdparser111.jar" />
       <property name="morpho" 
                 value="${libdir}/${name}.jar" />
-     <property name="junit" 
-               value="${libdir}/junit.jar" />
+      <property name="junit" 
+                value="${libdir}/junit.jar" />
+      <property name="jlf" 
+                value="${libdir}/jlfgr-1_0.jar" />
       <property name="cpath" 
-                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}"/>
+                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-22 19:09:03 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-05-23 07:07:49 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,8 +112,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   /** a collection of triple Hashtables, used during SAX parsing */
   private Vector tripleList;
 
-  /** The folder icon for representing local storage. */
-  private ImageIcon folder = null;
+  /** The icon for representing local storage. */
+  private ImageIcon localIcon = null;
+  /** The icon for representing metacat storage. */
+  private ImageIcon metacatIcon = null;
+  /** The icon for representing both local and metacat storage. */
+  private ImageIcon bothIcon = null;
 
   /**
    * Construct a ResultSet instance given a query object and a
@@ -135,7 +139,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     resultsVector = new Vector();
 
-    folder = new ImageIcon( getClass().getResource("Btflyyel.gif"));
+    localIcon = new ImageIcon( getClass().getResource("local.gif"));
+    metacatIcon = new ImageIcon( getClass().getResource("metacat.gif"));
+    bothIcon = new ImageIcon( getClass().getResource("local-metacat.gif"));
 
     this.framework = framework;
     this.config = framework.getConfiguration();   
@@ -254,7 +260,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public int getRowHeight()
   {
-    return folder.getIconHeight();
+    return localIcon.getIconHeight();
   }
 
   /**
@@ -360,7 +366,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       Vector row = new Vector();
 
       // Display the right icon for the data package
-      row.add(folder);
+      row.add(metacatIcon);
 
       // Then display requested fields in requested order
       for (int i=0; i < cnt; i++) {
@@ -549,12 +555,42 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public void merge(ResultSet r2)
   {
-    framework.debug(9, "Simple concatenation, no comparison done yet!");
+    // Create a hash of our docids for easy comparison
+    Hashtable docidList = new Hashtable();
+    int numColumns = getColumnCount();
+    for (int i=0; i < getRowCount(); i++) {
+      Vector rowVector = (Vector)resultsVector.get(i);
+      String currentDocid = (String)rowVector.get(numColumns+2);
+      docidList.put(currentDocid, new Integer(i));
+    }
+
+    // Step through all of the rows of the results in r2 and
+    // see if there is a docid match
     Vector r2Rows = r2.getResultsVector();
     Enumeration ee = r2Rows.elements();
     while (ee.hasMoreElements()) {
       Vector row = (Vector)ee.nextElement();
-      resultsVector.addElement(row);
+      String currentDocid = (String)row.get(numColumns+2);
+      // if docids match, change the icon and location flags
+      if (docidList.containsKey(currentDocid)) {
+        framework.debug(9, "Merging row: " + currentDocid);
+        int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
+        Vector originalRow = (Vector)resultsVector.get(rowIndex);
+        originalRow.set(0, bothIcon);
+        originalRow.set(numColumns+5, new Boolean(true));
+        originalRow.set(numColumns+6, new Boolean(true));
+      } else {
+        framework.debug(9, "Adding row: " + currentDocid);
+        resultsVector.addElement(row);
+      }
     }
+  }
+
+  /**
+   * Get a reference to the framework
+   */
+  public ClientFramework getFramework()
+  {
+    return this.framework;
   }
 }

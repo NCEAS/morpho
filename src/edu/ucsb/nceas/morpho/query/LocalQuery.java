@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-22 23:20:28 $'
- * '$Revision: 1.29 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-23 07:07:49 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,7 +158,8 @@ public class LocalQuery extends DefaultHandler
     super();
     this.savedQuery = query;
   
-    localIcon = new ImageIcon( getClass().getResource("Open24.gif"));
+    localIcon = new ImageIcon( getClass().
+                getResource("local.gif"));
   
     this.framework = framework;
     this.config = framework.getConfiguration();   
@@ -255,7 +256,7 @@ public class LocalQuery extends DefaultHandler
     for (int i=0;i<filevector.size();i++) {
       File currentfile = (File)filevector.elementAt(i);
       String filename = currentfile.getPath();
-      framework.debug(9, "Processing file: " + filename); 
+      framework.debug(9, "Searching local file: " + filename); 
       
       // skips subdirectories
       if (currentfile.isFile()) {
@@ -304,8 +305,6 @@ public class LocalQuery extends DefaultHandler
           if ((doctypes2bsearched.contains("any"))
                 ||(doctypes2bsearched.contains(currentDoctype))) {
                  
-              framework.debug(9, "Still processing: " + filename); 
-              framework.debug(9, "Using XPath: " + xpathExpression); 
               // Use the simple XPath API to obtain a node list.
               nl = XPathAPI.selectNodeList(root, xpathExpression);
               // if nl has no elements, then the document does not contain the
@@ -378,10 +377,18 @@ public class LocalQuery extends DefaultHandler
 	    rss.addElement(date);                                 // create date
 	    rss.addElement(date);                                 // update date
 	    rss.addElement(filename);                             // docid
+	    Document doc = (Document)dom_collection.get(fullfilename);
+            String docname = doc.getNodeName();
+	    rss.addElement(docname);                              // docname
 	    String temp = (String)doctype_collection.get(fullfilename);
 	    rss.addElement(temp);                                 // doctype
 	    rss.addElement(new Boolean(true));                    // isLocal
 	    rss.addElement(new Boolean(false));                   // isMetacat
+            // need to add the triple list vector, but the current
+            // data structure differs from the one in ResultSet so need
+            // to decide on a common structure
+	    //rss.addElement(new Vector());                       // tripleList
+
 	return rss;
 	}
 	

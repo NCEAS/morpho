@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-18 23:17:59 $'
- * '$Revision: 1.61 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-23 07:07:49 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
@@ -106,6 +107,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
         handleSearchAction();
       }
     };
+    searchItemAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
     searchItemAction.putValue("menuPosition", new Integer(0));
     menuActions[0] = searchItemAction;
@@ -161,24 +165,15 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
    */
   private void handleSearchAction()
   {
-    framework.debug(9, "Action fired: Search Dialog");
-
-    // Test the ResultFrame by creating one. This should be
-    // replaced by code that opens the QueryDialog and then
-    // it would create the ResultFrame
-    //DFH Query testQuery = new Query(getOwnerQuery(), framework);
-    //DFH ResultSet testResults = testQuery.execute();
-    //DFH ResultFrame rf = new ResultFrame(framework, testResults);
-    try {
-	// QueryDialog Create and show as non-modal
-	{
-	  QueryDialog QueryDialog1 = new QueryDialog(framework);
-	  QueryDialog1.setModal(false);
-	  QueryDialog1.show();
-	}
-     } catch (java.lang.Exception e) {
-     }
-
+    // QueryDialog Create and show as modal
+    QueryDialog queryDialog1 = new QueryDialog(framework);
+    queryDialog1.setModal(true);
+    queryDialog1.show();
+    Query query = queryDialog1.getQuery();
+    if (query != null) {
+      ResultSet rs = query.execute();
+      ResultFrame rsf = new ResultFrame(framework, rs);
+    }
   }
 
   /**

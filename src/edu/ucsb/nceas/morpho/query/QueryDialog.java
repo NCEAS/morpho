@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-21 23:46:10 $'
- * '$Revision: 1.5 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-23 07:07:49 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,9 @@ public class QueryDialog extends javax.swing.JDialog
 
   /** Flag, true if network searches are performed for this query */
   private boolean searchLocal = true;
+
+  /** Current query built using this QueryDialog */
+  private Query savedQuery;
 
 	public QueryDialog(Frame parent, ClientFramework framework)
 	{
@@ -383,18 +386,41 @@ public class QueryDialog extends javax.swing.JDialog
 	  return ret;
 	}
 
-	void ExecuteButton_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		String temp = buildTextPathQuery();
-//		System.out.println(temp);
+  /**
+   * Save the query when the execute button is set, making it accessible to
+   * the getQuery() method
+   */
+  private void ExecuteButton_actionPerformed(java.awt.event.ActionEvent event)
+  {
+    String temp = buildTextPathQuery();
     if (QueryTitleTF.getText().length()<1) {
-		  QueryTitleTF.setText(new Date().toString());
+      QueryTitleTF.setText(new Date().toString());
     }
-		Query query = new Query(temp, framework);
-		query.setQueryTitle(QueryTitleTF.getText());
-		query.setSearchMetacat(CatalogSearchCheckBox.isSelected());
-		query.setSearchLocal(LocalSearchCheckBox.isSelected());
-		ResultSet rs = query.execute();
-		ResultFrame rsf = new ResultFrame(framework, rs);
-	}
+
+    Query query = new Query(temp, framework);
+    query.setQueryTitle(QueryTitleTF.getText());
+    query.setSearchMetacat(CatalogSearchCheckBox.isSelected());
+    query.setSearchLocal(LocalSearchCheckBox.isSelected());
+    savedQuery = query;
+    setVisible(false);
+  }
+
+  /**
+   * Get the Query built using this dialog box
+   */
+  public Query getQuery()
+  {
+    return this.savedQuery;
+  }
+
+  /**
+   * Set the query that should be displayed and edited in the dialog
+   */
+  public void setQuery(Query query)
+  {
+    this.savedQuery = query;
+    
+    // Now refill all of the screen widgets with the query info
+    framework.debug(9, "Warning: setQuery implementation not complete!");
+  }
 }

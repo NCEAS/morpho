@@ -12,7 +12,9 @@
 <searchlocal>true</searchlocal>
 <pathquery_config>
   <doctypes_searched><doctype>any</doctype></doctypes_searched>
-  <doctypes_returned><returndoc>-//NCEAS//resource//EN</returndoc>
+  <doctypes_returned>
+    <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
+    <returndoc>-//NCEAS//resource//EN</returndoc>
   </doctypes_returned>
   <fields_returned>
   <returnfield>dataset/title</returnfield>
@@ -24,9 +26,8 @@
     <doctype_default>any</doctype_default>
   </doctypes_searched_default>
   <doctypes_returned_default>
+    <returndoc_default>-//NCEAS//eml-dataset-2.0//EN</returndoc_default>
     <returndoc_default>-//NCEAS//resource//EN</returndoc_default>
-    <returndoc_default>-//NCEAS//eml-dataset//EN</returndoc_default>
-    <returndoc_default>eml-dataset</returndoc_default>
   </doctypes_returned_default>
   <fields_returned_default>
     <returnfield_default>dataset/title</returnfield_default>
