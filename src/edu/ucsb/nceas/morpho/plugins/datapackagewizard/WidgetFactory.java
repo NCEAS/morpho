@@ -445,5 +445,71 @@ public class WidgetFactory {
     return dialog;
   }
 
+ 
+  public static JDialog makeContainerDialogNoParent(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
+
+    return makeContainerDialogNoParent(centerPanel, okListener, cancelListener, "OK", "Cancel");
+  }
+
+
+   /**
+    Function that creates a container dialog for a given panel. The container provides
+    the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
+    'OK' and 'Cancel' button are provided as parameters. The labels for the buttons are
+    also provided.
+    
+    This 'NoParent' version creates a dialog with no parent
+    Added so that custom unit will not have window ordering problem
+    (Dan Higgins - 4/14/2004)
+
+    @param centerPanel - the JPanel that is to displayed in this dialog
+    @param okListener  - the ActionListener for the 'OK' button
+    @param cancelListener  - the ActionListener for the 'Cancel' button
+    @param okCaption  - the label for the 'OK' button
+    @param cancelCaption  - the label for the 'Cancel' button
+    @return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
+                        at the bottom
+  */
+
+  public static JDialog makeContainerDialogNoParent(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption)
+  {
+
+//    JDialog dialog = new JDialog(WizardContainerFrame.getDialogParent());
+    JDialog dialog = new JDialog();
+    Container c = dialog.getContentPane();
+    c.setLayout(new BorderLayout());
+
+    dialog.setModal(true);
+    dialog.setVisible(false);
+
+    JPanel buttonsPanel = new JPanel();
+    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+    buttonsPanel.add(Box.createHorizontalGlue());
+    buttonsPanel.setOpaque(false);
+
+    buttonsPanel.setBorder(
+    BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
+    c.add(buttonsPanel, BorderLayout.SOUTH);
+
+    JButton okButton  = new JButton(okCaption);
+    okButton.addActionListener(okListener);
+    okButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+    okButton.setFont(WizardSettings.BUTTON_FONT);
+
+    JButton cancelButton = new JButton(cancelCaption);
+    cancelButton.addActionListener(cancelListener);
+    cancelButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+    cancelButton.setFont(WizardSettings.BUTTON_FONT);
+
+    buttonsPanel.add(okButton);
+    buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
+    buttonsPanel.add(cancelButton);
+    buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
+
+    c.add(centerPanel, BorderLayout.CENTER);
+    return dialog;
+  }
+
+  
 }
 
