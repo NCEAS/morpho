@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-15 18:30:40 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.SwingConstants;
 
 /**
@@ -112,6 +113,8 @@ public class OpenDialogBox extends JDialog
     
     setSize(800, 600);
     setTitle("Open");
+    // Set the default close operation is dispose
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
     getContentPane().setBackground(Color.white);
     
@@ -323,7 +326,7 @@ public class OpenDialogBox extends JDialog
       }
       clf.setProfile(profile);
       OpenDialogBox open = new OpenDialogBox(clf);
-      open.show();
+      open.setVisible(true);
     
   }
  
