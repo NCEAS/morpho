@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-15 06:38:27 $'
- * '$Revision: 1.23 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-16 15:42:45 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ public class Introduction extends AbstractUIPage {
     if (metadataIntroLink==null) {
 
       GUIAction newDataTableAction
-        = new GUIAction("Ecological Metadata Language (EML) Guide ",
+        = new GUIAction("Introduction to Ecological Metadata ",
                         null,
                         new Command() {
 
