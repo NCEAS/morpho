@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-05 23:45:46 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-09-06 00:11:44 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
 import edu.ucsb.nceas.morpho.util.IOUtil;
 
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
@@ -56,13 +57,15 @@ import edu.ucsb.nceas.morpho.util.Log;
  *  Top-level controller/Mediator class for an instance of a metadata display 
  *  panel.
  */
-public class MetaDisplay implements MetaDisplayInterface                                          
+public class MetaDisplay implements MetaDisplayInterface, 
+                                    EditingCompleteListener                                   
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
     private final   MetaDisplayUI           ui;
     private final   XMLTransformer          transformer;
     private final   History                 history;
+    private final   Vector                  editingCompletelistenerList;
     private final   Vector                  listenerList;
     private         XMLFactoryInterface     factory;
     private         String                  identifier;
@@ -73,10 +76,11 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public MetaDisplay()
     {
-        listenerList    = new Vector();
-        ui              = new MetaDisplayUI(this);
-        transformer     = XMLTransformer.getInstance();
-        history         = new History();
+        listenerList                = new Vector();
+        editingCompletelistenerList = new Vector();
+        ui                          = new MetaDisplayUI(this);
+        transformer                 = XMLTransformer.getInstance();
+        history                     = new History();
     }
 
     /**
@@ -336,6 +340,71 @@ public class MetaDisplay implements MetaDisplayInterface
             ((ActionListener)listeners.nextElement()).actionPerformed(ae);
         }
     }
+    
+    /**
+     *  Register an <code>EditingCompleteListener</code> to listen for editor
+     *  events
+     *
+     *  @param listener  
+     */
+    public void addEditingCompleteListener(EditingCompleteListener listener) 
+    {
+        Log.debug(50, "MetaDisplay: addEditingCompleteListener() called");
+    
+        if (listener==null) return;
+    
+        if (!editingCompletelistenerList.contains(listener)) {
+            editingCompletelistenerList.add(listener);
+        }
+    }
+    
+    /**
+     *  Remove this <code>EditingCompleteListener</code> from the list of 
+     *  registered listeners
+     *
+     *  @param listener
+     */
+    public void removeEditingCompleteListener(EditingCompleteListener listener) 
+    {
+        Log.debug(50, "MetaDisplay: removeActionListener() called");
+        if (editingCompletelistenerList.contains(listener)) {
+            editingCompletelistenerList.remove(listener);
+        }
+    }
+ 
+
+    /**
+     *    Required by <code>EditingCompleteListener</code>  Interface:
+     *    This method is called when editing is complete
+     *
+     *    @param xmlString is the edited XML in String format
+     */
+    public void editingCompleted(String xmlString, String id, String location) 
+    {
+        Log.debug(50, "MetaDisplay: editingCompleted() callback received.");
+                                       
+        Enumeration listeners = editingCompletelistenerList.elements();
+        while (listeners.hasMoreElements()) {
+            ((EditingCompleteListener)listeners.nextElement())
+                                    .editingCompleted(xmlString, id, location);
+        }
+    }
+
+    /**
+     *    Required by <code>EditingCompleteListener</code>  Interface:
+     *    this method handles canceled editing
+     */
+    public void editingCanceled(String xmlString, String id, String location) 
+    {
+        Log.debug(50, "MetaDisplay: editingCanceled() callback received.");
+                                       
+        Enumeration listeners = editingCompletelistenerList.elements();
+        while (listeners.hasMoreElements()) {
+            ((EditingCompleteListener)listeners.nextElement())
+                                    .editingCompleted(xmlString, id, location);
+        }
+    }
+    
 	
 	/**
 	 *  Get the current XML factory, used to resolve IDs into XML documents 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-05 01:03:50 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-06 00:11:44 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,8 +142,9 @@ public class XMLTransformerTest extends TestCase
         }
         assertNotNull(result);
         try {
-        assertEquals(   (IOUtil.getAsStringBuffer(HTML_RESULTDOC)).toString(),
-                        (IOUtil.getAsStringBuffer(result)).toString() );
+            assertEquals(
+                    IOUtil.getAsStringBuffer(HTML_RESULTDOC,true).toString(),
+                    IOUtil.getAsStringBuffer(result,true).toString() );
         } catch (IOException e) {
             e.printStackTrace();
             fail("IOException trying to read returned Readers "+e);

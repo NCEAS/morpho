@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-05 23:45:46 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-06 00:11:44 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,15 +88,10 @@ public class EditCommand implements Command {
             ioe.printStackTrace();
             return;
         }
-        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-        // * * THIS NEEDS WORK - WHO SHOULD BE THE EditingCompleteListener?  * *
-        // * * THIS NEEDS WORK - WHAT ABOUT THE "LOCATION" PARAMETER?        * *
-        // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        // * *      WHAT ABOUT THE "LOCATION" PARAMETER?       * *
+        // * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         String location = null;
-        // * * * * * * * * * * * * * * * * * * * 
-        EditingCompleteListener listener = null;
-        // * * * * * * * * * * * * * * * * * * * 
-        editor.openEditor(buffer.toString(), id, location, listener);
-        // * * * * * * * * * * * * * * * * * * * 
+        editor.openEditor(buffer.toString(), id, location, controller);
     }
 }

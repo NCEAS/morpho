@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-26 23:48:18 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-06 00:11:44 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.io.Reader;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.exception.NullArgumentException;
@@ -152,7 +153,23 @@ public interface MetaDisplayInterface
      *  @param listener
      */
     public void removeActionListener(ActionListener listener);
+   
+    /**
+     *  Register an <code>EditingCompleteListener</code> to listen for editor
+     *  events
+     *
+     *  @param listener  
+     */
+    public void addEditingCompleteListener(EditingCompleteListener listener);
     
+    /**
+     *  Remove this <code>EditingCompleteListener</code> from the list of 
+     *  registered listeners
+     *
+     *  @param listener
+     */
+    public void removeEditingCompleteListener(EditingCompleteListener listener);
+
     /**
      *  method to redisplay the previous metadata document from History, by 
      *  re-obtaining the latest instance of the XML document from the 

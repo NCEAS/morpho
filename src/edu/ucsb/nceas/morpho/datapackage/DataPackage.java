@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-04 21:17:00 $'
- * '$Revision: 1.70 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-06 00:11:44 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@ import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.IOUtil;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -71,21 +73,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import org.apache.xpath.XPathAPI;
-//import org.apache.xalan.xslt.XSLTInputSource;
-//import org.apache.xalan.xslt.XSLTResultTarget;
-//import org.apache.xalan.xslt.XSLTProcessor;
-//import org.apache.xalan.xslt.XSLTProcessorFactory;
 
-//import org.apache.xalan.xpath.xml.XMLParserLiaison;
-//import org.apache.xalan.xpath.xml.FormatterToXML;
-//import org.apache.xalan.xpath.xml.TreeWalker;
-
-import com.arbortext.catalog.Catalog;
 import com.arbortext.catalog.CatalogEntityResolver;
 
 /**
@@ -1253,11 +1244,13 @@ public class DataPackage implements XMLFactoryInterface
       }
       
       //create a html file from all of the metadata
-      StringBuffer htmldoc = new StringBuffer();
-//      ConfigXML config = morpho.getConfiguration();
-      htmldoc.append("<html><head></head><body>");
+      StringBuffer htmldoc = null;
+//      htmldoc.append("<html><head></head><body>");
+
+      ClassLoader classLoader = this.getClass().getClassLoader();
       for(int i=0; i<fileV.size(); i++)
       {
+System.err.println("* * * * * * * * * * * LOOP "+i+"...");            
         FileInputStream fis = new FileInputStream((File)fileV.elementAt(i));
         String header = "";
         for(int j=0; j<10; j++)
@@ -1265,67 +1258,110 @@ public class DataPackage implements XMLFactoryInterface
           header += (char)fis.read();
         }
         fis.close();
-        if(header.indexOf("<?xml") != -1)
+System.err.println("* * * * * * * * * * * header = "+header);            
+        if (header.indexOf("<?xml") != -1)
         { //this is an xml file so we can transform it.
           //transform each file individually then concatenate all of the 
-          //transformations together.
-          CatalogEntityResolver cer = new CatalogEntityResolver();
-          try 
-          {
-            Catalog myCatalog = new Catalog();
-            myCatalog.loadSystemCatalogs();
-            String catalogPath = //config.getConfigDirectory() + File.separator +
-                                             config.get("local_catalog_path", 0);
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            URL catalogURL = cl.getResource(catalogPath);
-        
-            myCatalog.parseCatalog(catalogURL.toString());
-            cer.setCatalog(myCatalog);
-          } 
-          catch (Exception e) 
-          {
-            Log.debug(9, "Problem creating Catalog in " +
-                         "DataPackage.export" + 
-                         e.toString());
-          }
+System.err.println("* * * * * * * * * * * doing xml transform");            
+          //transformations .
+System.err.println("* * * * * * * * * * * File ="+((File)fileV.elementAt(i)).getAbsolutePath());            
+            Reader xmlInputReader = new FileReader((File)fileV.elementAt(i));
+System.err.println("* * * * * * * * * * * xmlInputReader ="+xmlInputReader);            
+
+            String stylesheet = config.get("genericStylesheet", 0);
+System.err.println("* * * * * * * * * * * stylesheet ="+stylesheet);            
+//            BufferedReader sis = new BufferedReader(new InputStreamReader(
+//                                        classLoader.getResourceAsStream(stylesheet)));
+            Reader xslInputReader 
+                    = new InputStreamReader(
+                                  classLoader.getResourceAsStream(stylesheet));
+System.err.println("* * * * * * * * * * * xslInputReader ="+xslInputReader);            
+            Reader result = null;
+            XMLTransformer transformer = XMLTransformer.getInstance();
+System.err.println("* * * * * * * * * * * transformer ="+transformer);            
+            try {
+System.err.println("* * * * * * * * * * * GETTING result...");            
+              result = transformer.transform(xmlInputReader, xslInputReader);
+System.err.println("* * * * * * * * * * * result ="+result);            
+            } catch (IOException e) {
+              e.printStackTrace();
+              Log.debug(9,"Unexpected Error Styling Document: "+e.getMessage());
+              e.fillInStackTrace();
+              throw e;
+            }
+
+System.err.println("* * * * * * * * * * * GETTING HTML DOC...");            
+            try {
+              htmldoc = IOUtil.getAsStringBuffer(result, true);
+            } catch (IOException e) {
+              e.printStackTrace();
+              Log.debug(9,"Unexpected Error Reading Styled Document: "
+                                                              +e.getMessage());
+              e.fillInStackTrace();
+              throw e;
+            }
+            
+System.err.println("* * * * * * * * * * * HTML DOC = "+htmldoc);            
+System.err.println("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");            
+            
+//          CatalogEntityResolver cer = new CatalogEntityResolver();
+//          try 
+//          {
+//            Catalog myCatalog = new Catalog();
+//            myCatalog.loadSystemCatalogs();
+//            String catalogPath = //config.getConfigDirectory() + File.separator +
+//                                             config.get("local_catalog_path", 0);
+//            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+//            URL catalogURL = cl.getResource(catalogPath);
+//        
+//            myCatalog.parseCatalog(catalogURL.toString());
+//            cer.setCatalog(myCatalog);
+//          } 
+//          catch (Exception e) 
+//          {
+//            Log.debug(9, "Problem creating Catalog in " +
+//                         "DataPackage.export" + 
+//                         e.toString());
+//          }
           
-          htmldoc.append("<h2>");
-          htmldoc.append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
-          htmldoc.append("</h2>");
-          //do the actual transform
-          // It need new api from matthew
-          /*XSLTProcessor processor = XSLTProcessorFactory.getProcessor();
-          XMLParserLiaison pl = processor.getXMLProcessorLiaison();
-          pl.setEntityResolver(cer);
-          fis = new FileInputStream((File)fileV.elementAt(i));
-          XSLTInputSource xis = new XSLTInputSource(fis);
-          StringWriter docstring = new StringWriter();
-          String stylesheet = config.get("genericStylesheet", 0);
-          ClassLoader cl = this.getClass().getClassLoader();
-          BufferedReader sis = new BufferedReader(new InputStreamReader(
-                                            cl.getResourceAsStream(stylesheet)));
-          processor.process(xis,
-                            new XSLTInputSource(sis),
-                            new XSLTResultTarget(docstring));
-          htmldoc.append(docstring.toString());*/
-          htmldoc.append("<br><br><hr><br><br>");
-        }
-        else
-        { //this is a data file so we should link to it in the html
+//          htmldoc.append("<h2>");
+//          htmldoc.append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
+//          htmldoc.append("</h2>");
+//          //do the actual transform
+//          // It need new api from matthew
+//          XSLTProcessor processor = XSLTProcessorFactory.getProcessor();
+//          XMLParserLiaison pl = processor.getXMLProcessorLiaison();
+//          pl.setEntityResolver(cer);
+//          fis = new FileInputStream((File)fileV.elementAt(i));
+//          XSLTInputSource xis = new XSLTInputSource(fis);
+//          StringWriter docstring = new StringWriter();
+//          String stylesheet = config.get("genericStylesheet", 0);
+//          ClassLoader cl = this.getClass().getClassLoader();
+//          BufferedReader sis = new BufferedReader(new InputStreamReader(
+//                                            cl.getResourceAsStream(stylesheet)));
+//                                            
+//          processor.process(xis,                       //xml ("XSLTInputSource")
+//                            new XSLTInputSource(sis),           //the stylesheet
+//                            new XSLTResultTarget(docstring));   //output writer
+//          htmldoc.append(docstring.toString());
+
+        } else { 
+          //this is a data file so we should link to it in the html
+System.err.println("* * * * * * * * * * * doing data file");            
+          
+          htmldoc = new StringBuffer("<html><head></head><body>");
           Vector triplesV = triples.getCollection();
           htmldoc.append("<a href=\"");
           String dataFileName = null;
           String datafileid = getIdFromPath(((File)fileV.elementAt(i)).toString());
           
-          for(int j=0; j<triplesV.size(); j++)
-          {
+          for(int j=0; j<triplesV.size(); j++) {
             Triple triple = (Triple)triplesV.elementAt(j);
             String relationship = triple.getRelationship();
             String subject = triple.getSubject();
-            if(subject.trim().equals(datafileid.trim()))
-            {
-              if(relationship.indexOf("isDataFileFor") != -1)
-              { //get the name of the data file.
+            if(subject.trim().equals(datafileid.trim())) {
+              if(relationship.indexOf("isDataFileFor") != -1) { 
+                //get the name of the data file.
                 int lparenindex = relationship.indexOf("(");
                 dataFileName = relationship.substring(lparenindex + 1, 
                                                       relationship.length() - 1);
@@ -1334,12 +1370,15 @@ public class DataPackage implements XMLFactoryInterface
                 htmldoc.append(dataFileName).append("</a><br>");
               }
             }
+            htmldoc.append("<br><hr><br>");
           }
-          htmldoc.append("<br><hr><br>");
+          htmldoc.append("</body></html>");      
         }
-      }
-      htmldoc.append("</body></html>");
+      } //end if data or xml file
+System.err.println("* * * * * * * * * * * getting htmlfile; packagePath = "+packagePath);            
+      
       File htmlfile = new File(packagePath + "/metadata.html");
+System.err.println("* * * * * * * * * * * htmlfile = "+htmlfile.getAbsolutePath());            
       FileOutputStream fos = new FileOutputStream(htmlfile);
       BufferedOutputStream bfos = new BufferedOutputStream(fos);
       StringReader sr = new StringReader(htmldoc.toString());

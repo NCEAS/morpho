@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-05 01:02:56 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-06 00:11:44 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,48 +38,27 @@ import java.io.PipedReader;
 import java.io.PipedWriter;
 
 import java.net.URL;
-//import java.net.MalformedURLException;
-//import java.sql.*;
-//import java.util.Stack;
 
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.sax.SAXSource;
-//
-//import org.apache.xerces.parsers.DOMParser;
-//import org.w3c.dom.Attr;
-//import org.w3c.dom.NamedNodeMap;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.DocumentType;
-//import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-//import org.apache.xerces.dom.DocumentTypeImpl;
-//import org.apache.xpath.XPathAPI;
-//import org.w3c.dom.NamedNodeMap;
-//
-//import org.w3c.dom.Document;
-//import org.w3c.dom.Node;
-//import org.w3c.dom.Element;
-import org.xml.sax.SAXException;     
+
 import org.xml.sax.XMLReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;     
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.ContentHandler;
 
 import com.arbortext.catalog.Catalog;
 import com.arbortext.catalog.CatalogEntityResolver;
-
-//
-//  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
-
 
 
 /**
@@ -87,6 +66,9 @@ import com.arbortext.catalog.CatalogEntityResolver;
  */
 public class XMLTransformer extends DefaultHandler
 {
+
+//  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
+
     private final String SAX_PARSER_NAME = "org.apache.xerces.parsers.SAXParser";
     private final String CONFIG_KEY_LOCAL_CATALOG_PATH = "local_catalog_path";
     
@@ -95,6 +77,7 @@ public class XMLTransformer extends DefaultHandler
     
     private EntityResolver          entityResolver;
     private ConfigXML               config;
+    
     
     
     private XMLTransformer() 
@@ -109,6 +92,11 @@ public class XMLTransformer extends DefaultHandler
         }
     }
     
+    /**
+     *  Used to get a shared instance of the <code>XMLTransformer</code>
+     *
+     *  @return a shared instance of the <code>XMLTransformer</code>
+     */    
     public static XMLTransformer getInstance() 
     {
         if (instance==null) {
@@ -157,14 +145,15 @@ public class XMLTransformer extends DefaultHandler
         validateInputParam(xmlDocument,   "XML document reader");
         validateInputParam(xslStyleSheet, "XSL stylesheet reader");
 
-//        PipedWriter pipedWriter = new PipedWriter();
-        StringWriter pipedWriter = new StringWriter();
+        PipedReader returnReader = new PipedReader();
+        PipedWriter pipedWriter  = new PipedWriter();
+        returnReader.connect(pipedWriter);
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = null;
-
         try {
-            transformer = tFactory.newTransformer(new StreamSource(xslStyleSheet));
+            transformer 
+                    = tFactory.newTransformer(new StreamSource(xslStyleSheet));
         } catch (TransformerConfigurationException e) {
             String msg 
                 = "XMLTransformer.transform(): getting Transformer instance. "
@@ -173,28 +162,27 @@ public class XMLTransformer extends DefaultHandler
             pipedWriter.write(msg.toCharArray(),0,msg.length());
             e.printStackTrace(new PrintWriter(pipedWriter));
         }
-        
+
 //      transformer.setOutputProperty(OutputKeys.METHOD , outputDocType);
 //      transformer.setParameter("qformat", qformat);
 
         try {
-            transformer.transform(  getAsSaxSource(xmlDocument), 
+            transformer.transform(  getAsSaxSource(xmlDocument),
                                     new StreamResult(pipedWriter));
-
-//            transformer.transform(  new StreamSource(xmlDocument), 
-//                                    new StreamResult(stringWriter));
         } catch (TransformerException e) {
-            String msg 
+            String msg
                 = "XMLTransformer.transform(): Error transforming document."
                                 +" Nested TransformerException="+e.getMessage();
             Log.debug(12, msg);
             pipedWriter.write(msg.toCharArray(),0,msg.length());
             e.printStackTrace(new PrintWriter(pipedWriter));
+        } finally {
+            pipedWriter.flush();
+            pipedWriter.close();
         }
-//        return new PipedReader(pipedWriter);
-        return new StringReader(pipedWriter.toString());
+        return returnReader;
     }
-    
+
     /**
      *  Uses the stylesheet provided, to apply XSLT to the XML document provided
      *
@@ -218,22 +206,23 @@ public class XMLTransformer extends DefaultHandler
 //        return new StringReader("XMLTransformer: method not implemented!");
 //    }
 
-    private void validateInputParam(Object param, String paramDescription) 
+
+    //ensure passed parameter is non-null.  If is null, throws IOException, 
+    //using "paramDescription" in exception message
+    private void validateInputParam(Object param, String paramDescription)
                                                             throws IOException 
     {
-
         if (param==null) {
             String errMsg = "XMLTransformer received NULL parameter: "
                                                             +paramDescription;
-            IOException exception 
-                = new IOException(errMsg);
+            IOException exception = new IOException(errMsg);
             exception.fillInStackTrace();
             Log.debug(12,errMsg);
             throw exception;
         }
     }
-    
-    
+
+    //initialize entity resolver class variable 
     private void initEntityResolver() 
     {
         CatalogEntityResolver catalogEntResolver = new CatalogEntityResolver();
@@ -251,7 +240,10 @@ public class XMLTransformer extends DefaultHandler
         }
         this.entityResolver = (EntityResolver)catalogEntResolver;
     }
-    
+
+    //  Create a SAXSource to enable the transformer to access the Reader
+    //  - Necessary because we need to set the entity resolver for this source, 
+    //  which isn't possible if we just use an InputSource
     private SAXSource getAsSaxSource(Reader xmlDocument) 
     {   
         InputSource source = new InputSource(xmlDocument);
@@ -259,23 +251,18 @@ public class XMLTransformer extends DefaultHandler
         saxSource.setXMLReader(this.xmlReader);
         return saxSource;
     }
-    
+
     /* Set up the SAX parser for reading the XML serialized ACL */
-    private void initXMLReader() throws SAXException 
+    private void initXMLReader() throws SAXException
     {
       // Get an instance of the xmlReader
       xmlReader = XMLReaderFactory.createXMLReader(SAX_PARSER_NAME);
-  
       xmlReader.setFeature("http://xml.org/sax/features/validation", true);
-        
       xmlReader.setContentHandler((ContentHandler)this);
-  
       xmlReader.setEntityResolver(getEntityResolver());
-  
-//      xmlReader.setErrorHandler((ErrorHandler)this);
+      xmlReader.setErrorHandler(new CustomErrorHandler());
     }
-    
-    
+
     /**
      *  Sets the <code>EntityResolver</code> for the XML parser that will be 
      *  used by this transformer.  This is used to resolve PUBLIC and SYSTEM 
@@ -298,5 +285,32 @@ public class XMLTransformer extends DefaultHandler
     public EntityResolver getEntityResolver() 
     {
         return this.entityResolver;
+    }
+
+    class CustomErrorHandler implements ErrorHandler
+    {   
+        public void error(SAXParseException exception) throws SAXException
+        {
+            handleException(exception, "SAX ERROR");
+        }
+        
+        public void fatalError(SAXParseException exception) throws SAXException 
+        {
+            handleException(exception, "SAX FATAL ERROR");
+        }
+        
+        public void warning(SAXParseException exception) throws SAXException 
+        {
+            handleException(exception, "SAX WARNING");
+        }
+        
+        private void handleException(SAXParseException exception,
+                                        String errMessage) throws SAXException
+        {
+            Log.debug(9, "XMLTransformer$CustomErrorHandler: " 
+                                    + errMessage+": " + exception.getMessage());
+            exception.fillInStackTrace();
+            throw ((SAXException)exception);
+        }
     }
 }
