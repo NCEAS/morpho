@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-20 23:51:05 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-11-21 16:08:37 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -913,6 +913,7 @@ public class AddMetadataWizard extends JFrame
  
   private void handleAddedFiles(boolean locLocal, boolean locMetacat, Vector files)  {
     String docString = "";
+    String currentFileName;
     Triple t;
     TripleCollection triples = new TripleCollection();
     FileSystemDataStore fsds = null;
@@ -925,8 +926,12 @@ public class AddMetadataWizard extends JFrame
     Vector filedata = (Vector)files.elementAt(i);
     String type = (String)filedata.elementAt(2);
     File currentFile = (File)filedata.elementAt(1);
-    String currentFileName = currentFile.getAbsolutePath();
-    
+    if (type.equals("GETDATA")) {
+      currentFileName = (String)filedata.elementAt(0);
+    }
+    else {
+      currentFileName = currentFile.getAbsolutePath();
+    }
     
     //add a data file here
     String relationship = "isRelatedTo";

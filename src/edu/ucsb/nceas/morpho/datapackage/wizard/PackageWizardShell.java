@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-07 20:14:13 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2001-11-21 16:08:15 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,6 +102,13 @@ public class PackageWizardShell extends javax.swing.JFrame
   
   private ConfigXML config;
   
+  /** for use when we are adding data to an existing package 
+   *  set to a number greater than 0 to indicate adding data  
+  */
+  private int startingFrame = 0;
+  /** instance of AddMetadataWizard to return data to when adding data to existing package */
+  private AddMetadataWizard addMetaWiz;
+  
   public PackageWizardShell()
   {
     setTitle("Data Package Wizard");
@@ -117,6 +124,25 @@ public class PackageWizardShell extends javax.swing.JFrame
     initComponents();
     pack();
     setSize(660, 550);
+  }
+  
+  public PackageWizardShell(int startingFrame, AddMetadataWizard amdw) {
+    this();
+    this.startingFrame = startingFrame;
+    this.addMetaWiz = amdw;
+    frameWizardIndex = startingFrame;
+  }
+
+  public PackageWizardShell(ClientFramework cf, int startingFrame, AddMetadataWizard amdw) {
+    framework = cf;
+    setTitle("Data Package Wizard");
+    this.startingFrame = startingFrame;
+    frameWizardIndex = startingFrame;
+    initComponents();
+    pack();
+    setSize(660, 550);
+    this.addMetaWiz = amdw;
+    this.show();
   }
   
   private void initComponents()
@@ -335,6 +361,15 @@ public class PackageWizardShell extends javax.swing.JFrame
         //valid
         return;
       }
+    
+    if (startingFrame>0) {
+       Vector filesVec = handleFinishAddData();
+       this.hide();
+       this.dispose();
+       addMetaWiz.addingNewDataWizardCompleted(filesVec);
+       return;
+    }
+    //-------------
       
       wizardFrame.removeAll();
       wizardFrame.invalidate();
@@ -496,13 +531,13 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   private void handlePreviousAction()
   { //go back a frame
-    File f = activeContainer.getFile(true);
-    if(f == null)
-    {//the user pressed the no button when prompted if he wanted to create
-      //an invalid document OR the user did not enter a data file that was
-      //valid
-      return;
-    }
+ //DFH   File f = activeContainer.getFile(true);
+ //DFH   if(f == null)
+ //DFH   {//the user pressed the no button when prompted if he wanted to create
+ //DFH     //an invalid document OR the user did not enter a data file that was
+ //DFH     //valid
+ //DFH     return;
+ //DFH  }
     
     wizardFrame.removeAll();
     wizardFrame.invalidate();
@@ -1285,7 +1320,40 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
   }
   
-  public void importComplete()
+  public void importComplete() {
+    if (startingFrame==0) {
+      newImportComplete();  
+    }
+    else {
+      addImportComplete();
+    }
+  }
+  
+  private void addImportComplete() {
+    for(int i=startingFrame; i<frameWizards.size(); i++)
+    {
+      WizardFrameContainer wfcont = (WizardFrameContainer)frameWizards.elementAt(i);
+      String id = wfcont.id;
+      Hashtable atts = wfcont.attributes;
+      String name = (String)atts.get("name");
+      String item = name;
+      if(name == null)
+      {
+        name = "Data File";
+        item = wfcont.originalDataFilePath;
+      }
+      else if(!name.equals("InitialDescription") && !name.equals("IGNORE"))
+      {
+        wfcont.getFile(true);
+      }
+    }
+    Vector filesVec = handleFinishAddData();
+    this.hide();
+    this.dispose();
+    addMetaWiz.addingNewDataWizardCompleted(filesVec);
+  }
+  
+  private void newImportComplete()
   {
     frameWizardIndex += 2;
     WizardFrameContainer nextContainer = (WizardFrameContainer)
@@ -1371,7 +1439,12 @@ public class PackageWizardShell extends javax.swing.JFrame
   
   public void importCanceled()
   {
-    this.setVisible(true);
+    if (startingFrame==0) {
+      this.setVisible(true);
+    }
+    else {
+      addMetaWiz.addingNewDatAWizardCanceled(); 
+    }
   }
   
     /** Normalizes the given string. */
@@ -1420,6 +1493,39 @@ public class PackageWizardShell extends javax.swing.JFrame
 
     } // normalize(String):String
 	
-  
+private Vector handleFinishAddData()
+{
+    Vector packageFiles = new Vector();
+    
+    for(int i=startingFrame; i<frameWizards.size(); i++)
+    { //save all of the files to their new home
+      WizardFrameContainer wfc = (WizardFrameContainer)
+                                  frameWizards.elementAt(i);
+      
+      File f = wfc.getFile(false);
+      if(f == null)
+      {
+        return null;
+      }
+      
+      if(f.getName().equals("FAKE"))
+      {
+        continue;
+      }
+    
+      Vector fileVec = new Vector();
+      if (!wfc.type.equals("GETDATA")) {
+        fileVec.addElement(wfc.id);
+      }
+      else {
+        fileVec.addElement(fileTextField.getText());
+      }
+      fileVec.addElement(f);
+      fileVec.addElement(wfc.type);
+      packageFiles.addElement(fileVec);
+      
+    }
+    return packageFiles;
+}
   
 }
