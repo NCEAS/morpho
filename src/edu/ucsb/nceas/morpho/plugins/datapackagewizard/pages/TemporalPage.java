@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-03 18:58:38 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-04-03 20:52:28 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,9 +163,16 @@ public class TemporalPage extends AbstractUIPage {
 
     singlePointPanel = getSinglePointPanel();
     rangeTimePanel  = getRangeTimePanel();
-
-    currentPanel = singlePointPanel;
-    this.add(singlePointPanel, BorderLayout.CENTER);
+    if (currentPanel==null) {
+      currentPanel = singlePointPanel;
+    }
+    remove(currentPanel);
+    if (currentPanel==singlePointPanel) {
+      this.add(singlePointPanel, BorderLayout.CENTER);
+    }
+    else {
+      this.add(rangeTimePanel, BorderLayout.CENTER);      
+    }
   }
 
   /**
@@ -555,7 +562,9 @@ public class TemporalPage extends AbstractUIPage {
       Calendar singleCalendar = Calendar.getInstance();
       singleCalendar.set(year, month-1, day);
       singleTimeCalendar.setCalendar(singleCalendar);
+      this.remove(currentPanel);
       currentPanel = singlePointPanel;
+      this.add(singlePointPanel, BorderLayout.CENTER);
     }
     else {
       String startString = (String)map.get(xPathRoot + "/rangeOfDates[1]/beginDate[1]/calendarDate[1]");
@@ -580,8 +589,10 @@ public class TemporalPage extends AbstractUIPage {
         int eday = (new Integer(edayS)).intValue();
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.set(eyear, emonth-1, eday);
+        this.remove(currentPanel);
         endTimeCalendar.setCalendar(endCalendar);
         currentPanel = rangeTimePanel;
+        this.add(rangeTimePanel, BorderLayout.CENTER);
       }
     }
     //if anything left in map, then it included stuff we can't handle...
