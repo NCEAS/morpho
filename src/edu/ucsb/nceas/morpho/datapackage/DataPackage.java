@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-24 17:09:35 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2002-10-24 18:18:14 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1225,29 +1225,31 @@ public class DataPackage implements XMLFactoryInterface
     
     //get a list of the files and save them to the new location. if the file
     //is a data file, save it with its original name.
-    try
-    {
-      String packagePath = path + "/" + id + ".package";
-      String sourcePath = packagePath + "/metadata";
-      String dataPath = packagePath + "/data";
-      File savedir = new File(packagePath);
-      File savedirSub = new File(sourcePath);
-      File savedirDataSub = new File(dataPath);
-      savedir.mkdirs(); //create the new directories
-      savedirSub.mkdirs();
-      savedirDataSub.mkdirs();
-      Hashtable dataFileNameMap = getMapBetweenDataIdAndDataFileName();
-      Vector files = getAllIdentifiers();
-      for(int i=0; i<files.size(); i++)
-      { 
-        //save one file at a time
+   
+    String packagePath = path + "/" + id + ".package";
+    String sourcePath = packagePath + "/metadata";
+    String dataPath = packagePath + "/data";
+    File savedir = new File(packagePath);
+    File savedirSub = new File(sourcePath);
+    File savedirDataSub = new File(dataPath);
+    savedir.mkdirs(); //create the new directories
+    savedirSub.mkdirs();
+    Hashtable dataFileNameMap = getMapBetweenDataIdAndDataFileName();
+    Vector files = getAllIdentifiers();
+    StringBuffer[] htmldoc = new StringBuffer[files.size()];
+    for(int i=0; i<files.size(); i++)
+    { 
+      try
+      {
+       //save one file at a time
         // Get docid for the vector
         String docid = (String)files.elementAt(i);
         // Get the hasth table between docid and data file name
         File f = null;
         // if it is data file user filename to replace docid
-        if ( dataFileNameMap.containsKey(docid))
+        if (dataFileNameMap.containsKey(docid))
         {
+          savedirDataSub.mkdirs();
           String dataFile = (String)dataFileNameMap.get(docid);
           f = new File(dataPath + "/" + dataFile);
         }
@@ -1280,30 +1282,18 @@ public class DataPackage implements XMLFactoryInterface
         bfos.flush();
         bfis.close();
         bfos.close();
-      }
       
-      //create a html file from all of the metadata
-      StringBuffer[] htmldoc        = new StringBuffer[fileV.size()];
-      Reader        xmlInputReader  = null;
-      Reader        result          = null;
-      StringBuffer  tempPathBuff    = new StringBuffer();
-      
-      for(int i=0; i<fileV.size(); i++) {
-      
-        FileInputStream fis = new FileInputStream((File)fileV.elementAt(i));
-        String header = "";
-        for(int j=0; j<10; j++)
-        {
-          header += (char)fis.read();
-        }
-        fis.close();
-        
-        if (header.indexOf("<?xml") != -1)
+        // for html
+        Reader        xmlInputReader  = null;
+        Reader        result          = null;
+        StringBuffer  tempPathBuff    = new StringBuffer();
+              
+        if (!dataFileNameMap.containsKey(docid))
         { //this is an xml file so we can transform it.
           //transform each file individually then concatenate all of the 
           //transformations .
          
-            xmlInputReader = new FileReader((File)fileV.elementAt(i));
+            xmlInputReader = new FileReader(openfile);
             
             XMLTransformer transformer = XMLTransformer.getInstance();
             // add some property for style sheet
@@ -1336,15 +1326,14 @@ public class DataPackage implements XMLFactoryInterface
             }
         } else { 
           //this is a data file so we should link to it in the html
-          String datafileid = getIdFromPath(((File)fileV.elementAt(i)).toString());
           htmldoc[i] = new StringBuffer("<html><head></head><body>");
           htmldoc[i].append("<h2>Data File: ");
-          htmldoc[i].append(datafileid);
+          htmldoc[i].append(docid);
           htmldoc[i].append("</h2>");
 
           htmldoc[i].append("<a href=\"");
           String dataFileName = null;
-          dataFileName = (String)dataFileNameMap.get(datafileid); 
+          dataFileName = (String)dataFileNameMap.get(docid); 
           htmldoc[i].append("./data/").append(dataFileName).append("\">");
           htmldoc[i].append("Data File: ");
           htmldoc[i].append(dataFileName).append("</a><br>");
@@ -1358,25 +1347,25 @@ public class DataPackage implements XMLFactoryInterface
         
         tempPathBuff.append(packagePath);
         tempPathBuff.append("/");
-        if (id.equals(getIdFromPath(((File)fileV.elementAt(i)).toString())))
+        if (id.equals(docid))
         {
           tempPathBuff.append(METACATHTML);
         }
         else
         {
-          tempPathBuff.
-                  append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
+          tempPathBuff.append(docid);
         }
         tempPathBuff.append(HTMLEXTENSION);
-        
         saveToFile(htmldoc[i], new File(tempPathBuff.toString()));
-      }     //end of file vector loop      
-    }
-    catch(Exception e)
-    {
-      System.out.println("Error in DataPackage.export(): " + e.getMessage());
-      e.printStackTrace();
-    }
+        
+      }
+      catch(Exception e)
+      {
+        System.out.println("Error in DataPackage.export(): " + e.getMessage());
+        e.printStackTrace();
+      }
+    }//for     
+    
   }
 
   //save the StringBuffer to the File path specified
