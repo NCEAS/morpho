@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 01:09:26 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-07-30 05:26:10 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.Map;
 
@@ -53,11 +54,13 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 public class WizPage02 extends AbstractWizardPage{
   
-  public final String pageID     = WizardPageLibrary.PAGE02_ID;
-  public final String nextPageID = WizardPageLibrary.PAGE03_ID;
-  public final String title      = "General Dataset Information:";
-  public final String subtitle   = "Title and Abstract";
+  private final String pageID     = WizardPageLibrary.PAGE02_ID;
+  private final String nextPageID = null;
+  private final String title      = "General Dataset Information:";
+  private final String subtitle   = "Title and Abstract";
   
+  private JTextField titleField;  
+  private JTextArea  absField;
   
   public WizPage02() { init(); }
   
@@ -76,26 +79,25 @@ public class WizPage02 extends AbstractWizardPage{
       +"purpose and the components being described.", false);
     this.add(desc);
     
-    this.add(Box.createRigidArea(defaultSpacerDims));
+    this.add(WidgetFactory.makeDefaultSpacer());
     
     JTextArea titleDesc = WidgetFactory.makeMultilineTextArea(
     "Enter a descriptive title for the data package as a whole. A rule of "
     +"thumb is to include organization and project scope information.", false);
     this.add(titleDesc);
     
-    Box titleBox = Box.createHorizontalBox();
-    titleBox.setMaximumSize(singleLineDims);
+    JPanel titlePanel = WidgetFactory.makeOneLinePanel();
     
     JLabel titleLabel = WidgetFactory.makeLabel("Title", true);
 
-    titleBox.add(titleLabel);
+    titlePanel.add(titleLabel);
     
-    JTextField titleField = WidgetFactory.makeOneLineTextField();
-    titleBox.add(titleField);
+    titleField = WidgetFactory.makeOneLineTextField();
+    titlePanel.add(titleField);
     
-    this.add(titleBox);
+    this.add(titlePanel);
     
-    this.add(Box.createRigidArea(defaultSpacerDims));
+    this.add(WidgetFactory.makeDefaultSpacer());
     
     ////////////////////////////////////////////////////////////////////////////
     
@@ -105,24 +107,24 @@ public class WizPage02 extends AbstractWizardPage{
 
     this.add(absDesc);
         
-    Box absBox = Box.createHorizontalBox();
+    JPanel abstractPanel = new JPanel();
+    abstractPanel.setOpaque(false);
+    abstractPanel.setLayout(new BoxLayout(abstractPanel, BoxLayout.X_AXIS));
 
     JLabel absLabel = WidgetFactory.makeLabel("Abstract", false);
     absLabel.setAlignmentY(SwingConstants.TOP);
-    absBox.add(absLabel);
+    abstractPanel.add(absLabel);
     
-    JTextArea absField = WidgetFactory.makeMultilineTextArea("",true);
+    absField = WidgetFactory.makeMultilineTextArea("",true);
     absField.setRows(25);
     absField.setColumns(100);
     JScrollPane jscrl = new JScrollPane(absField);
-    absBox.add(jscrl);
-    this.add(absBox);
+    abstractPanel.add(jscrl);
+    this.add(abstractPanel);
     
-    this.add(Box.createRigidArea(defaultSpacerDims));
+    this.add(WidgetFactory.makeDefaultSpacer());
     
-    this.add(Box.createHorizontalGlue());
-    
-//    this.add(Box.createVerticalGlue());
+    this.add(Box.createVerticalGlue());
   }
   
   
@@ -131,7 +133,7 @@ public class WizPage02 extends AbstractWizardPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-    
+
   }
   
   
@@ -144,12 +146,23 @@ public class WizPage02 extends AbstractWizardPage{
   }
   
   
-  /**
+  /** 
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. May be empty
+   *  or "Finish" button(last page) is pressed. May be empty, but if so, must 
+   *  return true
+   *
+   *  @return boolean true if wizard should advance, false if not 
+   *          (e.g. if a required field hasn't been filled in)
    */
-  public void onAdvanceAction() {
+  public boolean onAdvanceAction() {
     
+    if (titleField.getText().trim().equals("")) {
+      
+      titleField.setBackground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+      titleField.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_REVERSEFIELD_COLOR);
+      return false;
+    }
+    return true;
   }
   
   
@@ -160,9 +173,17 @@ public class WizPage02 extends AbstractWizardPage{
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  public Map getPageData() {
+  private OrderedMap returnMap = new OrderedMap();
+
+  public OrderedMap getPageData() {
     
-    return null;
+    returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
+    if ( !(absField.getText().trim().equals("")) ) {
+      
+      returnMap.put("/eml:eml/dataset/abstract/section/para[1]", 
+                    absField.getText().trim());
+    }
+    return returnMap;
   }
   
   
@@ -199,20 +220,4 @@ public class WizPage02 extends AbstractWizardPage{
   public String getNextPageID() { return nextPageID; }
   
   
-  private final Dimension defaultSpacerDims
-                                = new Dimension(15, 15);
-  private final Dimension singleLineDims
-                                = WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS; 
-  
-//  private final Font  defaultFont
-//                                = WizardSettings.WIZARD_CONTENT_FONT;
-//  private final Color defaultFGColor
-//                                = WizardSettings.WIZARD_CONTENT_TEXT_COLOR;
-//  private final Color requiredFGColor
-//                                = WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR;
-//  private final Dimension defaultLabelDims
-//                                = WizardSettings.WIZARD_CONTENT_LABEL_DIMS;
-//  private final Dimension defaultTextFieldDims
-//                                = WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS;
-
 }

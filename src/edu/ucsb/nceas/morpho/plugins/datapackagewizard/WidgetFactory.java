@@ -1,6 +1,11 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import java.awt.Component;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -52,6 +57,24 @@ public class WidgetFactory {
     field.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     field.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     return field;
+  }
+  
+  
+  
+  public static JPanel makeOneLinePanel() {
+  
+    JPanel panel = new JPanel();
+    panel.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+    panel.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+    panel.setOpaque(false);
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+    return panel;
+  }
+  
+  
+  public static Component makeDefaultSpacer() {
+    
+    return Box.createRigidArea(WizardSettings.DEFAULT_SPACER_DIMS);
   }
     
 }

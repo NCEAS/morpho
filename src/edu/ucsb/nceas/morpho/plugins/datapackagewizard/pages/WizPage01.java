@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-29 16:56:07 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-07-30 05:26:10 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import java.awt.Color;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class WizPage01 extends AbstractWizardPage{
 
@@ -107,11 +107,13 @@ public class WizPage01 extends AbstractWizardPage{
   
   /** 
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. May be empty
+   *  or "Finish" button(last page) is pressed. May be empty, but if so, must 
+   *  return true
+   *
+   *  @return boolean true if wizard should advance, false if not 
+   *          (e.g. if a required field hasn't been filled in)
    */
-  public void onAdvanceAction() {
-    
-  }
+  public boolean onAdvanceAction() { return true; }
   
 
   /** 
@@ -121,7 +123,7 @@ public class WizPage01 extends AbstractWizardPage{
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  public Map getPageData() {
+  public OrderedMap getPageData() {
   
     return null;
   }

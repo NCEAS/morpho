@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 01:09:26 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-07-30 05:26:10 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,10 @@ public class WizardSettings {
   protected static final Dimension TOP_PANEL_DIMS = new Dimension(100,60);
   
   protected static final int PADDING = 5;
+
+  protected static final Dimension DEFAULT_SPACER_DIMS
+                                      = new Dimension(15, 15);
+
   
   protected static final Font  TITLE_FONT          
                                       = new Font("Sans-Serif", Font.BOLD,  12);
@@ -82,12 +86,15 @@ public class WizardSettings {
                                       = new Color(51, 51, 51);
   public static final  Color WIZARD_CONTENT_REQD_TEXT_COLOR  
                                       = new Color(221, 0, 0);
+  public static final  Color WIZARD_CONTENT_REQD_TEXT_REVERSEFIELD_COLOR  
+                                      = new Color(255, 255, 255);
+                                      
   public static final  Dimension WIZARD_CONTENT_LABEL_DIMS  
                                       = new Dimension(100,20);
   public static final  Dimension WIZARD_CONTENT_TEXTFIELD_DIMS  
                                       = new Dimension(2000,20);
 
-    public static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS  
+  protected static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS  
                                       = new Dimension(2000,20);
   protected static final  Color WIZARD_CONTENT_BG_COLOR    
                                       = new Color(221, 221, 221);

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-29 16:56:07 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-07-30 05:26:10 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -50,6 +51,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener ;
 
 import java.util.Stack;
+import java.util.Iterator;
 
 /**
  *  provides a top-level container for AbstractWizardPage objects. The top (title) panel
@@ -119,8 +121,8 @@ public class WizardContainerFrame extends JFrame {
     
     middlePanel.add(getCurrentPage(), BorderLayout.CENTER);
     getCurrentPage().setOpaque(false);
-    getCurrentPage().onLoadAction();
     middlePanel.repaint();
+    getCurrentPage().onLoadAction();
     updateButtonsStatus();
   }
 
@@ -256,24 +258,61 @@ public class WizardContainerFrame extends JFrame {
     
     Log.debug(45,"nextFinishAction called");
     
-    getCurrentPage().onAdvanceAction();
+    // if the page's onAdvanceAction() returns false, don't advance...
+    if ( !(getCurrentPage().onAdvanceAction()) ) return;
     
-    if (getCurrentPage().getNextPageID()==null) {
+    
+    if (getCurrentPage().getNextPageID()!=null) {
+    
+    // * * * N E X T * * *
+
+      //put current page on stack
+      Log.debug(45,"setCurrentPage pushing currentPage to Stack ("
+                                              +getCurrentPage().getPageID()+")");
+      pageStack.push(this.getCurrentPage());
+    
+      String nextPgID = getCurrentPage().getNextPageID();
+      Log.debug(45,"nextFinishAction - next page ID is: "+nextPgID);
+    
+      setCurrentPage(pageLib.getPage(nextPgID));
+    
+    } else {
+      
+    // * * * F I N I S H * * *
+    
       //this is the last page - user just pressed "finish"
       this.setVisible(false);
       
+      Iterator pagesIterator = pageStack.iterator();
+      OrderedMap wizData = new OrderedMap();
+      OrderedMap nextPgData  = new OrderedMap();
+      String nextKey = null;
+      String nextVal = null;
+      
+      while (pagesIterator.hasNext()) {
+      
+        nextPgData = ((WizardPage)(pagesIterator.next())).getPageData();
+        
+        if (nextPgData==null) continue;
+        
+        Iterator  it = nextPgData.keySet().iterator();
+        
+        if (it==null) continue;
+    
+        while (it.hasNext()) {
+    
+          nextKey = (String)it.next();
+    
+          if (nextKey==null || nextKey.trim().equals("")) continue;
+    
+          nextVal = (String)nextPgData.get(nextKey);
+          wizData.put(nextKey, nextVal);
+          
+        } // end while
+      }
+      Log.debug(45,wizData.toString());
       return;
     }
-    
-    //put current page on stack
-    Log.debug(45,"setCurrentPage pushing currentPage to Stack ("
-                                            +getCurrentPage().getPageID()+")");
-    pageStack.push(this.getCurrentPage());
-    
-    String nextPgID = getCurrentPage().getNextPageID();
-    Log.debug(45,"nextFinishAction - next page ID is: "+nextPgID);
-    
-    setCurrentPage(pageLib.getPage(nextPgID));
   }
   
 

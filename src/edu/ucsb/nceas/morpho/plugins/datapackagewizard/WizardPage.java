@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-28 19:08:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-07-30 05:26:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
-import java.util.Map;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 
 /**
@@ -86,8 +86,11 @@ public interface WizardPage {
   /** 
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
    *  or "Finish" button(last page) is pressed. May be empty
+   *
+   *  @return boolean true if wizard should advance, false if not 
+   *          (e.g. if a required field hasn't been filled in)
    */
-  public void onAdvanceAction();
+   public boolean onAdvanceAction();
   
 
   /** 
@@ -97,7 +100,7 @@ public interface WizardPage {
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  public Map getPageData();
+  public OrderedMap getPageData();
 
 }
 
