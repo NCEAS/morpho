@@ -22,6 +22,7 @@
     </paths>
     <listdoctypes>
       <entitydoctype>-//NCEAS//eml-entity-2.0//EN</entitydoctype>
+      <resourcedoctype>-//NCEAS//eml-dataset-2.0//EN</resourcedoctype>
     </listdoctypes>
   </packageEditor>
   <customFrames>

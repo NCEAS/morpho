@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-19 22:00:18 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2001-06-22 16:14:55 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,6 +132,10 @@ public class PackageWizard extends javax.swing.JFrame
     createPanel(doc, contentPane, docPanel);
   }
   
+  /**
+   * sets the visibility of the package wizard panel
+   * @param visible true if the panel should be visible false otherwise
+   */
   public void setVisible(boolean visible)
   {
     mainTabbedPane.setVisible(visible);

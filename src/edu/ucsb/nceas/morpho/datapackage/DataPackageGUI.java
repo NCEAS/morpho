@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-21 22:09:23 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-06-22 16:14:55 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     Hashtable docAtts = dataPackage.getAttributes();
     
     String entitytype = config.get("entitydoctype", 0);
+    String resourcetype = config.get("resourcedoctype", 0);
     
     if(docAtts.containsKey("originator"))
     {
@@ -139,7 +140,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           entityitems.addElement(s);
         }
       }
-      else
+      else if(!key.equals(resourcetype))
       {
         Vector v = (Vector)relfiles.get(key);
         for(int i=0; i<v.size(); i++)
@@ -149,6 +150,15 @@ public class DataPackageGUI extends javax.swing.JFrame
           otheritems.addElement(s);
         }
       }
+    }
+    
+    if(otheritems.size()==0)
+    {
+      otheritems.add(" ");
+    }
+    if(entityitems.size()==0)
+    {
+      otheritems.add(" ");
     }
     
     ImageIcon head = new ImageIcon(
