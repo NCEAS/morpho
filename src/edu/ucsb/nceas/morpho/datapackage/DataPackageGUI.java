@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 16:23:52 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-08 16:55:51 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -293,7 +293,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           sb.append((char)c);
           c = fr.read();
         }
-        System.out.println(sb.toString());
+        sb.append((char)c);
         fr.close();
       }
       catch(Exception eeeee)
@@ -302,7 +302,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                            eeeee.getMessage());
         return;
       }
-      
+      System.out.println("SB------------" + sb.toString());
       editor.openEditor(sb.toString(), id, location, this);
     }
     else if(command.equals("Add"))
@@ -325,6 +325,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   public void editingCompleted(String xmlString, String id, String location)
   {
     System.out.println("editing complete: id: " + id + " location: " + location);
+    System.out.println(xmlString);
     try
     {
       if(location.equals(DataPackage.METACAT))
