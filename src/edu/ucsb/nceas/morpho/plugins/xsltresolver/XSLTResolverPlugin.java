@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-18 18:21:06 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-23 23:04:41 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,9 @@ import java.io.InputStreamReader;
 import java.util.Vector;
 import java.util.Hashtable;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
@@ -55,33 +58,27 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
 {
 
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
-    private final String GENERIC_STYLESHEET;
+    private final String CONFIG_KEY_DOCTYPE_TO_XSLT = "doctype_xslt_mappings";
+    private final String CONFIG_KEY_DOCTYPE         = "doctype";
+    private final String CONFIG_KEY_XSLT            = "xslt";
+                                            
+    private final String    GENERIC_STYLESHEET;
     private final ConfigXML config;
-    private final Hashtable mappings;
+    private       Hashtable mappings;
 
     private final ClassLoader classLoader;
 
     public XSLTResolverPlugin()
     {
-        Log.debug(30, "XSLTResolverPlugin: ClassLoader *would* have been: " 
-                            + this.getClass().getClassLoader().getClass().getName());
-        
         classLoader = Morpho.class.getClassLoader();
-        Log.debug(30, "XSLTResolverPlugin: ...but from Morpho, setting ClassLoader to: " 
-                                                + classLoader.getClass().getName());
         Thread t = Thread.currentThread();
         t.setContextClassLoader(classLoader);        
 
         this.config = Morpho.getConfiguration();
         GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
-        mappings = new Hashtable();
-        initMappings();
+        initDoctypeToXSLTMappings();
     }
     
-    private void initMappings() 
-    {
-        Vector doctypes = config.get("****");
-    }
     /**
      *  Required by PluginInterface; called automatically at runtime
      *
@@ -126,7 +123,7 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
     {
         Log.debug(50, "\nXSLTResolver got: "+docType);
         Reader rdr = null;
-        String xslPathString = (String)mappings.get(docType);
+        String xslPathString = getFromMappings(docType);
         if (xslPathString==null || xslPathString.trim().equals("")) {
         
             rdr =  new InputStreamReader(
@@ -144,13 +141,35 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
         Log.debug(50, "\nXSLTResolver returning Reader: "+rdr);
         return rdr;
     }
+
+    // gets the doctype-to-xslt mappings from the config file and adds them to
+    //the mappings hashtable
+    private void initDoctypeToXSLTMappings()
+    {
+        mappings = config.getHashtable( CONFIG_KEY_DOCTYPE_TO_XSLT, 
+                                        CONFIG_KEY_DOCTYPE, 
+                                        CONFIG_KEY_XSLT );
+    }
+    
+    //trims whitespace, checks for null and empty strings, checks to see if 
+    //already in HashTable, and if so, returns value for this key
+    private String getFromMappings(String key)
+    {
+        Log.debug(50,"XSLTResolverPlugin.getFromMappings() got key="+key);
+                                                            
+        if ( key==null || key.equals("")) {
+        
+            Log.debug(12,"ALERT: XSLTResolverPlugin.getFromMappings(): got key="
+                                                                          +key);
+        } else if (!mappings.containsKey(key)) {
+        
+            Log.debug(12,"ALERT: XSLTResolverPlugin.getFromMappings():"
+                                                   +" could not find key="+key);
+        } else { 
+            String xslt = (String)mappings.get(key);
+            Log.debug(50,"XSLTResolverPlugin.getFromMappings() value = "+xslt);
+            return xslt;
+        }
+        return null;
+    }
 }
-//        if (docType.indexOf("entity")>0) {
-//          rdr = new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
-//        } else if (docType.indexOf("dataset")>0) {
-//          rdr = new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-dataset-2.0.0beta6.xsl"));
-//        } else if (docType.indexOf("attribute")>0) {
-//          rdr = new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-attribute-2.0.0beta6.xsl"));
