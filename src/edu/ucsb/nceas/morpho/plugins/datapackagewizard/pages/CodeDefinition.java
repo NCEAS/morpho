@@ -130,30 +130,35 @@ public class CodeDefinition extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-    String attr = mainWizFrame.getCurrentImportAttributeName();
-    String entity = mainWizFrame.getCurrentImportEntityName();
+		
+		adp = getADP();
+		if(adp == null) {
+			Log.debug(10, "Error! Unable to obtain the ADP in CodeDefinition page!");
+			return;
+		}
+		
+    String attr = adp.getCurrentImportAttributeName();
+    String entity = adp.getCurrentImportEntityName();
 
     attrField.setText(attr);
     entityField.setText(entity);
 
-    String tableName = mainWizFrame.getLastImportedEntity();
-    List attrs =  mainWizFrame.getLastImportedAttributes();
-    Vector rowData = mainWizFrame.getLastImportedDataSet();
+    String tableName = adp.getLastImportedEntity();
+    List attrs =  adp.getLastImportedAttributes();
+    Vector rowData = adp.getLastImportedDataSet();
     importPanel.setTable(tableName, attrs, rowData);
     importPanel.invalidate();
 
-    mainWizFrame.setLastImportedAttributes(null);
-    mainWizFrame.setLastImportedEntity(null);
-    mainWizFrame.setLastImportedDataSet(null);
+    adp.setLastImportedAttributes(null);
+    adp.setLastImportedEntity(null);
+    adp.setLastImportedDataSet(null);
 
     String prevPageID = mainWizFrame.getPreviousPageID();
     if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD)) {
 
         Node newDOM = mainWizFrame.collectDataFromPages();
 
-        if(adp == null)
-          adp = getADP();
-
+        
         Node entNode = null;
         String entityXpath = "";
         try{
@@ -198,9 +203,9 @@ public class CodeDefinition extends AbstractUIPage {
   public boolean onAdvanceAction() {
 
     if(importPanel.validateUserInput()) {
-      OrderedMap map = mainWizFrame.getCurrentImportMap();
-      String relativeXPath = mainWizFrame.getCurrentImportXPath();
-      String scale = mainWizFrame.getCurrentImportScale().toLowerCase();
+      OrderedMap map = adp.getCurrentImportMap();
+      String relativeXPath = adp.getCurrentImportXPath();
+      String scale = adp.getCurrentImportScale().toLowerCase();
       String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
 
       Iterator it = map.keySet().iterator();
@@ -234,19 +239,7 @@ public class CodeDefinition extends AbstractUIPage {
 
   private AbstractDataPackage getADP() {
 
-    DataViewContainerPanel resultPane = null;
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    AbstractDataPackage dp = null;
-    if (morphoFrame != null) {
-       resultPane = morphoFrame.getDataViewContainerPanel();
-    }
-    if ( resultPane != null) {
-       dp = resultPane.getAbstractDataPackage();
-    }
-
-    if(dp == null) {
-      Log.debug(16, " Abstract Data Package is null in CodeDefinition Page");
-    }
+    AbstractDataPackage dp = UIController.getInstance().getCurrentAbstractDataPackage();
     return dp;
   }
 

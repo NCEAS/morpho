@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-08 19:22:39 $'
- * '$Revision: 1.25 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-26 14:16:47 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,10 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
@@ -294,7 +295,11 @@ public class Entity extends AbstractUIPage{
     List rowLists = attributeList.getListOfRowLists();
     if (rowLists==null) return true;
     int index = 1;
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if(adp == null) {
+			Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
+		}
+    for (Iterator it = rowLists.iterator(); adp != null && it.hasNext(); ) {
 
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
@@ -312,7 +317,7 @@ public class Entity extends AbstractUIPage{
         String mScale = (String) nextRowList.get(2);
         String entityName = entityNameField.getText().trim();
         String colName = (String) nextRowList.get(0);
-        mainWizFrame.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
+        adp.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
         importNeeded = true;
       }
       index++;

@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-17 02:22:12 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-04-26 14:16:47 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.framework.UIController;
+
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.TextImportListener;
@@ -32,6 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportWizard;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -1057,8 +1061,6 @@ public class TextImportWizardEml2 extends JFrame {
     // info should be null if all fields are not blank
     if (!ad.onAdvanceAction()) return;
 
-    int attrsToBeImported = mainWizFrame.getAttributeImportCount();
-
     Iterator it = columnAttributes.iterator();
 		int index = 1;
     boolean importNeeded = false;
@@ -1067,32 +1069,43 @@ public class TextImportWizardEml2 extends JFrame {
     String entityName = TableNameTextField.getText();
     List colNames = new ArrayList();
 		columnMaps = new Vector();
+		
 		String prefix = AttributeSettings.Attribute_xPath;
+		int attrsToBeImported = 0;
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if(adp == null) {
+			Log.debug(10, "Error! Unable to obtain the ADP in TextImportWizard!");
+		} else {
+			attrsToBeImported = adp.getAttributeImportCount();
+		}
+		
     while(it.hasNext()) {
       ad = (AttributePage) it.next();
       OrderedMap map1 = ad.getPageData(prefix + "[" + index + "]");
 			columnMaps.add(map1);
       String colName = getColumnName(map1, prefix + "[" + index + "]");
 			
-			if(ad.isImportNeeded()) {
-
+			if(adp != null && ad.isImportNeeded()) {
+				
         String mScale = getMeasurementScale(map1, prefix + "[" + index + "]");
-        mainWizFrame.addAttributeForImport(entityName, colName, mScale, map1, prefix + "[" + index + "]", true);
+        adp.addAttributeForImport(entityName, colName, mScale, map1, prefix + "[" + index + "]", true);
         importNeeded = true;
       }
 			index++;
       colNames.add(colName);
       
     }
-
-    mainWizFrame.setLastImportedEntity(entityName);
-    mainWizFrame.setLastImportedAttributes(colNames);
-    if(vec != null)
-      mainWizFrame.setLastImportedDataSet(vec);
-    else {
-      mainWizFrame.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
-    }
-
+		
+		if(adp != null) {
+			adp.setLastImportedEntity(entityName);
+			adp.setLastImportedAttributes(colNames);
+			if(vec != null)
+				adp.setLastImportedDataSet(vec);
+				else {
+					adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
+				}
+		}
+		
     String prevPageID = mainWizFrame.getPreviousPageID();
 
     if(attrsToBeImported > 0) {

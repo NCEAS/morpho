@@ -254,8 +254,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
       for(int j = 0; j < attrNames.length; j++) {
         colsToExtract.add(new Integer(j));
       }
-
-      String numHeaders = adp.getPhysicalNumberHeaderLines(idx, 0);
+			String numHeaders = adp.getPhysicalNumberHeaderLines(idx, 0);
       int numHeaderLines = 0;
       try {
         if(numHeaders != null) {
@@ -927,7 +926,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     else if (adp.getDistributionArray(entityIndex, 0)==null) {
       // case where there is no distribution data in the package
 
-      Log.debug(5, "The selected entity has NO distribution information!");
+      Log.debug(10, "The selected entity has NO distribution information!");
       return null;
     }
 
@@ -1026,6 +1025,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
             }
             oldToken = token;
           }
+					int idx1 = colIndices.lastIndexOf(new Integer(cnt));
+					for(int rem = idx1 + 1; rem < colIndices.size(); rem++) {
+						row.add("");
+					}
         } // end of else
 
         result.add(row);

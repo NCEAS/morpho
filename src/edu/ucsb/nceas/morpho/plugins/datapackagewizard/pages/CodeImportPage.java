@@ -160,18 +160,40 @@ public class CodeImportPage extends AbstractUIPage {
     //importPanel.setVisible(false);
   }
 
-  public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap map, String xPath, boolean newTable) {
-
-    mainWizFrame.addAttributeForImport(entityName, attributeName, scale, map, xPath, newTable);
-  }
+  /*public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap map, String xPath, boolean newTable) {
+		
+		AbstractDataPackage	adp = getADP();
+		if(adp == null) {
+			Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
+			return;
+		}
+    adp.addAttributeForImport(entityName, attributeName, scale, map, xPath, newTable);
+  }*/
 
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
-    String attr = mainWizFrame.getCurrentImportAttributeName();
-    String entity = mainWizFrame.getCurrentImportEntityName();
+		
+		AbstractDataPackage	adp = getADP();
+		if(adp == null) {
+			Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
+			return;
+		}
+		
+		edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+		if(arr == null) {
+			
+			arr = adp.getEntityArray();
+			if(arr == null) {
+				Log.debug(5, "Cant get entities");
+				return;
+			}
+			adp.setOriginalEntityArray(arr);
+		}
+		
+		String attr = adp.getCurrentImportAttributeName();
+    String entity = adp.getCurrentImportEntityName();
 
     attrField.setText(attr);
     entityField.setText(entity);
@@ -184,12 +206,6 @@ public class CodeImportPage extends AbstractUIPage {
       // create the new data table. Need to store this DOM to return it.
       Node newDOM = mainWizFrame.collectDataFromPages();
       mainWizFrame.setDOMToReturn(null);
-
-      AbstractDataPackage	adp = getADP();
-      if(adp == null) {
-        Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
-        return;
-      }
 
       Node entNode = null;
       String entityXpath = "";
@@ -229,18 +245,8 @@ public class CodeImportPage extends AbstractUIPage {
   }
 
   private AbstractDataPackage getADP() {
-
-    AbstractDataPackage adp = null;
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    DataViewContainerPanel resultPane = null;
-    if (morphoFrame != null) {
-      resultPane = morphoFrame.getDataViewContainerPanel();
-    }//if
-    // make sure resulPanel is not null
-    if ( resultPane != null) {
-      adp = resultPane.getAbstractDataPackage();
-    }
-    return adp;
+		
+    return UIController.getInstance().getCurrentAbstractDataPackage();
   }
 
   /**
@@ -267,9 +273,14 @@ public class CodeImportPage extends AbstractUIPage {
 
     if(importChoice == IMPORT_DONE) {
       if(importPanel.validateUserInput()) {
-        OrderedMap map = mainWizFrame.getCurrentImportMap();
-        String relativeXPath = mainWizFrame.getCurrentImportXPath();
-        String scale = mainWizFrame.getCurrentImportScale().toLowerCase();
+				AbstractDataPackage	adp = getADP();
+				if(adp == null) {
+					Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
+					return true;
+				}
+        OrderedMap map = adp.getCurrentImportMap();
+        String relativeXPath = adp.getCurrentImportXPath();
+        String scale = adp.getCurrentImportScale().toLowerCase();
         String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
         if(!map.containsKey(path + "/entityReference")) {
           Log.debug(15, "Error in CodeImportPage!! map doesnt have the key - "+path);
@@ -282,11 +293,11 @@ public class CodeImportPage extends AbstractUIPage {
           map.putAll(importMap);
 
         }
-        if(mainWizFrame.getAttributeImportCount() > 1) {
+        /*if(adp.getAttributeImportCount() > 1) {
           nextPageID = pageID;
-          mainWizFrame.removeAttributeForImport();
+          adp.removeAttributeForImport();
         }
-        else
+        else */
           nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
 
         return true;

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-22 03:21:12 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-04-26 14:16:47 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ public class CodeImportSummary extends AbstractUIPage {
     this.add(WidgetFactory.makeDefaultSpacer());
     this.add(WidgetFactory.makeDefaultSpacer());
 
-    desc1 = WidgetFactory.makeHTMLLabel("", 2);
+    desc1 = WidgetFactory.makeHTMLLabel("", 1);
     this.add(desc1);
 
     desc3 = WidgetFactory.makeHTMLLabel(
@@ -117,7 +117,7 @@ public class CodeImportSummary extends AbstractUIPage {
     String ID = mainWizFrame.getFirstPageID();
 
     if (ID==null) return "";
-    int remaining = mainWizFrame.getAttributeImportCount();
+    int remaining = adp.getAttributeImportCount();
     if(remaining > 0) {
 			desc3.setText("");
       return "<p>Proceed to define or import data tables for the other attributes</p>";
@@ -132,7 +132,7 @@ public class CodeImportSummary extends AbstractUIPage {
     String ID = mainWizFrame.getFirstPageID();
     if (ID==null) return "";
     if(ID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
-      return "import the codes for the attribute <i>" + mainWizFrame.getCurrentImportAttributeName() + "</i>";
+      return "import the codes for the attribute <i>" + adp.getCurrentImportAttributeName() + "</i>";
     else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
       return "create your new data table";
     else return "create your new data package";
@@ -142,7 +142,14 @@ public class CodeImportSummary extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
+		
+		adp = getADP();
+		if(adp == null) {
+			
+			Log.debug(10, "Error! Unable to obtain the ADP in CodeImportSummary page!");
+			return;
+		}
+		
     String firstPageID = mainWizFrame.getFirstPageID();
     String prevID = mainWizFrame.getPreviousPageID();
     String currentAttrName = "";
@@ -150,10 +157,10 @@ public class CodeImportSummary extends AbstractUIPage {
     if(prevID.equals(DataPackageWizardInterface.CODE_DEFINITION)) {
 
       // need to update attribute in entity(if reqd) and remove attribute
-      currentAttrName = mainWizFrame.getCurrentImportAttributeName();
-      if(mainWizFrame.isCurrentImportNewTable())
+      currentAttrName = adp.getCurrentImportAttributeName();
+      if(adp.isCurrentImportNewTable())
         updateAttributeInNewTable();
-      mainWizFrame.removeAttributeForImport();
+      adp.removeAttributeForImport();
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p> The new data table has been created and the codes for the attribute " +
@@ -163,10 +170,10 @@ public class CodeImportSummary extends AbstractUIPage {
     } else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 
       String firstPage = mainWizFrame.getFirstPageID();
-      currentAttrName = mainWizFrame.getCurrentImportAttributeName();
-      if(mainWizFrame.isCurrentImportNewTable())
+      currentAttrName = adp.getCurrentImportAttributeName();
+      if(adp.isCurrentImportNewTable())
         updateAttributeInNewTable();
-      mainWizFrame.removeAttributeForImport();
+      adp.removeAttributeForImport();
       // just a summary of import. No further imports
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -175,7 +182,25 @@ public class CodeImportSummary extends AbstractUIPage {
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     } else if( prevID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD)) {
+			
+			desc1.setText(
+      WizardSettings.HTML_TABLE_LABEL_OPENING
+      +"<p>The new data table has been created successfully.</p>"
+			+ WizardSettings.HTML_TABLE_LABEL_CLOSING);
+			
+			edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+			if(arr == null) {
+				
+				arr = adp.getEntityArray();
+				if(arr == null) {
+					Log.debug(1, "Cant get entities");
+					return;
+				}
+				adp.setOriginalEntityArray(arr);
+			}
 
+			
+			
       // this is a new data table creation. Need to store this DOM to return it.
 
       Node newDOM = mainWizFrame.collectDataFromPages();
@@ -215,7 +240,7 @@ public class CodeImportSummary extends AbstractUIPage {
       }
       adp.setAccessionNumber(newid);
       adp.setLocation("");  // we've changed it and not yet saved
-
+			
 
     }
 
@@ -229,31 +254,19 @@ public class CodeImportSummary extends AbstractUIPage {
 
   private AbstractDataPackage getADP() {
 
-    DataViewContainerPanel resultPane = null;
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    AbstractDataPackage dp = null;
-    if (morphoFrame != null) {
-       resultPane = morphoFrame.getDataViewContainerPanel();
-    }
-    if ( resultPane != null) {
-       dp = resultPane.getAbstractDataPackage();
-    }
-
-    if(dp == null) {
-      Log.debug(16, " Abstract Data Package is null in CodeImportSummary Page");
-    }
+    AbstractDataPackage dp = UIController.getInstance().getCurrentAbstractDataPackage();
     return dp;
   }
 
   private void updateAttributeInNewTable() {
-
-    OrderedMap map = mainWizFrame.getCurrentImportMap();
+		
+		OrderedMap map = adp.getCurrentImportMap();
     adp = getADP();
     if(adp == null)
       return;
-    String eName = mainWizFrame.getCurrentImportEntityName();
-    String aName = mainWizFrame.getCurrentImportAttributeName();
-    String xPath = mainWizFrame.getCurrentImportXPath();
+    String eName = adp.getCurrentImportEntityName();
+    String aName = adp.getCurrentImportAttributeName();
+    String xPath = adp.getCurrentImportXPath();
 
     int entityIndex = adp.getEntityIndex(eName);
     int attrIndex = adp.getAttributeIndex(entityIndex, aName);
@@ -302,7 +315,7 @@ public class CodeImportSummary extends AbstractUIPage {
 
   private void updateButtonsStatus() {
 
-    if(mainWizFrame.getAttributeImportCount() > 0) {
+    if(adp != null && adp.getAttributeImportCount() > 0) {
       mainWizFrame.setButtonsStatus(true, true, false);
     } else {
       mainWizFrame.setButtonsStatus(true, false, true);

@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-20 16:58:28 $'
- * '$Revision: 1.64 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-26 14:16:47 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,6 @@ public class WizardContainerFrame
         cancelAction();
       }
     });
-    toBeImportedCount = 0;
     
   }
 
@@ -929,7 +928,25 @@ public class WizardContainerFrame
    *  The action to be executed when the "Cancel" button is pressed
    */
   public void cancelAction() {
-
+		
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if(adp != null) {
+			
+			edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+			if(arr != null) {
+				System.out.println("replacing subtree - ");
+				adp.deleteAllEntities();
+				/*edu.ucsb.nceas.morpho.datapackage.Entity[] newarr = adp.getEntityArray();
+				for(int i = 0; i < newarr.length; i++)
+					adp.deleteEntity(0);*/
+				for(int i = 0; i < arr.length; i++) {
+					System.out.println("adding entity - " + i);
+					adp.addEntity(arr[i]);
+				}
+			}
+			
+		}
+		
     this.setVisible(false);
 
     listener.wizardCanceled();
@@ -945,11 +962,9 @@ public class WizardContainerFrame
 
     //clear out pageStack
     pageStack.clear();
-
-    this.toBeImported = null;
-    this.toBeImportedCount = 0;
-    this.lastImportedAttributes = null;
-    this.lastImportedEntityName = null;
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if(adp != null) adp.clearAllAttributeImports();
+		
   }
 
   /**
@@ -1025,143 +1040,9 @@ public class WizardContainerFrame
     return dialogParent;
   }
 
-  public void addAttributeForImport(String entityName, String attributeName,
-                                    String scale, OrderedMap omap, String xPath,
-                                    boolean newTable) {
+  
 
-    List t = new ArrayList();
-    t.add(entityName);
-    t.add(attributeName);
-    t.add(scale);
-    t.add(omap);
-    t.add(xPath);
-    t.add(new Boolean(newTable));
-    if (toBeImported == null) {
-      toBeImported = new ArrayList();
-      toBeImportedCount = 0;
-    }
-    toBeImported.add(t);
-    toBeImportedCount++;
-    Log.debug(10,
-              "Adding Attr to Import - (" + entityName + ", " + attributeName +
-              ") ; count = " + toBeImportedCount);
-  }
-
-  public String getCurrentImportEntityName() {
-
-    if (toBeImportedCount == 0) {
-      return null;
-    }
-    List t = (List) toBeImported.get(0);
-    if (t == null) {
-      return null;
-    }
-    return (String) t.get(0);
-  }
-
-  public String getCurrentImportAttributeName() {
-
-    if (toBeImportedCount == 0) {
-      return null;
-    }
-    List t = (List) toBeImported.get(0);
-    if (t == null) {
-      return null;
-    }
-    return (String) t.get(1);
-  }
-
-  public String getCurrentImportScale() {
-    if (toBeImportedCount == 0) {
-      return null;
-    }
-    List t = (List) toBeImported.get(0);
-    if (t == null) {
-      return null;
-    }
-    return (String) t.get(2);
-  }
-
-  public OrderedMap getCurrentImportMap() {
-    if (toBeImportedCount == 0) {
-      return null;
-    }
-    List t = (List) toBeImported.get(0);
-    if (t == null) {
-      return null;
-    }
-    return (OrderedMap) t.get(3);
-  }
-
-  public OrderedMap getSecondImportMap() {
-    if (toBeImportedCount < 2) {
-      return null;
-    }
-    List t = (List) toBeImported.get(1);
-    if (t == null) {
-      return null;
-    }
-    return (OrderedMap) t.get(3);
-  }
-
-  public String getCurrentImportXPath() {
-    if (toBeImportedCount == 0) {
-      return null;
-    }
-    List t = (List) toBeImported.get(0);
-    if (t == null) {
-      return null;
-    }
-    return (String) t.get(4);
-  }
-
-  public boolean isCurrentImportNewTable() {
-    if (toBeImportedCount == 0) {
-      return false;
-    }
-    List t = (List) toBeImported.get(0);
-    if (t == null) {
-      return false;
-    }
-    return ( (Boolean) t.get(5)).booleanValue();
-  }
-
-  public int getAttributeImportCount() {
-    return toBeImportedCount;
-  }
-
-  public void removeAttributeForImport() {
-    if (toBeImportedCount == 0) {
-      return;
-    }
-    toBeImported.remove(0);
-    toBeImportedCount--;
-  }
-
-  public void setLastImportedEntity(String name) {
-    lastImportedEntityName = name;
-  }
-
-  public void setLastImportedDataSet(Vector data) {
-    lastImportedDataSet = data;
-  }
-
-  public void setLastImportedAttributes(List attr) {
-    lastImportedAttributes = attr;
-  }
-
-  public String getLastImportedEntity() {
-    return lastImportedEntityName;
-  }
-
-  public List getLastImportedAttributes() {
-    return lastImportedAttributes;
-  }
-
-  public Vector getLastImportedDataSet() {
-    return lastImportedDataSet;
-  }
-
+  
   // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private JLabel stepLabel;
@@ -1180,13 +1061,6 @@ public class WizardContainerFrame
   private WizardPageLibrary pageLib;
   private boolean showPageCount;
   private Map pageCache;
-
-  private List toBeImported = null;
-  private int toBeImportedCount = 0;
-
-  private List lastImportedAttributes;
-  private String lastImportedEntityName;
-  private Vector lastImportedDataSet;
 
   private String firstPageID;
   private static JFrame dummyFrame;

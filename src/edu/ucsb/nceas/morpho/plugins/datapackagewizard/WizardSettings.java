@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-20 00:51:35 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2004-04-26 14:16:47 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -826,53 +826,7 @@ public class WizardSettings {
 		}
 	}
 	
-	public static boolean isNewCustomUnit(String type, String unit) {
-		type = getStandardFormOfUnitType(type);
-    boolean newT = customUnitDictionaryUnitsCacheMap.containsKey(type);
-    if(newT) {
-      String[] units = (String[])customUnitDictionaryUnitsCacheMap.get(type);
-      if(units == null) return true;
-      if(Arrays.binarySearch(units, unit) >= 0) return false;
-      else return true;
-    } else return true;
-  }
-
-  public static void addNewUnit(String unitType, String unit, String SIUnit) {
-
-		unitType = getStandardFormOfUnitType(unitType);
-    int idx = Arrays.binarySearch(unitDictionaryUnitTypesArray, unitType);
-    if(idx < 0) {
-      idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);
-      if(idx < 0) {
-        String[] newArray = new String[customUnitDictionaryUnitTypesArray.length + 1];
-        insertObjectIntoArray(customUnitDictionaryUnitTypesArray, unitType, newArray);
-        customUnitDictionaryUnitTypesArray = newArray;
-        String units[] = new String[1];
-        units[0] = unit;
-        customUnitDictionaryUnitsCacheMap.put(unitType, units);
-        unitPreferenceMap.put(unitType.toLowerCase(), SIUnit);
-      } else {
-        String[] units = (String[]) customUnitDictionaryUnitsCacheMap.get(unitType);
-        int idx1 = Arrays.binarySearch(units, unit);
-        if(idx1 >= 0) return;
-        String[] newUnitArr = new String[units.length + 1];
-        insertObjectIntoArray(units, unit, newUnitArr);
-        customUnitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
-      }
-
-    } else {
-
-      String[] units = (String[]) unitDictionaryUnitsCacheMap.get(unitType);
-      int idx1 = Arrays.binarySearch(units, unit);
-      if(idx1 >= 0) return;
-      String[] newUnitArr = new String[units.length + 1];
-      insertObjectIntoArray(units, unit, newUnitArr);
-      unitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
-    }
-
-  }
-
-  /**
+	  /**
    *  given an entityType, returns an <code>OrderedMap<code> whose keys contain
    *  the human-readable display names for all the allowable MIME types (for the
    *  given entity type), and whose corresponding values are the actual MIME

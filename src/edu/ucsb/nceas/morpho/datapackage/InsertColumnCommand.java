@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-17 02:22:12 $'
-* '$Revision: 1.18 $'
+*     '$Date: 2004-04-26 14:16:46 $'
+* '$Revision: 1.19 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -342,10 +342,9 @@ public class InsertColumnCommand implements Command
       mScale = getMeasurementScale(map, xPath);
 
       if(attributePage.isImportNeeded()) {
-        CodeImportPage codeImportPage = (CodeImportPage)dpwPlugin.getPage(DataPackageWizardInterface.CODE_IMPORT_PAGE);
         String entityName = adp.getEntityName(entityIndex);
 
-        codeImportPage.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
+        adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
         DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
           public void wizardComplete(Node newDOM) {
             openNewWindow = true;

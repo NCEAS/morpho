@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-22 03:21:12 $'
-* '$Revision: 1.30 $'
+*     '$Date: 2004-04-26 14:16:47 $'
+* '$Revision: 1.31 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -997,7 +997,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         Point loc = attributePage.getLocationOnScreen();
         int xc = (int)(loc.getX() + attributePage.getWidth()/2 - DIALOG_SIZE.width/2);
         int yc = (int)(loc.getY() + attributePage.getHeight()/2 - DIALOG_SIZE.height/2);
-        importDialog = WidgetFactory.makeContainerDialog(codeImportPanel, okAction, cancelAction);
+        importDialog = WidgetFactory.makeContainerDialogNoParent(codeImportPanel, okAction, cancelAction);
         importDialog.setBounds(xc, yc, DIALOG_SIZE.width, DIALOG_SIZE.height);
       }
 
