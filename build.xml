@@ -33,11 +33,12 @@
 
    <target name="compileMdeBean" depends="init">
        <javac srcdir="${src.metaedit.home}" destdir="${classesdir}" classpath="lib/xml4j.jar;lib/xerces.jar;lib/sym.jar;lib/catalog.jar" />
-   </target>
+       <copydir src="${src.metaedit.home}/images/" dest="${classesdir}/${metaedit.home}" />
+  </target>
 
    <target name="compileClient" depends="init,compileCat,compileQueryBean,compileMdeBean">
        <javac srcdir="${src.dtclient.home}" destdir="${classesdir}" classpath="lib/xerces.jar;lib/xalan.jar;lib/sym.jar" /> 
-       <copydir src="images/" dest="${classesdir}/${dtclient.home}" />
+       <copydir src="${src.dtclient.home}/images/" dest="${classesdir}/${dtclient.home}" />
    </target> 
  
    <target name="buildAll" depends="init,compileClient">
