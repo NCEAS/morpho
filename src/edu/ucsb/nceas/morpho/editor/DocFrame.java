@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-11 21:45:23 $'
- * '$Revision: 1.110.2.3 $'
+ *     '$Date: 2003-08-12 04:08:33 $'
+ * '$Revision: 1.110.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1941,10 +1941,32 @@ public class DocFrame extends javax.swing.JFrame
                  (DefaultMutableTreeNode)instChildren.elementAt(instChildrenIndex);
       if(!simpleCompareNodes(instChild, templChild)){
         if (instChildrenIndex<(instChildren.size()-1)) {
-          instance.insert(templChild, instance.getIndex(instChild));
+          // making a clone of a node can be very time consuming;
+          // it is needed, however, because the instance node may appear
+          // more than once; do a lookahead and see if a
+          // name appears again and only clone in that case.
+          DefaultMutableTreeNode clone = templChild;
+          DefaultMutableTreeNode nextInstance = instance.getNextSibling();
+          if (nextInstance!=null) {
+            NodeInfo ni = (NodeInfo)instance.getUserObject();
+            NodeInfo nni = (NodeInfo)nextInstance.getUserObject();
+            if (ni.getName().equals(nni.getName())) {
+              clone = deepNodeCopy(templChild);
+            } 
+          }
+          instance.insert(clone, instance.getIndex(instChild));
         }
         else {
-          instance.add(templChild);
+          DefaultMutableTreeNode clone1 = templChild;
+          DefaultMutableTreeNode nextInstance1 = instance.getNextSibling();
+          if (nextInstance1!=null) {
+            NodeInfo ni1 = (NodeInfo)instance.getUserObject();
+            NodeInfo nni1 = (NodeInfo)nextInstance1.getUserObject();
+            if (ni1.getName().equals(nni1.getName())) {
+              clone1 = deepNodeCopy(templChild);
+            } 
+          }
+          instance.add(clone1);
         }
       }
       else {
