@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-22 20:41:14 $'
- * '$Revision: 1.8 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-23 18:14:27 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,23 +109,32 @@ public class OpenDialogBox extends JDialog
     this.ownerQuery = myQuery;
   
     
-    setSize(800, 600);
+    setSize(820, 600);
     setTitle("Open");
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
     getContentPane().setBackground(Color.white);
     
-    JPanel resultPanel = new JPanel();
-    resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+    // Create top padding
+    JPanel topMarginPanel = new JPanel();
+    topMarginPanel.setLayout(new BoxLayout(topMarginPanel,BoxLayout.Y_AXIS));
+    getContentPane().add(BorderLayout.NORTH, topMarginPanel);
+    topMarginPanel.add(Box.createVerticalStrut(8));
     
+    
+    // Create result panel
+    JPanel resultPanel = new JPanel();
+    resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.X_AXIS));
     getContentPane().add(BorderLayout.CENTER, resultPanel);
-    resultPanel.add(Box.createVerticalStrut(8));
+    // Add left padding
+    resultPanel.add(Box.createHorizontalStrut(8));
     // Get owner resultset and onwer panel
     createOwnerPanel();
-    
     // Add owner panel to the resulPanel
     resultPanel.add(ownerPanel);
+    // Add rightPadding
+    resultPanel.add(Box.createHorizontalStrut(8));
     
     // Create a margin panel
     JPanel marginPanel = new JPanel();
