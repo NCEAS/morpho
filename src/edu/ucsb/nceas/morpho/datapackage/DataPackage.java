@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 00:30:31 $'
- * '$Revision: 1.72 $'
+ *     '$Date: 2002-09-06 17:58:21 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -216,7 +216,7 @@ public class DataPackage implements XMLFactoryInterface
     //if so, now get the sub-element and return it
     File elementSrcFile = null;
     try {
-      elementSrcFile = getFileWithID(this.id);
+      elementSrcFile = getFileWithID(identifier);
     } catch (Throwable t) {
       throw new DocumentNotFoundException("DataPackage.open(): "
                             +"Error opening element with ID: "+identifier);
@@ -1245,12 +1245,12 @@ public class DataPackage implements XMLFactoryInterface
       
       //create a html file from all of the metadata
       StringBuffer htmldoc = null;
-//      htmldoc.append("<html><head></head><body>");
 
       ClassLoader classLoader = this.getClass().getClassLoader();
       for(int i=0; i<fileV.size(); i++)
       {
-Log.debug(50,"* * * LOOP "+i+"...");            
+      
+Log.debug(50,"* * DataPackage: LOOP "+i+"...");            
         FileInputStream fis = new FileInputStream((File)fileV.elementAt(i));
         String header = "";
         for(int j=0; j<10; j++)
@@ -1258,31 +1258,41 @@ Log.debug(50,"* * * LOOP "+i+"...");
           header += (char)fis.read();
         }
         fis.close();
-Log.debug(50,"* * * header = "+header);            
+Log.debug(50,"* * DataPackage: header = "+header);            
+
         if (header.indexOf("<?xml") != -1)
         { //this is an xml file so we can transform it.
           //transform each file individually then concatenate all of the 
-Log.debug(50,"* * * doing xml transform");            
           //transformations .
-Log.debug(50,"* * * File ="+((File)fileV.elementAt(i)).getAbsolutePath());            
+Log.debug(50,"* * DataPackage: doing xml transform");   
+         
             Reader xmlInputReader = new FileReader((File)fileV.elementAt(i));
-Log.debug(50,"* * * xmlInputReader ="+xmlInputReader);            
 
             String stylesheet = config.get("genericStylesheet", 0);
-Log.debug(50,"* * * stylesheet ="+stylesheet);            
+            
 //            BufferedReader sis = new BufferedReader(new InputStreamReader(
 //                                        classLoader.getResourceAsStream(stylesheet)));
             Reader xslInputReader 
                     = new InputStreamReader(
                                   classLoader.getResourceAsStream(stylesheet));
-Log.debug(50,"* * * xslInputReader ="+xslInputReader);
             Reader result = null;
             XMLTransformer transformer = XMLTransformer.getInstance();
-Log.debug(50,"* * * transformer ="+transformer);            
+            
+Log.debug(50,"* * DataPackage: File ="+((File)fileV.elementAt(i)).getAbsolutePath());            
+Log.debug(50,"* * DataPackage: xmlInputReader ="+xmlInputReader);            
+Log.debug(50,"* * DataPackage: stylesheet ="+stylesheet);            
+Log.debug(50,"* * DataPackage: xslInputReader ="+xslInputReader);
+Log.debug(50,"* * DataPackage: transformer ="+transformer); 
+           
             try {
-Log.debug(50,"* * * GETTING result...");            
+Log.debug(50,"* * DataPackage: GETTING result...");
+Log.debug(50,"* * DataPackage: XML INPUT WAS: ");
+Log.debug(50,"* *             "+IOUtil.getAsStringBuffer(xmlInputReader,false));
+Log.debug(50,"\n* * DataPackage: XSL INPUT WAS: ");
+Log.debug(50,"* *             "+IOUtil.getAsStringBuffer(xslInputReader,false));
+            
               result = transformer.transform(xmlInputReader, xslInputReader);
-Log.debug(50,"* * * result ="+result);            
+Log.debug(50,"* * DataPackage: GOT result: "+result);            
             } catch (IOException e) {
               e.printStackTrace();
               Log.debug(9,"Unexpected Error Styling Document: "+e.getMessage());
@@ -1290,7 +1300,7 @@ Log.debug(50,"* * * result ="+result);
               throw e;
             }
 
-Log.debug(50,"* * * GETTING HTML DOC...");            
+Log.debug(50,"* * DataPackage: GETTING HTML DOC...");            
             try {
               htmldoc = IOUtil.getAsStringBuffer(result, true);
             } catch (IOException e) {
@@ -1301,8 +1311,8 @@ Log.debug(50,"* * * GETTING HTML DOC...");
               throw e;
             }
             
-Log.debug(50,"* * * HTML DOC = "+htmldoc);            
-Log.debug(50,"* * * * * * * * * * * * * * * * * * * * * * * * *");            
+Log.debug(50,"* * DataPackage: HTML DOC = "+htmldoc);            
+Log.debug(50,"* * DataPackage: * * * * * * * * * * * * * * * * * * * * * *");            
             
 //          CatalogEntityResolver cer = new CatalogEntityResolver();
 //          try 
@@ -1347,7 +1357,7 @@ Log.debug(50,"* * * * * * * * * * * * * * * * * * * * * * * * *");
 
         } else { 
           //this is a data file so we should link to it in the html
-Log.debug(50,"* * * doing data file");            
+Log.debug(50,"* * DataPackage: doing data file");            
           
           htmldoc = new StringBuffer("<html><head></head><body>");
           Vector triplesV = triples.getCollection();
@@ -1375,10 +1385,10 @@ Log.debug(50,"* * * doing data file");
           htmldoc.append("</body></html>");      
         }
       } //end if data or xml file
-Log.debug(50,"* * * getting htmlfile; packagePath = "+packagePath);            
+Log.debug(50,"* * DataPackage: getting htmlfile; packagePath = "+packagePath);            
       
       File htmlfile = new File(packagePath + "/metadata.html");
-Log.debug(50,"* * * htmlfile = "+htmlfile.getAbsolutePath());            
+Log.debug(50,"* * DataPackage: htmlfile = "+htmlfile.getAbsolutePath());            
       FileOutputStream fos = new FileOutputStream(htmlfile);
       BufferedOutputStream bfos = new BufferedOutputStream(fos);
       StringReader sr = new StringReader(htmldoc.toString());
