@@ -63,9 +63,16 @@
 <tempDir>./tmp</tempDir>
 <accessionNumber>
   <scope>USERNAME</scope>
-  <lastId>636</lastId>
+  <lastId>724</lastId>
   <separator>.</separator>
 </accessionNumber>
+<packageEditor>
+  <paths>
+    <titlePath>/dataset/title</titlePath>
+    <originatorPath>/dataset/originator/individualName/surName</originatorPath>
+    <altTitlePath>/dataset/shortName</altTitlePath>
+  </paths>
+</packageEditor>
 <customFrames>
   <mainFrame>Resource</mainFrame>
   <frame>

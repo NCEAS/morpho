@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 22:50:18 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-06 22:39:15 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ public class DataPackagePlugin
       public void actionPerformed(ActionEvent e) 
       {
         framework.debug(1, "Action fired: New Data Package");
-        DataPackage dp = new DataPackage();
+        //DataPackage dp = new DataPackage();
         //DataPackageGUI gui = new DataPackageGUI(framework, dp);
         PackageWizardShell pws = new PackageWizardShell(framework);
         pws.show();

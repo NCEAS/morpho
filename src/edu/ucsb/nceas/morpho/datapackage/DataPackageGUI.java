@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-22 22:04:32 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-06 22:39:15 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     contentPane.setLayout(box);
     initComponents();
     pack();
-    setSize(800, 600);
+    setSize(500, 500);
     this.show();
   }
   
@@ -65,15 +65,54 @@ public class DataPackageGUI extends javax.swing.JFrame
   private void initComponents()
   {
     contentPane.setLayout(new FlowLayout());
-    JPanel listPanel = createListPanel();
     Vector orig = new Vector();
-    orig.addElement("Joe Smith");
-    orig.addElement("Jim Bo");
-    orig.addElement("Julie Andrews");
+    String title = "No Title Provided";
+    String altTitle = "No Alternate Title Provided";
+    Hashtable docAtts = dataPackage.getAttributes();
     
-    JPanel basicInfoPanel = createBasicInfoPanel("knb.1", "some title", 
-                                                 "some alt title", orig);
     
+    
+    if(docAtts.containsKey("originator"))
+    {
+      orig = (Vector)docAtts.get("originator");
+    }
+    
+    if(docAtts.containsKey("title"))
+    {
+      Vector v = (Vector)docAtts.get("title");
+      if(v.size() != 0)
+      {
+        title = (String)v.elementAt(0);
+      }
+    }
+    
+    if(docAtts.containsKey("altTitle"))
+    {
+      Vector v = (Vector)docAtts.get("altTitle");
+      if(v.size() != 0)
+      {
+        altTitle = (String)v.elementAt(0);
+      }
+    }
+    
+    JPanel basicInfoPanel = createBasicInfoPanel(dataPackage.getIdentifier(), 
+                                                 title, 
+                                                 altTitle, orig);
+    Hashtable relfiles = dataPackage.getRelatedFiles();
+    Vector listitems = new Vector();
+    Enumeration keys = relfiles.keys();
+    while(keys.hasMoreElements())
+    {
+      String key = (String)keys.nextElement();
+      System.out.println("key: " + key);
+      Vector v = (Vector)relfiles.get(key);
+      for(int i=0; i<v.size(); i++)
+      {
+        String s = key + " (" + v.elementAt(i) + ")";
+        listitems.addElement(s);
+      }
+    }
+    JPanel listPanel = createListPanel(listitems);
     contentPane.add(basicInfoPanel);
     contentPane.add(listPanel);
   }
@@ -86,6 +125,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     JLabel titleL = new JLabel("Title: ");
     JLabel altTitleL = new JLabel("Alternate Title: ");
     JLabel originatorL = new JLabel("Data Originator: ");
+    
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     
     JPanel tempPanel = new JPanel();
     tempPanel.add(identifierL);
@@ -117,16 +158,10 @@ public class DataPackageGUI extends javax.swing.JFrame
     return panel;
   }
   
-  private JPanel createListPanel()
-  {
-    Vector v = new Vector();
-    v.addElement("alaskdjf;lsafd");
-    v.addElement("alksdjf;lksadjfasdl;fkj");
-    v.addElement("32l234lk2j4");
-    v.addElement("alaskdjf;lsafd");
-    v.addElement("alksdjf;lksadjfasdl;fkj");
-    
+  private JPanel createListPanel(Vector v)
+  { 
     ///////////////dataFile/////////////////
+    /*
     JList dataFileList = new JList(v);
     dataFileList.setVisibleRowCount(10);
     JScrollPane dataFileScrollPane = new JScrollPane(dataFileList);
@@ -161,7 +196,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     entityFileButtonList.add(new JLabel("Entity Descriptors"));
     entityFileButtonList.add(entityFileScrollPane);
     entityFileButtonList.add(entityFileButtonPanel);
-    
+    */
     /////////otherFile////////////////////////
     JList otherFileList = new JList(v);
     otherFileList.setVisibleRowCount(10);
@@ -176,7 +211,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     JPanel otherFileButtonList = new JPanel();
     otherFileButtonList.setLayout(new BoxLayout(otherFileButtonList,
                                                BoxLayout.Y_AXIS));
-    otherFileButtonList.add(new JLabel("Other Descriptors"));
+    otherFileButtonList.add(new JLabel("Package Members"));
     otherFileButtonList.add(otherFileScrollPane);
     otherFileButtonList.add(otherFileButtonPanel);
     
@@ -184,12 +219,12 @@ public class DataPackageGUI extends javax.swing.JFrame
     JPanel listPanel = new JPanel();
     listPanel.setBorder(BorderFactory.createCompoundBorder(
                         BorderFactory.createTitledBorder(
-                        "Package Members"),
+                        /*"Package Members"*/""),
                         BorderFactory.createEmptyBorder(4, 4, 4, 4)));
     listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.X_AXIS));
-    listPanel.setPreferredSize(new Dimension(780, 270));
-    listPanel.add(dataFileButtonList);
-    listPanel.add(entityFileButtonList);
+    listPanel.setPreferredSize(new Dimension(400, 270));
+    //listPanel.add(dataFileButtonList);
+    //listPanel.add(entityFileButtonList);
     listPanel.add(otherFileButtonList);
     
     return listPanel; 
@@ -199,6 +234,6 @@ public class DataPackageGUI extends javax.swing.JFrame
   {
     ConfigXML conf = new ConfigXML("./lib/config.xml");
     ClientFramework cf = new ClientFramework(conf);
-    new DataPackageGUI(cf, new DataPackage()).show();
+    //new DataPackageGUI(cf, new DataPackage()).show();
   }
 }

@@ -62,3 +62,9 @@ PUBLIC "-//NCEAS//eml-dataset-2.0//EN" "eml-dataset-2.0.dtd"
 SYSTEM "urn:nceas:test-eml-dataset-2.0" "eml-dataset-2.0.dtd" 
 SYSTEM "eml-dataset-2.0.dtd" "eml-dataset-2.0.dtd"
 
+OVERRIDE YES
+PUBLIC "eml-entity-2.0" "eml-entity-2.0.dtd"
+PUBLIC "-//NCEAS//eml-entity-2.0//EN" "eml-entity-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-entity-2.0" "eml-entity-2.0.dtd" 
+SYSTEM "eml-entity-2.0.dtd" "eml-entity-2.0.dtd"
+

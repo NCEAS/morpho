@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-06 17:36:41 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-06 22:39:15 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -493,7 +493,8 @@ public class PackageWizardShell extends javax.swing.JFrame
         FileInputStream fs;
         
         CatalogEntityResolver cer = new CatalogEntityResolver();
-        try {
+        try 
+        {
           Catalog myCatalog = new Catalog();
           myCatalog.loadSystemCatalogs();
           ConfigXML config = framework.getConfiguration();
@@ -633,6 +634,21 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
       }
       */
+    }
+    
+    if(openCheckBox.isSelected())
+    {
+      WizardFrameContainer wfc = (WizardFrameContainer)
+                                  frameWizards.elementAt(0);
+      String location = DataPackage.LOCAL;
+      String identifier = wfc.id;
+      Vector relations = triples.getCollection();
+      framework.debug(9, "location: " + location + " identifier: " + 
+                      identifier + " relations: " + relations.toString());
+      DataPackage dp = new DataPackage(location, identifier, 
+                                     relations, framework);
+      DataPackageGUI gui = new DataPackageGUI(framework, dp);
+      gui.show();
     }
     
     //make the package wizard go away
