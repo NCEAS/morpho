@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 18:04:32 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-07-05 20:53:44 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ import com.arbortext.catalog.*;
 /**
  * A graphical window for adding new files to a package
  */
-public class NewPackageMetadataWizard extends JDialog
+public class NewPackageMetadataWizard extends JFrame
                                       implements ActionListener,
                                                  EditingCompleteListener
 {
@@ -106,7 +106,7 @@ public class NewPackageMetadataWizard extends JDialog
   public NewPackageMetadataWizard(ClientFramework cont, boolean modal,
                                   DataPackage dataPackage)
   {
-    super((Frame)cont, modal);
+    //super((Frame)cont, modal);
     framework = cont;
     config = framework.getConfiguration();
     this.dataPackage = dataPackage;
@@ -343,6 +343,9 @@ public class NewPackageMetadataWizard extends JDialog
     DataPackageGUI dpg = new DataPackageGUI(framework, dataPackage);
     dpg.show();
     dispose();
+    dpg.setName("Package Editor:" + dataPackage.getID());
+    framework.addWindow(dpg);
+    framework.removeWindow(this);
   }
 
   /**
@@ -922,6 +925,9 @@ public class NewPackageMetadataWizard extends JDialog
                                              framework);
     DataPackageGUI dpg = new DataPackageGUI(framework, newpackage);
     dpg.show();
+    dpg.setName("Package Editor:" + newpackage.getID());
+    framework.addWindow(dpg);
+    framework.removeWindow(this);
   }
 
   public void actionPerformed(ActionEvent e) 
