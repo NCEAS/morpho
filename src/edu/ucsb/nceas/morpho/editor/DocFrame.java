@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-31 19:29:24 $'
- * '$Revision: 1.139 $'
+ *     '$Date: 2004-02-02 21:58:56 $'
+ * '$Revision: 1.140 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -741,7 +741,6 @@ public class DocFrame extends javax.swing.JFrame
     if (templateFlag) {
       templateFlag = false;
       rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-//      setAllNodesAsSelected(rootNode);  //DFH
       setAttributeNames(rootNode);
       setChoiceNodes(rootNode);
       setAllNodesAsSelected(rootNode);
@@ -851,7 +850,6 @@ public class DocFrame extends javax.swing.JFrame
     if (templateFlag) {
       templateFlag = false;
       rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-//      setAllNodesAsSelected(rootNode);  //DFH
       setAttributeNames(rootNode);
       setChoiceNodes(rootNode);
       setAllNodesAsSelected(rootNode);
@@ -865,7 +863,6 @@ public class DocFrame extends javax.swing.JFrame
       tree.setModel(treeModel);
 
       tree.expandRow(1);
-//      tree.expandRow(2);
       tree.setSelectionRow(0);
       return;
     }
@@ -876,7 +873,6 @@ public class DocFrame extends javax.swing.JFrame
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     // the next line sets all the nodes from the instance as selected
     // this is for initial CHOICES in the merged tree
-    setAllNodesAsSelected(rootNode);  //DFH
     String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
     // arbitrary assumption that the formatting document has the rootname +
     // ".xml" as a file name; the formatting document is XML with the same
@@ -920,7 +916,6 @@ public class DocFrame extends javax.swing.JFrame
 
       setAttributeNames(rootNode);
       setChoiceNodes(rootNode);
-      setAllNodesAsSelected(rootNode);
       setSelectedNodes(rootNode);
       setLeafNodes(rootNode);
     }
@@ -1153,7 +1148,6 @@ public class DocFrame extends javax.swing.JFrame
    */
   void setSelectedNodes(DefaultMutableTreeNode node)
   {
-		if (true) return;
     DefaultMutableTreeNode parentNode = null;
     DefaultMutableTreeNode tempNode = null;
     DefaultMutableTreeNode curNode = node.getFirstLeaf();
@@ -1189,14 +1183,21 @@ public class DocFrame extends javax.swing.JFrame
             cNode = (DefaultMutableTreeNode)path2root.elementAt(i);
             NodeInfo cni = (NodeInfo)cNode.getUserObject();
             if (cni.isChoice()) {
-              //cni.setSelected(true);
+//              cni.setSelected(true);
               for (Enumeration eee = (cNode.getParent()).children();eee.hasMoreElements(); ) {
                 DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
                 NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
-                if (ni1.getName().equals(cni.getName())) {
+                if ((ni1.getName().equals(cni.getName()))||
+                  (ni1.getName().startsWith("attribute")))
+                     // 'attribute' check needed for eml2
+                {
                   ni1.setSelected(true);
                 } else {
-                  ni1.setSelected(false);
+                  if (cni.isCheckbox() && hasNonEmptyTextLeaves(nnn)) {
+                       ni1.setSelected(true);
+                  } else {
+                    ni1.setSelected(false);
+                  }
                 }
               }
             }

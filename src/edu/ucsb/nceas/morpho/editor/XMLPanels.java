@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-31 19:29:24 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2004-02-02 21:58:56 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -199,8 +199,7 @@ public class XMLPanels extends Component
           DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
 		      NodeInfo info = (NodeInfo)(nd.getUserObject());
 //          Log.debug(0, "info.name: "+info.name);
-          if ((!((info.name).equals("#PCDATA"))) &&
-                (info.isSelected()) )
+          if (!((info.name).equals("#PCDATA")))
           {
             if (((info.name).indexOf("CHOICE")<0) &&
                 ((info.name).indexOf("SEQUENCE")<0) )  
@@ -298,6 +297,7 @@ public class XMLPanels extends Component
 		      NodeInfo info1 = (NodeInfo)(nd.getUserObject());
 		      if ((info1.name).equals("#PCDATA")) {
 		        txt = info1.getPCValue();
+            if (txt.equals("")) txt = " ";
           }
         }
           if (txt.length()>0) {
