@@ -3,9 +3,9 @@
 # Shell script for launching morpho from unix systems
 #
 # '$RCSfile: morpho,v $'
-# '$Author: brooke $'
-# '$Date: 2002-10-28 17:32:17 $'
-# '$Revision: 1.19 $'
+# '$Author: tao $'
+# '$Date: 2002-11-01 23:39:28 $'
+# '$Revision: 1.20 $'
 
 if ! ls $JAVA_HOME/bin/ | grep -q java; then
  echo ----------------------------------------------------------------------
@@ -23,12 +23,12 @@ fi
 
 
 XMLP=./lib/xercesImpl.jar
-API=./lib/xmlParserAPIs.jar
+API=./lib/xml-apis.jar
 XALAN=./lib/xalan.jar
-# DMC=./lib/morpho.jar
-DMC=./build/morpho.jar
-# CFG=./lib/morpho-config.jar
-CFG=./build/morpho-config.jar
+DMC=./lib/morpho.jar
+#DMC=./build/morpho.jar
+CFG=./lib/morpho-config.jar
+#CFG=./build/morpho-config.jar
 JLF=./lib/shippedIcons.jar
 HTP=./lib/httpclient.jar
 ITS=./lib/itislib.jar
