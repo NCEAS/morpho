@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-25 21:28:06 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ public class AddResearchProjectCommand implements Command {
 
       try {
         insertProject();
+        UIController.showNewPackage(adp);
       } catch (Exception w) {
         Log.debug(15, "Exception trying to modify project DOM: "+w);
         w.printStackTrace();
