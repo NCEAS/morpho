@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.78 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-20 21:10:49 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,8 +88,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     this.morpho = morpho;
     this.config = morpho.getConfiguration();
     loadConfigurationParameters();
-    // Create the tabbed pane for the owner queries
-    ownerQuery = new Query(getOwnerQuery(), morpho);
+   
     // Create the menus and toolbar actions, will register later
     initializeActions(); 
     // Add the menus and toolbars
@@ -99,9 +98,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Add search menu
     controller.addMenu("Search", new Integer(3), menuActions);
     controller.addToolbarActions(toolbarActions);
-
-    // Create the tabbed pane for the owner queries
-    createOwnerPanel();
 
     // Register Services
     try
@@ -144,9 +140,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     
     // Create a onwer query
     GUIAction openDialogBoxAction = new GUIAction("Open", null, 
-                new OpenDialogBoxCommand(morpho, ownerQuery));
+                          new OpenDialogBoxCommand(morpho));
     openDialogBoxAction.setSmallIcon( new ImageIcon(getClass().
-                                      getResource("openButton.gif")));
+                  getResource("/toolbarButtonGraphics/general/Open16.gif")));
     openDialogBoxAction.setMenuItemPosition(0);
     openDialogBoxAction.setToolTipText("Open...");
     
@@ -161,40 +157,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    
   }
 
-  /**
-   * Construct a query suitable for getting the owner documents
-   */
-  private String getOwnerQuery()
-  {
-    ConfigXML profile = morpho.getProfile();
-    StringBuffer searchtext = new StringBuffer();
-    searchtext.append("<?xml version=\"1.0\"?>\n");
-    searchtext.append("<pathquery version=\"1.0\">\n");
-    String lastname = profile.get("lastname", 0);
-    String firstname = profile.get("firstname", 0);
-    searchtext.append("<querytitle>My Data (" + firstname + " " + lastname);
-    searchtext.append(")</querytitle>\n");
-    Vector returnDoctypeList = profile.get("returndoc");
-    for (int i=0; i < returnDoctypeList.size(); i++) {
-      searchtext.append("<returndoctype>");
-      searchtext.append((String)returnDoctypeList.elementAt(i));
-      searchtext.append("</returndoctype>\n");
-    }
-    Vector returnFieldList = profile.get("returnfield");
-    for (int i=0; i < returnFieldList.size(); i++) {
-      searchtext.append("<returnfield>");
-      searchtext.append((String)returnFieldList.elementAt(i));
-      searchtext.append("</returnfield>\n");
-    }
-    searchtext.append("<owner>" + morpho.getUserName() + "</owner>\n");
-    searchtext.append("<querygroup operator=\"UNION\">\n");
-    searchtext.append("<queryterm casesensitive=\"true\" ");
-    searchtext.append("searchmode=\"contains\">\n");
-    searchtext.append("<value>%</value>\n");
-    searchtext.append("</queryterm></querygroup></pathquery>");
 
-    return searchtext.toString();
-  }
 
   /**
    * Load the configuration parameters that we need
@@ -225,34 +188,14 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     refreshOwnerPanel();
   }
 
-  /**
-   * Create the owner panel with the appropriate query
-   */
-  private void createOwnerPanel()
-  {
-   
-    ResultSet results = ownerQuery.execute();
-    ownerPanel = new ResultPanel(results, true, false, null);
-
-    // Add the content pane, menus, and toolbars
-    //framework.setMainContentPane(ownerPanel);
-
-    // Reload any saved queries in the search menu
-    ownerPanel.loadSavedQueries();
-  }
+ 
 
   /**
    * Refresh the owner panel after the username has changed
    */
   private void refreshOwnerPanel()
   {
-    // Create the tabbed pane for the owner queries
-    ownerQuery = new Query(getOwnerQuery(), morpho);
-    ResultSet results = ownerQuery.execute();
-    ownerPanel.setResults(results);
-
-    // Reload any saved queries in the search menu
-    ownerPanel.loadSavedQueries();
+ 
   }
 
   /** 
@@ -261,7 +204,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */ 
   public void refresh()
   {
-      refreshOwnerPanel();
+  
   }
   
 
