@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-03 18:30:45 $'
- * '$Revision: 1.79.2.1 $'
+ *     '$Date: 2002-07-03 23:04:44 $'
+ * '$Revision: 1.79.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                                        WindowListener
 {
   public JPanel basicInfoPanel;
-  private ClientFramework framework;
+  ClientFramework framework;
   private ConfigXML config;
   Container contentPane;
   private DataPackage dataPackage;
@@ -71,6 +71,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   private JButton editBaseInfoButton = new JButton();
   public Hashtable listValueHash = new Hashtable();
   private Hashtable fileAttributes = new Hashtable();
+  DataPackageViewer dpv;
   private static final String htmlBegin = "<html><font color=black>";
   private static final String htmlEnd = "</font></html>";
   
@@ -1160,11 +1161,19 @@ public class DataPackageGUI extends javax.swing.JFrame
       } catch (ServiceNotHandledException snhe) {
         framework.debug(6, snhe.getMessage());
       }
-    
+      
+     if (this.dpv!=null) {
+    //  dpv.setVisible(false);
+      dpv.dispose();
+      dpv = null;
+    }
+   
       this.dispose();
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
-      newgui.show();
-    
+    //  newgui.show();
+    DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
+    this.dpv = dpv;
+    dpv.show();
   }
   
   public void editingCanceled(String xmlString, String id, String location)

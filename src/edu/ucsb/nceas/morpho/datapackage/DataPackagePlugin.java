@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-03 18:30:45 $'
- * '$Revision: 1.17.6.1 $'
+ *     '$Date: 2002-07-03 23:04:44 $'
+ * '$Revision: 1.17.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,30 +156,13 @@ public class DataPackagePlugin
     //framework.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
     final DataPackageGUI gui = new DataPackageGUI(framework, dp);
-   /*
-   gui.addWindowListener(new WindowAdapter()
-    {
-      public void windowClosed(WindowEvent e)
-      {
-        framework.removeWindow(gui);
-      }
-      
-      public void windowClosing(WindowEvent e)
-      {
-        framework.removeWindow(gui);
-      }
-    });
-    gui.setName("Package Editor: " + dp.getID());
-    
-   // framework.addWindow(gui);
-   // gui.show();
-   */ 
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(0,0));
     packagePanel.add(BorderLayout.CENTER,gui.basicInfoPanel);
     packagePanel.add(BorderLayout.EAST,gui.listPanel);
     
     DataPackageViewer dpv = new DataPackageViewer("DataPackageViewer", dp);
+    gui.dpv = dpv;
     dpv.setFramework(framework);
     //dpv.toppanel = gui.basicInfoPanel;
     dpv.toppanel = packagePanel;
@@ -187,7 +170,6 @@ public class DataPackagePlugin
     
     dpv.listValueHash = gui.listValueHash;
     dpv.init();
-    System.out.println("DataPackageViewer created !!!");
     dpv.setVisible(true);
   }
   

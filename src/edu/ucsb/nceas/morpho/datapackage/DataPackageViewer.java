@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-03 18:30:45 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-07-03 23:04:44 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,6 +121,28 @@ public class DataPackageViewer extends javax.swing.JFrame
     this();
     setTitle(sTitle);
     this.dp = dp;
+  }
+  
+  /**
+   *Create and new instance and set the DataPackage
+   */
+  public DataPackageViewer(String sTitle, DataPackage dp, DataPackageGUI dpgui) {
+    this();
+    setTitle(sTitle);
+    this.dp = dp;
+    
+    JPanel packagePanel = new JPanel();
+    packagePanel.setLayout(new BorderLayout(0,0));
+    packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
+    packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
+    this.framework = dpgui.framework;
+    this.toppanel = packagePanel;
+    this.entityItems = dpgui.entityitems;
+    
+    this.listValueHash = dpgui.listValueHash;
+    this.init();
+    this.setVisible(true);
+
   }
 	
 	/**
