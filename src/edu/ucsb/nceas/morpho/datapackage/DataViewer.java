@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-02 19:30:26 $'
- * '$Revision: 1.88 $'
+ *     '$Date: 2003-12-02 20:33:38 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -475,6 +475,10 @@ public class DataViewer extends javax.swing.JPanel
     
     public void setDataFile(File file) {
       this.dataFile = file;
+    }
+    
+    public void setDataFileId(String dfid) {
+      this.dataFileId = dfid;
     }
    
     public PersistentVector getPV() {
@@ -973,7 +977,11 @@ public class DataViewer extends javax.swing.JPanel
     }
     
     public void setDataPackage(DataPackage dp) {
-        this.dp = dp;
+      this.dp = dp;
+    }
+
+    public DataPackage getDataPackage() {
+      return this.dp;
     }
      
     public void setAttributeFile(File attr) {

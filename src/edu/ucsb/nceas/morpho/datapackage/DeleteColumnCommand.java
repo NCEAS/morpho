@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:51:00 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-02 20:33:38 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ import org.w3c.dom.NodeList;
 
 
 /**
- * Class to handle delete  a cloumn command
+ * Class to handle delete  a column command
  */
 public class DeleteColumnCommand implements Command 
 {
@@ -82,12 +82,19 @@ public class DeleteColumnCommand implements Command
        if (dataView != null)
        {
          // Get parameters and run it
+         DataPackage dp = dataView.getDataPackage();
+         AbstractDataPackage adp = dataView.getAbstractDataPackage();
+         int entityIndex = dataView.getEntityIndex();
          JTable jtable=dataView.getDataTable();
          PersistentTableModel ptmodel=(PersistentTableModel)jtable.getModel();
          PersistentVector vector=dataView.getPV();
-         Document attributeDocoumnet=dataView.getAttributeDoc();
+         Document attributeDocument=dataView.getAttributeDoc();
          Vector columnLabels=dataView.getColumnLabels();
-         deleteColumn(jtable, ptmodel, vector, attributeDocoumnet,columnLabels);
+         if (dp!=null) {  // old datapackage
+           deleteColumn(jtable, ptmodel, vector, attributeDocument,columnLabels);
+         } else { // new eml2
+           deleteColumn(jtable, ptmodel, vector, adp, entityIndex, columnLabels);
+         }
        }
        
     }//if
@@ -96,7 +103,32 @@ public class DeleteColumnCommand implements Command
   
   
   
-  /* Method to insert a new column into table */
+ /**
+  *  Method to delete a column into table
+  *  eml2.0.0 version (Morpho 1.5 +)
+  */
+   private void deleteColumn(JTable table, PersistentTableModel ptm, 
+                           PersistentVector pv, AbstractDataPackage adp, 
+                           int entityIndex, Vector column_labels)
+  {  
+    int sel = table.getSelectedColumn();
+    if (sel>-1) 
+    {
+      adp.deleteAttribute(entityIndex, sel);
+
+      column_labels.removeElementAt(sel);
+      ptm.deleteColumn(sel);
+      pv = ptm.getPersistentVector();
+      ptm.fireTableStructureChanged();    
+      
+    }
+  }
+  
+  
+ /** 
+  *  Method to delete a column into table 
+  *  This is the method used for Morpho version 1.4 and earlier
+  */
   private void deleteColumn(JTable table, PersistentTableModel ptm, 
                            PersistentVector pv, Document attributeDoc, 
                            Vector column_labels)
@@ -116,7 +148,7 @@ public class DeleteColumnCommand implements Command
       ptm.fireTableStructureChanged();    
     }
   
-  }//insetColumn
+  }//deleteColumn
 
  
   /**
@@ -124,4 +156,4 @@ public class DeleteColumnCommand implements Command
    */ 
   // public void undo();
 
-}//class CancelCommand
+}//class DeleteColumnCommand
