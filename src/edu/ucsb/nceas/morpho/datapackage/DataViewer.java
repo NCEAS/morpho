@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-06 18:13:22 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2002-09-06 22:29:03 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,49 +70,64 @@ import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.util.Log;
 
 
-//public class DataViewer extends javax.swing.JFrame
+/*
+ * The DataViewer class is a panel that displays a text-based table
+ * (or an image) based on metadata descriptions for an Entity and the
+ * associated Phyical and Attribute modules of eml.
+ * Currently, eml2-beta 1.6 is assumed. (some features are 'hard-coded'
+ * in this class and will need to be updated for future versions.)
+ * 
+ * A PersistentTableModel is used so that very large tables can be
+ * displayed (millions of rows). Data editing is also enabled with
+ * the ability to add rows and columns. Columns can also be sorted.
+ * Changees to the table are kept in a persisten vector until
+ * an Update is made, when a new dataPackage is created which includes
+ * memory updates and new metadata about added rows, columns, etc.
+ *
+ * Also has ability to Cut/Copy/Paste selections from the table.
+ */
 public class DataViewer extends javax.swing.JPanel 
                         implements EditingCompleteListener
 {
 	public JPanel DataViewerPanel = new javax.swing.JPanel();
-	  JPanel TablePanel = new javax.swing.JPanel();
-	  JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
-	  JPanel ControlPanel = new javax.swing.JPanel();
-    JPanel HeaderPanel = new javax.swing.JPanel();
-    JLabel headerLabel;
-	  JPanel ButtonControlPanel = new javax.swing.JPanel();
-	  JLabel DataIDLabel = new javax.swing.JLabel();
-	  JButton CancelButton = new javax.swing.JButton();
-	  JButton UpdateButton = new javax.swing.JButton();
-    ColumnMetadataEditPanel cmep;
+	JPanel TablePanel = new javax.swing.JPanel();
+	JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
+	JPanel ControlPanel = new javax.swing.JPanel();
+  JPanel HeaderPanel = new javax.swing.JPanel();
+  JLabel headerLabel;
+	JPanel ButtonControlPanel = new javax.swing.JPanel();
+	JLabel DataIDLabel = new javax.swing.JLabel();
+	JButton CancelButton = new javax.swing.JButton();
+	JButton UpdateButton = new javax.swing.JButton();
+  ColumnMetadataEditPanel cmep;
     
-    JPanel controlPanel;
-    JButton controlOK;
-    JButton controlCancel;
-    JDialog columnDialog;
+  JPanel controlPanel;
+  JButton controlOK;
+  JButton controlCancel;
+  JDialog columnDialog;
 
-    PersistentVector pv;
-    PersistentTableModel ptm;
-    JTable table;
+  PersistentVector pv;
+  PersistentTableModel ptm;
+  JTable table;
     
-    int sortdirection = 1;
-    boolean columnAddFlag = true;
+  int sortdirection = 1;
+  boolean columnAddFlag = true;
     
-    Document attributeDoc;
+  Document attributeDoc;
   
-    Morpho framework;
-    ConfigXML config;
-    String datadir;
-    String separator;
-    String cachedir;
-    String tempdir;
-    String dataString = "";
-    String dataID = "";
+  Morpho framework;
+  ConfigXML config;
+  String datadir;
+  String separator;
+  String cachedir;
+  String tempdir;
+  String dataString = "";
+  String dataID = "";
     
-    DataPackageGUI grandParent;
-    EntityGUI parent;
+  DataPackageGUI grandParent;
+  EntityGUI parent;
     
-    DataViewer thisRef;
+  DataViewer thisRef;
     
   /**popup menu for right clicks*/
   private JPopupMenu popup;
@@ -127,8 +142,8 @@ public class DataViewer extends javax.swing.JPanel
   private JMenuItem deleteColumn = new JMenuItem("Delete Selected Column");
   private JMenuItem editColumnMetadata = new JMenuItem("Edit Column Metadata");
 
- // The following instances of JMenu are apparently needed to make a
- // menus that appears in both the menu bar and in a popup menu
+  // The following instances of JMenu are apparently needed to make a
+  // menus that appears in both the menu bar and in a popup menu
   private JMenuItem createNewDatatable1 = new JMenuItem("Create New Datatable...");
   private JMenuItem sortBySelectedColumn1 = new JMenuItem("Sort by Selected Column");
   private JMenuItem insertRowAfter1 = new JMenuItem("insert Row After Selected Row");

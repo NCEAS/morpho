@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-06 20:18:53 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-09-06 22:29:03 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,49 +44,82 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.plugins.metadisplay.*;
 
 import edu.ucsb.nceas.morpho.framework.*;
+
 /**
- * A window that presents a data-centric view of a dataPackage
+ * A panel that presents a data-centric view of a dataPackage. In fact, the panel is somewhat
+ * complicated, with numerous subpanels and components
+ * The panel is made up of several JSplitPanes. The Top of the first split pane shows datapackage
+ * level metadata. A summary can be seen at the top showing a summary of the datapackage in
+ * a reference like format, followed by more package level metadata details. The bottom of this
+ * splitPane contains a tabbed pane which has a tab for each entity in the package.
+ * For each tab, another splitPane appears with a data display taking up most of the room on
+ * the left and a display of entity metadata on the right. Initially, most of the screen
+ * space is alloted to the data display, but the dividers can be dragged by the user to
+ * customize the display
  */
-public class DataViewContainerPanel extends javax.swing.JPanel implements javax.swing.event.ChangeListener
+public class DataViewContainerPanel extends javax.swing.JPanel 
+                                    implements javax.swing.event.ChangeListener
 {
   /**
    * The DataPackage that contains the data
-  */
+   */
   DataPackage dp;
   
-  // toppanel is added to packageMetadataPanel by init
-  public JPanel toppanel;
+  /**
+   * toppanel is added to packageMetadataPanel by init
+   */
+  JPanel toppanel;
   
-  PersistentVector lastPV = null;
+  /**
+   * tabbedEntitiesPanel is the tabbed panel which contains
+   * the entity list (as tabs) + dataView + entityMetadata
+   */
+   JTabbedPane tabbedEntitiesPanel;
   
-  String referenceLabelText = "referenceLabel";
-  
-  //tabbedEntitiesPanel is the tabbed panel which contains the entity list (as tabs) + dataView + entityMetadata
-  JTabbedPane tabbedEntitiesPanel;
-  
-  //dataViewPanel is the base panel for the data display
+  /**
+   * dataViewPanel is the base panel for the data display
+   */
   JPanel dataViewPanel;
  
- //Panel where package level metadata is displayed
+  /**
+   * Panel where package level metadata is displayed
+   */
   JPanel packageMetadataPanel;
 
-  String entityId;
-  Morpho framework;
+  /**
+   * reference to the top level Morpho class
+   */
+  Morpho morpho;
+  
+  /**
+   * the configuration class (of course)
+   */
   ConfigXML config;
+  
+  /**
+   * Array of Entity File objects corresponding to each of the tabs
+   */
   File[] entityFile;
   
+  /**
+   * global to keep track of last tab selected
+   */
+  int lastTabSelected = 0;
+  
+  Hashtable listValueHash = new Hashtable();
   JSplitPane entityPanel;
   JPanel entityMetadataPanel;
   JPanel currentDataPanel;
   JSplitPane vertSplit;
   
   Vector entityItems;
-  JFrame dpv;
-  
-  int lastTabSelected = 0;
-  
-  Hashtable listValueHash = new Hashtable();
+  PersistentVector lastPV = null;
 
+  
+  /*
+   * no parameter constuctor for DataViewContainerPanel.
+   * Some basic gui setup
+   */
   public DataViewContainerPanel()
   {
     this.setLayout(new BorderLayout(0,0));
@@ -101,8 +134,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     JPanel AttributeMetadataPanel = new JPanel();
 		
   
-   //ScrollTabLayout only works for Java 1.4; commented out for now so will compile unbder 1.3
-   // tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
+//ScrollTabLayout only works for Java 1.4; commented out for now so will compile unbder 1.3
+// tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
+
     tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
     tabbedEntitiesPanel.addChangeListener(this);
     
@@ -114,6 +148,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
  
   }
   
+  /*
+   * this constructor uses DataPackage and DataPackageGUI objects
+   * to build the interior object in the Panel
+   * (DataPackageGui is used because it already exist. The parts of it
+   * that are used will probably be moved and the rest deleted since
+   * many of its methods are now not needed)
+   */
   public DataViewContainerPanel(DataPackage dp, DataPackageGUI dpgui)
   {
     this();
@@ -121,8 +162,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(5,5));
 
-    // the following code builds the datapackage summary at the top of
-    // the DataViewContainerPanel
+// the following code builds the datapackage summary at the top of
+// the DataViewContainerPanel
     JLabel refLabel = new JLabel("<html>"+dpgui.referenceLabel+"</html>");
     refLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     JPanel refPanel = new JPanel();
@@ -166,11 +207,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     locationPanel.add(BorderLayout.NORTH,localLabel);
     locationPanel.add(BorderLayout.SOUTH, netLabel);
     refPanel.add(BorderLayout.EAST, locationPanel);
-  // ------------------------------------
-  // this is where the datapackage metadata is inserted into the container !!!!! 
-  // simply add Component to the packagePanel container, which has a Border
-  // layout. leave the 'NORTH' region empty, since the
-  // refpanel is added there later
+// ------------------------------------
+// this is where the datapackage metadata is inserted into the container !!!!! 
+// simply add Component to the packagePanel container, which has a Border
+// layout. leave the 'NORTH' region empty, since the
+// refpanel is added there later
   
 // -----------------------Test of MetaDisplay-------------------------
     MetaDisplay md = new MetaDisplay();
@@ -187,24 +228,30 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
 // the  following 2 lines add the Morpho 1.1.2 metadata displays when uncommented 
 //    packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
 //    packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
-  // ------------------------------------
+// ------------------------------------
     
-  // refpanel is created in this class and added to the top of the 
-  // panel in the next statement  
+// refpanel is created in this class and added to the top of the 
+// panel in the next statement  
     packagePanel.add(BorderLayout.NORTH,refPanel);
-    this.framework = dpgui.morpho;
+    this.morpho = dpgui.morpho;
     this.toppanel = packagePanel;
     this.entityItems = dpgui.entityitems;
     
     this.listValueHash = dpgui.listValueHash;
     this.setVisible(true);
    
-   // trying to get the height here always gives zero
-  //  vertSplit.setDividerLocation(refPanel.getHeight());
+// trying to get the height here always gives zero
+//  vertSplit.setDividerLocation(refPanel.getHeight());
 
   }
  
-  
+  /*
+   * Initialization continues here. In particular, the tabbed panels
+   * for each of the entities are created and added to the tab panel;
+   * Entity metadata is created and added, but adding the data table
+   * (or image) display is defered until runtime due to potentially
+   * large memory requirements
+   */
   public void init() {
     // first get info about the data package from DataPackageGUI
     if (toppanel==null) {
@@ -225,8 +272,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       // entity metadata
       String id = (String)listValueHash.get(item);
       String location = dp.getLocation();
-      EntityGUI entityEdit = new EntityGUI(dp, id, location, null, framework);
-      entityEdit.dpv = this.dpv;
+      EntityGUI entityEdit = new EntityGUI(dp, id, location, null, morpho);
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
       
@@ -271,9 +317,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       setDataViewer(0);
     }
   }
-  
+
+// public setters for various members  
   public void setFramework(Morpho cf) {
-    this.framework = cf;
+    this.morpho = cf;
   }
   public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
@@ -291,9 +338,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       lastPV.delete();  
     }
   }
-   /**
+
+  /**
    * creates the data display and puts it into the center of the window
-   * This needs to be dynamically done as tabs are selected due to large memory usage
+   * This needs to be dynamically done as tabs are selected due to potentially
+   * large memory usage
    */
   private void setDataViewer(int index) {
     JSplitPane entireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(lastTabSelected));
@@ -309,7 +358,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     File f = dp.getDataFile(id);
     String dataString = "";
     
-    DataViewer dv = new DataViewer(framework, "DataFile: "+fn, f);
+    DataViewer dv = new DataViewer(morpho, "DataFile: "+fn, f);
     dv.setDataID(dp.getDataFileID(id));
     dv.setPhysicalFile(fphysical);
     dv.setAttributeFile(fattribute);
