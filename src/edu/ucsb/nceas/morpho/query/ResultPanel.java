@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-26 00:45:43 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2002-08-26 21:12:01 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,12 +317,46 @@ public class ResultPanel extends JPanel
   }//getResultSet
   
   /** 
+   * Get the Jable
+   */
+  public JTable getJTable()
+  {
+    return table;
+  }//getJTable
+  
+  /** 
    * Get the dialog from ResultPanle
    */
   public OpenDialogBox getDialog()
   {
     return dialog;
   }//getDialog
+  
+  /**
+   * Get the selectedId
+   */
+  public String getSelectedId()
+  {
+    return selectedId;
+  }
+  
+  /**
+   * Get the metacatLoc
+   */
+  public boolean getMetacatLocation()
+  {
+    return metacatLoc;
+  }
+  
+  /**
+   * Get the local location
+   */
+  public boolean getLocalLocation()
+  {
+    return localLoc;
+  }
+  
+  
   
   /*
    * This method picks column sizes depend on the length of talbe and the 
