@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-25 23:29:45 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-27 00:11:13 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,8 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.*;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Component;
 import javax.swing.JDialog;
 
@@ -42,13 +43,17 @@ public class RefreshCommand implements Command
   /** A reference to the MophorFrame */
   private MorphoFrame morphoFrame = null;
   
+  /** A reference to a dialog */
+  private OpenDialogBox dialog = null;
+  
     
   /**
    * Constructor of SearcCommand
+   * @param box the dialog need to be refesh
    */
-  public RefreshCommand()
+  public RefreshCommand(OpenDialogBox box)
   {
-    
+    dialog = box;
   }//SearchCommand
   
 
@@ -58,27 +63,70 @@ public class RefreshCommand implements Command
    */    
   public void execute()
   {
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    ResultPanel resultPane = null;
+    if (dialog == null)
+    {
+      // If refresh is not happend in a dialog, moreFrame will be set to be
+      // current active morphoFrame
+      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+    }
+    else
+    {
+      morphoFrame = dialog.getParentFrame();
+      resultPane = dialog.getResultPanel();
+    }
     // make sure the morphoFrame is not null
     if ( morphoFrame == null)
     {
        Log.debug(5, "Morpho frame was null so I could refresh it!");
     }//if
     
-    // Make sure the main panel is result panel
-    Component comp = morphoFrame.getContentComponent();
-    Query myQuery = null;
-    if (comp != null && comp instanceof ResultPanel)
+    // make sure resulPanel is not null
+    if ( resultPane != null)
     {
-      morphoFrame.setBusy(true);
-      ResultPanel resultPane = (ResultPanel) comp;
+      Query myQuery = null;
       myQuery = resultPane.getResultSet().getQuery();
-      doQuery(myQuery);
+      if (myQuery != null)
+      {
+        morphoFrame.setBusy(true);
+        doQuery(myQuery);
+      }//if
     }//if
-      
- 
+  
   }//execute
-
+  
+  /**
+   * Gave a morphoFrame, get resultpanel from it. If morphFrame doesn't contain
+   * a resultPanel, null will be returned
+   *
+   * @param frame the morpho frame which contains the result panel
+   */
+  public static ResultPanel getResultPanelFromMorphoFrame(MorphoFrame frame)
+  {
+    if (frame == null)
+    {
+      return null;
+    }
+    // Get content of frame
+    Component comp = frame.getContentComponent();
+    if (comp == null)
+    {
+      return null;
+    }
+    // Make sure the comp is a result panel object
+    if (comp instanceof ResultPanel)
+    {
+      ResultPanel resultPane = (ResultPanel) comp;
+      return resultPane;
+    }
+    else
+    {
+      return null;
+    }
+      
+  }//getResulPanelFromMorphFrame
+  
   /**
    * Run the search query again 
    */
@@ -102,8 +150,17 @@ public class RefreshCommand implements Command
           ResultPanel resultDisplayPanel = new ResultPanel(
               null,results,12, null, morphoFrame.getDefaultContentAreaSize());
           resultDisplayPanel.setVisible(true);
-          morphoFrame.setMainContentPane(resultDisplayPanel);
-          morphoFrame.setMessage(results.getRowCount() + " data sets found");
+          // For morphoframe
+          if (dialog ==null)
+          {
+            morphoFrame.setMainContentPane(resultDisplayPanel);
+            morphoFrame.setMessage(results.getRowCount() + " data sets found");
+          }
+          else
+          {
+            // For dialog
+            dialog.setResultPanel(resultDisplayPanel);
+          }
           morphoFrame.setBusy(false);
         }
     };
