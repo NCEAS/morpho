@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-06 01:29:24 $'
-* '$Revision: 1.4 $'
+*     '$Date: 2004-03-06 01:34:18 $'
+* '$Revision: 1.5 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -197,8 +197,6 @@ public class Taxonomic extends AbstractWizardPage {
 		
 		JLabel classSystemLabel = WidgetFactory.makeLabel("System Name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 		classSystemTextField = WidgetFactory.makeOneLineTextField();
-		classSystemTextField.setBackground(Color.lightGray);
-		classSystemTextField.setForeground(Color.black);
 		JPanel cpanel1 = new JPanel();
 		cpanel1.setLayout(new BoxLayout(cpanel1, BoxLayout.X_AXIS));
 		cpanel1.add(classSystemLabel);
@@ -206,11 +204,6 @@ public class Taxonomic extends AbstractWizardPage {
 		
 		JLabel classNameLabel = WidgetFactory.makeLabel("Identifier Name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 		classNameTextField = WidgetFactory.makeOneLineTextField();
-		classNameTextField.setBackground(Color.lightGray);
-		classNameTextField.setForeground(Color.black);
-		//classNameTextField.setDisabledTextColor(Color.black);
-		classNameTextField.setText("Hello");
-		classNameTextField.setEditable(false);
 		JPanel cpanel2 = new JPanel();
 		cpanel2.setLayout(new BoxLayout(cpanel2, BoxLayout.X_AXIS));
 		cpanel2.add(classNameLabel);
