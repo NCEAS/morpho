@@ -6,13 +6,14 @@ Version: 1.1.0 - April 8, 2002
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
 
-Contributors: Matt Jones (jones@nceas.ucsb.edu)
-              Dan Higgins (higgins@nceas.ucsb.edu)
-              Chad Berkley (berkley@nceas.ucsb.edu)
-              Jivka Bojilova (bojilova@nceas.ucsb.edu)
-              Chris Jones (cjones@lifesci.ucsb.edu)
-              Mark Schildhauer (schild@nceas.ucsb.edu)
-              Eric Fegraus (fegraus@nceas.ucsb.edu)
+Contributors: 
+    Matt Jones (jones@nceas.ucsb.edu)
+    Dan Higgins (higgins@nceas.ucsb.edu)
+    Chad Berkley (berkley@nceas.ucsb.edu)
+    Jivka Bojilova (bojilova@nceas.ucsb.edu)
+    Chris Jones (cjones@lifesci.ucsb.edu)
+    Mark Schildhauer (schild@nceas.ucsb.edu)
+    Eric Fegraus (fegraus@nceas.ucsb.edu)
 
 This is Morpho, a data management application for managing ecological data.  Morpho allows researchers to describe their data using a comprehensive and flexible metadata specification, and to share their data publicly or to specific collaborators over the Knowledge Netwrok for Biocomplexity system. Although Morpho can be used without an account on the KNB, it is free and simple to obtain one: just register at
 
