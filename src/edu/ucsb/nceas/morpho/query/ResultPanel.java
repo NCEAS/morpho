@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-08-31 22:40:02 $'
- * '$Revision: 1.20 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-09-28 19:54:08 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -334,48 +334,51 @@ public class ResultPanel extends JPanel
    */
   private void exportDataset(String id)
   {
-    JFileChooser filechooser = new JFileChooser();
+    String curdir = System.getProperty("user.dir");
+    JFileChooser filechooser = new JFileChooser(curdir);
     filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    filechooser.setDialogTitle("Export Datapackage");
+    filechooser.setDialogTitle("Export Datapackage to Selected Directory");
     filechooser.setApproveButtonText("Export");
     filechooser.setApproveButtonMnemonic('E');
     filechooser.setApproveButtonToolTipText("Choose a directory to export " +
                                             "this Datapackage to.");
-    filechooser.updateUI();
+ //   filechooser.updateUI();
     File exportDir;
-    filechooser.showSaveDialog(this);
+    int result = filechooser.showSaveDialog(this);
     exportDir = filechooser.getSelectedFile();
-    //now we know where to export the files to, so export them.
-    DataPackageInterface dataPackage;
-    try 
-    {
-      ServiceProvider provider = 
+    if (result==JFileChooser.APPROVE_OPTION) {
+      //now we know where to export the files to, so export them.
+      DataPackageInterface dataPackage;
+      try 
+      {
+        ServiceProvider provider = 
                    framework.getServiceProvider(DataPackageInterface.class);
-      dataPackage = (DataPackageInterface)provider;
-    } 
-    catch (ServiceNotHandledException snhe) 
-    {
-      framework.debug(6, snhe.getMessage());
-      return;
-    }
+        dataPackage = (DataPackageInterface)provider;
+      } 
+      catch (ServiceNotHandledException snhe) 
+      {
+        framework.debug(6, snhe.getMessage());
+        return;
+      }
     
-    String location = "";
-    //figure out where this thing is.
-    if(metacatLoc && localLoc)
-    {
-      location = DataPackage.BOTH;
-    }
-    else if(metacatLoc && !localLoc)
-    {
-      location = DataPackage.METACAT;
-    }
-    else if(!metacatLoc && localLoc)
-    {
-      location = DataPackage.LOCAL;
-    }
+      String location = "";
+      //figure out where this thing is.
+      if(metacatLoc && localLoc)
+      {
+        location = DataPackage.BOTH;
+      }
+      else if(metacatLoc && !localLoc)
+      {
+        location = DataPackage.METACAT;
+      }
+      else if(!metacatLoc && localLoc)
+      {
+        location = DataPackage.LOCAL;
+      }
     
-    //export it.
-    dataPackage.export(selectedId, exportDir.toString(), location);
+      //export it.
+      dataPackage.export(selectedId, exportDir.toString(), location);
+    }
   }
   
   /**
@@ -431,10 +434,12 @@ public class ResultPanel extends JPanel
       }
       else if (object == exportMenu)
       {
+        ClientFramework.debug(20, "Exporting dataset");
         exportDataset(docid);
       }
-      
       refreshQuery();
+      getParent().invalidate();
+      getParent().repaint();
 		}
   }
   
