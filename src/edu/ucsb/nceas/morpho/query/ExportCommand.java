@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-22 19:00:52 $'
- * '$Revision: 1.16 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-16 20:42:34 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,6 +158,8 @@ public class ExportCommand implements Command
     {
       
       selectDocId = resultPane.getSelectedId();
+      metacatLoc  = resultPane.getMetacatLocation();
+      localLoc    = resultPane.getLocalLocation();
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))
       {
