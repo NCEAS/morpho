@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-26 20:12:08 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2003-11-26 21:49:09 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,7 +162,6 @@ public class DataPackageFactory
       dp = getDataPackage(adptemp.metadataNode, "eml:eml");
       dp.location = adptemp.location;
       Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
-//      dp.load(location,docid,morpho);
     }
 
 
