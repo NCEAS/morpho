@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-14 04:59:56 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2004-04-15 04:48:14 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -492,6 +492,7 @@ public class PartyMainPage
    */
   public void onLoadAction() {
 
+    updateListFromDOM();
     partiesList.focusAddButton();
   }
 

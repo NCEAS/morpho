@@ -6,9 +6,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-14 17:29:12 $'
- * '$Revision: 1.39 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-15 04:48:14 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -267,37 +267,40 @@ public class Project extends AbstractUIPage {
   }
 
 
-    /**
-     *
-     */
-     private void showNewPartyDialog() {
 
-       PartyPage partyPage
-           = (PartyPage)WizardPageLibrary.getPage(
-             DataPackageWizardInterface.PARTY_PERSONNEL);
 
-       ModalDialog wpd = new ModalDialog(partyPage,
-                                         WizardContainerFrame.getDialogParent(),
-                                         UISettings.POPUPDIALOG_WIDTH,
-                                         UISettings.POPUPDIALOG_HEIGHT);
 
-       if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
-         List newRow = partyPage.getSurrogate();
-         newRow.add(partyPage);
-         partiesList.addRow(newRow);
+  /**
+   *
+   */
+  private void showNewPartyDialog() {
 
-         if (partyPage.editingOriginalRef) {
+    PartyPage partyPage
+        = (PartyPage)WizardPageLibrary.getPage(
+        DataPackageWizardInterface.PARTY_PERSONNEL);
 
-           //have been editing an original reference via another party's dialog, so
-           //if the original ref is in this current page's list, update its
-           //PartyPage object before we write it to DOM...
-           updateOriginalRefPartyPage(partyPage);
-         }
-         //update datapackage...
-         updateDOMFromListOfPages();
-       }
-       WidgetFactory.unhiliteComponent(minRequiredLabel);
-     }
+    ModalDialog wpd = new ModalDialog(partyPage,
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT);
+
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+      List newRow = partyPage.getSurrogate();
+      newRow.add(partyPage);
+      partiesList.addRow(newRow);
+
+      if (partyPage.editingOriginalRef) {
+
+        //have been editing an original reference via another party's dialog, so
+        //if the original ref is in this current page's list, update its
+        //PartyPage object before we write it to DOM...
+        updateOriginalRefPartyPage(partyPage);
+      }
+      //update datapackage...
+      updateDOMFromListOfPages();
+    }
+    WidgetFactory.unhiliteComponent(minRequiredLabel);
+  }
 
      private void updateDOMFromListOfPages() {
 
@@ -468,6 +471,7 @@ public class Project extends AbstractUIPage {
    */
   public void onLoadAction() {
 
+    updateListFromDOM();
     WidgetFactory.unhiliteComponent(titleLabel);
     WidgetFactory.unhiliteComponent(minRequiredLabel);
   }

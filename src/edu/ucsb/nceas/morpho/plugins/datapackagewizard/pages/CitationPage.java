@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 23:57:34 $'
- * '$Revision: 1.14 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-15 04:48:14 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -587,10 +587,11 @@ public class CitationPage extends AbstractUIPage {
 
   /**
    *  The action to be executed when the page is loaded
-   *  Here, it does nothing because this is just a Panel and not the outer container
+   *  Here, it reloads the parties from the DOM, in case any of them are
+   *  references that have been edited elsewhere
    */
-
   public void onLoadAction() {
+    updateListFromDOM();
   }
 
   /**
@@ -818,10 +819,10 @@ public class CitationPage extends AbstractUIPage {
   private boolean mapContainsCreator(OrderedMap map, String xPath, int idx) {
 
     boolean b = map.containsKey(xPath + "/creator[" + idx + "]/references[1]");
-		if(b) return true;
-		b = map.containsKey(xPath + "/creator[" + idx + "]/references");
-		if(b) return true;
-		b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/surName[1]");
+    if(b) return true;
+    b = map.containsKey(xPath + "/creator[" + idx + "]/references");
+    if(b) return true;
+    b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/surName[1]");
     if(b) return true;
     b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName[1]/surName[1]");
     if(b) return true;
@@ -851,8 +852,8 @@ public class CitationPage extends AbstractUIPage {
 
     this.titleField.setText((String)map.get(xPath + "/title[1]"));
     map.remove(xPath + "/title[1]");
-		
-		for(int idx = 1; ; idx++) {
+
+    for(int idx = 1; ; idx++) {
 
       if(!mapContainsCreator(map, xPath, idx)) {
         break;
@@ -911,20 +912,20 @@ public class CitationPage extends AbstractUIPage {
 
    }
 
-	 private OrderedMap getNewCreatorMap(OrderedMap map, String xPath, int idx) {
-		 
-		 OrderedMap newMap = new OrderedMap();
-		 String searchString = xPath + "/creator[" + idx + "]";
-		 Iterator it = map.keySet().iterator();
-		 while(it.hasNext()) {
-			 
-			 String k = (String)it.next();
-			 if(k.startsWith(searchString)) {
-				 newMap.put(k, (String)map.get(k));
-			 }
-		 }
-		 return newMap;
-	 }
+   private OrderedMap getNewCreatorMap(OrderedMap map, String xPath, int idx) {
+
+     OrderedMap newMap = new OrderedMap();
+     String searchString = xPath + "/creator[" + idx + "]";
+     Iterator it = map.keySet().iterator();
+     while(it.hasNext()) {
+
+       String k = (String)it.next();
+       if(k.startsWith(searchString)) {
+         newMap.put(k, (String)map.get(k));
+       }
+     }
+     return newMap;
+   }
 }
 
 
