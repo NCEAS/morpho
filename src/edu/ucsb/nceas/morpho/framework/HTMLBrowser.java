@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-14 22:58:13 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-04-15 17:07:55 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,11 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
+
 import java.net.URL;
 import java.util.Stack;
 
@@ -33,32 +38,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
-import javax.swing.JButton;
+import javax.swing.Action;
 import javax.swing.JEditorPane;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
-import javax.swing.JFrame;
-import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import javax.swing.JToolBar;
-import edu.ucsb.nceas.morpho.util.GUIAction;
-import edu.ucsb.nceas.morpho.util.Command;
-import javax.swing.Action;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.ActionListener;
 
 
 /**
@@ -98,10 +92,9 @@ public class HTMLBrowser {
 
   private Action loadAction;
 
-
   /**
    * Creates a new instance of JFrame1 with the given title.
-   * @param sTitle the title for the new frame.
+   *
    * @see #JFrame1()
    */
   public HTMLBrowser() {
@@ -146,8 +139,12 @@ public class HTMLBrowser {
 
       public void execute(ActionEvent e) {
 
-        if (pageList.isEmpty()) return;
+        //use < 2, not < 1 ot empty, since current
+        // page is put on stack before displaying
+        if (pageList.size() < 2)return;
+        //remove current page..
         pageList.pop();
+        //...and get preious page
         Object url = pageList.pop();
         loadNewPage(url);
       }
@@ -170,6 +167,14 @@ public class HTMLBrowser {
 
     backAction.setEnabled(false);
 
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //IMPORTANT NOTE: if you change the order in which the following components
+    //are added, or if you add new components, you must also edit the code in
+    //setTextFieldDims() that gets the component sizes
+    ////////////////////////////////////////////////////////////////////////////
+
     toolBar.add(backAction);
 
     toolBar.addSeparator();
@@ -180,10 +185,20 @@ public class HTMLBrowser {
 
     toolBar.add(loadAction);
 
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     urlTextField.setText("");
 
     setTextFieldDims();
 
+    urlTextField.addActionListener(new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        loadAction.actionPerformed(e);
+      }
+    });
     pageList = new Stack();
 
     // Listener for hypertext events
@@ -234,7 +249,8 @@ public class HTMLBrowser {
 
   private void enableActions() {
 
-    backAction.setEnabled(!pageList.isEmpty());
+    //use > 1, not > 0, since first page is put on stack before displaying
+    backAction.setEnabled(pageList.size() > 1);
   }
 
 
@@ -295,36 +311,6 @@ public class HTMLBrowser {
 
     frame.setVisible(visible);
   }
-
-
-//  /**
-//   * Notifies this component that it has been added to a container
-//   * This method should be called by <code>Container.add</code>, and
-//   * not by user code directly.
-//   * Overridden here to adjust the size of the frame if needed.
-//   * @see java.awt.Container#removeNotify
-//   */
-//  public void addNotify() {
-//    // Record the size of the window prior to calling parents addNotify.
-//    Dimension size = frame.getSize();
-//
-//    frame.addNotify();
-//
-//    if (frameSizeAdjusted)
-//      return;
-//    frameSizeAdjusted = true;
-//
-//    // Adjust size of frame according to the insets and menu bar
-//    JMenuBar menuBar = frame.getRootPane().getJMenuBar();
-//    int menuBarHeight = 0;
-//    if (menuBar != null)
-//      menuBarHeight = menuBar.getPreferredSize().height;
-//    Insets insets = frame.getInsets();
-//    frame.setSize(insets.left + insets.right + size.width,
-//                  insets.top + insets.bottom + size.height + menuBarHeight);
-//  }
-
-
 
 
 
