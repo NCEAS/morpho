@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-12 18:27:56 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2003-09-12 19:06:39 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1860,8 +1860,10 @@ public void startImport(String file) {
           ||(cd.colType.equals("decimal"))||(cd.colType.equals("double"))) {
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/"
               +"unit/standardUnit",XMLUtil.normalize(cd.colUnits));
+        // precision arbirarily set to '1'; need to add code to look at actual values and
+        // guess based on strings in the numeric column
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/"
-              +"precision","???");
+              +"precision","1");
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
               +"numberType",XMLUtil.normalize(cd.colType));
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
@@ -1870,14 +1872,16 @@ public void startImport(String file) {
               +"bounds/maximum",""+cd.colMax);
       }
       else if(cd.colType.equals("date")) {
+        // arbitrary choices until code which determines date format frequencies and 
+        // date bounds is written
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
-              +"formatString","???");
+              +"formatString","YYYY-MM-DD");
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
-              +"dataTimePrecision","???");
+              +"dataTimePrecision","1");
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
-              +"dataTimeDomain/bounds/minimum","???");
+              +"dataTimeDomain/bounds/minimum","0000-01-01");
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/datetime/"
-              +"dataTimeDomain/bounds/maximum","???");
+              +"dataTimeDomain/bounds/maximum","3000-01-01");
       }
       else { //assume a string
         if (cd.enumChoice) {
