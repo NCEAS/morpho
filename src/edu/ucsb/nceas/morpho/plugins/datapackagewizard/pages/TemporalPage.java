@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 04:16:50 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-03-25 13:30:46 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -553,7 +553,7 @@ public class TemporalPage extends AbstractUIPage {
       int month = (new Integer(monthS)).intValue();
       int day = (new Integer(dayS)).intValue();
       Calendar singleCalendar = Calendar.getInstance();
-      singleCalendar.set(year, month-1, day-1);
+      singleCalendar.set(year, month-1, day);
       singleTimeCalendar.setCalendar(singleCalendar);
       currentPanel = singlePointPanel;
     }
@@ -570,7 +570,7 @@ public class TemporalPage extends AbstractUIPage {
         int smonth = (new Integer(smonthS)).intValue();
         int sday = (new Integer(sdayS)).intValue();
         Calendar startCalendar = Calendar.getInstance();
-        startCalendar.set(syear, smonth-1, sday-1);
+        startCalendar.set(syear, smonth-1, sday);
         startTimeCalendar.setCalendar(startCalendar);
         String eyearS = endString.substring(0,4);
         String emonthS = endString.substring(5,7);
@@ -579,7 +579,7 @@ public class TemporalPage extends AbstractUIPage {
         int emonth = (new Integer(smonthS)).intValue();
         int eday = (new Integer(sdayS)).intValue();
         Calendar endCalendar = Calendar.getInstance();
-        endCalendar.set(eyear, emonth-1, eday-1);
+        endCalendar.set(eyear, emonth-1, eday);
         endTimeCalendar.setCalendar(endCalendar);
         currentPanel = rangeTimePanel;
       }
