@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-01 23:26:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,8 @@ public class OpenPreviousVersionCommand implements Command
    /** DataPackage in local */
    boolean localLoc = false;
   
-  
+   /** reference to datapackage interface*/
+   DataPackageInterface dataPackage = null;
     
   /**
    * Constructor of OpenPreviousVersionCommand
@@ -92,7 +93,19 @@ public class OpenPreviousVersionCommand implements Command
    */    
   public void execute(ActionEvent event)
   {
-     // If dialog is null, get resultPanel from dialog
+    try 
+    {
+       ServiceController services = ServiceController.getInstance();
+       ServiceProvider provider = 
+                   services.getServiceProvider(DataPackageInterface.class);
+       dataPackage = (DataPackageInterface)provider;
+     } 
+     catch (ServiceNotHandledException snhe) 
+     {
+        Log.debug(6, snhe.getMessage());
+        return;
+     }
+    // If dialog is null, get resultPanel from dialog
     if (dialog != null)
     {
       // This command will apply to a dialog
@@ -107,19 +120,29 @@ public class OpenPreviousVersionCommand implements Command
       // current active morphoFrame
       morphoFrame = UIController.getInstance().getCurrentActiveWindow();
       resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
-    }
+     }
     
     if (resultPane != null)
     {
       packageName = resultPane.getPackageName();
-      version = resultPane.getVersion();
+      version = resultPane.getPreviousVersions();
       metacatLoc = resultPane.getMetacatLocation();
       localLoc = resultPane.getLocalLocation();
-  
-      // Make sure selected a id, and there is local pacakge
-      if ( packageName != null && !packageName.equals("") && version != -1)
-      {
-        
+    
+    }//if
+    else
+    {
+      //Try a data pakcage frame
+      String docId = dataPackage.getDocIdFromMorphoFrame(morphoFrame);
+      localLoc = dataPackage.isDataPackageInLocal(morphoFrame);
+      packageName = ResultPanel.getIdWithoutVersion(docId);
+      version = ResultPanel.getNumberOfPrevVersions(docId);
+      
+    }
+    
+    // Make sure selected a id, and there is local pacakge
+    if ( packageName != null && !packageName.equals("") && version != -1)
+    {
         // If it is dialog, destroied it 
         if ( dialog != null)
         {
@@ -129,8 +152,7 @@ public class OpenPreviousVersionCommand implements Command
         }
         doOpenPreviousVersion
                           (packageName, version, morpho, localLoc, morphoFrame);
-      }
-    }//if
+    }
     
   }//execute
 
@@ -149,20 +171,7 @@ public class OpenPreviousVersionCommand implements Command
           {
             frame.setBusy(true);
           }
-             
-           DataPackageInterface dataPackage;
-           try 
-           {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                   services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-           } 
-           catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, snhe.getMessage());
-            return null;
-          }
+       
           // create dialog for openning previous version
           dataPackage.createOpenPreviousVersionDialog
                                                 (name, vers, myMorpho,inLocal);
