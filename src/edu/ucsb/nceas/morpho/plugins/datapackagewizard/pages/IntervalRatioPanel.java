@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-20 01:11:33 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,8 +175,11 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     boundsLabel.setMaximumSize(boundsLabelDim);
     boundsPanel.add(boundsLabel);
     
-    String[] colNames     = new String[] {"Min (optional):", "Max (optional):"};
-    Object[] colTemplates = new Object[] {new JTextField(),   new JTextField()};
+    String[] colNames     = new String[] {  "Min", "inclusive?", 
+                                            "Max", "inclusive?"};
+                                            
+    Object[] colTemplates = new Object[] {  new JTextField(), new JCheckBox(), 
+                                            new JTextField(), new JCheckBox()};
     
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
@@ -295,7 +298,8 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     List rowLists = boundsList.getListOfRowLists();
     String nextMin = null;
     String nextMax = null;
-  
+    Object nextExcl = null;
+    
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
       // CHECK FOR AND ELIMINATE EMPTY ROWS...
@@ -306,7 +310,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
       if (nextRow.size() < 1) continue;
       
       boolean minIsNull = (nextRow.get(0)==null);
-      boolean maxIsNull = (nextRow.get(1)==null);
+      boolean maxIsNull = (nextRow.get(2)==null);
 
       if (minIsNull && maxIsNull) continue;
       
@@ -318,13 +322,33 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
         if (!nextMin.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
         }
+        nextExcl = nextRow.get(1);
+
+        if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+      
+          returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
+        
+        } else {
+        
+          returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "false");
+        }
       }
       
       if (!maxIsNull) {
       
-        nextMax = (String)(nextRow.get(1));
+        nextMax = (String)(nextRow.get(2));
         if (!nextMax.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
+        }
+        nextExcl = nextRow.get(3);
+
+        if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+      
+          returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
+        
+        } else {
+        
+          returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "false");
         }
       }
     }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:53 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,13 +82,13 @@ public class DataFormat extends AbstractWizardPage{
   
   private String formatXPath;
   private final String TEXT_BASE_XPATH
-                  = "/eml:eml/dataset/datatable/physical/dataFormat/textFormat/";
+                  = "/eml:eml/dataset/dataTable/physical/dataFormat/textFormat/";
   private final String SIMPLE_TEXT_XPATH  = TEXT_BASE_XPATH+"simpleDelimited/fieldDelimiter";
   private final String COMPLEX_TEXT_XPATH = TEXT_BASE_XPATH+"complex/";
   private final String PROPRIETARY_XPATH  
-          = "/eml:eml/dataset/datatable/physical/dataFormat/externallyDefinedFormat/formatName";
+          = "/eml:eml/dataset/dataTable/physical/dataFormat/externallyDefinedFormat/formatName";
   private final String RASTER_XPATH       
-          = "/eml:eml/dataset/datatable/physical/dataFormat/binaryRasterFormat";
+          = "/eml:eml/dataset/dataTable/physical/dataFormat/binaryRasterFormat";
   
   private JPanel simpleTextpanel;
   private JPanel complexTextPanel;

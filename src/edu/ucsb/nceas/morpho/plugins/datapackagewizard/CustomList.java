@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 23:37:59 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ public class CustomList extends JPanel {
     
     Vector rowsData = new Vector();
     
-    table = new CustomJTable(rowsData, colNamesVec);
+    table = new CustomJTable(rowsData, colNamesVec, columnEditors);
     model = (DefaultTableModel)(table.getModel());
     table.setColumnSelectionAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -319,7 +319,7 @@ public class CustomList extends JPanel {
       TableColumn column = table.getColumnModel().getColumn(i);
       
       int preferredWidth = (int)(tableWidth*fraction) - 3;
-      if (preferredWidth < 80) preferredWidth = 80;
+      if (preferredWidth < 40) preferredWidth = 40;
 
       column.setPreferredWidth(preferredWidth);
       column.setMinWidth((int)(preferredWidth*minFactor));
@@ -901,17 +901,20 @@ class CustomJTable extends JTable  {
 
 //    EditableStringRenderer    editableStringRenderer 
 //                                    = new EditableStringRenderer();
-    DefaultTableCellRenderer  defaultRenderer 
-                                    = new DefaultTableCellRenderer();
+    private DefaultTableCellRenderer defaultRenderer 
+                                      = new DefaultTableCellRenderer();
     
-    DefaultCellEditor         defaultCellEditor 
-                                    = new DefaultCellEditor(new JTextField());
+    private DefaultCellEditor defaultCellEditor 
+                                      = new DefaultCellEditor(new JTextField());
+    
+    Object[] editors;
+    
     boolean[] columnsEditableFlags;
     
-    public CustomJTable(Vector rowVect, Vector colNamesVec) {
+    public CustomJTable(Vector rowVect, Vector colNamesVec, Object[] editors) {
     
       super(rowVect, colNamesVec);
-      
+      this.editors = editors;
       super.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       defaultCellEditor.setClickCountToStart(1);
       
@@ -921,13 +924,53 @@ class CustomJTable extends JTable  {
     
     //override super
     public TableCellRenderer getCellRenderer(int row, int col) {
-    
-        Class colClass = getModel().getColumnClass(col);
-//        Log.debug(45, "getCellRenderer(): colClass.getName() = "+colClass.getName());
-        // can test for surrogates here////
+  
+      Class colClass = null;
+      
+      if (editors!=null && editors[col]!=null) colClass = editors[col].getClass();
+      
+      Log.debug(45, "\nCustomJTable.getCellRenderer(): colClass.getName() = "
+                                                                    +colClass);
+      if (colClass==null) return defaultRenderer;
+      if (colClass.getName().equals("javax.swing.JCheckBox")) {
+        return new TableCellRenderer() {
+        
+            public Component getTableCellRendererComponent( JTable table,
+                                                            Object value,
+                                                            boolean isSelected,
+                                                            boolean hasFocus,
+                                                            int row,
+                                                            int column) {
+              
+              boolean checked = false;                                             
+              if (value!=null) checked = ((Boolean)value).booleanValue();
+              JCheckBox cell = new JCheckBox("", checked);
+              if (cell.getForeground()==null) cell.setForeground(table.getForeground()); 
+              if (cell.getBackground()==null) cell.setBackground(table.getBackground()); 
+              if (isSelected) cell.setForeground(table.getSelectionForeground());
+              if (hasFocus) {
+                if (table.isCellEditable(row,column)) {
+                    cell.setForeground(table.getSelectionForeground());
+                    cell.setBackground(table.getSelectionBackground());
+                }
+                if (cell.getFont()==null) cell.setFont(table.getFont());
+                cell.setOpaque(true);
+              }
+              return cell;
+            }
+          };
+      }
+      return defaultRenderer;
+    }
 
-//        if (colClass.getName().equals("java.lang.String")) return editableStringRenderer;
-        return defaultRenderer;
+    //override super
+    public Class getColumnClass(int col) {
+    
+      Class colClass = "".getClass();
+      if (editors[col]!=null) colClass = editors[col].getClass();
+      Log.debug(45, "\nCustomJTable.getColumnClass("
+                                              +col+"): " + colClass.getName());
+      return colClass;
     }
 
     //override super

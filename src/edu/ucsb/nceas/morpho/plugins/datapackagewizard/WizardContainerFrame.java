@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 04:51:48 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ public class WizardContainerFrame extends JFrame {
   /**
    * Constructor
    */
-  public WizardContainerFrame(DataPackageWizardListener listener) {
+  public WizardContainerFrame() {
   
     super();
     frame = this;
@@ -89,6 +89,21 @@ public class WizardContainerFrame extends JFrame {
     init();
     setCurrentPage(WizardSettings.FIRST_PAGE_ID);
   }
+
+  
+  /** 
+   *  sets the <code>DataPackageWizardListener</code> to be called  back when 
+   *  the Wizard has finished
+   *
+   *  @param listener the <code>DataPackageWizardListener</code> to be called 
+   *                  back when the Wizard has finished
+   */
+  public void setDataPackageWizardListener(DataPackageWizardListener listener) {
+  
+    this.listener = listener;
+  }
+
+
 
   /** 
    *  sets the wizard content for the center pane
@@ -348,40 +363,87 @@ public class WizardContainerFrame extends JFrame {
     //of writing data to the DOM. We therefore convert the Stack to a Vector and 
     //access the pages non-sequentially in a feat of hard-coded madness:
     //
-    List pagesVector = (Vector)pageStack;
-    
+    List pagesList = (Vector)pageStack;
+
     int GENERAL 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.GENERAL));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.GENERAL));
     int KEYWORDS 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.KEYWORDS));
-    
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.KEYWORDS));
     int PARTY_CREATOR 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CREATOR));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CREATOR));
     int PARTY_CONTACT 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CONTACT));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CONTACT));
     int PARTY_ASSOCIATED 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_ASSOCIATED));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_ASSOCIATED));
     int USAGE_RIGHTS 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.USAGE_RIGHTS));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.USAGE_RIGHTS));
     int DATA_LOCATION 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.DATA_LOCATION));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.DATA_LOCATION));
     int TEXT_IMPORT_WIZARD 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.TEXT_IMPORT_WIZARD));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.TEXT_IMPORT_WIZARD));
     int DATA_FORMAT 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.DATA_FORMAT));
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.DATA_FORMAT));
     int ENTITY 
-        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.ENTITY));
-        
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(GENERAL)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(KEYWORDS)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(PARTY_CREATOR)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(PARTY_CONTACT)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(PARTY_ASSOCIATED)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(USAGE_RIGHTS)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(DATA_LOCATION)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(TEXT_IMPORT_WIZARD)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(DATA_FORMAT)),wizData);
-    addPageDataToResultsMap((WizardPage)(pagesVector.get(ENTITY)),wizData);
+        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.ENTITY));
+
+//TITLE:      
+    OrderedMap generalMap = null; 
+    if (GENERAL>=0)             {
+    
+      generalMap = ((WizardPage)(pagesList.get(GENERAL))).getPageData();
+      final String titleXPath = "/eml:eml/dataset/title[1]";
+      Object titleObj = generalMap.get(titleXPath);
+      if (titleObj!=null) wizData.put(titleXPath, (String)titleObj);
+    }
+
+//CREATOR:
+    if (PARTY_CREATOR>=0)       {  
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
+    }
+    
+//ASSOCIATED PARTY:
+    if (PARTY_ASSOCIATED>=0)    {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
+    }
+
+//ABSTRACT:
+    if (generalMap!=null)       {
+
+      final String abstractXPath = "/eml:eml/dataset/abstract/section/para[1]";
+      Object abstractObj = generalMap.get(abstractXPath);
+      if (abstractObj!=null) wizData.put(abstractXPath, (String)abstractObj);
+    }
+    
+//KEYWORDS:
+    if (KEYWORDS>=0)            {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
+    }
+
+//INTELLECTUAL RIGHTS:
+    if (USAGE_RIGHTS>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
+    }
+    
+//CONTACT:
+    if (PARTY_CONTACT>=0)       {  
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CONTACT)),wizData);
+    }
+    
+    if (TEXT_IMPORT_WIZARD>=0)  {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(TEXT_IMPORT_WIZARD)),wizData);
+    }
+    
+    if (ENTITY>=0)              {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(ENTITY)),wizData);
+    }
+    
+    if (DATA_LOCATION>=0)       {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
+    }
+    
+    if (DATA_FORMAT>=0)         {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_FORMAT)),wizData);
+    }
     
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
     Log.debug(45, wizData.toString());
@@ -389,6 +451,7 @@ public class WizardContainerFrame extends JFrame {
     
     Node rootNode = null;
     
+    //create a new empty DOM document to be poopulated by the wizard values:
     try {
     
       rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
@@ -401,7 +464,7 @@ public class WizardContainerFrame extends JFrame {
       return;
     }
     
-    
+    //now populate it...
     try {
     
       XMLUtilities.getXPathMapAsDOMTree(wizData, rootNode);
@@ -416,9 +479,6 @@ public class WizardContainerFrame extends JFrame {
     }
     
     listener.wizardFinished(rootNode);
-    
-    Log.debug(45, "\n\n********** Wizard finished: DOM:");
-    Log.debug(45, XMLUtilities.getDOMTreeAsString(rootNode));
   }
   
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:53 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -455,12 +455,12 @@ public class PartyDialog extends WizardPopupDialog {
     
     nextText = address1Field.getText().trim();
     if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/deliverypoint[1]", nextText);
+      returnMap.put(xPathRoot + "/address/deliveryPoint[1]", nextText);
     }
     
     nextText = address2Field.getText().trim();
     if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/deliverypoint[2]", nextText);
+      returnMap.put(xPathRoot + "/address/deliveryPoint[2]", nextText);
     }
     
     nextText = cityField.getText().trim();

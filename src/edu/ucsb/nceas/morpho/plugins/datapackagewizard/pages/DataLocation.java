@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-20 01:11:33 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,13 +82,13 @@ public class DataLocation extends AbstractWizardPage {
   private final AbstractWizardPage instance = this;
   private String distribXPath;
   private final String OBJECTNAME_XPATH 
-                  = "/eml:eml/dataset/datatable/physical/objectName";
+                  = "/eml:eml/dataset/dataTable/physical/objectName";
   private final String INLINE_XPATH  
-                  = "/eml:eml/dataset/datatable/physical/distribution/inline";
+                  = "/eml:eml/dataset/dataTable/physical/distribution/inline";
   private final String ONLINE_XPATH  
-                  = "/eml:eml/dataset/datatable/physical/distribution/online";
+                  = "/eml:eml/dataset/dataTable/physical/distribution/online";
   private final String OFFLINE_XPATH 
-                  = "/eml:eml/dataset/datatable/physical/distribution/offline";
+                  = "/eml:eml/dataset/dataTable/physical/distribution/offline";
   private final String NODATA_XPATH  = "";
 
   private String inlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
@@ -428,20 +428,14 @@ public class DataLocation extends AbstractWizardPage {
     } else if (distribXPath==OFFLINE_XPATH) {
 //  O F F L I N E  ///////////////////////////////////
     
-System.err.println("//  O F F L I N E  ///////////////////////////////////offlineNextPageID="+offlineNextPageID);
       //entered by hand:    
       if (offlineNextPageID.equals(WizardPageLibrary.DATA_FORMAT)) {
       
-System.err.println("//  O F F L I N E  ////entered by hand:");
         String userText = fileLocatorWidgetOffline.getTextArea().getText();
         if (userText!=null) userText = userText.trim();
         if (userText.equals("")) userText = null;
         fileLocatorWidgetOffline.setImportFilePath(userText);
-System.err.println("//  O F F L I N E  ////userText: "+userText);
-        
       }
-System.err.println("//  O F F L I N E  ////fileLocatorWidgetOffline.getImportFilePath(): "
-                                        +fileLocatorWidgetOffline.getImportFilePath());
       
       if (fileLocatorWidgetOffline.getImportFilePath()==null) {
     
@@ -480,6 +474,7 @@ System.err.println("//  O F F L I N E  ////fileLocatorWidgetOffline.getImportFil
     
     returnMap.clear();
     
+//  N O   D A T A  /////////////////////////////////////
     if (distribXPath==null || distribXPath==NODATA_XPATH) {
     
       // if no data, return empty Map:
@@ -509,7 +504,6 @@ System.err.println("//  O F F L I N E  ////fileLocatorWidgetOffline.getImportFil
     }
     return returnMap;
   }
-  
   
   
   private void setNextPageID(String id) {

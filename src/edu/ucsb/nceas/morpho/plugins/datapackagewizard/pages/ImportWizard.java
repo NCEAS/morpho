@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 04:51:48 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class ImportWizard extends     AbstractWizardPage 
-                              implements  TextImportListener {
+                          implements  TextImportListener {
 
   public final String pageID     = WizardPageLibrary.TEXT_IMPORT_WIZARD;
   
@@ -62,40 +62,37 @@ public class ImportWizard extends     AbstractWizardPage
   private TextImportWizard importWiz;
   
   private TextImportListener listener;
+  private boolean importCompletedOK = false;
   
-  public ImportWizard() {
-    
-    init();
-  }
+  
+  public ImportWizard() { init(); }
   
   /** 
    * initialize method does frame-specific design - i.e. adding the widgets that 
    are displayed only in this frame (doesn't include prev/next buttons etc)
    */
-  private void init() {
-  
-  }
+  private void init() {}
 
-  
   /** 
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
     
+    if (!importCompletedOK) {
 
-// HACK - TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
-    Morpho.main(null);
-///////////////////////    
-    
-    AbstractWizardPage locWizPage 
+      AbstractWizardPage locationPage
                   = WizardPageLibrary.getPage(WizardPageLibrary.DATA_LOCATION);
 
-    String fileTextName = ((DataLocation)locWizPage).getImportFilePath();
-                  
-    importWiz = new TextImportWizard(fileTextName, this);
-    importWiz.setVisible(true);
+      String fileTextName = ((DataLocation)locationPage).getImportFilePath();
+                
+      importWiz = new TextImportWizard(fileTextName, this);
+      importWiz.setVisible(true);
+      
+    } else {
+      importCompletedOK = false; 
+      listener.importCanceled();
+    }
   }
-  
 
   /** TextImportListener interface
    * This method is called when editing is complete
@@ -107,8 +104,9 @@ public class ImportWizard extends     AbstractWizardPage
     importWiz.setVisible(false);
     resultsMap = om;
     listener.importComplete(om);
+    importCompletedOK = true; 
+    importWiz = null;
   }
-  
   
   /** TextImportListener interface
    * this method handles canceled editing
@@ -117,6 +115,8 @@ public class ImportWizard extends     AbstractWizardPage
   
     importWiz.setVisible(false);
     listener.importCanceled();
+    importCompletedOK = false; 
+    importWiz = null;
   }
   
   /** 
@@ -132,15 +132,10 @@ public class ImportWizard extends     AbstractWizardPage
     this.listener = listener;
   }
   
-  
   /** 
    *  The action to be executed when the "Prev" button is pressed. May be empty
-   *
    */
-  public void onRewindAction() {
-    
-  }
-  
+  public void onRewindAction() {}
   
   /** 
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
@@ -150,9 +145,11 @@ public class ImportWizard extends     AbstractWizardPage
    *  @return boolean true if wizard should advance, false if not 
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() { return true; }
+  public boolean onAdvanceAction() { 
   
-
+    return true; 
+  }
+  
   /** 
    *  gets the Map object that contains all the key/value paired
    *  settings for this particular wizard page
@@ -160,14 +157,8 @@ public class ImportWizard extends     AbstractWizardPage
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  public OrderedMap getPageData() {
+  public OrderedMap getPageData() { return resultsMap; }
   
-    return resultsMap;
-  }
-  
-  
-  
-
   /** 
    *  gets the unique ID for this wizard page
    *

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:53 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class Keywords extends AbstractWizardPage{
   private final String nextPageID = WizardPageLibrary.PARTY_INTRO;
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Keyword Sets";
-  private final String xPathRoot  = "/eml:eml/keywordSet[";
+  private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";
   
   private final String[] colNames =  {"Thesaurus", "Keywords"};
   private final Object[] editors  =   null; //makes non-directly-editable

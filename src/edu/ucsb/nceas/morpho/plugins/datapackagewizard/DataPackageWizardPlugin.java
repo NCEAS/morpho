@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:15 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-22 21:53:24 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ import edu.ucsb.nceas.morpho.Morpho;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
@@ -48,7 +50,6 @@ import org.w3c.dom.Node;
 
 public class DataPackageWizardPlugin implements PluginInterface, 
                                                 ServiceProvider,
-                                                DataPackageWizardListener,
                                                 DataPackageWizardInterface {
 
 
@@ -59,7 +60,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public DataPackageWizardPlugin() {
   
-    dpWiz = new WizardContainerFrame(this);
+    dpWiz = new WizardContainerFrame();
     dpWiz.setVisible(false);
   }
 
@@ -86,9 +87,13 @@ public class DataPackageWizardPlugin implements PluginInterface,
   /**
    *  Required by DataPackageWizardInterface:
    *  method to start the wizard
+   *
+   *  @param listener the <code>DataPackageWizardListener</code> to be called 
+   *                  back when the Wizard has finished
    */
-  public void startWizard() {
+  public void startWizard(DataPackageWizardListener listener) {
 
+    dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
                   WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD, 
                   WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
@@ -96,25 +101,25 @@ public class DataPackageWizardPlugin implements PluginInterface,
   }
   
 
-  /**
-   *  Required by WizardListener interface:
-   *  callback method when wizard has finished
-   *
-   *  @param newDOM the root Node of the newly-created DOM document
-   */
-  public void wizardFinished(Node newDOM) {
-  
-    
-  }
-  
-  
-  
   // for testing/development
   public static void main(String[] args) {
   
+// HACK - TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
+    Morpho.main(null);
+///////////////////////    
+    
     Log.setDebugLevel(55);
     DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
-    plugin.startWizard();
+    plugin.startWizard(
+      new DataPackageWizardListener() {
+      
+        public void wizardFinished(Node newDOM) {
+        
+          Log.debug(45, "\n\n********** Wizard finished: DOM:");
+          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM));
+        }
+      }
+    );
     dpWiz.setVisible(true);
   }
 }
