@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:13:46 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-11-24 18:15:34 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.Morpho;
 import javax.swing.Action;
@@ -68,10 +69,22 @@ public interface DataPackageInterface
    * @param identifier the unique identifier to use to open the data
    * @param coordinator the coordinator for butterfly flapping
    */
+  public void openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator,
+                    String doctype);
+                    
+  /** 
+   * This method is called to open a data package that resides either
+   * locally (location=local) or on a Metacat server (location=metacat).
+   *
+   * @param location indicates the location from which to open the data
+   * @param identifier the unique identifier to use to open the data
+   * @param coordinator the coordinator for butterfly flapping
+   */
   public void openDataPackage(String location, String identifier, 
                     Vector relations, ButterflyFlapCoordinator coordinator,
                     String doctype);
-  /**
+
+                    /**
    * This method is called to upload a datapackage that is currently stored
    * locally to metacat and return a new id or orignal id.
    * @param docid the id of the package to upload
