@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 23:57:34 $'
- * '$Revision: 1.45 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-20 18:58:46 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.net.URL;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -819,6 +820,15 @@ public class PartyPage extends AbstractUIPage {
       WidgetFactory.hiliteComponent(warningLabel);
       return false;
     }
+    
+    String urlstring = urlField.getText();
+    if (notNullAndNotEmpty(urlstring.trim())) {
+      if (!isURL(urlstring)) {
+        Log.debug(1, "The Online URL '"+urlstring+"' is not valid!");
+        return false;
+      }
+    }
+
 
     if (this.isReference()) {
 
@@ -1615,6 +1625,18 @@ public class PartyPage extends AbstractUIPage {
     faxField.setText(EMPTY_STRING);
     emailField.setText(EMPTY_STRING);
     urlField.setText(EMPTY_STRING);
+  }
+  
+  private boolean isURL(String urltext) {
+    boolean ret = true;
+    try{
+      URL url = new URL(urltext);
+      if (url==null) ret = false;
+    }
+    catch (Exception e) {
+      return false;
+    }
+    return ret;
   }
 }
 
