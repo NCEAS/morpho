@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-11 22:46:19 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-04-02 18:46:37 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,6 +156,8 @@ public class ConnectionFrame extends javax.swing.JDialog
     }
 
     pack();
+    
+    PWTextField.requestFocus();
     
     /* Center the Frame */
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
