@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-01 00:38:45 $'
- * '$Revision: 1.24 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-04-02 02:04:12 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import java.util.ArrayList;
 
 public class Access
     extends AbstractUIPage {
@@ -76,7 +77,7 @@ public class Access
   public final String subtitle = " ";
 
   private JPanel radioPanel;
-  private final String xPathRoot = "/eml:eml/dataset/access/";
+  private String xPathRoot = "/eml:eml/dataset/access/";
 
   private boolean publicReadAccess = true;
   private final String[] buttonsText = new String[] {
@@ -84,17 +85,21 @@ public class Access
       "No. Don't give read-only access to public"
   };
 
+  private final String ALLOW_REL_XPATH = "allow[";
+  private final String DENY_REL_XPATH = "deny[";
+  private final String AUTHSYSTEM_REL_XPATH = "@authSystem";
+  private final String ORDER_REL_XPATH = "@order";
+
   private final String[] colNames = {
       "User", "Permissions"};
   private final Object[] editors = null;
   private CustomList accessList;
 
+  private String AUTHSYSTEM_VALUE = "knb";
+  private String ORDER_VALUE = "denyFirst";
+
   private InputStream queryResult;
   private Document doc;
-  private Node tempNode;
-  private AccessTreeNodeObject nodeObject = null;
-  private DefaultMutableTreeNode tempTreeNode = null;
-
   public static DefaultMutableTreeNode accessTreeNode = null;
 
   public Access() {
@@ -102,7 +107,7 @@ public class Access
   }
 
   /**
-   * initialize method does frame-specific design - i.e. adding the widgets that
+   * initialize access does frame-specific design - i.e. adding the widgets that
    are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
@@ -324,7 +329,7 @@ public class Access
       }
 
       if (nl != null) {
-        makeTree(nl, top);
+        //makeTree(nl, top);
       }
 
       return top;
@@ -335,106 +340,6 @@ public class Access
 
   protected void setQueryResult(InputStream queryResult) {
     this.queryResult = queryResult;
-  }
-
-  DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top) {
-    for (int count = 0; count < nl.getLength(); count++) {
-      tempNode = nl.item(count);
-      boolean done = false;
-
-      while (!done) {
-        if (tempNode.getNodeName().compareTo("authSystem") == 0) {
-          nodeObject = new AccessTreeNodeObject(
-              tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
-              WizardSettings.ACCESS_PAGE_AUTHSYS);
-
-          tempTreeNode = new DefaultMutableTreeNode();
-          tempTreeNode.setUserObject(nodeObject);
-
-          tempTreeNode = makeTree(tempNode.getChildNodes(), tempTreeNode);
-
-          top.add(tempTreeNode);
-          done = true;
-        }
-        else if (tempNode.getNodeName().compareTo("group") == 0) {
-          DefaultMutableTreeNode tempUserNode = null;
-
-          NodeList nl2 = tempNode.getChildNodes();
-          nodeObject = null;
-          AccessTreeNodeObject groupNodeObject = new AccessTreeNodeObject(
-              WizardSettings.ACCESS_PAGE_GROUP);
-          tempTreeNode = new DefaultMutableTreeNode();
-
-          for (int i = 0; i < nl2.getLength(); i++) {
-            Node node = nl2.item(i);
-            if (node.getNodeName().compareTo("groupname") == 0) {
-              groupNodeObject.setDN(node.getFirstChild().getNodeValue());
-            }
-            else if (node.getNodeName().compareTo("description") == 0) {
-              groupNodeObject.setDescription(node.getFirstChild().getNodeValue());
-            }
-            else if (node.getNodeName().compareTo("user") == 0) {
-              NodeList nl3 = node.getChildNodes();
-              nodeObject = new AccessTreeNodeObject(
-                  WizardSettings.ACCESS_PAGE_USER);
-
-              for (int j = 0; j < nl3.getLength(); j++) {
-                Node node1 = nl3.item(j);
-                if (node1.getNodeName().compareTo("username") == 0) {
-                  nodeObject.setDN(node1.getFirstChild().getNodeValue());
-                }
-                else if (node1.getNodeName().compareTo("name") == 0) {
-                  nodeObject.setName(node1.getFirstChild().getNodeValue());
-                }
-                else if (node1.getNodeName().compareTo("email") == 0) {
-                  nodeObject.setEmail(node1.getFirstChild().getNodeValue());
-                }
-              }
-              tempUserNode = new DefaultMutableTreeNode();
-              tempUserNode.setUserObject(nodeObject);
-              tempTreeNode.add(tempUserNode);
-            }
-            tempTreeNode.setUserObject(groupNodeObject);
-          }
-
-          top.add(tempTreeNode);
-          done = true;
-        }
-        else if (tempNode.getNodeName().compareTo("user") == 0) {
-          NodeList nl2 = tempNode.getChildNodes();
-          nodeObject = null;
-
-          nodeObject = new AccessTreeNodeObject(
-              WizardSettings.ACCESS_PAGE_USER);
-
-          for (int j = 0; j < nl2.getLength(); j++) {
-            Node node1 = nl2.item(j);
-            if (node1.getNodeName().compareTo("username") == 0) {
-              nodeObject.setDN(node1.getFirstChild().getNodeValue());
-            }
-            else if (node1.getNodeName().compareTo("name") == 0) {
-              nodeObject.setName(node1.getFirstChild().getNodeValue());
-            }
-            else if (node1.getNodeName().compareTo("email") == 0) {
-              nodeObject.setEmail(node1.getFirstChild().getNodeValue());
-            }
-          }
-
-          tempTreeNode = new DefaultMutableTreeNode();
-          tempTreeNode.setUserObject(nodeObject);
-
-          top.add(tempTreeNode);
-          done = true;
-        }
-        else if (tempNode.hasChildNodes()) {
-          tempNode = tempNode.getFirstChild();
-        }
-        else {
-          done = true;
-        }
-      }
-    }
-    return top;
   }
 
   public static void refreshTree(AccessPage accessPage) {
@@ -493,8 +398,8 @@ public class Access
     AccessPage nextAccessPage = null;
 
     if (publicReadAccess) {
-      returnMap.put(xPathRoot + "@authSystem", "knb");
-      returnMap.put(xPathRoot + "@order", "denyFirst");
+      returnMap.put(xPathRoot + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
+      returnMap.put(xPathRoot + ORDER_REL_XPATH, ORDER_VALUE);
       returnMap.put(xPathRoot + "allow[" + (allowIndex) + "]/principal",
                     "public");
       returnMap.put(xPathRoot + "allow[" + (allowIndex++) + "]/permission",
@@ -602,8 +507,201 @@ public class Access
     return pageNumber;
   }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  // resets all fields to blank
+  private void resetBlankData() {
+    accessList.removeAllRows();
+  }
 
+  public boolean setPageData(OrderedMap map, String xPathRoot) {
+
+    if (xPathRoot != null && xPathRoot.trim().length() > 0) {
+      this.xPathRoot = xPathRoot;
+    }
+
+    if (map == null || map.isEmpty()) {
+      this.resetBlankData();
+      return true;
+    }
+
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    List accessAllowList = new ArrayList();
+    List accessDenyList = new ArrayList();
+
+    while (keyIt.hasNext()) {
+
+      nextXPathObj = keyIt.next();
+      if (nextXPathObj == null) {
+        continue;
+      }
+      nextXPath = (String) nextXPathObj;
+
+      nextValObj = map.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+      Log.debug(45, "Access:  nextXPath = " + nextXPath
+                + "\n nextVal   = " + nextVal);
+
+      // remove everything up to and including the last occurrence of
+      // this.xPathRoot to get relative xpaths, in case we're handling a
+      // project elsewhere in the tree...
+      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(this.xPathRoot)
+                                      + this.xPathRoot.length());
+
+      Log.debug(45, "Access: TRIMMED nextXPath   = " + nextXPath);
+
+      if (nextXPath.startsWith(AUTHSYSTEM_REL_XPATH)) {
+        AUTHSYSTEM_VALUE = nextVal;
+        toDeleteList.add(nextXPathObj);
+      }
+      else if (nextXPath.startsWith(ORDER_REL_XPATH)) {
+        ORDER_VALUE = nextVal;
+        toDeleteList.add(nextXPathObj);
+      }
+      else if (nextXPath.startsWith(ALLOW_REL_XPATH)) {
+
+        Log.debug(45, ">>>>>>>>>> adding to accessAllowList: nextXPathObj="
+                  + nextXPathObj + "; nextValObj=" + nextValObj);
+        addToAccess(nextXPathObj, nextValObj, accessAllowList, ALLOW_REL_XPATH);
+        toDeleteList.add(nextXPathObj);
+      }
+      else if (nextXPath.startsWith(DENY_REL_XPATH)) {
+
+        Log.debug(45, ">>>>>>>>>> adding to accessDenystepList: nextXPathObj="
+                  + nextXPathObj + "; nextValObj=" + nextValObj);
+        addToAccess(nextXPathObj, nextValObj, accessDenyList, DENY_REL_XPATH);
+        toDeleteList.add(nextXPathObj);
+      }
+    }
+
+    Iterator allowIt = accessAllowList.iterator();
+    Iterator denyIt = accessDenyList.iterator();
+    Object nextStepMapObj = null;
+    OrderedMap nextStepMap = null;
+    int accessPredicate = 1;
+
+    accessList.removeAllRows();
+    boolean accessAllowRetVal = true;
+    boolean accessDenyRetVal = true;
+
+    while (allowIt.hasNext()) {
+
+      nextStepMapObj = allowIt.next();
+      if (nextStepMapObj == null) {
+        continue;
+      }
+      nextStepMap = (OrderedMap) nextStepMapObj;
+      if (nextStepMap.isEmpty()) {
+        continue;
+      }
+
+      AccessPage nextStep = (AccessPage) WizardPageLibrary.getPage(
+          DataPackageWizardInterface.ACCESS_PAGE);
+
+      boolean checkAccess = nextStep.setPageData(nextStepMap,
+                                                 this.xPathRoot
+                                                 + (accessPredicate++) + "]/");
+
+      if (!checkAccess) {
+        accessAllowRetVal = false;
+      }
+      List newRow = nextStep.getSurrogate();
+      newRow.add(nextStep);
+
+      accessList.addRow(newRow);
+    }
+
+    while (denyIt.hasNext()) {
+
+      nextStepMapObj = denyIt.next();
+      if (nextStepMapObj == null) {
+        continue;
+      }
+      nextStepMap = (OrderedMap) nextStepMapObj;
+      if (nextStepMap.isEmpty()) {
+        continue;
+      }
+
+      AccessPage nextStep = (AccessPage) WizardPageLibrary.getPage(
+          DataPackageWizardInterface.ACCESS_PAGE);
+
+      boolean checkAccess = nextStep.setPageData(nextStepMap,
+                                                 this.xPathRoot
+                                                 + (accessPredicate++) + "]/");
+
+      if (!checkAccess) {
+        accessDenyRetVal = false;
+      }
+      List newRow = nextStep.getSurrogate();
+      newRow.add(nextStep);
+
+      accessList.addRow(newRow);
+    }
+
+    //check access return valuse...
+    if (!accessAllowRetVal || !accessDenyRetVal) {
+      Log.debug(20, "Access.setPageData - Access sub-class returned FALSE");
+    }
+
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+    }
+
+    //if anything left in map, then it included stuff we can't handle...
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+
+      Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
+                + map);
+    }
+    return (returnVal && accessAllowRetVal && accessDenyRetVal);
+  }
+
+  private void addToAccess(Object nextPersonnelXPathObj,
+                           Object nextPersonnelVal, List accessstepList,
+                           String xPath) {
+
+    if (nextPersonnelXPathObj == null) {
+      return;
+    }
+    String nextPersonnelXPath = (String) nextPersonnelXPathObj;
+    int predicate = getFirstPredicate(nextPersonnelXPath, xPath);
+
+    // NOTE predicate is 1-relative, but List indices are 0-relative!!!
+    if (predicate >= accessstepList.size()) {
+
+      for (int i = accessstepList.size(); i <= predicate; i++) {
+        accessstepList.add(new OrderedMap());
+      }
+    }
+
+    if (predicate < accessstepList.size()) {
+      Object nextMapObj = accessstepList.get(predicate);
+      OrderedMap nextMap = (OrderedMap) nextMapObj;
+      nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
+    }
+    else {
+      Log.debug(15,
+                "**** ERROR - Access.addToAccess() - predicate > accessstepList.size()");
+    }
+  }
+
+  private int getFirstPredicate(String xpath, String firstSegment) {
+
+    String tempXPath
+        = xpath.substring(xpath.indexOf(firstSegment) + firstSegment.length());
+
+    return Integer.parseInt(
+        tempXPath.substring(0, tempXPath.indexOf("]")));
+  }
 }
 
 class ContactMetacat
@@ -637,8 +735,8 @@ class ContactMetacat
     try {
       queryResult = null;
 //      if (morpho.isConnected()) {
-        queryResult = morpho.getMetacatInputStream(prop);
-  //    }
+    //  queryResult = morpho.getMetacatInputStream(prop);
+      //    }
       access.setQueryResult(queryResult);
 
       if (methodCallID == ADD) {

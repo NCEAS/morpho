@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-17 04:15:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-04-02 02:04:12 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,16 +30,19 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
-class AccessTreeNodeObject{
+class AccessTreeNodeObject
+    implements Comparable {
 
   private String DNinfo = null;
   private String name = null;
   private String email = null;
   private String description = null;
+  private String EMPTY_STRING = "";
 
-  int  nodeType = 0;
+  int nodeType = 0;
 
   public AccessTreeNodeObject(int nodeType) {
+    DNinfo = "";
     this.nodeType = nodeType;
   }
 
@@ -48,59 +51,60 @@ class AccessTreeNodeObject{
     this.nodeType = nodeType;
   }
 
-  public String getDN(){
+  public String getDN() {
     return DNinfo;
   }
 
-  public void setDN(String DNinfo){
-    if(nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS){
-      try{
+  public void setDN(String DNinfo) {
+    if (nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS) {
+      try {
         DNinfo = DNinfo.substring(DNinfo.indexOf("o="));
-      }catch (Exception e){
-       Log.debug(10, e.getMessage());
+      }
+      catch (Exception e) {
+        Log.debug(10, e.getMessage());
       }
     }
     this.DNinfo = DNinfo;
   }
 
-  public String getName(){
+  public String getName() {
     return name;
   }
 
-  public void setName(String name){
+  public void setName(String name) {
     this.name = name;
   }
 
-  public String getDescription(){
+  public String getDescription() {
     return description;
   }
 
-  public void setDescription(String description){
+  public void setDescription(String description) {
     this.description = description;
   }
 
-  public String getEmail(){
+  public String getEmail() {
     return email;
   }
 
-  public void setEmail(String email){
+  public void setEmail(String email) {
     this.email = email;
   }
 
-  public String toString(){
+  public String toString() {
     String value = null;
     String key = null;
 
-    if(nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS){
+    if (nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS) {
       key = "o=";
       value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
       value = value.substring(0, value.indexOf(","));
-    } else if(nodeType == WizardSettings.ACCESS_PAGE_GROUP){
+    } else if (nodeType == WizardSettings.ACCESS_PAGE_GROUP) {
       key = "cn=";
       value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
       value = value.substring(0, value.indexOf(","));
-    } else if(nodeType == WizardSettings.ACCESS_PAGE_USER){
-      if(name != null && name.compareTo("") != 0){
+    } else if (nodeType == WizardSettings.ACCESS_PAGE_USER) {
+      if (name != null && name.compareTo("") != 0) {
         value = name;
       } else {
         key = "uid=";
@@ -109,9 +113,12 @@ class AccessTreeNodeObject{
       }
     }
 
-
     return value;
- }
+  }
 
-
+  public int compareTo(Object o) {
+    String thisString = (this.toString()).toLowerCase();
+    String otherString = (((AccessTreeNodeObject)o).toString()).toLowerCase();
+    return thisString.compareTo(otherString);
+  }
 }
