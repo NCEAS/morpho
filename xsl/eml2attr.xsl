@@ -322,19 +322,22 @@
   <xsl:template name="getUnit">
     <xsl:param name="string"/>
     <xsl:choose>
-      <xsl:when test="$unitDict/stmml:unitList/stmml:unit/@id=$string">
+      <!-- test for standard STMML unit definitions, trim leading/tailing
+      whitespace during the comparison -->
+      <xsl:when test="$unitDict/stmml:unitList/stmml:unit/@id=normalize-space($string)">
         <xsl:element name="standardUnit">
-          <xsl:value-of select="$unitDict/stmml:unitList/stmml:unit/@id[.=$string]"/>
+          <xsl:value-of select="$unitDict/stmml:unitList/stmml:unit/@id[.=normalize-space($string)]"/>
         </xsl:element>  
       </xsl:when>
-      <xsl:when test="$unitDict/stmml:unitList/stmml:unit/@abbreviation=$string">
+      <xsl:when test="$unitDict/stmml:unitList/stmml:unit/@abbreviation=normalize-space($string)">
         <xsl:element name="standardUnit">
-          <xsl:value-of select="$unitDict/stmml:unitList/stmml:unit[./@abbreviation=$string]/@id"/>
+          <xsl:value-of select="$unitDict/stmml:unitList/stmml:unit[./@abbreviation=normalize-space($string)]/@id"/>
         </xsl:element>
           </xsl:when>
+      <!-- Otherwise, use the trimmed value in a customUnit definition-->
       <xsl:otherwise>
         <xsl:element name="customUnit">
-          <xsl:value-of select="$string"/>
+          <xsl:value-of select="normalize-space($string)"/>
         </xsl:element>  
       </xsl:otherwise>
     </xsl:choose>  
