@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<wizard size="400x400" dtd="eml-physical-2.0.0.beta4e.dtd" doctype="-//ecoinformatics.org//eml-physical-2.0.0beta4//EN">
+  <group label="Data File Physical Information" field="eml-physical" type="panel">
+    <group layout="flow" size="380x300">
+    <group size="370x70">
+      <textbox label="identifier" size="10" visible="no" field="identifier" 
+               required="yes"/>
+      <textbox label="Format" field="format" size="20" allowNull="no" 
+               tooltip="Contains the name of the format for the data file (e.g 'text', 'ASCII', 'Excel')" required="yes"/>
+     <textbox label="Size" field="size" size="20" allowNull="yes" 
+               tooltip="The physical size of the entity, typically in bytes." required="no"/>     
+      <textbox label="Field Delimiter" field="fieldDelimiter" size="20" allowNull="yes" 
+               tooltip="The end of the attribute (field) is delimited by a special character called a field delimiter." required="no"/>
+    </group>
+    </group>
+  </group>
+</wizard>

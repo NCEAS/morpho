@@ -15,6 +15,11 @@
           idtag="/eml-attribute/identifier"
           relatedTo="Table"
           displayNamePath="/eml-attribute/attribute/attributeName"/>
+    <spec name="Physical" 
+          path="./lib/frames/physical.xml" 
+          idtag="/eml-physical/identifier"
+          relatedTo="Table"
+          displayNamePath="/eml-physical/identifier"/>
   </specs>
   
   <frame name="Table"
@@ -22,6 +27,9 @@
          dependsOn="Fields"/>
   <frame name="Fields"
          repeatable="no"/>
+  <frame name="Physical"
+         repeatable="no"
+         dependsOn="Fields"/>
          
   <descriptions>
     <description name="InitialDescription">
@@ -60,6 +68,13 @@
     <description name="Fields">
       Enter information about the fields in your previously described table here.
       Only the name and definition of the field are required.  
+    </description>
+    <description name="Physical">
+      Enter information about the physical configuration of a data object. 
+      This generally is a detailed description of a text representation that 
+      shows how the columns and rows of a table are represented, or simply 
+      the name of a well-known binary or proprietary format 
+      (e.g., Microsoft Excel 2000).
     </description>
   </descriptions>
   
