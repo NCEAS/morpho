@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-10-23 22:05:11 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-10-23 23:43:02 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,6 @@ public class ProfileDialog extends JDialog
   JTextField firstNameField = new JTextField();
   JTextField lastNameField = new JTextField();
   JTextField userIdField = new JTextField();
-  JPasswordField passwordField = new JPasswordField();
   JTextField otherOrgField = new JTextField();
   JTextField constructionField = new JTextField();
   JList orgList = null;
@@ -320,35 +319,29 @@ public class ProfileDialog extends JDialog
                             BorderFactory.createEmptyBorder(8,8,8,8),
                             "Metacat Account Information"));
       JLabel usernameLabel = new JLabel();
-      JLabel passwordLabel = new JLabel();
       JLabel orgLabel = new JLabel();
       JLabel otherOrgLabel = new JLabel();
       usernameLabel.setText("Metacat Username: ");
-      passwordLabel.setText("Metacat Password: ");
       orgLabel.setText("Organization: ");
       otherOrgLabel.setText("Other organization: ");
       usernameLabel.setForeground(Color.black);
-      passwordLabel.setForeground(Color.black);
       orgLabel.setForeground(Color.black);
       otherOrgLabel.setForeground(Color.black);
       usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      passwordLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       orgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       otherOrgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-      passwordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       otherOrgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       userIdField.setColumns(15);
-      passwordField.setColumns(10);
       String[] organizations = {"NCEAS", "LTER", "NRS", "PISCO", "MARINE"};
       orgList = new JList(organizations);
       orgList.setSelectionMode(1);
       orgList.setVisibleRowCount(3);
       JScrollPane orgScrollPane = new JScrollPane(orgList);
       otherOrgField.setColumns(15);
-      JLabel[] labels = {usernameLabel, passwordLabel, orgLabel, otherOrgLabel};
-      JComponent[] components = {userIdField, passwordField, 
+      JLabel[] labels = {usernameLabel, orgLabel, otherOrgLabel};
+      JComponent[] components = {userIdField,
                             orgScrollPane, otherOrgField};
       addLabelTextRows(labels, components, gridbag, screenPanel);
     } else if (2 == currentScreen) {
@@ -410,11 +403,15 @@ public class ProfileDialog extends JDialog
       fieldsAreValid = false;
     }
 
-    /*
-    if (!passwordField.getText().equals(passwordField2.getText())) {
-      fieldsAreValid = false;
+    String org = (String)orgList.getSelectedValue();
+    if (null == org) {
+        ClientFramework.debug(20, "org was initially null");
+        org = otherOrgField.getText();
+        if ((null == org) || (org.equals(""))) {
+            ClientFramework.debug(20, "second org was null");
+            fieldsAreValid = false;
+        }
     }
-    */
 
     return fieldsAreValid;
   }
@@ -461,7 +458,6 @@ public class ProfileDialog extends JDialog
           try {
             ConfigXML profile = new ConfigXML(profileFileName);
             // Log into metacat
-            framework.setPassword(passwordField.getText());
             framework.setProfile(profile);
   
             // Get rid of the dialog
@@ -554,7 +550,6 @@ public class ProfileDialog extends JDialog
           // Create a metacat user
  
           // Log into metacat
-          framework.setPassword(passwordField.getText());
           framework.setProfile(profile);
 
           // Get rid of the dialog
@@ -574,7 +569,7 @@ public class ProfileDialog extends JDialog
       layoutScreen();
       String messageText = "Some required information was invalid.\n\n" +
                            "Please check that you have provided a\n" +
-                           "profile name and a user id.\n";
+                           "profile name, a user name, and an organization.\n";
       JOptionPane.showMessageDialog(this, messageText);      
     }
   }
