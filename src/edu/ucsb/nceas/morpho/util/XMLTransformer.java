@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 01:03:25 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2003-10-10 22:34:16 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,15 +102,15 @@ public class XMLTransformer
     public static final String SELECTED_ATTRIBS_XSLPROP = "selected_attribute";
 
     /**
-     *  used to hold a list of all module ID(s) to be suppressed in DataPackage 
-     *  metaview.  
+     *  used to hold a list of all module ID(s) to be suppressed as triples 
+     *  SUBJECTS in DataPackage metaview.  
      */
     public static final String SUPPRESS_TRIPLES_SUBJECTS_XSLPROP 
                                                 = "suppress_subjects_identifier";
 
     /**
-     *  used to hold a list of all module ID(s) to be suppressed in DataPackage 
-     *  metaview.  
+     *  used to hold a list of all module ID(s) to be suppressed as triples 
+     *  OBJECTS in DataPackage metaview.  
      */
     public static final String SUPPRESS_TRIPLES_OBJECTS_XSLPROP 
                                                 = "suppress_objects_identifier";
@@ -126,28 +126,28 @@ public class XMLTransformer
                                                 = " ";
 
     /**
-     *  used to hold default css stylesheet name 
+     *  xsl property used to hold package index name 
      */
     public static final String PACKAGE_INDEX_NAME_XSLPROP 
                                                 = "package_index_name";
                                                 
     /**
-     *  used to hold default css stylesheet name 
+     *  xsl property used to hold package id 
      */
     public static final String PACKAGE_ID_XSLPROP = "package_id";
                                                 
     /**
-     *  used to hold default css stylesheet name 
+     *  xsl property used to hold default css stylesheet name 
      */
     public static final String DEFAULT_CSS_XSLPROP = "qformat";
 
     /**
-     *  used to hold entity/attribute css stylesheet name 
+     *  xsl property used to hold entity/attribute css stylesheet name 
      */
     public static final String ENTITY_CSS_XSLPROP = "entitystyle";
                                                 
     /**
-     *  used to hold path to css stylesheets 
+     *  xsl property used to hold path to css stylesheets 
      */
     public static final String CSS_PATH_XSLPROP = "stylePath";
     
