@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-15 00:05:29 $'
- * '$Revision: 1.72 $'
+ *     '$Date: 2001-12-17 19:15:33 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -368,7 +368,7 @@ public class DocFrame extends javax.swing.JFrame
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, boolean flag) 
 	{
 	  this();
-	  this.templateFlag = flag;
+//	  this.templateFlag = flag;
 	  setTitle("Morpho Editor");
 	  this.framework = cf;
 	  counter++;
