@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-11 03:45:51 $'
-  * '$Revision: 1.7 $'
+  *     '$Date: 2003-12-22 22:06:39 $'
+  * '$Revision: 1.8 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,7 @@
     */
 -->
 
-    <xsl:param name="stylePath">lib/style/</xsl:param>
+    <xsl:param name="stylePath">lib/style</xsl:param>
 
 
 <!--

@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 20:04:28 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2003-12-22 22:06:39 $'
+  * '$Revision: 1.5 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@
              <xsl:call-template name="datasetpubplace"/>
              <xsl:call-template name="datasetmethod"/>
              <xsl:call-template name="datasetproject"/>
-             <xsl:if test="$withEntityLinks='1'">
+             <xsl:if test="$withEntityLinks='1' or $displaymodule='printall'">
                <xsl:call-template name="datasetentity"/>
              </xsl:if>
           </xsl:for-each>
@@ -68,7 +68,7 @@
              <xsl:call-template name="datasetpubplace"/>
              <xsl:call-template name="datasetmethod"/>
              <xsl:call-template name="datasetproject"/>
-             <xsl:if test="$withEntityLinks='1'">
+             <xsl:if test="$withEntityLinks='1' or $displaymodule='printall'">
                <xsl:call-template name="datasetentity"/>
              </xsl:if>
        </xsl:otherwise>
