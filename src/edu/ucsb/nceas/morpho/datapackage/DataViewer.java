@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-16 21:57:23 $'
- * '$Revision: 1.119 $'
+ *     '$Date: 2004-04-20 20:30:37 $'
+ * '$Revision: 1.120 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -687,9 +687,10 @@ public class DataViewer extends javax.swing.JPanel
               dataTypeString = adp.getAttributeDataType(entityIndex, i);
               unitString = adp.getAttributeUnit(entityIndex, i);
 
-              temp = "<html><font face=\"Courier\"> <center><small>"+dataTypeString+"<br>"+unitString
-                                                  +"<br></small><b>"
-                                                  +temp+"</b></center></font></html>";
+              temp = "<html><font face=\"Courier\"> <center><small><nobr>"+dataTypeString
+                                                  +"</nobr><br><nobr>"+unitString
+                                                  +"</nobr><br></small><b><nobr>"
+                                                  +temp+"</nobr></b></center></font></html>";
               column_labels.addElement(temp);
             }
           }
