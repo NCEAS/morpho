@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-16 20:21:12 $'
- * '$Revision: 1.44 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,16 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.*;
@@ -72,7 +79,7 @@ public class ResultPanel extends JPanel
   /** A reference to the ResultSet being displayed */
   private ResultSet results = null;
   /** A reference to the framework */
-  private ClientFramework framework = null;
+  private Morpho morpho = null;
   /** A reference to the mediator */
   private ResultPanelAndFrameMediator mediator = null;
   /** The table used to display the results */
@@ -167,7 +174,7 @@ public class ResultPanel extends JPanel
     this.results = results;
     this.hasRefreshButton = showRefresh;
     this.hasReviseButton = showRevise;
-    this.framework = results.getFramework();
+    this.morpho = results.getFramework();
     this.mediator = myMediator;
     // If the panel don't need a mediator, null will be passed here
     if (mediator != null)
@@ -489,13 +496,14 @@ public class ResultPanel extends JPanel
       DataPackageInterface dataPackage;
       try 
       {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                   framework.getServiceProvider(DataPackageInterface.class);
+                   services.getServiceProvider(DataPackageInterface.class);
         dataPackage = (DataPackageInterface)provider;
       } 
       catch (ServiceNotHandledException snhe) 
       {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
         return;
       }
     
@@ -545,13 +553,14 @@ public class ResultPanel extends JPanel
       DataPackageInterface dataPackage;
       try 
       {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                   framework.getServiceProvider(DataPackageInterface.class);
+                   services.getServiceProvider(DataPackageInterface.class);
         dataPackage = (DataPackageInterface)provider;
       } 
       catch (ServiceNotHandledException snhe) 
       {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
         return;
       }
     
@@ -589,13 +598,14 @@ public class ResultPanel extends JPanel
       DataPackageInterface dataPackage;
       try 
       {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
         dataPackage = (DataPackageInterface)provider;
       } 
       catch (ServiceNotHandledException snhe) 
       {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
         return;
       }
 			if (object == openMenu)
@@ -607,7 +617,7 @@ public class ResultPanel extends JPanel
       else if (object == openPreviousVersion)
       {
         if (vers>0) {
-          OpenPreviousDialog opd = new OpenPreviousDialog(packageName,vers,framework,localLoc );
+          OpenPreviousDialog opd = new OpenPreviousDialog(packageName,vers,morpho,localLoc );
           opd.setVisible(true);
         }
       }
@@ -637,7 +647,7 @@ public class ResultPanel extends JPanel
       {
         doExport();
         
- /*       ClientFramework.debug(20, "Exporting dataset");
+ /*       Log.debug(20, "Exporting dataset");
         exportDataset(docid);
  */
       }
@@ -661,18 +671,19 @@ public class ResultPanel extends JPanel
 		{
 			Object object = event.getSource();
 			JMenuItem jmi = (JMenuItem)object;
-      ClientFramework.debug(30, "Event String:"+jmi.getText());
+      Log.debug(30, "Event String:"+jmi.getText());
 
       DataPackageInterface dataPackage;
       try 
       {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
         dataPackage = (DataPackageInterface)provider;
       } 
       catch (ServiceNotHandledException snhe) 
       {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
         return;
       }
       String location = "";
@@ -728,7 +739,7 @@ public class ResultPanel extends JPanel
       selectedId = docid;
       localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
       metacatLoc = ((Boolean)rowV.elementAt(10)).booleanValue();
-      ClientFramework.debug(30, "selectedId is: "+docid);
+      Log.debug(30, "selectedId is: "+docid);
       if (e.isPopupTrigger()) 
       {
         trigger = true;
@@ -798,9 +809,9 @@ public class ResultPanel extends JPanel
     Container parent = getRootPane().getParent();
     if (parent instanceof ResultFrame) {
       rsf = (ResultFrame)parent;
-      queryDialog1 = new QueryDialog(rsf, framework);
+      queryDialog1 = new QueryDialog(rsf, morpho);
     } else {
-      queryDialog1 = new QueryDialog(framework);
+      queryDialog1 = new QueryDialog(morpho);
     }
     queryDialog1.setQuery(results.getQuery());
     queryDialog1.setModal(true);
@@ -832,7 +843,7 @@ public class ResultPanel extends JPanel
   public void saveQuery()
   {
     // Serialize the query in the profiles directory
-    AccessionNumber a = new AccessionNumber(framework);
+    AccessionNumber a = new AccessionNumber(morpho);
     Query query = results.getQuery();
     String identifier = query.getIdentifier();
     if (identifier == null) {
@@ -841,13 +852,13 @@ public class ResultPanel extends JPanel
     }
 
     try {
-      ClientFramework.debug(10, "Saving query to disk...");
+      Log.debug(10, "Saving query to disk...");
       query.save();
-      ClientFramework.debug(10, "Adding query to menu...");
+      Log.debug(10, "Adding query to menu...");
       addQueryToMenu(query);
 
     } catch (IOException ioe) {
-      ClientFramework.debug(6, "Failed to save query: I/O error.");
+      Log.debug(6, "Failed to save query: I/O error.");
     }
   }
 
@@ -865,7 +876,7 @@ public class ResultPanel extends JPanel
     if (parent instanceof ResultFrame) {
       ResultFrame rsf = (ResultFrame)parent;
       rsf.setTitle(newTitle);
-    } else if (parent instanceof ClientFramework) {
+    //} else if (parent instanceof ClientFramework) {
     } else {
      
     }
@@ -884,7 +895,7 @@ public class ResultPanel extends JPanel
    */
   public void loadSavedQueries()
   {
-    ClientFramework.debug(20, "Loading saved queries...");
+    Log.debug(20, "Loading saved queries...");
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
       savedQueriesList = new Hashtable();
@@ -895,14 +906,14 @@ public class ResultPanel extends JPanel
     if (!savedQueriesList.isEmpty()) {
       for (int i = savedQueriesList.size()+1; i > 1; i--) {
         // Clear the search menu too 
-        framework.removeMenuItem("Search", i);
+        UIController.getInstance().removeMenuItem("Search", i);
       }
       savedQueriesList = new Hashtable();
     }
 
     // Look in the profile queries directory and load any pathquery docs
-    ConfigXML config = framework.getConfiguration();
-    ConfigXML profile = framework.getProfile();
+    ConfigXML config = morpho.getConfiguration();
+    ConfigXML profile = morpho.getProfile();
     String queriesDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) +
                             File.separator +
@@ -918,15 +929,15 @@ public class ResultPanel extends JPanel
         if (queryFile.isFile()) {
           try {
             FileReader xml = new FileReader(queryFile);
-            Query newQuery = new Query(xml, framework);
+            Query newQuery = new Query(xml, morpho);
             addQueryToMenu(newQuery);
           } catch (FileNotFoundException fnf) {
-            ClientFramework.debug(9, "Poof. The query disappeared.");
+            Log.debug(9, "Poof. The query disappeared.");
           }
         }
       }
     }
-    ClientFramework.debug(20, "Finished loading saved queries.");
+    Log.debug(20, "Finished loading saved queries.");
   }
 
   /**
@@ -941,7 +952,7 @@ public class ResultPanel extends JPanel
       savedQueriesList = new Hashtable();
     }
 
-    // Add a menu item in the framework to execute this query, but only
+    // Add a menu item in the UIController to execute this query, but only
     // if the menu item doesn't already exist, which is determined
     // by seeing if the query identifier is in the static list of queries
     if (! savedQueriesList.containsKey(query.getIdentifier())) {
@@ -954,7 +965,7 @@ public class ResultPanel extends JPanel
           Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
           if (savedQuery != null) {
             ResultSet rs = savedQuery.execute();
-            ResultFrame rsf = new ResultFrame(framework, rs);
+            ResultFrame rsf = new ResultFrame(morpho, rs);
           }
         }
       };
@@ -962,7 +973,7 @@ public class ResultPanel extends JPanel
       savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
                             "Execute saved search");
       menuActions[0] = savedSearchItemAction;
-      framework.addMenu("Search", new Integer(3), menuActions);
+      UIController.getInstance().addMenu("Search", new Integer(3), menuActions);
       savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
     } else {
       // The menu already exists, so update its title and query object
@@ -996,18 +1007,19 @@ private void doUpload() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            Log.debug(6, "Error in upload");
             return null;
           }
           
           { //upload the current selection to metacat
-            ClientFramework.debug(20, "Uploading package.");
+            Log.debug(20, "Uploading package.");
             try
             {
               dataPackage.upload(docid, false);
@@ -1038,7 +1050,7 @@ private void doUpload() {
                 }
                 catch(MetacatUploadException mue2)
                 {
-                  framework.debug(0, mue2.getMessage());
+                  Log.debug(0, mue2.getMessage());
                 }
               }
               else
@@ -1076,19 +1088,20 @@ private void doDownload() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            Log.debug(6, "Error in upload");
             return null;
           }
           
           
         //download the current selection to the local disk
-        ClientFramework.debug(20, "Downloading package.");
+        Log.debug(20, "Downloading package.");
         dataPackage.download(docid);
         refreshQuery();
           
@@ -1118,19 +1131,20 @@ private void doDeleteLocal() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            Log.debug(6, "Error in upload");
             return null;
           }
           
           
 		    //delete the local package
-        ClientFramework.debug(20, "Deleteing the local package.");
+        Log.debug(20, "Deleteing the local package.");
         String message = "Are you sure you want to delete \nthe package from " +
                          "your local file system?";
         int choice = JOptionPane.YES_OPTION;
@@ -1169,19 +1183,20 @@ private void doDeleteMetacat() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            Log.debug(6, "Error in upload");
             return null;
           }
           
           
 			   //delete the object on metacat
-         ClientFramework.debug(20, "Deleteing the metacat package.");
+         Log.debug(20, "Deleteing the metacat package.");
          String message = "Are you sure you want to delete \nthe package from " +
                          "Metacat? You \nwill not be able to upload \nit " +
                          "again with the same identifier.";
@@ -1222,18 +1237,19 @@ private void doDeleteAll() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            Log.debug(6, "Error in upload");
             return null;
           }
           
 			  //delete both of the objects
-        ClientFramework.debug(20, "Deleting both copies of the package.");
+        Log.debug(20, "Deleting both copies of the package.");
         String message = "Are you sure you want to delete \nthe package from " +
                          "Metacat and your \nlocal file system? " +
                          "Deleting a package\n cannot be undone!";
@@ -1273,18 +1289,19 @@ private void doExport() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            Log.debug(6, "Error in upload");
             return null;
           }
           
 			  //do export
-          ClientFramework.debug(20, "Exporting dataset");
+          Log.debug(20, "Exporting dataset");
           exportDataset(docid);
 
           return null;  
@@ -1312,18 +1329,19 @@ private void doExportToZip() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            Log.debug(6, "Error in upload");
             return null;
           }
           
 			  //do exportToZip
-          ClientFramework.debug(20, "Exporting dataset to zip file");
+          Log.debug(20, "Exporting dataset to zip file");
           exportDatasetToZip(docid);
 
           return null;  
@@ -1352,18 +1370,19 @@ private void doExportToZip() {
           DataPackageInterface dataPackage;
           try 
           {
+            ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
             dataPackage = (DataPackageInterface)provider;
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in doOpenDataPackage");
+            Log.debug(6, "Error in doOpenDataPackage");
             return null;
           }
           
 			  //do open
-          ClientFramework.debug(20, "Opening package!.");
+          Log.debug(20, "Opening package!.");
           openResultRecord(table);
         
           return null;  

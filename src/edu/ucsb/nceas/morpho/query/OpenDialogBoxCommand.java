@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-15 23:44:30 $'
- * '$Revision: 1.2 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 package edu.ucsb.nceas.morpho.query;
-import  edu.ucsb.nceas.morpho.framework.*;
+
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.*;
 import javax.swing.JDialog;
 
@@ -35,19 +35,20 @@ import javax.swing.JDialog;
 public class OpenDialogBoxCommand implements Command 
 {
   
-  /** A reference to the clientframework*/
-  private ClientFramework frame = null;
+  /** A reference to Morpho application */
+  private Morpho morpho = null;
   
   /** A reference to the owner query*/
   private Query ownerQuery = null;
   
   /**
    * Constructor of SearcCommand
-   * @param myFrame the frame which the cancel command will apply
+   *
+   * @param morpho the Morpho app to which the cancel command will apply
    */
-  public OpenDialogBoxCommand(ClientFramework myFrame, Query myQuery)
+  public OpenDialogBoxCommand(Morpho morpho, Query myQuery)
   {
-    frame = myFrame;
+    this.morpho = morpho;
     ownerQuery = myQuery;
     
    }//OpenDialogBoxCommand
@@ -59,7 +60,7 @@ public class OpenDialogBoxCommand implements Command
   public void execute()
   {
     OpenDialogBox open = null;
-    open = new OpenDialogBox(frame, ownerQuery);
+    open = new OpenDialogBox(morpho, ownerQuery);
     open.setVisible(true);
    
   }//execute

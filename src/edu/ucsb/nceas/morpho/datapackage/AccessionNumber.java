@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,10 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
+import edu.ucsb.nceas.morpho.util.Log;
 import java.io.*;
 import java.util.*;
 
@@ -51,13 +54,13 @@ import com.arbortext.catalog.*;
  */
 public class AccessionNumber 
 {
-  private ClientFramework framework;
+  private Morpho morpho;
   private ConfigXML profile;
   
-  public AccessionNumber(ClientFramework cf)
+  public AccessionNumber(Morpho morpho)
   {
-    framework = cf;
-    profile = framework.getProfile();
+    this.morpho = morpho;
+    profile = morpho.getProfile();
   }
 
   /**
@@ -82,7 +85,7 @@ public class AccessionNumber
     String s = "" + lastid;
     if(!profile.set("lastId", 0, s))
     {
-      ClientFramework.debug(1, "Error incrementing the accession number id");
+      Log.debug(1, "Error incrementing the accession number id");
       return null;
     }
     else
@@ -154,7 +157,7 @@ public class AccessionNumber
   public String incRevInTriples(File xmlfile, Vector oldid, Vector newid)
   {
     System.out.println("oldid: " + oldid.toString() + " newid: " + newid.toString());
-    DocumentBuilder parser = framework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     Document doc;
     InputSource in;
     FileInputStream fs;
@@ -163,14 +166,14 @@ public class AccessionNumber
     //get the DOM rep of the document without triples
     try
     {
-      ConfigXML config = framework.getConfiguration();
+      ConfigXML config = morpho.getConfiguration();
       String catalogPath = //config.getConfigDirectory() + File.separator +
                                        config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(xmlfile, catalogPath);
     }
     catch (Exception e)
     {
-      framework.debug(0, "error parsing " + xmlfile.getPath() + " : " +
+      Log.debug(0, "error parsing " + xmlfile.getPath() + " : " +
                          e.getMessage());
       e.printStackTrace();
       return null;

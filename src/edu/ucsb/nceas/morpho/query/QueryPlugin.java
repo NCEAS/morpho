@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-16 21:38:47 $'
- * '$Revision: 1.77 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,15 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.ConnectionListener;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.Component;
@@ -42,9 +50,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                                     ServiceProvider, QueryRefreshInterface
 {
   /** A reference to the container framework */
-  private ClientFramework framework = null;
+  private Morpho morpho = null;
 
-  /** The configuration options object reference from the framework */
+  /** The configuration options object reference from the morpho */
   private ConfigXML config = null;
 
   /** Store our menus and toolbars */
@@ -70,26 +78,27 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   }
 
   /** 
-   * The plugin must store a reference to the ClientFramework 
+   * The plugin must store a reference to the Morpho 
    * in order to be able to call the services available through 
    * the framework.  This is also the time to register menus
    * and toolbars with the framework.
    */
-  public void initialize(ClientFramework cf)
+  public void initialize(Morpho morpho)
   {
-    this.framework = cf;
-    this.config = framework.getConfiguration();
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();
     loadConfigurationParameters();
     // Create the tabbed pane for the owner queries
-    ownerQuery = new Query(getOwnerQuery(), framework);
+    ownerQuery = new Query(getOwnerQuery(), morpho);
     // Create the menus and toolbar actions, will register later
     initializeActions(); 
     // Add the menus and toolbars
     // Add open action in file menu
-    framework.addMenu("File", new Integer(1),fileMenuActions);
+    UIController controller = UIController.getInstance();
+    controller.addMenu("File", new Integer(1),fileMenuActions);
     // Add search menu
-    framework.addMenu("Search", new Integer(3), menuActions);
-    framework.addToolbarActions(toolbarActions);
+    controller.addMenu("Search", new Integer(3), menuActions);
+    controller.addToolbarActions(toolbarActions);
 
     // Create the tabbed pane for the owner queries
     createOwnerPanel();
@@ -97,16 +106,17 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Register Services
     try
     {
-        framework.addService(QueryRefreshInterface.class, this);
-        framework.debug(20, "Service added: QueryRefreshInterface.");
+        ServiceController services = ServiceController.getInstance();
+        services.addService(QueryRefreshInterface.class, this);
+        Log.debug(20, "Service added: QueryRefreshInterface.");
     } catch (ServiceExistsException see) {
-        framework.debug(6, "Service registration failed: QueryRefreshInterface.");
-        framework.debug(6, see.toString());
+        Log.debug(6, "Service registration failed: QueryRefreshInterface.");
+        Log.debug(6, see.toString());
     }
     
         
     // Listen for changes to the connection status
-    framework.addConnectionListener(this);
+    morpho.addConnectionListener(this);
   }
 
   /**
@@ -117,24 +127,24 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     menuActions = new Action[1];
   
     GUIAction searchItemAction = new GUIAction("Search...", null,
-              new SearchCommand(null, framework));
+              new SearchCommand(null, morpho));
     searchItemAction.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
-    searchItemAction.setSeparatorPosition(ClientFramework.SEPARATOR_FOLLOWING);
+    searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     /*searchItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
     searchItemAction.putValue("menuPosition", new Integer(0));
     searchItemAction.putValue(Action.DEFAULT, 
-                             ClientFramework.SEPARATOR_FOLLOWING);*/
+                             Morpho.SEPARATOR_FOLLOWING);*/
     menuActions[0] = searchItemAction;
     
     // Create a onwer query
     GUIAction openDialogBoxAction = new GUIAction("Open", null, 
-                new OpenDialogBoxCommand(framework, ownerQuery));
+                new OpenDialogBoxCommand(morpho, ownerQuery));
     openDialogBoxAction.setSmallIcon( new ImageIcon(getClass().
                                       getResource("openButton.gif")));
     openDialogBoxAction.setMenuItemPosition(0);
@@ -156,7 +166,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   private String getOwnerQuery()
   {
-    ConfigXML profile = framework.getProfile();
+    ConfigXML profile = morpho.getProfile();
     StringBuffer searchtext = new StringBuffer();
     searchtext.append("<?xml version=\"1.0\"?>\n");
     searchtext.append("<pathquery version=\"1.0\">\n");
@@ -176,7 +186,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
       searchtext.append((String)returnFieldList.elementAt(i));
       searchtext.append("</returnfield>\n");
     }
-    searchtext.append("<owner>" + framework.getUserName() + "</owner>\n");
+    searchtext.append("<owner>" + morpho.getUserName() + "</owner>\n");
     searchtext.append("<querygroup operator=\"UNION\">\n");
     searchtext.append("<queryterm casesensitive=\"true\" ");
     searchtext.append("searchmode=\"contains\">\n");
@@ -200,7 +210,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   public void usernameChanged(String newUsername)
   {
-    framework.debug(20, "New username: " + newUsername);
+    Log.debug(20, "New username: " + newUsername);
     refreshOwnerPanel();
   }
 
@@ -210,7 +220,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   public void connectionChanged(boolean connected)
   {
-    framework.debug(20, "Connection changed: " + 
+    Log.debug(20, "Connection changed: " + 
                     (new Boolean(connected)).toString());
     refreshOwnerPanel();
   }
@@ -225,7 +235,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     ownerPanel = new ResultPanel(results, true, false, null);
 
     // Add the content pane, menus, and toolbars
-    framework.setMainContentPane(ownerPanel);
+    //framework.setMainContentPane(ownerPanel);
 
     // Reload any saved queries in the search menu
     ownerPanel.loadSavedQueries();
@@ -237,7 +247,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   private void refreshOwnerPanel()
   {
     // Create the tabbed pane for the owner queries
-    ownerQuery = new Query(getOwnerQuery(), framework);
+    ownerQuery = new Query(getOwnerQuery(), morpho);
     ResultSet results = ownerQuery.execute();
     ownerPanel.setResults(results);
 

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-16 18:17:25 $'
- * '$Revision: 1.5 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,15 +26,13 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.*;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
-//DFH import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
-
 
 /**
  * A HeadResultSet encapsulates the list of results returned from either a
@@ -53,9 +51,9 @@ public class HeadResultSet extends ResultSet
    * InputStream that represents an XML encoding of the results.
    */
   public HeadResultSet(Query query, String source, 
-                       InputStream resultsXMLStream, ClientFramework cf)
+                       InputStream resultsXMLStream, Morpho morpho)
   {
-    super(query, source, resultsXMLStream, cf);
+    super(query, source, resultsXMLStream, morpho);
     consolidateResults();
   }
 
@@ -65,9 +63,9 @@ public class HeadResultSet extends ResultSet
    * for use with LocalQuery
    */
   public HeadResultSet(Query query, String source, 
-                       Vector vec, ClientFramework cf)
+                       Vector vec, Morpho morpho)
   {
-    super(query, source, vec, cf);
+    super(query, source, vec, morpho);
     consolidateResults();
    
   }
@@ -158,7 +156,7 @@ public class HeadResultSet extends ResultSet
       Vector rowVector = (Vector)headResultsVector.elementAt(row);
       openResultRecord(rowVector);
     } catch (ArrayIndexOutOfBoundsException aioobe) {
-      ClientFramework.debug(1, "array index out of bounds");
+      Log.debug(1, "array index out of bounds");
     }
   }
 

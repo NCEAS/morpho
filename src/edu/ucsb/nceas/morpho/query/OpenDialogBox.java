@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-15 23:43:01 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,8 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.BorderLayout;
@@ -68,8 +69,8 @@ import javax.swing.SwingConstants;
  */
 public class OpenDialogBox extends JDialog
 {
-  /** A reference to the container framework */
-  private ClientFramework framework = null;
+  /** A reference to the container Morpho application */
+  private Morpho morpho = null;
 
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
@@ -94,24 +95,25 @@ public class OpenDialogBox extends JDialog
   /**
    * Construct a new instance of the query dialog
    *
-   * @param framework A reference to the client framework 
+   * @param morpho A reference to the morpho application
    */
-  public OpenDialogBox(ClientFramework framework, Query myQuery)
+  public OpenDialogBox(Morpho morpho, Query myQuery)
   {
-    this((Frame)framework, framework, myQuery);
+    //MBJ fix this null reference to be a real Frame
+    this(null, morpho, myQuery);
   }
   
   /**
    * Construct a new instance of the query dialog
    *
    * @param parent The parent frame for this dialog
-   * @param framework A reference to the client framework 
+   * @param morpho A reference to the Morpho application
    */
-  public OpenDialogBox(Frame parent, ClientFramework framework, Query myQuery)
+  public OpenDialogBox(Frame parent, Morpho morpho, Query myQuery)
   {
     super(parent);
-    this.framework = framework;
-    this.config = framework.getConfiguration();
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();
     this.mediator = new ResultPanelAndFrameMediator();
     this.ownerQuery = myQuery;
   
@@ -151,7 +153,7 @@ public class OpenDialogBox extends JDialog
     // Search button
     GUIAction searchAction = new GUIAction("Search...", new ImageIcon
        (getClass().getResource("/toolbarButtonGraphics/general/Search16.gif")),
-       new SearchCommand(this, framework));
+       new SearchCommand(this, morpho));
     searchAction.setToolTipText("Switch to search system to open packages from" 
                                 + " the whole network");
   
@@ -249,7 +251,7 @@ public class OpenDialogBox extends JDialog
           ClassLoader cl = Thread.currentThread().getContextClassLoader();
           InputStream configInput = cl.getResourceAsStream(configFile);
           if (configInput == null) {
-         ClientFramework.debug(1, "Could not find default configuration file.");
+            Log.debug(1, "Could not find default configuration file.");
             System.exit(0);
           }
           byte buf[] = new byte[4096];
@@ -261,8 +263,8 @@ public class OpenDialogBox extends JDialog
           out.close();
         }
       } catch (IOException ioe) {
-        ClientFramework.debug(1, "Error copying config: " + ioe.getMessage());
-        ClientFramework.debug(1, ioe.getClass().getName());
+        Log.debug(1, "Error copying config: " + ioe.getMessage());
+        Log.debug(1, ioe.getClass().getName());
         ioe.printStackTrace(System.err);
         System.exit(0);
       }
@@ -279,7 +281,7 @@ public class OpenDialogBox extends JDialog
         e.printStackTrace(System.err);
       }
       // Create a new instance of our application's frame
-      ClientFramework clf = new ClientFramework(config);
+      Morpho morpho = new Morpho(config);
       String profileDir = ConfigXML.getConfigDirectory() + File.separator +
                                      config.get("profile_directory", 0);
       String currentProfile = config.get("current_profile", 0);
@@ -294,10 +296,9 @@ public class OpenDialogBox extends JDialog
       {
         e.printStackTrace(System.err);
       }
-      clf.setProfile(profile);
+      morpho.setProfile(profile);
       //OpenDialogBox open = new OpenDialogBox(clf);
       //open.setVisible(true);
-    
   }
  
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.5 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.Morpho;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -47,7 +47,7 @@ public class ResultFrame extends JFrame
   private ResultPanel resultDisplayPanel = null;
 
   /** A reference to the framework */
-  ClientFramework framework;
+  Morpho morpho;
  
   ImageIcon flapping;
   
@@ -56,9 +56,9 @@ public class ResultFrame extends JFrame
    *
    * @param results the result listing to display
    */
-  public ResultFrame(ClientFramework cf, ResultSet results)
+  public ResultFrame(Morpho morpho, ResultSet results)
   {
-    this(cf, results, 12);
+    this(morpho, results, 12);
   }
 
   /**
@@ -67,10 +67,10 @@ public class ResultFrame extends JFrame
    * @param results the result listing to display
    * @param fontSize the fontsize for the cells of the table
    */
-  public ResultFrame(ClientFramework cf, ResultSet results, int fontSize)
+  public ResultFrame(Morpho morpho, ResultSet results, int fontSize)
   {
     super();
-    this.framework = cf;
+    this.morpho = morpho;
     
        
     
@@ -99,7 +99,7 @@ public class ResultFrame extends JFrame
     addWindowListener(new CloseListener());
 
     // Add to the frameworks list of windows, and show the frame
-    framework.addWindow(this);
+    //MBJframework.addWindow(this);
   
     setVisible(true);
   }
@@ -109,7 +109,7 @@ public class ResultFrame extends JFrame
    */
   private void closeFrame()
   {
-    framework.removeWindow(this);
+    //framework.removeWindow(this);
     setVisible(false);
     dispose();
   }
@@ -134,8 +134,8 @@ public class ResultFrame extends JFrame
   {
     super.setTitle(title);
     setName(title);
-    framework.removeWindow(this);
-    framework.addWindow(this);
+    //framework.removeWindow(this);
+    //framework.addWindow(this);
   }
 
   public void addResultPanel(ResultSet results) {

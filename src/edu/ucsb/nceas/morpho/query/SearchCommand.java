@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-15 23:46:43 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@
  */
 
 package edu.ucsb.nceas.morpho.query;
-import  edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.util.*;
 import javax.swing.JDialog;
 
@@ -37,17 +38,17 @@ public class SearchCommand implements Command
   /** A reference to the JDialogBox */
   private JDialog dialogBox = null;
   
-  /** A reference to the clientframework*/
-  private ClientFramework frame = null;
+  /** A reference to the Morpho application */
+  private Morpho morpho = null;
   
   /**
    * Constructor of SearcCommand
-   * @param myFrame the frame which the cancel command will apply
+   * @param myFrame the morpho which the cancel command will apply
    */
-  public SearchCommand(JDialog myDialogBox, ClientFramework myFrame)
+  public SearchCommand(JDialog myDialogBox, Morpho morpho)
   {
     dialogBox = myDialogBox;
-    frame = myFrame;
+    this.morpho = morpho;
   }//SearchCommand
   
   
@@ -64,7 +65,7 @@ public class SearchCommand implements Command
       dialogBox = null;
     }//if
     // QueryDialog Create and show as modal
-    QueryDialog queryDialog = new QueryDialog(frame);
+    QueryDialog queryDialog = new QueryDialog(morpho);
     queryDialog.setModal(true);
     queryDialog.show();
     if (queryDialog.isSearchStarted()) 
@@ -73,7 +74,7 @@ public class SearchCommand implements Command
       if (query != null) 
       {
         ResultSet rs = null;
-        ResultFrame rsf = new ResultFrame(frame, rs);
+        ResultFrame rsf = new ResultFrame(morpho, rs);
         rsf.addWorking();
         doQuery(rsf, query);
 

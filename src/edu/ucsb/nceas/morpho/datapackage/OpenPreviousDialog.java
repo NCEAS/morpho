@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-30 20:38:14 $'
- * '$Revision: 1.1 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,18 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.*;
 import javax.swing.*;
 import java.util.Vector;
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 public class OpenPreviousDialog extends javax.swing.JDialog
 {
   String packageName = "";
-  ClientFramework framework;
+  Morpho morpho;
   boolean localLoc;
   
 	public OpenPreviousDialog(Frame parent)
@@ -77,7 +83,7 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		this((Frame)null);
 	}
 
-	public OpenPreviousDialog(String sTitle, int numVersions, ClientFramework cf, boolean local)
+	public OpenPreviousDialog(String sTitle, int numVersions, Morpho morpho, boolean local)
 	{
 		this();
 		setTitle(sTitle);
@@ -87,7 +93,7 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		  data.addElement("Revision "+(num+1));    
 		}
 		PrevPackageList.setListData(data);
-		this.framework = cf;
+		this.morpho = morpho;
 		this.localLoc = local;
 	}
 
@@ -152,13 +158,14 @@ public class OpenPreviousDialog extends javax.swing.JDialog
       DataPackageInterface dataPackage;
       try 
       {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                     framework.getServiceProvider(DataPackageInterface.class);
+                     services.getServiceProvider(DataPackageInterface.class);
         dataPackage = (DataPackageInterface)provider;
       } 
       catch (ServiceNotHandledException snhe) 
       {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
         return;
       }
       String location = "";

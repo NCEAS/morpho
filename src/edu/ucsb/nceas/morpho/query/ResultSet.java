@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-14 20:09:49 $'
- * '$Revision: 1.32 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,12 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.*;
 
 import java.io.*;
@@ -87,10 +92,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   /** Flag indicating whether the results are from a metacat query */
   private boolean isMetacat = false;
 
-  /** A reference to the framework */
-  private ClientFramework framework = null;
+  /** A reference to the Morpho */
+  private Morpho morpho = null;
 
-  /** The configuration options object reference from the framework */
+  /** The configuration options object reference from Morpho */
   private ConfigXML config = null;
 
   // this group of variables are temporary vars that are used while 
@@ -177,10 +182,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    * Construct a ResultSet instance from a vector of vectors;
    * for use with LocalQuery
    */
-  public ResultSet(Query query, String source, Vector vec, ClientFramework cf) {
+  public ResultSet(Query query, String source, Vector vec, Morpho morpho) {
   
     initIcons();
-    init(query, source, cf);
+    init(query, source, morpho);
     this.resultsVector = vec;
   }
 
@@ -189,11 +194,11 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    * InputStream that represents an XML encoding of the results.
    */
   public ResultSet( Query query, String source, 
-                    InputStream resultsXMLStream, ClientFramework cf) {
+                    InputStream resultsXMLStream, Morpho morpho) {
 
     initIcons();
-    init(query, source, cf);
-    framework.debug(30, "(2.41) Creating result set ...");
+    init(query, source, morpho);
+    Log.debug(30, "(2.41) Creating result set ...");
      resultsVector = new Vector();
     
     // Parse the incoming XML stream and extract the data
@@ -201,27 +206,27 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     // Set up the SAX document handlers for parsing
     try {
       // Get an instance of the parser
-      parser = framework.createSaxParser((ContentHandler)this, null);
-      framework.debug(30, "(2.43) Creating result set ...");
+      parser = Morpho.createSaxParser((ContentHandler)this, null);
+      Log.debug(30, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance
       parser.parse(new InputSource(resultsXMLStream));
-      framework.debug(30, "(2.44) Creating result set ...");
+      Log.debug(30, "(2.44) Creating result set ...");
     } catch (Exception e) {
-      framework.debug(30, "(2.431) Exception creating result set ...");
-      framework.debug(6, "(2.432) " + e.toString());
-      framework.debug(30, "(2.433) Exception is: " + e.getClass().getName());
+      Log.debug(30, "(2.431) Exception creating result set ...");
+      Log.debug(6, "(2.432) " + e.toString());
+      Log.debug(30, "(2.433) Exception is: " + e.getClass().getName());
     }
 
   }
 
 
   // common initialization functionality for constructors
-  private void init(Query query, String source, ClientFramework cf) {
+  private void init(Query query, String source, Morpho morpho) {
     
     this.savedQuery   = query;
-    this.framework    = cf;
-    this.config       = framework.getConfiguration();   
-    ConfigXML profile = framework.getProfile();
+    this.morpho       = morpho;
+    this.config       = morpho.getConfiguration();   
+    ConfigXML profile = morpho.getProfile();
     returnFields      = profile.get("returnfield");
 
     if (source.equals("local")) {
@@ -628,7 +633,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       Vector rowVector = (Vector)resultsVector.elementAt(row);
       openResultRecord(rowVector);
     } catch (ArrayIndexOutOfBoundsException aioobe) {
-      ClientFramework.debug(1, "array index out of bounds");
+      Log.debug(1, "array index out of bounds");
     }
   }
 
@@ -648,21 +653,11 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       openMetacat = 
                 ((Boolean)rowVector.elementAt(ISMETACATINDEX)).booleanValue();
       //rowTriples = (Vector)rowVector.get(numHeaders+7);
-/*    // DEBUGGING output to determine if the triples Hash is correct
-      for (int j=0; j < rowTriples.size(); j++) {
-        Hashtable currentTriple = (Hashtable)rowTriples.get(j);
-        Enumeration en = currentTriple.keys();
-        while (en.hasMoreElements()) {
-          String key = (String)en.nextElement(); 
-          framework.debug(9, key + " => " + (String)(currentTriple.get(key)) );
-        }
-      }
-*/
     } catch (ArrayIndexOutOfBoundsException aioobe) {
-      ClientFramework.debug(1, "array index out of bounds");
+      Log.debug(1, "array index out of bounds");
       docid = null;
     } catch (NullPointerException npe) {
-      ClientFramework.debug(1, "null pointer exception");
+      Log.debug(1, "null pointer exception");
       docid = null;
     }
 
@@ -678,12 +673,13 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     location = location.trim();
 
     try {
+      ServiceController services = ServiceController.getInstance();
       ServiceProvider provider = 
-                      framework.getServiceProvider(DataPackageInterface.class);
+                      services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
       dataPackage.openDataPackage(location, docid, rowTriples);
     } catch (ServiceNotHandledException snhe) {
-      framework.debug(6, snhe.getMessage());
+      Log.debug(6, snhe.getMessage());
     }
   }
   
@@ -741,11 +737,11 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   }
 
   /**
-   * Get a reference to the framework
+   * Get a reference to the Morpho application framework
    */
-  public ClientFramework getFramework()
+  public Morpho getFramework()
   {
-    return this.framework;
+    return this.morpho;
   }
   
   

@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-03 22:39:17 $'
- * '$Revision: 1.24 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,9 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -65,7 +67,7 @@ import javax.swing.JTextField;
 public class QueryDialog extends JDialog
 {
   /** A reference to the container framework */
-  private ClientFramework framework = null;
+  private Morpho morpho = null;
 
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
@@ -154,13 +156,13 @@ public class QueryDialog extends JDialog
    * Construct a new instance of the query dialog
    *
    * @param parent The parent frame for this dialog
-   * @param framework A reference to the client framework 
+   * @param morpho A reference to the Morpho application
    */
-  public QueryDialog(Frame parent, ClientFramework framework)
+  public QueryDialog(Frame parent, Morpho morpho)
   {
     super(parent);
-    this.framework = framework;
-    this.config = framework.getConfiguration();
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();
     String temp = config.get("titleSearchPath", 0);
     if (temp != null) {
       titleSearchPath = temp;
@@ -173,7 +175,7 @@ public class QueryDialog extends JDialog
     if (temp != null) {
         keywordSearchPath = temp;
     }
-    ConfigXML profile = framework.getProfile();
+    ConfigXML profile = morpho.getProfile();
     String searchMetacatString = profile.get("searchmetacat", 0);
     searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
     String searchLocalString = profile.get("searchlocal", 0);
@@ -408,11 +410,12 @@ public class QueryDialog extends JDialog
   /**
    * Construct a new instance of the query dialog
    *
-   * @param framework A reference to the client framework 
+   * @param morpho A reference to the Morpho application
    */
-  public QueryDialog(ClientFramework framework)
+  public QueryDialog(Morpho morpho)
   {
-    this((Frame)framework, framework);
+    // Replace this null with a real parent frame
+    this(null, morpho);
   }
   /**
    * Listens for key events coming from the dialog.  responds to escape and 
@@ -563,7 +566,7 @@ public class QueryDialog extends JDialog
   private Query buildQuery()
   {
     // Create the Query object
-    Query newQuery = new Query(framework);
+    Query newQuery = new Query(morpho);
 
     // Set top level query params
     if (queryTitleTF.getText().length() < 1) {
@@ -574,7 +577,7 @@ public class QueryDialog extends JDialog
     newQuery.setSearchLocal(localSearchCheckBox.isSelected());
 
     // Set the returndoc and returnfield parameters
-    ConfigXML profile = framework.getProfile();
+    ConfigXML profile = morpho.getProfile();
     Vector returndocList = profile.get("returndoc");
     newQuery.setReturnDocList(returndocList);
     Vector returnFieldList = profile.get("returnfield");
@@ -725,10 +728,10 @@ public class QueryDialog extends JDialog
 
       Vector synonymList;
       if (includeSynonyms) {
-        synonymList = framework.getTaxonSynonyms(taxonTermPanel.getValue());
-        ClientFramework.debug(20,"Number of synonyms: "+synonymList.size());
+        synonymList = morpho.getTaxonSynonyms(taxonTermPanel.getValue());
+        Log.debug(20,"Number of synonyms: "+synonymList.size());
         for (int i=0; i<synonymList.size(); i++) {
-          ClientFramework.debug(20, "Adding synonym to query: " + synonymList.elementAt(i));
+          Log.debug(20, "Adding synonym to query: " + synonymList.elementAt(i));
           QueryGroup synonymGroup = buildTaxonTerm(taxonTermPanel.getTaxonRank(),
                                                    (String)synonymList.elementAt(i),
                                                    taxonTermPanel.getSearchMode());
@@ -790,7 +793,7 @@ public class QueryDialog extends JDialog
           localflag = "false";
         }
       }
-      ConfigXML profile = framework.getProfile();
+      ConfigXML profile = morpho.getProfile();
       profile.set("searchmetacat", 0, metacatflag);
       profile.set("searchlocal",0,localflag);
       
@@ -814,7 +817,7 @@ public class QueryDialog extends JDialog
    */
   private void handleSaveDefaultsButtonAction(ActionEvent event)
   {
-    ConfigXML profile = framework.getProfile();
+    ConfigXML profile = morpho.getProfile();
 
     profile.set("searchmetacat", 0, 
                 catalogSearchCheckBox.isSelected() ? "true" : "false");
@@ -964,7 +967,7 @@ public class QueryDialog extends JDialog
             }
           }
         } catch (ClassCastException cce) {
-          framework.debug(3, "Query doesn't meet expectations, " +
+          Log.debug(3, "Query doesn't meet expectations, " +
                           "so couldn't rebuild dialog correctly!");
           tq = new SubjectTermPanel();
           tq.setAllState(true);
@@ -1019,22 +1022,22 @@ public class QueryDialog extends JDialog
     while (rootChildren.hasMoreElements()) {
       // test if this is the taxon group using the normal, no-synonyms structure
       QueryGroup tempTaxonGroup = (QueryGroup)rootChildren.nextElement(); // level 2
-      ClientFramework.debug(20, "Repopulating taxon query: level 2");
+      Log.debug(20, "Repopulating taxon query: level 2");
       Enumeration tempTaxonChildren = tempTaxonGroup.getChildren();
       try {
         QueryGroup tempTermsGroup =
                    (QueryGroup)tempTaxonChildren.nextElement();           // level 3
-        ClientFramework.debug(20, "Repopulating taxon query: level 3");
+        Log.debug(20, "Repopulating taxon query: level 3");
         Enumeration tempQTList = tempTermsGroup.getChildren();
         QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();           // level 4
-        ClientFramework.debug(20, "Repopulating taxon query: level 4 rank");
+        Log.debug(20, "Repopulating taxon query: level 4 rank");
         String path = tempQT.getPathExpression();
         if ((path != null) && path.equals(taxonRankSearchPath)) {
           tempQT = (QueryTerm)tempQTList.nextElement();                   // level 4
-          ClientFramework.debug(20, "Repopulating taxon query: level 4 value");
+          Log.debug(20, "Repopulating taxon query: level 4 value");
           path = tempQT.getPathExpression();
           if (path.equals(taxonValueSearchPath)) {
-            ClientFramework.debug(20, "Found regular taxon query.");
+            Log.debug(20, "Found regular taxon query.");
             foundTaxonGroup = true;
             hasSynonymStructure = false;
             taxonGroup = tempTaxonGroup;
@@ -1043,27 +1046,27 @@ public class QueryDialog extends JDialog
         }
       } catch (ClassCastException cce) {
         // Not the taxon group using normal structure, so test using synonym structure
-        ClientFramework.debug(20, cce.getMessage());
-        ClientFramework.debug(20, "Not a regular taxon query, testing for synonyms...");
+        Log.debug(20, cce.getMessage());
+        Log.debug(20, "Not a regular taxon query, testing for synonyms...");
         tempTaxonChildren = tempTaxonGroup.getChildren();
         try {
           QueryGroup tempSynonymGroup =
                      (QueryGroup)tempTaxonChildren.nextElement();           // level 3
-          ClientFramework.debug(20, "Repopulating taxon query: level 3");
+          Log.debug(20, "Repopulating taxon query: level 3");
           Enumeration tempSynonymChildren = tempSynonymGroup.getChildren();
           QueryGroup tempTermsGroup =
                      (QueryGroup)tempSynonymChildren.nextElement();         // level 4
-          ClientFramework.debug(20, "Repopulating taxon query: level 4");
+          Log.debug(20, "Repopulating taxon query: level 4");
           Enumeration tempQTList = tempTermsGroup.getChildren();
           QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();           // level 5
-          ClientFramework.debug(20, "Repopulating taxon query: level 5 rank");
+          Log.debug(20, "Repopulating taxon query: level 5 rank");
           String path = tempQT.getPathExpression();
           if ((path != null) && path.equals(taxonRankSearchPath)) {
             tempQT = (QueryTerm)tempQTList.nextElement();                   // level 5
-            ClientFramework.debug(20, "Repopulating taxon query: level 5 value");
+            Log.debug(20, "Repopulating taxon query: level 5 value");
             path = tempQT.getPathExpression();
             if (path.equals(taxonValueSearchPath)) {
-              ClientFramework.debug(20, "Found taxon query with synonyms.");
+              Log.debug(20, "Found taxon query with synonyms.");
               foundTaxonGroup = true;
               hasSynonymStructure = true;
               taxonGroup = tempTaxonGroup;
@@ -1072,8 +1075,8 @@ public class QueryDialog extends JDialog
           }
         } catch (ClassCastException cce2) {
           // Not the taxon group
-          ClientFramework.debug(20, cce2.getMessage());
-          ClientFramework.debug(20, "Not a taxon query.");
+          Log.debug(20, cce2.getMessage());
+          Log.debug(20, "Not a taxon query.");
           foundTaxonGroup = false;
         }
       }
@@ -1130,7 +1133,7 @@ public class QueryDialog extends JDialog
             }
           }
         } catch (ClassCastException cce) {
-          framework.debug(3, "Query doesn't meet expectations, " +
+          Log.debug(3, "Query doesn't meet expectations, " +
                           "so couldn't rebuild dialog correctly!");
           termPanel = new TaxonTermPanel();
         }

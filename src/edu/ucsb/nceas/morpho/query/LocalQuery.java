@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-14 21:58:05 $'
- * '$Revision: 1.55 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,10 @@
 
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
+import edu.ucsb.nceas.morpho.util.Log;
 import java.io.*;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -44,8 +48,6 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Stack;
 import javax.swing.ImageIcon;
-
-import edu.ucsb.nceas.morpho.framework.*;
 
 /**
  * LocalQuery is a class designed to execute a query defined in
@@ -93,10 +95,10 @@ public class LocalQuery
    */
   private static Hashtable packageTriples; 
   
-  /** A reference to the container framework */
-  private ClientFramework framework = null;
+  /** A reference to the Morpho application */
+  private Morpho morpho = null;
 
-  /** The configuration options object reference from the framework */
+  /** The configuration options object reference from the Morpho framework */
   private ConfigXML config = null;
     
   /** The name of the current profile */
@@ -146,9 +148,9 @@ public class LocalQuery
    * Basic Constuctor for the class
    * 
    * @param query the query on which this Local query is based
-   * @param framework the framework
+   * @param morpho the Morpho framework
    */
-  public LocalQuery(Query query, ClientFramework framework) {
+  public LocalQuery(Query query, Morpho morpho) {
     super();
     this.savedQuery = query;
     
@@ -161,8 +163,8 @@ public class LocalQuery
     localPackageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
    
   
-    this.framework = framework;
-    this.config = framework.getConfiguration();   
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();   
   
     loadConfigurationParameters();
       
@@ -190,8 +192,8 @@ public class LocalQuery
         row = createRSRow(packageName);
         rowCollection.addElement(row);
       }
-      //rs = new ResultSet(savedQuery, "local", rowCollection, framework);
-      rs = new HeadResultSet(savedQuery, "local", rowCollection, framework);
+      //rs = new ResultSet(savedQuery, "local", rowCollection, morpho);
+      rs = new HeadResultSet(savedQuery, "local", rowCollection, morpho);
     } 
 
     return rs;
@@ -208,9 +210,9 @@ public class LocalQuery
     Vector package_IDs = new Vector();
     Node root;
     long starttime, curtime, fm;
-    ClientFramework.debug(30, "(3.0) Creating DOM parser...");
-    DocumentBuilder parser = framework.createDomParser();
-    ClientFramework.debug(30, "(3.1) DOM parser created...");
+    Log.debug(30, "(3.0) Creating DOM parser...");
+    DocumentBuilder parser = morpho.createDomParser();
+    Log.debug(30, "(3.1) DOM parser created...");
     // first set up the catalog system for handling locations of DTDs
     CatalogEntityResolver cer = new CatalogEntityResolver();
     String catalogPath = //config.getConfigDirectory() + File.separator +
@@ -226,7 +228,7 @@ public class LocalQuery
       //myCatalog.parseCatalog(xmlcatalogfile);
       cer.setCatalog(myCatalog);
     } catch (Exception e) {
-      ClientFramework.debug(6,"Problem creating Catalog!" + e.toString());
+      Log.debug(6,"Problem creating Catalog!" + e.toString());
     }
     parser.setEntityResolver(cer);
     // set start time variable
@@ -250,31 +252,31 @@ public class LocalQuery
       if (currentfile.isFile()) {
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
-        //ClientFramework.debug(10,"current id: "+docid);
+        //Log.debug(10,"current id: "+docid);
         if (dom_collection.containsKey(docid)){
           root = ((Document)dom_collection.get(docid)).getDocumentElement();
           if (doctype_collection.containsKey(docid)) {
             currentDoctype = ((String)doctype_collection.get(docid));   
           }
         } else {
-          //ClientFramework.debug(10,"parsing "+docid);
+          //Log.debug(10,"parsing "+docid);
           InputSource in;
           try {
             in = new InputSource(new FileInputStream(filename));
           } catch (FileNotFoundException fnf) {
-            ClientFramework.debug(6,"FileInputStream of " + filename + 
+            Log.debug(6,"FileInputStream of " + filename + 
                                " threw: " + fnf.toString());
             continue;
           }
           Document current_doc = null;
           try {
-            ClientFramework.debug(30, "(3.2) Starting parse...");
+            Log.debug(30, "(3.2) Starting parse...");
             current_doc = parser.parse(in);
-            ClientFramework.debug(30, "(3.3) Ended parse...");
+            Log.debug(30, "(3.3) Ended parse...");
           } catch(Exception e1) {
             // Either this isn't an XML doc, or its broken, so skip it
-            ClientFramework.debug(20,"Parsing error: " + filename);
-            ClientFramework.debug(20,e1.toString());
+            Log.debug(20,"Parsing error: " + filename);
+            Log.debug(20,e1.toString());
             continue;
           }
 
@@ -300,7 +302,7 @@ public class LocalQuery
              
                 
             // Use the simple XPath API to obtain a node list.
- //           ClientFramework.debug(30,"starting XPathSearch: "+xpathExpression);
+ //           Log.debug(30,"starting XPathSearch: "+xpathExpression);
             boolean allHits = false;
             // there is no sense in actually returning all the text nodes
             // this, if we are searching for any text node, skip the selectNodeList
@@ -312,7 +314,7 @@ public class LocalQuery
             else {
               nl = XPathAPI.selectNodeList(root, xpathExpression);
             }
- //           ClientFramework.debug(30,"ending XPathSearch");
+ //           Log.debug(30,"ending XPathSearch");
             // if nl has no elements, then the document does not contain the
             // XPath expression of interest; otherwise, get the
             // corresponding dataPackage
@@ -331,18 +333,18 @@ public class LocalQuery
                   }
                 }
               } catch (Exception rogue) {
-                ClientFramework.debug(1, "Fatal error: " +
+                Log.debug(1, "Fatal error: " +
                                          "failed getting package list.");
               }
             }
           }
         } catch (Exception e2) {
-          ClientFramework.debug(6,"selectNodeList threw: " + e2.toString() 
+          Log.debug(6,"selectNodeList threw: " + e2.toString() 
             + " perhaps your xpath didn't select any nodes");
           continue;
         }
       } else {
-        ClientFramework.debug(6,"Bad input args: " + filename + ", " 
+        Log.debug(6,"Bad input args: " + filename + ", " 
           + xpathExpression);
       }
     } // end of 'for' loop over all files
@@ -455,7 +457,7 @@ public class LocalQuery
         }
       }
     } catch (Exception e){
-      ClientFramework.debug(6,"Error in getValueForPath method");
+      Log.debug(6,"Error in getValueForPath method");
     }
     return val;
   }
@@ -629,7 +631,7 @@ public class LocalQuery
    */
   private void loadConfigurationParameters()
   {
-    ConfigXML profile = framework.getProfile();
+    ConfigXML profile = morpho.getProfile();
     currentProfile = config.get("current_profile", 0);
     profileDir = config.getConfigDirectory() + File.separator +
                        config.get("profile_directory", 0) + File.separator +
@@ -648,8 +650,8 @@ public class LocalQuery
   public static void main(String[] args) 
   {
     if (args.length < 1) {
-      ClientFramework.debug(1, "Wrong number of arguments!!!");
-      ClientFramework.debug(1, "USAGE: java LocalQuery <xmlfile>");
+      Log.debug(1, "Wrong number of arguments!!!");
+      Log.debug(1, "USAGE: java LocalQuery <xmlfile>");
       return;
     } else {
       int i = 0;
@@ -657,19 +659,19 @@ public class LocalQuery
       String xmlfile  = args[i];
 
       try {
-        ClientFramework cf = new ClientFramework(
+        Morpho morpho = new Morpho(
                               new ConfigXML("lib/config.xml"));
         
         FileReader xml = new FileReader(new File(xmlfile));
-        Query query = new Query(xml, cf);
+        Query query = new Query(xml, morpho);
          
-        LocalQuery qspec = new LocalQuery(query, cf);
+        LocalQuery qspec = new LocalQuery(query, morpho);
         
         //Vector test = qspec.executeLocal(qspec.query);
         ResultSet rs = qspec.execute();
          
        } catch (IOException e) {
-         ClientFramework.debug(1, e.getMessage());
+         Log.debug(1, e.getMessage());
        }
      }
   }
@@ -691,7 +693,7 @@ public class LocalQuery
     try{
       nl = XPathAPI.selectNodeList(docNode, xpathExpression);
     } catch (Exception ee) {
-      ClientFramework.debug(6, "Error in building PackageList!");  
+      Log.debug(6, "Error in building PackageList!");  
     }
 
     // Check if we got a match for triple nodes

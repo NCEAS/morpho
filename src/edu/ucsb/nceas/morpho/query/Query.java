@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,9 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
@@ -92,10 +94,10 @@ public class Query extends DefaultHandler {
   private String parserName = null;
   private String accNumberSeparator = null;
 
-  /** A reference to the container framework */
-  private ClientFramework framework = null;
+  /** A reference to the Morpho application */
+  private Morpho morpho = null;
 
-  /** The configuration options object reference from the framework */
+  /** The configuration options object reference from Morpho */
   private ConfigXML config = null;
 
   /** Flag, true if Metacat searches are performed for this query */
@@ -109,32 +111,32 @@ public class Query extends DefaultHandler {
    *
    * @param queryspec the XML representation of the query (should conform
    *                  to pathquery.dtd) as a Reader
-   * @param framework the client framework in which this Query is run
+   * @param morpho the Morpho application in which this Query is run
    */
-  public Query(Reader queryspec, ClientFramework framework)
+  public Query(Reader queryspec, Morpho morpho)
   {
-    this(framework);
+    this(morpho);
     
     // Initialize temporary variables
     elementStack = new Stack();
     queryStack   = new Stack();
 
     // Initialize the parser and read the queryspec
-    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+    XMLReader parser = Morpho.createSaxParser((ContentHandler)this, 
             (ErrorHandler)this);
 
     if (parser == null) {
-      framework.debug(1, "SAX parser not instantiated properly.");
+      Log.debug(1, "SAX parser not instantiated properly.");
     }
     try {
       //parser.parse(new InputSource(new StringReader(queryString.trim())));
       parser.parse(new InputSource(queryspec));
     } catch (IOException ioe) {
-      framework.debug(4, "Error reading the query during parsing.");
+      Log.debug(4, "Error reading the query during parsing.");
     } catch (SAXException e) {
-      framework.debug(4, "Error parsing Query (" + 
+      Log.debug(4, "Error parsing Query (" + 
                       e.getClass().getName() +").");
-      framework.debug(4, e.getMessage());
+      Log.debug(4, e.getMessage());
     }
   }
 
@@ -143,20 +145,20 @@ public class Query extends DefaultHandler {
    *
    * @param queryspec the XML representation of the query (should conform
    *                  to pathquery.dtd) as a String
-   * @param framework the client framework in which this Query is run
+   * @param morpho the Morpho application which this Query is run
    */
-  public Query( String queryspec, ClientFramework framework)
+  public Query( String queryspec, Morpho morpho)
   {
-    this(new StringReader(queryspec), framework);
+    this(new StringReader(queryspec), morpho);
   }
 
   /**
    * construct an instance of the Query class, manually setting the Query
    * constraints rather that readin from an XML stream
    *
-   * @param framework the client framework in which this Query is run
+   * @param morpho the Morpho application in which this Query is run
    */
-  public Query(ClientFramework framework)
+  public Query(Morpho morpho)
   {
     // Initialize the members
     returnDocList = new Vector();
@@ -164,8 +166,8 @@ public class Query extends DefaultHandler {
     returnFieldList = new Vector();
     ownerList = new Vector();
     siteList = new Vector();
-    this.framework = framework;
-    this.config = framework.getConfiguration();
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();
 
     loadConfigurationParameters();
   }
@@ -371,7 +373,7 @@ public class Query extends DefaultHandler {
       QueryGroup currentGroup = new QueryGroup(
                                 currentNode.getAttribute("operator"));
       if (rootQG == null) {
-        ClientFramework.debug(30, "Created root query group.");
+        Log.debug(30, "Created root query group.");
         rootQG = currentGroup;
       } else {
         QueryGroup parentGroup = (QueryGroup)queryStack.peek();
@@ -740,7 +742,7 @@ public class Query extends DefaultHandler {
   /** Send the query to metacat, get back the XML resultset */
   private InputStream queryMetacat()
   {
-    framework.debug(30, "(2.1) Executing metacat query...");
+    Log.debug(30, "(2.1) Executing metacat query...");
     InputStream queryResult = null;
 
     Properties prop = new Properties();
@@ -749,16 +751,16 @@ public class Query extends DefaultHandler {
     prop.put("qformat", "xml");
     try
     {
-      queryResult = framework.getMetacatInputStream(prop);
+      queryResult = morpho.getMetacatInputStream(prop);
     }
     catch(Exception w)
     {
-      framework.debug(1, "Error in submitting structured query");
-      framework.debug(1, w.getMessage());
+      Log.debug(1, "Error in submitting structured query");
+      Log.debug(1, w.getMessage());
     }
 
-    framework.debug(30, "(2.3) Metacat output is:\n" + queryResult);
-    framework.debug(30, "(2.4) Done Executing metacat query...");
+    Log.debug(30, "(2.3) Metacat output is:\n" + queryResult);
+    Log.debug(30, "(2.4) Done Executing metacat query...");
     return queryResult;
   }
 
@@ -776,21 +778,21 @@ public class Query extends DefaultHandler {
 
     // TODO: Run these queries in parallel threads
 
-    framework.debug(30, "(1) Executing result set...");
+    Log.debug(30, "(1) Executing result set...");
     // if appropriate, query metacat
     ResultSet metacatResults = null;
     if (searchMetacat) {
-      framework.debug(30, "(2) Executing metacat query...");
+      Log.debug(30, "(2) Executing metacat query...");
       metacatResults = new HeadResultSet(this, "metacat", 
-                                     queryMetacat(), framework);
+                                     queryMetacat(), morpho);
     }
 
-    framework.debug(30, "(2.5) Executing result set...");
+    Log.debug(30, "(2.5) Executing result set...");
     // if appropriate, query locally
     ResultSet localResults = null;
     if (searchLocal) {
-      framework.debug(30, "(3) Executing local query...");
-      LocalQuery lq = new LocalQuery(this, framework);
+      Log.debug(30, "(3) Executing local query...");
+      LocalQuery lq = new LocalQuery(this, morpho);
       localResults = lq.execute();
     }
 
@@ -813,7 +815,7 @@ public class Query extends DefaultHandler {
    */
   public void save() throws IOException
   {
-    ConfigXML profile = framework.getProfile();
+    ConfigXML profile = morpho.getProfile();
     String queriesDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) +
                             File.separator +
@@ -836,7 +838,7 @@ public class Query extends DefaultHandler {
    */
   private void loadConfigurationParameters()
   {
-    ConfigXML profile = framework.getProfile();
+    ConfigXML profile = morpho.getProfile();
     parserName = config.get("saxparser", 0);
     accNumberSeparator = profile.get("separator", 0);
     String searchMetacatString = profile.get("searchmetacat", 0);
@@ -849,8 +851,8 @@ public class Query extends DefaultHandler {
   static public void main(String[] args) 
   {
      if (args.length < 1) {
-       ClientFramework.debug(1, "Wrong number of arguments!!!");
-       ClientFramework.debug(1, "USAGE: java Query [-noindex] <xmlfile>");
+       Log.debug(1, "Wrong number of arguments!!!");
+       Log.debug(1, "USAGE: java Query [-noindex] <xmlfile>");
        return;
      } else {
        int i = 0;
@@ -862,12 +864,11 @@ public class Query extends DefaultHandler {
        String xmlfile  = args[i];
 
        try {
-         ClientFramework cf = new ClientFramework(
-                              new ConfigXML("lib/config.xml"));
+         Morpho morpho = new Morpho(new ConfigXML("lib/config.xml"));
          FileReader xml = new FileReader(new File(xmlfile));
          
-         Query qspec = new Query(xml, cf);
-         cf.debug(9, qspec.toXml());
+         Query qspec = new Query(xml, morpho);
+         Log.debug(9, qspec.toXml());
 /*
          InputStreamReader returnStream =
                        new InputStreamReader( qspec.queryMetacat());
@@ -897,7 +898,7 @@ public class Query extends DefaultHandler {
          frame.setVisible(true);
 */
        } catch (IOException e) {
-         ClientFramework.debug(4, e.getMessage());
+         Log.debug(4, e.getMessage());
        }
      }
   }

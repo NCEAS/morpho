@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-16 23:19:50 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-17 01:30:11 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,19 @@ import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 
-//import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.HttpMessage;
+import edu.ucsb.nceas.morpho.framework.ConnectionListener;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.framework.ProfileDialog;
+import edu.ucsb.nceas.morpho.framework.HTMLBrowser;
+import edu.ucsb.nceas.morpho.framework.SplashFrame;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-//import edu.ucsb.nceas.morpho.plugins.Beep;
-//import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-//import edu.ucsb.nceas.morpho.plugins.BeepService;
-import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.framework.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -1020,27 +1026,23 @@ public class Morpho
      */
     private void loadPlugins()
     {
-        /*
-            / Get the list of plugins to load from the config file
-            Vector plugins = config.get("plugin");
-            / Dynamically load the plugins and their associated menus and toolbars
-            try
-            {
-            for (Enumeration q = plugins.elements(); q.hasMoreElements();)
-            {
-            / Start by creating the new bean plugin
-            PluginInterface plugin = (PluginInterface)
-            createObject((String) (q.nextElement()));
-            / Set a reference to the framework in the Plugin
-            plugin.initialize(this);
+        // Get the list of plugins to load from the config file
+        Vector plugins = config.get("plugin");
+        // Dynamically load the plugins and their associated menus and toolbars
+        try {
+            for (Enumeration q = plugins.elements(); q.hasMoreElements();) {
+                
+                // Start by creating the new plugin
+                PluginInterface plugin = (PluginInterface)
+                    createObject((String) (q.nextElement()));
+
+                // Set a reference to the framework in the Plugin
+                plugin.initialize(this);
             }
             pluginsLoaded = true;
-            }
-            catch(ClassCastException cce)
-            {
+        } catch(ClassCastException cce) {
             Log.debug(5, "Error loading plugin: wrong class!");
-            }
-          */
+        }
     }
 
     /** Set up the actions for menus and toolbars for the application  */
