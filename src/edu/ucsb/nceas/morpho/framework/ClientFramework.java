@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-08 00:11:45 $'
- * '$Revision: 1.87 $'
+ *     '$Date: 2002-03-12 19:24:34 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import java.lang.reflect.*;
 import java.lang.ClassCastException;
 import java.net.*;
 
+import com.sun.net.ssl.internal.ssl.*;
 /**
  * The ClientFramework is the main entry point for the Morpho application. It
  * creates the main application frame and sets up the menus and toolbars for
@@ -1407,6 +1408,13 @@ public class ClientFramework extends javax.swing.JFrame
          catch (Exception e) { 
          }
        */
+       
+      // Set system property to use HTTPClient or ssl protocol
+      System.setProperty("java.protocol.handler.pkgs","HTTPClient");
+      
+      // add provider for SSL support
+      java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+      
       // Open the configuration file
       ConfigXML config = new ConfigXML(configFile);
 
