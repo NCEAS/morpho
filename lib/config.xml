@@ -18,6 +18,7 @@
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>
   <tempDir>tmp</tempDir>
+  <stylesheetLocation>style/</stylesheetLocation>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
   <accessFileType>
     -//ecoinformatics.org//eml-access-2.0.0beta6//EN
