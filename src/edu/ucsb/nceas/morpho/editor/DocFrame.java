@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.100 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-03 22:13:50 $'
+ * '$Revision: 1.101 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -633,6 +633,14 @@ public class DocFrame extends javax.swing.JFrame
                 //Runs on the event-dispatching thread.
                 public void finished()
                 {
+                if (!templateFlag) {
+                  treeModel.reload();
+                  tree.setModel(treeModel);
+                } else {
+                  DefaultTreeModel dftm = new DefaultTreeModel(dtdtree.rootNode);
+                  tree.setModel(dftm);
+                }
+
                     tree.expandRow(1);
                     tree.expandRow(2);
                     tree.setSelectionRow(0);
@@ -757,6 +765,7 @@ public class DocFrame extends javax.swing.JFrame
         }
         setSelectedNodes(rootNode);
 
+/*
         if (!templateFlag) {
             treeModel.reload();
             tree.setModel(treeModel);
@@ -764,6 +773,7 @@ public class DocFrame extends javax.swing.JFrame
             DefaultTreeModel dftm = new DefaultTreeModel(dtdtree.rootNode);
             tree.setModel(dftm);
         }
+*/        
         /*
             tree.expandRow(1);
             tree.expandRow(2);
