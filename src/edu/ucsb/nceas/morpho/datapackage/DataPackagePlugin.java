@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-06 22:39:15 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-07 17:45:23 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,8 +147,8 @@ public class DataPackagePlugin
                     identifier + " from " + location + ".");
     DataPackage dp = new DataPackage(location, identifier, 
                                      relations, framework);
-    framework.debug(9, "location: " + location + " identifier: " + identifier +
-                    " relations: " + relations.toString());
+    //framework.debug(9, "location: " + location + " identifier: " + identifier +
+    //                " relations: " + relations.toString());
     DataPackageGUI gui = new DataPackageGUI(framework, dp);
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-06 22:39:15 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-07 17:45:23 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     while(keys.hasMoreElements())
     {
       String key = (String)keys.nextElement();
-      System.out.println("key: " + key);
       Vector v = (Vector)relfiles.get(key);
       for(int i=0; i<v.size(); i++)
       {
@@ -125,22 +124,52 @@ public class DataPackageGUI extends javax.swing.JFrame
     JLabel titleL = new JLabel("Title: ");
     JLabel altTitleL = new JLabel("Alternate Title: ");
     JLabel originatorL = new JLabel("Data Originator: ");
+    String htmlBegin = "<html><p>";
+    String htmlEnd = "</p></html";
     
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     
     JPanel tempPanel = new JPanel();
     tempPanel.add(identifierL);
-    tempPanel.add(new JLabel(identifier));
+    JLabel idLabel = new JLabel(identifier);
+    tempPanel.add(idLabel);
     panel.add(tempPanel);
     
     tempPanel = new JPanel();
     tempPanel.add(titleL);
     tempPanel.add(new JLabel(title));
+    //tempPanel.setPreferredSize(new Dimension(400, 50));
+    /*
+    JPanel layoutPanel = new JPanel();
+    layoutPanel.add(titleL);
+    layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
+    int l = title.length();
+    int inc = 40;
+    for(int i=0; i<l; i+=inc)
+    {
+      int end;
+      if(i+inc > l)
+      {
+        end = l;
+      }
+      else
+      {
+        end = i+inc;
+      }
+      String sub = title.substring(i, end);
+      JLabel sublabel = new JLabel(sub);
+      layoutPanel.add(sublabel, BorderLayout.CENTER);
+    }
+    */
+    //JLabel titleLabel = new JLabel(title);
+    //tempPanel.add(titleLabel);
     panel.add(tempPanel);
+    //panel.add(layoutPanel);
     
     tempPanel = new JPanel();
     tempPanel.add(altTitleL);
-    tempPanel.add(new JLabel(altTitle));
+    JLabel altTitleLabel = new JLabel(altTitle);
+    tempPanel.add(altTitleLabel);
     panel.add(tempPanel);
     
     tempPanel = new JPanel();
@@ -160,44 +189,6 @@ public class DataPackageGUI extends javax.swing.JFrame
   
   private JPanel createListPanel(Vector v)
   { 
-    ///////////////dataFile/////////////////
-    /*
-    JList dataFileList = new JList(v);
-    dataFileList.setVisibleRowCount(10);
-    JScrollPane dataFileScrollPane = new JScrollPane(dataFileList);
-    JButton dataFileAdd = new JButton("Add");
-    JButton dataFileRemove = new JButton("Remove");
-    JPanel dataFileButtonPanel = new JPanel();
-    dataFileButtonPanel.setLayout(new BoxLayout(dataFileButtonPanel, 
-                                                BoxLayout.X_AXIS));
-    dataFileButtonPanel.add(dataFileAdd);
-    dataFileButtonPanel.add(dataFileRemove);
-    JPanel dataFileButtonList = new JPanel();
-    dataFileButtonList.setLayout(new BoxLayout(dataFileButtonList,
-                                               BoxLayout.Y_AXIS));
-    dataFileButtonList.add(new JLabel("Data Descriptors"));
-    dataFileButtonList.add(dataFileScrollPane);
-    dataFileButtonList.add(dataFileButtonPanel);
-    
-    /////////////entityFile///////////////////
-    JList entityFileList = new JList(v);
-    entityFileList.setVisibleRowCount(10);
-    JScrollPane entityFileScrollPane = new JScrollPane(entityFileList);
-    JButton entityFileAdd = new JButton("Add");
-    JButton entityFileRemove = new JButton("Remove");
-    JPanel entityFileButtonPanel = new JPanel();
-    entityFileButtonPanel.setLayout(new BoxLayout(entityFileButtonPanel, 
-                                                BoxLayout.X_AXIS));
-    entityFileButtonPanel.add(entityFileAdd);
-    entityFileButtonPanel.add(entityFileRemove);
-    JPanel entityFileButtonList = new JPanel();
-    entityFileButtonList.setLayout(new BoxLayout(entityFileButtonList,
-                                               BoxLayout.Y_AXIS));
-    entityFileButtonList.add(new JLabel("Entity Descriptors"));
-    entityFileButtonList.add(entityFileScrollPane);
-    entityFileButtonList.add(entityFileButtonPanel);
-    */
-    /////////otherFile////////////////////////
     JList otherFileList = new JList(v);
     otherFileList.setVisibleRowCount(10);
     JScrollPane otherFileScrollPane = new JScrollPane(otherFileList);

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-30 23:00:26 $'
- * '$Revision: 1.16 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-07 17:45:24 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -511,7 +511,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       docid = (String)rowVector.get(numHeaders+2);
       openLocal = ((Boolean)rowVector.get(numHeaders+5)).booleanValue();
       openMetacat = ((Boolean)rowVector.get(numHeaders+6)).booleanValue();
-      rowTriples = (Vector)rowVector.get(numHeaders+7);
+      //rowTriples = (Vector)rowVector.get(numHeaders+7);
 /*    // DEBUGGING output to determine if the triples Hash is correct
       for (int j=0; j < rowTriples.size(); j++) {
         Hashtable currentTriple = (Hashtable)rowTriples.get(j);
@@ -523,8 +523,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       }
 */
     } catch (ArrayIndexOutOfBoundsException aioobe) {
+      System.out.println("array index out of bounds");
       docid = null;
     } catch (NullPointerException npe) {
+      System.out.println("null pointer exception");
       docid = null;
     }
 

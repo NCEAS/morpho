@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-06 22:39:15 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-07 17:45:23 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,37 @@ public class DataPackage
     framework.debug(9, "id: " + identifier);
     framework.debug(9, "location: " + location);
     this.identifier = identifier;
-    triples = new TripleCollection(relations);
+    if(relations != null)
+    { //if the relations are provided don't reparse the document
+      triples = new TripleCollection(relations);
+    }
+    else
+    { //since the relations were not provided we need to parse them out of
+      //the document.
+      File triplesFile;
+      try
+      {
+        if(location.equals(METACAT))
+        {
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          triplesFile = mds.openFile(identifier);
+        }
+        else
+        {
+          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          triplesFile = fsds.openFile(identifier);
+        }
+      }
+      catch(Exception e)
+      {
+        framework.debug(0, "Error in DataPackage.DataPackage: " + 
+                           e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+      
+      triples = new TripleCollection(triplesFile, framework);
+    }
     
     if(location.equals(METACAT))
     {
@@ -137,6 +167,10 @@ public class DataPackage
     }
   }
   
+  /**
+   * parses the triples file and pulls out the basic information (title, 
+   * altTitle, Originators)
+   */
   private void parseTripleFile()
   {
     DOMParser parser = new DOMParser();
@@ -144,45 +178,21 @@ public class DataPackage
     InputSource in;
     FileInputStream fs;
     CatalogEntityResolver cer = new CatalogEntityResolver();
-    try 
+    
+    //get the DOM rep of the document without triples
+    try
     {
-      Catalog myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
       ConfigXML config = framework.getConfiguration();
       String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
-      cer.setCatalog(myCatalog);
-    } 
-    catch (Exception e) 
-    {
-      ClientFramework.debug(9, "Problem creating Catalog in " +
-                   "packagewizardshell.handleFinishAction!" + e.toString());
+      doc = getDoc(tripleFile, catalogPath);
     }
-    
-    parser.setEntityResolver(cer);
-    
-    try
-    { //parse the wizard created file without the triples
-      fs = new FileInputStream(tripleFile);
-      in = new InputSource(fs);
-    }
-    catch(FileNotFoundException fnf)
+    catch (Exception e)
     {
-      fnf.printStackTrace();
+      framework.debug(0, "error parsing " + tripleFile.getPath() + " : " +
+                         e.getMessage());
+      e.printStackTrace();
       return;
     }
-    try
-    {
-      parser.parse(in);
-      fs.close();
-    }
-    catch(Exception e1)
-    {
-      System.err.println("parseTripleFile : parse threw: " + 
-                         e1.toString());
-    }
-    //get the DOM rep of the document without triples
-    doc = parser.getDocument();
     
     NodeList originatorNodeList = null;
     NodeList titleNodeList = null;
@@ -196,6 +206,12 @@ public class DataPackage
       originatorNodeList = XPathAPI.selectNodeList(doc, originatorPath);
       titleNodeList = XPathAPI.selectNodeList(doc, titlePath);
       altTitleNodeList = XPathAPI.selectNodeList(doc, altTitlePath);
+      
+      if(titleNodeList.getLength() == 0)
+      {
+        titleNodeList = XPathAPI.selectNodeList(doc, "//title");
+      }
+      
     }
     catch(SAXException se)
     {
@@ -243,7 +259,9 @@ public class DataPackage
   /**
    * parses file with the dom parser and returns a dom Document
    */
-  private Document getDoc(File file) throws SAXException, Exception
+  public static Document getDoc(File file, String catalogPath) throws 
+                                                               SAXException, 
+                                                               Exception
   {
     DOMParser parser = new DOMParser();
     Document doc;
@@ -254,8 +272,8 @@ public class DataPackage
     {
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
-      ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
+      //ConfigXML config = framework.getConfiguration();
+      //String catalogPath = config.get("local_catalog_path", 0);
       myCatalog.parseCatalog(catalogPath);
       cer.setCatalog(myCatalog);
     } 
@@ -304,6 +322,8 @@ public class DataPackage
     Hashtable filesHash = new Hashtable();
     MetacatDataStore mds = new MetacatDataStore(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    ConfigXML config = framework.getConfiguration();
+    String catalogPath = config.get("local_catalog_path", 0);
     
     for(int i=0; i<tripleVec.size(); i++)
     {
@@ -348,13 +368,10 @@ public class DataPackage
           xmlString += (char)fr.read();
         }
         
-        System.out.println("xmlString: " + xmlString);
-        System.out.flush();
-        
         String name;
         if(xmlString.equals("<?xml"))
         { //we are dealing with a data file here.
-          Document subDoc = getDoc(subfile);
+          Document subDoc = getDoc(subfile, catalogPath);
           DocumentTypeImpl dt = (DocumentTypeImpl)subDoc.getDoctype();
           name = dt.getName();
         }
@@ -422,13 +439,10 @@ public class DataPackage
           xmlString += (char)fr.read();
         }
         
-        System.out.println("xmlString: " + xmlString);
-        System.out.flush();
-        
         String name;
         if(xmlString.equals("<?xml"))
         { //we are dealing with a data file here.
-          Document objDoc = getDoc(objfile);
+          Document objDoc = getDoc(objfile, catalogPath);
           DocumentTypeImpl dt = (DocumentTypeImpl)objDoc.getDoctype();
           name = dt.getName();
           

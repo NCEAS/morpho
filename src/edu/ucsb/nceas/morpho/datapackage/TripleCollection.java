@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-04 21:26:43 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-07 17:45:23 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
  */
 
 package edu.ucsb.nceas.morpho.datapackage;
+
+import edu.ucsb.nceas.morpho.framework.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -55,6 +57,73 @@ public class TripleCollection
   {
     
   }
+  
+  /**
+   * parses an xml document and pulls any triples out of it.
+   */
+   public TripleCollection(File triplesFile, ClientFramework framework)
+   {
+     Document doc;
+     try
+     {
+       ConfigXML config = framework.getConfiguration();
+       String catalogPath = config.get("local_catalog_path", 0);
+       doc = DataPackage.getDoc(triplesFile, catalogPath);
+     }
+     catch(Exception e)
+     {
+       framework.debug(0, "error parsing " + triplesFile.getPath() + " : " +
+                         e.getMessage());
+       e.printStackTrace();
+       return;
+     }
+     
+     String triplePath = "//triple";
+     NodeList tripleList = null;
+     try
+     {
+       tripleList = XPathAPI.selectNodeList(doc, triplePath);
+     }
+     catch(Exception e)
+     {
+       ClientFramework.debug(0, "Error parsing triples in " + 
+                                "TripleCollection.TripleCollection: " +
+                                e.getMessage());
+       e.printStackTrace();
+     }
+     
+     for(int i=0; i<tripleList.getLength(); i++)
+     {
+       Node triple = tripleList.item(i);
+       NodeList children = triple.getChildNodes();
+       String sub = null;
+       String rel = null;
+       String obj = null;
+       if(children.getLength() > 2)
+       {
+         for(int j=0; j<children.getLength(); j++)
+         {
+           Node childNode = children.item(j);
+           String nodename = childNode.getNodeName().trim().toUpperCase();
+           if(nodename.equals("SUBJECT"))
+           {
+             sub = childNode.getFirstChild().getNodeValue();
+           }
+           else if(nodename.equals("OBJECT"))
+           {
+             obj = childNode.getFirstChild().getNodeValue();
+           }
+           else if(nodename.equals("RELATIONSHIP"))
+           {
+             rel = childNode.getFirstChild().getNodeValue();
+           }
+         }
+         
+         Triple t = new Triple(sub, rel, obj);
+         triples.addElement(t);
+       }
+     }
+   }
   
   /**
    * Copy constructor.  instantiate this object from the given TripleCollection
