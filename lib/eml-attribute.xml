@@ -36,7 +36,7 @@ help="Eml-attribute element represents a list of all attributes in a dataset.">
       <enumeratedDomain
       help="This element describes any code associated with the attribute.">
         <code
-        help="This element specifies a code associated with the attribute.">
+        help="This element specifies a code associated with the attribute.XXXXX">
         </code>
 
         <definition
@@ -44,7 +44,7 @@ help="Eml-attribute element represents a list of all attributes in a dataset.">
         </definition>
 
         <source
-        help="The name of the source from which this code and its associated definition are drawn. This is commonly used for identifying standard coding systems, like the FIPS standard for postal abbreviations for sta">
+        help="The name of the source from which this code and its associated definition are drawn. This is commonly used for identifying standard coding systems, like the FIPS standard for postal abbreviations for standard for postal abbreviations for states in the US. In other cases, the coding may be the researcher's customized way of recording and classifying their data, and no external source would exist.">
 
         </source>
       </enumeratedDomain>
