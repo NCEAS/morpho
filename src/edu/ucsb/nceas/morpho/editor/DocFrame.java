@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-07 15:43:34 $'
- * '$Revision: 1.118 $'
+ *     '$Date: 2003-10-07 16:55:19 $'
+ * '$Revision: 1.119 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1555,7 +1555,16 @@ public class DocFrame extends javax.swing.JFrame
     return str1;
   }
 
-
+  /**
+   *  This method writes a DOM Node based on the TreeNode
+   *   returns the root node of the DOM
+   */
+  Node writeToDOM(DefaultMutableTreeNode node) {
+    String xml = writeXMLString(node);
+    StringReader sr = new StringReader(xml);
+    Node DOMout = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
+    return DOMOut;
+  }
   /**
    * recursive routine to create xml output
    *
