@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-10 18:32:15 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-08-09 18:40:10 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,11 +56,15 @@ public class DTDTree
     String rootElementName = null;
     DTDElement rootElement = null;
 
-    DTDItem oldItem;
+
+// the Sequence_Flag determines whether or not the parsing marks 'sequences' of content
+// such sequences need to be noted when the content is something like
+// ((A,B,C)|(D,E)) i.e. when there are nested, unnamed sequences
+    boolean Sequence_Flag = true;
     
     // levels is how many levels deep the depth first parse is carried out
     // needs to be specified to provide stopping criteria for recursive DTDs
-    int levels = 9;
+    int levels = 12;
     
  
   public DTDTree() {
@@ -115,12 +119,16 @@ public class DTDTree
 	}
 
 
+
 public DefaultMutableTreeNode buildTree(DefaultMutableTreeNode root) {
   Vector vect = new Vector();
   Vector vvvv = new Vector();
   Vector zzzz = new Vector();
   vect.addElement(root);
+//  boolean tempflag = Sequence_Flag;
   for(int i=0;i<levels;i++) {
+ //   if (i==0) {Sequence_Flag = false;}
+ //   else {Sequence_Flag = tempflag;}
     for (Enumeration e = vect.elements() ; e.hasMoreElements() ;) { 
       DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)e.nextElement();
       vvvv = getChildren((NodeInfo)dmtn.getUserObject(),dmtn);
@@ -150,11 +158,32 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
   else if(name.equalsIgnoreCase("#PCDATA")) {
     
   }
+  else if(name.equalsIgnoreCase("(SEQUENCE)")) {
+    Vector vec2 = new Vector();
+    DTDSequence item = null;
+    if (ni.getItem()!=null) {
+      item = (DTDSequence)ni.getItem();
+      ni.setItem(null);  // no sense keeping the item information in the userObject after this point
+    }
+    DTDItem[] items = ((DTDSequence) item).getItems();
+    for (int i=0; i < items.length; i++)  {
+      DTDItems(items[i],vec2);
+    }
+    for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
+      NodeInfo node = (NodeInfo)(e.nextElement());
+		  DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(node);
+      parentNode.add(newNode);
+      vec1.addElement(newNode);
+    }
+  }
+  
   else if(name.equalsIgnoreCase("(CHOICE)")) {
+ //   Sequence_Flag = true;
     Vector vec2 = new Vector();
     DTDChoice item = null;
-    if (ni.getItem()) {
-      item = (DTDChoice)oldItem;
+    if (ni.getItem()!=null) {
+      item = (DTDChoice)ni.getItem();
+      ni.setItem(null); // no sense keeping the item information in the userObject after this point
     }
     DTDItem[] items = ((DTDChoice) item).getItems();
     for (int i=0; i < items.length; i++)  {
@@ -173,6 +202,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
         parentNode.add(newNode);
         vec1.addElement(newNode);
       }
+ //     Sequence_Flag = false;
     }
     else {
       for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
@@ -224,10 +254,9 @@ private void DTDItems(DTDItem item, Vector vec) {
   else if (item instanceof DTDChoice) {
     DTDItem[] items = ((DTDChoice) item).getItems();
     if (items.length>1) {
-      oldItem = item;
       NodeInfo ni = new NodeInfo("(CHOICE)");
+      ni.setItem(item);
       ni.setCardinality(getCardinality(item));
-      ni.setItem(true);
       vec.addElement(ni);
     }
     else {
@@ -239,12 +268,17 @@ private void DTDItems(DTDItem item, Vector vec) {
     }
   }
   else if (item instanceof DTDSequence) {
- //           NodeInfo ni = new NodeInfo("(Sequence)");
- //           ni.setCardinality("NONE");
- //           vec.addElement(ni);
-    DTDItem[] items = ((DTDSequence) item).getItems();
-    for (int i=0; i < items.length; i++) {
-      DTDItems(items[i],vec);
+    if (Sequence_Flag) {
+            NodeInfo ni = new NodeInfo("(SEQUENCE)");
+            ni.setItem(item);
+            ni.setCardinality(getCardinality(item));
+            vec.addElement(ni);
+    }
+    else {
+          DTDItem[] items = ((DTDSequence) item).getItems();
+          for (int i=0; i < items.length; i++) {
+            DTDItems(items[i],vec);
+          }
     }
   }
   else if (item instanceof DTDMixed) {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-18 04:46:52 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2001-08-09 18:40:10 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,10 @@ public class DocFrame extends javax.swing.JFrame
     
     boolean treeValueFlag = true;
     
+	  // determines whether node containing no text are saved when output
+	  // is written
+	  boolean emptyFlag = true;
+ 
     //* nodeCopy is the 'local clipboard' for node storage
     DefaultMutableTreeNode nodeCopy = null;
     
@@ -390,6 +394,8 @@ public class DocFrame extends javax.swing.JFrame
 		
 		treeModel.reload();
 		tree.setModel(treeModel);
+		tree.expandRow(1);
+		tree.expandRow(2);
     tree.setSelectionRow(0);
 	    
 	}
@@ -1039,13 +1045,12 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	  StringBuffer start1 = new StringBuffer();
 	  String name;
 	  String end;
-	  boolean notempty = true;
 	  boolean emptyNodeParent = false;
 	  NodeInfo ni = (NodeInfo)node.getUserObject();
 	  name = ni.name;
 	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
 	    // completely ignore NOT SELECTED nodes AND their children
-	    if ((!name.equals("(CHOICE)"))&&(!name.equals("Empty"))) {
+	    if ((!name.equals("(CHOICE)"))&&(!name.equals("(SEQUENCE)"))&&(!name.equals("Empty"))) {
 	      // ignore (CHOICE) nodes but process their children
 	      start1.append("\n"+indentString+"<"+name);  
 	    
@@ -1072,13 +1077,15 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	    if (ni1.name.equals("#PCDATA")) {
 	      // remove nodes with empty PCDATA
 	      String pcdata = ni1.getPCValue();
-	      if (pcdata.trim().length()<1) {
-	        String card = ni.getCardinality();
-/*	        if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
-	          notempty = false;
-	          start1 = new StringBuffer();
+        if (emptyFlag) {
+	        if (pcdata.trim().length()<1) {
+	          String card = ni.getCardinality();
+	          if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
+	            start1 = new StringBuffer();
+	            tempStack.pop();
+	            tempStack.push("");
+	          }
 	        }
-*/
 	      }
 	      start.append(start1.toString());
 	      start1 = new StringBuffer();
@@ -1101,7 +1108,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      write_loop(nd, indent+2);
 	    }
 	  }
-	    if ((!name.equals("(CHOICE)"))&&(!name.equals("Empty"))) {
+	    if ((!name.equals("(CHOICE)"))&&(!name.equals("(SEQUENCE)"))&&(!name.equals("Empty"))) {
 	      if (textnode) {
           if (!tempStack.isEmpty()) {
 	            start.append((String)(tempStack.pop()));
@@ -1204,7 +1211,8 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
                         newnode = deepNodeCopy(tNode);
                         trimSpecialAttributes(newnode);
-                        if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
+                        if ((((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) ||
+                          (((NodeInfo)tNode.getUserObject()).getName().equals("(SEQUENCE)"))) {
                             tempStack.push(newnode);
                         }
                         int index1 = findDuplicateIndex(nextLevelInputNodes,index);
@@ -1216,43 +1224,71 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                         }
                     }
             
-                    if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
-                    // in this case, one of the 'children' of the CHOICE node probably exists
-                    // in the Info nodes for this level
+                    if ((((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) ||
+                          (((NodeInfo)tNode.getUserObject()).getName().equals("(SEQUENCE)"))) {                    
+                            // in this case, one of the 'children' of the CHOICE node probably exists
+                            // in the Info nodes for this level
                         reverseStack(tempStack);
                         while (!tempStack.empty()) {
                             int indx1 = -1;
                             DefaultMutableTreeNode nwnode = (DefaultMutableTreeNode)tempStack.pop();
-                            Enumeration q = tNode.children();
+                            Vector childvec = new Vector();
+                            getRealChildren(tNode, childvec);
+                            Enumeration q = childvec.elements();
+//                            Enumeration q = tNode.children();
                             while (q.hasMoreElements()) {
                                 DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)q.nextElement();
-                                Enumeration ww = nwnode.children();
+                                Vector childvec1 = new Vector();
+                                getRealChildren(nwnode, childvec1);
+                                Enumeration ww = childvec1.elements();
+//                                Enumeration ww = nwnode.children();
                                 while (ww.hasMoreElements()) {
                                     qw = (DefaultMutableTreeNode)ww.nextElement();
                                     if (simpleCompareNodes(nd1,qw)) {
                                         indx1 = nwnode.getIndex(qw);
-                                        nwnode.remove(qw);
+                                        if (indx1>-1) {
+                                            nwnode.remove(qw);
+                                        }
+                                        
+                                        Vector choice_hits1 = simpleGetMatches(nd1, currentLevelInputNodes);
+                                        for (Enumeration ttt = choice_hits1.elements();ttt.hasMoreElements();) {
+                                          nextLevelInputNodes.addElement((DefaultMutableTreeNode)ttt.nextElement()); 
+                                        }
                                         
                                         Vector choice_hits = simpleGetMatches(nd1, nextLevelInputNodes);
+
                                         // choice_hits now contains a list of nodes to be moved
                                         // under the CHOICE node; only those with the same parent
                                         // should be moved to a single CHOICE
                                         
-                                        
                                         if (choice_hits.size()>0){
                                           choice_hits = sameParent(choice_hits);
+                                          
+                                          
+                                          
                                           Enumeration qq = choice_hits.elements();
                                           while (qq.hasMoreElements()) {
                                             nd2 = (DefaultMutableTreeNode)qq.nextElement();
-                                            nwnode.insert(nd2, indx1);
+                                            
+                                            
+                                            if ((indx1>=nwnode.getChildCount())||(indx1==-1)) {
+                                                nwnode.add(nd2);    
+                                            }
+                                            else {
+                                                nwnode.insert(nd2,indx1);
+                                            }
+                                      //      nwnode.insert(nd2, indx1);
                                             nextLevelInputNodes.remove(nd2);
                                           }
                                         }
-                                    }
+                                     }
                                 }
                             }
                         }
                     }
+                    
+                    
+                    
      //           } // end if hits.size==0
                 // put removed elements back
                 currentLevelInputNodes = tempVector;
@@ -1267,11 +1303,35 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                 }
 
             }
+ 
+            
             currentLevelInputNodes = nextLevelInputNodes;
             currentLevelTemplateNodes = nextLevelTemplateNodes;
+            
         }  // end levels loop
   } //end else
 }
+
+
+
+/** get the children of a node, stripping out the 'SEQUENCE' and 'CHOICE' nodes and
+  * inserting their children
+  * 'vec' is a vector of child nodes; node is parent
+  */
+  private void getRealChildren(DefaultMutableTreeNode node, Vector vec) {
+    Enumeration enum = node.children();
+    while (enum.hasMoreElements()) {
+      DefaultMutableTreeNode child = (DefaultMutableTreeNode)enum.nextElement();
+      vec.addElement(child);  
+      
+      if (((NodeInfo)child.getUserObject()).getName().equals("(SEQUENCE)")) {
+        getRealChildren(child,vec);  
+      }
+      else if (((NodeInfo)child.getUserObject()).getName().equals("(CHOICE)")) {
+        getRealChildren(child,vec);  
+      }
+    }
+  }
 
 /** reverse the order of items in a stack
  */
@@ -1570,6 +1630,7 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	void EditingExit_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		this.setVisible(false);    // hide the Frame
+		treeModel = (DefaultTreeModel)tree.getModel();
 		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 	  String xmlout = writeXMLString(rootNode);
 		controller.fireEditingCompleteEvent(this, xmlout);
