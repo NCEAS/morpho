@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 22:29:26 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-25 23:30:55 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,8 +118,9 @@ public class ReviseSearchCommand implements Command
         {
           currentIdentifier = myQuery.getQueryTitle();
           ResultSet newResults = myQuery.execute();
+          // null means the resultpanel would NOT be setted to a JDialog
           ResultPanel resultDisplayPanel = new ResultPanel(
-              newResults, 12, null, morphoFrame.getDefaultContentAreaSize());
+           null, newResults, 12, null, morphoFrame.getDefaultContentAreaSize());
           resultDisplayPanel.setVisible(true);
           frame.setMainContentPane(resultDisplayPanel);
           frame.setMessage(newResults.getRowCount()+ " data sets found");

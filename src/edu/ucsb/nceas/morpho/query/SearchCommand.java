@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-24 00:13:59 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-08-25 23:31:29 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,8 +111,9 @@ public class SearchCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
+          // null means the resultpanel would NOT be setted to a Jdialog
           ResultPanel resultDisplayPanel = new ResultPanel(
-              results, 12, null, resultWindow.getDefaultContentAreaSize());
+          null,results, 12, null, resultWindow.getDefaultContentAreaSize());
           resultDisplayPanel.setVisible(true);
           resultWindow.setMainContentPane(resultDisplayPanel);
           resultWindow.setMessage(results.getRowCount() + " data sets found");

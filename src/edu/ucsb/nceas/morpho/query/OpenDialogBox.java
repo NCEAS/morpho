@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-25 22:54:18 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-08-25 23:30:28 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,7 +246,7 @@ public class OpenDialogBox extends JDialog
   private void createOwnerPanel()
   {
     results = ownerQuery.execute();
-    ownerPanel = new ResultPanel(results, mediator);
+    ownerPanel = new ResultPanel(this, results, mediator);
     
    }// createOwnerPanel
   
