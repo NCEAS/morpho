@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-25 17:31:01 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-05-25 19:09:21 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
  */
 
 package edu.ucsb.nceas.morpho.datapackage.wizard;
+
 import edu.ucsb.nceas.morpho.framework.*;
 import javax.swing.*;
 import javax.swing.border.*; 
@@ -991,10 +992,17 @@ public class PackageWizard extends javax.swing.JFrame
         }
         else
         { //go here if we are building a panel that is not tabbed.
-          tempPanel.setBorder(BorderFactory.createCompoundBorder(
-                              BorderFactory.createTitledBorder(
-                              (String)tempElement.attributes.get("label")),
-                              BorderFactory.createEmptyBorder(4, 4, 4, 4)));
+          if(tempElement.attributes.containsKey("label"))
+          {
+            tempPanel.setBorder(BorderFactory.createCompoundBorder(
+                                BorderFactory.createTitledBorder(
+                                (String)tempElement.attributes.get("label")),
+                                BorderFactory.createEmptyBorder(4, 4, 4, 4)));
+          }
+          else
+          {
+            tempPanel.setBorder(null);
+          }
           
           if(tempElement.attributes.containsKey("repeatable"))
           { //allow this panel to be repeated.
@@ -1044,9 +1052,10 @@ public class PackageWizard extends javax.swing.JFrame
           }
           
           //tempPanel.setLayout(new /*GridLayout(0,2)*/FlowLayout());
-          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          //BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           //layout management for internal panels
-          tempPanel.setLayout(box);
+          //tempPanel.setLayout(box);
+          
           if(prevIndex == null)
           { //add this group as a child of it's parent for later reconstruction.
             parentPanel.children.addElement(tempPanel);
@@ -1068,7 +1077,11 @@ public class PackageWizard extends javax.swing.JFrame
         
         final JLabel label = new JLabel(
                                  (String)tempElement.attributes.get("label"));
-        Integer size = new Integer((String)tempElement.attributes.get("size"));
+        Integer size = new Integer(10);
+        if(tempElement.attributes.containsKey("size"))
+        {
+          size = new Integer((String)tempElement.attributes.get("size"));
+        }
         JButton button = null;
         boolean required = false;
         String defaultText = null;
@@ -1097,18 +1110,22 @@ public class PackageWizard extends javax.swing.JFrame
                   JTextFieldWrapper newtextfield = new JTextFieldWrapper();
                   newtextfield.element = newtempElement;
                   newtextfield.setPreferredSize(new Dimension(10, 20));
-                  Integer newsize = new Integer(
-                                 (String)newtempElement.attributes.get("size"));
+                  Integer newsize = new Integer(10);
+                  if(newtempElement.attributes.containsKey("size"))
+                  {
+                    newsize = new Integer(
+                              (String)newtempElement.attributes.get("size"));
+                  }
                   newtextfield.setColumns(newsize.intValue());
                   int textfieldindex = parentPanel.children.indexOf(textfield);
                   parentPanel.children.insertElementAt(newtextfield, 
                                                        textfieldindex+1);
                   
-                  int numcomponents = parentPanel.getComponentCount();
+                  int numcomponents = parentPanel.getParent().getComponentCount();
                   int insertindex = numcomponents;
                   for(int j=0; j<numcomponents; j++)
                   {
-                    Component nextcomp = parentPanel.getComponent(j);
+                    Component nextcomp = parentPanel.getParent().getComponent(j);
                     if(nextcomp == textfield)
                     {
                       insertindex = j;
@@ -1121,9 +1138,12 @@ public class PackageWizard extends javax.swing.JFrame
                                      tempElement.attributes.get("defaulttext");
                     newtextfield.setText(defaultText);
                   }
-                  
-                  parentPanel.add(newLabel, insertindex + 1);
-                  parentPanel.add(newtextfield, insertindex + 2);
+                  JPanel layoutpanel = new JPanel();
+                  layoutpanel.add(newLabel);
+                  layoutpanel.add(newtextfield);
+                  parentPanel.add(layoutpanel, insertindex);
+                  //parentPanel.add(newLabel, insertindex + 1);
+                  //parentPanel.add(newtextfield, insertindex + 2);
                   contentPane.repaint();
                 }
               }
@@ -1149,19 +1169,23 @@ public class PackageWizard extends javax.swing.JFrame
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
         
+        JPanel layoutpanel = new JPanel();
         if(button != null)
         { //if this item is repeatable add the button
-          JPanel layoutpanel = new JPanel();
+          
           button.add(label);
           layoutpanel.add(button);
-          parentPanel.add(button);
+          //parentPanel.add(button);
         }
         else
         { //add just the label if it is not repeatable
-          parentPanel.add(label);
+          //parentPanel.add(label);
+          layoutpanel.add(label);
         }
         textfield.setText(defaultText);
-        parentPanel.add(textfield);
+        //parentPanel.add(textfield);
+        layoutpanel.add(textfield);
+        parentPanel.add(layoutpanel);
       }
       else if(tempElement.name.equals("combobox"))
       {//add a new combo box with it's enumerated items
@@ -1207,14 +1231,18 @@ public class PackageWizard extends javax.swing.JFrame
                   newcombofield.setEditable(true);
                   newcombofield.setAlignmentX(Component.LEFT_ALIGNMENT);
                   int combofieldindex = parentPanel.children.indexOf(combofield);
-                  parentPanel.children.insertElementAt(newcombofield, combofieldindex+1);
+                  parentPanel.children.insertElementAt(newcombofield, 
+                                                       combofieldindex+1);
                   
-                  int numcomponents = parentPanel.getComponentCount();
+                  //note that you have to use getParent here because all 
+                  //text and combo boxes are inside of another panel for layout
+                  //reasons
+                  int numcomponents = parentPanel.getParent().getComponentCount();
                   int insertindex = numcomponents;
                   
                   for(int j=0; j<numcomponents; j++)
                   { //add the combo box in the correct position
-                    Component nextcomp = parentPanel.getComponent(j);
+                    Component nextcomp = parentPanel.getParent().getComponent(j);
                     if(nextcomp == combofield)
                     {
                       insertindex = j;
@@ -1228,8 +1256,12 @@ public class PackageWizard extends javax.swing.JFrame
                     combofield.setSelectedItem(defaultText);
                   }
                   
-                  parentPanel.add(newLabel, insertindex + 1);
-                  parentPanel.add(newcombofield, insertindex + 2);
+                  JPanel layoutpanel = new JPanel();
+                  layoutpanel.add(newLabel);
+                  layoutpanel.add(newcombofield);
+                  parentPanel.add(layoutpanel, insertindex);
+                  //parentPanel.add(newLabel, insertindex + 1);
+                  //parentPanel.add(newcombofield, insertindex + 2);
                   contentPane.repaint();
                 }
               }
@@ -1255,17 +1287,19 @@ public class PackageWizard extends javax.swing.JFrame
           label.setForeground(Color.red);
         }
         
+        JPanel layoutpanel = new JPanel();
+        
         if(button != null)
         {
-          JPanel layoutpanel = new JPanel();
-          //layoutpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+          
           button.add(label);
           layoutpanel.add(button);
-          parentPanel.add(button);
+          //parentPanel.add(button);
         }
         else
         {
-          parentPanel.add(label);
+          //parentPanel.add(label);
+          layoutpanel.add(label);
         }
         
         if(tempElement.attributes.containsKey("defaulttext"))
@@ -1274,8 +1308,9 @@ public class PackageWizard extends javax.swing.JFrame
                                tempElement.attributes.get("defaulttext");
           combofield.setSelectedItem(defaultText);
         }
-        
-        parentPanel.add(combofield);
+        layoutpanel.add(combofield);
+        parentPanel.add(layoutpanel);
+        //parentPanel.add(combofield);
       }
       
       //do the recursive call to the next level of the document:
