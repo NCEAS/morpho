@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-07-12 18:29:45 $'
- * '$Revision: 1.99 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-16 23:19:50 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,8 +173,8 @@ public class ClientFramework extends javax.swing.JFrame
 		toolbarPanel.add(morphoToolbar);
 
     // get StatusBar instance, initialize and add to interface:
-    statusBar = StatusBar.getInstance();
-		getContentPane().add(BorderLayout.SOUTH, statusBar);
+    statusBar = new StatusBar();
+	getContentPane().add(BorderLayout.SOUTH, statusBar);
   
  
     //{{REGISTER_LISTENERS
@@ -778,6 +778,7 @@ public class ClientFramework extends javax.swing.JFrame
    */
   private void establishConnection()
   {
+/* TEMPORARY COMMENT OUT CODE WHILE REFACTORING CLIENTFRAMEWORK
     if (networkStatus) {
       ConnectionFrame cf = new ConnectionFrame(this);
       cf.setVisible(true);
@@ -785,6 +786,7 @@ public class ClientFramework extends javax.swing.JFrame
       profile.set("searchmetacat", 0, "false");
       debug(6, "No MetaCat connection available - can't log in");
     }
+*/
   }
 
   /** 
@@ -792,8 +794,10 @@ public class ClientFramework extends javax.swing.JFrame
    */
   private void createNewProfile()
   {
+/* TEMPORARY COMMENT OUT CODE WHILE REFACTORING CLIENTFRAMEWORK
     ProfileDialog dialog = new ProfileDialog(this);
     dialog.setVisible(true);
+*/
   }
 
   /** 
@@ -1617,8 +1621,10 @@ public class ClientFramework extends javax.swing.JFrame
         String currentProfile = config.get("current_profile", 0);
         //String scope = null;
         if (currentProfile == null) {
+/* TEMPORARY COMMENT OUT CODE WHILE REFACTORING CLIENTFRAMEWORK
           ProfileDialog dialog = new ProfileDialog(clf);
           dialog.setVisible(true);
+*/
           // Make sure they actually created a profile
           if (clf.getProfile() == null) {
             JOptionPane.showMessageDialog(null,

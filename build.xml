@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.48 2002-08-14 16:47:54 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.49 2002-08-16 23:19:48 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -299,27 +299,10 @@
    </target>
 
    <target name="morpho" depends="install">
-     <java classname="edu.ucsb.nceas.morpho.framework.ClientFramework"
+     <java classname="edu.ucsb.nceas.morpho.Morpho"
            classpath="${cpath}:${morpho}"
            fork="yes" >
        <arg value="-Xmx128m"/>
-       <jvmarg line="-Djava.protocol.handler.pkgs=HTTPClient"/>
-     </java>
-   </target>
-   
-   <target name="wizard" depends="install">
-     <java classname="edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard"
-           classpath="${cpath}:${morpho}"
-           fork="yes">
-           <arg file="src/edu/ucsb/nceas/morpho/datapackage/wizard/wizardTest.xml"/>
-     </java>
-   </target>
-   
-   <target name="mdstore" depends="install">
-     <java classname="edu.ucsb.nceas.morpho.framework.MetacatDataStore"
-           classpath="${cpath}:${morpho}"
-           fork="yes">
-       <arg line="jones some-password h.1.1 build.xml data.1.1 morpho.bat"/>
        <jvmarg line="-Djava.protocol.handler.pkgs=HTTPClient"/>
      </java>
    </target>

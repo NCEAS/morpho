@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-06-06 21:35:56 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-16 23:19:50 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ import javax.swing.ToolTipManager;
  *  A graphical status bar for displaying information about network and login 
  *  status.  Tells the user whether Metacat is reachable over the network, 
  *  whether the user is logged into metacat, and whether the connection to 
- *  Metacat is via SSL or insecure HTTP
+ *  Metacat is via SSL or insecure HTTP.
  */
 public class StatusBar extends JPanel
 {
@@ -81,37 +81,20 @@ public class StatusBar extends JPanel
   //width of padding space between icons
   private static final int PADDING  = 5;
               
-
-  
   /**
-   *  private Constructor - singleton class - we want only one StatusBar  
-   *  instance to exist, since they should all show the same status
-   *
+   *  Constructor - creates the StatusBar and initializes its state
    */
-  private StatusBar() { initializeComponents(); }
-
-  
-  /**
-   * Get a pointer to the single instance of the StatusBar
-   *
-   *  @return     a pointer to the single instance of the StatusBar
-   *
-   */ 
-  public static StatusBar getInstance() {
-    
-    if (statusBar==null) { 
-      statusBar = new StatusBar(); 
+  public StatusBar() 
+  { 
+      initializeComponents(); 
       buildStatusBar();
-    }
-    return statusBar;
   }
-  
-  
+
   /**
    * Set up the status icons and their labels, and init them all to "no"
    */ 
-  private void initializeComponents(){
-    
+  private void initializeComponents()
+  {
     connect_YesIcon = new ImageIcon(getClass().getResource(CONN_YES_ICONPATH));
     connect_NoIcon  = new ImageIcon(getClass().getResource(CONN_NO_ICONPATH));
     login_YesIcon   = new ImageIcon(getClass().getResource(LOGIN_YES_ICONPATH));
@@ -136,12 +119,12 @@ public class StatusBar extends JPanel
   /**
    * Set up the status icons on the status bar
    */ 
-  private static void buildStatusBar(){
+  private void buildStatusBar()
+  {
+    this.setLayout(new BorderLayout());
 
-    statusBar.setLayout(new BorderLayout());
-
-    statusBar.add(BorderLayout.WEST, Box.createHorizontalStrut(PADDING));
-    statusBar.add(BorderLayout.CENTER, messageLabel);
+    this.add(BorderLayout.WEST, Box.createHorizontalStrut(PADDING));
+    this.add(BorderLayout.CENTER, messageLabel);
 
     JPanel iconPanel = new JPanel();
     iconPanel.add(connectStatusLabel);
@@ -149,7 +132,7 @@ public class StatusBar extends JPanel
     iconPanel.add(loginStatusLabel);
     iconPanel.add(Box.createHorizontalStrut(PADDING));
     iconPanel.add(sslStatusLabel);
-    statusBar.add(BorderLayout.EAST, iconPanel);
+    this.add(BorderLayout.EAST, iconPanel);
     
     ToolTipManager.sharedInstance().registerComponent(connectStatusLabel);
     ToolTipManager.sharedInstance().registerComponent(loginStatusLabel);
@@ -165,7 +148,8 @@ public class StatusBar extends JPanel
    *  @param status - boolean true for "yes", boolean false for "no"
    *
    */ 
-  public void setConnectStatus(boolean status){
+  public void setConnectStatus(boolean status)
+  {
     if (status) {
       connectStatusLabel.setIcon(connect_YesIcon);
       connectStatusLabel.setToolTipText(CONN_YES_TEXT);
@@ -181,7 +165,8 @@ public class StatusBar extends JPanel
    *  @param status - boolean true for "yes", boolean false for "no"
    *
    */ 
-  public void setLoginStatus(boolean status){
+  public void setLoginStatus(boolean status)
+  {
     if (status) {
       loginStatusLabel.setIcon(login_YesIcon);
       loginStatusLabel.setToolTipText(LOGIN_YES_TEXT);
@@ -197,7 +182,8 @@ public class StatusBar extends JPanel
    *  @param status - boolean true for "yes", boolean false for "no"
    *
    */ 
-  public void setSSLStatus(boolean status){
+  public void setSSLStatus(boolean status)
+  {
     if (status) {
       sslStatusLabel.setIcon(ssl_YesIcon);
       sslStatusLabel.setToolTipText(SSL_YES_TEXT);
@@ -213,7 +199,8 @@ public class StatusBar extends JPanel
    *  @param message - message - String to display
    *
    */ 
-  public void setMessage(String message){
+  public void setMessage(String message)
+  {
     if (message==null) message="";
     messageLabel.setText(message);
   }  
@@ -224,20 +211,18 @@ public class StatusBar extends JPanel
    *  @return message - String currently being displayed
    *
    */ 
-  public String getMessage(){
+  public String getMessage()
+  {
     return messageLabel.getText();
   } 
 
   
   //  C L A S S   V A R I A B L E S 
   
-  private ClientFramework   clientFramework;
-  private static StatusBar  statusBar;
-  
-  private static JLabel     messageLabel;
-  private static JLabel     connectStatusLabel;
-  private static JLabel     loginStatusLabel;
-  private static JLabel     sslStatusLabel;
+  private JLabel            messageLabel;
+  private JLabel            connectStatusLabel;
+  private JLabel            loginStatusLabel;
+  private JLabel            sslStatusLabel;
   
   private ImageIcon         connect_YesIcon;
   private ImageIcon         connect_NoIcon;
@@ -245,6 +230,4 @@ public class StatusBar extends JPanel
   private ImageIcon         login_NoIcon;
   private ImageIcon         ssl_YesIcon;
   private ImageIcon         ssl_NoIcon;
-
 }
-
