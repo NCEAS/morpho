@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:49 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-02 01:21:05 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
  */
 
 package edu.ucsb.nceas.morpho.framework;
-
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -66,17 +65,17 @@ public class ConfigXML
   /**
    * root node of the in-memory DOM structure
    */
-  public Node root;
+  private Node root;
 
   /**
    * Document node of the in-memory DOM structure
    */
-  public Document doc;
+  private Document doc;
 
   /**
    * XML file name in string form
    */
-  public String fileName;
+  private String fileName;
 
   /**
    * Print writer (output)
