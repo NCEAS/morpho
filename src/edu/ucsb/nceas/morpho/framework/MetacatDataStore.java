@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-19 17:56:04 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2002-03-28 23:39:59 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     String path = parseId(name);
     String dirs = path.substring(0, path.lastIndexOf("/"));
     StringBuffer response = new StringBuffer();
+    FileOutputStream fos;
     FileWriter writer;
     FileReader reader;
     
@@ -100,11 +101,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       try
       {
-        writer = new FileWriter(localfile);
-        BufferedWriter bwriter = new BufferedWriter(writer);
+//        writer = new FileWriter(localfile);
+        fos = new FileOutputStream(localfile);
+//        BufferedWriter bwriter = new BufferedWriter(writer);
+        BufferedOutputStream bfos = new BufferedOutputStream(fos);
         InputStream metacatInput = framework.getMetacatInputStream(props);
-        InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
-        BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
+//        InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+//        BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
+        BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
         int x = 1;
 /*        while(!bmetacatInputReader.ready())
         { //this is a stall to wait until the input stream is ready to read
@@ -117,14 +121,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
           }
         }
 */        
-        int c = bmetacatInputReader.read();
+        int c = bmetacatInputStream.read();
         while(c != -1)
         {
-          bwriter.write(c);
-          c = bmetacatInputReader.read();
+          bfos.write(c);
+          c = bmetacatInputStream.read();
         }
-        bwriter.flush();
-        bwriter.close();
+        bfos.flush();
+        bfos.close();
         
         // just look for error in first 1000 bytes - DFH
         int cnt = 0;
@@ -142,9 +146,9 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         //                      responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
-          bwriter.close();
+          bfos.close();
           breader.close();
-          bmetacatInputReader.close();
+          bmetacatInputStream.close();
           metacatInput.close();
           if(!localfile.delete())
           {
@@ -162,9 +166,9 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
                                           response.toString());
         }
         
-        bwriter.close();
+        bfos.close();
         breader.close();
-        bmetacatInputReader.close();
+        bmetacatInputStream.close();
         metacatInput.close();
         
         return localfile;
