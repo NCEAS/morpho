@@ -5,10 +5,13 @@
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
 <searchlocal>true</searchlocal>
 <searchnetwork>true</searchnetwork>
+<log_file>true</log_file>
+<searchnetwork>true</searchnetwork>
+<searchlocal>true</searchlocal>
 <pathquery_config>
     <doctypes_searched><doctype>any</doctype></doctypes_searched>
-    <doctypes_returned><returndoc>any</returndoc></doctypes_returned>
-    <fields_returned><returnfield>/resource/dataset/keywordInfo/keyword</returnfield></fields_returned>
+    <doctypes_returned><returndoc>-//NCEAS//resource//EN</returndoc></doctypes_returned>
+    <fields_returned><returnfield>/resource/dataset/title</returnfield></fields_returned>
 
     <doctypes_searched_default>
         <doctype_default>any</doctype_default>
