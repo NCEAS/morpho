@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-23 00:07:33 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-23 17:57:39 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,6 +289,24 @@ public class UIController
             updateWindowMenus();
         }
     }
+    
+        /**
+     * This method is called by plugins to remove all menu items from
+     * a menu 
+     *
+     * @param menuName the name of the menu from which to remove the item
+     */
+    public void removeAllMenuItems(String menuName)
+    {
+        Log.debug(50, "Removing menu item: " + menuName);
+        // Check if the menu exists, and if so, remove the item
+        if (orderedMenuList.contains(menuName)) {
+            Vector currentActions = (Vector)orderedMenuActions.get(menuName);
+            currentActions.removeAllElements();
+            updateWindowMenus();
+        }
+    }
+
 
     /**
     * This method is called by plugins to register a toolbar Action. 
