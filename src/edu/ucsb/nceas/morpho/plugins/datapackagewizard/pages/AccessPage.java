@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-15 13:29:49 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-04-16 21:52:39 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -203,8 +203,6 @@ public class AccessPage
         getMetacatURLString()) == 0) {
 
       displayTree(Access.accessTreeNode);
-    } else {
-      generateAccessTree();
     }
   }
 
@@ -1137,13 +1135,18 @@ public class AccessPage
          * accessTreePane is null... so we have to generate Access.accessTreeNode
          */
         generateAccessTree();
-      } else if (userName != null && Access.accessTreeNode != null &&
+      } else if (Access.accessTreeNode != null &&
           Access.accessTreeMetacatServerName.compareTo(Morpho.
           thisStaticInstance.
           getMetacatURLString()) == 0) {
 
         displayTree(Access.accessTreeNode);
       }
+    } else if (Access.accessTreeNode == null ||
+          Access.accessTreeMetacatServerName.compareTo(Morpho.
+          thisStaticInstance.
+          getMetacatURLString()) != 0) {
+      generateAccessTree();
     }
   }
 
