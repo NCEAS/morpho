@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 22:34:46 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-10-10 22:11:40 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,16 @@ import java.util.*;
 
 import HTTPClient.NVPair;
 
+
+/**
+ *   This class includes code to handle 'cookies' by looking at request and
+ *   response headers. If the Sun url handlers are used, this code is used
+ *   However, if the HttpClient class is used as the url handler, that class
+ *   handles cookies internally and strips the information out of the headers
+ *   before this class looks at them. This the cookie handler included here
+ *   will never be called!   DFH - October 2003
+ */
+ 
 public class HttpMessage
 {
   private URL servlet = null;
