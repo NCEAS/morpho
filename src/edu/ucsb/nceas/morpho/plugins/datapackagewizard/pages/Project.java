@@ -6,9 +6,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.22 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-20 02:09:44 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -364,7 +364,9 @@ public class Project extends AbstractUIPage {
 
       List rowLists = partiesList.getListOfRowLists();
 
-      if (rowLists==null) return null;
+      if (rowLists != null && rowLists.isEmpty()) {
+         return null;
+       }
 
       for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 

@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.20 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-20 02:09:44 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,8 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
-
-public class PartyMainPage extends AbstractUIPage {
+public class PartyMainPage
+    extends AbstractUIPage {
 
   public String pageID;
   public String nextPageID;
@@ -250,9 +250,9 @@ public class PartyMainPage extends AbstractUIPage {
     partyPage.setRole(role);
     ModalDialog wpd
         = new ModalDialog(partyPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT);
+                          WizardContainerFrame.getDialogParent(),
+                          UISettings.POPUPDIALOG_WIDTH,
+                          UISettings.POPUPDIALOG_HEIGHT);
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = partyPage.getSurrogate();
@@ -290,9 +290,9 @@ public class PartyMainPage extends AbstractUIPage {
     PartyPage editPartyPage = (PartyPage) dialogObj;
     editPartyPage.setEditValue();
     ModalDialog wpd = new ModalDialog(editPartyPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
@@ -369,7 +369,7 @@ public class PartyMainPage extends AbstractUIPage {
 
     List rowLists = partiesList.getListOfRowLists();
 
-    if (rowLists == null) {
+    if (rowLists != null && rowLists.isEmpty()) {
       return null;
     }
 
@@ -403,8 +403,6 @@ public class PartyMainPage extends AbstractUIPage {
     return returnMap;
   }
 
-
-
   /**
    * gets the Map object that contains all the key/value paired settings for
    * this particular wizard page
@@ -417,9 +415,8 @@ public class PartyMainPage extends AbstractUIPage {
   public OrderedMap getPageData(String rootXPath) {
 
     throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+        "getPageData(String rootXPath) Method Not Implemented");
   }
-
 
   /**
    * Checks if the list contains a PartyPage similar to the PartyPage passed in

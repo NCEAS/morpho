@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.29 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-20 02:09:44 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,27 +52,29 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
-public class Keywords extends AbstractUIPage{
+public class Keywords
+    extends AbstractUIPage {
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  private final String pageID     = DataPackageWizardInterface.KEYWORDS;
+  private final String pageID = DataPackageWizardInterface.KEYWORDS;
   private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
-  private final String title      = "Keywords";
-  private final String subtitle   = "";
-  private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";
-  private final String pageNumber  = "3";
+  private final String title = "Keywords";
+  private final String subtitle = "";
+  private final String xPathRoot = "/eml:eml/dataset/keywordSet[";
+  private final String pageNumber = "3";
 
-  private final String[] colNames =  {"Keywords", "Thesaurus"};
-  private final Object[] editors  =   null; //makes non-directly-editable
+  private final String[] colNames = {
+      "Keywords", "Thesaurus"};
+  private final Object[] editors = null; //makes non-directly-editable
 
-  private CustomList  keywordsList;
+  private CustomList keywordsList;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public Keywords() { init(); }
-
-
+  public Keywords() {
+    init();
+  }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
@@ -86,27 +88,29 @@ public class Keywords extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the keywords.</b> A data package may have multiple keywords "
-      +"associated with it to enable "
-      +"easy searching and categorizing.  In addition, one to many keywords "
-      +"may be associated with a &quot;keyword thesaurus&quot;, which allows "
-      +"one to associate a data package with an authoritative definition. "
-      +"Thesauri may also be used for internal categorization.", 3);
+        "<b>Enter the keywords.</b> A data package may have multiple keywords "
+        + "associated with it to enable "
+        +
+        "easy searching and categorizing.  In addition, one to many keywords "
+        +
+        "may be associated with a &quot;keyword thesaurus&quot;, which allows "
+        + "one to associate a data package with an authoritative definition. "
+        + "Thesauri may also be used for internal categorization.", 3);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     keywordsList = WidgetFactory.makeList(colNames, editors, 4,
-                                    true, true, false, true, true, true );
+                                          true, true, false, true, true, true);
 
-    keywordsList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
-                             WizardSettings.PADDING, 2*WizardSettings.PADDING));
+    keywordsList.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
+                                           WizardSettings.PADDING,
+                                           2 * WizardSettings.PADDING));
 
     vbox.add(keywordsList);
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     initActions();
   }
-
 
   /**
    *  Custom actions to be initialized for list buttons
@@ -115,37 +119,38 @@ public class Keywords extends AbstractUIPage{
 
     keywordsList.setCustomAddAction(
 
-      new AbstractAction() {
+        new AbstractAction() {
 
-        public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nKeywords: CustomAddAction called");
-          showNewKeywordsDialog();
-        }
-      });
+        Log.debug(45, "\nKeywords: CustomAddAction called");
+        showNewKeywordsDialog();
+      }
+    });
 
     keywordsList.setCustomEditAction(
 
-      new AbstractAction() {
+        new AbstractAction() {
 
-        public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nKeywords: CustomEditAction called");
-          showEditKeywordsDialog();
-        }
-      });
+        Log.debug(45, "\nKeywords: CustomEditAction called");
+        showEditKeywordsDialog();
+      }
+    });
   }
 
   private void showNewKeywordsDialog() {
 
-    KeywordsPage keywordsPage = (KeywordsPage)WizardPageLibrary.getPage(DataPackageWizardInterface.KEYWORDS_PAGE);
+    KeywordsPage keywordsPage = (KeywordsPage) WizardPageLibrary.getPage(
+        DataPackageWizardInterface.KEYWORDS_PAGE);
     ModalDialog wpd = new ModalDialog(keywordsPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = keywordsPage.getSurrogate();
       newRow.add(keywordsPage);
@@ -153,38 +158,35 @@ public class Keywords extends AbstractUIPage{
     }
   }
 
-
   private void showEditKeywordsDialog() {
 
     List selRowList = keywordsList.getSelectedRowList();
 
-    if (selRowList==null || selRowList.size() < 3) return;
+    if (selRowList == null || selRowList.size() < 3) {
+      return;
+    }
 
     Object dialogObj = selRowList.get(2);
 
-    if (dialogObj==null || !(dialogObj instanceof KeywordsPage)) return;
-    KeywordsPage editKeywordsPage = (KeywordsPage)dialogObj;
+    if (dialogObj == null || ! (dialogObj instanceof KeywordsPage)) {
+      return;
+    }
+    KeywordsPage editKeywordsPage = (KeywordsPage) dialogObj;
 
     ModalDialog wpd = new ModalDialog(editKeywordsPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
-
-    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = editKeywordsPage.getSurrogate();
       newRow.add(editKeywordsPage);
       keywordsList.replaceSelectedRow(newRow);
     }
   }
-
-
-
-
-
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -193,13 +195,11 @@ public class Keywords extends AbstractUIPage{
 
   }
 
-
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
   public void onRewindAction() {}
-
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
@@ -214,7 +214,6 @@ public class Keywords extends AbstractUIPage{
     return true;
   }
 
-
   /**
    *  gets the Map object that contains all the key/value paired
    *  settings for this particular wizard page
@@ -224,42 +223,49 @@ public class Keywords extends AbstractUIPage{
    */
 
   private OrderedMap returnMap = new OrderedMap();
+
   //
   public OrderedMap getPageData() {
 
     returnMap.clear();
 
     int index = 1;
-    Object  nextRowObj      = null;
-    List    nextRowList     = null;
-    Object  nextUserObject  = null;
-    OrderedMap  nextNVPMap  = null;
+    Object nextRowObj = null;
+    List nextRowList = null;
+    Object nextUserObject = null;
+    OrderedMap nextNVPMap = null;
     KeywordsPage nextKeywordsPage = null;
 
     List rowLists = keywordsList.getListOfRowLists();
 
-    if (rowLists==null) return null;
+    if (rowLists != null && rowLists.isEmpty()) {
+      return null;
+    }
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       nextRowObj = it.next();
-      if (nextRowObj==null) continue;
+      if (nextRowObj == null) {
+        continue;
+      }
 
-      nextRowList = (List)nextRowObj;
+      nextRowList = (List) nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size()<3)     continue;
+      if (nextRowList.size() < 3) {
+        continue;
+      }
       nextUserObject = nextRowList.get(2);
-      if (nextUserObject==null) continue;
+      if (nextUserObject == null) {
+        continue;
+      }
 
-      nextKeywordsPage = (KeywordsPage)nextUserObject;
+      nextKeywordsPage = (KeywordsPage) nextUserObject;
 
       nextNVPMap = nextKeywordsPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
   }
-
-
 
   /**
    * gets the Map object that contains all the key/value paired settings for
@@ -273,9 +279,8 @@ public class Keywords extends AbstractUIPage{
   public OrderedMap getPageData(String rootXPath) {
 
     throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+        "getPageData(String rootXPath) Method Not Implemented");
   }
-
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -285,21 +290,27 @@ public class Keywords extends AbstractUIPage{
    *
    *  @return   the unique ID String for this wizard page
    */
-  public String getPageID() { return pageID; }
+  public String getPageID() {
+    return pageID;
+  }
 
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
-  public String getTitle() { return title; }
+  public String getTitle() {
+    return title;
+  }
 
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
-  public String getSubtitle() { return subtitle; }
+  public String getSubtitle() {
+    return subtitle;
+  }
 
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
@@ -308,16 +319,18 @@ public class Keywords extends AbstractUIPage{
    *  @return the String ID of the page that the user will see next, or null if
    *  this is te last page
    */
-  public String getNextPageID() { return nextPageID; }
+  public String getNextPageID() {
+    return nextPageID;
+  }
 
   /**
-     *  Returns the serial number of the page
-     *
-     *  @return the serial number of the page
-     */
-  public String getPageNumber() { return pageNumber; }
+   *  Returns the serial number of the page
+   *
+   *  @return the serial number of the page
+   */
+  public String getPageNumber() {
+    return pageNumber;
+  }
 
-  public void setPageData(OrderedMap data, String _xPathRoot) { }
+  public void setPageData(OrderedMap data, String _xPathRoot) {}
 }
-
-
