@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-18 23:07:58 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2001-06-19 22:00:18 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1056,7 +1056,9 @@ public class PackageWizard extends javax.swing.JFrame
           }
           else
           {
-            parentPanel.add(new JScrollPane(tempPanel));
+            JScrollPane scrollpane = new JScrollPane(tempPanel);
+            scrollpane.setBorder(null);
+            parentPanel.add(new JScrollPane(scrollpane));
             //add the panel in a scroll pane in case it's too big.
           }
         }
@@ -1144,8 +1146,14 @@ public class PackageWizard extends javax.swing.JFrame
                     newtextfield.setText(defaultText);
                   }
                   JPanel layoutpanel = new JPanel();
-                  layoutpanel.add(newLabel);
-                  layoutpanel.add(newtextfield);
+                  BorderLayout bl = new BorderLayout();
+                  bl.setHgap(10);
+                  bl.setVgap(10);
+                  newtextfield.setAlignmentY(0);
+                  newtextfield.setAlignmentX(0);
+                  layoutpanel.setLayout(bl);
+                  layoutpanel.add(newLabel, BorderLayout.WEST);
+                  layoutpanel.add(newtextfield, BorderLayout.EAST);
                   //Dimension d = parentPanel2.getSize();
                   //parentPanel2.setSize(d.width, d.height + 10);
                   //System.out.println("new size: " + d.width + "x" + d.height);
@@ -1188,21 +1196,38 @@ public class PackageWizard extends javax.swing.JFrame
         }
         
         //set the user defined size of the text field
+        
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
         
         JPanel layoutpanel = new JPanel();
+        Dimension d;
+        if(parentPanel.getPreferredSize().getWidth() > 0)
+        {
+          d = new Dimension((int)parentPanel.getPreferredSize().getWidth(), 
+                            20);
+        }
+        else
+        {
+          d = new Dimension(20,20);
+        }
+        //layoutpanel.setPreferredSize(d);
+        BorderLayout bl = new BorderLayout();
+        bl.setHgap(10);
+        bl.setVgap(10);
+        layoutpanel.setLayout(bl);
+        
         if(button != null)
         { //if this item is repeatable add the button
           
           button.add(label);
-          layoutpanel.add(button);
+          layoutpanel.add(button, BorderLayout.WEST);
           //parentPanel.add(button);
         }
         else
         { //add just the label if it is not repeatable
           //parentPanel.add(label);
-          layoutpanel.add(label);
+          layoutpanel.add(label, BorderLayout.WEST);
         }
         
         if(tempElement.attributes.containsKey("visible"))
@@ -1214,10 +1239,11 @@ public class PackageWizard extends javax.swing.JFrame
             textfield.setVisible(false);
           }
         }
-       
+        textfield.setAlignmentY(0);
+        textfield.setAlignmentX(0);
         textfield.setText(defaultText);
         //parentPanel.add(textfield);
-        layoutpanel.add(textfield);
+        layoutpanel.add(textfield, BorderLayout.EAST);
         parentPanel.add(layoutpanel);
       }
       else if(tempElement.name.equals("combobox"))
@@ -1304,8 +1330,14 @@ public class PackageWizard extends javax.swing.JFrame
                   }
                   
                   JPanel layoutpanel = new JPanel();
-                  layoutpanel.add(newLabel);
-                  layoutpanel.add(newcombofield);
+                  BorderLayout bl = new BorderLayout();
+                  bl.setHgap(10);
+                  bl.setVgap(10);
+                  newcombofield.setAlignmentY(0);
+                  newcombofield.setAlignmentX(0);
+                  layoutpanel.setLayout(bl);
+                  layoutpanel.add(newLabel, BorderLayout.WEST);
+                  layoutpanel.add(newcombofield, BorderLayout.EAST);
                   parentPanel2.add(layoutpanel, insertindex + 1);
                   //parentPanel.add(newLabel, insertindex + 1);
                   //parentPanel.add(newcombofield, insertindex + 2);
@@ -1338,18 +1370,24 @@ public class PackageWizard extends javax.swing.JFrame
         }
         
         JPanel layoutpanel = new JPanel();
+        BorderLayout bl = new BorderLayout();
+        bl.setHgap(10);
+        bl.setVgap(10);
+        combofield.setAlignmentY(0);
+        combofield.setAlignmentX(0);
+        layoutpanel.setLayout(bl);
         
         if(button != null)
         {
           
           button.add(label);
-          layoutpanel.add(button);
+          layoutpanel.add(button, BorderLayout.WEST);
           //parentPanel.add(button);
         }
         else
         {
           //parentPanel.add(label);
-          layoutpanel.add(label);
+          layoutpanel.add(label, BorderLayout.WEST);
         }
         
         if(tempElement.attributes.containsKey("defaulttext"))
@@ -1358,7 +1396,7 @@ public class PackageWizard extends javax.swing.JFrame
                                tempElement.attributes.get("defaulttext");
           combofield.setSelectedItem(defaultText);
         }
-        layoutpanel.add(combofield);
+        layoutpanel.add(combofield, BorderLayout.EAST);
         parentPanel.add(layoutpanel);
         //parentPanel.add(combofield);
       }

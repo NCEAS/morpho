@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.19 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-19 22:00:18 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.io.*;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.KeyEvent;
 import com.symantec.itools.javax.swing.JButtonGroupPanel;
 import com.symantec.itools.javax.swing.borders.LineBorder;
 import com.symantec.itools.javax.swing.icons.ImageIcon;
@@ -128,6 +129,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     JPanel1.setBounds(0,255,315,35);
     connectButton.setText("Connect");
     connectButton.setActionCommand("OK");
+    connectButton.setMnemonic(KeyEvent.VK_ENTER);
     JPanel1.add(connectButton);
     connectButton.setBounds(65,5,81,25);
     DisconnectButton.setText("Disconnect");
@@ -137,6 +139,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     DisconnectButton.setBounds(151,5,99,25);
     CancelButton.setText("Cancel");
     CancelButton.setActionCommand("Cancel");
+    CancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
     CancelButton.setEnabled(true);
     JPanel1.add(CancelButton);
     CancelButton.setBounds(151,5,99,25);
@@ -146,6 +149,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     //}}
   
     //{{REGISTER_LISTENERS
+    this.addKeyListener(keyPressListener);
     SymAction lSymAction = new SymAction();
     connectButton.addActionListener(lSymAction);
     DisconnectButton.addActionListener(lSymAction);
@@ -216,11 +220,38 @@ public class ConnectionFrame extends javax.swing.JDialog
   javax.swing.JButton connectButton = new javax.swing.JButton();
   javax.swing.JButton DisconnectButton = new javax.swing.JButton();
   javax.swing.JButton CancelButton = new javax.swing.JButton();
+  KeyPressActionListener keyPressListener = new KeyPressActionListener();
   //}}
 
   //{{DECLARE_MENUS
   //}}
 
+  /**
+   * Listens for key events coming from the dialog.  responds to escape and 
+   * enter buttons.  escape toggles the cancel button and enter toggles the
+   * connect button
+   */
+  class KeyPressActionListener extends java.awt.event.KeyAdapter
+  {
+    public KeyPressActionListener()
+    {
+      
+    }
+    
+    public void keyPressed(KeyEvent e)
+    {
+      if(e.getKeyCode() == KeyEvent.VK_ENTER)
+      {
+        java.awt.event.ActionEvent event = new 
+                             java.awt.event.ActionEvent(connectButton, 0, "OK");
+        connectButton_actionPerformed(event);
+      }
+      else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+      {
+        dispose();
+      }
+    }
+  }
 
   /**
    * Listener used to detect button presses
@@ -229,6 +260,7 @@ public class ConnectionFrame extends javax.swing.JDialog
   {
     public void actionPerformed(java.awt.event.ActionEvent event)
     {
+      
       Object object = event.getSource();
       if (object == connectButton)
       {

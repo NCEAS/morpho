@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-18 23:07:58 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-06-19 22:00:18 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(620, 550);
+    setSize(640, 550);
   }
   
   public PackageWizardShell(ClientFramework cf)
@@ -111,7 +111,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(620, 550);
+    setSize(640, 550);
   }
   
   private void initComponents()
@@ -129,8 +129,6 @@ public class PackageWizardShell extends javax.swing.JFrame
       File xmlfile = new File(wizardFile);
       FileReader xml = new FileReader(xmlfile);
       pwsp = new PackageWizardShellParser(xml, saxparser);
-      //System.out.println("frames: " + pwsp.getFrames().toString());
-      //System.out.println("mainframe: " + pwsp.getMainFrame());
     }
     catch(Exception e)
     {
@@ -161,13 +159,12 @@ public class PackageWizardShell extends javax.swing.JFrame
       frames.insertElementAt(temphash, 0);
     }
     triplesFile = pwsp.getMainFrame();
-    System.out.println("frames: " + frames.toString());
     for(int i=0; i<frames.size(); i++)
     {
       Hashtable frame = (Hashtable)frames.elementAt(i);
       JPanel framePanel = new JPanel();
       WizardFrameContainer wfc = new WizardFrameContainer(framePanel);
-      System.out.println("frame: " + frame.toString());
+
       if(frame.containsKey("name"))
       {
         wfc.description = (String)descriptions.get((String)frame.get("name"));
