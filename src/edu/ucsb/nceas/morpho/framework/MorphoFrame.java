@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-15 07:45:43 $'
- * '$Revision: 1.1.2.7 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-15 15:45:37 $'
+ * '$Revision: 1.1.2.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,7 +97,8 @@ public class MorphoFrame extends JFrame
         //toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.X_AXIS));
         morphoToolbar = new JToolBar();
-        morphoToolbar.add(Box.createVerticalStrut(toolbarHeight));
+//        morphoToolbar.add(Box.createVerticalStrut(toolbarHeight));
+        morphoToolbar.add(Box.createRigidArea(new Dimension(1,toolbarHeight)));
         //toolbarPanel.add(morphoToolbar);
 
         Action cutItemAction = new AbstractAction("Cut") {
