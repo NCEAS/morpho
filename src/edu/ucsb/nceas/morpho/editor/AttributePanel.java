@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-02 23:05:02 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-03-03 19:25:37 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ public class AttributePanel extends JPanel
             parent_msnode.removeChild(msnode);
           }
           XMLUtilities.getXPathMapAsDOMTree(awp.getPageData(), domNode);
-//          Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+//          Log.debug(12, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
           JTree domtree = new DOMTree(doc);
           DefaultMutableTreeNode root = (DefaultMutableTreeNode)domtree.getModel().getRoot();
           parent = (DefaultMutableTreeNode)fnode.getParent();
@@ -154,7 +154,7 @@ public class AttributePanel extends JPanel
     });
     controlsPanel.add(saveButton);
     controlsPanel.add(cancelButton);
-    jp.add(controlsPanel);
+//    jp.add(controlsPanel);
     
     jp.setVisible(true);
     
@@ -162,6 +162,7 @@ public class AttributePanel extends JPanel
 
   void saveAction() {
 //    if (true) return;
+   if (awp2.onAdvanceAction()) {
     final Document doc = domNode.getOwnerDocument();
     try{
     Log.debug(12, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
@@ -197,6 +198,7 @@ public class AttributePanel extends JPanel
         Log.debug(5, "Problem in AttributePanel: "+e);
         e.printStackTrace();
     }
+   }
   }
   
 	class SymFocus extends java.awt.event.FocusAdapter
@@ -212,11 +214,11 @@ public class AttributePanel extends JPanel
 		}
     
     public void focusGained(java.awt.event.FocusEvent event) {
-//      DocFrame df = DocFrame.currentDocFrameInstance;
-//      df.setTreeValueFlag(false);
-//			TreePath tp = new TreePath(node.getPath());
-//			df.tree.setSelectionPath(tp);
-//			df.tree.scrollPathToVisible(tp);
+      DocFrame df = DocFrame.currentDocFrameInstance;
+      df.setTreeValueFlag(false);
+			TreePath tp = new TreePath(node.getPath());
+			df.tree.setSelectionPath(tp);
+			df.tree.scrollPathToVisible(tp);
     }
 
 	}
