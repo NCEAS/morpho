@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-22 02:59:46 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-12-22 23:14:38 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public class ImportWizard extends     AbstractWizardPage
 
   private boolean importCompletedOK = false;
 
-  private JFrame importWizFrame;
+  private TextImportWizardEml2 importWizFrame;
 
   public ImportWizard(WizardContainerFrame mainWizFrame) {
 
@@ -87,10 +87,17 @@ public class ImportWizard extends     AbstractWizardPage
 
       importWizFrame = new TextImportWizardEml2(dataFileObj, this);
 
-      importWizFrame.setBounds(mainWizFrame.getX(),     mainWizFrame.getY(),
-                               mainWizFrame.getWidth(), mainWizFrame.getHeight());
-      importWizFrame.setVisible(true);
-      mainWizFrame.setVisible(false);
+      importWizFrame.setBounds(mainWizFrame.getX(), mainWizFrame.getY(),
+                           mainWizFrame.getWidth(), mainWizFrame.getHeight());
+
+      if (importWizFrame.startImport()) {
+
+        importWizFrame.setVisible(true);
+        mainWizFrame.setVisible(false);
+
+      } else {
+        importCanceled();
+      }
 
     } else {
       // if import has completed OK, we don't need to be on this

@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-22 02:59:46 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-12-22 23:14:38 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,20 +202,41 @@ public class TextImportWizardEml2 extends JFrame {
 
     this.listener = listener;
     this.dataFile = file;
+    this.shortFilename = dataFile.getName();
 
     setDistribution(distribution);
 
     initControls();
 
     registerListeners();
-
-    //assign the filename and get the wizard started.
-    if (file != null) {
-      shortFilename = file.getName();
-      startImport(file);
-    }
   }
 
+
+  /**
+   * Start the import. Returns true if file parsed OK, otherwise returns false
+   *
+   * @return boolean true if file parsed OK, otherwise returns false
+   */
+  public boolean startImport() {
+
+    TableNameTextField.setText(shortFilename);
+
+    if (parsefile(dataFile)) {
+
+      createLinesTable();
+      stepNumber = 1;
+      hasReturnedFromScreen2 = false;
+      StepNumberLabel.setText("Step #" + stepNumber);
+      CardLayout cl = (CardLayout)ControlsPanel.getLayout();
+      cl.show(ControlsPanel, "card" + stepNumber);
+      BackButton.setEnabled(false);
+      FinishButton.setEnabled(false);
+      NextButton.setEnabled(true);
+      setVisible(true);
+      return true;
+    }
+    return false;
+  }
 
   private void initControls() {
     //{{INIT_CONTROLS
@@ -247,8 +268,8 @@ public class TextImportWizardEml2 extends JFrame {
     Step1FullControlsPanel.setLayout(new BorderLayout());
 	//new GridLayout(8, 1, 0, 10));
     ControlsPanel.add("card1", Step1FullControlsPanel);
-	
-    
+
+
     JLabel Step1_titleLabel = new JLabel("Text Import Wizard");
     Step1_titleLabel.setFont(WizardSettings.TITLE_FONT);
     Step1_titleLabel.setForeground(WizardSettings.TITLE_TEXT_COLOR);
@@ -309,7 +330,7 @@ public class TextImportWizardEml2 extends JFrame {
     /*
     Step1_DelimiterChoicePanel.setAlignmentX(0.0F);
     Step1_DelimiterChoicePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    
+
     Step1ControlsPanel.add(Step1_DelimiterChoicePanel);
     Step1_DelimiterLabel.setText(
         "Choose the method used to separate fields on each line of your data");
@@ -358,7 +379,7 @@ public class TextImportWizardEml2 extends JFrame {
     ColumnLabelsCheckBox.setSelected(false);
     StartingLinePanel.add(ColumnLabelsCheckBox);
     ColumnLabelsCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-    
+
     Step1FullControlsPanel.add(Step1ControlsPanel, BorderLayout.CENTER);
 
     //-------------------------------------------------------
@@ -379,7 +400,7 @@ public class TextImportWizardEml2 extends JFrame {
 
     Step2FullControlsPanel.setLayout(new BorderLayout());
     Step2FullControlsPanel.add(Step2_topPanel, BorderLayout.NORTH);
-    
+
     Step2ControlsPanel.setLayout(new BoxLayout(Step2ControlsPanel, BoxLayout.Y_AXIS));
     ControlsPanel.add("card2", Step2FullControlsPanel);
     Step2FullControlsPanel.setVisible(false);
@@ -569,20 +590,6 @@ public class TextImportWizardEml2 extends JFrame {
     }
   }
 
-  public void startImport(File file) {
-    TableNameTextField.setText(shortFilename);
-    parsefile(file);
-    createLinesTable();
-    stepNumber = 1;
-    hasReturnedFromScreen2 = false;
-    StepNumberLabel.setText("Step #" + stepNumber);
-    CardLayout cl = (CardLayout)ControlsPanel.getLayout();
-    cl.show(ControlsPanel, "card" + stepNumber);
-    BackButton.setEnabled(false);
-    FinishButton.setEnabled(false);
-    NextButton.setEnabled(true);
-    setVisible(true);
-  }
 
 
   public static void main(String args[]) {
@@ -623,10 +630,12 @@ public class TextImportWizardEml2 extends JFrame {
    * parses data input file into an array of lines (Strings)
    *
    * @param f the file name
+   * @return boolean true if parse was successful (textfile only); false if
+   *   parse unsuccessful (non-text file)
    */
-  private void parsefile(File f) {
-    int i;
-    String temp;
+  private boolean parsefile(File f) {
+
+    String temp = null;
 
     if (isTextFile(f)) {
 
@@ -668,11 +677,17 @@ public class TextImportWizardEml2 extends JFrame {
       //convert list to the "lines" array:
       lines = (String[])(linesList.toArray(new String[nlines]));
       guessDelimiter();
+
+      return true;
+
     } else {
+
       JOptionPane.showMessageDialog(this, "Selected File is NOT a text file!",
                                     "Message",
                                     JOptionPane.INFORMATION_MESSAGE, null);
       CancelButton_actionPerformed(null);
+
+      return false;
     }
   }
 
@@ -914,7 +929,7 @@ public class TextImportWizardEml2 extends JFrame {
       FinishButton.setEnabled(true);
     if (stepNumber < 3)BackButton.setEnabled(true);
 
-    if(fullColumnModel != null)	
+    if(fullColumnModel != null)
       	StepNumberLabel.setText("Step #" + stepNumber + " of " + (fullColumnModel.getColumnCount() + 2));
     else
     	StepNumberLabel.setText("Step #" + stepNumber);
@@ -1537,12 +1552,11 @@ public class TextImportWizardEml2 extends JFrame {
 
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event) {
 
+    this.setVisible(false);
+    this.dispose();
     if (listener != null) {
       listener.importCanceled();
     }
-    this.setVisible(false);
-    this.dispose();
-
   }
 
 
