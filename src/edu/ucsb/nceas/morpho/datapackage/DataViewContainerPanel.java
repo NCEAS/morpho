@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-25 01:02:17 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2002-10-26 08:05:52 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                         EditingCompleteListener
 {
 
-  private static final String XSL_SEL_ATTRIB_PARAM = "selected_attribute";
+  //XSL Transformer parameter name passed to MetaDisplay for setting params 
+  //used during transforms (i.e. NAME part of NAME/VALUE pair)
+  //XSL_SEL_ATTRIB_PARAM_NAME used to identify selected attribute(s) when   
+  //clicking on col headers:
+  private static final String XSL_SEL_ATTRIB_PARAM_NAME = "selected_attribute";
+
+  
   /**
    * The DataPackage that contains the data
    */
@@ -604,8 +610,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     String identifier = dp.getAttributeFileId(id);
     try
     {
-      //send identifier and index, separated by a space.  
-      meta.useTransformerProperty(XSL_SEL_ATTRIB_PARAM,
+      meta.useTransformerProperty(XSL_SEL_ATTRIB_PARAM_NAME,
                                   String.valueOf(selectedColIndex));
       meta.display(identifier);
                         
@@ -621,7 +626,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       setDataViewer(k);
     }
   }
-
+  
   
   private MetaDisplayInterface getMetaDisplayInstance()
   {
