@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-05 19:01:38 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-06-05 23:06:05 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   private Container contentPane;
   private JPanel descriptionPanel;
   private JTextArea descriptionText;
+  private JLabel descriptionLabel;
   private JPanel wizardFrame;
   private JButton previous;
   private JButton next;
@@ -130,6 +131,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     String description = "Enter your contact information and " +
                           "basic data package information here.";
     changeDescription(description);
+    System.out.println("changing description 5");
     
     wizardFrame = (JPanel)mainWizardFrame.getComponent(1);
     //get the location of the main wizard frame config file, parse it
@@ -221,6 +223,8 @@ public class PackageWizardShell extends javax.swing.JFrame
           frameWizardIndex++;
           frameWizards.add(frameWizardIndex, wfc);
           wizardFrame.add(wfc.panel);
+          changeDescription(wfc.description);
+          System.out.println("changing description 1");
           //show();
           wizardFrame.validate();
           wizardFrame.repaint();
@@ -256,7 +260,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                         "your new package to a Metacat server.  Check the " +
                         "box if you would like your new package opened in " + 
                         "the package editor.");
-      
+      System.out.println("changing description 2");
       Vector listContent = new Vector();
       for(int i=0; i<frameWizards.size(); i++)
       {
@@ -269,7 +273,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           name = "Data";
         }
-        String item = name + " (" + id + ")";
+        String item = name;
         listContent.add(item);
       }
       
@@ -278,7 +282,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                                              "editor?", true);
       saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", true);
       publicAccessCheckBox = new JCheckBox("Package should be publicly " +
-                                           "readable?", true);
+                                           "readable (on Metacat)?", true);
       //saveToMetacatButton = new JButton("Save To Metacat");
       JList idlist = new JList(listContent);
       idlist.setPreferredSize(new Dimension(100,100));
@@ -317,6 +321,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                                          frameWizards.elementAt(frameWizardIndex);
       activeContainer = nextContainer;
       changeDescription(nextContainer.description);
+      System.out.println("changing description 3");
       wizardFrame.add(nextContainer.panel);
       
       if(frameWizardIndex > 0)
@@ -350,6 +355,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                                        frameWizards.elementAt(frameWizardIndex);
     activeContainer = nextContainer;
     changeDescription(nextContainer.description);
+    System.out.println("changing description 4");
     wizardFrame.add(nextContainer.panel);
     
     if(frameWizardIndex == 0)
@@ -357,7 +363,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       previous.setVisible(false);
     }
     
-    if(frameWizardIndex == frameWizards.size()-2)
+    if(frameWizardIndex == frameWizards.size()-1)
     {
       next.setText("Next >>");
     }
@@ -546,6 +552,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       //save the package to metacat here
       System.out.println("saving the package to metacat (not really)");
       /*
+      ????????????This doesn't work and I don't know why???????????????????
       for(int i=0; i<packageFiles.size(); i++)
       {
         MetacatDataStore mds = new MetacatDataStore(framework);
@@ -680,13 +687,19 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   private void changeDescription(String desc)
   {
-    descriptionText = new JTextArea(desc);
+    /*descriptionText = new JTextArea(desc);
     descriptionText.setPreferredSize(new Dimension(580,40));
     descriptionText.setLineWrap(true);
     descriptionText.setWrapStyleWord(true);
     descriptionText.setEnabled(false);
     descriptionPanel.removeAll();
-    descriptionPanel.add(new JScrollPane(descriptionText));
+    descriptionPanel.add(new JScrollPane(descriptionText));*/
+    descriptionLabel = new JLabel("<html><p>" + desc + "</p></html>");
+    descriptionLabel.setPreferredSize(new Dimension(580,50));
+    descriptionPanel.removeAll();
+    descriptionPanel.add(descriptionLabel);
+    descriptionPanel.validate();
+    descriptionPanel.repaint();
   }
   
   /**
