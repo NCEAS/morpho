@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-30 19:58:13 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-01-23 21:46:05 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,7 +247,7 @@ public class SaveDialog extends JDialog
 	{
     Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
-    
+    boolean result = true;
     if (!location.equals("")) {
       // if location is "", then id should be current
       // otherwise try to increment version
@@ -264,17 +264,17 @@ public class SaveDialog extends JDialog
       }
     }
     if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
-      adp.serialize(AbstractDataPackage.BOTH);
+      result = adp.serialize(AbstractDataPackage.BOTH);
       adp.setLocation(AbstractDataPackage.BOTH);
       adp.serializeData();
     }
     else if (localLoc.isSelected()) {
-      adp.serialize(AbstractDataPackage.LOCAL);
+      result = adp.serialize(AbstractDataPackage.LOCAL);
       adp.setLocation(AbstractDataPackage.LOCAL);
       adp.serializeData();
     }
     else if (networkLoc.isSelected()) {
-      adp.serialize(AbstractDataPackage.METACAT);
+      result = adp.serialize(AbstractDataPackage.METACAT);
       adp.setLocation(AbstractDataPackage.METACAT);
       adp.serializeData();
     }
@@ -285,6 +285,8 @@ public class SaveDialog extends JDialog
 	this.setVisible(false);
 	this.dispose();
 
+  if (!result) return;
+  
   MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
   morphoFrame.setVisible(false);
     

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-23 17:31:09 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-01-23 21:46:05 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,18 +67,30 @@ public  class EML200DataPackage extends AbstractDataPackage
       if((location.equals(AbstractDataPackage.METACAT))||
                  (location.equals(AbstractDataPackage.BOTH))) {
         MetacatDataStore mds = new MetacatDataStore(morpho);
-      try{
-        if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
-           (this.getLocation().equals(AbstractDataPackage.BOTH)))
-        {
-          mds.saveFile(getAccessionNumber(),sr);
-        } // originally came from metacat; thus update
-        else
-        {
-          mds.newFile(getAccessionNumber(),sr);
-        }// not currently on metacat
-
-      } catch(Exception e) {
+        String temp1 = getAccessionNumber();
+        int lastperiod = temp1.lastIndexOf(".");
+        if (lastperiod>-1) {
+          temp1 = temp1.substring(lastperiod+1, temp1.length());
+        }
+        boolean updateFlag = !(temp1.equals("1")); 
+        try{
+          if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
+              (this.getLocation().equals(AbstractDataPackage.BOTH)) ||
+              updateFlag
+              )
+          {
+            mds.saveFile(getAccessionNumber(),sr);
+          } // originally came from metacat; thus update
+          else
+          {
+            mds.newFile(getAccessionNumber(),sr);
+          }// not currently on metacat
+        } catch (MetacatUploadException mue) {
+          Log.debug(5,"MetacatUpload Exeption in EML200DataPackage!\n"
+                       +mue.getMessage());
+          resflag = false;
+          return resflag;
+        } catch(Exception e) {
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
           resflag = false;
           return resflag;
@@ -212,8 +224,14 @@ public  class EML200DataPackage extends AbstractDataPackage
   public AbstractDataPackage upload(String id) throws MetacatUploadException {
     Morpho morpho = Morpho.thisStaticInstance;
     load(AbstractDataPackage.LOCAL, id, morpho);
-    serialize(AbstractDataPackage.METACAT);
-    serializeData();
+    boolean res = serialize(AbstractDataPackage.METACAT);
+    if (!res) {
+        throw new MetacatUploadException("error in uploading!");
+    }
+    boolean res1 = serializeData();
+    if (!res) {
+        throw new MetacatUploadException("error in uploading!");
+    }
     return this;
   }
 
