@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-07 01:23:42 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-08 03:29:22 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,11 +55,14 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -68,10 +72,15 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.Source;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.Result;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 
 public class AccessPage
     extends AbstractUIPage {
@@ -86,23 +95,19 @@ public class AccessPage
   protected JTree accessTree;
   private JPanel bottomPanel;
   private JPanel topPanel;
-  protected JPanel accessControlPanel;
-  protected JPanel currentPanel;
   private JPanel middlePanel;
-  private JPanel dnPanel;
   protected JTextField dnField;
   private JButton refreshButton;
-  private JLabel dnLabel;
+  private JLabel clickLabel;
+  private JLabel introLabel;
   private JLabel accessDesc1, accessDesc2;
   private String userAccessType = new String("  Allow");
   protected String userAccess = new String("Read");
   protected JComboBox typeComboBox;
   protected JComboBox accessComboBox;
-  protected JScrollPane accessTreePane;
-  private boolean readFile = true;
-  protected AccessProgressThread pbt = null;
+  private JScrollPane accessTreePane;
+  private AccessProgressThread pbt = null;
   public JTreeTable treeTable = null;
-
   private final String[] accessTypeText = new String[] {
       "  Allow",
       "  Deny"
@@ -134,13 +139,13 @@ public class AccessPage
     topPanel = new JPanel();
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
     topPanel.add(WidgetFactory.makeHalfSpacer());
-    topPanel.setBorder(new javax.swing.border.EmptyBorder(0,
-        4 * WizardSettings.PADDING, 0, 0));
+    topPanel.setBorder(new javax.swing.border.EmptyBorder(
+        0, 4 * WizardSettings.PADDING, 0, 0));
     JLabel desc = WidgetFactory.makeHTMLLabel(
         "<font size=\"4\"><b>Define Access:</b></font>", 1);
     topPanel.add(desc);
     topPanel.add(WidgetFactory.makeHalfSpacer());
-    JLabel introLabel = WidgetFactory.makeHTMLLabel(
+    introLabel = WidgetFactory.makeHTMLLabel(
         "<b>Select a user or group from the list below:</b>", 1);
     topPanel.add(introLabel);
     this.add(topPanel, BorderLayout.NORTH);
@@ -150,16 +155,6 @@ public class AccessPage
     // Define the middle panel which has the  accessTree ....
     middlePanel = new JPanel();
     middlePanel.setLayout(new BorderLayout());
-
-    accessControlPanel = getAccessControlPanel(true);
-
-    if ( (accessTreePane = getAccessTreePane(Access.accessTreeNode)) != null) {
-      middlePanel.add(accessTreePane, BorderLayout.CENTER);
-
-      middlePanel.add(accessControlPanel, BorderLayout.SOUTH);
-      typeComboBox.setEnabled(true);
-      accessComboBox.setEnabled(true);
-    }
 
     middlePanel.setBorder(new javax.swing.border.EmptyBorder(
         5 * WizardSettings.PADDING, 6 * WizardSettings.PADDING,
@@ -180,11 +175,14 @@ public class AccessPage
         + "<li>Read & Write: Able to view and modify data package.</li>"
         + "<li>Read, Write & Change Permissions: Able to view and modify "
         + "datapackage, and modify access permissions.</li>"
-        + "<li>All: Able to do everything.</li></ul>"
-        + "<i>You can do multiple selections using shift-click and "
-        + "ctrl-click.</i>", 6);
+        + "<li>All: Able to do everything.</li></ul>", 5);
+
+    clickLabel = WidgetFactory.makeHTMLLabel(
+        "<i>You can do multiple selections using shift-click and "
+        + "ctrl-click.</i>", 1);
 
     accessDefinitionPanel.add(accessDefinitionLabel, BorderLayout.CENTER);
+    accessDefinitionPanel.add(clickLabel, BorderLayout.SOUTH);
     bottomPanel.add(accessDefinitionPanel);
     bottomPanel.setBorder(new javax.swing.border.EmptyBorder(0,
         4 * WizardSettings.PADDING,
@@ -192,16 +190,312 @@ public class AccessPage
 
     this.add(bottomPanel, BorderLayout.SOUTH);
 
-    if (accessTreePane == null) {
+    if (Access.accessTreeNode == null) {
       /**
        * accessTreePane is null... so we have to generate Access.accessTreeNode
        */
-      pbt = new AccessProgressThread(this);
-      pbt.start();
+      generateAccessTree();
+    } else {
+      displayTree(Access.accessTreeNode);
     }
   }
 
-  private JPanel getAccessControlPanel(boolean withRefreshLink) {
+  /**
+   * Generates Access.accessTreeNode ... the algorithm followed is the following:
+   * 0. show a progress bar with text at the bottom showing which step
+   *    is being performed and a cancel button .. if cancel button is pressed,
+   *    thing on step 4 are performed....
+   * 1. try to read accesslist.xml and find if there is an entry for current
+   *    metacat server name...
+   * 2. if there is an entry generate the dom for the <result></result> and
+   *    send it domToTreeNode() funtion.
+   * 3. If not, contact metacat server with action=getprincipals...
+   * 4. If metacat server is not available, set appropriate text in middlePanel,
+   *    show dnPanel, make other required changes in panel and
+   *    close the progressbar
+   * 5. If metacat server is available, get the result... store it in file..
+   *    if it in the file already then delete the old entry and write
+   *    the file again...
+   *
+   *  @return
+   */
+  protected void generateAccessTree() {
+    Document doc = null;
+    if ( (doc = getDocumentFromFile()) == null) {
+      pbt = new AccessProgressThread(this);
+      pbt.start();
+
+      getDocumentFromMetacat();
+    } else {
+      DefaultMutableTreeNode treeNode = getTreeFromDocument(doc);
+      displayTree(treeNode);
+    }
+  }
+
+  private Document getDocumentFromFile() {
+
+    ConfigXML accessXML = null;
+
+    try {
+      accessXML = new ConfigXML("./lib/accesslist.xml");
+
+      Document doc = accessXML.getDocument();
+      NodeList nl = doc.getElementsByTagName("server");
+      if (nl.getLength() < 1) {
+        Log.debug(45, "No server nodes found in accesslist.xml");
+        return null;
+      }
+
+      Node cn = null;
+      Node serverNode = null;
+
+      for (int i = 0; i < nl.getLength(); i++) {
+        cn = nl.item(i).getFirstChild(); // assume 1st child is text node
+        if ( (cn != null) && (cn.getNodeType() == Node.TEXT_NODE) &&
+            cn.getNodeValue().compareTo(
+            Morpho.thisStaticInstance.getMetacatURLString()) == 0) {
+          serverNode = cn;
+          continue;
+        }
+      }
+
+      if (serverNode == null) {
+        Log.debug(45,
+            "No server nodes found with current metacat server name " +
+            "found in accesslist.xml");
+        return null;
+      }
+
+      serverNode = serverNode.getParentNode().getParentNode();
+
+      Node deepClone = serverNode.cloneNode(true);
+      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+      Document tempDoc = impl.createDocument("", "principals", null);
+      Node importedClone = tempDoc.importNode(deepClone, true);
+      Node tempRoot = tempDoc.getDocumentElement();
+      tempRoot.appendChild(importedClone);
+
+      try {
+        // Prepare the DOM document for writing
+        Source source = new DOMSource(tempDoc);
+
+        // Prepare the output file
+        File file = new File("./lib/ls.xml");
+        Result result = new StreamResult(file);
+
+        // Write the DOM document to the file
+        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        xformer.transform(source, result);
+
+      }
+      catch (TransformerConfigurationException e) {
+      }
+      catch (TransformerException e) {
+      }
+      return tempDoc;
+    }
+    catch (FileNotFoundException e) {
+      Log.debug(10, "accesslist.xml not found in /lib/ directory.");
+      Log.debug(45, "Exception in AccessPage class in getDocumentfromFile(). "
+          + "Exception:" + e.getClass());
+      Log.debug(45, e.getMessage());
+      return null;
+    }
+    catch (Exception e) {
+      Log.debug(45, "Exception in AccessPage class in getDocumentfromFile(). "
+          + "Exception:" + e.getClass());
+      Log.debug(45, e.getMessage());
+      return null;
+    }
+  }
+
+  private void getDocumentFromMetacat() {
+    pbt.setProgressBarString(
+        "Contacting Metacat Server for Access information....");
+
+    QueryMetacatThread cm = new QueryMetacatThread(this);
+    cm.start();
+
+    return;
+  }
+
+  private void insertDocInAccessList(Document doc) {
+
+    ConfigXML accessXML = null;
+
+    try {
+      accessXML = new ConfigXML("./lib/accesslist.xml");
+      Document doc1 = accessXML.getDocument();
+      NodeList nl = doc1.getElementsByTagName("server");
+      if (nl.getLength() < 1) {
+        Log.debug(45, "No server nodes found in accesslist.xml. "
+            + "Inserting new entry for current document in the document");
+        insertNewEntryInAccessList(accessXML, doc);
+        return;
+      }
+
+      Node cn = null;
+      Node serverNode = null;
+
+      for (int i = 0; i < nl.getLength(); i++) {
+        cn = nl.item(i).getFirstChild(); // assume 1st child is text node
+        if ( (cn != null) && (cn.getNodeType() == Node.TEXT_NODE) &&
+            cn.getNodeValue().compareTo(
+            Morpho.thisStaticInstance.getMetacatURLString()) == 0) {
+          serverNode = cn;
+          continue;
+        }
+      }
+
+      if (serverNode == null) {
+        insertNewEntryInAccessList(accessXML, doc);
+      } else {
+        modifyOldEntryInAccessList(accessXML, doc);
+      }
+
+    }
+    catch (Exception e) {
+      Log.debug(10,
+          "Exception in AccessPage class in insertDocInAccessList(). "
+          + "Exception:" + e.getClass());
+      Log.debug(10, e.getMessage());
+    }
+  }
+
+  private void insertNewEntryInAccessList(ConfigXML accessXML, Document doc) {
+    Log.debug(10, "Inserting a new entry in accesslist.xml");
+
+    Document doc1 = accessXML.getDocument();
+    Node node = doc1.getFirstChild();
+
+    Node result = doc1.createElement("result");
+    Node server = doc1.createElement("server");
+    Node serverName = doc1.createTextNode(
+        Morpho.thisStaticInstance.getMetacatURLString());
+
+    Node principalNode = doc.getDocumentElement();
+
+    if (principalNode.getNodeName().compareTo("principals") != 0) {
+      return;
+    }
+
+    Node deepClone = principalNode.cloneNode(true);
+    Node principals = doc1.importNode(deepClone, true);
+
+    server.appendChild(serverName);
+    result.appendChild(server);
+    result.appendChild(principals);
+    node.appendChild(result);
+
+    accessXML.save();
+  }
+
+  private void modifyOldEntryInAccessList(ConfigXML accessXML, Document doc) {
+
+    Log.debug(10, "Modifying an old entry in accesslist.xml");
+
+    Document doc1 = accessXML.getDocument();
+
+    Node node = doc1.getFirstChild();
+
+    Node result = doc1.createElement("result");
+    Node server = doc1.createElement("server");
+    Node serverName = doc1.createTextNode(
+        Morpho.thisStaticInstance.getMetacatURLString());
+
+    Node principalNode = doc.getDocumentElement();
+
+    if (principalNode.getNodeName().compareTo("principals") != 0) {
+      return;
+    }
+
+    NodeList nl = doc1.getElementsByTagName("server");
+
+    for (int count = 0; count < nl.getLength(); count++) {
+      Node tempNode = nl.item(count);
+      String value = tempNode.getFirstChild().getNodeValue();
+      if (value != null && value.compareTo(
+          Morpho.thisStaticInstance.getMetacatURLString()) == 0) {
+        Node listNode = tempNode.getParentNode();
+        listNode.getParentNode().removeChild(listNode);
+      }
+    }
+
+    Node deepClone = principalNode.cloneNode(true);
+    Node principals = doc1.importNode(deepClone, true);
+
+    server.appendChild(serverName);
+    result.appendChild(server);
+    result.appendChild(principals);
+    node.appendChild(result);
+
+    accessXML.save();
+
+  }
+
+  protected void parseInputStream(InputStream queryResult) {
+    pbt.setProgressBarString(
+        "Creating Access tree from information received....");
+
+    try {
+      DocumentBuilder parser = Morpho.createDomParser();
+      Document doc = parser.parse(queryResult);
+
+      DefaultMutableTreeNode treeNode = getTreeFromDocument(doc);
+      insertDocInAccessList(doc);
+      displayTree(treeNode);
+    }
+    catch (Exception e) {
+      Log.debug(10, "Unable to parse the reply from Metacat server.");
+      Log.debug(45, "Exception in AccessPage class in parseInputStream()."
+          + "Exception: " + e.getClass());
+      Log.debug(45, e.getMessage());
+      //// File is not on harddisk and data is not avaiable from
+      //// display a dn field to be entered by user...
+      if (Access.accessTreeNode == null) {
+        displayDNPanel();
+      } else {
+        Log.debug(10,
+            "Retrieving access information from Metacat server failed. "
+            + "Displaying the old access information.");
+        displayTree(Access.accessTreeNode);
+      }
+    }
+
+    pbt.exitProgressBarThread();
+
+    // save doc to the file
+
+  }
+
+  protected void displayDNPanel() {
+    JPanel panel = null;
+
+    panel = WidgetFactory.makePanel(1);
+    JLabel dnLabel = WidgetFactory.makeLabel("Distinguished Name", false);
+    panel.add(dnLabel);
+    dnField = WidgetFactory.makeOneLineTextField();
+    dnField.setBackground(java.awt.Color.white);
+    panel.add(dnField);
+    panel.setBorder(new javax.swing.border.EmptyBorder(
+        0, WizardSettings.PADDING,
+        0, 4 * WizardSettings.PADDING));
+
+    middlePanel.add(panel, BorderLayout.CENTER);
+    middlePanel.add(getAccessControlPanel(true, "Retrieve the user list ..."),
+        BorderLayout.SOUTH);
+    clickLabel.setVisible(false);
+    introLabel.setText("Specify a Distinguished Name in text field below:");
+    middlePanel.revalidate();
+    middlePanel.repaint();
+
+    typeComboBox.setEnabled(true);
+    accessComboBox.setEnabled(true);
+
+  }
+
+  private JPanel getAccessControlPanel(boolean withRefreshLink,
+      String refreshString) {
 
     accessDesc1 = WidgetFactory.makeLabel(" selected user(s)", false);
     accessDesc2 = WidgetFactory.makeLabel("   access", false);
@@ -262,27 +556,29 @@ public class AccessPage
     if (withRefreshLink) {
       final AccessPage accessP = this;
       GUIAction refreshListAction
-          = new GUIAction("Refresh the user list...",
-          null,
+          = new GUIAction(refreshString, null,
           new Command() {
 
         public void execute(ActionEvent ae) {
           Log.debug(45, "got action performed command from Referesh button");
 
-          if (accessTreePane != null) {
-            middlePanel.remove(accessTreePane);
-            middlePanel.revalidate();
-            middlePanel.repaint();
-          }
           refreshButton.setEnabled(false);
           typeComboBox.setEnabled(false);
           accessComboBox.setEnabled(false);
 
+          middlePanel.removeAll();
+          middlePanel.revalidate();
+          middlePanel.repaint();
+
+          pbt = new AccessProgressThread(accessP);
+          pbt.start();
+
+          getDocumentFromMetacat();
           // Access.refreshTree(accessP);
         }
       });
 
-      /// define and add refresh tree....
+      /// define and add refresh tree button....
       refreshButton = new HyperlinkButton(refreshListAction);
 
       panel.add(refreshButton, BorderLayout.EAST);
@@ -292,143 +588,62 @@ public class AccessPage
   }
 
   /**
-   * Generates Access.accessTreeNode ... the algorithm followed is the following:
-   * 0. show a progress bar with text at the bottom showing which step
-   *    is being performed and a cancel button .. if cancel button is pressed,
-   *    thing on step 4 are performed....
-   * 1. try to read accesslist.xml and find if there is an entry for current
-   *    metacat server name...
-   * 2. if there is an entry generate the dom for the <result></result> and
-   *    send it domToTreeNode() funtion.
-   * 3. If not, contact metacat server with action=getprincipals...
-   * 4. If metacat server is not available, set appropriate text in middlePanel,
-   *    show dnPanel, make other required changes in panel and
-   *    close the progressbar
-   * 5. If metacat server is available, get the result... store it in file..
-   *    if it in the file already then delete the old entry and write
-   *    the file again...
-   *
-   *  @return
+   * Checks if Access.accessTreeNode is present - if present, creates a
+   * ScrollPane and sends back the scrollpane... otherwise sends back
+   * null.
    */
-  protected void generateAccessTreeNode() {
-    Log.debug(10, "Inside generate");
 
-    pbt.setProgressBarString("Trying to retieve access tree from harddisk");
+  protected void displayTree(DefaultMutableTreeNode treeNode) {
+    accessTreePane = null;
 
-    File xmlFile = new File("./lib/accesslist.xml");
-    FileInputStream from = null;
-
-    if (xmlFile.exists() && xmlFile.canWrite()) {
-      try {
-        from = new FileInputStream(xmlFile);
-        setTree(from);
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
-      finally {
-        if (from != null) {
-          try {
-            from.close();
-          }
-          catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
-      }
+    if (treeNode != null) {
+      treeTable = new JTreeTable(new AccessTreeModel(treeNode));
+      accessTreePane = new JScrollPane(treeTable);
+      accessTreePane.setPreferredSize(new java.awt.Dimension(500, 500));
     }
-    else {
-      pbt.setProgressBarString(
-          "Contacting Metacat Server for Access information....");
-
-      QueryMetacatThread cm = new QueryMetacatThread(this);
-      cm.start();
-    }
-  }
-
-  protected void setTree(InputStream queryResult) {
-
-    pbt.setProgressBarString(
-        "Creating Access tree from information received....");
-
-    DefaultMutableTreeNode treeNode = createTree(queryResult);
-
-    Access.accessTreeNode = treeNode;
-
-    accessTreePane = getAccessTreePane(treeNode);
 
     if (accessTreePane != null) {
-      typeComboBox.setEnabled(true);
-      accessComboBox.setEnabled(true);
-
       middlePanel.add(accessTreePane, BorderLayout.CENTER);
-      middlePanel.add(accessControlPanel, BorderLayout.SOUTH);
-
-      middlePanel.revalidate();
-      middlePanel.repaint();
+      middlePanel.add(getAccessControlPanel(true, "Refresh the user list..."),
+          BorderLayout.SOUTH);
     } else {
-      middlePanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
-          + " from server", true,
-          new java.awt.Dimension(220, 100)));
-
-      typeComboBox.setEnabled(true);
-      accessComboBox.setEnabled(true);
+      displayDNPanel();
     }
-    pbt.exitProgressBarThread();
+
+    middlePanel.revalidate();
+    middlePanel.repaint();
+
+    typeComboBox.setEnabled(true);
+    accessComboBox.setEnabled(true);
   }
 
-  private DefaultMutableTreeNode createTree(InputStream queryResult) {
-    Document doc = null;
-    DefaultMutableTreeNode top =
+  private DefaultMutableTreeNode getTreeFromDocument(Document doc) {
+    DefaultMutableTreeNode treeNode = null;
+
+    DefaultMutableTreeNode topNode =
         new DefaultMutableTreeNode("Access Tree                        ");
     NodeList nl = null;
-    File xmlFile = new File("./lib/accesslist.xml");
-    FileOutputStream to = null;
 
-    if (queryResult != null) {
-      DocumentBuilder parser = Morpho.createDomParser();
-      try {
-        if (xmlFile.exists() && xmlFile.canWrite()) {
-          try {
-            to = new FileOutputStream(xmlFile);
-            byte[] buffer = new byte[4096];
-            int bytes_read;
-            while ( (bytes_read = queryResult.read(buffer)) != -1) {
-              to.write(buffer, 0, bytes_read);
-            }
-          }
-          finally {
-            if (to != null) {
-              try {
-                to.close();
-              }
-              catch (Exception e) {
-                e.printStackTrace();
-              }
-            }
-          }
-          doc = parser.parse(xmlFile);
-        } else {
-          Log.debug(10, "Unable to write to accessList.xml");
-          doc = parser.parse(queryResult);
-        }
-        nl = doc.getElementsByTagName("authSystem");
-      }
-      catch (Exception e) {
-        Log.debug(10, "Exception in parsing result set from Metacat...");
-        Log.debug(10, e.toString());
-        return null;
-      }
+    if (doc != null) {
+      nl = doc.getElementsByTagName("authSystem");
 
       if (nl != null) {
-        makeTree(nl, top);
+        createSubTree(nl, topNode);
       }
-      return top;
+      treeNode = topNode;
     }
-    return null;
+
+    if (treeNode != null) {
+      Access.accessTreeNode = treeNode;
+    } else {
+      Log.debug(1, "Unable to retrieve access tree. "
+          + "The old list will be displayed again");
+    }
+
+    return Access.accessTreeNode;
   }
 
-  DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top) {
+  DefaultMutableTreeNode createSubTree(NodeList nl, DefaultMutableTreeNode top) {
     Node tempNode;
     AccessTreeNodeObject nodeObject = null;
     DefaultMutableTreeNode tempTreeNode = null;
@@ -447,7 +662,7 @@ public class AccessPage
           tempTreeNode = new DefaultMutableTreeNode();
           tempTreeNode.setUserObject(nodeObject);
 
-          tempTreeNode = makeTree(tempNode.getChildNodes(), tempTreeNode);
+          tempTreeNode = createSubTree(tempNode.getChildNodes(), tempTreeNode);
 
           top.add(tempTreeNode);
           done = true;
@@ -537,51 +752,6 @@ public class AccessPage
     return top;
   }
 
-  public void refreshTree() {
-    accessTreePane = getAccessTreePane(Access.accessTreeNode);
-    refreshButton.setEnabled(true);
-
-    if (accessTreePane != null) {
-      if (dnField.getText().trim().compareTo("") != 0) {
-        typeComboBox.setEnabled(true);
-        accessComboBox.setEnabled(true);
-      }
-
-      middlePanel.add(accessTreePane, BorderLayout.CENTER);
-      middlePanel.add(accessControlPanel, BorderLayout.SOUTH);
-      middlePanel.revalidate();
-      middlePanel.repaint();
-    } else {
-      middlePanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
-          + " from server", true,
-          new java.awt.Dimension(220, 100)));
-      dnPanel.setVisible(true);
-
-      typeComboBox.setEnabled(true);
-      accessComboBox.setEnabled(true);
-    }
-  }
-
-  /**
-   * Checks if Access.accessTreeNode is present - if present, creates a
-   * ScrollPane and sends back the scrollpane... otherwise sends back
-   * null.
-   */
-
-  protected JScrollPane getAccessTreePane(DefaultMutableTreeNode treeNode) {
-    if (treeNode != null) {
-      treeTable = new JTreeTable(new AccessTreeModel(treeNode));
-
-      JScrollPane accessTreePane = new JScrollPane(treeTable);
-      accessTreePane.setPreferredSize(new java.awt.Dimension(500, 500));
-
-      return accessTreePane;
-    }
-
-    // no accessTreenNode found....
-    return null;
-  }
-
   /**
    *  The action to be executed when the "OK" button is pressed. If no onAdvance
    *  processing is required, implementation must return boolean true.
@@ -595,9 +765,8 @@ public class AccessPage
     //   return false;
     // }
 
-    if (treeTable != null) {
+    if (dnField == null) {
       int[] i = treeTable.getSelectedRows();
-      Log.debug(10, i.length + "");
       for (int j = 0; j < i.length; j++) {
         Object o = treeTable.getValueAt(i[j], 0);
         if (o instanceof AccessTreeNodeObject) {
@@ -607,6 +776,10 @@ public class AccessPage
             return true;
           }
         }
+      }
+    } else {
+      if (dnField.getText().trim().compareTo("") != 0) {
+        return true;
       }
     }
     return false;
@@ -878,12 +1051,12 @@ class AccessProgressThread
 
     // wait for accessPage to show....
     while (!accessPage.isShowing()) {
-      try {
-        this.sleep(10);
-      }
-      catch (java.lang.InterruptedException e) {
-        this.exitProgressBarThread();
-      }
+//      try {
+      //      this.sleep(10);
+      //  }
+      // catch (java.lang.InterruptedException e) {
+      //   this.exitProgressBarThread();
+      // }
     }
 
     // get the ModalDialog which parent of accessPage shown...
@@ -896,10 +1069,7 @@ class AccessProgressThread
 
     // progress bar will be showing soon ... the access tree node can
     // now be contacted
-    accessPage.generateAccessTreeNode();
-
     super.run();
-
   }
 }
 
@@ -930,13 +1100,23 @@ class QueryMetacatThread
       queryResult = null;
       //if (morpho.isConnected()) {
       queryResult = morpho.getMetacatInputStream(prop);
-      accessPage.setTree(queryResult);
+      accessPage.parseInputStream(queryResult);
       // }
     }
     catch (Exception w) {
       Log.debug(10, "Error in retrieving User list from Metacat server.");
       Log.debug(45, w.getMessage());
-      w.printStackTrace();
+
+      if (Access.accessTreeNode == null) {
+        accessPage.displayDNPanel();
+      } else {
+        Log.debug(10,
+            "Retrieving access information from Metacat server failed. "
+            + "Using the old access tree.");
+        accessPage.displayTree(Access.accessTreeNode);
+      }
+      //// File is not on harddisk and data is not avaiable from
+      //// display a dn field to be entered by user...
     }
   }
 
