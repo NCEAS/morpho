@@ -9,9 +9,10 @@ PUBLIC "-//ecoinformatics.org//eml-access-2.0.0beta4//EN" "eml-access-2.0.0.beta
 SYSTEM "eml-access.dtd" "eml-access-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "-//NCEAS//eml-software//EN" "eml-software-2.0.0.beta4e.dtd"
+PUBLIC "-//NCEAS//eml-software//EN" "eml-software-2.0.1.beta4e.dtd"
 PUBLIC "-//ecoinformatics.org//eml-software-2.0.0beta4//EN" "eml-software-2.0.0.beta4e.dtd"
-SYSTEM "eml-software.dtd" "eml-software-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-software-2.0.1beta4//EN" "eml-software-2.0.1.beta4e.dtd"
+SYSTEM "eml-software.dtd" "eml-software-2.0.1.beta4e.dtd"
 
 OVERRIDE YES
 PUBLIC "-//NCEAS//eml-entity//EN" "eml-entity-2.0.0.beta4e.dtd"
