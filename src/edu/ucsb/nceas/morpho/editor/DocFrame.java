@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-08 23:49:00 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-06-09 17:35:04 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,7 @@ public class DocFrame extends javax.swing.JFrame
     StringBuffer sb; 
     StringBuffer start;
     Stack tempStack;
+    boolean textnode = false;
     
     Catalog myCatalog;
     String dtdfile;
@@ -750,7 +751,7 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	    FileWriter out = new FileWriter(outputFile);
       tempStack = new Stack();
 	    start = new StringBuffer();
-	    write_loop(node);
+	    write_loop(node, 0);
 	    String str1 = start.toString();
 	    
 	    String doctype = "";
@@ -776,7 +777,7 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	String writeXMLString (DefaultMutableTreeNode node) {
       tempStack = new Stack();
 	    start = new StringBuffer();
-	    write_loop(node);
+	    write_loop(node, 0);
 	    String str1 = start.toString();
 	    
 	    String doctype = "";
@@ -797,7 +798,9 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	/*
 	 * recursive routine to create xml output
 	 */
-	void write_loop (DefaultMutableTreeNode node) {
+	void write_loop (DefaultMutableTreeNode node, int indent) {
+	  String indentString = "";
+	  while (indentString.length()<indent) { indentString = indentString + " ";}
 	  String name;
 	  String end;
 	  NodeInfo ni = (NodeInfo)node.getUserObject();
@@ -806,19 +809,19 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	    // completely ignore NOT SELECTED nodes AND their children
 	    if (!name.equals("(CHOICE)")) {
 	      // ignore (CHOICE) nodes but process their children
-	      start.append("<"+name+" ");  
+	      start.append("\n"+indentString+"<"+name);  
 	    
 	      Enumeration keys = (ni.attr).keys();
 	      while (keys.hasMoreElements()) {
 	        String str = (String)(keys.nextElement());
 	        String val = (String)((ni.attr).get(str));
-	        start.append(str+"=\""+val+"\" ");
+	        start.append(" "+str+"=\""+val+"\"");
 	      }
-	      start.append(">\n");
+	      start.append(">");
 	      if (ni.getPCValue()!=null) {   // text node info
-	        start.append(ni.getPCValue());
+	        start.append(normalize(ni.getPCValue()));
 	      }
-	      end = "</"+name+">\n";
+	      end = "</"+name+">";
 	      tempStack.push(end);
 	    }
 	  //}
@@ -827,14 +830,21 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
 	    NodeInfo ni1 = (NodeInfo)nd.getUserObject();
 	    if (ni1.name.equals("#PCDATA")) {
-	      start.append(ni1.getPCValue());
+	      start.append(normalize(ni1.getPCValue()));
+	      textnode = true;
 	    }
 	    else {
-	      write_loop(nd);
+	      write_loop(nd, indent+2);
 	    }
 	  }
 	    if (!name.equals("(CHOICE)")) {
-	      start.append((String)(tempStack.pop()));
+	      if (textnode) {
+	        start.append((String)(tempStack.pop()));  
+	      }
+	      else {
+	        start.append("\n"+indentString+(String)(tempStack.pop()));
+	      }
+	      textnode = false;
 	    }
 	  }
 	}
@@ -1035,6 +1045,53 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 		  }
 			 
 	}
+	
+   /** Normalizes the given string. */
+    private String normalize(String s) {
+        StringBuffer str = new StringBuffer();
+
+        int len = (s != null) ? s.length() : 0;
+        for (int i = 0; i < len; i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '<': {
+                    str.append("&lt;");
+                    break;
+                }
+                case '>': {
+                    str.append("&gt;");
+                    break;
+                }
+                case '&': {
+                    str.append("&amp;");
+                    break;
+                }
+                case '"': {
+                    str.append("&quot;");
+                    break;
+                }
+                case '\r':
+		case '\t':
+                case '\n': {
+                    if (false) {
+                        str.append("&#");
+                        str.append(Integer.toString(ch));
+                        str.append(';');
+                        break;
+                    }
+                    // else, default append char
+			break;
+                }
+                default: {
+                    str.append(ch);
+                }
+            }
+        }
+
+        return str.toString();
+
+    } // normalize(String):String
+	
 
 	class SymWindow extends java.awt.event.WindowAdapter
 	{

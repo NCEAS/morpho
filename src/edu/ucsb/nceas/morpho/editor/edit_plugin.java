@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-08 21:47:14 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-09 17:35:03 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 		//{{INIT_CONTROLS
 		setJMenuBar(JMenuBar1);
 		setTitle("edit_plugin");
-		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(488,309);
 		setVisible(false);
@@ -89,9 +89,8 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 		JScrollPane1.setOpaque(true);
 		JPanel1.add(BorderLayout.CENTER, JScrollPane1);
 		JTextArea1.setText("Use the \'Open\' menu to open an XML document in this window. Then click on the \'Display\' button to edit that XML document.");
-		JTextArea1.setLineWrap(true);
-		JTextArea1.setWrapStyleWord(true);
 		JScrollPane1.getViewport().add(JTextArea1);
+		JTextArea1.setFont(new Font("MonoSpaced", Font.PLAIN, 12));
 		JTextArea1.setBounds(0,0,485,281);
 		//$$ JMenuBar1.move(168,312);
 		fileMenu.setText("File");
@@ -402,7 +401,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 
 public void editingCompleted(String xmlString, String id, String location) {
   JTextArea1.setText(xmlString);
-  JOptionPane.showMessageDialog(null, "Editing Completed!!!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+//  JOptionPane.showMessageDialog(null, "Editing Completed!!!", "Alert", JOptionPane.INFORMATION_MESSAGE);
 }
 
 // --------------------------
