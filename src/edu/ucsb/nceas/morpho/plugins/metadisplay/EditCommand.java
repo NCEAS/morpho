@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-08 19:39:17 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-02-20 21:33:47 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.io.IOException;
 import  edu.ucsb.nceas.morpho.util.Log;
 import  edu.ucsb.nceas.morpho.util.IOUtil;
 import  edu.ucsb.nceas.morpho.util.Command;
+import  edu.ucsb.nceas.morpho.util.XMLTransformer;
 
 import  edu.ucsb.nceas.morpho.framework.EditorInterface;
 import  edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
@@ -100,6 +101,22 @@ public class EditCommand implements Command {
         String location = null;
 //DFH        editor.openEditor(buffer.toString(), id, location, controller);
         Document thisdoc = controller.getFactory().openAsDom(id);
-        editor.openEditor(thisdoc, id, location, controller);
+
+        String entIndS = controller.getTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP);
+        int entIndex = 0;
+        if (entIndS!=null) {
+          entIndex = ((new Integer(entIndS)).intValue()) -1; // is '1' based, so shbtract 1
+        } 
+        String attrIndS = controller.getTransformerProperty(XMLTransformer.SELECTED_ATTRIBS_XSLPROP);
+        int attrIndex = 0;
+        if (attrIndS!=null) {
+          attrIndex = ((new Integer(attrIndS)).intValue()) -1; // is '1' based, so shbtract 1
+        } 
+        if(entIndex>0) {
+          editor.openEditor(thisdoc, id, location, controller, 
+                            "dataTable["+entIndex+"]/attribute-", attrIndex);
+        } else {
+          editor.openEditor(thisdoc, id, location, controller, "dattribute-", attrIndex);
+        }
     }
 }

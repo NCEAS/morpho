@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-20 16:32:50 $'
- * '$Revision: 1.151 $'
+ *     '$Date: 2004-02-20 21:32:50 $'
+ * '$Revision: 1.152 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1014,10 +1014,12 @@ public class DocFrame extends javax.swing.JFrame
    *  rather than a string. Document is simply used to get the
    *  root node
    */
-  public void initDoc(Morpho morpho, Document doc, String id, String loc) 
+  public void initDoc(Morpho morpho, Document doc, String id, String loc,
+                             String initNodeName, int initNodeNumber) 
   {
     Node docnode = doc.getDocumentElement() ;
     initDoc(morpho, docnode, id, loc);
+    findNode(rootNode, initNodeName, initNodeNumber);
   }
   
   /**
@@ -1075,29 +1077,70 @@ public class DocFrame extends javax.swing.JFrame
   }
 
   /**
-   *  Searches the tree for a node that contains the 'name'
+   *  Searches the tree for the 'n'th node that contains the 'name',
+   *  starting at 'treeNode'
    *  Then selects the node found
    */
-   private void findNode(DefaultMutableTreeNode treeNode, String name) {
-    Enumeration enum = treeNode.preorderEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
-      NodeInfo ni = (NodeInfo)nd.getUserObject();
-      String nodeName = (ni.getName()).trim();
-      if (nodeName.indexOf(name)>-1) {
-        Object[] path = nd.getPath();
-        TreePath tp = new TreePath(path);
-        tree.scrollPathToVisible(tp);
-        tree.makeVisible(tp);
-        tree.setSelectionPath(tp);
-        return;
-      }
-    }
-    // no node was found
-    String msg = "Sorry, could not locate a node containing '"+name+"'";
-    JOptionPane.showMessageDialog(this, msg, "alert", JOptionPane.INFORMATION_MESSAGE);
+   private void findNode(DefaultMutableTreeNode treeNode, String name, int n) {
+     DefaultMutableTreeNode startNode = treeNode;
+     String newName = name;
+     // handle the special case of the 'name' being a simple xpath
+     int k = name.indexOf("/");
+     int j = 0;
+     String numstart = "";
+     if (k>-1) {
+       String start = name.substring(0, k);
+       String remainder = name.substring(k+1, name.length());
+       int kk = start.indexOf("[");
+       if (kk> -1) {
+         int kkk = start.indexOf("]");
+         numstart = start.substring(kk+1, kkk);
+         start = start.substring(0,kk);
+         try{
+           j = (new Integer(numstart)).intValue();
+         }
+         catch (Exception w) {};
+       }
+       int cnt2 = -1;
+       Enumeration enum2 = startNode.preorderEnumeration();
+       while (enum2.hasMoreElements()) {
+         DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum2.nextElement();
+         NodeInfo ni = (NodeInfo)nd.getUserObject();
+         String nodeName = (ni.getName()).trim();
+         if (nodeName.indexOf(start)>-1) {
+           cnt2++;
+           if (cnt2 == j) {
+             startNode = nd;
+             newName = remainder;
+           }
+         }
+       }
+     }
+     int cnt = -1;
+     Enumeration enum = startNode.preorderEnumeration();
+     while (enum.hasMoreElements()) {
+       DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+       NodeInfo ni = (NodeInfo)nd.getUserObject();
+       String nodeName = (ni.getName()).trim();
+       if (nodeName.indexOf(newName)>-1) {
+         cnt++;
+         if (cnt == n) {
+           Object[] path = nd.getPath();
+           TreePath tp = new TreePath(path);
+           tree.scrollPathToVisible(tp);
+           tree.makeVisible(tp);
+           tree.setSelectionPath(tp);
+           return;
+         }
+       }
+     }
+     // no node was found
+     String msg = "Sorry, could not locate a node containing '"+name+"'";
+     JOptionPane.showMessageDialog(this, msg, "alert", JOptionPane.INFORMATION_MESSAGE);
   }     
-  
+ 
+
+ 
   /**
    * Creates a new DefaultMutableTreeNode with the special
    * NodeInfo userObject used here
@@ -3309,7 +3352,7 @@ Log.debug(20, xmlout);
         tree.setSelectionRow(0);
       }
       else {
-        findNode(rootNode, sel);
+        findNode(rootNode, sel, 0);
       }
   }
 
