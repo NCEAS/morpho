@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.68 2002-11-21 01:35:20 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.69 2002-11-25 17:26:55 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -87,6 +87,8 @@
                 value="${libdir}/jhall.jar" />
       <property name="jnet"
                 value="${libdir}/jnet.jar" />
+      <property name="help"
+	        value="${libdir}/holidays.jar" />
       <property name="httpclient"
                 value="${libdir}/httpclient.jar" />
       <property name="lmap"
@@ -309,7 +311,7 @@
 
    <target name="morpho" depends="install">
      <java classname="edu.ucsb.nceas.morpho.Morpho"
-           classpath="${cpath}:${morpho}"
+           classpath="${cpath}:${morpho}:${help}"
            fork="yes" >
        <arg value="-Xmx128m"/>
        <arg value="-Xss1m"/>
