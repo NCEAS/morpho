@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-27 16:47:06 $'
- * '$Revision: 1.60 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-12-04 20:27:20 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -456,10 +456,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         //wizard
         int entitynum = frameWizardIndex + 1;
         int attributenum = frameWizardIndex + 2;
+        int physicalnum = frameWizardIndex + 3;
         WizardFrameContainer wfc1 = (WizardFrameContainer)frameWizards.elementAt(entitynum);
         WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(attributenum);
+        WizardFrameContainer wfc3 = (WizardFrameContainer)frameWizards.elementAt(physicalnum);
         PackageWizard pw1 = wfc1.wizard;
         PackageWizard pw2 = wfc2.wizard;
+        PackageWizard pw3 = wfc3.wizard;
         
         String fileTextName = null;
         if (!fileTextField.getText().equals("")) fileTextName = fileTextField.getText(); 
@@ -468,6 +471,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         // XML text it generates
         tiw.setEntityWizard(pw1);
         tiw.setAttributeWizard(pw2);
+        tiw.setPhysicalWizard(pw3);
         tiw.setVisible(true);
         this.setVisible(false);
         return;
