@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-23 20:49:27 $'
- * '$Revision: 1.44 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 02:56:05 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,176 +25,175 @@
  */
 
 
-/*
-  ----- A description of how this class is to be used-----
-
-  New DataPackage class for Morpho for handling EML2 and other metadata content standards
-
- It is desired to create a new class for representing 'generic' dataPackage objects, with
- EML2 being the immediate goal. It is desired, however, to avoid being too specific so
- that changes in standards can easily be configured without major code re-writes. This
- memo attempts to describe the current design.
-
-
-
- A simplified class diagram is shown below for discussion purposes.
-
-
- MetadataObject  <----------------  AbstractDataPackage  <---------- EML200DataPackage
- <---------- NBIIBioDataPackage       <----DataPackageFactory
- <---------- EML2Beta6DataPackage
-
-
- The base class is 'MetadataObject'. Basically, this class just a DOM structure containing
-  the metadata for a defined schema (the 'schemaGrammer'(i.e. doctype) is also a member
-  variable for the class) . There is also a member called the 'xpathKeyMap'. This is
-  supposed to be a reference to a set of mappings between generic concepts (e.g. the
-  package name) and the specific DOM xpath to the node in the specific DOM that contains
-  the actual concept. This map is stored in a properties file of some type (e.g. an
-  XML file) that is read at run time. Thus, minor changes in a schema can be handled
-  by just updating this properties file rather than changing the code.
-
- Now, the 'AbstractDataPackage' class extends the very general purpose 'MetadataObject'
- class and is meant to be used specifically for representing dataPackages of different
- types. The class is call 'Abstract...' because there are certain actions (like
- 'load' and 'serialize' that a specific to the schemaGrammar. Thus the
- 'AbstractDataPackage' class is extended by various schema specific classes such
- as the three shown above (i.e. EML200DataPackage, NBIIBioDataPackage, and
- EML2Beta6DataPackage). Note that the xpathKeyMap used is different for each of
- these specific package classes.
-
- Finally, the DataPackageFactory class is used to create a new datapackage object f
- rom a supplied DOM or from a docID of a document on metacat or stored locally.
- A factory method is needed so that it can determine just what schema is desired
- and which of the specific package classes should be used to create the object.
- Once created, however, methods in the AbstractDataPackage that are generic can
- be used to get information stored in the package.
-
-
- xpathKeyMap
-  Consider now how the xpathKeyMap works. An example in XML format for eml200
- is reproduced below. It should be noted that this example is organized as
- a set of 'contextNode' elements. The 'package' contextNode corresponds to
- the root of datapackage DOM while other contextNodes, like 'entity' refer
- to some node in the dom other than the root. The contextNode serves as the
- point of departure for XPath searches. The concept allows for relative
- searche - e.g. one can give paths relative to the entity context node.
-
-  An example of xpathKeyMap use is the problem of finding the "accessionNumber"
- for a generic metadata schema. The document below has an 'accessionNumber'
- element under the 'package' contextNode. It's value for eml2 is seen to be
- '/eml:eml/@packageId'. ONe first looks up this value in the xpathKeyMap and
- then applies the xpath to the eml2 dataPackage dom. We have thus added a level
- of indirection where specific paths are looked up in the xpathKeyMap using
- generic path names.
-
-  As another example, one would look at the 'name' element under the 'entity'
- contextNode to get an entity name. In this case the relative path is simply
- 'entityName'. But how does one get the actual entity contextNode where the
- relative path starts? In this example, the higher level 'entities' element
- under the package contextNode is an xpath that will return a NodeSet of
- entity nodes in the eml2 dom. Each of these nodes is a starting point for the
- entity information (i.e. the root of the entity subtree).
-
-
- <?xml version="1.0"?>
- <xpathKeyMap schemaGrammar="eml2.0.0">
- <!-- element name is key, element value is Xpath for this grammar -->
- <contextNode name="package">
-   <entities>/eml:eml/dataset/dataTable</entities>
-   <title>/eml:eml/dataset/title</title>
-   <author>/eml:eml/dataset/creator/individualName/surName</author>
-   <accessionNumber>/eml:eml/@packageId</accessionNumber>
-   <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
- </contextNode>
- <!-- Xpaths for entity values are defined as relative to top node of entity -->
- <contextNode name="entity">
-   <name>entityName</name>
-   <numRecords>numberOfRecords</numRecords>
-   <entityDescription>entityDescription</entityDescription >
-   <physical>physical</physical>
-   <attributes>attributeList/attribute</attributes>
- </contextNode>
- <contextNode name="attribute">
-   <name>attributeName</name>
-   <dataType>storageType</dataType>
-   <isText>count(measurementScale/nominal|measurementScale/ordinal)!=0</isText>
-   <isDate>count(measurementScale/datetime)!=0</isDate>
- </contextNode>
- <contextNode name="physical">
-   <name>objectName</name>
-   <fieldDelimiter>dataFormat/textFormat/simpleDelimited/fieldDelimiter</fieldDelimiter>
-   <numberHeaderLines>dataFormat/textFormat/numHeaderLines</numberHeaderLines>
-   <size>size</size>
-   <format>dataFormat/externallyDefinedFormat/formatName</format>
-   <isText>count(dataFormat/textFormat)!=0</isText>
-   <distribution>distribution</distribution>
- </contextNode>
- <contextNode name="distribution">
-   <isOnline>count(online/url)!=0</isOnline>
-   <url>online/url</url>
-   <isInline>count(inline)!=0</isInline>
-   <inline>inline</inline>
- </contextNode>
- </xpathKeyMap>
-
- */
-
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.IOUtil;
-import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.query.LocalQuery;
-
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.*;
-import org.apache.xpath.NodeSet;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import org.apache.xpath.objects.XObject;
-
-import edu.ucsb.nceas.utilities.*;
-
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
+import edu.ucsb.nceas.morpho.util.IOUtil;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import java.io.*;
-import java.util.Vector;
-import javax.swing.*;
-import java.io.FileInputStream;
+import javax.swing.JOptionPane;
+
+import org.apache.xpath.XPathAPI;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 
 /**
- * class that represents a data package. This class is abstract. Specific datapackages
- * e.g. eml2, beta6., etc extend this abstact class
+ * <p>class that represents a data package. This class is abstract. Specific datapackages
+ * e.g. eml2, beta6., etc extend this abstact class</p>
  *
- * actually, only the load and serialize methods are abstract.
+ * <p>actually, only the load and serialize methods are abstract.
  * A number of other concrete utlity methods are included in this class.
  * Note that this class extends the MetadataObject class. The essense of
  * this class is thus the DOM metadataNode (which contains references to all the Nodes
  * in the DOM and the metadataPathNode. The metadataPathNode references an XML structure
  * which maps generic DataPackage information to specific paths for the grammar being
  * considered. Thus, handling changes in the grammar of eml2, for example, should just
- * require one to create a new map from generic nodes to the new specific ones.
+ * require one to create a new map from generic nodes to the new specific ones.</p>
+ *
+ *   ----- A description of how this class is to be used-----
+ *
+ *   <p>New DataPackage class for Morpho for handling EML2 and other metadata content standards</p>
+ *
+ * <p>It is desired to create a new class for representing 'generic' dataPackage objects, with
+ *  EML2 being the immediate goal. It is desired, however, to avoid being too specific so
+ *  that changes in standards can easily be configured without major code re-writes. This
+ *  memo attempts to describe the current design.</p>
+ *
+ *
+ *
+ *  <p>A simplified class diagram is shown below for discussion purposes.</p>
+ *
+ * <pre>
+ *  MetadataObject  <----------------  AbstractDataPackage  <---------- EML200DataPackage
+ *  <---------- NBIIBioDataPackage       <----DataPackageFactory
+ *  <---------- EML2Beta6DataPackage
+ * </pre>
+ *
+ *  <p>The base class is 'MetadataObject'. Basically, this class just a DOM structure containing
+ *   the metadata for a defined schema (the 'schemaGrammer'(i.e. doctype) is also a member
+ *   variable for the class) . There is also a member called the 'xpathKeyMap'. This is
+ *   supposed to be a reference to a set of mappings between generic concepts (e.g. the
+ *   package name) and the specific DOM xpath to the node in the specific DOM that contains
+ *   the actual concept. This map is stored in a properties file of some type (e.g. an
+ *   XML file) that is read at run time. Thus, minor changes in a schema can be handled
+ *   by just updating this properties file rather than changing the code.</p>
+ *
+ *  <p>Now, the 'AbstractDataPackage' class extends the very general purpose 'MetadataObject'
+ *  class and is meant to be used specifically for representing dataPackages of different
+ *  types. The class is call 'Abstract...' because there are certain actions (like
+ *  'load' and 'serialize' that a specific to the schemaGrammar. Thus the
+ *  'AbstractDataPackage' class is extended by various schema specific classes such
+ *  as the three shown above (i.e. EML200DataPackage, NBIIBioDataPackage, and
+ *  EML2Beta6DataPackage). Note that the xpathKeyMap used is different for each of
+ *  these specific package classes.</p>
+ *
+ *  <p>Finally, the DataPackageFactory class is used to create a new datapackage object f
+ *  rom a supplied DOM or from a docID of a document on metacat or stored locally.
+ *  A factory method is needed so that it can determine just what schema is desired
+ *  and which of the specific package classes should be used to create the object.
+ *  Once created, however, methods in the AbstractDataPackage that are generic can
+ *  be used to get information stored in the package.</p>
+ *
+ *
+ *  <p>xpathKeyMap</p>
+ *   <p>Consider now how the xpathKeyMap works. An example in XML format for eml200
+ *  is reproduced below. It should be noted that this example is organized as
+ *  a set of 'contextNode' elements. The 'package' contextNode corresponds to
+ *  the root of datapackage DOM while other contextNodes, like 'entity' refer
+ *  to some node in the dom other than the root. The contextNode serves as the
+ *  point of departure for XPath searches. The concept allows for relative
+ *  searche - e.g. one can give paths relative to the entity context node.</p>
+ *
+ *   <p>An example of xpathKeyMap use is the problem of finding the "accessionNumber"
+ *  for a generic metadata schema. The document below has an 'accessionNumber'
+ *  element under the 'package' contextNode. It's value for eml2 is seen to be
+ *  '/eml:eml/@packageId'. ONe first looks up this value in the xpathKeyMap and
+ *  then applies the xpath to the eml2 dataPackage dom. We have thus added a level
+ *  of indirection where specific paths are looked up in the xpathKeyMap using
+ *  generic path names.</p>
+ *
+ *   <p>As another example, one would look at the 'name' element under the 'entity'
+ *  contextNode to get an entity name. In this case the relative path is simply
+ *  'entityName'. But how does one get the actual entity contextNode where the
+ *  relative path starts? In this example, the higher level 'entities' element
+ *  under the package contextNode is an xpath that will return a NodeSet of
+ *  entity nodes in the eml2 dom. Each of these nodes is a starting point for the
+ *  entity information (i.e. the root of the entity subtree).</p>
+ * <pre>
+ *  <code>
+ *  &lt;?xml version="1.0"?&gt;
+ *  &lt;xpathKeyMap schemaGrammar="eml2.0.0"&gt;
+ *  &lt;!-- element name is key, element value is Xpath for this grammar --&gt;
+ *  &lt;contextNode name="package"&gt;
+ *    &lt;entities&gt;/eml:eml/dataset/dataTable&lt;/entities&gt;
+ *    &lt;title&gt;/eml:eml/dataset/title&lt;/title&gt;
+ *    &lt;author&gt;/eml:eml/dataset/creator/individualName/surName&lt;/author&gt;
+ *    &lt;accessionNumber&gt;/eml:eml/@packageId&lt;/accessionNumber&gt;
+ *    &lt;keywords&gt;/eml:eml/dataset/keywordSet/keyword&lt;/keywords&gt;
+ *  &lt;/contextNode&gt;
+ *  &lt;!-- Xpaths for entity values are defined as relative to top node of entity --&gt;
+ *  &lt;contextNode name="entity"&gt;
+ *    &lt;name&gt;entityName&lt;/name&gt;
+ *    &lt;numRecords&gt;numberOfRecords&lt;/numRecords&gt;
+ *    &lt;entityDescription&gt;entityDescription&lt;/entityDescription &gt;
+ *    &lt;physical&gt;physical&lt;/physical&gt;
+ *    &lt;attributes&gt;attributeList/attribute&lt;/attributes&gt;
+ *  &lt;/contextNode&gt;
+ *  &lt;contextNode name="attribute"&gt;
+ *    &lt;name&gt;attributeName&lt;/name&gt;
+ *    &lt;dataType&gt;storageType&lt;/dataType&gt;
+ *    &lt;isText&gt;count(measurementScale/nominal|measurementScale/ordinal)!=0&lt;/isText&gt;
+ *    &lt;isDate&gt;count(measurementScale/datetime)!=0&lt;/isDate&gt;
+ *  &lt;/contextNode&gt;
+ *  &lt;contextNode name="physical"&gt;
+ *    &lt;name&gt;objectName&lt;/name&gt;
+ *    &lt;fieldDelimiter&gt;dataFormat/textFormat/simpleDelimited/fieldDelimiter&lt;/fieldDelimiter&gt;
+ *    &lt;numberHeaderLines&gt;dataFormat/textFormat/numHeaderLines&lt;/numberHeaderLines&gt;
+ *    &lt;size&gt;size&lt;/size&gt;
+ *    &lt;format&gt;dataFormat/externallyDefinedFormat/formatName&lt;/format&gt;
+ *    &lt;isText&gt;count(dataFormat/textFormat)!=0&lt;/isText&gt;
+ *    &lt;distribution&gt;distribution&lt;/distribution&gt;
+ *  &lt;/contextNode&gt;
+ *  &lt;contextNode name="distribution"&gt;
+ *    &lt;isOnline&gt;count(online/url)!=0&lt;/isOnline&gt;
+ *    &lt;url&gt;online/url&lt;/url&gt;
+ *    &lt;isInline&gt;count(inline)!=0&lt;/isInline&gt;
+ *    &lt;inline&gt;inline&lt;/inline&gt;
+ *  &lt;/contextNode&gt;
+ *  &lt;/xpathKeyMap&gt;
+ *  </code></pre>
  */
-public abstract class AbstractDataPackage
-    extends MetadataObject
-    implements XMLFactoryInterface {
+public abstract class AbstractDataPackage extends MetadataObject
+                                          implements XMLFactoryInterface {
   protected String location = "";
   protected String id;
   protected ConfigXML config;
@@ -206,36 +205,49 @@ public abstract class AbstractDataPackage
 
   private final String HTMLEXTENSION = ".html";
   private final String METADATAHTML = "metadata";
-  private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
-  private final String CONFIG_KEY_MCONFJAR_LOC = "morphoConfigJarLocation";
   private final String EXPORTSYLE = "export";
-  private final String EXPORTSYLEEXTENSION = ".css";
 
   /**
-   *  This abstract method turns the datapackage into a form (e.g. string) that can
-   *  be saved in the file system or metacat. Actual implementation is done in classes
-   *  specific to grammar
+   * This abstract method turns the datapackage into a form (e.g. string) that
+   * can be saved in the file system or metacat. Actual implementation is done
+   * in classes specific to grammar
+   *
+   * @param location String
    */
   abstract public void serialize(String location);
 
+
   /**
-   *  This abstract method loads a datapackage from metacat or the local file
-   *  system based on an identifier. Basic action is to create a DOM and assign it
-   *  to the underlying MetadataObject. Actual implementation is done in classes
-   *  specific to grammar
+   * This abstract method loads a datapackage from metacat or the local file
+   * system based on an identifier. Basic action is to create a DOM and assign
+   * it to the underlying MetadataObject. Actual implementation is done in
+   * classes specific to grammar
+   *
+   * @param location String
+   * @param identifier String
+   * @param morpho Morpho
    */
   abstract public void load(String location, String identifier, Morpho morpho);
 
+
   /**
-   *   Copies the AbstractDataPackage with the indicated id from the local
-   *   file store to Metacat
+   * Copies the AbstractDataPackage with the indicated id from the local file
+   * store to Metacat
+   *
+   * @param id String
+   * @throws MetacatUploadException
+   * @return AbstractDataPackage
    */
   abstract public AbstractDataPackage upload(String id) throws
       MetacatUploadException;
 
+
   /**
-   *   Copies the AbstractDataPackage with the indicated id from metacat
-   *   to the local file store
+   * Copies the AbstractDataPackage with the indicated id from metacat to the
+   * local file store
+   *
+   * @param id String
+   * @return AbstractDataPackage
    */
   abstract public AbstractDataPackage download(String id);
 
@@ -305,22 +317,31 @@ public abstract class AbstractDataPackage
     return dataPkgFile;
   }
 
+
   /**
-   *  Method to return the location
+   * Method to return the location
+   *
+   * @return String
    */
   public String getLocation() {
     return location;
   }
 
+
   /**
-   *  Method to set the location
+   * Method to set the location
+   *
+   * @param location String
    */
   public void setLocation(String location) {
     this.location = location;
   }
 
+
   /**
-   *  convenience method to get the DataPackage title
+   * convenience method to get the DataPackage title
+   *
+   * @return String
    */
   public String getTitle() {
     String temp = getGenericValue(
@@ -328,10 +349,13 @@ public abstract class AbstractDataPackage
     return temp;
   }
 
+
   /**
-   *  convenience method to get the DataPackage author
-   *  May be overridden for specific package types to give better response
-   *  (e.g. in eml2, folds together several elements and authors)
+   * convenience method to get the DataPackage author May be overridden for
+   * specific package types to give better response (e.g. in eml2, folds
+   * together several elements and authors)
+   *
+   * @return String
    */
   public String getAuthor() {
     String temp = "";
