@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-12 17:07:48 $'
- * '$Revision: 1.80 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-23 20:52:56 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,7 +226,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                                      "in your package.<br>  If you do not " +
                                      "wish " +
                                      "to include a data file, leave the box " +
-                                     "enpty and<br> click the 'next' button." +
+                                     "empty and<br> click the 'next' button." +
                                      "</html>");
         toplabel.setPreferredSize(new Dimension(20,100));                             
         framePanel.setLayout(new BoxLayout(framePanel,BoxLayout.Y_AXIS));
