@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-04-15 21:19:44 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-19 19:22:10 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -204,14 +204,20 @@ public class ModalDialog extends JDialog {
   private void okAction() {
 
     if (onAdvanceAction()) this.setVisible(false);
-    this.parent.toFront();
+    if (this.parent != null)
+    {
+      this.parent.toFront();
+    }
     USER_RESPONSE = OK_OPTION;
   }
 
   private void cancelAction() {
 
     this.setVisible(false);
-    this.parent.toFront();
+    if (this.parent != null)
+    {
+      this.parent.toFront();
+    }
     USER_RESPONSE = CANCEL_OPTION;
   }
 
