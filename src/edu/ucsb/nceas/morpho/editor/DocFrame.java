@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-11 21:55:45 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-06-12 20:06:59 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,9 +289,15 @@ public class DocFrame extends javax.swing.JFrame
 		  dtdtree.parseDTD();
 		
 	    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+
+        // treeTrim will remove nodes in the input that are not in the DTD
+	    
 	    // the treeUnion method will 'merge' the input document with
 	    // a template XML document created using the DTD parser from the DTD doc
 		  treeUnion(rootNode,dtdtree.rootNode);
+        // treeTrim will remove nodes in the input that are not in the DTD
+        // remove the following line if this is not wanted
+          treeTrim(rootNode,dtdtree.rootNode);
 		}
 		
 		
@@ -835,26 +841,28 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	void write_loop (DefaultMutableTreeNode node, int indent) {
 	  String indentString = "";
 	  while (indentString.length()<indent) { indentString = indentString + " ";}
+	  StringBuffer start1 = new StringBuffer();
 	  String name;
 	  String end;
+	  boolean notempty = true;
 	  NodeInfo ni = (NodeInfo)node.getUserObject();
 	  name = ni.name;
 	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
 	    // completely ignore NOT SELECTED nodes AND their children
 	    if (!name.equals("(CHOICE)")) {
 	      // ignore (CHOICE) nodes but process their children
-	      start.append("\n"+indentString+"<"+name);  
+	      start1.append("\n"+indentString+"<"+name);  
 	    
 	      Enumeration keys = (ni.attr).keys();
 	      while (keys.hasMoreElements()) {
 	        String str = (String)(keys.nextElement());
 	        String val = (String)((ni.attr).get(str));
-	        start.append(" "+str+"=\""+val+"\"");
+	        start1.append(" "+str+"=\""+val+"\"");
 	      }
-	      start.append(">");
-	      if (ni.getPCValue()!=null) {   // text node info
-	        start.append(normalize(ni.getPCValue()));
-	      }
+	      start1.append(">");
+//	      if (ni.getPCValue()!=null) {   // text node info
+//	        start.append(normalize(ni.getPCValue()));
+//	      }
 	      end = "</"+name+">";
 	      tempStack.push(end);
 	    }
@@ -864,16 +872,31 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
 	    NodeInfo ni1 = (NodeInfo)nd.getUserObject();
 	    if (ni1.name.equals("#PCDATA")) {
+	      // remove nodes with empty PCDATA
+	      String pcdata = ni1.getPCValue();
+	      if (pcdata.trim().length()<1) {
+	        notempty = false;
+	        start1 = new StringBuffer();
+	      }
+	      start.append(start1.toString());
+	      start1 = new StringBuffer();
 	      start.append(normalize(ni1.getPCValue()));
 	      textnode = true;
 	    }
 	    else {
+	      start.append(start1.toString());  
+	      start1 = new StringBuffer();
 	      write_loop(nd, indent+2);
 	    }
 	  }
 	    if (!name.equals("(CHOICE)")) {
 	      if (textnode) {
-	        start.append((String)(tempStack.pop()));  
+	        if (notempty) {
+	            start.append((String)(tempStack.pop()));
+	        }
+	        else {
+	            tempStack.pop();
+	        }
 	      }
 	      else {
 	        start.append("\n"+indentString+(String)(tempStack.pop()));
@@ -999,7 +1022,61 @@ void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
     }  // end levels loop
   } //end else
 }
-  
+
+/** treeTrim is designed to remove any nodes in the input that do not match the 
+  * the nodes in the template tree; i.e. the goal is to remove undesirable nodes
+  * from the input tree
+  */
+void treeTrim(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+  DefaultMutableTreeNode inNode;
+  DefaultMutableTreeNode parNode;
+  // first check to see if root nodes have same names
+  if (!compareNodes(input, template)) {
+    System.out.println( "Root nodes do not match!!!");
+  }
+  else {
+    // root nodes match, so start comparing children
+    Vector nextLevelInputNodes;
+    Vector nextLevelTemplateNodes;
+    Vector currentLevelInputNodes = new Vector();
+    currentLevelInputNodes.addElement(input);
+    Vector currentLevelTemplateNodes = new Vector();
+    currentLevelTemplateNodes.addElement(template);
+    for (int j=0;j<numlevels;j++) {
+      nextLevelInputNodes = new Vector();
+      for (Enumeration enum = currentLevelInputNodes.elements();enum.hasMoreElements();) {
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+        for (Enumeration qq = nd.children();qq.hasMoreElements();) {
+          DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
+          nextLevelInputNodes.addElement(nd1);
+        }
+      }
+      nextLevelTemplateNodes = new Vector();
+      for (Enumeration enum1 = currentLevelTemplateNodes.elements();enum1.hasMoreElements();) {
+        DefaultMutableTreeNode ndt = (DefaultMutableTreeNode)enum1.nextElement();
+        for (Enumeration qq1 = ndt.children();qq1.hasMoreElements();) {
+          DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
+          nextLevelTemplateNodes.addElement(ndt1);
+        }
+      }
+      // now have a list of all elements in input and template trees at the level being processed
+      // loop over all the input nodes at the 'next' level
+      Enumeration enum = nextLevelInputNodes.elements();
+      while (enum.hasMoreElements()) {
+        inNode = (DefaultMutableTreeNode)enum.nextElement();
+        Vector hits = getMatches(inNode, nextLevelTemplateNodes);
+        // if there are no 'hits' then the node should be removed
+        if (hits.size()<1) {
+            parNode = (DefaultMutableTreeNode)inNode.getParent();
+            parNode.remove(inNode);
+        }
+      }
+      currentLevelInputNodes = nextLevelInputNodes;
+      currentLevelTemplateNodes = nextLevelTemplateNodes;
+      
+    } // end of levels loop
+  }
+}
 
 /*
  * return a Vector containing all the nodes in a Vector that match 'match'
