@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 21:33:10 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-09-24 22:09:01 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -425,19 +425,18 @@ public class DataFormat extends AbstractWizardPage{
 
     } else if (formatXPath==COMPLEX_TEXT_XPATH) {
     
-
+      OrderedMap listNVP = getCmplxDelimListAsNVP();
+      
+      if (listNVP==null || listNVP.size()<1) {
+        WidgetFactory.hiliteComponent(listLabel);
+        return false;
+      }
       if (!listContainsOnlyPosNumericWidths()) {
         WidgetFactory.hiliteComponent(listLabel);
         return false;
       }
       WidgetFactory.unhiliteComponent(listLabel);
     
-//      OrderedMap listNVP = getCmplxDelimListAsNVP();
-//      
-//      if (listNVP==null || listNVP.size()<1) {
-//        WidgetFactory.hiliteComponent(listLabel);
-//        return false;
-//      }
 
     } else if (formatXPath==PROPRIETARY_XPATH) {
 
@@ -521,10 +520,18 @@ public class DataFormat extends AbstractWizardPage{
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
       
-      if (nextRow.get(0)==null) continue;
+      if (nextRow.get(0)==null || nextRow.get(1)==null) continue;
+      if (((String)(nextRow.get(1))).equals("")) continue;
       
-      if (nextRow.get(0).equals(pickListVals[0])) fixedDelimStr = "textFixed/fieldWidth";
-      else fixedDelimStr = "textDelimited/fieldDelimiter";
+      if (nextRow.get(0).equals(pickListVals[0])) {
+      
+        fixedDelimStr = "textFixed/fieldWidth";
+        
+      } else if (nextRow.get(0).equals(pickListVals[1])) {
+      
+        fixedDelimStr = "textDelimited/fieldDelimiter";
+        
+      } else continue;
       
       buff.delete(0,buff.length());
       buff.append(COMPLEX_TEXT_XPATH);
