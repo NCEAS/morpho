@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 21:10:01 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,13 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.util.Map;
 import java.util.List;
+
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
 import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
@@ -52,7 +53,9 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomPickList;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -62,18 +65,21 @@ public class Project extends AbstractWizardPage {
   public final String nextPageID = DataPackageWizardInterface.GENERAL;
 //////////////////////////////////////////////////////////
 
-  public final String title      = "Research Project Information - 1";
-  public final String subtitle   = " ";
+  public final String title      = "Research Project Information";
+  public final String subtitle   = "Enter Project Information";
+  public final String pageNumber = "2.1";
 
-  private JPanel dataPanel;
-  private JPanel noDataPanel;
-  private JPanel currentPanel;
-  private JLabel radioLabel;
-
-  private final String[] buttonsText = new String[] {
-      "YES",
-      "NO"
-  };
+  private JLabel      titleLabel;
+  private JTextField  titleField;
+  private JLabel      fundingLabel;
+  private JTextField  fundingField;
+  private JLabel      urlLabelOnline;
+  private JTextField  urlFieldOnline;
+  private JLabel minRequiredLabel;
+  private CustomList  partiesList;
+  private CustomPickList partiesPickList;
+  private final String[] colNames =  {"Party", "Role", "Address"};
+  private final Object[] editors  =   null; //makes non-directly-editable
 
   public Project() {
 
@@ -86,169 +92,66 @@ public class Project extends AbstractWizardPage {
    */
   private void init() {
 
-    this.setLayout(new BorderLayout());
+    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    Box topBox = Box.createVerticalBox();
-    topBox.add(WidgetFactory.makeHalfSpacer());
-
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-        "Data may be collected as part of a large research program with many "
-        +"sub-projects or they may be associated with a single, independent "
-        +"investigation. For example, a large NSF grant may provide funds for "
-        +"several PIs to collect data at various locations. In this case it is "
-        +"important to be able to reference sub-projects to the larger project "
-        +"with which they are associated.<br></br><b>Is your project part of a larger, "
-        +"umbrella research project?</b>", 3);
-
-  //  topBox.add(WidgetFactory.makeDefaultSpacer());
-    topBox.add(desc);
-
-//    radioLabel = WidgetFactory.makeHTMLLabel("", 1);
-  //  topBox.add(radioLabel);
-
-    final JPanel instance = this;
-
-    ActionListener listener = new ActionListener() {
-
-      public void actionPerformed(ActionEvent e) {
-        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-
-        onLoadAction();
-
-        if (e.getActionCommand().equals(buttonsText[0])) {
-
-          instance.remove(currentPanel);
-          currentPanel = dataPanel;
-    //      distribXPath = ONLINE_XPATH;
-          instance.add(dataPanel, BorderLayout.CENTER);
-    //      fileNameFieldOnline.requestFocus();
-
-        } else if (e.getActionCommand().equals(buttonsText[1])) {
-
-          instance.remove(currentPanel);
-          currentPanel = noDataPanel;
-  //        distribXPath = INLINE_XPATH;
-          instance.add(noDataPanel, BorderLayout.CENTER);
-
-        }
-        instance.validate();
-        instance.repaint();
-      }
-    };
-
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
-    topBox.add(radioPanel);
-
-    this.add(topBox, BorderLayout.NORTH);
-
-    dataPanel = getDataPanel();
-    noDataPanel  = getNoDataPanel();
-
-    currentPanel = noDataPanel;
-
-  }
-
-
-  /**
-   *
-   */
-
-  private JLabel      titleLabel;
-  private JTextField  titleField;
-  private JLabel      fundingLabel;
-  private JTextField  fundingField;
-  private JLabel      urlLabelOnline;
-  private JTextField  urlFieldOnline;
-  private JLabel minRequiredLabel;
-  private CustomList  partiesList;
-  private final String[] colNames =  {"Party", "Role", "Address"};
-  private final Object[] editors  =   null; //makes non-directly-editable
-
-  private JPanel getDataPanel() {
-
-    JPanel panel = WidgetFactory.makeVerticalPanel(6);
-
-    WidgetFactory.addTitledBorder(panel, "Enter Project Information");
-
-    //panel.add(WidgetFactory.makeDefaultSpacer());
-
-    ////
-
+    // title
+    this.add(WidgetFactory.makeDefaultSpacer());
     JPanel titlePanel = WidgetFactory.makePanel(1);
-
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
        "<b>Enter the title of the project.</b> ", 1);
-
-    panel.add(titleDesc);
-
+    this.add(titleDesc);
     titleLabel = WidgetFactory.makeLabel("Title", true);
     titlePanel.add(titleLabel);
-
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
+    this.add(titlePanel);
+    this.add(WidgetFactory.makeDefaultSpacer());
 
-    panel.add(titlePanel);
-
+    // funding
     JPanel fundingPanel = WidgetFactory.makePanel(1);
-
     JLabel fundingDesc = WidgetFactory.makeHTMLLabel(
       "<b>Enter the funding source(s) that supported data collection.</b> The "
       +"funding is used to provide information about funding sources for the "
-      +"project such as agency name, grant and contract numbers.", 2);
+      +"project such as agency name, grant and contract numbers.", 3);
 
-    panel.add(fundingDesc);
-
+    this.add(fundingDesc);
     fundingLabel = WidgetFactory.makeLabel("Funding Source", false);
     fundingPanel.add(fundingLabel);
-
     fundingField = WidgetFactory.makeOneLineTextField();
     fundingPanel.add(fundingField);
+    this.add(fundingPanel);
 
-    panel.add(fundingPanel);
 
-    //panel.add(WidgetFactory.makeDefaultSpacer());
-
-    ////
+    this.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the Personals information</b> The full name of the person or organization for the"
+      "<b>Enter the Personals information</b> The full name of the person or organization for the "
       +"project such as agency name, grant and contact numbers.(DESCRIPTION??)", 2);
-    panel.add(desc);
+    this.add(desc);
 
-    JPanel vPanel = WidgetFactory.makeVerticalPanel(9);
+    JPanel vPanel = WidgetFactory.makeVerticalPanel(14);
 
     minRequiredLabel = WidgetFactory.makeLabel(
                                 "One or more Personals must be defined:", true,
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
     vPanel.add(minRequiredLabel);
 
-    partiesList = WidgetFactory.makeList(colNames, editors, 6,
+    partiesList = WidgetFactory.makeList(colNames, editors, 8,
                                     true, true, false, true, true, true );
 
- //   vPanel.add(WidgetFactory.makeDefaultSpacer());
+    vPanel.add(WidgetFactory.makeDefaultSpacer());
 
     vPanel.add(partiesList);
 
-    panel.add(vPanel);
+    partiesPickList = new CustomPickList();
 
-    //panel.add(WidgetFactory.makeDefaultSpacer());
+    vPanel.add(WidgetFactory.makeDefaultSpacer());
 
-    panel.add(Box.createGlue());
+    vPanel.add(partiesPickList);
+
+    this.add(vPanel);
 
     initActions();
-
-    return panel;
-  }
-
-
-  /**
-   *
-   */
-  private JPanel getNoDataPanel() {
-
-    JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    return panel;
-
   }
 
 
@@ -257,73 +160,101 @@ public class Project extends AbstractWizardPage {
    */
   private void initActions() {
 
-      partiesList.setCustomAddAction(
+    partiesList.setCustomAddAction(
 
-        new AbstractAction() {
+        new AbstractAction() {  public void actionPerformed(ActionEvent e) {
 
-          public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "\nResearchProjInfo: CustomAddAction called");
+        showNewPartyDialog();
+      }
+    });
 
-            Log.debug(45, "\nResearchProjInfo: CustomAddAction called");
-            showNewPartyDialog();
-          }
-        });
+    partiesList.setCustomEditAction(
 
-      partiesList.setCustomEditAction(
+        new AbstractAction() {  public void actionPerformed(ActionEvent e) {
 
-        new AbstractAction() {
+        Log.debug(45, "\nResearchProjInfo: CustomEditAction called");
+        showEditPartyDialog();
+      }
+    });
 
-          public void actionPerformed(ActionEvent e) {
+    partiesPickList.setCustomAddAction(
 
-            Log.debug(45, "\nResearchProjInfo: CustomEditAction called");
-            showEditPartyDialog();
-          }
-        });
+        new AbstractAction() {  public void actionPerformed(ActionEvent e) {
+
+        Log.debug(45, "\nPartyPage: CustomAddAction called");
+        showAddPartyDialog();
+      }
+    });
+
+  }
+
+
+  /**
+   *
+   */
+  private void showNewPartyDialog() {
+    PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
+    partyPage.setRole(PartyPage.PERSONNEL);
+    WizardPopupDialog wpd = new WizardPopupDialog(partyPage, WizardContainerFrame.frame);
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+      List newRow = partyPage.getSurrogate();
+      newRow.add(partyPage);
+      partiesList.addRow(newRow);
+      partiesPickList.addRow(newRow);
     }
 
-
-    /**
-     *
-     */
-     private void showNewPartyDialog() {
-       PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
-       partyPage.setRole(PartyPage.PERSONNEL);
-       WizardPopupDialog wpd = new WizardPopupDialog(partyPage, WizardContainerFrame.frame);
-       if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
-
-         List newRow = partyPage.getSurrogate();
-         newRow.add(partyPage);
-         partiesList.addRow(newRow);
-       }
-
-       WidgetFactory.unhiliteComponent(minRequiredLabel);
-     }
+    WidgetFactory.unhiliteComponent(minRequiredLabel);
+  }
 
 
-     /**
-      *
-      */
-     private void showEditPartyDialog() {
+  /**
+   *
+   */
+  private void showEditPartyDialog() {
+    List selRowList = partiesList.getSelectedRowList();
+    if (selRowList==null || selRowList.size() < 4) return;
+    Object dialogObj = selRowList.get(3);
 
-       List selRowList = partiesList.getSelectedRowList();
+    if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
+    PartyPage editPartyPage = (PartyPage)dialogObj;
+    WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
+    wpd.resetBounds();
+    wpd.setVisible(true);
 
-       if (selRowList==null || selRowList.size() < 4) return;
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
 
-       Object dialogObj = selRowList.get(3);
+      List newRow = editPartyPage.getSurrogate();
+      newRow.add(editPartyPage);
+      partiesList.replaceSelectedRow(newRow);
+    }
+  }
 
-       if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
-       PartyPage editPartyPage = (PartyPage)dialogObj;
+  /**
+   *
+   */
+  private void showAddPartyDialog() {
+    List selRowList = partiesPickList.getSelectedRowList();
+    if (selRowList==null || selRowList.size() < 4) return;
+    Object dialogObj = selRowList.get(3);
 
-       WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
-       wpd.resetBounds();
-       wpd.setVisible(true);
+    if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
+    PartyPage editPartyPage = (PartyPage)dialogObj;
+    editPartyPage.modifyEditPage(PartyPage.PERSONNEL);
+    WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
+    wpd.resetBounds();
+    wpd.setVisible(true);
 
-       if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+      List newRow = editPartyPage.getSurrogate();
+      newRow.add(editPartyPage);
+      partiesList.addRow(newRow);
+      partiesPickList.addRow(newRow);
+    }
 
-         List newRow = editPartyPage.getSurrogate();
-         newRow.add(editPartyPage);
-         partiesList.replaceSelectedRow(newRow);
-       }
-     }
+    WidgetFactory.unhiliteComponent(minRequiredLabel);
+  }
+
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -351,21 +282,16 @@ public class Project extends AbstractWizardPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    if (currentPanel == dataPanel) {
-      if (titleField.getText().trim().equals("")) {
-
-        WidgetFactory.hiliteComponent(titleLabel);
-        titleField.requestFocus();
-        return false;
-      }
-
-      if (partiesList.getRowCount() < 1) {
-
-        WidgetFactory.hiliteComponent(minRequiredLabel);
-        return false;
-      }
+    if (titleField.getText().trim().equals("")) {
+      WidgetFactory.hiliteComponent(titleLabel);
+      titleField.requestFocus();
+      return false;
     }
 
+    if (partiesList.getRowCount() < 1) {
+      WidgetFactory.hiliteComponent(minRequiredLabel);
+      return false;
+    }
     return true;
   }
 
@@ -414,6 +340,13 @@ public class Project extends AbstractWizardPage {
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }
 }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:19 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ public interface DataPackageWizardInterface {
   **/
 
   public static final String INTRODUCTION       = "INTRODUCTION";
+  public static final String PROJECT_INTRO      = "PROJECT_INTRO";
   public static final String PROJECT            = "PROJECT";
   public static final String GENERAL            = "GENERAL";
   public static final String KEYWORDS           = "KEYWORDS";
@@ -51,6 +52,9 @@ public interface DataPackageWizardInterface {
   public static final String PARTY_CREATOR      = "PARTY_CREATOR";
   public static final String PARTY_CONTACT      = "PARTY_CONTACT";
   public static final String PARTY_ASSOCIATED   = "PARTY_ASSOCIATED";
+  public static final String GEOGRAPHIC         = "GEOGRAPHIC";
+  public static final String TAXONOMIC          = "TAXONOMIC";
+  public static final String TEMPORAL           = "TEMPORAL";
   public static final String USAGE_RIGHTS       = "USAGE_RIGHTS";
   public static final String DATA_LOCATION      = "DATA_LOCATION";
   public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
@@ -58,6 +62,7 @@ public interface DataPackageWizardInterface {
   public static final String ENTITY             = "ENTITY";
   public static final String ATTRIBUTE_PAGE	= "ATTRIBUTE_PAGE";
   public static final String PARTY_PAGE		= "PARTY_PAGE";
+  public static final String ACCESS             = "ACCESS";
   public static final String SUMMARY            = "SUMMARY";
   /**
    *  method to start the wizard

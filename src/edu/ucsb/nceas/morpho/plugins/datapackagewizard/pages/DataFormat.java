@@ -1,15 +1,15 @@
 /**
  *  '$RCSfile: DataFormat.java,v $'
- *    Purpose: A class that handles xml messages passed by the 
+ *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.24 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,31 +70,32 @@ public class DataFormat extends AbstractWizardPage{
 
   private final String pageID     = DataPackageWizardInterface.DATA_FORMAT;
   private String nextPageID       = DataPackageWizardInterface.ENTITY;
-  
+  private final String pageNumber = "";
+
   private final String title      = "Data File Information:";
   private final String subtitle   = "File Format";
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private final String OTHER_LABEL = "other";
   private final String EMPTY_STRING = "";
-  
+
   private final String COLUMN_MAJOR = "column";
   private final String ROW_MAJOR    = "row";
-  
+
   private String orientationSimple  = COLUMN_MAJOR;
   private String orientationComplex = COLUMN_MAJOR;
-  
+
   private String formatXPath;
   private final String TEXT_BASE_XPATH
                   = "/eml:eml/dataset/dataTable/physical/dataFormat/textFormat/";
   private final String SIMPLE_TEXT_XPATH  = TEXT_BASE_XPATH+"simpleDelimited/fieldDelimiter";
   private final String COMPLEX_TEXT_XPATH = TEXT_BASE_XPATH+"complex/";
-  private final String PROPRIETARY_XPATH  
+  private final String PROPRIETARY_XPATH
           = "/eml:eml/dataset/dataTable/physical/dataFormat/externallyDefinedFormat/formatName";
-  private final String RASTER_XPATH       
+  private final String RASTER_XPATH
           = "/eml:eml/dataset/dataTable/physical/dataFormat/binaryRasterFormat";
-  
+
   private JPanel simpleTextpanel;
   private JPanel complexTextPanel;
   private JPanel proprietaryPanel;
@@ -107,12 +108,12 @@ public class DataFormat extends AbstractWizardPage{
       "Non-text or proprietary formatted object that is externally defined (e.g. 'Microsoft Excel')"
 //      ,"Binary raster image file"
     };
-  
+
   private final String[] orientButtonsText = new String[] {
       "Columns",
       "Rows"
     };
-    
+
   private final String[] delimiterCheckBoxesText = new String[] {
     "tab",
     "comma",
@@ -121,22 +122,22 @@ public class DataFormat extends AbstractWizardPage{
     OTHER_LABEL
   };
 
-  private String[] pickListVals = new String[] { 
-    "Fixed-Width", 
-    "Delimited" 
+  private String[] pickListVals = new String[] {
+    "Fixed-Width",
+    "Delimited"
   };
-  
+
   private String delim_tab       = null;
   private String delim_comma     = null;
   private String delim_space     = null;
   private String delim_semicolon = null;
   private boolean delim_other    = false;
   private CustomList list;
-    
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   public DataFormat() { init(); }
-  
+
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    * are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -144,74 +145,74 @@ public class DataFormat extends AbstractWizardPage{
   private void init() {
 
     this.setLayout(new BorderLayout());
-    
+
     Box topBox = Box.createVerticalBox();
-    
+
     JLabel desc = WidgetFactory.makeHTMLLabel(
       "Enter some information about your data file. Required fields are "
       +"highlighted", 2);
     topBox.add(desc);
     topBox.add(WidgetFactory.makeDefaultSpacer());
 
-    radioButtonGrpLabel 
+    radioButtonGrpLabel
           = WidgetFactory.makeHTMLLabel("What is the format of your data?", 1);
     topBox.add(radioButtonGrpLabel);
 
     final JPanel instance = this;
-    
+
     ActionListener listener = new ActionListener() {
-      
+
       public void actionPerformed(ActionEvent e) {
-        
+
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
 
         //undo any hilites:
         onLoadAction();
-        
+
         if (e.getActionCommand().equals(buttonsText[0])) {
-          
+
           instance.remove(currentPanel);
           currentPanel = simpleTextpanel;
           formatXPath = SIMPLE_TEXT_XPATH;
           instance.add(simpleTextpanel, BorderLayout.CENTER);
-          
+
         } else if (e.getActionCommand().equals(buttonsText[1])) {
-        
+
           instance.remove(currentPanel);
           currentPanel = complexTextPanel;
           formatXPath = COMPLEX_TEXT_XPATH;
           instance.add(complexTextPanel, BorderLayout.CENTER);
-          
+
         } else if (e.getActionCommand().equals(buttonsText[2])) {
-        
+
           instance.remove(currentPanel);
           currentPanel = proprietaryPanel;
           formatXPath = PROPRIETARY_XPATH;
           instance.add(proprietaryPanel, BorderLayout.CENTER);
-          
+
         } else if (e.getActionCommand().equals(buttonsText[3])) {
-        
+
           instance.remove(currentPanel);
           currentPanel = rasterPanel;
           formatXPath = RASTER_XPATH;
           instance.add(rasterPanel, BorderLayout.CENTER);
-          
+
         }
         instance.validate();
         instance.repaint();
       }
     };
-    
-    
-    
+
+
+
     JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
-    
+
     topBox.add(radioPanel);
-    
+
     topBox.add(WidgetFactory.makeDefaultSpacer());
-    
+
     this.add(topBox, BorderLayout.NORTH);
-    
+
     simpleTextpanel  = getSimpleTextpanel();
     complexTextPanel = getComplexTextPanel();
     proprietaryPanel = getProprietaryPanel();
@@ -221,31 +222,31 @@ public class DataFormat extends AbstractWizardPage{
   }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private JLabel delimiterLabel;
-  
-  
+
+
   private JPanel getSimpleTextpanel() {
-    
+
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    
+
     WidgetFactory.addTitledBorder(panel, buttonsText[0]);
-    
+
     panel.add(WidgetFactory.makeDefaultSpacer());
-  
+
     ////
     panel.add(WidgetFactory.makeHTMLLabel("Data Attributes are arranged in:", 1));
 
     JPanel orientationPanel = WidgetFactory.makePanel(2);
 
     JLabel spacerLabel = WidgetFactory.makeLabel(EMPTY_STRING, false);
-    
+
     orientationPanel.add(spacerLabel);
-    
+
     orientationPanel.add(getOrientationRadioPanel());
-    
+
     panel.add(orientationPanel);
-    
+
     panel.add(WidgetFactory.makeDefaultSpacer());
 
     ////
@@ -255,140 +256,140 @@ public class DataFormat extends AbstractWizardPage{
     JPanel delimiterPanel = WidgetFactory.makePanel(8);
 
     delimiterLabel = WidgetFactory.makeLabel("Delimiter(s)", true);
-    
+
     delimiterPanel.add(delimiterLabel);
-    
+
     delimiterPanel.add(getDelimiterCheckBoxPanel());
-    
+
     panel.add(delimiterPanel);
-    
+
     panel.add(WidgetFactory.makeDefaultSpacer());
-    
+
     panel.add(Box.createGlue());
 
     return panel;
   }
-  
-  
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private JLabel listLabel;
-  
+
   private JPanel getComplexTextPanel() {
-    
+
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    
+
     WidgetFactory.addTitledBorder(panel, buttonsText[1]);
-    
+
     ////
     panel.add(WidgetFactory.makeHTMLLabel("Data Attributes are arranged in:", 1));
 
     JPanel orientationPanel = WidgetFactory.makePanel(2);
 
     JLabel spacerLabel = WidgetFactory.makeLabel(EMPTY_STRING, false);
-    
+
     orientationPanel.add(spacerLabel);
-    
+
     orientationPanel.add(getOrientationRadioPanel());
-    
+
     panel.add(orientationPanel);
 
     ////
     panel.add(WidgetFactory.makeDefaultSpacer());
-  
+
     listLabel = WidgetFactory.makeHTMLLabel(
                         "Define the delimited fields and/or fixed width fields "
                         +"that describe how the data is structured:", 1);
-    
+
     panel.add(listLabel);
-  
- 
-    JComboBox pickList = WidgetFactory.makePickList(pickListVals, false, 0, 
-    
+
+
+    JComboBox pickList = WidgetFactory.makePickList(pickListVals, false, 0,
+
         new ItemListener() {
-        
+
           public void itemStateChanged(ItemEvent e) {
 
             Log.debug(45, "got PickList state changed; src = "
                                           +e.getSource().getClass().getName());
           }
         });
-    
+
     Object[] colTemplates = new Object[] { pickList, new JTextField() };
 
-    String[] colNames = new String[] { 
-      "Fixed-Width or Delimited?", 
-      "Width or Delimiter Character:" 
+    String[] colNames = new String[] {
+      "Fixed-Width or Delimited?",
+      "Width or Delimiter Character:"
     };
-    
+
     list = WidgetFactory.makeList(colNames, colTemplates, 4,
                                   true, false, false, true, true, true);
     panel.add(list);
-  
+
     return panel;
   }
-  
-  
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private JLabel      proprietaryLabel;
-  private String      proprietaryText; 
+  private String      proprietaryText;
   private JTextField  otherProprietaryTextField;
-  
+
   private JPanel getProprietaryPanel() {
-    
+
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    
+
     WidgetFactory.addTitledBorder(panel, buttonsText[2]);
-    
+
     panel.add(WidgetFactory.makeDefaultSpacer());
-  
+
     final Map mimeMap = WizardSettings.getSupportedMIMETypesForEntity(
-                                              WizardSettings.ENTITY_DATATABLE);    
-      
-    // proprietaryButtonsText array is one elem larger than mime map, because 
+                                              WizardSettings.ENTITY_DATATABLE);
+
+    // proprietaryButtonsText array is one elem larger than mime map, because
     // we need to add an entry for "other"...
     final String [] proprietaryButtonsText = new String[mimeMap.size() + 1];
-    
+
     int i = 0;
-    
+
     for (Iterator it = mimeMap.keySet().iterator(); it.hasNext(); ) {
-    
+
       Object nextObj = it.next();
       if (nextObj==null) continue;
       proprietaryButtonsText[i++] = ((String)nextObj).trim();
     }
 
     otherProprietaryTextField = WidgetFactory.makeOneLineTextField();
-    Dimension dim = new Dimension(  
-                          WizardSettings.DIALOG_WIDTH/2, 
+    Dimension dim = new Dimension(
+                          WizardSettings.DIALOG_WIDTH/2,
                           WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS.height);
     otherProprietaryTextField.setPreferredSize(dim);
     otherProprietaryTextField.setMaximumSize(  dim);
-    
+
     ActionListener listener = new ActionListener() {
-      
+
       public void actionPerformed(ActionEvent e) {
-        
+
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
 
         //undo any hilites:
         onLoadAction();
         if (e.getActionCommand().equals(OTHER_LABEL)) {
-        
+
           setProprietaryText(OTHER_LABEL, mimeMap);
-          
+
         } else {
-          
+
           setProprietaryText(e.getActionCommand(), mimeMap);
         }
       }};
-    
+
     proprietaryButtonsText[i] = OTHER_LABEL;
 
     ////
     JPanel proprietaryPanel = new JPanel();
-    proprietaryPanel.setLayout(new BoxLayout(proprietaryPanel, 
+    proprietaryPanel.setLayout(new BoxLayout(proprietaryPanel,
                                               BoxLayout.Y_AXIS));
 
     proprietaryLabel = WidgetFactory.makeLabel("Format:", true);
@@ -396,23 +397,23 @@ public class DataFormat extends AbstractWizardPage{
     leftJustifyPanel.add(proprietaryLabel);
     leftJustifyPanel.add(Box.createGlue());
     proprietaryPanel.add(leftJustifyPanel);
-      
+
     final int INITIAL_SELECTION = 0;
-    
-    JPanel radioPanel = WidgetFactory.makeRadioPanel( proprietaryButtonsText, 
-                                                      INITIAL_SELECTION, 
+
+    JPanel radioPanel = WidgetFactory.makeRadioPanel( proprietaryButtonsText,
+                                                      INITIAL_SELECTION,
                                                       listener);
     setProprietaryText(proprietaryButtonsText[INITIAL_SELECTION], mimeMap);
-    
+
     JPanel radioJustifyPanel = new JPanel();
-    radioJustifyPanel.setLayout(new BoxLayout(radioJustifyPanel, 
+    radioJustifyPanel.setLayout(new BoxLayout(radioJustifyPanel,
                                               BoxLayout.X_AXIS));
     radioJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
     radioJustifyPanel.add(radioPanel);
-    proprietaryPanel.add(radioJustifyPanel);    
-    
+    proprietaryPanel.add(radioJustifyPanel);
+
     JPanel otherJustifyPanel = new JPanel();
-    otherJustifyPanel.setLayout(new BoxLayout(otherJustifyPanel, 
+    otherJustifyPanel.setLayout(new BoxLayout(otherJustifyPanel,
                                               BoxLayout.X_AXIS));
     otherJustifyPanel.setPreferredSize(WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
     otherJustifyPanel.setMaximumSize(WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
@@ -420,9 +421,9 @@ public class DataFormat extends AbstractWizardPage{
     otherJustifyPanel.add(otherProprietaryTextField);
     otherJustifyPanel.add(Box.createGlue());
     proprietaryPanel.add(otherJustifyPanel);
-    
+
     JPanel otherHelpJustifyPanel = new JPanel();
-    otherHelpJustifyPanel.setLayout(new BoxLayout(otherHelpJustifyPanel, 
+    otherHelpJustifyPanel.setLayout(new BoxLayout(otherHelpJustifyPanel,
                                                   BoxLayout.X_AXIS));
     otherHelpJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
     JLabel help = WidgetFactory.makeHTMLLabel(
@@ -432,29 +433,29 @@ public class DataFormat extends AbstractWizardPage{
       +"above. <br>This would preferably be in the form of a standard MIME "
       +"type (e.g: application/msword ), but if you do not know the MIME type, "
       +"enter a text description"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 4);
- 
+
     Dimension helpDim = new Dimension(
-                      WizardSettings.DIALOG_WIDTH - 
+                      WizardSettings.DIALOG_WIDTH -
                             2*WizardSettings.WIZARD_CONTENT_LABEL_DIMS.width,
                       3*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
-    
+
     help.setPreferredSize(helpDim);
     help.setMaximumSize(helpDim);
-    
+
     Dimension helpPanelDim = new Dimension(
                       WizardSettings.DIALOG_WIDTH,
                       3*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
-    
+
     otherHelpJustifyPanel.setPreferredSize(helpPanelDim);
     otherHelpJustifyPanel.setMaximumSize(helpPanelDim);
-    
+
     otherHelpJustifyPanel.add(help);
     otherHelpJustifyPanel.add(Box.createGlue());
-    
+
     proprietaryPanel.add(otherHelpJustifyPanel);
 
     panel.add(proprietaryPanel);
-        
+
     panel.add(WidgetFactory.makeDefaultSpacer());
     panel.add(Box.createGlue());
 
@@ -463,23 +464,23 @@ public class DataFormat extends AbstractWizardPage{
 
 
   //
-  //  sets the value of the proprietaryString variable - based on a the passed 
-  //  String param which is the selected radiobutton label. mimeMap is the Map 
+  //  sets the value of the proprietaryString variable - based on a the passed
+  //  String param which is the selected radiobutton label. mimeMap is the Map
   //  containing the radiobutton labels as keys and the MIME types as values
   //
   private void setProprietaryText(String labelString, Map mimeMap) {
-  
+
     if (labelString==null) return;
-    
-    //if it's "other", set text to empty string: 
+
+    //if it's "other", set text to empty string:
     if (labelString.equals(OTHER_LABEL)) {
-    
+
       otherProprietaryTextField.setEnabled(true);
       otherProprietaryTextField.requestFocus();
       proprietaryText = EMPTY_STRING;
-      
+
     } else {
-      
+
       otherProprietaryTextField.setEnabled(false);
       proprietaryText = ((String)(mimeMap.get(labelString.trim()))).trim();
     }
@@ -487,16 +488,16 @@ public class DataFormat extends AbstractWizardPage{
 
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    
-  
+
+
   private JPanel getEmptyPanel() {
-    
+
     return WidgetFactory.makeVerticalPanel(7);
   }
-  
+
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
@@ -509,27 +510,27 @@ public class DataFormat extends AbstractWizardPage{
     otherProprietaryTextField.setForeground(
                                       WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
   }
-  
-  
+
+
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
   public void onRewindAction() {
-    
+
   }
-  
-  
-  /** 
+
+
+  /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. May be empty, but if so, must 
+   *  or "Finish" button(last page) is pressed. May be empty, but if so, must
    *  return true
    *
-   *  @return boolean true if wizard should advance, false if not 
+   *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    
+
 
     if (formatXPath==null || currentPanel==null)  {
 
@@ -538,28 +539,28 @@ public class DataFormat extends AbstractWizardPage{
 
     } else if (formatXPath==SIMPLE_TEXT_XPATH) {
 
-      if (delim_tab==null && delim_comma==null && delim_space==null 
+      if (delim_tab==null && delim_comma==null && delim_space==null
                           && delim_semicolon==null && delim_other==false) {
-      
+
         WidgetFactory.hiliteComponent(delimiterLabel);
         return false;
       }
       if (delim_other==true) {
-      
+
         String otherTxt = otherDelimTextFieldSimple.getText();
         if (otherTxt==null || otherTxt.equals(EMPTY_STRING)) {
-      
+
           WidgetFactory.hiliteComponent(otherDelimTextFieldSimple);
           otherDelimTextFieldSimple.requestFocus();
           return false;
         }
       }
-    
+
 
     } else if (formatXPath==COMPLEX_TEXT_XPATH) {
 
       list.fireEditingStopped();
-      
+
       OrderedMap listNVP = getCmplxDelimListAsNVP();
 
       if (listNVP==null || listNVP.size()<1) {
@@ -571,115 +572,115 @@ public class DataFormat extends AbstractWizardPage{
         return false;
       }
       WidgetFactory.unhiliteComponent(listLabel);
-    
+
 
     } else if (formatXPath==PROPRIETARY_XPATH) {
 
         if (proprietaryText==null || proprietaryText.equals(EMPTY_STRING)) {
-        
-          //gets here only if user has selected "OTHER" - so need to get entered 
+
+          //gets here only if user has selected "OTHER" - so need to get entered
           //value
           proprietaryText = otherProprietaryTextField.getText().trim();
-          
+
           //if actual values is still empty string, user hasn't entered anything
           if (proprietaryText.equals(EMPTY_STRING)) {
-          
+
             WidgetFactory.hiliteComponent(otherProprietaryTextField);
             return false;
           }
         }
-  
+
 //  } else if (formatXPath==RASTER_XPATH) {
 
     }
     return true;
   }
-  
+
 
 
   //
-  //  returns false if any column 0 entry is "fixed width" and its corresponding 
+  //  returns false if any column 0 entry is "fixed width" and its corresponding
   //  col 1 entry is not a number
   //
   private boolean listContainsOnlyPosNumericWidths() {
-  
+
     boolean returnVal = true;
     List rowLists = list.getListOfRowLists();
     String nextWidthStr = null;
-  
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
-    
+
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
-    
+
       boolean nextCol0IsNull = (nextRow.get(0)==null);
       boolean nextCol1IsNull = (nextRow.get(1)==null);
-  
+
       if (nextCol0IsNull || nextCol1IsNull) continue;
 
       if (nextRow.get(0).equals(pickListVals[0])) {  // fixed width...
         nextWidthStr = (String)(nextRow.get(1));
-        
+
         if (!(nextWidthStr.trim().equals(EMPTY_STRING))) {
-      
+
           if (!WizardSettings.isFloat(nextWidthStr)) returnVal = false;
           else {
             returnVal = (Float.parseFloat(nextWidthStr) > 0);
           }
         }
-      }  
+      }
     }
     return returnVal;
   }
 
 
 
-  
+
   private OrderedMap listResultsMap = new OrderedMap();
   //
   private OrderedMap getCmplxDelimListAsNVP() {
-  
+
     listResultsMap.clear();
-      
+
     // CHECK FOR AND ELIMINATE EMPTY ROWS...
-    list.deleteEmptyRows( CustomList.OR, 
-                          new short[] { CustomList.NULL, 
+    list.deleteEmptyRows( CustomList.OR,
+                          new short[] { CustomList.NULL,
                                         CustomList.EMPTY_STRING_NOTRIM } );
-    
+
     int predicateIndex      = 1;
     StringBuffer buff       = new StringBuffer();
     List rowLists           = list.getListOfRowLists();
     String fixedDelimStr    = null;
-  
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-  
+
       Object nextRowObj = it.next();
-    
+
       if (nextRowObj==null) continue;
-      
+
       List nextRow = (List)nextRowObj;
-    
+
       if (nextRow.size() < 1) continue;
-      
+
       if (nextRow.get(0).equals(pickListVals[0])) {
-      
+
         fixedDelimStr = "textFixed/fieldWidth";
-        
+
       } else if (nextRow.get(0).equals(pickListVals[1])) {
-      
+
         fixedDelimStr = "textDelimited/fieldDelimiter";
-        
+
       }
-      
+
       String nextVal = (String)(nextRow.get(1));
-      
+
       // substitute hex values for tabs and spaces:
       if (nextVal.equals("\\t")) nextVal = WizardSettings.HEX_VALUE_TAB;
       if (nextVal.equals(" ")) nextVal  = WizardSettings.HEX_VALUE_SPACE;
-      
+
       buff.delete(0,buff.length());
       buff.append(COMPLEX_TEXT_XPATH);
       buff.append(fixedDelimStr);
@@ -693,7 +694,7 @@ public class DataFormat extends AbstractWizardPage{
 
   }
 
-  
+
   /**
    *  gets the OrderedMap object that contains all the key/value paired
    *  settings for this particular wizard page
@@ -704,23 +705,23 @@ public class DataFormat extends AbstractWizardPage{
   private OrderedMap returnMap = new OrderedMap();
 
   public OrderedMap getPageData() {
-    
+
     returnMap.clear();
-    
+
     if (formatXPath==null || formatXPath==RASTER_XPATH) {
-    
+
       // if no data, return empty Map:
       return returnMap;
-    
+
     } else if (formatXPath==SIMPLE_TEXT_XPATH)  {
-  
+
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationSimple);
-      
+
       int index=1;
       StringBuffer buff = new StringBuffer();
-      
+
       if (delim_tab!=null) {
-        
+
         buff.delete(0,buff.length());
         buff.append(SIMPLE_TEXT_XPATH);
         buff.append("[");
@@ -728,9 +729,9 @@ public class DataFormat extends AbstractWizardPage{
         buff.append("]");
         returnMap.put(buff.toString(), delim_tab);
       }
-      
+
       if (delim_comma!=null) {
-        
+
         buff.delete(0,buff.length());
         buff.append(SIMPLE_TEXT_XPATH);
         buff.append("[");
@@ -738,9 +739,9 @@ public class DataFormat extends AbstractWizardPage{
         buff.append("]");
         returnMap.put(buff.toString(), delim_comma);
       }
-    
+
       if (delim_space!=null) {
-        
+
         buff.delete(0,buff.length());
         buff.append(SIMPLE_TEXT_XPATH);
         buff.append("[");
@@ -748,9 +749,9 @@ public class DataFormat extends AbstractWizardPage{
         buff.append("]");
         returnMap.put(buff.toString(), delim_space);
       }
-    
+
       if (delim_semicolon!=null) {
-        
+
         buff.delete(0,buff.length());
         buff.append(SIMPLE_TEXT_XPATH);
         buff.append("[");
@@ -758,9 +759,9 @@ public class DataFormat extends AbstractWizardPage{
         buff.append("]");
         returnMap.put(buff.toString(), delim_semicolon);
       }
-    
+
       if (delim_other==true) {
-        
+
         buff.delete(0,buff.length());
         buff.append(SIMPLE_TEXT_XPATH);
         buff.append("[");
@@ -769,58 +770,58 @@ public class DataFormat extends AbstractWizardPage{
         returnMap.put(buff.toString(), otherDelimTextFieldSimple.getText());
          // do not ".trim()"!!!
       }
-                                         
-    
+
+
     } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
-    
+
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationComplex);
-      
+
       returnMap.putAll(getCmplxDelimListAsNVP());
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
 
       returnMap.put(PROPRIETARY_XPATH, proprietaryText);
-    
+
 //    } else if (formatXPath==RASTER_XPATH) {
 
     }
     return returnMap;
   }
-  
-  
+
+
   private final JTextField otherDelimTextFieldSimple
                                           = WidgetFactory.makeOneLineTextField();
-  
+
   private JPanel getDelimiterCheckBoxPanel() {
-  
+
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    
+
     JPanel cbPanel = WidgetFactory.makeCheckBoxPanel(delimiterCheckBoxesText, -1,
       new ItemListener() {
-    
+
         public void itemStateChanged(ItemEvent e) {
 
           String cmd = ( (JCheckBox)(e.getSource()) ).getActionCommand();
           int stateChange = e.getStateChange();
-          
+
           Log.debug(45, "got checkBox state changed: "+cmd
                                 +"; type of state change = "
                 +((stateChange==ItemEvent.SELECTED)? "SELECTED": "UNSELECTED"));
 
           if (cmd.indexOf(delimiterCheckBoxesText[0])==0) {
-        
-            delim_tab       = (stateChange==ItemEvent.SELECTED)? 
+
+            delim_tab       = (stateChange==ItemEvent.SELECTED)?
                                           WizardSettings.HEX_VALUE_TAB : null;
-        
+
           } else if (cmd.indexOf(delimiterCheckBoxesText[1])==0) {
-      
+
             delim_comma     = (stateChange==ItemEvent.SELECTED)? "," : null;
-            
+
           } else if (cmd.indexOf(delimiterCheckBoxesText[2])==0) {
-      
-            delim_space     = (stateChange==ItemEvent.SELECTED)? 
+
+            delim_space     = (stateChange==ItemEvent.SELECTED)?
                                           WizardSettings.HEX_VALUE_SPACE : null;
-            
+
           } else if (cmd.indexOf(delimiterCheckBoxesText[3])==0) {
 
             delim_semicolon = (stateChange==ItemEvent.SELECTED)? ";" : null;
@@ -830,77 +831,84 @@ public class DataFormat extends AbstractWizardPage{
             delim_other = (stateChange==ItemEvent.SELECTED);
             otherDelimTextFieldSimple.setEnabled(delim_other);
             otherDelimTextFieldSimple.requestFocus();
-            
+
           }
         }
       });
     panel.add(cbPanel);
-    
-    otherDelimTextFieldSimple.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
-    otherDelimTextFieldSimple.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
+
+    otherDelimTextFieldSimple.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    otherDelimTextFieldSimple.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     otherDelimTextFieldSimple.setEnabled(false);
     JPanel otherPanel = new JPanel();
     otherPanel.setLayout(new BoxLayout(otherPanel, BoxLayout.X_AXIS));
     otherPanel.add(otherDelimTextFieldSimple);
     otherPanel.add(Box.createGlue());
     panel.add(otherPanel);
-    
+
     return panel;
   }
-  
-  
-  
+
+
+
   private JPanel getOrientationRadioPanel() {
-    
+
     return WidgetFactory.makeRadioPanel(orientButtonsText, 0,
       new ActionListener() {
-    
+
         public void actionPerformed(ActionEvent e) {
-      
+
           Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-      
+
           if (e.getActionCommand().equals(orientButtonsText[0])) {
-        
+
             setOrientation(COLUMN_MAJOR);
-            
+
           } else if (e.getActionCommand().equals(orientButtonsText[1])) {
-      
+
             setOrientation(ROW_MAJOR);
           }
         }
       });
   }
-  
-  
+
+
   private void setOrientation(String orient) {
-  
+
     if (formatXPath==SIMPLE_TEXT_XPATH)  orientationSimple  = orient;
     if (formatXPath==COMPLEX_TEXT_XPATH) orientationComplex = orient;
   }
 
 
-  
+
   /**
    *  gets the unique ID for this wizard page
    *
    *  @return   the unique ID String for this wizard page
    */
   public String getPageID() { return pageID; }
-  
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
+
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
   public String getTitle() { return title; }
-  
+
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
   public String getSubtitle() { return subtitle; }
-  
+
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
    *  button is pressed. If this is the last page, return value must be null

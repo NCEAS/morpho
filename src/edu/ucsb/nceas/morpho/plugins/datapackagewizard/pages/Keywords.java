@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:20 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ public class Keywords extends AbstractWizardPage{
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Keyword Sets";
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";
+  private final String pageNumber  = "4";
 
   private final String[] colNames =  {"Thesaurus", "Keywords"};
   private final Object[] editors  =   null; //makes non-directly-editable
@@ -295,6 +296,13 @@ public class Keywords extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }
 }

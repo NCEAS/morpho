@@ -1,15 +1,15 @@
 /**
- *  '$RCSfile: UsageRights.java,v $'
+ *  '$RCSfile: Taxonomic.java,v $'
  *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Chad Berkley
+ *    Authors: Saurabh Garg
  *    Release: @release@
  *
  *   '$Author: sgarg $'
  *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.3 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,93 +28,78 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 
+import java.util.Map;
+import java.util.List;
+import javax.swing.Box;
 import javax.swing.JLabel;
-import javax.swing.BoxLayout;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import javax.swing.AbstractAction;
 
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class UsageRights extends AbstractWizardPage{
+public class Taxonomic extends AbstractWizardPage {
 
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  public final String pageID     = DataPackageWizardInterface.TAXONOMIC;
+  public final String nextPageID = DataPackageWizardInterface.TEMPORAL;
+  public final String pageNumber = "10";
 
-  private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
-  private final String nextPageID = DataPackageWizardInterface.DATA_LOCATION;
-  private final String pageNumber = "12";
-  private final String title      = "General Dataset Information:";
-  private final String subtitle   = "Usage Rights";
+//////////////////////////////////////////////////////////
 
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  public final String title      = "Taxonomic Information";
+  public final String subtitle   = " ";
 
-  private JTextArea   usageField;
-  private JLabel      usageLabel;
+  private JLabel radioLabel;
 
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  private final String[] buttonsText = new String[] {
+      "READ",
+      "ALL",
+      "NONE"
+  };
 
-  public UsageRights() { init(); }
+  public Taxonomic() {
+
+    init();
+  }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
-   * are displayed only in this frame (doesn't include prev/next buttons etc)
+   are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
-
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    JPanel vbox = this;
-
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-      "Each Data Package may have intellectual rights associated with the "
-      +"dataset.  You may declare that the data package is in now in "
-      +"the public domain, or that there are certain ethical restrictions in "
-      +"using the data.", 2);
-    vbox.add(desc);
-
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-
-    JLabel titleDesc = WidgetFactory.makeHTMLLabel(
-        "Enter a paragraph that describes the intended usage rights of the "
-        +"data package.", 2);
-    vbox.add(titleDesc);
-
-    JPanel usagePanel = WidgetFactory.makePanel();
-
-    JLabel usageLabel = WidgetFactory.makeLabel("Usage Rights:", false);
-    usagePanel.add(usageLabel);
-
-    usageField = WidgetFactory.makeTextArea("", 15, true);
-
-    JScrollPane jscrl = new JScrollPane(usageField);
-
-    usagePanel.add(jscrl);
-    vbox.add(usagePanel);
-
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    this.setLayout(new BorderLayout());
 
   }
 
+  /**
+   *
+   */
+  private void initActions() {
 
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
+  }
 
 
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
-    usageField.requestFocus();
   }
 
 
@@ -123,7 +108,6 @@ public class UsageRights extends AbstractWizardPage{
    *
    */
   public void onRewindAction() {
-
   }
 
 
@@ -135,28 +119,21 @@ public class UsageRights extends AbstractWizardPage{
    *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() { return true; }
+  public boolean onAdvanceAction() {
+    return true;
+  }
 
 
   /**
-   *  gets the OrderedMap object that contains all the key/value paired
+   *  gets the Map object that contains all the key/value paired
    *  settings for this particular wizard page
    *
-   *  @return   data the OrderedMap object that contains all the
+   *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  private OrderedMap returnMap = new OrderedMap();
-
   public OrderedMap getPageData() {
 
-    returnMap.clear();
-
-    if ( !(usageField.getText().trim().equals("")) ) {
-
-      returnMap.put("/eml:eml/dataset/intellectualRights/section/para[1]",
-                    usageField.getText().trim());
-    }
-    return returnMap;
+    return null;
   }
 
 
@@ -193,10 +170,10 @@ public class UsageRights extends AbstractWizardPage{
   public String getNextPageID() { return nextPageID; }
 
   /**
-   *  Returns the serial number of the page
-   *
-   *  @return the serial number of the page
-   */
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
   public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }

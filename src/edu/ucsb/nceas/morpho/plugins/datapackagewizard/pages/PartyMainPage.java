@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:20 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,7 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.AbstractAction;
 
-
 import java.awt.event.ActionEvent;
-
 import java.awt.BorderLayout;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
@@ -51,6 +49,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomPickList;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -60,6 +59,7 @@ public class PartyMainPage extends AbstractWizardPage{
 
   public String pageID;
   public String nextPageID;
+  public String pageNumber;
 
   private final String[] colNames =  {"Party", "Role", "Address"};
   private final Object[] editors  =   null; //makes non-directly-editable
@@ -73,6 +73,7 @@ public class PartyMainPage extends AbstractWizardPage{
   private JLabel      minRequiredLabel;
   private CustomList  partiesList;
   private boolean     oneOrMoreRequired;
+  private CustomPickList partiesPickList;
 
   public PartyMainPage(short role) {
 
@@ -90,11 +91,12 @@ public class PartyMainPage extends AbstractWizardPage{
         oneOrMoreRequired = true;
         pageID     = DataPackageWizardInterface.PARTY_CREATOR;
         nextPageID = DataPackageWizardInterface.PARTY_CONTACT;
+        pageNumber = "6";
         subtitle = "Owners";
         xPathRoot = "/eml:eml/dataset/creator[";
         description =
-            "<p><b>Enter information about the Owners</b>: The information of the "
-            +"person or organization responsible for the data. The list of data "
+            "<p><b>Enter information about the Owners</b>: This is information about the "
+            +"person or organizations certified for the data. The list of data "
             +"owners should include all people and organizations who should be cited "
             +"for the data. Select Add to add an owner"
             +"<br></br></p>";
@@ -105,11 +107,12 @@ public class PartyMainPage extends AbstractWizardPage{
         oneOrMoreRequired = true;
         pageID     = DataPackageWizardInterface.PARTY_CONTACT;
         nextPageID = DataPackageWizardInterface.PARTY_ASSOCIATED;
+        pageNumber = "7";
         subtitle = "Contacts";
         xPathRoot = "/eml:eml/dataset/contact[";
         description =
-            "<p><b>Enter information about the Contacts</b>: The full name of the "
-            +"person or organization who are the contacts for this dataset. This is "
+            "<p><b>Enter information about the Contacts</b>: This is information about the "
+            +"person or organizations who are the contacts for this dataset. This is "
             +"the person or institution to contact with questions about the use or "
             +"interpretation of a data package. This may or may not be same as the owner."
             +"<br></br></p>";
@@ -119,12 +122,14 @@ public class PartyMainPage extends AbstractWizardPage{
 
         oneOrMoreRequired = false;
         pageID     = DataPackageWizardInterface.PARTY_ASSOCIATED;
-        nextPageID = DataPackageWizardInterface.USAGE_RIGHTS;
+        nextPageID = DataPackageWizardInterface.GEOGRAPHIC;
+        pageNumber = "8";
         subtitle = "Associated Parties";
         xPathRoot = "/eml:eml/dataset/associatedParty[";
         description =
-         "<p><b>Enter information about Associated People and Organizations</b>: The full name of the people or organization the full names of other people, organizations, "
-        +"or positions who should be associated with the resource. These "
+         "<p><b>Enter information about Associated People and Organizations</b>: "
+        +"This is information about the people or organizations "
+        +"who should be associated with the resource. These "
         +"parties might play various roles in the creation or maintenance of "
         +"the resource, and these roles should be indicated in the \"role\" "
         +"element.<br></br></p>";
@@ -135,8 +140,8 @@ public class PartyMainPage extends AbstractWizardPage{
         subtitle = "Personnel";
         xPathRoot = "/eml:eml/dataset/project/personnel[";
         description =
-         "<p>b>Enter information about Personnel</b>: the full names of other people, organizations, "
-        +"or positions who should be associated with the resource. These "
+         "<p>b>Enter information about Personnel</b>: This is information about "
+        +"the people or organizations who should be associated with the resource. These "
         +"parties might play various roles in the creation or maintenance of "
         +"the resource, and these roles should be indicated in the \"role\" "
         +"element.<br></br></p>";
@@ -175,6 +180,14 @@ public class PartyMainPage extends AbstractWizardPage{
 
     vPanel.add(partiesList);
 
+    partiesPickList = new CustomPickList();
+
+    vPanel.add(WidgetFactory.makeDefaultSpacer());
+
+    vPanel.add(partiesPickList);
+
+    vPanel.add(WidgetFactory.makeDefaultSpacer());
+
     this.add(vPanel, BorderLayout.CENTER);
 
     initActions();
@@ -207,7 +220,19 @@ public class PartyMainPage extends AbstractWizardPage{
           showEditPartyDialog();
         }
       });
+
+    partiesPickList.setCustomAddAction(
+
+      new AbstractAction() {
+
+        public void actionPerformed(ActionEvent e) {
+
+           Log.debug(45, "\nPartyPage: CustomAddAction called");
+           showAddPartyDialog();
+         }
+       });
   }
+
 
   private void showNewPartyDialog() {
 
@@ -219,6 +244,7 @@ public class PartyMainPage extends AbstractWizardPage{
       List newRow = partyPage.getSurrogate();
       newRow.add(partyPage);
       partiesList.addRow(newRow);
+      partiesPickList.addRow(newRow);
     }
 
     if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
@@ -235,7 +261,6 @@ public class PartyMainPage extends AbstractWizardPage{
 
     if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
     PartyPage editPartyPage = (PartyPage)dialogObj;
-
     WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
     wpd.resetBounds();
     wpd.setVisible(true);
@@ -249,10 +274,39 @@ public class PartyMainPage extends AbstractWizardPage{
   }
 
 
+  private void showAddPartyDialog() {
+
+    List selRowList = partiesPickList.getSelectedRowList();
+
+    if (selRowList==null || selRowList.size() < 4) return;
+
+    Object dialogObj = selRowList.get(3);
+
+    if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
+    PartyPage editPartyPage = (PartyPage)dialogObj;
+    editPartyPage.modifyEditPage(role);
+    WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
+    wpd.resetBounds();
+    wpd.setVisible(true);
+
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+      List newRow = editPartyPage.getSurrogate();
+      newRow.add(editPartyPage);
+      partiesList.addRow(newRow);
+      partiesPickList.addRow(newRow);
+    }
+
+    if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
+  }
+
+
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
-  public void onLoadAction() {}
+  public void onLoadAction() {
+
+    partiesPickList.getList();
+  }
 
 
   /**
@@ -357,6 +411,13 @@ public class PartyMainPage extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }
 }

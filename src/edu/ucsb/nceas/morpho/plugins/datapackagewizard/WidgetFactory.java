@@ -22,10 +22,14 @@ import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import java.util.List;
+import java.util.ArrayList;
 
 public class WidgetFactory {
 
   private static boolean debugHilite = false;
+
+  public static List responsiblePartyList = new ArrayList();
 
   private WidgetFactory() {}
 

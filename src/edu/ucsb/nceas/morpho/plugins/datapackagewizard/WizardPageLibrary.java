@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:19 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ public class WizardPageLibrary {
   public WizardPageLibrary() {
 
     pages.put(DataPackageWizardInterface.INTRODUCTION,       new Introduction());
+    pages.put(DataPackageWizardInterface.PROJECT_INTRO,      new ProjectIntro());
     pages.put(DataPackageWizardInterface.PROJECT,            new Project());
     pages.put(DataPackageWizardInterface.GENERAL,            new General());
     pages.put(DataPackageWizardInterface.KEYWORDS,           new Keywords());
@@ -89,12 +90,15 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.PARTY_CREATOR,      new PartyMainPage(PartyPage.CREATOR));
     pages.put(DataPackageWizardInterface.PARTY_CONTACT,      new PartyMainPage(PartyPage.CONTACT));
     pages.put(DataPackageWizardInterface.PARTY_ASSOCIATED,   new PartyMainPage(PartyPage.ASSOCIATED));
-
     pages.put(DataPackageWizardInterface.USAGE_RIGHTS,       new UsageRights());
     pages.put(DataPackageWizardInterface.DATA_LOCATION,      new DataLocation());
     pages.put(DataPackageWizardInterface.TEXT_IMPORT_WIZARD, new ImportWizard());
     pages.put(DataPackageWizardInterface.DATA_FORMAT,        new DataFormat());
     pages.put(DataPackageWizardInterface.ENTITY,             new Entity());
+    pages.put(DataPackageWizardInterface.ACCESS,             new Access());
+    pages.put(DataPackageWizardInterface.GEOGRAPHIC,         new Geographic());
+    pages.put(DataPackageWizardInterface.TAXONOMIC,          new Taxonomic());
+    pages.put(DataPackageWizardInterface.TEMPORAL,           new Temporal());
     pages.put(DataPackageWizardInterface.SUMMARY,            new Summary());
   }
 

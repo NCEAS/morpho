@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:20 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ public class PartyPage extends AbstractWizardPage {
   private final String nextPageID = "";
   private final String title      = "Attribute Page";
   private final String subtitle   = "";
+  private final String pageNumber = "";
 
   public static final short CREATOR    = 0;
   public static final short CONTACT    = 10;
@@ -96,7 +97,7 @@ public class PartyPage extends AbstractWizardPage {
   private JTextField faxField;
   private JTextField emailField;
   private JTextField urlField;
-
+  private JPanel rolePanel;
   private JPanel middlePanel;
 
   private final String[] roleArray
@@ -134,9 +135,49 @@ public class PartyPage extends AbstractWizardPage {
       case PERSONNEL:
         roleString = "Personnel";
         break;
+    }
+
+    init();
+  }
+
+
+  public void modifyEditPage(short role) {
+    int oldRole = this.role;
+    this.role = role;
+
+    switch (role) {
+
+      case CREATOR:
+        roleString = "Owner";
+        break;
+      case CONTACT:
+        roleString = "Contact";
+        break;
+      case ASSOCIATED:
+        roleString = "Associated Party";
+        break;
+      case PERSONNEL:
+        roleString = "Personnel";
+        break;
 
     }
-    init();
+
+    if ((role == ASSOCIATED || role == PERSONNEL) && (oldRole == CONTACT || oldRole == CREATOR)) {
+      rolePanel = WidgetFactory.makePanel(1);
+      roleLabel = WidgetFactory.makeLabel("Role:", true);
+      rolePanel.add(roleLabel);
+//  roleField = WidgetFactory.makeOneLineTextField();
+      rolePickList = WidgetFactory.makePickList(roleArray, false, 0,
+                                                new ItemListener(){ public void itemStateChanged(ItemEvent e) {}});
+      rolePanel.add(rolePickList);
+      middlePanel.add(rolePanel);
+      middlePanel.add(WidgetFactory.makeHalfSpacer());
+    }
+
+    if ((oldRole == ASSOCIATED || oldRole == PERSONNEL) && (role == CONTACT || role == CREATOR)) {
+      middlePanel.remove(rolePanel);
+    }
+
   }
 
   /**
@@ -157,7 +198,7 @@ public class PartyPage extends AbstractWizardPage {
 
     ////
     if (role == ASSOCIATED || role == PERSONNEL) {
-      JPanel rolePanel = WidgetFactory.makePanel(1);
+      rolePanel = WidgetFactory.makePanel(1);
       roleLabel = WidgetFactory.makeLabel("Role:", true);
       rolePanel.add(roleLabel);
     //  roleField = WidgetFactory.makeOneLineTextField();
@@ -291,7 +332,7 @@ public class PartyPage extends AbstractWizardPage {
     warningPanel.setVisible(false);
     setPrefMinMaxSizes(warningLabel, PARTY_FULL_LABEL_DIMS);
     middlePanel.add(warningPanel);
-
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
   }
 
 
@@ -416,6 +457,12 @@ public class PartyPage extends AbstractWizardPage {
    */
   public String getNextPageID() { return this.nextPageID; }
 
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
 
   /**
    *  @return a List contaiing 3 String elements - one for each column of the

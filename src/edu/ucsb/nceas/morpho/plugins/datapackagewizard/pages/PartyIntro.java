@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:20 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public class PartyIntro extends AbstractWizardPage{
   public final String nextPageID = DataPackageWizardInterface.PARTY_CREATOR;
   public final String title      = "General Data Package Information:";
   public final String subtitle   = "People and Organizations";
-
+  public final String pageNumber = "5";
 
   public PartyIntro() {
 
@@ -150,6 +150,13 @@ public class PartyIntro extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }
 }

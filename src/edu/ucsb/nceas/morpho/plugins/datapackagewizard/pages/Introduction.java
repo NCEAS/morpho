@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:20 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,9 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 public class Introduction extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.INTRODUCTION;
-  public final String nextPageID = DataPackageWizardInterface.PROJECT;
+  public final String nextPageID = DataPackageWizardInterface.PROJECT_INTRO;
+  public final String pageNumber = "1";
+
 //////////////////////////////////////////////////////////
 
   public final String title      = "Welcome to the Data Package Wizard";
@@ -63,10 +65,10 @@ public class Introduction extends AbstractWizardPage {
   private void init() {
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-    "<p>If you do not have a basic understanding of metadat and "
+    "<p>If you do not have a basic understanding of metadata and "
     +"related concepts you should start by reading the <a>Ecological Metadata "
     +"Language(EML) Guide</a>. It provides background information on metadata "
-    +"and contains metadata creation examples. this wizard creates a <i>Data "
+    +"and contains metadata creation examples. This wizard creates a <i>Data "
     +"Package</i> that consists of metadata that describes your data and the "
     +"data itself. The wizard uses a subset of EML to describe your data. If "
     +"additional metadata are needed to adequately document your data use "
@@ -167,6 +169,13 @@ public class Introduction extends AbstractWizardPage {
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }
 }

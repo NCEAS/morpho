@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,32 +61,33 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class Entity extends AbstractWizardPage{
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private final String pageID     = DataPackageWizardInterface.ENTITY;
-  private final String nextPageID = DataPackageWizardInterface.SUMMARY;
+  private final String nextPageID = DataPackageWizardInterface.ACCESS;
+  private final String pageNumber = "";
   private final String title      = "Data Information:";
   private final String subtitle   = "Table (Entity)";
   private final String xPathRoot  = "/eml:eml/dataset/dataTable";
-  
-  private final String[] colNames =  {"Attribute Name", 
-                                      "Attribute Definition", 
+
+  private final String[] colNames =  {"Attribute Name",
+                                      "Attribute Definition",
                                       "Measurement Scale"};
   private final Object[] editors  =   null; //makes non-directly-editable
-  
-  private JTextField  entityNameField;  
+
+  private JTextField  entityNameField;
   private JTextArea   entityDescField;
   private JLabel      entityNameLabel;
   private CustomList  attributeList;
   private JLabel      attributesLabel;
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Entity() { init(); }
-  
-  
-  
+
+
+
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    * are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -94,7 +95,7 @@ public class Entity extends AbstractWizardPage{
   private void init() {
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    
+
     this.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
@@ -103,32 +104,32 @@ public class Entity extends AbstractWizardPage{
       +"after you create your data package. Required fields are highlighted. ",
                                                                              2);
     this.add(desc1);
-    
+
     this.add(WidgetFactory.makeDefaultSpacer());
     this.add(WidgetFactory.makeDefaultSpacer());
-    
+
     ///
     JPanel attributePanel = WidgetFactory.makePanel(1);
-    
+
     entityNameLabel = WidgetFactory.makeLabel("Table name:", true);
 
     attributePanel.add(entityNameLabel);
-    
+
     entityNameField = WidgetFactory.makeOneLineTextField();
     attributePanel.add(entityNameField);
-    
+
     this.add(attributePanel);
-    
+
     this.add(WidgetFactory.makeDefaultSpacer());
-    
+
     ////////////////////////////////////////////////////////////////////////////
-    
+
     JLabel entityDesc = WidgetFactory.makeHTMLLabel(
     "Enter a paragraph that describes the table or entity, its type, and "
     +"relevant information about the data that it contains.<br></br>"
     +"<font color=\"666666\">&nbsp;&nbsp;[Example:&nbsp;&nbsp;&nbsp;Species "
     +"abundance data for 1996 at the VCR LTER site]</font>", 3);
-    
+
     this.add(entityDesc);
 
     JPanel entityDescPanel = WidgetFactory.makePanel();
@@ -137,104 +138,104 @@ public class Entity extends AbstractWizardPage{
     entityLabel.setVerticalAlignment(SwingConstants.TOP);
     entityLabel.setAlignmentY(SwingConstants.TOP);
     entityDescPanel.add(entityLabel);
-    
+
     entityDescField = WidgetFactory.makeTextArea("", 6, true);
     JScrollPane jscrl = new JScrollPane(entityDescField);
     entityDescPanel.add(jscrl);
     this.add(entityDescPanel);
-    
+
     ////////////////////////////////////////////////////////////////////////////
     this.add(WidgetFactory.makeDefaultSpacer());
-    
+
     this.add(WidgetFactory.makeHTMLLabel(
                       "One or more attributes (columns) must be defined:", 1));
-    
+
     JPanel attribsPanel = WidgetFactory.makePanel();
 
     attributesLabel = WidgetFactory.makeLabel("Attributes", true);
     attribsPanel.add(attributesLabel);
-    
+
     attributeList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
     attribsPanel.add(attributeList);
-    
+
     this.add(attribsPanel);
 
     initActions();
   }
 
-  
-  /** 
+
+  /**
    *  Custom actions to be initialized for list buttons
    */
   private void initActions() {
-  
-    attributeList.setCustomAddAction( 
-      
+
+    attributeList.setCustomAddAction(
+
       new AbstractAction() {
-    
+
         public void actionPerformed(ActionEvent e) {
-      
+
           Log.debug(45, "\nEntity: CustomAddAction called");
           showNewAttributeDialog();
         }
       });
-  
-    attributeList.setCustomEditAction( 
-      
+
+    attributeList.setCustomEditAction(
+
       new AbstractAction() {
-    
+
         public void actionPerformed(ActionEvent e) {
-      
+
           Log.debug(45, "\nEntity: CustomEditAction called");
           showEditAttributeDialog();
         }
       });
   }
-  
+
   private void showNewAttributeDialog() {
-    
+
     AttributePage attributePage = new AttributePage();
     WizardPopupDialog wpd = new WizardPopupDialog(attributePage, WizardContainerFrame.frame);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
-    
+
       List newRow = attributePage.getSurrogate();
       newRow.add(attributePage);
       attributeList.addRow(newRow);
     }
     WidgetFactory.unhiliteComponent(attributesLabel);
   }
-  
+
 
   private void showEditAttributeDialog() {
-    
+
     List selRowList = attributeList.getSelectedRowList();
-    
+
     if (selRowList==null || selRowList.size() < 4) return;
-    
+
     Object dialogObj = selRowList.get(3);
-    
+
     if (dialogObj==null || !(dialogObj instanceof AttributePage)) return;
     AttributePage editAttributePage = (AttributePage)dialogObj;
-    
+
     WizardPopupDialog wpd = new WizardPopupDialog(editAttributePage, WizardContainerFrame.frame);
     wpd.resetBounds();
     wpd.setVisible(true);
-    
+
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
-    
+
       List newRow = editAttributePage.getSurrogate();
       newRow.add(editAttributePage);
       attributeList.replaceSelectedRow(newRow);
     }
   }
 
-  
-  
 
-  
-  
+
+
+
+
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
@@ -242,127 +243,127 @@ public class Entity extends AbstractWizardPage{
 
     entityNameField.requestFocus();
   }
-  
-  
+
+
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
   public void onRewindAction() {
-    
+
     WidgetFactory.unhiliteComponent(attributesLabel);
   }
-  
-  
-  /** 
+
+
+  /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. May be empty, but if so, must 
+   *  or "Finish" button(last page) is pressed. May be empty, but if so, must
    *  return true
    *
-   *  @return boolean true if wizard should advance, false if not 
+   *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    
+
     if (entityNameField.getText().trim().equals("")) {
 
       WidgetFactory.hiliteComponent(entityNameLabel);
       entityNameField.requestFocus();
       return false;
     }
-    
+
     if (attributeList.getRowCount() < 1) {
 
       WidgetFactory.hiliteComponent(attributesLabel);
       return false;
     }
-    return true; 
+    return true;
   }
-  
-  
-  /** 
+
+
+  /**
    *  gets the Map object that contains all the key/value paired
    *  settings for this particular wizard page
    *
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  
+
   private OrderedMap returnMap = new OrderedMap();
   //
   public OrderedMap getPageData() {
-  
+
     returnMap.clear();
-    
-    returnMap.put(xPathRoot + "/entityName", 
+
+    returnMap.put(xPathRoot + "/entityName",
                   entityNameField.getText().trim());
-                  
+
     String entityDesc = entityDescField.getText().trim();
     if (!entityDesc.equals("")) {
       returnMap.put(xPathRoot + "/entityDescription", entityDesc);
     }
-    
+
     returnMap.put(xPathRoot + "/physical/objectName", "");
     returnMap.put(xPathRoot + "/physical/dataFormat", "");
-                  
+
     int index = 1;
     Object  nextRowObj      = null;
     List    nextRowList     = null;
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
     AttributePage nextAttributePage = null;
-    
+
     List rowLists = attributeList.getListOfRowLists();
-    
+
     if (rowLists==null) return null;
-    
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-    
+
       nextRowObj = it.next();
       if (nextRowObj==null) continue;
-      
+
       nextRowList = (List)nextRowObj;
       //column 2 is user object - check it exists and isn't null:
       if (nextRowList.size()<4)     continue;
       nextUserObject = nextRowList.get(3);
       if (nextUserObject==null) continue;
-      
+
       nextAttributePage = (AttributePage)nextUserObject;
-      
-      nextNVPMap = nextAttributePage.getPageData(xPathRoot 
+
+      nextNVPMap = nextAttributePage.getPageData(xPathRoot
                                 + "/attributeList/attribute["+(index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
   }
-  
-  
-  
-  
+
+
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  
+
+
   /**
    *  gets the unique ID for this wizard page
    *
    *  @return   the unique ID String for this wizard page
    */
   public String getPageID() { return pageID; }
-  
+
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
   public String getTitle() { return title; }
-  
+
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
   public String getSubtitle() { return subtitle; }
-  
+
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
    *  button is pressed. If this is the last page, return value must be null
@@ -371,6 +372,13 @@ public class Entity extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
-  
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
+
   public void setPageData(OrderedMap data) { }
 }

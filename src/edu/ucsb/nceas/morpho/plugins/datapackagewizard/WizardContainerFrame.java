@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:19 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,7 +298,7 @@ public class WizardContainerFrame extends JFrame {
 
     stepLabel = new JLabel();
     stepLabel.setBorder(BorderFactory.createEmptyBorder(3,10,3,3));
-    stepLabel.setText("Step " + stepNumber + " of " + WizardSettings.NUMBER_OF_STEPS );
+    stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS );
 
     bottomBorderPanel.add(stepLabel, BorderLayout.WEST);
     bottomBorderPanel.add(bottomPanel, BorderLayout.CENTER);
@@ -343,9 +343,6 @@ public class WizardContainerFrame extends JFrame {
 
     // * * * N E X T * * *
 
-      stepNumber++;
-      stepLabel.setText("Step " + stepNumber + " of " + WizardSettings.NUMBER_OF_STEPS );
-
       //put current page on stack
       Log.debug(45,"setCurrentPage pushing currentPage to Stack ("
                                               +getCurrentPage().getPageID()+")");
@@ -356,6 +353,7 @@ public class WizardContainerFrame extends JFrame {
 
       setCurrentPage(pageLib.getPage(nextPgID));
 
+      stepLabel.setText("Step " + getCurrentPage().getPageNumber() + " of " + WizardSettings.NUMBER_OF_STEPS );
     } else {
 
     // * * * F I N I S H * * *
@@ -383,6 +381,8 @@ public class WizardContainerFrame extends JFrame {
 
     int GENERAL
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GENERAL));
+    int PROJECT_INTRO
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT_INTRO));
     int PROJECT
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
     int KEYWORDS
@@ -414,7 +414,11 @@ public class WizardContainerFrame extends JFrame {
       if (titleObj!=null) wizData.put(titleXPath,
                                       XMLUtilities.normalize(titleObj));
     }
-//PROJECT
+//PROJECT_INTRO:
+
+
+//PROJECT:
+
 
 //CREATOR:
     if (PARTY_CREATOR>=0)       {
@@ -640,8 +644,7 @@ public class WizardContainerFrame extends JFrame {
     Log.debug(45,"previousAction - popped page with ID: "
                                       +previousPage.getPageID()+" from stack");
 
-    stepNumber--;
-    stepLabel.setText("Step " + stepNumber + " of " + WizardSettings.NUMBER_OF_STEPS );
+    stepLabel.setText("Step " + previousPage.getPageNumber() + " of " + WizardSettings.NUMBER_OF_STEPS );
 
     getCurrentPage().onRewindAction();
 
@@ -693,7 +696,6 @@ public class WizardContainerFrame extends JFrame {
   // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private JLabel stepLabel;
-  private int stepNumber = 1;
   private int PADDING = WizardSettings.PADDING;
   private Container contentPane;
   private JPanel topPanel;

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.1 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,40 +78,41 @@ public class AttributePage extends AbstractWizardPage {
 
   private final String pageID     = DataPackageWizardInterface.ATTRIBUTE_PAGE;
   private final String nextPageID = "";
+  private final String pageNumber = "";
   private final String title      = "Attribute Page";
   private final String subtitle   = "";
-  
+
   public static final int BORDERED_PANEL_TOT_ROWS = 9;
   public static final int DOMAIN_NUM_ROWS = 8;
-  
+
   private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
   private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
-  
+
   private JTextField attribNameField;
-  
+
   private JLabel kwLabel;
   private JLabel attribNameLabel;
   private JLabel attribDefinitionLabel;
   private JLabel measScaleLabel;
   private JPanel currentPanel;
-  
+
   // to be visible in setData() function call
   private JPanel radioPanel;
-      
+
   private JPanel nominalPanel;
   private JPanel ordinalPanel;
   private JPanel intervalPanel;
   private JPanel ratioPanel;
   private JPanel dateTimePanel;
-  
+
   private JPanel middlePanel;
-  
+
   private String measurementScale;
 
   private final String xPathRoot = AttributeSettings.Attribute_xPath;
-  
+
   private JTextArea attribDefinitionField;
-  private final String[] buttonsText  
+  private final String[] buttonsText
       = {
           WizardSettings.HTML_NO_TABLE_OPENING
           +"NOMINAL:&nbsp;&nbsp;&nbsp;numbers have been assigned only for "
@@ -120,7 +121,7 @@ public class AttributePage extends AbstractWizardPage {
           +"e.g: assigning 1 for male and 2 for female"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
-          
+
           WizardSettings.HTML_NO_TABLE_OPENING
           +"ORDINAL:&nbsp;&nbsp;&nbsp;can determine order of categories, "
           +"but not magnitude of their differences. "
@@ -128,22 +129,22 @@ public class AttributePage extends AbstractWizardPage {
           +"e.g: ranking system: 1=good,2=fair,3=poor."
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
-          
+
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"INTERVAL:&nbsp;&nbsp;data consist of equidistant points on a " 
+          +"INTERVAL:&nbsp;&nbsp;data consist of equidistant points on a "
           +"scale."+WizardSettings.HTML_EXAMPLE_FONT_OPENING
           +"e.g: Celsius scale (no "
           +"natural zero point; 20C is not twice as hot as 10C)"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
-          
+
           WizardSettings.HTML_NO_TABLE_OPENING
           +"RATIO:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data which "
           +"has equidistant points <b>and</b> a meaningful zero point. "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: length in meters"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
-          
+
           WizardSettings.HTML_NO_TABLE_OPENING
           +"DATE-TIME: values that comply with the Gregorian calendar "
           +"system."+WizardSettings.HTML_EXAMPLE_FONT_OPENING
@@ -161,35 +162,35 @@ public class AttributePage extends AbstractWizardPage {
   public static final int MEASUREMENTSCALE_INTERVAL = 2;
   public static final int MEASUREMENTSCALE_RATIO    = 3;
   public static final int MEASUREMENTSCALE_DATETIME = 4;
-  
-  
-    // 
-  /*public AttributePage(JFrame parent) { 
-  
-    super(parent); 
-    
+
+
+    //
+  /*public AttributePage(JFrame parent) {
+
+    super(parent);
+
     initNames();
     init();
     this.setVisible(true);
   }
-  
-  public AttributePage(JFrame parent, boolean showNow) { 
-  
-    super(parent); 
-    
+
+  public AttributePage(JFrame parent, boolean showNow) {
+
+    super(parent);
+
     initNames();
     init();
     this.setVisible(showNow);
   }*/
-  
-  public AttributePage() { 
-  
+
+  public AttributePage() {
+
     initNames();
     init();
   }
-  
+
   private void initNames() {
-    
+
     measScaleElemNames[MEASUREMENTSCALE_NOMINAL]  = "nominal";
     measScaleElemNames[MEASUREMENTSCALE_ORDINAL]  = "ordinal";
     measScaleElemNames[MEASUREMENTSCALE_INTERVAL] = "interval";
@@ -198,12 +199,12 @@ public class AttributePage extends AbstractWizardPage {
   }
 
 
-  /** 
-   * initialize method does frame-specific design - i.e. adding the widgets that 
+  /**
+   * initialize method does frame-specific design - i.e. adding the widgets that
    are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
-	 
+
     middlePanel = new JPanel();
     this.setLayout( new BorderLayout());
     this.add(middlePanel,BorderLayout.CENTER);
@@ -211,9 +212,9 @@ public class AttributePage extends AbstractWizardPage {
 
     middlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>Define Attribute or Column:</b></font>", 1));
-    
+
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    
+
     ////
     JPanel attribNamePanel = WidgetFactory.makePanel(1);
     attribNameLabel = WidgetFactory.makeLabel("Attribute name:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
@@ -221,21 +222,21 @@ public class AttributePage extends AbstractWizardPage {
     attribNameField = WidgetFactory.makeOneLineTextField();
     attribNamePanel.add(attribNameField);
     middlePanel.add(attribNamePanel);
-        
+
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////////////////////////////////////////////////////////////////////////////
-    
-    // this embedding and use of html on a label instead of calling 
-    // WidgetFactory.makeHTMLLabel() is required because the Java HTML rendering 
+
+    // this embedding and use of html on a label instead of calling
+    // WidgetFactory.makeHTMLLabel() is required because the Java HTML rendering
     // on JLabels seems to be buggy - using WidgetFactory.makeHTMLLabel() yields
     // labels that resize themselves depending which radiobutton is chosen :-(
     Dimension infoDim = new Dimension(WizardSettings.DIALOG_WIDTH,40);
     JPanel infoPanel  = new JPanel();
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
-    
+
     JLabel infoLabel = WidgetFactory.makeLabel(
-    
+
     WizardSettings.HTML_NO_TABLE_OPENING
     +"Define the contents of the attribute (or column) precisely, "
     +"so that a data user could interpret the attribute accurately.<br></br>"
@@ -244,9 +245,9 @@ public class AttributePage extends AbstractWizardPage {
     +"\"spden\" is the number of individuals of all macro invertebrate species "
     +"found in the plot]"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_OPENING, false, infoDim);
-    
+
     infoLabel.setAlignmentX(1.0f);
-    
+
     infoPanel.add(infoLabel);
     infoPanel.add(Box.createGlue());
     middlePanel.add(infoPanel);
@@ -257,84 +258,84 @@ public class AttributePage extends AbstractWizardPage {
     attribDefinitionLabel.setVerticalAlignment(SwingConstants.TOP);
     attribDefinitionLabel.setAlignmentY(SwingConstants.TOP);
     attribDefinitionPanel.add(attribDefinitionLabel);
-    
+
     attribDefinitionField = WidgetFactory.makeTextArea("", 3, true);
     JScrollPane jscrl = new JScrollPane(attribDefinitionField);
     attribDefinitionPanel.add(jscrl);
     middlePanel.add(attribDefinitionPanel);
- 
+
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    
+
     ////
     ActionListener listener = new ActionListener() {
-      
+
       public void actionPerformed(ActionEvent e) {
-        
+
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
 
         //undo any hilites:
-        
+
         if (e.getActionCommand().equals(buttonsText[0])) {
           nominalPanel.repaint();
           setMeasurementScaleUI(nominalPanel);
           setMeasurementScale(measScaleElemNames[0]);
 	  nominalPanel.repaint();
-                    
+
         } else if (e.getActionCommand().equals(buttonsText[1])) {
-        
+
           setMeasurementScaleUI(ordinalPanel);
           setMeasurementScale(measScaleElemNames[1]);
-                  
-          
+
+
         } else if (e.getActionCommand().equals(buttonsText[2])) {
-        
+
           setMeasurementScaleUI(intervalPanel);
           setMeasurementScale(measScaleElemNames[2]);
-                  
-          
+
+
         } else if (e.getActionCommand().equals(buttonsText[3])) {
-        
+
           setMeasurementScaleUI(ratioPanel);
           setMeasurementScale(measScaleElemNames[3]);
-                  
+
         } else if (e.getActionCommand().equals(buttonsText[4])) {
-        
+
           setMeasurementScaleUI(dateTimePanel);
           setMeasurementScale(measScaleElemNames[4]);
-                    
+
         }
       }
     };
 
     measScaleLabel = WidgetFactory.makeLabel(
-                                "Select and define a Measurement Scale:", true, 
+                                "Select and define a Measurement Scale:", true,
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-                                
+
     middlePanel.add(measScaleLabel);
-    
+
     radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
-    
+
     middlePanel.add(radioPanel);
-    
+
     currentPanel  = getEmptyPanel();
-    
+
     middlePanel.add(currentPanel);
-    
+
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
     ordinalPanel  = getNomOrdPanel(MEASUREMENTSCALE_ORDINAL);
     intervalPanel = getIntervalRatioPanel(MEASUREMENTSCALE_INTERVAL);
     ratioPanel    = getIntervalRatioPanel(MEASUREMENTSCALE_RATIO);
     dateTimePanel = getDateTimePanel();
-    
-  } 
+
+  }
 
   private void setMeasurementScale(String scale) {
 
     this.measurementScale = scale;
   }
-  
-  
-  
+
+
+
 
   private void setMeasurementScaleUI(JPanel panel) {
 
@@ -347,51 +348,51 @@ public class AttributePage extends AbstractWizardPage {
     middlePanel.validate();
     middlePanel.repaint();
   }
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private JPanel getEmptyPanel() {
-    
+
     JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
-    
+
     panel.add(WidgetFactory.makeDefaultSpacer());
 
     return panel;
   }
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   // nom_ord can be MEASUREMENTSCALE_NOMINAL or MEASUREMENTSCALE_ORDINAL
   private NominalOrdinalPanel getNomOrdPanel(int nom_ord) {
-  
+
     NominalOrdinalPanel panel = new NominalOrdinalPanel(this);
     WidgetFactory.addTitledBorder(panel, measScaleElemNames[nom_ord]);
     return panel;
   }
-    
+
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  
+
+
   private IntervalRatioPanel getIntervalRatioPanel(int intvl_ratio) {
 
     IntervalRatioPanel panel = new IntervalRatioPanel(this);
     WidgetFactory.addTitledBorder(panel, measScaleElemNames[intvl_ratio]);
     return panel;
   }
-    
-  
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  
+
+
   private DateTimePanel getDateTimePanel() {
 
     DateTimePanel panel = new DateTimePanel(this);
     WidgetFactory.addTitledBorder(panel, measScaleElemNames[MEASUREMENTSCALE_DATETIME]);
     return panel;
   }
-    
-  
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
@@ -399,99 +400,105 @@ public class AttributePage extends AbstractWizardPage {
    *  calls validate() and repaint() on the middle panel
    */
   public void refreshUI() {
-  
+
     currentPanel.validate();
     currentPanel.repaint();
     middlePanel.validate();
     middlePanel.repaint();
   }
-  
-  /** 
+
+  /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *  Here, it does nothing because this is just a Panel and not the outer container
    */
-   
+
   public void onRewindAction() {
   }
-  
-  /** 
+
+  /**
    *  The action to be executed when the page is loaded
    *  Here, it does nothing because this is just a Panel and not the outer container
    */
-   
+
   public void onLoadAction() {
   }
-  
-  /** 
+
+  /**
    *  gets the unique ID for this wizard page
    *
    *  @return   the unique ID String for this wizard page
    */
   public String getPageID() { return this.pageID;}
 
-  /** 
+  /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
   public String getTitle() { return title; }
-  
-  /** 
+
+  /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
   public String getSubtitle() { return subtitle; }
-  
-  /** 
-   *  Returns the ID of the page that the user will see next, after the "Next" 
+
+  /**
+   *  Returns the ID of the page that the user will see next, after the "Next"
    *  button is pressed. If this is the last page, return value must be null
    *
-   *  @return the String ID of the page that the user will see next, or null if 
+   *  @return the String ID of the page that the user will see next, or null if
    *  this is te last page
    */
   public String getNextPageID() { return this.nextPageID; }
-  
-  
-  /** 
-   *  The action to be executed when the "OK" button is pressed. If no onAdvance 
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
+
+  /**
+   *  The action to be executed when the "OK" button is pressed. If no onAdvance
    *  processing is required, implementation must return boolean true.
    *
-   *  @return boolean true if dialog should close and return to wizard, false 
+   *  @return boolean true if dialog should close and return to wizard, false
    *          if not (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
 
     if (attribNameField.getText().trim().equals("")) {
-  
+
       WidgetFactory.hiliteComponent(attribNameLabel);
       attribNameField.requestFocus();
       return false;
     }
     WidgetFactory.unhiliteComponent(attribNameLabel);
-    
+
     if (attribDefinitionField.getText().trim().equals("")) {
-  
+
       WidgetFactory.hiliteComponent(attribDefinitionLabel);
       attribDefinitionField.requestFocus();
       return false;
     }
     WidgetFactory.unhiliteComponent(attribDefinitionLabel);
-    
+
     if (measurementScale==null) {
-  
+
       WidgetFactory.hiliteComponent(measScaleLabel);
       return false;
     }
     WidgetFactory.unhiliteComponent(measScaleLabel);
-    
+
     return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
   }
 
 
-  
+
   /**
-   *  @return a List contaiing 2 String elements - one for each column of the 
+   *  @return a List contaiing 2 String elements - one for each column of the
    *  2-col list in which this surrogate is displayed
    *
    */
@@ -521,12 +528,12 @@ public class AttributePage extends AbstractWizardPage {
   }
 
 
-  /** 
+  /**
    *  gets the Map object that contains all the key/value paired
    *
-   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-   *            appended when making name/value pairs.  For example, in the 
-   *            following xpath: 
+   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be
+   *            appended when making name/value pairs.  For example, in the
+   *            following xpath:
    *
    *            /eml:eml/dataset/dataTable/attributeList/attribute[2]
    *            /measurementScale/nominal/nonNumericDomain/textDomain/definition
@@ -536,7 +543,7 @@ public class AttributePage extends AbstractWizardPage {
    *              /eml:eml/dataset/dataTable/attributeList
    *                                /attribute[2]
    *
-   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
+   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN
    *            SQUARE BRACKETS []
    *
    *  @return   data the Map object that contains all the
@@ -545,7 +552,7 @@ public class AttributePage extends AbstractWizardPage {
   private OrderedMap   returnMap     = new OrderedMap();
   //////////////////
   public OrderedMap getPageData() {
-	  
+
 	  return this.getPageData(xPathRoot);
   }
   public OrderedMap getPageData(String xPathRoot) {
@@ -563,68 +570,68 @@ public class AttributePage extends AbstractWizardPage {
     }
 
     if (measurementScale!=null && !measurementScale.equals("")) {
-    
+
       returnMap.putAll(
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPathRoot+"/measurementScale/"+measurementScale) );
     }
-    
+
     return returnMap;
   }
-  
-  
-  
+
+
+
   private String findMeasurementScale(OrderedMap map) {
-		
+
 	Object o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
 	if(o1 != null) return "Nominal";
 	o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
 	if(o1 != null) return "Nominal";
-	
+
 	o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
 	if(o1 != null) return "Ordinal";
 	o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
 	if(o1 != null) return "Ordinal";
-	
+
 	o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
 	if(o1 != null) return "Interval";
 	o1 = map.get(AttributeSettings.Interval_xPath+"/numericDomain/numberType");
 	if(o1 != null) return "Interval";
-	
+
 	o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
 	if(o1 != null) return "Ratio";
 	o1 = map.get(AttributeSettings.Ratio_xPath+"/numericDomain/numberType");
 	if(o1 != null) return "Ratio";
-	
+
 	o1 = map.get(AttributeSettings.DateTime_xPath+"/formatString");
 	if(o1 != null) return "Datetime";
 	o1 = map.get(AttributeSettings.DateTime_xPath+"/dateTimePrecision");
 	if(o1 != null) return "Datetime";
-	
+
 	return "";
   }
-  
-  /** 
+
+  /**
    *  sets the Data in the Attribute Dialog fields. This is called from the TextImportWizard
    *  when it wants to set some information it has already guessed from the given data file.
-   *	
-   *  Any data in the AttributeDialog can be set through this method. The TextImportWizard 
-   *  however sets only the "Attribute Name", "Measurement Scale", "Number Type" and the 
+   *
+   *  Any data in the AttributeDialog can be set through this method. The TextImportWizard
+   *  however sets only the "Attribute Name", "Measurement Scale", "Number Type" and the
    *  "Enumeration Code Definitions"
    *
    *  @param  xPathRoot - this is the relative xPath of the current attribute
    *
-   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map 
+   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map
    *		    are absolute xPath and not the relative xPaths
    *
-   *  @param  mScale - The guessed measurement scale. The appropriate radioButton is 
+   *  @param  mScale - The guessed measurement scale. The appropriate radioButton is
    *			selected and that Panel is displayed
    *
    *
    */
-   
+
   public void setPageData(OrderedMap map) {
-	
+
 	String mScale = findMeasurementScale(map);
 	String xPathRoot = AttributeSettings.Attribute_xPath;
 	String name = (String)map.get(xPathRoot + "/attributeName");
@@ -633,12 +640,12 @@ public class AttributePage extends AbstractWizardPage {
 	String defn = (String)map.get(xPathRoot + "/attributeDefinition");
 	if(defn != null)
 		attribDefinitionField.setText(defn);
-	
+
 	if(mScale == null || mScale.equals(""))
 		return;
-	
+
 	measurementScale = mScale;
-	
+
 	int componentNum = -1;
 	if(measurementScale.equalsIgnoreCase("nominal")) {
 		  setMeasurementScaleUI(nominalPanel);
@@ -665,9 +672,9 @@ public class AttributePage extends AbstractWizardPage {
 		setMeasurementScale(measScaleElemNames[4]);
 		componentNum = 4;;
 	}
-	  
+
 	//selects the appropriate radio button
-	  
+
 	if(componentNum != -1) {
 		JRadioButton jrb = (JRadioButton)(radioPanel.getComponent(componentNum));
 		jrb.setSelected(true);
@@ -681,99 +688,99 @@ public class AttributePage extends AbstractWizardPage {
 	refreshUI();
 	return;
   }
-  
-  /** 
+
+  /**
    *  gets the HTML representation of the attribute values
-   *  The HTML text references the entity.css file 
+   *  The HTML text references the entity.css file
    *
    *  @return   the HTML text describes the attribute values
    */
-   
+
   public String getText() {
 	String text = "<html> <head> <link href=\"" + getFullStylePath() + "/entity.css\" type=\"text/css\" rel=\"stylesheet\"> </head> ";
 	text += "<body>";
 	text += "<table border=\"0\" cellpadding=\"5\" cellspacing=\"0\" width=\"100%\" cols = \"5\"> ";
-	
-	
+
+
 	// First row - Name:
 	text += "<tr>";
 	text += "<td class=\"highlight\"  width = \"35%\" > Name: </td>";
 	text += "<td class=\"secondCol\" width=\"65%\" colspan=\"4\">" + this.attribNameField.getText() + "</td>";
 	text += "</tr>";
-	
+
 	// Second row - Definition:
 	text += "<tr>";
 	text += "<td class=\"highlight\"  width = \"35%\" > Definition: </td>";
 	text += "<td class=\"secondCol\" width=\"65%\" colspan=\"4\">" + this.attribDefinitionField.getText() + "</td>";
-	text += "</tr>";	
-	
+	text += "</tr>";
+
 	String scale = measurementScale;
 	int index = 0;
-	
-	
+
+
 	OrderedMap map = getPageData(AttributeSettings.Attribute_xPath);
-	
+
 	if(measurementScale.equalsIgnoreCase("Nominal")) {
 		Object o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
 		if(o1 != null) { scale += "; Enumerated values"; index = 0; }
-		else { 
+		else {
 			o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
-			if(o1 != null)  { 
-				scale += "; Text values"; 
-				index = 1; 
+			if(o1 != null)  {
+				scale += "; Text values";
+				index = 1;
 			}
-			// both arent there. so Enumerated is the default - 
+			// both arent there. so Enumerated is the default -
 			// this occurs only at the first time, before the user edits the values
-			else { 
-				scale += "; Enumerated values"; 
-				index = 0; 
-			}  
+			else {
+				scale += "; Enumerated values";
+				index = 0;
+			}
 		}
 	}
 	else if(measurementScale.equalsIgnoreCase("Ordinal")) {
 		Object o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
 		if(o1 != null) { scale += "; Enumerated values"; index = 0; }
-		else { 
+		else {
 			o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
-			if(o1 != null)  { 
-				scale += "; Text values"; 
-				index = 1; 
+			if(o1 != null)  {
+				scale += "; Text values";
+				index = 1;
 			}
-			// both arent there. so Enumerated is the default - 
+			// both arent there. so Enumerated is the default -
 			// this occurs only at the first time, before the user edits the values
-			else { 
-				scale += "; Enumerated values"; 
-				index = 0; 
+			else {
+				scale += "; Enumerated values";
+				index = 0;
 			}
 		}
 	}
 
-	// Third row - Measurement Scale:	
+	// Third row - Measurement Scale:
 	text += "<tr>";
 	text += "<td class = \"highlight\"  width = \"35%\" > Measurement Scale: </td>";
 	text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + scale + "</td>";
 	text += "</tr>";
-	
 
-	
+
+
 	// Nominal measurement scale
 	if(measurementScale.equalsIgnoreCase("Nominal") || measurementScale.equalsIgnoreCase("Ordinal")) {
-		
+
 		String mainXPath;
 		if (measurementScale.equalsIgnoreCase("Nominal")) mainXPath = AttributeSettings.Nominal_xPath;
 		else mainXPath = AttributeSettings.Ordinal_xPath;
 		//Enumerated values
-		if(index == 0) { 
+		if(index == 0) {
 			text += "<tr>";
 			text += "<td class = \"tablehead\" > Definitions: </td>" ;
-			
+
 			String table="";
-			
+
 			table += "<td class = \"tablehead\" >Code </td>";
 			table += "<td class = \"tablehead\" >Definition </td>";
 			table += "<td class = \"tablehead\" colspan=\"2\">Source </td>";
 			table += "</tr>";
-			
+
 			int i = 1;
 			String enumPath = "/enumeratedDomain[1]/codeDefinition[";
 			while(true) {
@@ -782,9 +789,9 @@ public class AttributePage extends AbstractWizardPage {
 				String e1 = (String) o;
 				o = map.get(mainXPath + enumPath + i + "]/definition" );
 				String e2;
-				if( o == null) e2 = "no definition"; 
-				else e2 = (String)o; 
-				
+				if( o == null) e2 = "no definition";
+				else e2 = (String)o;
+
 				o = map.get(mainXPath + enumPath + i + "]/source" );
 				String e3;
 				if( o == null) e3 ="";
@@ -795,11 +802,11 @@ public class AttributePage extends AbstractWizardPage {
 				table += "</tr>";
 				i++;
 			}
-			
+
 			text += table;
-			
-			
-		}	
+
+
+		}
 		// Text values
 		else if (index == 1) {
 			String textPath = "/textDomain[1]/";
@@ -808,7 +815,7 @@ public class AttributePage extends AbstractWizardPage {
 			text += "<td class =\"highlight\"  width = \"35%\"> Definition: </td>";
 			text += "<td class =\"secondCol\" width=\"65%\" colspan=\"4\"> " +  data + "</td>";
 			text += "</tr>";
-			
+
 			Object o = map.get(mainXPath + textPath + "source");
 			if(o != null) {
 				text += "<tr>";
@@ -817,7 +824,7 @@ public class AttributePage extends AbstractWizardPage {
 				text += "</tr>";
 			}
 			int i = 1;
-			
+
 			while(true) {
 				Object o1 = map.get(mainXPath + textPath + "pattern[" + i + "]");
 				if(o1 ==null) break;
@@ -827,50 +834,50 @@ public class AttributePage extends AbstractWizardPage {
 				} else {
 					text += "<td class =\"highlight\"></td>";
 				}
-				
+
 				text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\">" + (String)o1 + "</td>";
 				text += "</tr>";
 				i++;
 			}
-			
+
 		} // end of else if
-		
+
 	} // end of Nomimal/Ordinal
-	
+
 	// Interval / Ratio measurement scales
-	
+
 	if(measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) {
-		
+
 		String mainXPath;
 		if(measurementScale.equalsIgnoreCase("Interval")) mainXPath = AttributeSettings.Interval_xPath;
 		else mainXPath = AttributeSettings.Ratio_xPath;
-		
+
 		String unit = (String) map.get(mainXPath + "/unit/standardUnit");
-		
+
 		text += "<tr>";
 		text += "<td class = \"highlight\"  width = \"35%\" > Standard Unit: </td>";
 		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + unit + "</td>";
 		text += "</tr>";
-		
+
 		String precision = (String) map.get(mainXPath + "/precision");
-		
+
 		text += "<tr>";
 		text += "<td class = \"highlight\"  width = \"35%\"> Precision: </td>";
 		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\">" + precision + "</td>";
 		text += "</tr>";
-		
+
 		String numberType = (String) map.get(mainXPath + "/numericDomain/numberType");
-		
+
 		text += "<tr>";
 		text += "<td class = \"highlight\"  width = \"35%\"> Number Type: </td>";
 		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\">" + numberType + "</td>";
 		text += "</tr>";
-		
+
 		Object o1 = map.get(mainXPath + "/numericDomain/bounds[1]/minimum");
 		Object o2 = map.get(mainXPath + "/numericDomain/bounds[1]/maximum");
 		// add Bounds
 		if(o1 != null || o2 != null) {
-					
+
 			int pos = 1;
 			while(true) {
 				Object ob1 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/minimum");
@@ -879,13 +886,13 @@ public class AttributePage extends AbstractWizardPage {
 				String e1,e2;
 				if(ob1 == null) e1 = ""; else e1 = (String)ob1;
 				if(ob2 == null) e2 = ""; else e2 = (String)ob2;
-				
+
 				Object ob3 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/minimum/@exclusive");
 				Object ob4 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/maximum/@exclusive");
 				String e3,e4;
 				if(ob3 == null || ((String)ob3).equalsIgnoreCase("false")) e3 = "(incl)"; else e3 = "(excl)";
 				if(ob4 == null || ((String)ob4).equalsIgnoreCase("false")) e4 = "(incl)"; else e4 = "(excl)";
-				
+
 				text += "<tr>";
 				if(pos == 1) {
 					text += "<td class = \"highlight\"  width = \"35%\"> Bounds: </td>";
@@ -900,30 +907,30 @@ public class AttributePage extends AbstractWizardPage {
 				pos++;
 			}
 		} // end of adding bounds
-		
+
 	} // end of Interval/Ratio
-	
+
 	if(measurementScale.equalsIgnoreCase("Datetime")) {
-	
+
 		String mainXPath = AttributeSettings.DateTime_xPath;
-		
+
 		String format = (String) map.get(mainXPath + "/formatString");
 		String precision = (String) map.get(mainXPath + "/dateTimePrecision");
 		text += "<tr>";
 		text += "<td class = \"highlight\"  width = \"35%\" > Format: </td>";
 		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + format + "</td>";
 		text += "</tr>";
-		
+
 		text += "<tr>";
 		text += "<td class = \"highlight\"  width = \"35%\" > Precision: </td>";
 		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + precision + "</td>";
 		text += "</tr>";
-		
+
 		Object o1 = map.get(mainXPath + "/dateTimeDomain/bounds[1]/minimum");
 		Object o2 = map.get(mainXPath + "/dateTimeDomain/bounds[1]/maximum");
 		// add Bounds
 		if(o1 != null || o2 != null) {
-			
+
 			int pos = 1;
 			while(true) {
 				Object ob1 = map.get(mainXPath + "/dateTimeDomain/bounds[" + pos + "]/minimum");
@@ -932,13 +939,13 @@ public class AttributePage extends AbstractWizardPage {
 				String e1,e2;
 				if(ob1 == null) e1 = ""; else e1 = (String)ob1;
 				if(ob2 == null) e2 = ""; else e2 = (String)ob2;
-				
+
 				Object ob3 = map.get(mainXPath + "/dateTimeDomain/bounds[" + pos + "]/minimum/@exclusive");
 				Object ob4 = map.get(mainXPath + "/dateTimeDomain/bounds[" + pos + "]/maximum/@exclusive");
 				String e3,e4;
 				if(ob3 == null || ((String)ob3).equalsIgnoreCase("false")) e3 = "(incl)"; else e3 = "(excl)";
 				if(ob4 == null || ((String)ob4).equalsIgnoreCase("false")) e4 = "(incl)"; else e4 = "(excl)";
-				
+
 				text += "<tr>";
 				if(pos == 1) {
 					text += "<td class = \"highlight\" > Bounds: </td>";
@@ -952,21 +959,21 @@ public class AttributePage extends AbstractWizardPage {
 				text += "</tr>";
 				pos++;
 			}
-			
+
 		} // end of adding bounds
-		
+
 	} // end of DateTime
-	
+
 	text += "</table>";
 	text += "</body>";
 	text += "</html>";
-	
+
 	Log.debug(15,text);
 	return text;
-	
+
   } // end of function - getText()
-  
-  
+
+
   private String getFullStylePath()    {
 	String FULL_STYLE_PATH = null;
 	ConfigXML config = Morpho.getConfiguration();
@@ -983,10 +990,10 @@ public class AttributePage extends AbstractWizardPage {
         }
         return FULL_STYLE_PATH;
    }
-    
-  
-  
-   
-  
-  
+
+
+
+
+
+
 }

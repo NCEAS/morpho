@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 21:10:01 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2003-12-03 02:38:49 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ public class WizardSettings {
   = new Dimension(2000,20);
 
   public static final String HTML_FONT_OPENING
-          = "<font size=\"3\">";
+          = "<font size=\"3\" face=\"san-sarif\">";
 
   public static final String HTML_EXAMPLE_FONT_OPENING
                                                   = "<font color=\"#666666\">";
@@ -215,7 +215,7 @@ public class WizardSettings {
 
   protected static final String OK_BUTTON_TEXT      = "OK";
 
-  protected static final String NUMBER_OF_STEPS     = "11";
+  public static String NUMBER_OF_STEPS              = "15";
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "
