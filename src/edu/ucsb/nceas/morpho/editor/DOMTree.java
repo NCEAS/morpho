@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-03 21:24:59 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-10-06 18:02:41 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,6 +177,10 @@ public class DOMTree
         /** Node Map. */
         private Hashtable nodeMap = new Hashtable();
         
+        /**
+         *  An inverse nodeMap for getting treeNode from node
+         */
+         private Hashtable invNodeMap = new Hashtable();
 
         //
         // Constructors
@@ -206,6 +210,7 @@ public class DOMTree
             // clear tree and re-populate
             ((DefaultMutableTreeNode)getRoot()).removeAllChildren();
             nodeMap.clear();
+            invNodeMap.clear();
             buildTree();
             fireTreeStructureChanged(this, new Object[] { getRoot() }, new int[0], new Object[0]);
 
@@ -219,6 +224,11 @@ public class DOMTree
         /** get the org.w3c.Node for a MutableTreeNode. */
         public Node getNode(Object treeNode) {
             return (Node)nodeMap.get(treeNode);
+        }
+
+        /** get a MutableTreeNode from the org.w3c.Node - DFH */
+        public Object getInvNode(Node node) {
+            return (Object)invNodeMap.get(node);
         }
 
         //
@@ -285,6 +295,7 @@ public class DOMTree
         private MutableTreeNode insertDocumentNode(Node what, MutableTreeNode where) {
             MutableTreeNode treeNode = insertNode("<"+what.getNodeName()+'>', where, null);
             nodeMap.put(treeNode, what);
+            invNodeMap.put(what, treeNode);
             return treeNode;
             }
 
@@ -308,6 +319,7 @@ public class DOMTree
             
             MutableTreeNode element = insertNode(name.toString(), where, ht);
             nodeMap.put(element, what);
+            invNodeMap.put(what, element);
             
             // gather up attributes and children nodes
             NodeList children = what.getChildNodes();
@@ -339,7 +351,8 @@ public class DOMTree
             String value = what.getNodeValue().trim();
             if (value.length() > 0) {
                 MutableTreeNode treeNode = insertTNode(value, where);
-                nodeMap.put(treeNode, what);            
+                nodeMap.put(treeNode, what); 
+                invNodeMap.put(what, treeNode);
                 return treeNode;
                 }
             return null;
@@ -354,7 +367,8 @@ public class DOMTree
          //--- optional --- CSectionBfr.append( "]]>" );
          if (CSectionBfr.length() > 0) {
             MutableTreeNode treeNode = insertNode(CSectionBfr.toString(), where, null);
-            nodeMap.put(treeNode, what);            
+            nodeMap.put(treeNode, what);
+            invNodeMap.put(what, treeNode);
             return treeNode;
             }
          return null;
