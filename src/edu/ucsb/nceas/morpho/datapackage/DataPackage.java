@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.54 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-12 20:48:51 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.framework.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
@@ -210,6 +211,36 @@ public class DataPackage
   public String getID()
   {
     return this.id;
+  }
+  
+  /**
+   * Open a sub-element of this datapackage (for example, a Module, or a 
+   * sub-tree), given its String identifier.
+   * @param     identifier                  the unique identifier needed to 
+   *                                        locate the desired sub-element. 
+   * @return    a <code>java.io.Reader</code> to allow direct read access 
+   *                                        to the source
+   * @throws    DocumentNotFoundException   if document cannot be found
+   * @throws    FileNotFoundException       if document cannot succesfully be 
+   *                                        opened and a Reader returned
+   */
+  public Reader open(String identifier) throws  DocumentNotFoundException, 
+                                                FileNotFoundException
+  {
+    File xmlFile;
+    try {
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      xmlFile = fsds.openFile(id);
+    } catch(Exception ex1) {
+      try {
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        xmlFile = mds.openFile(id);
+      } catch(Exception ex2) {
+        throw new DocumentNotFoundException("DataPackage.open(): Error opening "
+                  + "selected file (CacheAccessException): "+ ex2.getMessage());
+      }
+    }
+    return new FileReader(xmlFile);
   }
   
   /**
