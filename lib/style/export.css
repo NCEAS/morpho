@@ -9,8 +9,8 @@
   *     Authors: Matt Jones
   *
   *    '$Author: brooke $'
-  *      '$Date: 2002-10-24 18:45:12 $'
-  *  '$Revision: 1.1 $'
+  *      '$Date: 2002-10-24 22:28:53 $'
+  *  '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ a {
 }
 
 a:hover {
-    color: blue;
+    color: green;
     text-decoration: underline; 
 }
 
@@ -64,11 +64,9 @@ a:hover {
 }
 
 .tablehead {
-    background: #abbbcc;
-    vertical-align: baseline;
+    background: #9aaabb;
     color: white;
     font-size: 12px;
-    font-weight: bold;
 }
 
 .roweven {
