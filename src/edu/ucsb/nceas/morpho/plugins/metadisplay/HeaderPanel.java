@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-29 00:50:44 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-11 15:53:44 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,8 +55,16 @@ import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
  */
 public class HeaderPanel extends JPanel
 {
-    // CONSTANTS
     
+    // * * * * * * * *  D E F A U L T   T E X T   L A B E L S   * * * * * * * * 
+    private static final String BACK_BUTTON_TEXT = "< back";
+    private static final String EDIT_BUTTON_TEXT = "edit";
+    private static final String CLOSE_BUTTON_TEXT = "hide X";
+    private static final String TITLEBAR_INIT_TEXT = "Metadata View";
+    private static final String PATH_INIT_TEXT = "You are here:\n";
+    private static final String PATH_SEPARATOR = ">>";
+ 
+
     // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
 
     private final Font TITLE_FONT  = new Font(null, Font.BOLD, 14);
@@ -116,7 +124,7 @@ public class HeaderPanel extends JPanel
         addPathBar();
         addBottomLine();
     }
-
+    
     //titlebar has a fixed height, and is the topmost component in the display 
     //(ie is loosely analogous to a JFrame titlebar).  It also has a back button 
     //and a close button.
@@ -133,10 +141,10 @@ public class HeaderPanel extends JPanel
         setTitleBarColor(TITLEBAR_COLOR);
         titleBar.setOpaque(true);
         this.add(titleBar, BorderLayout.NORTH);
-        
+
         //add back button:
         GUIAction backAction 
-                = new GUIAction("< back", null, new BackCommand(controller));
+            = new GUIAction(BACK_BUTTON_TEXT, null,new BackCommand(controller));
         JButton backButton = new JButton(backAction);
         backButton.setBackground(BACKBUTTON_COLOR);
         backButton.setForeground(BACKBUTTON_TEXT_COLOR);
@@ -145,7 +153,7 @@ public class HeaderPanel extends JPanel
         titleBar.add(backButton, BorderLayout.WEST);
         
         //add title text label
-        titleTextLabel = new JLabel("Metadata View");
+        titleTextLabel = new JLabel(TITLEBAR_INIT_TEXT);
         titleTextLabel.setForeground(TITLE_TEXT_COLOR);
         titleTextLabel.setFont(TITLE_FONT);
         titleTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -153,7 +161,8 @@ public class HeaderPanel extends JPanel
         
         //add close button:
         GUIAction closeAction 
-                = new GUIAction("close X", null, new CloseCommand(controller));
+            = new GUIAction(CLOSE_BUTTON_TEXT, null, 
+                                                new CloseCommand(controller));
         JButton closeButton = new JButton(closeAction);
         closeButton.setBackground(CLOSEBUTTON_COLOR);
         closeButton.setForeground(CLOSEBUTTON_TEXT_COLOR);
@@ -188,12 +197,12 @@ public class HeaderPanel extends JPanel
         JTextArea pathDisplayComponent = new JTextArea();
         pathBar.add(pathDisplayComponent, BorderLayout.CENTER);
         pathDisplayComponent.setBackground(pathBar.getBackground());
-        pathDisplayComponent.setText("You are here:\n>> dataPackage >> etc >> etc");
+        pathDisplayComponent.setText(PATH_INIT_TEXT);
         pathDisplayComponent.setEditable(false);
         
         //add edit button:
         GUIAction editAction
-                = new GUIAction("edit", null, new EditCommand(controller));
+            = new GUIAction(EDIT_BUTTON_TEXT, null,new EditCommand(controller));
         JButton editButton = new JButton(editAction);
         editButton.setBackground(EDITBUTTON_COLOR);
         editButton.setForeground(EDITBUTTON_TEXT_COLOR);

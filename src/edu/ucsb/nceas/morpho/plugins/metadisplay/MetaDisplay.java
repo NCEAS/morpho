@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 00:11:44 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-09-11 15:53:44 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,41 +174,6 @@ public class MetaDisplay implements MetaDisplayInterface,
         history.add(oldID);
     }
     
-    //displays the passed ID, but DOES NOT add the previous one to the history -
-    //that must be done separately, since it's not always required (eg when this 
-    //is called by displayPrevious() )
-    private void displayThisID(String identifier) 
-                                                throws DocumentNotFoundException
-    {
-        Reader reader = null;
-        String oldID = this.identifier; //the global one, not the local one
-        try  {
-            setIdentifier(identifier);
-        } catch (NullArgumentException nae) {
-            Log.debug(12, "NullArgumentException setting identifier: "
-                                            +identifier+"; "+nae.getMessage());
-            DocumentNotFoundException dnfe 
-                =  new DocumentNotFoundException("Nested NullArgumentException:"
-                                                            +nae.getMessage());
-            dnfe.fillInStackTrace();
-            throw dnfe;
-        }
-        try  {
-            reader = factory.openAsReader(identifier);
-        } catch (DocumentNotFoundException dnfe) {
-        
-            //reset ID to it's original value before exception occurred:
-            setIDBackTo(oldID);
-            
-            Log.debug(12, "DocumentNotFoundException getting Reader for ID: "
-                                            +identifier+"; "+dnfe.getMessage());
-            dnfe.fillInStackTrace();
-            throw dnfe;
-        }
-        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
-        ui.setHTML(getAsString(reader));
-    }
-
 
     /**
      *  method to display metadata in an existing instance of a visual component 
@@ -449,6 +414,68 @@ public class MetaDisplay implements MetaDisplayInterface,
 		return this.identifier;
 	}
 
+
+	//displays the passed ID, but DOES NOT add the previous one to the history -
+	//that must be done separately, since it's not always required (eg when this 
+	//is called by displayPrevious() )
+	private void displayThisID(String ID) 
+	                                            throws DocumentNotFoundException
+	{
+	    Reader xmlReader = null;
+	    String oldID = this.identifier; //the global one, not the local one
+	    try  {
+	        setIdentifier(ID);
+	    } catch (NullArgumentException nae) {
+	        Log.debug(12, "NullArgumentException setting identifier: "
+	                                        +ID+"; "+nae.getMessage());
+	        DocumentNotFoundException dnfe 
+	            =  new DocumentNotFoundException("Nested NullArgumentException:"
+	                                                        +nae.getMessage());
+	        dnfe.fillInStackTrace();
+	        throw dnfe;
+	    }
+	    try  {
+	        xmlReader = factory.openAsReader(ID);
+	    } catch (DocumentNotFoundException dnfe) {
+	    
+	        //reset ID to it's original value before exception occurred:
+	        setIDBackTo(oldID);
+	        
+	        Log.debug(12, "DocumentNotFoundException getting Reader for ID: "
+	                                        +ID+"; "+dnfe.getMessage());
+	        dnfe.fillInStackTrace();
+	        throw dnfe;
+	    }
+	    fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
+
+	    Reader resultReader = doTransform(xmlReader);
+	    String htmlDoc = getAsString(resultReader);
+        ui.setHTML(htmlDoc);
+	}
+
+    //sends xml Reader to morpho.util.XMLTransformer to be styled
+	private Reader doTransform(Reader xml) throws DocumentNotFoundException
+	{
+	    Reader result = null;
+	    try {
+	        result = transformer.transform(xml);
+	    } catch (IOException ioe) {
+	        String errMsg   = "MetaDisplay.doTransform(): \n"
+	                        + "throwing DocumentNotFoundException. \n"
+	                        + "Nested IOException is:\n"+ioe.getMessage()
+	                        + "\nXML document received was:\n"+getAsString(xml);
+	        Log.debug(12, errMsg);
+	        DocumentNotFoundException d = new DocumentNotFoundException(errMsg);
+	        d.fillInStackTrace();
+	        throw d;
+	    }
+	    Log.debug(50, "doTransform returning Reader: " + result
+                                                +" for ID: " + this.identifier);
+	    return result;
+//        return xml;
+	}    
+
+    
     //sets ID
 	private void setIdentifier(String identifier) throws NullArgumentException
 	{

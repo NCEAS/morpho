@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-26 23:48:18 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-11 15:53:44 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
 	private static final String DEFAULT_HTML =
-	     "<html><head></head>\n<body bgcolor=\"#ffffff\">&nbsp;</body></html>";
+	     "<html><head></head>\n<body bgcolor=\"#eeeeee\">&nbsp;</body></html>";
 
     private MetaDisplayInterface  controller;
 
@@ -110,6 +110,28 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 	 */
 	public void setHTML(String html)
 	{
+        Log.debug(50, "\nHTMLPanel.setHTML() received HTML: \n"+html+"\n");
+        html = stripHTMLMetaTags(html);
         this.setText(html);
+	}
+    
+    //strips <META ... > tags out of html String 
+	private String stripHTMLMetaTags(String html)
+	{
+        int META_END = 0;
+        final int META_START = html.indexOf("<META");
+        if (META_START>=0)  {  
+            final char[] htmlChars = html.toCharArray();
+            int charIndex = META_START;
+            char nextChar = ' '; 
+            do {
+                nextChar = htmlChars[charIndex];
+                htmlChars[charIndex] = ' ';
+                charIndex++;
+            } while ((nextChar!='>') && (charIndex < htmlChars.length));
+            html = String.valueOf(htmlChars);
+            return stripHTMLMetaTags(html);
+	    }
+        return html;
 	}
 }

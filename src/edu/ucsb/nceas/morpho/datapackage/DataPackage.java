@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 21:09:13 $'
- * '$Revision: 1.74 $'
+ *     '$Date: 2002-09-11 15:53:44 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1277,22 +1277,24 @@ Log.debug(50,"* * DataPackage: doing xml transform");
          
             xmlInputReader = new FileReader((File)fileV.elementAt(i));
             
-            xslInputReader = new InputStreamReader(
-                                   classLoader.getResourceAsStream(stylesheet));
+//            xslInputReader = new InputStreamReader(
+//                                   classLoader.getResourceAsStream(stylesheet));
 
             XMLTransformer transformer = XMLTransformer.getInstance();
             
 Log.debug(50,"* * DataPackage: File ="+((File)fileV.elementAt(i)).getAbsolutePath());            
 Log.debug(50,"* * DataPackage: xmlInputReader ="+xmlInputReader);            
 Log.debug(50,"* * DataPackage: stylesheet ="+stylesheet);            
-Log.debug(50,"* * DataPackage: xslInputReader ="+xslInputReader);
+//Log.debug(50,"* * DataPackage: xslInputReader ="+xslInputReader);
 Log.debug(50,"* * DataPackage: transformer ="+transformer); 
            
             try {
             
 Log.debug(50,"* * DataPackage: GETTING result...");
 
-              result = transformer.transform(xmlInputReader, xslInputReader);
+              result = transformer.transform(xmlInputReader);
+
+//              result = transformer.transform(xmlInputReader, xslInputReader);
               
 Log.debug(50,"* * DataPackage: GOT result: "+result);            
             } catch (IOException e) {
