@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-30 23:37:15 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2001-10-15 21:45:52 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -327,7 +327,7 @@ public class ConnectionFrame extends javax.swing.JDialog
   }
 
   /**
-   * Perform actions associated with the Disconnect button
+   * Perform actions associated with the Cancel button
    */
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
   {
