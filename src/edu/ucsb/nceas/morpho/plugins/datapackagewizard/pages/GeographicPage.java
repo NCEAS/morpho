@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-31 16:48:45 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-03-31 17:24:06 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ public class GeographicPage extends AbstractUIPage {
     covDescLabel.setAlignmentY(SwingConstants.TOP);
     covDescPanel.add(covDescLabel);
 
-    covDescField = WidgetFactory.makeTextArea("", 6, true);
+    covDescField = WidgetFactory.makeTextArea("", 2, true);
     JScrollPane jscrl = new JScrollPane(covDescField);
     covDescPanel.add(jscrl);
 
