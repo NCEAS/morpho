@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-20 21:08:49 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-21 18:35:34 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,8 @@ public class OpenDialogBoxCommand implements Command
   {
     OpenDialogBox open = null;
     open = new OpenDialogBox(morpho, ownerQuery);
+    // Set the open dialog box modal true
+    open.setModal(true);
     open.setVisible(true);
    
   }//execute
