@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-15 18:01:20 $'
- * '$Revision: 1.103 $'
+ *     '$Date: 2002-12-06 00:48:24 $'
+ * '$Revision: 1.104 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1566,6 +1566,37 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
+     * Returns true if this node has any descendents with text leaves
+     * which have contain ONLY white space
+     *
+     * @param node  Description of Parameter
+     * @return      Description of the Returned Value
+     */
+    boolean hasEmptyTextLeaves(DefaultMutableTreeNode node)
+    {
+        boolean res = false;
+        DefaultMutableTreeNode parentNode = null;
+        Enumeration enum = node.depthFirstEnumeration();
+        while (enum.hasMoreElements()) {
+            DefaultMutableTreeNode curNode = 
+                (DefaultMutableTreeNode)enum.nextElement();
+            if (curNode.isLeaf()) {
+                NodeInfo ni = (NodeInfo)curNode.getUserObject();
+
+                if (ni.name.equals("#PCDATA")) {
+                    // is a text node
+                    String pcdata = ni.getPCValue();
+                    if (pcdata.trim().length() == 0) {
+                        // has only white space
+                        return true;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+    
+    /**
      * Description of the Method
      *
      * @param jt     Description of Parameter
@@ -2092,15 +2123,33 @@ public class DocFrame extends javax.swing.JFrame
      */
     void EditingExit_actionPerformed(java.awt.event.ActionEvent event)
     {
-        // hide the Frame
-        this.setVisible(false);
         
         treeModel = (DefaultTreeModel)tree.getModel();
         rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
         String xmlout = writeXMLString(rootNode);
-        controller.fireEditingCompleteEvent(this, xmlout);
-        // free the system resources
-        this.dispose();
+        if (hasEmptyTextLeaves(rootNode)) {
+          int opt = JOptionPane.showConfirmDialog(null,
+                 "Some Required Fields are Empty", 
+                 "Do you want to Continue?",
+                 JOptionPane.YES_NO_OPTION);
+          if (opt == JOptionPane.YES_OPTION) {
+            
+          }
+          else {
+            return;
+          }
+        }
+        String valresult = validate(xmlout);
+        if (valresult.indexOf("<valid />")>-1) {
+          controller.fireEditingCompleteEvent(this, xmlout);
+          // hide the Frame
+          this.setVisible(false);
+          // free the system resources
+          this.dispose();
+        }
+        else {
+          Log.debug(1,"Validation problemXXX: "+valresult);
+        }
     }
 
     /**
@@ -2780,6 +2829,49 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 //--------------------------------------------------------------------------------------    
+
+  public String validate(String xml) {
+    Log.debug(11,"DocFrame: validating output using Metacat");
+    String res = "oops!";
+    Properties props = new Properties();
+    props.put("action", "validate");
+    props.put("valtext", xml);
+    props.put("qformat", "xml");
+    if (!morpho.getNetworkStatus()) {
+      Log.debug(11, "Could not check validity due to lack of network connection");  
+      int opt = JOptionPane.showConfirmDialog(null,
+                 "Could not check validity due to lack of network connection", 
+                 "Do you want to Continue?",
+                 JOptionPane.YES_NO_OPTION);
+      if (opt == JOptionPane.YES_OPTION) {
+        return "<valid />";           
+      }
+      else {
+       return "Could not check validity due to lack of network connection";
+      }
+    }
+    try {
+        StringWriter sos = new StringWriter();
+        InputStream metacatResponseStream = morpho.getMetacatInputStream(props);
+        Morpho.connectionBusy = true;
+      
+        int c = metacatResponseStream.read();
+        while (c!=-1) {
+          sos.write(c);
+          c = metacatResponseStream.read();
+        }
+        sos.flush();
+        sos.close();
+        metacatResponseStream.close();
+        res = sos.toString();
+        Morpho.connectionBusy = true;
+    }
+    catch (Exception e) {
+        Morpho.connectionBusy = true;
+        res = "Problem validating using Metacat";
+    }
+    return res;
+  }
 
 }
 
