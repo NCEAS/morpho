@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-26 19:32:54 $'
- * '$Revision: 1.50 $'
+ *   '$Author: jones $'
+ *     '$Date: 2003-01-08 18:21:31 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -273,6 +273,7 @@ public class DataPackagePlugin
     insertRowAfter.setToolTipText("Insert a row after selected row");
     insertRowAfter.setMenuItemPosition(i);
     insertRowAfter.setMenu("Data", DATAMENUPOSITION);
+    insertRowAfter.setAcceleratorKeyString("control I");
     insertRowAfter.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                       true, GUIAction.EVENT_LOCAL);
