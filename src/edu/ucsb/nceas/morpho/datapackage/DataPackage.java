@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:34:33 $'
- * '$Revision: 1.37 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-26 22:45:13 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,20 @@ import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.apache.xerces.dom.DocumentTypeImpl;
+/*
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+*/
+import org.xml.sax.SAXException;
+import org.apache.xalan.xslt.XSLTProcessorFactory;
+import org.apache.xalan.xslt.XSLTInputSource;
+import org.apache.xalan.xslt.XSLTResultTarget;
+import org.apache.xalan.xslt.XSLTProcessor;
+import org.apache.xalan.xpath.xml.XMLParserLiaison;
 
 import com.arbortext.catalog.*;
 
@@ -878,6 +892,7 @@ public class DataPackage
         if(!entryFile.isDirectory())
         {
           ze.setSize(entryFile.length());
+          System.out.println("============file length: " + entryFile.length());
           zos.putNextEntry(ze);
           FileInputStream fis = new FileInputStream(entryFile);
           int c = fis.read();
@@ -892,7 +907,6 @@ public class DataPackage
       packdir += "/metadata";
       temppackdir += "/metadata";
       File sourcedir = new File(temppackdir);
-//DFH      File[] sourcefiles = sourcedir.listFiles();
       File[] sourcefiles = listFiles(sourcedir);
       for(int i=0; i<sourcefiles.length; i++)
       {
@@ -900,6 +914,7 @@ public class DataPackage
         
         ZipEntry ze = new ZipEntry(packdir + "/" + f.getName());
         ze.setSize(f.length());
+        System.out.println("============file length: " + f.length());
         zos.putNextEntry(ze);
         FileInputStream fis = new FileInputStream(f);
         int c = fis.read();
@@ -925,7 +940,7 @@ public class DataPackage
    */
   public void export(String path)
   {
-    ClientFramework.debug(20, "exporting....................................");
+    ClientFramework.debug(20, "exporting...");
     ClientFramework.debug(20, "path: " + path);
     ClientFramework.debug(20, "id: " + id);
     ClientFramework.debug(20, "location: " + location);
@@ -964,7 +979,6 @@ public class DataPackage
       { //save one file at a time
         File f = new File(sourcePath + "/" + (String)files.elementAt(i));
         File openfile = null;
-//DFH        f.createNewFile();
         if(localloc)
         { //get the file locally and save it
           openfile = fsds.openFile((String)files.elementAt(i));
@@ -990,6 +1004,7 @@ public class DataPackage
       
       //copy the data file to the root of the package with its original name
       //if there is a data file
+      /*
       Vector triplesV = triples.getCollection();
       String dataFileName = null;
       String dataFileId = null;
@@ -1005,7 +1020,6 @@ public class DataPackage
           dataFileId = triple.getSubject();
           File datafile = new File(sourcePath + "/" + dataFileId);
           File realdatafile = new File(packagePath + "/" + dataFileName);
-//DFH          realdatafile.createNewFile();
           FileInputStream fis = new FileInputStream(datafile);
           FileOutputStream fos = new FileOutputStream(realdatafile);
           int c = fis.read();
@@ -1016,11 +1030,11 @@ public class DataPackage
           }
         }
       }
-      /*
-      //create a generic html file from all of the metadata
-      String htmlhead = "<html><head><title>Data Package Summary</title></head>";
-      htmlhead += "<body><table>";
-      String html = "";
+      */
+      
+      //create a html file from all of the metadata
+      StringBuffer htmldoc = new StringBuffer();
+      htmldoc.append("<html><head></head><body>");
       for(int i=0; i<fileV.size(); i++)
       {
         FileInputStream fis = new FileInputStream((File)fileV.elementAt(i));
@@ -1030,24 +1044,96 @@ public class DataPackage
           header += (char)fis.read();
         }
         fis.close();
-        System.out.println("==========================header: " + header);
         if(header.indexOf("<?xml") != -1)
         { //this is an xml file so we can transform it.
-          String catalogPath = config.get("local_catalog_path", 0);
-          Document convdoc = PackageUtil.getDoc((File)fileV.elementAt(i), 
-                                                 catalogPath);  
-          html += "--\n" + dft(convdoc, html, 0);
+          //transform each file individually then concatenate all of the 
+          //transformations together.
+          CatalogEntityResolver cer = new CatalogEntityResolver();
+          try 
+          {
+            Catalog myCatalog = new Catalog();
+            myCatalog.loadSystemCatalogs();
+            ConfigXML config = framework.getConfiguration();
+            String catalogPath = config.get("local_catalog_path", 0);
+            myCatalog.parseCatalog(catalogPath);
+            cer.setCatalog(myCatalog);
+          } 
+          catch (Exception e) 
+          {
+            ClientFramework.debug(9, "Problem creating Catalog in " +
+                         "DataPackage.export" + 
+                         e.toString());
+          }
+          
+          htmldoc.append("<h2>");
+          htmldoc.append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
+          htmldoc.append("</h2>");
+          //do the actual transform
+          XSLTProcessor processor = XSLTProcessorFactory.getProcessor();
+          XMLParserLiaison pl = processor.getXMLProcessorLiaison();
+          pl.setEntityResolver(cer);
+          fis = new FileInputStream((File)fileV.elementAt(i));
+          XSLTInputSource xis = new XSLTInputSource(fis);
+          StringWriter docstring = new StringWriter();
+          processor.process(xis,
+                            new XSLTInputSource("lib/style/generic.xsl"),
+                            new XSLTResultTarget(docstring));
+
+          //System.out.println("docstring: " + docwriter.toString());
+          htmldoc.append(docstring.toString());
+          htmldoc.append("<br><br><hr><br><br>");
+        }
+        else
+        { //this is a data file so we should link to it in the html
+          htmldoc.append("<a href=\"");
+          String fileid = getIdFromPath(((File)fileV.elementAt(i)).toString());
+          htmldoc.append("./metadata/").append(fileid).append("\">Data File</a>");
+          htmldoc.append("<br><hr><br>");
         }
       }
-      htmlhead += html;
-      htmlhead += "\n</table></body></html>";
-      System.out.println(htmlhead);*/
+      htmldoc.append("</body></html>");
+      //System.out.println(htmldoc.toString());
+      File htmlfile = new File(packagePath + "/metadata.html");
+      FileOutputStream fos = new FileOutputStream(htmlfile);
+      StringReader sr = new StringReader(htmldoc.toString());
+      int c = sr.read();
+      while(c != -1)
+      {
+        fos.write(c);
+        c = sr.read();
+      }
+      fos.flush();
+      fos.close();
     }
     catch(Exception e)
     {
       System.out.println("Error in DataPackage.export(): " + e.getMessage());
       e.printStackTrace();
     }
+  }
+  
+  /**
+   * returns the id of a file based on the path.  this method assumes that 
+   * the file is being stored
+   */
+  private String getIdFromPath(String path)
+  {
+    char sep = '/';
+    if(path.indexOf("\\") != -1)
+    { //check for windows separator
+      sep = '\\';
+    }
+    int lastSep = path.lastIndexOf(sep);
+    String num = path.substring(lastSep+1, path.length());
+    int secondToLastSep = lastSep - 1;
+    char c = path.charAt(secondToLastSep--);
+    while(c != sep)
+    {
+      secondToLastSep--;
+      c = path.charAt(secondToLastSep);
+    }
+    String scope = path.substring(secondToLastSep+1, lastSep);
+    return scope + "." + num;
   }
   
   /**
@@ -1089,9 +1175,9 @@ public class DataPackage
     }
   }
   
-  
- /* Checks a file to see if it is a text file by looking for bytes containing '0'
- */
+ /** 
+  * Checks a file to see if it is a text file by looking for bytes containing '0'
+  */
    private boolean isTextFile(File file) { 
      boolean text = true; 
      int res; 
