@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-06 23:20:06 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2002-09-07 16:56:32 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -955,6 +955,17 @@ public class DataViewer extends javax.swing.JPanel
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	  (table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+    table.registerKeyboardAction (new TableCopyAction(),
+                          KeyStroke.getKeyStroke("ctrl C"),
+                          JComponent.WHEN_FOCUSED);
+    table.registerKeyboardAction (new TablePasteAction(),
+                          KeyStroke.getKeyStroke("ctrl V"),
+                          JComponent.WHEN_FOCUSED);
+    table.registerKeyboardAction (new TableCutAction(),
+                          KeyStroke.getKeyStroke("ctrl X"),
+                          JComponent.WHEN_FOCUSED);
+      
       
     DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
