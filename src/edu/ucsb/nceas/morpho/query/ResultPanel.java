@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:07:24 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2002-08-25 23:29:06 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -83,6 +84,8 @@ public class ResultPanel extends JPanel
   private Morpho morpho = null;
   /** A reference to the mediator */
   private ResultPanelAndFrameMediator mediator = null;
+  /** A reference to a dialog box if the panel will be set into a open dialog */
+  private JDialog dialog = null;
   /** The table used to display the results */
   ToolTippedSortableJTable table = null;
   /** Button used to trigger a re-execution of the query */
@@ -132,39 +135,48 @@ public class ResultPanel extends JPanel
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
    *
+   * @param dialog the dialog the result will be set to. If it is null, the
+   *                result panel would be set to a dialog
    * @param results the result listing to display
    * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator)
+  public ResultPanel(JDialog dialog, ResultSet results, 
+                                        ResultPanelAndFrameMediator myMediator)
   {
-    this(results, 12, myMediator, new Dimension(775,500));
+    this(dialog, results, 12, myMediator, new Dimension(775,500));
   }
 
   /**
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
    *
+   * @param dialog the dialog the result will be set to. If it is null, the
+   *                result panel would be set to a dialog
    * @param results the result listing to display
    * @param myMediator the mediaor passed from frame to control table
+   * @param preferredSize the specific size of the panel
    */
-  public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator,
-          Dimension preferredSize)
+  public ResultPanel(JDialog dialog, ResultSet results, 
+              ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
-    this(results, 12, myMediator, preferredSize);
+    this(dialog, results, 12, myMediator, preferredSize);
   }
 
 
   /**
    * Construct a new ResultPanel and display the result set
    *
+   ** @param dialog the dialog the result will be set to. If it is null, the
+   *                result panel would be set to a dialog
    * @param results the result listing to display
    * @param fontSize the fontsize for the cells of the table
    * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(ResultSet results, int fontSize, 
+  public ResultPanel(JDialog dialog, ResultSet results, int fontSize, 
             ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
     super();
+    this.dialog = dialog;
     this.results = results;
     //this.hasRefreshButton = showRefresh;
     //this.hasReviseButton = showRevise;
