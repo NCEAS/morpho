@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2002-08-19 18:15:45 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -121,6 +122,7 @@ public class ResultPanel extends JPanel
   /**the location of the data package*/
   boolean metacatLoc = false;
   boolean localLoc = false;
+  private Dimension preferredSize;
   
   ImageIcon bfly;
   ImageIcon flapping;
@@ -141,7 +143,20 @@ public class ResultPanel extends JPanel
    */
   public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator)
   {
-    this(results, true, true, myMediator);
+    this(results, true, true, myMediator, new Dimension(775,500));
+  }
+
+  /**
+   * Construct a new ResultPanel and display the result set.  By default
+   * the panel has reset and refresh buttons.
+   *
+   * @param results the result listing to display
+   * @param myMediator the mediaor passed from frame to control table
+   */
+  public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator,
+          Dimension preferredSize)
+  {
+    this(results, true, true, myMediator, preferredSize);
   }
 
   /**
@@ -155,7 +170,23 @@ public class ResultPanel extends JPanel
   public ResultPanel(ResultSet results, boolean showRefresh, 
                  boolean showRevise, ResultPanelAndFrameMediator myMediator)
   {
-    this(results, showRefresh, showRevise, 12, myMediator);
+    this(results, showRefresh, showRevise, 12, myMediator, 
+            new Dimension(775, 500));
+  }
+
+  /**
+   * Construct a new ResultPanel and display the result set
+   *
+   * @param results the result listing to display
+   * @param showRefresh boolean true if the Refresh button should appear
+   * @param showRevise boolean true if the Revise button should appear
+   * @param myMediator the mediaor passed from frame to control table
+   */
+  public ResultPanel(ResultSet results, boolean showRefresh, 
+                 boolean showRevise, ResultPanelAndFrameMediator myMediator,
+                 Dimension preferredSize)
+  {
+    this(results, showRefresh, showRevise, 12, myMediator, preferredSize);
   }
 
   /**
@@ -168,7 +199,8 @@ public class ResultPanel extends JPanel
    * @param myMediator the mediaor passed from frame to control table
    */
   public ResultPanel(ResultSet results, boolean showRefresh,
-       boolean showRevise, int fontSize, ResultPanelAndFrameMediator myMediator)
+       boolean showRevise, int fontSize, ResultPanelAndFrameMediator myMediator,
+       Dimension preferredSize)
   {
     super();
     this.results = results;
@@ -176,6 +208,7 @@ public class ResultPanel extends JPanel
     this.hasReviseButton = showRevise;
     this.morpho = results.getFramework();
     this.mediator = myMediator;
+    this.preferredSize = preferredSize;
     // If the panel don't need a mediator, null will be passed here
     if (mediator != null)
     {
@@ -193,7 +226,8 @@ public class ResultPanel extends JPanel
 
     setLayout(new BorderLayout());
     setBackground(Color.white);
-    setPreferredSize(new Dimension(775,500));
+    //MBJ setPreferredSize(new Dimension(775,500));
+    setPreferredSize(preferredSize);
 
     if (results != null) {
       setName(results.getQuery().getQueryTitle());
@@ -278,7 +312,8 @@ public class ResultPanel extends JPanel
       // Set JScrollPane background color white
       scrollPane.getViewport().setBackground(Color.white);
       // Initialize column, pass the width of virwport to the table
-      initTableColumnSize(table, results, 775);
+      //initTableColumnSize(table, results, 775);
+      initTableColumnSize(table, results, (int)preferredSize.getWidth());
       // Add the table to scroll pane
       //scrollPane.add(table);
   
@@ -804,11 +839,11 @@ public class ResultPanel extends JPanel
     String identifier = results.getQuery().getIdentifier();
 
     // QueryDialog Create and show as modal
-    ResultFrame rsf = null;
+    MorphoFrame rsf = null;
     QueryDialog queryDialog1 = null;
     Container parent = getRootPane().getParent();
-    if (parent instanceof ResultFrame) {
-      rsf = (ResultFrame)parent;
+    if (parent instanceof MorphoFrame) {
+      rsf = (MorphoFrame)parent;
       queryDialog1 = new QueryDialog(rsf, morpho);
     } else {
       queryDialog1 = new QueryDialog(morpho);
@@ -871,22 +906,16 @@ public class ResultPanel extends JPanel
 
     // Notify the frame of any title changes
     String newTitle = results.getQuery().getQueryTitle();
-    //titleLabel.setText(newTitle);
     Container parent = getRootPane().getParent();
-    if (parent instanceof ResultFrame) {
-      ResultFrame rsf = (ResultFrame)parent;
+    if (parent instanceof MorphoFrame) {
+      MorphoFrame rsf = (MorphoFrame)parent;
       rsf.setTitle(newTitle);
-    //} else if (parent instanceof ClientFramework) {
-    } else {
-     
     }
  
-    // Update the record count
-    //recordCountLabel.setText(results.getRowCount() + " data packages");
-
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);
-    initTableColumnSize(table, results, 775);
+    //initTableColumnSize(table, results, 775);
+    initTableColumnSize(table, results, (int)preferredSize.getWidth());
   }
 
   /**
@@ -945,7 +974,7 @@ public class ResultPanel extends JPanel
    *
    * @param query the query to be added to the Search menu
    */
-  private void addQueryToMenu(Query query)
+  private void addQueryToMenu(final Query query)
   {
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
@@ -964,8 +993,18 @@ public class ResultPanel extends JPanel
           Action queryAction = ((JMenuItem)e.getSource()).getAction();
           Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
           if (savedQuery != null) {
-            ResultSet rs = savedQuery.execute();
-            ResultFrame rsf = new ResultFrame(morpho, rs);
+            MorphoFrame resultWindow = UIController.getInstance().addWindow(
+                query.getQueryTitle());
+            resultWindow.setBusy(true);
+            resultWindow.setVisible(true);
+            ResultSet results = savedQuery.execute();
+            ResultPanel resultDisplayPanel = new ResultPanel(
+                results, true, true, 12, null, 
+                resultWindow.getDefaultContentAreaSize());
+            resultDisplayPanel.setVisible(true);
+            resultWindow.setMainContentPane(resultDisplayPanel);
+            resultWindow.setMessage(results.getRowCount() + " data sets found");
+            resultWindow.setBusy(false);
           }
         }
       };

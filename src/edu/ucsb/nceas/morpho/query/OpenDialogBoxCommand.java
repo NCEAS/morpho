@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-19 18:15:45 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ public class OpenDialogBoxCommand implements Command
   private Query ownerQuery = null;
   
   /**
-   * Constructor of SearcCommand
+   * Constructor of SearchCommand
    *
    * @param morpho the Morpho app to which the cancel command will apply
    */

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-19 18:15:45 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,11 @@
  */
 
 package edu.ucsb.nceas.morpho.query;
+
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.*;
 import javax.swing.JDialog;
 
@@ -43,7 +46,7 @@ public class SearchCommand implements Command
   
   /**
    * Constructor of SearcCommand
-   * @param myFrame the morpho which the cancel command will apply
+   * @param morpho the morpho application which the cancel command will apply
    */
   public SearchCommand(JDialog myDialogBox, Morpho morpho)
   {
@@ -73,10 +76,11 @@ public class SearchCommand implements Command
       Query query = queryDialog.getQuery();
       if (query != null) 
       {
-        ResultSet rs = null;
-        ResultFrame rsf = new ResultFrame(morpho, rs);
-        rsf.addWorking();
-        doQuery(rsf, query);
+        MorphoFrame resultWindow = UIController.getInstance().addWindow(
+                query.getQueryTitle());
+        resultWindow.setBusy(true);
+        resultWindow.setVisible(true);
+        doQuery(resultWindow, query);
 
       }//if
     }//if
@@ -85,15 +89,15 @@ public class SearchCommand implements Command
   /**
    * Run the search query
    */
-  private void doQuery(final ResultFrame rsf, final Query query) 
+  private void doQuery(final MorphoFrame resultWindow, final Query query) 
   {
   
     final SwingWorker worker = new SwingWorker() 
     {
-        ResultSet frs;
+        ResultSet results;
         public Object construct() 
         {
-          frs = query.execute();
+          results = query.execute();
         
           return null;  
         }
@@ -101,11 +105,13 @@ public class SearchCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          
-          rsf.setTitle(frs.getQuery().getQueryTitle());
-          rsf.setName(frs.getQuery().getQueryTitle());
-          
-          rsf.addResultPanel(frs);
+          ResultPanel resultDisplayPanel = new ResultPanel(
+              results, true, true, 12, null, 
+              resultWindow.getDefaultContentAreaSize());
+          resultDisplayPanel.setVisible(true);
+          resultWindow.setMainContentPane(resultDisplayPanel);
+          resultWindow.setMessage(results.getRowCount() + " data sets found");
+          resultWindow.setBusy(false);
         }
     };
     worker.start();  //required for SwingWorker 3

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-16 23:19:50 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-19 18:15:45 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ public class MorphoFrame extends JFrame
     private JToolBar morphoToolbar;
     private StatusBar statusBar;
     private ProgressIndicator indicator;
+    private Component contentComponent;
     private Dimension screenSize;
     private Dimension windowSize;
     private Dimension contentAreaSize;
@@ -157,9 +158,12 @@ public class MorphoFrame extends JFrame
     {
         // Create a panel to display the plugin if requested
         if (comp != null) {
-            getContentPane().add(BorderLayout.CENTER, comp);
-            //comp.invalidate();
-            //invalidate();
+            Container contentPane = getContentPane();
+            if (contentComponent != null) {
+                contentPane.remove(contentComponent);
+            }
+            contentComponent = comp;
+            contentPane.add(BorderLayout.CENTER, comp);
             pack();
         } else {
             Log.debug(5, "Component was null so I could not set it!");
