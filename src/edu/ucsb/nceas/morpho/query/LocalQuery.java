@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 00:15:42 $'
- * '$Revision: 1.53.4.1 $'
+ *     '$Date: 2002-08-14 16:06:42 $'
+ * '$Revision: 1.53.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,9 +153,11 @@ public class LocalQuery
     
     localPackageIcon
       = new ImageIcon(getClass().getResource("localscreen.gif"));
+    localPackageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);
     
     localPackageDataIcon
       = new ImageIcon(getClass().getResource("net.gif"));
+    localPackageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
    
   
     this.framework = framework;
