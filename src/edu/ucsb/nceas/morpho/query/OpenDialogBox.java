@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 00:03:36 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2002-08-28 19:58:26 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -230,7 +231,20 @@ public class OpenDialogBox extends JDialog
    */
   public void setResultPanel(ResultPanel resultPanel)
   {
-    ownerPanel = resultPanel;
+    //ownerPanel = resultPanel;
+     if (resultPanel != null) 
+     {
+         Container contentPane = getContentPane();
+         if (ownerPanel != null) 
+         {
+           contentPane.remove(ownerPanel);
+         }
+         ownerPanel = resultPanel;
+         contentPane.add(BorderLayout.CENTER, resultPanel);
+         validate();
+        
+     } 
+   
   }
 
   /**
