@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-07 20:02:06 $'
- * '$Revision: 1.47 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-30 20:47:37 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -451,7 +451,7 @@ public class DataPackagePlugin
     
 
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
-                "Data Package");
+                "Data Package: "+identifier);
     packageWindow.setBusy(true);
     packageWindow.setVisible(true);
     
