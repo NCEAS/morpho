@@ -72,6 +72,8 @@ Known Bugs and Feature Requests
 -------------------------------
 See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of the know issues with Morpho, and a list ofthe new features that have been requested.  Submit reports of new bugs to this address as well.
 
+There is a known problem with downloading very large datafiles (with more than ~500,000 records) from the network with Moprho 1.2.0.
+
 
 Version History
 -------------------------------
