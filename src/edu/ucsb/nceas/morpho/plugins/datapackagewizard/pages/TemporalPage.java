@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 23:36:37 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2004-03-25 04:16:50 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -370,7 +370,7 @@ public class TemporalPage extends AbstractUIPage {
       String dateString = calendar.get(Calendar.YEAR) + "-";
 
       int month = calendar.get(Calendar.MONTH) + 1;
-      int day = calendar.get(Calendar.DAY_OF_MONTH) + 1;
+      int day = calendar.get(Calendar.DAY_OF_MONTH);
 
       if(c.getMonthChooser().isEnabled()){
         if (month < 10) {
