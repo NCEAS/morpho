@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-10 00:07:06 $'
- * '$Revision: 1.36 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-10 18:22:37 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -431,7 +431,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='entity']/name")).getNodeValue();
       NodeList enameNodes = XPathAPI.selectNodeList(entity, entityNameXpath);
       if (enameNodes==null) return "enameNodes is null !";
-      Node child = enameNodes.item(entNum).getFirstChild();
+      Node child = enameNodes.item(0).getFirstChild();
       temp = child.getNodeValue();
     }
     catch (Exception w) {
@@ -1313,7 +1313,6 @@ public abstract class AbstractDataPackage extends MetadataObject
     //  is a data file, save it with its original name.
     //  With the use of AbstractDataPackage, there is only a single metadata doc
     //  and we will use the DOM; may be multiple data files, however
-   
     String packagePath = path + "/" + id + ".package";
     String sourcePath = packagePath + "/metadata";
     String dataPath = packagePath + "/data";
