@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-01 16:09:06 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2003-10-10 22:01:10 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -211,7 +211,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       parser = Morpho.createSaxParser((ContentHandler)this, null);
       Log.debug(30, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance
-      parser.parse(new InputSource(resultsXMLStream));
+      parser.parse(new InputSource(new InputStreamReader(resultsXMLStream)));
       Log.debug(30, "(2.44) Creating result set ...");
     } catch (Exception e) {
       Log.debug(30, "(2.431) Exception creating result set ...");
