@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-12 20:07:09 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-09-13 18:54:15 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,19 +149,18 @@ public class MetaDisplay implements MetaDisplayInterface,
      *
      *  @throws NullArgumentException if XML Factory is null.
      */
-    public Component getBlankDisplayComponent(  XMLFactoryInterface factory,
-                                                ActionListener listener )
-                                                throws NullArgumentException
+    public Component getDisplayComponent(XMLFactoryInterface factory,
+                        ActionListener listener) throws NullArgumentException
     {
-        Log.debug(50, "getBlankDisplayComponent() called");
+        Log.debug(50, "getDisplayComponent() called");
         //set XML factory
         setFactory(factory);
         
         //add ActionListener to list
         addActionListener(listener);
         
-        ui.setHTML("<html><head></head><body bgcolor=\"#eeeeee\">"
-                                                      +"&nbsp;</body></html>");
+        ui.setHTML("<html><head></head>"
+                            +"<body bgcolor=\"#eeeeee\">&nbsp;</body></html>");
         updateBackButtonStatus();
         
         return ui;
