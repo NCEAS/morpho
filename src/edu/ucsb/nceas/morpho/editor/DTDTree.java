@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-11 23:31:27 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-02-08 21:00:36 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,7 +148,6 @@ public DefaultMutableTreeNode buildTree(DefaultMutableTreeNode root) {
     ni.setItem(null);
     leaf = leaf.getNextLeaf();
   }
-  
   return root;
 }
 
@@ -177,7 +176,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
     }
     DTDItem[] items = ((DTDSequence) item).getItems();
     for (int i=0; i < items.length; i++)  {
-      DTDItems(items[i],vec2);
+      DTDItems(items[i],vec2,false);
     }
     for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
       NodeInfo node = (NodeInfo)(e.nextElement());
@@ -188,7 +187,6 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
   }
   
   else if(name.startsWith("(CHOICE)")) {
- //   Sequence_Flag = true;
     Vector vec2 = new Vector();
     DTDChoice item = null;
     if (ni.getItem()!=null) {
@@ -197,7 +195,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
     }
     DTDItem[] items = ((DTDChoice) item).getItems();
     for (int i=0; i < items.length; i++)  {
-      DTDItems(items[i],vec2);
+      DTDItems(items[i],vec2,true);
     }
     boolean first = true;
     if ((ni.getCardinality().equalsIgnoreCase("ONE"))) {
@@ -212,7 +210,6 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
         parentNode.add(newNode);
         vec1.addElement(newNode);
       }
- //     Sequence_Flag = false;
     }
     else {
       for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
@@ -229,7 +226,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
   }
   if (elem!=null) {
     getAttributes(ni, elem);
-    DTDItems(elem.content, vec);
+    DTDItems(elem.content, vec, false);
     for (Enumeration e = vec.elements() ; e.hasMoreElements() ;) {
       //  DTDElement el = (DTDElement)dtd.elements.get(((NodeInfo)(e.nextElement())).name);
       //  NodeInfo node = new NodeInfo(((NodeInfo)(e.nextElement())).name);
@@ -243,7 +240,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
 }
 
 // returns a vector of NodeInfo objects of allowed child element 
-private void DTDItems(DTDItem item, Vector vec) {
+private void DTDItems(DTDItem item, Vector vec, boolean flg) {
   if (item == null) return;
 
   if (item instanceof DTDAny)  {
@@ -274,13 +271,16 @@ private void DTDItems(DTDItem item, Vector vec) {
 
 //            DTDItem[] items = ((DTDChoice) item).getItems();
       for (int i=0; i < items.length; i++) {
-        DTDItems(items[i],vec);
+        DTDItems(items[i],vec, false);
       }
     }
   }
   else if (item instanceof DTDSequence) {
-    if ((Sequence_Flag) 
-        &&(!getCardinality(item).equals("ONE"))) {
+    if ( ((Sequence_Flag)&&(flg)) ||
+        ((Sequence_Flag)&&(!getCardinality(item).equals("ONE")))
+        )
+        
+         {
             cntr++;
             NodeInfo ni = new NodeInfo("(SEQUENCE)"+cntr);
             ni.setItem(item);
@@ -290,7 +290,7 @@ private void DTDItems(DTDItem item, Vector vec) {
     else {
           DTDItem[] items = ((DTDSequence) item).getItems();
           for (int i=0; i < items.length; i++) {
-            DTDItems(items[i],vec);
+            DTDItems(items[i],vec,false);
           }
     }
   }
@@ -298,7 +298,7 @@ private void DTDItems(DTDItem item, Vector vec) {
     DTDItem[] items = ((DTDMixed) item).getItems();
 
     for (int i=0; i < items.length; i++) {
-      DTDItems(items[i],vec);
+      DTDItems(items[i],vec,false);
     }
   }
   else if (item instanceof DTDPCData) {
@@ -377,7 +377,5 @@ private String getCardinality(DTDItem item) {
   if (item.cardinal==DTDCardinal.ONEMANY) return "ONE to MANY";
 return "ONE";
 }
-  
-	//{{DECLARE_CONTROLS
-	//}}
+
 }
