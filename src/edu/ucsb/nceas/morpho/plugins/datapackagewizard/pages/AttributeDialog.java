@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 00:35:44 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-17 01:52:13 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,12 +78,6 @@ class AttributeDialog extends WizardPopupDialog {
   private JLabel attribDefinitionLabel;
   private JLabel measScaleLabel;
   private JPanel currentPanel;
-//  private JPanel currentNominalSubPanel;
-//  private JPanel currentOrdinalSubPanel;
-//  private JPanel nominalTextSubPanel;
-//  private JPanel nominalEnumSubPanel;
-//  private JPanel ordinalTextSubPanel;
-//  private JPanel ordinalEnumSubPanel;
       
   private JPanel nominalPanel;
   private JPanel ordinalPanel;
@@ -93,17 +87,7 @@ class AttributeDialog extends WizardPopupDialog {
   
   
   private String measurementScale;
-  private String nominalDomain;
 
-//  private JLabel[]     nomOrdTextDefinitionLabel = new JLabel[2];
-//  private JTextField[] nomOrdTextDefinitionField = new JTextField[2];
-//  private JTextField[] nomOrdTextSourceField     = new JTextField[2];
-//  private CustomList[] nomOrdTextPatternsList    = new CustomList[2];
-//  
-//  private JLabel[]     nomOrdEnumDefinitionLabel = new JLabel[2];
-//  private CustomList[] nomOrdEnumDefinitionList  = new CustomList[2];
-//
-//  private JCheckBox[] nomOrdEnumDefinitionFreeTextCheckBox = new JCheckBox[2];
   
   private JTextArea attribDefinitionField;
   private final String[] buttonsText  
@@ -144,24 +128,35 @@ class AttributeDialog extends WizardPopupDialog {
 //
 //                                        
 
-  private final String[] measScaleElemNames = { "nominal",
-                                                "ordinal",
-                                                "interval",
-                                                "ratio",
-                                                "dateTime" };
+  private final String[] measScaleElemNames = new String[5];
 
-  // these must correspond to indeces of measScaleElemNames array
-  public static final int MEASUREMENTSCALE_NOMINAL = 0;
-  public static final int MEASUREMENTSCALE_ORDINAL = 1;
-
+  // these must correspond to indices of measScaleElemNames array
+  public static final int MEASUREMENTSCALE_NOMINAL  = 0;
+  public static final int MEASUREMENTSCALE_ORDINAL  = 1;
+  public static final int MEASUREMENTSCALE_INTERVAL = 2;
+  public static final int MEASUREMENTSCALE_RATIO    = 3;
+  public static final int MEASUREMENTSCALE_DATETIME = 4;
+  
+  
   // 
   public AttributeDialog(JFrame parent) { 
   
     super(parent); 
     
+    initNames();
     init();
     this.setVisible(true);
   }
+  
+  private void initNames() {
+    
+    measScaleElemNames[MEASUREMENTSCALE_NOMINAL]  = "nominal";
+    measScaleElemNames[MEASUREMENTSCALE_ORDINAL]  = "ordinal";
+    measScaleElemNames[MEASUREMENTSCALE_INTERVAL] = "interval";
+    measScaleElemNames[MEASUREMENTSCALE_RATIO]    = "ratio";
+    measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "dateTime";
+  }
+  
   
   /** 
    * initialize method does frame-specific design - i.e. adding the widgets that 
@@ -170,7 +165,7 @@ class AttributeDialog extends WizardPopupDialog {
   private void init() {
     
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-    
+
     middlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>Define Attribute or Column:</b></font>", 1));
     
@@ -265,8 +260,8 @@ class AttributeDialog extends WizardPopupDialog {
     
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
     ordinalPanel  = getNomOrdPanel(MEASUREMENTSCALE_ORDINAL);
-    intervalPanel = getIntervalPanel();
-    ratioPanel    = getRatioPanel();
+    intervalPanel = getIntervalRatioPanel(MEASUREMENTSCALE_INTERVAL);
+    ratioPanel    = getIntervalRatioPanel(MEASUREMENTSCALE_RATIO);
     dateTimePanel = getDateTimePanel();
     
   } 
@@ -301,46 +296,19 @@ class AttributeDialog extends WizardPopupDialog {
   // nom_ord can be MEASUREMENTSCALE_NOMINAL or MEASUREMENTSCALE_ORDINAL
   private NominalOrdinalPanel getNomOrdPanel(int nom_ord) {
   
-    return new NominalOrdinalPanel(this, nom_ord);
+    NominalOrdinalPanel panel = new NominalOrdinalPanel(this);
+    WidgetFactory.addTitledBorder(panel, measScaleElemNames[nom_ord]);
+    return panel;
   }
     
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
   
-  private JPanel getIntervalPanel() {
+  private IntervalRatioPanel getIntervalRatioPanel(int intvl_ratio) {
 
-    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
-    
-    WidgetFactory.addTitledBorder(panel, measScaleElemNames[2]);
-    
-    panel.add(WidgetFactory.makeDefaultSpacer());
-    
-//    JComboBox pickList = WidgetFactory.makePickList(pickListVals, false, 1, 
-//    
-//        new ItemListener() {
-//        
-//          public void itemStateChanged(ItemEvent e) {
-//
-//            Log.debug(45, "got PickList state changed; src = "
-//                                          +e.getSource().getClass().getName());
-//          }
-//        });
-//    
-//    Object[] colTemplates = new Object[] { pickList, new JTextField() };
-//
-//    String[] colNames = new String[] { 
-//      "Fixed-Width or Delimited?", 
-//      "Width or Delimiter Character:" 
-//    };
-//    
-//                                    
-//    list = WidgetFactory.makeList(colNames, colTemplates, 4,
-//                                  true, false, false, true, true, true);
-//    
-//    panel.add(list);
- 
-    ////
+    IntervalRatioPanel panel = new IntervalRatioPanel(this);
+    WidgetFactory.addTitledBorder(panel, measScaleElemNames[intvl_ratio]);
     return panel;
   }
     
@@ -462,8 +430,16 @@ class AttributeDialog extends WizardPopupDialog {
    *
    *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
    *            appended when making name/value pairs.  For example, in the 
-   *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-   *            root would be /eml:eml/dataset/keywordSet[2]
+   *            following xpath: 
+   *
+   *            /eml:eml/dataset/dataTable/attributeList/attribute[2]
+   *            /measurementScale/nominal/nonNumericDomain/textDomain/definition
+   *
+   *            the root would be:
+   *
+   *              /eml:eml/dataset/dataTable/attributeList
+   *                                /attribute[2]
+   *
    *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
    *            SQUARE BRACKETS []
    *
@@ -471,8 +447,7 @@ class AttributeDialog extends WizardPopupDialog {
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap   returnMap     = new OrderedMap();
-//  private StringBuffer measScaleBuff = new StringBuffer();
-  ////////////////////////////////////////////////////////
+  //////////////////
   public OrderedMap getPageData(String xPathRoot) {
 
     returnMap.clear();
@@ -491,7 +466,8 @@ class AttributeDialog extends WizardPopupDialog {
     if (measurementScale!=null && !measurementScale.equals("")) {
     
       returnMap.putAll(
-                    ((DialogSubPanelAPI)currentPanel).getPanelData(xPathRoot) );
+        ((DialogSubPanelAPI)currentPanel).getPanelData(
+                            xPathRoot+"/measurementScale/"+measurementScale) );
     
     
 //      measScaleBuff.delete(0, measScaleBuff.length);

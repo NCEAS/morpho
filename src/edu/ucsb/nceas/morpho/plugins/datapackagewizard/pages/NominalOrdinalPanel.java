@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 00:35:44 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-17 01:52:13 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,8 +87,6 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
   private final int ENUMERATED_DOMAIN = 10;
   private final int TEXT_DOMAIN       = 20;
   
-  private int nom_ord_mode;
-  
   private AttributeDialog attributeDialog;
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -102,10 +100,9 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
    *  @param nom_ord_mode can be AttributeDialog.MEASUREMENTSCALE_NOMINAL 
    *                  or AttributeDialog.MEASUREMENTSCALE_ORDINAL
    */
-  public NominalOrdinalPanel(AttributeDialog attributeDialog, int nom_ord_mode) {
+  public NominalOrdinalPanel(AttributeDialog attributeDialog) {
   
     super();
-    this.nom_ord_mode = nom_ord_mode;
     this.attributeDialog = attributeDialog;
     init();
   } 
@@ -123,8 +120,6 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 
     this.setPreferredSize(dims);
     this.setMaximumSize(dims);
-  
-    WidgetFactory.addTitledBorder(this, nomOrdDisplayNames[nom_ord_mode]);
     
     final String TEXT_HELP 
                 = "<html>Describe a free text domain for the attribute.</html>";
@@ -419,8 +414,16 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
    *
    *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
    *            appended when making name/value pairs.  For example, in the 
-   *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-   *            root would be /eml:eml/dataset/keywordSet[2]
+   *            following xpath: 
+   *
+   *            /eml:eml/dataset/dataTable/attributeList/attribute[2]
+   *            /measurementScale/nominal/nonNumericDomain/textDomain/definition
+   *
+   *            the root would be:
+   *
+   *              /eml:eml/dataset/dataTable/attributeList
+   *                                /attribute[2]/measurementScale
+   *
    *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
    *            SQUARE BRACKETS []
    *
@@ -437,8 +440,6 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     nomOrdBuff.delete(0, nomOrdBuff.length());
 
     nomOrdBuff.append(xPathRoot);
-    nomOrdBuff.append("/");
-    nomOrdBuff.append(nomOrdDisplayNames[nom_ord_mode]);
     nomOrdBuff.append("/nonNumericDomain/");
     
     xPathRoot = nomOrdBuff.toString();
