@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-13 04:51:21 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2004-04-13 05:14:19 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.awt.BorderLayout;
@@ -905,7 +906,7 @@ public class DataLocation extends AbstractUIPage {
     String id = an.getNextId();
     FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
     try {
-      fds.saveTempDataFile(id, new FileReader(f));
+      fds.saveTempDataFile(id, new FileInputStream(f));
     } catch (Exception w) {
       Log.debug(1, "error in TIW saving temp data file!");
     }
