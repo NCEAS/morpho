@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:52 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-10-19 16:14:48 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,6 +154,7 @@ public class AccessionNumber
    */
   public String incRevInTriples(File xmlfile, Vector oldid, Vector newid)
   {
+    System.out.println("oldid: " + oldid.toString() + " newid: " + newid.toString());
     DOMParser parser = new DOMParser();
     Document doc;
     InputSource in;
@@ -227,7 +228,6 @@ public class AccessionNumber
               }
               System.out.println("replacing: " + nodeval + " with " + newidS);
               childNode.getFirstChild().setNodeValue(newidS);
-              //System.out.println("substituting " + oldid + " for " + newid);
             }
           }
         }

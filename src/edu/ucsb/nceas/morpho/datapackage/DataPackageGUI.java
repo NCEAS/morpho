@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:52 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2001-10-19 16:14:48 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1025,9 +1025,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           oldids.addElement(oldid);
-          oldids.addElement(dataPackage.getID());
           newids.addElement(newid);
-          newids.addElement(newPackageId);
           String newPackageFile = a.incRevInTriples(f, oldids, newids);
           mds.saveFile(newid, new StringReader(newPackageFile), 
                        metacatpublic, dataPackage);
@@ -1035,15 +1033,21 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
         else
         { //edit another file in the package
+          Vector oldids = new Vector();
+          Vector newids = new Vector();
           String oldid = id;
           newid = a.incRev(id);
           mds.saveFile(newid, new StringReader(xmlString), metacatpublic, 
                        dataPackage);
           newPackageId = a.incRev(dataPackage.getID());
           //increment the package files id in the triples
+          oldids.addElement(oldid);
+          oldids.addElement(dataPackage.getID());
+          newids.addElement(newid);
+          newids.addElement(newPackageId);
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
-                                                    oldid,
-                                                    newPackageId);
+                                                    oldids,
+                                                    newids);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
                        metacatpublic, dataPackage);
         }
