@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-29 21:00:05 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-07 20:00:41 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,8 +200,23 @@ public class StateChangeEvent extends ChangeEvent
     public static String METAVIEWER_BEGIN_EDIT
         = "metaViewerBeginEdit";
 
+   /**
+     *  Public constant to denote that the Paste command has
+     *  data in the System clipboard to 'Paste'. This should
+     *  enable the Paste menu item
+     */
+     public static String CLIPBOARD_HAS_DATA_TO_PASTE
+        = "clipboardHasDataToPaste";
+
+    /**
+     *  Public constant to denote that the Paste command has
+     *  no data in the System clipboard to 'Paste'. This should
+     *  disable the Paste menu item
+     */
+    public static String CLIPBOARD_HAS_NO_DATA_TO_PASTE
+        = "clipboardHasNoDataToPaste";
     
-//////////////////////////////////////////////////////////////////////////////// 
+/////////////////////////////////////////////s/////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////// 
 
     private String changedState;
