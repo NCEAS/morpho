@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-04-02 05:44:43 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -814,6 +814,8 @@ public class PartyPage extends AbstractUIPage {
     //if (!processingReferenceSelection)
     rememberPreviousValues();
 
+    Log.debug(45, "\nfinished onAdvanceAction for page ID: "+this.getPageID());
+
     return true;
   }
 
@@ -1451,15 +1453,15 @@ public class PartyPage extends AbstractUIPage {
     previousValuesMap = this.getPageData(this.rootXPath);
     previousRootXPath = this.rootXPath;
     backupExists = true;
-    Log.debug(45, "PartyPage.restoreFromPreviousValues() restoring: \nXPath = "
-              +previousRootXPath+"\n\nMap = "+previousValuesMap);
+    Log.debug(45, "\n\nPartyPage.rememberPreviousValues() remembering: \nXPath = "
+              +previousRootXPath+"\nMap = "+previousValuesMap);
   }
 
 
   private boolean restoreFromPreviousValues() {
 
-    Log.debug(45, "PartyPage.restoreFromPreviousValues() restoring: \npreviousRootXPath = "
-              +previousRootXPath+"\n\nMap = "+previousValuesMap);
+    Log.debug(45, "\n\nPartyPage.restoreFromPreviousValues() restoring: \npreviousRootXPath = "
+              +previousRootXPath+"\nMap = "+previousValuesMap);
     if (previousValuesMap.isEmpty()) return true;
 
     processingReferenceSelection = true;

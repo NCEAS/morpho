@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 05:05:04 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2004-04-02 05:44:43 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -69,7 +69,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.w3c.dom.Node;
-import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 
 /**
  *  provides a top-level container for AbstractUIPage objects. The top (title) panel
@@ -519,9 +518,11 @@ public class WizardContainerFrame
 
       AbstractUIPage nextPage = (AbstractUIPage)pageStack.pop();
       String nextPageID = nextPage.getPageID();
+      Log.debug(45, ">> collectDataFromPages() - next pageID = "+nextPageID);
       if (nextPageID==null || nextPageID.trim().length()<1) {
 
-        Log.debug(15,"*** WARNING - WizardContainerFrame.collectDataFromPages()"
+        Log.debug(15,
+                  "\n*** WARNING - WizardContainerFrame.collectDataFromPages()"
                   +" has encountered a page with no ID! Object is: "+nextPage);
         continue;
       }
@@ -532,12 +533,12 @@ public class WizardContainerFrame
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GENERAL);
     AbstractUIPage KEYWORDS
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.KEYWORDS);
-    AbstractUIPage PARTY_CREATOR
-        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CREATOR);
-    AbstractUIPage PARTY_CONTACT
-        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CONTACT);
-    AbstractUIPage PARTY_ASSOCIATED
-        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_ASSOCIATED);
+    AbstractUIPage PARTY_CREATOR_PAGE
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CREATOR_PAGE);
+    AbstractUIPage PARTY_CONTACT_PAGE
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CONTACT_PAGE);
+    AbstractUIPage PARTY_ASSOCIATED_PAGE
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE);
     AbstractUIPage PROJECT
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PROJECT);
     AbstractUIPage METHODS
@@ -573,13 +574,13 @@ public class WizardContainerFrame
     }
 
     //CREATOR:
-    if (PARTY_CREATOR != null) {
-      addPageDataToResultsMap( PARTY_CREATOR, wizData);
+    if (PARTY_CREATOR_PAGE != null) {
+      addPageDataToResultsMap( PARTY_CREATOR_PAGE, wizData);
     }
 
     //ASSOCIATED PARTY:
-    if (PARTY_ASSOCIATED != null) {
-      addPageDataToResultsMap( PARTY_ASSOCIATED, wizData);
+    if (PARTY_ASSOCIATED_PAGE != null) {
+      addPageDataToResultsMap( PARTY_ASSOCIATED_PAGE, wizData);
     }
 
     //ABSTRACT:
@@ -614,8 +615,8 @@ public class WizardContainerFrame
     }
 
     //CONTACT:
-    if (PARTY_CONTACT != null) {
-      addPageDataToResultsMap( PARTY_CONTACT, wizData);
+    if (PARTY_CONTACT_PAGE != null) {
+      addPageDataToResultsMap( PARTY_CONTACT_PAGE, wizData);
     }
 
     //METHODS:
@@ -834,23 +835,17 @@ public class WizardContainerFrame
 
     OrderedMap nextPgData = nextPage.getPageData();
 
-    if (nextPgData == null) {
-      return;
-    }
+    if (nextPgData == null) return;
 
     Iterator it = nextPgData.keySet().iterator();
 
-    if (it == null) {
-      return;
-    }
+    if (it == null) return;
 
     while (it.hasNext()) {
 
       nextKey = (String) it.next();
 
-      if (nextKey == null || nextKey.trim().equals("")) {
-        continue;
-      }
+      if (nextKey == null || nextKey.trim().equals("")) continue;
 
       //now excape all characters that might cause a problem in XML:
       resultsMap.put(nextKey, XMLUtilities.normalize(nextPgData.get(nextKey)));
