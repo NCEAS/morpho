@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-09 18:55:56 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2004-02-27 19:06:52 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -322,7 +322,10 @@ public class DataPackageFactory
       Log.debug(25, "the second line string is: "+secondLine);
 //      xml.reset();
       xml.close();
-    } catch (Exception e) {Log.debug(6, "Error in getSchemaLine!");}
+    } catch (Exception e) {
+    Log.debug(6, "Sorry - Unable to Open the Requested Data Package!");
+    Log.debug(20, "Error in getSchemaLine!");
+    }
     return secondLine;
   }
   

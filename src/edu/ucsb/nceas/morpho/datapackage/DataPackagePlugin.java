@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-02-24 20:47:38 $'
- * '$Revision: 1.76 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-27 19:06:52 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -605,13 +605,22 @@ public class DataPackagePlugin
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
     }
 
-    {
-      // open a single version package
+    // figure out whether there may be multiple versions, based on identifier
+    int lastDot = identifier.lastIndexOf(".");
+    String verNum = identifier.substring(lastDot+1,identifier.length());
+    if (verNum.equals("1")) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
     }
+    else {
+      monitor.notifyStateChange(
+                 new StateChangeEvent(
+                 dvcp,
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
+    }
+    
     monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
@@ -690,11 +699,22 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
 
-      // open a single version package
+    // figure out whether there may be multiple versions, based on identifier
+    String identifier = adp.getAccessionNumber();
+    int lastDot = identifier.lastIndexOf(".");
+    String verNum = identifier.substring(lastDot+1,identifier.length());
+    if (verNum.equals("1")) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
+    }
+    else {
+      monitor.notifyStateChange(
+                 new StateChangeEvent(
+                 dvcp,
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
+    }
 
     monitor.notifyStateChange(
                  new StateChangeEvent(
