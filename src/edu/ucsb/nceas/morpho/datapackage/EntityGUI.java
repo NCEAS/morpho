@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:22 $'
- * '$Revision: 1.22 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-23 17:52:24 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -213,6 +213,14 @@ public class EntityGUI extends javax.swing.JFrame
   {
     JButton editEntityButton = new JButton("Edit Table Description");
     JButton editAttributes = new JButton("Edit Attributes");
+    JButton editDataButton = new JButton("View Data");
+    if (dataPackage.hasDataFile(entityId)) {
+      editDataButton.setEnabled(true); 
+    }
+    else {
+      editDataButton.setEnabled(false); 
+    }
+    editDataButton.addActionListener(this);
     editEntityButton.addActionListener(this);
     editAttributes.addActionListener(this);
     
@@ -377,7 +385,7 @@ public class EntityGUI extends javax.swing.JFrame
     entityPanel.add(orientation);
     entityPanel.add(new JLabel(" "));
     */
-    entityPanel.add(editEntityButton);
+//    entityPanel.add(editEntityButton);
     entityPanel.setPreferredSize(new Dimension(225, 280));
     entityPanel.setBackground(Color.white);
     
@@ -401,6 +409,7 @@ public class EntityGUI extends javax.swing.JFrame
     mainPanel.add(entattPanel);
     mainPanel.add(editEntityButton);
     mainPanel.add(editAttributes);
+    mainPanel.add(editDataButton);
     
     contentPane.add(mainPanel);
   }
@@ -783,5 +792,24 @@ public class EntityGUI extends javax.swing.JFrame
       editor.openEditor(s, id, location, (String)attributeNameNode.elementAt(0), 
                         selectedItem, this);
     }
+    else if(command.equals("View Data")) {
+      String fn = dataPackage.getDataFileName(entityId);
+      if(dataPackage.isDataFileText(entityId)) {
+        JOptionPane.showMessageDialog(null, 
+                               "Data File " +fn+ " IS apparently  a Text file!" , 
+                               "Alert", 
+                               JOptionPane.ERROR_MESSAGE);    
+      }
+      else{
+        JOptionPane.showMessageDialog(null, 
+                               "Data File " +fn+ " is apparently NOT a Text file!" +
+                               "  Morpho cannot display this data." , 
+                               "Alert", 
+                               JOptionPane.ERROR_MESSAGE);    
+      }
+    }
   }
+  
+  
+  
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:22 $'
- * '$Revision: 1.34 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-23 17:52:24 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1084,4 +1084,161 @@ public class DataPackage
       return dft(firstchild, html, depth++);
     }
   }
+  
+  
+ /* Checks a file to see if it is a text file by looking for bytes containing '0'
+ */
+   private boolean isTextFile(File file) { 
+     boolean text = true; 
+     int res; 
+     try { 
+         FileInputStream in = new FileInputStream(file); 
+         while ((res = in.read())>-1) { 
+             if (res==0) text = false; 
+         } 
+     } 
+     catch (Exception e) {} 
+     return text; 
+ } 
+  
+  /*
+   * find out if there are datafiles associated with the given entity ID
+   */
+  public boolean hasDataFile(String entityID) {
+    boolean result = false;
+      Vector triplesV = triples.getCollection();
+      // first find out if there are ANY data files
+      for(int i=0; i<triplesV.size(); i++)
+      {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String relationship = triple.getRelationship();
+        if(relationship.indexOf("isDataFileFor") != -1)
+        {
+          String dataFileID = triple.getSubject();
+          // now see if entity file points to this data file
+          for (int j=0; j<triplesV.size();j++) {
+            Triple tripleA = (Triple)triplesV.elementAt(j);
+            if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dataFileID))) {
+              result = true;  
+            }
+          }
+        }
+      }
+    return result;
+  }
+ 
+  public boolean isDataFileText(String entityID) {
+    boolean result = false;
+    File fl = getDataFile(entityID);
+    if (fl!=null) {
+      result = isTextFile(fl);
+    }
+    else result = false;
+    return result;
+  }
+  
+  
+  public String getDataFileName(String entityID) {
+    String dataFileName = null;
+    boolean result = false;
+      Vector triplesV = triples.getCollection();
+      // first find out if there are ANY data files
+      for(int i=0; i<triplesV.size(); i++)
+      {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String relationship = triple.getRelationship();
+        if(relationship.indexOf("isDataFileFor") != -1)
+        {
+          int lparenindex = relationship.indexOf("(");
+          dataFileName = relationship.substring(lparenindex + 1, 
+                                                relationship.length() - 1);
+          String dataFileID = triple.getSubject();
+          // now see if entity file points to this data file
+          for (int j=0; j<triplesV.size();j++) {
+            Triple tripleA = (Triple)triplesV.elementAt(j);
+            if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dataFileID))) {
+              result = true;  
+            }
+          }
+        }
+      }
+    String resultString = null;
+    if (result) resultString = dataFileName;
+    return resultString;
+  }
+  
+  public File getDataFile(String entityID) {
+    File datafile = null;
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackage.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+      Vector triplesV = triples.getCollection();
+      // first find out if there are ANY data files
+      for(int i=0; i<triplesV.size(); i++)
+      {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String relationship = triple.getRelationship();
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        if(relationship.indexOf("isDataFileFor") != -1)
+        {
+          String dataFileID = triple.getSubject();
+          // now see if entity file points to this data file
+          for (int j=0; j<triplesV.size();j++) {
+            Triple tripleA = (Triple)triplesV.elementAt(j);
+            if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dataFileID))) {
+              if(localloc)
+              { //get the file locally and save it
+                try {
+                  datafile = fsds.openFile(dataFileID);
+                }
+                catch(Exception e)
+                {
+                  System.out.println("Error in DataPackage.getDataFile(): " + e.getMessage());
+                  e.printStackTrace();
+                }
+              }
+              else if(metacatloc)
+              { //get the file from metacat
+                try {
+                  datafile = mds.openFile(dataFileID);
+                }
+                catch(Exception e)
+                {
+                  System.out.println("Error in DataPackage.getDataFile(): " + e.getMessage());
+                  e.printStackTrace();
+                }
+              }
+              
+//              File realdatafile = new File(packagePath + "/" + dataFileName);
+//              realdatafile.createNewFile();
+//              FileInputStream fis = new FileInputStream(datafile);
+//              FileOutputStream fos = new FileOutputStream(realdatafile);
+//              int c = fis.read();
+//              while(c != -1)
+//              { //copy the data file with its real name
+//                fos.write(c);
+//                c = fis.read();
+//              }
+              
+            }
+          }
+        }
+      }
+    return datafile;
+  } 
+  
+  
 }
