@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-25 21:18:24 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-06-26 16:38:58 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,8 +55,16 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
    *  with associated EditingCompleteListeners 
    */
   private Hashtable docframes = null;
+  
   private String id = null;
   private String location = null;
+  
+  /** 
+   *  clipboardObject is a DefaultMutableTreeNode used to
+   *  pass nodes between different editors; i.e. for
+   *  copy and paste between editor windows
+   */
+   private Object clipboardObject = null;
   
   
   /**
@@ -183,5 +191,13 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   {
     openEditor(xmlText, null, null, listener);
   }
+  
+  public Object getClipboardObject() {
+    return clipboardObject; 
+  }
+  
+  public void setClipboardObject(Object node) {
+    this.clipboardObject = node;
+  } 
 
   }

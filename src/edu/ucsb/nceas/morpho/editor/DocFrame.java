@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-25 21:18:24 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2001-06-26 16:38:58 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -582,6 +582,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         tree.setSelectionPath(selPath);
         if (selectedNode!=null) {
 	      // simple node comparison
+	        if (controller!=null) {
+	          nodeCopy = (DefaultMutableTreeNode)controller.getClipboardObject(); 
+	        }
 	        if (nodeCopy!=null) {
 	          String nodename = ((NodeInfo)selectedNode.getUserObject()).getName();
 	          String savenodename = ((NodeInfo)nodeCopy.getUserObject()).getName();
@@ -632,12 +635,15 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
     }
 
     void Copy_actionPerformed(java.awt.event.ActionEvent event) {
-    TreePath tp = tree.getSelectionPath();
-	if (tp!=null) {
-	    Object ob = tp.getLastPathComponent();
-	    DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
-        nodeCopy = deepNodeCopy(node); 
-    }
+      TreePath tp = tree.getSelectionPath();
+	    if (tp!=null) {
+	      Object ob = tp.getLastPathComponent();
+	      DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+        nodeCopy = deepNodeCopy(node);
+        if (controller!=null) {
+          controller.setClipboardObject(nodeCopy); 
+        }
+      }
     }
 
     void Paste_actionPerformed(java.awt.event.ActionEvent event) {
@@ -648,6 +654,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	        DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
 	        // simple node comparison
 	        String nodename = ((NodeInfo)node.getUserObject()).getName();
+	        if (controller!=null) {
+	          nodeCopy = (DefaultMutableTreeNode)controller.getClipboardObject(); 
+	        }
 	        if (nodeCopy!=null) {
 	            String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
 	            if (nodename.equals(savenodename)) {
