@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-13 21:19:48 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-10-13 21:27:53 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,6 +156,14 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
     worker.start();
     
   }//doOpenPakcage
+  
+
+  /**
+   * Method returns the doctype
+   */
+  public String getDocType() {
+    return doctype;
+  }
   
   /**
    * Method implements from ButterflyFlapCoordinator
