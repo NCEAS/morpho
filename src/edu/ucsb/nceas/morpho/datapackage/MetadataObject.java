@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-10 22:47:07 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-16 21:59:28 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
 import java.io.*;
+import java.util.*;
 
 import org.xml.sax.InputSource;
 
@@ -50,6 +51,7 @@ import java.util.Hashtable;
 
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.utilities.*;
 
 /**
  * class that represents a data package.
@@ -76,8 +78,11 @@ public class MetadataObject
    *   paths is designed to provide a 'map' between generic paths and specific locations
    *   in a tree (Node) structure. This allows one to get items like 'name' from paths that
    *   may occur in different locations in the tree for different schemas
+   *   It was decided to use a DOM structure for storing this information since this
+   *   is more general than a map and tools for getting data from a DOM are already in
+   *   use (see XMLUtilites)
    */
-  protected Hashtable metadataPaths = null;
+  protected Node metadataPathNode = null;
   
   /**
    *   specifies the general type of the grammar used to specify the schema;
@@ -93,29 +98,26 @@ public class MetadataObject
 
   // class constructors -----------------------
   public MetadataObject() {
-    metadataPaths = new Hashtable();
   }
 
   public MetadataObject(Node node) {
     this.metadataNode = node;
-    metadataPaths = new Hashtable();
   }
 
   public MetadataObject(Node node, String grammartype, String grammar) {
     this.metadataNode = node;
     this.grammar = grammar;
     this.grammarType = grammartype;
-    metadataPaths = new Hashtable();
   }
 
-  public MetadataObject(Node node, Hashtable ht) {
+  public MetadataObject(Node node, Node nd) {
     this.metadataNode = node;
-    metadataPaths = ht;
+    metadataPathNode = nd;
   }
 
-  public MetadataObject(Node node, Hashtable ht, String grammartype, String grammar) {
+  public MetadataObject(Node node, Node nd, String grammartype, String grammar) {
     this.metadataNode = node;
-    metadataPaths = ht;
+    metadataPathNode = nd;
     this.grammar = grammar;
     this.grammarType = grammartype;
   }
@@ -129,21 +131,30 @@ public class MetadataObject
     return metadataNode; 
   }
   
-  public Hashtable getMetadataPath() {
-    return metadataPaths; 
+  public Node getMetadataPath() {
+    return metadataPathNode; 
   }
   
-  public void setMetadataPath(Hashtable ht) {
-    metadataPaths = ht;
+  public void setMetadataPath(Node nd) {
+    metadataPathNode = nd;
   }
   
   public String getGenericValue(String genericName) {
-    Object value = metadataPaths.get(genericName);
+    Node value = null;
+    if (getMetadataPath()!=null) Log.debug(1, "MetadataPath is not null");
+    try{
+      Log.debug(1, "genericName: "+genericName);
+      value = XMLUtilities.getTextNodeWithXPath(getMetadataPath(), genericName);
+    }
+    catch (Exception e) {
+      Log.debug(1, "Error in getGenericValue: "+e.toString());
+    }
     String ret = null;
     if (value!=null) {
       // value is an XPath
-      String path = (String)value;
-      if ((path!=null)||(path.length()<1)) {
+      String path = value.getNodeValue();
+      if ((path!=null)&&(path.length()>1)) {
+        Log.debug(1,"path: "+path);
         try{
           // metadataNode is the context node
           NodeList nl = XPathAPI.selectNodeList(metadataNode, path);
@@ -168,7 +179,13 @@ public class MetadataObject
   }
   
   public void setGenericValue(String genericName, String genericValue) {
-    Object value = metadataPaths.get(genericName);
+    Object value = null;
+    try{
+      value = XMLUtilities.getTextNodeWithXPath(metadataPathNode, genericName);
+    }
+    catch (Exception e) {
+      Log.debug(10, "Error in getGenericValue: "+e.toString());
+    }
     if (value!=null) {
       // value is an XPath
       String path = (String)value;
@@ -191,22 +208,10 @@ public class MetadataObject
 
   static public void main(String args[]) {
 
-    DocumentBuilder parser = Morpho.createDomParser();
-    InputSource in;
-    FileInputStream fs;
-    try
-    {
-      fs = new FileInputStream("test.xml");
-      in = new InputSource(fs);
-
-      doc = parser.parse(in);
-      fs.close();
-    } catch(Exception e1) {
-      Log.debug(4, "Parsing threw: " + e1.toString());
-      e1.printStackTrace();
-    }
-    root = doc.getDocumentElement();
     try{
+      root = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
+      Map mp = XMLUtilities.getDOMTreeAsXPathMap(root);
+      System.out.println(mp.toString());
       // assumed XPath is in args[0]; evaluation of XPath expression can result in a variety of
       // object types; check i it is a NodeList
       XObject xobj = XPathAPI.eval(root, args[0]);
@@ -230,7 +235,7 @@ public class MetadataObject
         }
       }
       } catch (Exception e) {
-          Log.debug(5, "error in XPath node selection in MetadataObject");
+          Log.debug(5, "error in XPath node selection in MetadataObject"+e.toString());
       }
   }
   

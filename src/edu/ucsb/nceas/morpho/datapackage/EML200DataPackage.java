@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-10 22:47:07 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-16 21:59:28 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,8 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.utilities.*;
+
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -61,40 +63,60 @@ public  class EML200DataPackage extends AbstractDataPackage
   }
   
   void load(String location, String identifier, Morpho morpho) {
+    Log.debug(1, "loading new DataPackage Object");
     this.location   = location;
     this.id         = identifier;
     this.config     = Morpho.getConfiguration();
 
-    Log.debug(11, "Creating new DataPackage Object");
-    Log.debug(11, "id: " + this.id);
-    Log.debug(11, "location: " + location);
-
+    Log.debug(1, "Creating new DataPackage Object");
+    Log.debug(1, "id: " + this.id);
+    Log.debug(1, "location: " + location);
+    
+    morpho = Morpho.thisStaticInstance;
+    
     fileSysDataStore  = new FileSystemDataStore(morpho);
     metacatDataStore  = new MetacatDataStore(morpho);
+    Log.debug(1, "DataStores have been created!");
     File packagefile;
     try {
       packagefile = getFileWithID(this.id);
      } catch (Throwable t) {
+      Log.debug(1, "in catch");
       //already handled in getFileWithID() method, 
       //so just abandon this instance:
       return;
     }
+    Log.debug(1, "Position 1");
     
     DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     FileInputStream fs;
+    Log.debug(1, "Position 2");
+    Document doc = null;
     try
     {
+    if (packagefile==null) Log.debug(1, "packagefile is NULL!");
       fs = new FileInputStream(packagefile);
       in = new InputSource(fs);
+    if (in==null) Log.debug(1, "in is NULL!");
 
-      Document doc = parser.parse(in);
+      doc = parser.parse(in);
       fs.close();
-    } catch(Exception e1) {
+     Log.debug(1, "Position 3");
+   } catch(Exception e1) {
       Log.debug(4, "Parsing threw: " + e1.toString());
       e1.printStackTrace();
     }
+    if (doc==null) Log.debug(1, "doc is NULL!");
     metadataNode = doc.getDocumentElement();  // the root Node
+     Log.debug(1, "Position 4");
+    try{
+      metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
+    }
+    catch (Exception e2) {
+      Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
+      e2.printStackTrace();
+    }
   }
   
 }

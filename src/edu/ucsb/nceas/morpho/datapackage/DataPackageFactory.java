@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-10 22:47:07 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-16 21:59:28 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ import java.io.*;
 import edu.ucsb.nceas.morpho.Morpho;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.*;
+
 
 /**
  * class (factory) for creating a new DataPackage
@@ -68,7 +70,20 @@ public class DataPackageFactory
     String type = getDocTypeInfo(in);
     Log.debug(1,"DocTypeInfo: " + type);
     if (type.equals("eml:eml")) {
+      Log.debug(1,"Creating new eml2.0.0 package");
       dp = new EML200DataPackage();
+      Log.debug(1,"loading new eml2.0.0 DOM");
+      dp.load("local","jscientist.7.1",null);
+      try{
+        Node textNode = XMLUtilities.getTextNodeWithXPath(dp.getMetadataPath(),"/xpathKeyMap/contextNode[@name='package']/title");
+        String test = textNode.getNodeValue();
+        Log.debug(1,"test:"+test);
+        String temp = dp.getGenericValue("/xpathKeyMap/contextNode[@name='package']/title");
+        Log.debug(1,"temp:"+temp);
+      }
+      catch (Exception w) {
+        Log.debug(1,"exception");
+      }
     }
     else if (type.indexOf("eml-dataset-2.0.0beta6")>-1) {
       dp = new EML2Beta6DataPackage();
@@ -93,10 +108,23 @@ public class DataPackageFactory
     if (!metacat && local) location = AbstractDataPackage.LOCAL;
     if (metacat && local) location = AbstractDataPackage.BOTH;
     dp.load(location, docid, morpho);
-    return dp;
-    
+    return dp;    
   }
-  
+
+
+  /**
+   *  given a node in a DOM (the root?), create an AbstractDataPackage object
+   *  needed for use with DPWizard?
+   */
+  public static AbstractDataPackage getDataPackage(Node node, String doctype) {
+    AbstractDataPackage dp = null;
+    // no 'load' operation is required
+    
+//    this.doctype = doctype;
+    dp.grammar = doctype;
+    dp.metadataNode = node;
+    return dp;
+  }
   
   /**
    *  reads the stream and tries to determine the docType. If there is a read docType,
@@ -209,6 +237,7 @@ public class DataPackageFactory
     try{
       File f = new File("test.xml");
       FileReader in = new FileReader(f);
+      Morpho.createMorphoInstance();
       DataPackageFactory.getDataPackage(in, false, true);
       in.close();
       System.exit(0);
