@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-09-28 19:54:08 $'
- * '$Revision: 1.21 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-17 17:53:00 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,6 +98,7 @@ public class ResultPanel extends JPanel
   private JMenuItem deleteAllMenu = new JMenuItem("Delete Both Copies");
   private JMenuItem refreshMenu = new JMenuItem("Refresh");
   private JMenuItem exportMenu = new JMenuItem("Export...");
+  private JMenuItem exportToZipMenu = new JMenuItem("Export to ZIP...");
   /**a string to keep track of the selected row's id*/
   private String selectedId = "";
   /**the location of the data package*/
@@ -234,6 +235,7 @@ public class ResultPanel extends JPanel
       popup.add(deleteAllMenu);
       popup.add(new JSeparator());
       popup.add(exportMenu);
+      popup.add(exportToZipMenu);
       
       MenuAction menuhandler = new MenuAction();
       openMenu.addActionListener(menuhandler);
@@ -244,6 +246,7 @@ public class ResultPanel extends JPanel
       deleteAllMenu.addActionListener(menuhandler);
       refreshMenu.addActionListener(menuhandler);
       exportMenu.addActionListener(menuhandler);
+      exportToZipMenu.addActionListener(menuhandler);
       
       MouseListener popupListener = new PopupListener();
       table.addMouseListener(popupListener);
@@ -382,6 +385,59 @@ public class ResultPanel extends JPanel
   }
   
   /**
+   * exports the datapackage to a different location in a zip file
+   * @param id the id of the datapackage to export
+   */
+  private void exportDatasetToZip(String id)
+  {
+    String curdir = System.getProperty("user.dir");
+    JFileChooser filechooser = new JFileChooser(curdir);
+    //filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    filechooser.setDialogTitle("Export Datapackage to Selected Directory");
+    filechooser.setApproveButtonText("Export");
+    filechooser.setApproveButtonMnemonic('E');
+    filechooser.setApproveButtonToolTipText("Choose a directory to export " +
+                                            "this Datapackage to.");
+    //filechooser.updateUI();
+    File exportDir;
+    int result = filechooser.showSaveDialog(this);
+    exportDir = filechooser.getSelectedFile();
+    if (result==JFileChooser.APPROVE_OPTION) {
+      //now we know where to export the files to, so export them.
+      DataPackageInterface dataPackage;
+      try 
+      {
+        ServiceProvider provider = 
+                   framework.getServiceProvider(DataPackageInterface.class);
+        dataPackage = (DataPackageInterface)provider;
+      } 
+      catch (ServiceNotHandledException snhe) 
+      {
+        framework.debug(6, snhe.getMessage());
+        return;
+      }
+    
+      String location = "";
+      //figure out where this thing is.
+      if(metacatLoc && localLoc)
+      {
+        location = DataPackage.BOTH;
+      }
+      else if(metacatLoc && !localLoc)
+      {
+        location = DataPackage.METACAT;
+      }
+      else if(!metacatLoc && localLoc)
+      {
+        location = DataPackage.LOCAL;
+      }
+    
+      //export it.
+      dataPackage.exportToZip(selectedId, exportDir.toString(), location);
+    }
+  }
+  
+  /**
    * Event handler for the right click popup menu
    */
   class MenuAction implements java.awt.event.ActionListener 
@@ -436,6 +492,11 @@ public class ResultPanel extends JPanel
       {
         ClientFramework.debug(20, "Exporting dataset");
         exportDataset(docid);
+      }
+      else if (object == exportToZipMenu)
+      {
+        ClientFramework.debug(20, "Exporting dataset to zip file");
+        exportDatasetToZip(docid);
       }
       refreshQuery();
       getParent().invalidate();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-08-31 22:40:01 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-10-17 17:53:00 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -214,5 +214,26 @@ public class DataPackagePlugin
   {
     DataPackage dp = new DataPackage(location, docid, null, framework);
     dp.export(path);
+  }
+  
+  /**
+   * Exports the package into a zip file
+   * @param docid the id of the package to export
+   * @param path the directory to which the package should be exported.
+   * @param location the location where the package is now: LOCAL, METACAT or 
+   * BOTH
+   */
+  public void exportToZip(String docid, String path, String location)
+  {
+    DataPackage dp = new DataPackage(location, docid, null, framework);
+    try
+    {
+      dp.exportToZip(path);
+    }
+    catch(Exception e)
+    {
+      System.out.println("Error in DataPackage.exportToZip(): " + e.getMessage());
+      e.printStackTrace();
+    }
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-08-31 22:40:01 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2001-10-17 17:53:00 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.framework.*;
 
 import java.util.*;
 import java.io.*;
+import java.util.zip.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -759,6 +760,74 @@ public class DataPackage
   }
   
   /**
+   * Exports a package to a zip file at the given path
+   * @param path the path to export the zip file to
+   */
+  public void exportToZip(String path) throws Exception
+  {
+    try
+    {
+      //export the package in an uncompressed format to the temp directory
+      //then zip it up and save it to the specified path
+      String tempdir = config.get("tempDir", 0);
+      export(tempdir + "/tmppackage");
+      File zipfile = new File(path);
+      FileOutputStream fos = new FileOutputStream(zipfile);
+      ZipOutputStream zos = new ZipOutputStream(fos);
+      String temppackdir = tempdir + "/tmppackage/" + id + ".package";
+      File packdirfile = new File(temppackdir);
+      String[] dirlist = packdirfile.list();
+      String packdir = id + ".package";
+      //zos.putNextEntry(new ZipEntry(packdir));
+      for(int i=0; i<dirlist.length; i++)
+      {
+        String entry = temppackdir + "/" + dirlist[i];
+        ZipEntry ze = new ZipEntry(packdir + "/" + dirlist[i]);
+        File entryFile = new File(entry);
+        if(!entryFile.isDirectory())
+        {
+          ze.setSize(entryFile.length());
+          zos.putNextEntry(ze);
+          FileInputStream fis = new FileInputStream(entryFile);
+          int c = fis.read();
+          while(c != -1)
+          {
+            zos.write(c);
+            c = fis.read();
+          }
+          zos.closeEntry();
+        }
+      }
+      packdir += "/metadata";
+      temppackdir += "/metadata";
+      File sourcedir = new File(temppackdir);
+      File[] sourcefiles = sourcedir.listFiles();
+      for(int i=0; i<sourcefiles.length; i++)
+      {
+        File f = sourcefiles[i];
+        
+        ZipEntry ze = new ZipEntry(packdir + "/" + f.getName());
+        ze.setSize(f.length());
+        zos.putNextEntry(ze);
+        FileInputStream fis = new FileInputStream(f);
+        int c = fis.read();
+        while(c != -1)
+        {
+          zos.write(c);
+          c = fis.read();
+        }
+        zos.closeEntry();
+      }
+      zos.flush();
+      zos.close();
+    }
+    catch(Exception e)
+    {
+      throw e;
+    }
+  }
+    
+  /**
    * exports a package to a given path
    * @param path the path to which this package should be exported.
    */
@@ -792,7 +861,7 @@ public class DataPackage
       FileSystemDataStore fsds = new FileSystemDataStore(framework);
       MetacatDataStore mds = new MetacatDataStore(framework);
       String packagePath = path + "/" + id + ".package";
-      String sourcePath = packagePath + "/source";
+      String sourcePath = packagePath + "/metadata";
       File savedir = new File(packagePath);
       File savedirSub = new File(sourcePath);
       savedir.mkdirs(); //create the new directories

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-08-31 22:40:01 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-10-17 17:53:00 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,4 +79,12 @@ public interface DataPackageInterface
    * @param location the current location of the package: METACAT, LOCAL or BOTH
    */
   public void export(String docid, String path, String location);
+  
+   /**
+   * This method exports an entire data package to a given location in a zip file.
+   * @param id the docid of the package to export
+   * @param path the location to export it to
+   * @param location the current location of the package: METACAT, LOCAL or BOTH
+   */
+  public void exportToZip(String docid, String path, String location);
 }
