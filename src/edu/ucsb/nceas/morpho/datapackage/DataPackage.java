@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-22 21:37:24 $'
- * '$Revision: 1.78 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-23 23:16:05 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,8 @@ public class DataPackage implements XMLFactoryInterface
 
   private final FileSystemDataStore fileSysDataStore;
   private final MetacatDataStore    metacatDataStore;
+  private final String              HTMLEXTENSION = ".html";
+  private final String              METACATHTML = "metacat";
 
  
   
@@ -1286,7 +1288,13 @@ public class DataPackage implements XMLFactoryInterface
             xmlInputReader = new FileReader((File)fileV.elementAt(i));
             
             XMLTransformer transformer = XMLTransformer.getInstance();
-            
+            // add some property for style sheet
+            transformer.
+                addTransformerProperty("export_file_extension", HTMLEXTENSION);
+            transformer.addTransformerProperty("package_id", id);
+            transformer.
+                    addTransformerProperty("pakcage_index_name", METACATHTML);
+                    
             try {
               result = transformer.transform(xmlInputReader);
             } catch (IOException e) {
@@ -1343,9 +1351,17 @@ public class DataPackage implements XMLFactoryInterface
         tempPathBuff.delete(0,tempPathBuff.length());
         
         tempPathBuff.append(packagePath);
-        tempPathBuff.append("/metadata_");
-        tempPathBuff.append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
-        tempPathBuff.append(".html");
+        tempPathBuff.append("/");
+        if (id.equals(getIdFromPath(((File)fileV.elementAt(i)).toString())))
+        {
+          tempPathBuff.append(METACATHTML);
+        }
+        else
+        {
+          tempPathBuff.
+                  append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
+        }
+        tempPathBuff.append(HTMLEXTENSION);
         
         saveToFile(htmldoc[i], new File(tempPathBuff.toString()));
       }     //end of file vector loop      
