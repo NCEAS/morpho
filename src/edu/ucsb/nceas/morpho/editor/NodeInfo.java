@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-11 21:55:45 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-29 04:22:53 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,16 +97,16 @@ public class NodeInfo implements Serializable
     this.cardinality = card;
        
   if(card.equalsIgnoreCase("ONE")) {
-    setIcon("greensq.gif");    
+    setIcon("bluesq.gif");    
   }
   if(card.equalsIgnoreCase("OPTIONAL")) {
-    setIcon("greenqumark.gif");    
+    setIcon("bluequmark.gif");    
   }
   if(card.equalsIgnoreCase("ZERO to MANY")) {
-    setIcon("greenasterisk.gif");    
+    setIcon("blueasterisk.gif");    
   }
   if(card.equalsIgnoreCase("ONE to MANY")) {
-    setIcon("greenplus.gif");    
+    setIcon("blueplus.gif");    
   }
   if(card.equalsIgnoreCase("SELECTED")) {
     setIcon("sel.gif");    
