@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-06 23:31:51 $'
- * '$Revision: 1.10 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-07 00:00:21 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,34 +32,28 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
-import edu.ucsb.nceas.morpho.util.SortableJTable;
 import edu.ucsb.nceas.morpho.util.Log;
-
+import edu.ucsb.nceas.morpho.util.SortableJTable;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 
 import org.w3c.dom.Node;
 
@@ -73,7 +67,6 @@ public class ExternalRefsPage extends AbstractUIPage
   private ColumnSortableTableModel resultsModel;
   private ReferenceSelectionEvent event;
   private String refID;
-  private String displayName;
   private Vector refIDTableCloumnName = new Vector();
   private String currentDataPackageID;
   private String selectedDataPackageID;
@@ -96,9 +89,7 @@ public class ExternalRefsPage extends AbstractUIPage
   ExternalRefsPage(ReferencesHandler referenceHandler)
   {
     this.referenceHandler = referenceHandler;
-    this.displayName = this.referenceHandler.getDisplayName();
-     // add the displayName into the column name vector in reference id
-    refIDTableCloumnName.add(displayName);
+
     init();
     addingMouseListenerForSearchResultTable();
    }
@@ -107,23 +98,22 @@ public class ExternalRefsPage extends AbstractUIPage
 
   protected void setReferenceSelectionEvent(ReferenceSelectionEvent event)
   {
-
     this.event = event;
   }
 
-  protected ReferenceSelectionEvent getReferenceSelectionEvent()
-  {
+
+  protected ReferenceSelectionEvent getReferenceSelectionEvent() {
     return event;
   }
 
- protected void setCurrentDataPackageID(String currentDataPackageID)
-  {
+
+  protected void setCurrentDataPackageID(String currentDataPackageID) {
 
     this.currentDataPackageID = currentDataPackageID;
   }
 
-  private void init()
-  {
+
+  private void init() {
 
     this.setLayout(new BorderLayout());
 
@@ -144,8 +134,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
     // right panel is the reference id panel
     JPanel refsPanel = new JPanel();
-    String selectRefsString = "2) Select a " + displayName +
-                              " from this data package";
+    String selectRefsString = "2) Select a previous entry from this data package";
     JLabel selectedRefsLabel = new JLabel(selectRefsString);
     refsPanel.setBorder(BorderFactory.createEmptyBorder(
                         TOPGAP, SMALLSIDEGAP, BOTTOMGAP, BIGSIDEGAP));
@@ -158,6 +147,25 @@ public class ExternalRefsPage extends AbstractUIPage
 
     this.add(refsPanel, BorderLayout.CENTER);
   }
+
+
+
+
+
+  /**
+   * Method to set displayName for the ExternalRefsDialog
+   * @param String displayName for the ExternalRefsDialog
+   */
+  public void setDisplayName(String displayName) {
+
+    if (displayName==null) displayName = "";
+    // add the displayName into the column name vector in reference id
+    refIDTableCloumnName.clear();
+    refIDTableCloumnName.add(displayName);
+    referenceIdTable.validate();
+    referenceIdTable.repaint();
+  }
+
 
   /*
    * Method to add mouse listener to the table
@@ -211,7 +219,6 @@ public class ExternalRefsPage extends AbstractUIPage
      referenceIdTable.setModel(referenceIdModel);
      referenceIdTable.validate();
      referenceIdTable.repaint();
-
    }
 
   /**

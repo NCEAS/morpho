@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 19:08:21 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2004-04-07 00:00:21 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -573,13 +573,13 @@ public class PartyPage extends AbstractUIPage {
           // and edit that one
           Object[] optionArray
               = new String[] {
-                "Edit previous entry",
-                "Copy previous entry and edit",
+                "Edit original",
+                "Copy original and edit",
                 "Cancel"};
           JOptionPane optPane = new JOptionPane();
           optPane.setOptions(optionArray);
           optPane.setMessage(
-              "Do you want to :\nedit the original entry (and therefore change \n"
+              "Do you want to :\nedit the original entry (and therefore change "
               +"all entries that refer to the original), or \n"
               +"create a copy of the original and edit that?");
           optPane.createDialog(instance, "Select an option...").show();
@@ -642,18 +642,18 @@ public class PartyPage extends AbstractUIPage {
 
     rolePickList = null;
     rolePanel.removeAll();
-
+    boolean isCreatorOrContact = false;
     if (role.equals(DataPackageWizardInterface.PARTY_CREATOR)) {
 
       roleString = "Owner";
       backupXPath = "/creator";
-      return;
+      isCreatorOrContact = true;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
 
       roleString = "Contact";
       backupXPath = "/contact";
-      return;
+      isCreatorOrContact = true;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
 
@@ -667,6 +667,8 @@ public class PartyPage extends AbstractUIPage {
     }
     //set display name for external refs dialog...
     referencesHandler.setDisplayName(roleString);
+
+    if (isCreatorOrContact) return;
 
     ////////////////////////////////////////////////////////////////////
     // gets here only if role is *not* PARTY_CREATOR or PARTY_CONTACT...
