@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-05-15 15:39:45 $'
- * '$Revision: 1.91 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-05-21 21:59:19 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,8 @@ public class ClientFramework extends javax.swing.JFrame
   private ConfigXML config;
   private ConfigXML profile;
   private boolean connected = false;
+  private boolean networkStatus = false;
+  private boolean sslStatus = false;
   private Hashtable menuList = null;
  //DFH private TreeMap menuOrder = null;
   private Hashtable menuOrder = null;
@@ -99,7 +101,7 @@ public class ClientFramework extends javax.swing.JFrame
   boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-	javax.swing.JPanel toolbarPanel = new javax.swing.JPanel();
+	javax.swing.JPanel toolbarPanel    = new javax.swing.JPanel();
 	javax.swing.JToolBar morphoToolbar = new javax.swing.JToolBar();
 	javax.swing.JMenuBar morphoMenuBar = new javax.swing.JMenuBar();
 	//}}
@@ -107,6 +109,25 @@ public class ClientFramework extends javax.swing.JFrame
   //{{DECLARE_MENUS
 	//}}
 
+  private StatusBar statusBar;
+  
+  //text messages to show on status bar for different scenarios. All three will 
+  //have the metacatURL appended.
+  //
+  //network connection to Metacat is available, and user is logged in:
+  private final String STATUSBAR_MSG_LOGGED_IN 
+        = "Logged into Metacat at: ";
+  // network connection to Metacat is available, but user is not logged in:
+  private final String STATUSBAR_MSG_NET_OK_NOT_LOGGED_IN 
+        = "Not logged in. Can access Metacat as \"Public\" user at: "; 
+  // network connection is down, or Metacat is not available at the given url:
+  private final String STATUSBAR_MSG_NO_NET_NOT_LOGGED_IN 
+        = "Not Logged in - no network connection, or Metacat not available at: ";
+  
+  // the polling interval, in milliSeconds, between attempts to verify that  
+  // MetaCat is available over the network
+  private final long METACAT_PING_INTERVAL = 5000;
+  
   /**
    * Creates a new instance of ClientFramework with the given title.
    * @param sTitle the title for the new frame.
@@ -160,6 +181,11 @@ public class ClientFramework extends javax.swing.JFrame
 		//$$ morphoMenuBar.move(0,0);
 		//}}
 
+    // get StatusBar instance, initialize and add to interface:
+    try { statusBar = StatusBar.getInstance(this); }
+		catch (Exception e) { debug(5, "Error creating status bar: "+e); }
+    getContentPane().add(BorderLayout.SOUTH, statusBar);
+  
     //{{INIT_MENUS
 		//}}
 
@@ -168,14 +194,38 @@ public class ClientFramework extends javax.swing.JFrame
     this.addWindowListener(aSymWindow);
     //}}
 
-
     // Get the configuration file information needed by the framework
     loadConfigurationParameters();
 
+    // NOTE: current test for SSL connection is to determine whether metacat_url 
+    // is set to be "https://..." in the config.xml file.  This check happens 
+    // only ONCE on start-up, so if Morpho is ever revised to allow users to 
+    // change metacat urls whilst it is running, we need to revise this to check 
+    // more often. 05/20/02- Currently, SSL is not used, so will always be false
+    sslStatus = ( metacatURL.indexOf("https://") == 0 );
+    //metacatURL is iniatilized in the loadConfigurationParameters() call, above
+    
+    //create URL object to poll for metacat connectivity
+    try {
+      metacatPingURL = new URL(metacatURL);
+    } catch (MalformedURLException mfue){
+      debug(5, "unable to read or resolve Metacat URL");
+    }
+    
+    //detects whether metacat is available, and if so, sets networkStatus = true
+    doPing();  
+    updateStatusBar();
+
+    //start a thread to check periodically whether metacat remains available
+    //over the network...
+    Thread pinger = new MetacatPinger();
+    pinger.start();
+    
     // Set up the framework's menus and toolbars, and services
     initializeActions();
   }
 
+  
   /**
    * Load all of the plugins specified in the configuration file. The plugins
    * are classes that implement the PluginInterface interface.
@@ -737,8 +787,13 @@ public class ClientFramework extends javax.swing.JFrame
    */
   private void establishConnection()
   {
-    ConnectionFrame cf = new ConnectionFrame(this);
-    cf.setVisible(true);
+    if (networkStatus) {
+      ConnectionFrame cf = new ConnectionFrame(this);
+      cf.setVisible(true);
+    } else {
+      profile.set("searchmetacat", 0, "false");
+      debug(6, "No MetaCat connection available - can't log in");
+    }
   }
 
   /** 
@@ -763,7 +818,7 @@ public class ClientFramework extends javax.swing.JFrame
     String profilesList[] = null;
     int selection = 0;
     if (profileDir.isDirectory()) {
-        
+
         // Get vector of profiles to be displayed
         profilesList = profileDir.list();
         for (selection=0; selection < profilesList.length; selection++) {
@@ -777,7 +832,7 @@ public class ClientFramework extends javax.swing.JFrame
                                 "Select from existing profiles:", "Input",
                                 JOptionPane.INFORMATION_MESSAGE, null,
                                 profilesList, profilesList[selection]);
-    
+
         // Set the new profile to the one selected if it is different
         if (null != newProfile) {
             if (currentProfile.equals(newProfile)) {
@@ -1110,6 +1165,7 @@ public class ClientFramework extends javax.swing.JFrame
     }
 
     if (wasConnected != connected) {
+      updateStatusBar();
       fireConnectionChangedEvent();
     }
 
@@ -1128,13 +1184,53 @@ public class ClientFramework extends javax.swing.JFrame
       prop.put("qformat", "xml");
   
       String response = getMetacatString(prop);
-      HttpMessage.setCookie(null);
-      connected = false;
-
-      fireConnectionChangedEvent();
+      doLogoutCleanup();
     }
   }
+  
+  /**
+   *  cleanup routine called by logout() and by MetacatPinger thread
+   *  Keeps all this stuff in one place so as not repeat code
+   */
+  private void doLogoutCleanup() {
+    HttpMessage.setCookie(null);
+    connected = false;
+    updateStatusBar();
+    fireConnectionChangedEvent();
+  }
+  
+  /**
+   *  updates status bar in response to changes in connection parameters
+   */
+  private void updateStatusBar() {
+    debug(19,"updateStatusBar() called; networkStatus = "+networkStatus);
+    statusBar.setConnectStatus(networkStatus);
+    statusBar.setLoginStatus  (connected && networkStatus);
+    statusBar.setSSLStatus    (sslStatus);
+    
+    statusBar.setMessage(makeStatusBarMessage());
+    
+    statusBar.validate();
+  }
+  
+  
+  private String makeStatusBarMessage() {
+    
+    if (networkStatus) {
+      if (connected)  return STATUSBAR_MSG_LOGGED_IN + metacatURL;
+      else            return STATUSBAR_MSG_NET_OK_NOT_LOGGED_IN + metacatURL;
+    }
+    return STATUSBAR_MSG_NO_NET_NOT_LOGGED_IN + metacatURL;
+  }
 
+  
+  /**
+   *  allows other classes to determine whether network connection to metacat is 
+   *  available before trying to contact it, since this would cause an error
+   */
+  public boolean isMetacatAvailable() { return networkStatus; }
+  
+  
   /**
    * Log out of metacat when exiting
    */
@@ -1165,7 +1261,7 @@ public class ClientFramework extends javax.swing.JFrame
       this.userName = uname;
       fireUsernameChangedEvent();
     }
-  } 
+  }
 
   /**
    * Get the username associated with this framework
@@ -1296,7 +1392,7 @@ public class ClientFramework extends javax.swing.JFrame
     establishConnection();
     setLastID(scope);
     fireConnectionChangedEvent();
-  } 
+  }
 
   /**
    * Set the profile associated with this framework based on its name
@@ -1631,7 +1727,8 @@ public class ClientFramework extends javax.swing.JFrame
   }
   
   private void setLastID(String scope) {
-    if (connected) {   // only execute if connected to avoid hanging when there is no network connection
+    //MB 05-21-02: if (connected && networkStatus) {
+    if (networkStatus) {   // only execute if connected to avoid hanging when there is no network connection
       String id = getLastID(scope);
       if (id!=null) {
         int num = (new Integer(id)).intValue();
@@ -1772,5 +1869,83 @@ public class ClientFramework extends javax.swing.JFrame
 
     return parser;
   }
+  
+  /**
+   *  Thread to "ping" (ie try to contact) the Metacat defined by "metacatURL"
+   *  string, with a period defined by the METACAT_PING_INTERVAL in milliSeconds
+   */
+  class MetacatPinger extends Thread {
+    
+    private boolean repeat;
+    private boolean origNetworkStatus;
 
+    
+    /*
+     *  constructor
+     */
+    public MetacatPinger(){
+      setPriority(2);
+      repeat = true;
+
+      //need to do this to set initial value of networkStatus/origNetworkStatus,
+      //otherwise tries to refresh packages at startup and triggers error
+      //check if metacat can be reached:
+      doPing();
+      //updateStatusBar();
+    }
+
+    public void run() {
+      while (repeat) {
+        origNetworkStatus = networkStatus;
+        
+        // check if metacat can be reached:
+        doPing();
+        
+        if (origNetworkStatus != networkStatus) {
+          //if lost connection, can't log out, but can still do cleanup
+          if (!networkStatus) {
+            profile.set("searchmetacat", 0, "false");
+            doLogoutCleanup();
+          } else {
+            updateStatusBar();
+          }
+          
+          try { //update package list
+            ServiceProvider provider 
+                              = getServiceProvider(QueryRefreshInterface.class);
+            ((QueryRefreshInterface)provider).refresh();
+          } catch (ServiceNotHandledException snhe) {
+            debug(6, snhe.getMessage());
+          }
+        }
+        //sleep...
+        try{ Thread.sleep(METACAT_PING_INTERVAL); } 
+        catch (InterruptedException ie) { 
+          debug(5, "unable to detect status of network/Metacat connectivity");
+          repeat = false;
+          break;
+        }
+      }
+    }
+  }
+  
+  
+  /**
+   *  sets networkStatus to boolean true if metacat connection can be made
+   */
+  private URL metacatPingURL=null;
+  private URLConnection urlConn=null;
+
+  private void doPing() {
+    debug(19,"doPing() called ");
+    try {
+      urlConn = metacatPingURL.openConnection();
+      urlConn.connect();
+      networkStatus = (urlConn.getDate() > 0L);
+    } catch (IOException ioe) {
+      debug(19, " - unable to open network connection to Metacat");
+      networkStatus = false;
+      if (profile!=null) profile.set("searchmetacat", 0, "false");
+    }
+  }
 }
