@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-18 21:33:59 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2001-10-20 18:12:47 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1466,17 +1466,20 @@ public class ClientFramework extends javax.swing.JFrame
   }
   
   private void setLastID(String usr) {
-    String id = getLastID(usr);
-    if (id!=null) {
-      int num = (new Integer(id)).intValue();
-      String curval = profile.get("lastId", 0);
-      int curnum = (new Integer(curval)).intValue();
-      if (curnum<num) {
-        num = num + 1;  // required because Metacat does not return the latest id
-        id = (new Integer(num)).toString();
-        profile.set("lastId",0,id);
-        profile.save();
+    if (connected) {   // only execute if connected to avoid hanging when there is no network connection
+      String id = getLastID(usr);
+      if (id!=null) {
+        int num = (new Integer(id)).intValue();
+        String curval = profile.get("lastId", 0);
+        int curnum = (new Integer(curval)).intValue();
+        if (curnum<num) {
+          num = num + 1;  // required because Metacat does not return the latest id
+          id = (new Integer(num)).toString();
+          profile.set("lastId",0,id);
+          profile.save();
+        }
       }
     }
   }
+  
 }
