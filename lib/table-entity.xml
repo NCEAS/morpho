@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE table-entity PUBLIC "-//NCEAS//eml-entity-2.0//EN" "file:////C:/VisualCafe/Projects/edit_plugin/lib/catalog/eml-entity-2.0.dtd">
+<table-entity help="Descriptor of one table entity in the dataset.">
+  <identifier help="The unique identifier for this metadata file"></identifier>
+  <entityName help="The name identifies the entity in the dataset: file name, name of database table, etc."></entityName>
+  <entityDescription help="General description of the entity and its contents"></entityDescription>
+  <temporalCoverage help="This element specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates."></temporalCoverage>
+  <geographicCoverage help="Geographic Coverage is a container for spatial information about a project, a resource, or an entity within a resource."></geographicCoverage>
+  <taxonomicCoverage help="Taxonomic Coverage is a container for Taxonomic information about a project, a resource, or an entity within a resource."></taxonomicCoverage>
+  <orientation help="Specification of the entity's record orientation (The valid attribute values are 'columnmajor' or 'rowmajor')" columnorrow="columnmajor"/>
+  <caseSensitive help="Specification of text case sensitiveness in the entity. Valid attribute values are 'yes' or 'no')" yesorno="no"/>
+  <numberOfRecords help="The integer count of the number of records in the entity"></numberOfRecords>
+</table-entity>
