@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-06 01:32:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,17 +28,16 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
 import java.awt.Component;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.*;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 
 /**
  * A classs represent sortable table
@@ -56,18 +55,7 @@ public class ToolTippedSortableJTable extends SortableJTable
   
   }
 
-  /**
-  * Constructor of ToolTippedSortableJTable
-  * @param model ColumnSortableTableModel
-  * @param colModel colModel for table
-  */
-  public ToolTippedSortableJTable(ColumnSortableTableModel model,
-    TableColumnModel colModel)
-  {
-    super(model, colModel);
-   
-  }
-  
+
   /**
    * In order to only show tool tion of the cell which is elided,
    * getToolTipText will be overwritten
