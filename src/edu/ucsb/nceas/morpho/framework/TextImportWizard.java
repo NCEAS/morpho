@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-07 20:12:42 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-11-21 23:06:30 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,16 @@ public class TextImportWizard extends javax.swing.JFrame
 	 */
 	// contains column titles
 	Vector colTitles;
+
+	/**
+	 * vector containing column Name strings
+	 */
+	Vector colNames;
+
+	/**
+	 * vector containing column Definition strings
+	 */
+	Vector colDefinitions;
 	
 	/**
 	 * vector containing column types (in strings)
@@ -122,6 +132,13 @@ public class TextImportWizard extends javax.swing.JFrame
 	// contains column types
 	Vector colTypes;
 	
+	
+	/**
+	 * vector containing number of unique elements in each column
+	 * value is stored as an Integer
+	 */
+	 Vector numUniqueItems;
+	 
 	/**
 	 * vector containing units for each column
 	 * (default is an empty string; requires user input)
@@ -160,7 +177,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		setTitle("Text Import Wizard");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(630,420);
+		setSize(696,420);
 		setVisible(false);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
@@ -311,45 +328,85 @@ public class TextImportWizard extends javax.swing.JFrame
 		Step3ControlsPanel.setVisible(false);
 		JPanel13.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		Step3ControlsPanel.add(BorderLayout.WEST,JPanel13);
-		JLabel6.setText("<html><br>Select column of<p>interest by \'clicking\'.<p>");
+		JPanel13.setBackground(java.awt.Color.white);
+		JLabel6.setText("<html><br>Select column of<p>interest by \'clicking\'<p>on any cell in <p>column.<p>");
 		JPanel13.add(JLabel6);
 		JLabel6.setForeground(java.awt.Color.black);
 		JPanel14.setAlignmentX(0.495413F);
-		JPanel14.setLayout(new BoxLayout(JPanel14,BoxLayout.Y_AXIS));
+		JPanel14.setLayout(new GridLayout(2,1,0,0));
 		Step3ControlsPanel.add(BorderLayout.CENTER,JPanel14);
-		JPanel15.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel14.add(JPanel15);
+		JPanel22.setLayout(new GridLayout(1,2,0,0));
+		JPanel14.add(JPanel22);
+		JPanel19.setAlignmentX(0.495413F);
+		JPanel19.setLayout(new BoxLayout(JPanel19,BoxLayout.Y_AXIS));
+		JPanel22.add(JPanel19);
+		JPanel15.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
+		JPanel19.add(JPanel15);
 		JLabel9.setText("Column Name:  ");
 		JPanel15.add(JLabel9);
 		JLabel9.setForeground(java.awt.Color.black);
 		JLabel9.setFont(new Font("Dialog", Font.PLAIN, 12));
-		ColumnNameTextField.setColumns(20);
+		ColumnNameTextField.setColumns(12);
 		JPanel15.add(ColumnNameTextField);
-		JPanel18.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel14.add(JPanel18);
+		ColumnNameTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JPanel21.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
+		JPanel19.add(JPanel21);
+		JLabel12.setText("Column Label:   ");
+		JPanel21.add(JLabel12);
+		JLabel12.setForeground(java.awt.Color.black);
+		JLabel12.setFont(new Font("Dialog", Font.PLAIN, 12));
+		ColumnLabelTextField.setColumns(12);
+		JPanel21.add(ColumnLabelTextField);
+		ColumnLabelTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JPanel18.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
+		JPanel19.add(JPanel18);
 		JLabel11.setText("Column Unit:      ");
 		JPanel18.add(JLabel11);
 		JLabel11.setForeground(java.awt.Color.black);
 		JLabel11.setFont(new Font("Dialog", Font.PLAIN, 12));
-		ColumnUnitTextField.setColumns(20);
+		ColumnUnitTextField.setColumns(12);
 		JPanel18.add(ColumnUnitTextField);
+		ColumnUnitTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JPanel23.setLayout(new BoxLayout(JPanel23,BoxLayout.Y_AXIS));
+		JPanel22.add(JPanel23);
+		JPanel23.add(JScrollPane2);
+		JTextArea1.setLineWrap(true);
+		JTextArea1.setWrapStyleWord(true);
+		JScrollPane2.getViewport().add(JTextArea1);
+		JTextArea1.setBounds(0,0,-69,19);
+		JLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+		JLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+		JLabel13.setText("Column Definition:");
+		JLabel13.setAlignmentX(0.5F);
+		JPanel23.add(JLabel13);
+		JLabel13.setForeground(java.awt.Color.black);
+		JLabel13.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JPanel20.setLayout(new GridLayout(1,2,0,0));
+		JPanel14.add(JPanel20);
 		JPanel16.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel14.add(JPanel16);
+		JPanel20.add(JPanel16);
 		JLabel10.setText("Data Type           ");
 		JPanel16.add(JLabel10);
 		JLabel10.setForeground(java.awt.Color.black);
 		JLabel10.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JScrollPane1.setOpaque(true);
 		JPanel16.add(JScrollPane1);
-		DataTypeList.setVisibleRowCount(5);
+		DataTypeList.setVisibleRowCount(4);
 		JScrollPane1.getViewport().add(DataTypeList);
-		DataTypeList.setBounds(0,0,123,85);
+		DataTypeList.setBounds(0,0,256,64);
+		JPanel24.setLayout(new BorderLayout(0,0));
+		JPanel20.add(JPanel24);
+		NumUniqueLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		NumUniqueLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JPanel24.add(BorderLayout.SOUTH,NumUniqueLabel);
+		NumUniqueLabel.setForeground(java.awt.Color.black);
+		NumUniqueLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		DataPanel.setLayout(new BorderLayout(0,0));
 		JPanel1.add(DataPanel);
 		DataPanel.add(BorderLayout.CENTER,DataScrollPanel);
 		ButtonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 		getContentPane().add(BorderLayout.SOUTH, ButtonsPanel);
-		StepNumberLabel.setText("Step # 1");
+		StepNumberLabel.setText("Step #1 of 3");
 		ButtonsPanel.add(StepNumberLabel);
 		StepNumberLabel.setForeground(java.awt.Color.black);
 		CancelButton.setText("Cancel");
@@ -389,12 +446,12 @@ public class TextImportWizard extends javax.swing.JFrame
 		exitItem.setActionCommand("Exit");
 		exitItem.setMnemonic((int)'X');
 		fileMenu.add(exitItem);
+		DataTypeList.setSelectedIndex(0);
 		CancelButton.setActionCommand("Cancel");
 		BackButton.setActionCommand("< Back");
 		BackButton.setEnabled(false);
 		NextButton.setActionCommand("Next >");
 		FinishButton.setActionCommand("Finish");
-		DataTypeList.setSelectedIndex(0);
 		//}}
 
 		//{{INIT_MENUS
@@ -432,7 +489,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		//}}
 		
 		resultsBuffer = new StringBuffer();
-		String[] dataTypes = {"Text", "Integers", "Floating Point Numbers", "Date", "skip this column" };
+		String[] dataTypes = {"Text", "Integers", "Floating Point", "Date", "Enumeration", "Codes", "skip this column" };
 
 		DataTypeList.setListData(dataTypes);
     
@@ -445,7 +502,7 @@ public class TextImportWizard extends javax.swing.JFrame
       createLinesTable();
       resultsBuffer = new StringBuffer();
       stepNumber = 1;
-      StepNumberLabel.setText("Step # "+stepNumber);
+      StepNumberLabel.setText("Step #"+stepNumber+" of 3");
       CardLayout cl = (CardLayout)ControlsPanel.getLayout();
       cl.show(ControlsPanel, "card"+stepNumber);
       BackButton.setEnabled(false);
@@ -588,16 +645,28 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JPanel JPanel13 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel14 = new javax.swing.JPanel();
+	javax.swing.JPanel JPanel22 = new javax.swing.JPanel();
+	javax.swing.JPanel JPanel19 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel15 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel9 = new javax.swing.JLabel();
 	javax.swing.JTextField ColumnNameTextField = new javax.swing.JTextField();
+	javax.swing.JPanel JPanel21 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel12 = new javax.swing.JLabel();
+	javax.swing.JTextField ColumnLabelTextField = new javax.swing.JTextField();
 	javax.swing.JPanel JPanel18 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel11 = new javax.swing.JLabel();
 	javax.swing.JTextField ColumnUnitTextField = new javax.swing.JTextField();
+	javax.swing.JPanel JPanel23 = new javax.swing.JPanel();
+	javax.swing.JScrollPane JScrollPane2 = new javax.swing.JScrollPane();
+	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
+	javax.swing.JLabel JLabel13 = new javax.swing.JLabel();
+	javax.swing.JPanel JPanel20 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel16 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel10 = new javax.swing.JLabel();
 	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JList DataTypeList = new javax.swing.JList();
+	javax.swing.JPanel JPanel24 = new javax.swing.JPanel();
+	javax.swing.JLabel NumUniqueLabel = new javax.swing.JLabel();
 	javax.swing.JPanel DataPanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel ButtonsPanel = new javax.swing.JPanel();
@@ -754,7 +823,7 @@ public void startImport(String file) {
         createLinesTable();
 		    resultsBuffer = new StringBuffer();
 		    stepNumber = 1;
-		    StepNumberLabel.setText("Step # "+stepNumber);
+		    StepNumberLabel.setText("Step #"+stepNumber+" of 3");
 		    CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		    cl.show(ControlsPanel, "card"+stepNumber);
 		    BackButton.setEnabled(false);
@@ -855,7 +924,7 @@ public void startImport(String file) {
         createLinesTable();
 		      resultsBuffer = new StringBuffer();
 		      stepNumber = 1;
-		      StepNumberLabel.setText("Step # "+stepNumber);
+		      StepNumberLabel.setText("Step #"+stepNumber+" of 3");
 		      CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		      cl.show(ControlsPanel, "card"+stepNumber);
 		      BackButton.setEnabled(false);
@@ -996,8 +1065,12 @@ public void startImport(String file) {
 	  
 	    buildTable(colTitles, vec);
 	    colTypes = new Vector();
+	    numUniqueItems = new Vector();
 	    for (int k=0;k<numcols;k++) {
 	      colTypes.addElement(guessColFormat(k)); 
+	      Vector lst = getUniqueColValues(k);
+	      Integer sz = new Integer(lst.size());
+	      numUniqueItems.addElement(sz);
 	    }
     }
 	}
@@ -1028,6 +1101,9 @@ public void startImport(String file) {
                   } else {
                       selectedCol = lsm.getMinSelectionIndex();
                       //selectedCol is selected
+                      Integer numUnique = (Integer)numUniqueItems.elementAt(selectedCol);
+                      String str = "There are "+numUnique.toString()+" unique item(s) in this column";
+                      NumUniqueLabel.setText(str);
                       ColumnUnitTextField.setText((String)units.elementAt(selectedCol));
                       ColumnNameTextField.setText(table.getColumnName(selectedCol));
                       String colType = (String)colTypes.elementAt(selectedCol);
@@ -1131,7 +1207,7 @@ public void startImport(String file) {
 		else {
 		  NextButton.setEnabled(false);
 		}
-		StepNumberLabel.setText("Step # "+stepNumber);
+		StepNumberLabel.setText("Step #"+stepNumber+" of 3");
 		CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		cl.show(ControlsPanel, "card"+stepNumber);
 		if (stepNumber == 2) parseDelimited();
@@ -1147,7 +1223,7 @@ public void startImport(String file) {
 		else {
 		  BackButton.setEnabled(false); 
 		}
-		StepNumberLabel.setText("Step # "+stepNumber);
+		StepNumberLabel.setText("Step #"+stepNumber+" of 3");
 		CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		cl.show(ControlsPanel, "card"+stepNumber);
 		if (stepNumber==1) {
@@ -1426,6 +1502,24 @@ public void startImport(String file) {
       return "date";  
     }
     return "text";
+  }
+ 
+ /**
+  *  creates a Vector containing all the unique items (Strings) in the
+  *  column
+  */
+  Vector getUniqueColValues(int colNum) {
+    Vector res = new Vector();
+    for (int i=0;i<vec.size();i++) {
+      Vector v = (Vector)vec.elementAt(i);
+      String str = (String)v.elementAt(colNum);
+      if (!str.equals("")) {  // ignore empty strings
+        if (!res.contains(str)) {
+            res.addElement(str);  
+        }
+      }
+    }
+    return res;
   }
   
  /**
