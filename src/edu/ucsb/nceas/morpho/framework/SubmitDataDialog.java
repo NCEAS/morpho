@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.6 2001-01-15 02:23:49 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.7 2001-01-19 20:57:52 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -26,6 +26,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
+import com.symantec.itools.javax.swing.models.StringComboBoxModel;
 
 public class SubmitDataDialog extends javax.swing.JDialog implements ContentHandler
 {
@@ -54,114 +55,189 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		//{{INIT_CONTROLS
 		setTitle("Data Storage on Server");
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(568,418);
+		setSize(697,418);
 		setVisible(false);
-		GetFilePanel.setLayout(new GridLayout(7,1,0,0));
+		GetFilePanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.NORTH,GetFilePanel);
-		GetFilePanel.setBounds(0,0,568,245);
-		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel3);
-		JPanel3.setBounds(0,0,568,35);
+		GetFilePanel.setBounds(0,0,697,280);
+		LabelPanel.setLayout(new GridLayout(8,1,0,0));
+		GetFilePanel.add(BorderLayout.WEST,LabelPanel);
+		LabelPanel.setBounds(0,0,114,280);
+		JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		JLabel1.setText("File");
-		JPanel3.add(JLabel1);
-		JLabel1.setBounds(20,10,19,15);
+		LabelPanel.add(JLabel1);
+		JLabel1.setBounds(0,0,114,35);
+		JLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel2.setText("File Metadata");
+		LabelPanel.add(JLabel2);
+		JLabel2.setBounds(0,35,114,35);
+		JLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel3.setText(" Resource Metadata");
+		LabelPanel.add(JLabel3);
+		JLabel3.setBounds(0,70,114,35);
+		JLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel4.setText("Package Name");
+		LabelPanel.add(JLabel4);
+		JLabel4.setBounds(0,105,114,35);
+		JLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel5.setToolTipText("First name of Originator");
+		JLabel5.setText("Given Name:");
+		LabelPanel.add(JLabel5);
+		JLabel5.setBounds(0,140,114,35);
+		JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel8.setToolTipText("Last name of Originator");
+		JLabel8.setText("Surname:");
+		LabelPanel.add(JLabel8);
+		JLabel8.setBounds(0,175,114,35);
+		JLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel6.setText("Document Title");
+		LabelPanel.add(JLabel6);
+		JLabel6.setBounds(0,210,114,35);
+		JLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JLabel7.setText("Keywords");
+		LabelPanel.add(JLabel7);
+		JLabel7.setBounds(0,245,114,35);
+		TextBoxPanel.setLayout(new GridLayout(8,1,0,4));
+		GetFilePanel.add(BorderLayout.CENTER,TextBoxPanel);
+		TextBoxPanel.setBounds(114,0,391,280);
 		FileNameTextField.setColumns(30);
 		FileNameTextField.setText("FileName of data to be sent to server should appear here");
-		JPanel3.add(FileNameTextField);
-		FileNameTextField.setBounds(44,8,330,19);
+		TextBoxPanel.add(FileNameTextField);
+		FileNameTextField.setBounds(0,0,391,31);
 		FileMetadataTextField.setColumns(30);
 		FileMetadataTextField.setText("./file_template.xml");
-		JPanel3.add(FileMetadataTextField);
-		FileMetadataTextField.setBounds(159,5,330,19);
+		TextBoxPanel.add(FileMetadataTextField);
+		FileMetadataTextField.setBounds(0,35,391,31);
+		ResourceMetadataTextField.setColumns(30);
+		ResourceMetadataTextField.setText("./resource_template.xml");
+		TextBoxPanel.add(ResourceMetadataTextField);
+		ResourceMetadataTextField.setBounds(0,70,391,31);
+		PackageNameTextField.setColumns(30);
+		PackageNameTextField.setText("packageExample");
+		TextBoxPanel.add(PackageNameTextField);
+		PackageNameTextField.setBounds(0,105,391,31);
+		GivenNameTextField.setColumns(12);
+		TextBoxPanel.add(GivenNameTextField);
+		GivenNameTextField.setBounds(0,140,391,31);
+		SurNameTextField.setColumns(15);
+		TextBoxPanel.add(SurNameTextField);
+		SurNameTextField.setBounds(0,175,391,31);
+		DocTitleTextField.setColumns(30);
+		TextBoxPanel.add(DocTitleTextField);
+		DocTitleTextField.setBounds(0,210,391,31);
+		KeywordsTextField.setColumns(30);
+		TextBoxPanel.add(KeywordsTextField);
+		KeywordsTextField.setBounds(0,245,391,31);
+		ControlsPanel.setLayout(new GridLayout(8,1,0,0));
+		GetFilePanel.add(BorderLayout.EAST,ControlsPanel);
+		ControlsPanel.setBounds(505,0,192,280);
+		JPanel10.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		ControlsPanel.add(JPanel10);
+		JPanel10.setBounds(0,0,192,35);
 		SelectFile.setText("Select File...");
 		SelectFile.setActionCommand("Select File...");
-		JPanel3.add(SelectFile);
-		SelectFile.setBounds(379,5,101,25);
+		JPanel10.add(SelectFile);
+		SelectFile.setBounds(12,5,101,25);
 		VirtualFileCheckBox.setToolTipText("If set, only a reference to the data file is inserted.");
 		VirtualFileCheckBox.setText("Virtual");
 		VirtualFileCheckBox.setActionCommand("Virtual");
-		JPanel3.add(VirtualFileCheckBox);
-		VirtualFileCheckBox.setBounds(485,6,62,23);
+		JPanel10.add(VirtualFileCheckBox);
+		VirtualFileCheckBox.setBounds(118,6,62,23);
+		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		ControlsPanel.add(JPanel3);
+		JPanel3.setBounds(0,35,192,35);
+		FileCombo.setModel(stringComboBoxModel1);
+		JPanel3.add(FileCombo);
+		FileCombo.setBackground(java.awt.Color.white);
+		FileCombo.setBounds(5,5,134,24);
+		FileSet.setText("...");
+		FileSet.setActionCommand("...");
+		JPanel3.add(FileSet);
+		FileSet.setBounds(144,5,43,25);
 		JPanel4.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel4);
-		JPanel4.setBounds(0,35,568,35);
-		JLabel2.setText("File Metadata");
-		JPanel4.add(JLabel2);
-		JLabel2.setBounds(79,7,75,15);
-		JPanel4.add(FileMetadataTextField);
+		ControlsPanel.add(JPanel4);
+		JPanel4.setBounds(0,70,192,35);
+		ResourceCombo.setModel(stringComboBoxModel2);
+		JPanel4.add(ResourceCombo);
+		ResourceCombo.setBackground(java.awt.Color.white);
+		ResourceCombo.setBounds(5,5,134,24);
+		ResourceSet.setText("...");
+		ResourceSet.setActionCommand("...");
+		JPanel4.add(ResourceSet);
+		ResourceSet.setBounds(144,5,43,25);
 		JPanel5.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel5);
-		JPanel5.setBounds(0,70,568,35);
-		JLabel3.setText("Resource Metadata");
-		JPanel5.add(JLabel3);
-		JLabel3.setBounds(61,7,111,15);
-		ResourceMetadataTextField.setColumns(30);
-		ResourceMetadataTextField.setText("./resource_template.xml");
-		JPanel5.add(ResourceMetadataTextField);
-		ResourceMetadataTextField.setBounds(177,5,330,19);
-		JPanel6.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel6);
-		JPanel6.setBounds(0,105,568,35);
-		JLabel4.setText("Package Name");
-		JPanel6.add(JLabel4);
-		JLabel4.setBounds(73,7,86,15);
-		PackageNameTextField.setColumns(30);
-		PackageNameTextField.setText("packageExample");
-		JPanel6.add(PackageNameTextField);
-		PackageNameTextField.setBounds(164,5,330,19);
-		JPanel7.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel7);
-		JPanel7.setBounds(0,140,568,35);
-		JLabel5.setText("Originator ---  Given Name:");
-		JPanel7.add(JLabel5);
-		JLabel5.setBounds(26,7,148,15);
-		GivenNameTextField.setColumns(12);
-		JPanel7.add(GivenNameTextField);
-		GivenNameTextField.setBounds(179,5,132,19);
-		JLabel8.setText("Surname:");
-		JPanel7.add(JLabel8);
-		JLabel8.setBounds(316,7,55,15);
-		SurNameTextField.setColumns(15);
-		JPanel7.add(SurNameTextField);
-		SurNameTextField.setBounds(376,5,165,19);
-		JPanel8.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel8);
-		JPanel8.setBounds(0,175,568,35);
-		JLabel6.setText("Document Title");
-		JPanel8.add(JLabel6);
-		JLabel6.setBounds(74,7,85,15);
-		DocTitleTextField.setColumns(30);
-		JPanel8.add(DocTitleTextField);
-		DocTitleTextField.setBounds(164,5,330,19);
-		JPanel9.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel9);
-		JPanel9.setBounds(0,210,568,35);
-		JLabel7.setText("Keywords");
-		JPanel9.add(JLabel7);
-		JLabel7.setBounds(88,7,57,15);
-		KeywordsTextField.setColumns(30);
-		JPanel9.add(KeywordsTextField);
-		KeywordsTextField.setBounds(150,5,330,19);
+		ControlsPanel.add(JPanel5);
+		JPanel5.setBounds(0,105,192,35);
+		PackageCombo.setModel(stringComboBoxModel3);
+		JPanel5.add(PackageCombo);
+		PackageCombo.setBackground(java.awt.Color.white);
+		PackageCombo.setBounds(5,5,134,24);
+		PackageSet.setText("...");
+		PackageSet.setActionCommand("...");
+		JPanel5.add(PackageSet);
+		PackageSet.setBounds(144,5,43,25);
+		JLabel9.setText("metadata");
+		ControlsPanel.add(JLabel9);
+		JLabel9.setBounds(0,140,192,35);
+		JLabel10.setText("metadata");
+		ControlsPanel.add(JLabel10);
+		JLabel10.setBounds(0,175,192,35);
+		JLabel11.setText("metadata");
+		ControlsPanel.add(JLabel11);
+		JLabel11.setBounds(0,210,192,35);
+		JLabel12.setText("metadata");
+		ControlsPanel.add(JLabel12);
+		JLabel12.setBounds(0,245,192,35);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,JPanel1);
-		JPanel1.setBounds(0,383,568,35);
+		JPanel1.setBounds(0,383,697,35);
 		SubmitDataButton.setText("Submit");
 		SubmitDataButton.setActionCommand("Submit");
 		JPanel1.add(SubmitDataButton);
-		SubmitDataButton.setBounds(207,5,75,25);
+		SubmitDataButton.setBounds(272,5,75,25);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
 		JPanel1.add(CancelButton);
-		CancelButton.setBounds(287,5,73,25);
+		CancelButton.setBounds(352,5,73,25);
 		JPanel2.setAlignmentY(0.466667F);
 		JPanel2.setLayout(new BoxLayout(JPanel2,BoxLayout.X_AXIS));
 		getContentPane().add(BorderLayout.CENTER,JPanel2);
-		JPanel2.setBounds(0,245,568,138);
+		JPanel2.setBounds(0,280,697,103);
 		SubmitDataTextArea.setEditable(false);
 		SubmitDataTextArea.setWrapStyleWord(true);
 		SubmitDataTextArea.setLineWrap(true);
 		JPanel2.add(SubmitDataTextArea);
-		SubmitDataTextArea.setBounds(0,0,568,138);
+		SubmitDataTextArea.setBounds(0,0,697,103);
+		{
+			String[] tempString = new String[4];
+			tempString[0] = "new metadata";
+			tempString[1] = "local file";
+			tempString[2] = "catalog document";
+			tempString[3] = "none";
+			stringComboBoxModel1.setItems(tempString);
+		}
+		//$$ stringComboBoxModel1.move(0,419);
+		{
+			String[] tempString = new String[4];
+			tempString[0] = "new metadata";
+			tempString[1] = "local file";
+			tempString[2] = "catalog document";
+			tempString[3] = "none";
+			stringComboBoxModel2.setItems(tempString);
+		}
+		//$$ stringComboBoxModel2.move(24,419);
+		{
+			String[] tempString = new String[4];
+			tempString[0] = "new metadata";
+			tempString[1] = "local file";
+			tempString[2] = "catalog document";
+			tempString[3] = "none";
+			stringComboBoxModel3.setItems(tempString);
+		}
+		//$$ stringComboBoxModel3.move(48,419);
+		PackageCombo.setSelectedIndex(0);
+		ResourceCombo.setSelectedIndex(0);
+		FileCombo.setSelectedIndex(0);
 		//}}
 	    String text = "Select File to be sent to server for centralized storage using \"Select File...\" button and then submit using the \"Submit\" button.";
 	    text = text + " Note that several metadata files will be automatically created to describe the file being submitted. ";
@@ -173,6 +249,13 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		SelectFile.addActionListener(lSymAction);
 		CancelButton.addActionListener(lSymAction);
 		SubmitDataButton.addActionListener(lSymAction);
+		FileSet.addActionListener(lSymAction);
+		ResourceSet.addActionListener(lSymAction);
+		PackageSet.addActionListener(lSymAction);
+		SymItem lSymItem = new SymItem();
+		FileCombo.addItemListener(lSymItem);
+		ResourceCombo.addItemListener(lSymItem);
+		PackageCombo.addItemListener(lSymItem);
 		//}}
 	}
 
@@ -229,36 +312,49 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 
 	//{{DECLARE_CONTROLS
 	javax.swing.JPanel GetFilePanel = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
+	javax.swing.JPanel LabelPanel = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel5 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel8 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel7 = new javax.swing.JLabel();
+	javax.swing.JPanel TextBoxPanel = new javax.swing.JPanel();
 	javax.swing.JTextField FileNameTextField = new javax.swing.JTextField();
+	javax.swing.JTextField FileMetadataTextField = new javax.swing.JTextField();
+	javax.swing.JTextField ResourceMetadataTextField = new javax.swing.JTextField();
+	javax.swing.JTextField PackageNameTextField = new javax.swing.JTextField();
+	javax.swing.JTextField GivenNameTextField = new javax.swing.JTextField();
+	javax.swing.JTextField SurNameTextField = new javax.swing.JTextField();
+	javax.swing.JTextField DocTitleTextField = new javax.swing.JTextField();
+	javax.swing.JTextField KeywordsTextField = new javax.swing.JTextField();
+	javax.swing.JPanel ControlsPanel = new javax.swing.JPanel();
+	javax.swing.JPanel JPanel10 = new javax.swing.JPanel();
 	javax.swing.JButton SelectFile = new javax.swing.JButton();
 	javax.swing.JCheckBox VirtualFileCheckBox = new javax.swing.JCheckBox();
+	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
+	javax.swing.JComboBox FileCombo = new javax.swing.JComboBox();
+	javax.swing.JButton FileSet = new javax.swing.JButton();
 	javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
-	javax.swing.JTextField FileMetadataTextField = new javax.swing.JTextField();
+	javax.swing.JComboBox ResourceCombo = new javax.swing.JComboBox();
+	javax.swing.JButton ResourceSet = new javax.swing.JButton();
 	javax.swing.JPanel JPanel5 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
-	javax.swing.JTextField ResourceMetadataTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel6 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
-	javax.swing.JTextField PackageNameTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel7 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel5 = new javax.swing.JLabel();
-	javax.swing.JTextField GivenNameTextField = new javax.swing.JTextField();
-	javax.swing.JLabel JLabel8 = new javax.swing.JLabel();
-	javax.swing.JTextField SurNameTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel8 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
-	javax.swing.JTextField DocTitleTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel9 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel7 = new javax.swing.JLabel();
-	javax.swing.JTextField KeywordsTextField = new javax.swing.JTextField();
+	javax.swing.JComboBox PackageCombo = new javax.swing.JComboBox();
+	javax.swing.JButton PackageSet = new javax.swing.JButton();
+	javax.swing.JLabel JLabel9 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel10 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel11 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel12 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JButton SubmitDataButton = new javax.swing.JButton();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
 	javax.swing.JTextArea SubmitDataTextArea = new javax.swing.JTextArea();
+	com.symantec.itools.javax.swing.models.StringComboBoxModel stringComboBoxModel1 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
+	com.symantec.itools.javax.swing.models.StringComboBoxModel stringComboBoxModel2 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
+	com.symantec.itools.javax.swing.models.StringComboBoxModel stringComboBoxModel3 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
 	//}}
 
 
@@ -273,6 +369,12 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 				CancelButton_actionPerformed(event);
 			else if (object == SubmitDataButton)
 				SubmitDataButton_actionPerformed(event);
+			else if (object == FileSet)
+				FileSet_actionPerformed(event);
+			else if (object == ResourceSet)
+				ResourceSet_actionPerformed(event);
+			else if (object == PackageSet)
+				PackageSet_actionPerformed(event);
 		}
 	}
 
@@ -297,11 +399,19 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	
 	void SubmitDataButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+	    String resourceID = "";
+		String resourcemetadatafile = "";
+	    String filemetadatafile = "";
+	    String fileID = "";
+	    String packID = "";
+	    
+	    
 	    if (container.userName.equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to insert data into the system catalog!");
 	    }
 	    else if (FileNameTextField.getText().startsWith("FileName of data to be sent to server"))
-	        {JOptionPane.showMessageDialog(this,"Please enter a file name.");}
+	        {JOptionPane.showMessageDialog(this,"Please enter a file name.");
+	        return;}
 	         
 	    else {
 	  String dataURL = FileNameTextField.getText();      
@@ -319,42 +429,68 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	        int posend = dataURL.indexOf("</docid>", pos+7);
 	        dataURL = dataURL.substring(pos+7, posend);    
 	    }
+	  } 
+	  else {
+	    JOptionPane.showMessageDialog(this,"Virtual selected. Only a reference to the data will be inserted"); 
 	  }
-		// now insert the dataURL into the resourcetemplate file
-		String resourcemetadatafile = "./resource_template.xml";
+		// now insert the dataURL into the resourcetemplate file (if local or new)
+		if ((ResourceCombo.getSelectedIndex()==0)||(ResourceCombo.getSelectedIndex()==1)) {
 		if (!ResourceMetadataTextField.getText().equals("")) {
-		   resourcemetadatafile = ResourceMetadataTextField.getText();} 
-		ReplaceFile(resourcemetadatafile, "datasetid", dataURL);
-		if (DocTitleTextField.getText().equals("")) {
-		    ReplaceFile(resourcemetadatafile, "title", shortFileName);
-		}
-		else {
-		    ReplaceFile(resourcemetadatafile, "title", DocTitleTextField.getText());
-		}
-		if (!GivenNameTextField.getText().equals("")) {
-		    ReplaceFile(resourcemetadatafile, "givenName", GivenNameTextField.getText());
-		}
-		if (!SurNameTextField.getText().equals("")) {
-		    ReplaceFile(resourcemetadatafile, "surName", SurNameTextField.getText());
-		}
-		if (!KeywordsTextField.getText().equals("")) {
-		    ReplaceFile(resourcemetadatafile, "keyword", KeywordsTextField.getText());
-		}
-		String resourceID = insertIntoMetacat(resourcemetadatafile);
-	//	System.out.println("ID of resource_template file is :"+resourceID);
-	    String filemetadatafile = "./file_template.xml";
-		if (!FileMetadataTextField.getText().equals("")) {
-		   resourcemetadatafile = FileMetadataTextField.getText();} 
-		ReplaceFile(filemetadatafile, "file_name", shortFileName);
-		String fileID = insertIntoMetacat(filemetadatafile);
-	//	System.out.println("ID of file_template file is :"+fileID);
-		String pack = buildPackage(resourceID, "ismetadatafor", dataURL, fileID, "ismetadatafor", dataURL);
-		System.out.println(pack);
-		String packID = insertStringIntoMetacat(pack);
-	//	System.out.println("ID of packagefile is :"+packID);
-		String ids = dataURL+"\nfileID = "+fileID+"\nresourceID = "+resourceID+"\npackage ID ="+packID;
-		SubmitDataTextArea.setText(ids);
+		    resourcemetadatafile = ResourceMetadataTextField.getText();
+		    ReplaceFile(resourcemetadatafile, "datasetid", dataURL);
 		
+		    if (DocTitleTextField.getText().equals("")) {
+		        ReplaceFile(resourcemetadatafile, "title", FileNameTextField.getText());
+		    }
+		    else {
+		        ReplaceFile(resourcemetadatafile, "title", DocTitleTextField.getText());
+		    }
+		    if (!GivenNameTextField.getText().equals("")) {
+		        ReplaceFile(resourcemetadatafile, "givenName", GivenNameTextField.getText());
+		    }
+		    if (!SurNameTextField.getText().equals("")) {
+		        ReplaceFile(resourcemetadatafile, "surName", SurNameTextField.getText());
+		    }
+		    if (!KeywordsTextField.getText().equals("")) {
+		        ReplaceFile(resourcemetadatafile, "keyword", KeywordsTextField.getText());
+		    }
+		    resourceID = insertIntoMetacat(resourcemetadatafile);
+	//	    System.out.println("ID of resource_template file is :"+resourceID);
+	    }
+	    }
+	    if (ResourceCombo.getSelectedIndex()==2) {     // already in catalog
+	        resourceID = ResourceMetadataTextField.getText();
+	    }
+	    
+		if ((FileCombo.getSelectedIndex()==0)||(FileCombo.getSelectedIndex()==1)) {	    
+		    if (!FileMetadataTextField.getText().equals("")) {
+		        filemetadatafile = FileMetadataTextField.getText();
+		    ReplaceFile(filemetadatafile, "file_name", shortFileName);
+		    fileID = insertIntoMetacat(filemetadatafile);
+	    //	System.out.println("ID of file_template file is :"+fileID);
+	        }
+	    }
+		if (FileCombo.getSelectedIndex()==2) {	    
+	        fileID = FileMetadataTextField.getText();
+	    }
+	
+		if (PackageCombo.getSelectedIndex()==0) {	    
+//		    String datastr = "metacatdata://dev.nceas.ucsb.edu:8090/metacat?name="+shortFileName+"&docid="+dataURL;
+		    String datastr = "metacatdata://dev.nceas.ucsb.edu:8090/metacat?docid="+dataURL;
+		    String pack = buildPackage(resourceID, "ismetadatafor", datastr, fileID, "ismetadatafor", datastr);
+		    System.out.println(pack);
+		    packID = insertStringIntoMetacat(pack);
+		    System.out.println("ID of packagefile is :"+packID);
+		    String ids = dataURL+"\nfileID = "+fileID+"\nresourceID = "+resourceID+"\npackage ID = "+packID;
+		    SubmitDataTextArea.setText(ids);
+		}
+		if (PackageCombo.getSelectedIndex()==1) {
+		    packID = insertIntoMetacat(PackageNameTextField.getText());
+		    System.out.println("ID of packagefile is :"+packID);
+		    String ids = dataURL+"\nfileID = "+fileID+"\nresourceID = "+resourceID+"\npackage ID = "+packID;
+		    SubmitDataTextArea.setText(ids);
+		    
+		}
 		}
 	}
 	
@@ -370,12 +506,12 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
         pack.append("<relation>\n");
         pack.append("<subject>"+"metacat://dev.nceas.ucsb.edu:8090/metacat?docid="+subj1+"</subject>\n");
         pack.append("<relationship>"+rel1+"</relationship>\n");
-        pack.append("<object>"+"metacatdata://dev.nceas.ucsb.edu:8090/metacat?docid="+obj1+"</object>\n");
+        pack.append("<object>"+obj1+"</object>\n");
         pack.append("</relation>\n");
         pack.append("<relation>\n");
         pack.append("<subject>"+"metacat://dev.nceas.ucsb.edu:8090/metacat?docid="+subj2+"</subject>\n");
         pack.append("<relationship>"+rel2+"</relationship>\n");
-        pack.append("<object>"+"metacatdata://dev.nceas.ucsb.edu:8090/metacat?docid="+obj2+"</object>\n");
+        pack.append("<object>"+obj2+"</object>\n");
         pack.append("</relation>\n");
         pack.append("</package>\n");
         
@@ -801,4 +937,140 @@ public String insertIntoMetacat(String filename) {
    public void endPrefixMapping(String prefix) throws SAXException { }
    public void setDocumentLocator (Locator locator) { }
 
+
+	void FileSet_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	    int selection = FileCombo.getSelectedIndex();
+	    if (selection==0) {           // new metadata doc
+	        FileMetadataTextField.setText("./file_template.xml");
+	        JOptionPane.showMessageDialog(this, "Set to create a new metadata File item");
+	    }
+	    if (selection==1) {           //local file
+		    try {
+			// saveFileDialog Show the FileDialog
+			    container.openFileDialog.setVisible(true);
+		    } catch (Exception e) {}
+		    String file = container.openFileDialog.getFile();
+		    if (file!=null) {
+		        shortFileName = file;
+		        file = container.openFileDialog.getDirectory() + file;
+		        FileMetadataTextField.setText(file);
+		    }
+		}
+		if (selection==2) {            //metacat (catalog) document
+		    FileMetadataTextField.setText("");
+		}
+		if (selection==3) {            // do NOT submit
+		    FileMetadataTextField.setText("");
+		}
+			 
+	}
+
+	void ResourceSet_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	    int selection = ResourceCombo.getSelectedIndex();
+	    if (selection==0) {           // new metadata doc
+	        ResourceMetadataTextField.setText("./resource_template.xml");
+	        JOptionPane.showMessageDialog(this, "Set to create a new metadata resource item");
+	    }
+	    if (selection==1) {           //local file
+		    try {
+			// saveFileDialog Show the FileDialog
+			    container.openFileDialog.setVisible(true);
+		    } catch (Exception e) {}
+		    String file = container.openFileDialog.getFile();
+		    if (file!=null) {
+		        shortFileName = file;
+		        file = container.openFileDialog.getDirectory() + file;
+		        ResourceMetadataTextField.setText(file);
+		    }
+		}
+		if (selection==2) {            //metacat (catalog) document
+		    ResourceMetadataTextField.setText("");
+		}
+		if (selection==3) {            // do NOT submit
+		    ResourceMetadataTextField.setText("");
+		}			 
+	}
+	
+	
+	
+	
+
+	void PackageSet_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	    int selection = PackageCombo.getSelectedIndex();
+	    if (selection==0) {           // new metadata doc
+	        PackageNameTextField.setText("Package Example");
+	    }
+	    if (selection==1) {           //local file
+		    try {
+			// saveFileDialog Show the FileDialog
+			    container.openFileDialog.setVisible(true);
+		    } catch (Exception e) {}
+		    String file = container.openFileDialog.getFile();
+		    if (file!=null) {
+		        shortFileName = file;
+		        file = container.openFileDialog.getDirectory() + file;
+		        PackageNameTextField.setText(file);
+		    }
+		}
+		if (selection==2) {            //metacat (catalog) document
+		    PackageNameTextField.setText("");
+		}
+		if (selection==3) {            // do NOT submit
+		    PackageNameTextField.setText("");
+		}
+	}
+	
+	
+	
+
+	class SymItem implements java.awt.event.ItemListener
+	{
+		public void itemStateChanged(java.awt.event.ItemEvent event)
+		{
+			Object object = event.getSource();
+			if (object == FileCombo)
+				FileCombo_itemStateChanged(event);
+			else if (object == ResourceCombo)
+				ResourceCombo_itemStateChanged(event);
+			else if (object == PackageCombo)
+				PackageCombo_itemStateChanged(event);
+		}
+	}
+
+	void FileCombo_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+	    int selection = FileCombo.getSelectedIndex();
+	    if (selection==0) {           // new metadata doc
+	        FileMetadataTextField.setText("./file_template.xml");
+	    }
+	    else {
+	        FileMetadataTextField.setText("");
+	        }
+	}
+
+	void ResourceCombo_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+	    int selection = ResourceCombo.getSelectedIndex();
+	    if (selection==0) {           // new metadata doc
+	        ResourceMetadataTextField.setText("./resource_template.xml");
+	    }
+	    else {
+	        ResourceMetadataTextField.setText("");
+	        }
+	    
+	}
+
+	void PackageCombo_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+	    int selection = PackageCombo.getSelectedIndex();
+	    if (selection==0) {           // new metadata doc
+	        PackageNameTextField.setText("Package Example");
+	    }
+	    else{
+	        PackageNameTextField.setText("");
+	    }
+	}
 }
