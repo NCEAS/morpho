@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-01 18:50:04 $'
- * '$Revision: 1.29 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-20 19:06:49 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -451,7 +451,6 @@ public class EntityGUI extends javax.swing.JFrame
     ClientFramework.debug(11, "Editing complete: id: " + id + " location: " + 
                               location);
     AccessionNumber a = new AccessionNumber(framework);
-    boolean metacatpublic = false;
     boolean newfile = false;
     boolean metacatloc = false;
     boolean localloc = false;
@@ -564,16 +563,6 @@ public class EntityGUI extends javax.swing.JFrame
     {
       if(metacatloc)
       { //save it to metacat
-        int choice = JOptionPane.showConfirmDialog(null, 
-                               "Do you wish to make this file publicly readable "+ 
-                               "(Searchable) on Metacat?", 
-                               "Package Editor", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          metacatpublic = true;
-        }
         if(id.trim().equals(dataPackage.getID().trim()))
         { //edit the package file
           String oldid = id;
