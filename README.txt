@@ -9,7 +9,10 @@ out' the code from CVS by executing runme.bat (Windows machines - Unix machines
 should be able to run the program by typing the contents of runme.bat on
 the command line.) Certain features (e.g. the metadata editor) will not operate
 properly until paths in 'mde.cfg' are set properly for the user's machine,
-however.
+however. 
+
+Note that there are a number of sample xml files in the directory xmlfiles.
+Queries currently search all files in this local directory. 
 
 One can compile the code by moving all *.java files to a single directory
 and then using 'javac' to compile with the '-d' switch so that packages are

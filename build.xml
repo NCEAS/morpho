@@ -46,7 +46,7 @@
    </target>
 
    <target name="clean" depends="init">
-       <delete file="dmanclient.jar" />
+       <delete file="lib/dmanclient.jar" />
        <deltree dir="${classesdir}" />
    </target>
 </project>
