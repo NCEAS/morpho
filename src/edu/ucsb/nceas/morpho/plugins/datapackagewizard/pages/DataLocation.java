@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 00:57:21 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,10 +72,15 @@ public class DataLocation extends AbstractWizardPage {
   private final String INIT_FILE_LOCATOR_TEXT 
                                   = "   use button to select a file -->";
   private final String FILE_LOCATOR_IMPORT_DESC 
-        = "<html>Use the \"locate\" button to locate the data file on your computer:</html>";
+        = WizardSettings.HTML_TABLE_LABEL_OPENING
+        +"Use the \"locate\" button to locate the data file on your computer:"
+        +WizardSettings.HTML_TABLE_LABEL_CLOSING;
+        
   private final String FILE_LOCATOR_BYHAND_DESC 
-        = "<html>Enter the filename of your data file. "
-                                    +"You do not need to enter its full path:</html>";
+        = WizardSettings.HTML_TABLE_LABEL_OPENING
+        +"Enter the filename of your data file. "
+        +"You do not need to enter its full path:"
+        +WizardSettings.HTML_TABLE_LABEL_CLOSING;
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 

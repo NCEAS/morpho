@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 00:35:44 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,10 +92,11 @@ public class Summary extends AbstractWizardPage {
    */
   public void onLoadAction() {
     
-    desc2.setText( "<html><table width=\"100%\"><tr><td valign=\"top\" "
-                  +"width=\"100%\"><p><b>"+WizardSettings.getSummaryText()
+    desc2.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
+                  +"<p><b>"+WizardSettings.getSummaryText()
                   +this.getDataLocation()
-                  +"</b></p><br></br></td></tr></table></html>");
+                  +"</b></p><br></br>"
+                  +WizardSettings.HTML_TABLE_LABEL_OPENING);
   }  
   
   private String getDataLocation() {

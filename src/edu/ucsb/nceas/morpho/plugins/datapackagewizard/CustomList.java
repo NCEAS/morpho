@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 16:17:45 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2003-10-01 18:22:41 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JComponent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -215,7 +216,10 @@ public class CustomList extends JPanel {
     /////////////////////////////////
     
     scrollPane = new JScrollPane(table);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setVerticalScrollBarPolicy(
+                            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setHorizontalScrollBarPolicy(
+                            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.getViewport().setBackground(java.awt.Color.white);
     scrollPane.getViewport().addChangeListener(new ChangeListener() {
     

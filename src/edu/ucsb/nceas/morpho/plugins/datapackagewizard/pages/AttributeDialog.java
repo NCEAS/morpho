@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-27 01:00:43 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,34 +92,43 @@ class AttributeDialog extends WizardPopupDialog {
   private JTextArea attribDefinitionField;
   private final String[] buttonsText  
       = {
-          "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
+          WizardSettings.HTML_NO_TABLE_OPENING
           +"NOMINAL:&nbsp;&nbsp;&nbsp;numbers have been assigned only for "
-          +"categorizing a variable. <font color=\"#666666\">"
-          +"e.g: assigning 1 for male and 2 for female</font>"
-          +"</td></tr></table></html>",
+          +"categorizing a variable. "
+          +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+          +"e.g: assigning 1 for male and 2 for female"
+          +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+          +WizardSettings.HTML_NO_TABLE_CLOSING,
           
-          "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
+          WizardSettings.HTML_NO_TABLE_OPENING
           +"ORDINAL:&nbsp;&nbsp;&nbsp;can determine order of categories, "
-          +"but not magnitude of their differences. <font color=\"#666666\">"
-          +"e.g: ranking system: 1=good,2=fair,3=poor.</font>"
-          +"</td></tr></table></html>",
+          +"but not magnitude of their differences. "
+          +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+          +"e.g: ranking system: 1=good,2=fair,3=poor."
+          +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+          +WizardSettings.HTML_NO_TABLE_CLOSING,
           
-          "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
+          WizardSettings.HTML_NO_TABLE_OPENING
           +"INTERVAL:&nbsp;&nbsp;data consist of equidistant points on a " 
-          +"scale. <font color=\"#666666\">e.g: Celsius scale (no "
-          +"natural zero point; 20C is not twice as hot as 10C)</font>"
-          +"</td></tr></table></html>",
+          +"scale."+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+          +"e.g: Celsius scale (no "
+          +"natural zero point; 20C is not twice as hot as 10C)"
+          +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+          +WizardSettings.HTML_NO_TABLE_CLOSING,
           
-          "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
+          WizardSettings.HTML_NO_TABLE_OPENING
           +"RATIO:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data which "
           +"has equidistant points <b>and</b> a meaningful zero point. "
-          +"<font color=\"#666666\">e.g: length in meters</font>"
-          +"</td></tr></table></html>",
+          +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: length in meters"
+          +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+          +WizardSettings.HTML_NO_TABLE_CLOSING,
           
-          "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
+          WizardSettings.HTML_NO_TABLE_OPENING
           +"DATE-TIME: values that comply with the Gregorian calendar "
-          +"system. <font color=\"#666666\">e.g:  2002-10-14T09:13:45</font>"
-          +"</td></tr></table></html>"
+          +"system."+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+          +"e.g:  2002-10-14T09:13:45"
+          +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+          +WizardSettings.HTML_NO_TABLE_CLOSING
         };
 
 //  private final String[] textEnumPicklistVals
@@ -187,16 +196,20 @@ class AttributeDialog extends WizardPopupDialog {
     // WidgetFactory.makeHTMLLabel() is required because the Java HTML rendering 
     // on JLabels seems to be buggy - using WidgetFactory.makeHTMLLabel() yields
     // labels that resize themselves depending which radiobutton is chosen :-(
-    Dimension infoDim = new Dimension(600,40);
+    Dimension infoDim = new Dimension(WizardSettings.DIALOG_WIDTH,40);
     JPanel infoPanel  = new JPanel();
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
     
     JLabel infoLabel = WidgetFactory.makeLabel(
-    "<html>Define the contents of the attribute (or column) precisely, "
+    
+    WizardSettings.HTML_NO_TABLE_OPENING
+    +"Define the contents of the attribute (or column) precisely, "
     +"so that a data user could interpret the attribute accurately.<br></br>"
-    +"<font color=\"666666\">&nbsp;&nbsp;[Example(s):&nbsp;&nbsp;&nbsp;"
+    +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+    +"&nbsp;&nbsp;[Example(s):&nbsp;&nbsp;&nbsp;"
     +"\"spden\" is the number of individuals of all macro invertebrate species "
-    +"found in the plot]</font><html>", false, infoDim);
+    +"found in the plot]"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+    +WizardSettings.HTML_NO_TABLE_OPENING, false, infoDim);
     
     infoLabel.setAlignmentX(1.0f);
     

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 04:49:01 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,9 +120,11 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     JPanel formatStringGrid = new JPanel(new GridLayout(1,2));
     formatStringGrid.add(formatStringPanel);
     formatStringGrid.add(WidgetFactory.makeLabel(
-        "<html><font color=\"#666666\">e.g: YYYY-MM-DDTHH:MM:SS ,"
-        +"&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss</font></html>", false,
-        new Dimension(1000,30)) );
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"e.g: YYYY-MM-DDTHH:MM:SS ,&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,30)) );
 
 //    this.add(WidgetFactory.makeHalfSpacer());
     this.add(formatStringGrid);
@@ -139,10 +141,13 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     JPanel precisionGrid = new JPanel(new GridLayout(1,2));
     precisionGrid.add(precisionPanel);
     precisionGrid.add(WidgetFactory.makeLabel(
-        "<html>Precision of a date or time measurement, interpreted in the "
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +"Precision of a date or time measurement, interpreted in the "
         +"smallest units represented by the datetime format."
-        +"&nbsp;&nbsp;<font color=\"#666666\">e.g: 0.1 or 0.01</font></html>", false,
-        new Dimension(1000,40)) );
+        +"&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: 0.1 or 0.01"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,40)) );
 
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(precisionGrid);
@@ -177,18 +182,23 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     
     boundsHelpPanel.add(boundsPanel);
     boundsHelpPanel.add(WidgetFactory.makeLabel(
-        "<html><font color=\"#666666\">Check 'excl?' box if "
-        +"bound does not include the value itself</font></html>", false,
-        new Dimension(1000,22)) );
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"Check 'excl?' box if bound does not include the value itself"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,22)) );
     
     
     JPanel boundsGrid = new JPanel(new GridLayout(1,2));
     boundsGrid.add(boundsHelpPanel);
     boundsGrid.add(WidgetFactory.makeLabel(
-    "<html>Range of permitted values, in same date-time format as used in "
-    +"the format description above. <br></br><font color=\"#666666\">e.g: if format is "
-    +"\"YYYY-MM-DD\", a valid minimum would be \"2001-05-29\"</font><br></br></html>", 
-    false, new Dimension(1000,35)));
+    WizardSettings.HTML_NO_TABLE_OPENING
+    +"Range of permitted values, in same date-time format as used in the format "
+    +"description above.&nbsp;&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
+    +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+    +"e.g: if format is \"YYYY-MM-DD\", a valid minimum would be \"2001-05-29\""
+    +WizardSettings.HTML_EXAMPLE_FONT_CLOSING+"<br></br>"
+    +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,35)));
     
 //    this.add(WidgetFactory.makeHalfSpacer());
     this.add(boundsGrid);

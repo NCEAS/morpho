@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 04:49:01 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -431,23 +431,24 @@ public class DataFormat extends AbstractWizardPage{
                                                   BoxLayout.X_AXIS));
     otherHelpJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
     JLabel help = WidgetFactory.makeHTMLLabel(
-      "<font color=\"#666666\">If your format does not appear in the above "
-      +"list, select \""+OTHER_LABEL+"\" and enter a description in the field "
+      WizardSettings.HTML_EXAMPLE_FONT_OPENING
+      +"If your format does not appear in the above list, select \""
+      +OTHER_LABEL+"\" and enter a description in the field "
       +"above. <br>This would preferably be in the form of a standard MIME "
       +"type (e.g: application/msword ), but if you do not know the MIME type, "
-      +"enter a text description</font>", 2);
+      +"enter a text description"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 4);
  
     Dimension helpDim = new Dimension(
                       WizardSettings.DIALOG_WIDTH - 
                             2*WizardSettings.WIZARD_CONTENT_LABEL_DIMS.width,
-                      2*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
+                      3*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
     
     help.setPreferredSize(helpDim);
     help.setMaximumSize(helpDim);
     
     Dimension helpPanelDim = new Dimension(
                       WizardSettings.DIALOG_WIDTH,
-                      2*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
+                      3*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
     
     otherHelpJustifyPanel.setPreferredSize(helpPanelDim);
     otherHelpJustifyPanel.setMaximumSize(helpPanelDim);

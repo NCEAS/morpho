@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 04:49:01 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,9 +137,13 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     JPanel precisionGrid = new JPanel(new GridLayout(1,2));
     precisionGrid.add(precisionPanel);
     precisionGrid.add(WidgetFactory.makeLabel(
-        "<html><font color=\"#666666\">e.g: for an attribute with unit \"meter\", "
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"e.g: for an attribute with unit \"meter\", "
         +"a precision of \"0.1\" would be interpreted as precise to the "
-        +"nearest 1/10th of a meter</font></html>", false,
+        +"nearest 1/10th of a meter"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING, false,
         new Dimension(1000,40)) );
 
     this.add(WidgetFactory.makeHalfSpacer());
@@ -205,9 +209,11 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     boundsHelpGrid.add(WidgetFactory.makeHalfSpacer());
 
     boundsHelpGrid.add(WidgetFactory.makeLabel(
-        "<html><font color=\"#666666\">Check the 'excl?' box if "
-        +"the bound does not include the value itself</font></html>", false,
-        new Dimension(1000,20)) );
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"Check the 'excl?' box if the bound does not include the value itself"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,20)) );
     
     this.add(boundsHelpGrid);
     

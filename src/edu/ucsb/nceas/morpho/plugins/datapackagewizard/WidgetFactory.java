@@ -50,9 +50,9 @@ public class WidgetFactory {
   
     if (text==null) text="";
     buff.delete(0, buff.length());
-    buff.append("<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">");
+    buff.append(WizardSettings.HTML_TABLE_LABEL_OPENING);
     buff.append(text);
-    buff.append("</td></tr></table></html>");
+    buff.append(WizardSettings.HTML_TABLE_LABEL_CLOSING);
     
     return makeLabel( buff.toString(), false, 
                       getDimForNumberOfLines(numberOfLines));

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 04:49:01 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,11 +122,15 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     this.setMaximumSize(dims);
     
     final String TEXT_HELP 
-                = "<html>Describe a free text domain for the attribute.</html>";
+                = WizardSettings.HTML_NO_TABLE_OPENING
+                +"Describe a free text domain for the attribute."
+                +WizardSettings.HTML_NO_TABLE_CLOSING;
 
     final String ENUM_HELP 
-                = "<html>Describe any codes that are used as values of "
-                +"the attribute.</html>";
+                = WizardSettings.HTML_NO_TABLE_OPENING
+                +"Describe any codes that are used as values of "
+                +"the attribute."+WizardSettings.HTML_NO_TABLE_CLOSING;
+                
     final JLabel helpTextLabel = getLabel(ENUM_HELP);
                     
     ItemListener listener = new ItemListener() {
@@ -223,8 +227,11 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     topHorizPanel.add(defFieldPanel);
 
     topHorizPanel.add(getLabel(
-        "<html><font color=\"#666666\">e.g: <i>U.S. telephone numbers in "
-        +"the format (999) 888-7777</i></font></html>"));
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"e.g: <i>U.S. telephone numbers in the format (999) 888-7777</i>"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING));
 
     panel.add(topHorizPanel);
 
@@ -243,8 +250,11 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     middleHorizPanel.add(srcFieldPanel);
 
     middleHorizPanel.add(getLabel(
-        "<html><font color=\"#666666\">e.g: <i>FIPS standard "
-        +"for postal abbreviations for U.S. states</i></font></html>"));
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"e.g: <i>FIPS standard for postal abbreviations for U.S. states</i>"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING));
 
     panel.add(middleHorizPanel);
 
@@ -270,11 +280,14 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     bottomHorizPanel.add(patternPanel);
     
     bottomHorizPanel.add(getLabel(
-        "<html><font color=\"#666666\">Patterns "
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"Patterns "
         +"are interpreted as regular expressions constraining allowable "
-        +"character sequences - e.g: <i>'[0-9]{3}-[0-9]{3}-[0-9]{4}' allows for "
-        +"only numeric digits in the pattern of a US phone number."
-        +"</i></font></html>"));
+        +"character sequences - e.g: <i>'[0-9]{3}-[0-9]{3}-[0-9]{4}' allows "
+        +"only numeric digits in the pattern of US phone numbers"
+        +"</i>"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING));
             
     panel.add(bottomHorizPanel);
 
@@ -315,16 +328,28 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     helpPanel.setLayout(new GridLayout(1,5));
     
     helpPanel.add(this.getLabel(
-        "<html><font color=\"#666666\">Examples:</font></html>"));
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"Examples:"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +WizardSettings.HTML_NO_TABLE_CLOSING));
         
     helpPanel.add(this.getLabel(
-        "<html><center><font color=\"#666666\">CA</font></center></html>"));
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +"<center>"+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"CA"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +"</center>"+WizardSettings.HTML_NO_TABLE_CLOSING));
         
     helpPanel.add(this.getLabel(
-        "<html><center><font color=\"#666666\">California</font></center></html>"));
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +"<center>"+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"California"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +"</center>"+WizardSettings.HTML_NO_TABLE_CLOSING));
     
     helpPanel.add(this.getLabel(
-        "<html><center><font color=\"#666666\">FIPS U.S. state codes</font></center></html>"));
+        WizardSettings.HTML_NO_TABLE_OPENING
+        +"<center>"+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"FIPS U.S. state codes"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+        +"</center>"+WizardSettings.HTML_NO_TABLE_CLOSING));
 
     helpPanel.add(this.getLabel(" "));
 

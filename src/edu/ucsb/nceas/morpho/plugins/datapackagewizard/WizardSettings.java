@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 04:49:01 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2003-10-01 18:22:42 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,7 +175,25 @@ public class WizardSettings {
   public static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS
   = new Dimension(2000,20);
   
+  public static final String HTML_FONT_OPENING 
+          = "<font size=\"2\" face=\"sans-serif\">";
+          
+  public static final String HTML_EXAMPLE_FONT_OPENING 
+                                                  = "<font color=\"#666666\">";
+                                                  
+  public static final String HTML_EXAMPLE_FONT_CLOSING = "</font>";
   
+  public static final String HTML_TABLE_LABEL_OPENING 
+          = "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
+                                                        +HTML_FONT_OPENING;
+
+  public static final String HTML_TABLE_LABEL_CLOSING 
+                                          = "</font></td></tr></table></html>";
+
+  public static final String HTML_NO_TABLE_OPENING = "<html>"+HTML_FONT_OPENING;
+                                            
+  public static final String HTML_NO_TABLE_CLOSING = "</html>";
+      
   public static final  Dimension LIST_BUTTON_DIMS
   = new Dimension(100,30);
   
