@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:21:41 $'
- * '$Revision: 1.21 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-19 01:23:57 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -508,7 +508,7 @@ public class MorphoFrame extends JFrame
     /**
      * close the window when requested
      */
-    private void close()
+    public void close()
     {
 
       Object contentsPanel = getContentComponent();
@@ -539,7 +539,23 @@ public class MorphoFrame extends JFrame
       Component comp = getContentComponent();
       comp = null;
       System.gc();
-
+    }
+    
+    /*
+     *  returns a flag indicating wheter this window is 'dirty'
+     *  i.e. has information that needs to be saved
+     */
+    public boolean isDirty() {
+      Object contentsPanel = getContentComponent();
+      if (contentsPanel instanceof DataViewContainerPanel) {
+         DataViewContainerPanel dvcp = (DataViewContainerPanel)contentsPanel;
+         dvcp.saveDataChanges();
+         String loc = dvcp.getPackageLocation();
+         if (loc.equals("")) {
+           return true;
+         } 
+      }
+      return false;   
     }
 
     /**

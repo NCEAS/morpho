@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-17 19:14:25 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-03-19 01:23:57 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -335,6 +335,27 @@ public class UIController
       }
       // set count 0
       count = 0;
+    }
+    
+    /*
+     * remove all 'clean' frames and return a vector of 'dirty' frames
+     */
+    public Vector removeCleanWindows() {
+      Vector res = new Vector();
+      Enumeration frameList = windowList.elements();
+      while (frameList.hasMoreElements())
+      {
+        MorphoFrame frame = (MorphoFrame)frameList.nextElement();
+        if (frame.isDirty()) {
+          res.addElement(frame);
+        } else {
+          removeWindowWithoutCheckingEmpty(frame);
+          frame.dispose();
+          frame = null;
+        }
+      }
+    count = res.size();  
+    return res;
     }
 /*
     public void addGuiAction(GUIAction action)

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-17 19:15:26 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2004-03-19 01:23:28 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -659,11 +659,19 @@ public class Morpho
         try {
             // Really need to check for dirty
             // documents and exit quickly if nothing is to be done.
-
-            logOutExit();
-            config.save();
-            System.exit(0);
+            UIController controller = UIController.getInstance();
+            Vector dirty = controller.removeCleanWindows();
+            if (dirty.size()<1) {
             // close the application
+              logOutExit();
+              config.save();
+              System.exit(0);
+            } else {
+              for (int i=0;i<dirty.size();i++) {
+                MorphoFrame frame = (MorphoFrame)dirty.elementAt(i);
+                frame.close();
+              }
+            }
         } catch (Exception e) {
         }
     }
