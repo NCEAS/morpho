@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-31 00:30:43 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2002-09-04 00:17:06 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,80 +241,82 @@ public class ResultPanel extends JPanel
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
     
-    
-    
-      //Build the popup menu for the right click functionality
-      popup = new JPopupMenu();
-      // Create a openPackage action
-      GUIAction openAction = new GUIAction("Open Package", null,
+      // In open dialog, doesn't show popup
+      if (dialog == null)
+      {
+        //Build the popup menu for the right click functionality
+        popup = new JPopupMenu();
+        // Create a openPackage action
+        GUIAction openAction = new GUIAction("Open Package", null,
                             new OpenPackageCommand(dialog));
-      openMenu = new JMenuItem(openAction);
-      popup.add(openMenu);
+        openMenu = new JMenuItem(openAction);
+        popup.add(openMenu);
       
-      // Create a OpenPreviousVersion action
-      GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
+        // Create a OpenPreviousVersion action
+        GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
                             new OpenPreviousVersionCommand(dialog, null));
-      openPreviousVersion = new JMenuItem(openPreviousAction);
-      popup.add(openPreviousVersion);
-      openPreviousAction.setEnabled(false);
+        openPreviousVersion = new JMenuItem(openPreviousAction);
+        popup.add(openPreviousVersion);
+        openPreviousAction.setEnabled(false);
       
-      // Create a refresh action
-      GUIAction refreshAction = new GUIAction("Refresh", null, 
+        // Create a refresh action
+        GUIAction refreshAction = new GUIAction("Refresh", null, 
                                new RefreshCommand(dialog));
-      refreshMenu = new JMenuItem(refreshAction);
-      popup.add(refreshMenu);
+        refreshMenu = new JMenuItem(refreshAction);
+        popup.add(refreshMenu);
       
-      popup.add(new JSeparator());
+        popup.add(new JSeparator());
       
-      // Create a action to open a synchronize dialog
-      GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
+        // Create a action to open a synchronize dialog
+        GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
                                     new OpenSynchronizeDialogCommand());
-      synchronizeMenu = new JMenuItem(synchronizeAction);
-      popup.add(synchronizeMenu);
+        synchronizeMenu = new JMenuItem(synchronizeAction);
+        popup.add(synchronizeMenu);
       
-      // Create a new JMenu SynChronize...
-      //JMenu synchronize = new JMenu("Synchronize...");
-      // Create a upload action and add it to synchronize
-      //GUIAction uploadAction = new GUIAction("Local to network", null,
+        // Create a new JMenu SynChronize...
+        //JMenu synchronize = new JMenu("Synchronize...");
+        // Create a upload action and add it to synchronize
+        //GUIAction uploadAction = new GUIAction("Local to network", null,
                                 //new LocalToNetworkCommand(dialog));
-      //uploadMenu = new JMenuItem(uploadAction);
-      //synchronize.add(uploadMenu);
-      // Create a download action
-      //GUIAction downloadAction = new GUIAction("Network to Local", null,
+        //uploadMenu = new JMenuItem(uploadAction);
+        //synchronize.add(uploadMenu);
+        // Create a download action
+        //GUIAction downloadAction = new GUIAction("Network to Local", null,
                        //new NetworkToLocalCommand(dialog));
-      //downloadMenu = new JMenuItem(downloadAction);
-      //synchronize.add(downloadMenu);
+        //downloadMenu = new JMenuItem(downloadAction);
+        //synchronize.add(downloadMenu);
       
-      // Add synchronize to pop
-      //popup.add(synchronize);
-      popup.add(new JSeparator());
+        // Add synchronize to pop
+        //popup.add(synchronize);
+        popup.add(new JSeparator());
       
-      // Create a new JMenu Delete
-      JMenu delete = new JMenu("Delete...");
-      GUIAction deleteLocalAction = new GUIAction("Local", null,
+        // Create a new JMenu Delete
+        JMenu delete = new JMenu("Delete...");
+        GUIAction deleteLocalAction = new GUIAction("Local", null,
                          new DeleteCommand(dialog, DataPackageInterface.LOCAL));
-      deleteLocalMenu = new JMenuItem(deleteLocalAction);
-      delete.add(deleteLocalMenu);
-      GUIAction deleteNetworkAction = new GUIAction("Network", null,
+        deleteLocalMenu = new JMenuItem(deleteLocalAction);
+        delete.add(deleteLocalMenu);
+        GUIAction deleteNetworkAction = new GUIAction("Network", null,
                        new DeleteCommand(dialog, DataPackageInterface.METACAT));
-      deleteMetacatMenu = new JMenuItem(deleteNetworkAction);
-      delete.add(deleteMetacatMenu);
-      GUIAction deleteBothAction = new GUIAction("Both", null,
+        deleteMetacatMenu = new JMenuItem(deleteNetworkAction);
+        delete.add(deleteMetacatMenu);
+        GUIAction deleteBothAction = new GUIAction("Both", null,
                        new DeleteCommand(dialog, DataPackageInterface.BOTH));
-      deleteAllMenu = new JMenuItem(deleteBothAction);
-      delete.add(deleteAllMenu);
-      popup.add(delete);
-      popup.add(new JSeparator());
+        deleteAllMenu = new JMenuItem(deleteBothAction);
+        delete.add(deleteAllMenu);
+        popup.add(delete);
+        popup.add(new JSeparator());
       
-      // Create export
-      GUIAction exportAction = new GUIAction("Export...", null, 
+        // Create export
+        GUIAction exportAction = new GUIAction("Export...", null, 
                             new ExportCommand(dialog, ExportCommand.REGULAR));
-      exportMenu = new JMenuItem(exportAction);
-      popup.add(exportMenu);
-      GUIAction exportToZipAction = new GUIAction("Export to Zip...", null, 
+        exportMenu = new JMenuItem(exportAction);
+        popup.add(exportMenu);
+        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null, 
                             new ExportCommand(dialog, ExportCommand.ZIP));
-      exportToZipMenu = new JMenuItem(exportToZipAction);
-      popup.add(exportToZipMenu);
+        exportToZipMenu = new JMenuItem(exportToZipAction);
+        popup.add(exportToZipMenu);
+      }//if
       
     
       MouseListener popupListener = new PopupListener();
@@ -551,7 +553,11 @@ public class ResultPanel extends JPanel
 
     public void mouseReleased(MouseEvent e) 
     {
-      maybeShowPopup(e);
+      // Don't show popup in dilog
+      if (dialog == null)
+      {
+        maybeShowPopup(e);
+      }
     }
 
     private void maybeShowPopup(MouseEvent e) 
