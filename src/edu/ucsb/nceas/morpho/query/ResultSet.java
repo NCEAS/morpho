@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-07 19:37:26 $'
- * '$Revision: 1.41 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-03-26 01:56:12 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,9 +79,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   protected Vector resultsVector = null;
 
   /**
-   * a list of the desired return fields from the configuration file. 
+   * a list of the desired return fields from the configuration file.
    *
-   * NOTE: This info should really come from the query so that it can 
+   * NOTE: This info should really come from the query so that it can
    * vary by query.
    */
   private Vector returnFields;
@@ -98,7 +98,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   /** The configuration options object reference from Morpho */
   private ConfigXML config = null;
 
-  // this group of variables are temporary vars that are used while 
+  // this group of variables are temporary vars that are used while
   // parsing the XML stream.  Ultimately the data ends up in the
   // resultsVector above
   private Stack elementStack = null;
@@ -115,7 +115,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    * Hashtable has up to five fields with the following String keys:
    * subject, subjectdoctype, relationship, object, objectdoctype
    */
-  private Hashtable triple; 
+  private Hashtable triple;
   /** a collection of triple Hashtables, used during SAX parsing */
   private Vector tripleList;
 
@@ -137,55 +137,55 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   //private ImageIcon metacatDataIcon = null;
   /** The icon for representing both local and metacat storage with data. */
   //private ImageIcon bothDataIcon = null;
-  
+
   /** Store the index of package icon in resultsVector */
   protected static final int PACKAGEICONINDEX = 0;
-     
+
   /** Store the index of titl in resultsVector */
   protected static final int TITLEINDEX = 1;
-  
+
   /** Store the index of surname in resultsVector */
   protected static final int SURNAMEINDEX = 2;
-  
+
   /** Store the index of keywords in resultsVector */
   protected static final int KEYWORDSINDEX = 3;
-  
+
   /** Store the index of createdate in resultsVector */
   protected static final int CREATEDATEINDEX = 4;
-  
+
   /** Store the index of update in resultsVector */
   protected static final int UPDATEDATEINDEX = 5;
-  
+
   /** Store the index of docid in resultsVector */
   protected static final int DOCIDINDEX = 6;
-  
+
   /** Store the index of doc name in resultsVector */
   protected static final int DOCNAMEINDEX = 7;
-  
+
   /** Store the index of doc type in resultsVector */
   protected static final int DOCTYPEINDEX = 8;
-  
+
   /** Store the index of islocal in resultsVector */
   protected static final int ISLOCALINDEX = 9;
-  
+
   /** Store the index of ismetacat in resultsVector */
   protected static final int ISMETACATINDEX = 10;
-  
+
   /** Store the index of triple in resultsVector*/
   protected static final int TRIPLEINDEX =11;
 
   /** Store the height fact for table row height */
   private static final int HEIGHTFACTOR = 2;
-  
+
   /** global for accumulating characters in SAX parser */
   private String accumulatedCharacters = null;
-  
+
   /**
    * Construct a ResultSet instance from a vector of vectors;
    * for use with LocalQuery
    */
   public ResultSet(Query query, String source, Vector vec, Morpho morpho) {
-  
+
     initIcons();
     init(query, source, morpho);
     this.resultsVector = vec;
@@ -195,14 +195,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    * Construct a ResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public ResultSet( Query query, String source, 
+  public ResultSet( Query query, String source,
                     InputStream resultsXMLStream, Morpho morpho) {
 
     initIcons();
     init(query, source, morpho);
     Log.debug(30, "(2.41) Creating result set ...");
      resultsVector = new Vector();
-    
+
     // Parse the incoming XML stream and extract the data
     XMLReader parser = null;
     // Set up the SAX document handlers for parsing
@@ -224,10 +224,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
 
   // common initialization functionality for constructors
   private void init(Query query, String source, Morpho morpho) {
-    
+
     this.savedQuery   = query;
     this.morpho       = morpho;
-    this.config       = morpho.getConfiguration();   
+    this.config       = morpho.getConfiguration();
     ConfigXML profile = morpho.getProfile();
     returnFields      = profile.get("returnfield");
 
@@ -238,46 +238,46 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       isLocal = false;
       isMetacat = true;
     }
-    
+
     // Set up the headers
     createTableHeader();
     //int cnt = (returnFields==null)? 0 : returnFields.size();
     //int numberFixedHeaders = 1;
-    //headers = new String[numberFixedHeaders+cnt];  
+    //headers = new String[numberFixedHeaders+cnt];
     //headers[0] = " "; // This is for the icon column;
-                      // *NOTE* we *must* use a space here, *NOT* an empty 
-                      // string ("") - otherwise header height is set too 
+                      // *NOTE* we *must* use a space here, *NOT* an empty
+                      // string ("") - otherwise header height is set too
                       // small in windows L&F
     //for (int i=0;i<cnt;i++) {
       //headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
     //}
   }
-  
+
   //initialize icons - called from constructor
   private void initIcons() {
 
-    localIcon 
+    localIcon
       = new ImageIcon(getClass().getResource("local-package-small.png"));
     localIcon.setDescription(ImageRenderer.LOCALTOOLTIP);
-    metacatIcon 
+    metacatIcon
       = new ImageIcon(getClass().getResource("network-package-small.png"));
     metacatIcon.setDescription(ImageRenderer.METACATTOOLTIP);
-    blankIcon 
+    blankIcon
       = new ImageIcon(getClass().getResource("blank.gif"));
     blankIcon.setDescription(ImageRenderer.BLANK);
     packageIcon
       = new ImageIcon(getClass().getResource("metadata-only-small.png"));
-    packageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);   
+    packageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);
     packageDataIcon
       = new ImageIcon(getClass().getResource("metadata+data-small.png"));
     packageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
-    /*bothIcon 
+    /*bothIcon
       = new ImageIcon(getClass().getResource("local+network-metadata.gif"));
-    localDataIcon   
+    localDataIcon
       = new ImageIcon(getClass().getResource("local-metadata+data.gif"));
-    metacatDataIcon 
+    metacatDataIcon
       = new ImageIcon(getClass().getResource("network-metadata+data.gif"));
-    bothDataIcon 
+    bothDataIcon
     =new ImageIcon(getClass().getResource("local+network-metadata+data.gif"));*/
   }
 
@@ -287,7 +287,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public Vector getResultsVector() {
     return this.resultsVector;
   }
-  
+
   /**
    *  set the resultsVector
    */
@@ -343,7 +343,17 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     Object value = null;
     return value;
   }
-  
+
+  /**
+   * Get the morpho attribute
+   * @return Morpho
+   */
+  public Morpho getMorpho()
+  {
+    return morpho;
+  }
+
+
   /**
    * Lookup an array to find resultsVector index for header index
    *  header index              resultVector index
@@ -362,7 +372,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     int [] lookupArray = {PACKAGEICONINDEX, TITLEINDEX, DOCIDINDEX,SURNAMEINDEX,
                   KEYWORDSINDEX, UPDATEDATEINDEX, ISLOCALINDEX, ISMETACATINDEX};
     return lookupArray[headerIndex];
-    
+
   }//lookupResultsVectorIndex
 
   /**
@@ -398,10 +408,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     // Thus, for now, just fix the 'cnt' variable
     cnt = 3;
     int numberFixedHeaders = 5;
-    headers = new String[numberFixedHeaders+cnt];  
+    headers = new String[numberFixedHeaders+cnt];
     headers[0] = " "; // This is for the first package icon column;
-                      // *NOTE* we *must* use a space here, *NOT* an empty 
-                      // string ("") - otherwise header height is set too 
+                      // *NOTE* we *must* use a space here, *NOT* an empty
+                      // string ("") - otherwise header height is set too
                       // small in windows L&F
     // This is for Title
     //headers[1] = getLastPathElement((String)returnFields.elementAt(0));
@@ -414,7 +424,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     // This is for surname and keywords
     /*if (cnt != 0)
     {
-      for (int i=1;i<cnt;i++) 
+      for (int i=1;i<cnt;i++)
       {
         headers[2+i] = getLastPathElement((String)returnFields.elementAt(i));
       }
@@ -424,14 +434,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     headers[6]="Local";
     headers[7]="Net";
   }
-  
+
   /**
    * SAX handler callback that is called upon the start of an
    * element when parsing an XML document.
    */
   public void startElement (String uri, String localName,
                             String qName, Attributes atts)
-                            throws SAXException 
+                            throws SAXException
   {
     if (localName.equalsIgnoreCase("param")) {
       paramName = atts.getValue("name");
@@ -455,17 +465,17 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
 
     // Reset the variables for each relation within a document
     else if (localName.equals("triple")) {
-      triple = new Hashtable(); 
+      triple = new Hashtable();
     }
     accumulatedCharacters = "";
   }
-  
+
    /**
    * SAX handler callback that is called upon the end of an
    * element when parsing an XML document.
    */
   public void endElement (String uri, String localName,
-                          String qName) throws SAXException 
+                          String qName) throws SAXException
   {
     setRSValues(localName);
     if (localName.equals("triple")) {
@@ -500,12 +510,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       // hasData has now been set properly for those docs with triples
       // still need to consider eml2.0 docs where there are no triples
 // in order to handle both datapackages with triples and those (e.g. eml2) without
-// a returnField which looks for 'entityName' fields has been included in the 
+// a returnField which looks for 'entityName' fields has been included in the
 // query. For some docs this returnField will not be present. Thus, only the first 3
 // of the return fields are added to the ResultSet table. [The 'entityName' returnField
-// MUST be listed AFTER title, surname, and keyword returnFields]  
+// MUST be listed AFTER title, surname, and keyword returnFields]
       if (params.containsKey("entityName")) hasData = true;
-      
+
       if (hasData) {
         row.addElement(packageDataIcon);
       } else {
@@ -526,25 +536,25 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       row.addElement(new Boolean(isLocal));
       row.addElement(new Boolean(isMetacat));
       row.addElement(tripleList);
-        
+
       // Add this document row to the list of results
       resultsVector.addElement(row);
     }
     String leaving = (String)elementStack.pop();
   }
-  
-  
-  
-  
+
+
+
+
   /**
    * SAX handler callback that is called for character content of an
    * element when parsing an XML document.
    */
-  public void characters(char ch[], int start, int length) 
+  public void characters(char ch[], int start, int length)
   {
     String inputString = new String(ch, start, length);
     accumulatedCharacters = accumulatedCharacters + inputString;
-    
+
     /*
     // this code is commented out to allow an accumulation of characters
     // due to multiple calls to this method which sometimes occur - DFH 5/1/2003
@@ -566,7 +576,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
         String cur = (String)params.get(paramName);
         val = cur + " " + val;
       }
-      params.put(paramName, val);  
+      params.put(paramName, val);
     } else if (currentTag.equals("subject")) {
       triple.put("subject", inputString);
     } else if (currentTag.equals("subjectdoctype")) {
@@ -599,7 +609,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
         String cur = (String)params.get(paramName);
         val = cur + " " + val;
       }
-      params.put(paramName, val);  
+      params.put(paramName, val);
     } else if (currentTag.equals("subject")) {
       triple.put("subject", inputString);
     } else if (currentTag.equals("subjectdoctype")) {
@@ -612,50 +622,50 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       triple.put("objectdoctype", inputString);
     }
   }
-  
+
   /**
-   * SAX handler callback that is called when an XML document 
+   * SAX handler callback that is called when an XML document
    * is initially parsed.
    */
-  public void startDocument() throws SAXException { 
+  public void startDocument() throws SAXException {
     elementStack = new Stack();
   }
 
   /** Unused SAX handler */
-  public void endDocument() throws SAXException 
-  { 
+  public void endDocument() throws SAXException
+  {
   }
 
   /** Unused SAX handler */
-  public void ignorableWhitespace(char[] cbuf, int start, int len) 
-  { 
+  public void ignorableWhitespace(char[] cbuf, int start, int len)
+  {
   }
 
   /** Unused SAX handler */
-  public void skippedEntity(String name) throws SAXException 
-  { 
+  public void skippedEntity(String name) throws SAXException
+  {
   }
 
   /** Unused SAX handler */
-  public void processingInstruction(String target, String data) 
-              throws SAXException 
-  { 
+  public void processingInstruction(String target, String data)
+              throws SAXException
+  {
   }
 
   /** Unused SAX handler */
-  public void startPrefixMapping(String prefix, String uri) 
-              throws SAXException 
-  { 
+  public void startPrefixMapping(String prefix, String uri)
+              throws SAXException
+  {
   }
 
   /** Unused SAX handler */
-  public void endPrefixMapping(String prefix) throws SAXException 
-  { 
+  public void endPrefixMapping(String prefix) throws SAXException
+  {
   }
 
   /** Unused SAX handler */
-  public void setDocumentLocator (Locator locator) 
-  { 
+  public void setDocumentLocator (Locator locator)
+  {
   }
 
   /**
@@ -665,20 +675,20 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     String last = "";
     int ind = str.lastIndexOf("/");
     if (ind==-1) {
-      last = str;     
+      last = str;
     } else {
-      last = str.substring(ind+1);     
+      last = str.substring(ind+1);
     }
     return last;
   }
-   
+
   /**
    * Get the query that was used to construct these results
    */
   public Query getQuery() {
-    return savedQuery; 
+    return savedQuery;
   }
-  
+
   /**
    * Set the query that was used to construct these results
    * (for use by LocalQuery)
@@ -686,7 +696,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public void setQuery(Query query) {
     this.savedQuery = query;
   }
- 
+
   /**
    * Open a given row index of the result set using a delegated handler class
    */
@@ -713,7 +723,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     try {
       docid = (String)rowVector.elementAt(DOCIDINDEX);
       openLocal = ((Boolean)rowVector.elementAt(ISLOCALINDEX)).booleanValue();
-      openMetacat = 
+      openMetacat =
                 ((Boolean)rowVector.elementAt(ISMETACATINDEX)).booleanValue();
       //rowTriples = (Vector)rowVector.get(numHeaders+7);
     } catch (ArrayIndexOutOfBoundsException aioobe) {
@@ -728,16 +738,16 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     if (openLocal) {
       location = "local";
     }
-    
+
     if (openMetacat) {
       location += "metacat";
     }
-    
+
     location = location.trim();
 
     try {
       ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
+      ServiceProvider provider =
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
       dataPackage.openDataPackage(location, docid, rowTriples, null, null);
@@ -745,7 +755,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       Log.debug(6, snhe.getMessage());
     }
   }
-  
+
 
   /**
    * Merge a ResultSet onto this one using the docid as the join column
@@ -761,7 +771,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
         String currentDocid = (String)rowVector.elementAt(DOCIDINDEX);
         docidList.put(currentDocid, new Integer(i));
       }
-  
+
       // Step through all of the rows of the results in r2 and
       // see if there is a docid match
       Vector r2Rows = r2.getResultsVector();
@@ -775,16 +785,16 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
           Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
 
           // Determine which icon to use based on the current setting
-          ImageIcon currentIcon 
+          ImageIcon currentIcon
             = (ImageIcon)originalRow.elementAt(PACKAGEICONINDEX);
-       
+
           if ((currentIcon.getDescription()).
                           equals(packageDataIcon.getDescription())) {
             //originalRow.setElementAt(bothDataIcon, 0);
-           
+
             originalRow.setElementAt(packageDataIcon, PACKAGEICONINDEX);
           } else {
-            
+
             //originalRow.setElementAt(bothIcon, 0);
             originalRow.setElementAt(packageIcon, PACKAGEICONINDEX);
           }
@@ -806,8 +816,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   {
     return this.morpho;
   }
-  
-  
+
+
   /**
    * Method implements from SortTableModel. To make sure a col can be sort
    * or not. We decide it always be sortable.
@@ -816,7 +826,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    */
   public void sortTableByColumn(int col, String order)
   {
-  
-  
+
+
   }//sortColumn
 }
