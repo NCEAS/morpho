@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-05 19:39:29 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2001-12-10 19:03:04 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ public class DocFrame extends javax.swing.JFrame
     /**
      *  flag to indicate whether noInfoNodes should be trimmed when a tree is saved
      */
-    boolean trimFlag = false;    
+    boolean trimFlag = true;    
 
    /** counter for name */
     public static int counter = 0;
@@ -1774,7 +1774,9 @@ private Vector sameParent(Vector list) {
                 }
             }
         }
-
+        String res = str.toString();
+        res = res.trim();
+        if (res.length()==0) res = " ";
         return str.toString();
 
     } // normalize(String):String
