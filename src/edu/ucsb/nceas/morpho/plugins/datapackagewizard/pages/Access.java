@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-18 02:43:49 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-03-19 01:24:38 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,40 +28,40 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.OrderedMap;
-
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
 import javax.xml.parsers.DocumentBuilder;
 
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class Access
     extends AbstractUIPage {
@@ -89,7 +89,6 @@ public class Access
   private final Object[] editors = null;
   private CustomList accessList;
 
-  private Morpho morpho;
   private InputStream queryResult;
   private Document doc;
   private Node tempNode;
@@ -134,8 +133,8 @@ public class Access
     };
 
     radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
-    radioPanel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.
-        PADDING,0, 0));
+    radioPanel.setBorder(new javax.swing.border.EmptyBorder(0, WizardSettings.
+        PADDING, 0, 0));
 
     vBox.add(radioPanel);
     vBox.add(WidgetFactory.makeDefaultSpacer());
@@ -167,6 +166,8 @@ public class Access
    */
   private void initActions() {
 
+    final ContactMetacat contactMetacat = new ContactMetacat(this);
+
     accessList.setCustomAddAction(
 
         new AbstractAction() {
@@ -174,25 +175,64 @@ public class Access
       public void actionPerformed(ActionEvent e) {
 
         Log.debug(45, "\nAccess: CustomAddAction called");
-        showNewAccessDialog();
+        if (accessTreeNode == null) {
+          accessList.disable();
+          Component parent = SwingUtilities.getRoot( (Component) accessList);
+          if (parent != null && parent.isShowing()) {
+            parent.setCursor(
+                Cursor.getPredefinedCursor(
+                Cursor.WAIT_CURSOR));
+          }
+          try {
+            contactMetacat.setMethodCall(contactMetacat.ADD);
+            contactMetacat.start();
+          }
+          catch (Exception e1) {
+            Log.debug(10, "Could not connect to Metacat server...");
+            Log.debug(45, e1.toString());
+          }
+        }
+        else {
+          showNewAccessDialog();
+        }
       }
     });
 
     accessList.setCustomEditAction(
-
         new AbstractAction() {
-
       public void actionPerformed(ActionEvent e) {
-
-        Log.debug(45, "\nAccess: CustomEditAction called");
-        showEditAccessDialog();
+        if (accessTreeNode == null) {
+          Component parent = SwingUtilities.getRoot( (Component) accessList);
+          if (parent != null && parent.isShowing()) {
+            parent.setCursor(
+                Cursor.getPredefinedCursor(
+                Cursor.WAIT_CURSOR));
+          }
+          try {
+            contactMetacat.setMethodCall(contactMetacat.EDIT);
+            contactMetacat.start();
+          }
+          catch (Exception e1) {
+            Log.debug(10, "Could not connect to Metacat server...");
+            Log.debug(45, e1.toString());
+          }
+        } else {
+          Log.debug(45, "\nAccess: CustomEditAction called");
+          showEditAccessDialog();
+        }
       }
     });
   }
 
-  private void showNewAccessDialog() {
+  protected void showNewAccessDialog() {
 
     if (accessTreeNode == null) {
+      Component parent = SwingUtilities.getRoot( (Component) accessList);
+      if (parent != null) {
+        parent.setCursor(
+            Cursor.getPredefinedCursor(
+            Cursor.DEFAULT_CURSOR));
+      }
       accessTreeNode = createTree();
     }
 
@@ -212,9 +252,15 @@ public class Access
     }
   }
 
-  private void showEditAccessDialog() {
+  protected void showEditAccessDialog() {
 
     if (accessTreeNode == null) {
+      Component parent = SwingUtilities.getRoot( (Component) accessList);
+      if (parent != null) {
+        parent.setCursor(
+      Cursor.getPredefinedCursor(
+      Cursor.DEFAULT_CURSOR));
+      }
       accessTreeNode = createTree();
     }
 
@@ -251,19 +297,6 @@ public class Access
     DefaultMutableTreeNode top =
         new DefaultMutableTreeNode("Access Tree                        ");
 
-    Properties prop = new Properties();
-    prop.put("action", "getprincipals");
-
-    morpho = Morpho.thisStaticInstance;
-
-    try {
-      queryResult = morpho.getMetacatInputStream(prop);
-    }
-    catch (Exception w) {
-      Log.debug(10, "Error in retrieving User list from Metacat server.");
-      Log.debug(45, w.getMessage());
-    }
-
     NodeList nl = null;
 
     if (queryResult != null) {
@@ -287,6 +320,10 @@ public class Access
     }
 
     return null;
+  }
+
+  protected void setQueryResult(InputStream queryResult) {
+    this.queryResult = queryResult;
   }
 
   DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top) {
@@ -356,22 +393,19 @@ public class Access
           NodeList nl2 = tempNode.getChildNodes();
           nodeObject = null;
 
-          for (int i = 0; i < nl2.getLength(); i++) {
-            Node node = nl2.item(i);
-            nodeObject = new AccessTreeNodeObject(
-                WizardSettings.ACCESS_PAGE_USER);
+          nodeObject = new AccessTreeNodeObject(
+              WizardSettings.ACCESS_PAGE_USER);
 
-            for (int j = 0; j < nl2.getLength(); j++) {
-              Node node1 = nl2.item(j);
-              if (node1.getNodeName().compareTo("username") == 0) {
-                nodeObject.setDN(node1.getFirstChild().getNodeValue());
-              }
-              else if (node1.getNodeName().compareTo("name") == 0) {
-                nodeObject.setName(node1.getFirstChild().getNodeValue());
-              }
-              else if (node1.getNodeName().compareTo("email") == 0) {
-                nodeObject.setEmail(node1.getFirstChild().getNodeValue());
-              }
+          for (int j = 0; j < nl2.getLength(); j++) {
+            Node node1 = nl2.item(j);
+            if (node1.getNodeName().compareTo("username") == 0) {
+              nodeObject.setDN(node1.getFirstChild().getNodeValue());
+            }
+            else if (node1.getNodeName().compareTo("name") == 0) {
+              nodeObject.setName(node1.getFirstChild().getNodeValue());
+            }
+            else if (node1.getNodeName().compareTo("email") == 0) {
+              nodeObject.setEmail(node1.getFirstChild().getNodeValue());
             }
           }
 
@@ -555,5 +589,53 @@ public class Access
   }
 
   public void setPageData(OrderedMap data) {}
+
+}
+
+class ContactMetacat
+    extends Thread {
+
+  Runnable runnable;
+  Access access;
+  InputStream queryResult;
+  public int ADD = 1;
+  public int EDIT = 2;
+
+  int methodCallID;
+
+
+  public ContactMetacat(Access access1) {
+    this.access = access1;
+  }
+
+  public void run() {
+    Properties prop = new Properties();
+    prop.put("action", "getprincipals");
+
+    Morpho morpho = Morpho.thisStaticInstance;
+    try {
+      queryResult = morpho.getMetacatInputStream(prop);
+      access.setQueryResult(queryResult);
+
+      if(methodCallID == ADD){
+        access.showNewAccessDialog();
+      } else if(methodCallID == EDIT){
+        access.showEditAccessDialog();
+      }
+    }
+    catch (Exception w) {
+      Log.debug(10, "Error in retrieving User list from Metacat server.");
+      Log.debug(45, w.getMessage());
+    }
+  }
+
+  /**
+   * setMethodCall
+   *
+   * @param i int
+   */
+  public void setMethodCall(int methodCallID) {
+    this.methodCallID = methodCallID;
+  }
 
 }
