@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-09 23:17:02 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2001-07-10 16:00:14 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -307,6 +307,27 @@ public class DataPackageGUI extends javax.swing.JFrame
     contentPane.add(layoutPanel);
   }
   
+  private static String htmlize(String s)
+  {
+    return htmlize(s, null);
+  }
+  
+  private static String htmlize(String s, String label)
+  {
+    if(s.trim().equals(""))
+    {
+      return "";
+    }
+    else if(label != null)
+    {
+      return "<u>" + label + "</u>: " + s + "<br>";
+    }
+    else
+    {
+      return s + "<br>";
+    }
+  }
+  
   /**
    * creates the basicinfopanel
    */
@@ -404,10 +425,12 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
     }
     
-    wholelabel += id + "<br>" + title + "<br>" + shortName + "<br>" + keywords +
-                 "<br>" + abstractS + "<br>";
+    wholelabel += htmlize(id, "ID") + htmlize(title, "Title") + 
+                  htmlize(shortName, "Short Name") + 
+                  htmlize(keywords, "Keywords") + 
+                  htmlize(abstractS, "Abstract");
     
-    String originators = "<br>";
+    String originators = "<br><u>Originators</u><br>";
     String name = "";
     String orgname = "";
     String address = "";
@@ -474,7 +497,15 @@ public class DataPackageGUI extends javax.swing.JFrame
               pc = cn.getFirstChild().getNodeValue().trim();
             }
           }
-          address = dp + "<br>" + city + ", " + aa + "  " + pc;
+          
+          if(!city.equals(""))
+          {
+            address = htmlize(dp) + city + ", " + aa + "  " + pc;
+          }
+          else
+          {
+            address = htmlize(dp) + aa + " " + pc;
+          }
         }
         else if(nodename.equals("phone"))
         {
@@ -493,22 +524,24 @@ public class DataPackageGUI extends javax.swing.JFrame
           role = n.getFirstChild().getNodeValue().trim();
         }
       }
-      originators += "<br>" + name +  "<br>" + orgname + "<br>" + address + 
-                     "<br>" + phone + "<br>" + email +   "<br>" + web +
-                     "<br>" + role +  "<br>";
+      originators += htmlize(name) + htmlize(orgname) + htmlize(address) + 
+                     htmlize(phone) + htmlize(email) + htmlize(web) +
+                     htmlize(role) + "<br>";
     }
-    System.out.println(originators);
-    //originators += "</html>";
     
     wholelabel += originators + "</html>";
     JLabel biglabel = new JLabel(wholelabel);
-    biglabel.setPreferredSize(new Dimension(300, 500));
-    biglabel.setMaximumSize(new Dimension(300, 500));
+    //biglabel.setPreferredSize(new Dimension(500, 500));
+    //biglabel.setMaximumSize(new Dimension(500, 500));
+    JPanel biglabelPanel = new JPanel();
+    //System.out.println(biglabel.getText());
+    biglabelPanel.add(biglabel);
+    biglabelPanel.setBackground(Color.white);
     
     headerPanel.setAlignmentX(0);
-    biglabel.setAlignmentX(0);
+    biglabelPanel.setAlignmentX(0);
     textpanel.add(headerPanel);
-    textpanel.add(biglabel);
+    textpanel.add(new JScrollPane(biglabelPanel));
     
     return textpanel;
   }
