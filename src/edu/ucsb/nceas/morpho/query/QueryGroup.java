@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-03 01:51:58 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-07 22:53:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,13 @@ public class QueryGroup
    */
   public Enumeration getChildren() {
     return children.elements();
+  }
+
+  /**
+   * Retrieve the operator for this QueryGroup
+   */
+  public String getOperator() {
+    return operator;
   }
  
   /**
