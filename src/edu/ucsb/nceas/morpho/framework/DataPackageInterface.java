@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-11 01:04:52 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-03-25 21:50:48 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,6 +112,15 @@ public interface DataPackageInterface
    * @param location the current location of the package: METACAT, LOCAL or BOTH
    */
   public void exportToZip(String docid, String path, String location);
+
+
+   /**
+   * This method exports an entire data package to a given location to eml2
+   * @param id the docid of the package to export
+   * @param path the location to export it to
+   * @param location the current location of the package: METACAT, LOCAL or BOTH
+   */
+  public void exportToEml2(String docid, String path, String location);
   
   /**
    * This method will create a dialog for open previouse version of a 

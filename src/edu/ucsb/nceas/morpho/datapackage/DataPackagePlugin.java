@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-19 19:09:23 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2003-03-25 21:50:23 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -597,6 +597,20 @@ public class DataPackagePlugin
     DataPackage dp = new DataPackage(location, docid, null, morpho, false);
     dp.export(path);
   }
+
+  /**
+   * Exports the package to eml2
+   * @param docid the id of the package to export
+   * @param path the directory to which the package should be exported.
+   * @param location the location where the package is now: LOCAL, METACAT or 
+   * BOTH
+   */
+  public void exportToEml2(String docid, String path, String location)
+  {
+    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
+    dp.exportToEml2(path);
+  }
+
   
   /**
    * Exports the package into a zip file

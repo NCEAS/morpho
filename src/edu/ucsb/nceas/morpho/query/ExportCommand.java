@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 19:20:13 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-03-25 21:49:43 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,7 +212,7 @@ public class ExportCommand implements Command
           }
           else if (format.equals(TOEML2))
           {
-            
+            exportDatasetToEml2(docid);
           }
           return null;  
           
@@ -272,6 +272,18 @@ public class ExportCommand implements Command
       dataPackage.export(id, exportDir.toString(), location);
     }
   }
+
+  /*
+   * exports the datapackage to a different location
+   */
+  private void exportDatasetToEml2(String id)
+  {
+
+      String location = getLocation();
+       //export it.
+      dataPackage.exportToEml2(id, "./", location);
+  }
+
   
   /*
    * exports the datapackage to a different location in a zip file
