@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-15 14:19:50 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-01-15 20:32:06 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,13 +147,19 @@ public class Geographic extends AbstractWizardPage {
 
     
     Vector names = getLocationNames();
-    regionList = new JList(names);
+    final DefaultListModel model = new DefaultListModel();
+    for (int i=0;i<names.size();i++) {
+      model.addElement(names.elementAt(i));
+    }
+    regionList = new JList(model);
     regionList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     regionList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     regionList.setSelectedIndex(0);
     JScrollPane jscr2 = new JScrollPane(regionList);
     regionSelectionPanel.add(jscr2);
-    JLabel regionHelpLabel = getLabel("Click button to display region.");
+
+    JLabel selectHelpLabel = getLabel("Click button to display selected region.");
+    
     JButton selectButton = new JButton("Select");
     selectButton.setPreferredSize(new Dimension(60,24));
     selectButton.setMaximumSize(new Dimension(60,24));
@@ -173,10 +179,90 @@ public class Geographic extends AbstractWizardPage {
       }
     });
 
+    final Geographic currentInstance = this;
+    final JTextField textField = new JTextField(20);
+    final String msg1 = "Enter short name to appear in list.";
+    final Object[] array = {msg1, textField};
+    final String descText = (covDescField.getText()).trim();
+    JLabel addHelpLabel = getLabel("Click to add current selection to list.");
+    JButton addButton = new JButton("Add");
+    addButton.setPreferredSize(new Dimension(60,24));
+    addButton.setMaximumSize(new Dimension(60,24));
+    addButton.setMargin(new Insets(0, 2, 1, 2));
+    addButton.setEnabled(true);
+    addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    addButton.setFocusPainted(false);
+    addButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        
+        String btnString1 = "Enter";
+        String btnString2 = "Cancel";
+        Object[] options = {btnString1, btnString2};
+
+        JOptionPane optionPane = new JOptionPane(array, 
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    JOptionPane.YES_NO_OPTION,
+                                    null,
+                                    options,
+                                    options[0]);        
+        JDialog dialog = optionPane.createDialog(currentInstance, "Add Current Selection to Named Region List");
+        dialog.show();
+        String selectedValue = (String)(optionPane.getValue());
+        if ((selectedValue!=null)&&(selectedValue.equals("Enter"))) {
+          String inputName = (textField.getText()).trim();
+          if (inputName.length()==0) {
+            Log.debug(1, "Sorry, but a Name must be entered.");
+          } else {
+            // create new location here
+          
+            addLocation(inputName, descText, lmp.getNorth(), lmp.getWest(), 
+                                lmp.getSouth(), lmp.getEast());
+            model.addElement(inputName);
+          }
+        }
+      }
+    });
+
+    JLabel deleteHelpLabel = getLabel("Click to remove selected region from list.");
+    JButton deleteButton = new JButton("Delete");
+    deleteButton.setPreferredSize(new Dimension(60,24));
+    deleteButton.setMaximumSize(new Dimension(60,24));
+    deleteButton.setMargin(new Insets(0, 2, 1, 2));
+    deleteButton.setEnabled(true);
+    deleteButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    deleteButton.setFocusPainted(false);
+    deleteButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        int selindex = regionList.getSelectedIndex();
+        model.remove(selindex);
+        locationsXML.removeNode("location", selindex);
+        locationsXML.save();
+      }
+    });
+
     JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    buttonPanel.add(selectButton);
-    buttonPanel.add(regionHelpLabel);
+    buttonPanel.setLayout(new GridLayout(3, 1));
+    JPanel buttonSubpanel1 = new JPanel();
+    JPanel buttonSubpanel2 = new JPanel();
+    JPanel buttonSubpanel3 = new JPanel();
+    
+    buttonSubpanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
+    buttonSubpanel1.add(selectButton);
+    buttonSubpanel1.add(selectHelpLabel);
+    
+    buttonSubpanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
+    buttonSubpanel2.add(addButton);
+    buttonSubpanel2.add(addHelpLabel);
+
+    buttonSubpanel3.setLayout(new FlowLayout(FlowLayout.LEFT));
+    buttonSubpanel3.add(deleteButton);
+    buttonSubpanel3.add(deleteHelpLabel);
+
+    buttonPanel.add(buttonSubpanel1);
+    buttonPanel.add(buttonSubpanel2);
+    buttonPanel.add(buttonSubpanel3);
+    
+    
     
     
     regionPanel.add(regionSelectionPanel);
