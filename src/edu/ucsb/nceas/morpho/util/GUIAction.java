@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-27 21:03:03 $'
- * '$Revision: 1.18 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-01 00:19:26 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -479,7 +479,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         this.originalAction = action;
     }
 
-    private MorphoFrame getMorphoFrameAncestor(Component c) 
+    public static MorphoFrame getMorphoFrameAncestor(Component c) 
     {
         Object parent = null;                      
         if (c instanceof MorphoFrame) {
@@ -516,8 +516,11 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         }          
         MorphoFrame thisAncestor
                         = UIController.getMorphoFrameContainingGUIAction(this);
-        Log.debug(50,"\n# # GUIAction.isLocalEvent: comparing eventAncestor="
-                              +eventAncestor+" and thisAncestor="+thisAncestor);
+        Log.debug(50,"\n# # GUIAction.isLocalEvent: "+
+                "GUIAction name:: "+this.getName()+
+                 " thisAncestor="+thisAncestor +
+                 " And!!!! event name: "+event.getChangedState()+
+                 " comparing eventAncestor=" +eventAncestor);
         Log.debug(50,"\n# # result = "+( eventAncestor==thisAncestor ));
         return ( eventAncestor==thisAncestor );
     }
