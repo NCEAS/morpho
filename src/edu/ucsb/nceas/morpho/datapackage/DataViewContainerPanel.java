@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 17:30:17 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-09-24 22:52:37 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -373,6 +373,23 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   public void setFramework(Morpho cf) {
     this.morpho = cf;
   }
+  
+  /**
+   * Method to get frame work
+   */
+  public Morpho getFramework()
+  {
+    return morpho;
+  }
+  
+  /**
+   * Method to get data package
+   */
+  public DataPackage getDataPackage()
+  {
+    return dp;
+  }
+  
   public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
