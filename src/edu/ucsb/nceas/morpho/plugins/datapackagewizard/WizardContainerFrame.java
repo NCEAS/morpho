@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-03 06:35:09 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2004-04-05 17:25:21 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -268,6 +268,8 @@ public class WizardContainerFrame
   }
 
   private void init() {
+
+    pageCache = new HashMap();
     initContentPane();
     initKeyInputMap();
     initTopPanel();
@@ -497,7 +499,11 @@ public class WizardContainerFrame
     String nextPgID = getCurrentPage().getNextPageID();
     Log.debug(45, "nextFinishAction - next page ID is: " + nextPgID);
 
-    setCurrentPage(pageLib.getPage(nextPgID));
+    AbstractUIPage nextPage = (AbstractUIPage)pageCache.get(nextPgID);
+
+    if (nextPage==null) nextPage = pageLib.getPage(nextPgID);
+
+    setCurrentPage(nextPage);
   }
 
   /**
@@ -876,14 +882,13 @@ public class WizardContainerFrame
     } // end while
   }
 
+
   /**
    *  The action to be executed when the "Prev" button is pressed
    */
   public void previousAction() {
 
-    if (pageStack.isEmpty()) {
-      return;
-    }
+    if (pageStack.isEmpty()) return;
 
     AbstractUIPage previousPage = (AbstractUIPage) pageStack.pop();
     if (previousPage == null) {
@@ -893,7 +898,12 @@ public class WizardContainerFrame
     Log.debug(45, "previousAction - popped page with ID: "
               + previousPage.getPageID() + " from stack");
 
-    getCurrentPage().onRewindAction();
+    //put current page on stack
+    AbstractUIPage currentPage = this.getCurrentPage();
+    Log.debug(45, "previousAction adding currentPage to pageCache ("
+              + currentPage.getPageID() + ")");
+    currentPage.onRewindAction();
+    pageCache.put(currentPage.getPageID(), currentPage);
 
     setCurrentPage(previousPage);
   }
@@ -1167,6 +1177,7 @@ public class WizardContainerFrame
   private Stack pageStack;
   private WizardPageLibrary pageLib;
   private boolean showPageCount;
+  private Map pageCache;
 
   private List toBeImported = null;
   private int toBeImportedCount = 0;

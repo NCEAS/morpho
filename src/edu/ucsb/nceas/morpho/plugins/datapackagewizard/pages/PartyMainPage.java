@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-05 07:06:52 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-04-05 17:25:58 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,9 +298,6 @@ public class PartyMainPage
    */
   private void showEditPartyDialog() {
 
-    int predicate = 1 + partiesList.getSelectedRowIndex();
-    if (predicate < 1) predicate = 1 + partiesList.getRowCount();
-
     List selRowList = partiesList.getSelectedRowList();
 
     if (selRowList == null || selRowList.size() < 4) return;
@@ -332,9 +329,9 @@ public class PartyMainPage
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-    if (oneOrMoreRequired && partiesList.getListOfRowLists().isEmpty()) {
+
+    if (oneOrMoreRequired && partiesList.getRowCount() < 1) {
       showNewPartyDialog();
-      // partiesPickList.getList();
     }
   }
 

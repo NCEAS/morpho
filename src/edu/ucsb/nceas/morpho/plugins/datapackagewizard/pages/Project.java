@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-05 07:06:52 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-04-05 17:25:58 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -355,6 +355,7 @@ public class Project extends AbstractUIPage {
   public boolean onAdvanceAction() {
 
     if (currentPanel == dataPanel) {
+
       if (titleField.getText().trim().equals("")) {
         WidgetFactory.hiliteComponent(titleLabel);
         titleField.requestFocus();
@@ -395,9 +396,7 @@ public class Project extends AbstractUIPage {
 
     if (currentPanel == dataPanel) {
 
-      if ( !(titleField.getText().trim().equals("")) ) {
-        returnMap.put(rootXPath + TITLE_REL_XPATH, titleField.getText().trim());
-      }
+      returnMap.put(rootXPath + TITLE_REL_XPATH, titleField.getText().trim());
 
       int index = 1;
       Object  nextRowObj      = null;
