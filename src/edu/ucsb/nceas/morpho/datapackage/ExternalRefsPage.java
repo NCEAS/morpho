@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-05 21:33:48 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-04-06 00:28:42 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,11 +91,16 @@ public class ExternalRefsPage extends AbstractUIPage
     this.event = event;
   }
 
-  protected void setCurrentDataPackageID(String currentDataPackageID)
+  protected ReferenceSelectionEvent getReferenceSelectionEvent()
+  {
+    return event;
+  }
+
+ /* protected void setCurrentDataPackageID(String currentDataPackageID)
   {
 
     this.currentDataPackageID = currentDataPackageID;
-  }
+  }*/
 
   private void init()
   {
@@ -368,6 +373,8 @@ public class ExternalRefsPage extends AbstractUIPage
       referencedSubtree = currentDataPackage.getSubtreeAtReference(refID);
     }
     event.setReferenceID(refID);
+    event.setLocation(ReferenceSelectionEvent.DIFFERENT_DATA_PACKAGE);
+    event.setSubtreeRootNodeName(referencedSubtree.getNodeName());
     event.setXPathValsMap(XMLUtilities.getDOMTreeAsXPathMap(referencedSubtree));
     return true;
   }

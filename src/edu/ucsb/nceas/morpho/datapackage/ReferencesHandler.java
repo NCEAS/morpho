@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-05 21:33:48 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-04-06 00:28:42 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,7 +194,6 @@ public class ReferencesHandler {
       public void itemStateChanged(ItemEvent e) {
 
         if (e.getStateChange()!=e.SELECTED) return;
-
         JComboBox source = (JComboBox) e.getSource();
         ReferenceSelectionEvent event = null;
 
@@ -303,7 +302,7 @@ public class ReferencesHandler {
   private ReferenceSelectionEvent showCopyExternalRefsDialog(
       AbstractDataPackage dataPkg, Frame parent) {
 
-    Node returnNode = null;
+      Node returnNode = null;
     //event object will be populated by dialog...
     ReferenceSelectionEvent event = new ReferenceSelectionEvent();
 
@@ -313,20 +312,19 @@ public class ReferencesHandler {
       externalRefsDialog = new ModalDialog(externalRefsPage,
                                            parent,
                                            UISettings.POPUPDIALOG_WIDTH,
-                                           UISettings.POPUPDIALOG_HEIGHT);
+                                           UISettings.POPUPDIALOG_HEIGHT,
+                                           false);
     }
     externalRefsPage.setReferenceSelectionEvent(event);
-    externalRefsPage.setCurrentDataPackageID(dataPkg.getPackageId());
+    //externalRefsPage.setCurrentDataPackageID(dataPkg.getPackageId());
     externalRefsDialog.setVisible(true);
 
-    //first get a list of available local datapackages
-    //then set these in dialog and show it
-    //doQueryAndPopulateDialog();
 
     //...and get corresponding node from external datapackage
+    if (externalRefsDialog.USER_RESPONSE==ModalDialog.OK_OPTION) {
 
-    OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(returnNode);
-
+        event = externalRefsPage.getReferenceSelectionEvent();
+    }
     return event;
   }
 
