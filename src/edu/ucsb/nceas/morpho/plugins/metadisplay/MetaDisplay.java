@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 18:54:15 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-09-13 19:11:43 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,9 @@ public class MetaDisplay implements MetaDisplayInterface,
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
+    public static final String BLANK_HTML_PAGE =
+          "<html><head></head><body bgcolor=\"#eeeeee\">&nbsp;</body></html>";
+                            
     private final   MetaDisplayUI           ui;
     private final   XMLTransformer          transformer;
     private final   History                 history;
@@ -159,8 +162,7 @@ public class MetaDisplay implements MetaDisplayInterface,
         //add ActionListener to list
         addActionListener(listener);
         
-        ui.setHTML("<html><head></head>"
-                            +"<body bgcolor=\"#eeeeee\">&nbsp;</body></html>");
+        ui.setHTML(BLANK_HTML_PAGE);
         updateBackButtonStatus();
         
         return ui;

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 15:53:44 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-13 19:11:43 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,7 +112,12 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 	{
         Log.debug(50, "\nHTMLPanel.setHTML() received HTML: \n"+html+"\n");
         html = stripHTMLMetaTags(html);
-        this.setText(html);
+        try {
+          this.setText(html);
+        } catch (ArrayIndexOutOfBoundsException e) {
+          Log.debug(12,"HTMLPanel error - invalid HTML mark-up!\n"+html);
+          this.setText(MetaDisplay.BLANK_HTML_PAGE);
+        }
 	}
     
     //strips <META ... > tags out of html String 
