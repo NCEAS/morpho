@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 21:56:15 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-12 02:49:44 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,10 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
+
+import edu.ucsb.nceas.morpho.plugins.XSLTResolverInterface;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -71,6 +75,16 @@ public class XMLTransformerTest extends TestCase
   private static Exception testException;
   private final String CONFIG_KEY_LOCAL_CATALOG_PATH  = "local_catalog_path";
   private ConfigXML config = Morpho.getConfiguration();
+  private static XSLTResolverPlugin xsltResolverPlugin;
+  
+  static {
+      xsltResolverPlugin = new XSLTResolverPlugin();
+      // Start by creating the new plugin
+      PluginInterface plugin = (PluginInterface)xsltResolverPlugin;
+
+      // Set a reference to the framework in the Plugin
+      plugin.initialize(null);
+  }
 
   /**
    * Constructor to build the test
