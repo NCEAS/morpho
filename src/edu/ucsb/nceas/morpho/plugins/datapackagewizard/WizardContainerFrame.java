@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 14:16:47 $'
- * '$Revision: 1.65 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-26 18:58:12 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ public class WizardContainerFrame
   private InputMap imap;
   private ActionMap amap;
 
-  
+
 
 
   /**
@@ -109,7 +109,7 @@ public class WizardContainerFrame
         cancelAction();
       }
     });
-    
+
   }
 
   /**
@@ -570,7 +570,7 @@ public class WizardContainerFrame
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.USAGE_RIGHTS);
     AbstractUIPage GEOGRAPHIC
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GEOGRAPHIC);
-		AbstractUIPage TEMPORAL
+    AbstractUIPage TEMPORAL
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEMPORAL);
     AbstractUIPage TAXONOMIC
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TAXONOMIC);
@@ -638,12 +638,12 @@ public class WizardContainerFrame
     if (TEMPORAL != null) {
       addPageDataToResultsMap( TEMPORAL, wizData);
     }
-		
-		//TAXONOMIC
+
+    //TAXONOMIC
     if (TAXONOMIC != null) {
       addPageDataToResultsMap( TAXONOMIC, wizData);
     }
-		
+
     //CONTACT:
     if (PARTY_CONTACT_PAGE != null) {
       addPageDataToResultsMap( PARTY_CONTACT_PAGE, wizData);
@@ -723,8 +723,8 @@ public class WizardContainerFrame
       return null;
     }
 
-    Log.debug(49, "\n\n********** Wizard finished: DOM:");
-    Log.debug(49, XMLUtilities.getDOMTreeAsString(rootNode));
+    Log.debug(45, "\n\n********** Wizard finished: DOM:");
+    Log.debug(45, XMLUtilities.getDOMTreeAsString(rootNode));
     return rootNode;
   }
 
@@ -878,7 +878,8 @@ public class WizardContainerFrame
       if (nextKey == null || nextKey.trim().equals("")) continue;
 
       //now excape all characters that might cause a problem in XML:
-      resultsMap.put(nextKey, XMLUtil.normalize(nextPgData.get(nextKey)));
+//      resultsMap.put(nextKey, XMLUtil.normalize(nextPgData.get(nextKey)));
+      resultsMap.put(nextKey, nextPgData.get(nextKey));
 
     } // end while
   }
@@ -928,25 +929,25 @@ public class WizardContainerFrame
    *  The action to be executed when the "Cancel" button is pressed
    */
   public void cancelAction() {
-		
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		if(adp != null) {
-			
-			edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
-			if(arr != null) {
-				System.out.println("replacing subtree - ");
-				adp.deleteAllEntities();
-				/*edu.ucsb.nceas.morpho.datapackage.Entity[] newarr = adp.getEntityArray();
-				for(int i = 0; i < newarr.length; i++)
-					adp.deleteEntity(0);*/
-				for(int i = 0; i < arr.length; i++) {
-					System.out.println("adding entity - " + i);
-					adp.addEntity(arr[i]);
-				}
-			}
-			
-		}
-		
+
+    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    if(adp != null) {
+
+      edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+      if(arr != null) {
+        System.out.println("replacing subtree - ");
+        adp.deleteAllEntities();
+        /*edu.ucsb.nceas.morpho.datapackage.Entity[] newarr = adp.getEntityArray();
+        for(int i = 0; i < newarr.length; i++)
+          adp.deleteEntity(0);*/
+        for(int i = 0; i < arr.length; i++) {
+          System.out.println("adding entity - " + i);
+          adp.addEntity(arr[i]);
+        }
+      }
+
+    }
+
     this.setVisible(false);
 
     listener.wizardCanceled();
@@ -962,9 +963,9 @@ public class WizardContainerFrame
 
     //clear out pageStack
     pageStack.clear();
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		if(adp != null) adp.clearAllAttributeImports();
-		
+    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    if(adp != null) adp.clearAllAttributeImports();
+
   }
 
   /**
@@ -1040,9 +1041,9 @@ public class WizardContainerFrame
     return dialogParent;
   }
 
-  
 
-  
+
+
   // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private JLabel stepLabel;
