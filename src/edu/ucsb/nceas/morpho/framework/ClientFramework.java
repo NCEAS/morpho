@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-20 18:12:47 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2001-10-20 20:32:09 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1435,7 +1435,7 @@ public class ClientFramework extends javax.swing.JFrame
     String result = null;
     Properties lastIDProp = new Properties();
     lastIDProp.put("action","getlastdocid");
-    lastIDProp.put("username",username);
+    lastIDProp.put("scope",username);
     String temp = getMetacatString(lastIDProp);
     /*
       if successful temp should be of the form
