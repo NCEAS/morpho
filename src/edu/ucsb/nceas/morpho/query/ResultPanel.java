@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-11 23:04:03 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2002-09-12 01:01:54 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -276,7 +276,7 @@ public class ResultPanel extends JPanel
       
         // Create a action to open a synchronize dialog
         GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
-                                    new OpenSynchronizeDialogCommand());
+                                      new OpenSynchronizeDialogCommand(dialog));
         synchronizeMenu = new JMenuItem(synchronizeAction);
         popup.add(synchronizeMenu);
       
