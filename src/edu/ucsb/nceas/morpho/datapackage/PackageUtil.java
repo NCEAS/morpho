@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:47:11 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2003-10-10 22:00:39 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,7 +147,8 @@ public class PackageUtil
     DocumentBuilder parser = Morpho.createDomParser();
     Document doc;
     InputSource in;
-    FileInputStream fs;
+//    FileInputStream fs;
+    FileReader fs;
     CatalogEntityResolver cer = new CatalogEntityResolver();
     try 
     {
@@ -174,7 +175,8 @@ public class PackageUtil
     
     try
     { //parse the wizard created file without the triples
-      fs = new FileInputStream(file);
+//      fs = new FileInputStream(file);
+      fs = new FileReader(file);
       in = new InputSource(fs);
     }
     catch(FileNotFoundException fnf)
@@ -210,7 +212,8 @@ public class PackageUtil
     DocumentBuilder parser = Morpho.createDomParser();
     Document doc;
     InputSource in;
-    FileInputStream fs;
+//    FileInputStream fs;
+    FileReader fs;
     CatalogEntityResolver cer = new CatalogEntityResolver();
     try 
     {
@@ -236,7 +239,8 @@ public class PackageUtil
     
     try
     { //parse the wizard created file without the triples
-      fs = new FileInputStream(file);
+//      fs = new FileInputStream(file);
+      fs = new FileReader(file);
       in = new InputSource(fs);
     }
     catch(FileNotFoundException fnf)
