@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-12 21:10:02 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2003-12-18 19:08:44 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1196,6 +1196,31 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(50,"exception in getting distribution url: "+w.toString());
     }
     return temp;
+  }
+
+  /**
+   *  This method sets the url for data as a String for the indexed entity,
+   *  physical object, and distribution object.    */  
+  public void setDistributionUrl(int entityIndex, int physicalIndex, int distIndex, String urlS) {
+    String temp = "";
+    Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distIndex>distNodes.length-1) return;
+    Node distNode = distNodes[distIndex];
+    String distXpath = "";
+    try {
+      distXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='distribution']/url")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(distNode, distXpath);
+      if (aNodes==null) {
+        Log.debug(10, "aNodes is null !");
+        return;
+      }
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      child.setNodeValue(urlS);
+    }
+    catch (Exception w) {
+      Log.debug(50,"exception in setting distribution url: "+w.toString());
+    }
   }
   
   /*
