@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-02 22:29:25 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-07-05 20:53:44 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,6 +109,11 @@ public class EntityGUI extends javax.swing.JFrame
     BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
     contentPane.setLayout(box);
     parseEntity();
+    /* Center the Frame */
+    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+    Rectangle frameDim = getBounds();
+    setLocation((screenDim.width - frameDim.width) / 2 ,
+            (screenDim.height - frameDim.height) /2);
     initComponents();
     pack();
     setSize(500, 450);

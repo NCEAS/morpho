@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 18:04:31 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2001-07-05 20:53:44 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,8 @@ import org.apache.xerces.dom.DocumentTypeImpl;
  */
 public class DataPackageGUI extends javax.swing.JFrame 
                             implements ActionListener, 
-                                       EditingCompleteListener
+                                       EditingCompleteListener,
+                                       WindowListener
 {
   private ClientFramework framework;
   private ConfigXML config;
@@ -77,10 +78,17 @@ public class DataPackageGUI extends javax.swing.JFrame
     this.dataPackage = dp;
     this.framework = framework;
     this.config = framework.getConfiguration();
+    this.addWindowListener(this);
+    
     contentPane = getContentPane();
     setTitle("Data Package Editor");
     BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
     contentPane.setLayout(box);
+    /* Center the Frame */
+    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+    Rectangle frameDim = getBounds();
+    setLocation((screenDim.width - frameDim.width) / 2 ,
+                (screenDim.height - frameDim.height) /2);
     initComponents();
     pack();
     setSize(500, 550);
@@ -578,6 +586,9 @@ public class DataPackageGUI extends javax.swing.JFrame
                                                                    dataPackage);
       this.dispose();                                                          
       npmw.show();
+      npmw.setName("New Description Wizard:" + dataPackage.getID());
+      framework.addWindow(npmw);
+      framework.removeWindow(this);
     }
     else if(command.equals("Remove"))
     {
@@ -847,6 +858,24 @@ public class DataPackageGUI extends javax.swing.JFrame
   public void editingCanceled(String xmlString, String id, String location)
   { //do nothing
   }
+  
+  public void windowClosed(WindowEvent event)
+  {
+    framework.removeWindow(this);
+  }
+  
+  public void windowClosing(WindowEvent event)
+  {}
+  public void windowActivated(WindowEvent event)
+  {}
+  public void windowDeactivated(WindowEvent event)
+  {}
+  public void windowIconified(WindowEvent event)
+  {}
+  public void windowDeiconified(WindowEvent event)
+  {}
+  public void windowOpened(WindowEvent event)
+  {}
   
   /**
    * makes sure that there is only one file selected in the list boxes at
