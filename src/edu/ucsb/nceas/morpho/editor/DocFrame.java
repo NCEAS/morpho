@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-29 18:28:32 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2001-07-02 23:06:57 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1059,7 +1059,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         System.out.println( "Root nodes do not match!!!");
         }
         else {
-            // root nodes match, so start comparing children
+            // root nodes match
+            mergeNodes(input, template);
+            //so start comparing children
             Vector nextLevelInputNodes;
             Vector nextLevelTemplateNodes;
             Vector currentLevelInputNodes = new Vector();

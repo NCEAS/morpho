@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-18 15:54:26 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-07-02 23:06:57 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
     public void characters(char ch[], int start, int length) {
 		// Set Text of Node on top of Stack
     	String text = new String (ch, start, length);
-    	text = text.trim();
+//    	text = text.trim();
     	text = text.replace('\n', ' ');
     	if (text.length()>0) {
 		    NodeInfo ni = new NodeInfo("#PCDATA");
