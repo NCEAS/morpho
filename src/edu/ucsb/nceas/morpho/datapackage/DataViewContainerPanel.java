@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-19 00:12:54 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2003-02-19 18:09:20 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,32 +384,20 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       return;
     }
     entityFile = new File[entityItems.size()];
-    for (int i=0;i<entityItems.size();i++) {
+//    for (int i=0;i<entityItems.size();i++) {
+    for (int i=0;i<1;i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
       
       String item = (String)entityItems.elementAt(i);
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
       // entity metadata
-//      String id = (String)listValueHash.get(item);
       String id = getEntityIDForThisEntityName(item);
       
       String location = dp.getLocation();
-      EntityGUI entityEdit;
-      if (id!=null) {
-        entityEdit = new EntityGUI(dp, id, location, null, morpho);
-      }
-      else { break;}
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
       
-//      JPanel entityInfoPanel = new JPanel();
-//      entityInfoPanel.setLayout(new BorderLayout(0,0));
-//      entityInfoPanel.add(BorderLayout.CENTER, entityEdit.entityPanel);
-//      entityInfoPanel.add(BorderLayout.NORTH, new JLabel("Entity Information"));
-//      JPanel entityEditControls = new JPanel();
-//      entityEditControls.add(entityEdit.editEntityButton);
-      // ---------------------end_setup
       
       // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
       // add Component to 'currentEntityMetadataPanel' which has a borderlayout
@@ -445,7 +433,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       component.setVisible(true);
       tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i),component);
       //tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
-      this.entityFile[i] = entityEdit.entityFile;
+      this.entityFile[i] = dp.getFileFromId(id);
     
       // create the data display panel (usually a table) using DataViewer class
       String fn = dp.getDataFileName(id);    

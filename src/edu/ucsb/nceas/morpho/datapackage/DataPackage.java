@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-14 23:00:23 $'
- * '$Revision: 1.108 $'
+ *     '$Date: 2003-02-19 18:09:20 $'
+ * '$Revision: 1.109 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2072,6 +2072,37 @@ public class DataPackage implements XMLFactoryInterface
     return dataFileID;
   } 
 
+  public File getFileFromId(String id) {
+    File xmlFile = null;
+    try
+    {
+      if(location.equals(DataPackageInterface.LOCAL) || 
+         location.equals(DataPackageInterface.BOTH))
+      {
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+        xmlFile = fsds.openFile(id);
+        return xmlFile;
+      }
+      else
+      {
+        MetacatDataStore mds = new MetacatDataStore(morpho);
+        xmlFile = mds.openFile(id);
+        return xmlFile;
+      }
+    }
+    catch(FileNotFoundException fnfe)
+    {
+      Log.debug(0, "Error reading file : " + xmlFile + " " + 
+                         fnfe.getMessage() + "---File NOT found.");
+    }
+    catch(CacheAccessException cae)
+    {
+      Log.debug(0, "Error reading file : " + xmlFile + " " + 
+                         cae.getMessage() + "---Cache could not be accessed");
+    }
+    return null;
+  }
+  
   private File[] listFiles(File dir) {
     String[] fileStrings = dir.list();
     int len = fileStrings.length;
