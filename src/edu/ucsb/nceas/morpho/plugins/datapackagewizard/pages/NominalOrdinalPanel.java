@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-31 21:02:20 $'
-* '$Revision: 1.27 $'
+*     '$Date: 2004-03-31 21:56:48 $'
+* '$Revision: 1.28 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -841,9 +841,6 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
       codeLocationPickList.setSelectedItem(codeLocationPicklistVals[1]);
       codeLocationValue = CODES_IMPORTED;
       domainPickList.setSelectedItem(this.textEnumPicklistVals[0]);
-
-      removeAllKeysStartingWith(xPathRoot + "/enumeratedDomain/entityCodeList", map);
-
       return;
 
     } else { // codes are defined here
@@ -889,18 +886,6 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   }
 
 
-
-
-  private void removeAllKeysStartingWith(String startingString, OrderedMap map) {
-
-    Iterator keysIt = map.keySet().iterator();
-    while (keysIt.hasNext()) {
-
-      String xpath = (String)keysIt.next();
-
-      if (xpath.startsWith(startingString)) map.remove(xpath);
-    }
-  }
 
 
   /**

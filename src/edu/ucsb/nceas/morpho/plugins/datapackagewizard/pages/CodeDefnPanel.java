@@ -709,6 +709,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   public void setPanelData(String xPath, OrderedMap data) {
 
     Object o1 = data.get(xPath + "/entityReference");
+		data.remove(xPath + "/entityReference");
     Container c = (Container)(radioPanel.getComponent(1));
 
     if( o1 == null) {
@@ -729,7 +730,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     currentEntityID = (String)o1;
     codeAttributeID = (String)data.get(xPath + "/valueAttributeReference");
     defnAttributeID = (String)data.get(xPath + "/definitionAttributeReference");
-
+		
+		data.remove(xPath + "/valueAttributeReference");
+		data.remove(xPath + "/definitionAttributeReference");
+		
     int[] selectedCols = new int[2];
     boolean codeSelected = false;
     boolean defnSelected = false;
