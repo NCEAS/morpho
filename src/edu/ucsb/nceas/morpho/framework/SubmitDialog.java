@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.15 2001-04-27 23:03:50 jones Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.16 2001-05-02 22:09:35 jones Exp $'
  */
 
 package edu.ucsb.nceas.morpho.framework;
@@ -679,9 +679,6 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		       result = JOptionPane.showConfirmDialog(null, "An ID already in document. Do you want to insert a new ID?", "choose one", JOptionPane.YES_NO_OPTION); 
 		    }
 		  if (result==JOptionPane.YES_OPTION) {
-            System.err.println("Trying: " + container.MetaCatServletURL);
-		    URL url = new URL(container.MetaCatServletURL);
-		    HttpMessage msg = new HttpMessage(url);
 		    Properties prop = new Properties();
 		    prop.put("action","insert");
 		    prop.put("public", access);
@@ -689,7 +686,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		    String indocid = getdocid();
 		    if (indocid!=null) { prop.put("docid",indocid);}
 		    
-		    InputStream in = msg.sendPostMessage(prop);
+		    InputStream in = container.getMetacatInputStream(prop);
 		    
 	
         // Determine the assigned docid if insert successful
@@ -824,16 +821,12 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	        }
 	        else {
 	            try {
-                    //System.err.println("Trying: " + container.MetaCatServletURL);
-		            URL url = new URL(container.MetaCatServletURL);
-		            HttpMessage msg = new HttpMessage(url);
-		            Properties prop = new Properties();
-		            prop.put("action","delete");
-		            prop.put("public", access);
-		            prop.put("docid",indocid);
+		      Properties prop = new Properties();
+		      prop.put("action","delete");
+		      prop.put("public", access);
+		      prop.put("docid",indocid);
 		    
-		    
-		            InputStream in = msg.sendPostMessage(prop);
+		      InputStream in = container.getMetacatInputStream(prop);
 		    
         XMLReader parser = null;
 
@@ -907,16 +900,13 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		        
 	            
 	            }
-                    //System.err.println("Trying: " + container.MetaCatServletURL);
-		            URL url = new URL(container.MetaCatServletURL);
-		            HttpMessage msg = new HttpMessage(url);
-		            Properties prop = new Properties();
-		            prop.put("action","update");
-		            prop.put("docid",indocid);
-		            prop.put("public", access);
-		            prop.put("doctext",txt.toString());
-		    
-		            InputStream in = msg.sendPostMessage(prop);
+		     Properties prop = new Properties();
+		     prop.put("action","update");
+		     prop.put("docid",indocid);
+		     prop.put("public", access);
+		     prop.put("doctext",txt.toString());
+		   
+		     InputStream in = container.getMetacatInputStream(prop);
 		    
         // Determine the assigned docid if insert successful
         XMLReader parser = null;

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:50 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-02 22:09:35 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import junit.framework.TestSuite;
 public class ConnectTest extends TestCase
 {
   // These need to be set to a valid metacat account for the test to work
+  private static String configFile = "lib/config.xml";
   private static String username = "jones";
   private static String password = "change-to-valid-password";
 
@@ -59,7 +60,8 @@ public class ConnectTest extends TestCase
    */
   public void setUp()
   {
-    framework = new ClientFramework();
+    ConfigXML config = new ConfigXML(configFile);
+    framework = new ClientFramework(config);
     framework.setUserName(username);
     framework.setPassword(password);
   }

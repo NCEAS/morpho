@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.11 2001-04-27 23:03:50 jones Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.12 2001-05-02 22:09:35 jones Exp $'
  */
 
 package edu.ucsb.nceas.morpho.framework;
@@ -280,7 +280,6 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		this((Frame)null);
 	    container = cf;
 	    userName = cf.getUserName();
-	    //MBJOUTDATED//passWord = cf.getPassword();
 	    this.setModal(false);
 	    
 	}
@@ -783,13 +782,11 @@ public String getIDFromFile(String file_in, String tag) {
 public String insertStringIntoMetacat(String xmlstring) {
         String res = "error";
         try {
-		    URL url = new URL(container.MetaCatServletURL);
-		    HttpMessage msg = new HttpMessage(url);
 		    Properties prop = new Properties();
 		    prop.put("action","insert");
 		    prop.put("public", access);
 		    prop.put("doctext",xmlstring);
-		    InputStream inn = msg.sendPostMessage(prop);
+		    InputStream inn = container.getMetacatInputStream(prop);
 	
         // Determine the assigned docid if insert successful
         XMLReader parser = null;
@@ -841,12 +838,10 @@ public String insertStringIntoMetacat(String xmlstring) {
 private int getPort() {
     int port = 0;
     try{
-      URL url = new URL(container.MetaCatServletURL);
-      HttpMessage msg2 = new HttpMessage(url);
-	  Properties prop = new Properties();
-	  prop.put("action","getdataport");
+      Properties prop = new Properties();
+      prop.put("action","getdataport");
       
-      InputStream in = msg2.sendPostMessage(prop);
+      InputStream in = container.getMetacatInputStream(prop);
       InputStreamReader isr = new InputStreamReader(in);
       char c;
       int i = isr.read();
@@ -879,13 +874,11 @@ public String insertIntoMetacat(String filename) {
 		    txt.append((char)x);
 		 }
 		 fr.close();
-		    URL url = new URL(container.MetaCatServletURL);
-		    HttpMessage msg = new HttpMessage(url);
 		    Properties prop = new Properties();
 		    prop.put("action","insert");
 		    prop.put("public", access);
 		    prop.put("doctext",txt.toString());
-		    InputStream inn = msg.sendPostMessage(prop);
+		    InputStream inn = container.getMetacatInputStream(prop);
 	
         // Determine the assigned docid if insert successful
         XMLReader parser = null;

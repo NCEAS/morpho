@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <root>
+<plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
 <plugin>edu.ucsb.nceas.morpho.query.QueryBean</plugin>
 <MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
@@ -48,4 +49,5 @@
     <localdoctypename>eml-variable</localdoctypename>
     <localdoctypedtd>eml-variable.dtd</localdoctypedtd>
 </localdoctypes>
+<saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
 </root>
