@@ -58,5 +58,6 @@
 <accessionNumber>
   <scope>username</scope>
   <lastId>0</lastId>
+  <separator>.</separator>
 </accessionNumber>
 </root>
