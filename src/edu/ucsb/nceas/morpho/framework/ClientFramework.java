@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-26 17:32:11 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2001-04-27 01:31:35 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -763,12 +763,30 @@ public class ClientFramework extends javax.swing.JFrame
    * Send a request to Metacat
    *
    * @param prop the properties to be sent to Metacat
-   * @return a string as returned by Metacat
+   * @param requiresLogin indicates whether a valid connection is required
+                          for the operation
+   * @return InputStream as returned by Metacat
    */
-  public String sendToMetacat(Properties prop)
+  public InputStream getMetacatInputStream(Properties prop, boolean requiresLogin)
   {
-    String response = null;
+    if (requiresLogin) {
+      if (!connected) {
+        // Ask the user to connect
+        establishConnection();
+      }
+    }
+    return getMetacatInputStream(prop);
+  }
 
+  /**
+   * Send a request to Metacat
+   *
+   * @param prop the properties to be sent to Metacat
+   * @return InputStream as returned by Metacat
+   */
+  public InputStream getMetacatInputStream(Properties prop)
+  {
+    InputStream returnStream = null;
     // Now contact metacat and send the request
     try
     {
@@ -776,8 +794,49 @@ public class ClientFramework extends javax.swing.JFrame
       debug(9, "Sending data to: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
       HttpMessage msg = new HttpMessage(url);
+      returnStream = msg.sendPostMessage(prop);
+    }
+    catch(Exception e)
+    {
+      debug(1, "Fatal error sending data to Metacat.");
+    }
+    return returnStream;
+  }
+
+  /**
+   * Send a request to Metacat
+   *
+   * @param prop the properties to be sent to Metacat
+   * @param requiresLogin indicates whether a valid connection is required
+                          for the operation
+   * @return a string as returned by Metacat
+   */
+  public String getMetacatString(Properties prop, boolean requiresLogin)
+  {
+    if (requiresLogin) {
+      if (!connected) {
+        // Ask the user to connect
+        establishConnection();
+      }
+    }
+    return (String)getMetacatString(prop);
+  }
+
+  /**
+   * Send a request to Metacat
+   *
+   * @param prop the properties to be sent to Metacat
+   * @return a string as returned by Metacat
+   */
+  public String getMetacatString(Properties prop)
+  {
+    String response = null;
+
+    // Now contact metacat and send the request
+    try
+    {
       InputStreamReader returnStream = 
-                        new InputStreamReader(msg.sendPostMessage(prop));
+                        new InputStreamReader(getMetacatInputStream(prop));
       StringWriter sw = new StringWriter();
       int len;
       char[] characters = new char[512];
@@ -809,10 +868,11 @@ public class ClientFramework extends javax.swing.JFrame
     prop.put("password", passWord);
 
     // Now contact metacat
-    String response = sendToMetacat(prop);
+    String response = getMetacatString(prop);
     if (response.indexOf("<login>") != -1) {
       connected = true;
     } else {
+      HttpMessage.setCookie(null);
       connected = false;
     }
     return connected;
@@ -827,7 +887,8 @@ public class ClientFramework extends javax.swing.JFrame
     prop.put("action", "logout");
     prop.put("qformat", "xml");
 
-    String response = sendToMetacat(prop);
+    String response = getMetacatString(prop);
+    HttpMessage.setCookie(null);
     connected = false;
     //JOptionPane.showMessageDialog(this, "Connection closed.");
   }

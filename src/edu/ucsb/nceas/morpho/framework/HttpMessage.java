@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-25 22:23:00 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-04-27 01:31:35 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,10 @@ import java.util.*;
 public class HttpMessage
 {
   public String contype;
-  URL servlet = null;
-  String argString = null;
-  static String cookie = null;
+  private URL servlet = null;
+  private String argString = null;
+  private static String cookie = null;
+
   public HttpMessage(URL servlet)
   {
     this.servlet = servlet;
@@ -62,10 +63,10 @@ public class HttpMessage
 
     // turn off caching
     URLConnection con = url.openConnection();
-      con.setUseCaches(false);
-      contype = con.getContentType();
+    con.setUseCaches(false);
+    contype = con.getContentType();
 
-      return con.getInputStream();
+    return con.getInputStream();
   }
 
   //Performs a POST request to the previously given servlet
@@ -91,7 +92,7 @@ public class HttpMessage
       {
         cookie = cookie.substring(0, k);
       }
-      //System.out.println("Cookie = " + cookie);
+      System.err.println("Sending cookie: " + cookie);
       con.setRequestProperty("Cookie", cookie);
       // add 10/26/00 by DFH so Metacat can determine where request come from
       con.setRequestProperty("User-Agent", "MORPHO");
@@ -119,7 +120,7 @@ public class HttpMessage
         cookie = cookie.substring(0, k);
       }
     }
-    //System.out.println(cookie);
+    System.err.println("Got cookie: " + cookie);
 //        String str;
 //        for (int i=1;i<10;i++) {
 //            str = con.getHeaderFieldKey(i);
@@ -156,13 +157,19 @@ public class HttpMessage
     return buf.toString();
   }
 
-    /**
-     * return the cookie that this message object contains
-     */
-
+  /**
+   * return the cookie that this message object contains
+   */
   public static String getCookie()
   {
     return cookie;
   }
 
+  /**
+   * return the cookie that this message object contains
+   */
+  public static void setCookie(String newCookie)
+  {
+    cookie = newCookie;
+  }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-26 17:32:12 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2001-04-27 01:31:35 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -958,7 +958,7 @@ public class QueryBean extends Container implements PluginInterface
     menuActions = new Action[1];
     Action searchItemAction = new AbstractAction("Search") {
       public void actionPerformed(ActionEvent e) {
-        System.out.println("Action fired: Search :-)");
+        framework.debug(1, "Action fired: Search :-)");
       }
     };
     menuActions[0] = searchItemAction;
@@ -1107,7 +1107,7 @@ public class QueryBean extends Container implements PluginInterface
 
   void TestSearch_actionPerformed(java.awt.event.ActionEvent event)
   {
-    System.out.println("Current user: " + framework.getUserName());
+    framework.debug(9, "Current user: " + framework.getUserName());
     getOwnerDocs(framework.getUserName());
   }
 
@@ -1153,7 +1153,7 @@ public class QueryBean extends Container implements PluginInterface
       }
       else
       {
-        System.out.println("mde is null in RSFrame class");
+        framework.debug(1, "mde is null in RSFrame class");
       }
     }
   }
@@ -1304,10 +1304,10 @@ public class QueryBean extends Container implements PluginInterface
                     
           ListSelectionModel lsm = (ListSelectionModel)e.getSource();
           if (lsm.isSelectionEmpty()) {
-            System.out.println("No rows are selected.");
+            framework.debug(9, "No rows are selected.");
           } else {
             int selectedRow = lsm.getMinSelectionIndex();
-            // System.out.println("Row " + selectedRow + " is now selected.");
+            // framework.debug(9, "Row " + selectedRow + " is now selected.");
             String filename = (String)table.getModel().getValueAt(selectedRow, 0);
             File file = new File(filename);
             DocFrame df = new DocFrame(file);
@@ -1412,10 +1412,10 @@ public class QueryBean extends Container implements PluginInterface
 
            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
            if (lsm.isSelectionEmpty()) {
-           System.out.println("No rows are selected.");
+           framework.debug(9, "No rows are selected.");
            } else {
            int selectedRow = lsm.getMinSelectionIndex();
-           //                        System.out.println("Row " + selectedRow
+           //                        framework.debug(9, "Row " + selectedRow
            //                                           + " is now selected.");
            String filename = (String)table.getModel().getValueAt(selectedRow, 0);
            File file = new File(filename);
@@ -1562,7 +1562,7 @@ public class QueryBean extends Container implements PluginInterface
       {
       }
     }
-    System.out.println(out);
+    framework.debug(9, out);
     return out;
   }
 
@@ -1631,7 +1631,7 @@ public class QueryBean extends Container implements PluginInterface
     if (searchlocal)
     {
       lq = new LocalQuery("//*[contains(text(),\"" + searchText + "\")]");
-      System.out.println("query = " + "//*[contains(text(),\"" + searchText +
+      framework.debug(9, "query = " + "//*[contains(text(),\"" + searchText +
                          "\")]");
       table = lq.getRSTable();
       table.addMouseListener(popupListener);
@@ -1696,10 +1696,13 @@ public class QueryBean extends Container implements PluginInterface
     prop.put("qformat", "xml");
     try
     {
+/*
       System.err.println("Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
       HttpMessage msg = new HttpMessage(url);
       InputStream in = msg.sendPostMessage(prop);
+*/
+      InputStream in = framework.getMetacatInputStream(prop, true);
 
       ExternalQuery rq = new ExternalQuery(in);
       RSFrame rs = new RSFrame("Results of Catalog Search");
@@ -1719,7 +1722,7 @@ public class QueryBean extends Container implements PluginInterface
     }
     catch(Exception w)
     {
-      System.out.println("Error in submitting structured query");
+      framework.debug(1, "Error in submitting structured query");
     }
   }
 
@@ -1736,11 +1739,13 @@ public class QueryBean extends Container implements PluginInterface
     prop.put("qformat", "xml");
     try
     {
+/*
       System.err.println("Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
       HttpMessage msg = new HttpMessage(url);
       InputStream in = msg.sendPostMessage(prop);
-
+*/
+      InputStream in = framework.getMetacatInputStream(prop, true);
 
       ExternalQuery rq = new ExternalQuery(in, 0);  // the difference is here!
       RSFrame rs = new RSFrame("Results of Catalog Search");
@@ -1760,7 +1765,7 @@ public class QueryBean extends Container implements PluginInterface
     }
     catch(Exception w)
     {
-      System.out.println("Error in submitting structured query");
+      framework.debug(1, "Error in submitting structured query");
     }
   }
 
@@ -1772,10 +1777,13 @@ public class QueryBean extends Container implements PluginInterface
     prop.put("qformat", "xml");
     try
     {
+/*
       System.err.println("Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
       HttpMessage msg = new HttpMessage(url);
       InputStream in = msg.sendPostMessage(prop);
+*/
+      InputStream in = framework.getMetacatInputStream(prop, true);
       ExternalQuery rq = new ExternalQuery(in);
       RSFrame rs = new RSFrame("Results of Catalog Search");
       rs.setEditor(mde);
@@ -1792,7 +1800,7 @@ public class QueryBean extends Container implements PluginInterface
     }
     catch(Exception w)
     {
-      System.out.println("Error in submitting simple query");
+      framework.debug(1, "Error in submitting simple query");
     }
   }
 
