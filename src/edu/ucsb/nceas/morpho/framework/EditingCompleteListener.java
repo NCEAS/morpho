@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:26:42 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-08 15:45:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ public interface EditingCompleteListener
    *
    * @param xmlString is the edited XML in String format
    */
-  public void editingCompleted(String xmlString, String id);
+  public void editingCompleted(String xmlString, String id, String location);
   
 
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:26:42 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-08 15:45:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
    */
   private Hashtable docframes = null;
   private String id = null;
+  private String location = null;
   
   
   /**
@@ -153,7 +154,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   {
     if (docframes.containsKey(doc)) {
       EditingCompleteListener list = (EditingCompleteListener)docframes.get(doc); 
-      list.editingCompleted(xmlString, this.id);
+      list.editingCompleted(xmlString, this.id, this.location);
     }
   }
   
@@ -164,20 +165,22 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     framework.addWindow(editorframe);
   }
 
-  public void openEditor(String xmlText, String id, EditingCompleteListener listener) {
+  public void openEditor(String xmlText, String id, String location, 
+                         EditingCompleteListener listener) {
     DocFrame editorframe = new DocFrame(framework, "XML Editor", xmlText);
     editorframe.setController(this);
     editorframe.setVisible(true);
     this.id = id;
+    this.location = location;
     if (framework!=null) {
       framework.addWindow(editorframe);
     }
     docframes.put(editorframe, listener);
   }
   
-  public void opendEditor(String xmlText, EditingCompleteListener listener)
+  public void openEditor(String xmlText, EditingCompleteListener listener)
   {
-    openEditor(xmlText, null, listener);
+    openEditor(xmlText, null, null, listener);
   }
 
   }

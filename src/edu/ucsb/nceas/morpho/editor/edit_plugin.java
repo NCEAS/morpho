@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:26:42 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-08 15:45:18 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -360,7 +360,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
       ServiceProvider provider = 
                       framework.getServiceProvider(EditorInterface.class);
       EditorInterface editor = (EditorInterface)provider;
-      editor.openEditor(JTextArea1.getText(), null, this);
+      editor.openEditor(JTextArea1.getText(), null, null, this);
     } catch (ServiceNotHandledException snhe) {
       framework.debug(6, snhe.getMessage());
     }
@@ -400,7 +400,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 
 //---------------------------
 
-public void editingCompleted(String xmlString, String id) {
+public void editingCompleted(String xmlString, String id, String location) {
   JTextArea1.setText(xmlString);
   JOptionPane.showMessageDialog(null, "Editing Completed!!!", "Alert", JOptionPane.INFORMATION_MESSAGE);
 }

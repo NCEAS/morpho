@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-07 17:45:23 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-08 15:45:17 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ public class DataPackage
   private String identifier;
   private Hashtable docAtts = new Hashtable();
   private ClientFramework framework;
+  private String location = null;
   
   /**
    * used to signify that this package is located on a metacat server
@@ -88,6 +89,7 @@ public class DataPackage
     //-respond to any request from the user to open a specific file
     this.framework = framework;
     config = framework.getConfiguration();
+    this.location = location;
     
     framework.debug(9, "Creating new DataPackage Object");
     framework.debug(9, "id: " + identifier);
@@ -165,6 +167,15 @@ public class DataPackage
       
       parseTripleFile();
     }
+  }
+  
+  /**
+   * returns the location of the data package.  Either this.METACAT or 
+   * this.LOCAL.
+   */
+  public String getLocation()
+  {
+    return location;
   }
   
   /**
