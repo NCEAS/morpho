@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-14 21:26:09 $'
-* '$Revision: 1.25 $'
+*     '$Date: 2004-04-14 23:57:34 $'
+* '$Revision: 1.26 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -351,8 +351,9 @@ public class Taxonomic extends AbstractUIPage {
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT);
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-
-      row.set(3, citationPage.getPageData("/classificationSystemCitation[1]"));
+			
+			row = citationPage.getSurrogate();
+      row.add(citationPage.getPageData("/classificationSystemCitation[1]"));
       this.classList.replaceSelectedRow(row);
     }
 

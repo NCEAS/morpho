@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-14 17:29:12 $'
- * '$Revision: 1.13 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-14 23:57:34 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -817,7 +817,11 @@ public class CitationPage extends AbstractUIPage {
 
   private boolean mapContainsCreator(OrderedMap map, String xPath, int idx) {
 
-    boolean b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/surName[1]");
+    boolean b = map.containsKey(xPath + "/creator[" + idx + "]/references[1]");
+		if(b) return true;
+		b = map.containsKey(xPath + "/creator[" + idx + "]/references");
+		if(b) return true;
+		b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/surName[1]");
     if(b) return true;
     b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName[1]/surName[1]");
     if(b) return true;
@@ -847,13 +851,13 @@ public class CitationPage extends AbstractUIPage {
 
     this.titleField.setText((String)map.get(xPath + "/title[1]"));
     map.remove(xPath + "/title[1]");
-
-    for(int idx = 1; ; idx++) {
+		
+		for(int idx = 1; ; idx++) {
 
       if(!mapContainsCreator(map, xPath, idx)) {
         break;
       }
-      OrderedMap copyMap = (OrderedMap)map.clone();
+      OrderedMap copyMap = getNewCreatorMap(map, xPath, idx);
       PartyPage page = (PartyPage)WizardPageLibrary.getPage( DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
       page.setPageData(copyMap, xPath + "/creator[" + idx + "]");
       List row = page.getSurrogate();
@@ -907,7 +911,20 @@ public class CitationPage extends AbstractUIPage {
 
    }
 
-
+	 private OrderedMap getNewCreatorMap(OrderedMap map, String xPath, int idx) {
+		 
+		 OrderedMap newMap = new OrderedMap();
+		 String searchString = xPath + "/creator[" + idx + "]";
+		 Iterator it = map.keySet().iterator();
+		 while(it.hasNext()) {
+			 
+			 String k = (String)it.next();
+			 if(k.startsWith(searchString)) {
+				 newMap.put(k, (String)map.get(k));
+			 }
+		 }
+		 return newMap;
+	 }
 }
 
 
@@ -1235,7 +1252,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
     map.put(xPathRoot + "/pageRange[1]", this.rangeField.getText());
     String pub = (String)this.publisherField.getText();
-    if(pub.trim().equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
+    if(!pub.trim().equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
 
     return map;
   }
@@ -1268,10 +1285,10 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
       map.remove(xPathRoot + "/issue[1]");
     }
 
-    String pub = (String)map.get(xPathRoot + "/publisher[1]/organization[1]");
+    String pub = (String)map.get(xPathRoot + "/publisher[1]/organizationName[1]");
     if(pub != null) {
       this.publisherField.setText(pub);
-      map.remove(xPathRoot + "/publisher[1]/organization[1]");
+      map.remove(xPathRoot + "/publisher[1]/organizationName[1]");
     }
 
     return;

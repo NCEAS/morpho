@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-14 00:28:29 $'
- * '$Revision: 1.44 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-14 23:57:34 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1142,7 +1142,7 @@ public class PartyPage extends AbstractUIPage {
 
 
     if (isReference()) {
-      returnMap.put(rootXPath + "/references", referencesNodeIDString);
+      returnMap.put(rootXPath + "/references[1]", referencesNodeIDString);
       // added by DFH  4/10/2004
       if (editingOriginalRef && rolePickList!=null) {
         if (getCurrentPickListRole().length() > 0) {
