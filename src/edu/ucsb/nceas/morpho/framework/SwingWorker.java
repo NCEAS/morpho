@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-01 22:33:39 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-04-15 21:13:23 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,9 +141,12 @@ public abstract class SwingWorker {
                 }
                 finally {
                     threadVar.clear();
+                    SwingUtilities.invokeLater(doFinished);
                 }
 
-                SwingUtilities.invokeLater(doFinished);
+//DFH                SwingUtilities.invokeLater(doFinished);
+// moved inside the finally block to insure that 'finished command is always executed
+// this is needed to stop the flapping butterfly in Morpho
             }
         };
 
