@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-08 19:19:24 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2004-01-09 18:13:40 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,6 +144,23 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(saveAction);
+
+    GUIAction revertAction = new GUIAction("Revert",
+                                              null,
+                                              new RevertCommand());
+    revertAction.setMenuItemPosition(5);
+    revertAction.setToolTipText("Revert");
+    revertAction.setMenu("File", 0);
+    revertAction.setEnabled(false);
+/*
+    revertAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    revertAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+*/                      
+    controller.addGuiAction(revertAction);
 
 
 
