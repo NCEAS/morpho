@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-08 19:40:08 $'
- * '$Revision: 1.128 $'
+ *     '$Date: 2003-12-16 21:49:51 $'
+ * '$Revision: 1.129 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,12 @@ public class DocFrame extends javax.swing.JFrame
   public DefaultMutableTreeNode rootNode;
   public DTDTree dtdtree;
   public JTree tree;
+  
+  /**
+   *   the DOM node passed in which contains a parsed XML document
+   *   to be displayed and edited
+   */
+  Node docnode = null;
 
   File openfile = null;
   File file = null;
@@ -272,15 +278,23 @@ public class DocFrame extends javax.swing.JFrame
     ControlPanel.add(BorderLayout.EAST, ButtonPanel);
     NewButton.setText("New EML2");
     NewButton.setActionCommand("Open");
+//DFH
+    NewButton.setVisible(false);
+    
     ButtonPanel.add(NewButton);
     OpenButton.setText("Open");
     OpenButton.setActionCommand("Open");
+//DFH  
+    OpenButton.setVisible(false);  
+    
     ButtonPanel.add(OpenButton);
-    CancelButton.setText("Cancel");
+//    CancelButton.setText("Cancel");
+    CancelButton.setText("Revert");
     CancelButton.setActionCommand("Cancel");
     ButtonPanel.add(CancelButton);
-    EditingExit.setText("Save Changes");
-    EditingExit.setActionCommand("jbutton");
+//    EditingExit.setText("Save Changes");
+    EditingExit.setText("Finish");
+    EditingExit.setActionCommand("Finish");
     ButtonPanel.add(EditingExit);
     NotesPanel.setLayout(new GridLayout(2, 2, 6, 0));
     ControlPanel.add(BorderLayout.WEST, NotesPanel);
@@ -822,6 +836,7 @@ public class DocFrame extends javax.swing.JFrame
    */
   public void initDoc(Morpho morpho, Node docnode)
   {
+    this.docnode = docnode;
     DefaultMutableTreeNode frootNode = null;
     setName("Morpho Editor");
     treeModel = putDOMintoTree(docnode);
@@ -2562,7 +2577,7 @@ public class DocFrame extends javax.swing.JFrame
       System.gc();
       }
       else {
-      writeOutputFile(xmlout); 
+        writeOutputFile(xmlout); 
       }
     }
     else {
@@ -2721,39 +2736,17 @@ public class DocFrame extends javax.swing.JFrame
   }
   
   /**
-   * method carried out when 'Cancel' button is clicked
-   * fires 'editingCanceledEvent'; i.e. no changes are saved
+   * method carried out when 'Revert' button is clicked
+   * This method shold revert to the DOM intially parsed when
+   * this frame was opened
    *
-   * @param event  Cancel button clicked event
+   * @param event  Revert button clicked event
    */
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
-  {    
-    //MBJ if (framework!=null) {
-    //MBJ framework.removeWindow(this);
-    //MBJ }
-    if(controller!=null) {  
-      controller.fireEditingCanceledEvent(this, XMLTextString);
-
-      this.setVisible(false);
-      // hide the Frame
-      this.dispose();
-      // free the system resources
-      tree = null;
-      treeModel = null;
-      OutputScrollPanelContainer = null;
-      NestedPanelScrollPanel = null;
-      System.gc();
-
-    }
-    else{
-      this.setVisible(false);
-      // hide the Frame
-      this.dispose();
-      // free the system resources
-      System.exit(0);
-    }
+  { 
+    initDoc(morpho, docnode);
   }
-
+  
   /**
    *  Let user select a  DTD file; file is parsed into a tree
    *  showing schema which can then be saved as a DTD template
