@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-18 17:48:24 $'
- * '$Revision: 1.53 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-02-19 00:12:54 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -499,8 +499,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       Component mdcomponent = null;
   
       if (hasData) {
-        String attributeFileID = dp.getAttributeFileId(dv.getEntityFileId());
-        
         StringBuffer suppressBuff = new StringBuffer();
         String nextAttributeFileID = null;
         String nextDataFileID = null;
