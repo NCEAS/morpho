@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+<resource>
+<dataset>
+<identifier>
+ </identifier>
+<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/client.properties</datasetid>
+<title>client.properties</title>
+<alternateTitle>
+ </alternateTitle>
+<originator>
+<responsibleParty>
+<individualName>
+<salutation>
+ </salutation>
+<givenName>
+ </givenName>
+<surName>
+ </surName>
+</individualName>
+  <contactInfo>
+<phone>
+<voice>
+ </voice>
+<facsimile>
+ </facsimile>
+  </phone>
+<address>
+<deliveryPoint>
+ </deliveryPoint>
+<city>
+ </city>
+<administrativeArea>
+ </administrativeArea>
+<postalCode>
+ </postalCode>
+<country>
+ </country>
+<electronicMailAddress>
+ </electronicMailAddress>
+</address>
+<onlineResource>
+<linkage>
+<URL>
+ </URL>
+</linkage>
+<protocol>
+ </protocol>
+<applicationProfile>
+ </applicationProfile>
+<name>
+ </name>
+<description>
+ </description>
+<functionCode>
+ </functionCode>
+</onlineResource>
+<hoursOfService>
+ </hoursOfService>
+<contactInstructions>
+ </contactInstructions>
+</contactInfo>
+<roleCode>
+ </roleCode>
+</responsibleParty>
+</originator>
+<pubdate>
+ </pubdate>
+<pubplace>
+ </pubplace>
+<series>
+ </series>
+<abstract>
+ </abstract>
+<keywordInfo>
+<keyword>
+ </keyword>
+<keywordType>
+ </keywordType>
+<keywordThesaurus>
+ </keywordThesaurus>
+</keywordInfo>
+<url>
+<URL>
+ </URL>
+</url>
+<additionalInfo>
+ </additionalInfo>
+<geoForm>
+ </geoForm>
+</dataset>
+<identifier>
+ </identifier>
+<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/client.properties</datasetid>
+<title>client.properties</title>
+<alternateTitle>
+ </alternateTitle>
+<originator>
+<responsibleParty>
+<individualName>
+<salutation>
+ </salutation>
+<givenName>
+ </givenName>
+<surName>
+ </surName>
+</individualName>
+  <contactInfo>
+<phone>
+<voice>
+ </voice>
+<facsimile>
+ </facsimile>
+  </phone>
+<address>
+<deliveryPoint>
+ </deliveryPoint>
+<city>
+ </city>
+<administrativeArea>
+ </administrativeArea>
+<postalCode>
+ </postalCode>
+<country>
+ </country>
+<electronicMailAddress>
+ </electronicMailAddress>
+</address>
+<onlineResource>
+<linkage>
+<URL>
+ </URL>
+</linkage>
+<protocol>
+ </protocol>
+<applicationProfile>
+ </applicationProfile>
+<name>
+ </name>
+<description>
+ </description>
+<functionCode>
+ </functionCode>
+</onlineResource>
+<hoursOfService>
+ </hoursOfService>
+<contactInstructions>
+ </contactInstructions>
+</contactInfo>
+<roleCode>
+ </roleCode>
+</responsibleParty>
+</originator>
+<pubdate>
+ </pubdate>
+<pubplace>
+ </pubplace>
+<series>
+ </series>
+<abstract>
+ </abstract>
+<keywordInfo>
+<keyword>
+ </keyword>
+<keywordType>
+ </keywordType>
+<keywordThesaurus>
+ </keywordThesaurus>
+</keywordInfo>
+<url>
+<URL>
+ </URL>
+</url>
+<additionalInfo>
+ </additionalInfo>
+<ISBN>
+ </ISBN>
+<ISSN>
+ </ISSN>
+<editor>
+ </editor>
+<edition>
+ </edition>
+<volume>
+ </volume>
+</resource>
