@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-20 21:15:06 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-21 00:31:05 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,7 @@ public class RefreshCommand implements Command
   /** A reference to the MophorFrame */
   private MorphoFrame morphoFrame = null;
   
-  /** A reference to the Morpho application */
-  //private Morpho morpho = null;
-  
+    
   /**
    * Constructor of SearcCommand
    */
@@ -79,6 +77,7 @@ public class RefreshCommand implements Command
     Query myQuery = null;
     if (comp != null && comp instanceof ResultPanel)
     {
+      morphoFrame.setBusy(true);
       ResultPanel resultPane = (ResultPanel) comp;
       myQuery = resultPane.getResultSet().getQuery();
       doQuery(myQuery);
