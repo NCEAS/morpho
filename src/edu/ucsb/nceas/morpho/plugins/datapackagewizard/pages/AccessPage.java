@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-09 00:42:21 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-03-17 04:15:11 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ import java.util.List;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.BorderLayout;
 
 import javax.swing.BoxLayout;
@@ -52,6 +54,8 @@ import javax.swing.tree.TreeSelectionModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import javax.swing.JComboBox;
+import javax.swing.JButton;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -68,23 +72,29 @@ public class AccessPage extends AbstractWizardPage {
 
   private JPanel middlePanel;
   private JPanel topPanel;
+  private JPanel selectionInfoPanel;
+  private JPanel currentPanel;
   private JPanel leftPanel;
   private JTextField dnField;
   private JLabel dnLabel;
-  private JLabel descLabel;
-  private String userAccessType   = new String("Allow");
-  private String userAccess       = new String("Read");
-  private JTree accessTree;
+  private JLabel introLabel;
+  private JLabel descLabel, accessDesc1, accessDesc2;
+  private String userAccessType   = new String("  Allow");
+  private String userAccess       = new String("  Read");
+  private JComboBox typeComboBox;
+  private JComboBox accessComboBox;
+  private JScrollPane treeView;
 
   private final String[] accessTypeText = new String[] {
-    "Allow",
-    "Deny"
+    "  Allow",
+    "  Deny"
   };
 
   private final String[] accessText = new String[] {
-    "Read",
-    "Write",
-    "All"
+    "  Read",
+    "  Read & Write",
+    "  Read, Write & Change Permissions",
+    "  All"
   };
 
   public boolean accessIsAllow = true;
@@ -110,20 +120,49 @@ public class AccessPage extends AbstractWizardPage {
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>Define Access:</b></font>", 1);
     topPanel.add(desc);
+    topPanel.add(WidgetFactory.makeHalfSpacer());
+    JLabel introLabel = WidgetFactory.makeHTMLLabel(
+                      "<b>Select a user or group from the list below:</b>", 1);
+    topPanel.add(introLabel);
 
     this.add(topPanel, BorderLayout.NORTH);
 
-    JScrollPane treeView = createTree();
+    treeView = createTree();
     leftPanel = new JPanel();
+    leftPanel.setLayout(new BorderLayout());
+
     if(treeView != null){
-      leftPanel.add(treeView);
+      leftPanel.add(treeView, BorderLayout.CENTER);
+
+      ActionListener actionListener = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          Log.debug(45, "got action performed command from Referesh button");
+          Access.refreshTree();
+
+          treeView = createTree();
+          if(treeView != null){
+            leftPanel.remove(treeView);
+            leftPanel.add(treeView, BorderLayout.CENTER);
+            leftPanel.revalidate();
+            leftPanel.repaint();
+          }
+        }
+      };
+
+      JButton refreshButton = WidgetFactory.makeJButton("Refresh",
+          actionListener);
+      JPanel buttonPanel = new JPanel();
+      buttonPanel.add(refreshButton);
+      leftPanel.add(buttonPanel, BorderLayout.SOUTH);
     } else {
       leftPanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
-                                                +" from server", true,
-                                                new java.awt.Dimension(220,100)));
+                                            +" from server", true,
+                                            new java.awt.Dimension(220,100)));
+      introLabel.setText("  Enter a full distinguished name below");
     }
-    leftPanel.setBorder(new javax.swing.border.EmptyBorder(10*WizardSettings.PADDING,
-        4*WizardSettings.PADDING,8*WizardSettings.PADDING,4*WizardSettings.PADDING));
+
+    leftPanel.setBorder(new javax.swing.border.EmptyBorder(5*WizardSettings.PADDING,
+        4*WizardSettings.PADDING,4*WizardSettings.PADDING,4*WizardSettings.PADDING));
     this.add(leftPanel, BorderLayout.WEST);
 
 
@@ -131,99 +170,307 @@ public class AccessPage extends AbstractWizardPage {
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     JPanel dnPanel = WidgetFactory.makePanel(1);
-    dnLabel = WidgetFactory.makeLabel("User DN:", false);
+    dnLabel = WidgetFactory.makeLabel("Distinguished Name", false);
     dnPanel.add(dnLabel);
     dnField = WidgetFactory.makeOneLineTextField();
+    dnField.setBackground(java.awt.Color.white);
     dnPanel.add(dnField);
     dnPanel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.PADDING,0,
-        WizardSettings.PADDING));
-    middlePanel.add(WidgetFactory.makeHalfSpacer());
-    middlePanel.add(dnPanel);
+        0));
 
-    ActionListener accessTypeListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+    if(treeView == null){
+      middlePanel.add(dnPanel);
+    }
 
-        if (e.getActionCommand().equals(accessTypeText[0])) {
+    selectionInfoPanel = new JPanel();
+    selectionInfoPanel.setLayout(new BorderLayout());
+    currentPanel = WidgetFactory.makeVerticalPanel(2);
+    selectionInfoPanel.add(currentPanel);
+    middlePanel.add( selectionInfoPanel);
+
+    ItemListener accessTypeListener = new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        Log.debug(45, "got itemStateChanged command in access type list");
+
+        if (e.getItem().toString().compareTo(accessTypeText[0]) == 0) {
           userAccessType = "Allow";
           accessIsAllow = true;
-        } else if (e.getActionCommand().equals(accessTypeText[1])) {
+        } else if (e.getItem().toString().compareTo(accessTypeText[1]) == 0) {
           userAccessType = "Deny";
           accessIsAllow = false;
         }
       }
     };
 
-    JPanel typeRadioOuterPanel = WidgetFactory.makePanel(2);
-    JPanel typeRadioPanel = WidgetFactory.makeRadioPanel(accessTypeText, 0, accessTypeListener);
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    typeRadioOuterPanel.add(typeRadioPanel);
     descLabel = WidgetFactory.makeHTMLLabel(
-        "<p><b>Choose access type:</b> Choose to allow or deny the user the "
-        +"below defined permission.</p>", 2);
+        "<b>&nbsp;Define access control for this user/group:</b>", 1);
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(descLabel);
-    middlePanel.add(typeRadioOuterPanel);
+    middlePanel.add(WidgetFactory.makeHalfSpacer());
 
+    typeComboBox = WidgetFactory.makePickList(accessTypeText, false,
+                                    0, accessTypeListener);
 
-    ActionListener accessListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+    accessDesc1 = WidgetFactory.makeLabel("      this user", false);
+    accessDesc2 = WidgetFactory.makeLabel("   access", false);
 
-        if (e.getActionCommand().equals(accessText[0])) {
+    ItemListener accessListener = new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        Log.debug(45, "got itemStateChanged command in access list");
+
+        if (e.getItem().toString().compareTo(accessText[0]) == 0) {
           userAccess = "Read";
-        } else if (e.getActionCommand().equals(accessText[1])) {
+        } else if (e.getItem().toString().compareTo(accessText[2]) == 0) {
           userAccess = "Write";
-        } else if (e.getActionCommand().equals(accessText[2])) {
+        } else if (e.getItem().toString().compareTo(accessText[3]) == 0) {
           userAccess = "All";
         }
       }
     };
 
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    accessComboBox = WidgetFactory.makePickList(accessText, false, 0,
+        accessListener);
 
-    JPanel accessRadioOuterPanel = WidgetFactory.makePanel(3);
-    JPanel accessRadioPanel = WidgetFactory.makeRadioPanel(accessText, 0, accessListener);
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    accessRadioOuterPanel.add(accessRadioPanel);
-    descLabel = WidgetFactory.makeHTMLLabel(
-      "<p><b>Choose access:</b></p>", 1);
-    middlePanel.add(descLabel);
-    middlePanel.add(accessRadioOuterPanel);
+    if(treeView!=null){
+      typeComboBox.setEnabled(false);
+      accessComboBox.setEnabled(false);
+    } else {
+      typeComboBox.setEnabled(true);
+      accessComboBox.setEnabled(true);
+    }
 
+    JPanel typePanel = new JPanel();
+
+    typePanel.setLayout(new BoxLayout(typePanel, BoxLayout.X_AXIS));
+    typePanel.setBorder(new javax.swing.border.EmptyBorder(0,2*WizardSettings.PADDING,
+        0,0));
+
+    typePanel.add(typeComboBox);
+    typePanel.add(accessDesc1);
+    typePanel.add(accessComboBox);
+    typePanel.add(accessDesc2);
+
+    middlePanel.add(typePanel);
+
+    JPanel accessDefinitionPanel = new JPanel();
+    accessDefinitionPanel.setLayout(new BorderLayout());
+
+    JLabel accessDefinitionLabel = WidgetFactory.makeHTMLLabel(
+        "<b>&nbsp;Description of access levels:</b>"
+        +"<ul><li>Read: Able to view data package.</li>"
+        +"<li>Read & Write: Able to view and modify data package.</li>"
+        +"<li>Read, Write & Change Permissions: Able to view and modify "
+        +"datapackage, and modify access permissions.</li>"
+        +"<li>All: Able to do everything.</li></ul>", 4);
+
+    accessDefinitionPanel.add(accessDefinitionLabel, BorderLayout.CENTER);
+    middlePanel.add(accessDefinitionPanel);
     middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-        37*WizardSettings.PADDING,8*WizardSettings.PADDING));
+        3*WizardSettings.PADDING,8*WizardSettings.PADDING));
 
     this.add(middlePanel, BorderLayout.CENTER);
   }
 
 
   private JScrollPane createTree(){
-
     if(Access.accessTreeNode != null){
-      accessTree = new JTree(Access.accessTreeNode);
+      final JTree accessTree = new JTree(Access.accessTreeNode);
 
       accessTree.getSelectionModel().setSelectionMode(
                                 TreeSelectionModel.SINGLE_TREE_SELECTION);
 
+      accessTree.setCellRenderer(new AccessTreeCellRenderer());
+
       accessTree.addTreeSelectionListener(new TreeSelectionListener(){
         public void valueChanged(TreeSelectionEvent e) {
+
           DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                       accessTree.getLastSelectedPathComponent();
 
 
-          dnField.setText(((AccessTreeNodeObject)node.getUserObject()).getDN());
+          if(node != null && node.getUserObject() instanceof AccessTreeNodeObject){
+            selectionInfoPanel.remove(currentPanel);
+
+            if(((AccessTreeNodeObject) node.getUserObject()).nodeType ==
+               WizardSettings.ACCESS_PAGE_GROUP){
+
+              dnField.setText( ( (AccessTreeNodeObject) node.getUserObject()).
+                            getDN());
+              currentPanel = getGroupInfoPanel((AccessTreeNodeObject)
+                                       node.getUserObject());
+
+              typeComboBox.setEnabled(true);
+              accessComboBox.setEnabled(true);
+
+              selectionInfoPanel.add(currentPanel, BorderLayout.CENTER);
+            } else if(((AccessTreeNodeObject) node.getUserObject()).nodeType ==
+                      WizardSettings.ACCESS_PAGE_USER){
+
+              dnField.setText( ( (AccessTreeNodeObject) node.getUserObject()).
+                            getDN());
+              currentPanel = getUserInfoPanel((AccessTreeNodeObject)
+                                       node.getUserObject());
+              typeComboBox.setEnabled(true);
+              accessComboBox.setEnabled(true);
+
+              selectionInfoPanel.add(currentPanel, BorderLayout.CENTER);
+             } else {
+               dnField.setText("");
+               typeComboBox.setEnabled(false);
+               accessComboBox.setEnabled(false);
+             }
+
+            selectionInfoPanel.revalidate();
+            selectionInfoPanel.repaint();
+
+          } else {
+            dnField.setText("");
+          }
         }
       });
       JScrollPane treeView = new JScrollPane(accessTree);
-
+      treeView.setPreferredSize(new java.awt.Dimension(200,200));
       return treeView;
     }
 
     return null;
   }
+
+  private JPanel getGroupInfoPanel(AccessTreeNodeObject nodeObject){
+
+    JPanel panel = WidgetFactory.makeVerticalPanel(2);
+
+    panel.add(WidgetFactory.makeDefaultSpacer());
+
+    JPanel desc = WidgetFactory.makePanel(1);
+    JLabel descLabel = WidgetFactory.makeHTMLLabel("<b>Group Information:</b>",
+                                                   1);
+    desc.add(descLabel);
+    panel.add(desc);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+
+    JPanel username = WidgetFactory.makePanel(1);
+    JLabel nameLabel = WidgetFactory.makeLabel(" Name:", false);
+    username.add(nameLabel);
+
+    JTextField nameField = WidgetFactory.makeOneLineTextField();
+    nameField.setEditable(false);
+    nameField.setBackground(java.awt.Color.white);
+    nameField.setText(" " + nodeObject.toString());
+    username.add(nameField);
+
+    panel.add(username);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel organization = WidgetFactory.makePanel(1);
+    JLabel orgLabel = WidgetFactory.makeLabel(" Organization:", false);
+    organization.add(orgLabel);
+
+    JTextField orgField = WidgetFactory.makeOneLineTextField();
+    orgField.setEditable(false);
+    orgField.setBackground(java.awt.Color.white);
+    String value = nodeObject.getDN();
+    if(value != null && value.indexOf("o=")>0){
+      value = value.substring(value.indexOf("o=") + 2);
+      value = value.substring(0, value.indexOf(","));
+    } else {
+      value = "";
+    }
+    orgField.setText(" " + value);
+    organization.add(orgField);
+
+    panel.add(organization);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel groupDesc = WidgetFactory.makePanel(1);
+
+    JLabel groupDescLabel = WidgetFactory.makeLabel(" Group Description:", false);
+    groupDesc.add(groupDescLabel);
+
+    JTextField descField = WidgetFactory.makeOneLineTextField();
+    descField.setEditable(false);
+    if(nodeObject.getDescription() != null)
+      descField.setText(" " + nodeObject.getDescription());
+    descField.setBackground(java.awt.Color.white);
+    groupDesc.add(descField);
+
+    panel.add(groupDesc);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+    panel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.PADDING,
+        0,WizardSettings.PADDING));
+
+    return panel;
+  }
+
+
+  private JPanel getUserInfoPanel(AccessTreeNodeObject nodeObject){
+    JPanel panel = WidgetFactory.makeVerticalPanel(2);
+
+    panel.add(WidgetFactory.makeDefaultSpacer());
+
+    JPanel desc = WidgetFactory.makePanel(1);
+    JLabel descLabel = WidgetFactory.makeHTMLLabel("<b>User Information:</b>",
+                                                   1);
+    desc.add(descLabel);
+    panel.add(desc);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel username = WidgetFactory.makePanel(1);
+    JLabel nameLabel = WidgetFactory.makeLabel(" Name:", false);
+    username.add(nameLabel);
+
+    JTextField nameField = WidgetFactory.makeOneLineTextField();
+    nameField.setEditable(false);
+    nameField.setBackground(java.awt.Color.white);
+    nameField.setText(" " + nodeObject.toString());
+    username.add(nameField);
+
+    panel.add(username);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel organization = WidgetFactory.makePanel(1);
+    JLabel orgLabel = WidgetFactory.makeLabel(" Organization:", false);
+    organization.add(orgLabel);
+
+    JTextField orgField = WidgetFactory.makeOneLineTextField();
+    orgField.setEditable(false);
+    orgField.setBackground(java.awt.Color.white);
+    String value = nodeObject.getDN();
+    if(value != null && value.indexOf("o=")>0){
+      value = value.substring(value.indexOf("o=") + 2);
+      value = value.substring(0, value.indexOf(","));
+    } else {
+      value = "";
+    }
+    orgField.setText(" " + value);
+    organization.add(orgField);
+
+    panel.add(organization);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel email = WidgetFactory.makePanel(1);
+    JLabel emailLabel = WidgetFactory.makeLabel(" Email:", false);
+    email.add(emailLabel);
+
+    JTextField emailField = WidgetFactory.makeOneLineTextField();
+    emailField.setEditable(false);
+    if(nodeObject.getEmail() != null)
+      emailField.setText(" " + nodeObject.getEmail());
+    emailField.setBackground(java.awt.Color.white);
+    email.add(emailField);
+
+    panel.add(email);
+    panel.add(WidgetFactory.makeHalfSpacer());
+
+    panel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.PADDING,
+        0,WizardSettings.PADDING));
+    return panel;
+ }
 
    /**
    *  The action to be executed when the "OK" button is pressed. If no onAdvance

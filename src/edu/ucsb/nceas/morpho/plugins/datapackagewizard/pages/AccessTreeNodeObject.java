@@ -1,46 +1,114 @@
+/**
+ *  '$RCSfile: AccessTreeNodeObject.java,v $'
+ *    Purpose: A class that creates node object for tree in AccessPage.java
+ *  Copyright: 2000 Regents of the University of California and the
+ *             National Center for Ecological Analysis and Synthesis
+ *    Authors: Saurabh Garg
+ *    Release: @release@
+ *
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-17 04:15:11 $'
+ * '$Revision: 1.2 $'
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 class AccessTreeNodeObject{
 
-  String DNinfo = null;
+  private String DNinfo = null;
+  private String name = null;
+  private String email = null;
+  private String description = null;
+
   int  nodeType = 0;
 
-  public AccessTreeNodeObject(String DNinfo, int nodeType) {
-    if(nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS){
-      try{
-        DNinfo = DNinfo.substring(DNinfo.indexOf("o="));
-      }catch (Exception e){
-       Log.debug(1,DNinfo);
-       Log.debug(10, e.getMessage());
-      }
-    }
-
-    this.DNinfo = DNinfo;
+  public AccessTreeNodeObject(int nodeType) {
     this.nodeType = nodeType;
+  }
 
+  public AccessTreeNodeObject(String DNinfo, int nodeType) {
+    setDN(DNinfo);
+    this.nodeType = nodeType;
   }
 
   public String getDN(){
     return DNinfo;
   }
+
+  public void setDN(String DNinfo){
+    if(nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS){
+      try{
+        DNinfo = DNinfo.substring(DNinfo.indexOf("o="));
+      }catch (Exception e){
+       Log.debug(10, e.getMessage());
+      }
+    }
+    this.DNinfo = DNinfo;
+  }
+
+  public String getName(){
+    return name;
+  }
+
+  public void setName(String name){
+    this.name = name;
+  }
+
+  public String getDescription(){
+    return description;
+  }
+
+  public void setDescription(String description){
+    this.description = description;
+  }
+
+  public String getEmail(){
+    return email;
+  }
+
+  public void setEmail(String email){
+    this.email = email;
+  }
+
   public String toString(){
     String value = null;
     String key = null;
 
     if(nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS){
       key = "o=";
+      value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
+      value = value.substring(0, value.indexOf(","));
     } else if(nodeType == WizardSettings.ACCESS_PAGE_GROUP){
       key = "cn=";
+      value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
+      value = value.substring(0, value.indexOf(","));
     } else if(nodeType == WizardSettings.ACCESS_PAGE_USER){
-      key = "uid=";
+      if(name != null && name.compareTo("") != 0){
+        value = name;
+      } else {
+        key = "uid=";
+        value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
+        value = value.substring(0, value.indexOf(","));
+      }
     }
 
-    value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
-    value = value.substring(0, value.indexOf(","));
 
     return value;
  }

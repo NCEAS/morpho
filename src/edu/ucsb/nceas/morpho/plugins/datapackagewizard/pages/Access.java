@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:09:24 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-17 04:15:11 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,34 +245,34 @@ public class Access extends AbstractWizardPage {
        try{
          queryResult = morpho.getMetacatInputStream(prop);
        } catch(Exception w) {
-         Log.debug(1, "Error in retrieving User list from Metacat server.");
-         Log.debug(1, w.getMessage());
+         Log.debug(10, "Error in retrieving User list from Metacat server.");
+         Log.debug(45, w.getMessage());
        }
 
+       NodeList nl = null;
+
        if(queryResult != null){
-         parseResult(queryResult, top);
+         DocumentBuilder parser = Morpho.createDomParser();
+
+         try {
+           doc = parser.parse(queryResult);
+           nl = doc.getElementsByTagName("authSystem");
+         }
+         catch (Exception e) {
+           Log.debug(10, "Exception in parsing result set from Metacat...");
+           Log.debug(45, e.toString());
+           return null;
+         }
+
+         if(nl != null){
+           makeTree(nl, top);
+         }
 
          return top;
        }
 
        return null;
      }
-
-
-  private void parseResult(InputStream queryResult, DefaultMutableTreeNode top){
-    DocumentBuilder parser = Morpho.createDomParser();
-
-    try {
-      doc = parser.parse(queryResult);
-    }
-    catch (Exception e) {
-      Log.debug(10, "(2.431) Exception parsing result set from Metacat...");
-      Log.debug(10, e.toString());
-    }
-
-    NodeList nl = doc.getElementsByTagName("authSystem");
-    makeTree(nl, top);
-  }
 
   DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top){
     for (int count = 0; count < nl.getLength(); count++) {
@@ -297,33 +297,36 @@ public class Access extends AbstractWizardPage {
 
           NodeList nl2 = tempNode.getChildNodes();
           nodeObject = null;
+          AccessTreeNodeObject groupNodeObject = new AccessTreeNodeObject(
+                                             WizardSettings.ACCESS_PAGE_GROUP);
+          tempTreeNode = new DefaultMutableTreeNode();
 
           for (int i = 0; i < nl2.getLength(); i++) {
             Node node = nl2.item(i);
             if (node.getNodeName().compareTo("groupname") == 0) {
-              nodeObject = new AccessTreeNodeObject(node.getFirstChild().getNodeValue(),
-                                              WizardSettings.ACCESS_PAGE_GROUP);
-
-              tempTreeNode = new DefaultMutableTreeNode();
-              tempTreeNode.setUserObject(nodeObject);
-
+              groupNodeObject.setDN(node.getFirstChild().getNodeValue());
+            } else if (node.getNodeName().compareTo("description") == 0) {
+              groupNodeObject.setDescription(node.getFirstChild().getNodeValue());
             } else if (node.getNodeName().compareTo("user") == 0) {
               NodeList nl3 = node.getChildNodes();
-              nodeObject = null;
+              nodeObject = new AccessTreeNodeObject(
+                          WizardSettings.ACCESS_PAGE_USER);
 
               for (int j = 0; j < nl3.getLength(); j++) {
                 Node node1 = nl3.item(j);
                 if (node1.getNodeName().compareTo("username") == 0) {
-                   nodeObject = new AccessTreeNodeObject(
-                      node1.getFirstChild().getNodeValue(),
-                      WizardSettings.ACCESS_PAGE_USER);
+                  nodeObject.setDN(node1.getFirstChild().getNodeValue());
+                } else if (node1.getNodeName().compareTo("name") == 0) {
+                  nodeObject.setName(node1.getFirstChild().getNodeValue());
+                } else if (node1.getNodeName().compareTo("email") == 0) {
+                  nodeObject.setEmail(node1.getFirstChild().getNodeValue());
                 }
-
               }
               tempUserNode = new DefaultMutableTreeNode();
               tempUserNode.setUserObject(nodeObject);
               tempTreeNode.add(tempUserNode);
             }
+            tempTreeNode.setUserObject(groupNodeObject);
         }
 
           top.add(tempTreeNode);
@@ -334,10 +337,18 @@ public class Access extends AbstractWizardPage {
 
           for (int i = 0; i < nl2.getLength(); i++) {
             Node node = nl2.item(i);
-            if(node.getNodeName().compareTo("username") == 0){
-              nodeObject = new AccessTreeNodeObject(
-                                   node.getFirstChild().getNodeValue(),
-                                   WizardSettings.ACCESS_PAGE_USER);
+            nodeObject = new AccessTreeNodeObject(
+                        WizardSettings.ACCESS_PAGE_USER);
+
+            for (int j = 0; j < nl2.getLength(); j++) {
+              Node node1 = nl2.item(j);
+              if (node1.getNodeName().compareTo("username") == 0) {
+                nodeObject.setDN(node1.getFirstChild().getNodeValue());
+              } else if (node1.getNodeName().compareTo("name") == 0) {
+                nodeObject.setName(node1.getFirstChild().getNodeValue());
+              } else if (node1.getNodeName().compareTo("email") == 0) {
+                nodeObject.setEmail(node1.getFirstChild().getNodeValue());
+              }
             }
           }
 
@@ -356,6 +367,11 @@ public class Access extends AbstractWizardPage {
     return top;
   }
 
+  public static DefaultMutableTreeNode refreshTree(){
+    Access access = new Access();
+    accessTreeNode = access.createTree();
+    return accessTreeNode;
+  }
 
   /**
    *  The action to be executed when the page is displayed. May be empty
