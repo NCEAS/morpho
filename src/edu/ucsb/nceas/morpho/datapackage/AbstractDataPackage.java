@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-19 15:12:41 $'
- * '$Revision: 1.98 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-23 22:40:26 $'
+ * '$Revision: 1.99 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2646,7 +2646,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
     try {
-      dataFile = mds.openFile(urlinfo);
+      dataFile = mds.openDataFile(urlinfo);
     }
     catch (FileNotFoundException fnf) {
       // if the datfile has NOT been located, a FileNotFoundException will be thrown.
