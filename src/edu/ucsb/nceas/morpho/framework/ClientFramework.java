@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-06-14 17:07:01 $'
- * '$Revision: 1.96 $'
+ *     '$Date: 2002-06-20 21:10:57 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,8 @@ public class ClientFramework extends javax.swing.JFrame
   // the polling interval, in milliSeconds, between attempts to verify that  
   // MetaCat is available over the network
   private final int METACAT_PING_INTERVAL = 5000;
-  
+
+
   /**
    * Creates a new instance of ClientFramework with the given title.
    * @param sTitle the title for the new frame.
@@ -213,7 +214,9 @@ public class ClientFramework extends javax.swing.JFrame
     }
     
     //detects whether metacat is available, and if so, sets networkStatus = true
-    doPing();  
+    // Boolean "true" tells doPing() method this is startup, so we don't get 
+    // "No such service registered." exception from getServiceProvider()
+    doPing(true);  
     updateStatusBar();
 
     //start a Timer to check periodically whether metacat remains available
@@ -1883,51 +1886,70 @@ public class ClientFramework extends javax.swing.JFrame
    *  METACAT_PING_INTERVAL milliSeconds, upon which it tries to contact the 
    *  Metacat defined by "metacatURL"
    */
-  private boolean origNetworkStatus=false;
-  
   ActionListener pingActionListener = new ActionListener() {
-    public void actionPerformed(ActionEvent e){
-      origNetworkStatus = networkStatus;
-      
-      //check if metacat can be reached:
-      doPing();
-      
-      if (origNetworkStatus != networkStatus) {
-        //if lost connection, can't log out, but can still do cleanup
-        if (!networkStatus) {
-          profile.set("searchmetacat", 0, "false");
-          doLogoutCleanup();
-        } else {
-          updateStatusBar();
-        }
-        try { //update package list
-          ServiceProvider provider 
-                            = getServiceProvider(QueryRefreshInterface.class);
-          ((QueryRefreshInterface)provider).refresh();
-        } catch (ServiceNotHandledException snhe) {
-          debug(6, snhe.getMessage());
-        }
-      }
-    }
+    public void actionPerformed(ActionEvent e){ doPing(); }
   };
-  
+
+
   /**
    *  sets networkStatus to boolean true if metacat connection can be made
+   *  @param isStartUp - set to boolean "true" when calling for first time, so 
+   *  we don't get "No such service registered." exception from 
+   *  getServiceProvider()
+   *  
    */
-  private URL metacatPingURL=null;
-  private URLConnection urlConn=null;
+  private URL           metacatPingURL    = null;
+  private URLConnection urlConn           = null;
+  private boolean       origNetworkStatus = false;
 
-  private void doPing() {
-    debug(19,"doPing() called ");
-    try {
-      urlConn = metacatPingURL.openConnection();
-      urlConn.connect();
-      networkStatus = (urlConn.getDate() > 0L);
-    } catch (IOException ioe) {
-      debug(19, " - unable to open network connection to Metacat");
-      networkStatus = false;
-      if (profile!=null) profile.set("searchmetacat", 0, "false");
-    }
+  //overload to give default functionality; boolean flag needed only at startup
+  private void doPing() { doPing(false); }
+  
+  private void doPing(final boolean isStartUp) {
+
+    final SwingWorker sbUpdater = new SwingWorker() {
+
+      public Object construct() {
+        //check if metacat can be reached:
+        origNetworkStatus = networkStatus;
+        try {
+          urlConn = metacatPingURL.openConnection();
+          urlConn.connect();
+          networkStatus = (urlConn.getDate() > 0L);
+        } catch (IOException ioe) {
+          debug(19, " - unable to open network connection to Metacat");
+          networkStatus = false;
+          if (profile!=null) profile.set("searchmetacat", 0, "false");
+        }
+        return null; //return value not used by this program
+      }
+
+      //Runs on the event-dispatching thread.
+      public void finished() {
+        debug(21,"doPing() called - network available?? - "+networkStatus);
+        if (origNetworkStatus != networkStatus) {
+          //if lost connection, can't log out, but can still do cleanup
+          if (!networkStatus) {
+            profile.set("searchmetacat", 0, "false");
+            doLogoutCleanup();
+          } else {
+            if (!isStartUp) {
+              //update package list
+              try { 
+                ServiceProvider provider 
+                              = getServiceProvider(QueryRefreshInterface.class);
+                ((QueryRefreshInterface)provider).refresh();
+              } catch (ServiceNotHandledException snhe) {
+                debug(6, snhe.getMessage());
+              }
+            }
+            //update status bar
+            updateStatusBar();
+          }
+        }
+      }
+    };
+    sbUpdater.start(); 
   }
   
   /**
