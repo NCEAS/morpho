@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-06 19:45:27 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2001-06-06 20:19:41 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -248,7 +248,8 @@ public class LocalQuery
           if (temp==null) temp = root.getNodeName();
           doctype_collection.put(filename,temp);
           currentDoctype = temp;
-        } // end else
+          addToPackageList(root, getLastPathElement(filename));
+   } // end else
       
         String rootname = root.getNodeName();
         NodeList nl = null;
