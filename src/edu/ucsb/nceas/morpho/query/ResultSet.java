@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-06-21 21:26:24 $'
- * '$Revision: 1.30 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-05 17:31:51 $'
+ * '$Revision: 1.30.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.util.*;
 
 import java.io.*;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.Collections;
 
 import javax.swing.*;
 import javax.swing.ImageIcon;
@@ -42,7 +44,6 @@ import javax.swing.table.*;
 import javax.swing.table.AbstractTableModel;
 
 import org.w3c.dom.*;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -63,7 +64,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * Other child elements are determined by query and are returned as <param>
  * elements with a "name" attribute and the value as the content.
  */
-public class ResultSet extends AbstractTableModel implements ContentHandler
+public class ResultSet extends AbstractTableModel implements ContentHandler,
+                                                        ColumnSortableTableModel
 {
   /** store a private copy of the Query run to create this resultset */
   private Query savedQuery = null;
@@ -618,4 +620,17 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   {
     return this.framework;
   }
+  
+  
+  /**
+   * Method implements from SortTableModel. To make sure a col can be sort
+   * or not. We decide it always be sortable.
+   * @param col, the index of column which need to be sorted
+   * @param ascending, the sort order
+   */
+  public void sortTableByColumn(int col, boolean ascending)
+  {
+    Collections.sort(this.getResultsVector(),
+                    new CellComparator(col, ascending));
+  }//sortColumn
 }
