@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.6 2000-08-10 00:30:41 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.7 2000-08-10 23:32:03 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -53,6 +53,9 @@ import org.apache.xalan.xpath.xml.*;
 //public class QueryBean extends java.awt.Container 
 public class QueryBean extends AbstractQueryBean 
 {
+    String userName = "anonymous";
+    String passWord = "none";
+    
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
     PropertyResourceBundle options;
@@ -977,7 +980,12 @@ public class QueryBean extends AbstractQueryBean
 	}
 
 
-
+    public void setUserName(String name) {
+        userName = name;
+    }
+    public void setPassWord(String ps) {
+        passWord = ps;
+    }
 
 	class SymItem implements java.awt.event.ItemListener
 	{
@@ -1117,7 +1125,8 @@ public class QueryBean extends AbstractQueryBean
 	{
    //      simplequery_submitToDatabase("%NCEAS%");
 	    String temp = create_XMLQuery();
-//	    squery_submitToDatabase(temp);   
+	    LogIn();
+	    squery_submitToDatabase(temp);   
 	    if (SearchButton1.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -1226,6 +1235,7 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
+//	LogOut();
     }
 
 	void SearchButton_actionPerformed(java.awt.event.ActionEvent event)
@@ -1319,6 +1329,7 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
+//	LogOut();
 	}
 	
 	void SearchButton2_actionPerformed(java.awt.event.ActionEvent event)
@@ -1452,13 +1463,16 @@ public class QueryBean extends AbstractQueryBean
 		}
 		if ((TextChoices11.isVisible())&&(TextValue11.getText().length()>0)) {
 		    if (TitleCheckBox.isSelected()) {
-		        pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/title","contains",true);
+		   //     pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/title","contains",true);
+		        pqx.add_queryterm(TextValue11.getText(),"title","contains",true);
 		    }
 		    if (AbstractCheckBox.isSelected()) {
-		        pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/abstract/paragraph","contains",true);
+		   //     pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/abstract/paragraph","contains",true);
+		        pqx.add_queryterm(TextValue11.getText(),"paragraph","contains",true);
 		    }
 		    if (KeyWordsCheckBox.isSelected()) {
-		        pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/keyword_info/keyword","contains",true);
+		   //     pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/keyword_info/keyword","contains",true);
+		        pqx.add_queryterm(TextValue11.getText(),"keyword","contains",true);
 		    }
 		    if (AllCheckBox.isSelected()) {
 		        pqx.add_queryterm(TextValue11.getText(),"//*","contains",true);		        
@@ -1473,8 +1487,8 @@ public class QueryBean extends AbstractQueryBean
 	 }
 	 if (QueryChoiceTabs.getSelectedIndex()==1) {
 		pqx.add_querygroup(op);
-		if ((TextChoices11.isVisible())&&(TextValue11.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue11.getText(),"//*",searchmode[TextMatch1.getSelectedIndex()],true);
+		if ((TextChoices1.isVisible())&&(TextValue1.getText().length()>0)) {
+		    pqx.add_queryterm(TextValue1.getText(),"//*",searchmode[TextMatch1.getSelectedIndex()],true);
 		}
 		if ((TextChoices2.isVisible())&&(TextValue2.getText().length()>0)) {
 		    pqx.add_queryterm(TextValue2.getText(),"//*",searchmode[TextMatch2.getSelectedIndex()],true);
@@ -1496,8 +1510,8 @@ public class QueryBean extends AbstractQueryBean
 	 if (QueryChoiceTabs.getSelectedIndex()==2) {
 	    String root = "/"+DocTypeList.getSelectedValue().toString();
 		pqx.add_querygroup(op);
-		if ((TextChoices11.isVisible())&&(TextValue11.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue11.getText(),root+"//*",searchmode[TextMatch1.getSelectedIndex()],true);
+		if ((TextChoices1.isVisible())&&(TextValue1.getText().length()>0)) {
+		    pqx.add_queryterm(TextValue1.getText(),root+"//*",searchmode[TextMatch1.getSelectedIndex()],true);
 		}
 		if ((TextChoices2.isVisible())&&(TextValue2.getText().length()>0)) {
 		    pqx.add_queryterm(TextValue2.getText(),"root+//*",searchmode[TextMatch2.getSelectedIndex()],true);
@@ -1697,8 +1711,8 @@ public void LogIn() {
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);
-            prop.put("username", "higgins");
-            prop.put("password","neetar");
+            prop.put("username", userName);
+            prop.put("password",passWord);
         InputStream returnStream = msg.sendPostMessage(prop);
 	    StringWriter sw = new StringWriter();
 	    int c;
@@ -1713,7 +1727,34 @@ public void LogIn() {
       } catch (Exception e) {
         System.out.println("Error logging into system");
       }
-    
 }
+
+public void LogOut() {
+      Properties prop = new Properties();
+       prop.put("action","Logout");
+
+      // Now try to write the document to the database
+      try {
+        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+        InputStream returnStream = msg.sendPostMessage(prop);
+	    StringWriter sw = new StringWriter();
+	    int c;
+	    while ((c = returnStream.read()) != -1) {
+           sw.write(c);
+        }
+        returnStream.close();
+        String res = sw.toString();
+        sw.close();
+ //       System.out.println(res);
+			 
+      } catch (Exception e) {
+        System.out.println("Error logging out of system");
+      }
+}
+
 
 }

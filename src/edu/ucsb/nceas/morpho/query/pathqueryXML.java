@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: pathqueryXML.java,v 1.3 2000-08-10 00:30:41 higgins Exp $'
+ *     Version: '$Id: pathqueryXML.java,v 1.4 2000-08-10 23:32:03 higgins Exp $'
  */
 
 
@@ -98,7 +98,9 @@ public void add_returndoctype(String val) {
 public void add_queryterm(String value, String path) {
     String query = "  <queryterm casesensitive=\"true\" searchmode=\"contains\">\n";
     query = query + "   <value>"+value+"</value>\n";
-    query = query + "   <pathexpr>"+path+"</pathexpr>\n";
+    if (!path.equals("//*")) {
+        query = query + "   <pathexpr>"+path+"</pathexpr>\n";
+    }
     query = query + "  </queryterm>\n";
     gStart.append(query);
 }
@@ -107,7 +109,9 @@ public void add_queryterm(String value, String path, String mode, boolean casese
     if (!casesensitive) cs = "false"; 
     String query = "  <queryterm casesensitive=\""+cs+"\" searchmode=\""+mode+"\">\n";
     query = query + "   <value>"+value+"</value>\n";
-    query = query + "   <pathexpr>"+path+"</pathexpr>\n";
+    if (!path.equals("//*")) {
+        query = query + "   <pathexpr>"+path+"</pathexpr>\n";
+    }
     query = query + "  </queryterm>\n";
     gStart.append(query);
 }

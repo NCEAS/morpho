@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.6 2000-08-09 00:08:11 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.7 2000-08-10 23:32:45 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -35,7 +35,8 @@ import java.lang.reflect.*;
  */
 public class ClientFramework extends javax.swing.JFrame
 {
-    
+    String userName = "anonymous";
+    String passWord = "none";
     
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
@@ -336,9 +337,10 @@ public class ClientFramework extends javax.swing.JFrame
             SplashFrame sf = new SplashFrame();
             sf.setVisible(true);
 			//Create a new instance of our application's frame, and make it visible.
-			(new ClientFramework()).setVisible(true);
+			ClientFramework clf = new ClientFramework();
+			clf.setVisible(true);
 			sf.dispose();
-			ConnectionFrame cf = new ConnectionFrame();
+			ConnectionFrame cf = new ConnectionFrame(clf);
 			cf.setVisible(true);
 		} 
 		catch (Throwable t) {
@@ -610,15 +612,16 @@ public class ClientFramework extends javax.swing.JFrame
 		    }
 		    catch (Exception e) {}
 		}
-		
+		LogIn();
 	    try {
             System.err.println("Trying: " + MetaCatServletURL);
+//            System.out.println("User = " + userName);
+//            System.out.println("Pasword = " + passWord);
 		    URL url = new URL(MetaCatServletURL);
 		    HttpMessage msg = new HttpMessage(url);
 		    Properties prop = new Properties();
 		    prop.put("action","insert");
 		    prop.put("doctext",txt.toString());
-//		    prop.put("doctext","ahsfkhf");
 		    
 		    
 		    InputStream in = msg.sendPostMessage(prop);
@@ -634,7 +637,12 @@ public class ClientFramework extends javax.swing.JFrame
 		    catch (Exception e) {}
 		    String txt1 = txt.toString();
 		    System.out.println(txt1);
+		    
 //   What do I need to do to acknowlede that XML text was sent??? Does servlet respond?
+            ResultFrame rs = new ResultFrame();
+            rs.ResultTextArea.setText(txt1);
+            rs.setVisible(true);
+        LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -790,6 +798,61 @@ public class ClientFramework extends javax.swing.JFrame
            return object;
     }
     
+public void LogIn() {
+      Properties prop = new Properties();
+       prop.put("action","Login Client");
+
+      // Now try to write the document to the database
+      try {
+        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+            prop.put("username", userName);
+            prop.put("password",passWord);
+        InputStream returnStream = msg.sendPostMessage(prop);
+	    StringWriter sw = new StringWriter();
+	    int c;
+	    while ((c = returnStream.read()) != -1) {
+           sw.write(c);
+        }
+        returnStream.close();
+        String res = sw.toString();
+        sw.close();
+        System.out.println(res);
+			 
+      } catch (Exception e) {
+        System.out.println("Error logging into system");
+      }
+}
+
+public void LogOut() {
+      Properties prop = new Properties();
+       prop.put("action","Logout");
+
+      // Now try to write the document to the database
+      try {
+        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+        InputStream returnStream = msg.sendPostMessage(prop);
+	    StringWriter sw = new StringWriter();
+	    int c;
+	    while ((c = returnStream.read()) != -1) {
+           sw.write(c);
+        }
+        returnStream.close();
+        String res = sw.toString();
+        sw.close();
+ //       System.out.println(res);
+			 
+      } catch (Exception e) {
+        System.out.println("Error logging out of system");
+      }
+}
     
     
 }
