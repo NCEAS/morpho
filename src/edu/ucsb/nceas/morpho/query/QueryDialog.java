@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-07-27 19:20:50 $'
- * '$Revision: 1.18 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-09-05 21:16:53 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Date;
@@ -45,6 +49,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -154,6 +159,9 @@ public class QueryDialog extends JDialog
     searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
     String searchLocalString = profile.get("searchlocal", 0);
     searchLocal = (new Boolean(searchLocalString)).booleanValue();
+    if (!searchMetacat) {
+      searchLocal = true;
+    }
 
     untitledCounter++;
 
@@ -337,13 +345,16 @@ public class QueryDialog extends JDialog
     //}}
 
     //{{REGISTER_LISTENERS
-    SymAction lSymAction = new SymAction();
-    moreButton.addActionListener(lSymAction);
-    lessButton.addActionListener(lSymAction);
-    taxonMoreButton.addActionListener(lSymAction);
-    taxonLessButton.addActionListener(lSymAction);
-    executeButton.addActionListener(lSymAction);
-    cancelButton.addActionListener(lSymAction);
+    ActionEventHandler actionHandler = new ActionEventHandler();
+    moreButton.addActionListener(actionHandler);
+    lessButton.addActionListener(actionHandler);
+    taxonMoreButton.addActionListener(actionHandler);
+    taxonLessButton.addActionListener(actionHandler);
+    executeButton.addActionListener(actionHandler);
+    cancelButton.addActionListener(actionHandler);
+    CheckBoxListener checkboxHandler = new CheckBoxListener();
+    catalogSearchCheckBox.addItemListener(checkboxHandler);
+    localSearchCheckBox.addItemListener(checkboxHandler);
     //}}
   }
 
@@ -380,9 +391,9 @@ public class QueryDialog extends JDialog
   private boolean frameSizeAdjusted = false;
 
   /** Class to listen for ActionEvents */
-  private class SymAction implements java.awt.event.ActionListener
+  private class ActionEventHandler implements ActionListener
   {
-    public void actionPerformed(java.awt.event.ActionEvent event)
+    public void actionPerformed(ActionEvent event)
     {
       Object object = event.getSource();
       if (object == moreButton) {
@@ -401,10 +412,24 @@ public class QueryDialog extends JDialog
     }
   }
 
+  /** Class to listen for ItemEvents */
+  private class CheckBoxListener implements ItemListener {
+    public void itemStateChanged(ItemEvent event) {
+      Object object = event.getItemSelectable();
+
+      if (object == catalogSearchCheckBox) {
+        handleSearchCheckboxAction(event);
+      } else if (object == localSearchCheckBox) {
+        handleSearchCheckboxAction(event);
+      }
+    }
+  }
+
+
   /**
    * Performs actions associated with pressing the "More" button
    */
-  private void handleMoreButtonAction(java.awt.event.ActionEvent event)
+  private void handleMoreButtonAction(ActionEvent event)
   {
     SubjectTermPanel tq = new SubjectTermPanel();
     queryChoicesPanel.add(tq);
@@ -417,7 +442,7 @@ public class QueryDialog extends JDialog
   /**
    * Performs actions associated with pressing the "Less" button
    */
-  private void handleLessButtonAction(java.awt.event.ActionEvent event)
+  private void handleLessButtonAction(ActionEvent event)
   {
     Component comp = (Component) textPanels.lastElement();
     queryChoicesPanel.remove(comp);
@@ -432,7 +457,7 @@ public class QueryDialog extends JDialog
   /**
    * Performs actions associated with pressing the "More" button
    */
-  private void handleTaxonMoreButtonAction(java.awt.event.ActionEvent event)
+  private void handleTaxonMoreButtonAction(ActionEvent event)
   {
     TaxonTermPanel term = new TaxonTermPanel();
     taxonChoicesPanel.add(term);
@@ -445,7 +470,7 @@ public class QueryDialog extends JDialog
   /**
    * Performs actions associated with pressing the "Less" button
    */
-  private void handleTaxonLessButtonAction(java.awt.event.ActionEvent event)
+  private void handleTaxonLessButtonAction(ActionEvent event)
   {
     Component comp = (Component)taxonPanels.lastElement();
     taxonChoicesPanel.remove(comp);
@@ -455,6 +480,28 @@ public class QueryDialog extends JDialog
     }
     taxonChoicesPanel.invalidate();
     taxonPanel.validate();
+  }
+
+  /**
+   * Performs actions associated with pressing the local or catalog search checkboxes
+   */
+  private void handleSearchCheckboxAction(ItemEvent event)
+  {
+    Object object = event.getItemSelectable();
+
+    if (event.getStateChange() == ItemEvent.DESELECTED) {
+      String messageText = "You must select at least one of \"Catalog Search\"\n" +
+                           "or \"Local Search\". You can not deselect both.\n";
+      if (object == catalogSearchCheckBox && 
+          localSearchCheckBox.isSelected() == false) {
+        catalogSearchCheckBox.setSelected(true);
+        JOptionPane.showMessageDialog(this, messageText);
+      } else if (object == localSearchCheckBox && 
+                 catalogSearchCheckBox.isSelected() == false) {
+        localSearchCheckBox.setSelected(true);
+        JOptionPane.showMessageDialog(this, messageText);
+      }
+    }
   }
 
   /** 
@@ -633,7 +680,7 @@ public class QueryDialog extends JDialog
    * Save the query when the execute button is set, making it accessible to
    * the getQuery() method
    */
-  private void handleExecuteButtonAction(java.awt.event.ActionEvent event)
+  private void handleExecuteButtonAction(ActionEvent event)
   {
     String metacatflag = "true";
     String localflag = "true";
@@ -657,7 +704,7 @@ public class QueryDialog extends JDialog
   /**
    * Close the dialog when the cancel button is pressed
    */
-  private void handleCancelButtonAction(java.awt.event.ActionEvent event)
+  private void handleCancelButtonAction(ActionEvent event)
   {
     searchStarted = false;
     setVisible(false);
