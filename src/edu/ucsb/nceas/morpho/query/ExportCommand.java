@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-28 16:23:47 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-29 00:52:22 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,14 +130,14 @@ public class ExportCommand implements Command
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))
       {
-          // If it is dialog, destroied it 
-          if ( dialog != null)
-          {
-            dialog.setVisible(false);
-            dialog.dispose();
-            dialog = null;
-          }
-          doExport(selectDocId, morphoFrame);
+        // Destroy the dialog
+        if (dialog != null)
+        {
+          dialog.setVisible(false);
+          dialog.dispose();
+          dialog = null;
+        }
+        doExport(selectDocId, morphoFrame);
         
       }//if
     }//if
@@ -186,9 +186,8 @@ public class ExportCommand implements Command
   
   }
   
-  /**
+  /*
    * exports the datapackage to a different location
-   * @param id the id of the datapackage to export
    */
   private void exportDataset(String id)
   {
@@ -200,20 +199,14 @@ public class ExportCommand implements Command
     filechooser.setApproveButtonMnemonic('E');
     filechooser.setApproveButtonToolTipText("Choose a directory to export " +
                                             "this Datapackage to.");
-    String msg = "ALERT: Please select a DIRECTORY, not a file in the File " 
-                   +"Dialog which will appear next!";
+    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+   
  
     File exportDir;
     // Choose the parent of savedialog
     int result;
-    if (dialog != null)
-    {
-      result = filechooser.showSaveDialog(dialog);
-    }
-    else
-    {
-      result = filechooser.showSaveDialog(morphoFrame);
-    }
+    result = filechooser.showSaveDialog(morphoFrame);
+   
     
     exportDir = filechooser.getCurrentDirectory();
     if (result==JFileChooser.APPROVE_OPTION) {
@@ -232,29 +225,14 @@ public class ExportCommand implements Command
         return;
       }
     
-      String location = "";
-      //figure out where this thing is.
-      if(metacatLoc && localLoc)
-      {
-        location = DataPackageInterface.BOTH;
-      }
-      else if(metacatLoc && !localLoc)
-      {
-        location = DataPackageInterface.METACAT;
-      }
-      else if(!metacatLoc && localLoc)
-      {
-        location = DataPackageInterface.LOCAL;
-      }
-    
-      //export it.
+      String location = getLocation();
+       //export it.
       dataPackage.export(id, exportDir.toString(), location);
     }
   }
   
-  /**
+  /*
    * exports the datapackage to a different location in a zip file
-   * @param id the id of the datapackage to export
    */
   private void exportDatasetToZip(String id)
   {
@@ -268,19 +246,14 @@ public class ExportCommand implements Command
     filechooser.setApproveButtonMnemonic('E');
     filechooser.setApproveButtonToolTipText("Choose a file to export " +
                                             "this Datapackage to.");
-    filechooser.setSelectedFile(zipFile);                                        
+    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    //filechooser.setSelectedFile(zipFile);                                        
     //filechooser.updateUI();
     File exportDir;
       // Choose the parent of savedialog
     int result;
-    if (dialog != null)
-    {
-      result = filechooser.showSaveDialog(dialog);
-    }
-    else
-    {
-      result = filechooser.showSaveDialog(morphoFrame);
-    }
+    result = filechooser.showSaveDialog(morphoFrame);
+   
     exportDir = filechooser.getSelectedFile();
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
@@ -298,8 +271,20 @@ public class ExportCommand implements Command
         return;
       }
     
-      String location = "";
-      //figure out where this thing is.
+      String location = getLocation();
+    
+      //export it.
+      dataPackage.exportToZip(id, exportDir.toString(), location);
+    }
+  }
+  
+  /*
+   * Determine the location of data package
+   */
+   private String getLocation()
+   {
+     String location = null;
+     //figure out where this thing is.
       if(metacatLoc && localLoc)
       {
         location = DataPackageInterface.BOTH;
@@ -312,12 +297,8 @@ public class ExportCommand implements Command
       {
         location = DataPackageInterface.LOCAL;
       }
-    
-      //export it.
-      dataPackage.exportToZip(id, exportDir.toString(), location);
-    }
-  }
-  
+      return location;
+   }
  
    /**
     * could also have undo functionality; disabled for now
