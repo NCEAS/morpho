@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-21 17:01:03 $'
- * '$Revision: 1.105 $'
+ *     '$Date: 2005-01-26 23:23:36 $'
+ * '$Revision: 1.106 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -523,6 +523,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='package']/"+ genericName)).getNodeValue();
       nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
           genericNamePath);
+
       if ((nodelist == null)||(nodelist.getLength()==0)) {
 
         Log.debug(50, "AbstractDataPackage.getSubtree() - no nodes found of "
@@ -826,11 +827,31 @@ public abstract class AbstractDataPackage extends MetadataObject
         NodeList insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
             "/xpathKeyMap/insertionList[@name='"+genericName+"']/prevNode");
         if (insertionList==null) {
-          Log.debug(15, "\n** Error in AbstractDataPackage insertSubtree():\n"
-                    +"XMLUtilities.getNodeListWithXPath() returned NULL "
-                    +"for xpath: /xpathKeyMap/insertionList[@name='"
-                    +genericName+"']/prevNode");
-          return null;
+          // check if there is a node next to teh generic node
+          insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
+            "/xpathKeyMap/insertionList[@name='"+genericName+"']/nextNode");
+          if (insertionList==null) {
+            Log.debug(15, "\n** Error in AbstractDataPackage insertSubtree():\n"
+                + "XMLUtilities.getNodeListWithXPath() returned NULL "
+                + "for xpath: /xpathKeyMap/insertionList[@name='"
+                + genericName + "']/prevNode and "
+                + "/xpathKeyMap/insertionList[@name='" + genericName
+                + "']/nextNode");
+            return null;
+          } else {
+            for (int i=0;i<insertionList.getLength();i++) {
+              Node nd = insertionList.item(i);
+              String path = (nd.getFirstChild()).getNodeValue();
+              NodeList temp = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+              if ((temp!=null)&&(temp.getLength()>0)) {
+                Log.debug(40, "found: "+path);
+                Node nextNode = temp.item(0);
+                Node par = nextNode.getParentNode();
+                par.insertBefore(newSubtree, nextNode);
+                return newSubtree;
+              }
+            } //
+          }
         }
         for (int i=0;i<insertionList.getLength();i++) {
           Node nd = insertionList.item(i);
@@ -920,7 +941,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
     } catch (Exception e) {
-      Log.debug(15, "Exception in deleteSubtree!"+e);
+      Log.debug(15, "Exception in deleteSubtree! "+e);
       e.printStackTrace();
       return null;
     }
