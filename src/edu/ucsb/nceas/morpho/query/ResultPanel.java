@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-29 05:08:41 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2002-10-01 00:20:23 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ import javax.swing.JMenu;
  * Display a ResultSet in a table view in a panel that can be
  * embedded in a window or tab or other location
  */
-public class ResultPanel extends JPanel
+public class ResultPanel extends JPanel implements StoreStateChangeEvent
 {
   /** A reference to the ResultSet being displayed */
   private ResultSet results = null;
@@ -87,6 +87,9 @@ public class ResultPanel extends JPanel
   private OpenDialogBox dialog = null;
   /** The table used to display the results */
   ToolTippedSortableJTable table = null;
+  /** vector to store the state change event */
+  Vector storedStateChangeEventlist = null;
+ 
   /** Button used to trigger a re-execution of the query */
 //  private JButton refreshButton;
 //  /** Button used to trigger a revision using QueryDialog */
@@ -180,6 +183,7 @@ public class ResultPanel extends JPanel
     this.morpho = results.getFramework();
     this.mediator = myMediator;
     this.preferredSize = preferredSize;
+    storedStateChangeEventlist = new Vector();
     // If the panel don't need a mediator, null will be passed here
     if (mediator != null)
     {
@@ -509,6 +513,45 @@ public class ResultPanel extends JPanel
     sortCommand.execute(null);
   }//sortTable
 
+  /**
+   * Method implements form StoreStateChangeEvent
+   * This method will be called to store a event
+   *
+   * @param event  the state change event need to be stored
+   */
+  public void storingStateChangeEvent(StateChangeEvent event)
+  {
+    if (storedStateChangeEventlist != null)
+    {
+      storedStateChangeEventlist.add(event);
+    }
+  }
+  
+    
+  /**
+   * Get the  stored state change event.
+   */
+  public Vector getStoredStateChangeEvent()
+  {
+    return storedStateChangeEventlist;
+  }
+  
+  /**
+   * Broadcast the stored StateChangeEvent
+   */
+  public void broadcastStoredStateChangeEvent()
+  {
+    if (storedStateChangeEventlist != null)
+    {
+      for ( int i = 0; i< storedStateChangeEventlist.size(); i++)
+      {
+        StateChangeEvent event = 
+                (StateChangeEvent) storedStateChangeEventlist.elementAt(i);
+        (StateChangeMonitor.getInstance()).notifyStateChange(event);
+      }//for
+    }//if
+  }
+  
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
     // on the PC; use the trigger flag to record a trigger, but do not show popup until the
@@ -558,16 +601,16 @@ public class ResultPanel extends JPanel
                           StateChangeEvent.SEARCH_RESULT_SELECTED));
         if (localLoc ^ metacatLoc)
         {
-          // unsynchronized package
-          monitor.notifyStateChange(
+            // unsynchronized package
+            monitor.notifyStateChange(
                       new StateChangeEvent( 
                       pane, 
                       StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED));
         }
         else
         {
-          // synchronized package
-          monitor.notifyStateChange(
+            // synchronized package
+            monitor.notifyStateChange(
                       new StateChangeEvent( 
                       pane, 
                       StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED));
@@ -576,20 +619,21 @@ public class ResultPanel extends JPanel
         int versions = getNumberOfPrevVersions();
         if (versions > 0)
         {
-          // mutipleversion package
-          monitor.notifyStateChange(
+            // mutipleversion package
+            monitor.notifyStateChange(
                       new StateChangeEvent( 
                       pane, 
                       StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS));
         }
         else
         {
-          // one version package
-          monitor.notifyStateChange(
+            // one version package
+            monitor.notifyStateChange(
                       new StateChangeEvent( 
                       pane, 
                       StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS));
         }
+        
       }// if dialg == null
       
       
