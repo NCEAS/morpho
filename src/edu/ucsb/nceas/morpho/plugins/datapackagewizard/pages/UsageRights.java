@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:18:05 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-01-28 23:58:34 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ public class UsageRights extends AbstractWizardPage{
 
     if ( !(usageField.getText().trim().equals("")) ) {
 
-      returnMap.put("/eml:eml/dataset/intellectualRights/section/para[1]",
+      returnMap.put("/eml:eml/dataset/intellectualRights/para[1]",
                     usageField.getText().trim());
     }
     return returnMap;

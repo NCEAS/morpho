@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-28 23:58:34 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,7 +184,7 @@ public class General extends AbstractWizardPage{
 
     if ( !(absField.getText().trim().equals("")) ) {
 
-      returnMap.put("/eml:eml/dataset/abstract/section/para[1]",
+      returnMap.put("/eml:eml/dataset/abstract/para[1]",
                     absField.getText().trim());
     }
     return returnMap;
