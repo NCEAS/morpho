@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-23 21:15:01 $'
- * '$Revision: 1.11 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-09 20:41:58 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,6 +136,10 @@ public abstract class DataStore implements DataStoreInterface
     Hashtable docatts = PackageUtil.getConfigFileTypeAttributes(framework, 
                                                                 "xmlfiletype");
     Hashtable h = (Hashtable)docatts.get(doctype);
+    
+    if (h==null) return null;
+    if (h.get("idpath")==null) return null;
+    
     String idpath = (String)h.get("idpath");
     
     NodeList idNL;
@@ -161,7 +165,13 @@ public abstract class DataStore implements DataStoreInterface
         String nname = n.getNodeName();
         if(nname.equals(idNodeName))
         {
-          n.getFirstChild().setNodeValue(id);
+          if (n.getFirstChild()!=null) {
+            n.getFirstChild().setNodeValue(id);
+          }
+          else {            // add a text node to idNodeName
+            Node txtnode =  doc.createTextNode(id);
+            n.appendChild(txtnode);
+          }
         }
       }
     }
