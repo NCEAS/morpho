@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-15 22:57:26 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-04-02 23:23:27 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,6 +116,15 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
   }
     
   public boolean isCellEditable(int rowindex, int colindex) {
+    int rlast = getRowCount()-1;
+    int clast = getColumnCount()-1;
+    if (rowindex==rlast) {
+      Vector vec = new Vector();
+      for (int i=0;i<getColumnCount();i++) {
+        vec.addElement("");
+      }
+      addRow(vec);
+    }
     return true;
   }
     
