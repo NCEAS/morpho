@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-23 00:10:34 $'
- * '$Revision: 1.22 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-27 17:55:14 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,5 +289,23 @@ public class DataPackagePlugin
       System.out.println("Error in DataPackage.exportToZip(): " + e.getMessage());
       e.printStackTrace();
     }
+  }
+  
+   /**
+   * This method will create a dialog for open previouse version of a 
+   * datapackage
+   * @param title the title of the dialog, docid will be set as tile
+   * @param numOfVersion the total number of versions in this docid
+   * @param morpho the morpho file
+   * @param local the package is local or not
+   */
+  public void createOpenPreviousVersionDialog(String title, int numOfVersion,
+                                              Morpho morpho, boolean local)
+  {
+    // Create a new open previous version dialog
+    OpenPreviousDialog open = new OpenPreviousDialog(title, numOfVersion, 
+                                                      morpho, local);
+    // Set open dialog show
+    open.setVisible(true);
   }
 }
