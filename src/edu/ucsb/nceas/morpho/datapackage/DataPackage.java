@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-19 17:03:30 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2001-10-19 17:21:05 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -552,12 +552,20 @@ public class DataPackage
           s += (char)c;
           c = fis.read();
         }
-        
         if(s.indexOf("<?xml") != -1)
         {
           Document doc = PackageUtil.getDoc(f, catalogpath);
           DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
           publicid = dt.getPublicId();
+          for(int j=0; j<accessFileType.size(); j++)
+          {
+            String accesstype = ((String)accessFileType.elementAt(j)).trim();
+            publicid = publicid.trim();
+            if(accesstype.equals(publicid))
+            { //this is the file we are looking for
+              return (String)fileids.elementAt(i);
+            }
+          }
         }
       }
       catch(Exception e)
@@ -565,15 +573,7 @@ public class DataPackage
         throw e;
       }
       
-      for(int j=0; j<accessFileType.size(); j++)
-      {
-        String accesstype = ((String)accessFileType.elementAt(j)).trim();
-        publicid = publicid.trim();
-        if(accesstype.equals(publicid))
-        { //this is the file we are looking for
-          return (String)fileids.elementAt(i);
-        }
-      }
+      
     }
     throw new FileNotFoundException("The package did not contain an access file " +
                                 "(DataPackage.getAccessId()");
