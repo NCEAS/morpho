@@ -11,8 +11,10 @@
     <personnel>/eml:eml/dataset/project/personnel</personnel>
     <taxon_citation_creator>/eml:eml/dataset/coverage/taxonomicCoverage/taxonomicSystem/classificationSystem/classificationSystemCitation/creator</taxon_citation_creator>
     <title>/eml:eml/dataset/title</title>
+    <abstract>/eml:eml/dataset/abstract</abstract>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
+    <keywordSet>/eml:eml/dataset/keywordSet</keywordSet>
     <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
     <coverage>/eml:eml/dataset/coverage</coverage>
     <methods>/eml:eml/dataset/methods</methods>
@@ -70,6 +72,26 @@
     <prevNode>/eml:eml/dataset/series</prevNode>
     <prevNode>/eml:eml/dataset/language</prevNode>
     <prevNode>/eml:eml/dataset/pubdate</prevNode>
+    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
+    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+    <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>
+  <insertionList name="title">
+   <nextNode>/eml:eml/dataset/creator</nextNode>
+  </insertionList>  
+  <insertionList name="abstract">
+    <prevNode>/eml:eml/dataset/series</prevNode>
+    <prevNode>/eml:eml/dataset/language</prevNode>
+    <prevNode>/eml:eml/dataset/pubDate</prevNode>
+    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
+    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+    <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>  
+  <insertionList name="keywordSet">
+    <prevNode>/eml:eml/dataset/abstract</prevNode>
+    <prevNode>/eml:eml/dataset/series</prevNode>
+    <prevNode>/eml:eml/dataset/language</prevNode>
+    <prevNode>/eml:eml/dataset/pubDate</prevNode>
     <prevNode>/eml:eml/dataset/associatedParty</prevNode>
     <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
     <prevNode>/eml:eml/dataset/creator</prevNode>
