@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-15 09:02:34 $'
- * '$Revision: 1.43 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-26 21:36:16 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -258,6 +258,7 @@ public class LocalQuery
             // see if current doctype is in list of doctypes to be searched
           if ((doctypes2bsearched.contains("any"))
               ||(doctypes2bsearched.contains(currentDoctype))) {
+             
                 
             // Use the simple XPath API to obtain a node list.
             nl = XPathAPI.selectNodeList(root, xpathExpression);
@@ -624,6 +625,16 @@ public class LocalQuery
               object = currentNode.getNodeValue().trim();   
             }
           }
+        }
+        // add the packageDocid itself
+        if (dataPackage_collection.containsKey(packageDocid)) {    
+          // already in collection
+          // don't do anything
+        }
+        else {  // new
+          Vector vec = new Vector();
+          vec.addElement(packageDocid); 
+          dataPackage_collection.put(packageDocid, vec);
         }
         // add subject to the collection
         if (dataPackage_collection.containsKey(subject)) {    
