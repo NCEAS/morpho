@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-21 21:54:29 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-06-22 21:13:36 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ public class MetacatDataStore extends DataStore
           c = reader.read();
         }
         String responseStr = response.toString();
-        //ClientFramework.debug(11, "responseStr: " + 
+        //ClientFramework.debug(11, "==========================responseStr: " + 
         //                      responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
@@ -264,7 +264,7 @@ public class MetacatDataStore extends DataStore
       else
       {//something weird happened.
         throw new Exception("unexpected error in edu.ucsb.nceas.morpho." +
-                            "framework.MetacatDataStore.saveFile()");
+                            "framework.MetacatDataStore.saveFile(): " + message);
       } 
     }
     catch(Exception e)

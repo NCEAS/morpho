@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:06 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2001-06-22 21:13:36 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -660,6 +660,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         localDataStore.saveFile(wfc.id, sr, false); //write out the file
       }
     }
+    String location = DataPackage.LOCAL;
     
     if(saveToMetacatCheckBox.isSelected())
     {
@@ -719,11 +720,11 @@ public class PackageWizardShell extends javax.swing.JFrame
                                 ioe.getMessage());
         }
       }
+      location = DataPackage.BOTH;
     }
     
     WizardFrameContainer wfc = (WizardFrameContainer)
                                 frameWizards.elementAt(1);
-    String location = DataPackage.LOCAL;
     String identifier = wfc.id;
     Vector relations = triples.getCollection();
     DataPackage dp = new DataPackage(location, identifier, 

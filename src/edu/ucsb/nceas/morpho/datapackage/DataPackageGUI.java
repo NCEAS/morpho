@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:05 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2001-06-22 21:13:36 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,20 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DocumentType;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+import org.apache.xerces.dom.DocumentTypeImpl;
+
 /**
  * Class that implements a GUI to edit a data package
  */
@@ -54,6 +68,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   private String location = null;
   private String id = null;
   private JButton editBaseInfoButton = new JButton();
+  private Hashtable listValueHash = new Hashtable();
   
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
@@ -135,11 +150,49 @@ public class DataPackageGUI extends javax.swing.JFrame
       else if(key.equals(entitytype))
       {
         Vector v = (Vector)relfiles.get(key);
+        String spacecount = "";
         for(int i=0; i<v.size(); i++)
         {
           String eleid = (String)v.elementAt(i);
-          String s = "Entity File (" + eleid + ")";
-          entityitems.addElement(s);
+          //String s = "Entity File (" + eleid + ")";
+          File xmlfile;
+          try
+          {
+            if(dataPackage.getLocation().equals(DataPackage.METACAT))
+            {
+              MetacatDataStore mds = new MetacatDataStore(framework);
+              xmlfile = mds.openFile(eleid);
+            }
+            else
+            {
+              FileSystemDataStore fsds = new FileSystemDataStore(framework);
+              xmlfile = fsds.openFile(eleid);
+            }
+          }
+          catch(FileNotFoundException fnfe)
+          {
+            framework.debug(0, "The file specified was not found.");
+            return;
+          }
+          catch(CacheAccessException cae)
+          {
+            framework.debug(0, "You do not have proper permissions to write" +
+                               " to the cache.");
+            return;
+          }
+          NodeList nl = PackageUtil.getPathContent(xmlfile, "//entityName", 
+                                                   framework);
+          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          //note that the path here is hardwired to the entityName tag
+          //this is just because I can't figure out a good way to get it
+          //from the config file at this point.  this should be changed
+          //for the release!
+          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          Node n = nl.item(0);
+          String s = n.getFirstChild().getNodeValue().trim();
+          spacecount += " ";
+          entityitems.addElement(s + spacecount);
+          listValueHash.put(s + spacecount, eleid);
         }
       }
       else if(!key.equals(resourcetype))
@@ -456,6 +509,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           else
           { 
             item = (String)entityFileList.getSelectedValue();
+            item = item + "(" + (String)listValueHash.get(item) + ")";
           }
         }
         else
