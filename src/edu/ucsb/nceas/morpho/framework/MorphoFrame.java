@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-15 21:48:24 $'
- * '$Revision: 1.15.2.1 $'
+ *     '$Date: 2003-08-17 21:50:33 $'
+ * '$Revision: 1.15.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.framework;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -459,6 +460,9 @@ public class MorphoFrame extends JFrame
         this.dispose();
 
         Component comp = getContentComponent();
+        if ((DataViewContainerPanel.class).isInstance(comp)) {
+          ((DataViewContainerPanel)comp).dispose();
+        }
         comp = null;
         System.gc();
 

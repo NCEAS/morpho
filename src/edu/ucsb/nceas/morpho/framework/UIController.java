@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-15 21:48:24 $'
- * '$Revision: 1.22.2.1 $'
+ *     '$Date: 2003-08-17 21:50:33 $'
+ * '$Revision: 1.22.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -311,7 +311,6 @@ public class UIController
         // Remove the window from the windowList
         try {
             windowList.remove(currentAction);
-          Log.debug(10,"removed from window list");
             System.gc();
         } catch(NullPointerException npe2) {
             Log.debug(20, "Window already removed from registry.");
