@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-05-23 23:21:08 $'
- * '$Revision: 1.94 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-05-31 19:23:19 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.itis.Taxon;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.Timer; //required in addition to import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.net.URL;
@@ -126,7 +127,7 @@ public class ClientFramework extends javax.swing.JFrame
   
   // the polling interval, in milliSeconds, between attempts to verify that  
   // MetaCat is available over the network
-  private final long METACAT_PING_INTERVAL = 5000;
+  private final int METACAT_PING_INTERVAL = 5000;
   
   /**
    * Creates a new instance of ClientFramework with the given title.
@@ -215,10 +216,11 @@ public class ClientFramework extends javax.swing.JFrame
     doPing();  
     updateStatusBar();
 
-    //start a thread to check periodically whether metacat remains available
+    //start a Timer to check periodically whether metacat remains available
     //over the network...
-    Thread pinger = new MetacatPinger();
-    pinger.start();
+    Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
+    timer.setRepeats(true);
+    timer.start();
     
     // Set up the framework's menus and toolbars, and services
     initializeActions();
@@ -1884,64 +1886,37 @@ public class ClientFramework extends javax.swing.JFrame
   }
   
   /**
-   *  Thread to "ping" (ie try to contact) the Metacat defined by "metacatURL"
-   *  string, with a period defined by the METACAT_PING_INTERVAL in milliSeconds
+   *  This ActionListener is notified by the swing.Timer every 
+   *  METACAT_PING_INTERVAL milliSeconds, upon which it tries to contact the 
+   *  Metacat defined by "metacatURL"
    */
-  class MetacatPinger extends Thread {
-    
-    private boolean repeat;
-    private boolean origNetworkStatus;
-
-    
-    /*
-     *  constructor
-     */
-    public MetacatPinger(){
-      setPriority(2);
-      repeat = true;
-
-      //need to do this to set initial value of networkStatus/origNetworkStatus,
-      //otherwise tries to refresh packages at startup and triggers error
+  private boolean origNetworkStatus=false;
+  
+  ActionListener pingActionListener = new ActionListener() {
+    public void actionPerformed(ActionEvent e){
+      origNetworkStatus = networkStatus;
+      
       //check if metacat can be reached:
       doPing();
-      //updateStatusBar();
-    }
-
-    public void run() {
-      while (repeat) {
-        origNetworkStatus = networkStatus;
-        
-        // check if metacat can be reached:
-        doPing();
-        
-        if (origNetworkStatus != networkStatus) {
-          //if lost connection, can't log out, but can still do cleanup
-          if (!networkStatus) {
-            profile.set("searchmetacat", 0, "false");
-            doLogoutCleanup();
-          } else {
-            updateStatusBar();
-          }
-          
-          try { //update package list
-            ServiceProvider provider 
-                              = getServiceProvider(QueryRefreshInterface.class);
-            ((QueryRefreshInterface)provider).refresh();
-          } catch (ServiceNotHandledException snhe) {
-            debug(6, snhe.getMessage());
-          }
+      
+      if (origNetworkStatus != networkStatus) {
+        //if lost connection, can't log out, but can still do cleanup
+        if (!networkStatus) {
+          profile.set("searchmetacat", 0, "false");
+          doLogoutCleanup();
+        } else {
+          updateStatusBar();
         }
-        //sleep...
-        try{ Thread.sleep(METACAT_PING_INTERVAL); } 
-        catch (InterruptedException ie) { 
-          debug(5, "unable to detect status of network/Metacat connectivity");
-          repeat = false;
-          break;
+        try { //update package list
+          ServiceProvider provider 
+                            = getServiceProvider(QueryRefreshInterface.class);
+          ((QueryRefreshInterface)provider).refresh();
+        } catch (ServiceNotHandledException snhe) {
+          debug(6, snhe.getMessage());
         }
       }
     }
-  }
-  
+  };
   
   /**
    *  sets networkStatus to boolean true if metacat connection can be made
