@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-06 23:39:53 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-03-07 18:01:24 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,24 +48,17 @@ public class DataViewer extends javax.swing.JFrame
     String tempdir;
     String dataString = "";
     String dataID = "";
+    String delimiter;
     
     DataPackageGUI grandParent;
     EntityGUI parent;
     
-	/**
-	 * actual number of lines in fdata file
-	 */
-	int nlines_actual;  
 
 	/**
 	 * number of parsed lines in file
 	 */
 	int nlines; 
 	
-	/**
-	 * max number of lines to be parsed in file
-	 */
-	int nlines_max = 5000;  
 
 	/**
 	 * array of line strings
@@ -294,6 +287,7 @@ public class DataViewer extends javax.swing.JFrame
       if (temp.equals("comma")) str = ",";
       if (temp.equals("space")) str = " ";
       if (temp.equals("semicolon")) str = ";";
+      delimiter = str;
 	  return str;
 	}
 	
@@ -301,7 +295,7 @@ public class DataViewer extends javax.swing.JFrame
 	  if (lines!=null) {
 	    int start = startingLine;  // startingLine is 1-based not 0-based
 //	    if (labelsInStartingLine) {
-        if (true) {
+      if (true) {
 	      colTitles = getColumnValues(lines[startingLine-1]);
 	    }
 	    else {
@@ -352,8 +346,6 @@ public class DataViewer extends javax.swing.JFrame
           }
         catch (Exception e) {};
         
-        nlines_actual = nlines;
-        if (nlines>nlines_max) nlines=nlines_max;
         lines = new String[nlines];
           // now read again since we know how many lines
           BufferedReader in1 = new BufferedReader(new StringReader(s));
@@ -559,10 +551,35 @@ public class DataViewer extends javax.swing.JFrame
 		this.dispose();
 			 
 	}
+	
+	/* 
+	 * Convert the vector of vectors with the table data back to a string
+	 */
+	void vecToString() {
+	  Vector innerVec;
+	  StringBuffer coltitles = new StringBuffer();
+	  StringBuffer resultString = new StringBuffer();
+	  for (int k=0;k<colTitles.size();k++){
+	      coltitles.append((String)colTitles.elementAt(k)+delimiter);
+	  }
+	  resultString.append(coltitles.toString()+"\n");
+	  for (int i=0;i<nlines-1;i++) {
+	    StringBuffer lineString = new StringBuffer();
+	    innerVec = (Vector)vec.elementAt(i);
+	    for (int j=0;j<innerVec.size();j++) {
+	      lineString.append((String)innerVec.elementAt(j)+delimiter);
+	    }
+	    resultString.append(lineString.toString()+"\n");
+	  }
+	  dataString = resultString.toString();
+	}
 
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
 	  if (dp!=null) {
+	      // convert table info to string
+	      vecToString();
+	    
         framework.debug(20, "beginning of data file update");
         AccessionNumber a = new AccessionNumber(framework);
         FileSystemDataStore fsds = new FileSystemDataStore(framework);
