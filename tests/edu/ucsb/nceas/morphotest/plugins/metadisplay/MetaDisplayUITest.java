@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 22:20:59 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-24 00:41:34 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,20 +26,7 @@
 
 package edu.ucsb.nceas.morphotest.plugins.metadisplay;
 
-import java.io.Reader;
-import java.io.StringReader;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JFrame;
-
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -53,12 +40,7 @@ public class MetaDisplayUITest extends TestCase
 {
     
     private static MetaDisplayUI        testUI;
-    private static JFrame               frame;
 
-    static {
-        createJFrame();
-        assertNotNull(frame);
-    }
     /**
     * Constructor to build the test
     *
@@ -84,87 +66,47 @@ public class MetaDisplayUITest extends TestCase
 
     public void testMetaDisplayUI() {
     
-        testUI = new MetaDisplayUI();
+        testUI = new MetaDisplayUI(MetaDisplayTestResources.getTestMetaDisplay());
         assertNotNull(testUI);
-        displayInJFrame(testUI);
+        MetaDisplayTestResources.displayInJFrame(testUI,1,(TestCase)this);
     }
 
     /** 
-     *  Test the display(String id) and display(String id, Reader xmldoc) 
-     *  functions
+     *  Test the testSetHTML() function
      */
     public void testSetHTML()
     {
         try {
-            testUI.setHTML(TEST_HTML_RED);
+            testUI.setHTML(MetaDisplayTestResources.TEST_XML_DOC_1);
         } catch (Exception e) {
             e.printStackTrace();
             fail("testSetHTML() Exception: "+ e.getMessage());
         }
         System.err.println("testSetHTML() completed OK...");
-        doSleep(2);
+        MetaDisplayTestResources.doSleep(1);
         try {
-            testUI.setHTML(TEST_HTML_GREEN);
+            testUI.setHTML(MetaDisplayTestResources.TEST_XML_DOC_2);
         } catch (Exception e) {
             e.printStackTrace();
             fail("testSetHTML() Exception: "+ e.getMessage());
         }
         System.err.println("testSetHTML() completed OK...");
-        doSleep(2);
+        MetaDisplayTestResources.doSleep(1);
         try {
-            testUI.setHTML(TEST_HTML_BLUE);
+            testUI.setHTML(MetaDisplayTestResources.TEST_XML_DOC_3);
         } catch (Exception e) {
             e.printStackTrace();
             fail("testSetHTML() Exception: "+ e.getMessage());
         }
         System.err.println("testSetHTML() completed OK...");
-        doSleep(2);
+        MetaDisplayTestResources.doSleep(1);
     }
     
-////////////////////////////////////////////////////////////////////////////////
-//                      E N D   T E S T   M E T H O D S                       //
-////////////////////////////////////////////////////////////////////////////////
-
-   private static void createJFrame() {
-        frame = new JFrame("MetaDisplayUITest");
-        frame.setBackground(Color.pink);
-        frame.setBounds(600,150,200,200);
-    }
-
-    private void displayInJFrame(Component comp) {
-        if (comp==null) fail("displayInJFrame received NULL arg");
-        frame.getContentPane().add(comp);
-        frame.pack();
-        frame.show();
-        doSleep(1);
-    }
-    
-    //pause briefly so we can see UI before test exits...
-    private void doSleep(long seconds) {
-        try  { 
-            Thread.sleep(seconds*1000);
-        } catch(InterruptedException ie)  { 
-            System.err.println("Thread interrupted!"); 
-        }
-    }
-
     public static void main(String args[]) {
         Log.getLog().setDebugLevel(51);
         junit.textui.TestRunner.run(MetaDisplayUITest.class);
-        System.exit(0);
     }
 
-    private static final String TEST_HTML_RED =
-         "<html><head></head>\n<body bgcolor=\"#CC0000\">\n"
-        +"<h1>Test Doc 1</h1></body></html>";
-        
-    private static final String TEST_HTML_GREEN =
-         "<html><head></head>\n<body bgcolor=\"#00CC00\">\n"
-        +"<h1>Test Doc 2</h1></body></html>";
-        
-    private static final String TEST_HTML_BLUE =
-         "<html><head></head>\n<body bgcolor=\"#0000CC\">\n"
-        +"<h1>Test Doc 3</h1></body></html>";
 }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 22:20:59 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-08-24 00:41:34 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ public class MetaDisplay implements MetaDisplayInterface
     public MetaDisplay()
     {
         listenerList    = new Vector();
-        display         = new MetaDisplayUI();
+        display         = new MetaDisplayUI(this);
         transformer     = new XMLTransformer();
         history         = new History();
     }

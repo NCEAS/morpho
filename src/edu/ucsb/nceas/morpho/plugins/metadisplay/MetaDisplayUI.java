@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 22:20:59 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-24 00:41:34 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ import javax.swing.BoxLayout;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
+import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
+
 
 /**
  *  Display component used by the MetaDisplay class to display:<ul>
@@ -48,8 +50,9 @@ public class MetaDisplayUI extends JPanel
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-    private final HeaderPanel header;
-    private HTMLPanel htmlPanel;
+    private       HTMLPanel             htmlPanel;
+    private final HeaderPanel           header;
+    private final MetaDisplayInterface  controller;
 
     private final int TOTAL_WIDTH     = 400;
     private final int TOTAL_HEIGHT    = 600;
@@ -70,11 +73,12 @@ public class MetaDisplayUI extends JPanel
      *  constructor
      *
      */
-    public MetaDisplayUI() {
+    public MetaDisplayUI(MetaDisplayInterface controller) {
     
-        header = new HeaderPanel();
+        this.controller = controller;
+        this.header     = new HeaderPanel(controller);
         try {
-            htmlPanel = new HTMLPanel();
+            htmlPanel = new HTMLPanel(controller);
         } catch (IOException ioe) {
             Log.debug(5, "Error trying to create MetaData display pane: "+ioe);
             ioe.printStackTrace();

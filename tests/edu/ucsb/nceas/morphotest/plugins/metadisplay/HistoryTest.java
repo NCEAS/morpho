@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 22:20:59 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-24 00:41:34 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,20 +26,7 @@
 
 package edu.ucsb.nceas.morphotest.plugins.metadisplay;
 
-import java.io.Reader;
-import java.io.StringReader;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JFrame;
-
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
 
 import edu.ucsb.nceas.morpho.util.Log;
 

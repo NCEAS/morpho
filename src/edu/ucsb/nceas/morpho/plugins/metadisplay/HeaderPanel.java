@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:26:06 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-24 00:41:34 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ package edu.ucsb.nceas.morpho.plugins.metadisplay;
 import javax.swing.JPanel;
 import java.awt.Color;
 
+import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
+
 //import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
 
@@ -44,13 +46,16 @@ public class HeaderPanel extends JPanel
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
+    private final MetaDisplayInterface  controller;
    
     /**
      *  constructor
      *
      */
-     public HeaderPanel() {
-         init();
+     public HeaderPanel(MetaDisplayInterface controller)
+     {
+        this.controller = controller;
+        init();
      }
  
  

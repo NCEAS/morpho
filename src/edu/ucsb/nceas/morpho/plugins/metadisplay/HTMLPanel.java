@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 22:20:59 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-24 00:41:34 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ import javax.swing.event.HyperlinkListener;
 
 import java.awt.Color;
 
+import edu.ucsb.nceas.morpho.util.Log;
+
+import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 
 
 
@@ -48,14 +51,16 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-    private final JEditorPane paneRefefernce;
+    private MetaDisplayInterface  controller;
 
     /**
      *  constructor
      *
      */
-    public HTMLPanel() throws IOException {
+    public HTMLPanel(MetaDisplayInterface controller) throws IOException {
+    
         this("DEFAULT_HTML");
+        this.controller = controller;
     }
 
     /**
@@ -67,16 +72,20 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
         this.setContentType("text/html");
         init();
         addHyperlinkListener(this);
-        paneRefefernce = this;
         setEditable(false);
     }
 
     public void hyperlinkUpdate(HyperlinkEvent e) {
         try {
+            Log.debug(50,"hyperlinkUpdate called; eventType="+e.getEventType());
             if ( e.getEventType() == HyperlinkEvent.EventType.ACTIVATED ) {
-                paneRefefernce.setPage(e.getURL());
+                Log.debug(50,"eventType=ACTIVATED; description="
+                                      +e.getDescription()+"; url="+e.getURL());
+                controller.display(e.getDescription());
             }
         } catch (Exception ex) {
+            Log.debug(12,"HTMLPanel.hyperlinkUpdate(): "
+                            +"Exception trying to dispatch HyperlinkEvent:"+ex);
             ex.printStackTrace(System.err);
         }
     }

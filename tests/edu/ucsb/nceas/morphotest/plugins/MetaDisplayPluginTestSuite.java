@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 22:20:59 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-24 00:41:34 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,8 +49,8 @@ public class MetaDisplayPluginTestSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();    
         suite.addTest(new TestSuite(HistoryTest.class));
-        suite.addTest(new TestSuite(MetaDisplayTest.class));
         suite.addTest(new TestSuite(MetaDisplayUITest.class));
+        suite.addTest(new TestSuite(MetaDisplayTest.class));
         //etc
         
         return suite;
