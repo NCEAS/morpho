@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-17 20:45:43 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2004-04-27 19:02:27 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,7 +68,8 @@ public  class EML200DataPackage extends AbstractDataPackage
         throws MetacatUploadException
   {
     Morpho morpho = Morpho.thisStaticInstance;
-    String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+//    String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+    String temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
     StringReader sr = new StringReader(temp);
     StringReader sr1 = new StringReader(temp);
       if((location.equals(AbstractDataPackage.LOCAL))||
