@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 16:46:09 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-22 22:20:59 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
+
+import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplayUI;
 
@@ -94,13 +96,29 @@ public class MetaDisplayUITest extends TestCase
     public void testSetHTML()
     {
         try {
-            testUI.setHTML(TEST_HTML);
+            testUI.setHTML(TEST_HTML_RED);
         } catch (Exception e) {
             e.printStackTrace();
             fail("testSetHTML() Exception: "+ e.getMessage());
         }
         System.err.println("testSetHTML() completed OK...");
-        doSleep(5);
+        doSleep(2);
+        try {
+            testUI.setHTML(TEST_HTML_GREEN);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("testSetHTML() Exception: "+ e.getMessage());
+        }
+        System.err.println("testSetHTML() completed OK...");
+        doSleep(2);
+        try {
+            testUI.setHTML(TEST_HTML_BLUE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("testSetHTML() Exception: "+ e.getMessage());
+        }
+        System.err.println("testSetHTML() completed OK...");
+        doSleep(2);
     }
     
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,14 +128,14 @@ public class MetaDisplayUITest extends TestCase
    private static void createJFrame() {
         frame = new JFrame("MetaDisplayUITest");
         frame.setBackground(Color.pink);
-        frame.setBounds(100,100,200,200);
-        frame.show();
+        frame.setBounds(600,150,200,200);
     }
 
     private void displayInJFrame(Component comp) {
         if (comp==null) fail("displayInJFrame received NULL arg");
         frame.getContentPane().add(comp);
         frame.pack();
+        frame.show();
         doSleep(1);
     }
     
@@ -131,13 +149,22 @@ public class MetaDisplayUITest extends TestCase
     }
 
     public static void main(String args[]) {
+        Log.getLog().setDebugLevel(51);
         junit.textui.TestRunner.run(MetaDisplayUITest.class);
         System.exit(0);
     }
 
-    private static final String TEST_HTML =
+    private static final String TEST_HTML_RED =
+         "<html><head></head>\n<body bgcolor=\"#CC0000\">\n"
+        +"<h1>Test Doc 1</h1></body></html>";
+        
+    private static final String TEST_HTML_GREEN =
+         "<html><head></head>\n<body bgcolor=\"#00CC00\">\n"
+        +"<h1>Test Doc 2</h1></body></html>";
+        
+    private static final String TEST_HTML_BLUE =
          "<html><head></head>\n<body bgcolor=\"#0000CC\">\n"
-        +"<h1>Hello World!</h1></body></html>";
+        +"<h1>Test Doc 3</h1></body></html>";
 }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 20:15:19 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-22 22:20:59 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,7 +295,6 @@ public class MetaDisplay implements MetaDisplayInterface
         while (listeners.hasMoreElements()) {
             ((ActionListener)listeners.nextElement()).actionPerformed(ae);
         }
-        
     }
 	
 	/**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 20:15:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-22 22:20:59 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
+
+import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.morpho.plugins.metadisplay.History;
 
@@ -189,7 +191,9 @@ public class HistoryTest extends TestCase
 
 
     public static void main(String args[]) {
+        Log.getLog().setDebugLevel(51);
         junit.textui.TestRunner.run(HistoryTest.class);
+        System.exit(0);
     }
 }
 

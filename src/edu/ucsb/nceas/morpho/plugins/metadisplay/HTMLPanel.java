@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:26:06 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-22 22:20:59 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,14 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import java.io.IOException;
+
+import javax.swing.JEditorPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import java.awt.Color;
-import java.awt.BorderLayout;
 
-//import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
 
 
@@ -43,42 +44,48 @@ import java.awt.BorderLayout;
  *  Then styles this document accordingly using XSLT, before displaying it in an 
  *  embedded HTML display.
  */
-public class HTMLPanel extends JPanel
+public class HTMLPanel extends JEditorPane implements HyperlinkListener
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-    private JTextArea textArea;
-    
+    private final JEditorPane paneRefefernce;
+
     /**
      *  constructor
      *
      */
-    public HTMLPanel() {
-        this("METADATA");
+    public HTMLPanel() throws IOException {
+        this("DEFAULT_HTML");
     }
 
     /**
      *  constructor
      *
      */
-    public HTMLPanel(String html) {
+    public HTMLPanel(String html) throws IOException {
+        super();
+        this.setContentType("text/html");
         init();
-        setHTML(html);
+        addHyperlinkListener(this);
+        paneRefefernce = this;
+        setEditable(false);
     }
 
+    public void hyperlinkUpdate(HyperlinkEvent e) {
+        try {
+            if ( e.getEventType() == HyperlinkEvent.EventType.ACTIVATED ) {
+                paneRefefernce.setPage(e.getURL());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
 
     private void init()
     {
-        this.setBackground(Color.red);
+        this.setBackground(Color.gray);
         this.setOpaque(true);
-        this.setLayout(new BorderLayout());
-        textArea = new JTextArea();
-        textArea.setBackground(Color.white);
-        textArea.setOpaque(true);
-        textArea.setLineWrap(true);
-        this.add(textArea, BorderLayout.CENTER);
     }
-
 
 	/**
 	 *  get a reference to the embedded HeaderPanel object
@@ -87,9 +94,13 @@ public class HTMLPanel extends JPanel
 	 */
 	public void setHTML(String html)
 	{
-		textArea.setText(html);
-        this.validate();
+        this.setText(html);
 	}
-
-	
+    
+    
+	private static final String DEFAULT_HTML =
+	     "<html><head></head>\n<body bgcolor=\"#dddddd\">\n"
+	    +"<h3>no data</h3></body></html>";
+	    
+    
 }

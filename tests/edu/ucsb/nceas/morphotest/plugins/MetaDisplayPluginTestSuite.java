@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 16:46:09 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-22 22:20:59 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ public class MetaDisplayPluginTestSuite extends TestCase {
 
     public MetaDisplayPluginTestSuite(String name) {
         super(name);
-        Log.getLog().setDebugLevel(50);
+        Log.getLog().setDebugLevel(51);
     }
 
     public static Test suite() {
@@ -55,7 +55,6 @@ public class MetaDisplayPluginTestSuite extends TestCase {
         
         return suite;
     }
-    
 }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-22 16:46:09 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-22 22:20:59 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
+import java.io.IOException;
+
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 
@@ -33,9 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 
-
-//import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
-
+import edu.ucsb.nceas.morpho.util.Log;
 
 
 /**
@@ -49,7 +49,7 @@ public class MetaDisplayUI extends JPanel
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
     private final HeaderPanel header;
-    private final HTMLPanel htmlPanel;
+    private HTMLPanel htmlPanel;
 
     private final int TOTAL_WIDTH     = 400;
     private final int TOTAL_HEIGHT    = 600;
@@ -71,8 +71,14 @@ public class MetaDisplayUI extends JPanel
      *
      */
     public MetaDisplayUI() {
+    
         header = new HeaderPanel();
-        htmlPanel = new HTMLPanel();
+        try {
+            htmlPanel = new HTMLPanel();
+        } catch (IOException ioe) {
+            Log.debug(5, "Error trying to create MetaData display pane: "+ioe);
+            ioe.printStackTrace();
+        }
         initLayout();
     }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 20:15:19 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-22 22:20:59 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ import junit.framework.TestSuite;
 import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+
+import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.morpho.exception.NullArgumentException;
 
@@ -116,15 +118,19 @@ public class MetaDisplayTest extends TestCase
     {
         System.err.println("testing getDisplay with valid params..."); 
         getDisplayAll_OK();
+        display.removeActionListener(listener);
         
         System.err.println("testing getDisplay with BOGUS_ID..."); 
         getDisplay_bad_params("BOGUS_ID",   factory,    listener);
+        display.removeActionListener(listener);
         
         System.err.println("testing getDisplay with null ID..."); 
         getDisplay_bad_params(null,         factory,    listener);
+        display.removeActionListener(listener);
         
         System.err.println("testing getDisplay with null factory..."); 
         getDisplay_bad_params(ID1,   null,       listener);
+        display.removeActionListener(listener);
         
         System.err.println("testing getDisplay with null listener..."); 
         getDisplay_null_listener();
@@ -139,7 +145,7 @@ public class MetaDisplayTest extends TestCase
     {
         //display(String id) * * * * * * * * * * * * * * * * * * * * * * * * * *
         try {
-            display.display(ID2);
+            display.display(ID3);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -162,7 +168,7 @@ public class MetaDisplayTest extends TestCase
 
         //display(String id, Reader xmldoc) * * * * * * * * * * * * * * * * * * 
         try {
-            display.display(ID3, new StringReader(TEST_XML_DOC_3));
+            display.display(ID4, new StringReader(TEST_XML_DOC_4));
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -316,7 +322,7 @@ public class MetaDisplayTest extends TestCase
     
         testComponent = null;
         try {
-            testComponent = display.getDisplayComponent(ID4, factory, null);
+            testComponent = display.getDisplayComponent(ID2, factory, null);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -327,12 +333,16 @@ public class MetaDisplayTest extends TestCase
                                                           + nae.getMessage());
         }
         assertNotNull(testComponent);
+        System.err.println("testGetDisplayComponent(null-listener) returned OK...");
+        System.err.println("...now displaying in test frame...");
+        displayInJFrame(testComponent);
     }
     
     private void displayInJFrame(Component comp) {
         if (comp==null) fail("displayInJFrame received NULL arg");
         frame.getContentPane().add(comp);
         frame.pack();
+        frame.show();
         doSleep(1);
     }
     
@@ -347,9 +357,7 @@ public class MetaDisplayTest extends TestCase
     
     private static void createJFrame() {
         frame = new JFrame("MetaDisplayTest");
-        frame.setBackground(Color.magenta);
         frame.setBounds(100,100,200,200);
-        frame.show();
     }
     
     private static void createXMLFactory() 
@@ -376,53 +384,71 @@ public class MetaDisplayTest extends TestCase
                     +"ActionEvent = "+ae.paramString());
             }
         };
-    }    
+    }   
     
+     
     private static final String TEST_XML_DOC_1 =
-        "<?xml version=\"1.0\"?>"
-        + "<!DOCTYPE eml-attribute "
-        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-        + "<eml-attribute>"
-        + "  <identifier> * * * * TESTDOC 1 1 1 1 1 * * * * </identifier>"
-        + "</eml-attribute>";
-    
+         "<html><head></head>\n<body bgcolor=\"#ff0000\">\n"
+        +"<h1>TEST DOCUMENT 1</h1></body></html>";
+        
     private static final String TEST_XML_DOC_2 =
-        "<?xml version=\"1.0\"?>"
-        + "<!DOCTYPE eml-attribute "
-        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-        + "<eml-attribute>"
-        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
-        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
-        + "</eml-attribute>";
+         "<html><head></head>\n<body bgcolor=\"#00ff00\">\n"
+        +"<h1>TEST DOCUMENT 2</h1></body></html>";
         
     private static final String TEST_XML_DOC_3 =
-        "<?xml version=\"1.0\"?>"
-        + "<!DOCTYPE eml-attribute "
-        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-        + "<eml-attribute>"
-        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
-        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
-        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
-        + "</eml-attribute>";
-        
+         "<html><head></head>\n<body bgcolor=\"#0000ff\">\n"
+        +"<h1>TEST DOCUMENT 3</h1></body></html>";
+    
     private static final String TEST_XML_DOC_4 =
-        "<?xml version=\"1.0\"?>"
-        + "<!DOCTYPE eml-attribute "
-        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-        + "<eml-attribute>"
-        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-        + "</eml-attribute>";
+         "<html><head></head>\n<body bgcolor=\"#ffff00\">\n"
+        +"<h1>TEST DOCUMENT 4</h1></body></html>";
+                
+    
+//    private static final String TEST_XML_DOC_1 =
+//        "<?xml version=\"1.0\"?>"
+//        + "<!DOCTYPE eml-attribute "
+//        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+//        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+//        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+//        + "<eml-attribute>"
+//        + "  <identifier> * * * * TESTDOC 1 1 1 1 1 * * * * </identifier>"
+//        + "</eml-attribute>";
+//    
+//    private static final String TEST_XML_DOC_2 =
+//        "<?xml version=\"1.0\"?>"
+//        + "<!DOCTYPE eml-attribute "
+//        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+//        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+//        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+//        + "<eml-attribute>"
+//        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
+//        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
+//        + "</eml-attribute>";
+//        
+//    private static final String TEST_XML_DOC_3 =
+//        "<?xml version=\"1.0\"?>"
+//        + "<!DOCTYPE eml-attribute "
+//        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+//        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+//        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+//        + "<eml-attribute>"
+//        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
+//        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
+//        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
+//        + "</eml-attribute>";
+//        
+//    private static final String TEST_XML_DOC_4 =
+//        "<?xml version=\"1.0\"?>"
+//        + "<!DOCTYPE eml-attribute "
+//        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+//        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+//        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+//        + "<eml-attribute>"
+//        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+//        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+//        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+//        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+//        + "</eml-attribute>";
     
 
 //    private static final String TEST_XML_DOC_ORIG =
@@ -488,7 +514,9 @@ public class MetaDisplayTest extends TestCase
 
 
     public static void main(String args[]) {
+        Log.getLog().setDebugLevel(51);
         junit.textui.TestRunner.run(MetaDisplayTest.class);
+        System.exit(0);
     }
 }
 
