@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-24 02:22:22 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-05-24 02:23:38 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import javax.swing.*;
 import javax.swing.event.*;
 
