@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:23:02 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:20:13 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -229,14 +230,14 @@ public class NewDataFile extends javax.swing.JDialog
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         File packageFile = dataPackage.getTriplesFile();
     
-        if(location.equals(DataPackage.LOCAL) || 
-        location.equals(DataPackage.BOTH))
+        if(location.equals(DataPackageInterface.LOCAL) || 
+        location.equals(DataPackageInterface.BOTH))
         {
             locLocal = true;
         }
     
-        if(location.equals(DataPackage.METACAT) || 
-            location.equals(DataPackage.BOTH))
+        if(location.equals(DataPackageInterface.METACAT) || 
+            location.equals(DataPackageInterface.BOTH))
         {
             locMetacat = true;
         }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:23:02 $'
- * '$Revision: 1.86 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:20:13 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 //import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -202,7 +203,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           File xmlfile;
           try
           {
-            if(dataPackage.getLocation().equals(DataPackage.METACAT))
+            if(dataPackage.getLocation().equals(DataPackageInterface.METACAT))
             {
               MetacatDataStore mds = new MetacatDataStore(morpho);
               xmlfile = mds.openFile(eleid);
@@ -855,13 +856,13 @@ public class DataPackageGUI extends javax.swing.JFrame
       //remove the file.
       boolean locMetacat = false;
       boolean locLocal = false;
-      if(location.equals(DataPackage.METACAT) || 
-         location.equals(DataPackage.BOTH))
+      if(location.equals(DataPackageInterface.METACAT) || 
+         location.equals(DataPackageInterface.BOTH))
       {
         locMetacat = true;
       }
-      if(location.equals(DataPackage.LOCAL) ||
-         location.equals(DataPackage.BOTH))
+      if(location.equals(DataPackageInterface.LOCAL) ||
+         location.equals(DataPackageInterface.BOTH))
       {
         locLocal = true;
       }
@@ -1024,16 +1025,16 @@ public class DataPackageGUI extends javax.swing.JFrame
     boolean bothloc = false;
     String newid = "";
     String newPackageId = "";
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       metacatloc = true;
       localloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 17:55:14 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2002-08-28 17:20:13 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,24 +226,24 @@ public class DataPackagePlugin
   
   /**
    * Uploads the package to metacat.  The location is assumed to be 
-   * DataPackage.LOCAL
+   * DataPackageInterface.LOCAL
    * @param docid the id of the package to upload
    */
   public void upload(String docid, boolean updateIds) 
               throws MetacatUploadException
   {
-    DataPackage dp = new DataPackage(DataPackage.LOCAL, docid, null, morpho);
+    DataPackage dp = new DataPackage(DataPackageInterface.LOCAL, docid, null, morpho);
     dp.upload(updateIds);
   }
   
   /**
    * Downloads the package from metacat.  The location is assumed to be
-   * DataPackage.METACAT 
+   * DataPackageInterface.METACAT 
    * @param docid the id of the package to download
    */
   public void download(String docid)
   {
-    DataPackage dp = new DataPackage(DataPackage.METACAT, docid, null, morpho);
+    DataPackage dp = new DataPackage(DataPackageInterface.METACAT, docid, null, morpho);
     dp.download();
   }
   

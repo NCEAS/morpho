@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-28 16:14:56 $'
- * '$Revision: 1.22 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:20:13 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1079,16 +1079,16 @@ public class DataViewer extends javax.swing.JPanel
         String newid = "";
         String location = dp.getLocation();
         String newPackageId = "";
-        if(location.equals(DataPackage.BOTH))
+        if(location.equals(DataPackageInterface.BOTH))
         {
             metacatloc = true;
             localloc = true;
         }
-        else if(location.equals(DataPackage.METACAT))
+        else if(location.equals(DataPackageInterface.METACAT))
         {
             metacatloc = true;
         }
-        else if(location.equals(DataPackage.LOCAL))
+        else if(location.equals(DataPackageInterface.LOCAL))
         {
             localloc = true;
         }

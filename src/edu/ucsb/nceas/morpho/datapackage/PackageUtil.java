@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:33 $'
- * '$Revision: 1.18 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:20:13 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
@@ -489,8 +490,8 @@ public class PackageUtil
     {
       try
       {
-        if(location.equals(DataPackage.LOCAL) || 
-           location.equals(DataPackage.BOTH))
+        if(location.equals(DataPackageInterface.LOCAL) || 
+           location.equals(DataPackageInterface.BOTH))
         {
           FileSystemDataStore fsds = new FileSystemDataStore(morpho);
           f = fsds.openFile(name);

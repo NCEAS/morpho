@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:25:34 $'
- * '$Revision: 1.69 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:20:13 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.datapackage.wizard;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.TextImportListener;
 import edu.ucsb.nceas.morpho.framework.TextImportWizard;
 //import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -912,11 +913,11 @@ public class PackageWizardShell extends javax.swing.JFrame
     String location;
     if(saveToMetacatCheckBox.isSelected())
     {
-      location = DataPackage.BOTH;
+      location = DataPackageInterface.BOTH;
     }
     else
     {
-      location = DataPackage.LOCAL;
+      location = DataPackageInterface.LOCAL;
     }
     WizardFrameContainer wfc = (WizardFrameContainer)
                                 frameWizards.elementAt(1);
@@ -981,7 +982,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                                 ioe.getMessage());
         }
       }
-      location = DataPackage.BOTH;
+      location = DataPackageInterface.BOTH;
     }
     
     /* No longer needed because the query isn't shown by default

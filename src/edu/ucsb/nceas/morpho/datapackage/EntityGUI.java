@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:47:08 $'
- * '$Revision: 1.46 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:20:13 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -154,8 +155,8 @@ public class EntityGUI extends javax.swing.JPanel
     File xmlFile;
     try
     {
-      if(location.equals(DataPackage.LOCAL) || 
-         location.equals(DataPackage.BOTH))
+      if(location.equals(DataPackageInterface.LOCAL) || 
+         location.equals(DataPackageInterface.BOTH))
       {
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         xmlFile = fsds.openFile(entityId);
@@ -253,8 +254,8 @@ public class EntityGUI extends javax.swing.JPanel
       File f;
       try
       {
-        if(location.equals(DataPackage.LOCAL) || 
-           location.equals(DataPackage.BOTH))
+        if(location.equals(DataPackageInterface.LOCAL) || 
+           location.equals(DataPackageInterface.BOTH))
         {
           FileSystemDataStore fsds = new FileSystemDataStore(morpho);
           f = fsds.openFile(id);
@@ -499,16 +500,16 @@ public class EntityGUI extends javax.swing.JPanel
       File f = fsds.saveTempFile("tmp.0", new StringReader(packageFile));
       packageFile = a.incRevInTriples(f, dataPackage.getID(), packageId);
       
-      if(location.equals(DataPackage.BOTH))
+      if(location.equals(DataPackageInterface.BOTH))
       {
         metacatloc = true;
         localloc = true;
       }
-      else if(location.equals(DataPackage.METACAT))
+      else if(location.equals(DataPackageInterface.METACAT))
       {
         metacatloc = true;
       }
-      else if(location.equals(DataPackage.LOCAL))
+      else if(location.equals(DataPackageInterface.LOCAL))
       {
         localloc = true;
       }
@@ -575,16 +576,16 @@ public class EntityGUI extends javax.swing.JPanel
     
     String newid = "";
     String newPackageId = "";
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       metacatloc = true;
       localloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }
@@ -745,8 +746,8 @@ public class EntityGUI extends javax.swing.JPanel
       File xmlFile;
       try
       {
-        if(location.equals(DataPackage.LOCAL) || 
-           location.equals(DataPackage.BOTH))
+        if(location.equals(DataPackageInterface.LOCAL) || 
+           location.equals(DataPackageInterface.BOTH))
         {
           FileSystemDataStore fsds = new FileSystemDataStore(morpho);
           xmlFile = fsds.openFile(entityId);
