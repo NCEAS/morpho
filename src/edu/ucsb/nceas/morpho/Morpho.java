@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-15 22:44:36 $'
- * '$Revision: 1.1.2.7 $'
+ *     '$Date: 2002-08-16 00:52:19 $'
+ * '$Revision: 1.1.2.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1196,6 +1196,19 @@ public class Morpho
         controller.addMenu("Window", new Integer(5));
         controller.addMenu("Help", new Integer(6));
 
+        // Add the default toolbar items
+        Action cutItemAction = new AbstractAction("Cut") {
+            public void actionPerformed(ActionEvent e) {
+                Log.debug(9, "Cut is not yet implemented.");
+            }
+        };
+        cutItemAction.putValue(Action.SMALL_ICON, new ImageIcon( 
+            morpho.getClass().getResource(
+            "/toolbarButtonGraphics/general/Cut16.gif")));
+        Action[] tbActions = new Action[1];
+        tbActions[0] = cutItemAction;
+        controller.addToolbarActions(tbActions);
+
         // Load all of the plugins, their menus, and toolbars
         morpho.loadPlugins();
 
@@ -1207,13 +1220,27 @@ public class Morpho
         tempFrame.setVisible(true);
         MorphoFrame tempFrame2 = controller.addWindow("Test 2 window");
         tempFrame2.setVisible(true);
+
+        Log.debug(4, "Butterfly flaps after clicking OK ...");
+        tempFrame2.setBusy(true);
+        Log.debug(4, "Butterfly stops flapping after clicking OK ...");
+        tempFrame2.setBusy(false);
+
+        Action copyItemAction = new AbstractAction("Copy") {
+            public void actionPerformed(ActionEvent e) {
+                Log.debug(9, "Copy is not yet implemented.");
+            }
+        };
+        copyItemAction.putValue(Action.SMALL_ICON, new ImageIcon( 
+            morpho.getClass().getResource(
+            "/toolbarButtonGraphics/general/Copy16.gif")));
+        Action[] tbActions2 = new Action[1];
+        tbActions2[0] = copyItemAction;
+        controller.addToolbarActions(tbActions2);
+
         MorphoFrame tempFrame3 = controller.addWindow("Test 3 window");
         tempFrame3.setVisible(true);
 
-        Log.debug(4, "Butterfly flaps after clicking OK ...");
-        tempFrame3.setBusy(true);
-        Log.debug(4, "Butterfly stops flapping after clicking OK ...");
-        tempFrame3.setBusy(false);
       }
     } catch(Throwable t) {
       t.printStackTrace();

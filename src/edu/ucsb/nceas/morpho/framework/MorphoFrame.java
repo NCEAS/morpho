@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-15 22:44:36 $'
- * '$Revision: 1.1.2.10 $'
+ *     '$Date: 2002-08-16 00:52:19 $'
+ * '$Revision: 1.1.2.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,6 @@ import javax.swing.*;
 public class MorphoFrame extends JFrame
 {
     private JMenuBar morphoMenuBar;
-    private JPanel toolbarPanel;
     private JToolBar morphoToolbar;
     private StatusBar statusBar;
     private ProgressIndicator indicator;
@@ -75,7 +74,6 @@ public class MorphoFrame extends JFrame
         JLayeredPane layeredPane = getLayeredPane();
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout(0, 0));
-        //setTitle("Morpho - Data Management for Ecologists");
 
         // Set up the progress indicator
         ImageIcon bfly = null;
@@ -98,14 +96,11 @@ public class MorphoFrame extends JFrame
         int toolbarHeight = indicatorHeight - menuHeight;
         Log.debug(10, "(indicator, menu, tool) = (" + indicatorHeight + "," + 
                 menuHeight + "," + toolbarHeight + ")");
-        toolbarPanel = new JPanel();
-        //toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.X_AXIS));
         morphoToolbar = new JToolBar();
-//        morphoToolbar.add(Box.createVerticalStrut(toolbarHeight));
+        morphoToolbar.setFloatable(false);
         morphoToolbar.add(Box.createRigidArea(new Dimension(1,toolbarHeight)));
-        //toolbarPanel.add(morphoToolbar);
 
+/*
         Action cutItemAction = new AbstractAction("Cut") {
             public void actionPerformed(ActionEvent e) {
                 Log.debug(9, "Cut is not yet implemented.");
@@ -115,21 +110,17 @@ public class MorphoFrame extends JFrame
                         new ImageIcon(getClass().
             getResource("/toolbarButtonGraphics/general/Cut16.gif")));
         JButton toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Log.debug(50, "Toolbar components: " + 
+                morphoToolbar.getComponentCount());
         toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         morphoToolbar.add(
             Box.createHorizontalGlue());
-        toolButton = morphoToolbar.add(cutItemAction);
-        //toolbarPanel.add(
         morphoToolbar.add(
             Box.createHorizontalStrut((int)(indicator.getSize().getWidth())));
-        //getContentPane().add(BorderLayout.NORTH, toolbarPanel);
+*/
         getContentPane().add(BorderLayout.NORTH, morphoToolbar);
 
         // Set up and add a StatusBar
@@ -204,6 +195,27 @@ public class MorphoFrame extends JFrame
     {
         this.setJMenuBar(newMenuBar);
         this.getLayeredPane().invalidate();
+    }
+
+    /**
+     * Add new toolbar actions by adding all of the components that
+     * are currently not on our toolbar.
+     */
+    public void addToolbarActions(Vector toolbarList)
+    {
+        int toolbarActionCount = toolbarList.size();
+        int componentCount = morphoToolbar.getComponentCount() - 1;
+        if ((toolbarActionCount > 0) && (toolbarActionCount > componentCount)) {
+            for (int i=componentCount; i < toolbarActionCount; i++) {
+                Action currentAction = (Action)toolbarList.elementAt(i);
+                JButton toolButton = morphoToolbar.add(currentAction);
+                String toolTip  = 
+                    (String)currentAction.getValue(Action.SHORT_DESCRIPTION);
+                if (toolTip != null) {
+                    toolButton.setToolTipText(toolTip);
+                }
+            }
+        }
     }
 
     /**

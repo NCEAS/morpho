@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-15 19:45:36 $'
- * '$Revision: 1.1.2.5 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-16 00:52:19 $'
+ * '$Revision: 1.1.2.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ public class UIController
     private static Hashtable windowList;
     private static Vector orderedMenuList;
     private static Hashtable orderedMenuActions;
+    private static Vector toolbarList;
 
     // Constants
     public static final String SEPARATOR_PRECEDING = "separator_preceding";
@@ -73,6 +74,7 @@ public class UIController
         windowList = new Hashtable();
         orderedMenuList = new Vector();
         orderedMenuActions = new Hashtable();
+        toolbarList = new Vector();
     }
 
     /**
@@ -128,6 +130,7 @@ public class UIController
         windowMenuActions.addElement(windowAction);
 
         updateWindowMenus();
+        window.addToolbarActions(toolbarList);
 
         return window;
     }
@@ -265,7 +268,34 @@ public class UIController
     }
 
     /**
-     * Update the mennu bar by rebuilding it when a new menu is added
+    * This method is called by plugins to register a toolbar Action. 
+    *
+    * @param toolbarActions an array of Actions to be added to the toolbar
+    */
+    public void addToolbarActions(Action[] toolbarActions)
+    {
+        if (toolbarActions != null) {
+            for (int j=0; j < toolbarActions.length; j++) {
+                Action currentAction = toolbarActions[j];
+                toolbarList.add(currentAction);
+            }
+            updateWindowToolbars();
+        }
+    }
+
+    /**
+     * refresh all visible the windows that are in the windowList.
+     */
+    public void refreshWindows()
+    {
+        Enumeration windows = windowList.elements();
+        while (windows.hasMoreElements()) {
+            ((Container)windows.nextElement()).validate();
+        }
+    }
+
+    /**
+     * Update the menu bar by rebuilding it when a new menu is added
      * to the list.
      */
     private void updateWindowMenus()
@@ -281,15 +311,18 @@ public class UIController
         }
     }
 
-    
     /**
-     * refresh all visible the windows that are in the windowList.
+     * Update the toolbars for each of the windows when a new action is added.
      */
-    public void refreshWindows()
+    private void updateWindowToolbars()
     {
+        // Notify all of the windows of the changed toolbar
         Enumeration windows = windowList.elements();
         while (windows.hasMoreElements()) {
-            ((Container)windows.nextElement()).validate();
+            MorphoFrame currentWindow = (MorphoFrame)windows.nextElement();
+            currentWindow.addToolbarActions(toolbarList);
+            Log.debug(50, "Updated toolbar for window: " + 
+                    currentWindow.getTitle());
         }
     }
 
