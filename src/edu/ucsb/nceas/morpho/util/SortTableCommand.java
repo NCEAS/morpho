@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 01:31:50 $'
- * '$Revision: 1.2.6.2 $'
+ *     '$Date: 2004-04-13 22:10:28 $'
+ * '$Revision: 1.2.6.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,6 @@ public class SortTableCommand implements Command
    */
   public void execute(ActionEvent event)
   {
-    System.out.println("in execute sorting !!!!!!!!!!!!!!!!!!!!");
     // table
     SortableJTable sortTable = null;
     // table model

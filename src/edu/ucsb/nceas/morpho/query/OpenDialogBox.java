@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 19:29:06 $'
- * '$Revision: 1.20.2.1 $'
+ *     '$Date: 2004-04-13 22:10:28 $'
+ * '$Revision: 1.20.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -58,14 +59,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
 import javax.swing.SwingConstants;
 
 /**
@@ -207,7 +200,8 @@ public class OpenDialogBox extends JDialog
 
     // Add a keyPressActionListener
     this.addKeyListener(new KeyPressActionListener());
-    setVisible(false);
+    setModal(true);
+    setVisible(true);
 
   }
 
@@ -281,8 +275,22 @@ public class OpenDialogBox extends JDialog
    */
   private void createOwnerPanel()
   {
-    results = ownerQuery.execute();
+    //results = ownerQuery.execute();
+    //ownerPanel = new ResultPanel(this, results, mediator);
+    Vector vector = new Vector();
+    String source ="";
+    HeadResultSet results = new HeadResultSet(
+                                       ownerQuery, source, vector, morpho);
     ownerPanel = new ResultPanel(this, results, mediator);
+    ownerPanel.setVisible(true);
+    StateChangeEvent event = null;
+    boolean showSearchNumber = false;
+    boolean sort = true;
+    int index = 5;
+    String order = SortableJTable.DECENDING;
+    ownerQuery.displaySearchResult(parentFrame, ownerPanel, sort,
+                             index, order, showSearchNumber, event);
+
 
    }// createOwnerPanel
 

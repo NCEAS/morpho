@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-29 06:04:36 $'
- * '$Revision: 1.16 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-13 22:10:28 $'
+ * '$Revision: 1.16.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,8 @@ public class OpenDialogBoxCommand implements Command
     // Open a open dialog
     if ( frame != null)
     {
-      doOpenDialog(frame);
+      OpenDialogBox open = new OpenDialogBox(frame, morpho, ownerQuery);
+      //doOpenDialog(frame);
     }
 
 
