@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-06 22:20:14 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2002-02-26 23:07:12 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -477,6 +477,14 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     for(int i=0; i<originatorNL.getLength(); i++)
     {
+      name = "";
+      orgname = "";
+      address = "";
+      phone = "";
+      email = "";
+      web = "";
+      role = "";
+        
       Node node = originatorNL.item(i);
       NodeList origChildren = node.getChildNodes();
       for(int k=0; k<origChildren.getLength(); k++)
