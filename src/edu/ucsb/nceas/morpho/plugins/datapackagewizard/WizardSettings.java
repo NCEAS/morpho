@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-09 00:41:12 $'
- * '$Revision: 1.50 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-09 18:36:23 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -381,8 +383,12 @@ public class WizardSettings {
 
       Reader reader = null;
       try {
-        reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
-
+        File unitDict = new File("./xsl/eml-unitDictionary.xml");
+        reader = new FileReader(unitDict);
+//        reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
+// above change to use a FileReader was made to get this code to work on a Mac;
+// Use of getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH) seems to work fine on Windows!
+// DFH - Mar 2004
       } catch (Exception e) {
 
         e.printStackTrace();
