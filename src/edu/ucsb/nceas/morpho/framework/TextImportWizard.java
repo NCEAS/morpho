@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-10 22:47:18 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2002-01-14 23:01:41 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -984,6 +984,11 @@ public void startImport(String file) {
             while ((temp = in.readLine())!=null) {
                 if (temp.length()>0) {   // do not count blank lines
                 nlines++;} 
+                if (nlines>10000) {
+                  JOptionPane.showMessageDialog(this, "Data File parsing has been truncated at 10000 lines due to large size!",
+                        "Message",JOptionPane.INFORMATION_MESSAGE, null);
+                  break;
+                }
             }
             in.close();
         }
