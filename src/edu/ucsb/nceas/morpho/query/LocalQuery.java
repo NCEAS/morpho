@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-08 18:33:07 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2003-10-08 18:44:12 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,8 +306,6 @@ public class LocalQuery
             // see if current doctype is in list of doctypes to be searched
           if ((doctypes2bsearched.contains("any"))
               ||(doctypes2bsearched.contains(currentDoctype))) {
-Log.debug(1, "currentDocType: "+currentDoctype);                   
-                
             // Use the simple XPath API to obtain a node list.
  //           Log.debug(30,"starting XPathSearch: "+xpathExpression);
             boolean allHits = false;
