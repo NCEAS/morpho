@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-15 19:22:10 $'
- * '$Revision: 1.84 $'
+ *     '$Date: 2003-10-15 21:14:15 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -469,6 +469,10 @@ public class DataViewer extends javax.swing.JPanel
         this.dataFile = dataFile;
     }
     
+    public void setDataFile(File file) {
+      this.dataFile = file;
+    }
+   
     public PersistentVector getPV() {
       return pv;  
     }
@@ -822,7 +826,7 @@ public class DataViewer extends javax.swing.JPanel
         buildTextDisplay();
       }
       else { 
-Log.debug(1,"format: "+format);        
+//Log.debug(1,"format: "+format);        
         if (format.indexOf("text")>-1){
           text_flag=true;
         }

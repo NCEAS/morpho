@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-15 19:22:10 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2003-10-15 21:14:15 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -361,11 +361,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(5,5));
     
-//    entityItems = new Vector();
-//    int numEnts = (adp.getEntityArray()).length;
-//    for (int k=0;k<numEnts;k++) {
-//      entityItems.addElement(adp.getEntityName(k));
-//    }
+    entityItems = new Vector();
+    int numEnts = (adp.getEntityArray()).length;
+    for (int k=0;k<numEnts;k++) {
+      entityItems.addElement(adp.getEntityName(k));
+    }
 
 // the following code builds the datapackage summary at the top of
 // the DataViewContainerPanel
@@ -515,13 +515,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //      String location = dp.getLocation();
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
-      
-      
+    
+    MetaDisplayInterface md = null;
+    if (dp!=null) {  // old datapackage
       // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
       // add Component to 'currentEntityMetadataPanel' which has a borderlayout
       
 // --------- E N T I T Y / A T T R I B U T E   M e t a D i s p l a y -----------
-      MetaDisplayInterface md = getMetaDisplayInstance();
+      md = getMetaDisplayInstance();
       md.addEditingCompleteListener(this);
       md.setTitle(RIGHT_METAVIEW_TITLE);
       Component mdcomponent = null;
@@ -541,17 +542,21 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         }
       }
       currentEntityMetadataPanel.add(BorderLayout.CENTER, mdcomponent);
-
+    }
       currentEntityPanel.setDividerLocation(METADATA_PANEL_DEFAULT_WIDTH);
       
       // create a tabbed component instance
       TabbedContainer component = new TabbedContainer();
       component.setSplitPane(currentEntityPanel);
-      component.setMetaDisplayInterface(md);
+      if(dp != null) {
+        component.setMetaDisplayInterface(md);
+      }
       component.setVisible(true);
       tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i),component);
       //tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
-      this.entityFile[i] = dp.getFileFromId(id);
+      if (dp!=null) {
+        this.entityFile[i] = dp.getFileFromId(id);
+      }
     
       // create the data display panel (usually a table) using DataViewer class
 //      String fn = dp.getDataFileName(id);    
@@ -586,7 +591,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         stateMonitor.notifyStateChange( new StateChangeEvent( this, 
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
       }//else
-      initDPMetaView(true);
+      if (dp!=null) {
+        initDPMetaView(true);
+      }
     } else {
       moreLabel.setEnabled(false);
       initDPMetaView(false);
@@ -615,10 +622,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         while (it.hasNext()) {
             nextObj = it.next();
             if (nextObj==null || !(nextObj instanceof String)) continue;
-            
-            nextEntityID        = getEntityIDForThisEntityName((String)nextObj);
-            nextDataFileID      = dp.getDataFileID(nextEntityID);
-            nextAttributeFileID = dp.getAttributeFileId(nextEntityID);
+            if (dp!=null) {
+              nextEntityID        = getEntityIDForThisEntityName((String)nextObj);
+              nextDataFileID      = dp.getDataFileID(nextEntityID);
+              nextAttributeFileID = dp.getAttributeFileId(nextEntityID);
+            }
             
             if (nextDataFileID!=null && !nextDataFileID.equals("")) {
                 suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
@@ -649,7 +657,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
         // can't display requested ID, so just display empty viewer:
         try{
-          mdcomponent = md.getDisplayComponent(dp, null);
+          if (dp!=null) {
+            mdcomponent = md.getDisplayComponent(dp, null);
+          }
         }
         catch (Exception e) {
           Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
@@ -815,6 +825,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
       dv.setAbstractDataPackage(adp);
       dv.setEntityIndex(index);
+      File testFile = new File("C:/Documents and Settings/higgins/.morpho/profiles/higgins/data/jscientist/3.1");
+      dv.setDataFile(testFile);
     }
     dv.init();
 //    dv.getEntityInfo();  // this is already done in init
