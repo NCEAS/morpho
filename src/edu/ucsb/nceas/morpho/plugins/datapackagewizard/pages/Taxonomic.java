@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: berkley $'
-*     '$Date: 2004-04-07 23:29:24 $'
-* '$Revision: 1.19 $'
+*     '$Date: 2004-04-09 00:35:50 $'
+* '$Revision: 1.20 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -107,10 +107,10 @@ public class Taxonomic extends AbstractUIPage {
   private final String heading
     = "<p><b>Enter information about the Taxonomic Coverage. </b>"
     + "By default, you may enter information on Genus and Species.  If you "
-    + "would like to enter information at another classification level or "
-    + "would like to change the default classification levels, click the "
-    + "edit button.  Note that the field 'Higher Level Taxa' can only be "
-    + "edited using the edit button.</p>";
+    + "would like to enter information at another classification rank or "
+    + "would like to change the default classification rank, click the "
+    + "edit button.  Note that the field 'Higher Level Taxa' is dynamically "
+    + "generated from your entries and is not manually editable.</p>";
 
   // column titles for the customlist in the main-page
   private String colNames[] = {"Higher Level Taxa", "Rank", "Name",
