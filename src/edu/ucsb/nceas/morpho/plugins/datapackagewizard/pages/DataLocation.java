@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 04:22:36 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-11 23:44:22 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ public class DataLocation extends AbstractWizardPage{
   private String dataInline     = "INLINE DATA FROM IMPORT WIZARD GOES HERE";
   
   private String inlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
-  private String onlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
+  private String onlineNextPageID  = WizardPageLibrary.DATA_FORMAT;
   private String offlineNextPageID = WizardPageLibrary.TEXT_IMPORT_WIZARD;
     
   private JPanel inlinePanel;
@@ -243,11 +243,11 @@ public class DataLocation extends AbstractWizardPage{
     
     panel.add(WidgetFactory.makeDefaultSpacer());
     
-    panel.add(WidgetFactory.makeHTMLLabel(
-      "How would you like to enter the information describing "
-      +"the format and structure of the data?", 1));
-  
-    panel.add(getGeneratedOrByHandRadioPanel());
+//    panel.add(WidgetFactory.makeHTMLLabel(
+//      "How would you like to enter the information describing "
+//      +"the format and structure of the data?", 1));
+//  
+//    panel.add(getGeneratedOrByHandRadioPanel());
     
     panel.add(WidgetFactory.makeDefaultSpacer());
     

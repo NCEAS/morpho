@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 04:22:36 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-11 23:44:22 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class DataFormat extends AbstractWizardPage{
   private JPanel proprietaryPanel;
   private JPanel rasterPanel;
   private JPanel currentPanel;
-  private JLabel desc2;
+  private JLabel radioButtonGrpLabel;
   private final String[] buttonsText = new String[] {
       "Simple delimited text format (uses one of a series of delimiters to indicate the ends of fields)",
       "Complex text format (delimited fields, fixed width fields, and mixtures of the two)",
@@ -148,8 +148,9 @@ public class DataFormat extends AbstractWizardPage{
     topBox.add(desc);
     topBox.add(WidgetFactory.makeDefaultSpacer());
 
-    desc2 = WidgetFactory.makeHTMLLabel("What is the format of your data?", 1);
-    topBox.add(desc2);
+    radioButtonGrpLabel 
+          = WidgetFactory.makeHTMLLabel("What is the format of your data?", 1);
+    topBox.add(radioButtonGrpLabel);
 
     final JPanel instance = this;
     
@@ -182,6 +183,7 @@ public class DataFormat extends AbstractWizardPage{
           currentPanel = proprietaryPanel;
           formatXPath = PROPRIETARY_XPATH;
           instance.add(proprietaryPanel, BorderLayout.CENTER);
+          proprietaryField.requestFocus();
           
         } else if (e.getActionCommand().equals(buttonsText[3])) {
         
@@ -385,7 +387,7 @@ public class DataFormat extends AbstractWizardPage{
    */
   public void onLoadAction() {
 
-    WidgetFactory.unhiliteComponent(desc2);
+    WidgetFactory.unhiliteComponent(radioButtonGrpLabel);
     WidgetFactory.unhiliteComponent(proprietaryLabel);
     WidgetFactory.unhiliteComponent(listLabel);
 
@@ -414,6 +416,7 @@ public class DataFormat extends AbstractWizardPage{
     
     if (formatXPath==null || currentPanel==null)  {
 
+      WidgetFactory.hiliteComponent(radioButtonGrpLabel);
       return false;
 
     } else if (formatXPath==SIMPLE_TEXT_XPATH) {
@@ -635,6 +638,8 @@ public class DataFormat extends AbstractWizardPage{
           } else if (cmd.indexOf(delimiterCheckBoxesText[4])==0) {
 
             delim_other = (stateChange==ItemEvent.SELECTED);
+            otherDelimTextFieldSimple.requestFocus();
+            
           }
         }
       });

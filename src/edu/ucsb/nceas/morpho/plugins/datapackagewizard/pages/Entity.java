@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-11 17:58:13 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-11 23:44:22 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,6 +265,7 @@ public class Entity extends AbstractWizardPage{
     if (entityNameField.getText().trim().equals("")) {
 
       WidgetFactory.hiliteComponent(entityNameLabel);
+      entityNameField.requestFocus();
       return false;
     }
     
