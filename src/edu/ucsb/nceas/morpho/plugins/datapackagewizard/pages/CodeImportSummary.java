@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 19:46:02 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-11 02:53:08 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,6 +173,11 @@ public class CodeImportSummary extends AbstractWizardPage {
 			
 		} else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 			
+			String firstPage = mainWizFrame.getFirstPageID();
+			currentAttrName = mainWizFrame.getCurrentImportAttributeName();
+			if(mainWizFrame.isCurrentImportNewTable())
+				updateAttributeInNewTable();
+			mainWizFrame.removeAttributeForImport();
 			// just a summary of import. No further imports
 			desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -350,8 +355,10 @@ public class CodeImportSummary extends AbstractWizardPage {
    */
   public boolean onAdvanceAction() {
 		
-		if(nextPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
+		if(nextPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 			WizardPageLibrary.reInitialize();
+			mainWizFrame.reInitializePageStack();
+		}
 		
 		return true; 
 	}

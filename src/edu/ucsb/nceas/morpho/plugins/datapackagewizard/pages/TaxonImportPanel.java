@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-06 01:29:24 $'
-* '$Revision: 1.1 $'
+*     '$Date: 2004-03-11 02:53:08 $'
+* '$Revision: 1.2 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -228,6 +228,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 				
 				int colIdx = adp.getAttributeIndex(entityIndex, colName);
 				List data = CodeDefnPanel.getOneColumnValue(entityFiles[entityIndex], colIdx, numHeaderLines[entityIndex], delimiter[entityIndex], -1);
+				data = removeRedundantData(data);
 				
 				if(!isDefn) { // column contains codes
 					
@@ -262,6 +263,19 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		} // end of for loop - for each selected col
 		
 		return result;
+	}
+	
+	private List removeRedundantData(List data) {
+		
+		List newData = new ArrayList();
+		Iterator it = data.iterator();
+		while(it.hasNext()) {
+			
+			String d = (String)it.next();
+			if(!newData.contains(d))
+				newData.add(d);
+		}
+		return newData;
 	}
 	
 	private boolean isDefinition(Vector headerVector) {
@@ -299,7 +313,8 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 			for(int j =0;j< cols.length; j++) {
 				
 				String colType = adp.getAttributeDataType(i,j);
-				if(colType.equalsIgnoreCase("text") || colType.equalsIgnoreCase("Nominal") || colType.equalsIgnoreCase("Ordinal")) {
+				if(colType.trim().equalsIgnoreCase("text") || colType.trim().equalsIgnoreCase("Nominal") || colType.trim().equalsIgnoreCase("Ordinal") ||
+				colType.trim().equalsIgnoreCase("String")) {
 					
 					colsToExtract.add(new Integer(j));
 				}
@@ -411,7 +426,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 	}
 	
 	
-	private void addColumnsToRowData(Vector rowData, List data) {
+	public static void addColumnsToRowData(Vector rowData, List data) {
 		
 		if(data.size() == 0) 
 			return;

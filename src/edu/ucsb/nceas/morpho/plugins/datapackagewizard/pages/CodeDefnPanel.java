@@ -59,6 +59,8 @@ import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomTable;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 import edu.ucsb.nceas.morpho.Morpho;
@@ -82,11 +84,17 @@ import java.awt.Container;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.Box;
 import javax.swing.JComboBox;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ButtonModel;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -107,28 +115,15 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	private JLabel choiceLabel;
 	private JPanel radioPanel;
 	private JPanel definitionsPanel;
-
-
-	private JPanel tableNamePanel;
-	private JPanel namePanel;
-	private JLabel nameLabel;
-	private JComboBox namePickList;
-
-	private JPanel tableCodePanel;
-	private JPanel codePanel;
-	private JLabel codeLabel;
-	private JComboBox codePickList;
-
-	private JPanel tableDefnPanel;
-	private JPanel defnPanel;
-	private JLabel defnLabel;
-	private JComboBox defnPickList;
-
-	private JPanel buttonsPanel;
-
-
+	
 	private String[] entityNames = null;
 	private String[] attrNames = null;
+	
+	private Vector rowData;
+	private Vector tableNames;
+	private Vector colNames;
+	
+	private CustomTable table;
 
 	private short selectedImportChoice = 0;
 
@@ -137,40 +132,49 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	private static final String ID_XPATH = "attribute/@id";
 	private static final int MAX_IMPORTED_ROWS_DISPLAYED = 10;
 	private static final String TRUNCATE_STRING = "--other codes not displayed--";
-
-	private int currentEntityIndexSelected = -1;
-
+	
 	private int entityIdx = -1;
-	private String currentEntityID = null;
-	private String codeAttributeID = null;
-	private String defnAttributeID = null;
+	private String currentEntityID = "";
+	private String codeAttributeID = "";
+	private String defnAttributeID = "";
 
 	private static Node[] attributeArray = null;
 
 	// AbstractDataPackage of the current package
 	private AbstractDataPackage adp = null;
+	
 	// DataViewContainerPanel of current package
 	private DataViewContainerPanel resultPane = null;
-
+	
 	private ItemListener namePickListListener;
-
+	
 	// flag to indicate if the panel is to only allow the user to define codes,
 	// without giving the option of importing it later.
 
 	private boolean onlyDefnPanel = false;
 
+	// flag to indicate if the data from the tables need to imported into the CustomTable
+	// It is possible to set the table data at runtime using the setTable() interface.
+	private boolean createDataTable = true;
+	
 	public CodeDefnPanel(){
 
-		onlyDefnPanel = false;
-		init();
+		this(false, true);
 	}
 
 	public CodeDefnPanel(boolean onlyDefinitionsPanel) {
 
+		this(onlyDefinitionsPanel, true);
+	}
+	
+	public CodeDefnPanel(boolean onlyDefinitionsPanel, boolean createDataTable) {
+		
 		onlyDefnPanel = onlyDefinitionsPanel;
-		if(onlyDefnPanel)
-			selectedImportChoice = IMPORT_DONE;
+    if(onlyDefnPanel)
+	       selectedImportChoice = IMPORT_DONE;
+		this.createDataTable = createDataTable;
 		init();
+		
 	}
 
 	private void init() {
@@ -223,101 +227,77 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	private JPanel getDefinitionsPanel() {
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(3,1,0, 5));
-
+		panel.setLayout(new BorderLayout());
+		JLabel headLabel = WidgetFactory.makeHTMLLabel("Select the two columns that define 	the codes and definitions. The selected columns should be in the same data table.", 2 , false);
+		
+		panel.add(headLabel, BorderLayout.NORTH);
+		
+		if(adp == null)
+			getADP();
+		if(adp == null) {
+			
+			Log.debug(5, "Unable to obtain the AbstractDataPackage in the CodeImportPanel");
+			return panel;
+		}
+		
+		Morpho morpho = resultPane.getFramework();
+		
 		entityNames = getEntityNames();
-		attrNames = new String[] {};
-
-		JPanel tableNamePanel = new JPanel(new GridLayout(1,2, 3, 0));
-
-		namePickListListener = new ItemListener() {
-
-			public void itemStateChanged(ItemEvent e) {
-
-				int index = ((JComboBox)e.getSource()).getSelectedIndex();
-				String name = (String)((JComboBox)e.getSource()).getSelectedItem();
-				if(index == currentEntityIndexSelected)
-					return;
-				currentEntityIndexSelected = index;
-				Log.debug(45, "PickList state changed: " +
-				(String)((JComboBox)e.getSource()).getItemAt(index));
-
-
-				if (index == 0) {
-					codePickList.setEnabled(false);
-					defnPickList.setEnabled(false);
-				} else {
-					if(adp == null)
-						getADP();
-					if(adp == null) {
-
-						Log.debug(15, "Unable to obtain the AbstractDataPackage in the CodeImportPanel");
-						return;
-					}
-					entityIdx = adp.getEntityIndex(name);
-					attrNames = getAttributeNames(entityIdx);
-					currentEntityID = getEntityID(entityIdx);
-					if(currentEntityID == null || currentEntityID.trim().length() ==0) {
-						String newId = WizardSettings.getUniqueID();
-						adp.setEntityID(entityIdx, newId);
-						currentEntityID = newId;
-						Log.debug(15, "Entity does not have an ID ! Assigning it a new ID of " + newId);
-					}
-					codePickList.setEnabled(true);
-					defnPickList.setEnabled(true);
-					codePickList.setModel(new DefaultComboBoxModel(attrNames));
-					defnPickList.setModel(new DefaultComboBoxModel(attrNames));
-
+		tableNames = new Vector();
+		colNames = new Vector();
+		rowData = new Vector();
+		
+		if(this.createDataTable == false) 
+			return panel;
+		
+		for(int i =0; i < entityNames.length; i++) {
+			
+			int idx = adp.getEntityIndex(entityNames[i]);
+			attrNames = getAttributeNames(idx);
+			
+			File entityFile = getEntityFile(morpho, adp, idx);
+			if(entityFile == null) {
+				continue;
+			}
+			
+			Vector colsToExtract = new Vector();
+			for(int j = 0; j < attrNames.length; j++) {
+				colsToExtract.add(new Integer(j));
+			}
+			
+			String numHeaders = adp.getPhysicalNumberHeaderLines(idx, 0);
+			int numHeaderLines = 0;
+			try {
+				if(numHeaders != null) {
+					numHeaderLines = Integer.parseInt(numHeaders);
+				}
+			} catch(Exception e) {}
+			
+			String field_delimiter = adp.getPhysicalFieldDelimiter(idx, 0);
+			String delimiter = getDelimiterString(field_delimiter);
+			
+			List data = getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, -1);
+			
+			if(data != null && data.size() < 1)
+				continue;
+			else {
+				for(int k = 0; k < attrNames.length; k++) {
+					tableNames.add(entityNames[i]);
+					colNames.add(attrNames[k]);
 				}
 			}
-		};
-
-		namePanel = WidgetFactory.makePanel();
-		nameLabel = WidgetFactory.makeLabel("Data table:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		namePanel.add(nameLabel);
-		namePickList = WidgetFactory.makePickList( entityNames, false, 0, namePickListListener);
-		namePanel.add(namePickList);
-
-		tableNamePanel.add(namePanel);
-		tableNamePanel.add(getLabel(
-		WizardSettings.HTML_NO_TABLE_OPENING
-		+"Choose the data table that contains the codes and their definition"
-		+WizardSettings.HTML_NO_TABLE_CLOSING));
-		panel.add(tableNamePanel);
-
-		JPanel tableCodePanel = new JPanel(new GridLayout(1,2, 3, 0));
-
-		codePanel = WidgetFactory.makePanel();
-		codeLabel = WidgetFactory.makeLabel("Codes:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		codePanel.add(codeLabel);
-		codePickList = WidgetFactory.makePickList( attrNames, false, 0, null);
-		codePanel.add(codePickList);
-
-		tableCodePanel.add(codePanel);
-		tableCodePanel.add(getLabel(
-		WizardSettings.HTML_NO_TABLE_OPENING
-		+"Choose the column in the data table that contains the codes"
-		+WizardSettings.HTML_NO_TABLE_CLOSING));
-		panel.add(tableCodePanel);
-
-		JPanel tableDefnPanel = new JPanel(new GridLayout(1,2, 3, 0));
-
-		defnPanel = WidgetFactory.makePanel();
-		defnLabel = WidgetFactory.makeLabel("Definitions:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		defnPanel.add(defnLabel);
-		defnPickList = WidgetFactory.makePickList( attrNames, false, 0, null);
-		defnPanel.add(defnPickList);
-
-		tableDefnPanel.add(defnPanel);
-		tableDefnPanel.add(getLabel(
-		WizardSettings.HTML_NO_TABLE_OPENING
-		+"Choose the column in the data table that contains the definitions for the codes"
-		+WizardSettings.HTML_NO_TABLE_CLOSING));
-		panel.add(tableDefnPanel);
-
-		codePickList.setEnabled(false);
-		defnPickList.setEnabled(false);
-
+			TaxonImportPanel.addColumnsToRowData(rowData, data);
+			
+		}
+		
+		Vector headerVector = new Vector();
+		headerVector.add(tableNames);
+		headerVector.add(colNames);
+		
+		table = new CustomTable(headerVector, rowData);
+		table.addPopupListener(new CustomPopupHandler());
+		panel.add(table, BorderLayout.CENTER);
+		
 		return panel;
 	}
 
@@ -332,6 +312,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 		if ( resultPane != null) {
 			adp = resultPane.getAbstractDataPackage();
 		}
+		
 	}
 
 	private String[] getEntityNames() {
@@ -342,22 +323,20 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 		if(adp == null)
 			getADP();
 		
-		String[] entNames = new String[1];
+		String[] entNames = new String[0];
 		
 		if(adp != null) {
 		
 			int cnt = adp.getEntityCount();
-			entNames = new String[cnt +1];
+			entNames = new String[cnt];
 
 			for(int i = 0; i < cnt; i++) {
-				entNames[i+1] = adp.getEntityName(i);
+				entNames[i] = adp.getEntityName(i);
 			}
 			
 		} else {
 			Log.debug(45, "Error - Unable to get the AbstractDataPackage in CodeImportPanel. ");
 		}
-
-		entNames[0] = "--Select data table--";
 		return entNames;
 
 	}
@@ -369,46 +348,67 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	*/
 
 	public String getTableName() {
-		if(selectedImportChoice == IMPORT_LATER || entityNames == null)
+		if(selectedImportChoice == IMPORT_LATER || entityNames == null) {
 			return null;
-		if(namePickList.getSelectedIndex() == 0)
+		}
+		int[] arr = table.getSelectedColumns();
+		if(arr == null || arr.length < 1) {
 			return null;
-		return (String)namePickList.getSelectedItem();
+		}
+		Vector header = table.getColumnHeaderStrings(arr[0]);
+		if(header == null) {
+			return null;
+		}
+		return (String)header.get(0);
 	}
 
-	public void setTableName(String name) {
-		entityNames = new String[2];
-		entityNames[0] = "--Select data table--";
-		entityNames[1] = name;
-		namePickList.setModel(new DefaultComboBoxModel(entityNames));
-
+	public void setTable(String tableName, List columns, Vector data) {
+		
+		entityNames = new String[1];
+		entityNames[0] = tableName;
+		attrNames = new String[columns.size()];
+		
+		this.tableNames = new Vector();
+		this.colNames = new Vector();
+		this.rowData = data;
+		
+		Iterator it = columns.iterator();
+		int cnt = 0;
+		while(it.hasNext()) {
+			
+			String col = (String)it.next();
+			tableNames.add(tableName);
+			colNames.add(col);
+			attrNames[cnt++] = col;
+		}
+		
+		Vector headerInfo = new Vector();
+		headerInfo.add(tableNames);
+		headerInfo.add(colNames);
+		
+		if(table != null)
+			definitionsPanel.remove(table);
+		table = new CustomTable(headerInfo, rowData);
+		table.addPopupListener(new CustomPopupHandler());
+		
+		definitionsPanel.add(table, BorderLayout.CENTER);
+		definitionsPanel.validate();
+		definitionsPanel.repaint();
 	}
 
-	public void setAttributes(List attr) {
-
-		int cnt = attr.size();
-		attrNames = new String[cnt + 1];
-		attrNames[0] = "--Select A Column--";
-		int i = 1;
-		for(Iterator it = attr.iterator(); it.hasNext() && i < (cnt+1) ; )
-			attrNames[i++] =  (String) it.next();
-
-		codePickList.setModel(new DefaultComboBoxModel(attrNames));
-		defnPickList.setModel(new DefaultComboBoxModel(attrNames));
-
-	}
+	
 
 	/*
 	*	Function to retrieve the ID of the selected table from where the enumerated
 	*	codes are imported.
 	*/
-
+	/*
 	private String getEntityID(int entityIndex) {
 		String id = "";
 		id = adp.getEntityID(entityIndex);
 		Log.debug(45, "Entity ID for entityIndex = " + entityIndex + " is " + id);
 		return id;
-	}
+	}*/
 
 	/**
 	*	Function to retrieve the selected entity Index
@@ -416,25 +416,27 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	*/
 
 	public int getSelectedEntityIndex() {
-		return entityIdx;
+		
+		String table = getTableName();
+		if(adp == null){
+			return -1;
+		}
+		return adp.getEntityIndex(table);
 	}
 
 
 	private String[] getAttributeNames(int entityIndex) {
+		
 		ArrayList names = new ArrayList();
+		String attrs[] = new String[0];
 		if(adp != null) {
 			int num = adp.getAttributeCountForAnEntity(entityIndex);
+			attrs = new String[num];
 			for(int i = 0; i < num; i++) {
-				names.add(adp.getAttributeName(entityIndex, i));
+				attrs[i] = adp.getAttributeName(entityIndex, i);
 			}
 		}
-		int cnt = names.size();
-		String[] attrs = new String[cnt+1];
-		attrs[0] = "--Select A Column--";
-		int i = 1;
-		for(Iterator it = names.iterator(); it.hasNext();)
-			attrs[i++] = (String)it.next();
-
+		
 		return attrs;
 	}
 
@@ -463,37 +465,67 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 		if(selectedImportChoice == IMPORT_LATER)
 			return true;
-
-		if(namePickList.getSelectedIndex() < 1) {
-			WidgetFactory.hiliteComponent(nameLabel);
+		
+		int sel[] = table.getSelectedColumns();
+		if(sel.length != 2) {
+			
+			JOptionPane.showMessageDialog(this, "Select exactly two columns", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		WidgetFactory.unhiliteComponent(nameLabel);
-
-		if(codePickList.getSelectedIndex() < 1) {
-			WidgetFactory.hiliteComponent(codeLabel);
+		
+		Vector header1 = table.getColumnHeaderStrings(sel[0]);
+		Vector header2 = table.getColumnHeaderStrings(sel[1]);
+		
+		String table1 = (String)header1.get(0);
+		String table2 = (String)header2.get(0);
+		if(!(table1.equals(table2))) {
+			
+			JOptionPane.showMessageDialog(this, "Both columns need to be selected from the same data table", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		WidgetFactory.unhiliteComponent(codeLabel);
-
-		if(defnPickList.getSelectedIndex() < 1) {
-			WidgetFactory.hiliteComponent(defnLabel);
+		
+		if(header1.size() < 3 || header2.size() < 3) {
+			
+			JOptionPane.showMessageDialog(this, "Select the data type (Code/Definition) for both the columns", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		WidgetFactory.unhiliteComponent(defnLabel);
-
-		int codeIndex = codePickList.getSelectedIndex() - 1;
-		int defnIndex = defnPickList.getSelectedIndex() - 1;
-
+		
+		String type1 = (String)header1.get(2);
+		String type2 = (String)header2.get(2);
+		
+		if(type1.equals(type2)) {
+			
+			JOptionPane.showMessageDialog(this, "Select one column for codes and one for definition", "Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		
+		entityIdx = getSelectedEntityIndex();
+		if(entityIdx < 0)
+			return true;
+		
+		currentEntityID = adp.getEntityID(entityIdx);
+		
 		if(adp != null) {
-
-			codeAttributeID = adp.getAttributeID(entityIdx, codeIndex);
+			
+			int codeIndex = getCodeColumnIndex();
+			int defnIndex = getDefnColumnIndex();
+			
+			if(currentEntityID.trim().equals("")) {
+				
+				currentEntityID = WizardSettings.getUniqueID();
+				Log.debug(15, "Entity doesnt have an enity ID - assigning it a new ID of " + currentEntityID);
+				adp.setEntityID(entityIdx, currentEntityID);
+			}
+			
+			if(codeIndex >=0 )
+				codeAttributeID = adp.getAttributeID(entityIdx, codeIndex);
 
 			// the attribute has no ID !! This should never happen for data tables
 			// created using the new DPW. But if we encounter such a situation, a
 			// new ID is assigned and added to the attribute.
 
-			if(codeAttributeID.trim() == "") {
+			if(codeAttributeID.trim() == "" && codeIndex >= 0) {
 				Log.debug(15, "Attribute " +
 				adp.getAttributeName(entityIdx,	codeIndex) + "has no ID; assigning one now");
 
@@ -502,12 +534,13 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 			}
 			Log.debug(45, "Code AttributeID = " + codeAttributeID);
 
-			defnAttributeID = adp.getAttributeID(entityIdx,	defnPickList.getSelectedIndex() - 1);
+			if(defnIndex >= 0)
+				defnAttributeID = adp.getAttributeID(entityIdx,	defnIndex);
 
 			// the attribute has no ID !! This should never happen for data tables
 			// created using the new DPW. But if we encounter such a situation, a
 			// new ID is assigned and added to the attribute.
-			if(defnAttributeID.trim() == "") {
+			if(defnAttributeID.trim() == "" && defnIndex >= 0) {
 				Log.debug(15, "Attribute " +
 				adp.getAttributeName(entityIdx,	defnIndex) + " has no ID; assigning one now");
 				defnAttributeID = WizardSettings.getUniqueID();
@@ -516,8 +549,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 			Log.debug(45, "Defn AttributeID = " + defnAttributeID);
 
 		} else {
-			Log.debug(15, "No AbstractDataPackage found! Hence IDs could not be retrieved!");
+			
+			Log.debug(25, "No AbstractDataPackage found! Hence IDs could not be retrieved!");
 		}
+		
 		return true;
 	}
 
@@ -567,6 +602,55 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 		return getPanelData("");
 	}
 
+	private int getCodeColumnIndex() {
+		
+		if(adp == null) {
+			return -1;
+		}
+		int arr[] = table.getSelectedColumns();
+		if(arr.length != 2) {
+			return -1;
+		}
+		Vector header = table.getColumnHeaderStrings(arr[0]);
+		String colType = (String)header.get(2);
+		if(colType.equalsIgnoreCase("Code")) {
+			String colName = (String)header.get(1);
+			return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
+		}
+		
+		header = table.getColumnHeaderStrings(arr[1]);
+		colType = (String)header.get(2);
+		if(colType.equalsIgnoreCase("Code")) {
+			String colName = (String)header.get(1);
+			return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
+		}
+		return -1;
+	}
+	
+	private int getDefnColumnIndex() {
+		
+		if(adp == null)
+			return -1;
+		int arr[] = table.getSelectedColumns();
+		if(arr.length != 2) return -1;
+		Vector header = table.getColumnHeaderStrings(arr[0]);
+		String colType = (String)header.get(2);
+		if(colType.equalsIgnoreCase("Definition")) {
+			String colName = (String)header.get(1);
+			return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
+		}
+		
+		header = table.getColumnHeaderStrings(arr[1]);
+		colType = (String)header.get(2);
+		if(colType.equalsIgnoreCase("Definition")) {
+			String colName = (String)header.get(1);
+			return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
+			
+		}
+		
+		return -1;
+	}
+	
 	/**
 	*  gets the Map object that contains all the key/value paired
 	*  settings for this particular wizard panel, given a prefix xPath
@@ -580,6 +664,17 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	public OrderedMap getPanelData(String xPath) {
 
 		OrderedMap map = new OrderedMap();
+		
+		if(adp!=null && currentEntityID.equals("")) {
+			currentEntityID = adp.getEntityID(getSelectedEntityIndex());
+		}
+		if(adp!=null && codeAttributeID.equals("")) {
+			codeAttributeID = adp.getAttributeID(getSelectedEntityIndex(), getCodeColumnIndex());
+		}
+		if(adp!=null && defnAttributeID.equals("")) {
+			defnAttributeID = adp.getAttributeID(getSelectedEntityIndex(), getDefnColumnIndex());
+		}
+		
 		map.put(xPath + "/entityReference", this.currentEntityID);
 		map.put(xPath + "/valueAttributeReference", this.codeAttributeID);
 		map.put(xPath + "/definitionAttributeReference", this.defnAttributeID);
@@ -643,36 +738,49 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 		}
 
 		currentEntityID = (String)o1;
-
-		entityNames = getEntityNames();
-		for(int i = 0; i < entityNames.length; i++) {
-			String ID = getEntityID(i);
-			if(ID.equals(currentEntityID)) {
-				namePickList.setSelectedIndex(i + 1);
-
-				break;
-			}
-		}
-
 		codeAttributeID = (String)data.get(xPath + "/valueAttributeReference");
 		defnAttributeID = (String)data.get(xPath + "/definitionAttributeReference");
-
+		
+		int[] selectedCols = new int[2];
 		boolean codeSelected = false;
 		boolean defnSelected = false;
-
-		for(int j = 1; j < codePickList.getItemCount(); j++) {
-			String attrID = adp.getAttributeID(entityIdx, j -1);
-			if(attrID.equals(codeAttributeID)) {
-				codePickList.setSelectedIndex(j);
-				codeSelected = true;
+		
+		int colCount = 0;
+		for(int i = 0; i < entityNames.length; i++) {
+			
+			int entIdx = adp.getEntityIndex(entityNames[i]);
+			String eID = adp.getEntityID(i);
+			int attrCnt = adp.getAttributeCountForAnEntity(entIdx);
+			if(!eID.equals(currentEntityID)) {
+				colCount += attrCnt;
+				continue;
 			}
-			if(attrID.equals(defnAttributeID)) {
-				defnPickList.setSelectedIndex(j);
-				defnSelected = true;
+			
+			for(int j = 0; j < attrCnt; j++) {
+				
+				String ID = adp.getAttributeID(entIdx, j);
+				if(ID.equals(codeAttributeID)) {
+					selectedCols[0] = colCount;
+					table.setExtraColumnHeaderInfo(colCount, "Code");
+					codeSelected = true;
+					
+				} else if(ID.equals(defnAttributeID)) {
+					selectedCols[1] = colCount;
+					table.setExtraColumnHeaderInfo(colCount, "Definition");
+					defnSelected = true;
+					
+				}
+				colCount++;
+				
+				if(codeSelected && defnSelected) {
+					table.setSelectedColumns(selectedCols);
+					break;
+				}
 			}
-			if(codeSelected  && defnSelected)
-				break;
+			
+			break;
 		}
+		
 		return;
 	}
 
@@ -698,65 +806,39 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	* @return list the list of rows containing only the selected two columns
 	*/
 
+	
 	public List getColumnData() {
 
-		File entityFile = null;
-
-		if(adp == null) {
-			Log.debug(15, "Abstract Data Package is null. Cannot fill customlist with the imported codes");
+		List result = new ArrayList();
+		if(rowData == null) {
 			return null;
 		}
 		
-		Morpho morpho = resultPane.getFramework();
-		entityFile = getEntityFile(morpho, adp, entityIdx);
-		if(entityFile == null) {
-			return null;
+		int cols[] = table.getSelectedColumns();
+		if(cols.length != 2) return null;
+		int codeIdx = cols[0];
+		int defnIdx = cols[1];
+		
+		Vector header = table.getColumnHeaderStrings(cols[0]);
+		if(header.size() < 3) return null;
+		
+		String type = (String) header.get(2);
+		if(type.equalsIgnoreCase("Definition")) {
+			codeIdx = cols[1];
+			defnIdx = cols[0];
 		}
 		
-		int codeIndex = codePickList.getSelectedIndex() - 1;
-		int defnIndex = defnPickList.getSelectedIndex() - 1;
-		String numHeaders = adp.getPhysicalNumberHeaderLines(entityIdx, 0);
-		int numHeaderLines = 0;
-		try {
-			if(numHeaders != null) {
-				numHeaderLines = Integer.parseInt(numHeaders);
-			}
-		} catch(Exception e) {}
-
-		
-		String field_delimiter = adp.getPhysicalFieldDelimiter(entityIdx, 0);
-		String delimiter = getDelimiterString(field_delimiter);
-		
-		Vector colIndices = new Vector();
-		if(codeIndex <= defnIndex) {
-		
-			colIndices.add(new Integer(codeIndex));
-			colIndices.add(new Integer(defnIndex));
-		} else {
+		Iterator it = rowData.iterator();
+		while(it.hasNext()) {
 			
-			colIndices.add(new Integer(defnIndex));
-			colIndices.add(new Integer(codeIndex));
-		}
-
-		List data = getColumnValues(entityFile, colIndices, numHeaderLines, delimiter, MAX_IMPORTED_ROWS_DISPLAYED);
-		
-		if(codeIndex > defnIndex) {
-			List newData = new ArrayList();
-			Iterator it = data.iterator();
-			while(it.hasNext()) {
-				
-				List t = (List)it.next();
-				List newT = new ArrayList();
-				newT.add(t.get(1));
-				newT.add(t.get(0));
-				newData.add(newT);
-			}
-			data = newData;
+			List t = new ArrayList();
+			Vector row = (Vector)it.next();
+			t.add(row.get(codeIdx));
+			t.add(row.get(defnIdx));
+			result.add(t);
 		}
 		
-		return data;
-
-
+		return result;
 	}
 
 
@@ -862,6 +944,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 		
 		return entityFile;
 	}
+	
 	public static List getColumnValues(File file, Vector colIndices, int numHeaderLines, String delimiter, int maxLinesNeeded) {
 
 		List result = new ArrayList();
@@ -910,7 +993,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 					result.add(row);
 					continue;
 				}
-				else { // not consecutive delimiters
+				else { //do not ignore consecutive delimiters
 					int cnt = -1;
 					StringTokenizer st = new StringTokenizer(line, delimiter, true);
 					while( st.hasMoreTokens() ) {
@@ -956,6 +1039,14 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 		catch(Exception e) {
 			Log.debug(15, "Exception in reading the data File: " + e);
 
+		}
+		
+		if(result.size() == 0) {
+			// add an empty row
+			List row = new ArrayList();
+			for(int i = 0; i < colIndices.size(); i++)
+				row.add("");
+			result.add(row);
 		}
 		return result;
 
@@ -1055,3 +1146,93 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 }
 
+
+/** class to handle the CustomTable Popup events that are generated when a user clicks
+	*	on a table header. It extends AbstractCustomTablePopupHandler that implements the
+	*	CustomTablePopupListener interface.
+	*
+	*/
+
+
+class CustomPopupHandler extends AbstractCustomTablePopupHandler {
+	
+	private Vector taxonData = null;
+	private String displayString = null;
+	private ButtonGroup grp;
+	private String[] data = new String[] { "Code", "Definition"};
+	private JRadioButton jrb1, jrb2, dummyButton;
+	
+	CustomPopupHandler() {
+		
+		super();
+		setModal(true);
+		init();
+		
+	}
+	
+	private void init() {
+		
+		JPanel panel = new JPanel(new BorderLayout());
+		JLabel headLabel = WidgetFactory.makeHTMLLabel("Is this a Code or Definition?", 2, false);
+		
+		JPanel middlePanel = new JPanel();
+		middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+		grp = new ButtonGroup();
+		jrb1 = new JRadioButton(data[0]);
+		jrb1.setActionCommand(data[0]);
+		jrb2 = new JRadioButton(data[1]);
+		jrb2.setActionCommand(data[1]);
+		dummyButton = new JRadioButton("");
+		ActionListener listener = new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				displayString = ((JRadioButton)ae.getSource()).getActionCommand();
+				CustomPopupHandler.this.setVisible(false);
+			}
+		};
+		jrb1.addActionListener(listener);
+		jrb2.addActionListener(listener);
+		grp.add(jrb1);
+		grp.add(jrb2);
+		grp.add(dummyButton);
+		
+		middlePanel.add(Box.createGlue());
+		middlePanel.add(jrb1);
+		middlePanel.add(Box.createGlue());
+		middlePanel.add(jrb2);
+		middlePanel.add(Box.createGlue());
+		middlePanel.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
+		
+		panel.add(headLabel, BorderLayout.NORTH);
+		panel.add(middlePanel, BorderLayout.CENTER);
+		
+		this.getContentPane().setLayout(new BorderLayout());
+		this.getContentPane().add(panel, BorderLayout.CENTER);
+		this.setSize(125,150);
+		
+	}
+	
+	/** Function to retrieve the string to be displayed in the header of the CustomTable.
+	*
+	* @return String the string to be displayed in the header of the table. returns null 
+	*									if no value is present
+	*/
+	public String getDisplayString() {
+		
+		return displayString;
+	}
+	
+	/** Function to retrieve the dialog that is to be displayed when the user clicks
+	* 	on the header of the CustomTable. The dialog is responsible of disposing itself
+	*		after the input is received.
+	*
+	* @return JDialog a dialog that is popped up when a user clicks on the table header 
+	*/
+	
+	public JDialog getPopupDialog() {
+		
+		displayString = null;
+		dummyButton.setSelected(true);
+		return this;
+	}
+	
+}

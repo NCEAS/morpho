@@ -60,6 +60,8 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
+import java.util.Vector;
+import java.util.List;
 
 
 
@@ -128,7 +130,7 @@ public class CodeDefinition extends AbstractWizardPage {
 		
 		add(infoPanel, BorderLayout.NORTH);
 		
-		importPanel = new CodeDefnPanel(true);	
+		importPanel = new CodeDefnPanel(true, false); // CodeDefnPanel with only the definition part but without the data tables being created	
 		add(importPanel, BorderLayout.CENTER);
 		
 	}
@@ -144,12 +146,15 @@ public class CodeDefinition extends AbstractWizardPage {
 		attrField.setText(attr);
 		entityField.setText(entity);
 		
-		importPanel.setTableName(mainWizFrame.getLastImportedEntity());
-		importPanel.setAttributes(mainWizFrame.getLastImportedAttributes());
+		String tableName = mainWizFrame.getLastImportedEntity();
+		List attrs =  mainWizFrame.getLastImportedAttributes();
+		Vector rowData = mainWizFrame.getLastImportedDataSet();
+		importPanel.setTable(tableName, attrs, rowData);
+		importPanel.invalidate();
 		
 		mainWizFrame.setLastImportedAttributes(null);
 		mainWizFrame.setLastImportedEntity(null);
-		
+		mainWizFrame.setLastImportedDataSet(null);
 		
 		String prevPageID = mainWizFrame.getPreviousPageID();
 		if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD)) {

@@ -24,6 +24,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
@@ -31,8 +32,19 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AddDocumentationCommand;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datapackage.Entity;
+
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.Log;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.swing.BoxLayout;
 import javax.swing.Box;
@@ -47,6 +59,7 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.util.Iterator;
 
 public class CodeImportPage extends AbstractWizardPage {
 
@@ -166,14 +179,80 @@ public class CodeImportPage extends AbstractWizardPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
+		
 		String attr = mainWizFrame.getCurrentImportAttributeName();
 		String entity = mainWizFrame.getCurrentImportEntityName();
 		
 		attrField.setText(attr);
 		entityField.setText(entity);
 		
+		String prevPageID = mainWizFrame.getPreviousPageID();
+		
+		if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
+			
+			
+			// create the new data table. Need to store this DOM to return it.
+			Node newDOM = mainWizFrame.collectDataFromPages();
+			mainWizFrame.setDOMToReturn(null);
+			
+			AbstractDataPackage	adp = getADP();
+			if(adp == null) {
+				Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
+				return;
+			}
+			
+			Node entNode = null;
+			String entityXpath = "";
+			try{
+				entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
+				"/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
+				NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
+				entityXpath);
+				entNode = entityNodes.item(0);
+			}
+			catch (Exception w) {
+				Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
+			}
+			
+			//              Entity entity = new Entity(newDOM);
+			edu.ucsb.nceas.morpho.datapackage.Entity entityNode = 
+			new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
+			
+			Log.debug(30,"Adding Entity object to AbstractDataPackage..");
+			adp.addEntity(entityNode);
+			
+			// ---DFH
+			Morpho morpho = Morpho.thisStaticInstance;
+			AccessionNumber an = new AccessionNumber(morpho);
+			String curid = adp.getAccessionNumber();
+			String newid = null;
+			if (!curid.equals("")) {
+				newid = an.incRev(curid);
+			} else {
+				newid = an.getNextId();
+			}
+			adp.setAccessionNumber(newid);
+			adp.setLocation("");  // we've changed it and not yet saved
+			mainWizFrame.reInitializePageStack();
+		}
+		
 	}
 
+	private AbstractDataPackage getADP() {
+
+		AbstractDataPackage adp = null;
+		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+		DataViewContainerPanel resultPane = null;
+		if (morphoFrame != null) {
+			resultPane = AddDocumentationCommand.
+			getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+		}//if
+		// make sure resulPanel is not null
+		if ( resultPane != null) {
+			adp = resultPane.getAbstractDataPackage();
+		}
+		return adp;
+	}
   
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
@@ -205,6 +284,7 @@ public class CodeImportPage extends AbstractWizardPage {
 				String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
 				if(!map.containsKey(path + "/entityReference")) {
 					Log.debug(15, "Error in CodeImportPage!! map doesnt have the key - "+path);
+					
 				} else {
 					map.remove(path + "/entityReference");
 					map.remove(path + "/valueAttributeReference");
@@ -213,13 +293,13 @@ public class CodeImportPage extends AbstractWizardPage {
 					map.putAll(importMap);
 					
 				}
-				
 				if(mainWizFrame.getAttributeImportCount() > 1) {
 					nextPageID = pageID;
+					mainWizFrame.removeAttributeForImport();
 				}
 				else
 					nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
-				mainWizFrame.removeAttributeForImport();
+				
 				return true;
 			} else
 				return false;

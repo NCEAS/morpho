@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.28 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-11 02:53:08 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,6 +110,10 @@ public class DataLocation extends AbstractWizardPage {
     "DESCRIBE - include only a metadata description of a web-accessible, archived or inaccessible data file"
   };
 
+	private final static int CREATE_CHOICE = 0;
+	private final static int IMPORT_CHOICE = 1;
+	private final static int DESCRIBE_CHOICE = 2;
+	
   private final String Q2_TITLE_IMPORT
                         = "How do you want to enter the metadata description?";
   private final String[] Q2_LABELS_IMPORT = new String[] {
@@ -134,12 +138,19 @@ public class DataLocation extends AbstractWizardPage {
 
   private final Dimension Q3_RADIOPANEL_DIMS = new Dimension(120, 300);
 
-
+	private WizardContainerFrame mainWizFrame;
+	
+	// first radio Panel - CREATE/IMPORT/DESCRIBE
+	private JPanel mainRadioPanel;
+	
+	private JPanel q2RadioPanel_import;
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
-  public DataLocation() {
+  public DataLocation(WizardContainerFrame mainWizFrame) {
 
+		this.mainWizFrame = mainWizFrame;
+		
     INLINE_OR_ONLINE = WizardSettings.ONLINE;
 
     String inOnString
@@ -254,7 +265,7 @@ public class DataLocation extends AbstractWizardPage {
       }
     };
 
-    final JPanel q2RadioPanel_import
+    q2RadioPanel_import
                                 = getRadioPanel(Q2_TITLE_IMPORT,
                                                 Q2_LABELS_IMPORT,
                                                 q2Listener_import, -1, true);
@@ -307,9 +318,10 @@ public class DataLocation extends AbstractWizardPage {
         instance.repaint();
       }
     };
+		
+		mainRadioPanel = getRadioPanel( Q1_TITLE, Q1_LABELS, q1Listener, 0, true); 
 
-    topBox.add(getRadioPanel( Q1_TITLE,
-                              Q1_LABELS, q1Listener, 0, true));
+    topBox.add(mainRadioPanel);
 
     topBox.add(WidgetFactory.makeDefaultSpacer());
 
@@ -509,6 +521,30 @@ public class DataLocation extends AbstractWizardPage {
     WidgetFactory.unhiliteComponent(urlLabelOnline);
     WidgetFactory.unhiliteComponent(objNameLabel);
     WidgetFactory.unhiliteComponent(medNameLabel);
+		
+		String prevPageID = mainWizFrame.getPreviousPageID();
+		if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
+			
+			// allow only import
+			Container radioPanel = (Container)mainRadioPanel.getComponent(1);
+			Container middlePanel = (Container) radioPanel.getComponent(1);
+			
+			// for CREATE
+			JRadioButton jrb = (JRadioButton)middlePanel.getComponent(CREATE_CHOICE); 
+      jrb.setEnabled(false);
+			// for DESCRIBE
+			jrb = (JRadioButton)middlePanel.getComponent(DESCRIBE_CHOICE);
+      jrb.setEnabled(false);
+			
+			// select the IMPORT_CHOICE
+			jrb = (JRadioButton)middlePanel.getComponent(IMPORT_CHOICE);
+			jrb.setSelected(true);
+			setQ2(q2RadioPanel_import);
+      setQ3(blankPanel);
+      setLastEvent(IMPORT);
+			
+
+		}
   }
 
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:51 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2004-03-11 02:53:08 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public class Entity extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.ENTITY;
-  private final String nextPageID = DataPackageWizardInterface.SUMMARY;
+  private String nextPageID = DataPackageWizardInterface.SUMMARY;
   private final String pageNumber = "";
   private final String title      = "Data Information:";
   private final String subtitle   = "Table (Entity)";
@@ -75,9 +75,15 @@ public class Entity extends AbstractWizardPage{
   private CustomList  attributeList;
   private JLabel      attributesLabel;
 
+	private WizardContainerFrame mainWizFrame;
+	
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public Entity() { init(); }
+  public Entity(WizardContainerFrame frame) {
+		
+		this.mainWizFrame = frame;
+		init(); 
+	}
 
 
 
@@ -273,6 +279,41 @@ public class Entity extends AbstractWizardPage{
       WidgetFactory.hiliteComponent(attributesLabel);
       return false;
     }
+		
+		boolean importNeeded = false;
+		AttributePage nextAttributePage = null;
+    List rowLists = attributeList.getListOfRowLists();
+		if (rowLists==null) return true;
+		int index = 1;
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+
+      Object nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+
+      List nextRowList = (List)nextRowObj;
+      //column 2 is user object - check it exists and isn't null:
+      if (nextRowList.size()<4)     continue;
+      Object nextUserObject = nextRowList.get(3);
+      if (nextUserObject==null) continue;
+
+      nextAttributePage = (AttributePage)nextUserObject;
+			if(nextAttributePage.isImportNeeded()) {
+				
+				OrderedMap map = nextAttributePage.getPageData(xPathRoot + "/attributeList/attribute["+index + "]");
+				String mScale = (String) nextRowList.get(2);
+				String entityName = entityNameField.getText().trim();
+				String colName = (String) nextRowList.get(0);
+				mainWizFrame.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
+				importNeeded = true;
+			}
+			index++;
+		}
+		
+		if(importNeeded) {
+			
+			this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
+		}
+		
     return true;
   }
 

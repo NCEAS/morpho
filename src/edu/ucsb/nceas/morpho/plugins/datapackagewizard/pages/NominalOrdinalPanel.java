@@ -1,4 +1,4 @@
-/*  '$RCSfile: NominalOrdinalPanel.java,v $'
+/**  '$RCSfile: NominalOrdinalPanel.java,v $'
 *    Purpose: A class that handles xml messages passed by the
 *             package wizard
 *  Copyright: 2000 Regents of the University of California and the
@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-06 01:29:24 $'
-* '$Revision: 1.20 $'
+*     '$Date: 2004-03-11 02:53:08 $'
+* '$Revision: 1.21 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by

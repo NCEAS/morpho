@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-06 01:34:18 $'
-* '$Revision: 1.5 $'
+*     '$Date: 2004-03-11 02:53:08 $'
+* '$Revision: 1.6 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -580,12 +580,25 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
 			
 			if(rows.size() == 0) return res;
 			List cr = (List)rows.get(0);
-			res.add(""); // for ancestor
-			res.add(""); // for parent rank
-			res.add(""); // for parent name
-			res.add((String)cr.get(0));
-			res.add((String)cr.get(1));
-			res.add((String)cr.get(2));
+			String rank = (String) cr.get(0);
+			int rankIndex = WizardSettings.getIndexOfTaxonRank(rank);
+			if(rankIndex == WizardSettings.NUMBER_OF_TAXON_RANKS - 1) {
+				
+				res.add(""); // for ancestor
+				res.add(""); // for parent rank
+				res.add(""); // for parent name
+				res.add(rank);
+				res.add((String)cr.get(1));
+				res.add((String)cr.get(2));
+			} else {
+				
+				res.add(""); // for ancestor
+				res.add(rank);
+				res.add((String)cr.get(1));
+				res.add(""); // for lowest rank
+				res.add(""); // for lowest name
+				res.add(""); // for lowest rank's common names
+			}
 		}
 		
 		this.editedAlready = true;
