@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-13 05:54:26 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2002-12-14 01:27:07 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,14 @@ import java.lang.ClassCastException;
 import java.lang.reflect.*;
 import java.net.*;
 import java.net.URL;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.xml.parsers.DocumentBuilder;
@@ -117,6 +124,7 @@ public class Morpho
     //private Action[] helpMenuActions = null;
     //private Action[] containerToolbarActions = null;
     private Vector connectionRegistry = null;
+    private static final List profileAddedListenerList = new ArrayList();
     private boolean pluginsLoaded = false;
     private String sessionCookie = null;
     private Itis itis;
@@ -299,7 +307,7 @@ public class Morpho
     {
         String profileDir = config.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
-        String currentProfile = profileConfig.get("current_profile", 0);
+        String currentProfile = getCurrentProfileName();
         if (!newProfileName.equals(currentProfile)) {
             String newProfilePath = profileDir + File.separator + 
                 newProfileName + File.separator + newProfileName + ".xml";
@@ -535,7 +543,7 @@ public class Morpho
      *
      * @return  String representation of current profile name
      */
-    public String getCurrentProfileName()
+    public static String getCurrentProfileName()
     {
         return profileConfig.get("current_profile", 0);
     }
@@ -1227,18 +1235,22 @@ public class Morpho
     
     private static void createNewProfile()
     {
+        String previousProfileName = getCurrentProfileName();
         ProfileDialog dialog = new ProfileDialog(thisStaticInstance);
         dialog.setVisible(true);
+        if (previousProfileName!=getCurrentProfileName()) {
+            fireProfileAdded();
+        }
     }
 
     /** Switch profiles (from one existing profile to another) */
     private void switchProfile()
     {
         logOut();
-        String currentProfile = profileConfig.get("current_profile", 0);
+        String currentProfile = getCurrentProfileName();
 
         String[] profilesList = getProfilesList();
-        
+
         int selection = 0;
         for (selection = 0; selection < profilesList.length; selection++) {
             if (currentProfile.equals(profilesList[selection])) {
@@ -1307,7 +1319,7 @@ public class Morpho
       MorphoFrame initialFrame = controller.addWindow(INITIALFRAMENAME);
      
       initialFrame.setMainContentPane(new InitialScreen(thisStaticInstance,
-                                                        initialFrame));
+                                                             initialFrame));
      
       initialFrame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
                           (int)UISettings.DEFAULT_WINDOW_HEIGHT);
@@ -1364,12 +1376,14 @@ public class Morpho
         }
     }
 
+
     /**
      * Fire off notifications for all of the registered ConnectionListeners when
      * the username is changed.
      */
     private void fireUsernameChangedEvent()
     {
+        
         for (int i = 0; i < connectionRegistry.size(); i++) {
             ConnectionListener listener =
                     (ConnectionListener)connectionRegistry.elementAt(i);
@@ -1378,6 +1392,33 @@ public class Morpho
             }
         }
     }
+
+    /**
+     * Fire off notifications for all of the registered ProfileAddedListeners 
+     * when a new profile is added.
+     */
+    private static void fireProfileAdded()
+    {
+        
+        Iterator it = profileAddedListenerList.iterator();
+        while (it.hasNext()) {
+            ProfileAddedListener listener = (ProfileAddedListener)it.next();
+            if (listener == null) continue;
+            listener.profileAdded(getCurrentProfileName());
+        }
+    }
+
+    /**
+     * Add a ProfileAddedListener to listen for new profile additions.
+     *
+     *  @param listener the <code>ProfileAddedListener</code> that is being 
+     *                  registered to receive callbacks
+     */
+    public void addProfileAddedListener(ProfileAddedListener listener)
+    {
+        if (listener!=null) profileAddedListenerList.add(listener);
+    }
+
 
     /** Load configuration parameters from the config file as needed */
     private void loadConfigurationParameters()
@@ -1749,7 +1790,7 @@ public class Morpho
         // Load the current profile and log in
         String profileDir = ConfigXML.getConfigDirectory() + 
             File.separator + config.get("profile_directory", 0);
-        String currentProfile = profileConfig.get("current_profile", 0);
+        String currentProfile = getCurrentProfileName();
         if (currentProfile == null) {
             ProfileDialog dialog = new ProfileDialog(morpho);
             dialog.setVisible(true);
