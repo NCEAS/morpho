@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.11 2001-01-05 21:32:18 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.12 2001-01-08 19:08:17 higgins Exp $'
  */
 
 
@@ -292,7 +292,7 @@ public class RSFrame extends javax.swing.JFrame
 	            filename = saveFileDialog.getDirectory()+filename;
 //	            System.out.println(filename);
 	            File file = new File(filename);
-
+ 
             String qtext2 = (String)JTable1.getModel().getValueAt(selectedRow, docidcol);
                     // assumes that docid is in docidcol column of table
             String qtext1 = docidFilter(qtext2);
@@ -338,13 +338,16 @@ public class RSFrame extends javax.swing.JFrame
 	{
 	   int selectedRow = JTable1.getSelectedRow();
 	   if (local) {
-	    
+            JOptionPane.showMessageDialog(null,"This feature not yet enabled for local files!","Alert",JOptionPane.INFORMATION_MESSAGE); 
 	   }
 	   else {
             String qtext1 = (String)JTable1.getModel().getValueAt(selectedRow, 0);
                     // assumes that docid is in first column of table
-            if ((relations!=null)&&(relations.size()>0)) {        
+            if (relations!=null) { 
+                if (relations.size()>0) {
 	            Vector relationsVector = (Vector)relations.get(qtext1);
+	            
+	            if (relationsVector!=null) {
 	            
 	            String[] relationheaders = new String[3];
 	            relationheaders[0] = "Relationship";
@@ -373,8 +376,18 @@ public class RSFrame extends javax.swing.JFrame
                  TableModel tm = ttt.getModel();
                  rs.JTable1.setModel(tm);
                  rs.JTable1.setColumnModel(ttt.getColumnModel());
-             //   rs.pack();
-	            
+                 rs.pack();
+                }
+	            else {  // relationsVector is null
+	               JOptionPane.showMessageDialog(null,"No related documents were found.","Alert",JOptionPane.INFORMATION_MESSAGE);
+	            }
+	            }
+	            else {  // number of related docs is zero
+	               JOptionPane.showMessageDialog(null,"No related documents were found.","Alert",JOptionPane.INFORMATION_MESSAGE);
+	            }
+	        }
+	        else {  // relations is null
+                 JOptionPane.showMessageDialog(null,"No related documents were found.","Alert",JOptionPane.INFORMATION_MESSAGE); 
 	        }
 	   }
 	 
@@ -539,7 +552,8 @@ public class RSFrame extends javax.swing.JFrame
                      trigger = false;
                      popup.show(e.getComponent(), e.getX(), e.getY());
                   }
-                      
+                  int selrow = ((JTable)e.getComponent()).rowAtPoint(new Point(e.getX(), e.getY()));
+                  ((JTable)e.getComponent()).setRowSelectionInterval(selrow,selrow);    
               }
     }
 

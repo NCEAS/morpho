@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.11 2001-01-05 21:32:18 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.12 2001-01-08 19:08:18 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -990,7 +990,8 @@ return "NONE";
                      trigger = false;
                      popup.show(e.getComponent(), e.getX(), e.getY());
                   }
-                      
+                  int selrow = ((JTable)e.getComponent()).rowAtPoint(new Point(e.getX(), e.getY()));
+                  ((JTable)e.getComponent()).setRowSelectionInterval(selrow,selrow);    
               }
     }
 
