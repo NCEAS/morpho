@@ -1,8 +1,15 @@
-5/31/00 - The contents of dmanclient have been completely rearranged. 
+7/28/00 - The contents of dmanclient have been completely reorganized
 All java source code is now inside the src directory within subdirectories
 representing the package structure where compiled classes should be stored.
-Xalan.jar and xerces.jar files have also been included since they are needed
-for compilation.
+Xalan.jar, xerces.jar and several other jar files needed for compilation
+and execution are included in the lib directory.
+
+You should be able to execute the Desktop Client immediately after 'checking
+out' the code from CVS by executing runme.bat (Windows machines - Unix machines
+should be able to run the program by typing the contents of runme.bat on
+the command line.) Certain features (e.g. the metadata editor) will not operate
+properly until paths in 'mde.cfg' are set properly for the user's machine,
+however.
 
 One can compile the code by moving all *.java files to a single directory
 and then using 'javac' to compile with the '-d' switch so that packages are
@@ -27,12 +34,9 @@ Ant works by reading instructions from an XML file. In this case, the file is ca
 desktop client code in this version of the Client. Simply CDing the base directory
 and entering 'Ant' will run the build.xml file. This will compile the java code,
 move the image files into the same directory as compiled class files, and then
-create a jar file, XMLClient.jar, which should contain everything needed to run the
+create a jar file, dmanclient.jar, which should contain everything needed to run the
 application.
 
-NOTE: The current Ant binary distribution DOES NOT work properly with the newly
-released Java 1.3 compiler. A fixed Javac.java source file is available, but one
-currently needs to get that new source file and add it to the proper jar file
-(ant.jar) replacing the older file.                          
+                          
 
 Dan Higgins  (higgins@nceas.ucsb.edu)
