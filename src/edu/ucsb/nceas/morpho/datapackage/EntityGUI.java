@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-02 17:04:09 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-07-02 22:29:25 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -592,13 +592,22 @@ public class EntityGUI extends javax.swing.JFrame
       String selectedItem = (String)attributeList.getSelectedValue();
       if(selectedItem == null)
       {
-        ClientFramework.debug(0, "You must select an attribute to edit.");
+        ClientFramework.debug(0, "You must select an attribute to edit." +
+                              " If there are no attributes in the list, " +
+                              "you must first add a field description " +
+                              "using the 'add' button in the Package " +
+                              "Editor.");
         return;
       }
       File f;
       String id = (String)attributeHash.get(selectedItem);
       if(id == null)
       {
+        ClientFramework.debug(0, "You must select an attribute to edit." +
+                              " If there are no attributes in the list, " +
+                              "you must first add a field description " +
+                              "using the 'add' button in the Package " +
+                              "Editor.");
         return;
       }
       
