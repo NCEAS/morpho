@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 21:27:17 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-08-25 22:54:18 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.BorderLayout;
@@ -81,6 +82,9 @@ public class OpenDialogBox extends JDialog
   /** the reference to the owner query */
   private Query ownerQuery = null;
   
+  /** the reference to the parent of dialog */
+  private MorphoFrame parentFrame = null;
+  
  
   //{{DECLARE_CONTROLS
   private JButton openButton = null;
@@ -103,9 +107,10 @@ public class OpenDialogBox extends JDialog
    * @param morpho  A reference to the Morpho application
    * @param myQuery a Query to get the user's own packages
    */
-  public OpenDialogBox(Frame parent, Morpho morpho, Query myQuery)
+  public OpenDialogBox(MorphoFrame parent, Morpho morpho, Query myQuery)
   {
     super(parent);
+    this.parentFrame = parent;
     this.morpho = morpho;
     this.config = morpho.getConfiguration();
     this.mediator = new ResultPanelAndFrameMediator();
@@ -201,6 +206,13 @@ public class OpenDialogBox extends JDialog
    
   }
 
+  /**
+   * Method to get the parent morphoFrame of dialog
+   */
+  public MorphoFrame getParentFrame()
+  {
+    return parentFrame;
+  }//getParent
  
   /**
    * Listens for key events coming from the dialog.  responds to escape and 
