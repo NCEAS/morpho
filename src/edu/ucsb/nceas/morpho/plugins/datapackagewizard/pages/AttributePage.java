@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-09 18:28:51 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-04-12 06:43:09 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -721,7 +721,7 @@ public class AttributePage extends AbstractUIPage {
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPath+"/measurementScale/"+measurementScale) );
     }
-		if(measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) {
+		if( measurementScale != null && (measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) ) {
 			
 			boolean p = returnMap.containsKey(xPath+"/measurementScale/"+measurementScale + "/additionalMetadata/ANY/unitList/unit[1]/@name");
 			if(p) {

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-09 18:28:51 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2004-04-12 06:43:09 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JOptionPane;
 
 public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI {
 
@@ -854,13 +855,17 @@ class UnitsPickList extends JPanel {
 			
     } else {
 			// add units to existing type
-      UnitTypesListItem item = new UnitTypesListItem(stdType, newUnit);
-      int idx = Arrays.binarySearch(unitTypesListItems, item);
-      if(idx >=0 && idx < unitTypesListItems.length)
-        unitTypesListItems[idx].addUnit(newUnit);
-			this.unitTypesList.setSelectedItem(item);
-			this.unitsList.setSelectedItem(newUnit);
-			this.unitsList.hidePopup();
+			int idx = getIndexOfStandardType(type);
+      
+      //int idx = Arrays.binarySearch(unitTypesListItems, item);
+			if(idx >=0 && idx < unitTypesListItems.length) {
+				UnitTypesListItem item = this.unitTypesListItems[idx];
+				item.addUnit(newUnit);
+				this.unitTypesList.setSelectedItem(item);
+				this.unitsList.setSelectedItem(newUnit);
+				this.unitsList.hidePopup();
+			}
+			
 		}
 		
     customUnitDialog.setVisible(false);
@@ -882,6 +887,18 @@ class UnitsPickList extends JPanel {
 	private String getSIUnit(OrderedMap map, String xPath) {
 		
 		return (String)map.get(xPath + "/unitList/unit[1]/@parentSI");
+	}
+	
+	private int getIndexOfStandardType(String unitType) {
+		
+		for(int i = 0; i < this.unitTypesListItems.length; i++) {
+			
+			String type = this.unitTypesListItems[i].toString();
+			if(type.equals(unitType)) return i;
+			
+		}
+		return -1;
+		
 	}
 	
 	
@@ -953,22 +970,22 @@ class UnitsPickList extends JPanel {
     list.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     list.setEditable(false);
   }
-
-  public void setData(int unitTypeIndex, int unitIndex) {
-
-  UnitTypesListItem[] listItemsArray = getUnitTypesArray();
-  if(listItemsArray == null) return;
-  int length = listItemsArray.length;
-  if(length < unitTypeIndex ) return;
-
-  unitTypesList.setSelectedIndex(unitTypeIndex);
-  unitsList.setModel( listItemsArray[unitTypeIndex].getComboBoxModel());
-  unitsList.setEnabled(true);
-  unitsList.setSelectedIndex(unitIndex);
-  unitsList.setPopupVisible(false);
-
-  return;
-  }
+	
+	public void setData(int unitTypeIndex, int unitIndex) {
+		
+		UnitTypesListItem[] listItemsArray = getUnitTypesArray();
+		if(listItemsArray == null) return;
+		int length = listItemsArray.length;
+		if(length < unitTypeIndex ) return;
+		
+		unitTypesList.setSelectedIndex(unitTypeIndex);
+		unitsList.setModel( listItemsArray[unitTypeIndex].getComboBoxModel());
+		unitsList.setEnabled(true);
+		unitsList.setSelectedIndex(unitIndex);
+		unitsList.setPopupVisible(false);
+		
+		return;
+	}
 
   public void getData(int[] indicesArray) {
 
