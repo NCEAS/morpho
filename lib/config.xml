@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.1.1</version>
+  <version>1.1.2+</version>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
@@ -11,8 +11,8 @@
   <default_profile>default-profile.xml</default_profile>
   <local_dtd_directory>catalog</local_dtd_directory>
   <local_catalog_path>catalog/catalog</local_catalog_path>
-  <debug_level>9</debug_level>
-  <log_file>true</log_file>
+  <debug_level>50</debug_level>
+  <log_file>false</log_file>
   <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>
@@ -200,5 +200,6 @@
   <uid_tag>uid</uid_tag>
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
-  <current_profile></current_profile>
+  <lookAndFeel>kunststoff</lookAndFeel>
+  <current_profile>higgins</current_profile>
 </config>
