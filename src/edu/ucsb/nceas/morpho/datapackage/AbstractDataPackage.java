@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-25 23:38:32 $'
- * '$Revision: 1.77 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-03-26 21:45:53 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2725,7 +2725,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * use either BOTH, METACAT or LOCAL
    */
 
-  public void delete(String location) {
+  public void delete(String location) throws Exception {
     boolean metacatLoc = false;
     boolean localLoc = false;
     if(location.equals(METACAT) ||
@@ -2744,7 +2744,11 @@ public abstract class AbstractDataPackage extends MetadataObject
       LocalQuery.removeFromCache(accnum);
     }
     if (metacatLoc) {
-      metacatDataStore.deleteFile(accnum);
+     boolean success = metacatDataStore.deleteFile(accnum);
+     if (!success)
+     {
+       throw new Exception("User couldn't delete the network copy");
+     }
     }
   }
 
