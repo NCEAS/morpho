@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-21 21:32:08 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-04-22 00:53:54 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -405,34 +405,34 @@ public class CitationPage extends AbstractUIPage {
         TAXON_CITATION_CREATOR_GENERIC_NAME);
 
 
-        updateListFromDOM();
+        //updateListFromDOM();
   }
 
-  private void updateListFromDOM() {
-
-    AbstractDataPackage adp
-    = UIController.getInstance().getCurrentAbstractDataPackage();
-    if (adp == null) {
-      Log.debug(15, "\npackage from UIController is null");
-      Log.debug(5, "ERROR: cannot update!");
-      return;
-    }
-
-    List personnelList = adp.getSubtrees(TAXON_CITATION_CREATOR_GENERIC_NAME);
-    Log.debug(45, "updateListFromDOM - personnelList.size() = "
-    + personnelList.size());
-
-    List personnelOrderedMapList = new ArrayList();
-
-    for (Iterator it = personnelList.iterator(); it.hasNext(); ) {
-
-      personnelOrderedMapList.add(
-      XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
-    }
-
-    populatePartiesList(personnelOrderedMapList,
-    "/"+TAXON_CITATION_CREATOR_ROOTXPATH + "[");
-  }
+//  private void updateListFromDOM() {
+//
+//    AbstractDataPackage adp
+//    = UIController.getInstance().getCurrentAbstractDataPackage();
+//    if (adp == null) {
+//      Log.debug(15, "\npackage from UIController is null");
+//      Log.debug(5, "ERROR: cannot update!");
+//      return;
+//    }
+//
+//    List personnelList = adp.getSubtrees(TAXON_CITATION_CREATOR_GENERIC_NAME);
+//    Log.debug(45, "updateListFromDOM - personnelList.size() = "
+//    + personnelList.size());
+//
+//    List personnelOrderedMapList = new ArrayList();
+//
+//    for (Iterator it = personnelList.iterator(); it.hasNext(); ) {
+//
+//      personnelOrderedMapList.add(
+//      XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
+//    }
+//
+//    populatePartiesList(personnelOrderedMapList,
+//    "/"+TAXON_CITATION_CREATOR_ROOTXPATH + "[");
+//  }
 
 
   //personnelXPathRoot looks like:
@@ -578,7 +578,7 @@ public class CitationPage extends AbstractUIPage {
    *  references that have been edited elsewhere
    */
   public void onLoadAction() {
-    updateListFromDOM();
+    //updateListFromDOM();
   }
 
   /**
