@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-25 23:30:55 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-10 17:53:40 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,18 @@ public class ReviseSearchCommand implements Command
       ResultSet results = resultPane.getResultSet();
       // Save the original identifier
       String oldIdentifier = results.getQuery().getQueryTitle();
+      
+      // Get SortableJTable
+      SortableJTable table = resultPane.getJTable();
+      boolean sorted = false;
+      int index = -1;
+      String order = null;
+      if ( table != null)
+      {
+        sorted = table.getSorted();
+        index = table.getIndexOfSortedColumn();
+        order = table.getOrderOfSortedColumn();
+      }
 
       // QueryDialog Create and show as modal
       QueryDialog queryDialog1 = null;
@@ -96,7 +108,7 @@ public class ReviseSearchCommand implements Command
       {
         Query query = queryDialog1.getQuery();
         morphoFrame.setBusy(true);
-        doReviseQuery(morphoFrame, query, oldIdentifier);
+        doReviseQuery(morphoFrame, query, oldIdentifier, sorted, index, order);
       }
     }//if
       
@@ -107,7 +119,8 @@ public class ReviseSearchCommand implements Command
    * Run revised query in another thread
    */
   private void doReviseQuery(final MorphoFrame frame, final Query myQuery, 
-                                                       final String identifier)
+                             final String identifier, final boolean sorted,
+                             final int index, final String order)
   {
     final SwingWorker worker = new SwingWorker()
     {
@@ -121,6 +134,11 @@ public class ReviseSearchCommand implements Command
           // null means the resultpanel would NOT be setted to a JDialog
           ResultPanel resultDisplayPanel = new ResultPanel(
            null, newResults, 12, null, morphoFrame.getDefaultContentAreaSize());
+          // if previsous frame sorted, then sorted
+          if (sorted)
+          {
+            resultDisplayPanel.sortTable(index, order);
+          }
           resultDisplayPanel.setVisible(true);
           frame.setMainContentPane(resultDisplayPanel);
           frame.setMessage(newResults.getRowCount()+ " data sets found");
