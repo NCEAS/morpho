@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-27 19:06:52 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-03-09 22:22:02 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -188,7 +188,7 @@ public class DataPackageFactory
       dp = new EML200DataPackage();
     
       try{
-        Node metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
+        Node metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
         dp.setMetadataPath(metadataPathNode);
       }
       catch (Exception e2) {

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-13 05:43:59 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-09 22:22:02 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -237,7 +237,7 @@ public class MetadataObject
   static public void main(String args[]) {
 
     try{
-      root = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
+      root = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
       Map mp = XMLUtilities.getDOMTreeAsXPathMap(root);
       System.out.println(mp.toString());
       // assumed XPath is in args[0]; evaluation of XPath expression can result in a variety of

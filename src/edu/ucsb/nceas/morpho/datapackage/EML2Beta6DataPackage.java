@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-09 05:56:40 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-03-09 22:22:02 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     if (doc==null) Log.debug(1, "doc is NULL!");
     metadataNode = doc.getDocumentElement();  // the root Node
     try{
-      metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
+      metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
     }
     catch (Exception e2) {
       Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
