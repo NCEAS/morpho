@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-29 21:20:42 $'
- * '$Revision: 1.133 $'
+ *     '$Date: 2003-12-30 19:09:38 $'
+ * '$Revision: 1.134 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1707,8 +1707,8 @@ public class DocFrame extends javax.swing.JFrame
             && (!str.equals("")) 
 //            &&(!(str.indexOf("schemaLocation")>-1))
           ) {
-//            start1.append(" " + str + "=\"" + val + "\"");
-            start1.append(str + "=\"" + val + "\"");
+            start1.append(" " + str + "=\"" + val + "\"");
+//DFH            start1.append(str + "=\"" + val + "\"");
           }
         }
         // next line adds cardinality info
