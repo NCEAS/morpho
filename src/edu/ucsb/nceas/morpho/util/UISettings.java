@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-13 23:35:37 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-12-18 19:54:33 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ package edu.ucsb.nceas.morpho.util;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Insets;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
@@ -80,6 +82,7 @@ public class UISettings
      *  for client screen width etc)
      */
     public static final double DEFAULT_WINDOW_WIDTH     = getWindowWidth();
+ 
     /**
      *  overall height (pixels) of MorphoFrame (after making allowance 
      *  for client screen height, taskbar etc)
@@ -97,6 +100,12 @@ public class UISettings
     public static final int PATHBAR_TOP_PADDING         = 2;
     public static final int PATHBAR_SIDES_PADDING       = 0;
     public static final int PATHBAR_BOTTOM_PADDING      = 2;
+    
+
+    /**
+     *  insets for nuttons in metaviewer - order is (TOP, LEFT, BOTTOM, RIGHT)
+     */
+    public static final Insets METAVIEW_BUTTON_INSETS = new Insets(2,5,2,5);
     
                                            
     //ignored by Borderlayout, but needed to create Dimension:
@@ -185,12 +194,16 @@ public class UISettings
 
     //                                       "null" means use default font...
     public static final Font SUBPANEL_TITLE_FONT   
-                                          = new Font("Dialog", Font.BOLD, 12);
-    public static final Font BUTTON_FONT  = new Font("Dialog", Font.BOLD, 11);
+                                          = new Font("Dialog", Font.BOLD,  12);
+                                          
+    public static final Font BUTTON_FONT  = new Font("Sans-Serif", Font.BOLD,  11);
+
     public static final Font TITLE_CITATION_FONT 
                                           = new Font("Dialog", Font.PLAIN, 12);
+                                          
     public static final Font TITLE_CITATION_FONT_BOLD 
-                                          = new Font("Dialog", Font.BOLD, 12);
+                                          = new Font("Dialog", Font.BOLD,  12);
+                                          
     public static final Font TITLE_LOCATION_FONT 
                                           = new Font("Dialog", Font.PLAIN, 9);
 
@@ -265,7 +278,7 @@ public class UISettings
     /**
      *  Settings for MetaData Viewer panels 
      */
-    public static final Color BACKBUTTON_TEXT_COLOR   = new Color(0, 198, 255);
+    public static final Color BACKBUTTON_TEXT_COLOR   = new Color(178,238,255);
 
     /**
      *  Settings for MetaData Viewer panels 
@@ -275,7 +288,13 @@ public class UISettings
     /**
      *  Settings for MetaData Viewer panels 
      */
-    public static final Color EDITBUTTON_TEXT_COLOR   = new Color(0, 255, 0);
+    public static final Color EDITBUTTON_TEXT_COLOR   = new Color(153, 255, 153);
+
+    /**
+     *  Settings for MetaData Viewer panels 
+     */
+    public static final Color BUTTON_DISABLED_TEXT_COLOR   
+                                                      = new Color(204,204,204);
 
     /**
      *  General alert text (eg shown in data view if data file not readable)
@@ -285,7 +304,7 @@ public class UISettings
     
     // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
     
-    public static final Color TITLEBAR_COLOR       = Color.gray;
+    public static final Color TITLEBAR_COLOR       = new Color(117,117,117);
     public static final Color BACKGROUND_COLOR     = Color.lightGray;
     public static final Color BOTTOMLINE_COLOR     = Color.darkGray;
     public static final Color BACKBUTTON_COLOR     = TITLEBAR_COLOR;
