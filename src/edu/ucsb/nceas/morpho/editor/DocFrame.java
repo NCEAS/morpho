@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-15 16:27:27 $'
- * '$Revision: 1.88 $'
+ *     '$Date: 2002-02-16 00:02:54 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -733,18 +733,22 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
          
          NodeInfo ni = (NodeInfo)node.getUserObject();
          
-         
-         if ((ni.getCardinality().equals("NOT SELECTED"))
-                  ||(ni.getCardinality().equals("SELECTED"))) {
+ 
+         if (ni.isChoice()) {
+ //        if ((ni.getCardinality().equals("NOT SELECTED"))
+ //                 ||(ni.getCardinality().equals("SELECTED"))) {
             for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
                 DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
                 NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
                 if (ni1.getName().equals(ni.getName())) {
-                  ni1.setCardinality("SELECTED");
+//                  ni1.setCardinality("SELECTED");
+                  ni1.setSelected(true);
                 }
                 else {
-                  ni1.setCardinality("NOT SELECTED");
+//                  ni1.setCardinality("NOT SELECTED");
+                  ni1.setSelected(false);
                 }
+               
             }
             tree.invalidate();
             OutputScrollPanel.repaint();
@@ -820,9 +824,11 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
           
           
           CardmenuItem.setText("Number: "+ni.getCardinality());
-          if ((ni.getCardinality().equalsIgnoreCase("ONE")) ||
-             (ni.getCardinality().equalsIgnoreCase("SELECTED"))  ||
-             (ni.getCardinality().equalsIgnoreCase("NOT SELECTED")))
+          if (ni.getCardinality().equalsIgnoreCase("ONE"))
+          
+//          ||   (ni.getCardinality().equalsIgnoreCase("SELECTED"))  ||
+//             (ni.getCardinality().equalsIgnoreCase("NOT SELECTED"))
+//             )
           
           {
             DupmenuItem.setEnabled(false);
@@ -990,8 +996,10 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	        DefaultMutableTreeNode par = (DefaultMutableTreeNode)node.getParent();
 	        int iii = par.getIndex(node);
 	        DefaultMutableTreeNode newnode = deepNodeCopy(node);
-	        if (((NodeInfo)newnode.getUserObject()).getCardinality().equalsIgnoreCase("SELECTED")) {
-	            ((NodeInfo)newnode.getUserObject()).setCardinality("NOT SELECTED");
+	        if ( (((NodeInfo)newnode.getUserObject()).isChoice())&&
+	          (((NodeInfo)newnode.getUserObject()).isSelected())
+	          ) {
+	            ((NodeInfo)newnode.getUserObject()).setSelected(false);
 	        }
 	        tree.expandPath(tp);
 	        par.insert(newnode,iii+1);
@@ -1114,7 +1122,8 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	  boolean emptyNodeParent = false;
 	  NodeInfo ni = (NodeInfo)node.getUserObject();
 	  name = ni.name;
-	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
+//	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
+	  if ((!ni.isChoice())||(ni.isChoice()&&(ni.isSelected()))) {
 	    // completely ignore NOT SELECTED nodes AND their children
 	    if ((!name.startsWith("(CHOICE)"))&&(!name.startsWith("(SEQUENCE)"))&&(!name.equals("Empty"))) {
 	      // ignore (CHOICE) nodes but process their children
@@ -1743,9 +1752,33 @@ private Vector sameParent(Vector list) {
             NodeInfo inputni = (NodeInfo)input.getUserObject();
             NodeInfo templateni = (NodeInfo)template.getUserObject();
             inputni.setCardinality(templateni.getCardinality());
-            if (templateni.getCardinality().equals("NOT SELECTED")) {
-                inputni.setCardinality("SELECTED");      
+            inputni.setChoice(templateni.isChoice());
+ //           inputni.setSelected(templateni.isSelected());
+//            if (templateni.getCardinality().equals("NOT SELECTED")) {
+//                inputni.setCardinality("SELECTED");      
+//            }
+          // first set all sibling of input to be not selected
+            if (templateni.isChoice()) {
+                DefaultMutableTreeNode parent = (DefaultMutableTreeNode)input.getParent();
+                if (((NodeInfo)parent.getUserObject()).isChoice()) {
+                    DefaultMutableTreeNode grandparent = (DefaultMutableTreeNode)parent.getParent();
+                    if (grandparent!=null) {
+                        Enumeration penum = grandparent.children();
+                        while (penum.hasMoreElements()) {
+                            DefaultMutableTreeNode sib = (DefaultMutableTreeNode)penum.nextElement();
+                            ((NodeInfo)sib.getUserObject()).setSelected(false);                        }
+                    }
+                    ((NodeInfo)parent.getUserObject()).setSelected(true);  
+                }
+                Enumeration enum = parent.children();
+                while (enum.hasMoreElements()) {
+                    DefaultMutableTreeNode sib = (DefaultMutableTreeNode)enum.nextElement();
+                    ((NodeInfo)sib.getUserObject()).setSelected(false);
+                }
+                // the fact that the input node exists indicates that it should be the selected node
+                inputni.setSelected(true);
             }
+            
             if (templateni.getHelp()!=null) {
               inputni.setHelp(templateni.getHelp());
             }
