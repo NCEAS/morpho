@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.52.2.1 $'
+ *     '$Date: 2002-05-08 19:45:29 $'
+ * '$Revision: 1.52.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.zip.*;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -223,7 +223,7 @@ public class DataPackage
    */
   private void parseTripleFile()
   {
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = framework.createDomParser();
     Document doc;
     InputSource in;
     FileInputStream fs;

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-06 16:20:14 $'
- * '$Revision: 1.52.2.2 $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.52.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import java.io.*;
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Document;
@@ -203,7 +203,7 @@ public class LocalQuery
     Node root;
     long starttime, curtime, fm;
     ClientFramework.debug(10, "(3.0) Creating DOM parser...");
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = framework.createDomParser();
     ClientFramework.debug(10, "(3.1) DOM parser created...");
     // first set up the catalog system for handling locations of DTDs
     CatalogEntityResolver cer = new CatalogEntityResolver();
@@ -244,14 +244,14 @@ public class LocalQuery
       if (currentfile.isFile()) {
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
-//        ClientFramework.debug(30,"current id: "+docid);
+        //ClientFramework.debug(10,"current id: "+docid);
         if (dom_collection.containsKey(docid)){
           root = ((Document)dom_collection.get(docid)).getDocumentElement();
           if (doctype_collection.containsKey(docid)) {
             currentDoctype = ((String)doctype_collection.get(docid));   
           }
         } else {
- //         ClientFramework.debug(30,"parsing "+docid);
+          //ClientFramework.debug(10,"parsing "+docid);
           InputSource in;
           try {
             in = new InputSource(new FileInputStream(filename));
@@ -260,9 +260,10 @@ public class LocalQuery
                                " threw: " + fnf.toString());
             continue;
           }
+          Document current_doc = null;
           try {
             ClientFramework.debug(10, "(3.2) Starting parse...");
-            parser.parse(in);
+            current_doc = parser.parse(in);
             ClientFramework.debug(10, "(3.3) Ended parse...");
           } catch(Exception e1) {
             // Either this isn't an XML doc, or its broken, so skip it
@@ -273,8 +274,7 @@ public class LocalQuery
 
           // Get the documentElement from the parser, which is what 
           // the selectNodeList method expects
-          Document current_doc = parser.getDocument();
-          root = parser.getDocument().getDocumentElement();
+          root = current_doc.getDocumentElement();
           dom_collection.put(docid,current_doc);
           String temp = getDocTypeFromDOM(current_doc);
           if (temp==null) temp = root.getNodeName();

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-02 21:50:26 $'
- * '$Revision: 1.71 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.71.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -253,7 +253,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   
 private void doQuery(final ResultFrame rsf, final Query query) {
   
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         ResultSet frs;
         public Object construct() {
           frs = query.execute();

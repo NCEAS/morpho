@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-06 16:20:14 $'
- * '$Revision: 1.6.4.2 $'
+ *     '$Date: 2002-05-08 19:45:29 $'
+ * '$Revision: 1.6.4.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
@@ -75,7 +77,8 @@ public class PackageWizardParser extends DefaultHandler
   
   public PackageWizardParser(Reader xml, String parserName)
   {
-    XMLReader parser = initializeParser(parserName);
+    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+            (ErrorHandler)this);
     if (parser == null) 
     {
       System.err.println("SAX parser not instantiated properly.");
@@ -98,6 +101,7 @@ public class PackageWizardParser extends DefaultHandler
     }
   }
   
+  /*
   private XMLReader initializeParser(String parserName) 
   {
     XMLReader parser = null;
@@ -120,6 +124,7 @@ public class PackageWizardParser extends DefaultHandler
     }
     return parser;
   }
+  */
   
   /**
    * This method is called whenever a new start tag is encountered.  It sorts

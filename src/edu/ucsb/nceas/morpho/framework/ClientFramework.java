@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.89.2.1 $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.89.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,14 @@ import java.net.URL;
 import java.lang.reflect.*;
 import java.lang.ClassCastException;
 import java.net.*;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.XMLReader;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import com.sun.net.ssl.internal.ssl.*;
 /**
@@ -84,6 +92,7 @@ public class ClientFramework extends javax.swing.JFrame
   private boolean pluginsLoaded = false;
   private String sessionCookie = null;
   private Itis itis;  
+  private ClassLoader classLoader = null;
   
   private boolean versionFlag = true;  //Java 1.3 or greater
 
@@ -116,6 +125,7 @@ public class ClientFramework extends javax.swing.JFrame
    */
   public ClientFramework(ConfigXML config)
   {
+    this.classLoader = Thread.currentThread().getContextClassLoader();
     this.config = config;
     this.profile = null;
     checkJavaVersion();
@@ -1682,4 +1692,96 @@ public class ClientFramework extends javax.swing.JFrame
     return this.versionFlag;   
  }
   
+  /**
+   * Set up a SAX parser for reading an XML document
+   *
+   * @param contentHandler object to be used for parsing the content
+   * @param errorHandler object to be used for handling errors
+   * @return a SAX XMLReader object for parsing
+   */
+  public static XMLReader createSaxParser(ContentHandler contentHandler, 
+          ErrorHandler errorHandler) 
+  {
+    XMLReader parser = null;
+
+    // Set up the SAX document handlers for parsing
+    try {
+
+      // Get an instance of the parser
+      SAXParserFactory spfactory = SAXParserFactory.newInstance();
+      SAXParser saxp = spfactory.newSAXParser();
+      parser = saxp.getXMLReader();
+
+      if (parser != null) {
+          ClientFramework.debug(10, "Parser created is: " +
+                  parser.getClass().getName());
+          parser.setFeature("http://xml.org/sax/features/namespaces", true);
+      } else {
+          ClientFramework.debug(9, "Unable to create SAX parser!");
+      }
+
+      // Set the ContentHandler to the provided object
+      if (null != contentHandler) {
+        parser.setContentHandler(contentHandler);
+      } else {
+        ClientFramework.debug(3, 
+                "Fatal error: no content handler for SAX parser!");
+      }
+
+      // Set the error Handler to the provided object
+      if (null != errorHandler) {
+        parser.setErrorHandler(errorHandler);
+      }
+
+    } catch (Exception e) {
+       ClientFramework.debug(1, "Failed to create SAX parser:\n" + 
+               e.toString());
+    }
+
+    return parser;
+  }
+
+  /**
+   * Get the class loader that loaded the application
+   *
+   * @returns the ClassLoader that loaded the application
+   */
+  public ClassLoader getClassLoader()
+  {
+      return this.classLoader;
+  }
+
+  /**
+   * Set up a DOM parser for reading an XML document
+   *
+   * @return a DOM parser object for parsing
+   */
+  public static DocumentBuilder createDomParser() 
+  {
+    DocumentBuilder parser = null;
+
+    try {
+        //ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        ClassLoader cl = ClientFramework.class.getClassLoader();
+        ClientFramework.debug(10, "Current ClassLoader is: " +
+                cl.getClass().getName());
+        Thread t = Thread.currentThread();
+        t.setContextClassLoader(cl);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        parser = factory.newDocumentBuilder();
+        if (parser != null) {
+            ClientFramework.debug(10, "Parser created is: " +
+                    parser.getClass().getName());
+        } else {
+            ClientFramework.debug(9, "Unable to create DOM parser!");
+        }
+    } catch (ParserConfigurationException pce) {
+            ClientFramework.debug(9, "Exception while creating DOM parser!");
+            ClientFramework.debug(10, pce.getMessage());
+    }
+
+    return parser;
+  }
+
 }

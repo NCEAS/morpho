@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.34.2.1 $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.34.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -810,7 +810,7 @@ private int getNumberOfPrevVersions(int row) {
 
 
 private void doUpload() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -891,7 +891,7 @@ private void doUpload() {
  
   
 private void doDownload() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -932,7 +932,7 @@ private void doDownload() {
 }
 
 private void doDeleteLocal() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -983,7 +983,7 @@ private void doDeleteLocal() {
 }
 
 private void doDeleteMetacat() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -1036,7 +1036,7 @@ private void doDeleteMetacat() {
 }
   
 private void doDeleteAll() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -1087,7 +1087,7 @@ private void doDeleteAll() {
 }
 
 private void doExport() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -1126,7 +1126,7 @@ private void doExport() {
 }
 
 private void doExportToZip() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -1165,7 +1165,7 @@ private void doExportToZip() {
 }
 
 private void doOpenDataPackage() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
@@ -1205,7 +1205,7 @@ private void doOpenDataPackage() {
  
   
 private void doRefreshQuery() {
-  final SwingWorker worker = new SwingWorker() {
+  final SwingWorker worker = new SwingWorker(framework.getClassLoader()) {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;

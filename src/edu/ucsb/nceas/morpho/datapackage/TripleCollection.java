@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.9.2.1 $'
+ *     '$Date: 2002-05-08 19:45:29 $'
+ * '$Revision: 1.9.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -52,6 +52,7 @@ import java.io.*;
 public class TripleCollection
 {
   private Vector triples = new Vector();
+  private ClientFramework framework = null;
   /**
    * Default Constructor
    */
@@ -65,6 +66,7 @@ public class TripleCollection
    */
    public TripleCollection(File triplesFile, ClientFramework framework)
    {
+       this.framework = framework;
      Document doc;
      try
      {
@@ -303,12 +305,13 @@ public class TripleCollection
   
   public NodeList getNodeList()
   {
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = framework.createDomParser();
     InputSource in;
     in = new InputSource(new StringReader(toXML("triples")));
+    Document doc = null;
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
     }
     catch(Exception e1)
     {
@@ -316,7 +319,6 @@ public class TripleCollection
                          e1.toString());
       //e1.printStackTrace();
     }
-    Document doc = parser.getDocument();
     return doc.getElementsByTagName("triple");
   }
   

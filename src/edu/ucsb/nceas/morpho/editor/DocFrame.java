@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-30 23:35:11 $'
- * '$Revision: 1.95.2.3 $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.95.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -432,7 +432,7 @@ public class DocFrame extends javax.swing.JFrame
 	        final String fdoctext = doctext;
 	        final boolean fflag = flag;
 
-    final SwingWorker worker = new SwingWorker() {
+    final SwingWorker worker = new SwingWorker(cf.getClassLoader()) {
         public Object construct() {
 	        
           initDocInner(fcf, fdoctext, fflag);
@@ -769,18 +769,19 @@ class SymAction implements java.awt.event.ActionListener {
             cer.setCatalog(myCatalog);
         }
         catch (Exception e) {
-          ClientFramework.debug(10, "Problem creating Catalog (772)!");
+          ClientFramework.debug(10, "Problem creating Catalog (772)!\n" +
+                  e.getMessage());
         }
         try {
             StringReader sr = new StringReader(xmlText);
-            String parserName = "org.apache.xerces.parsers.SAXParser";
+            //String parserName = "org.apache.xerces.parsers.SAXParser";
             XMLReader parser = null;
             // Get an instance of the parser
-            parser = XMLReaderFactory.createXMLReader(parserName);
             XMLDisplayHandler mh = new XMLDisplayHandler(tm);
-            parser.setContentHandler(mh);
+            //parser = XMLReaderFactory.createXMLReader(parserName);
+            parser = ClientFramework.createSaxParser((ContentHandler)mh,  null);
+            //parser.setContentHandler(mh);
             parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
-      
 	        parser.setEntityResolver(cer);
 	        InputSource is = new InputSource(sr);
 

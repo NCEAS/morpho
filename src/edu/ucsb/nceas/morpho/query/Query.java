@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-06 16:20:14 $'
- * '$Revision: 1.16.4.2 $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.16.4.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,14 +49,14 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 /**
  * A Class that represents a structured query, and can be 
@@ -120,7 +120,9 @@ public class Query extends DefaultHandler {
     queryStack   = new Stack();
 
     // Initialize the parser and read the queryspec
-    XMLReader parser = initializeParser();
+    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+            (ErrorHandler)this);
+
     if (parser == null) {
       framework.debug(1, "SAX parser not instantiated properly.");
     }
@@ -350,6 +352,7 @@ public class Query extends DefaultHandler {
   /**
    * Set up the SAX parser for reading the XML serialized query
    */
+  /*
   private XMLReader initializeParser() {
     XMLReader parser = null;
 
@@ -357,9 +360,6 @@ public class Query extends DefaultHandler {
     try {
 
       // Get an instance of the parser
-      //SAXParserFactory spfactory = SAXParserFactory.newInstance();
-      //SAXParser saxp = spfactory.newSAXParser();
-      //parser = saxp.getXMLReader();
       parser = XMLReaderFactory.createXMLReader(parserName);
 
       // Set the ContentHandler to this instance
@@ -374,6 +374,7 @@ public class Query extends DefaultHandler {
 
     return parser;
   }
+    */
 
   /**
    * callback method used by the SAX Parser when the start tag of an 
@@ -383,6 +384,7 @@ public class Query extends DefaultHandler {
   public void startElement (String uri, String localName, 
                             String qName, Attributes atts) 
          throws SAXException {
+    ClientFramework.debug(10, "Starting element parse: " + localName);
     BasicNode currentNode = new BasicNode(localName);
     // add attributes to BasicNode here
     if (atts != null) {
@@ -397,6 +399,7 @@ public class Query extends DefaultHandler {
       QueryGroup currentGroup = new QueryGroup(
                                 currentNode.getAttribute("operator"));
       if (rootQG == null) {
+        ClientFramework.debug(10, "Created root query group.");
         rootQG = currentGroup;
       } else {
         QueryGroup parentGroup = (QueryGroup)queryStack.peek();
@@ -782,6 +785,7 @@ public class Query extends DefaultHandler {
       framework.debug(1, w.getMessage());
     }
 
+    framework.debug(10, "(2.3) Metacat output is:\n" + queryResult);
     framework.debug(10, "(2.4) Done Executing metacat query...");
     return queryResult;
   }

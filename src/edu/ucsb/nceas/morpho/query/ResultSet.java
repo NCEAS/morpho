@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-06 16:20:14 $'
- * '$Revision: 1.26.2.1 $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.26.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,6 +196,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       SAXParserFactory spfactory = SAXParserFactory.newInstance();
       SAXParser saxp = spfactory.newSAXParser();
       parser = saxp.getXMLReader();
+      framework.debug(10, "Created parser with class: " + 
+              parser.getClass().getName());
       //parser = XMLReaderFactory.createXMLReader(parserName);
       framework.debug(10, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance

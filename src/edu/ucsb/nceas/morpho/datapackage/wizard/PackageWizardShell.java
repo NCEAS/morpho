@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-01 16:44:25 $'
- * '$Revision: 1.65.2.2 $'
+ *     '$Date: 2002-05-08 19:45:29 $'
+ * '$Revision: 1.65.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,19 +39,17 @@ import java.net.URL;
 import java.awt.*;
 import java.awt.event.*;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 
 import com.arbortext.catalog.*;
 
@@ -807,7 +805,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           return;
         }
         
-        DOMParser parser = new DOMParser();
+        DocumentBuilder parser = framework.createDomParser();
         InputSource in;
         FileInputStream fs;
         
@@ -845,7 +843,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         try
         {
-          parser.parse(in);
+          doc = parser.parse(in);
           fs.close();
         }
         catch(Exception e1)
@@ -853,8 +851,6 @@ public class PackageWizardShell extends javax.swing.JFrame
           System.err.println("File: " + f.getPath() + " : parse threw (8): " + 
                              e1.toString());
         }
-        //get the DOM rep of the document without triples
-        doc = parser.getDocument();
         NodeList tripleNodeList = triples.getNodeList();
         NodeList docTriplesNodeList = null;
         

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.15.4.1 $'
+ *     '$Date: 2002-05-08 19:45:29 $'
+ * '$Revision: 1.15.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,11 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -92,7 +91,7 @@ public class PackageUtil
       return null;
     }
    
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = framework.createDomParser();
     InputSource in;
     FileInputStream fs;
     
@@ -129,9 +128,10 @@ public class PackageUtil
       return null;
     }
     
+    Document doc = null;
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
       fs.close();
     }
     catch(Exception e1)
@@ -140,8 +140,6 @@ public class PackageUtil
                          e1.toString());
       return null;
     }
-    
-    Document doc = parser.getDocument();
     
     try
     {
@@ -166,7 +164,7 @@ public class PackageUtil
                                                                SAXException, 
                                                                Exception
   {
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = ClientFramework.createDomParser();
     Document doc;
     InputSource in;
     FileInputStream fs;
@@ -206,15 +204,13 @@ public class PackageUtil
     }
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
       fs.close();
     }
     catch(Exception e1)
     {
       throw new Exception(e1.getMessage());
     }
-    //get the DOM rep of the document without triples
-    doc = parser.getDocument();
     
     return doc;
   }
@@ -570,8 +566,8 @@ public class PackageUtil
   {
     String triplesTag = framework.getConfiguration().get("triplesTag", 0);
     File packageFile = dataPackage.getTriplesFile();
-    Document doc;
-    DOMParser parser = new DOMParser();
+    Document doc = null;
+    DocumentBuilder parser = framework.createDomParser();
     InputSource in;
     FileInputStream fs;
     
@@ -611,7 +607,7 @@ public class PackageUtil
     }
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
       fs.close();
     }
     catch(Exception e1)
@@ -620,7 +616,6 @@ public class PackageUtil
                          e1.toString());
     }
     //get the DOM rep of the document with existing triples
-    doc = parser.getDocument();
     NodeList tripleNodeList = triples.getNodeList();
     NodeList docTriplesNodeList = null;
     
@@ -670,8 +665,8 @@ public class PackageUtil
   {
     String triplesTag = framework.getConfiguration().get("triplesTag", 0);
     File packageFile = dataPackage.getTriplesFile();
-    Document doc;
-    DOMParser parser = new DOMParser();
+    Document doc = null;
+    DocumentBuilder parser = framework.createDomParser();
     InputSource in;
     FileInputStream fs;
     
@@ -711,7 +706,7 @@ public class PackageUtil
     }
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
       fs.close();
     }
     catch(Exception e1)
@@ -719,8 +714,6 @@ public class PackageUtil
       System.err.println("File: " + packageFile.getPath() + " : parse threw (5): " + 
                          e1.toString());
     }
-    //get the DOM rep of the document with existing triples
-    doc = parser.getDocument();
     NodeList docTriplesNodeList = null;
     
     try

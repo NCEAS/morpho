@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.11.6.1 $'
+ *     '$Date: 2002-05-08 19:45:30 $'
+ * '$Revision: 1.11.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -90,7 +90,7 @@ public class ConfigXML
   {
     this.fileName = filename;
 
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = ClientFramework.createDomParser();
     File XMLConfigFile = new File(filename);
     InputSource in;
     FileInputStream fs;
@@ -99,14 +99,13 @@ public class ConfigXML
 
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
       fs.close();
     } catch(Exception e1) {
       ClientFramework.debug(4, "Parsing " + filename + " threw: " + 
                             e1.toString());
       e1.printStackTrace();
     }
-    doc = parser.getDocument();
     root = doc.getDocumentElement();
   }
 
@@ -117,20 +116,19 @@ public class ConfigXML
    */
   public ConfigXML(InputStream configStream) throws FileNotFoundException
   {
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = ClientFramework.createDomParser();
     InputSource in;
     in = new InputSource(configStream);
 
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
       configStream.close();
     } catch(Exception e1) {
       ClientFramework.debug(4, "Parsing config file threw: " + 
                             e1.toString());
       e1.printStackTrace();
     }
-    doc = parser.getDocument();
     root = doc.getDocumentElement();
   }
   

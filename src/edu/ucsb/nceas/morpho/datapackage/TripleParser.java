@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-09-07 20:28:08 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-08 19:45:29 $'
+ * '$Revision: 1.4.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
+
 import java.sql.*;
 import java.util.Stack;
 import java.util.Vector;
@@ -40,6 +42,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
@@ -75,7 +79,8 @@ public class TripleParser extends DefaultHandler
   
   private void doInit(Reader xml, String parserName, CatalogEntityResolver cer)
   {
-    XMLReader parser = initializeParser(parserName);
+    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+            (ErrorHandler)this);
     if (parser == null) 
     {
       System.err.println("SAX parser not instantiated properly.");
@@ -102,6 +107,7 @@ public class TripleParser extends DefaultHandler
     }
   }
   
+  /*
   private XMLReader initializeParser(String parserName) 
   {
     XMLReader parser = null;
@@ -123,6 +129,7 @@ public class TripleParser extends DefaultHandler
     }
     return parser;
   }
+  */
   
   public void startElement(String uri, String localName, String qName, 
                            Attributes attributes) throws SAXException

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-06 16:20:14 $'
- * '$Revision: 1.6.6.2 $'
+ *     '$Date: 2002-05-08 19:45:29 $'
+ * '$Revision: 1.6.6.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
@@ -50,8 +52,6 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 /** 
  * A Class implementing callback bethods for the SAX parser to
@@ -75,7 +75,8 @@ public class PackageWizardShellParser extends DefaultHandler
    */
   public PackageWizardShellParser(Reader xml, String parserName)
   {
-    XMLReader parser = initializeParser(parserName);
+    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+            (ErrorHandler)this);
     if (parser == null) 
     {
       System.err.println("SAX parser not instantiated properly.");
@@ -101,6 +102,7 @@ public class PackageWizardShellParser extends DefaultHandler
   /**
    * performs init functions on the parser
    */
+  /*
   private XMLReader initializeParser(String parserName) 
   {
     XMLReader parser = null;
@@ -108,9 +110,6 @@ public class PackageWizardShellParser extends DefaultHandler
     try 
     {
       // Get an instance of the parser
-      //SAXParserFactory spfactory = SAXParserFactory.newInstance();
-      //SAXParser saxp = spfactory.newSAXParser();
-      //parser = saxp.getXMLReader();
       parser = XMLReaderFactory.createXMLReader(parserName);
       // Set the ContentHandler to this instance
       parser.setContentHandler(this);
@@ -126,6 +125,7 @@ public class PackageWizardShellParser extends DefaultHandler
     }
     return parser;
   }
+  */
   
   /**
    * This method is called whenever a new start tag is encountered.  It sorts
