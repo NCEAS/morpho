@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-17 23:30:28 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-18 16:06:46 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     initComponents();
     pack();
     setSize(800, 600);
+    this.show();
   }
   
   /**
@@ -61,7 +62,7 @@ public class DataPackageGUI extends javax.swing.JFrame
    */
   private void initComponents()
   {
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);  
+    //this.setDefaultCloseOperation(EXIT_ON_CLOSE);  
     contentPane.setLayout(new FlowLayout());
     
     JPanel mainPanel = new JPanel();

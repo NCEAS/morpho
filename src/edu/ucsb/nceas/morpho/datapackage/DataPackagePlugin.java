@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-17 23:30:28 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-18 16:06:47 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ public class DataPackagePlugin
    */
   public void initialize(ClientFramework cf)
   {
+    cf.debug(9, "initializing the DataPackagePlugin");
     this.framework = cf;
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
@@ -101,6 +102,8 @@ public class DataPackagePlugin
       public void actionPerformed(ActionEvent e) 
       {
         framework.debug(1, "Action fired: New Data Package");
+        DataPackage dp = new DataPackage();
+        DataPackageGUI gui = new DataPackageGUI(framework, dp);
       }
     };
     
