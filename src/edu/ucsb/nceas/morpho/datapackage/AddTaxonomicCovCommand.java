@@ -5,9 +5,9 @@
  *    Authors: Perumal Sambasivam
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-01 17:37:49 $'
- * '$Revision: 1.10 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-02 21:55:41 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,63 +106,73 @@ public class AddTaxonomicCovCommand implements Command {
     taxonomicPage = dpwPlugin.getPage(
         DataPackageWizardInterface.TAXONOMIC);
 				
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		Node taxonomicRoot = adp.getSubtree("taxonomicCoverage", 0);
-
-    if (taxonomicRoot!=null) {
-      map = XMLUtilities.getDOMTreeAsXPathMap(taxonomicRoot);
-    } else {
-			map = new OrderedMap();
-		}
-		
-		taxonomicPage.setPageData(map, "/taxonomicCoverage");
-		
-    ModalDialog wpd = new ModalDialog(taxonomicPage,
+		 boolean pageCanHandleAllData = insertCurrentData();
+    
+		if (pageCanHandleAllData) {
+			
+			ModalDialog wpd = new ModalDialog(taxonomicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
-
-    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
-    wpd.setVisible(true);
-
-    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+																
+			wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
+			wpd.setVisible(true);
 			
-			map = taxonomicPage.getPageData("/coverage/taxonomicCoverage");
-			Iterator it = map.keySet().iterator();
-			while(it.hasNext()) {
-				String k = (String)it.next();
-				System.out.println(k + " - " + (String)map.get(k));
-			}
-			
-			Node covRoot = null;
-			try {
-				DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-				Document doc = impl.createDocument("", "coverage", null);
+			if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 				
-				covRoot = doc.getDocumentElement();
-				XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
-				// now the covRoot node may have a number of temporalCoverage children
-				NodeList kids = covRoot.getChildNodes();
-				adp.removeTaxonomicNodes();
-				for (int i=0;i<kids.getLength();i++) {
-					Node kid = kids.item(i);
-					adp.insertCoverage(kid);          
-					System.out.println("Insetrting child " + i);
-				}
+				insertTaxonomicNode();
 			}
-			catch (Exception w) {
-				Log.debug(5, "Unable to add OrderMap elements to DOM");
-				w.printStackTrace();
-			}
-    
-			//taxonomicPage.setPageData(map, "/coverage/taxonomicCoverage");
-      UIController.showNewPackage(adp);
-    }
-    else {
-
-    }
+			
+		} else {
+			
+			UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+          "coverage", 0);
+		}
 
     return;
   }
-
+	
+	private void insertTaxonomicNode() {
+		
+		OrderedMap map = taxonomicPage.getPageData("/coverage/taxonomicCoverage[1]");
+		
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		Node covRoot = null;
+		
+		try {
+			DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+			Document doc = impl.createDocument("", "coverage", null);
+			
+			covRoot = doc.getDocumentElement();
+			XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
+			NodeList kids = covRoot.getChildNodes();
+			adp.removeTaxonomicNodes();
+			for (int i=0;i<kids.getLength();i++) {
+				Node kid = kids.item(i);
+				adp.insertCoverage(kid);          
+			}
+		}
+		catch (Exception w) {
+			Log.debug(5, "Unable to add OrderMap elements to DOM");
+			w.printStackTrace();
+		}
+		
+		UIController.showNewPackage(adp);
+		
+	}
+	private boolean insertCurrentData() {
+    
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		
+		if(adp == null) return false;
+    NodeList taxonList = adp.getTaxonomicNodeList();
+		
+    if (taxonList==null) return true;
+    for (int i=0;i<taxonList.getLength();i++) {
+			 OrderedMap taxonMap = XMLUtilities.getDOMTreeAsXPathMap(taxonList.item(i));
+       boolean flag = taxonomicPage.setPageData(taxonMap, "");
+       if (!flag) return false;
+    }
+    return true;
+  }
 }

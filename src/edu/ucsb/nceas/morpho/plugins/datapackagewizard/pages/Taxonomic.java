@@ -7,9 +7,9 @@
 *    Authors: Saurabh Garg
 *    Release: @release@
 *
-*   '$Author: brooke $'
-*     '$Date: 2004-04-02 07:31:20 $'
-* '$Revision: 1.16 $'
+*   '$Author: sambasiv $'
+*     '$Date: 2004-04-02 21:55:41 $'
+* '$Revision: 1.17 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -100,6 +100,7 @@ public class Taxonomic extends AbstractUIPage {
 
   public final String title      = "Taxonomic Coverage";
   public final String subtitle   = "";
+	private final String xPathRoot  = "/eml:eml/dataset/coverage/taxonomicCoverage[1]";
 
   ////////////////////////////////////////////////////////////
 
@@ -162,55 +163,64 @@ public class Taxonomic extends AbstractUIPage {
     ((JTextField)colObjects[0]).setForeground(Color.black);
     for(int i = 1;i<6;i++) {
       colObjects[i] = new JTextField();
-    }
+		}
+		colObjects[1].setInputVerifier(new InputVerifier() {
+			public boolean verify(JComponent input) {
+				return Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)input, 1);
+			}
+		});
+    //colObjects[2].setInputVerifier(new TaxonNameVerifier(this, 2));
+    //colObjects[3].setInputVerifier(new NewTaxonRankVerifier(this, 3));
+    //colObjects[4].setInputVerifier(new TaxonNameVerifier(this, 4));
+    //colObjects[5].setInputVerifier(new CommonNameVerifier(this));
+		
 
-
-    ((JTextField)colObjects[1]).addFocusListener(new FocusListener() {
-      public void focusGained(FocusEvent fe){
-        ((JTextField)fe.getComponent()).selectAll();
-      }
-      public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[1], 1);
-      }
-    });
-
-    ((JTextField)colObjects[3]).addFocusListener(new FocusListener() {
-      public void focusGained(FocusEvent fe){
-        ((JTextField)fe.getComponent()).selectAll();
-      }
-      public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[3], 3);
-      }
-    });
-
-    ((JTextField)colObjects[2]).addFocusListener(new FocusListener() {
-      public void focusGained(FocusEvent fe){
-        ((JTextField)fe.getComponent()).selectAll();
-      }
-      public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[2], 2);
-      }
-    });
-
-    ((JTextField)colObjects[4]).addFocusListener(new FocusListener() {
-      public void focusGained(FocusEvent fe){
-        ((JTextField)fe.getComponent()).selectAll();
-      }
-      public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[4], 4);
-      }
-    });
-
-    ((JTextField)colObjects[5]).addFocusListener(new FocusListener() {
-      public void focusGained(FocusEvent fe){
-        ((JTextField)fe.getComponent()).selectAll();
-      }
-      public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyCommonName(Taxonomic.this, (JTextField)colObjects[5]);
-      }
-    });
-
-
+		
+		/*((JTextField)colObjects[1]).addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent fe){
+				((JTextField)fe.getComponent()).selectAll();
+			}
+			public void focusLost(FocusEvent fe) {
+				Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[1], 1);
+			}
+		});*/
+		
+		((JTextField)colObjects[3]).addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent fe){
+				((JTextField)fe.getComponent()).selectAll();
+			}
+			public void focusLost(FocusEvent fe) {
+				Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[3], 3);
+			}
+		});
+		
+		((JTextField)colObjects[2]).addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent fe){
+				((JTextField)fe.getComponent()).selectAll();
+			}
+			public void focusLost(FocusEvent fe) {
+				Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[2], 2);
+			}
+		});
+		
+		((JTextField)colObjects[4]).addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent fe){
+				((JTextField)fe.getComponent()).selectAll();
+			}
+			public void focusLost(FocusEvent fe) {
+				Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[4], 4);
+			}
+		});
+		
+		((JTextField)colObjects[5]).addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent fe){
+				((JTextField)fe.getComponent()).selectAll();
+			}
+			public void focusLost(FocusEvent fe) {
+				Taxonomic.this.verifyCommonName(Taxonomic.this, (JTextField)colObjects[5]);
+			}
+		});
+		
     taxonList = WidgetFactory.makeList(colNames, colObjects, 0, true, true, false,
     true, false, false);
     double[] colPercentages = new double[] {28,14,14,14,14,16};
@@ -283,22 +293,26 @@ public class Taxonomic extends AbstractUIPage {
 
     centerPanel.add(headPanel);
     centerPanel.add(WidgetFactory.makeDefaultSpacer());
-    centerPanel.add(taxonPanel);
-    centerPanel.add(WidgetFactory.makeDefaultSpacer());
-    //////////////
 
+		centerPanel.add(taxonPanel);
+		centerPanel.add(WidgetFactory.makeDefaultSpacer());
+		//////////////
 
-    JPanel classTablePanel = WidgetFactory.makeVerticalPanel(-1);
-
-    classTablePanel.add(WidgetFactory.makeHTMLLabel("<b>Classification System </b>If the list of taxa belong to one or more different classification systems, list the citations for those systems.", 2, false));
-    classTablePanel.add(Box.createVerticalGlue());
-    classList = WidgetFactory.makeList(classColNames, classEditors, -1, true, true, false, true, false, false);
-    classTablePanel.add(classList);
-
-    Action classAddAction = new AbstractAction (){
-      public void actionPerformed(ActionEvent e) {
-
-        classificationCitationAddAction();
+		
+		JPanel classTablePanel = WidgetFactory.makeVerticalPanel(-1);
+		
+		classTablePanel.add(WidgetFactory.makeHTMLLabel("<b>Classification System </b>If the list of taxa belong to one or more different classification systems, list the citations for those systems.", 2, false));
+		classTablePanel.add(Box.createVerticalGlue());
+		JPanel classPanel = new JPanel(new BorderLayout());
+		classList = WidgetFactory.makeList(classColNames, classEditors, -1, true, true, false, true, false, false);
+		classPanel.add(classList, BorderLayout.CENTER);
+		classPanel.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
+		classTablePanel.add(classPanel);
+		
+		Action classAddAction = new AbstractAction (){
+			public void actionPerformed(ActionEvent e) {
+				
+				classificationCitationAddAction();
       }
     };
     Action classEditAction = new AbstractAction (){
@@ -602,7 +616,7 @@ public class Taxonomic extends AbstractUIPage {
   */
   public OrderedMap getPageData() {
 
-    return null;
+    return getPageData(xPathRoot);
   }
 
 
@@ -668,6 +682,7 @@ public class Taxonomic extends AbstractUIPage {
         } else {
 
           //cmp--;
+					prevHier = hierarchies[1];
           int start = 0;
           int temp = 0;
           int idx = -1;
@@ -796,26 +811,32 @@ public class Taxonomic extends AbstractUIPage {
    */
   public boolean setPageData(OrderedMap data, String _xPathRoot) {
 
-    this.taxonList.removeAllRows();
+    //this.taxonList.removeAllRows();
     Node covRoot;
     boolean result = true;
+		
+		data.remove("/taxonomicCoverage/@scope");
+		data.remove("/taxonomicCoverage/@id");
+		
+		//System.out.println("In setPageData of TaxonomicPage - " + data.toString());
+		
     try {
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
       Document doc = impl.createDocument("", "taxonomicCoverage", null);
 
       covRoot = doc.getDocumentElement();
       XMLUtilities.getXPathMapAsDOMTree(data, covRoot);
-      result = traverseTree(covRoot.getFirstChild(), new TaxonHierarchy(new Vector()));
+      result = traverseTree(covRoot, new TaxonHierarchy(new Vector()));
+			if(!result) return false;
+			else {
+				removeAllKeysStartingWith("/taxonomicCoverage/taxonomicClassification", data);
+			}
     } catch(Exception e) {
 
-      Log.debug(10, "Invalid orderedmap");
-      result = false;
+      Log.debug(10, "Invalid orderedmap - " + e);
+      return false;
     }
-    if(this.taxonList.getRowCount() == 0) {
-
-      TaxonListAddAction();
-    }
-
+    
 
     int size = data.keySet().size();
     String[] keys = new String[size];
@@ -845,11 +866,13 @@ public class Taxonomic extends AbstractUIPage {
         }
 
         CitationPage cpage = new CitationPage();
-        cpage.setPageData(map, "/classificationSystemCitation[1]");
+        boolean flag = cpage.setPageData(map, "/classificationSystemCitation[1]");
+				if(!flag) return false;
         List row = cpage.getSurrogate();
         if(row.size() == 0)
           break;
         row.add(map);
+				data.removeAll(map);
         this.classList.addRow(row);
         pos++;
       }
@@ -859,8 +882,8 @@ public class Taxonomic extends AbstractUIPage {
 
     this.taxonList.editCellAt(0, 2);
 
-
-    return result;
+		if(data.keySet().size() > 0) return false;
+    else return true;
   }
 
   private boolean traverseTree(Node root, TaxonHierarchy hier) {
@@ -936,6 +959,17 @@ public class Taxonomic extends AbstractUIPage {
     return toReturn;
 
   }
+	
+	private void removeAllKeysStartingWith(String path, OrderedMap map) {
+		
+		Iterator it = map.keySet().iterator();
+		while(it.hasNext()) {
+			
+			String key = (String)it.next();
+			if(key.startsWith(path)) it.remove();
+		}
+		return;
+	}
 
   private int compareStrings(String first, String sec) {
 
@@ -998,246 +1032,246 @@ public class Taxonomic extends AbstractUIPage {
   private static int validateTaxonCounter = 0;
   private static int commonNameCounter = 0;
   private static int taxonNameCounter = 0;
-
-  public boolean verifyTaxonRank(Taxonomic parent, JTextField jc, int pos) {
-
-    if(validateTaxonCounter > 0) {
-      return true;
-    }
-    validateTaxonCounter++;
-
-    boolean error = false;
-    JTextField textField = (JTextField) jc;
-    String newText = textField.getText();
-    int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
-
-    if(newText == null || newText.trim().equals("")) {
-      validateTaxonCounter--;
-      return true;
-    }
-    if(!isValidTaxonName(newText)) {
-      JOptionPane.showMessageDialog(Taxonomic.this, "Invalid characters in the taxon rank. Only letters and spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
-      validateTaxonCounter--;
-      //Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
-      int[] selRows = new int[]{rowIdx};
-      Taxonomic.this.taxonList.setSelectedRows(selRows);
-      return false;
-    }
-
-    List selRow = taxonList.getSelectedRowList();
-    TaxonHierarchy hier = null;
-    if(selRow.size() > 5)
-      hier = (TaxonHierarchy)selRow.get(6);
-
-    int currcnt = hier.getLevelCount();
-    if(pos == 1) {
-
-      String nextRank = (String) selRow.get(3);
-      TaxonLevel currLevel = null;
-      int mypos  = currcnt - 2;
-      if(nextRank.trim().equals("")) {
-        mypos = currcnt - 1;
-      } else {
-        mypos = currcnt - 2;
-      }
-      currLevel = hier.getTaxonAtLevel(mypos);
-      currLevel.setRank(newText);
-      if(newText.trim().equals("")) {
-        hier.removeTaxon(currLevel);
-      }
-
-    } else if(pos == 3) {
-
-      int mypos = currcnt - 1;
-      TaxonLevel currLevel = hier.getTaxonAtLevel(mypos);
-      currLevel.setRank(newText);
-      if(newText.trim().equals(""))
-        hier.removeTaxon(currLevel);
-
-    }
-
-    if(! hier.isValidHierarchy() ) {
-
-      JOptionPane.showMessageDialog(Taxonomic.this, "Error in the entry! The entered taxon rank is already present in the taxonomic hierarchy", "Error", JOptionPane.ERROR_MESSAGE);
-      int idx = Taxonomic.this.taxonList.getSelectedRowIndex();
-      //Taxonomic.this.taxonList.editCellAt(idx, pos);
-      //jc.requestFocus();
-      validateTaxonCounter--;
-      int[] selRows = new int[]{idx};
-      Taxonomic.this.taxonList.setSelectedRows(selRows);
-      return false;
-    }
-    List data = taxonList.getListOfRowLists();
-    Iterator it = data.iterator();
-    int cnt = -1;
-    while(it.hasNext()) {
-
-      List row = (List)it.next();
-      cnt++;
-      if(cnt == rowIdx)
-        continue;
-      if(row.size() < 6)
-        continue;
-      TaxonHierarchy tr = (TaxonHierarchy)row.get(6);
-      int res = hier.compareTo(tr);
-      if(res == 0) {
-
-        JOptionPane.showMessageDialog(Taxonomic.this, "Error in the entry! The entered taxonomic hierarchy is already present in the list", "Error", JOptionPane.ERROR_MESSAGE);
-        int idx = Taxonomic.this.taxonList.getSelectedRowIndex();
-        //Taxonomic.this.taxonList.editCellAt(idx, pos);
-        //jc.requestFocus();
-        validateTaxonCounter--;
-        int[] selRows = new int[]{idx};
-        Taxonomic.this.taxonList.setSelectedRows(selRows);
-        return false;
-      }
-    }
-
-    validateTaxonCounter--;
-    return true;
-  }
-
-  public boolean verifyCommonName(Taxonomic parent, JTextField jc) {
-
-    if(commonNameCounter > 0) {
-      return true;
-    }
-    commonNameCounter++;
-    String newName = ((JTextField)jc).getText();
-    if(!validateCommonNames(newName)) {
-      JOptionPane.showMessageDialog(parent, "Invalid characters in the common name(s). Only letters, digits and spaces are allowed. Common names are seperated by a comma", "Error", JOptionPane.ERROR_MESSAGE);
-      int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
-      //Taxonomic.this.taxonList.editCellAt(rowIdx, 5);
-      //jc.requestFocus();
-      commonNameCounter--;
-      int[] selRows = new int[]{rowIdx};
-      Taxonomic.this.taxonList.setSelectedRows(selRows);
-      return false;
-    }
-    List row = (List)Taxonomic.this.taxonList.getSelectedRowList();
-    TaxonHierarchy currHier = (TaxonHierarchy) row.get(6);
-    int currcount = currHier.getLevelCount();
-
-    TaxonLevel currLevel = currHier.getTaxonAtLevel(currcount - 1);
-    currLevel.setName(newName);
-    commonNameCounter--;
-    return true;
-  }
-
-  private boolean validateCommonNames(String text) {
-
-    char arr[] = text.toCharArray();
-    for(int i =0; i < arr.length; i++) {
-      if(arr[i] == ',' || Character.isLetterOrDigit(arr[i]) || Character.isSpaceChar(arr[i]))
-        continue;
-      return false;
-    }
-    return true;
-  }
-
-  public boolean verifyTaxonName(Taxonomic parent, JTextField jc, int pos) {
-
-    if(taxonNameCounter > 0) {
-      return true;
-    }
-    taxonNameCounter++;
-    int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
-    String newName = ((JTextField)jc).getText();
-    if(!isValidTaxonName(newName)) {
-      JOptionPane.showMessageDialog(parent, "Invalid characters in the taxon name. Only letters, digits and spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
-
-      //Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
-      //jc.requestFocus();
-      int[] selRows = new int[]{rowIdx};
-      Taxonomic.this.taxonList.setSelectedRows(selRows);
-      taxonNameCounter--;
-      return false;
-    }
-
-    List row = Taxonomic.this.taxonList.getSelectedRowList();
-    TaxonHierarchy currHier = (TaxonHierarchy)row.get(6);
-    int currcount = currHier.getLevelCount();
-
-    if(pos == 2) {
-      String r2 = (String)row.get(3);
-      TaxonLevel currLevel = null;
-      if(r2.trim().equals("")) { // next taxon is empty, meaning this is last taxon
-        currLevel = currHier.getTaxonAtLevel(currcount - 1);
-      } else {
-        if(currcount > 1)
-          currLevel = currHier.getTaxonAtLevel(currcount - 2);
-          else {
-            currLevel = new TaxonLevel("", newName, null);
-            currHier.insertTaxonAtLevel(0, currLevel);
-          }
-      }
-      if(currLevel != null)
-        currLevel.setName(newName);
-
-    } else if(pos == 4) {
-
-      TaxonLevel currLevel = currHier.getTaxonAtLevel(currcount - 1);
-      currLevel.setName(newName);
-    }
-
-
-    // check if the current hierarchy is a duplicate
-    List data = taxonList.getListOfRowLists();
-    Iterator it = data.iterator();
-    int cnt = -1;
-    while(it.hasNext()) {
-
-      List currRow = (List)it.next();
-      cnt++;
-      if(cnt == rowIdx)
-        continue;
-      if(currRow.size() < 6)
-        continue;
-      TaxonHierarchy tr = (TaxonHierarchy)currRow.get(6);
-      int res = currHier.compareTo(tr);
-      if(res == 0) {
-
-        JOptionPane.showMessageDialog(Taxonomic.this, "Error in the entry! The entered taxonomic hierarchy is already present in the list", "Error", JOptionPane.ERROR_MESSAGE);
-        //Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
-        //jc.requestFocus();
-        taxonNameCounter--;
-        int[] selRows = new int[]{rowIdx};
-        Taxonomic.this.taxonList.setSelectedRows(selRows);
-        return false;
-
-      }
-    }
-
-    List allRows = Taxonomic.this.taxonList.getListOfRowLists();
-    for(int i = 0; i < allRows.size(); i++) {
-
-      if(i == rowIdx) continue;
-      List currRow = (List)allRows.get(i);
-      TaxonHierarchy hier = (TaxonHierarchy)currRow.get(6);
-      if(hier == null || hier.getLevelCount() == 0) continue;
-      TaxonHierarchy parentHier = hier.getParentsOfName(newName);
-      if(parentHier == null) continue;
-      if(pos == 2) {
-
-
-      }
-    }
-
-
-    taxonNameCounter--;
-    return true;
-  }
-
-  private boolean isValidTaxonName(String text) {
-
-    char arr[] = text.toCharArray();
-    for(int i =0; i < arr.length; i++) {
-      if(Character.isLetterOrDigit(arr[i]) || Character.isSpaceChar(arr[i]))
-        continue;
-      return false;
-    }
-    return true;
-  }
+	
+	public boolean verifyTaxonRank(Taxonomic parent, JTextField textField, int pos) {
+		
+		if(validateTaxonCounter > 0) {
+			return true;
+		}
+		validateTaxonCounter++;
+		//System.out.println("in verifyTaxonRank; text = "+ textField.getText());
+		boolean error = false;
+		
+		String newText = textField.getText();
+		int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
+		
+		if(newText == null || newText.trim().equals("")) {
+			validateTaxonCounter--;
+			return true;
+		}
+		if(!isValidTaxonName(newText)) {
+			JOptionPane.showMessageDialog(Taxonomic.this, "Invalid characters in the taxon rank. Only letters and spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
+			validateTaxonCounter--;
+			//Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
+			int[] selRows = new int[]{rowIdx};
+			Taxonomic.this.taxonList.setSelectedRows(selRows);
+			return false;
+		}
+		
+		List selRow = taxonList.getSelectedRowList();
+		TaxonHierarchy hier = null;
+		if(selRow.size() > 5)
+			hier = (TaxonHierarchy)selRow.get(6);
+		
+		int currcnt = hier.getLevelCount();
+		if(pos == 1) {
+			
+			String nextRank = (String) selRow.get(3);
+			TaxonLevel currLevel = null;
+			int mypos  = currcnt - 2;
+			if(nextRank.trim().equals("")) {
+				mypos = currcnt - 1;
+			} else {
+				mypos = currcnt - 2;
+			}
+			currLevel = hier.getTaxonAtLevel(mypos);
+			currLevel.setRank(newText);
+			if(newText.trim().equals("")) {
+				hier.removeTaxon(currLevel);
+			}
+			
+		} else if(pos == 3) {
+			
+			int mypos = currcnt - 1;
+			TaxonLevel currLevel = hier.getTaxonAtLevel(mypos);
+			currLevel.setRank(newText);
+			if(newText.trim().equals(""))
+				hier.removeTaxon(currLevel);
+			
+		}
+		
+		if(! hier.isValidHierarchy() ) {
+			
+			JOptionPane.showMessageDialog(Taxonomic.this, "Error in the entry! The entered taxon rank is already present in the taxonomic hierarchy", "Error", JOptionPane.ERROR_MESSAGE);
+			int idx = Taxonomic.this.taxonList.getSelectedRowIndex();
+			//Taxonomic.this.taxonList.editCellAt(idx, pos);
+			//jc.requestFocus();
+			validateTaxonCounter--;
+			int[] selRows = new int[]{idx};
+			Taxonomic.this.taxonList.setSelectedRows(selRows);
+			return false;
+		}
+		List data = taxonList.getListOfRowLists();
+		Iterator it = data.iterator();
+		int cnt = -1;
+		while(it.hasNext()) {
+			
+			List row = (List)it.next();
+			cnt++;
+			if(cnt == rowIdx)
+				continue;
+			if(row.size() < 6)
+				continue;
+			TaxonHierarchy tr = (TaxonHierarchy)row.get(6);
+			int res = hier.compareTo(tr);
+			if(res == 0) {
+				
+				JOptionPane.showMessageDialog(Taxonomic.this, "Error in the entry! The entered taxonomic hierarchy is already present in the list", "Error", JOptionPane.ERROR_MESSAGE);
+				int idx = Taxonomic.this.taxonList.getSelectedRowIndex();
+				//Taxonomic.this.taxonList.editCellAt(idx, pos);
+				//jc.requestFocus();
+				validateTaxonCounter--;
+				int[] selRows = new int[]{idx};
+				Taxonomic.this.taxonList.setSelectedRows(selRows);
+				return false;
+			}
+		}
+		
+		validateTaxonCounter--;
+		return true;
+	}
+	
+	public boolean verifyCommonName(Taxonomic parent, JTextField jc) {
+		
+		if(commonNameCounter > 0) {
+			return true;
+		}
+		commonNameCounter++;
+		String newName = ((JTextField)jc).getText();
+		if(!validateCommonNames(newName)) {
+			JOptionPane.showMessageDialog(parent, "Invalid characters in the common name(s). Only letters, digits and spaces are allowed. Common names are seperated by a comma", "Error", JOptionPane.ERROR_MESSAGE);
+			int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
+			//Taxonomic.this.taxonList.editCellAt(rowIdx, 5);
+			//jc.requestFocus();
+			commonNameCounter--;
+			int[] selRows = new int[]{rowIdx};
+			Taxonomic.this.taxonList.setSelectedRows(selRows);
+			return false;
+		}
+		List row = (List)Taxonomic.this.taxonList.getSelectedRowList();
+		TaxonHierarchy currHier = (TaxonHierarchy) row.get(6);
+		int currcount = currHier.getLevelCount();
+		
+		TaxonLevel currLevel = currHier.getTaxonAtLevel(currcount - 1);
+		currLevel.setName(newName);
+		commonNameCounter--;
+		return true;
+	}
+	
+	private boolean validateCommonNames(String text) {
+		
+		char arr[] = text.toCharArray();
+		for(int i =0; i < arr.length; i++) {
+			if(arr[i] == ',' || Character.isLetterOrDigit(arr[i]) || Character.isSpaceChar(arr[i]))
+				continue;
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean verifyTaxonName(Taxonomic parent, JTextField jc, int pos) {
+		
+		if(taxonNameCounter > 0) {
+			return true;
+		}
+		taxonNameCounter++;
+		int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
+		String newName = ((JTextField)jc).getText();
+		if(!isValidTaxonName(newName)) {
+			JOptionPane.showMessageDialog(parent, "Invalid characters in the taxon name. Only letters, digits and spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
+			
+			//Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
+			//jc.requestFocus();
+			int[] selRows = new int[]{rowIdx};
+			Taxonomic.this.taxonList.setSelectedRows(selRows);
+			taxonNameCounter--;
+			return false;
+		}
+		
+		List row = Taxonomic.this.taxonList.getSelectedRowList();
+		TaxonHierarchy currHier = (TaxonHierarchy)row.get(6);
+		int currcount = currHier.getLevelCount();
+		
+		if(pos == 2) {
+			String r2 = (String)row.get(3);
+			TaxonLevel currLevel = null;
+			if(r2.trim().equals("")) { // next taxon is empty, meaning this is last taxon
+				currLevel = currHier.getTaxonAtLevel(currcount - 1);
+			} else {
+				if(currcount > 1) 
+					currLevel = currHier.getTaxonAtLevel(currcount - 2);
+					else {
+						currLevel = new TaxonLevel("", newName, null);
+						currHier.insertTaxonAtLevel(0, currLevel);
+					}
+			}
+			if(currLevel != null)
+				currLevel.setName(newName);
+			
+		} else if(pos == 4) {
+			
+			TaxonLevel currLevel = currHier.getTaxonAtLevel(currcount - 1);
+			currLevel.setName(newName);
+		}
+		
+		
+		// check if the current hierarchy is a duplicate
+		List data = taxonList.getListOfRowLists();
+		Iterator it = data.iterator();
+		int cnt = -1;
+		while(it.hasNext()) {
+			
+			List currRow = (List)it.next();
+			cnt++;
+			if(cnt == rowIdx)
+				continue;
+			if(currRow.size() < 6)
+				continue;
+			TaxonHierarchy tr = (TaxonHierarchy)currRow.get(6);
+			int res = currHier.compareTo(tr);
+			if(res == 0) {
+				
+				JOptionPane.showMessageDialog(Taxonomic.this, "Error in the entry! The entered taxonomic hierarchy is already present in the list", "Error", JOptionPane.ERROR_MESSAGE);
+				//Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
+				//jc.requestFocus();
+				taxonNameCounter--;
+				int[] selRows = new int[]{rowIdx};
+				Taxonomic.this.taxonList.setSelectedRows(selRows);
+				return false;
+				
+			}
+		}
+		
+		List allRows = Taxonomic.this.taxonList.getListOfRowLists();
+		for(int i = 0; i < allRows.size(); i++) {
+			
+			if(i == rowIdx) continue;
+			List currRow = (List)allRows.get(i);
+			TaxonHierarchy hier = (TaxonHierarchy)currRow.get(6);
+			if(hier == null || hier.getLevelCount() == 0) continue;
+			TaxonHierarchy parentHier = hier.getParentsOfName(newName);
+			if(parentHier == null) continue;
+			if(pos == 2) {
+				
+				
+			}
+		}
+		
+		
+		taxonNameCounter--;
+		return true;
+	}
+	
+	private boolean isValidTaxonName(String text) {
+		
+		char arr[] = text.toCharArray();
+		for(int i =0; i < arr.length; i++) {
+			if(Character.isLetterOrDigit(arr[i]) || Character.isSpaceChar(arr[i]))
+				continue;
+			return false;
+		}
+		return true;
+	}
 
 
 }
