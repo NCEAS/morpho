@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-26 22:38:51 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2001-07-06 16:48:43 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1142,6 +1142,12 @@ public class PackageWizard extends javax.swing.JFrame
           defaultText = (String)tempElement.attributes.get("defaulttext");
         }
         
+        if(tempElement.attributes.containsKey("tooltip"))
+        {
+          String tooltip = (String)tempElement.attributes.get("tooltip");
+          textfield.setToolTipText(tooltip);
+        }
+        
         if(tempElement.attributes.containsKey("repeatable"))
         { //if the text box is repeatable, make the label into a button
           //and when the button is pressed, repeat the element.
@@ -1396,6 +1402,12 @@ public class PackageWizard extends javax.swing.JFrame
           {
             required = true;
           }
+        }
+        
+        if(tempElement.attributes.containsKey("tooltip"))
+        {
+          String tooltip = (String)tempElement.attributes.get("tooltip");
+          combofield.setToolTipText(tooltip);
         }
         
         //make this combobox a child of the parent frame

@@ -7,20 +7,27 @@
                editable="no" defaulttext="to be assigned" visible="no"/>
       <group field="variable" repeatable="yes">
         <textbox label="Field Name" field="variable_name" size="15" allowNull="no"
-                 defaulttext="Enter Field Name here"/>
+                 defaulttext="Enter Field Name here"
+                 tooltip="The name of the field"/>
         <textbox label="Definition" field="variable_definition" size="15" allowNull="no" 
-                 defaulttext="Enter Field Definition here" />
-        <textbox label="Units" field="unit" size="15"/>
+                 defaulttext="Enter Field Definition here" 
+                 tooltip="The definition of the field"/>
+        <textbox label="Units" field="unit" size="15"
+                 tooltip="The measuring units encoded in this field"/>
         <group>
         <group label="Numeric Range" field="numeric_range" repeatable="yes"
                size="50x120">
-          <textbox label="Minimum" field="minimum" size="15"/>
-          <textbox label="Maximum" field="maximum" size="15"/>
+          <textbox label="Minimum" field="minimum" size="15"
+                   tooltip="The minimum numerical range of this field"/>
+          <textbox label="Maximum" field="maximum" size="15"
+                   tooltip="The maximum numerical range of this field"/>
         </group>
         </group>
         <textbox label="Missing Value Code" field="missing_value_code" 
-                 size="15" repeatable="yes"/>
-        <textbox label="Precision" field="precision" size="15"/>
+                 size="15" repeatable="yes"
+                 tooltip="The code that was entered to show a missing entry"/>
+        <textbox label="Precision" field="precision" size="15"
+                 tooltip="Mathematical precision of this field"/>
       </group>
     </group>
   </group>

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 21:50:19 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2001-07-06 16:48:43 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(640, 550);
+    setSize(660, 550);
   }
   
   public PackageWizardShell(ClientFramework cf)
@@ -113,7 +113,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(640, 550);
+    setSize(660, 550);
   }
   
   private void initComponents()

@@ -10,8 +10,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-18 23:07:57 $' 
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-07-06 16:48:42 $' 
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@
                   repeatable  (yes | no) "no" <!--is this text box repeatable?-->
                   allowNull   (yes | no) "yes" <!--can this text box be left 
                                                     with empty content-->
+                  tooltip     (#PCDATA)         <!--text for the tooltip for this field-->
                   visible     (yes | no) "yes"> <!--make this text box invisible--> 
                   
 <!ELEMENT combobox (item+)>
@@ -67,6 +68,7 @@
                    field       (#PCDATA)
                    size        (#PCDATA)
                    defaulttext (#PCDATA)
+                   tooltip     (#PCDATA)
                    repeatable  (yes | no) "no"
                    allowNull   (yes | no) "yes">
                    

@@ -5,20 +5,25 @@
     <group >
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" 
                editable="no" defaulttext="to be assigned" visible="no"/>
-      <textbox label="Short Name" field="shortName" size="15" />
+      <textbox label="Short Name" field="shortName" size="15" 
+               tooltip="A common name for the data package"/>
       <textbox label="Title" field="title" size="15" allowNull="no" 
-               defaulttext="Enter Data Package Title Here" />
+               defaulttext="Enter Data Package Title Here" 
+               tooltip="The official title of this data package"/>
     </group>
   
     <group label="Originator" repeatable="yes" field="originator" allowNull="no">
       <group  label="Name and Organization">
       <textbox label="Salutation" field="individualName/salutation" size="15"/>
-      <textbox label="Given Name" field="individualName/givenName" size="15"/>
+      <textbox label="Given Name" field="individualName/givenName" size="15"
+               tooltip="First name"/>
       <textbox label="Sur Name" field="individualName/surName" size="15" 
-               allowNull="no" defaulttext="berkley"/>
+               allowNull="no" defaulttext="berkley"
+               tooltip="Last Name"/>
       
       <textbox label="Organization" field="organizationName" size="15" 
-               repeatable="yes"/>
+               repeatable="yes" 
+               tooltip="The name of the organization to which this data package is attributed"/>
       </group>
       <group  label="Address Information">
       <textbox label="Address" field="address/deliveryPoint" size="15" 
@@ -32,14 +37,16 @@
       <group label="Phone and Electronic Information">
       <group field="@phone">
         <textbox label="Phone Number" field="FIELDVALUE" size="15"/>
-        <textbox label="Phone Type" field="phonetype" size="15" defaulttext="voice"/>
+        <textbox label="Phone Type" field="phonetype" size="15" defaulttext="voice"
+                 tooltip="The kind of phone that this is (i.e. voice, fax, data, etc.)"/>
       </group>
       <textbox label="Email address" field="electronicMailAddress" 
                size="15" />
       <textbox label="Web Site" field="onlineLink" size="15" 
                defaulttext="http://knb.ecoinformatics.org"/>
       <combobox label="Originators Role" field="role" size="15" 
-              allowNull="no" repeatable="yes" defaulttext="originator">
+              allowNull="no" repeatable="yes" defaulttext="originator"
+              tootip="The job of the contact person being described with regards to this data package">
         <item value="contentProvider"/>
         <item value="custodianSteward"/>
         <item value="owner"/>
@@ -56,6 +63,5 @@
       </group>
     </group>
     <textbox field="triple" visible="no"/>
-    
   </group>
 </wizard>

@@ -6,24 +6,29 @@
       <textbox label="identifier" size="10" visible="no" field="identifier" 
                required="yes"/>
       <textbox label="Name" field="entityName" size="20" allowNull="no" 
-               defaulttext="Enter Table Name Here"/>
-      <textbox label="Description" field="entityDescription"  size="20" />
+               defaulttext="Enter Table Name Here"
+               tooltip="The name of the table"/>
+      <textbox label="Description" field="entityDescription"  size="20" 
+               tooltip="A description of the table"/>
     </group>
     <group field="@orientation" size="370x35">
-      <combobox label="Orientation" field="columnorrow"  size="10" defaulttext="columnmajor">
+      <combobox label="Orientation" field="columnorrow"  size="10" defaulttext="columnmajor"
+                tooltip="The logical construction of the table">
         <item name="Column Major" value="columnmajor"/>
         <item name="Row Major" value="rowmajor"/>
       </combobox>
     </group>
     
     <group field="@caseSensitive" size="370x35">
-      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no">
+      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no"
+                tooltip="An identifier specifying wether this table is case sensitive or not">
         <item name="No" value="no" />
         <item name="Yes" value="yes"/>
       </combobox>
     </group>
     <group size="370x30">
-      <textbox label="Number of Records"  size="10" field="numberOfRecords"/>
+      <textbox label="Number of Records"  size="10" field="numberOfRecords"
+               tooltip="The number of records in this table"/>
     </group>
     </group>
   </group>
