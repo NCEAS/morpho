@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ------------------------------
 
-Version: Alpha 3 Release - June 22, 2001
+Version: Beta 1.2 release for Java 1.17 JVM
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
 
