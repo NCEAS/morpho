@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-26 21:51:41 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-11-26 22:50:21 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -294,8 +297,27 @@ public class SaveDialog extends JDialog
         return;
       }
    }
-		this.setVisible(false);
-		this.dispose();
+	this.setVisible(false);
+	this.dispose();
+
+  MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+  morphoFrame.setVisible(false);
+    
+  try {
+    ServiceController services = ServiceController.getInstance();
+    ServiceProvider provider = 
+                services.getServiceProvider(DataPackageInterface.class);
+    DataPackageInterface dataPackage = (DataPackageInterface)provider;
+    dataPackage.openNewDataPackage(adp, null, "eml:eml");
+    UIController controller = UIController.getInstance();
+    controller.removeWindow(morphoFrame);
+    morphoFrame.dispose();
+  }
+  catch (ServiceNotHandledException snhe) {
+      Log.debug(6, snhe.getMessage());
+      morphoFrame.setVisible(true);
+  }
+
 	}
 
  
