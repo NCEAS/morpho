@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-24 06:29:31 $'
- * '$Revision: 1.52 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-24 18:12:20 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -795,7 +795,15 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
     }
     
-    String location = DataPackage.LOCAL;
+    String location;
+    if(saveToMetacatCheckBox.isSelected())
+    {
+      location = DataPackage.BOTH;
+    }
+    else
+    {
+      location = DataPackage.LOCAL;
+    }
     WizardFrameContainer wfc = (WizardFrameContainer)
                                 frameWizards.elementAt(1);
     String identifier = wfc.id;
@@ -1077,21 +1085,20 @@ public class PackageWizardShell extends javax.swing.JFrame
  
   /** create a new ACL file */
   private File getACLFile(String id) {
-    String pubID = "-//ecoinformatics.org//eml-access//2.0.0beta4//EN";  //current default
+    String pubID = "-//ecoinformatics.org//eml-access//2.0.0beta4//EN";  
+    //current default
     if (config!=null) {
         pubID = config.get("accessFileType", 0);   
     }
     StringBuffer sb = new StringBuffer();
     sb.append("<?xml version=\"1.0\"?>\n");
-    sb.append("<!DOCTYPE acl PUBLIC \""+pubID+"\" \"eml-access.dtd\">\n");
+    sb.append("<!DOCTYPE acl PUBLIC \"" + pubID + "\" \"eml-access.dtd\">\n");
     sb.append("<acl authSystem=\"knb\" order=\"allowFirst\">\n");
-// Note: newer acl eml dtd requires the 'system' attribute - BE SURE NEW dtd is added to metacat!!!
-//    sb.append("<identifier system=\"knb\">" + id + "</identifier>\n");
+    // Note: newer acl eml dtd requires the 'system' attribute - BE SURE NEW dtd 
+    //is added to metacat!!
     sb.append("<identifier>" + id + "</identifier>\n");
     sb.append("<allow>\n");
     sb.append("<principal>" + framework.getUserName() + "</principal>\n");
-    sb.append("<permission>read</permission>\n");
-    sb.append("<permission>write</permission>\n");
     sb.append("<permission>all</permission>\n");
     sb.append("</allow>\n");
     if (publicAccessCheckBox.isSelected()) {
