@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:45:18 $'
- * '$Revision: 1.6 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-08 21:47:14 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 		//{{INIT_CONTROLS
 		setJMenuBar(JMenuBar1);
 		setTitle("edit_plugin");
-		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(488,309);
 		setVisible(false);
@@ -228,18 +228,18 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 
 	void exitApplication()
 	{
-		try {
+//		try {
 	    	// Beep
-	    	Toolkit.getDefaultToolkit().beep();
+//	    	Toolkit.getDefaultToolkit().beep();
 	    	// Show a confirmation dialog
-	    	int reply = JOptionPane.showConfirmDialog(this, 
-	    	                                          "Do you really want to exit?", 
-	    	                                          "JFC Application - Exit" , 
-	    	                                          JOptionPane.YES_NO_OPTION, 
-	    	                                          JOptionPane.QUESTION_MESSAGE);
+//	    	int reply = JOptionPane.showConfirmDialog(this, 
+//	    	                                          "Do you really want to exit?", 
+//	    	                                          "JFC Application - Exit" , 
+//	    	                                          JOptionPane.YES_NO_OPTION, 
+//	    	                                          JOptionPane.QUESTION_MESSAGE);
 			// If the confirmation was affirmative, handle exiting.
-			if (reply == JOptionPane.YES_OPTION)
-			{
+//			if (reply == JOptionPane.YES_OPTION)
+//			{
 			  if (framework!=null) {
 			    framework.removeWindow(this);  
 			  }
@@ -249,9 +249,9 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 		    	if (framework==null) {
 		    	  System.exit(0);            // close the application
 		    	}
-			}
-		} catch (Exception e) {
-		}
+//			}
+//		} catch (Exception e) {
+//		}
 	}
 
 	class SymWindow extends java.awt.event.WindowAdapter
@@ -406,4 +406,6 @@ public void editingCompleted(String xmlString, String id, String location) {
 }
 
 // --------------------------
+
+
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-06 22:46:18 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-08 21:47:15 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,12 +56,14 @@ public class AttributeEditDialog extends javax.swing.JDialog implements TableMod
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(329,176);
 		setVisible(false);
-		getContentPane().add(BorderLayout.CENTER,AttributeScrollPane);
+		getContentPane().add(BorderLayout.CENTER, AttributeScrollPane);
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
-		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
+		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
 		CancelButton.setText("Cancel");
+		CancelButton.setActionCommand("Cancel");
 		ControlPanel.add(CancelButton);
 		SaveButton.setText("Save");
+		SaveButton.setActionCommand("Save");
 		ControlPanel.add(SaveButton);
 		//}}
 		

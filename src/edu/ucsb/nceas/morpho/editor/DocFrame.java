@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-07 23:27:42 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-06-08 21:47:14 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ public class DocFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
-		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(600,305);
 		setVisible(false);
@@ -136,19 +136,20 @@ public class DocFrame extends javax.swing.JFrame
 		reload.setText("Reload Tree");
 		reload.setActionCommand("Reload Tree");
 		ControlPanel.add(reload);
+		reload.setVisible(false);
 		DTDParse.setText("Parse DTD");
 		DTDParse.setActionCommand("Parse DTD");
 		ControlPanel.add(DTDParse);
-		TestButton.setText("Test");
-		TestButton.setActionCommand("Test");
-		ControlPanel.add(TestButton);
-		TestButton.setVisible(false);
+		DTDParse.setVisible(false);
 		SaveXML.setText("Save XML...");
 		SaveXML.setActionCommand("Save XML...");
 		ControlPanel.add(SaveXML);
-		EditingExit.setText("Exit Editing");
+		EditingExit.setText("Save Changes");
 		EditingExit.setActionCommand("jbutton");
 		ControlPanel.add(EditingExit);
+		CancelButtons.setText("Cancel");
+		CancelButtons.setActionCommand("Cancel");
+		ControlPanel.add(CancelButtons);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
 		//$$ saveFileDialog.move(0,306);
@@ -187,11 +188,11 @@ public class DocFrame extends javax.swing.JFrame
 		SymChange lSymChange = new SymChange();
 		reload.addActionListener(lSymAction);
 		DTDParse.addActionListener(lSymAction);
-		TestButton.addActionListener(lSymAction);
 		SaveXML.addActionListener(lSymAction);
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
 		EditingExit.addActionListener(lSymAction);
+		CancelButtons.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -324,9 +325,9 @@ public class DocFrame extends javax.swing.JFrame
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
 	javax.swing.JButton reload = new javax.swing.JButton();
 	javax.swing.JButton DTDParse = new javax.swing.JButton();
-	javax.swing.JButton TestButton = new javax.swing.JButton();
 	javax.swing.JButton SaveXML = new javax.swing.JButton();
 	javax.swing.JButton EditingExit = new javax.swing.JButton();
+	javax.swing.JButton CancelButtons = new javax.swing.JButton();
 	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	//}}
 
@@ -372,12 +373,12 @@ class SymAction implements java.awt.event.ActionListener {
 				reload_actionPerformed(event);
 			else if (object == DTDParse)
 				DTDParse_actionPerformed(event);
-			else if (object == TestButton)
-				TestButton_actionPerformed(event);
-			else if (object == SaveXML)
+			if (object == SaveXML)
 				SaveXML_actionPerformed(event);
 			else if (object == EditingExit)
 				EditingExit_actionPerformed(event);
+			else if (object == CancelButtons)
+				CancelButtons_actionPerformed(event);
 		}
 }
 
@@ -980,13 +981,6 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
     inputni.setCardinality(templateni.getCardinality());
   }
 }
-//------------------------------------------------------------	 
-
-	void TestButton_actionPerformed(java.awt.event.ActionEvent event)
-	{
-	  rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-		treeUnion(rootNode,dtdtree.rootNode);
-	}
 	
 
 	void SaveXML_actionPerformed(java.awt.event.ActionEvent event)
@@ -1003,22 +997,14 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 
 	class SymWindow extends java.awt.event.WindowAdapter
 	{
-		public void windowClosed(java.awt.event.WindowEvent event)
+		public void windowClosing(java.awt.event.WindowEvent event)
 		{
 			Object object = event.getSource();
 			if (object == DocFrame.this)
-				DocFrame_windowClosed(event);
+				DocFrame_windowClosing(event);
 		}
-	}
+  }
 
-	void DocFrame_windowClosed(java.awt.event.WindowEvent event)
-	{
-			  if (framework!=null) {
-			    framework.removeWindow(this);  
-			  }
-		    	this.setVisible(false);    // hide the Frame
-	//	    	this.dispose();            // free the system resources
-	}
 	
 	public void setController(EditorPlugin con) {
 	    this.controller = con;
@@ -1031,5 +1017,33 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 		this.hide();
 	  String xmlout = writeXMLString(rootNode);
 		controller.fireEditingCompleteEvent(this, xmlout);
+	}
+
+	void DocFrame_windowClosing(java.awt.event.WindowEvent event)
+	{
+    // Show a confirmation dialog
+    int reply = JOptionPane.showConfirmDialog(this,
+						"Do you really want to exit without saving changes?",
+						"Editor - Exit",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+      // If the confirmation was affirmative, handle exiting.
+    if (reply == JOptionPane.YES_OPTION) {
+			  if (framework!=null) {
+			    framework.removeWindow(this);  
+			  }
+		    	this.setVisible(false);    // hide the Frame
+	//	    	this.dispose();            // free the system resources
+	  }
+	}
+	
+
+	void CancelButtons_actionPerformed(java.awt.event.ActionEvent event)
+	{
+			  if (framework!=null) {
+			    framework.removeWindow(this);  
+			  }
+		    	this.setVisible(false);    // hide the Frame
+		    	this.dispose();            // free the system resources
 	}
 }
