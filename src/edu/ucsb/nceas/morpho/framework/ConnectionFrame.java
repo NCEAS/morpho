@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-08 00:11:29 $'
- * '$Revision: 1.32.6.1 $'
+ *     '$Date: 2002-08-08 22:19:33 $'
+ * '$Revision: 1.32.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.net.*;
 import java.io.*;
@@ -164,7 +165,7 @@ public class ConnectionFrame extends javax.swing.JDialog
       ActivityLabel.setIcon(still);
       flapping = new javax.swing.ImageIcon(getClass().getResource("Btfly4.gif"));
     } catch (Exception w) {
-      Morpho.debug(7, "Error in loading images");
+      Log.debug(7, "Error in loading images");
     }
 
     pack();
@@ -235,7 +236,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     if (component!=null) {
           component.addKeyListener(keyPressListener);
     } else {
-      Morpho.debug(10,
+      Log.debug(10,
             "ConnectionFrame.addKeyListenerToComponent() - received NULL arg");
       return;
     }
@@ -324,7 +325,7 @@ public class ConnectionFrame extends javax.swing.JDialog
               
               dispose();
             } else {
-              Morpho.debug(9, "Login failed.\n" + 
+              Log.debug(9, "Login failed.\n" + 
                     "Please check the Caps Lock key and try again.");
               DisconnectButton.setEnabled(false);
               ActivityLabel.setIcon(still);

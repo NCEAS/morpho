@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-08 00:11:29 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-08 22:19:32 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
@@ -123,7 +124,7 @@ public class Morpho
     try {
       metacatPingURL = new URL(metacatURL);
     } catch (MalformedURLException mfue){
-      debug(5, "unable to read or resolve Metacat URL");
+      Log.debug(5, "unable to read or resolve Metacat URL");
     }
     
     /*
@@ -181,7 +182,7 @@ public class Morpho
     }
     catch(ClassCastException cce)
     {
-      debug(5, "Error loading plugin: wrong class!");
+      Log.debug(5, "Error loading plugin: wrong class!");
     }
     */
   }
@@ -240,7 +241,7 @@ public class Morpho
     editMenuActions = new Action[4];
     Action cutItemAction = new AbstractAction("Cut") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Cut is not yet implemented.");
+        Log.debug(9, "Cut is not yet implemented.");
       }
     };
     cutItemAction.putValue(Action.ACCELERATOR_KEY, 
@@ -256,7 +257,7 @@ public class Morpho
 
     Action copyItemAction = new AbstractAction("Copy") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Copy is not yet implemented.");
+        Log.debug(9, "Copy is not yet implemented.");
       }
     };
     copyItemAction.putValue(Action.ACCELERATOR_KEY, 
@@ -272,7 +273,7 @@ public class Morpho
 
     Action pasteItemAction = new AbstractAction("Paste") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Paste is not yet implemented.");
+        Log.debug(9, "Paste is not yet implemented.");
       }
     };
     pasteItemAction.putValue(Action.ACCELERATOR_KEY, 
@@ -288,7 +289,7 @@ public class Morpho
 
     Action prefsItemAction = new AbstractAction("Preferences...") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Preferences dialog not yet implemented!");
+        Log.debug(9, "Preferences dialog not yet implemented!");
       }
     };
     prefsItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -378,7 +379,7 @@ public class Morpho
       cf.setVisible(true);
     } else {
       profile.set("searchmetacat", 0, "false");
-      debug(6, "No MetaCat connection available - can't log in");
+      Log.debug(6, "No MetaCat connection available - can't log in");
     }
   }
 
@@ -422,15 +423,15 @@ public class Morpho
         // Set the new profile to the one selected if it is different
         if (null != newProfile) {
             if (currentProfile.equals(newProfile)) {
-                Morpho.debug(9, "No change in profile.");
+                Log.debug(9, "No change in profile.");
             } else {
                 setProfile(newProfile);
-                Morpho.debug(9, "New profile is: " + newProfile);
+                Log.debug(9, "New profile is: " + newProfile);
             }
         }
     } else {
         // This is an error
-        Morpho.debug(3, "Error: Can not switch profiles.\n " +
+        Log.debug(3, "Error: Can not switch profiles.\n " +
                 "profile_directory is not a directory.");
     }
   }
@@ -449,15 +450,15 @@ public class Morpho
     }
     catch(InstantiationException e)
     {
-      debug(1, e.toString());
+      Log.debug(1, e.toString());
     }
     catch(IllegalAccessException e)
     {
-      debug(1, e.toString());
+      Log.debug(1, e.toString());
     }
     catch(ClassNotFoundException e)
     {
-      debug(1, e.toString());
+      Log.debug(1, e.toString());
     }
     return object;
   }
@@ -531,7 +532,7 @@ public class Morpho
     {
       //FileInputStream data = new FileInputStream(file);
 
-      Morpho.debug(20, "Sending data to: |" + metacatURL + "|");
+      Log.debug(20, "Sending data to: |" + metacatURL + "|");
       URL url = new URL(metacatURL.trim());
       HttpMessage msg = new HttpMessage(url);
       Properties args = new Properties();
@@ -540,7 +541,7 @@ public class Morpho
 
       Properties dataStreams = new Properties();
       String filename = file.getAbsolutePath();
-      Morpho.debug(20, "Sending data file: " + filename);
+      Log.debug(20, "Sending data file: " + filename);
       dataStreams.put("datafile", filename);
       
       /*
@@ -575,7 +576,7 @@ public class Morpho
         }
       }
     } catch(Exception e) {
-      Morpho.debug(1, "Fatal error sending binary data to Metacat: " + 
+      Log.debug(1, "Fatal error sending binary data to Metacat: " + 
                             e.getMessage());
       e.printStackTrace(System.err);
     }
@@ -609,7 +610,7 @@ public class Morpho
      */
     try
     {
-      debug(20, "Sending data to: " + metacatURL);
+      Log.debug(20, "Sending data to: " + metacatURL);
       URL url = new URL(metacatURL);
       HttpMessage msg = new HttpMessage(url);
       returnStream = msg.sendPostMessage(prop);
@@ -620,7 +621,7 @@ public class Morpho
     {
       try
       {
-        debug(20, "Sending data (again) to : " + metacatURL);
+        Log.debug(20, "Sending data (again) to : " + metacatURL);
         URL url = new URL(metacatURL);
         HttpMessage msg = new HttpMessage(url);
         returnStream = msg.sendPostMessage(prop);
@@ -631,7 +632,7 @@ public class Morpho
       {
         try
         {
-          debug(20, "Sending data (again)(again) to: " + metacatURL);
+          Log.debug(20, "Sending data (again)(again) to: " + metacatURL);
           URL url = new URL(metacatURL);
           HttpMessage msg = new HttpMessage(url);
           returnStream = msg.sendPostMessage(prop);
@@ -640,7 +641,7 @@ public class Morpho
         }
         catch(Exception e3)
         {
-          debug(1, "Fatal error sending data to Metacat: " + e3.getMessage());
+          Log.debug(1, "Fatal error sending data to Metacat: " + e3.getMessage());
           e.printStackTrace(System.err);
         }
       }
@@ -695,7 +696,7 @@ public class Morpho
     }
     catch(Exception e)
     {
-      debug(1, "Fatal error sending data to Metacat.");
+      Log.debug(1, "Fatal error sending data to Metacat.");
     }
     return response;
   }
@@ -708,7 +709,7 @@ public class Morpho
     Properties prop = new Properties();
     prop.put("action", "login");
     prop.put("qformat", "xml");
-    debug(20, "Logging in using uid: " + userName);
+    Log.debug(20, "Logging in using uid: " + userName);
     prop.put("username", userName);
     prop.put("password", passWord);
 
@@ -762,7 +763,7 @@ public class Morpho
    */
   private void updateStatusBar() {
     /*
-    debug(19,"updateStatusBar() called; networkStatus = "+networkStatus);
+    Log.debug(19,"updateStatusBar() called; networkStatus = "+networkStatus);
     statusBar.setConnectStatus(networkStatus);
     statusBar.setLoginStatus  (connected && networkStatus);
     statusBar.setSSLStatus    (sslStatus);
@@ -875,7 +876,7 @@ public class Morpho
   public void addConnectionListener(ConnectionListener listener)
   {
     if (!connectionRegistry.contains(listener)) {
-      debug(20, "Adding listener: " + listener.toString());
+      Log.debug(20, "Adding listener: " + listener.toString());
       connectionRegistry.addElement(listener);
     }
   }
@@ -946,7 +947,7 @@ public class Morpho
     String scope = profile.get("scope", 0);
     String dn = profile.get("dn", 0);
     //setUserName(username);
-    debug(20, "Setting username to dn: " + dn);
+    Log.debug(20, "Setting username to dn: " + dn);
     setUserName(dn);
 
     if (! config.set("current_profile", 0, profilename)) {
@@ -975,7 +976,7 @@ public class Morpho
         ConfigXML newProfile = new ConfigXML(newProfilePath);
         setProfile(newProfile);
       } catch (FileNotFoundException fnf) {
-        Morpho.debug(5, "Profile not found!");
+        Log.debug(5, "Profile not found!");
       }
     }
   } 
@@ -996,7 +997,7 @@ public class Morpho
     Vector synonymList = new Vector();
 
     // Look up the name we were passed
-    Morpho.debug(20, "Searching ITIS for synonyms of: " + taxonName);
+    Log.debug(20, "Searching ITIS for synonyms of: " + taxonName);
     try {
       long newTsn = itis.findTaxonTsn(taxonName);
       if (newTsn > 0) {
@@ -1008,46 +1009,14 @@ public class Morpho
             synonymList.addElement(synonymTaxon.getScientificName());
           }
         } catch (ItisException ie) {
-          Morpho.debug(20, "Problem with ITIS lookup for: " + taxonName);
+          Log.debug(20, "Problem with ITIS lookup for: " + taxonName);
         }
       }
     } catch (ItisException iesearch) {
-      Morpho.debug(20, "Taxon not found in ITIS: " + taxonName);
+      Log.debug(20, "Taxon not found in ITIS: " + taxonName);
     }
     return synonymList;
   }
-
-  /**
-   * Print debugging messages based on severity level, where severity level 1
-   * are the most critical and higher numbers are more trivial messages.
-   * Messages with severity 1 to 4 will result in an error dialog box for the
-   * user to inspect.  Those with severity 5-9 result in a warning dialog
-   * box for the user to inspect.  Those with severity greater than 9 are
-   * printed only to standard error.
-   * Setting the debug_level to 0 in the configuration file turns all messages
-   * off.
-   *
-   * @param severity the severity of the debug message
-   * @param message the message to log
-   */
-  public static void debug(int severity, String message)
-  {
-    if (debug) {
-      if (debug_level > 0 && severity <= debug_level) {
-        // Show a dialog for severe errors
-        if (severity < 5) {
-          JOptionPane.showMessageDialog(null, message, "Error!",
-                                        JOptionPane.ERROR_MESSAGE);
-        } else if (severity < 10) {
-          JOptionPane.showMessageDialog(null, message, "Warning!",
-                                        JOptionPane.WARNING_MESSAGE);
-        }
-
-        // Everything gets printed to standard error
-        System.err.println(message);
-      }
-    }
-  } 
 
   /**
    * Load configuration parameters from the config file as needed
@@ -1057,8 +1026,6 @@ public class Morpho
     metacatURL = config.get("metacat_url", 0);
     String temp_uname = config.get("username", 0);
     userName = (temp_uname != null) ? temp_uname : "public";
-    debug_level = (new Integer(config.get("debug_level", 0))).intValue();
-    debug(20, "Debug_level set to: " + debug_level);
   }
 
   /**
@@ -1103,7 +1070,7 @@ public class Morpho
       configDir = new File(ConfigXML.getConfigDirectory());
       if (!configDir.exists()) {
         if (!configDir.mkdir()) {
-          Morpho.debug(1, "Failed to create config directory");
+          Log.debug(1, "Failed to create config directory");
           System.exit(0);
         }
       }
@@ -1116,7 +1083,7 @@ public class Morpho
           ClassLoader cl = Thread.currentThread().getContextClassLoader();
           InputStream configInput = cl.getResourceAsStream(configFile);
           if (configInput == null) {
-            Morpho.debug(1, "Could not find default configuration file.");
+            Log.debug(1, "Could not find default configuration file.");
             System.exit(0);
           }
           byte buf[] = new byte[4096];
@@ -1128,8 +1095,8 @@ public class Morpho
           out.close();
         }
       } catch (IOException ioe) {
-        Morpho.debug(1, "Error copying config: " + ioe.getMessage());
-        Morpho.debug(1, ioe.getClass().getName());
+        Log.debug(1, "Error copying config: " + ioe.getMessage());
+        Log.debug(1, ioe.getClass().getName());
         ioe.printStackTrace(System.err);
         System.exit(0);
       }
@@ -1157,7 +1124,7 @@ public class Morpho
       Date now = new Date();
  //     if (now.after(expiration))  // removed for release version
       if (false) {
-        clf.debug(1, "This version of Morpho has expired! " +
+        Log.debug(1, "This version of Morpho has expired! " +
            "See http://knb.ecoinformatics.org/ for a newer version.");
            JOptionPane.showMessageDialog(null,
            "This version of Morpho has expired!\n" +
@@ -1166,7 +1133,7 @@ public class Morpho
       } else {
  //       if (now.after(warning))
         if (false) {
-          clf.debug(1, "This version of Morpho will expire on " +
+          Log.debug(1, "This version of Morpho will expire on " +
             "April 1, 2002. See http://knb.ecoinformatics.org/ for a " +
             "newer version.");
           JOptionPane.showMessageDialog(null,
@@ -1196,6 +1163,9 @@ public class Morpho
         }
                 
         // Set up logging as appropriate
+        Log log = Log.getLog();
+        debug_level = (new Integer(config.get("debug_level", 0))).intValue();
+        log.setDebugLevel(debug_level);
         String log_file_setting = config.get("log_file", 0);
         if (log_file_setting != null) {
           if (log_file_setting.equalsIgnoreCase("true")) {
@@ -1217,7 +1187,15 @@ public class Morpho
         // make the Morpho visible.
         sf.dispose();
         
-        debug(1, "Finished main, what to do now?");
+        MorphoFrame tempFrame = new MorphoFrame(config);
+        JPanel content = new JPanel();
+        //content.setSize(300,500);
+        JTextArea ta = new JTextArea("This is a test",50,200);
+        content.add(ta);
+        tempFrame.setMainContentPane(content);
+        tempFrame.setVisible(true);
+
+        Log.debug(1, "Finished main, what to do now? Exit?");
         System.exit(0);
       }
     } catch(Throwable t) {
@@ -1345,17 +1323,17 @@ public class Morpho
 
       if (parser != null) {
           parser.setFeature("http://xml.org/sax/features/namespaces", true);
-          Morpho.debug(30, "Parser created is: " +
+          Log.debug(30, "Parser created is: " +
                   parser.getClass().getName());
       } else {
-          Morpho.debug(9, "Unable to create SAX parser!");
+          Log.debug(9, "Unable to create SAX parser!");
       }
 
       // Set the ContentHandler to the provided object
       if (null != contentHandler) {
         parser.setContentHandler(contentHandler);
       } else {
-        Morpho.debug(3, 
+        Log.debug(3, 
                 "No content handler for SAX parser!");
       }
 
@@ -1365,7 +1343,7 @@ public class Morpho
       }
 
     } catch (Exception e) {
-       Morpho.debug(1, "Failed to create SAX parser:\n" + 
+       Log.debug(1, "Failed to create SAX parser:\n" + 
                e.toString());
     }
 
@@ -1384,7 +1362,7 @@ public class Morpho
     try {
         //ClassLoader cl = Thread.currentThread().getContextClassLoader();
         ClassLoader cl = Morpho.class.getClassLoader();
-        Morpho.debug(30, "Current ClassLoader is: " +
+        Log.debug(30, "Current ClassLoader is: " +
                 cl.getClass().getName());
         Thread t = Thread.currentThread();
         t.setContextClassLoader(cl);
@@ -1392,14 +1370,14 @@ public class Morpho
         factory.setNamespaceAware(true);
         parser = factory.newDocumentBuilder();
         if (parser != null) {
-            Morpho.debug(30, "Parser created is: " +
+            Log.debug(30, "Parser created is: " +
                     parser.getClass().getName());
         } else {
-            Morpho.debug(9, "Unable to create DOM parser!");
+            Log.debug(9, "Unable to create DOM parser!");
         }
     } catch (ParserConfigurationException pce) {
-            Morpho.debug(9, "Exception while creating DOM parser!");
-            Morpho.debug(10, pce.getMessage());
+            Log.debug(9, "Exception while creating DOM parser!");
+            Log.debug(10, pce.getMessage());
     }
 
     return parser;
@@ -1441,7 +1419,7 @@ public class Morpho
           urlConn.connect();
           networkStatus = (urlConn.getDate() > 0L);
         } catch (IOException ioe) {
-          debug(19, " - unable to open network connection to Metacat");
+          Log.debug(19, " - unable to open network connection to Metacat");
           networkStatus = false;
           if (profile!=null) profile.set("searchmetacat", 0, "false");
         }
@@ -1450,7 +1428,7 @@ public class Morpho
 
       //Runs on the event-dispatching thread.
       public void finished() {
-        debug(21,"doPing() called - network available?? - "+networkStatus);
+        Log.debug(21,"doPing() called - network available?? - "+networkStatus);
         if (origNetworkStatus != networkStatus) {
           //if lost connection, can't log out, but can still do cleanup
           if (!networkStatus) {
@@ -1465,7 +1443,7 @@ public class Morpho
                               = getServiceProvider(QueryRefreshInterface.class);
                 ((QueryRefreshInterface)provider).refresh();
               } catch (ServiceNotHandledException snhe) {
-                debug(6, snhe.getMessage());
+                Log.debug(6, snhe.getMessage());
               }
               */
             }
@@ -1485,14 +1463,14 @@ public class Morpho
     try {
       if (lnf!=null) {
         if (lnf.equalsIgnoreCase("kunststoff")) {
-          debug(19,"kunststoff - loading");
+          Log.debug(19,"kunststoff - loading");
           try{
             Class classDefinition = Class.forName("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
             LookAndFeel test = (LookAndFeel)classDefinition.newInstance();
             UIManager.setLookAndFeel(test);
           }
           catch (ClassNotFoundException www) {
-            debug(19,"couldn't set L&F to kunststoff - using Java default");
+            Log.debug(19,"couldn't set L&F to kunststoff - using Java default");
             return;
           }
         }
@@ -1514,7 +1492,7 @@ public class Morpho
     }
 
     } catch (Exception e) { 
-      debug(19,"couldn't set L&F to native - using Java default"); 
+      Log.debug(19,"couldn't set L&F to native - using Java default"); 
     }
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-08 00:11:29 $'
- * '$Revision: 1.19.6.1 $'
+ *     '$Date: 2002-08-08 22:19:33 $'
+ * '$Revision: 1.19.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.net.*;
 import java.io.*;
@@ -241,7 +242,7 @@ public class ProfileDialog extends JDialog
         addKeyListenerToComponent(components[i]);
       }
     } else {
-      Morpho.debug(10, 
+      Log.debug(10, 
             "ProfileDialog.addKeyListenerToComponents() - received null array");
       return;
     }
@@ -254,7 +255,7 @@ public class ProfileDialog extends JDialog
     if (component!=null) {
           component.addKeyListener(keyPressListener);
     } else {
-      Morpho.debug(10,
+      Log.debug(10,
               "ProfileDialog.addKeyListenerToComponent() - received NULL arg");
       return;
     }
@@ -487,10 +488,10 @@ public class ProfileDialog extends JDialog
 
     String org = (String)orgList.getSelectedValue();
     if (null == org) {
-        Morpho.debug(20, "org was initially null");
+        Log.debug(20, "org was initially null");
         org = otherOrgField.getText();
         if ((null == org) || (org.equals(""))) {
-            Morpho.debug(20, "second org was null");
+            Log.debug(20, "second org was null");
             fieldsAreValid = false;
         }
     }
@@ -645,7 +646,7 @@ public class ProfileDialog extends JDialog
               destDir.mkdirs();
               String destName = destDirName + File.separator + 
                                 srcFile.getName();
-              Morpho.debug(20, destName);
+              Log.debug(20, destName);
               FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
             }
           }
