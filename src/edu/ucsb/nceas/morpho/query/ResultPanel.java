@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-14 20:57:16 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2002-03-28 22:07:27 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -511,6 +511,7 @@ public class ResultPanel extends JPanel
             try
             {
               dataPackage.upload(docid, true);
+              refreshQuery();
             }
             catch(MetacatUploadException mue2)
             {
