@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.72 2002-12-26 20:06:59 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.73 2003-01-03 01:46:13 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -22,7 +22,13 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
-
+      <property name="cvsroot" value=":ext:tao@cvs.ecoinformatics.org:/cvs" />
+      <property name="eml-module" value="eml" />
+      <property name="eml-tag" value="JavaHelp" />
+      <property name="eml.doc.dir" value="simpledocs" />
+      <property name="java.help.dir" value="/home/tao/download/jh1.1.3/javahelp/bin" />
+      <property name="java.help.doc.dir" value="/home/tao/download/jh1.1.3/javahelp/bin/morphohelp" />
+      <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
       <filter token="mpass" value="${mpass}"/>
@@ -33,6 +39,7 @@
       <property name="itisdir" value="../itislib" />
       <property name="srcdir" value="./src" />
       <property name="libdir" value="./lib" />
+      <property name="docuserdir" value="./docs/user" />
       <property name="jwsdir"
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
       <property name="testdir" value="./tests" />
@@ -117,6 +124,52 @@
         </fileset>
       </copy>
        -->
+   </target>
+   
+   <target name="emldoc" depends="prepare">
+     <!-- checkout eml moduel -->
+     <echo>Enter CVS password: </echo>
+     <cvs cvsRoot="${cvsroot}"
+          package="${eml-module}"
+          tag="${eml-tag}"
+          dest="${build.docs}" />
+     <ant dir="${build.docs}/${eml-module}" target="simpledocs" />
+     <mkdir dir="${java.help.doc.dir}" />
+     <copy todir="${java.help.doc.dir}" filtering="no">
+        <fileset dir="${build.docs}/${eml-module}/${eml.doc.dir}">
+          <include name="**/*.html" />
+          <include name="**/*.png" />
+        </fileset>
+     </copy>
+   
+   </target>
+   
+   <target name="helpjar" depends="emldoc">
+     <echo>Please download JavaHelp before running help target!</echo>
+     <echo>${java.help.dir}</echo>
+     <copy todir="${java.help.doc.dir}" filtering="no">
+        <fileset dir="${docuserdir}">
+          <include name="**/*.html" />
+          <include name="**/*.jpg" />
+          <include name="**/*.gif" />
+          <include name="*.css" />
+        </fileset>
+      </copy>
+      <copy todir="${java.help.dir}" filtering="no">
+        <fileset dir="${docuserdir}">
+          <include name="*.xml" />
+          <include name="*.jhm" />
+          <include name="*.hs" />
+        </fileset>
+      </copy>
+      <!-- Creating search database -->
+      <exec dir="${java.help.dir}" executable="${java.help.dir}/jhindexer" >
+        <arg line="morphohelp" />
+      </exec>
+      <delete file="${libdir}/${helpjar}" />
+      <jar destfile="${libdir}/${helpjar}" basedir="${java.help.dir}" includes="*.xml, *.jhm, *.hs, morphohelp/**/*, JavaHelpSearch/**/*">  
+      </jar>
+      
    </target>
 
    <!--
