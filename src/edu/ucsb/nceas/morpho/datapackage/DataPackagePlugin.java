@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:45:34 $'
- * '$Revision: 1.78 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-06 01:31:14 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -293,6 +293,26 @@ public class DataPackagePlugin
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(deleteDatatable);
 
+		i= i+1; 
+    GUIAction addTaxonomicCovColumn = new GUIAction("Add Taxonomic Information..",
+                                           null, new AddTaxonomicCovCommand());
+    addTaxonomicCovColumn.setToolTipText("Add taxonomic coverage information");
+    addTaxonomicCovColumn.setMenuItemPosition(i);
+    addTaxonomicCovColumn.setMenu("Data", DATAMENUPOSITION);
+    addTaxonomicCovColumn.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    addTaxonomicCovColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    addTaxonomicCovColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    addTaxonomicCovColumn.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                   false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addTaxonomicCovColumn);
+		
     i= i+2; // separator will take a position so add 2
     GUIAction addTemporalCovColumn = new GUIAction("Add Temporal Information..",
                                            null, new AddTemporalCovCommand());
@@ -313,8 +333,7 @@ public class DataPackagePlugin
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addTemporalCovColumn);
-
-
+		
     i= i+2; // separator will take a position so add 2
     GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column",
                                            null, new SortDataTableCommand());
@@ -482,6 +501,7 @@ public class DataPackagePlugin
     createNewDatatable.setEnabled(false);
     deleteDatatable.setEnabled(false);
     addTemporalCovColumn.setEnabled(false);
+		addTaxonomicCovColumn.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
     insertRowBefore.setEnabled(false);
