@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.5.0alpha3.0</version>
+  <version>1.5.0alpha4.0</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
