@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-11 22:57:33 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-12 20:11:17 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,10 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.io.File;
+
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.JOptionPane;
 
 /**
@@ -60,6 +62,8 @@ public class ExportCommand implements Command
   public static final String ZIP = "ZIP";
   public static final String REGULAR = "REGULAR";
  
+  /** Constant String for zip file extension*/
+  private String ZIPEXTENSION = "zip";
   
   /** fromat of the export */
   private String format = null;
@@ -243,19 +247,64 @@ public class ExportCommand implements Command
    */
   private void exportDatasetToZip(String id)
   {
+    // Set zip file filter
+    FileFilter zipFilter = new FileFilter()
+    {
+      public boolean accept(File f)
+      {
+        boolean flag = false;
+        if ( f != null)
+        {
+          if (f.isDirectory())
+          {
+            flag = true;
+          }
+          else
+          {
+            String extention = getFileExtension(f);
+            if (extention != null && extention.equalsIgnoreCase(ZIPEXTENSION))
+            {
+              flag = true;
+            }//if
+          }//else
+        }//if
+        return flag;
+      }// accept
+      
+      public String getDescription()
+      {
+        return "Zip(*.zip, *.ZIP)";
+      }//getDescription
+      
+      private String getFileExtension(File f) 
+      {
+	      if(f != null) 
+        {
+	        String filename = f.getName();
+	        int i = filename.lastIndexOf(".");
+	        if(i>0 && i<filename.length()-1) 
+          {
+		        return filename.substring(i+1).toLowerCase();
+	        }//if
+	       }//if
+	      return null;
+      }//getFileExtention
+    };//FileFilter
+    
     String curdir = System.getProperty("user.dir");
     curdir = curdir + System.getProperty("file.separator") + id + ".zip";
     File zipFile = new File(curdir);
     JFileChooser filechooser = new JFileChooser(curdir);
+    filechooser.addChoosableFileFilter(zipFilter);
+    filechooser.setFileFilter(zipFilter);
     filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     filechooser.setDialogTitle("Export Datapackage to Selected Zip File");
     filechooser.setApproveButtonText("Export");
     filechooser.setApproveButtonMnemonic('E');
     filechooser.setApproveButtonToolTipText("Choose a file to export " +
                                             "this Datapackage to.");
-    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    //filechooser.setSelectedFile(zipFile);                                        
-    //filechooser.updateUI();
+    filechooser.setSelectedFile(zipFile);                                        
+    
     File exportDir;
       // Choose the parent of savedialog
     int result;
@@ -286,9 +335,25 @@ public class ExportCommand implements Command
       }
     
       String location = getLocation();
-    
-      //export it.
-      dataPackage.exportToZip(id, exportDir.toString(), location);
+      if ( exportDir != null)
+      {
+        // Check the file name if it has .zip extension
+        String fileName = exportDir.getAbsolutePath();
+        if (fileName != null)
+        {
+          String lowerCaseName =fileName.toLowerCase();
+          String fileExtention ="."+ ZIPEXTENSION;
+          // if not end with ".zip", then add it
+          if (!lowerCaseName.endsWith(fileExtention))
+          {
+            fileName = fileName + fileExtention;
+          }
+          Log.debug(30, "fileName is: "+fileName);
+          
+          //export it.
+          dataPackage.exportToZip(id, fileName, location);
+        }
+      }
     }
   }
   
