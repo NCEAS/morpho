@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-27 17:34:11 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-04-08 03:19:02 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -496,12 +496,40 @@ public class DataViewer extends javax.swing.JFrame
 	    String oldToken = "";
 	    String token = "";
 	    Vector res = new Vector();
-	    StringTokenizer st = new StringTokenizer(str, sDelim, false);
-	    while( st.hasMoreTokens() ) {
+	    boolean ignoreConsequtiveDelimiters = false;
+	    if (ignoreConsequtiveDelimiters) {
+	      StringTokenizer st = new StringTokenizer(str, sDelim, false);
+	      while( st.hasMoreTokens() ) {
 	        token = st.nextToken().trim();
 	        res.addElement(token);
+	      }
+	    }
+	    else {
+	      StringTokenizer st = new StringTokenizer(str, sDelim, true);
+	      while( st.hasMoreTokens() ) {
+	        token = st.nextToken().trim();
+	        if (!inDelimiterList(token, sDelim)) {
+	            res.addElement(token);
+	        }
+	        else {
+	            if ((inDelimiterList(oldToken,sDelim))&&(inDelimiterList(token,sDelim))) {
+	                res.addElement("");
+                }
+	        }
+	        oldToken = token;
+	      }
 	    }
 	    return res;
+	}
+
+	private boolean inDelimiterList(String token, String delim) {
+	    boolean result = false;
+	    int test = delim.indexOf(token);
+	    if (test>-1) {
+	        result = true;
+	    }
+	    else { result = false; }
+	    return result;
 	}
 
 
