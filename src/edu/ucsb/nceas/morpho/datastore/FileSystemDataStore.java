@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-14 17:47:52 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-11-21 22:34:39 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,6 +89,18 @@ public class FileSystemDataStore extends DataStore
   public File saveTempFile(String name, Reader file)
   {
     return saveFile(name, file, tempdir, null);
+  }
+  
+  public File openTempFile(String name) throws FileNotFoundException
+  {
+    Log.debug(21, "opening "+name+" from temp dir - temp: "+tempdir);
+    File file = new File(tempdir+"/"+name);
+    if(!file.exists())
+    {
+      throw new FileNotFoundException("file " + tempdir + "/" + name + " does not exist");
+    }
+    
+    return file;
   }
 
   public File saveDataFile(String name, Reader file)
