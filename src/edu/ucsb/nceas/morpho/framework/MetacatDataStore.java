@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-07-19 18:03:59 $'
- * '$Revision: 1.21 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-23 21:15:01 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,6 +218,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       */
       
       //save a temp file so that the id can be put in the file.
+      StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/tmp/metacat.noid");
       tempfile.createNewFile();
       FileWriter fw = new FileWriter(tempfile);
@@ -225,11 +226,17 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       while(c != -1)
       {
         fw.write(c); //write out everything in the reader
+        sw.write(c);
         c = file.read();
       }
       fw.flush();
       fw.close();
       String filetext = insertIdInFile(tempfile, name); //put the id in
+      
+      if(filetext == null)
+      {
+        filetext = sw.toString();
+      }
       
       Properties prop = new Properties();
       prop.put("action", action);

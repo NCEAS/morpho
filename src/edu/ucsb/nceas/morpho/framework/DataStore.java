@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 22:07:20 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-07-23 21:15:01 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,9 @@ public abstract class DataStore implements DataStoreInterface
     }
     catch(Exception e)
     {
-      debug(0, "Error getting a DOM rep. of file: " + file.getPath() + " : " +
+      debug(20, "Error getting a DOM rep. of file.  This is probably a data " +
+            "file: " + 
+            file.getPath() + " : " +
             e.getMessage());
       return null;
     }

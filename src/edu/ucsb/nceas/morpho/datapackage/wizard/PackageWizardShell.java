@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-07-23 18:17:18 $'
- * '$Revision: 1.36 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-23 21:15:01 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -489,23 +489,16 @@ public class PackageWizardShell extends javax.swing.JFrame
     // now create a triple for the ACL relating it to datapackage file
     Vector aclTriples = new Vector();
     Triple aclt = null;
-    for(int m=0; m<frameWizards.size(); m++) {
-        // link the ACL to ALL metadata files
-        WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
-        if ((wfc2.id!=null)&&(!(wfc2.id).equals("NULLDATAFILE"))) {
-          aclt = new Triple(newid, "isRelatedTo", wfc2.id);
-          aclTriples.addElement(aclt);
-        }
-        
- /*       // loop to find the triple file
-        WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
-        if(((String)wfc2.attributes.get("name")).equals(triplesFile)) {
-            aclt = new Triple(newid, "isRelatedTo", wfc2.id);
-            break;
-        }
- */
+    for(int m=0; m<frameWizards.size(); m++) 
+    {
+      // link the ACL to ALL metadata files
+      WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
+      if ((wfc2.id!=null)&&(!(wfc2.id).equals("NULLDATAFILE"))) 
+      {
+        aclt = new Triple(newid, "isRelatedTo", wfc2.id);
+        aclTriples.addElement(aclt);
+      }
     }
-    
     
     // ---------------
     
@@ -579,11 +572,8 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
       }
     }
-    // add acl triple
-//    if (aclt!=null) {
-//        tc.addTriple(aclt);
-//    }
-    // add acl triples
+    
+    //add acl triples
     if (aclTriples!=null) {
       for (int kk=0;kk<aclTriples.size();kk++) {
         tc.addTriple((Triple)aclTriples.elementAt(kk));  
@@ -977,11 +967,11 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     sb.append("</acl>");
     String aclString = sb.toString();
-    System.out.println(aclString);
+    //System.out.println(aclString);
     StringReader aclReader = new StringReader(aclString);
     FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
     File file = localDataStore.saveFile(id, aclReader, false);
-    
+    aclReader.close();
     return file;
   }
   

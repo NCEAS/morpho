@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 22:07:20 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-07-23 21:15:01 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,6 +122,7 @@ public class FileSystemDataStore extends DataStore
       }
       
       //save a temp file so that the id can be put in the file.
+      StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/tmp/local.noid");
       tempfile.createNewFile();
       FileWriter fw = new FileWriter(tempfile);
@@ -129,11 +130,17 @@ public class FileSystemDataStore extends DataStore
       while(c != -1)
       {
         fw.write(c); //write out everything in the reader
+        sw.write(c);
         c = file.read();
       }
       fw.flush();
       fw.close();
       String fileWithId = insertIdInFile(tempfile, name); //put the id in
+      
+      if(fileWithId == null)
+      {
+        fileWithId = sw.toString();
+      }
       
       //now that the id has been put in the file, we can save it.
       StringReader sr = new StringReader(fileWithId);
