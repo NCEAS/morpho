@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.13 2001-01-31 23:37:47 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.14 2001-04-25 22:23:00 jones Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -271,11 +271,12 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 	{
 		this((Frame)null);
 	    container = cf;
-	    userName = cf.userName;
-	    passWord = cf.passWord;
+	    userName = cf.getUserName();
+	    //MBJOUTDATED//passWord = cf.passWord;
 	    this.setModal(false);
 		//now save current xml doc as file and get id
-	    String temp = container.mdeBean1.getSaveString();
+            String temp = null;
+	    //MBJOUTDATED//temp = container.mdeBean1.getSaveString();
 		    System.out.println("temp string created");
 	    
 		if ((temp==null)||(temp.length()==0)) {
@@ -650,13 +651,14 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	       access = "no";
 	    }
 	    StringBuffer txt = new StringBuffer();
-	    if (container.userName.equals("public")) {
+	    if (container.getUserName().equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to insert data into the system catalog!");
 	    }
 	    else {
 		try {
 		    if(CurrentCheckBox.isSelected()) {   // use the xml doc currently being edited
-		        String temp = container.mdeBean1.getSaveString();
+                        String temp = null;
+		        //MBJOUTDATED//temp = container.mdeBean1.getSaveString();
 		        if ((temp==null)||(temp.length()==0)) {
 		            JOptionPane.showMessageDialog(this,"Unable to obtain current XML document!");
 		            return;
@@ -727,7 +729,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	                    if ((globalidTextBox.getText().length()>0)) {
 	                        String newID = globalidTextBox.getText();
 		                    ReplaceFile(tempXMLFileName,idtagTextField.getText(),newID);
-		                    container.mdeBean1.openDocument(tmp);
+		                    //MBJOUTDATED//container.mdeBean1.openDocument(tmp);
 		                }
 		            }
 		        }
@@ -812,7 +814,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	void DeleteButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		JOptionPane.showMessageDialog(null, "Delete will remove a document having the displayed ID Number from the remote Server", "Alert", JOptionPane.INFORMATION_MESSAGE);
-	    if (container.userName.equals("public")) {
+	    if (container.getUserName().equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to delete data from the system catalog!");
 	    }
 	    else {
@@ -872,7 +874,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	       access = "no";
 	    }
 		JOptionPane.showMessageDialog(null, "Update will replace a document having the displayed ID Number from the remote Server", "Alert", JOptionPane.INFORMATION_MESSAGE);
-	    if (container.userName.equals("public")) {
+	    if (container.getUserName().equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to update data in the system catalog!");
 	    }
 	    else {
@@ -885,7 +887,8 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	            try {
 	            
 		        if(CurrentCheckBox.isSelected()) {   // use the xml doc currently being edited
-		            String temp = container.mdeBean1.getSaveString();
+                            String temp = null;
+		            //MBJOUTDATED//temp = container.mdeBean1.getSaveString();
 		            if ((temp==null)||(temp.length()==0)) {
 		                JOptionPane.showMessageDialog(this,"Unable to obtain current XML document!");
 		                return;

@@ -6,10 +6,15 @@ import java.awt.event.*;
 import java.io.*;
 
 import edu.ucsb.nceas.dtclient.PluginInterface;
+import edu.ucsb.nceas.dtclient.ClientFramework;
+import edu.ucsb.nceas.dtclient.ServiceRequest;
+import edu.ucsb.nceas.dtclient.ServiceResponse;
+import edu.ucsb.nceas.dtclient.ServiceNotHandledException;
 
 public class EditorBean extends Container implements PluginInterface
 {
   Editor me;
+  ClientFramework framework = null;
   Action[] menuActions = null;
   Action[] toolbarActions = null;
 
@@ -22,9 +27,21 @@ public class EditorBean extends Container implements PluginInterface
     me.setVisible(true);
     me.invalidate();
     add(BorderLayout.CENTER,me);
+    setName("Demo Editor");
     setVisible(true);
    
     initializeActions();
+  }
+
+  /** 
+   * The plugin must store a reference to the ClientFramework 
+   * in order to be able to call the services available through 
+   * the framework
+   */
+  public void setFramework(ClientFramework cf) 
+  {
+    this.framework = cf;
+    me.setFramework(cf);
   }
 
   /**
@@ -60,6 +77,51 @@ public class EditorBean extends Container implements PluginInterface
    */ 
   public Action[] registerToolbarActions() {
     return toolbarActions;;
+  }
+
+  /**
+   * This method is called by the framework when the plugin should 
+   * register a UI tab pane that is to incorporated into the main
+   * user interface.
+   */
+  public Container registerTabPane()
+  {
+    return (Container)this;
+  }
+
+  /**
+   * This method is called by the framework when the plugin should 
+   * register any services that it handles.  The plugin should then
+   * call the framework's 'addService' method for each service it can
+   * handle.
+   */
+  public void registerServices()
+  {
+  }
+
+  /**
+   * This is the general dispatch method that is called by the framework
+   * whenever a plugin is expected to handle a service request.  The
+   * details of the request and data for the request are contained in
+   * the ServiceRequest object.
+   *
+   * @param request request details and data
+   */
+  public void handleServiceRequest(ServiceRequest request)
+              throws ServiceNotHandledException
+  {
+  }
+
+  /**
+   * This method is called by a service provider that is handling 
+   *  a service request that originated with the plugin.  Data
+   * from the ServiceRequest is handed back to the source plugin in
+   * the ServiceResponse object.
+   *
+   * @param response response details and data
+   */
+  public void handleServiceResponse(ServiceResponse response)
+  {
   }
 
   /**
@@ -126,6 +188,4 @@ public class EditorBean extends Container implements PluginInterface
     }
     new DriverFrame().show();
   }
-  
-  public void setContainer(Object o) {}
 }
