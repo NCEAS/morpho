@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-14 03:36:52 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2001-06-20 01:36:49 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -242,7 +242,6 @@ public class ClientFramework extends javax.swing.JFrame
       currentMenu = new JMenu(); 
       currentMenu.setText(menuName);
       currentMenu.setActionCommand(menuName);
-      //currentMenu.setMnemonic((int)'H');
       menuList.put(menuName, currentMenu);
       menuOrder.put(menuPosition, currentMenu);
 
@@ -257,6 +256,7 @@ public class ClientFramework extends javax.swing.JFrame
     if (menuActions != null) {
       for (int j=0; j < menuActions.length; j++) {
         Action currentAction = menuActions[j];
+        JMenuItem currentItem = null;
         String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
         Integer itemPosition = (Integer)currentAction.getValue("menuPosition");
         int menuPos = (itemPosition != null) ? itemPosition.intValue() : -1;
@@ -272,7 +272,9 @@ public class ClientFramework extends javax.swing.JFrame
             hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
             currentMenu.insertSeparator(menuPos++);
           }
-          currentMenu.insert(currentAction, menuPos);
+          currentItem = currentMenu.insert(currentAction, menuPos);
+          currentItem.setAccelerator(
+                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             menuPos++;
@@ -284,7 +286,9 @@ public class ClientFramework extends javax.swing.JFrame
             hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
             currentMenu.addSeparator();
           }
-          currentMenu.add(currentAction);
+          currentItem = currentMenu.add(currentAction);
+          currentItem.setAccelerator(
+                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             currentMenu.addSeparator();
@@ -451,6 +455,8 @@ public class ClientFramework extends javax.swing.JFrame
         exitApplication();
       }
     };
+    exitItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control Q"));
     exitItemAction.putValue(Action.SHORT_DESCRIPTION, "Exit Morpho");
     exitItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     exitItemAction.putValue("menuPosition", new Integer(-1));
@@ -483,6 +489,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Cut is not yet implemented.");
       }
     };
+    cutItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control X"));
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Cut the selection and put it on the Clipboard");
     cutItemAction.putValue(Action.SMALL_ICON, 
@@ -497,6 +505,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Copy is not yet implemented.");
       }
     };
+    copyItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control C"));
     copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Copy the selection and put it on the Clipboard");
     copyItemAction.putValue(Action.SMALL_ICON, 
@@ -511,6 +521,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Paste is not yet implemented.");
       }
     };
+    pasteItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control P"));
     pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Paste the selection.");
     pasteItemAction.putValue(Action.SMALL_ICON, 
