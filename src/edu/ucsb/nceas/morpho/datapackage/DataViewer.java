@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-22 22:17:11 $'
- * '$Revision: 1.71 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-10-23 22:48:21 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -421,7 +421,7 @@ public class DataViewer extends javax.swing.JPanel
                                 File.separator +
                                 config.get("profile_directory", 0) +
                                 File.separator + 
-                                config.get("current_profile", 0);
+                                profile.get("profilename", 0);
         datadir = profileDirName + File.separator + profile.get("datadir", 0);
         tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
         cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
@@ -453,7 +453,7 @@ public class DataViewer extends javax.swing.JPanel
         String profileDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) + 
                             File.separator +
-                            config.get("current_profile", 0);
+                            profile.get("profilename", 0);
         datadir = profileDirName + File.separator + profile.get("datadir", 0);
         tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
         cachedir = profileDirName + File.separator + profile.get("cachedir", 0);

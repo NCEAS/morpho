@@ -3,9 +3,9 @@
 # Shell script for launching morpho from unix systems
 #
 # '$RCSfile: morpho,v $'
-# '$Author: cjones $'
-# '$Date: 2002-09-26 01:57:51 $'
-# '$Revision: 1.16 $'
+# '$Author: jones $'
+# '$Date: 2002-10-23 22:48:19 $'
+# '$Revision: 1.17 $'
 
 XMLP=./lib/xercesImpl.jar
 API=./lib/xmlParserAPIs.jar
@@ -22,4 +22,9 @@ JCE=./lib/jcert.jar
 JNE=./lib/jnet.jar  
 LAF=./lib/kunststoff.jar
 CPATH=$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF
+echo "----------------------------------"
+
+java -version
+
+echo "----------------------------------"
 java -Xmx512m -Xss1m -cp $CPATH edu.ucsb.nceas.morpho.Morpho

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-21 18:37:26 $'
- * '$Revision: 1.20 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-10-23 22:48:21 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,6 +100,7 @@ public class Morpho
     private String passWord = "none";
     private String metacatURL = null;
     private static ConfigXML config;
+    private static ConfigXML profileConfig;
     private ConfigXML profile;
     private boolean connected = false;
     private boolean networkStatus = false;
@@ -127,6 +128,7 @@ public class Morpho
 
     /** The hardcoded XML configuration file */
     private static String configFile = "config.xml";
+    private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
 
@@ -217,10 +219,11 @@ public class Morpho
         Log.debug(20, "Setting username to dn: " + dn);
         setUserName(dn);
 
-        if (!config.set("current_profile", 0, profilename)) {
-            boolean success = config.insert("current_profile", profilename);
+        if (!profileConfig.set("current_profile", 0, profilename)) {
+            boolean success = profileConfig.insert("current_profile", 
+                    profilename);
         }
-        config.save();
+        profileConfig.save();
         establishConnection();
         setLastID(scope);
         fireConnectionChangedEvent();
@@ -235,10 +238,10 @@ public class Morpho
     {
         String profileDir = config.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
-        String currentProfile = config.get("current_profile", 0);
+        String currentProfile = profileConfig.get("current_profile", 0);
         if (!newProfileName.equals(currentProfile)) {
-            String newProfilePath = profileDir + File.separator + newProfileName +
-                    File.separator + newProfileName + ".xml";
+            String newProfilePath = profileDir + File.separator + 
+                newProfileName + File.separator + newProfileName + ".xml";
             try {
                 ConfigXML newProfile = new ConfigXML(newProfilePath);
                 setProfile(newProfile);
@@ -793,28 +796,7 @@ public class Morpho
                 }
 
                 // Load the current profile and log in
-                String profileDir = ConfigXML.getConfigDirectory() + 
-                    File.separator + config.get("profile_directory", 0);
-                String currentProfile = config.get("current_profile", 0);
-                if (currentProfile == null) {
-                    ProfileDialog dialog = new ProfileDialog(morpho);
-                    dialog.setVisible(true);
-                    // Make sure they actually created a profile
-                    if (morpho.getProfile() == null) {
-                        JOptionPane.showMessageDialog(null,
-                                "You must create a profile in order " +
-                                "to configure Morpho  \n" +
-                                "correctly.  Please restart Morpho " +
-                                "and try again.");
-                        morpho.exitApplication();
-                    }
-                } else {
-                    String profileName = profileDir + File.separator + 
-                        currentProfile + File.separator + 
-                        currentProfile + ".xml";
-                    ConfigXML profile = new ConfigXML(profileName);
-                    morpho.setProfile(profile);
-                }
+                morpho.loadProfile(morpho);
 
                 // Set up the Service Controller
                 ServiceController services = ServiceController.getInstance();
@@ -1184,7 +1166,7 @@ public class Morpho
     private void switchProfile()
     {
         logOut();
-        String currentProfile = config.get("current_profile", 0);
+        String currentProfile = profileConfig.get("current_profile", 0);
         String profileDirName = config.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
         File profileDir = new File(profileDirName);
@@ -1527,8 +1509,8 @@ public class Morpho
      *
      * @throws FileNotFoundException
      */
-    private static void initializeConfiguration() throws FileNotFoundException {
-
+    private static void initializeConfiguration() throws FileNotFoundException 
+    {
         // Make sure the config directory exists
         File configurationFile  = null;
         File configDir = new File(ConfigXML.getConfigDirectory());
@@ -1562,8 +1544,7 @@ public class Morpho
         } catch (IOException ioe) {
             Log.debug(1, "Error copying config: " + ioe.getMessage());
             Log.debug(1, ioe.getClass().getName());
-            ioe.printStackTrace(System.err);
-            System.exit(0);
+            System.exit(1);
         }
         // Open the configuration file
         config = new ConfigXML(configurationFile.getAbsolutePath());
@@ -1597,6 +1578,58 @@ public class Morpho
             } catch (FileNotFoundException fnfe) {
                 Log.debug(10, "Warning: Failure to redirect log to a file.");
             }
+        }
+    }
+                
+    /**
+     * Set up the profile properties during startup
+     *
+     * @throws FileNotFoundException
+     */
+    private void loadProfile(Morpho morpho) throws FileNotFoundException 
+    {
+        // Check if the profileConfig file exists, create it if needed
+        File configDir = new File(ConfigXML.getConfigDirectory());
+        File profileFile = null;
+        try {
+            profileFile = new File(configDir, profileFileName);
+            if (profileFile.createNewFile() 
+                    || profileFile.length() == 0) {
+                FileWriter out = new FileWriter(profileFile);
+                out.write("<current_profile></current_profile>\n");
+                out.close();
+            }
+        } catch (IOException ioe) {
+            Log.debug(1, "Error creating profile marker: " + ioe.getMessage());
+            Log.debug(1, ioe.getClass().getName());
+            System.exit(1);
+        }
+
+        // Open the profileConfig file
+        profileConfig = new ConfigXML(profileFile.getAbsolutePath());
+
+        // Load the current profile and log in
+        String profileDir = ConfigXML.getConfigDirectory() + 
+            File.separator + config.get("profile_directory", 0);
+        String currentProfile = profileConfig.get("current_profile", 0);
+        if (currentProfile == null) {
+            ProfileDialog dialog = new ProfileDialog(morpho);
+            dialog.setVisible(true);
+            // Make sure they actually created a profile
+            if (getProfile() == null) {
+                JOptionPane.showMessageDialog(null,
+                    "You must create a profile in order " +
+                    "to configure Morpho  \n" +
+                    "correctly.  Please restart Morpho " +
+                    "and try again.");
+                exitApplication();
+            }
+        } else {
+            String profileName = profileDir + File.separator + 
+                currentProfile + File.separator + 
+                currentProfile + ".xml";
+            ConfigXML profile = new ConfigXML(profileName);
+            setProfile(profile);
         }
     }
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.3 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-10-23 22:48:21 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ public abstract class DataStore implements DataStoreInterface
     String profileDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) + 
                             File.separator +
-                            config.get("current_profile", 0);
+                            profile.get("profilename", 0);
     datadir = profileDirName + File.separator + profile.get("datadir", 0);
     tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
     cachedir = profileDirName + File.separator + profile.get("cachedir", 0);

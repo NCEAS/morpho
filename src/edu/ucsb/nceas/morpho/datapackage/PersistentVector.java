@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-02 19:59:10 $'
- * '$Revision: 1.11 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-10-23 22:48:21 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ public class PersistentVector
                                 File.separator +
                                 config.get("profile_directory", 0) + 
                                 File.separator + 
-                                config.get("current_profile", 0);
+                                profile.get("profilename", 0);
     tmpDir = profileDirName + File.separator 
              + profile.get("tempdir", 0)+File.separator;
        

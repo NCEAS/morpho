@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:36 $'
- * '$Revision: 1.58 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-10-23 22:48:21 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -630,7 +630,7 @@ public class LocalQuery
   private void loadConfigurationParameters()
   {
     ConfigXML profile = morpho.getProfile();
-    currentProfile = config.get("current_profile", 0);
+    currentProfile = profile.get("profilename", 0);
     profileDir = config.getConfigDirectory() + File.separator +
                        config.get("profile_directory", 0) + File.separator +
                        currentProfile;

@@ -202,7 +202,6 @@
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
   <lookAndFeel></lookAndFeel>
-  <current_profile></current_profile>
   <stylesheetLocation>style</stylesheetLocation>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
   <doctype_xslt_mappings>
