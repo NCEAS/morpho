@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-24 21:06:51 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2002-02-26 22:13:38 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JButton previous;
   private JButton next;
   private JTextField fileTextField = new JTextField();
+  private JCheckBox includeDataFileCheckBox;
   private JPanel getFilePanel = new JPanel();
   private JPanel donePanel = new JPanel();
   private JCheckBox openCheckBox;
@@ -226,9 +227,15 @@ public class PackageWizardShell extends javax.swing.JFrame
         importDataRButton = new JRadioButton("Automatically generate " +
                                              "data file descriptions " +
                                              "(ASCII files only)");
-        simpleDataRButton.setSelected(true);
+        importDataRButton.setSelected(true);
         bg.add(importDataRButton);
         bg.add(simpleDataRButton);
+        
+        String includeIt = "Include data file in saved package?";
+        includeDataFileCheckBox = new JCheckBox(includeIt, true);
+        String toolTip = "If this box is unchecked, the data will be used to create "
+                       + "metadata, but not be included in the final datapackage";
+        includeDataFileCheckBox.setToolTipText(toolTip);
         
         framePanel.add(toplabel);
         container1.add(fileTextField);
@@ -242,6 +249,8 @@ public class PackageWizardShell extends javax.swing.JFrame
         //framePanel.add(parseLabel);
         framePanel.add(simpleDataRButton);
         framePanel.add(importDataRButton);
+        framePanel.add(Box.createRigidArea(new Dimension(0, 60)));
+        framePanel.add(includeDataFileCheckBox);
         
         //framePanel.setPreferredSize(new Dimension(450,300));
         framePanel.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -451,7 +460,9 @@ public class PackageWizardShell extends javax.swing.JFrame
       String prevFrameType = ((WizardFrameContainer)
                              frameWizards.elementAt(frameWizardIndex)).type;
                              
-      if(prevFrameType.equals("GETDATA") && importDataRButton.isSelected())
+      if(prevFrameType.equals("GETDATA") && importDataRButton.isSelected()
+                       && ((fileTextField.getText().trim()).length()>0)
+      )
       { //this is what happens when the user wants to use the text import 
         //wizard
         int entitynum = frameWizardIndex + 1;
@@ -466,6 +477,8 @@ public class PackageWizardShell extends javax.swing.JFrame
         
         String fileTextName = null;
         if (!fileTextField.getText().equals("")) fileTextName = fileTextField.getText(); 
+        if (!includeDataFileCheckBox.isSelected()) fileTextField.setText("");
+        
         TextImportWizard tiw = new TextImportWizard(fileTextName, this);
         //the TextImport wizard has reference to PackageWizards so it can save the
         // XML text it generates
