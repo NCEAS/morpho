@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-28 16:12:16 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-14 18:05:07 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -259,6 +259,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       }
       bfw.flush();
       bfw.close();
+      bfile.close();
       String filetext = insertIdInFile(tempfile, name); //put the id in
       
       if(filetext == null)
