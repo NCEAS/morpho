@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-18 23:52:17 $'
- * '$Revision: 1.89 $'
+ *     '$Date: 2002-09-24 17:27:40 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -364,6 +364,26 @@ public class DataPackageGUI extends javax.swing.JFrame
     return foundMatch;
   }
   
+  /**
+   * Method to get entityitems. In this method, the empty element will remove
+   */
+  public Vector getEntityitems()
+  {
+    if (entityitems!= null && entityitems.size() == 1)
+    {
+      Object obj = entityitems.elementAt(0);
+      if (obj instanceof String)
+      {
+        String str =(String)obj;
+        str.trim();
+        if ( str.equals("") || str.equals(" ")) 
+        {
+          return null;
+        }//if
+      }//if
+    }//if
+    return entityitems;
+  }
   /**
    * creates the basicinfopanel
    */
