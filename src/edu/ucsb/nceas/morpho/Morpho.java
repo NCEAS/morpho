@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-16 22:23:31 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2002-12-16 22:41:51 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ public class Morpho
     private static ConfigXML config;
     private static ConfigXML profileConfig;
     private ConfigXML profile;
-    private boolean connected = false;
+    private static boolean connected = false;
     private boolean networkStatus = false;
     private boolean sslStatus = false;
 
@@ -489,7 +489,7 @@ public class Morpho
      *
      * @return   boolean true if connected to Metacat, false otherwise
      */
-    public boolean isConnected()
+    public static boolean isConnected()
     {
         return connected;
     }
