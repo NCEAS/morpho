@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-02 23:05:15 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-06 01:31:53 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package edu.ucsb.nceas.morpho.util;
-import javax.swing.table.*;
+
+import javax.swing.table.TableModel;
 
 /**
  * Interface for ColumnSortableTableModel
@@ -32,6 +33,6 @@ import javax.swing.table.*;
 public interface ColumnSortableTableModel extends TableModel
 {
   // Method to sort table
-  public void sortTableByColumn(int col, boolean ascending);
+  public void sortTableByColumn(int col, String order);
 }
 
