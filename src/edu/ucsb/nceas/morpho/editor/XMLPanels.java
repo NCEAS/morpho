@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-07 22:48:59 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2002-12-03 05:00:14 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,8 +228,8 @@ public class XMLPanels extends Component
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BoxLayout(jp2,BoxLayout.Y_AXIS));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(panelWidth,70));
-        jp1.setPreferredSize(new Dimension(panelWidth,70));
+        jp1.setMaximumSize(new Dimension(panelWidth,45));
+        jp1.setPreferredSize(new Dimension(panelWidth,45));
         jp2.setMaximumSize(new Dimension(panelWidth,25));
         jp.add(jp1);
         jp.add(jp2);
@@ -241,18 +241,32 @@ public class XMLPanels extends Component
           name.append(info.getHelp()); 
         }
         String helpString = name.toString();
+        if (helpString.length()==0) {
+          jp1.setMaximumSize(new Dimension(panelWidth,2));
+          jp1.setPreferredSize(new Dimension(panelWidth,2));
+        }
         if (helpString.length()>0) {
-          int helplen = helpString.length();
-          int vertsize = (1+helplen/50)*16;
-          if (vertsize>70) {
-            jp1.setMaximumSize(new Dimension(panelWidth,vertsize));
-            jp1.setPreferredSize(new Dimension(panelWidth,vertsize));
-           }
+          JScrollPane jsp = new JScrollPane();
+          JTextArea jta = new JTextArea();
+          jta.setLineWrap(true);
+          jta.setWrapStyleWord(true);
+          jta.setEditable(false);
+          jta.setBackground(jp1.getBackground());
+          jsp.getViewport().add(jta);
+//          int helplen = helpString.length();
+//         int vertsize = (1+helplen/50)*16;
+//          if (vertsize>70) {
+//            jp1.setMaximumSize(new Dimension(panelWidth,vertsize));
+//            jp1.setPreferredSize(new Dimension(panelWidth,vertsize));
+//           }
           
-          JLabel jl = new JLabel();
-          jl.setForeground(Color.black);
-          jl.setText("<html><font size='-1'>"+helpString+"</html>");
-          jp1.add(jl);
+//          JLabel jl = new JLabel();
+ //         jl.setForeground(Color.black);
+ //         jl.setText("<html><font size='-1'>"+helpString+"</html>");
+ //         jp1.add(jl);
+            jp1.add(jsp);
+            jta.setText(helpString);
+            jta.setCaretPosition(0);
         }
         //now check if there are child TEXT nodes
         Enumeration nodes = node.children();
