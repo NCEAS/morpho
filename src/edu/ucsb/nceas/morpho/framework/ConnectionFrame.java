@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-23 23:43:02 $'
- * '$Revision: 1.27 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-31 22:32:13 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -287,6 +287,10 @@ public class ConnectionFrame extends javax.swing.JDialog
           public void run() 
           {
             if (connected) {
+              ConfigXML profile = container.getProfile();
+              profile.set("searchmetacat", 0, "true");
+              profile.save();
+              
               dispose();
             } else {
               ClientFramework.debug(9, "Login failed.\n" + 
@@ -318,6 +322,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     
     ConfigXML profile = container.getProfile();
     profile.set("searchmetacat", 0, "false");
+    profile.save();
     dispose();
   }
 }
