@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-02 23:12:51 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-14 16:47:56 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,22 +35,25 @@ public class SortableTableHeaderCellRenderer extends DefaultTableCellRenderer
 {
   // The icon for nonsorted in table header cell
   private Icon NONSORTED = null;
-   /* new SortArrowIcon(SortArrowIcon.NONE);*/
   // The icon for ascending order in table header cell
-  private Icon ASCENDING = new ImageIcon 
-                      (getClass().getResource("images/ascendingArrow.gif"));
+  private  Icon ASCENDING = null;  
   // The icon for decending order in table header cell
-  private Icon DECENDING = new ImageIcon 
-                      (getClass().getResource("images/decendingArrow.gif"));
- 
+  private  Icon DECENDING = null;
+    
+  // Font size                 
+  private static final int FONTSIZE = 12;
   /**
    * Consturctor of SortableHeaderCellRender
    */
-  /*public SortableTableHeaderCellRenderer()
+  public SortableTableHeaderCellRenderer()
   {
-    setHorizontalTextPosition(LEFT);
-    setHorizontalAlignment(CENTER);
-  }*/
+    ASCENDING = new ImageIcon(getClass().getResource("ascendingArrow.gif"));
+    DECENDING = new ImageIcon(getClass().getResource("decendingArrow.gif"));
+    //setMargin(new Insets(MARGIN, MARGIN, MARGIN, MARGIN));
+    setFont(new Font("Dialog", Font.PLAIN, FONTSIZE));
+    // Set text in the left of the arrow icon
+    setHorizontalTextPosition(SwingConstants.LEFT);
+  }
   
   /**
    * Method to return table cell render

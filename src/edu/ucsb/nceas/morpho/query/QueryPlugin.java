@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.72 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-14 16:47:56 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 
   /** Tabbed panel that displays the data owned by the user */
   private ResultPanel ownerPanel = null;
+  
+  
 
   /**
    * Construct the query plugin.  Initialize our one tab for the 
@@ -172,6 +174,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   private void handleSearchAction()
   {
+    
     // QueryDialog Create and show as modal
     QueryDialog queryDialog1 = new QueryDialog(framework);
     queryDialog1.setModal(true);
@@ -219,7 +222,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Create the tabbed pane for the owner queries
     ownerQuery = new Query(getOwnerQuery(), framework);
     ResultSet results = ownerQuery.execute();
-    ownerPanel = new ResultPanel(results, true, false);
+    ownerPanel = new ResultPanel(results, true, false, null);
 
     // Add the content pane, menus, and toolbars
     framework.setMainContentPane(ownerPanel);

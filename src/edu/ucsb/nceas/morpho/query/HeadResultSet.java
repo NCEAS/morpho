@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:36 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-14 16:47:56 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.*;
-
+import edu.ucsb.nceas.morpho.util.*;
 import java.io.InputStream;
-
+import java.util.Collections;
 import java.util.Enumeration;
 //DFH import java.util.HashMap;
 import java.util.Hashtable;
@@ -41,11 +41,13 @@ import java.util.Vector;
  * local query or a Metacat query, but only presents the most recent revision
  * of a document as part of the Table Model. 
  */
-public class HeadResultSet extends ResultSet
+public class HeadResultSet extends ResultSet 
 {
   /** Store the most recent revision in a vector */
   private Vector headResultsVector = null;
-
+  
+ 
+  
   /**
    * Construct a HeadResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
@@ -67,6 +69,7 @@ public class HeadResultSet extends ResultSet
   {
     super(query, source, vec, cf);
     consolidateResults();
+   
   }
 
 
@@ -93,16 +96,58 @@ public class HeadResultSet extends ResultSet
     Object value = null;
     try {
       Vector rowVector = (Vector)headResultsVector.elementAt(row);
-      value = rowVector.elementAt(col);
+      // The oder of header is different to resultsVector, so we need a 
+      // conversion
+      value = rowVector.elementAt(lookupResultsVectorIndex(col));
+      
+      // Add icon rather than ture or false value to col6 and col7
+      if (col == 6)
+      { 
+        // cast value to Boolean object
+        Boolean isLocally = (Boolean)value;
+        if (isLocally.booleanValue())
+        {
+          // If is local, the value will be a local icon
+          value = localIcon;
+        }//if
+        else
+        {
+          // If there isnot local, value is empty String
+          value = blankIcon;
+        }//else
+      }//if
+      
+      // Add icon for col6 and col7
+      if (col == 7)
+      { 
+        // cast value to Boolean object
+        Boolean isNet = (Boolean)value;
+        if (isNet.booleanValue())
+        {
+          // If is local, the value will be a local icon
+          value = metacatIcon;
+        }//if
+        else
+        {
+          // If there isnot local, value is empty String
+          value = blankIcon;
+        }//else
+      }//if
+         
     } catch (ArrayIndexOutOfBoundsException aioobe) {
+      
       String emptyString = "";
       value = null;
     } catch (NullPointerException npe) {
+      
       String emptyString = "";
       value = emptyString;
     }
+    
     return value;
   }
+  
+ 
 
   /**
    * Open a given row index of the result set using a delegated handler class
@@ -139,7 +184,7 @@ public class HeadResultSet extends ResultSet
     for (int i=0; i<resultsVector.size(); i++) {
       // Get the row, and its docid, parse out the rev #
       Vector rowVector = (Vector)resultsVector.elementAt(i);
-      String docid = (String)rowVector.elementAt(numHeaders+2);
+      String docid = (String)rowVector.elementAt(DOCIDINDEX);
       String family = docid.substring(0, docid.lastIndexOf("."));
       String rev = docid.substring(docid.lastIndexOf(".")+1);
       Integer currentRev = new Integer(rev);
@@ -171,5 +216,23 @@ public class HeadResultSet extends ResultSet
       while (enum.hasMoreElements()) {
           headResultsVector.addElement(enum.nextElement());
       }
+     
   }
+  
+   /**
+   * Method implements from SortTableModel. To make sure a col can be sort
+   * or not. We decide it always be sortable.
+   * @param col, the index of column which need to be sorted
+   * @param ascending, the sort order
+   */
+  public void sortTableByColumn(int col, boolean ascending)
+  {
+   
+   //look up index in result vector
+    int resultColIndex = lookupResultsVectorIndex(col);
+    // sort the result vector
+    Collections.sort(headResultsVector,
+                    new CellComparator(resultColIndex, ascending));
+ 
+  }//sortColumn
 }

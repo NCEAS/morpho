@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.41 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-14 16:47:56 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -72,8 +73,10 @@ public class ResultPanel extends JPanel
   private ResultSet results = null;
   /** A reference to the framework */
   private ClientFramework framework = null;
+  /** A reference to the mediator */
+  private ResultPanelAndFrameMediator mediator = null;
   /** The table used to display the results */
-  JTable table = null;
+  ToolTippedSortableJTable table = null;
   /** Indicate whether the refresh button should appear */
   private boolean hasRefreshButton = false;
   /** Indicate whether the revise button should appear */
@@ -127,10 +130,11 @@ public class ResultPanel extends JPanel
    * the panel has reset and refresh buttons.
    *
    * @param results the result listing to display
+   * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(ResultSet results)
+  public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator)
   {
-    this(results, true, true);
+    this(results, true, true, myMediator);
   }
 
   /**
@@ -139,11 +143,12 @@ public class ResultPanel extends JPanel
    * @param results the result listing to display
    * @param showRefresh boolean true if the Refresh button should appear
    * @param showRevise boolean true if the Revise button should appear
+   * @param myMediator the mediaor passed from frame to control table
    */
   public ResultPanel(ResultSet results, boolean showRefresh, 
-                     boolean showRevise)
+                 boolean showRevise, ResultPanelAndFrameMediator myMediator)
   {
-    this(results, showRefresh, showRevise, 12);
+    this(results, showRefresh, showRevise, 12, myMediator);
   }
 
   /**
@@ -153,15 +158,23 @@ public class ResultPanel extends JPanel
    * @param showRefresh boolean true if the Refresh button should appear
    * @param showRevise boolean true if the Revise button should appear
    * @param fontSize the fontsize for the cells of the table
+   * @param myMediator the mediaor passed from frame to control table
    */
   public ResultPanel(ResultSet results, boolean showRefresh,
-                     boolean showRevise, int fontSize)
+       boolean showRevise, int fontSize, ResultPanelAndFrameMediator myMediator)
   {
     super();
     this.results = results;
     this.hasRefreshButton = showRefresh;
     this.hasReviseButton = showRevise;
     this.framework = results.getFramework();
+    this.mediator = myMediator;
+    // If the panel don't need a mediator, null will be passed here
+    if (mediator != null)
+    {
+      // Register result panel to mediator
+      mediator.registerResultPanel(this);
+    }
 
     try {
         bfly = new javax.swing.ImageIcon(getClass().getResource("Btfly.gif"));
@@ -234,17 +247,33 @@ public class ResultPanel extends JPanel
       add(headerPanel, BorderLayout.NORTH);
  
       // Set up the results table
-      table = new JTable(results);
-      WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
-      stringRenderer.setRows(5);
-//DFH      table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
-      table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
-      //table.setRowHeight(results.getRowHeight());
+      table = new ToolTippedSortableJTable(results);
+           
+      // Set resize model
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      // Set horizontal line off
+      table.setShowHorizontalLines(false);
+      table.setShowVerticalLines(false);
+      
+      ToolTippedTextRenderer stringRenderer = 
+                                       new ToolTippedTextRenderer(fontSize);
+     
+      //stringRenderer.setRows(5);
+      //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
+      table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
-      initColumnSizes(table, results);
-  
-      //Create the scroll pane and add the table to it. 
+      table.setDefaultRenderer
+                            (javax.swing.ImageIcon.class, new ImageRenderer());
+     
+      // Create the scroll pane and add the table to it. 
       JScrollPane scrollPane = new JScrollPane(table);
+      
+      // Set JScrollPane background color white
+      scrollPane.getViewport().setBackground(Color.white);
+      // Initialize column, pass the width of virwport to the table
+      initTableColumnSize(table, results, 775);
+      // Add the table to scroll pane
+      //scrollPane.add(table);
   
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
@@ -302,6 +331,72 @@ public class ResultPanel extends JPanel
   }
 
   /*
+   * This method picks column sizes depend on the length of talbe and the 
+   * value for every column in an array.
+   */
+  private void initTableColumnSize(JTable table, ResultSet results, int width) 
+  {
+    // width for the each column (by percentage), change the value in the
+    // array, the column width will be changed
+    // Add the all element in the array together you will get 1 (100%100)
+    // The value is 30/768, 282/768, 96/768, 72/768, 120/768, 90/768, 42/768, 
+    // 36/768
+    /*double [] columnWidth = {0.0390625, 0.3671875, 0.125, 0.09375, 0.15625, 
+                            0.1171875, 0.0546875, 0.046875};*/
+     double [] columnWidth = {0.03, 0.355, 0.132, 0.1, 0.14, 
+                             0.13, 0.066, 0.047};
+    // column object
+    TableColumn column = null;
+    // Minimum factor for MinWidth
+    double minFactor = 0.7;
+    // Maxmum factor for MaxWidth
+    int maxFactor = 5;
+    // Percentage width
+    double percentage = 0.0;
+    // Perferred size of column
+    int preferredSize = 0;
+    // Minimum size
+    int minimumSize = 0;
+    // Maxmum size 
+    int maxmumSize = 0;
+    
+    
+    for (int i = 0; i < results.getColumnCount(); i++) 
+    {
+      // Get the column
+      column = table.getColumnModel().getColumn(i);
+      // Get the percentage of width for this column from the array
+      percentage = columnWidth[i];
+      // Get the width as preferred width
+      preferredSize = (new Double(width*percentage)).intValue();
+     
+      // Get the minimum size
+      minimumSize =(new Double(preferredSize*minFactor)).intValue();
+      // Get the maxmum size
+      maxmumSize = preferredSize*maxFactor;
+       // In order to keep title at least show 6 words, we need to make sure
+      // it is bigger than 200
+      if ( i== 1 && preferredSize <200 )
+      {
+        // Set preferred size is 200
+        preferredSize = 200;
+        // Get the minimum size
+        minimumSize=( new Double(preferredSize*minFactor)).intValue();
+        // Get the maxmum size
+        maxmumSize = preferredSize*maxFactor;
+    
+      }//if
+      // Set preferred width
+      column.setPreferredWidth(preferredSize);
+      // Set minimum width
+      column.setMinWidth(minimumSize);
+      // Set maxmum width
+      column.setMaxWidth(maxmumSize);
+    }//for
+  }// initTableColumnSize 
+
+
+  /*
    * This method picks good column sizes.
    * If all column heads are wider than the column's cells' 
    * contents, then you can just use column.sizeWidthToFit().
@@ -341,10 +436,11 @@ public class ResultPanel extends JPanel
    * multiple rows are selected, open them all.
    */
   private void openResultRecord(JTable table) {
+   
     int[] selectedRows = table.getSelectedRows();
 
     for (int i = 0; i < selectedRows.length; i++) {
-      System.out.println("row: " + selectedRows[i]);
+     
       results.openResultRecord(selectedRows[i]);
     }
   }
@@ -484,9 +580,11 @@ public class ResultPanel extends JPanel
    */
   class MenuAction implements java.awt.event.ActionListener 
   {
+    
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
-			Object object = event.getSource();
+			
+      Object object = event.getSource();
       String docid = selectedId;
       DataPackageInterface dataPackage;
       try 
@@ -502,6 +600,7 @@ public class ResultPanel extends JPanel
       }
 			if (object == openMenu)
       { 
+        
         doOpenDataPackage();
         //open the current selection in the package editor
       }
@@ -605,6 +704,14 @@ public class ResultPanel extends JPanel
       table.setRowSelectionInterval(selrow, selrow);
       Vector resultV = results.getResultsVector();
       Vector rowV = (Vector)resultV.elementAt(selrow);
+      
+      // If the panel need a mediator
+      if (mediator != null)
+      {
+        // If select a row, open button will enable
+        mediator.enableOpenButton();
+      }
+    
       /*//System.out.println("resultsV: " + resultV.toString());
       for(int i=0; i<resultV.size(); i++)
       {
@@ -681,6 +788,7 @@ public class ResultPanel extends JPanel
    */
   public void reviseQuery()
   {
+    
     // Save the original identifier
     String identifier = results.getQuery().getIdentifier();
 
@@ -768,7 +876,7 @@ public class ResultPanel extends JPanel
 
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);
-    initColumnSizes(table, results);
+    initTableColumnSize(table, results, 775);
   }
 
   /**
@@ -1234,7 +1342,8 @@ private void doExportToZip() {
     worker.start();  //required for SwingWorker 3
 }
 
-private void doOpenDataPackage() {
+  public void doOpenDataPackage() {
+   
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
           bflyLabel.setIcon(flapping);
@@ -1250,12 +1359,12 @@ private void doOpenDataPackage() {
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            framework.debug(6, "Error in doOpenDataPackage");
             return null;
           }
           
 			  //do open
-          ClientFramework.debug(20, "Opening package.");
+          ClientFramework.debug(20, "Opening package!.");
           openResultRecord(table);
         
           return null;  

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-06-21 21:26:24 $'
- * '$Revision: 1.30 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-14 16:47:56 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.util.*;
 
 import java.io.*;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.Collections;
 
 import javax.swing.*;
 import javax.swing.ImageIcon;
@@ -42,7 +44,6 @@ import javax.swing.table.*;
 import javax.swing.table.AbstractTableModel;
 
 import org.w3c.dom.*;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -63,7 +64,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * Other child elements are determined by query and are returned as <param>
  * elements with a "name" attribute and the value as the content.
  */
-public class ResultSet extends AbstractTableModel implements ContentHandler
+public class ResultSet extends AbstractTableModel implements ContentHandler,
+                                                        ColumnSortableTableModel
 {
   /** store a private copy of the Query run to create this resultset */
   private Query savedQuery = null;
@@ -113,18 +115,63 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   private Vector tripleList;
 
   /** The icon for representing local storage. */
-  private ImageIcon localIcon = null;
+  public static ImageIcon localIcon = null;
   /** The icon for representing metacat storage. */
-  private ImageIcon metacatIcon = null;
+  public static ImageIcon metacatIcon = null;
+  /** the icon for blank, nothing there */
+  public static ImageIcon blankIcon = null;
+  /** The icon for representing package */
+  public static ImageIcon packageIcon = null;
+  /** The icon for representing pakcage and data file */
+  public static ImageIcon packageDataIcon = null;
   /** The icon for representing both local and metacat storage. */
-  private ImageIcon bothIcon = null;
+  //private ImageIcon bothIcon = null;
   /** The icon for representing local storage with data. */
-  private ImageIcon localDataIcon = null;
+  //private ImageIcon localDataIcon = null;
   /** The icon for representing metacat storage with data. */
-  private ImageIcon metacatDataIcon = null;
+  //private ImageIcon metacatDataIcon = null;
   /** The icon for representing both local and metacat storage with data. */
-  private ImageIcon bothDataIcon = null;
+  //private ImageIcon bothDataIcon = null;
+  
+  /** Store the index of package icon in resultsVector */
+  protected static final int PACKAGEICONINDEX = 0;
+     
+  /** Store the index of titl in resultsVector */
+  protected static final int TITLEINDEX = 1;
+  
+  /** Store the index of surname in resultsVector */
+  protected static final int SURNAMEINDEX = 2;
+  
+  /** Store the index of keywords in resultsVector */
+  protected static final int KEYWORDSINDEX = 3;
+  
+  /** Store the index of createdate in resultsVector */
+  protected static final int CREATEDATEINDEX = 4;
+  
+  /** Store the index of update in resultsVector */
+  protected static final int UPDATEDATEINDEX = 5;
+  
+  /** Store the index of docid in resultsVector */
+  protected static final int DOCIDINDEX = 6;
+  
+  /** Store the index of doc name in resultsVector */
+  protected static final int DOCNAMEINDEX = 7;
+  
+  /** Store the index of doc type in resultsVector */
+  protected static final int DOCTYPEINDEX = 8;
+  
+  /** Store the index of islocal in resultsVector */
+  protected static final int ISLOCALINDEX = 9;
+  
+  /** Store the index of ismetacat in resultsVector */
+  protected static final int ISMETACATINDEX = 10;
+  
+  /** Store the index of triple in resultsVector*/
+  protected static final int TRIPLEINDEX =11;
 
+  /** Store the height fact for table row height */
+  private static final int HEIGHTFACTOR = 2;
+  
 
   /**
    * Construct a ResultSet instance from a vector of vectors;
@@ -132,6 +179,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public ResultSet(Query query, String source, Vector vec, ClientFramework cf) {
   
+    initIcons();
     init(query, source, cf);
     this.resultsVector = vec;
   }
@@ -143,10 +191,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public ResultSet( Query query, String source, 
                     InputStream resultsXMLStream, ClientFramework cf) {
 
+    initIcons();
     init(query, source, cf);
     framework.debug(30, "(2.41) Creating result set ...");
-    initIcons();
-    resultsVector = new Vector();
+     resultsVector = new Vector();
     
     // Parse the incoming XML stream and extract the data
     XMLReader parser = null;
@@ -163,6 +211,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       framework.debug(6, "(2.432) " + e.toString());
       framework.debug(30, "(2.433) Exception is: " + e.getClass().getName());
     }
+
   }
 
 
@@ -184,40 +233,52 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     }
     
     // Set up the headers
-    int cnt = (returnFields==null)? 0 : returnFields.size();
-    int numberFixedHeaders = 1;
-    headers = new String[numberFixedHeaders+cnt];  
-    headers[0] = " "; // This is for the icon column;
+    createTableHeader();
+    //int cnt = (returnFields==null)? 0 : returnFields.size();
+    //int numberFixedHeaders = 1;
+    //headers = new String[numberFixedHeaders+cnt];  
+    //headers[0] = " "; // This is for the icon column;
                       // *NOTE* we *must* use a space here, *NOT* an empty 
                       // string ("") - otherwise header height is set too 
                       // small in windows L&F
-    for (int i=0;i<cnt;i++) {
-      headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
+    //for (int i=0;i<cnt;i++) {
+      //headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
+    //}
   }
   
   //initialize icons - called from constructor
   private void initIcons() {
 
     localIcon 
-      = new ImageIcon(getClass().getResource("local-metadata.gif"));
+      = new ImageIcon(getClass().getResource("localscreen.gif"));
+    localIcon.setDescription(ImageRenderer.LOCALTOOLTIP);
     metacatIcon 
-      = new ImageIcon(getClass().getResource("network-metadata.gif"));
-    bothIcon 
+      = new ImageIcon(getClass().getResource("net.gif"));
+    metacatIcon.setDescription(ImageRenderer.METACATTOOLTIP);
+    blankIcon 
+      = new ImageIcon(getClass().getResource("blank.gif"));
+    blankIcon.setDescription(ImageRenderer.BLANK);
+    packageIcon
+      = new ImageIcon(getClass().getResource("localscreen.gif"));
+    packageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);   
+    packageDataIcon
+      = new ImageIcon(getClass().getResource("net.gif"));
+    packageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
+    /*bothIcon 
       = new ImageIcon(getClass().getResource("local+network-metadata.gif"));
     localDataIcon   
       = new ImageIcon(getClass().getResource("local-metadata+data.gif"));
     metacatDataIcon 
       = new ImageIcon(getClass().getResource("network-metadata+data.gif"));
     bothDataIcon 
-      = new ImageIcon(getClass().getResource("local+network-metadata+data.gif"));
+    =new ImageIcon(getClass().getResource("local+network-metadata+data.gif"));*/
   }
 
   /**
    *  get the resultsVector
    */
   public Vector getResultsVector() {
-    return resultsVector;
+    return this.resultsVector;
   }
   
   /**
@@ -248,7 +309,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public int getRowHeight()
   {
-    return localIcon.getIconHeight();
+    if (localIcon != null)
+    {
+      int height = (localIcon.getIconHeight())*HEIGHTFACTOR;
+      return height ;
+    }
+    else
+    {
+      return 1;
+    }
   }
 
   /**
@@ -265,18 +334,29 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public Object getValueAt(int row, int col)
   {
     Object value = null;
-    try {
-      Vector rowVector = (Vector)resultsVector.elementAt(row);
-      value = rowVector.elementAt(col);
-    } catch (ArrayIndexOutOfBoundsException aioobe) {
-      String emptyString = "";
-      value = null;
-    } catch (NullPointerException npe) {
-      String emptyString = "";
-      value = emptyString;
-    }
     return value;
   }
+  
+  /**
+   * Lookup an array to find resultsVector index for header index
+   *  header index              resultVector index
+   *      0                       PACKAGEICONEX(0)
+   *      1                       TITLEINDEX(1)
+   *      2                       DOCIDINDEX(6)
+   *      3                       SURNAMEINDEX(2)
+   *      4                       KEYWORKDINDEX(3)
+   *      5                       UPDATEDATEINDEX(5)
+   *      6                       ISLOCALINDEX(9)
+   *      7                       ISMETACATINDEX(10)
+   */
+  protected int lookupResultsVectorIndex(int headerIndex)
+  {
+    // Array to store the resultSVectorIndex
+    int [] lookupArray = {PACKAGEICONINDEX, TITLEINDEX, DOCIDINDEX,SURNAMEINDEX,
+                  KEYWORDSINDEX, UPDATEDATEINDEX, ISLOCALINDEX, ISMETACATINDEX};
+    return lookupArray[headerIndex];
+    
+  }//lookupResultsVectorIndex
 
   /**
    * Return the Class for each column so that they can be
@@ -296,6 +376,42 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     return currentClass;
   }
 
+  /**
+   * Create the header for table model
+   * The header include a package icon, title, documentid,  surname, keywords
+   * last modified, local and net icon.
+   */
+  private void createTableHeader()
+  {
+    int cnt = (returnFields==null)? 0 : returnFields.size();
+    int numberFixedHeaders = 5;
+    headers = new String[numberFixedHeaders+cnt];  
+    headers[0] = " "; // This is for the first package icon column;
+                      // *NOTE* we *must* use a space here, *NOT* an empty 
+                      // string ("") - otherwise header height is set too 
+                      // small in windows L&F
+    // This is for Title
+    //headers[1] = getLastPathElement((String)returnFields.elementAt(0));
+    headers[1] = "Title";
+    headers[2] = "Document ID";// This for third column header
+    // SurName
+    headers[3] = "Surname";
+    // Keyworkds
+    headers[4] = "Keywords";
+    // This is for surname and keywords
+    /*if (cnt != 0)
+    {
+      for (int i=1;i<cnt;i++) 
+      {
+        headers[2+i] = getLastPathElement((String)returnFields.elementAt(i));
+      }
+    }*/
+    // This is for last modeidfied
+    headers[5]="Last Modified";
+    headers[6]="Local";
+    headers[7]="Net";
+  }
+  
   /**
    * SAX handler callback that is called upon the start of an
    * element when parsing an XML document.
@@ -330,7 +446,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     }
   }
   
-  /**
+   /**
    * SAX handler callback that is called upon the end of an
    * element when parsing an XML document.
    */
@@ -361,9 +477,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
           }
       }
       if (hasData) {
-        row.addElement(metacatDataIcon);
+        row.addElement(packageDataIcon);
       } else {
-        row.addElement(metacatIcon);
+        row.addElement(packageIcon);
       }
 
       // Then display requested fields in requested order
@@ -386,6 +502,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     }
     String leaving = (String)elementStack.pop();
   }
+  
+  
+  
   
   /**
    * SAX handler callback that is called for character content of an
@@ -524,9 +643,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     boolean openMetacat = false;
     Vector rowTriples = null;
     try {
-      docid = (String)rowVector.elementAt(numHeaders+2);
-      openLocal = ((Boolean)rowVector.elementAt(numHeaders+5)).booleanValue();
-      openMetacat = ((Boolean)rowVector.elementAt(numHeaders+6)).booleanValue();
+      docid = (String)rowVector.elementAt(DOCIDINDEX);
+      openLocal = ((Boolean)rowVector.elementAt(ISLOCALINDEX)).booleanValue();
+      openMetacat = 
+                ((Boolean)rowVector.elementAt(ISMETACATINDEX)).booleanValue();
       //rowTriples = (Vector)rowVector.get(numHeaders+7);
 /*    // DEBUGGING output to determine if the triples Hash is correct
       for (int j=0; j < rowTriples.size(); j++) {
@@ -579,7 +699,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       int numColumns = getColumnCount();
       for (int i=0; i < getRowCount(); i++) {
         Vector rowVector = (Vector)resultsVector.elementAt(i);
-        String currentDocid = (String)rowVector.elementAt(numColumns+2);
+        String currentDocid = (String)rowVector.elementAt(DOCIDINDEX);
         docidList.put(currentDocid, new Integer(i));
       }
   
@@ -589,21 +709,30 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       Enumeration ee = r2Rows.elements();
       while (ee.hasMoreElements()) {
         Vector row = (Vector)ee.nextElement();
-        String currentDocid = (String)row.elementAt(numColumns+2);
+        String currentDocid = (String)row.elementAt(DOCIDINDEX);
         // if docids match, change the icon and location flags
         if (docidList.containsKey(currentDocid)) {
           int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
           Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
 
           // Determine which icon to use based on the current setting
-          ImageIcon currentIcon = (ImageIcon)originalRow.elementAt(0);
-          if (currentIcon == metacatDataIcon) {
-            originalRow.setElementAt(bothDataIcon, 0);
+          ImageIcon currentIcon 
+            = (ImageIcon)originalRow.elementAt(PACKAGEICONINDEX);
+       
+          if ((currentIcon.getDescription()).
+                          equals(packageDataIcon.getDescription())) {
+            //originalRow.setElementAt(bothDataIcon, 0);
+           
+            originalRow.setElementAt(packageDataIcon, PACKAGEICONINDEX);
           } else {
-            originalRow.setElementAt(bothIcon, 0);
+            
+            //originalRow.setElementAt(bothIcon, 0);
+            originalRow.setElementAt(packageIcon, PACKAGEICONINDEX);
           }
-          originalRow.setElementAt(new Boolean(true), numColumns+5);
-          originalRow.setElementAt(new Boolean(true), numColumns+6);
+          //originalRow.setElementAt(new Boolean(true), numColumns+5);
+          originalRow.setElementAt(new Boolean(true), ISLOCALINDEX);
+          //originalRow.setElementAt(new Boolean(true), numColumns+6);
+          originalRow.setElementAt(new Boolean(true), ISMETACATINDEX);
         } else {
           resultsVector.addElement(row);
         }
@@ -618,4 +747,17 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   {
     return this.framework;
   }
+  
+  
+  /**
+   * Method implements from SortTableModel. To make sure a col can be sort
+   * or not. We decide it always be sortable.
+   * @param col, the index of column which need to be sorted
+   * @param ascending, the sort order
+   */
+  public void sortTableByColumn(int col, boolean ascending)
+  {
+  
+  
+  }//sortColumn
 }

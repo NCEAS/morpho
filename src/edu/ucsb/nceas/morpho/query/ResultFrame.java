@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-02 21:50:26 $'
- * '$Revision: 1.4 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-14 16:47:56 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -47,10 +48,9 @@ public class ResultFrame extends JFrame
 
   /** A reference to the framework */
   ClientFramework framework;
-  
+ 
   ImageIcon flapping;
   
-
   /**
    * Construct a new ResultFrame and display the result set
    *
@@ -71,7 +71,9 @@ public class ResultFrame extends JFrame
   {
     super();
     this.framework = cf;
-
+    
+       
+    
     if (results!=null) {
       super.setTitle(results.getQuery().getQueryTitle());
       setName(results.getQuery().getQueryTitle());
@@ -88,7 +90,7 @@ public class ResultFrame extends JFrame
 
     // Create the result panel and add it to the frame
     if (results!=null) {
-      resultDisplayPanel = new ResultPanel(results, true, true, fontSize);
+      resultDisplayPanel = new ResultPanel(results,true,true,fontSize, null);
       getContentPane().setLayout(new BorderLayout());
       getContentPane().add(resultDisplayPanel, BorderLayout.CENTER);
     }
@@ -98,6 +100,7 @@ public class ResultFrame extends JFrame
 
     // Add to the frameworks list of windows, and show the frame
     framework.addWindow(this);
+  
     setVisible(true);
   }
 
@@ -136,7 +139,7 @@ public class ResultFrame extends JFrame
   }
 
   public void addResultPanel(ResultSet results) {
-      resultDisplayPanel = new ResultPanel(results, true, true, 12);
+      resultDisplayPanel = new ResultPanel(results, true, true, 12, null);
       resultDisplayPanel.setVisible(true);
       getContentPane().removeAll();
       getContentPane().setLayout(new BorderLayout());

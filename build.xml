@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.47 2002-07-22 20:43:44 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.48 2002-08-14 16:47:54 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -136,6 +136,10 @@
       <copy todir="${build.dest}/${package.home}/morpho/query" filtering="no">
         <fileset dir="${srcdir}/${package.home}/morpho/query/images">
         </fileset>
+      </copy>
+      <copy todir="${build.dest}/${package.home}/morpho/util" filtering="no">
+         <fileset dir="${srcdir}/${package.home}/morpho/util/images">
+	 </fileset>
       </copy>
       <copy todir="${build.dest}/${package.home}/morpho/editor" filtering="no">
         <fileset dir="${srcdir}/${package.home}/morpho/editor/images">
