@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-08 03:57:19 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2002-04-08 18:12:55 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -249,7 +249,7 @@ public class ResultPanel extends JPanel
       popup = new JPopupMenu();
       popup.add(openMenu);
       openPreviousVersion.setEnabled(false);
-      popup.add(openPreviousVersion);
+ //   popup.add(openPreviousVersion);
       
       popup.add(refreshMenu);
       popup.add(new JSeparator());
