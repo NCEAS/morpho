@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 18:04:40 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2002-12-05 04:42:50 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -617,6 +617,8 @@ public class TextImportWizard extends javax.swing.JFrame
 				CancelButton_actionPerformed(event);
       else if (object == insertEnumButton)
         insertEnumButton_actionPerformed(event);
+      else if (object ==  StartingLineTextField)
+        StartingLineTextField_actionPerformed(event);
 		}
 	}
 
@@ -1598,6 +1600,11 @@ public void startImport(String file) {
  		String str = StartingLineTextField.getText();
 		if (isInteger(str)) {
           startingLine = (Integer.valueOf(str)).intValue();
+          // startingLine is assumed to be 1-based
+          if (startingLine<1) {
+            startingLine = 1;
+            StartingLineTextField.setText("1");
+          }
  		} else {
 		  StartingLineTextField.setText(String.valueOf(startingLine));
 		}
@@ -1615,13 +1622,17 @@ public void startImport(String file) {
 
 	void StartingLineTextField_focusLost(java.awt.event.FocusEvent event)
 	{
-		String str = StartingLineTextField.getText();
+ 		String str = StartingLineTextField.getText();
 		if (isInteger(str)) {
-		  startingLine = (Integer.valueOf(str)).intValue();  
-		}
-		else {
+          startingLine = (Integer.valueOf(str)).intValue();
+          // startingLine is assumed to be 1-based
+          if (startingLine<1) {
+            startingLine = 1;
+            StartingLineTextField.setText("1");
+          }
+ 		} else {
 		  StartingLineTextField.setText(String.valueOf(startingLine));
-		}			 
+		}
 	}
 	
 	
