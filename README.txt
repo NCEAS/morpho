@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.0.4 - February 11, 2002
+Version: 1.0.% - February 19, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -123,7 +123,10 @@ edited and then submitted to Metacat.
 ---
 Version 1.0.4 of Morpho contains several more fixes to errors in the Morpho 
 editor. In particular, empty nodes were being trimmed incorrectly and sequences
-of nodes inside choice elements were handled incorrectly.
+of nodes inside choice elements were handled incorrectly. 
+---
+Version 1.0.5 of Morpho fixes some additional bugs in the editor, especially
+with CHOICE nodes. Changes for speeding up several function have also been made.
 
 
 Legalese
