@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-21 23:20:16 $'
- * '$Revision: 1.55 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-21 23:26:14 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,31 +32,30 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.EventListener;
-
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -67,7 +66,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
-import javax.swing.InputVerifier;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
@@ -82,10 +80,6 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListSelectionModel;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
 
 /**
  *  Interface   CustomList
@@ -263,7 +257,7 @@ public class CustomList extends JPanel {
         setColumnSizes(scrollPane.getViewport().getSize().getWidth());
       }
     });
-		this.add(scrollPane, BorderLayout.CENTER);
+    this.add(scrollPane, BorderLayout.CENTER);
     this.setBorder(new EmptyBorder(0, 0, //WizardSettings.PADDING,
                                    2 * WizardSettings.PADDING, 0));
     //WizardSettings.PADDING));
@@ -1223,12 +1217,17 @@ public class CustomList extends JPanel {
 
   /**
    * Sets the <code>javax.swing.Action</code> to be executed on pressing the
-   * appropriate list button. NOTE that the CUSTOM action will be executed FIRST,
-   * and then the button's 'private' Action (defined elsewhere in this class)
-   * will be executed
+   * appropriate list button.
+   * NOTE that if no custom delete action is set, or if a null action
+   *  is set, the DELETE button's 'private' Action (defined elsewhere in this
+   *  class) will be executed; otherwise the custom action will be executed (and
+   *  the 'private' Action will NOT be executed).
+   *  <em>Note that this behavior is different for the other custom action
+   *  get/set methods, which are executed IN ADDITION to private actions</em>
    *
    * @param a <code>javax.swing.Action</code> to be executed
    */
+
   public void setCustomDeleteAction(Action a) {
 
     this.customDeleteAction = a;
@@ -1246,24 +1245,24 @@ public class CustomList extends JPanel {
 
     return this.customDeleteAction;
   }
-	
-	/**
+
+  /**
    * 	Sets the boolean to indicate whether the customlist can be edited or not. If false,
-	 *	all the columns are made non-editable
+   *	all the columns are made non-editable
    *
    * @param editable boolean indicating whether the custom list can be edited or not
    */
-	 
+
   public void setEditable(boolean editable) {
     table.setEditableForAllColumns(editable);
   }
 
-	/**
-   * 	Method to edit a particular cell. This method call results in the cursor being placed 
-	 *	at that cell for editing (if the cell is editable).
+  /**
+   * 	Method to edit a particular cell. This method call results in the cursor being placed
+   *	at that cell for editing (if the cell is editable).
    *
    * @param row the row of the cell
-	 * @param col the column of the cell
+   * @param col the column of the cell
    */
   public void editCellAt(int row, int col) {
 
@@ -1275,24 +1274,25 @@ public class CustomList extends JPanel {
     }
     table.editCellAt(row, col);
   }
-	
-	public void selectAndEditCell(int row, int col) {
-		if (row >= table.getRowCount() || row < 0) {
+
+  public void selectAndEditCell(int row, int col) {
+    if (row >= table.getRowCount() || row < 0) {
       return;
     }
     if (col >= table.getColumnCount() || col < 0) {
       return;
     }
     table.selectAndEditCell(row, col);
-	}
-	
-	/**
-   * 	Sets the boolean to indicate whether the customlist should be disabled or not. If false,
-	 *	all the columns are made non-editable and the buttons are disabled
+  }
+
+
+  /**
+   * Sets the boolean to indicate whether the customlist should be disabled or
+   * not. If false, all the columns are made non-editable and the buttons are
+   * disabled
    *
-   * @param editable boolean indicating whether the custom list be enabled or not
+   * @param enabled boolean indicating whether the custom list be enabled or not
    */
-	
   public void setEnabled(boolean enabled) {
 
     this.enabled = enabled;
@@ -1318,38 +1318,39 @@ public class CustomList extends JPanel {
       if (showMoveDownButton) {
         moveDownButton.setEnabled(enabled);
       }
-			this.setEditable(enabled);
+      this.setEditable(enabled);
     }
     else {
       doEnablesDisables(table.getSelectedRows());
-			this.setEditable(true);
+      this.setEditable(true);
     }
   }
-	
-	/**
+
+  /**
    * 	Gets the boolean indicating whether the customlist is enabled or not
    *
    * @return boolean true custom list is enabled and false otherwise
    */
-	
+
   public boolean isEnabled() {
     return enabled;
   }
-	
-	/**
-   * 	Sets the boolean to indicate whether the customlist can be edited or not. If false,
-	 *	all the columns are made non-editable
+
+
+  /**
+   * Sets the boolean to indicate whether the customlist can be edited or not.
+   * If false, all the columns are made non-editable
    *
-   * @param editable boolean indicating whether the custom list can be edited or not
+   * @param bgColor boolean indicating whether the custom list can be edited or
+   *   not
    */
-	
-	public void setBackground(Color bgColor) {
-		
-		if(bgColor != null && table != null) {
-			table.setBackground(bgColor);
-			scrollPane.getViewport().setBackground(bgColor);
-		}
-	}
+  public void setBackground(Color bgColor) {
+
+    if(bgColor != null && table != null) {
+      table.setBackground(bgColor);
+      scrollPane.getViewport().setBackground(bgColor);
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1510,18 +1511,20 @@ class DeleteAction
 
     parentList.fireEditingStopped();
 
-    //execute the user's custom action:
-    if (parentList.getCustomDeleteAction() != null) {
+    if (parentList.getCustomDeleteAction()==null) {
+
+      //no custom action has been set - just remove the rows
+      for (int i = 0; i < rows.length; i++) {
+        parentList.removeRow(rows[i] - i);
+      }
+
+    } else {
+
+      //execute the user's custom action:
       parentList.getCustomDeleteAction().actionPerformed(
       new ActionEvent(parentList, ActionEvent.ACTION_PERFORMED, "Delete"));
     }
-
-    //now remove the rows
-    for (int i = 0; i < rows.length; i++) {
-      parentList.removeRow(rows[i] - i);
-    }
   }
-
 }
 
 class MoveUpAction
@@ -1602,13 +1605,13 @@ class CustomJTable extends JTable{
   private DefaultCellEditor defaultCellEditor
       = new DefaultCellEditor(new JTextField());
   Object[] editors;
-	
-	boolean[] columnsEditableFlags;
+
+  boolean[] columnsEditableFlags;
 
   int DOUBLE_CLICK = 2;
-	
-	private int currentRow = -1;
-	private int currentCol = -1;
+
+  private int currentRow = -1;
+  private int currentCol = -1;
 
   public CustomJTable(final CustomList parentList, Vector rowVect, Vector colNamesVec, Object[] editors) {
 
@@ -1623,21 +1626,21 @@ class CustomJTable extends JTable{
     // Added a mouse listener which looks for double clicks on
     // columns. If there is a double click on the column,
     // edit action is fired for the parentList
-		this.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent e) {
-				
-				if(e.getClickCount()==DOUBLE_CLICK){
+    this.addMouseListener(new MouseListener() {
+      public void mouseClicked(MouseEvent e) {
+
+        if(e.getClickCount()==DOUBLE_CLICK){
           parentList.fireEditAction();
         }
-			}
+      }
       public void mouseEntered(MouseEvent e) {}
       public void mouseExited(MouseEvent e) {}
       public void mousePressed(MouseEvent e) {}
       public void mouseReleased(MouseEvent e) {}
     }
     );
-		
-	}
+
+  }
 
   //override super
   public TableCellRenderer getCellRenderer(int row, int col) {
@@ -1784,12 +1787,12 @@ class CustomJTable extends JTable{
               + colClass.getName());
     return colClass;
   }
-	
-	private JTextField getTextFieldEditor(int row, int col) {
-		
-		String val = (String)this.getValueAt(row, col);
-		return new JTextField(val);
-	}
+
+  private JTextField getTextFieldEditor(int row, int col) {
+
+    String val = (String)this.getValueAt(row, col);
+    return new JTextField(val);
+  }
 
   //override super
   public boolean getDragEnabled() {
@@ -1820,43 +1823,43 @@ class CustomJTable extends JTable{
     return columnsEditableFlags[col];
   }
 
-	public void selectAndEditCell(int row, int col) {
-		
-		editCellAt(row, col);
-		changeSelection(row, col, false, false);
-	}
-	
-	public void changeSelection(int rowIndex,
+  public void selectAndEditCell(int row, int col) {
+
+    editCellAt(row, col);
+    changeSelection(row, col, false, false);
+  }
+
+  public void changeSelection(int rowIndex,
                             int columnIndex,
                             boolean toggle,
-														boolean extend) {
-															
-		
-		if(rowIndex != currentRow || columnIndex != currentCol) {
-			
-			if(editors != null && currentCol >= 0 && currentCol < editors.length && editors[currentCol] != null) {
-				if(editors[currentCol] instanceof JTextField) {
-					
-					InputVerifier iv = ((JTextField)editors[currentCol]).getInputVerifier();
-					JTextField jtf = getTextFieldEditor(currentRow, currentCol);
-					if(iv != null) { 
-						boolean res = iv.verify(jtf);
-						if(!res) { 
-							//jtf.requestFocus();
-							this.editCellAt(currentRow, currentCol);
-							//super.changeSelection(currentRow, currentCol, false, false);
-							return;
-						}
-					}
-					
-				}
-			}
-		}
-		currentRow = rowIndex;
-		currentCol = columnIndex;
-		super.changeSelection(rowIndex, columnIndex, toggle, extend);
-		
-	}
-	
-	
+                            boolean extend) {
+
+
+    if(rowIndex != currentRow || columnIndex != currentCol) {
+
+      if(editors != null && currentCol >= 0 && currentCol < editors.length && editors[currentCol] != null) {
+        if(editors[currentCol] instanceof JTextField) {
+
+          InputVerifier iv = ((JTextField)editors[currentCol]).getInputVerifier();
+          JTextField jtf = getTextFieldEditor(currentRow, currentCol);
+          if(iv != null) {
+            boolean res = iv.verify(jtf);
+            if(!res) {
+              //jtf.requestFocus();
+              this.editCellAt(currentRow, currentCol);
+              //super.changeSelection(currentRow, currentCol, false, false);
+              return;
+            }
+          }
+
+        }
+      }
+    }
+    currentRow = rowIndex;
+    currentCol = columnIndex;
+    super.changeSelection(rowIndex, columnIndex, toggle, extend);
+
+  }
+
+
 }

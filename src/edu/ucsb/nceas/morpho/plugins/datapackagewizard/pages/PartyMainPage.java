@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-21 21:32:08 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2004-04-21 23:26:14 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -414,7 +414,17 @@ public class PartyMainPage
 
       PartyPage page = (PartyPage)(deletedRows[i].get(userObjIdx));
 
-      ReferencesHandler.deleteOriginalReferenceSubtree(adp, page.getRefID());
+      Node retval
+          = ReferencesHandler.deleteOriginalReferenceSubtree(adp, page.getRefID());
+
+      if (retval==null) {
+
+        //this means that the deleteOriginalReferenceSubtree() method didn't
+        //delete the subtree from the dom, so we have to do it ourselves...
+        partiesList.removeRow(partiesList.getSelectedRowIndex());
+
+        updateDOMFromListOfPages();
+      }
     }
     Log.debug(45, "AFTER: adp=" + adp);
 
@@ -471,15 +481,13 @@ public class PartyMainPage
       nextPersonnelMap = (OrderedMap)persIt.next();
       if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
 
-      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
-//          DataPackageWizardInterface.PARTY_PERSONNEL);
-          this.role);
+      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(this.role);
 
       boolean checkParty = nextParty.setPageData(nextPersonnelMap,
                                                  personnelXPathRoot
                                                  + (partyPredicate++) + "]");
 
-      if (!checkParty)partyRetVal = false;
+      if (!checkParty) partyRetVal = false;
       List newRow = nextParty.getSurrogate();
       newRow.add(nextParty);
 
