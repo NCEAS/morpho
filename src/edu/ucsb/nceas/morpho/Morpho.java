@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-05 00:23:17 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2002-12-09 22:06:58 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -1498,6 +1499,8 @@ public class Morpho
                                                 "WindowsLookAndFeel")<0) return;
         UIManager.getLookAndFeelDefaults().put("SplitPane.dividerSize",
                                                DIVIDER_THICKNESS_FOR_MSWINDOWS);
+        UIManager.getLookAndFeelDefaults().put("SplitPane.background",
+                       UISettings.CUSTOM_GRAY);
     }
     /**
      * Attempts to connect a socket, returns null if it is not successful
