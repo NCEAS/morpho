@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-01 18:45:37 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2002-10-03 14:47:20 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1562,6 +1562,9 @@ public class DataViewer extends javax.swing.JPanel
     MorphoFrame thisFrame = null;
     DataPackage newPackage = null;
     File tempfile = null;
+    File tempfileAttr = null;
+    File tempfilePhy = null;
+    File tempfileEnt = null;
 	  if (dp!=null) {
       // make a temporary copy of the data file
       // PersistentVector get from ptm
@@ -1650,10 +1653,10 @@ public class DataViewer extends javax.swing.JPanel
           FileReader frAttr = null;
           FileReader frPhy = null;
           FileReader frEnt = null;
+          
          try{
            //ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
             tempfile = new File(tempdir + "/" + "tempdata");
-            fr = new FileReader(tempfile);
           }
           catch (Exception ww) {
             Log.debug(20,"Problem making temporary copy of data");
@@ -1661,8 +1664,7 @@ public class DataViewer extends javax.swing.JPanel
           
           
           try{
-            File tempfileAttr = new File(tempdir + "/" + "tempattribute");
-            frAttr = new FileReader(tempfileAttr);
+            tempfileAttr = new File(tempdir + "/" + "tempattribute");
           }
           catch (Exception ww) {
             Log.debug(20,"Problem making Attr FileReader");
@@ -1673,8 +1675,7 @@ public class DataViewer extends javax.swing.JPanel
           newids.addElement(newAttrFileId);
 
           try{
-            File tempfilePhy = new File(tempdir + "/" + "tempphysical");
-            frPhy = new FileReader(tempfilePhy);
+            tempfilePhy = new File(tempdir + "/" + "tempphysical");
           }
           catch (Exception ww) {
             Log.debug(20,"Problem making Physical FileReader");
@@ -1685,8 +1686,7 @@ public class DataViewer extends javax.swing.JPanel
           newids.addElement(newPhyFileId);          
            
           try{
-            File tempfileEnt = new File(tempdir + "/" + "tempentity");
-            frEnt = new FileReader(tempfileEnt);
+            tempfileEnt = new File(tempdir + "/" + "tempentity");
           }
           catch (Exception ww) {
             Log.debug(20,"Problem making Entity FileReader");
@@ -1694,7 +1694,12 @@ public class DataViewer extends javax.swing.JPanel
           String newEntFileId = a.incRev(entityFileId);
           oldids.addElement(entityFileId);
           newids.addElement(newEntFileId);          
-        
+      
+      fr = new FileReader(tempfile);
+      frAttr = new FileReader(tempfileAttr);
+      frPhy = new FileReader(tempfilePhy);
+      frEnt = new FileReader(tempfileEnt);
+
       if(localloc)
       { //save it locally
         try{
@@ -1717,12 +1722,24 @@ public class DataViewer extends javax.swing.JPanel
                                                     oldids, 
                                                     newids);
           fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
+          
+          fr.close();
+          frAttr.close();
+          frPhy.close();
+          frEnt.close();
 
         }
         catch (Exception e) {
           Log.debug(20, "error in local update");    
         }
       }
+      
+      // now recreate readers since they may have been used in creating local docs
+      fr = new FileReader(tempfile);
+      frAttr = new FileReader(tempfileAttr);
+      frPhy = new FileReader(tempfilePhy);
+      frEnt = new FileReader(tempfileEnt);
+
       if(metacatloc)
       { //save it to metacat
         oldid = dataID;
@@ -1743,7 +1760,7 @@ public class DataViewer extends javax.swing.JPanel
           oldids.addElement(dp.getID());
           newids.addElement(newid);
           newids.addElement(newPackageId);
-          Log.debug(20, "ready to increment triples");
+          Log.debug(0, "ready to increment triples");
           
           //increment the package files id in the triples
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
@@ -1751,6 +1768,12 @@ public class DataViewer extends javax.swing.JPanel
                                                     newids);
           Log.debug(20, "oldid: " + oldid + " newid: " + newid);          
           mds.saveFile(newPackageId, new StringReader(newPackageFile), dp); 
+          
+          fr.close();
+          frAttr.close();
+          frPhy.close();
+          frEnt.close();
+
         }
         catch (Exception e) {
             Log.debug(20, "error in metacat update of data file"+e.getMessage());    
@@ -1763,7 +1786,9 @@ public class DataViewer extends javax.swing.JPanel
       thisFrame.setVisible(false);
       thisFrame.dispose();
       }
-      catch (Exception www) {}
+      catch (Exception www) {
+        Log.debug(20, "Error!"+www.getMessage());
+      }
   
     // Show the new package
     try 
