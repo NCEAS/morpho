@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-29 00:54:41 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2002-08-30 01:22:31 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -267,7 +267,7 @@ public class ResultPanel extends JPanel
       popup.add(new JSeparator());
       
       // Create a new JMenu SynChronize...
-      JMenu synchronize = new JMenu("Sychronize...");
+      JMenu synchronize = new JMenu("Synchronize...");
       // Create a upload action and add it to synchronize
       GUIAction uploadAction = new GUIAction("Local to network", null,
                                 new LocalToNetworkCommand(dialog));
