@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-24 15:46:59 $'
- * '$Revision: 1.80 $'
+ *     '$Date: 2002-10-24 17:04:38 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1290,11 +1290,11 @@ public class DataPackage implements XMLFactoryInterface
             XMLTransformer transformer = XMLTransformer.getInstance();
             // add some property for style sheet
             transformer.
-                addTransformerProperty("export_file_extension", HTMLEXTENSION);
+                addTransformerProperty("href_path_extension", HTMLEXTENSION);
             transformer.addTransformerProperty("package_id", id);
             transformer.
-                    addTransformerProperty("pakcage_index_name", METACATHTML);
-                    
+                    addTransformerProperty("package_index_name", METACATHTML);
+            transformer.addTransformerProperty("qformat", "export");
             try {
               result = transformer.transform(xmlInputReader);
             } catch (IOException e) {
