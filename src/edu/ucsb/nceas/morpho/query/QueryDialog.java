@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-09-06 20:16:53 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-10-24 07:33:22 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Date;
@@ -146,6 +147,7 @@ public class QueryDialog extends JDialog
   private JCheckBox includeItisSynonymsCheckBox = new JCheckBox(
           "Include taxon synonyms from ITIS in query");
   private JButton saveDefaultsButton = new JButton();
+  KeyPressActionListener keyPressListener = new KeyPressActionListener();
   //}}
 
   /**
@@ -399,6 +401,7 @@ public class QueryDialog extends JDialog
     CheckBoxListener checkboxHandler = new CheckBoxListener();
     catalogSearchCheckBox.addItemListener(checkboxHandler);
     localSearchCheckBox.addItemListener(checkboxHandler);
+    this.addKeyListener(keyPressListener);
     //}}
   }
 
@@ -411,6 +414,32 @@ public class QueryDialog extends JDialog
   {
     this((Frame)framework, framework);
   }
+  /**
+   * Listens for key events coming from the dialog.  responds to escape and 
+   * enter buttons.  escape toggles the cancel button and enter toggles the
+   * Search button
+   */
+  class KeyPressActionListener extends java.awt.event.KeyAdapter
+  {
+    public KeyPressActionListener()
+    {
+    }
+    
+    public void keyPressed(KeyEvent e)
+    {
+      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        java.awt.event.ActionEvent event = new 
+                       java.awt.event.ActionEvent(executeButton, 0, "Search");
+        handleExecuteButtonAction(event);
+      } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        dispose();
+        java.awt.event.ActionEvent event = new 
+                       java.awt.event.ActionEvent(cancelButton, 0, "Cancel");
+        handleCancelButtonAction(event);
+      }
+    }
+  }
+
 
   /** Class to listen for ActionEvents */
   private class ActionEventHandler implements ActionListener
