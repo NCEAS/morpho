@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: cjones $'
-*     '$Date: 2004-06-23 23:51:29 $'
-* '$Revision: 1.31 $'
+*     '$Date: 2004-06-24 02:02:18 $'
+* '$Revision: 1.32 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -111,13 +111,12 @@ public class AttributePage extends AbstractUIPage {
   private JLabel attribNameLabel;
   private JLabel attribLabelLabel;
   private JLabel attribDefinitionLabel;
-        // storage type is unused, so no label here
+  // storage type is not presented, so no label here
   private JLabel measScaleLabel;
   private JPanel currentPanel;
   
   // to be visible in setData() function call
   private JPanel radioPanel;
-  
   private JPanel nominalPanel;
   private JPanel ordinalPanel;
   private JPanel intervalPanel;
@@ -128,6 +127,9 @@ public class AttributePage extends AbstractUIPage {
   private JPanel topMiddlePanel;
   
   private String measurementScale;
+  // both missing value fields are not presented, so no labels here
+  private JTextField missingValueCodeField;
+  private JTextField missingValueExplnField;
   
   private String xPathRoot = AttributeSettings.Attribute_xPath;
   
@@ -275,11 +277,15 @@ public class AttributePage extends AbstractUIPage {
     attribNameLabel = WidgetFactory.makeLabel("Name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribNamePanel.add(attribNameLabel);
     attribNameField = WidgetFactory.makeOneLineTextField();
-    storageTypeField = WidgetFactory.makeOneLineTextField();
     attribNamePanel.add(attribNameField);
     JLabel attribNameHelpLabel = getLabel(this.ATTRIB_NAME_HELP);
     namePanel.add(attribNamePanel);
     namePanel.add(attribNameHelpLabel);
+    // the following three fields are not added to the panel, but are just used
+    // as placeholders
+    storageTypeField = WidgetFactory.makeOneLineTextField();
+    missingValueCodeField = WidgetFactory.makeOneLineTextField();
+    missingValueExplnField = WidgetFactory.makeOneLineTextField();
     
     topMiddlePanel.add(namePanel);
     topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
@@ -783,6 +789,18 @@ public class AttributePage extends AbstractUIPage {
       }
       
     }*/
+
+    String missingValueCode = missingValueCodeField.getText().trim();
+    if(missingValueCode !=null && !missingValueCode.equals("")) {
+      returnMap.put(xPath + "/missingValueCode/code", missingValueCode);
+    }
+    
+    String missingValueExpln = missingValueExplnField.getText().trim();
+    if(missingValueExpln !=null && !missingValueExpln.equals("")) {
+      returnMap.put(xPath + "/missingValueCode/codeExplanation",
+      missingValueExpln);
+    }
+    
     return returnMap;
   }
   
@@ -961,7 +979,8 @@ public class AttributePage extends AbstractUIPage {
     // should be handled with an appropriate widget.
     String storageType = (String)map.get(xPathRoot + "/storageType");
     if(storageType != null) {
-        map.remove(xPathRoot + "/storageType");
+      storageTypeField.setText(storageType);
+      map.remove(xPathRoot + "/storageType");
     }
     
     // in future versions of this Attribute Page dialog, the
@@ -1023,7 +1042,28 @@ public class AttributePage extends AbstractUIPage {
       JRadioButton jrb = (JRadioButton)c.getComponent(componentNum);
       jrb.setSelected(true);
     }
+
+    // handle missing value code definitions
+    // this should handle repeated missing value codes in future revisions
+    String missingValueCode = 
+    (String)map.get(xPathRoot + "/missingValueCode/code");
+    if(missingValueCode != null) {
+      missingValueCodeField.setText(missingValueCode);
+      map.remove(xPathRoot + "/missingValueCode/code");
+    }
     
+    String missingValueExpln = 
+    (String)map.get(xPathRoot + "/missingValueCode/codeExplanation");
+    if(missingValueExpln != null) {
+      missingValueExplnField.setText(missingValueExpln);
+      map.remove(xPathRoot + "/missingValueCode/codeExplanation");
+    }
+    
+
+    // handle attribute level coverage elements
+
+    // handle attribute level method elements
+
     refreshUI();
     
     //if anything left in map, then it included stuff we can't handle...
@@ -1433,11 +1473,6 @@ public class AttributePage extends AbstractUIPage {
       
       contentPane.add(new JScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
-      
-      
     }
   }
-  
-  
-  
 }
