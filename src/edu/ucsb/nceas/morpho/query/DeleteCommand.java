@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:48:18 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-04 23:27:35 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public class DeleteCommand implements Command
 {
     
   /** A reference to the dialog */
-   private OpenDialogBox dialog = null;
+   private JDialog dialog = null;
    
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
@@ -76,17 +76,32 @@ public class DeleteCommand implements Command
   String selectDocId = null;
   
   /** flag to indicate a deletion can be execute, it depends package location */
-  boolean execute = false;
+  private boolean execute = false;
+  
+  /** flag to indicate selected data package has local copy */
+  private boolean inLocal = false;
+  
+  /** flag to indicate selected data package has local copy */
+  private boolean inNetwork = false;
  
   /**
    * Constructor of DeleteCommand
-   * @param dialog a delete command will be happened at this dialog 
+   * @param dialog a delete dialog need to be destroied
+   * @param myFrame the parent frame of delete dialog
+   * @param selectId the id of data package need to be deleted
    * @param myState which deletion will happend, local, network or both
+   * @param myInLocal if the datapackage has a local copy
+   * @param myInNetwork if the datapackage has a network copy
    */
-  public DeleteCommand(OpenDialogBox box, String myState)
+  public DeleteCommand(JDialog box, MorphoFrame myFrame, String myState,
+                      String selectId,  boolean myInLocal, boolean myInNetwork)
   {
     dialog = box;
+    morphoFrame = myFrame;
+    selectDocId = selectId;
     state = myState;
+    inLocal = myInLocal;
+    inNetwork = myInNetwork;
   
   }//LocalToNetworkCommand
   
@@ -96,27 +111,7 @@ public class DeleteCommand implements Command
    */    
   public void execute()
   {
-    // Get frame and resultpanel depen on different situation
-    if (dialog != null)
-    {
-      // This command will apply to a dialog
-      morphoFrame = dialog.getParentFrame();
-      resultPane = dialog.getResultPanel();
-    }
-    else
-    {
-      // If the command would not applyto a dialog, moreFrame will be set to be
-      // current active morphoFrame
-      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
-    }
     
-    if (resultPane != null)
-    {
-      selectDocId = resultPane.getSelectedId();
-      boolean inNetwork = resultPane.getMetacatLocation();
-      boolean inLocal = resultPane.getLocalLocation();
-      
       if (state.equals(DataPackageInterface.LOCAL))
       {
         // Delete local copy
@@ -146,27 +141,36 @@ public class DeleteCommand implements Command
       // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals("") && execute)
       {
-        doDelete(selectDocId, morphoFrame, dialog);
+        // Destroy the dialog
+        if (dialog != null)
+        {
+          dialog.setVisible(false);
+          dialog.dispose();
+          dialog = null;
+        }
+      
+        doDelete(selectDocId, morphoFrame);
       }
-    }//if
-    
+   
   }//execute
 
   /**
    * Using SwingWorket class to delete a local package
    *
    */
- private void doDelete(final String docid, final MorphoFrame frame, 
-                                                      final OpenDialogBox box) 
+ private void doDelete(final String docid, final MorphoFrame frame) 
  {
   final SwingWorker worker = new SwingWorker() 
   {
         public Object construct() 
         {
-          frame.setBusy(true);
+          if (frame!=null)
+          {
+            frame.setBusy(true);
+          }
           DataPackageInterface dataPackage;
           // Create a refresh command 
-          RefreshCommand refresh = new RefreshCommand(box);
+          RefreshCommand refresh = new RefreshCommand(null);
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -176,7 +180,7 @@ public class DeleteCommand implements Command
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            Log.debug(6, "Error in upload");
+            Log.debug(6, "Error in delete");
             return null;
           }
           
@@ -185,7 +189,7 @@ public class DeleteCommand implements Command
 		      //delete the local package
           Log.debug(20, "Deleteing the package.");
           int choice = JOptionPane.YES_OPTION;
-          choice = JOptionPane.showConfirmDialog(box, message, 
+          choice = JOptionPane.showConfirmDialog(frame, message, 
                                "Morpho", 
                                JOptionPane.YES_NO_CANCEL_OPTION,
                                JOptionPane.WARNING_MESSAGE);
@@ -203,8 +207,11 @@ public class DeleteCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          // Stop butterfly
-          frame.setBusy(false);
+          if (frame!=null)
+          {
+            // Stop butterfly
+            frame.setBusy(false);
+          }
         }
     };//final
     worker.start();  //required for SwingWorker 3
