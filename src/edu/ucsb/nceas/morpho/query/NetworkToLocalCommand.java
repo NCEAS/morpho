@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:32:40 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-12 01:00:02 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,9 +45,12 @@ import javax.swing.JOptionPane;
 public class NetworkToLocalCommand implements Command 
 {
     
-  /** A reference to the dialog */
-   private JDialog dialog = null;
-   
+  /** A reference to the synchronize dialog */
+   private JDialog synchronizeDialog = null;
+  
+  /** A reference to the open dialog */
+   private OpenDialogBox openDialog = null;
+
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
  
@@ -59,19 +62,27 @@ public class NetworkToLocalCommand implements Command
   
   /** flag to indicate selected data package has local copy */
   private boolean inNetwork = false;
-    
+  
+  /** flag to indiecate synchronize will apply to a open dialog*/
+  private boolean comeFromOpenDialog = false;  
   /**
    * Constructor of NetworkToLocalCommand in dialog
+   * @param myOpenDialog the open dialog which will be applied synchronize
    * @param dialog a synchronize dialog need to be destroied
    * @param myFrame the parent frame of synchronize dialog
    * @param selectId the id of data package need to be synchronized
    * @param myInLocal if the datapackage has a local copy
    * @param myInNetwork if the datapackage has a network copy
    */
-  public NetworkToLocalCommand(JDialog box, MorphoFrame myFrame, 
-                      String selectId, boolean myInLocal, boolean myInNetwork)
+  public NetworkToLocalCommand(OpenDialogBox myOpenDialog, JDialog mySynDialog,
+   MorphoFrame myFrame, String selectId, boolean myInLocal, boolean myInNetwork)
   {
-    dialog = box;
+    if(myOpenDialog != null)
+    {
+      openDialog = myOpenDialog;
+      comeFromOpenDialog = true;
+    }
+    synchronizeDialog = mySynDialog;
     morphoFrame = myFrame;
     selectDocId = selectId;
     inLocal = myInLocal;
@@ -87,13 +98,13 @@ public class NetworkToLocalCommand implements Command
        // Make sure selected a id, and there no package in metacat
     if (selectDocId != null && !selectDocId.equals("") && !inLocal && inNetwork)
     {
-        if (dialog != null)
+        if (synchronizeDialog != null)
         {
-          dialog.setVisible(false);
-          dialog.dispose();
-          dialog = null;
+          synchronizeDialog.setVisible(false);
+          synchronizeDialog.dispose();
+          synchronizeDialog = null;
         }
-        doDownload(selectDocId, morphoFrame);
+        doDownload(selectDocId, morphoFrame, openDialog, comeFromOpenDialog);
     }
   
   }//execute
@@ -102,7 +113,8 @@ public class NetworkToLocalCommand implements Command
    * Using SwingWorket class to download a package
    *
    */
- private void doDownload(final String docid, final MorphoFrame frame)
+ private void doDownload(final String docid, final MorphoFrame frame, 
+                                final OpenDialogBox open, final boolean hasOpen)
  {
   final SwingWorker worker = new SwingWorker() 
   {
@@ -115,7 +127,16 @@ public class NetworkToLocalCommand implements Command
           frame.setBusy(true);
           DataPackageInterface dataPackage;
           // Create a refresh command 
-          RefreshCommand refresh = new RefreshCommand(frame);
+          RefreshCommand refresh = null;
+          if(hasOpen)
+          {
+            refresh = new RefreshCommand(open);
+          }
+          else
+          {
+            refresh = new RefreshCommand(frame);
+          }
+          
           try 
           {
             ServiceController services = ServiceController.getInstance();
