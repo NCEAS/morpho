@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-27 17:25:14 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2002-09-27 18:43:58 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ public class DataPackagePlugin
     copy.setToolTipText("Copy value in data table cells");
     copy.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Copy16.gif")));
-    copy.setAcceleratorKey(COPYKEY);
+    copy.setAcceleratorKeyString(COPYKEY);
     copy.setMenuItemPosition(0);
     copy.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(copy);
@@ -146,7 +146,7 @@ public class DataPackagePlugin
     cut.setToolTipText("Cut value in data table cells");
     cut.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Cut16.gif")));
-    cut.setAcceleratorKey(CUTKEY);
+    cut.setAcceleratorKeyString(CUTKEY);
     cut.setMenuItemPosition(1);
     cut.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(cut);
@@ -155,7 +155,7 @@ public class DataPackagePlugin
     paste.setToolTipText("Paste value in data table cells");
     paste.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Paste16.gif")));
-    paste.setAcceleratorKey(PASTEKEY);
+    paste.setAcceleratorKeyString(PASTEKEY);
     paste.setMenuItemPosition(2);
     paste.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(paste);
