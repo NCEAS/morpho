@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-12 02:48:27 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-09-12 03:07:22 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,10 +90,10 @@ public class XMLTransformer
     private final  ClassLoader      classLoader;
     private static XMLTransformer   instance;
     private static String           latestDocID;
+    private static XSLTResolverInterface  resolver;
     
     private EntityResolver          entityResolver;
     private ConfigXML               config;
-
 
     private XMLTransformer() 
     {
@@ -462,16 +462,9 @@ public class XMLTransformer
     //returns a new Reader to access the generic default stylesheet
     private Reader getStyleSheetReader(String docType) throws IOException
     {
-        XSLTResolverInterface resolver = null;
-        try
-        {
-          ServiceController services = ServiceController.getInstance();
-          ServiceProvider provider = 
-                        services.getServiceProvider(XSLTResolverInterface.class);
-          resolver = (XSLTResolverInterface)provider;
-        }
-        catch(ServiceNotHandledException ee)
-        {
+        try {
+            getXSLTResolverService();
+        } catch(ServiceNotHandledException ee) {
           Log.debug(0, "Error acquiring XSLT Resolver plugin: " + ee);
           ee.printStackTrace();
           return new InputStreamReader(
@@ -492,6 +485,18 @@ public class XMLTransformer
         }
         return xsltReader;
     }  
+    
+    private XSLTResolverInterface getXSLTResolverService() 
+                                              throws ServiceNotHandledException
+    {
+        if (resolver==null) {
+            ServiceController services = ServiceController.getInstance();
+            ServiceProvider provider = 
+                      services.getServiceProvider(XSLTResolverInterface.class);
+            resolver = (XSLTResolverInterface)provider;
+        }
+        return resolver;
+    }
 }
 
 
