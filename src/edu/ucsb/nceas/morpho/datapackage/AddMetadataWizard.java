@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-24 18:51:38 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-10-29 22:48:44 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -861,9 +861,11 @@ public class AddMetadataWizard extends JFrame
       MetacatDataStore mds = new MetacatDataStore(framework);
       try
       { //send the new data file to the server
-        mds.newDataFile(newid, addedFile);
+//DFHDFH        mds.newDataFile(newid, addedFile);
+	 	FileReader fr = new FileReader(addedMetadataFile);
+         	mds.newFile(newid, fr, dataPackage);
       }
-      catch(MetacatUploadException mue)
+      catch(Exception mue)
       {
         ClientFramework.debug(0, "Error saving data file to metacat: " + 
                               mue.getMessage());
