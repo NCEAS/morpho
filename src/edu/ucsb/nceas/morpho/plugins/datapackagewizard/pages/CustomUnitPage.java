@@ -1,5 +1,5 @@
 /**
- *  '$RCSfile: CustomUnitPanel.java,v $'
+ *  '$RCSfile: CustomUnitPage.java,v $'
  *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-14 20:24:11 $'
- * '$Revision: 1.4 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-14 21:20:53 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,12 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AddDocumentationCommand;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
@@ -84,8 +86,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.AbstractAction;
 
 
-public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI 
-{
+public class CustomUnitPage extends AbstractUIPage { 
+	
+	private final String pageID     = DataPackageWizardInterface.CUSTOM_UNIT_PAGE;
+  private final String nextPageID = "";
+  private final String pageNumber = "";
+  private final String title      = "Custom Unit Definition";
+  private final String subtitle   = "";
+	
 	
 	private static final String TOP_LABEL_STRING = "Enter a name and an optional description for your custom unit.";
 	
@@ -146,7 +154,6 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 	private String[] unitTypes;
 	private String[] basicUnitTypes;
 	private String currentUnitTypeSelected = "";
-	private JPanel parentPanel;
 	
 	private int currentCategorySelection = -1;
 	private JPanel existingTypePanel;
@@ -156,9 +163,8 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 	private JPanel centerPanel = new JPanel();
 	private JPanel middleExistingTypePanel;
 	
-	CustomUnitPanel(JPanel parent) {
+	public CustomUnitPage() {
 		
-		this.parentPanel = parent;
 		init();
 	}
 	
@@ -437,7 +443,6 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		JPanel newSIunitNamePanel = WidgetFactory.makePanel();
 		newSIunitNameLabel = WidgetFactory.makeLabel("SI Unit:", true);
 		newSIunitNameBox = new JComboBox(SIUnits);
-    newSIunitNameBox.setEditable(true);
 		newSIunitNamePanel.add(newSIunitNameLabel);
 		JPanel newSIunitNameGrid = new JPanel(new GridLayout(1,2));
 		newSIunitNameGrid.add(newSIunitNameBox);
@@ -559,12 +564,61 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		return label;
 	}
 	
-	/** 
-   *  The action to be executed when the panel is displayed. May be empty
+	
+	/**
+   *  The action to be executed when the "Prev" button is pressed. May be empty
+   *  Here, it does nothing because this is just a Panel and not the outer container
    */
+
+  public void onRewindAction() {
+  }
+
+  /**
+   *  The action to be executed when the page is loaded
+   *  Here, it does nothing because this is just a Panel and not the outer container
+   */
+
   public void onLoadAction() {
-		
-	}
+  }
+
+  /**
+   *  gets the unique ID for this wizard page
+   *
+   *  @return   the unique ID String for this wizard page
+   */
+  public String getPageID() { return this.pageID;}
+
+  /**
+   *  gets the title for this wizard page
+   *
+   *  @return   the String title for this wizard page
+   */
+  public String getTitle() { return title; }
+
+  /**
+   *  gets the subtitle for this wizard page
+   *
+   *  @return   the String subtitle for this wizard page
+   */
+  public String getSubtitle() { return subtitle; }
+
+  /**
+   *  Returns the ID of the page that the user will see next, after the "Next"
+   *  button is pressed. If this is the last page, return value must be null
+   *
+   *  @return the String ID of the page that the user will see next, or null if
+   *  this is te last page
+   */
+  public String getNextPageID() { return this.nextPageID; }
+
+  /**
+     *  Returns the serial number of the page
+     *
+     *  @return the serial number of the page
+     */
+  public String getPageNumber() { return pageNumber; }
+
+  
 	
 	private int getSelectedRadioIndex(JPanel radioPanel) {
 		
@@ -577,14 +631,14 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		return -1;
 	}
 	
-  /** 
-   *  checks that the user has filled in required fields - if not, highlights 
-   *  labels to draw attention to them
+  /**
+   *  The action to be executed when the "OK" button is pressed. If no onAdvance
+   *  processing is required, implementation must return boolean true.
    *
-   *  @return   boolean true if user data validated OK. false if intervention 
-   *            required
+   *  @return boolean true if dialog should close and return to wizard, false
+   *          if not (e.g. if a required field hasn't been filled in)
    */
-  public boolean validateUserInput() {
+  public boolean onAdvanceAction() {
 		
 		String unitName = this.unitNameField.getText();
 		if(unitName.trim().equals("")) {
@@ -650,21 +704,29 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		}
 		
 	}
-
-  /** 
+	/**
    *  gets the Map object that contains all the key/value paired
+   *  settings for this particular UI page
    *
-   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-   *            appended when making name/value pairs.  For example, in the 
-   *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-   *            root would be /eml:eml/dataset/keywordSet[2]
-   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
-   *            SQUARE BRACKETS []
-   *
-   *  @return   data the OrderedMap object that contains all the
-   *            key/value paired settings for this particular panel
+   *  @return   data the Map object that contains all the
+   *            key/value paired settings for this particular UI page
    */
-  public OrderedMap getPanelData(String xPathRoot) {
+  public OrderedMap getPageData() {
+		// not supported
+		throw new UnsupportedOperationException(
+      "getPageData(String rootXPath) Method Not Implemented in Custom Unit Page");
+	}
+	
+  /**
+   * gets the Map object that contains all the key/value paired settings for
+   * this particular UI page
+   *
+   * @param rootXPath the root xpath to prepend to all the xpaths returned by
+   *   this method
+   * @return data the Map object that contains all the key/value paired
+   *   settings for this particular UI page
+   */
+  public OrderedMap getPageData(String xPathRoot) {
 		
 		OrderedMap map = new OrderedMap();
 		String unit = this.unitNameField.getText();
@@ -725,23 +787,26 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 	}
 	
 	
-	/**
-	*	  sets the data in the sub panel using the key/values paired Map object
-	*
-	*  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-  *            appended when making name/value pairs.  For example, in the 
-  *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-  *            root would be /eml:eml/dataset/keywordSet[2]
-  *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
-  *            SQUARE BRACKETS []
-	*  @param  map - OrderedMap of xPath-value pairs. xPaths in this map
-	*		    		are absolute xPath and not the relative xPaths
-	*
-	**/
 
-	public void setPanelData(String xPathRoot, OrderedMap map) {
+  /**
+   * sets the fields in the UI page using the Map object that contains all
+   * the key/value paired
+   *
+   * @param data the Map object that contains all the key/value paired settings
+   *   for this particular UI page
+   * @param rootXPath the String that represents the "root" of the XPath to the
+   *   content of this widget, INCLUDING PREDICATES. example - if this is a
+   *   "Party" widget, being used for the second "Creator" entry in a list,
+   *   then xPathRoot = "/eml:eml/dataset[1]/creator[2]
+   * @return boolean true if this page can handle all the data passed in the
+   * OrderedMap, false if not. <em>NOTE that the setPageData() method should
+   * still complete its work and fill out all the UI values, even if it is
+   * returning false</em>
+   */
+  public boolean setPageData(OrderedMap data, String rootXPath) {
 		
-		// not required for this panel
+		// not required for this page
+		return true;
 	}
 	
 }

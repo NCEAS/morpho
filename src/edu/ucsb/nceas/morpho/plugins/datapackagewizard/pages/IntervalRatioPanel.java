@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-14 20:08:20 $'
- * '$Revision: 1.35 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-14 21:20:53 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,20 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
@@ -76,7 +82,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   private JTextField precisionField;
   private JComboBox  numberTypePickList;
   private CustomList boundsList;
-	private CustomUnitPanel customPanel = null;
+	private AbstractUIPage customPage = null;
 
   // note - order must match numberEMLVals array!
   private String[] numberTypesDisplayVals = new String[] {
@@ -470,10 +476,10 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 		String type = this.unitsPickList.getSelectedType().trim();
 		String unit = unitsPickList.getSelectedUnit().trim();
 		if(WizardSettings.isNewUnit(type, unit)) {
-			if(customPanel != null) {
+			if(customPage != null) {
 				String SIUnit = this.unitsPickList.getSelectedSIUnit();
 				WizardSettings.addNewUnit(type, unit, SIUnit);
-				OrderedMap map = customPanel.getPanelData(xPathRoot + "/additionalMetadata/ANY");
+				OrderedMap map = customPage.getPageData(xPathRoot + "/additionalMetadata/ANY");
 				returnMap.putAll(map);
 				returnMap.put(  xPathRoot + "/unit/customUnit", unit);
 			}
@@ -577,7 +583,12 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   public void setPanelData(String xPathRoot, OrderedMap map) {
 
     String unit = (String)map.get(xPathRoot + "/unit/standardUnit");
-
+		if(unit != null) map.remove(xPathRoot + "/unit/standardUnit");
+		else {
+			unit = (String)map.get(xPathRoot + "/unit/customUnit");
+			if(unit != null) map.remove(xPathRoot + "/unit/customUnit");
+		}
+		
     if (unit != null && !unit.equals("")) {
       String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
       int totUnitTypes = unitTypesArray.length;
@@ -593,7 +604,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
           break;
         }
       }
-      map.remove(xPathRoot + "/unit/standardUnit");
+      
     }
 
     String precision = (String)map.get(xPathRoot + "/precision");
@@ -715,12 +726,12 @@ class UnitsPickList extends JPanel {
   private JLabel unitTypeLabel;
   private JPanel parentPanel;
   
-  private JDialog customUnitDialog = null;
+  private ModalDialog customUnitDialog = null;
 
   private UnitTypesListItem[] unitTypesListItems;
 
   public static final int CUSTOM_UNIT_PANEL_WIDTH = 700;
-  public static final int CUSTOM_UNIT_PANEL_HEIGHT = 500;
+  public static final int CUSTOM_UNIT_PANEL_HEIGHT = 450;
 
   public UnitsPickList(JPanel parent, JLabel unitTypeLabel) {
 
@@ -794,21 +805,28 @@ class UnitsPickList extends JPanel {
         ActionListener cancelAction = new ActionListener() {
           public void actionPerformed(ActionEvent ae) {
             customUnitDialog.setVisible(false);
-						customPanel = null;
+						customPage = null;
           }
         };
-        customPanel = new CustomUnitPanel(parentPanel);
-        customUnitDialog = WidgetFactory.makeContainerDialogNoParent(customPanel, okAction, cancelAction);
-        customUnitDialog.setTitle("New Unit Definition");
-        Point loc = parentPanel.getLocationOnScreen();
-        int wd = parentPanel.getWidth();
-        int ht = parentPanel.getHeight();
-        int dwd = CUSTOM_UNIT_PANEL_WIDTH;
-        int dht = CUSTOM_UNIT_PANEL_HEIGHT;
-        customUnitDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
-        customUnitDialog.setSize(dwd, dht);
-        customUnitDialog.setVisible(true);
-      }
+        customPage = WizardPageLibrary.getPage(DataPackageWizardInterface.CUSTOM_UNIT_PAGE);
+        /*customUnitDialog = WidgetFactory.makeContainerDialogNoParent(customPage, okAction, cancelAction);
+        customUnitDialog.setTitle("New Unit Definition");*/
+				int dwd = UISettings.POPUPDIALOG_WIDTH - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
+				int dht = UISettings.POPUPDIALOG_HEIGHT - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
+				
+				customUnitDialog = new ModalDialog(customPage,
+                                WizardContainerFrame.getDialogParent(),
+                                dwd, dht);
+				
+				//Point loc = parentPanel.getLocationOnScreen();
+				//int wd = parentPanel.getWidth();
+				//int ht = parentPanel.getHeight();
+				//customUnitDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
+				//customUnitDialog.setSize(dwd, dht);
+				if (customUnitDialog.USER_RESPONSE == ModalDialog.OK_OPTION) customUnitOKAction();
+				else customPage = null;
+				
+			}
     });
 
     JPanel unitsPanel = WidgetFactory.makePanel();
@@ -829,15 +847,14 @@ class UnitsPickList extends JPanel {
 
   private void customUnitOKAction() {
 
-    if(customPanel == null) {
-      customUnitDialog.setVisible(false);
+    if(customPage == null) {
       return;
     }
 
-    if(!customPanel.validateUserInput())
+    if(!customPage.onAdvanceAction())
       return;
 		String xPath = "/additionalMetadata/ANY";
-    OrderedMap map = customPanel.getPanelData(xPath);
+    OrderedMap map = customPage.getPageData(xPath);
 		
     String type = getUnitTypeOfNewUnit(map, xPath);
     String newUnit = getNewUnit(map, xPath);
@@ -868,7 +885,6 @@ class UnitsPickList extends JPanel {
 			
 		}
 		
-    customUnitDialog.setVisible(false);
     return;
   }
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-10 02:21:48 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-04-14 21:20:53 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,8 @@ public class WizardPageLibrary {
       return new CodeDefinition(container);
     if(pageID.equals(DataPackageWizardInterface.CITATION_PAGE))
       return new CitationPage();
-
+		if(pageID.equals(DataPackageWizardInterface.CUSTOM_UNIT_PAGE))
+      return new CustomUnitPage();
 
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);

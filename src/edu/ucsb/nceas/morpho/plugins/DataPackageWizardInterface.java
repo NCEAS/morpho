@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-10 02:21:48 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-04-14 21:20:53 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,6 +87,7 @@ public interface DataPackageWizardInterface {
   public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
   public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
   public static final String CITATION_PAGE	   	= "CITATION";
+	public static final String CUSTOM_UNIT_PAGE	  = "CUSTOM_UNIT_PAGE";
 
 
   /**

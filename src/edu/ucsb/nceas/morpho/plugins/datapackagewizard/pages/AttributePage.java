@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-13 01:00:58 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2004-04-14 21:20:53 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -743,7 +743,7 @@ public class AttributePage extends AbstractUIPage {
 
 	private void insertIntoDOMTree(OrderedMap map) {
 		
-		AbstractDataPackage adp = UIController.getInstance().getCurrentExistingAbstractDataPackage();
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
 		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 		Document doc = impl.createDocument("", "additionalMetadata", null);
 		
