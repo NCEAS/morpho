@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-05 23:42:55 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2003-11-06 22:13:20 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
+import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
@@ -829,13 +830,42 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dv.setDataPackage(this.dp);
     } else {  // new eml2.0.0
       if (adp==null) {
-        Log.debug(1, "Both dp amd adp are null! No data package");
+        Log.debug(1, "Both dp and adp are null! No data package");
         return;
       }
       String inline = adp.getDistributionInlineData(index, 0,0);
          // assume the first set of physical and distribution data
       if (inline.length()>0) {  // there is inline data
-        
+        // there may be a problem here with putting inline data in a string 
+        // if the amount of inline data is vary large; assume for now that very large sets
+        // of inline data has been removed before reaching here (needs to be done so that
+        // DOM can be created!!!)
+        // ********************
+        // now check to see if the inline data is in base64 format; if not, assumed to be in 
+        // a text format
+        String encMethod = adp.getEncodingMethod(index, 0);
+        if ((encMethod.indexOf("Base64")>-1)||(encMethod.indexOf("base64")>-1)||
+            (encMethod.indexOf("Base 64")>-1)||(encMethod.indexOf("base 64")>-1)) {
+          // is Base64
+          
+          // test --- first encode
+          // byte[] decodedData1 = inline.getBytes();
+          // String temp = Base64.encode(decodedData1);
+          // Log.debug(1, "temp: "+temp);      
+          // byte[] decodedData = Base64.decode(temp);
+          
+          byte[] decodedData = Base64.decode(inline);
+          ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
+          InputStreamReader isr = new InputStreamReader(bais);
+          FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
+          displayFile = fds3.saveTempDataFile(adp.getAccessionNumber(), isr);
+        }
+        else {
+          // is assumed to be text
+          FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
+          StringReader sr2 = new StringReader(inline);
+          displayFile = fds2.saveTempDataFile(adp.getAccessionNumber(), sr2);
+        }
       } else {
         String urlinfo = adp.getDistributionUrl(index, 0,0);
         int indx2 = urlinfo.indexOf("//");
