@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:34:33 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-11-16 18:41:59 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ public class AddMetadataWizard extends JFrame
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setTitle("Add New Descriptions");
+    setTitle("Add New\\Existing Descriptions(Metadata) or Data to Data Package ");
     getContentPane().setLayout(new BoxLayout(getContentPane(),
                                BoxLayout.X_AXIS));
     setVisible(false);
@@ -192,7 +192,7 @@ public class AddMetadataWizard extends JFrame
     entryPanel.add(Box.createVerticalStrut(8));
 
     JLabel headLabel = new JLabel();
-    headLabel.setText("Add New Descriptions");
+    headLabel.setText("Add New\\Existing Descriptions or Data");
     ImageIcon head = new ImageIcon(
                          framework.getClass().getResource("smallheader-bg.gif"));
     headLabel.setIcon(head);
@@ -355,7 +355,8 @@ public class AddMetadataWizard extends JFrame
     { //find out whether the user wants to create a new file or use an existing 
       //one
       String helpText = "<html><p>This wizard will assist you in creating or " +
-                        "inserting new descriptions or data files into your " +
+                        "inserting new or existing descriptions (metadata) or " +
+                        "data files into your " +
                         "Data Package.  You will be asked several questions " +
                         "about the type of information that you would like to" +
                         "provide then the wizard will insert your new " +
@@ -369,12 +370,11 @@ public class AddMetadataWizard extends JFrame
       JLabel initLabel = new JLabel("<html><p><font color=black>What kind of " +
                                     "information would you like " +
                                     "to provide?  To add an existing data file " +
-                                    "on your system, select 'Existing Data" +
-                                    "File'. " +
+                                    "on your system, select 'Import Data'. " +
                                     "To add an existing description file (XML metadata) " +
-                                    "select 'Existing Description'. " +
+                                    "select 'Import Existing Description From File'. " +
                                     "To add new descriptions from scratch, " +
-                                    "select 'New Description'." +
+                                    "select 'Create New Description'." +
                                     "</font></p></html>");
       initLabel.setMaximumSize(new Dimension(375, 100));
       screenPanel.add(initLabel);
