@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-07 20:34:38 $'
- * '$Revision: 1.27 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-07 23:29:24 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ public class Temporal extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter information about temporal coverage.</b> Temporsl coverage "
+      "<b>Enter information about temporal coverage.</b> Temporal coverage "
       +"can be specified as a single point in time, multiple points in time, "
       +"or a range thereof. ", 3);
     vbox.add(desc);
@@ -271,7 +271,7 @@ public class Temporal extends AbstractUIPage{
       nextNVPMap = nextTemporalPage.getPageData(xPath + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
-		System.out.println("TemporalPage returning - " + returnMap.toString());
+    System.out.println("TemporalPage returning - " + returnMap.toString());
     // clear the list so that next time old variables dont show up again.
     timespanList.removeAllRows();
     return returnMap;
@@ -331,20 +331,21 @@ public class Temporal extends AbstractUIPage{
   public String getPageNumber() { return pageNumber; }
 
  // assume that 'data' is an orderedMap for a single temporalCov subtree
-  public boolean setPageData(OrderedMap data, String xPathRoot) { 
+  public boolean setPageData(OrderedMap data, String xPathRoot) {
     if (xPathRoot.equals("removeAllRows")) {
       timespanList.removeAllRows();
     }
     boolean res = true;
-    TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
-		data.remove(xPathRoot + "/temporalCoverage/@scope");
-		data.remove(xPathRoot + "/temporalCoverage/@id");
+    TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(
+      DataPackageWizardInterface.TEMPORAL_PAGE);
+    data.remove(xPathRoot + "/temporalCoverage/@scope");
+    data.remove(xPathRoot + "/temporalCoverage/@id");
     boolean flag = temporalPage.setPageData(data, "/temporalCoverage");
     if(!flag) res = false;
     List newRow = temporalPage.getSurrogate();
     newRow.add(temporalPage);
     timespanList.addRow(newRow);
-    return res; 
+    return res;
   }
 }
 

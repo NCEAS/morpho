@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-04-07 01:23:41 $'
- * '$Revision: 1.28 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-07 23:29:24 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,8 +75,8 @@ public class Access
 
   private boolean publicReadAccess = true;
   private final String[] buttonsText = new String[] {
-      "Yes, give read-only access to public",
-      "No. Don't give read-only access to public"
+      "Yes, give read-only access to public.",
+      "No, don't give read-only access to public."
   };
 
   private final String ALLOW_REL_XPATH = "allow[";
@@ -110,9 +110,8 @@ public class Access
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Allow read access to public for your dataset?</b> By default, "
-        + "read-only access is given to the public. Do you want to give read "
-        + "access to the public?</p>", 3);
+      "<p><b>Would you like to allow the public to read your dataset?</b>"
+      + "</p>", 3);
 
     vBox.add(desc);
 
@@ -137,11 +136,11 @@ public class Access
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-        "<p><b>Specify access rights for other people?</b> You "
-        +
-        "can specify access for other members of your team or any other person. "
-        + "Use the table below to add, edit and "
-        + "delete access rights to your datapackage.</p>", 3);
+      "<p><b>Would you like to give special access rights to other people?"
+      + "</b> You can specify access for other members of your team or any "
+      + "other person. "
+      + "Use the table below to add, edit and "
+      + "delete access rights to your data package.</p>", 3);
     vBox.add(desc1);
 
     accessList = WidgetFactory.makeList(colNames, editors, 4,

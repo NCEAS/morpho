@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-05 22:25:06 $'
- * '$Revision: 1.25 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-07 23:29:24 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,9 +86,9 @@ public class Geographic extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter information about the spatial coverage.</b> You can describe a "
-      +"geographic region associated with your data and specify a point or bounding "
-      +"box describing the location in latitude/longitude pairs.", 3);
+      "<b>Describe the geographic region covered by your "
+      + "data</b>. Use the following screen to provide a complete "
+      + "description or assign one of the existing descriptions.", 3);
     vbox.add(desc);
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
@@ -306,20 +306,20 @@ public class Geographic extends AbstractUIPage{
 
 
 // assume that 'data' is an orderedMap for a single geographicCov subtree
-  public boolean setPageData(OrderedMap data, String xPathRoot) { 
+  public boolean setPageData(OrderedMap data, String xPathRoot) {
     if (xPathRoot.equals("removeAllRows")) {
       geographicspanList.removeAllRows();
     }
     boolean res = true;
     GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
-		data.remove("/geographicCoverage/@scope");
-		data.remove("/geographicCoverage/@id");
+    data.remove("/geographicCoverage/@scope");
+    data.remove("/geographicCoverage/@id");
    boolean flag = geographicPage.setPageData(data, "/geographicCoverage");
     if(!flag) res = false;
     List newRow = geographicPage.getSurrogate();
     newRow.add(geographicPage);
     geographicspanList.addRow(newRow);
-    return res; 
+    return res;
   }
 }
 

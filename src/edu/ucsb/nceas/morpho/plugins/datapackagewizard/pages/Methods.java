@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-04-06 03:19:20 $'
- * '$Revision: 1.14 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-07 23:29:24 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,9 @@ public class Methods
 
     vbox.add(WidgetFactory.makeDefaultSpacer());
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-        "<b>Enter Method Step Description</b>", 1);
+      "<p><b>Enter method step description.</b> Method steps describe a "
+      + "single step in the implementation of a methodology for an "
+      + "experiment.</p>", 1);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeHalfSpacer());
 
@@ -122,16 +124,14 @@ public class Methods
         WizardSettings.PADDING, 0, 0));
     vbox.add(methodsList);
 
-    vbox.add(WidgetFactory.makeHalfSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    //vbox.add(WidgetFactory.makeHalfSpacer());
+    //vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel studyDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Study Extent Description</b> Describe the temporal, spatial and "
-        + "taxonomic extent of the study, supplementing the information on "
-        +
-        "coverage provided earlier. For example, if the temporal coverage of the"
-        + " data is 1990-2000, you might provide details about any years that "
-        + "were missed or the months in which sampling occurred.", 3);
+        "<p><b>Study extent description</b>. Describe the temporal, spatial "
+        + "and taxonomic extent of the study.  This information supplements "
+        + "the coverage information you may have provided in a previous "
+        + "step.</p>", 3);
     vbox.add(studyDesc);
 
     JPanel studyPanel = WidgetFactory.makePanel(10);
@@ -143,10 +143,10 @@ public class Methods
     studyPanel.add(jStudyScrl);
 
     vbox.add(studyPanel);
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    //vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel sampleDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Sampling Description</b> Describe the sampling design of the study."
+        "<b>Sampling description</b>. Describe the sampling design of the study."
         + " For example, you might describe the way in which treatments were "
         + "assigned to sampling units.", 2);
     vbox.add(sampleDesc);
@@ -160,7 +160,7 @@ public class Methods
     samplePanel.add(jSampleScrl);
 
     vbox.add(samplePanel);
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    //vbox.add(WidgetFactory.makeDefaultSpacer());
 
     warningPanel = WidgetFactory.makePanel(1);
     warningLabel = WidgetFactory.makeLabel(
