@@ -1,0 +1,27 @@
+<!ELEMENT wizard (group+)>
+<!ATTLIST wizard size (#PCDATA)
+                 dtd  (#PCDATA)>
+
+<!ELEMENT group (group* | textbox* | combobox*)>
+<!ATTLIST group label (#PCDATA)
+                field (#PCDATA)
+                type  (panel | pathgrouping) "pathgrouping"
+                repeatable (yes | no) "no">
+
+<!ELEMENT textbox>
+<!ATTLIST textbox label (#PCDATA)
+                  field   (#PCDATA)
+                  size  (#PCDATA)
+                  repeatable (yes | no) "no"
+                  allowNull  (yes | no) "yes">
+
+<!ELEMENT combobox (item+)>
+<!ATTLIST combobox label (#PCDATA)
+                   field (#PCDATA)
+                   size  (#PCDATA)
+                   repeatable (yes | no) "no"
+                   allowNull  (yes | no) "yes">
+                   
+<!ELEMENT item (#PCDATA)>
+<!ATTLIST item value (#PCDATA)>
+

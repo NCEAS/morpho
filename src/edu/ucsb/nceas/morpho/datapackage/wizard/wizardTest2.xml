@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<wizard size="1000x1000" dtd="eml-resource.dtd">
+  <group field="dataset" type="pathgrouping">
+    <group label="Coverage" type="panel">
+      <group label="Temporal Coverage" field="temporalCoverage" repeatable="true" type="pathgrouping">
+        <group label="Other Date" field="otherDate" repeatable="false">
+            <textbox label="Year" field="year" size="2" />
+        </group>
+        <group label="Start Date" field="bastardDatex" repeatable="false">
+            <textbox label="Year" field="year" size="2" />
+        </group>
+        <group label="Stop Date" field="stopDate" repeatable="false" type="pathgrouping">
+            <textbox label="Year" field="year" size="2" />
+        </group>
+      </group>
+    </group>
+  </group>
+</wizard>
