@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-24 15:45:53 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2003-09-24 19:14:37 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1868,7 +1868,11 @@ public void startImport(String file) {
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
               +"numberType",XMLUtil.normalize(cd.colType));
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
+              +"bounds/minimum/@exclusive","true");
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
               +"bounds/minimum",""+cd.colMin);
+        om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
+              +"bounds/maximum/@exclusive","true");
         om.put(header+"attributeList/attribute"+"["+(i+1)+"]/"+"measurementScale/interval/numericDomain/"
               +"bounds/maximum",""+cd.colMax);
       }
