@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-09 20:21:53 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2003-01-21 19:41:58 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,14 @@ import javax.swing.ImageIcon;
 public class LocalQuery
 {
 
+  /**
+   * vector which contains documents that should not be searched
+   * mainly, these are data documents; docs are added to the vector
+   * when xml parsing fails, so system doesn't bother to try
+   * parsing again
+   */
+  private static Vector doNotParse_collection = new Vector();
+  
   /**
    * hash table with dom objects from previously scanned local XML
    * documents; serves as a cache to avoid having to re-parse documents
@@ -246,8 +254,8 @@ public class LocalQuery
       File parentFile = new File(currentfile.getParent());
       String docid = parentFile.getName() + separator + currentfile.getName();
       
-      // skips subdirectories
-      if (currentfile.isFile()) {
+      // skips subdirectories and docs in doNotParse collection
+      if ((currentfile.isFile())&&(!doNotParse_collection.contains(docid))) {
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
         //Log.debug(10,"current id: "+docid);
@@ -257,7 +265,7 @@ public class LocalQuery
             currentDoctype = ((String)doctype_collection.get(docid));   
           }
         } else {
-          //Log.debug(10,"parsing "+docid);
+        //  Log.debug(10,"parsing "+docid);
           InputSource in;
           try {
             in = new InputSource(new FileInputStream(filename));
@@ -275,6 +283,7 @@ public class LocalQuery
             // Either this isn't an XML doc, or its broken, so skip it
             Log.debug(20,"Parsing error: " + filename);
             Log.debug(20,e1.toString());
+            doNotParse_collection.addElement(docid);
             continue;
           }
 
@@ -342,8 +351,8 @@ public class LocalQuery
           continue;
         }
       } else {
-        Log.debug(6,"Bad input args: " + filename + ", " 
-          + xpathExpression);
+ //       Log.debug(6,"Bad input args: " + filename + ", " 
+ //         + xpathExpression);
       }
     } // end of 'for' loop over all files
         
@@ -495,7 +504,37 @@ public class LocalQuery
                 vec.addElement(currentfile);   
             }
         }
+        getLatestVersion(vec);
    }
+ 
+  /**
+   *  modify list to only contain latest version as indicated by a trailing
+   *  version number
+   *  This is to reduce the search time by avoiding older versions
+   */
+  private void getLatestVersion(Vector vec) {
+    Vector newvec = new Vector();
+    for (int j=0;j<vec.size();j++) {
+      File file = (File)vec.elementAt(j);
+      String name = file.getName();
+      newvec.addElement(name);
+    }
+    // now string ids are in newvec
+    int cnt = 0;
+    for (int k=0;k<newvec.size();k++) {
+      String name1 = (String)(newvec.elementAt(k));
+      int periodloc = name1.lastIndexOf(".");
+      String namestart = name1.substring(0,periodloc);
+      String vernum = name1.substring(periodloc+1,name1.length());
+      Integer Intver = new Integer(vernum);
+      int iver = Intver.intValue();
+      String newstr = namestart+"."+(iver+1);
+      if (newvec.contains(newstr)) {
+        vec.removeElementAt(k - cnt);
+        cnt++;
+      }
+    }
+  }
  
   /**
    * given a QueryTerm, construct a XPath expression
