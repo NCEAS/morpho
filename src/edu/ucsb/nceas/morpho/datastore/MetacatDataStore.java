@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:34 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-28 16:12:16 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   public MetacatDataStore(Morpho morpho)
   {
     super(morpho);
-    morpho = morpho;
+    this.morpho = morpho;
   }
   
   /**
