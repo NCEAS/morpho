@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-12 15:58:12 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-12-19 22:05:32 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1958,7 +1958,7 @@ public void startImport(String file) {
 	public String createXMLAttributeString() {
 	  StringBuffer XMLBuffer = new StringBuffer();
 	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-	  XMLBuffer.append("<!DOCTYPE eml-attribute PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN\" \"eml-attribute.dtd\">\n");
+	  XMLBuffer.append("<!DOCTYPE eml-attribute PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" \"eml-attribute.dtd\">\n");
 	  XMLBuffer.append("<eml-attribute>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
 	  for (int i=0;i<colTitles.size();i++) {
@@ -2007,7 +2007,7 @@ public void startImport(String file) {
 	public String createXMLEntityString() {
 	  StringBuffer XMLBuffer = new StringBuffer();
 	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-	  XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//ecoinformatics.org//eml-entity-2.0.0beta4//EN\" \"eml-entity.dtd\">\n");
+	  XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//ecoinformatics.org//eml-entity-2.0.0beta6//EN\" \"eml-entity.dtd\">\n");
 	  XMLBuffer.append("<table-entity>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
 	  XMLBuffer.append("    <entityName> "+normalize(TableNameTextField.getText())+"</entityName>\n");
@@ -2034,7 +2034,7 @@ public void startImport(String file) {
 	  if (!labelsInStartingLine) numHeaderLines = numHeaderLines-1;
 	  
 	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-	  XMLBuffer.append("<!DOCTYPE eml-physical PUBLIC \"-//ecoinformatics.org//eml-physical-2.0.0beta4//EN\" \"eml-physical.dtd\">\n");
+	  XMLBuffer.append("<!DOCTYPE eml-physical PUBLIC \"-//ecoinformatics.org//eml-physical-2.0.0beta6//EN\" \"eml-physical.dtd\">\n");
 	  XMLBuffer.append("<eml-physical>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
       XMLBuffer.append("    <format> Text</format>\n");  // text import wizard only handles text 
