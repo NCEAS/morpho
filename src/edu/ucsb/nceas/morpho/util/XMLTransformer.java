@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-02 16:54:25 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-03 01:18:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import java.io.Reader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 
@@ -42,8 +43,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-        //import javax.xml.transform.TransformerException;
-        //import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
         //
         //import org.apache.xerces.parsers.DOMParser;
         //import org.w3c.dom.Attr;
@@ -122,29 +123,39 @@ public class XMLTransformer
     public Reader transform(Reader xmlDocument, Reader xslStyleSheet)
                                                             throws IOException
     {
-        if (xmlDocument==null) {
-            throw new IOException("XMLTransformer.transform():"
-                                   +" received NULL Reader for XML document");
-        } else if (xslStyleSheet==null) {
-            throw new IOException("XMLTransformer.transform():"
-                                   +" received NULL Reader for XSL stylesheet");
-        }
+        validateInputParam(xmlDocument,   "XML document reader");
+        validateInputParam(xslStyleSheet, "XSL stylesheet reader");
+
         PipedWriter pipedWriter = new PipedWriter();
         StringWriter stringWriter = new StringWriter();
+
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = null;
+
         try {
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer     
-                = tFactory.newTransformer( new StreamSource(xslStyleSheet) );
+            transformer = tFactory.newTransformer(new StreamSource(xslStyleSheet));
+        } catch (TransformerConfigurationException e) {
+            String msg 
+                = "XMLTransformer.transform(): getting Transformer instance. "
+                    +"Nested TransformerConfigurationException="+e.getMessage();
+            Log.debug(12, msg);
+            pipedWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(pipedWriter));
+        }        
+//        transformer.setOutputProperty(OutputKeys.METHOD , outputDocType);
+
     //        transformer.setParameter("qformat", qformat);
+        try {
             transformer.transform(  new StreamSource(xmlDocument), 
                                     new StreamResult(stringWriter));
 //                                    new StreamResult(pipedWriter));
-        } catch (Exception e) {
+        } catch (TransformerException e) {
             String msg 
-                = "XMLTransformer.transform(): Error transforming document"
-                                                                +e.getMessage();
-            e.printStackTrace();
+                = "XMLTransformer.transform(): Error transforming document."
+                                +" Nested TransformerException="+e.getMessage();
+            Log.debug(12, msg);
             pipedWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(pipedWriter));
         }
 //        return new PipedReader(pipedWriter);
         return new StringReader(stringWriter.toString());
@@ -172,4 +183,17 @@ public class XMLTransformer
 //    {
 //        return new StringReader("XMLTransformer: method not implemented!");
 //    }
+
+    private void validateInputParam(Object param, String paramDescription) throws IOException {
+
+        if (param==null) {
+            String errMsg = "XMLTransformer received NULL parameter: "
+                                                            +paramDescription;
+            IOException exception 
+                = new IOException(errMsg);
+            exception.fillInStackTrace();
+            Log.debug(12,errMsg);
+            throw exception;
+        }
+    }
 }

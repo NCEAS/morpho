@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-02 16:52:35 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-03 01:18:24 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
 import edu.ucsb.nceas.morpho.util.Log;
@@ -140,7 +141,13 @@ public class XMLTransformerTest extends TestCase
             fail("Unexpected testTransform() IOException: " + e.getMessage());
         }
         assertNotNull(result);
-        assertEquals(result, HTML_RESULTDOC);        
+        try {
+        assertEquals(   (IOUtil.getAsStringBuffer(HTML_RESULTDOC)).toString(),
+                        (IOUtil.getAsStringBuffer(result)).toString() );
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("IOException trying to read returned Readers "+e);
+        }
         testException = null;
         result = null;
     }
@@ -154,12 +161,12 @@ public class XMLTransformerTest extends TestCase
 
     private static final Reader XML_TESTDOC = new StringReader(
         "<?xml version=\"1.0\"?>"
-        + "<!DOCTYPE eml-attribute "
-        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+//        + "<!DOCTYPE eml-attribute "
+//        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+//        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+//        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
         + "<eml-attribute>"
-        + "  <identifier> * * * * TESTDOC 1 1 1 1 1 * * * * </identifier>"
+        + "  <identifier>TESTDOC_1</identifier>"
         + "</eml-attribute>");
     
     private static final Reader XSL_TESTDOC = new StringReader(
@@ -175,24 +182,25 @@ public class XMLTransformerTest extends TestCase
         +"          <h1>Attribute structure description</h1>"
         +"          <h3>Ecological Metadata Language</h3>"
         +"        </center>"
-//        +"        <xsl:for-each select=\"eml-attribute/attribute\">"
-//        +"          <xsl:value-of select=\"precision\"/>&#160;</td>"
-//        +"        </xsl:for-each>"
+        +"          <xsl:value-of select=\"eml-attribute/identifier\"/>"
         +"      </body>"
         +"    </html>"
         +"  </xsl:template>"
         +"</xsl:stylesheet>");
     
     private static final Reader HTML_RESULTDOC = new StringReader(
-        "<?xml version=\"1.0\"?>"
-        + "<!DOCTYPE eml-attribute "
-        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-        + "<eml-attribute>"
-        + "  <identifier> * * * * TESTDOC 1 1 1 1 1 * * * * </identifier>"
-        + "</eml-attribute>");
-    
+         "<html>\r\n"
+        +"<head>\r\n"
+        +"<META http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\r\n"
+        +"</head>\r\n"
+        +"<body>\r\n"
+        +"<center>\r\n"
+        +"<h1>Attribute structure description</h1>\r\n"
+        +"<h3>Ecological Metadata Language</h3>\r\n"
+        +"</center>"
+        +"TESTDOC_1"
+        +"</body>\r\n"
+        +"</html>\r\n");
 }
 
 
