@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 18:02:55 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-28 22:12:54 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,5 +64,10 @@ public interface EditorInterface
  public void openEditor(String xmltext, String id, String location,
                         String nodeName, String nodeValue,
                         EditingCompleteListener listener);
+
+ public void openEditor(Vector xmlDocs, String id, String location,
+                        String nodeName, String nodeValue,
+                        EditingCompleteListener listener);
+   
    
 }
