@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 21:34:02 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-03-31 23:33:46 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -220,11 +221,13 @@ public class DeleteDialog extends JDialog
     // Create note box and add it to the north of mainPanel
     Box noteBox = Box.createVerticalBox();
     noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
-    JTextArea note = new JTextArea(WARNING);
+    JLabel note = WidgetFactory.makeHTMLLabel(WARNING, 3);
+/*    JTextArea note = new JTextArea(WARNING);
     note.setEditable(false);
     note.setLineWrap(true);
     note.setWrapStyleWord(true);
     note.setOpaque(false);
+*/
     noteBox.add(note);
     noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     mainPanel.add(BorderLayout.NORTH, noteBox);

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 21:19:13 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-03-31 23:33:09 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -161,11 +162,13 @@ public class SaveDialog extends JDialog
     // Create note box and add it to the north of mainPanel
     Box noteBox = Box.createVerticalBox();
     noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
-    JTextArea note = new JTextArea(WARNING);
+    JLabel note = WidgetFactory.makeHTMLLabel(WARNING, 2);
+/*    JTextArea note = new JTextArea(WARNING);
     note.setEditable(false);
     note.setLineWrap(true);
     note.setWrapStyleWord(true);
     note.setOpaque(false);
+*/    
     noteBox.add(note);
     noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     mainPanel.add(BorderLayout.NORTH, noteBox);

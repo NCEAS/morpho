@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-11 22:45:02 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-31 23:33:46 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 
+import java.awt.Font;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Color;
@@ -79,7 +80,7 @@ public class SynchronizeDialog extends JDialog
   
   private static String SYNCHRONIZE =
       "\"Synchronize\" will keep the Data Packages on your local computer "
-      + "identical with those on the network.\n"
+      + "identical with those on the network. "
       + "In order to do this, Morpho will copy the Data Package as shown below:";
  
   private static String WARNING =
@@ -191,6 +192,7 @@ public class SynchronizeDialog extends JDialog
     note.setLineWrap(true);
     note.setWrapStyleWord(true);
     note.setOpaque(false);
+    note.setFont(new Font("SansSerif", Font.PLAIN, 11));
     noteBox.add(note);
     // Add left and right padding for notebox and add them to the north of
     // of content panel
@@ -259,6 +261,8 @@ public class SynchronizeDialog extends JDialog
     warning.setLineWrap(true);
     warning.setWrapStyleWord(true);
     warning.setOpaque(false);
+    warning.setFont(new Font("SansSerif", Font.PLAIN, 11));
+
     bottomBox.add(warning);
     bottomBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     // Create a controlbuttionBox
