@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-02 19:59:10 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -314,7 +314,7 @@ public class PersistentVector
          String sss = s[0];
          for (int ii=1;ii<s.length;ii++) {
            //sss = sss + "\t" + s[ii];
-           sss = sss + field_delimiter + s[ii];
+           sss = sss + getDelimiterString() + s[ii];
          } 
          out.write(sss, 0, sss.length());
          out.newLine();
@@ -459,6 +459,10 @@ public class PersistentVector
 	  return result;
 	}
 
+  /*
+   * this method converts hex delimiter strings to in-line strings
+   * i.e. #x09 is converted to a tab \t
+   */
 	private String getDelimiterString() {
     String str = "";
     String temp = field_delimiter;
