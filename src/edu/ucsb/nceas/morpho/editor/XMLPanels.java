@@ -9,16 +9,14 @@ import java.lang.reflect.*;
 
 /**
  *       Name: XMLPanels.java
- *    Purpose: Used to store various information for application
- *             configuration in an XML file
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Dan Higgins
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-04 21:37:43 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-08 23:29:03 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,10 +34,24 @@ import java.lang.reflect.*;
  */
 
 /**
- * Class designed for creating a set of nested panels corresponding
- * to Java tree structure
- *
- * @author Dan Higgins
+ * XMLPanels is an alternative view of the TreeModel data
+ * structure. Rather than the JTree outline view, this
+ * class creates a set of nested panels for showing the
+ * hierarchy. Included is support for dynamically loaded
+ * 'custom' editor that can be assigned at run time for any
+ * special nodes in the hierarchy. An XMLPanels object is
+ * usually associated with a JTree view which serves as an
+ * 'outline' and selecting any node in the outline displays the
+ * nested panel (or custom editor) view of that node and its
+ * children. Tree leaves are shown as text input boxes that
+ * are labeled with the element name. Editing the text box thus
+ * serves as editing text in the original hierarchy. The
+ * class is designed to look like a form to the user. One can
+ * enter text into the textboxes and then press tab to move to
+ * the next box. The display scrolls as the user moves to a
+ * textbox out of view.
+ * 
+ * @author higgins
  */
  
 public class XMLPanels extends Component
@@ -74,6 +86,8 @@ public class XMLPanels extends Component
         treeModel = tm;
     }
     
+    /**
+     */
     void init(){
         topPanel = new JPanel();
         NodeInfo info = (NodeInfo)(doc.getUserObject());

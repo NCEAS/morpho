@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-07 16:19:37 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-08 23:29:03 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,15 @@ import java.util.*;
 import edu.ucsb.nceas.morpho.framework.*;
 
 
+/**
+ * DocFrame is an example container for an XML editor which
+ * shows combined outline and nested panel views of an XML
+ * document.
+ * Currently, this example frame also shows a text view of the
+ * XML document and an HTML view in alternative tabbed panels.
+ * 
+ * @author higgins
+ */
 public class DocFrame extends javax.swing.JFrame
 {
     ConfigXML config;

@@ -1,15 +1,13 @@
 /**
  *       Name: XMLDisplayHandler.java
- *    Purpose: Used to store various information for application
- *             configuration in an XML file
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Dan Higgins
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-04 21:37:43 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-08 23:29:03 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +32,12 @@ import javax.swing.tree.*;
 import java.util.*;
 
 
+/**
+ * SAX2 event handler for parsing an XML file and turning it
+ * into a JTreeModel for use in editor. Specifically, this
+ * class puts the XML element information into the NodeInfo
+ * userobject and builds the connected set of JTreeModel nodes.
+ */
 // SAX2 implementation of event handler
 //  Event Handler
 class XMLDisplayHandler extends DefaultHandler {

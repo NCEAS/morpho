@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-04 21:37:43 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-08 23:29:03 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,16 @@ import java.awt.*;
 import java.io.*;
 import com.wutka.dtd.*;
 
+/**
+ * NodeInfo is a class used as a UserObject for a specialized JTree model. It is 
+ * basically the container for all information about the node in the tree data
+ * structure. This includes the node text and icon. When the tree is used to show
+ * the hierarchy of an XML document, it also contains all all information in the
+ * attributes of the XML node, as well as other information like the cardinality
+ * of the node.
+ * 
+ * @author higgins
+ */
 public class NodeInfo implements Serializable
 {
     static Hashtable icons;
@@ -46,6 +56,13 @@ public class NodeInfo implements Serializable
     String cardinality = "ONE";  // allowed values - ONE, ZERO to MANY, ONE to MANY, OPTIONAL
     boolean Item;
     Hashtable attr;
+
+ /**
+  * creates a new NodeInfo object with the indicated name.
+  * 
+  * @param name name is the text that will appear when a TreeNode which has been
+  * assigned a NodeInfo object with 'name' as the UserObject;
+  */
  public NodeInfo(String name) {
     attr = new Hashtable();
     this.name = name;

@@ -1,15 +1,14 @@
 /**
  *       Name: DFHPanel.java
- *    Purpose: Used to store various information for application
- *             configuration in an XML file
+ *    Purpose: Example dynamic editor class for XMLPanel
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Dan Higgins
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-04 21:37:44 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-08 23:29:04 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +30,16 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.util.*;
 
+/**
+ * DFHPanel is an example of a class that can be dynamically
+ * loaded at run time to edit a specific part of an XML
+ * document tree. In particular, this class displays a panel
+ * with a custom layout of User information (i.e. name,
+ * address, e-mail, etc. It can be loaded at run time by
+ * including the class name as an attibute in the XML file.
+ * 
+ * @author higgins
+ */
 public class DFHPanel extends JPanel
 {
     
@@ -85,6 +94,13 @@ public class DFHPanel extends JPanel
         this(null);
         }
     
+    /**
+     * The primary constructor used to dynamically load the class.
+     * 
+     * @param nd the treenode passed to the object. This node and its children contain
+     * all the data that this editor displays in a panel. To pass the edited
+     * data back, it must be put into the node objects as editing is done.
+     */
     public DFHPanel(DefaultMutableTreeNode nd) {
         this.node = nd;
         nodeMap = new Hashtable();  // textfield key mapped to node

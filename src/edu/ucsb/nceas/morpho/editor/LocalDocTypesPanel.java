@@ -1,15 +1,16 @@
 /**
  *       Name: LocalDocTypesPanel.java
- *    Purpose: Used to store various information for application
- *             configuration in an XML file
+ *    Purpose: Example of pluggable editor for part of a XML editor
+ *             this class creates a 2 column table that allows
+ *             the display and editing of pairs of configuration variables.
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Dan Higgins
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-04 21:37:43 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-08 23:29:03 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,15 +1,15 @@
 /**
  *       Name: XMLTreeCellRenderer.java
- *    Purpose: Used to store various information for application
- *             configuration in an XML file
+ *    Purpose: Uses the ImageIcon stored in a UserObject
+ *             as the icon of TreeCellNode
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Dan Higgins
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-04 21:37:43 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-08 23:29:03 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,39 @@ import java.awt.*;
 import javax.swing.JTree;
 import javax.swing.ImageIcon;
 
+/**
+ * This class is a simple extension of the DefaultTreeCell
+ * Renderer that uses an ImageIcon stored in the NodeInfo
+ * UserObject of a tree node as the icon of a node when it is
+ * displayed in a tree. Using an icon from the UserObject allows
+ * each node to have its own icon which can be dynamically
+ * changed.
+ * 
+ * @author higgins
+ */
 public class XMLTreeCellRenderer extends javax.swing.tree.DefaultTreeCellRenderer
 {
+
+	/**
+	 * Constructor
+	 */
 	public XMLTreeCellRenderer()
 	{
     }
+
+    /**
+     * required method for a TreeCellRenderer
+     * uses icon in userobject for each nodeinstead of
+     * an icon which is based on whether node is leaf or branch.
+     * 
+     * @param tree
+     * @param value
+     * @param sel
+     * @param expanded
+     * @param leaf
+     * @param row
+     * @param hasFocus
+     */
     public Component getTreeCellRendererComponent(
                             JTree tree,
                             Object value,
