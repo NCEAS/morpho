@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-31 04:47:23 $'
- * '$Revision: 1.83 $'
+ *     '$Date: 2004-04-01 00:40:22 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -594,8 +594,13 @@ public abstract class AbstractDataPackage extends MetadataObject
     String IDXpath = "";
     NodeList IDNodes;
     try {
-      IDXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
-          "/xpathKeyMap/contextNode[@name='package']/"+genericName)).getNodeValue();
+			Node textNode = XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/"+genericName);
+			if(textNode == null) {
+				Log.debug(40, "Unable to find text node with the given name!");
+				return returnList;
+			}
+      IDXpath = textNode.getNodeValue();
       // example: genericName = 'parties'
       IDNodes = XMLUtilities.getNodeListWithXPath(metadataNode, IDXpath);
       if (IDNodes == null) {
