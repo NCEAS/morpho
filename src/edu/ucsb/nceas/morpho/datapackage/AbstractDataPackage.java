@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-03-26 21:45:53 $'
- * '$Revision: 1.78 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-26 23:53:47 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -581,17 +581,41 @@ public abstract class AbstractDataPackage extends MetadataObject
    * of all the subtrees identified by the passed unique String.  Returns an
    * empty string if none found. <em>NOTE - should never return null</em>
    *
-   * @param refID unique String refID
+   * @param genericName string identifying nodes - e.g. "parties"
    * @return  a <code>java.util.List</code> containing IDs of all the rootnodes
    * of all the subtrees identified by the passed unique String.  Returns an
-   * empty string if none found. <em>NOTE - should never return null</em>
+   * empty List if none found. <em>NOTE - should never return null</em>
    */
   public List getIDsForNodesWithName(String genericName) {
 
     List returnList = new ArrayList();
 
-    //do some clever stuff here...
-
+		String IDXpath = "";
+		NodeList IDNodes;
+    try {
+      IDXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/"+genericName)).getNodeValue();
+      // example: genericName = 'parties'
+      IDNodes = XMLUtilities.getNodeListWithXPath(metadataNode, IDXpath);
+      if (IDNodes == null) {
+        Log.debug(40, "IDs returnList is null!");
+        return returnList;
+      }
+		}
+		catch (Exception w) {
+      Log.debug(50, "exception in getting IDsForNodes");
+      w.printStackTrace();
+      return returnList;
+		}
+	  // add an ID string to the returnList for each Node in the NodeList
+		for (int i=0;i<IDNodes.getLength();i++) {
+		  Element node = (Element)IDNodes.item(i);
+		  String IDValue = node.getAttribute("id");
+      //Log.debug(1,"tagName: "+node.getTagName()+"---IDValue: "+IDValue);
+		  if (!IDValue.equals("")) {
+			  returnList.add(IDValue);
+		  }
+	  }
     return returnList;
   }
 
