@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-23 18:48:14 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
                                                     false, 0, listener);
     
     JPanel numberTypePanel = WidgetFactory.makePanel();
-    numberTypeLabel    = WidgetFactory.makeLabel("Number Type:", true);
+    numberTypeLabel = WidgetFactory.makeLabel("Number Type:", true);
     numberTypePanel.add(numberTypeLabel);
     numberTypePanel.add(numberTypePickList);
 
@@ -175,8 +175,8 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     boundsLabel.setMaximumSize(boundsLabelDim);
     boundsPanel.add(boundsLabel);
     
-    String[] colNames     = new String[] {  "Min", "inclusive?", 
-                                            "Max", "inclusive?"};
+    String[] colNames     = new String[] {  "Min.", "excl?", 
+                                            "Max.", "excl?"};
                                             
     Object[] colTemplates = new Object[] {  new JTextField(), new JCheckBox(), 
                                             new JTextField(), new JCheckBox()};
@@ -185,7 +185,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
                                         true, false, false, true, false, false);
     boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     boundsPanel.add(boundsList);
-    
+
     numericDomainGrid.add(boundsPanel);
     
     /////////////////
@@ -194,6 +194,17 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     this.add(numericDomainGrid);
   
     ////////////////////////
+
+    JPanel boundsHelpGrid = new JPanel(new GridLayout(1,2));
+    
+    boundsHelpGrid.add(WidgetFactory.makeHalfSpacer());
+
+    boundsHelpGrid.add(WidgetFactory.makeLabel(
+        "<html><font color=\"#666666\">Check the 'excl?' box if "
+        +"the bound does not include the value itself</font></html>", false,
+        new Dimension(1000,20)) );
+    
+    this.add(boundsHelpGrid);
     
   }
   
@@ -321,16 +332,16 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
         nextMin = (String)(nextRow.get(0));
         if (!nextMin.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
-        }
-        nextExcl = nextRow.get(1);
+          nextExcl = nextRow.get(1);
 
-        if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
       
-          returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
+            returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
         
-        } else {
+          } else {
         
-          returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "false");
+            returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "false");
+          }
         }
       }
       
@@ -339,16 +350,17 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
         nextMax = (String)(nextRow.get(2));
         if (!nextMax.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
-        }
-        nextExcl = nextRow.get(3);
+          
+          nextExcl = nextRow.get(3);
 
-        if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
       
-          returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
+            returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
         
-        } else {
+          } else {
         
-          returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "false");
+            returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "false");
+          }
         }
       }
     }

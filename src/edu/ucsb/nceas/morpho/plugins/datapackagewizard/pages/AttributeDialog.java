@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 16:40:55 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-23 18:48:14 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,7 +154,7 @@ class AttributeDialog extends WizardPopupDialog {
     measScaleElemNames[MEASUREMENTSCALE_ORDINAL]  = "ordinal";
     measScaleElemNames[MEASUREMENTSCALE_INTERVAL] = "interval";
     measScaleElemNames[MEASUREMENTSCALE_RATIO]    = "ratio";
-    measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "dateTime";
+    measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "datetime";
   }
   
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 16:40:55 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-23 18:48:14 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
         +"&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss</font></html>", false,
         new Dimension(1000,30)) );
 
-    this.add(WidgetFactory.makeHalfSpacer());
+//    this.add(WidgetFactory.makeHalfSpacer());
     this.add(formatStringGrid);
   
 
@@ -149,14 +149,23 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     this.add(WidgetFactory.makeHalfSpacer());
   
 
+    String[] colNames     = new String[] {  "Min.", "excl?", 
+                                            "Max.", "excl?"};
+                                            
+    Object[] colTemplates = new Object[] {  new JTextField(), new JCheckBox(), 
+                                            new JTextField(), new JCheckBox()};
     ////////////////////////
     
-    JPanel boundsPanel = WidgetFactory.makePanel();
+    JPanel boundsHelpPanel = WidgetFactory.makeVerticalPanel(4);
+//    new JPanel();
+//    boundsHelpPanel.setLayout(new BoxLayout(boundsHelpPanel, BoxLayout.Y_AXIS));
 
-    boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false));
+    ////////////////////////
     
-    String[] colNames     = new String[] {"Min (optional):", "Max (optional):"};
-    Object[] colTemplates = new Object[] {new JTextField(),   new JTextField()};
+    JPanel boundsPanel = new JPanel();
+    boundsPanel.setLayout(new BoxLayout(boundsPanel, BoxLayout.X_AXIS));
+    
+    boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false));
     
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
@@ -165,19 +174,27 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     
     /////////////////
 
+    
+    boundsHelpPanel.add(boundsPanel);
+    boundsHelpPanel.add(WidgetFactory.makeLabel(
+        "<html><font color=\"#666666\">Check the 'excl?' box if "
+        +"the bound does not include the value itself</font></html>", false,
+        new Dimension(1000,22)) );
+    
+    
     JPanel boundsGrid = new JPanel(new GridLayout(1,2));
-    boundsGrid.add(boundsPanel);
+    boundsGrid.add(boundsHelpPanel);
     boundsGrid.add(WidgetFactory.makeLabel(
     "<html>Range of permitted values, in same date-time format as used in "
     +"the format description above. <br></br><font color=\"#666666\">e.g: if format is "
     +"\"YYYY-MM-DD\", a valid minimum would be \"2001-05-29\"</font><br></br></html>", 
-    false, new Dimension(1000,40)));
+    false, new Dimension(1000,35)));
     
 //    this.add(WidgetFactory.makeHalfSpacer());
     this.add(boundsGrid);
   
     ////////////////////////
-    
+
   }
   
  
@@ -269,6 +286,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     List rowLists = boundsList.getListOfRowLists();
     String nextMin = null;
     String nextMax = null;
+    Object nextExcl = null;
   
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
@@ -280,7 +298,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
       if (nextRow.size() < 1) continue;
       
       boolean minIsNull = (nextRow.get(0)==null);
-      boolean maxIsNull = (nextRow.get(1)==null);
+      boolean maxIsNull = (nextRow.get(2)==null);
 
       if (minIsNull && maxIsNull) continue;
       
@@ -291,14 +309,34 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
         nextMin = (String)(nextRow.get(0));
         if (!nextMin.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
+
+          nextExcl = nextRow.get(1);
+          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+      
+            returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
+        
+          } else {
+        
+            returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "false");
+          }
         }
       }
       
       if (!maxIsNull) {
       
-        nextMax = (String)(nextRow.get(1));
+        nextMax = (String)(nextRow.get(2));
         if (!nextMax.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
+
+          nextExcl = nextRow.get(3);
+          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+      
+            returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
+        
+          } else {
+        
+            returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "false");
+          }
         }
       }
     }

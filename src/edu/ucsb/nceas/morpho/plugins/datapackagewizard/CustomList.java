@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-09-23 18:48:14 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 import java.awt.Component;
+import java.awt.Insets;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -53,6 +54,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JComponent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -116,8 +118,8 @@ public class CustomList extends JPanel {
    *                  displayed at the top of each column. 
    *
    *  @param columnEditors array containing Objects that this class will use as  
-   *                  the default editing widget for the cells in each column. 
-   *                  For example,<code><pre>
+   *                  the default display and editing widget for the cells in 
+   *                  each column. For example,<code><pre>
    *
    *                    String[] listValues = new String[] {"item 1", "item 2"};
    *                    Object[] columnEditors 
@@ -211,12 +213,13 @@ public class CustomList extends JPanel {
     /////////////////////////////////
     
     final JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.getViewport().setBackground(java.awt.Color.white);
     scrollPane.getViewport().addChangeListener(new ChangeListener() {
     
       public void stateChanged(ChangeEvent e) {
       
-        setColumnSizes(scrollPane.getSize().getWidth());
+        setColumnSizes(scrollPane.getViewport().getSize().getWidth());
       }
     });
     this.add(scrollPane, BorderLayout.CENTER);
@@ -310,21 +313,41 @@ public class CustomList extends JPanel {
   
   private void setColumnSizes(double tableWidth) {
   
+System.err.println("\n\n*****************************************************");
+System.err.println("  setColumnSizes() - tableWidth = "+tableWidth);
+System.err.println("*****************************************************\n\n");
+
     final double  fraction  = 1d/((double)(table.getColumnCount()));
-    final double  minFactor = 0.7;
-    final double  maxFactor = 5;
+    final double  minFactor = 0.5;
+    final double  maxFactor = 2;
     
     for (int i = 0; i < table.getColumnCount(); i++) {
     
       TableColumn column = table.getColumnModel().getColumn(i);
       
-      int preferredWidth = (int)(tableWidth*fraction) - 3;
-      if (preferredWidth < 40) preferredWidth = 40;
+      int preferredWidth = (int)(tableWidth*fraction) - 1;
+      int headerWidth = getHeaderWidth(i, column);
+      if (preferredWidth < headerWidth) preferredWidth = headerWidth;
 
       column.setPreferredWidth(preferredWidth);
       column.setMinWidth((int)(preferredWidth*minFactor));
       column.setMaxWidth((int)(preferredWidth*maxFactor));
     }
+  }
+  
+  
+  private int getHeaderWidth(int colNumber, TableColumn column) {
+  
+    TableCellRenderer headerRenderer = column.getHeaderRenderer();
+    if (headerRenderer==null) {
+      headerRenderer = table.getTableHeader().getDefaultRenderer();
+    }
+    Component comp = headerRenderer.getTableCellRendererComponent(
+                                                table, column.getHeaderValue(), 
+                                                false, false, -1, colNumber);
+    int headerWidth = comp.getPreferredSize().width;
+    Insets ins = ((JComponent)headerRenderer).getInsets();
+    return (ins.left + headerWidth + ins.right);
   }
 
   
@@ -941,7 +964,7 @@ class CustomJTable extends JTable  {
                                                             boolean hasFocus,
                                                             int row,
                                                             int column) {
-              
+
               boolean checked = false;                                             
               if (value!=null) checked = ((Boolean)value).booleanValue();
               JCheckBox cell = new JCheckBox("", checked);

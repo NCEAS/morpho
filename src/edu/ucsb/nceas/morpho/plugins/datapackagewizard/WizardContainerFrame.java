@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-09-23 18:48:14 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -437,13 +437,15 @@ public class WizardContainerFrame extends JFrame {
       addPageDataToResultsMap((WizardPage)(pagesList.get(ENTITY)),wizData);
     }
     
-    if (DATA_LOCATION>=0)       {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
-    }
-    
     if (DATA_FORMAT>=0)         {
       addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_FORMAT)),wizData);
     }
+
+    if (DATA_LOCATION>=0)       {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
+    }
+
+    
     
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
     Log.debug(45, wizData.toString());
