@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-04 16:57:18 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-02-18 21:34:07 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,34 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.JTree;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import edu.ucsb.nceas.morpho.editor.DocFrame;
+
+import edu.ucsb.nceas.utilities.*;
+
+import java.util.Iterator;
+
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DOMImplementation;
+import org.apache.xerces.dom.DOMImplementationImpl;
 
 /**
  * PartyPanel is an example of a special panel editor for
@@ -50,369 +73,74 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 public class PartyPanel extends JPanel
 {
 
-  private static final Dimension PARTY_2COL_LABEL_DIMS = new Dimension(70,20);
-
-  private short  role;
-  private String roleString;
-  private JLabel salutationLabel;
-  private JLabel     roleLabel;
-  private JTextField roleField;
-  private JTextField salutationField;
-  private JTextField firstNameField;
-  private JLabel     lastNameLabel;
-  private JTextField lastNameField;
-  private JLabel     organizationLabel;
-  private JTextField organizationField;
-  private JLabel     positionNameLabel;
-  private JTextField positionNameField;
-  private JTextField address1Field;
-  private JTextField address2Field;
-  private JTextField cityField;
-  private JTextField stateField;
-  private JTextField zipField;
-  private JTextField countryField;
-  private JTextField phoneField;
-  private JTextField faxField;
-  private JTextField emailField;
-  private JTextField urlField;
-
-  DefaultMutableTreeNode nd = null;
-  DefaultMutableTreeNode nd1 = null;
-
   public PartyPanel(DefaultMutableTreeNode node) {
-    nd = node;
+    final DefaultMutableTreeNode fnode = node;
     JPanel jp = this;
     jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
     jp.setAlignmentX(Component.LEFT_ALIGNMENT);
-		NodeInfo info = (NodeInfo)(nd.getUserObject());
-    jp.setMaximumSize(new Dimension(500,500));
-    init(jp);
+    jp.setMaximumSize(new Dimension(800,600));
+    final AbstractWizardPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
+    ((PartyPage)awp).desc.setVisible(false);
+    ((PartyPage)awp).listPanel.setVisible(false);
+    ((PartyPage)awp).setMaximumSize(new Dimension(800,400));
+    jp.add(awp);
+
+    DocFrame df = DocFrame.currentDocFrameInstance;
+    final Node domNode = df.writeToDOM(node);
+    // domNode is now the DOM tree equivalent of the original JTree subtree in node
+    // The parts of this DOM tree that are NOT handled by the attribute panel need to be preserved
+    // so that when data from the panel is merged back, information is not lost.
+    final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
+    NodeInfo ni = (NodeInfo)node.getUserObject();
+     final String nname = ni.getName();
+    ((PartyPage)awp).setXPathRoot("/"+nname);
+    awp.setPageData(om);
+
+    JPanel controlsPanel = new JPanel();
+    JButton saveButton = new JButton("Save");
+    saveButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        final Document doc = domNode.getOwnerDocument();
+        try{
+//        Log.debug(1, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+          // data from the panel is merged back into the DOM tree here
+          XMLUtilities.getXPathMapAsDOMTree(awp.getPageData(), domNode);
+//        Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+          JTree domtree = new DOMTree(doc);
+          DefaultMutableTreeNode root = (DefaultMutableTreeNode)domtree.getModel().getRoot();
+          DefaultMutableTreeNode parent = (DefaultMutableTreeNode)fnode.getParent();
+          int index = parent.getIndex(fnode);
+          parent.remove(index);
+          parent.insert(root, index);
+          DocFrame df1 = DocFrame.currentDocFrameInstance;
+					DefaultMutableTreeNode fn = df1.findTemplateNodeByName(nname);
+					if (fn!=null) {
+					  df1.treeUnion(root, fn);
+					}
+					df1.addXMLAttributeNodes(root);
+					df1.setAttributeNames(root);
+					NodeInfo nir = (NodeInfo)(root.getUserObject());
+					nir.setChoice(false);
+					nir.setCheckboxFlag(false);
+					(df1.treeModel).reload();
+        } catch (Exception e) {
+          Log.debug(5, "Problem in PartyPanel");
+        }
+      }
+    });
+    JButton cancelButton = new JButton("Cancel");
+    cancelButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+				awp.setPageData(om);
+      }
+    });
+    controlsPanel.add(saveButton);
+    controlsPanel.add(cancelButton);
+    jp.add(controlsPanel);
+    
+    
     jp.setVisible(true);
   }
 
-  private void init(JPanel panel) {
-
-    ////
-    JPanel salutationPanel = WidgetFactory.makePanel(1);
-    salutationLabel = WidgetFactory.makeLabel("Salutation:", false);
-    salutationPanel.add(salutationLabel);
-    salutationField = WidgetFactory.makeOneLineTextField();
-    salutationField.setText(getValue(nd, "salutation"));
-    salutationField.addFocusListener(new dfhFocus());
-    salutationPanel.add(salutationField);
-    panel.add(salutationPanel);
-
-    ////
-    JPanel firstNamePanel = WidgetFactory.makePanel(1);
-    firstNamePanel.add(WidgetFactory.makeLabel("First Name:", false));
-    firstNameField = WidgetFactory.makeOneLineTextField();
-    firstNameField.setText(getValue(nd, "givenName"));
-    firstNameField.addFocusListener(new dfhFocus());
-    firstNamePanel.add(firstNameField);
-    panel.add(firstNamePanel);
-
-    ////
-    JPanel lastNamePanel = WidgetFactory.makePanel(1);
-    lastNameLabel = WidgetFactory.makeLabel("Last Name:", true);
-    lastNamePanel.add(lastNameLabel);
-    lastNameField = WidgetFactory.makeOneLineTextField();
-    lastNameField.setText(getValue(nd, "surName"));
-    lastNameField.addFocusListener(new dfhFocus());
-    lastNamePanel.add(lastNameField);
-    panel.add(lastNamePanel);
-
-    ////
-    JPanel organizationPanel = WidgetFactory.makePanel(1);
-    organizationLabel = WidgetFactory.makeLabel("Organization:", true);
-    organizationPanel.add(organizationLabel);
-    organizationField = WidgetFactory.makeOneLineTextField();
-    organizationField.setText(getValue(nd, "organizationName"));
-    organizationField.addFocusListener(new dfhFocus());
-    organizationPanel.add(organizationField);
-    panel.add(organizationPanel);
-
-    ////
-    JPanel positionNamePanel = WidgetFactory.makePanel(1);
-    positionNameLabel = WidgetFactory.makeLabel("Position Name:", true);
-    positionNamePanel.add(positionNameLabel);
-    positionNameField = WidgetFactory.makeOneLineTextField();
-    positionNameField.setText(getValue(nd, "positionName"));
-    positionNameField.addFocusListener(new dfhFocus());
-    positionNamePanel.add(positionNameField);
-    panel.add(positionNamePanel);
-
-    ////
-    JPanel address1Panel = WidgetFactory.makePanel(1);
-    address1Panel.add(WidgetFactory.makeLabel("Address 1:", false));
-    address1Field = WidgetFactory.makeOneLineTextField();
-    address1Field.setText(getValue(nd, "deliveryPoint"));
-    address1Field.addFocusListener(new dfhFocus());
-    address1Panel.add(address1Field);
-    panel.add(address1Panel);
-
-    ////
-    JPanel address2Panel = WidgetFactory.makePanel(1);
-    address2Panel.add(WidgetFactory.makeLabel("Address 2:", false));
-    address2Field = WidgetFactory.makeOneLineTextField();
-    // need to figure out how to handle multiple addresses
-    address2Panel.add(address2Field);
-    panel.add(address2Panel);
-
-    ////
-    JPanel cityStatePanel = WidgetFactory.makePanel(1);
-    cityStatePanel.add(WidgetFactory.makeLabel("City:", false));
-    cityField = WidgetFactory.makeOneLineTextField();
-    cityField.setText(getValue(nd, "city"));
-    cityField.addFocusListener(new dfhFocus());
-    cityStatePanel.add(cityField);
-    cityStatePanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel stateLabel = WidgetFactory.makeLabel("State:", false);
-    setPrefMinMaxSizes(stateLabel, PARTY_2COL_LABEL_DIMS);
-    cityStatePanel.add(stateLabel);
-    stateField = WidgetFactory.makeOneLineTextField();
-    stateField.setText(getValue(nd, "administrativeArea"));
-    stateField.addFocusListener(new dfhFocus());
-    cityStatePanel.add(stateField);
-    panel.add(cityStatePanel);
-
-    ////
-    JPanel zipCountryPanel = WidgetFactory.makePanel(1);
-    zipCountryPanel.add(WidgetFactory.makeLabel("Postal Code:", false));
-    zipField = WidgetFactory.makeOneLineTextField();
-    zipField.setText(getValue(nd, "postalCode"));
-    zipField.addFocusListener(new dfhFocus());
-    zipCountryPanel.add(zipField);
-    zipCountryPanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel countryLabel = WidgetFactory.makeLabel("Country:", false);
-    setPrefMinMaxSizes(countryLabel, PARTY_2COL_LABEL_DIMS);
-    zipCountryPanel.add(countryLabel);
-    countryField = WidgetFactory.makeOneLineTextField();
-    countryField.setText(getValue(nd, "country"));
-    countryField.addFocusListener(new dfhFocus());
-    zipCountryPanel.add(countryField);
-    panel.add(zipCountryPanel);
-
-
-    ////
-    JPanel phoneFaxPanel = WidgetFactory.makePanel(1);
-    phoneFaxPanel.add(WidgetFactory.makeLabel("Phone:", false));
-    phoneField = WidgetFactory.makeOneLineTextField();
-    phoneField.setText(getValue(nd, "phone"));
-    phoneField.addFocusListener(new dfhFocus());
-    phoneFaxPanel.add(phoneField);
-    phoneFaxPanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel faxLabel = WidgetFactory.makeLabel("Fax:", false);
-    setPrefMinMaxSizes(faxLabel, PARTY_2COL_LABEL_DIMS);
-    phoneFaxPanel.add(faxLabel);
-    faxField = WidgetFactory.makeOneLineTextField();
-    faxField.setText(getValue(nd, "phone", "phonetype", "facsimile"));
-    phoneFaxPanel.add(faxField);
-    panel.add(phoneFaxPanel);
-
-
-    ////
-    JPanel emailUrlPanel = WidgetFactory.makePanel(1);
-    emailUrlPanel.add(WidgetFactory.makeLabel("Email:", false));
-    emailField = WidgetFactory.makeOneLineTextField();
-    emailField.setText(getValue(nd, "electronicMailAddress"));
-    emailField.addFocusListener(new dfhFocus());
-    emailUrlPanel.add(emailField);
-    emailUrlPanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel urlLabel = WidgetFactory.makeLabel("Online URL:", false);
-    setPrefMinMaxSizes(urlLabel, PARTY_2COL_LABEL_DIMS);
-    emailUrlPanel.add(urlLabel);
-    urlField = WidgetFactory.makeOneLineTextField();
-    urlField.setText(getValue(nd, "onlineUrl"));
-    urlField.addFocusListener(new dfhFocus());
-    emailUrlPanel.add(urlField);
-    panel.add(emailUrlPanel);
-		
-  }
-
-
-
-  private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
-
-    WidgetFactory.setPrefMaxSizes(component, dims);
-    component.setMinimumSize(dims);
-  }
-
-  /**
-   *  This method searches for a descendent of the specified node
-   *  with the specified name and returns the text value.
-   */
-  private String getValue(DefaultMutableTreeNode node, String name) {
-    String ret = null;
-    Enumeration enum = node.breadthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
-      NodeInfo ni = (NodeInfo)nd.getUserObject();
-      String nodeName = (ni.getName()).trim();
-      if (nodeName.equals(name)) {
-        Enumeration kids = nd.children();
-        while (kids.hasMoreElements()) {
-          DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)kids.nextElement();
-          NodeInfo tni = (NodeInfo)tnode.getUserObject();
-          if (tni.getName().equalsIgnoreCase("#PCDATA")) {
-            ret = tni.getPCValue();
-            return ret;
-          }
-        }
-        return ret;
-      }
-    }
-    return ret;
-  }
-
-    /**
-   *  This method searches for a descendent of the specified node
-   *  with the specified name, and the specified attribute with the given name
-   *  and returns the text value.
-   */
-  private String getValue(DefaultMutableTreeNode node, String name, String attrName, String attrVal) {
-    String ret = null;
-    Enumeration enum = node.breadthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
-      NodeInfo ni = (NodeInfo)nd.getUserObject();
-      String nodeName = (ni.getName()).trim();
-     if (nodeName.equals(name)) {
-        if ((ni.attr.containsKey(attrName))&&(((String)(ni.attr.get(attrName))).equals(attrVal))) {
-          DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
-          NodeInfo tni = (NodeInfo)tnode.getUserObject();
-          ret = tni.getPCValue();
-          return ret;
-        }
-      }
-    }
-    return ret;
-  }
-
-
-  /**
-   *  This method searches for a descendent of the specified node
-   *  with the specified name and sets the text value.
-   */
-  private void setValue(DefaultMutableTreeNode node, String name, String val) {
-    String ret = null;
-    Enumeration enum = node.breadthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
-      NodeInfo ni = (NodeInfo)nd.getUserObject();
-      String nodeName = (ni.getName()).trim();
-     if (nodeName.equals(name)) {
-        DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
-        NodeInfo tni = (NodeInfo)tnode.getUserObject();
-        tni.setPCValue(val);
-        break;
-      }
-    }
-  }
-
-  /**
-   *  This method searches for a descendent of the specified node
-   *  with the specified name, specified attribute name & value
-   *  and and sets the text value.
-   */
-  private void setValue(DefaultMutableTreeNode node, String name, String val, String attrName, String attrVal) {
-    String ret = null;
-    Enumeration enum = node.breadthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
-      NodeInfo ni = (NodeInfo)nd.getUserObject();
-      String nodeName = (ni.getName()).trim();
-      if (nodeName.equals(name)) {
-        if ((ni.attr.containsKey(attrName))&&(((String)(ni.attr.get(attrName))).equals(attrVal))) {
-          DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
-          NodeInfo tni = (NodeInfo)tnode.getUserObject();
-          tni.setPCValue(val);
-         break;
-        }
-      }
-    }
-  }
-
-
-class dfhAction implements java.awt.event.ActionListener
-{
-  public void actionPerformed(java.awt.event.ActionEvent event)
-    {
-      Object object = event.getSource();
-      if (object instanceof JTextArea) {
-        NodeInfo info = (NodeInfo)(nd1.getUserObject());
-        info.setPCValue(((JTextArea)object).getText().trim());
-      }
-    }
 }
 
-class dfhFocus extends java.awt.event.FocusAdapter {
-  public void focusLost(java.awt.event.FocusEvent event)
-    {
-      Object object = event.getSource();
-      if (object == salutationField) {
-        String val = salutationField.getText().trim();
-        setValue(nd, "salutation", val);
-      }
-       else if (object == firstNameField) {
-        String val = firstNameField.getText().trim();
-        setValue(nd, "givenName", val);
-      }
-      else if (object == lastNameField) {
-        String val = lastNameField.getText().trim().trim();
-        setValue(nd, "surName", val);
-      }
-      else if (object == organizationField) {
-        String val = organizationField.getText().trim();
-        setValue(nd, "organizationName", val);
-      }
-      else if (object == positionNameField) {
-        String val = positionNameField.getText().trim();
-        setValue(nd, "positionName", val);
-      }
-      else if (object == address1Field) {
-        String val = address1Field.getText().trim();
-        setValue(nd, "deliveryPoint", val);
-      }
-      else if (object == cityField) {
-        String val = cityField.getText().trim();
-        setValue(nd, "city", val);
-      }
-      else if (object == stateField) {
-        String val = stateField.getText().trim();
-        setValue(nd, "administrativeArea", val);
-      }
-      else if (object == zipField) {
-        String val = zipField.getText().trim();
-        setValue(nd, "postalCode", val);
-      }
-      else if (object == countryField) {
-        String val = countryField.getText().trim();
-        setValue(nd, "country", val);
-      }
-      else if (object == phoneField) {
-        String val = phoneField.getText().trim();
-        setValue(nd, "phone", val);
-      }
-      else if (object == faxField) {
-        String val = faxField.getText().trim();
-        setValue(nd, "phone", val);	      //NEED to handle attribute to determine voice or fax
-      }
-      else if (object == emailField) {
-        String val = emailField.getText().trim();
-        setValue(nd, "electronicMailAddress", val);
-      }
-      else if (object == urlField) {
-        String val = urlField.getText().trim();
-        setValue(nd, "onlineUrl", val);
-      }
-    }
-
-  public void focusGained(java.awt.event.FocusEvent event)
-    {
-      Object object = event.getSource();
-      if (object instanceof JTextArea) {
-      }
-    }
-}
-
-}
