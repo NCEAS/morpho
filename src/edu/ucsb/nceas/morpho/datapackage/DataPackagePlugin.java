@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-04 21:58:23 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2002-10-07 20:02:06 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -185,9 +187,17 @@ public class DataPackagePlugin
     paste.setAcceleratorKeyString(PASTEKEY);
     paste.setMenuItemPosition(2);
     paste.setMenu("Edit", EDITMENUPOSITION);
+   /*
     paste.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                       true, GUIAction.EVENT_LOCAL);
+   */                   
+    paste.setEnabledOnStateChange(
+                      StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE, 
+                      true, GUIAction.EVENT_LOCAL);
+    paste.setEnabledOnStateChange(
+                      StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE, 
+                      false, GUIAction.EVENT_LOCAL);
     paste.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
@@ -440,10 +450,30 @@ public class DataPackagePlugin
     final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
     
 
-    MorphoFrame packageWindow = UIController.getInstance().addWindow(
+    final MorphoFrame packageWindow = UIController.getInstance().addWindow(
                 "Data Package");
     packageWindow.setBusy(true);
     packageWindow.setVisible(true);
+    
+    
+    packageWindow.addWindowListener(
+                new WindowAdapter() {
+                public void windowActivated(WindowEvent e) 
+                {
+                    Log.debug(50, "Processing window activated event");
+                    if (hasClipboardData(packageWindow)){
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow, 
+                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+                    }
+                    else {
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow, 
+                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));                    
+                }
+                } 
+            });
+
     
     // Stop butterfly flapping for old window.
     //packageWindow.setBusy(true);
@@ -693,4 +723,25 @@ public class DataPackagePlugin
     }//if
     return data;
   }//getDataPackageFromMorphoFrame
+  
+  private boolean hasClipboardData(Component c) {
+    boolean ret = true;
+ 		Transferable t = c.getToolkit().getSystemClipboard().getContents(null);   
+    if (t==null) {
+      ret = false;
+    }
+    else{
+      String sel = "";
+      try{
+        sel = (String)t.getTransferData(DataFlavor.stringFlavor);
+      }
+      catch (Exception e) {
+        Log.debug(40, "Problem getting data from clipboard");
+        ret = false;
+      }
+      if ((sel==null)||(sel.length()<1)) ret = false;
+    }
+    return ret;
+  }
+  
 }//DataPackagePlugin

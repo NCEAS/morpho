@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 16:11:13 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-07 20:02:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,9 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -175,6 +178,11 @@ public class TableCopyCommand implements Command
 		if (!isEmpty) {
 			tbl.getToolkit().getSystemClipboard().setContents(
 					new StringSelection(sel.toString()), null);
+          
+      StateChangeMonitor.getInstance().notifyStateChange(
+          new StateChangeEvent(tbl, 
+          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+    
 		}
   }//insert row
 
