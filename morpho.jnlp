@@ -18,7 +18,8 @@
           <j2se version="1.3"/> 
           <jar href="morpho.jar"/> 
           <jar href="morpho-config.jar"/> 
-          <jar href="xerces.jar"/> 
+          <jar href="xercesImpl.jar"/> 
+          <jar href="xmlParserAPIs.jar"/> 
           <jar href="xalan.jar"/> 
           <jar href="jlfgr-1_0.jar"/> 
           <jar href="httpclient.jar"/> 
