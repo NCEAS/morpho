@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-24 18:46:48 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2002-10-24 21:58:42 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -242,10 +242,10 @@ public class DataPackage implements XMLFactoryInterface
     FileReader reader = null;
     try {
         reader = new FileReader(openAsFile(identifier));
-    } catch (IOException ioe) {
+    } catch (Exception ioe) {
         Log.debug(12, "Error instantiating reader "+ioe.getMessage());
         DocumentNotFoundException dnfe =  new DocumentNotFoundException(
-         "DataPackage.openAsReader() - Nested IOException " + ioe);
+         "DataPackage.openAsReader() - Nested Exception: " + ioe);
         dnfe.fillInStackTrace();
         throw dnfe;
     }
@@ -1297,6 +1297,7 @@ public class DataPackage implements XMLFactoryInterface
             
             XMLTransformer transformer = XMLTransformer.getInstance();
             // add some property for style sheet
+            transformer.removeAllTransformerProperties();
             transformer.
                 addTransformerProperty("href_path_extension", HTMLEXTENSION);
             transformer.addTransformerProperty("package_id", id);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 06:14:11 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-10-24 21:58:42 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -413,7 +413,29 @@ public class XMLTransformer
     public void addTransformerProperty(String key, String value) 
     {
         if (key==null || value==null) return;
+        if (this.transformerProperties.contains(key)) return;
         this.transformerProperties.setProperty(key, value);
+    }
+
+    /**
+     *  removes a name/value pair from the <code>Properties</code> object   
+     *  containing the properties to be set for the transformer 
+     *
+     *  @param key        the key of the entry to be removed
+     */
+    public void removeTransformerProperty(String key) 
+    {
+        if (key==null) return;
+        this.transformerProperties.remove(key);
+    }
+
+    /**
+     *  removes <em>all</em> name/value pairs from the <code>Properties</code>    
+     *  object containing the properties to be set for the transformer 
+     */
+    public void removeAllTransformerProperties() 
+    {
+        this.transformerProperties.clear();
     }
 
     /**

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-09 18:01:40 $'
- * '$Revision: 1.26 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-24 21:58:42 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class MetaDisplay implements MetaDisplayInterface,
     private final   ConfigXML               config;
     private         XMLFactoryInterface     factory;
     private         String                  identifier;
-    private         StringBuffer            pathBuff;
+    private         String                  FULL_STYLE_PATH;
     
     /**
      *  constructor
@@ -90,11 +90,9 @@ public class MetaDisplay implements MetaDisplayInterface,
         listenerList                = new Vector();
         editingCompletelistenerList = new Vector();
         history                     = new History();
-        pathBuff                    = new StringBuffer();
         ui                          = new MetaDisplayUI(this);
         config                      = Morpho.getConfiguration();
         transformer                 = XMLTransformer.getInstance();
-        transformer.addTransformerProperty("stylePath", getFullStylePath());
     }
 
     
@@ -506,6 +504,10 @@ public class MetaDisplay implements MetaDisplayInterface,
 	//is called by displayPrevious() )
 	private void displayThisID(String ID) throws DocumentNotFoundException
 	{
+      // first reset XSL parameters in case they've been reset by an "export":
+      transformer.removeAllTransformerProperties();
+      transformer.addTransformerProperty("stylePath", getFullStylePath());
+
 	    Reader xmlReader = null;
 	    try  {
 	        setIdentifier(ID);
@@ -590,20 +592,24 @@ public class MetaDisplay implements MetaDisplayInterface,
     
     //returns string representation of full path to style directory in 
     //Morpho-Config.jar.  All names are in config.xml file
+    //NOTE - checks config & install directory only once, then re-uses 
+    //same values!
     private String getFullStylePath() 
     {
-        pathBuff.delete(0,pathBuff.length());
-        pathBuff.append("jar:file:");
-        File current = new File(""); 
-        String root = current.getAbsolutePath();
-        pathBuff.append(root);
-        pathBuff.append("/");
-        pathBuff.append(config.get(CONFIG_KEY_MCONFJAR_LOC, 0));
-        pathBuff.append("!/");
-        pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
-        Log.debug(50,"MetaDisplay.getFullStylePath() returning: "
-                                                          +pathBuff.toString());
-        return pathBuff.toString();
+        if (FULL_STYLE_PATH==null) {
+            StringBuffer pathBuff = new StringBuffer();
+            pathBuff.append("jar:file:");
+            pathBuff.append(new File("").getAbsolutePath());
+            pathBuff.append("/");
+            pathBuff.append(config.get(CONFIG_KEY_MCONFJAR_LOC, 0));
+            pathBuff.append("!/");
+            pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+            Log.debug(50,"MetaDisplay.getFullStylePath() returning: "
+                                                              +pathBuff.toString());
+            FULL_STYLE_PATH = pathBuff.toString();
+            pathBuff = null;
+        }
+        return FULL_STYLE_PATH;
     }
 }
 
