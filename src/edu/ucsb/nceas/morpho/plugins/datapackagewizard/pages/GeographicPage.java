@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,39 +28,50 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-
-import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.query.LiveMapPanel;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.util.Iterator;
-import javax.swing.*;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
-import javax.swing.event.ListSelectionListener;
+import java.awt.event.FocusAdapter;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import javax.swing.event.ListSelectionListener;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 
 public class GeographicPage extends AbstractUIPage {
@@ -335,7 +346,9 @@ public class GeographicPage extends AbstractUIPage {
   }
 
   /**
-   *  gets info for location list from file
+   * gets info for location list from file
+   *
+   * @return Vector
    */
   private Vector getLocationNames() {
     try{
@@ -389,8 +402,17 @@ public class GeographicPage extends AbstractUIPage {
     return res;
   }
 
+
   /**
-   *  Create a dom subtree with a new location
+   * Create a dom subtree with a new location
+   *
+   * @param name String
+   * @param desc String
+   * @param north double
+   * @param west double
+   * @param south double
+   * @param east double
+   * @return Node
    */
   private Node createNewLocation( String name, String desc, double north, double west,
                           double south, double east) {
@@ -432,8 +454,16 @@ public class GeographicPage extends AbstractUIPage {
     return head;
   }
 
+
   /**
-   *  adds a location to the config file
+   * adds a location to the config file
+   *
+   * @param name String
+   * @param desc String
+   * @param north double
+   * @param west double
+   * @param south double
+   * @param east double
    */
   public void addLocation( String name, String desc, double north, double west,
                           double south, double east) {
@@ -552,7 +582,7 @@ public class GeographicPage extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap map, String _xPathRoot) {
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
@@ -561,12 +591,17 @@ public class GeographicPage extends AbstractUIPage {
     double s = -89.0;
     double e = 179.0;
     String name = (String)map.get(xPathRoot + "/geographicDescription[1]");
-    if(name != null) map = stripIndexOneFromMapKeys(map);
+    if(name != null) {
+      map = stripIndexOneFromMapKeys(map);
+      map.remove(xPathRoot + "/geographicDescription[1]");
+    }
 
     name = (String)map.get(xPathRoot + "/geographicDescription");
     if (name!=null) {
       covDescField.setText(name);
+      map.remove(xPathRoot + "/geographicDescription");
     }
+
 
     name = (String)map.get(xPathRoot + "/boundingCoordinates/northBoundingCoordinate");
     if (name!=null) {
@@ -574,31 +609,49 @@ public class GeographicPage extends AbstractUIPage {
       if (N!=null) {
         n = N.doubleValue();
       }
+      map.remove(xPathRoot + "/boundingCoordinates/northBoundingCoordinate");
     }
+
     name = (String)map.get(xPathRoot + "/boundingCoordinates/westBoundingCoordinate");
     if (name!=null) {
       Double W = new Double(name);
       if (W!=null) {
         w = W.doubleValue();
       }
+      map.remove(xPathRoot + "/boundingCoordinates/westBoundingCoordinate");
     }
+
     name = (String)map.get(xPathRoot + "/boundingCoordinates/southBoundingCoordinate");
     if (name!=null) {
       Double S = new Double(name);
       if (S!=null) {
         s = S.doubleValue();
       }
+      map.remove(xPathRoot + "/boundingCoordinates/southBoundingCoordinate");
     }
+
     name = (String)map.get(xPathRoot + "/boundingCoordinates/eastBoundingCoordinate");
     if (name!=null) {
       Double E = new Double(name);
       if (E!=null) {
         e = E.doubleValue();
       }
+      map.remove(xPathRoot + "/boundingCoordinates/eastBoundingCoordinate");
     }
+
     if ((e==w)&&(n==s)) lmp.setTool("PT");
     lmp.setBoundingBox(n, w, s, e);
 
+    //if anything left in map, then it included stuff we can't handle...
+     boolean returnVal = map.isEmpty();
+
+     if (!returnVal) {
+
+       Log.debug(20,
+                 "GeographicPage.setPageData returning FALSE! Map still contains:"
+                 + map);
+     }
+     return returnVal;
   }
 
   private JLabel getLabel(String text) {
@@ -634,8 +687,10 @@ public class GeographicPage extends AbstractUIPage {
   }
 
 
-    /**
-   *  This is a static main method configured to test the class
+  /**
+   * This is a static main method configured to test the class
+   *
+   * @param args String[]
    */
   static public void main(String args[]) {
 

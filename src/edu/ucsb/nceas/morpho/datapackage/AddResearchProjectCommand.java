@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 20:45:39 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,12 +109,23 @@ public class AddResearchProjectCommand implements Command {
     }
     Log.debug(45, "sending previous data to projectPage -\n\n" + existingValuesMap);
 
-    projectPage.setPageData(existingValuesMap, PROJECT_SUBTREE_NODENAME);
+    boolean pageCanHandleAllData
+        = projectPage.setPageData(existingValuesMap, PROJECT_SUBTREE_NODENAME);
 
-    ModalDialog dialog = new ModalDialog(projectPage,
-                            UIController.getInstance().getCurrentActiveWindow(),
-                            UISettings.POPUPDIALOG_WIDTH,
-                            UISettings.POPUPDIALOG_HEIGHT);
+    ModalDialog dialog = null;
+    if (pageCanHandleAllData) {
+
+      dialog = new ModalDialog(projectPage,
+                               UIController.getInstance().
+                               getCurrentActiveWindow(),
+                               UISettings.POPUPDIALOG_WIDTH,
+                               UISettings.POPUPDIALOG_HEIGHT);
+    } else {
+
+      UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+          DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+      return false;
+    }
 
     return (dialog.USER_RESPONSE==ModalDialog.OK_OPTION);
   }

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-20 02:09:44 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -331,6 +331,6 @@ public class Temporal extends AbstractUIPage{
      */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap data, String _xPathRoot) {}
+    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
 }
 

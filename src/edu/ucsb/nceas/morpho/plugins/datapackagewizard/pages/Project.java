@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 20:02:17 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -346,7 +346,7 @@ public class Project extends AbstractUIPage {
    * @param rootXPath the root xpath to prepend to all the xpaths returned by
    *   this method
    *
-   * @return   data the Map object that contains all the
+   * @return   map the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap returnMap = new OrderedMap();
@@ -410,7 +410,7 @@ public class Project extends AbstractUIPage {
    * gets the Map object that contains all the key/value paired settings for
    * this particular wizard page
    *
-   * @return data the Map object that contains all the key/value paired
+   * @return map the Map object that contains all the key/value paired
    *   settings for this particular wizard page
    */
   public OrderedMap getPageData() {
@@ -457,21 +457,22 @@ public class Project extends AbstractUIPage {
 
 
 
-  public void setPageData(OrderedMap data, String _xPathRoot) {
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
     JCheckBox checkBox = ((JCheckBox)(checkBoxPanel.getComponent(0)));
 
-    if (data==null || data.isEmpty()) {
+    if (map==null || map.isEmpty()) {
 
       checkBox.setSelected(false);
       this.resetBlankData();
-      return;
+      return true;
     }
     checkBox.setSelected(true);
 
-    Iterator keyIt = data.keySet().iterator();
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
     Object nextXPathObj = null;
     String nextXPath = null;
     Object nextValObj = null;
@@ -485,7 +486,7 @@ public class Project extends AbstractUIPage {
       if (nextXPathObj == null)continue;
       nextXPath = (String)nextXPathObj;
 
-      nextValObj = data.get(nextXPathObj);
+      nextValObj = map.get(nextXPathObj);
       nextVal = (nextValObj == null) ? "" : ((String)nextValObj).trim();
 
       Log.debug(45, "Project:  nextXPath = " + nextXPath
@@ -502,16 +503,19 @@ public class Project extends AbstractUIPage {
       if (nextXPath.startsWith(TITLE_REL_XPATH)) {
 
         titleField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
 
       } else if (nextXPath.startsWith(FUNDING_REL_XPATH)) {
 
         fundingField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
 
       } else if (nextXPath.startsWith(PERSONNEL_REL_XPATH)) {
 
         Log.debug(45,">>>>>>>>>> adding to personnelList: nextXPathObj="
                   +nextXPathObj+"; nextValObj="+nextValObj);
         addToPersonnel(nextXPathObj, nextValObj, personnelList);
+        toDeleteList.add(nextXPathObj);
       }
     }
 
@@ -521,6 +525,7 @@ public class Project extends AbstractUIPage {
     int partyPredicate = 1;
 
     partiesList.removeAllRows();
+    boolean partyRetVal = true;
 
     while (persIt.hasNext()) {
 
@@ -534,14 +539,36 @@ public class Project extends AbstractUIPage {
 
       nextParty.setRole(PartyPage.PERSONNEL);
 
-      nextParty.setPageData(nextPersonnelMap, this.xPathRoot
-                            + PERSONNEL_REL_XPATH + (partyPredicate++) + "]/");
+      boolean checkParty = nextParty.setPageData(nextPersonnelMap,
+                                                 this.xPathRoot
+                                                 + PERSONNEL_REL_XPATH
+                                                 + (partyPredicate++) + "]/");
 
+      if (!checkParty) partyRetVal = false;
       List newRow = nextParty.getSurrogate();
       newRow.add(nextParty);
 
       partiesList.addRow(newRow);
     }
+    //check party return valuse...
+    if (!partyRetVal) {
+
+      Log.debug(20, "Project.setPageData - Party sub-class returned FALSE");
+    }
+
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) map.remove(dlIt.next());
+
+    //if anything left in map, then it included stuff we can't handle...
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+
+      Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
+                + map);
+    }
+    return (returnVal && partyRetVal);
   }
 
 
@@ -588,7 +615,6 @@ public class Project extends AbstractUIPage {
       Log.debug(15,"**** ERROR - Project.addToPersonnel() - predicate > personnelList.size()");
     }
   }
-
 }
 
 

@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: brooke $'
-*     '$Date: 2004-03-18 02:21:41 $'
-* '$Revision: 1.25 $'
+*     '$Date: 2004-03-24 02:14:18 $'
+* '$Revision: 1.26 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -809,12 +809,22 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     // first set the free text checkbox if needed
 
     String freeText = (String)map.get(xPathRoot + "/textDomain[1]/definition");
-    if(freeText == null)
+
+    if(freeText == null) {
       freeText = (String)map.get(xPathRoot + "/textDomain/definition");
-    if(freeText != null && freeText.equals("Free text (unrestricted)"))
-      enumDefinitionFreeTextCheckBox.setSelected(true);
-    else
-      enumDefinitionFreeTextCheckBox.setSelected(false);
+    } else {
+      map.remove(xPathRoot + "/textDomain[1]/definition");
+    }
+
+    if(freeText!=null) {
+
+      if (freeText.equals("Free text (unrestricted)")) {
+        enumDefinitionFreeTextCheckBox.setSelected(true);
+      } else {
+        enumDefinitionFreeTextCheckBox.setSelected(false);
+      }
+      map.remove(xPathRoot + "/textDomain/definition");
+    }
 
     // check for code imports
 
@@ -830,6 +840,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
       codeLocationPickList.setSelectedItem(codeLocationPicklistVals[1]);
       codeLocationValue = CODES_IMPORTED;
       domainPickList.setSelectedItem(this.textEnumPicklistVals[0]);
+
+      removeAllKeysStartingWith(xPathRoot + "/enumeratedDomain/entityCodeList", map);
+
       return;
 
     } else { // codes are defined here
@@ -847,25 +860,55 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         codeLocationValue = CODES_DEFINED_HERE;
         codeLocationPickList.setSelectedItem(codeLocationPicklistVals[0]);
         domainPickList.setSelectedItem(this.textEnumPicklistVals[0]);
+
         return;
       }
     }
 
     String defn = (String)map.get(xPathRoot + "/textDomain[1]/definition");
-    if(defn == null)
+
+    if (defn == null) {
       defn = (String)map.get(xPathRoot + "/textDomain/definition");
-    if(defn != null) {
+    } else {
+      map.remove(xPathRoot + "/textDomain[1]/definition");
+    }
+
+    if (defn != null) {
       textDefinitionField.setText(defn);
       domainPickList.setSelectedItem(this.textEnumPicklistVals[1]);
+      defn = (String)map.get(xPathRoot + "/textDomain/definition");
+       if(defn!=null) map.remove(xPathRoot + "/textDomain/definition");
     }
     setTextListData(xPathRoot + "/textDomain[1]", map);
     setTextListData(xPathRoot + "/textDomain", map);
+
     String source = (String)map.get(xPathRoot + "/textDomain[1]/source");
-    if(source == null)
+
+    if (source == null) {
       source = (String)map.get(xPathRoot + "/textDomain/source");
-    if(source != null)
+    } else {
+      map.remove(xPathRoot + "/textDomain[1]/source");
+    }
+
+    if (source != null) {
       textSourceField.setText(source);
+      map.remove(xPathRoot + "/textDomain/source");
+    }
     return;
+  }
+
+
+
+
+  private void removeAllKeysStartingWith(String startingString, OrderedMap map) {
+
+    Iterator keysIt = map.keySet().iterator();
+    while (keysIt.hasNext()) {
+
+      String xpath = (String)keysIt.next();
+
+      if (xpath.startsWith(startingString)) map.remove(xpath);
+    }
   }
 
 
@@ -884,17 +927,24 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     while(true) {
       List row = new ArrayList();
       String code = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/code");
+      if (code!=null) map.remove(xPathRoot+"/codeDefinition[" +index+ "]/code");
 
-      if(index == 1 && code == null)
+      if(index == 1 && code == null) {
         code = (String)map.get(xPathRoot+"/codeDefinition/code");
+        if (code!=null) map.remove(xPathRoot+"/codeDefinition/code");
+      }
 
-      if(code == null)
-        break;
+      if(code == null) break;
+
       codePresent = true;
       row.add(code);
       String defn = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/definition");
-      if(index == 1 && defn == null)
-        defn = (String)map.get(xPathRoot+"/codeDefinition/definition");
+      if (defn!=null) map.remove(xPathRoot+"/codeDefinition[" +index+ "]/definition");
+
+      if(index == 1 && defn == null) {
+        defn = (String)map.get(xPathRoot + "/codeDefinition/definition");
+        if (defn!=null) map.remove(xPathRoot+"/codeDefinition/definition");
+      }
       row.add(defn);
       enumDefinitionList.addRow(row);
       index++;
@@ -907,11 +957,16 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     while(true) {
       List row = new ArrayList();
       String pattern = (String)map.get(xPathRoot+"/pattern[" +index+ "]");
-      if(index == 1 && pattern == null)
-        pattern = (String)map.get(xPathRoot+"/pattern");
 
-      if(pattern == null)
-        break;
+      if (pattern!=null) map.remove(xPathRoot+"/pattern[" +index+ "]");
+
+      if(index == 1 && pattern == null) {
+        pattern = (String)map.get(xPathRoot+"/pattern");
+        if (pattern!=null) map.remove(xPathRoot+"/pattern");
+      }
+
+      if(pattern == null) break;
+
       row.add(pattern);
       textPatternsList.addRow(row);
       index++;
@@ -1035,8 +1090,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
      */
     public void setPageData(String xPath, OrderedMap map) {
 
-      if(codeImportPanel == null)
-        codeImportPanel = new CodeDefnPanel();
+      if(codeImportPanel == null) codeImportPanel = new CodeDefnPanel();
       codeImportPanel.setPanelData(xPath, map);
       String name = codeImportPanel.getTableName();
       if( name == null) { // to be imported later

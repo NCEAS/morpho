@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-20 02:12:22 $'
- * '$Revision: 1.5 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -284,5 +284,5 @@ public class MethodsPage
     return pageNumber;
   }
 
-  public void setPageData(OrderedMap data, String _xPathRoot) {}
+    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
 }

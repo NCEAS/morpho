@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: brooke $'
-*     '$Date: 2004-03-20 00:44:55 $'
-* '$Revision: 1.10 $'
+*     '$Date: 2004-03-24 02:14:18 $'
+* '$Revision: 1.11 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -478,7 +478,7 @@ public class Taxonomic extends AbstractUIPage {
    *  @param   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  public void setPageData(OrderedMap data, String _xPathRoot) {}
+    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
 
   //////////////////////////////////////////////////////
   //InputVerifiers for the TextField in the CustomList

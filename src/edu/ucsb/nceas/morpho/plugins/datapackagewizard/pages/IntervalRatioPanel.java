@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-19 20:31:19 $'
- * '$Revision: 1.30 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,17 +35,16 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Arrays;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -58,14 +57,10 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JDialog;
 import javax.swing.JTextField;
-
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import org.apache.xerces.dom.DOMImplementationImpl;
 
 public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI {
 
@@ -101,8 +96,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
                     };
 
   private JButton addButton, delButton;
-	
-	private AbstractUIPage parentPage;
+
+  private AbstractUIPage parentPage;
 //////////////////////////////////////////////////
 //
 //from eml-entity.xsd:
@@ -146,8 +141,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
    */
   public IntervalRatioPanel(AbstractUIPage page) {
 
-		super();
-		this.parentPage = page;
+    super();
+    this.parentPage = page;
     init();
   }
 
@@ -166,14 +161,14 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     //this.setMaximumSize(dims);
 
     ////////////////////////
-		unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     unitsPickList = new UnitsPickList(parentPage, unitsPickListLabel);
-		/*
+    /*
     JPanel pickListPanel = WidgetFactory.makePanel();
-    
+
     pickListPanel.add(unitsPickListLabel);
     pickListPanel.add(unitsPickList);
-		*/
+    */
     this.add(Box.createGlue());
     this.add(unitsPickList);
 
@@ -564,86 +559,112 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
    *
    **/
 
-   public void setPanelData( String xPathRoot, OrderedMap map) {
+  public void setPanelData(String xPathRoot, OrderedMap map) {
 
-     String unit = (String)map.get( xPathRoot + "/unit/standardUnit");
+    String unit = (String)map.get(xPathRoot + "/unit/standardUnit");
 
-     if(unit != null && !unit.equals("")) {
-       String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
-       int totUnitTypes = unitTypesArray.length;
-       String[] unitsOfThisType = null;
+    if (unit != null && !unit.equals("")) {
+      String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
+      int totUnitTypes = unitTypesArray.length;
+      String[] unitsOfThisType = null;
 
-       for (int i=0; i < totUnitTypes; i++) {
+      for (int i = 0; i < totUnitTypes; i++) {
 
-         unitsOfThisType
-         = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
-         int pos = -1;
-         if((pos = isPresentInList(unit, unitsOfThisType)) >= 0) {
-           unitsPickList.setSelectedUnit(i+1, pos);
-           break;
-         }
-       }
-     }
+        unitsOfThisType
+            = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
+        int pos = -1;
+        if ((pos = isPresentInList(unit, unitsOfThisType)) >= 0) {
+          unitsPickList.setSelectedUnit(i + 1, pos);
+          break;
+        }
+      }
+      map.remove(xPathRoot + "/unit/standardUnit");
+    }
 
-     String precision = (String)map.get(  xPathRoot + "/precision");
-     if(precision != null)
-       precisionField.setText(precision);
+    String precision = (String)map.get(xPathRoot + "/precision");
+    if (precision != null) {
+      precisionField.setText(precision);
+      map.remove(xPathRoot + "/precision");
+    }
 
-     String type = (String)map.get( xPathRoot + "/numericDomain/numberType");
-     if(type != null)
-       numberTypePickList.setSelectedItem(type);
+    String type = (String)map.get(xPathRoot + "/numericDomain/numberType");
+    if (type != null) {
+      numberTypePickList.setSelectedItem(type);
+      map.remove(xPathRoot + "/numericDomain/numberType");
+    }
 
-     int index = 1;
+    int index = 1;
 
-     while(true) {
-       List row = new ArrayList();
-       Object min = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum");
-       if(index ==1 && min == null)
-         min = map.get(xPathRoot + "/numericDomain/bounds/minimum");
-         if(min != null) {
-           row.add((String)min);
-           Object  excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
-           if(index == 1 && excl == null)
-             excl = map.get(xPathRoot + "/numericDomain/bounds/minimum/@exclusive");
+    while (true) {
+      List row = new ArrayList();
+      Object min = map.get(xPathRoot+"/numericDomain/bounds["+index+"]/minimum");
+      if (min!=null) map.remove(xPathRoot+"/numericDomain/bounds["+index+"]/minimum");
 
-           if(excl != null && ((String)excl).equals("true"))
-             row.add("<");
-           else
-             row.add("<=");
+      if (index == 1 && min == null) {
+        min = map.get(xPathRoot + "/numericDomain/bounds/minimum");
+      }
+      if (min != null) {
+        row.add((String)min);
+        map.remove(xPathRoot + "/numericDomain/bounds/minimum");
 
-         }
-         else {
-           row.add("");
-           row.add("<");
-         }
-         row.add("value");
-         Object max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
-         if(index ==1 && max == null)
-           max = map.get(xPathRoot + "/numericDomain/bounds/maximum");
-           if(max != null) {
-             Object excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
-             if(index == 1 && excl == null)
-               excl = map.get(xPathRoot + "/numericDomain/bounds/maximum/@exclusive");
-             if(excl != null && ((String)excl).equals("true"))
-               row.add("<");
-             else
-               row.add("<=");
+        Object excl = map.get(xPathRoot + "/numericDomain/bounds[" + index
+                              + "]/minimum/@exclusive");
+        if (excl != null) {
+          map.remove(xPathRoot + "/numericDomain/bounds["
+                                    + index + "]/minimum/@exclusive");
+        }
+        if (index == 1 && excl == null) {
+          excl = map.get(xPathRoot + "/numericDomain/bounds/minimum/@exclusive");
+        }
 
-             row.add((String)max);
-           }
-           else {
-             row.add("<");
-             row.add("");
-           }
-           if(min == null && max == null)
-             break;
-           else
-             boundsList.addRow(row);
-           index++;
-     }
-     boundsList.fireEditingStopped();
-     return;
-   }
+        if (excl != null) {
+
+          map.remove(xPathRoot + "/numericDomain/bounds/minimum/@exclusive");
+
+          if (((String)excl).equals("true"))row.add("<");
+          else row.add("<=");
+        }
+      } else {
+
+        row.add("");
+        row.add("<");
+      }
+      row.add("value");
+      Object max = (String)map.get(xPathRoot + "/numericDomain/bounds[" + index
+                                   + "]/maximum");
+      if (max!=null) map.remove(xPathRoot + "/numericDomain/bounds[" + index
+                                   + "]/maximum");
+
+      if (index == 1 && max == null)
+        max = map.get(xPathRoot + "/numericDomain/bounds/maximum");
+      if (max != null) {
+        Object excl = map.get(xPathRoot + "/numericDomain/bounds[" + index
+                              + "]/maximum/@exclusive");
+        if (excl!=null) map.remove(xPathRoot + "/numericDomain/bounds[" + index
+                              + "]/maximum/@exclusive");
+
+        if (index == 1 && excl == null)
+          excl = map.get(xPathRoot + "/numericDomain/bounds/maximum/@exclusive");
+        if (excl != null) {
+
+          map.remove(xPathRoot + "/numericDomain/bounds/maximum/@exclusive");
+
+          if (((String)excl).equals("true")) row.add("<");
+          else row.add("<=");
+        }
+        row.add((String)max);
+        map.remove(xPathRoot + "/numericDomain/bounds/maximum");
+      } else {
+        row.add("<");
+        row.add("");
+      }
+      if (min == null && max == null) break;
+      else boundsList.addRow(row);
+      index++;
+    }
+    boundsList.fireEditingStopped();
+    return;
+  }
 
    private int isPresentInList(String unitType, String[] unitsOfThisType) {
 
@@ -675,28 +696,28 @@ class UnitsPickList extends JPanel {
   private final JComboBox unitTypesList  = new JComboBox();
   private final JComboBox unitsList      = new JComboBox();
   private final String UNITLIST_DEFAULT  = "- Select a Unit Type -";
-	private JButton newUnit;
-	private JLabel unitTypeLabel;
-	private JPanel parentPanel;
-	private CustomUnitPanel customPanel = null;
-	private JDialog customUnitDialog = null;
-	
-	private UnitTypesListItem[] unitTypesListItems;
-	
-	public static final int CUSTOM_UNIT_PANEL_WIDTH = 700;
+  private JButton newUnit;
+  private JLabel unitTypeLabel;
+  private JPanel parentPanel;
+  private CustomUnitPanel customPanel = null;
+  private JDialog customUnitDialog = null;
+
+  private UnitTypesListItem[] unitTypesListItems;
+
+  public static final int CUSTOM_UNIT_PANEL_WIDTH = 700;
   public static final int CUSTOM_UNIT_PANEL_HEIGHT = 500;
-	
+
   public UnitsPickList(JPanel parent, JLabel unitTypeLabel) {
-		
-		this.parentPanel = parent;
-		this.unitTypeLabel = unitTypeLabel;
+
+    this.parentPanel = parent;
+    this.unitTypeLabel = unitTypeLabel;
     init();
   }
 
 
   private void init() {
 
-		unitTypesListItems = getUnitTypesArray();
+    unitTypesListItems = getUnitTypesArray();
     unitTypesList.setModel(new DefaultComboBoxModel(unitTypesListItems));
 
     unitTypesList.addItemListener(
@@ -728,7 +749,7 @@ class UnitsPickList extends JPanel {
     unitTypesList.setSelectedIndex(0);
 
     JPanel unitTypesPanel = WidgetFactory.makePanel();
-		unitTypesPanel.add(unitTypeLabel);
+    unitTypesPanel.add(unitTypeLabel);
     unitTypesPanel.add(unitTypesList);
     /*unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
     unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
@@ -746,42 +767,42 @@ class UnitsPickList extends JPanel {
       });
     setUI(unitsList);
 
-		newUnit = new JButton("Define new unit");
-		newUnit.addActionListener( new ActionListener() {
-			
-			public void actionPerformed(ActionEvent ae) {
-				
-				ActionListener okAction = new ActionListener() {
-					public void actionPerformed(ActionEvent ae) {
-						customUnitOKAction();
-					}
-				};
-				ActionListener cancelAction = new ActionListener() {
-					public void actionPerformed(ActionEvent ae) {
-						customUnitDialog.setVisible(false);
-					}
-				};
-				customPanel = new CustomUnitPanel(parentPanel);
-				customUnitDialog = WidgetFactory.makeContainerDialog(customPanel, okAction, cancelAction);
-				customUnitDialog.setTitle("New Unit Definition");
-				Point loc = parentPanel.getLocationOnScreen();
-				int wd = parentPanel.getWidth();
-				int ht = parentPanel.getHeight();
-				int dwd = CUSTOM_UNIT_PANEL_WIDTH;
-				int dht = CUSTOM_UNIT_PANEL_HEIGHT;
-				customUnitDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
-				customUnitDialog.setSize(dwd, dht);
-				customUnitDialog.setVisible(true);
-			}
-		});
-		
+    newUnit = new JButton("Define new unit");
+    newUnit.addActionListener( new ActionListener() {
+
+      public void actionPerformed(ActionEvent ae) {
+
+        ActionListener okAction = new ActionListener() {
+          public void actionPerformed(ActionEvent ae) {
+            customUnitOKAction();
+          }
+        };
+        ActionListener cancelAction = new ActionListener() {
+          public void actionPerformed(ActionEvent ae) {
+            customUnitDialog.setVisible(false);
+          }
+        };
+        customPanel = new CustomUnitPanel(parentPanel);
+        customUnitDialog = WidgetFactory.makeContainerDialog(customPanel, okAction, cancelAction);
+        customUnitDialog.setTitle("New Unit Definition");
+        Point loc = parentPanel.getLocationOnScreen();
+        int wd = parentPanel.getWidth();
+        int ht = parentPanel.getHeight();
+        int dwd = CUSTOM_UNIT_PANEL_WIDTH;
+        int dht = CUSTOM_UNIT_PANEL_HEIGHT;
+        customUnitDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
+        customUnitDialog.setSize(dwd, dht);
+        customUnitDialog.setVisible(true);
+      }
+    });
+
     JPanel unitsPanel = WidgetFactory.makePanel();
     unitsPanel.add(unitsList);
     unitsPanel.add(WidgetFactory.makeDefaultSpacer());
     unitsPanel.add(newUnit);
     unitsPanel.add(WidgetFactory.makeDefaultSpacer());
-		unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-		
+    unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
     ///////////////////////
     this.setLayout(new GridLayout(1,2));
     this.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
@@ -791,80 +812,80 @@ class UnitsPickList extends JPanel {
     unitsList.setEnabled(false);
   }
 
-	private void customUnitOKAction() {
-		
-		if(customPanel == null) {
-			customUnitDialog.setVisible(false);
-			return;
-		}
-		
-		if(!customPanel.validateUserInput())
-			return;
-		
-		OrderedMap map = customPanel.getPanelData("");
-			
-		String type = getUnitTypeOfNewUnit(map);
-		String[] newUnits = getNewUnits(map);
-		String stdType = WizardSettings.getStandardFormOfUnitType(type);
-		if(isNewType(map)) {
-			
-			UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
-			UnitTypesListItem[] newArray = new UnitTypesListItem[unitTypesListItems.length + 1];
-			WizardSettings.insertObjectIntoArray(unitTypesListItems, item, newArray);
-			unitTypesListItems = newArray;
-			unitTypesList.setModel(new DefaultComboBoxModel(unitTypesListItems));
-			
-		} else {
-			
-			// add units to existing type
-			UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
-			int idx = Arrays.binarySearch(unitTypesListItems, item);
-			if(idx >=0 && idx < unitTypesListItems.length)
-				unitTypesListItems[idx].addUnits(newUnits);
-		}
-		
-		customUnitDialog.setVisible(false);
-		return;
-	}
-	
-	private String getUnitTypeOfNewUnit( OrderedMap map) {
-		
-		String t = (String) map.get("/unitList/unitType[1]/@name");
-		if(t != null)
-			return t;
-		return (String) map.get("/unitList/unit[1]/@unitType");
-		
-	}
-	
-	private String[] getNewUnits(OrderedMap map) {
-		
-		Object o1 = map.get("/unitList/unit[1]/@name");
-		String u1 = (String)o1;
-		
-		Object o2 = map.get("/unitList/unit[2]/@name");
-		if(o2 == null) {
-			// only 1 unit
-			String[] ret = new String[1];
-			ret[0] = u1;
-			return ret;
-		}
-		String[] ret = new String[2];
-		ret[0] = u1;
-		ret[1] = (String)o2;
-		return ret;
-		
-	}
-	
-	private boolean isNewType(OrderedMap map) {
-		
-		String t = (String) map.get("/unitList/unitType[1]/@name");
-		if(t != null)
-			return true;
-		else
-			return false;
-		
-		
-	}
+  private void customUnitOKAction() {
+
+    if(customPanel == null) {
+      customUnitDialog.setVisible(false);
+      return;
+    }
+
+    if(!customPanel.validateUserInput())
+      return;
+
+    OrderedMap map = customPanel.getPanelData("");
+
+    String type = getUnitTypeOfNewUnit(map);
+    String[] newUnits = getNewUnits(map);
+    String stdType = WizardSettings.getStandardFormOfUnitType(type);
+    if(isNewType(map)) {
+
+      UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
+      UnitTypesListItem[] newArray = new UnitTypesListItem[unitTypesListItems.length + 1];
+      WizardSettings.insertObjectIntoArray(unitTypesListItems, item, newArray);
+      unitTypesListItems = newArray;
+      unitTypesList.setModel(new DefaultComboBoxModel(unitTypesListItems));
+
+    } else {
+
+      // add units to existing type
+      UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
+      int idx = Arrays.binarySearch(unitTypesListItems, item);
+      if(idx >=0 && idx < unitTypesListItems.length)
+        unitTypesListItems[idx].addUnits(newUnits);
+    }
+
+    customUnitDialog.setVisible(false);
+    return;
+  }
+
+  private String getUnitTypeOfNewUnit( OrderedMap map) {
+
+    String t = (String) map.get("/unitList/unitType[1]/@name");
+    if(t != null)
+      return t;
+    return (String) map.get("/unitList/unit[1]/@unitType");
+
+  }
+
+  private String[] getNewUnits(OrderedMap map) {
+
+    Object o1 = map.get("/unitList/unit[1]/@name");
+    String u1 = (String)o1;
+
+    Object o2 = map.get("/unitList/unit[2]/@name");
+    if(o2 == null) {
+      // only 1 unit
+      String[] ret = new String[1];
+      ret[0] = u1;
+      return ret;
+    }
+    String[] ret = new String[2];
+    ret[0] = u1;
+    ret[1] = (String)o2;
+    return ret;
+
+  }
+
+  private boolean isNewType(OrderedMap map) {
+
+    String t = (String) map.get("/unitList/unitType[1]/@name");
+    if(t != null)
+      return true;
+    else
+      return false;
+
+
+  }
   public String getSelectedUnit() {
 
     Object selItem = unitsList.getSelectedItem();
@@ -948,13 +969,13 @@ class UnitTypesListItem  implements Comparable{
   private ComboBoxModel model;
   private String        unitType;
   private String        unitTypeDisplayString;
-	private String[]			unitsOfThisType;
-	
+  private String[]			unitsOfThisType;
+
   public UnitTypesListItem(String unitType, String[] unitsOfThisType) {
 
     this.unitType = unitType;
     unitTypeDisplayString = WizardSettings.getDisplayFormOfUnitType(unitType);
-		this.unitsOfThisType = unitsOfThisType;
+    this.unitsOfThisType = unitsOfThisType;
     model = new DefaultComboBoxModel(unitsOfThisType);
   }
 
@@ -962,18 +983,18 @@ class UnitTypesListItem  implements Comparable{
 
   public String toString() { return unitTypeDisplayString; }
 
-	public void addUnits(String[] newUnits) {
-		
-		String[] newArr = new String[unitsOfThisType.length + 1];
-		for(int i=0; i < newUnits.length; i++) {
-			WizardSettings.insertObjectIntoArray(unitsOfThisType, newUnits[i], newArr);
-		}
-		unitsOfThisType = newArr;
-		model = new DefaultComboBoxModel(unitsOfThisType);
-	}
-  
-	public int compareTo(Object o) {
-		
-		return unitTypeDisplayString.compareTo( ((UnitTypesListItem)o).toString());
-	}
+  public void addUnits(String[] newUnits) {
+
+    String[] newArr = new String[unitsOfThisType.length + 1];
+    for(int i=0; i < newUnits.length; i++) {
+      WizardSettings.insertObjectIntoArray(unitsOfThisType, newUnits[i], newArr);
+    }
+    unitsOfThisType = newArr;
+    model = new DefaultComboBoxModel(unitsOfThisType);
+  }
+
+  public int compareTo(Object o) {
+
+    return unitTypeDisplayString.compareTo( ((UnitTypesListItem)o).toString());
+  }
 }

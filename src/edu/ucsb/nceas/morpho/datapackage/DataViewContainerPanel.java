@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-16 21:54:01 $'
- * '$Revision: 1.97 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ import org.w3c.dom.Node;
 
 
 import edu.ucsb.nceas.morpho.framework.*;
+import org.w3c.dom.Document;
 
 /**
  * A panel that presents a data-centric view of a dataPackage. In fact, the panel is somewhat
@@ -168,14 +169,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * no parameter constuctor for DataViewContainerPanel.
    * Some basic gui setup
    */
-  
+
   /**
    * this array keeps the DataViewer objects for a package with multiple
    * entities in memory. This insures that temporary changes are not lost
    * as one moves from one tab to another.
    */
   private DataViewer[] dvArray = null;
-   
+
   public DataViewContainerPanel()
   {
     this.setLayout(new BorderLayout(0,0));
@@ -621,7 +622,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     return dv;
   }
 
-	public void setTopPanel(JPanel jp) {
+  public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
   }
@@ -669,24 +670,24 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         String item = (String)entityItems.elementAt(lastTabSelected);
 //        String entityID = (String)listValueHash.get(item);
         String entityID = getEntityIDForThisEntityName(item);
-				if (newID.equalsIgnoreCase(entityID)) {
+        if (newID.equalsIgnoreCase(entityID)) {
           //deselect columns in table:
           resetTableSelection();
         } else {
           String selectedAttribs
               = container.getMetaDisplayInterface().getTransformerProperty(
                                       XMLTransformer.SELECTED_ATTRIBS_XSLPROP);
-					if(selectedAttribs == null) {
-						resetTableSelection();
+          if(selectedAttribs == null) {
+            resetTableSelection();
             return;
-					}
+          }
           int selectedColIndex = -1;
           try {
             selectedColIndex = Integer.parseInt(selectedAttribs);
 
           } catch (NumberFormatException nfe) {
             Log.debug(12,"Can't handle multiple column selections yet!!");
-					  return;
+            return;
           }
           dv.getDataTable().setColumnSelectionInterval( selectedColIndex -1,
                                                         selectedColIndex -1);
@@ -735,14 +736,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // note that 'false' parameter passed to saveCurrentTable avoids updating package id
       // for each data change; thus, do it now
       AccessionNumber a = new AccessionNumber(morpho);
-			String curid = adp.getAccessionNumber();
-			String newid = null;
-			if (!curid.equals("")) {
-				newid = a.incRev(curid);
-			} else {
-				newid = a.getNextId();
-			}
-			adp.setAccessionNumber(newid);
+      String curid = adp.getAccessionNumber();
+      String newid = null;
+      if (!curid.equals("")) {
+        newid = a.incRev(curid);
+      } else {
+        newid = a.getNextId();
+      }
+      adp.setAccessionNumber(newid);
     }
   }
 
@@ -756,7 +757,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           dvArray[i].init();
         }
       }
-    }    
+    }
   }
 
   /**
@@ -905,7 +906,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
       lastPV = dv.getPV();
       JPanel tablePanel = null;
-      
+
       tablePanel = dv.DataViewerPanel;
 
       tablePanel.setOpaque(true);
@@ -1148,6 +1149,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
   }
 
+
   public void editingCompleted(String xmlString, String id, String location) {
 
     Log.debug(30, "editing complete: id: " + id + " location: " + location);
@@ -1165,7 +1167,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
     // turn the xml string into a dom root node
     try{
-//  Log.debug(1,xmlString);    
+//  Log.debug(1,xmlString);
       StringReader sr = new StringReader(xmlString);
       Node nd = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
       AbstractDataPackage newadp = DataPackageFactory.getDataPackage(nd);
@@ -1213,13 +1215,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
  }
 
-	class SymComponent extends java.awt.event.ComponentAdapter
-	{
-		public void componentResized(java.awt.event.ComponentEvent event)
-		{
-			Object object = event.getSource();
-			if (object == packageMetadataPanel) {
-				int cursize = vertSplit.getDividerLocation();
+  class SymComponent extends java.awt.event.ComponentAdapter
+  {
+    public void componentResized(java.awt.event.ComponentEvent event)
+    {
+      Object object = event.getSource();
+      if (object == packageMetadataPanel) {
+        int cursize = vertSplit.getDividerLocation();
         int maxsize = vertSplit.getMaximumDividerLocation();
         if ((maxsize-cursize)<1) {
           moreLabel.setText("<html><a href=\".\"><b>less</b></a></html>");
@@ -1228,8 +1230,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           moreLabel.setText("<html><a href=\".\"><b>more</b></a></html>");
         }
       }
-		}
-	}
+    }
+  }
 
 }
 

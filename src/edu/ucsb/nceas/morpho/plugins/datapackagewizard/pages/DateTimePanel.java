@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-16 23:00:46 $'
- * '$Revision: 1.19 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,12 +67,12 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
   private CustomList boundsList;
 
-	private String[] boundsPickListValues = new String[] {
-												"<",
-												"<="
-										};
+  private String[] boundsPickListValues = new String[] {
+                        "<",
+                        "<="
+                    };
 
-	private JButton addButton, delButton;
+  private JButton addButton, delButton;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -147,14 +147,14 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     String[] colNames     = new String[] {  "Min.", "", "" , "", "Max."};
     JLabel valueLabel = new JLabel("value", null, JLabel.CENTER);
 
-		JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
-		JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+    JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+    JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
 
     Object[] colTemplates = new Object[] {  new JTextField(),
-														combobox1, valueLabel, combobox2,	new JTextField()
-													  };
+                            combobox1, valueLabel, combobox2,	new JTextField()
+                            };
 
-		////////////////////////
+    ////////////////////////
 
     //JPanel boundsHelpPanel = WidgetFactory.makeVerticalPanel(4);
 //    new JPanel();
@@ -170,8 +170,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         false, false, false, false, false, false);
     boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		boundsList.setBorderForButtonPanel(0, WizardSettings.PADDING, 0, 0);
-		boundsPanel.add(boundsList);
+    boundsList.setBorderForButtonPanel(0, WizardSettings.PADDING, 0, 0);
+    boundsPanel.add(boundsList);
 
     /////////////////
 
@@ -181,46 +181,46 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
 
-		addButton = new JButton("Add");
-		addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    addButton = new JButton("Add");
+    addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
-		delButton = new JButton("Delete");
-		delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		delButton.setEnabled(false);
+    delButton = new JButton("Delete");
+    delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    delButton.setEnabled(false);
 
-		addButton.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				boundsList.fireAddAction();
-				if(boundsList.getRowCount() > 0)
-					delButton.setEnabled(true);
-			}
-		});
+    addButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        boundsList.fireAddAction();
+        if(boundsList.getRowCount() > 0)
+          delButton.setEnabled(true);
+      }
+    });
 
-		delButton.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				boundsList.fireDeleteAction();
-				if(boundsList.getRowCount() == 0)
-					delButton.setEnabled(false);
-			}
-		});
+    delButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        boundsList.fireDeleteAction();
+        if(boundsList.getRowCount() == 0)
+          delButton.setEnabled(false);
+      }
+    });
 
-		buttonPanel.add(addButton);
-		buttonPanel.add(delButton);
-		buttonPanel.add(Box.createVerticalGlue());
-		JPanel outerButtonPanel = new JPanel();
-		outerButtonPanel.setLayout(new BoxLayout(outerButtonPanel, BoxLayout.X_AXIS));
-		outerButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
-		outerButtonPanel.add(buttonPanel);
+    buttonPanel.add(addButton);
+    buttonPanel.add(delButton);
+    buttonPanel.add(Box.createVerticalGlue());
+    JPanel outerButtonPanel = new JPanel();
+    outerButtonPanel.setLayout(new BoxLayout(outerButtonPanel, BoxLayout.X_AXIS));
+    outerButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+    outerButtonPanel.add(buttonPanel);
 
-	 	outerButtonPanel.add(Box.createHorizontalStrut(10));
-		JPanel boundsHelpPanel = new JPanel();
-		boundsHelpPanel.setLayout(new BorderLayout());
-		//new BoxLayout(boundsHelpPanel, BoxLayout.Y_AXIS));
-		JLabel helpLabel = new JLabel(
+     outerButtonPanel.add(Box.createHorizontalStrut(10));
+    JPanel boundsHelpPanel = new JPanel();
+    boundsHelpPanel.setLayout(new BorderLayout());
+    //new BoxLayout(boundsHelpPanel, BoxLayout.Y_AXIS));
+    JLabel helpLabel = new JLabel(
     WizardSettings.HTML_NO_TABLE_OPENING
     +"Range of permitted values, in same date-time format as used in the format "
     +"description above.&nbsp;&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
@@ -229,31 +229,31 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING+"<br></br>"
     +WizardSettings.HTML_NO_TABLE_CLOSING);
 
-		helpLabel.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    helpLabel.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
     boundsHelpPanel.add( helpLabel, BorderLayout.CENTER);
-		//boundsHelpPanel.add(Box.createGlue());
-		outerButtonPanel.add(boundsHelpPanel);
+    //boundsHelpPanel.add(Box.createGlue());
+    outerButtonPanel.add(boundsHelpPanel);
 
-		boundsGrid.add(outerButtonPanel);
+    boundsGrid.add(outerButtonPanel);
     this.add(boundsGrid);
-		this.add(Box.createGlue());
+    this.add(Box.createGlue());
     ////////////////////////
 
   }
 
 
-	private JLabel getLabel(String text) {
+  private JLabel getLabel(String text) {
 
-		if (text==null) text= "";
-		JLabel label = new JLabel(text);
+    if (text==null) text= "";
+    JLabel label = new JLabel(text);
 
-		label.setAlignmentX(1.0f);
-		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
+    label.setAlignmentX(1.0f);
+    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
 
-		return label;
-	}
+    return label;
+  }
 
 
 
@@ -281,8 +281,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     boundsList.deleteEmptyRows( CustomList.AND,
                                 new short[] { CustomList.EMPTY_STRING_TRIM,
                                               CustomList.IGNORE,
-																							CustomList.IGNORE,
-																							CustomList.IGNORE,
+                                              CustomList.IGNORE,
+                                              CustomList.IGNORE,
                                               CustomList.EMPTY_STRING_TRIM } );
 
     if (formatStringField.getText().trim().equals("")) {
@@ -384,7 +384,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
 
           nextExcl = nextRow.get(3);
-          if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
+          if (nextExcl != null && ((String)nextExcl).equals("<")) {
 
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
 
@@ -399,6 +399,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
   }
 
+
   /**
    *  sets the Data in the DataTime Panel. This is called by the setData() function
    *  of AttributePage.
@@ -412,64 +413,83 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
   public void setPanelData(String xPathRoot, OrderedMap map) {
 
+    String format = (String)map.get(xPathRoot + "/formatString");
+    if (format != null) {
+      formatStringField.setText(format);
+      map.remove(xPathRoot + "/formatString");
+    }
 
-	  String format = (String)map.get(xPathRoot + "/formatString");
-	  if(format != null)
-		  formatStringField.setText(format);
+    String precision = (String)map.get(xPathRoot + "/dateTimePrecision");
+    if (precision != null) {
+      precisionField.setText(precision);
+      map.remove(xPathRoot + "/dateTimePrecision");
+    }
 
-	  String precision = (String)map.get(xPathRoot + "/dateTimePrecision");
-	  if(precision != null)
-		  precisionField.setText(precision);
+    int index = 1;
+    while (true) {
+      List row = new ArrayList();
+      String min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
+                                   + index + "]/minimum");
+      if (index == 1 && min == null)
+        min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
+      if (min != null) {
+        row.add(min);
+        Boolean excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds["
+                                        + index + "]/minimum/@exclusive");
+        if (excl != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
+                                    + index + "]/minimum/@exclusive");
 
-	  int index = 1;
-	  while(true) {
-		  List row = new ArrayList();
-		  String min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/minimum");
-			if(index == 1 && min == null)
-				min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
-		  if(min != null) {
-			  row.add(min);
-			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/minimum/@exclusive");
-				if(index == 1 && excl == null)
-					excl = (Boolean)map.get(xPathRoot +
-							"/dateTimeDomain/bounds/minimum/@exclusive");
-			  if(excl != null && excl.booleanValue() == true)
-				  row.add("<");
-			  else
-				  row.add("<=");
-		  }
-		  else {
-			  row.add("");
-			  row.add("<");
-		  }
-			row.add("value");
-		  String max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum");
-			if(index == 1 && max == null)
-				max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
-		  if(max != null) {
+        if (index == 1 && excl == null)
+          excl = (Boolean)map.get(xPathRoot +
+                                  "/dateTimeDomain/bounds/minimum/@exclusive");
+        if (excl != null) {
 
-			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum/@exclusive");
-				if(index == 1 && excl == null)
-					excl = (Boolean)map.get(xPathRoot +
-							"/dateTimeDomain/bounds/maximum/@exclusive");
-			  if(excl != null && excl.booleanValue() == true)
-				  row.add("<");
-			  else
-				  row.add("<=");
-				row.add(max);
-		  }
-		  else {
-				row.add("<");
-				row.add("");
-		  }
-		  if(min == null && max == null)
-			  break;
-		  else
-			  boundsList.addRow(row);
-		  index++;
-	  }
+          map.remove(xPathRoot + "/dateTimeDomain/bounds/minimum/@exclusive");
+          if (excl.booleanValue() == true)row.add("<");
+          else row.add("<=");
+        }
 
-	  return;
+      } else {
+        row.add("");
+        row.add("<");
+      }
+      row.add("value");
+      String max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
+                                   + index + "]/maximum");
+      if (max != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
+                                 + index + "]/maximum");
+
+      if (index == 1 && max == null)
+        max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
+      if (max != null) {
+
+        Boolean excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds["
+                                        + index + "]/maximum/@exclusive");
+        if (index == 1 && excl == null) {
+          excl = (Boolean)map.get(xPathRoot +
+                                  "/dateTimeDomain/bounds/maximum/@exclusive");
+        }
+
+        if (excl != null) {
+
+          map.remove(xPathRoot + "/dateTimeDomain/bounds/maximum/@exclusive");
+
+          if (excl.booleanValue() == true)row.add("<");
+          else row.add("<=");
+        }
+        row.add(max);
+      } else {
+        row.add("<");
+        row.add("");
+      }
+      if (min == null && max == null)
+        break;
+      else
+        boundsList.addRow(row);
+      index++;
+    }
+
+    return;
   }
 
 }

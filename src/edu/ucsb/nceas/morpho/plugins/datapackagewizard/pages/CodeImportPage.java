@@ -361,5 +361,5 @@ public class CodeImportPage extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap data, String _xPathRoot) {}
+    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
 }

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -786,7 +785,7 @@ public class AttributePage extends AbstractUIPage {
    * @param map - Data is passed as OrderedMap of xPath-value pairs. xPaths in
    *   this map are absolute xPath and not the relative xPaths
    */
-  public void setPageData(OrderedMap map, String _xPathRoot) {
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
@@ -799,22 +798,27 @@ public class AttributePage extends AbstractUIPage {
 
      //String xPathRoot = AttributeSettings.Attribute_xPath;
      name = (String)map.get(xPathRoot + "/attributeName");
-     if(name != null)
+     if(name != null) {
        attribNameField.setText(name);
-
+       map.remove(xPathRoot + "/attributeName");
+     }
      String label = (String)map.get(xPathRoot + "/attributeLabel");
-     if(label != null)
+     if(label != null){
        attribLabelField.setText(label);
+     map.remove(xPathRoot + "/attributeLabel");
+   }
 
      String defn = (String)map.get(xPathRoot + "/attributeDefinition");
-     if(defn != null)
+     if(defn != null){
        attribDefinitionField.setText(defn);
+     map.remove(xPathRoot + "/attributeDefinition");
+   }
 
      storageType = (String)map.get(xPathRoot + "/storageType");
      if(storageType == null) storageType = "";
+     else      map.remove(xPathRoot + "/storageType");
 
-     if(mScale == null || mScale.equals(""))
-       return;
+     if(mScale == null || mScale.equals("")) return false;
 
      measurementScale = mScale;
 
@@ -846,7 +850,7 @@ public class AttributePage extends AbstractUIPage {
      }
      //selects the appropriate radio button
 
-     if(componentNum != -1) {
+     if (componentNum != -1) {
 
        Container c = (Container)(radioPanel.getComponent(1));
        JRadioButton jrb = (JRadioButton)c.getComponent(componentNum);
@@ -854,14 +858,30 @@ public class AttributePage extends AbstractUIPage {
 
      }
 
-     ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
-     ((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
-     ((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
-     ((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
-     ((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
+     //ensure sub-panels can handle everything in their respective maps...
+     ((NominalOrdinalPanel)nominalPanel).setPanelData(
+           xPathRoot + "/measurementScale/nominal/nonNumericDomain", map);
+     ((NominalOrdinalPanel)ordinalPanel).setPanelData(
+           xPathRoot + "/measurementScale/ordinal/nonNumericDomain", map);
+     ((IntervalRatioPanel)intervalPanel).setPanelData(
+           xPathRoot + "/measurementScale/interval", map);
+     ((IntervalRatioPanel)ratioPanel).setPanelData(
+           xPathRoot + "/measurementScale/ratio", map);
+     ((DateTimePanel)dateTimePanel).setPanelData(
+           xPathRoot + "/measurementScale/datetime", map);
 
      refreshUI();
-     return;
+
+     //if anything left in map, then it included stuff we can't handle...
+     boolean returnVal = map.isEmpty();
+
+     if (!returnVal) {
+
+       Log.debug(20,
+                 "AttributePage.setPageData returning FALSE! Map still contains:"
+                 + map);
+     }
+     return returnVal;
    }
 
    private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,18 +28,20 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
+
+import java.util.Iterator;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.util.Iterator;
 
 
 
@@ -216,48 +218,50 @@ public class UsageRights extends AbstractUIPage{
 
 
 
+  public boolean setPageData(OrderedMap data, String _xPathRoot) {
 
-  private OrderedMap hiddenFieldsMap = new OrderedMap();
+    if (_xPathRoot != null && _xPathRoot.trim().length() > 0) {
 
-  public void setPageData(OrderedMap data, String _xPathRoot) {
+      throw new java.lang.IllegalArgumentException("METHOD IGNORES XPATHROOT!");
+    }
 
-//    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+    Log.debug(45,
+              "UsageRights.setPageData() called with _xPathRoot = " + _xPathRoot
+              + "\n Map = \n" + data);
 
-
-    if (data == null || data.isEmpty())return;
-
-    hiddenFieldsMap.clear();
-
+    if (data == null || data.isEmpty()) {
+      usageField.setText("");
+      return true;
+    }
     Iterator it = data.keySet().iterator();
-    Object nextXPathObj = null;
     String nextXPath = null;
-    Object nextValObj = null;
+    String endingXPath = null;
     String nextVal = null;
 
     while (it.hasNext()) {
 
-      nextXPathObj = it.next();
-      if (nextXPathObj == null) continue;
-      nextXPath = (String)nextXPathObj;
+      nextXPath = (String)it.next();
+      if (nextXPath==null) continue;
 
-      nextValObj = data.get(nextXPathObj);
-      nextVal = (nextValObj == null)? "" : ((String)nextValObj).trim();
+      nextVal = (String)data.get(nextXPath);
+      if (nextVal==null) nextVal = "";
 
       // remove everything up to and including the last occurrence of
       // USAGE_ROOT to get relative xpaths, in case we're handling a
       // project elsewhere in the tree...
-      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(USAGE_ROOT)
+      endingXPath = nextXPath.substring(nextXPath.lastIndexOf(USAGE_ROOT)
                                   + USAGE_ROOT.length());
 
-      if (nextXPath.startsWith(PARA_REL_XPATH)) {
+      if (endingXPath.startsWith(PARA_REL_XPATH)) {
 
         usageField.setText(nextVal);
 
       } else {
 
-        hiddenFieldsMap.put(nextXPathObj, nextValObj);
+        Log.debug(20, "UsageRights: found xpath I can't handle: "+nextXPath);
+        return false;
       }
     }
-
+    return true;
   }
 }

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 20:02:17 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1419,7 +1419,7 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
-  public void setPageData(OrderedMap map, String _xPathRoot) {
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
 
     Log.debug(45,
               "PartyPage.setPageData() called with _xPathRoot = " + _xPathRoot
@@ -1464,7 +1464,7 @@ public class PartyPage extends AbstractUIPage {
 
         Log.debug(45,
                   "*** ERROR - PartyPage.setPageData() can't get AbstractDataPkg");
-        return;
+        return false;
       }
       Node referencedPartyNode = abs.getSubtreeAtReference(ref);
 
@@ -1474,7 +1474,7 @@ public class PartyPage extends AbstractUIPage {
 
         Log.debug(45,
                   "*** ERROR - PartyPage.setPageData() can't get referenced party");
-        return;
+        return false;
       }
       Log.debug(45, "Got referenced map " + map);
 
@@ -1489,6 +1489,7 @@ public class PartyPage extends AbstractUIPage {
       if (role != null) {
         rolePickList.addItem(role);
         rolePickList.setSelectedItem(role);
+        map.remove(xpathRootNoPredicates + "/role[1]");
       }
     }
 
@@ -1496,67 +1497,98 @@ public class PartyPage extends AbstractUIPage {
                                   + "/individualName/salutation[1]");
     if (name != null) {
       salutationField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/individualName/salutation[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/individualName/givenName[1]");
     if (name != null) {
       firstNameField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/individualName/givenName[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/individualName/surName[1]");
     if (name != null) {
       lastNameField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/individualName/surName[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/organizationName[1]");
     if (name != null) {
       organizationField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/organizationName[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/positionName[1]");
     if (name != null) {
       positionNameField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/positionName[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[1]");
     if (name != null) {
       address1Field.setText(name);
+      map.remove(xpathRootNoPredicates  + "/address/deliveryPoint[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[2]");
     if (name != null) {
       address2Field.setText(name);
+      map.remove(xpathRootNoPredicates  + "/address/deliveryPoint[2]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/address/city[1]");
     if (name != null) {
       cityField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/address/city[1]");
     }
     name = (String)map.get(xpathRootNoPredicates
                            + "/address/administrativeArea[1]");
     if (name != null) {
       stateField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/address/administrativeArea[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/address/postalCode[1]");
     if (name != null) {
       zipField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/address/postalCode[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/address/country[1]");
     if (name != null) {
       countryField.setText(name);
+      map.remove(xpathRootNoPredicates  + "/address/country[1]");
     }
+
     name = (String)map.get(xpathRootNoPredicates + "/phone[1]");
-    String type = (String)map.get(xpathRootNoPredicates
-                                   + "/phone[1]/@phonetype");
-    if ((name != null) && (type.equals("voice"))) {
-      phoneField.setText(name);
+    String type = (String)map.get(xpathRootNoPredicates + "/phone[1]/@phonetype");
+    if (type!=null) map.remove(xpathRootNoPredicates + "/phone[1]/@phonetype");
+
+    if (name != null) {
+      map.remove(xpathRootNoPredicates  + "/phone[1]");
+      if (type.equals("voice")) phoneField.setText(name);
     }
+
     name = (String)map.get(xpathRootNoPredicates + "/phone[2]");
     type = (String)map.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
-    if ((name != null) && (type.equals("fax"))) {
-      faxField.setText(name);
+    if (type!=null) map.remove(xpathRootNoPredicates + "/phone[2]/@phonetype");
+
+    if (name != null) {
+      map.remove(xpathRootNoPredicates  + "/phone[2]");
+      if (type.equals("fax")) faxField.setText(name);
     }
     name = (String)map.get(xpathRootNoPredicates + "/electronicMailAddress[1]");
     if (name != null) {
       emailField.setText(name);
+      map.remove(xpathRootNoPredicates + "/electronicMailAddress[1]");
     }
     name = (String)map.get(xpathRootNoPredicates + "/onlineUrl[1]");
     if (name != null) {
       urlField.setText(name);
+      map.remove(xpathRootNoPredicates + "/onlineUrl[1]");
     }
+
+    //if anything left in map, then it included stuff we can't handle...
+     boolean returnVal = map.isEmpty();
+
+     if (!returnVal) {
+
+       Log.debug(20,
+                 "PartyPage.setPageData returning FALSE! Map still contains:"
+                 + map);
+     }
+     return returnVal;
 
   }
 

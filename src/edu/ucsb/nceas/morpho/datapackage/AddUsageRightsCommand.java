@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 20:45:39 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,10 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights;
 
 /**
  * Class to handle add usage command
@@ -97,27 +101,40 @@ public class AddUsageRightsCommand implements Command {
       se.printStackTrace();
     }
 
-    if (dpwPlugin == null) return false;
+    if (dpwPlugin == null)return false;
 
-    usagePage = dpwPlugin.getPage(DataPackageWizardInterface.USAGE_RIGHTS);
+    usagePage = (UsageRights)dpwPlugin.getPage(DataPackageWizardInterface.
+                                               USAGE_RIGHTS);
 
     OrderedMap existingValuesMap = null;
     usageRoot = adp.getSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, 0);
 
-    if (usageRoot!=null) {
+    if (usageRoot != null) {
       existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(usageRoot);
     }
-    Log.debug(45, "sending previous data to usage page -\n\n" + existingValuesMap);
+    Log.debug(45,
+              "sending previous data to usage page -\n\n" + existingValuesMap);
 
-    usagePage.setPageData(existingValuesMap, USAGE_SUBTREE_NODENAME);
+    boolean pageCanHandleAllData
+        = usagePage.setPageData(existingValuesMap, null);
 
-    ModalDialog dialog = new ModalDialog(usagePage,
-                            UIController.getInstance().getCurrentActiveWindow(),
-                            UISettings.POPUPDIALOG_WIDTH,
-                            UISettings.POPUPDIALOG_HEIGHT);
+    ModalDialog dialog = null;
+    if (pageCanHandleAllData) {
 
-    return (dialog.USER_RESPONSE==ModalDialog.OK_OPTION);
+      dialog = new ModalDialog(usagePage,
+                               UIController.getInstance().
+                               getCurrentActiveWindow(),
+                               UISettings.POPUPDIALOG_WIDTH,
+                               UISettings.POPUPDIALOG_HEIGHT);
+    } else {
+
+      UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+          DATAPACKAGE_RIGHTS_GENERIC_NAME, 0);
+      return false;
+    }
+    return (dialog.USER_RESPONSE == ModalDialog.OK_OPTION);
   }
+
 
 
   private void insertUsage() {
@@ -170,5 +187,7 @@ public class AddUsageRightsCommand implements Command {
   private AbstractDataPackage adp;
   private MorphoFrame morphoFrame;
   private DataViewContainerPanel dataViewContainerPanel;
-  private AbstractUIPage usagePage;
+  private UsageRights usagePage;
+
+//  private AbstractUIPage usagePage;
 }

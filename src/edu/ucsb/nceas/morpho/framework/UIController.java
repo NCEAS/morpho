@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-22 18:44:04 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import org.w3c.dom.Document;
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 
 /**
  * The UIController handles the state of the morpho menu and toolbars so
@@ -550,23 +554,64 @@ public class UIController
 
 
     /**
-     * get Morpho
-     */
-    public static Morpho getMorpho()
-    {
-      return morpho;
+
+
+  /**
+   * get Morpho
+   */
+  public static Morpho getMorpho() {
+    return morpho;
+  }
+
+
+  /**
+   * launches the XML tree editor, rooted at the subtree node denoted by the
+   * passed string and index, to edit the datapackage associated with the
+   * current MorphoFrame
+   *
+   * @param subtreeRootNodeName String
+   * @param subtreeRootIndex int (zero-relative)
+   */
+  public void launchEditorAtSubtreeForCurrentFrame(
+      String subtreeRootNodeName, int subtreeRootIndex) {
+
+    EditorInterface editor = null;
+    try {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider =
+          services.getServiceProvider(EditorInterface.class);
+      editor = (EditorInterface)provider;
+    } catch (Exception ee) {
+      Log.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
+      ee.printStackTrace();
+      return;
     }
-    /**
-     * Register a window by creating an action and adding it to the
-     * list of windows for the application. All existing windows are
-     * updated with new menus that reflect the menu change.
-     *
-     * @param window the window which should be added
-     */
-    private void registerWindow(MorphoFrame window)
-    {
-        if (window == null) {
-          Log.debug(50, "Window is null, create failed!");
+    DataViewContainerPanel panel = null;
+    AbstractDataPackage adp = null;
+    MorphoFrame frame = this.getCurrentActiveWindow();
+
+    if (frame != null)panel = frame.getDataViewContainerPanel();
+    if (panel != null)adp = panel.getAbstractDataPackage();
+
+    Document thisdoc = adp.getMetadataNode().getOwnerDocument();
+    String id = adp.getPackageId();
+    String location = adp.getLocation();
+
+    editor.openEditor(thisdoc, id, location, panel,
+                      subtreeRootNodeName, subtreeRootIndex);
+  }
+
+
+  /**
+   * Register a window by creating an action and adding it to the
+   * list of windows for the application. All existing windows are
+   * updated with new menus that reflect the menu change.
+   *
+   * @param window the window which should be added
+   */
+  private void registerWindow(MorphoFrame window) {
+    if (window == null) {
+      Log.debug(50, "Window is null, create failed!");
         }
         // clone all of the existing GUIActions for this new window
         Enumeration actionList = guiActionClones.keys();

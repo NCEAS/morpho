@@ -1,15 +1,12 @@
 /**
  *  '$RCSfile: AbstractUIPage.java,v $'
- *    Purpose: A class that handles xml messages passed by the
- *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Chad Berkley
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-03-24 02:14:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,25 +37,25 @@ import javax.swing.JPanel;
 public abstract class AbstractUIPage extends JPanel {
 
   /**
-   *  gets the unique ID for this wizard page
+   *  gets the unique ID for this UI page
    *
-   *  @return   the unique ID String for this wizard page
+   *  @return   the unique ID String for this UI page
    */
   public abstract String getPageID();
 
 
   /**
-   *  gets the title for this wizard page
+   *  gets the title for this UI page
    *
-   *  @return   the String title for this wizard page
+   *  @return   the String title for this UI page
    */
   public abstract String getTitle();
 
 
   /**
-   *  gets the subtitle for this wizard page
+   *  gets the subtitle for this UI page
    *
-   *  @return   the String subtitle for this wizard page
+   *  @return   the String subtitle for this UI page
    */
   public abstract String getSubtitle();
 
@@ -106,37 +103,41 @@ public abstract class AbstractUIPage extends JPanel {
 
   /**
    *  gets the Map object that contains all the key/value paired
-   *  settings for this particular wizard page
+   *  settings for this particular UI page
    *
    *  @return   data the Map object that contains all the
-   *            key/value paired settings for this particular wizard page
+   *            key/value paired settings for this particular UI page
    */
   public abstract OrderedMap getPageData();
 
 
   /**
    * gets the Map object that contains all the key/value paired settings for
-   * this particular wizard page
+   * this particular UI page
    *
    * @param rootXPath the root xpath to prepend to all the xpaths returned by
    *   this method
    * @return data the Map object that contains all the key/value paired
-   *   settings for this particular wizard page
+   *   settings for this particular UI page
    */
   public abstract OrderedMap getPageData(String rootXPath);
 
 
   /**
-   *  sets the fields in the waird page using the Map object
-   *  that contains all the key/value paired
+   * sets the fields in the UI page using the Map object that contains all
+   * the key/value paired
    *
-   *  @param   data the Map object that contains all the
-   *            key/value paired settings for this particular wizard page
-   *  @param   rootXPath the String that represents the "root" of the XPath to
-   *           the content of this widget, INCLUDING PREDICATES.
-   * example - if this is a "Party" widget, being used for the second "Creator"
-   * entry in a list, then xPathRoot = "/eml:eml/dataset[1]/creator[2]
+   * @param data the Map object that contains all the key/value paired settings
+   *   for this particular UI page
+   * @param rootXPath the String that represents the "root" of the XPath to the
+   *   content of this widget, INCLUDING PREDICATES. example - if this is a
+   *   "Party" widget, being used for the second "Creator" entry in a list,
+   *   then xPathRoot = "/eml:eml/dataset[1]/creator[2]
+   * @return boolean true if this page can handle all the data passed in the
+   * OrderedMap, false if not. <em>NOTE that the setPageData() method should
+   * still complete its work and fill out all the UI values, even if it is
+   * returning false</em>
    */
-  public abstract void setPageData(OrderedMap data, String rootXPath);
+  public abstract boolean setPageData(OrderedMap data, String rootXPath);
 
 }
