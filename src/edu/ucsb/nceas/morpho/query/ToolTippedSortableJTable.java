@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-13 00:22:13 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-14 00:22:06 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,12 @@ public class ToolTippedSortableJTable extends SortableJTable
     int widthOfCell = 0;
     // Width of string in the cell
     int widthOfString = 0;
+    
+    // If tip is null, return it
+    if (tip == null)
+    {
+      return tip;
+    }//if
       
     // if it is icon tip just return it
     if ( tip.equals(ImageRenderer.LOCALTOOLTIP) 
