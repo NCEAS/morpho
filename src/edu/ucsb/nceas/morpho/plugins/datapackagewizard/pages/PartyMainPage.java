@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-27 22:25:23 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-02-24 20:56:01 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class PartyMainPage extends AbstractWizardPage{
   public  final String   title      = "Dataset Associated Parties";
   public  final short    role;
 
-  public static int   RESPONSIBLE_PARTY_REFERENCE_COUNT     = 0;
+  public static int   RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   private JLabel      minRequiredLabel;
   private CustomList  partiesList;
   private boolean     oneOrMoreRequired;
@@ -76,6 +76,9 @@ public class PartyMainPage extends AbstractWizardPage{
     initRole();
     init();
 
+	// A empty row is added to responsiblePartyList if none exists. 
+	// This is done so that the dropdown list on PartyPage has 
+	// no entry as the first option 
     if(WidgetFactory.responsiblePartyList.size() == 0){
       List newRow = new ArrayList();
       newRow.add("");
@@ -86,10 +89,17 @@ public class PartyMainPage extends AbstractWizardPage{
     }
   }
 
+
+  /**
+   *  Initiates various parameters of PartyMainPage based on value 
+   *  of variable role. 
+   *
+   *  @return void
+   */
+
   private void initRole() {
 
     switch (role) {
-
       case PartyPage.CREATOR:
 
         oneOrMoreRequired = true;
@@ -157,9 +167,10 @@ public class PartyMainPage extends AbstractWizardPage{
     }
   }
 
+
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
-   are displayed only in this frame (doesn't include prev/next buttons etc)
+   * are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
 
@@ -223,6 +234,9 @@ public class PartyMainPage extends AbstractWizardPage{
   }
 
 
+  /**
+   *  
+   */
   private void showNewPartyDialog() {
 
     PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
@@ -234,7 +248,10 @@ public class PartyMainPage extends AbstractWizardPage{
       newRow.add(partyPage);
       partiesList.addRow(newRow);
       if(!partyPage.isReference){
-        WidgetFactory.responsiblePartyList.add(newRow);
+		DataPackageWizardInterface.responsiblePartyList.add(newRow);
+      	if(!partyPage.referDiffDP){
+	        WidgetFactory.responsiblePartyList.add(newRow);
+		}
       }
     }
 
@@ -242,6 +259,9 @@ public class PartyMainPage extends AbstractWizardPage{
   }
 
 
+  /**
+   *  
+   */
   private void showEditPartyDialog() {
 
     List selRowList = partiesList.getSelectedRowList();
@@ -263,6 +283,7 @@ public class PartyMainPage extends AbstractWizardPage{
       partiesList.replaceSelectedRow(newRow);
       if(!editPartyPage.isReference){
         WidgetFactory.responsiblePartyList.add(newRow);
+		DataPackageWizardInterface.responsiblePartyList.add(newRow);
       }
     }
   }
@@ -314,7 +335,8 @@ public class PartyMainPage extends AbstractWizardPage{
    */
 
   private OrderedMap returnMap = new OrderedMap();
-  //
+  
+  
   public OrderedMap getPageData() {
 
     returnMap.clear();
@@ -343,8 +365,9 @@ public class PartyMainPage extends AbstractWizardPage{
 
       nextPartyPage = (PartyPage)nextUserObject;
 
-      if(nextPartyPage.isReference && !listContains(rowLists, nextPartyPage.referedPage))
+      if(nextPartyPage.isReference && !listContains(rowLists, nextPartyPage.referedPage)){
         continue;
+      }
 
       nextNVPMap = nextPartyPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
@@ -352,7 +375,10 @@ public class PartyMainPage extends AbstractWizardPage{
     return returnMap;
   }
 
-
+  /**
+   *  Checks if the list contains a PartyPage similar to the PartyPage
+   *  passed in the parameters. 
+   */
   private boolean listContains(List rowLists, PartyPage page){
     if (rowLists==null) return false;
 
@@ -364,9 +390,25 @@ public class PartyMainPage extends AbstractWizardPage{
       if (nextRowObj==null) continue;
       nextRowList = (List)nextRowObj;
       //column 3 is user object - check it exists and isn't null:
-      if (nextRowList.size()<4)     continue;
+      if (nextRowList.size()<4)    continue;
       nextPage = (PartyPage)nextRowList.get(3);
-      if (nextPage == page) return true;
+       if (nextPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
+       nextPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
+       nextPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
+       nextPage.getorganizationFieldText().equals(page.getorganizationFieldText()) &&
+       nextPage.getpositionNameFieldText().equals(page.getpositionNameFieldText()) &&
+       nextPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
+       nextPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
+       nextPage.getcityFieldText().equals(page.getcityFieldText()) &&
+       nextPage.getstateFieldText().equals(page.getstateFieldText()) &&
+       nextPage.getzipFieldText().equals(page.getzipFieldText()) &&
+       nextPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
+       nextPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
+       nextPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
+       nextPage.getemailFieldText().equals(page.getemailFieldText()) &&
+       nextPage.geturlFieldText().equals(page.geturlFieldText())){
+        return true;
+      }
     }
 
     return false;

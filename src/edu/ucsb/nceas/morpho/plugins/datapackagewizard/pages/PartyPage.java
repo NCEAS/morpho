@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-18 21:13:12 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-02-24 20:56:01 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,30 +28,30 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JOptionPane;
-import javax.swing.JCheckBox;
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class PartyPage extends AbstractWizardPage {
 
@@ -101,10 +101,10 @@ public class PartyPage extends AbstractWizardPage {
   private JPanel     rolePanel;
   private JPanel     middlePanel;
   private JPanel     radioPanel;
-  
+
   public JLabel desc;
   public JPanel listPanel;
-  
+
   public  PartyPage  referedPage;
 
   private final String[] roleArray
@@ -128,6 +128,7 @@ public class PartyPage extends AbstractWizardPage {
   private String     referenceIdString;
   private String     referedIdString;
   public  boolean    isReference;
+  public  boolean    referDiffDP = false;
   private boolean    editReference;
 
   public PartyPage() {
@@ -417,10 +418,10 @@ public class PartyPage extends AbstractWizardPage {
       public void itemStateChanged(ItemEvent e) {
         Log.debug(45, "got radiobutton command: "+e.getStateChange());
         onLoadAction();
-        if (e.getStateChange() == e.DESELECTED) {
+        if (e.getStateChange() == ItemEvent.DESELECTED) {
           instance.setEditable(false);
 
-        } else if (e.getStateChange() == e.SELECTED) {
+        } else if (e.getStateChange() == ItemEvent.SELECTED) {
           int reply =  JOptionPane.showConfirmDialog(instance,
                     "The changes you make here will be reflected in the "
                     +"entry that you made earlier. Do you want to continue?",
@@ -459,15 +460,28 @@ public class PartyPage extends AbstractWizardPage {
 
           List currentList = (List)WidgetFactory.responsiblePartyList.get(index);
           referedPage = (PartyPage)currentList.get(3);
+		  PartyPage page = partyInSameDP(referedPage);
+		  if (page != null){
 
-          isReference = true;
-          referedIdString = referedPage.getRefID();
+			isReference = true;
+			referedIdString = page.getRefID();
 
-          instance.setEditable(false);
-          instance.setValue(referedPage);
+			instance.setEditable(false);
+			instance.setValue(page);
 
-          radioPanel.setVisible(true);
-          Log.debug(45, "Setting referedIdString to " + referedIdString);
+			radioPanel.setVisible(true);
+			Log.debug(45, "The refered page is not in a different DP. Setting referedIdString to " + referedIdString);
+		  } else {
+			isReference = false;
+			referDiffDP = true;
+			referedIdString = null;
+			
+			instance.setEditable(true);
+			instance.setValue(referedPage);
+
+			radioPanel.setVisible(false);
+			Log.debug(45, "The refered page is in a different DP. Setting referedIdString to null.");
+		  }
         }
       }
     };
@@ -493,6 +507,36 @@ public class PartyPage extends AbstractWizardPage {
     radioPanel.setVisible(false);
   }
 
+
+  private PartyPage partyInSameDP(PartyPage referedPage){
+  	
+  	List dpList = DataPackageWizardInterface.responsiblePartyList;
+  	
+	Iterator it = dpList.iterator();
+	while(it.hasNext()) {
+		List row = (List) it.next();
+		PartyPage page = (PartyPage)row.get(3);
+		
+		if(referedPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
+		referedPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
+		referedPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
+		referedPage.getorganizationFieldText().equals(page.getorganizationFieldText()) &&
+		referedPage.getpositionNameFieldText().equals(page.getpositionNameFieldText()) &&
+		referedPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
+		referedPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
+		referedPage.getcityFieldText().equals(page.getcityFieldText()) &&
+		referedPage.getstateFieldText().equals(page.getstateFieldText()) &&
+		referedPage.getzipFieldText().equals(page.getzipFieldText()) &&
+		referedPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
+		referedPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
+		referedPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
+		referedPage.getemailFieldText().equals(page.getemailFieldText()) &&
+		referedPage.geturlFieldText().equals(page.geturlFieldText())){
+			return page;
+		}
+	}				
+  	return null;
+  }
 
   private void setValue(PartyPage Page) {
     if(Page == null){
@@ -1145,7 +1189,7 @@ public class PartyPage extends AbstractWizardPage {
   public void setXPathRoot(String xpath) {
     xPathRoot = xpath;
   }
-  
+
   public void setPageData(OrderedMap map) {
     OrderedMap map2 = map;
     map = stripIndexOneFromMapKeys(map);
@@ -1214,7 +1258,7 @@ public class PartyPage extends AbstractWizardPage {
     }
 
   }
-  
+
   private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
 
 		 OrderedMap newMap = new OrderedMap();
