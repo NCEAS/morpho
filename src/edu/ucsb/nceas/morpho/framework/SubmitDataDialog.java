@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.12 2001-05-02 22:09:35 jones Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.13 2001-05-03 22:18:15 jones Exp $'
  */
 
 package edu.ucsb.nceas.morpho.framework;
@@ -388,12 +388,13 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	{
 		try {
 			// saveFileDialog Show the FileDialog
-			container.openFileDialog.setVisible(true);
+			//MBJBROKE//container.openFileDialog.setVisible(true);
 		} catch (Exception e) {}
-		String file = container.openFileDialog.getFile();
+                String file = null;
+		//MBJBROKE//file = container.openFileDialog.getFile();
 		if (file!=null) {
 		    shortFileName = file;
-		    file = container.openFileDialog.getDirectory() + file;
+		    //MBJBROKE//file = container.openFileDialog.getDirectory() + file;
 		    FileNameTextField.setText(file);
 		}
 	}
@@ -954,12 +955,13 @@ public String insertIntoMetacat(String filename) {
 	    if (selection==1) {           //local file
 		    try {
 			// saveFileDialog Show the FileDialog
-			    container.openFileDialog.setVisible(true);
+			    //MBJBROKE//container.openFileDialog.setVisible(true);
 		    } catch (Exception e) {}
-		    String file = container.openFileDialog.getFile();
+                    String file = null;
+		    //MBJBROKE//file = container.openFileDialog.getFile();
 		    if (file!=null) {
 		        shortFileName = file;
-		        file = container.openFileDialog.getDirectory() + file;
+		        //MBJBROKE//file = container.openFileDialog.getDirectory() + file;
 		        FileMetadataTextField.setText(file);
 		    }
 		}
@@ -988,12 +990,13 @@ public String insertIntoMetacat(String filename) {
 	    if (selection==1) {           //local file
 		    try {
 			// saveFileDialog Show the FileDialog
-			    container.openFileDialog.setVisible(true);
+			    //MBJBROKE//container.openFileDialog.setVisible(true);
 		    } catch (Exception e) {}
-		    String file = container.openFileDialog.getFile();
+                    String file = null;
+		    //MBJBROKE//file = container.openFileDialog.getFile();
 		    if (file!=null) {
 		        shortFileName = file;
-		        file = container.openFileDialog.getDirectory() + file;
+		        //MBJBROKE//file = container.openFileDialog.getDirectory() + file;
 		        ResourceMetadataTextField.setText(file);
 		    }
 		}
@@ -1024,12 +1027,13 @@ public String insertIntoMetacat(String filename) {
 	    if (selection==1) {           //local file
 		    try {
 			// saveFileDialog Show the FileDialog
-			    container.openFileDialog.setVisible(true);
+			    //MBJBROKE//container.openFileDialog.setVisible(true);
 		    } catch (Exception e) {}
-		    String file = container.openFileDialog.getFile();
+                    String file = null;
+		    //MBJBROKE//file = container.openFileDialog.getFile();
 		    if (file!=null) {
 		        shortFileName = file;
-		        file = container.openFileDialog.getDirectory() + file;
+		        //MBJBROKE//file = container.openFileDialog.getDirectory() + file;
 		        PackageNameTextField.setText(file);
 		    }
 		}

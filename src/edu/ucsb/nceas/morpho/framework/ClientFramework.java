@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-02 17:41:36 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2001-05-03 22:18:14 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ import java.util.*;
 import java.net.URL;
 import java.lang.reflect.*;
 import java.lang.ClassCastException;
-import com.symantec.itools.javax.swing.borders.LineBorder;
 
 /**
  * The ClientFramework is the main entry point for the Morpho application. It
@@ -58,41 +57,26 @@ public class ClientFramework extends javax.swing.JFrame
   static int debug_level = 0;
   // redirects standard out and err streams
   static boolean log_file = false;
-  String metacatURL = null;
-  ConfigXML config;
+  private String metacatURL = null;
+  private ConfigXML config;
   private boolean connected = false;
-  edu.ucsb.nceas.morpho.query.LocalQuery lq = null;
-  Hashtable menuList = null;
-  TreeMap menuOrder = null;
-  Action[] fileMenuActions = null;
-  Action[] editMenuActions = null;
-  Action[] helpMenuActions = null;
-  Action[] containerToolbarActions = null;
-  Hashtable servicesRegistry = null;
-  Hashtable windowsRegistry = null;
-  ClientFramework framework = null;
+  private Hashtable menuList = null;
+  private TreeMap menuOrder = null;
+  private Action[] fileMenuActions = null;
+  private Action[] editMenuActions = null;
+  private Action[] helpMenuActions = null;
+  private Action[] containerToolbarActions = null;
+  private Hashtable servicesRegistry = null;
+  private Hashtable windowsRegistry = null;
   private boolean pluginsLoaded = false;
-  //JTable table;
 
   // Used by addNotify
   boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-  java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
-  java.awt.FileDialog openFileDialog = new java.awt.FileDialog(this);
-  javax.swing.JPanel ToolBarPanel = new javax.swing.JPanel();
+  javax.swing.JPanel toolbarPanel = new javax.swing.JPanel();
   javax.swing.JToolBar morphoToolbar = new javax.swing.JToolBar();
-
-  javax.swing.JPanel ContentPanel = new javax.swing.JPanel();
-  javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
-
-  javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
-  javax.swing.JLabel dataPict = new javax.swing.JLabel();
-  javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
-  com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 =
-    new com.symantec.itools.javax.swing.borders.LineBorder();
   javax.swing.JMenuBar morphoMenuBar = new javax.swing.JMenuBar();
-
   //}}
 
   //{{DECLARE_MENUS
@@ -140,24 +124,16 @@ public class ClientFramework extends javax.swing.JFrame
     setSize(775, 550);
     setVisible(false);
 
-    saveFileDialog.setMode(FileDialog.SAVE);
-    saveFileDialog.setTitle("Save");
-    openFileDialog.setMode(FileDialog.LOAD);
-    openFileDialog.setTitle("Open");
-    ToolBarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    getContentPane().add(BorderLayout.NORTH, ToolBarPanel);
-    ToolBarPanel.setBounds(0, 0, 744, 36);
+    //saveFileDialog.setMode(FileDialog.SAVE);
+    //saveFileDialog.setTitle("Save");
+    //openFileDialog.setMode(FileDialog.LOAD);
+    //openFileDialog.setTitle("Open");
+    toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    getContentPane().add(BorderLayout.NORTH, toolbarPanel);
+    toolbarPanel.setBounds(0, 0, 744, 36);
     morphoToolbar.setAlignmentY(0.222222F);
-    ToolBarPanel.add(morphoToolbar);
+    toolbarPanel.add(morphoToolbar);
     morphoToolbar.setBounds(0, 0, 834, 36);
-
-    ContentPanel.setLayout(new BorderLayout(0, 0));
-    getContentPane().add(BorderLayout.CENTER, ContentPanel);
-    ContentPanel.setBounds(0, 0, 0, 0);
-    JTabbedPane1.setToolTipText("Select tab of interest");
-    ContentPanel.add(BorderLayout.CENTER, JTabbedPane1);
-    JTabbedPane1.setBounds(0, 0, 0, 0);
-
     //}}
 
     //{{INIT_MENUS
@@ -226,17 +202,13 @@ public class ClientFramework extends javax.swing.JFrame
    */
   public void setMainContentPane(Component comp) 
   {
-	// Create a panel to display the plugin if requested
-        if (comp != null) {
-          if (JTabbedPane1.getTabCount() > 0) {
-            JTabbedPane1.setComponentAt(0, comp);
-            JTabbedPane1.setTitleAt(0, comp.getName());
-          } else {
-	    JTabbedPane1.addTab(comp.getName(), comp);
-          }
-        } else {
-          debug(9, "Component was null so I could not set it!");
-        }
+    // Create a panel to display the plugin if requested
+    if (comp != null) {
+      getContentPane().add(BorderLayout.CENTER, comp);
+      comp.invalidate();
+    } else {
+      debug(9, "Component was null so I could not set it!");
+    }
   }
 
   /**

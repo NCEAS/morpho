@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.16 2001-05-02 22:09:35 jones Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.17 2001-05-03 22:18:15 jones Exp $'
  */
 
 package edu.ucsb.nceas.morpho.framework;
@@ -425,11 +425,12 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		StringBuffer txt = new StringBuffer();
 		try {
 			// saveFileDialog Show the FileDialog
-			container.openFileDialog.setVisible(true);
+			//MBJBROKE//container.openFileDialog.setVisible(true);
 		} catch (Exception e) {}
-		String file = container.openFileDialog.getFile();
+                String file = null;
+		//MBJBROKE//file = container.openFileDialog.getFile();
 		if (file!=null) {
-		    file = container.openFileDialog.getDirectory() + file;
+		    //MBJBROKE//file = container.openFileDialog.getDirectory() + file;
 		    int x;
 		    CurrentCheckBox.setSelected(false);
 		    DocumentTextBox.setText(file);
