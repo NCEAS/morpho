@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 01:04:11 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2002-11-27 18:24:51 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,9 +326,17 @@ public class TextImportWizard extends javax.swing.JFrame
 		Step3_HelpLabel.setText("<html><br>Select column of<p>interest by \'clicking\'<p>on any cell in <p>column.<p>A red label indicates</p><p>a requiired item.</p>");
 		Step3_HelpPanel.add(Step3_HelpLabel);
 		Step3_HelpLabel.setForeground(java.awt.Color.black);
-		JPanel14.setAlignmentX(0.495413F);
-		JPanel14.setLayout(new GridLayout(2,2,6,6));
-		Step3ControlsPanel.add(BorderLayout.CENTER, JPanel14);
+    ColDataSummaryPanel.setLayout(new GridLayout(2,1));
+    ColDataSummaryPanel.add(TopColSummaryPanel);
+    ColDataSummaryPanel.add(BottomColSummaryPanel);    
+		TopColSummaryPanel.setLayout(new BoxLayout(TopColSummaryPanel,BoxLayout.Y_AXIS));
+    ColDataSummaryPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    TopColSummaryPanel.add(ColDataSummaryLabel);
+    BottomColSummaryPanel.setLayout(new BorderLayout(0,0));
+    BottomColSummaryPanel.add(BorderLayout.NORTH, new JLabel("Unique Items List"));
+    BottomColSummaryPanel.add(BorderLayout.CENTER, UniqueItemsScrollPane);
+    UniqueItemsScrollPane.getViewport().add(UniqueItemsList);
+		Step3ControlsPanel.add(BorderLayout.CENTER, ColDataSummaryPanel);
     
     //------------------------------------------------
 		DataPanel.setLayout(new BorderLayout(0,0));
@@ -553,7 +561,7 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JPanel Step3ControlsPanel = new javax.swing.JPanel();
 	javax.swing.JPanel Step3_HelpPanel = new javax.swing.JPanel();
 	javax.swing.JLabel Step3_HelpLabel = new javax.swing.JLabel();
-	javax.swing.JPanel JPanel14 = new javax.swing.JPanel();
+	javax.swing.JPanel ColDataSummaryPanel = new javax.swing.JPanel();
 	javax.swing.JPanel DataPanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel ColumnDataPanel = new javax.swing.JPanel();
@@ -566,7 +574,13 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JButton BackButton = new javax.swing.JButton();
 	javax.swing.JButton NextButton = new javax.swing.JButton();
 	javax.swing.JButton FinishButton = new javax.swing.JButton();
-	//}}
+  javax.swing.JLabel ColDataSummaryLabel = new JLabel("<html><b>Column Contents:</b></html>");
+	javax.swing.JScrollPane UniqueItemsScrollPane = new javax.swing.JScrollPane();
+	javax.swing.JList UniqueItemsList = new javax.swing.JList();
+  javax.swing.JPanel TopColSummaryPanel = new JPanel();
+  javax.swing.JPanel BottomColSummaryPanel = new JPanel();
+  
+//}}
 
 	//{{DECLARE_MENUS
 	//}}
@@ -882,23 +896,32 @@ public void startImport(String file) {
                   if (lsm.isSelectionEmpty()) {
                       //no columns are selected
                   } else {
+                      String str = "<b>Column Contents:</b><br>";
                       selectedCol = lsm.getMinSelectionIndex();
+                      str = str + "Selected Column: "+selectedCol +"<br>";
                       //selectedCol is selected
                       ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
                       int numUnique =  cd.colNumUniqueItems;
-                      String str = "There are "+numUnique+" unique item(s) in this column";
-                      if (cd.colType.equals("Floating Point")) {
+                      str = str + "There are "+numUnique+" unique item(s) in this column<br>";
+                      if ((cd.colType.equals("float"))||(cd.colType.equals("decimal"))
+                                                     ||(cd.colType.equals("double"))) {
                         String dmin = Double.toString(cd.colMin);
                         String dmax = Double.toString(cd.colMax);
-                        String daver = Double.toString(cd.colAverage);
+                        long raver = (Math.round(cd.colAverage*100.0));
+                        String daver = Long.toString(raver);
+                        daver = daver.substring(0,daver.length()-2)+"."+daver.substring(daver.length()-2);
+                        str = str + "Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver+"<br>";
 //                        MinMaxLabel.setText("Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver);
 //                        MinTextField.setText(dmin);
 //                        MaxTextField.setText(dmax);
                       } 
-                      else if ((cd.colType.equals("Integers"))) {
+                      else if ((cd.colType.equals("integer"))) {
                         String min = Integer.toString((int)cd.colMin);
                         String max = Integer.toString((int)cd.colMax);
-                        String aver = Double.toString(cd.colAverage);
+                        long iaver = (Math.round(cd.colAverage*100.0));
+                        String aver = Long.toString(iaver);
+                        aver = aver.substring(0,aver.length()-2)+"."+aver.substring(aver.length()-2);
+                        str = str + "Min:"+ min +"  Max:" + max + "  Aver:" +aver+"<br>";
 //                        MinMaxLabel.setText("Min:"+ min +"  Max:" + max + "  Aver:" +aver);   
 //                        MinTextField.setText(min);
 //                        MaxTextField.setText(max);
@@ -923,6 +946,7 @@ public void startImport(String file) {
                         row[1] = "";
                         dtm.addRow(row);
                       }
+                      UniqueItemsList.setListData(cd.colUniqueItemsList);
                       
             //          JList uniq = new JList(cd.colUniqueItemsList);
             //          JTable uniq = new JTable(dtm);
@@ -935,6 +959,7 @@ public void startImport(String file) {
 //                      String colType = cd.colType;
 //                      DataTypeList.setSelectedValue(colType, true);
 //                      ColumnDefTextArea.setText(cd.colDefinition);
+                      ColDataSummaryLabel.setText("<html>"+str+"</html>");
                       cmePanel.setColumnData(cd);
                      
                   }
