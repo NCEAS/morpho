@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-29 00:53:42 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.6.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
 /**
@@ -66,7 +67,7 @@ public class OpenPackageCommand implements Command
   /**
    * execute open package command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
     // if Resulpanel's parent is morphoframe, frame value will be set the parent
     // of resultpanel

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-28 01:04:36 $'
- * '$Revision: 1.2 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:15 $'
+ * '$Revision: 1.2.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import  edu.ucsb.nceas.morpho.util.Command;
 import  edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import  edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
+import java.awt.event.ActionEvent;
 
 public class BackCommand implements Command {
 
@@ -45,7 +46,7 @@ public class BackCommand implements Command {
     /**
      * execute this object's command
      */    
-    public void execute() 
+    public void execute(ActionEvent event) 
     {
         Log.debug(50,
           "BackCommand.execute() called. Doing controller.displayPrevious()...");

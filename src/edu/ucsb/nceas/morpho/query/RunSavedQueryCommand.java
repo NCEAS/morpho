@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-23 23:54:53 $'
- * '$Revision: 1.1 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.1.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.*;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
 /**
@@ -74,7 +75,7 @@ public class RunSavedQueryCommand implements Command
   /**
    * execute cancel command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
    
       if (query != null) 

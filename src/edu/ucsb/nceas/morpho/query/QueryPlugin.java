@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-27 00:06:01 $'
- * '$Revision: 1.85 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.85.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,7 +123,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   private void initializeActions() {
     // Set up the search menus for the application
     menuActions = new Action[NUMBEROFACTIONINSEARCH];
-   
+
+    UIController controller = UIController.getInstance();
+
     // Action for search
     GUIAction searchItemAction = new GUIAction("Search...", null,
                                         new SearchCommand(null, morpho));
@@ -131,6 +133,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
+    searchItemAction.setMenu("Search", 3);
+    searchItemAction.setToolbarPosition(2);
+    controller.addGuiAction(searchItemAction);
     
     //searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Action for refresh
@@ -141,6 +146,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
     refreshItemAction.setToolTipText("Refresh...");
     refreshItemAction.setMenuItemPosition(1);
+    refreshItemAction.setMenu("Search", 3);
+    refreshItemAction.setToolbarPosition(3);
+    controller.addGuiAction(refreshItemAction);
     
     //refreshItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Action for save query
@@ -151,6 +159,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Save16.gif")));
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
+    saveQueryItemAction.setMenu("Search", 3);
+    saveQueryItemAction.setToolbarPosition(4);
+    controller.addGuiAction(saveQueryItemAction);
         
     // RevisedSearch action
     GUIAction reviseSearchItemAction = new GUIAction("Revise search", null,
@@ -160,6 +171,11 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setToolTipText("Revise search");
     reviseSearchItemAction.setMenuItemPosition(3);
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    reviseSearchItemAction.setMenu("Search", 3);
+    reviseSearchItemAction.setToolbarPosition(5);
+    controller.addGuiAction(reviseSearchItemAction);
+    controller.removeGuiAction(reviseSearchItemAction);
+
     // Put actions into array which will be added into search menu
     menuActions[0] = searchItemAction;
     menuActions[1] = refreshItemAction;
@@ -176,6 +192,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                   getResource("/toolbarButtonGraphics/general/Open16.gif")));
     openDialogBoxAction.setMenuItemPosition(0);
     openDialogBoxAction.setToolTipText("Open...");
+    openDialogBoxAction.setMenu("File", 1);
+    openDialogBoxAction.setToolbarPosition(1);
+    controller.addGuiAction(openDialogBoxAction);
     
      // Set up the toolbar for the application
     toolbarActions = new Action[5];

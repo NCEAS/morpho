@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-09-02 20:49:47 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.1.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -92,7 +93,8 @@ public class GUIActionTest extends TestCase
     suite.addTest(new GUIActionTest("initialize"));
     suite.addTest(new GUIActionTest("testEnabled"));
     suite.addTest(new GUIActionTest("testCommand"));
-    suite.addTest(new GUIActionTest("testVisual"));
+    //suite.addTest(new GUIActionTest("testVisual"));
+    suite.addTest(new GUIActionTest("testAddGUIAction"));
     return suite;
   }
 
@@ -114,7 +116,7 @@ public class GUIActionTest extends TestCase
         assertTrue(monitor != null);
 
         Command command1 = new Command() {
-            public void execute() {
+            public void execute(ActionEvent event) {
                 Log.debug(20, "Test command executed.");
             }
         };
@@ -141,14 +143,14 @@ public class GUIActionTest extends TestCase
         assertTrue(monitor != null);
 
         Command command1 = new Command() {
-            public void execute() {
+            public void execute(ActionEvent event) {
                 Log.debug(9, "Command 1 executed.");
             }
         };
         assertTrue(command1 != null);
 
         Command command2 = new Command() {
-            public void execute() {
+            public void execute(ActionEvent event) {
                 Log.debug(9, "Command 2 executed.");
             }
         };
@@ -191,14 +193,14 @@ public class GUIActionTest extends TestCase
         assertTrue(monitor != null);
 
         Command command1 = new Command() {
-            public void execute() {
+            public void execute(ActionEvent event) {
                 Log.debug(9, "Command 1 executed.");
             }
         };
         assertTrue(command1 != null);
 
         Command command2 = new Command() {
-            public void execute() {
+            public void execute(ActionEvent event) {
                 Log.debug(9, "Command 2 executed.");
             }
         };
@@ -232,5 +234,78 @@ public class GUIActionTest extends TestCase
         assertTrue(current != null);
         assertTrue(current == command2);
         Log.debug(9, "Pause after second event. Button enabled again?");
+  }
+
+  /**
+   * Test if the state monitoring is working for the command switching
+   */
+  public void testAddGUIAction()
+  {
+
+        ConfigXML config = null;
+        try {
+            File configDir = new File(ConfigXML.getConfigDirectory());
+            File configFile = new File(configDir, "config.xml");
+            config = new ConfigXML(configFile.getAbsolutePath());
+            morpho = new Morpho(config);
+        } catch (IOException ioe) {
+          fail("Test failed, couldn't create config.");
+        }
+
+        StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+        assertTrue(monitor != null);
+
+        Command command1 = new Command() {
+            public void execute(ActionEvent event) {
+                Log.debug(9, "Command 1 executed.");
+            }
+        };
+        assertTrue(command1 != null);
+
+        Command command2 = new Command() {
+            public void execute(ActionEvent event) {
+                Log.debug(9, "Command 2 executed.");
+            }
+        };
+        assertTrue(command2 != null);
+
+        GUIAction action = new GUIAction("Test", null, command2);
+        action.setMenu("Testing", 0);
+        action.setCommandOnStateChange(state1, command1);
+        action.setCommandOnStateChange(state2, command2);
+        action.setEnabledOnStateChange(state1, false);
+        action.setEnabledOnStateChange(state2, true);
+
+        UIController controller = UIController.initialize(morpho);
+        MorphoFrame test = controller.addWindow("Test Window");
+        controller.addGuiAction(action);
+        test.setVisible(true);
+
+        Log.debug(9, "Button enabled.  Pause before first event.");
+        // Post the first state change and test if the command changed
+        monitor.notifyStateChange(event1);
+        Command current = action.getCommand();
+        assertTrue(current != null);
+        assertTrue(current == command1);
+
+        Log.debug(9, "Pause between events; button now disabled?");
+        // Post the second state change and test if the command changed
+        monitor.notifyStateChange(event2);
+        current = action.getCommand();
+        assertTrue(current != null);
+        assertTrue(current == command2);
+        Log.debug(9, "Pause after second event. Button enabled again?");
+
+        GUIAction action2 = new GUIAction("Test2", null, command1);
+        action.setMenu("Testing", 0);
+        action.setCommandOnStateChange(state1, command1);
+        action.setCommandOnStateChange(state2, command2);
+        action.setEnabledOnStateChange(state1, false);
+        action.setEnabledOnStateChange(state2, true);
+        controller.addGuiAction(action2);
+
+        Log.debug(9, "Second action added to menu. Pause before removing it.");
+        controller.removeGuiAction(action2);
+        Log.debug(9, "Second action removed.");
   }
 }

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:29:57 $'
- * '$Revision: 1.5 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.5.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
@@ -36,6 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -85,7 +85,7 @@ public class LocalToNetworkCommand implements Command
   /**
    * execute open package command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
     if (selectDocId != null && !selectDocId.equals("") && !inNetwork && inLocal)
     {
@@ -137,7 +137,7 @@ public class LocalToNetworkCommand implements Command
             {
               dataPackage.upload(docid, false);
               refreshFlag = true;
-              refresh.execute();
+              refresh.execute(null);
             }
             catch(MetacatUploadException mue)
             {
@@ -161,7 +161,7 @@ public class LocalToNetworkCommand implements Command
                 {
                   dataPackage.upload(docid, true);
                   refreshFlag = true;
-                  refresh.execute();
+                  refresh.execute(null);
                 }
                 catch(MetacatUploadException mue2)
                 {

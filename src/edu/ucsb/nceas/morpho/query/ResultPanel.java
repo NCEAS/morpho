@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-04 23:29:45 $'
- * '$Revision: 1.59 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.59.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,7 +319,7 @@ public class ResultPanel extends JPanel
   { 
     // Create a open pakcag command
     OpenPackageCommand open = new OpenPackageCommand(dialog);
-    open.execute();
+    open.execute(null);
   }// doDoubleClickOpen
 
   /**

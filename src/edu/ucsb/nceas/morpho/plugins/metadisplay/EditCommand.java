@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-06 00:11:44 $'
- * '$Revision: 1.3 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:15 $'
+ * '$Revision: 1.3.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import  edu.ucsb.nceas.morpho.util.Log;
@@ -55,7 +56,7 @@ public class EditCommand implements Command {
     /**
      * execute this object's command
      */    
-    public void execute() 
+    public void execute(ActionEvent event) 
     {
         EditorInterface editor = null;
         String id = controller.getIdentifier();

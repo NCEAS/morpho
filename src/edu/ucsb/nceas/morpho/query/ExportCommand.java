@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-29 00:52:22 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.4.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -104,7 +105,7 @@ public class ExportCommand implements Command
   /**
    * execute delete local package command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
      // Get morphoframe and resultPanel if dialog is not null
     if (dialog != null)

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:24:01 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-06 07:12:16 $'
+ * '$Revision: 1.6.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -36,6 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -109,7 +109,7 @@ public class DeleteCommand implements Command
   /**
    * execute delete local package command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
     
       if (state.equals(DataPackageInterface.LOCAL))
@@ -202,7 +202,7 @@ public class DeleteCommand implements Command
           {
             dataPackage.delete(docid, state);
             refreshFlag = true;
-            refresh.execute();
+            refresh.execute(null);
           }
          
            return null;  
