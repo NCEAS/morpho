@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-06-13 07:25:45 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,9 @@ import edu.ucsb.nceas.morpho.framework.ClientFramework;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -70,6 +73,9 @@ public class ResultPanel extends JPanel
 
   /** Button used to trigger a revision using QueryDialog */
   JButton reviseButton;
+
+  /** Button used to trigger a save of the current Query */
+  JButton saveButton;
 
   /** The label used to display the query title */
   JLabel titleLabel;
@@ -141,18 +147,32 @@ public class ResultPanel extends JPanel
       headerBox.add(Box.createHorizontalStrut(4));
       refreshButton = new JButton("Refresh", new ImageIcon( getClass().
           getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
+      refreshButton.setText(null);
+      refreshButton.setToolTipText("Refresh");
       if (hasRefreshButton) {
         headerBox.add(refreshButton);
         headerBox.add(Box.createHorizontalStrut(4));
       }
-      reviseButton = new JButton("Revise...");
+      reviseButton = new JButton("Revise", new ImageIcon( getClass().
+          getResource("/toolbarButtonGraphics/general/Search16.gif")));
+      reviseButton.setText(null);
+      reviseButton.setToolTipText("Revise search");
       if (hasReviseButton) {
         headerBox.add(reviseButton);
+        headerBox.add(Box.createHorizontalStrut(4));
+      }
+      saveButton = new JButton("Save search", new ImageIcon( getClass().
+          getResource("/toolbarButtonGraphics/general/Save16.gif")));
+      saveButton.setText(null);
+      saveButton.setToolTipText("Save search");
+      if (hasReviseButton) {
+        headerBox.add(saveButton);
         headerBox.add(Box.createHorizontalStrut(4));
       }
       ActionHandler dispatcher = new ActionHandler();
       refreshButton.addActionListener(dispatcher);
       reviseButton.addActionListener(dispatcher);
+      saveButton.addActionListener(dispatcher);
  
       JPanel headerPanel = new JPanel();
       headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
@@ -251,6 +271,8 @@ public class ResultPanel extends JPanel
         reviseQuery();
       } else if (object == refreshButton) {
         refreshQuery();
+      } else if (object == saveButton) {
+        saveQuery();
       }
     }
   }
@@ -260,6 +282,9 @@ public class ResultPanel extends JPanel
    */
   public void reviseQuery()
   {
+    // Save the original identifier
+    String identifier = results.getQuery().getIdentifier();
+
     // QueryDialog Create and show as modal
     ResultFrame rsf = null;
     QueryDialog queryDialog1 = null;
@@ -276,6 +301,7 @@ public class ResultPanel extends JPanel
     if (queryDialog1.isSearchStarted()) {
       Query query = queryDialog1.getQuery();
       if (query != null) {
+        query.setIdentifier(identifier);
         ResultSet newResults = query.execute();
         setResults(newResults);
       }
@@ -291,6 +317,45 @@ public class ResultPanel extends JPanel
     ResultSet newResults = query.execute();
     setResults(newResults);
   } 
+
+  /**
+   * Save a query in the user's profile so they can run it again later. It
+   * will show up in the "Search" menu sp they can execute it.
+   */
+  public void saveQuery()
+  {
+    // Serialize the query in the profiles directory
+    Query query = results.getQuery();
+    String identifier = query.getIdentifier();
+    if (identifier == null) {
+      identifier = framework.getNextId();
+      query.setIdentifier(identifier);
+    }
+
+    try {
+      query.save();
+
+      // Add a menu item in the framework to execute this query
+      Action[] menuActions = new Action[1];
+      Action savedSearchItemAction = new AbstractAction(query.getQueryTitle()) {
+        public void actionPerformed(ActionEvent e) {
+          /*
+          if (query != null) {
+            ResultSet rs = query.execute();
+            ResultFrame rsf = new ResultFrame(framework, rs);
+          }
+          */
+        }
+      };
+      savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
+                            "Execute saved search");
+      menuActions[0] = savedSearchItemAction;
+      framework.addMenu("Search", new Integer(3), menuActions);
+    } catch (IOException ioe) {
+      ClientFramework.debug(6, "Failed to saved query: I/O error.");
+      ClientFramework.debug(6, ioe.getMessage());
+    }
+  }
 
   /**
    * Set the ResultSet (usually as a result of refreshing or revising a Query)

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-13 07:25:44 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -818,6 +819,28 @@ public class Query extends DefaultHandler {
     }
     // return the merged results
     return results;
+  }
+
+  /**
+   * Save an XML serialized version of the query in the profile directory
+   */
+  public void save() throws IOException
+  {
+    ConfigXML profile = framework.getProfile();
+    String queriesDirName = config.get("profile_directory", 0) +
+                            File.separator +
+                            config.get("current_profile", 0) +
+                            File.separator +
+                            profile.get("queriesdir", 0); 
+    File queriesDir = new File(queriesDirName);
+    if (!queriesDir.exists()) {
+      queriesDir.mkdirs();
+    }
+    File queryFile = new File(queriesDir, getIdentifier());
+    boolean isNew = queryFile.createNewFile();
+    FileWriter output = new FileWriter(queryFile);
+    output.write(this.toXml());
+    output.close();
   }
 
   /**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2001-06-13 07:25:44 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,6 +103,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
     searchItemAction.putValue("menuPosition", new Integer(0));
+    searchItemAction.putValue(Action.DEFAULT, 
+                             ClientFramework.SEPARATOR_FOLLOWING);
     menuActions[0] = searchItemAction;
 
     // Set up the toolbar for the application
