@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 19:53:55 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-12-18 22:34:02 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,8 +245,6 @@ public class HeaderPanel extends JPanel
     // (OTHERWISE, OSX IGNORES BGCOLOR, WHICH MAKES TEXT UNREADABLE)
     class eJButton extends JButton 
     {
-        Color enabledForeGroundColor;
-        
         eJButton(Action a) {
             super(a);
             super.setUI(new javax.swing.plaf.metal.MetalButtonUI());
