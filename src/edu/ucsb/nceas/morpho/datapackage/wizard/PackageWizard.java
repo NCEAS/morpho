@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-23 22:22:08 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-05-24 20:20:39 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -392,6 +392,8 @@ public class PackageWizard extends javax.swing.JFrame
   {
     StringBuffer doc = new StringBuffer();
     Vector vStack = new Vector();
+    String attName = "";
+    boolean attFlag = false;
     
     for(int i=0; i<paths.size(); i++)
     {//put the paths into a vector for easy manipulation.
@@ -424,8 +426,9 @@ public class PackageWizard extends javax.swing.JFrame
     
     Vector elements = new Vector();
     int level = 0;
-    String spaces = ""; //spaces are used for textual representation of the xml
+    String spaces = ""; //used for textual representation of the xml
     //System.out.println(vStack.toString());
+    
     for(int i=0; i<vStack.size(); i++)
     { //go through the paths one by one.
       boolean samenode = false;
@@ -440,11 +443,24 @@ public class PackageWizard extends javax.swing.JFrame
         Vector pathVec = (Vector)vStack.elementAt(i);
         int diff = 0;
         
+        attFlag = false;
+        for(int j=0; j<pathVec.size(); j++)
+        {
+          String pathvecstr = ((String)pathVec.elementAt(j)).trim();
+          if(pathvecstr.indexOf("@") != -1)
+          {
+            attFlag = true;
+            attName = pathvecstr;
+            break;
+          }
+        }
+        
         for(int j=0; j<pathVec.size(); j++)
         { //find the point at which the elements vector and the pathVec
           //diverge and record it as diff
           String pathvecstr = ((String)pathVec.elementAt(j)).trim();
           String elementstr = ((String)elements.elementAt(j)).trim();
+          
           if((elements.size()-1) == j ||
             !pathvecstr.equals(elementstr))
           {
@@ -457,33 +473,165 @@ public class PackageWizard extends javax.swing.JFrame
           }
         }
         
-/////////////////////////////diff==0///////////////////////////////////////////
+        boolean continueFlag = false;
+        
+/////////this if statemen deals entirely with tags that have attributes////////
+        if(attFlag)
+        { //we are in an attribute group.  print out each of the next elements
+          //as attributes and values
+          //doc.append("diff: " + diff + "\n");
+          //doc.append("elements size: " + (elements.size()-1) + "\n");
+          //doc.append("elements: " + elements.toString() + "\n");
+          //doc.append("pathVec: " + pathVec.toString() + "\n");
+          if(diff == elements.size()-1)
+          { //first print out the end tag for the last element.
+            String e = (String)elements.elementAt(diff);
+            String p = (String)pathVec.elementAt(diff);
+            if(e.equals(p))
+            { //if the tags at the end of elements and at diff of pathVec
+              //are the same then we need to increment diff so that the
+              //next tag will get taken.
+              diff++;
+            }
+            
+            for(int j=elements.size()-1; j>=diff; j--)
+            { //print out any end tags that need to be closed.
+              String endTag = (String)elements.remove(j);
+              if(!endTag.equals(elements.elementAt(elements.size()-1)))
+              { //make sure that the endTag is not on the end of the elements
+                //vector.  if it is it is not time to print it yet.
+                //System.out.println(spaces + "</" + endTag+ ">");
+                doc.append(spaces + "</" + endTag.trim() + ">\n");
+                spaces = spaces.substring(0, spaces.length() - 2);
+              }
+            }
+          }
+          else if(diff < elements.size()-1)
+          {
+            for(int j=elements.size()-1; j>=diff; j--)
+            { //end the overlapping tags.
+              String endTag = (String)elements.remove(j);  
+              //System.out.println(spaces + "</" + endTag+ ">");
+              doc.append(spaces + "</" + endTag.trim() + ">\n");
+              spaces = spaces.substring(0, spaces.length() - 2);
+            }
+          }
+          
+          String attributeTag = (String)pathVec.elementAt(diff);
+          String tag = attributeTag.substring(1, attributeTag.length());
+          String tagContent = "";
+          spaces += "  ";
+          doc.append(spaces + "<" + tag);
+          i++;
+          elements = pathVec;
+          pathVec = (Vector)vStack.elementAt(i);
+          while(attributeTag.indexOf("@") != -1)
+          { //while there is an @ sign in the name of the parent tag, we need
+            //to take the next tags and make them into attributes
+            String attribute = (String)pathVec.elementAt(pathVec.size()-1);
+            if(attribute.equals("FIELDVALUE"))
+            { //the FIELDVALUE attribute is a keyword that tells you which
+              //text box to take the value of the actual tag from
+              String keyPath = "";
+              for(int k=0; k<pathVec.size(); k++)
+              {
+                keyPath += "/" + pathVec.elementAt(k);
+              }
+              
+              if(content.containsKey(keyPath))
+              { //get the content and save it
+                if(!((String)content.get(keyPath)).equals(""))
+                {
+                  tagContent = (String)content.get(keyPath);
+                }
+              }
+            }
+            else
+            {
+              doc.append(" " + attribute + "=\"");
+              
+              //get the path to the content in the hash
+              String keyPath = "";
+              for(int k=0; k<pathVec.size(); k++)
+              {
+                keyPath += "/" + pathVec.elementAt(k);
+              }
+              
+              if(content.containsKey(keyPath))
+              { //get the content and print it
+                if(!((String)content.get(keyPath)).equals(""))
+                {
+                  doc.append(content.get(keyPath));
+                }
+              }
+              doc.append("\"");
+            }
+            
+            i++;
+            //go the the next path
+            elements = pathVec;
+            pathVec = (Vector)vStack.elementAt(i);
+
+            if(diff >= pathVec.size())
+            { //if we have gone into a different tag then we need to take 
+              //a step back, break out of this loop and continue in the 
+              //main for i loop
+              continueFlag = true;
+              i--;
+              break;
+            }
+            
+            attributeTag = (String)pathVec.elementAt(diff);
+            
+            if(!attributeTag.equals(attName))
+            { //if there are two attributes with an @ sign in a row, this
+              //if statement makes sure that they get made into different
+              //tags and not just stuck together.
+              continueFlag = true;
+              i--;
+              break;
+            }
+          }
+          
+          doc.append(">\n"); //end the tag and add the content that was saved
+                             //from before
+          if(tagContent != "")
+          {
+            doc.append(spaces + "  " + tagContent + "\n");
+          }
+          
+          for(int j=diff+1; j<elements.size(); j++)
+          { //remove any extra attributes that we have already used.
+            elements.remove(j);
+          }
+          
+          //add the end tag
+          String attributeEndTag = (String)elements.remove(diff);
+          //remove the @ sign
+          attributeEndTag = attributeEndTag.substring(1, 
+                                                      attributeEndTag.length());
+          elements.addElement(attributeEndTag);
+          attFlag = false;
+          
+          if(continueFlag)
+          {
+            continue;
+          }
+        }
+        
+//1///////////////////////////diff==0///////////////////////////////////////////
         if(diff == 0)
         { //if diff==0 then the whole content vector needs to become the element
           //vector and the start tags from each element need to be printed
           //doc.append("diff==0\n");
           elements = pathVec;
-          int attIndex = -1;
+          
           for(int j=0; j<elements.size(); j++)
           {
             String startTag = (String)elements.elementAt(j);
-            
-            attIndex = startTag.indexOf("@");
-            if(attIndex != -1)
-            {//if there is an @ sign in the name of the element then it is
-             //an attribute, not an element.
-              System.out.println("startTag with att: " + startTag);
-              spaces += "  ";
-              startTag = startTag.substring(0, startTag.trim().length()-1);
-              //System.out.println(spaces + "<" + startTag + ">");
-              doc.append(spaces + "<" + startTag.trim() + "\"");
-            }
-            else
-            {
-              spaces += "  ";
-              //System.out.println(spaces + "<" + startTag + ">");
-              doc.append(spaces + "<" + startTag.trim() + ">\n");
-            }
+            spaces += "  ";
+            //System.out.println(spaces + "<" + startTag + ">");
+            doc.append(spaces + "<" + startTag.trim() + ">\n");
           }
           
           String keyPath = "";
@@ -491,32 +639,16 @@ public class PackageWizard extends javax.swing.JFrame
           {
             keyPath += "/" + pathVec.elementAt(k);
           }
-          if(attIndex != -1)
+          
+          if(content.containsKey(keyPath))
           {
-            if(content.containsKey(keyPath))
+            if(!((String)content.get(keyPath)).equals(""))
             {
-              if(!((String)content.get(keyPath)).equals(""))
-              {
-                doc.append(content.get(keyPath) + "\">");
-              }
-              else
-              {
-                doc.append("\">"); 
-              }
-            }
-          }
-          else
-          {
-            if(content.containsKey(keyPath))
-            {
-              if(!((String)content.get(keyPath)).equals(""))
-              {
-                doc.append(spaces + "  " + content.get(keyPath) + "\n");
-              }
+              doc.append(spaces + "  " + content.get(keyPath) + "\n");
             }
           }
         }
-/////////////////////diff==elements.size()-1///////////////////////////////////
+//2//////////////////diff==elements.size()-1///////////////////////////////////
         else if(diff == (elements.size()-1))
         { //in this state, the vectors differ at the end of the elements
           //vector.  
@@ -536,13 +668,6 @@ public class PackageWizard extends javax.swing.JFrame
             { //make sure that the endTag is not on the end of the elements
               //vector.  if it is it is not time to print it yet.
               //System.out.println(spaces + "</" + endTag+ ">");
-              int attIndex = endTag.indexOf("@");
-              if(attIndex != -1)
-              {
-                //System.out.println("endTag with @: " + endTag);
-                endTag = endTag.substring(0, endTag.indexOf(" "));
-              }
-              
               doc.append(spaces + "</" + endTag.trim() + ">\n");
               spaces = spaces.substring(0, spaces.length() - 2);
             }
@@ -553,59 +678,27 @@ public class PackageWizard extends javax.swing.JFrame
             elements.addElement(pathVec.elementAt(j));
             String startTag = (String)pathVec.elementAt(j);
             
-            int attIndex = startTag.indexOf("@");
-            if(attIndex != -1)
-            {//if there is an @ sign in the name of the element then it is
-             //an attribute, not an element.
-              spaces += "  ";
-              //System.out.println(spaces + "<" + startTag + ">");
-              startTag = startTag.substring(0, startTag.trim().length()-1);
-              System.out.println("startTag2 with att: " + startTag);
-              doc.append(spaces + "<" + startTag.trim() + "\"");
-              
-              String keyPath = "";
-              for(int k=0; k<elements.size(); k++)
-              {
-                keyPath += "/" + pathVec.elementAt(k);
-              }
-              //System.out.println("keypath: " + keyPath); 
-              if(content.containsKey(keyPath))
-              {
-                if(!((String)content.get(keyPath)).equals(""))
-                {
-                  //System.out.println(spaces + "  " + content.get(keyPath));
-                  doc.append(content.get(keyPath) + "\">");
-                }
-                else
-                {
-                  doc.append("\">"); 
-                }
-              }
-            }
-            else
+            spaces += "  ";
+            //System.out.println(spaces + "<" + startTag + ">");
+            doc.append(spaces + "<" + startTag.trim() + ">\n");
+            
+            String keyPath = "";
+            for(int k=0; k<elements.size(); k++)
             {
-              spaces += "  ";
-              //System.out.println(spaces + "<" + startTag + ">");
-              doc.append(spaces + "<" + startTag.trim() + ">\n");
-              
-              String keyPath = "";
-              for(int k=0; k<elements.size(); k++)
+              keyPath += "/" + pathVec.elementAt(k);
+            }
+            //System.out.println("keypath: " + keyPath); 
+            if(content.containsKey(keyPath))
+            {
+              if(!((String)content.get(keyPath)).equals(""))
               {
-                keyPath += "/" + pathVec.elementAt(k);
-              }
-              //System.out.println("keypath: " + keyPath); 
-              if(content.containsKey(keyPath))
-              {
-                if(!((String)content.get(keyPath)).equals(""))
-                {
-                  //System.out.println(spaces + "  " + content.get(keyPath));
-                  doc.append(spaces + "  " + content.get(keyPath) + "\n");
-                }
+                //System.out.println(spaces + "  " + content.get(keyPath));
+                doc.append(spaces + "  " + content.get(keyPath) + "\n");
               }
             }
           }
         }
-//////////////////////////diff<element.size()-1////////////////////////////////
+//3///////////////////////diff<element.size()-1////////////////////////////////
         else if(diff < (elements.size()-1))
         { //in this state, there is a difference before the end of the 
           //elements vector so several elements items need to be removed and
@@ -613,15 +706,8 @@ public class PackageWizard extends javax.swing.JFrame
           //doc.append("diff<elements.size()-1\n");
           for(int j=elements.size()-1; j>=diff; j--)
           { //end the overlapping tags.
-            String endTag = (String)elements.remove(j);
-            
-            int attIndex = endTag.indexOf("@");
-            if(attIndex != -1)
-            {
-              System.out.println("endTag with @: " + endTag);
-              endTag = endTag.substring(0, endTag.indexOf(" "));
-            }
-              //System.out.println(spaces + "</" + endTag+ ">");
+            String endTag = (String)elements.remove(j);  
+            //System.out.println(spaces + "</" + endTag+ ">");
             doc.append(spaces + "</" + endTag.trim() + ">\n");
             spaces = spaces.substring(0, spaces.length() - 2);
           }
@@ -630,57 +716,22 @@ public class PackageWizard extends javax.swing.JFrame
             //elements vector
             elements.addElement(pathVec.elementAt(j));
             String startTag = (String)pathVec.elementAt(j);
+            spaces += "  ";
+            //System.out.println(spaces + "<" + startTag + ">");
+            doc.append(spaces + "<" + startTag.trim() + ">\n");
             
-            int attIndex = startTag.indexOf("@");
-            if(attIndex != -1)
-            {//if there is an @ sign in the name of the element then it is
-             //an attribute, not an element.
-              System.out.println("startTag3 with att: " + startTag);
-              spaces += "  ";
-              //System.out.println(spaces + "<" + startTag + ">");
-              startTag = startTag.substring(0, startTag.trim().length()-1);
-              //remove the @ sign
-              doc.append(spaces + "<" + startTag.trim() + "\"");
-              
-              String keyPath = "";
-              for(int k=0; k<elements.size(); k++)
-              {
-                keyPath += "/" + pathVec.elementAt(k);
-              }
-              //System.out.println("keypath: " + keyPath);
-              if(content.containsKey(keyPath))
-              {
-                if(!((String)content.get(keyPath)).equals(""))
-                {
-                  //System.out.println(spaces + "  " + content.get(keyPath));
-                  doc.append(content.get(keyPath));
-                  doc.append("\">");
-                }
-                else
-                {
-                  doc.append("\">");
-                }
-              }
-            }
-            else
+            String keyPath = "";
+            for(int k=0; k<elements.size(); k++)
             {
-              spaces += "  ";
-              //System.out.println(spaces + "<" + startTag + ">");
-              doc.append(spaces + "<" + startTag.trim() + ">\n");
-              
-              String keyPath = "";
-              for(int k=0; k<elements.size(); k++)
+              keyPath += "/" + pathVec.elementAt(k);
+            }
+            //System.out.println("keypath: " + keyPath);
+            if(content.containsKey(keyPath))
+            {
+              if(!((String)content.get(keyPath)).equals(""))
               {
-                keyPath += "/" + pathVec.elementAt(k);
-              }
-              //System.out.println("keypath: " + keyPath);
-              if(content.containsKey(keyPath))
-              {
-                if(!((String)content.get(keyPath)).equals(""))
-                {
-                  //System.out.println(spaces + "  " + content.get(keyPath));
-                  doc.append(spaces + "  " + content.get(keyPath) + "\n");
-                }
+                //System.out.println(spaces + "  " + content.get(keyPath));
+                doc.append(spaces + "  " + content.get(keyPath) + "\n");
               }
             }
           }
@@ -692,13 +743,8 @@ public class PackageWizard extends javax.swing.JFrame
     { //print out the remainder of the elements vector to finish off the
       //document
       //System.out.println(spaces + "</" + elements.remove(i) + ">");
-      String endTag = (String)elements.remove(i);
-      if(endTag.indexOf("@") != -1)
-      {
-        endTag = endTag.substring(0, endTag.indexOf(" "));
-      }
-       
-      doc.append(spaces + "</" + endTag + ">\n");
+      String endTag = (String)elements.remove(i); 
+      doc.append(spaces + "</" + endTag.trim() + ">\n");
       spaces = spaces.substring(0, spaces.length() - 2);
     }
     return doc;

@@ -1,35 +1,49 @@
 <?xml version="1.0"?>
-<wizard size="780x250" dtd="eml-entity.dtd" doctype="-//NCEAS//eml-entity2.0//EN">
+<wizard size="500x500" dtd="eml-entity.dtd" doctype="-//NCEAS//eml-entity2.0//EN">
   <group label="Entity Information" field="table-entity" type="panel">
     <textbox label="identifier" size="10" visible="no" field="identifier" repeatable="yes" required="yes"/>
     <textbox label="Name" field="entityName"  size="10" required="yes"/>
     <textbox label="Description" field="entityDescription"  size="10" />
+    
+      <group label="Temporal Coverage" field="temporalCov" repeatable="yes">
+        <textbox size="10" label="dummy" field="dummy1"/>
+        <textbox size="10" label="dummy" field="dummy2"/>
+        <textbox size="10" label="dummy" field="dummy3"/>
+      </group>
+      <group label="Geographic Coverage" field="geographicCov" repeatable="yes">
+        <textbox size="10" label="dummy" field="dummy1"/>
+        <textbox size="10" label="dummy" field="dummy2"/>
+        <textbox size="10" label="dummy" field="dummy3"/>
+      </group>
+      <group label="Taxonomic Coverage" field="taxonomicCov" repeatable="yes">
+        <textbox size="10" label="dummy" field="dummy1"/>
+        <textbox size="10" label="dummy" field="dummy2"/>
+        <textbox size="10" label="dummy" field="dummy3"/>
+      </group>
+    
+    <!--
+    <group field="@test2">
+      <textbox label="test1" field="FIELDVALUE" size="10"/>
+      <textbox label="att1" field="att" size="10"/>
+      <textbox label="att2" field="att2" size="10"/>
+    </group>
+    -->
     <group>
-    <group label="Temporal Coverage" field="temporalCov" repeatable="yes">
-      <textbox size="10" label="dummy" field="dummy"/>
-    </group>
-    <group label="Geographic Coverage" field="geographicCov" repeatable="yes">
-      <textbox size="10" label="dummy" field="dummy"/>
-    </group>
-    <group label="Taxonomic Coverage" field="taxonomicCov" repeatable="yes">
-      <textbox size="10" label="dummy" field="dummy"/>
-    </group>
+    <group field="@orientation">
+      <combobox label="Orientation" field="columnrow"  size="10" defaulttext="columnmajor">
+        <item name="Column Major" value="columnmajor"/>
+        <item name="Row Major" value="rowmajor"/>
+      </combobox>
     </group>
     
-    <combobox label="Orientation" field="orientation columnrow=@"  size="10" visible="yes" defaulttext="columnmajor">
-      <item name="Column Major" value="columnmajor"/>
-      <item name="Row Major" value="rowmajor"/>
-    </combobox>
-
-    <combobox label="Case Sensitive" field="caseSensitive yesorno=@ nory=@"  size="10" visible="yes" defaulttext="no">
-      <item name="No" value="no" />
-      <item name="Yes" value="yes"/>
-    </combobox>
-    <combobox label="Case Sensitive" field="caseSensitive yorn=@"  size="10" visible="yes" defaulttext="no">
-      <item name="No" value="no2" />
-      <item name="Yes" value="yes2"/>
-    </combobox>
-
+    <group field="@casesSensitive">
+      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no">
+        <item name="No" value="no" />
+        <item name="Yes" value="yes"/>
+      </combobox>
+    </group>
+    
     <textbox label="Number of Records"  size="10" field="numberOfRecords"/>
+    </group>
   </group>
 </wizard>

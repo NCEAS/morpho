@@ -1,12 +1,29 @@
 <?xml version="1.0"?>
 <wizard size="780x250" dtd="eml-entity.dtd" doctype="-//NCEAS//eml-entity2.0//EN">
   <group label="Entity Information" field="table-entity" type="panel">
-    <group field="@test1">
-      <textbox label="test1" field="VALUE" size="10"/>
-      <textbox label="att1" field="test1 att=@" size="10"/>
-      <textbox label="att2" field="test1 att2=@" size="10"/>
+    <textbox label="abc" field="abc" size="10"/>
+    <textbox label="cba" field="cba" size="10"/>
+    <group label="xyz" field="xyz">
+      <group field="laksjf">
+       <textbox label="m" field="cb" size="10"/>
+      <textbox label="clkj" field="c" size="10"/>
+      </group>
+      <group field="@test1">
+        <textbox label="test1" field="FIELDVALUE" size="10"/>
+        <textbox label="att1" field="att" size="10"/>
+        <textbox label="att2" field="att2" size="10"/>
+      </group>
+      <group field="@test2">
+        <textbox label="test1" field="FIELDVALUE" size="10"/>
+        <textbox label="att1" field="att" size="10"/>
+        <textbox label="att2" field="att2" size="10"/>
+      </group>
+      <textbox label="m" field="ca" size="10"/>
+      <textbox label="clkj" field="123cba" size="10"/>
     </group>
-    <textbox label="test2" field="test2 att=@" size="10"/>
-    <textbox label="test3" field="test3 att=@" size="10"/>
+    <group field="a">
+      <textbox label="m" field="cba" size="10"/>
+      <textbox label="clkj" field="cba" size="10"/>
+    </group>
   </group>
 </wizard>
