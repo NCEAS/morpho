@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2004-04-12 20:27:20 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-04-14 15:56:30 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ public class SplashFrame extends javax.swing.JFrame
                                      "Perumal Sambasivam",
                                      "Andrea Chadden",
                                      "Rick Reeves",
+                                     "Sandy Andelman",
                                     };
   private static String[] orgs = { 
                  "National Center for Ecological Analysis and Synthesis",
