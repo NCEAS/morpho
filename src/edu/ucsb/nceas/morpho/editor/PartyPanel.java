@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-10-30 18:54:16 $'
- * '$Revision: 1.5 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-21 04:41:15 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,26 +26,32 @@
  */
 package edu.ucsb.nceas.morpho.editor;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.tree.*;
-import java.util.*;
+import java.util.Enumeration;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.*;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.*;
-import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.FocusAdapter;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
 /**
  * PartyPanel is an example of a special panel editor for
- * use with the DocFrame class. It is designed to 
- * 
+ * use with the DocFrame class. It is designed to
+ *
  * @author higgins
  */
 public class PartyPanel extends JPanel
-{  
+{
 
   private static final Dimension PARTY_2COL_LABEL_DIMS = new Dimension(70,20);
-  
+
   private short  role;
   private String roleString;
   private JLabel salutationLabel;
@@ -69,11 +75,11 @@ public class PartyPanel extends JPanel
   private JTextField faxField;
   private JTextField emailField;
   private JTextField urlField;
-    
-  DefaultMutableTreeNode nd = null;  
-  DefaultMutableTreeNode nd1 = null;  
-  
-  public PartyPanel(DefaultMutableTreeNode node) { 
+
+  DefaultMutableTreeNode nd = null;
+  DefaultMutableTreeNode nd1 = null;
+
+  public PartyPanel(DefaultMutableTreeNode node) {
     nd = node;
     JPanel jp = this;
     jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
@@ -85,7 +91,7 @@ public class PartyPanel extends JPanel
   }
 
   private void init(JPanel panel) {
-    
+
     ////
     JPanel salutationPanel = WidgetFactory.makePanel(1);
     salutationLabel = WidgetFactory.makeLabel("Salutation:", false);
@@ -95,7 +101,7 @@ public class PartyPanel extends JPanel
     salutationField.addFocusListener(new dfhFocus());
     salutationPanel.add(salutationField);
     panel.add(salutationPanel);
-    
+
     ////
     JPanel firstNamePanel = WidgetFactory.makePanel(1);
     firstNamePanel.add(WidgetFactory.makeLabel("First Name:", false));
@@ -104,7 +110,7 @@ public class PartyPanel extends JPanel
     firstNameField.addFocusListener(new dfhFocus());
     firstNamePanel.add(firstNameField);
     panel.add(firstNamePanel);
-    
+
     ////
     JPanel lastNamePanel = WidgetFactory.makePanel(1);
     lastNameLabel = WidgetFactory.makeLabel("Last Name:", true);
@@ -114,7 +120,7 @@ public class PartyPanel extends JPanel
     lastNameField.addFocusListener(new dfhFocus());
     lastNamePanel.add(lastNameField);
     panel.add(lastNamePanel);
-    
+
     ////
     JPanel organizationPanel = WidgetFactory.makePanel(1);
     organizationLabel = WidgetFactory.makeLabel("Organization:", true);
@@ -124,7 +130,7 @@ public class PartyPanel extends JPanel
     organizationField.addFocusListener(new dfhFocus());
     organizationPanel.add(organizationField);
     panel.add(organizationPanel);
-    
+
     ////
     JPanel positionNamePanel = WidgetFactory.makePanel(1);
     positionNameLabel = WidgetFactory.makeLabel("Position Name:", true);
@@ -134,7 +140,7 @@ public class PartyPanel extends JPanel
     positionNameField.addFocusListener(new dfhFocus());
     positionNamePanel.add(positionNameField);
     panel.add(positionNamePanel);
-    
+
     ////
     JPanel address1Panel = WidgetFactory.makePanel(1);
     address1Panel.add(WidgetFactory.makeLabel("Address 1:", false));
@@ -143,7 +149,7 @@ public class PartyPanel extends JPanel
     address1Field.addFocusListener(new dfhFocus());
     address1Panel.add(address1Field);
     panel.add(address1Panel);
-  
+
     ////
     JPanel address2Panel = WidgetFactory.makePanel(1);
     address2Panel.add(WidgetFactory.makeLabel("Address 2:", false));
@@ -151,7 +157,7 @@ public class PartyPanel extends JPanel
     // need to figure out how to handle multiple addresses
     address2Panel.add(address2Field);
     panel.add(address2Panel);
-    
+
     ////
     JPanel cityStatePanel = WidgetFactory.makePanel(1);
     cityStatePanel.add(WidgetFactory.makeLabel("City:", false));
@@ -168,7 +174,7 @@ public class PartyPanel extends JPanel
     stateField.addFocusListener(new dfhFocus());
     cityStatePanel.add(stateField);
     panel.add(cityStatePanel);
-    
+
     ////
     JPanel zipCountryPanel = WidgetFactory.makePanel(1);
     zipCountryPanel.add(WidgetFactory.makeLabel("Postal Code:", false));
@@ -185,8 +191,8 @@ public class PartyPanel extends JPanel
     countryField.addFocusListener(new dfhFocus());
     zipCountryPanel.add(countryField);
     panel.add(zipCountryPanel);
-  
-    
+
+
     ////
     JPanel phoneFaxPanel = WidgetFactory.makePanel(1);
     phoneFaxPanel.add(WidgetFactory.makeLabel("Phone:", false));
@@ -202,8 +208,8 @@ public class PartyPanel extends JPanel
     faxField.setText(getValue(nd, "phone", "phonetype", "facsimile"));
     phoneFaxPanel.add(faxField);
     panel.add(phoneFaxPanel);
-  
-    
+
+
     ////
     JPanel emailUrlPanel = WidgetFactory.makePanel(1);
     emailUrlPanel.add(WidgetFactory.makeLabel("Email:", false));
@@ -222,10 +228,10 @@ public class PartyPanel extends JPanel
     panel.add(emailUrlPanel);
   }
 
-  
-  
+
+
   private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
-  
+
     WidgetFactory.setPrefMaxSizes(component, dims);
     component.setMinimumSize(dims);
   }
@@ -250,7 +256,7 @@ public class PartyPanel extends JPanel
     }
     return ret;
   }
-  
+
     /**
    *  This method searches for a descendent of the specified node
    *  with the specified name, and the specified attribute with the given name
@@ -318,8 +324,8 @@ public class PartyPanel extends JPanel
       }
     }
   }
-  
-    
+
+
 class dfhAction implements java.awt.event.ActionListener
 {
   public void actionPerformed(java.awt.event.ActionEvent event)
@@ -338,47 +344,47 @@ class dfhFocus extends java.awt.event.FocusAdapter {
       Object object = event.getSource();
       if (object == salutationField) {
         String val = salutationField.getText();
-        setValue(nd, "salutation", val);	      
+        setValue(nd, "salutation", val);
       }
        else if (object == firstNameField) {
         String val = firstNameField.getText();
-        setValue(nd, "givenName", val);	      
+        setValue(nd, "givenName", val);
       }
       else if (object == lastNameField) {
         String val = lastNameField.getText();
-        setValue(nd, "surName", val);	      
+        setValue(nd, "surName", val);
       }
       else if (object == organizationField) {
         String val = organizationField.getText();
-        setValue(nd, "organizationName", val);	      
+        setValue(nd, "organizationName", val);
       }
       else if (object == positionNameField) {
         String val = positionNameField.getText();
-        setValue(nd, "positionName", val);	      
+        setValue(nd, "positionName", val);
       }
       else if (object == address1Field) {
         String val = address1Field.getText();
-        setValue(nd, "deliveryPoint", val);	      
+        setValue(nd, "deliveryPoint", val);
       }
       else if (object == cityField) {
         String val = cityField.getText();
-        setValue(nd, "city", val);	      
+        setValue(nd, "city", val);
       }
       else if (object == stateField) {
         String val = stateField.getText();
-        setValue(nd, "administrativeArea", val);	      
+        setValue(nd, "administrativeArea", val);
       }
       else if (object == zipField) {
         String val = zipField.getText();
-        setValue(nd, "postalCode", val);	      
+        setValue(nd, "postalCode", val);
       }
       else if (object == countryField) {
         String val = countryField.getText();
-        setValue(nd, "country", val);	      
+        setValue(nd, "country", val);
       }
       else if (object == phoneField) {
         String val = phoneField.getText();
-        setValue(nd, "phone", val);	      
+        setValue(nd, "phone", val);
       }
       else if (object == faxField) {
         String val = faxField.getText();
@@ -386,14 +392,14 @@ class dfhFocus extends java.awt.event.FocusAdapter {
       }
       else if (object == emailField) {
         String val = emailField.getText();
-        setValue(nd, "electronicMailAddress", val);	      
+        setValue(nd, "electronicMailAddress", val);
       }
       else if (object == urlField) {
         String val = urlField.getText();
-        setValue(nd, "onlineUrl", val);	      
+        setValue(nd, "onlineUrl", val);
       }
     }
-		
+
   public void focusGained(java.awt.event.FocusEvent event)
     {
       Object object = event.getSource();
@@ -401,5 +407,5 @@ class dfhFocus extends java.awt.event.FocusAdapter {
       }
     }
 }
-    
+
 }
