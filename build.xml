@@ -1,9 +1,14 @@
 <?xml version="1.0"?>
-<project name="dtclient" default="compileClient" basedir=".">
+<project name="dtclient" default="buildAll" basedir=".">
    <target name="init">
       <property name="classesdir" value="./classes" />
+      <property name="libdir" value="./lib" />
       <property name="dtclient.home" value="edu/ucsb/nceas/dtclient" />
+      <property name="metaedit.home" value="edu/ucsb/nceas/metaedit" />
+      <property name="querybean.home" value="edu/ucsb/nceas/querybean" />
       <property name="src.dtclient.home" value="src/edu/ucsb/nceas/dtclient" />
+      <property name="src.metaedit.home" value="src/edu/ucsb/nceas/metaedit" />
+      <property name="src.querybean.home" value="src/edu/ucsb/nceas/querybean" />
       <property name="src.arbortext.home"  value="src/com/arbortext/catalog"  />
       <property name="src.sym.home.awt"  value="src/com/symantec/itools/awt"  />
       <property name="src.sym.home.swing"  value="src/com/symantec/itools/javax/swing"  />
@@ -22,15 +27,26 @@
        <javac srcdir="${src.sym.home.swing}" destdir="${classesdir}" />
    </target>
 
-   <target name="compileClient" depends="init,compileCat,compileSymAwt,compileSymSwing">
-       <javac srcdir="${src.dtclient.home}" destdir="${classesdir}" classpath="xerces.jar;xalan.jar" /> 
+   <target name="compileQueryBean" depends="init">
+       <javac srcdir="${src.querybean.home}" destdir="${classesdir}" classpath="lib/xerces.jar;lib/xalan.jar;lib/sym.jar;lib/catalog.jar" />
+   </target>
+
+   <target name="compileMdeBean" depends="init">
+       <javac srcdir="${src.metaedit.home}" destdir="${classesdir}" classpath="lib/xml4j.jar;lib/xerces.jar;lib/sym.jar;lib/catalog.jar" />
+   </target>
+
+   <target name="compileClient" depends="init,compileCat,compileQueryBean,compileMdeBean">
+       <javac srcdir="${src.dtclient.home}" destdir="${classesdir}" classpath="lib/xerces.jar;lib/xalan.jar;lib/sym.jar" /> 
        <copydir src="images/" dest="${classesdir}/${dtclient.home}" />
-       <delete file="XMLClient.jar" />
-       <jar jarfile="XMLClient.jar" basedir="${classesdir}"  />
    </target> 
+ 
+   <target name="buildAll" depends="init,compileClient">
+        <delete file="dmanclient.jar" />
+       <jar jarfile="lib/dmanclient.jar" basedir="${classesdir}"  />
+   </target>
 
    <target name="clean" depends="init">
-       <delete file="XMLClient.jar" />
+       <delete file="dmanclient.jar" />
        <deltree dir="${classesdir}" />
    </target>
 </project>
