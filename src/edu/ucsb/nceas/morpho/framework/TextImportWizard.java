@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-27 00:16:50 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-11-30 16:16:48 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -346,11 +346,12 @@ public class TextImportWizard extends javax.swing.JFrame
 		ColumnUnitTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JPanel23.setLayout(new BoxLayout(JPanel23,BoxLayout.Y_AXIS));
 		JPanel22.add(JPanel23);
+		JScrollPane2.setOpaque(true);
 		JPanel23.add(JScrollPane2);
 		ColumnDefTextArea.setLineWrap(true);
 		ColumnDefTextArea.setWrapStyleWord(true);
 		JScrollPane2.getViewport().add(ColumnDefTextArea);
-		ColumnDefTextArea.setBounds(0,0,-69,19);
+		ColumnDefTextArea.setBounds(0,0,278,71);
 		JLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 		JLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		JLabel13.setText("Column Definition:");
@@ -1696,7 +1697,7 @@ public void startImport(String file) {
 	{
     if (selectedCol>-1) {
         ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-        cd.colTitle = ColumnNameTextField.getText();
+        cd.colTitle = ColumnLabelTextField.getText();
       }
 	}
 
@@ -1735,7 +1736,7 @@ public void startImport(String file) {
 	{
     if (selectedCol>-1) {
         ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-        cd.colTitle = ColumnNameTextField.getText();
+        cd.colTitle = ColumnLabelTextField.getText();
       }
 			 
 	}
@@ -1915,12 +1916,12 @@ public void startImport(String file) {
 	        XMLBuffer.append("             </rangeDomain>\n");
 	    }
 	    else if(cd.useEnumerationList) {
-	        XMLBuffer.append("             <enumeratedDomain>\n");
 	        for (int k=0;k<cd.colUniqueItemsList.size();k++) {
+	            XMLBuffer.append("             <enumeratedDomain>\n");
 	            XMLBuffer.append("                <code>"+(String)cd.colUniqueItemsList.elementAt(k)+"</code>\n");
 	            XMLBuffer.append("                <definition> </definition>\n");
+	            XMLBuffer.append("             </enumeratedDomain>\n");
 	        }
-	        XMLBuffer.append("             </enumeratedDomain>\n");
 	    }
 	    else {
 	        XMLBuffer.append("             <enumeratedDomain>\n");
