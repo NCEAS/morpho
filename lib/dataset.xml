@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE dataset PUBLIC "-//NCEAS//eml-dataset-2.0//EN" "file:////C:/work/dmanclient/lib/catalog/eml-dataset-2.0.dtd">
 
-<dataset editor="edu.ucsb.nceas.morpho.editor.DataPackagePanel">
+<dataset>
   <identifier editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="The unique identifier of this metadata file or object."></identifier>
   <shortName help="A short name that describes the resource, sometimes a filename."></shortName>
   <title help="A brief description of the resource, providing enough detail to differentiate it from other similar resources."></title>
