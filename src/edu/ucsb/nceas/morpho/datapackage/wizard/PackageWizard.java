@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:34:48 $'
- * '$Revision: 1.42 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-12-11 00:23:34 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1163,8 +1163,26 @@ public class PackageWizard extends javax.swing.JFrame
       }
       else if(tempElement.name.equals("textbox"))
       {//add a new text box 
+        boolean multiline = false;
+        String multilineS = (String)tempElement.attributes.get("multiline");
+        //see if we need to make a multiline text box.
+        if(multilineS != null && multilineS.equals("yes"))
+        {
+          multiline = true;
+        }
+        
         final JTextFieldWrapper textfield = new JTextFieldWrapper();
-        textfield.element = tempElement;
+        final JTextAreaWrapper textarea = new JTextAreaWrapper();
+        if(multiline)
+        {
+          textarea.element = tempElement;
+          textfield.element = null;
+        }
+        else
+        {
+          textfield.element = tempElement;
+          textarea.element = null;
+        }
         
         final JLabel label = new JLabel(
                                  (String)tempElement.attributes.get("label"));
@@ -1198,60 +1216,134 @@ public class PackageWizard extends javax.swing.JFrame
                   //and stick it in the tree.  then repaint.
                   XMLElement newtempElement = new XMLElement(tempElement);
                   JLabel newLabel = new JLabel(label.getText());
-                  JTextFieldWrapper newtextfield = new JTextFieldWrapper();
-                  newtextfield.element = newtempElement;
-                  newtextfield.setPreferredSize(new Dimension(10, 20));
-                  Integer newsize = new Integer(10);
-                  if(newtempElement.attributes.containsKey("size"))
+                  JTextFieldWrapper newtextfield = null;
+                  JTextAreaWrapper newtextarea = null;
+                  JPanel parentPanel2;
+                  int insertindex;
+                  if(textfield.element != null)
                   {
-                    newsize = new Integer(
-                              (String)newtempElement.attributes.get("size"));
-                  }
-                  newtextfield.setColumns(newsize.intValue());
-                  int textfieldindex = parentPanel.children.indexOf(textfield);
-                  parentPanel.children.insertElementAt(newtextfield, 
-                                                       textfieldindex+1);
-                  JPanel parentPanel2 = (JPanel)textfield.getParent().getParent();
-                  int numcomponents = parentPanel2.getComponentCount();
-                  
-                  int insertindex = numcomponents;
-                  for(int j=0; j<numcomponents; j++)
-                  {
-                    Component nextcomp = parentPanel2.getComponent(j); 
-                    try
+                    newtextfield = new JTextFieldWrapper();
+                    newtextfield.element = newtempElement;
+                    newtextfield.setPreferredSize(new Dimension(10, 20));
+                    Integer newsize = new Integer(10);
+                    if(newtempElement.attributes.containsKey("size"))
                     {
-                      JTextField t = (JTextField)((Component)
-                                            ((JPanel)nextcomp).getComponent(1));
-                      if(t == textfield)
+                      newsize = new Integer(
+                                (String)newtempElement.attributes.get("size"));
+                    }
+                    newtextfield.setColumns(newsize.intValue());
+                    int textfieldindex = parentPanel.children.indexOf(textfield);
+                    parentPanel.children.insertElementAt(newtextfield, 
+                                                         textfieldindex + 1);
+                    
+                    parentPanel2 = (JPanel)textfield.getParent().getParent();
+                    int numcomponents = parentPanel2.getComponentCount();
+                    
+                    insertindex = numcomponents;
+                    for(int j=0; j<numcomponents; j++)
+                    {
+                      Component nextcomp = parentPanel2.getComponent(j); 
+                      try
                       {
-                        insertindex = j;
+                        JTextField t = (JTextField)((Component)
+                                              ((JPanel)nextcomp).getComponent(1));
+                        if(t == textfield)
+                        {
+                          insertindex = j;
+                        }
+                      }
+                      catch(ClassCastException cce)
+                      {
+                        ClientFramework.debug(11, 
+                                       "Exception in packagewizard." +
+                                       "createpanel()(1): This is OK.");
+                      }
+                      catch(ArrayIndexOutOfBoundsException aioobe)
+                      {
+                        ClientFramework.debug(11, 
+                                       "Exception in packagewizard." + 
+                                       "createpanel()(2): This is OK.");
                       }
                     }
-                    catch(ClassCastException cce)
+                    
+                    if(tempElement.attributes.containsKey("defaulttext"))
                     {
-                      ClientFramework.debug(11, 
-                                     "Exception in packagewizard." +
-                                     "createpanel()(1): This is OK.");
+                      String defaultText1 = (String)
+                                     tempElement.attributes.get("defaulttext");
+                      newtextfield.setText(defaultText1);
                     }
-                    catch(ArrayIndexOutOfBoundsException aioobe)
+                  }
+                  else
+                  {
+                    newtextarea = new JTextAreaWrapper();
+                    newtextarea.element = newtempElement;
+                    newtextarea.setPreferredSize(new Dimension(10, 20));
+                    Integer newsize = new Integer(10);
+                    if(newtempElement.attributes.containsKey("size"))
                     {
-                      ClientFramework.debug(11, 
-                                     "Exception in packagewizard." + 
-                                     "createpanel()(2): This is OK.");
+                      newsize = new Integer(
+                                (String)newtempElement.attributes.get("size"));
+                    }
+                    newtextarea.setColumns(newsize.intValue());
+                    int textfieldindex = parentPanel.children.indexOf(textarea);
+                    parentPanel.children.insertElementAt(newtextarea, 
+                                                         textfieldindex + 1);
+                    
+                    parentPanel2 = (JPanel)textarea.getParent().getParent().getParent();
+                    int numcomponents = parentPanel2.getComponentCount();
+                    System.out.println("!!!!!!!!!!!!!1numcomponents: " + numcomponents);
+                    insertindex = numcomponents;
+                    for(int j=0; j<numcomponents; j++)
+                    {
+                      Component nextcomp = parentPanel2.getComponent(j); 
+                      try
+                      {
+                        
+                        JTextArea t = (JTextArea)((Component)((JPanel)nextcomp).getComponent(1));
+                        System.out.println("??????????????before if");
+                        if(t == textarea)
+                        {
+                          System.out.println("!!!!!!!!!!!!!!!!!!!!insertindex = " + j);
+                          insertindex = j;
+                        }
+                      }
+                      catch(ClassCastException cce)
+                      {
+                        ClientFramework.debug(11, 
+                                       "Exception in packagewizard." +
+                                       "createpanel()(1,2): This is OK.");
+                      }
+                      catch(ArrayIndexOutOfBoundsException aioobe)
+                      {
+                        ClientFramework.debug(11, 
+                                       "Exception in packagewizard." + 
+                                       "createpanel()(2,2): This is OK.");
+                      }
+                    }
+                    
+                    if(tempElement.attributes.containsKey("defaulttext"))
+                    {
+                      String defaultText1 = (String)
+                                     tempElement.attributes.get("defaulttext");
+                      newtextarea.setText(defaultText1);
                     }
                   }
                   
-                  if(tempElement.attributes.containsKey("defaulttext"))
-                  {
-                    String defaultText1 = (String)
-                                     tempElement.attributes.get("defaulttext");
-                    newtextfield.setText(defaultText1);
-                  }
                   JPanel layoutpanel = new JPanel();
                   BorderLayout bl = new BorderLayout();
                   layoutpanel.setLayout(bl);
                   layoutpanel.add(newLabel, BorderLayout.WEST);
-                  layoutpanel.add(newtextfield, BorderLayout.EAST);
+                  if(newtextfield != null)
+                  {
+                    layoutpanel.add(newtextfield, BorderLayout.EAST);
+                  }
+                  else
+                  {
+                    newtextarea.setRows(4);
+                    newtextarea.setLineWrap(true);
+                    newtextarea.setWrapStyleWord(true);
+                    layoutpanel.add(newtextarea, BorderLayout.EAST);
+                  }
                   parentPanel2.add(layoutpanel, insertindex + 1);
                   parentPanel2.validate();
                   parentPanel2.repaint();
@@ -1283,21 +1375,45 @@ public class PackageWizard extends javax.swing.JFrame
           String editable = (String)tempElement.attributes.get("editable");
           if(editable.equals("no"))
           {
-            textfield.setEnabled(false);
-            textfield.setBackground(new Color(230,230,230));
+            if(!multiline)
+            {
+              textfield.setEnabled(false);
+              textfield.setBackground(new Color(230,230,230));
+            }
+            else
+            {
+              textarea.setEnabled(false);
+              textarea.setBackground(new Color(230,230,230));
+            }
           }
         }
         
         //set the user defined size of the text field
-        textfield.setColumns(size.intValue());
-        parentPanel.children.addElement(textfield);
+        if(!multiline)
+        {
+          textfield.setColumns(size.intValue());
+          parentPanel.children.addElement(textfield);
+        }
+        else
+        {
+          textarea.setColumns(size.intValue());
+          parentPanel.children.addElement(new JScrollPane(textarea));
+        }
+        
         //add the new textfield to the children of the parentPanel for later
         //navigation
         
         if(tempElement.attributes.containsKey("tooltip"))
         {
           String tooltip = (String)tempElement.attributes.get("tooltip");
-          textfield.setToolTipText(tooltip);
+          if(!multiline)
+          {
+            textfield.setToolTipText(tooltip);
+          }
+          else
+          {
+            textarea.setToolTipText(tooltip);
+          }
           label.setToolTipText(tooltip);
         }
         
@@ -1321,11 +1437,30 @@ public class PackageWizard extends javax.swing.JFrame
           if(visible.equals("no"))
           { //make the box invisible
             layoutpanel.setVisible(false);
-            textfield.setVisible(false);
+            if(!multiline)
+            {
+              textfield.setVisible(false);
+            }
+            else
+            {
+              textarea.setVisible(false);
+            }
           }
         }
-        textfield.setText(defaultText);
-        layoutpanel.add(textfield, BorderLayout.EAST);
+        
+        if(!multiline)
+        {
+          textfield.setText(defaultText);
+          layoutpanel.add(textfield, BorderLayout.EAST);
+        }
+        else
+        {
+          textarea.setText(defaultText);
+          textarea.setRows(4);
+          textarea.setLineWrap(true);
+          textarea.setWrapStyleWord(true);
+          layoutpanel.add(new JScrollPane(textarea), BorderLayout.EAST);
+        }
         parentPanel.add(layoutpanel);
       }
       else if(tempElement.name.equals("combobox"))
@@ -1603,6 +1738,28 @@ public class PackageWizard extends javax.swing.JFrame
     {
       
     }
+    
+    public String getText() {
+      String rawtext = super.getText();
+      String normalizedText = normalize(rawtext);
+      return normalizedText;
+    }
+  }
+  
+  /**
+     Wrapper for JTextArea
+     this allows the paths to be traced back from the panel when the xml
+     document is created
+   */
+  private class JTextAreaWrapper extends JTextArea
+  {
+    public XMLElement element;
+    
+    public JTextAreaWrapper()
+    {
+      
+    }
+    
     public String getText() {
       String rawtext = super.getText();
       String normalizedText = normalize(rawtext);

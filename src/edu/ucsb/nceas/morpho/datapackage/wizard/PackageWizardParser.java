@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:34:47 $'
- * '$Revision: 1.5 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-12-11 00:23:35 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,7 +221,7 @@ public class PackageWizardParser extends DefaultHandler
         int len = atts.getLength();
         for(int i=0; i<len; i++)
         { //get each of the attributes on the group object and put them
-          //into the hashtable of the groupObj 
+          //into the hashtable of the textObj 
           String locName = atts.getLocalName(i);
           String val = atts.getValue(i);
           textObj.attributes.put(locName, val);
@@ -238,7 +238,7 @@ public class PackageWizardParser extends DefaultHandler
       //System.out.println("popping tempgroup in item");
       tempgroup = (XMLElement)groupStack.pop();
       textObj = new XMLElement();
-//      textObj = (XMLElement)tempgroup.content.remove(tempgroup.content.size()-1);
+      //textObj = (XMLElement)tempgroup.content.remove(tempgroup.content.size()-1);
       textObj = (XMLElement)tempgroup.content.elementAt(tempgroup.content.size()-1);
       tempgroup.content.removeElementAt(tempgroup.content.size()-1);
       XMLElement item = new XMLElement();
