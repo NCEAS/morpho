@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-09 23:31:53 $'
- * '$Revision: 1.62 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-11 17:04:08 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -471,7 +471,8 @@ public class DataPackagePlugin
     Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
 //DFH    if ((doctype!=null)&&(doctype.indexOf("eml://ecoinformatics.org/eml-2.0.0")>-1)) {
-    if ((doctype!=null)&&(true)) {
+    if (true) {  // set so that an old-style datapackage is never created
+                 // will excise unneeded code later
       boolean metacat = false;
       boolean local = false;
       if ((location.equals(DataPackageInterface.METACAT))||
