@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-18 22:51:06 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2003-11-19 18:07:00 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -324,28 +324,14 @@ public class DataPackageFactory
               +"bounds/maximum","1.0");
       //  create ordermap elements for a new entity
       om1.put("/dataTable/entityName", "TestEntityName");
-      om1.put("/dataTable/attributeList/attribute", "attribute1");
+      om1.put("/dataTable/attributeList/attribute/attributeName", "attributeOne");
               
     } catch (Exception w) {Log.debug(5, "problem creating ordered map!");}
     
     try{        
-        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-        Document doc = impl.createDocument("", "attribute", null);
-        attrRoot = doc.getDocumentElement();
-        attrRoot.appendChild(doc.createElement("attributeName"));
- Log.debug(1, "getDocumentElement:"+XMLUtilities.getDOMTreeAsString(attrRoot));    
-        XMLUtilities.getXPathMapAsDOMTree(om, attrRoot);
- Log.debug(1, "after_getXPathMapAsDOMTree:"+XMLUtilities.getDOMTreeAsString(attrRoot));    
  
- //       Document doc1 = impl.createDocument("", "dataTable", null);
- //       entRoot = doc1.getDocumentElement();
-        entityObject = new Entity("dataTable", om1);
-        entRoot = entityObject.getNode();
-        attributeObject = new Attribute(om);
-//        entRoot.appendChild(doc1.createElement("entityName"));
-// Log.debug(1, "getDocumentElement:"+XMLUtilities.getDOMTreeAsString(entRoot));    
-        XMLUtilities.getXPathMapAsDOMTree(om1, entRoot);
- Log.debug(1, "after_getXPathMapAsDOMTree:"+XMLUtilities.getDOMTreeAsString(entRoot));    
+      entityObject = new Entity("dataTable", om1);
+      attributeObject = new Attribute(om);
 
       }
       catch (Exception e) {Log.debug(5, "problem creating DOM tree!"+ e);}
@@ -353,12 +339,11 @@ public class DataPackageFactory
       adp.insertEntity(entityObject, 3);
       adp.insertAttribute(0, attributeObject,1);
       
-       Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
-       Node domnode = adp.getMetadataNode();
-       DocFrame df = new DocFrame();
-       df.setVisible(true);
-       df.initDoc(null, domnode);
-//      System.exit(0);
+      Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
+      Node domnode = adp.getMetadataNode();
+      DocFrame df = new DocFrame();
+      df.setVisible(true);
+      df.initDoc(null, domnode);
   }
 
 }
