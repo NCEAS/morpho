@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 06:17:17 $'
- * '$Revision: 1.20.2.5 $'
+ *     '$Date: 2004-04-13 19:29:06 $'
+ * '$Revision: 1.20.2.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -893,7 +893,7 @@ public class Query extends DefaultHandler {
          }//else
          if (sort)
          {
-           resultDisplayPanel.sortTable(5, sortOder);
+           resultDisplayPanel.sortTable(sortIndex, sortOder);
          }
          if (stateEvent != null)
          {

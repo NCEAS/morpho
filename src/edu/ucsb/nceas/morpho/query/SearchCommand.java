@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 06:17:17 $'
- * '$Revision: 1.17.2.2 $'
+ *     '$Date: 2004-04-13 19:29:06 $'
+ * '$Revision: 1.17.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,9 +94,10 @@ public class SearchCommand implements Command
         Query query = queryDialog.getQuery();
         if (query != null)
         {
-          // first true is sorted or not, 5 is sorted column index, second true
+           MorphoFrame box = UIController.getInstance().addWindow(query.getQueryTitle());
+           // first true is sorted or not, 5 is sorted column index, second true
           // is send event of not
-          doQuery(morphoFrame, query, true, 5, SortableJTable.DECENDING, true);
+          doQuery(box, query, true, 5, SortableJTable.DECENDING, true);
         }//if
       }//if
     }//if
@@ -114,7 +115,6 @@ public class SearchCommand implements Command
                              boolean sendEvent)
   {
      Morpho morphoInQuery = query.getMorpho();
-     resultWindow = UIController.getInstance().addWindow(query.getQueryTitle());
      resultWindow.setVisible(true);
      Vector vector = new Vector();
      String source ="";

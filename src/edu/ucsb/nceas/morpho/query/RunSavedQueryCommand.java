@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 06:17:17 $'
- * '$Revision: 1.2.6.1 $'
+ *     '$Date: 2004-04-13 19:29:06 $'
+ * '$Revision: 1.2.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ public class RunSavedQueryCommand implements Command
       {
         MorphoFrame resultWindow = UIController.getInstance().addWindow(
                 query.getQueryTitle());
-        resultWindow.setBusy(true);
+        //resultWindow.setBusy(true);
         resultWindow.setVisible(true);
         //SearchCommand.doQuery(resultWindow, query);
         //true means sored, 5 means sored column index

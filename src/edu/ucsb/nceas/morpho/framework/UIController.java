@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-07 18:03:50 $'
- * '$Revision: 1.35 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-13 19:29:06 $'
+ * '$Revision: 1.35.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -277,7 +277,7 @@ public class UIController
       // Set frame new title
       window.setTitle(title);
 
-      registerWindow(window);
+      putFrameIntoWindowList(window);
 
       if (getCurrentActiveWindow()==null) {
           setCurrentActiveWindow(window);
@@ -731,27 +731,35 @@ public class UIController
             Log.debug(50, "Clone menu name is: " + clone.getMenuName());
             window.addGuiAction(clone);
         }
+        putFrameIntoWindowList(window);
 
-        // add a new menu item for this window by greating a GUIAction for it
-        String title = window.getTitle();
-        Command command = new Command() {
-            public void execute(ActionEvent e) {
-                JMenuItem source = (JMenuItem)e.getSource();
-                Action firedAction = source.getAction();
-                GUIAction original =
-                    ((GUIAction)firedAction).getOriginalAction();
-                MorphoFrame window1 =
-                    (MorphoFrame)windowList.get(original);
-                window1.toFront();
-            }
-        };
-        GUIAction action = new GUIAction(title, null, command);
-        action.setMenu("Window", 5);
-        action.setToolTipText("Select Window");
-        windowList.put(action, window);
-        addGuiAction(action);
     }
 
+    /*
+     * Method to put a morpho frame into window list
+     */
+     private void putFrameIntoWindowList(MorphoFrame window)
+     {
+       // add a new menu item for this window by greating a GUIAction for it
+       String title = window.getTitle();
+       Command command = new Command() {
+           public void execute(ActionEvent e) {
+               JMenuItem source = (JMenuItem)e.getSource();
+               Action firedAction = source.getAction();
+               GUIAction original =
+                   ((GUIAction)firedAction).getOriginalAction();
+               MorphoFrame window1 =
+                   (MorphoFrame)windowList.get(original);
+               window1.toFront();
+           }
+       };
+       GUIAction action = new GUIAction(title, null, command);
+       action.setMenu("Window", 5);
+       action.setToolTipText("Select Window");
+       windowList.put(action, window);
+       addGuiAction(action);
+
+     }
     /**
      * Updates a single StatusBar to reflect the current network state
      *
@@ -1100,7 +1108,7 @@ public class UIController
    * @param adp AbstractDataPackage
    */
   public static void showNewPackageNoLocChange(AbstractDataPackage adp) {
-    showNewPackage_base(adp);   
+    showNewPackage_base(adp);
   }
 
   /**
@@ -1110,9 +1118,9 @@ public class UIController
    */
   public static void showNewPackage(AbstractDataPackage adp) {
     adp.setLocation("");
-    showNewPackage_base(adp);   
+    showNewPackage_base(adp);
   }
-  
+
   private static void showNewPackage_base(AbstractDataPackage adp) {
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     Point pos = morphoFrame.getLocation();

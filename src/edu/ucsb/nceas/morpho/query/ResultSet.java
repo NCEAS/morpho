@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 04:42:42 $'
- * '$Revision: 1.46.2.3 $'
+ *     '$Date: 2004-04-13 19:29:06 $'
+ * '$Revision: 1.46.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -629,6 +629,40 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   public void sortTableByColumn(int col, String order)
   {
 
+     sortVector(resultsVector, col, order);
+  }//sortTableColumn
 
-  }//sortColumn
+  protected void sortVector(Vector vector, int col, String order)
+  {
+    boolean sort = false;
+    boolean ascending = false;
+
+   // look up sort and ascending
+   if (order.equals(SortableJTable.ASCENDING))
+   {
+     sort = true;
+     ascending = true;
+   }
+   else if (order.equals(SortableJTable.DECENDING))
+   {
+     sort = true;
+     ascending = false;
+   }
+   else if (order.equals(SortableJTable.NONORDERED))
+   {
+     sort = false;
+   }
+   // sorting
+   if (sort)
+   {
+
+     //look up index in result vector
+     int resultColIndex = lookupResultsVectorIndex(col);
+     // sort the result vector
+     Collections.sort(vector,
+                   new CellComparator(resultColIndex, ascending));
+
+   }
+
+  }
 }
