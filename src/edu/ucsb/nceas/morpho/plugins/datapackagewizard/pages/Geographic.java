@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-16 23:14:13 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-01-20 19:39:08 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,12 +61,12 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 public class Geographic extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
-  public final String nextPageID = null;
+  public final String nextPageID = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "1";
 //////////////////////////////////////////////////////////
 
   public final String title      = "Geographic Information";
-  public final String subtitle   = "Unintentionally left blank";
+  public final String subtitle   = "";
   
   private JTextArea   covDescField;
   private JLabel regionSelectionLabel;
@@ -88,7 +88,7 @@ public class Geographic extends AbstractWizardPage {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JPanel vbox = this;
 
-    vbox.add(WidgetFactory.makeHalfSpacer());
+//DFH    vbox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel coverageDesc = WidgetFactory.makeHTMLLabel(
         "<b>Enter a description of the geographic coverage.</b> Enter a general "
@@ -110,14 +110,14 @@ public class Geographic extends AbstractWizardPage {
     covDescPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(covDescPanel);
 
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+//DFH    vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel bbDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Set the geographic coordinates which bound the coverage</b> Latitude and longitude"
+        "<p><b>Set the geographic coordinates which bound the coverage</b> Latitude and longitude"
        +"values are used to create a 'bounding box' containing the region of interest. "
        +"Drag or click on the map. Then edit the text boxes if necessary. "
        +"[Default entries are in fractional degrees. To enter in degreea/minutes/seconds, simply "
-       +"type a space between the degrees, minutes, and seconds values]", 4);
+       +"type a space between the degrees, minutes, and seconds values]</p>", 3);
     vbox.add(bbDesc);
 
 
@@ -241,7 +241,7 @@ public class Geographic extends AbstractWizardPage {
     });
 
     JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new GridLayout(3, 1));
+    buttonPanel.setLayout(new GridLayout(4, 1));
     JPanel buttonSubpanel1 = new JPanel();
     JPanel buttonSubpanel2 = new JPanel();
     JPanel buttonSubpanel3 = new JPanel();
@@ -413,9 +413,32 @@ public class Geographic extends AbstractWizardPage {
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  public OrderedMap getPageData() {
+  private OrderedMap returnMap = new OrderedMap();
 
-    return null;
+  public OrderedMap getPageData() {
+    returnMap.clear();
+    
+    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/geographicDescription[1]",
+                    covDescField.getText().trim());
+
+    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
+                    +"westBoundingCoordinate[1]" ,
+                    (new Double(lmp.getWest())).toString());
+
+    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
+                    +"eastBoundingCoordinate[1]" ,
+                    (new Double(lmp.getEast())).toString());
+
+    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
+                    +"northBoundingCoordinate[1]" ,
+                    (new Double(lmp.getNorth())).toString());
+                    
+    returnMap.put("/eml:eml/dataset/coverage/geographicCoverage/boundingCoordinates/"
+                    +"southBoundingCoordinate[1]" ,
+                    (new Double(lmp.getSouth())).toString());
+
+                    
+                    return returnMap;
   }
 
 
