@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.10 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-28 21:43:28 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,10 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 
 import javax.swing.border.EmptyBorder;
+import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -57,7 +59,8 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
     private MetaDisplayInterface  controller;
-
+    private JScrollPane           scrollPane;
+    
     /**
      *  constructor
      *
@@ -122,6 +125,7 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
             Log.debug(12,"HTMLPanel error - invalid HTML mark-up!\n"+html);
             this.setText(MetaDisplay.BLANK_HTML_PAGE);
         }
+	      this.setCaretPosition(0);
 	}
     
     //strips <META ... > tags out of html String 
