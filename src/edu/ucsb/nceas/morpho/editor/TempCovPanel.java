@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-21 22:20:31 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-06 19:48:35 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,7 +152,7 @@ public class TempCovPanel extends JPanel
 
      singleTimeTF = new JTextField();
      singleTimeTF.setEditable(false);
-     singleTimeTF.setBackground(Color.WHITE);
+     singleTimeTF.setBackground(Color.white);
 
      singleTimeCalendar = new JCalendar();
      singleTimeCalendar.setVisible(true);
@@ -183,7 +183,7 @@ public class TempCovPanel extends JPanel
 
      beginTimeTF = new JTextField();
      beginTimeTF.setEditable(false);
-     beginTimeTF.setBackground(Color.WHITE);
+     beginTimeTF.setBackground(Color.white);
 
      beginTimeCalendar = new JCalendar();
      beginTimeCalendar.setVisible(true);
@@ -198,7 +198,7 @@ public class TempCovPanel extends JPanel
 
      endTimeTF = new JTextField();
      endTimeTF.setEditable(false);
-     endTimeTF.setBackground(Color.WHITE);
+     endTimeTF.setBackground(Color.white);
 
      endTimeCalendar = new JCalendar();
      endTimeCalendar.setVisible(true);

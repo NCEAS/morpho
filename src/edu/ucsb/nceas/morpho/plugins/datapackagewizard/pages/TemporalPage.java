@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-23 01:08:58 $'
- * '$Revision: 1.5 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-06 19:48:35 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -183,7 +183,7 @@ public class TemporalPage extends AbstractWizardPage {
 
     singleTimeTF = new JTextField();
     singleTimeTF.setEditable(false);
-    singleTimeTF.setBackground(Color.WHITE);
+    singleTimeTF.setBackground(Color.white);
 
     singleTimeCalendar = new JCalendar();
     singleTimeCalendar.setVisible(true);
@@ -210,7 +210,7 @@ public class TemporalPage extends AbstractWizardPage {
 
     startTimeTF = new JTextField();
     startTimeTF.setEditable(false);
-    startTimeTF.setBackground(Color.WHITE);
+    startTimeTF.setBackground(Color.white);
 
     startTimeCalendar = new JCalendar();
     startTimeCalendar.setVisible(true);
@@ -222,7 +222,7 @@ public class TemporalPage extends AbstractWizardPage {
 
     endTimeTF = new JTextField();
     endTimeTF.setEditable(false);
-    endTimeTF.setBackground(Color.WHITE);
+    endTimeTF.setBackground(Color.white);
 
     endTimeCalendar = new JCalendar();
     endTimeCalendar.setVisible(true);
