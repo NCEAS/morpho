@@ -265,10 +265,10 @@
                       </references>
                   </CHOICE87>
                 </geographicCoverage>
-                <temporalCoverage editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="This field specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates. Dates can be expressed in tems of both calander dates and geologic dating systems.">
+                <temporalCoverage scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="This field specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates. Dates can be expressed in tems of both calander dates and geologic dating systems.">
                   <CHOICE90 minOccurs="1" maxOccurs="1" help="">
                     <CHOICE91 minOccurs="1" maxOccurs="1" help="">
-                      <singleDateTime minOccurs="1" maxOccurs="unbounded" help="The SingleDateTimeType field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
+                      <singleDateTime editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" minOccurs="1" maxOccurs="unbounded" help="The SingleDateTimeType field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
                         <CHOICE92 minOccurs="1" maxOccurs="1" help="">
                           <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
                             <calendarDate minOccurs="1" maxOccurs="1" help="The calendar date field is used to express a date, giving the year, month, and day. The format should be one that complies with the International Standards Organization's standard 8601. The recommended format for EML is YYYY-MM-DD, where Y is the four digit year, M is the two digit month code (01 - 12, where January = 01), and D is the two digit day of the month (01 - 31).">
@@ -280,7 +280,7 @@
                           </alternativeTimeScale>
                         </CHOICE92>
                       </singleDateTime>
-                      <rangeOfDates minOccurs="1" maxOccurs="1" help="The 'RangeOfDatesType' field is intended to be used for describing a range of dates and/or times. It may be used multiple times to document multiple date ranges. It allows for two 'singleDateTime' fields, the first to be used as the beginning dateTime, and the second to be used as the ending dateTime of the range.">
+                      <rangeOfDates editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" minOccurs="1" maxOccurs="1" help="The 'RangeOfDatesType' field is intended to be used for describing a range of dates and/or times. It may be used multiple times to document multiple date ranges. It allows for two 'singleDateTime' fields, the first to be used as the beginning dateTime, and the second to be used as the ending dateTime of the range.">
                         <beginDate minOccurs="1" maxOccurs="1" help="A single time stamp signifying the beginning of some time period. There is a choice between two options: a calendar date with a time, or a geologic age.">
      <CHOICE0 minOccurs="1" maxOccurs="1" help="">
     <SEQUENCE1 minOccurs="1" maxOccurs="1" help="">
