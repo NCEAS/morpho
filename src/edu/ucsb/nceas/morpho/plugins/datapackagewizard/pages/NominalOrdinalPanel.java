@@ -6,9 +6,9 @@
 *    Authors: Chad Berkley
 *    Release: @release@
 *
-*   '$Author: brooke $'
-*     '$Date: 2004-03-24 02:14:18 $'
-* '$Revision: 1.26 $'
+*   '$Author: sambasiv $'
+*     '$Date: 2004-03-31 21:02:20 $'
+* '$Revision: 1.27 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -808,22 +808,23 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     // first set the free text checkbox if needed
 
-    String freeText = (String)map.get(xPathRoot + "/textDomain[1]/definition");
+    String defn = (String)map.get(xPathRoot + "/textDomain[1]/definition");
 
-    if(freeText == null) {
-      freeText = (String)map.get(xPathRoot + "/textDomain/definition");
+    if(defn == null) {
+      defn = (String)map.get(xPathRoot + "/textDomain/definition");
+			if(defn != null) map.remove(xPathRoot + "/textDomain/definition");
     } else {
-      map.remove(xPathRoot + "/textDomain[1]/definition");
-    }
+			map.remove(xPathRoot + "/textDomain[1]/definition");
+		}
+		
+		
+    if(defn!=null) {
 
-    if(freeText!=null) {
-
-      if (freeText.equals("Free text (unrestricted)")) {
+      if (defn.equals("Free text (unrestricted)")) {
         enumDefinitionFreeTextCheckBox.setSelected(true);
       } else {
         enumDefinitionFreeTextCheckBox.setSelected(false);
       }
-      map.remove(xPathRoot + "/textDomain/definition");
     }
 
     // check for code imports
@@ -865,19 +866,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
       }
     }
 
-    String defn = (String)map.get(xPathRoot + "/textDomain[1]/definition");
-
-    if (defn == null) {
-      defn = (String)map.get(xPathRoot + "/textDomain/definition");
-    } else {
-      map.remove(xPathRoot + "/textDomain[1]/definition");
-    }
-
     if (defn != null) {
       textDefinitionField.setText(defn);
       domainPickList.setSelectedItem(this.textEnumPicklistVals[1]);
-      defn = (String)map.get(xPathRoot + "/textDomain/definition");
-       if(defn!=null) map.remove(xPathRoot + "/textDomain/definition");
     }
     setTextListData(xPathRoot + "/textDomain[1]", map);
     setTextListData(xPathRoot + "/textDomain", map);
@@ -886,13 +877,13 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     if (source == null) {
       source = (String)map.get(xPathRoot + "/textDomain/source");
+			if(source != null) map.remove(xPathRoot + "/textDomain/source");
     } else {
       map.remove(xPathRoot + "/textDomain[1]/source");
     }
 
     if (source != null) {
       textSourceField.setText(source);
-      map.remove(xPathRoot + "/textDomain/source");
     }
     return;
   }
