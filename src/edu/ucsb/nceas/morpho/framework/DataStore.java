@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-01 17:24:43 $'
- * '$Revision: 1.3 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-11 02:13:37 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,14 +49,15 @@ public abstract class DataStore implements DataStoreInterface
   {
     this.framework = cf;
     config = framework.getConfiguration();
-    Vector datadirV = config.get("local_xml_directory");
-    datadir = (String)datadirV.elementAt(0);
-    tempdir = (String)config.get("tempDir", 0);
-    Vector separatorV = config.get("separator");
-    separator = (String)separatorV.elementAt(0);
+    ConfigXML profile = framework.getProfile();
+    String profileDirName = config.get("profile_directory", 0) + 
+                            File.separator +
+                            config.get("current_profile", 0);
+    datadir = profileDirName + File.separator + profile.get("datadir", 0);
+    tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
+    cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
+    separator = profile.get("separator", 0);
     separator = separator.trim();
-    Vector cachedirV = config.get("local_cache_directory");
-    cachedir = (String)cachedirV.elementAt(0);
   }
   
   public void debug(int code, String message)

@@ -1,15 +1,13 @@
 /**
- *       Name: ConfigXML.java
- *    Purpose: Used to store various information for application
- *             configuration in an XML file
+ *  '$RCSfile: ConfigXML.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Dan Higgins
+ *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-16 22:32:57 $'
- * '$Revision: 1.7 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-11 02:13:37 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,9 +55,6 @@ import javax.swing.*;
  * memory as a DOM object. 
  * 
  * Note that nodes are specified by node tags rather than paths
- * 
- * @author Dan Higgins
- * @version 1.0
  */
 public class ConfigXML
 {
@@ -123,10 +118,6 @@ public class ConfigXML
     }
     doc = parser.getDocument();
     root = doc.getDocumentElement();
-
-
-    //{{INIT_CONTROLS
-    //}}
   }
 
   /**
@@ -134,8 +125,7 @@ public class ConfigXML
    * value(s) for a named parameter.
    * 
    * @param key 'key' is element name.
-   * @return Returns a Vector of strings because
-   * may have repeated elements
+   * @return Returns a Vector of strings because may have repeated elements
    */
   public Vector get(String key)
   {
@@ -165,11 +155,6 @@ public class ConfigXML
    * @param i zero based index of elements with the name stored in key
    * @return String value of the ith element with name in 'key'
    */
-
-
-  /*
-   * get the ith (zero-based) string correponding to key
-   */
   public String get(String key, int i)
   {
     NodeList nl = doc.getElementsByTagName(key);
@@ -189,7 +174,6 @@ public class ConfigXML
     }
     return result;
   }
-
 
   /**
    * used to set a value corresponding to 'key'; value is changed
@@ -243,17 +227,15 @@ public class ConfigXML
     NodeList nl = doc.getElementsByTagName(key);
 
     // If so, insert new element before existing
-    if (nl.getLength() > 0)
-    {
+    if (nl.getLength() > 0) {
       Node nnn = nl.item(0);
       Node parent = nnn.getParentNode();
       //insert newElem before nnn
       parent.insertBefore(newElem, nnn);
       result = true;
-    } 
+
     // Otherwise, append new element to end of root
-    else 
-    {
+    } else {
       root.appendChild(newElem);
       result = true;
     }
@@ -628,34 +610,31 @@ public class ConfigXML
 
   } // normalize(String):String
 
-	/*
-	 *  utility routine to return the value(s) of a node defined by
-	 *  a specified XPath
-	 */
-	public Vector getValuesForPath(String pathstring) {
-	  Vector val = new Vector();
-	  if (!pathstring.startsWith("/")) {
-	    pathstring = "//*/"+pathstring;
-	  }
-	    try{
-          NodeList nl = null;
-          nl = XPathAPI.selectNodeList(doc, pathstring);
-          if ((nl!=null)&&(nl.getLength()>0)) {
-            // loop over node list is needed if node is repeated
-            for (int k=0;k<nl.getLength();k++) {
-              Node cn = nl.item(k).getFirstChild();  // assume 1st child is text node
-              if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                String temp = cn.getNodeValue().trim();
-                val.addElement(temp);
-              }
-            }
+  /*
+   *  utility routine to return the value(s) of a node defined by
+   *  a specified XPath
+   */
+  public Vector getValuesForPath(String pathstring) {
+    Vector val = new Vector();
+    if (!pathstring.startsWith("/")) {
+      pathstring = "//*/"+pathstring;
+    }
+    try{
+      NodeList nl = null;
+      nl = XPathAPI.selectNodeList(doc, pathstring);
+      if ((nl!=null)&&(nl.getLength()>0)) {
+        // loop over node list is needed if node is repeated
+        for (int k=0;k<nl.getLength();k++) {
+          Node cn = nl.item(k).getFirstChild();  // assume 1st child is text node
+          if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
+            String temp = cn.getNodeValue().trim();
+            val.addElement(temp);
           }
-        
-      }
-      catch (Exception e) {
-          System.out.println("Error in getValueForPath method");
         }
-	return val;    
-	}
-
+      }
+    } catch (Exception e) {
+      System.out.println("Error in getValueForPath method");
+    }
+    return val;    
+  }
 }

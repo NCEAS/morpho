@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-10 02:36:14 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-11 02:13:38 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import javax.swing.*;
 public class ProfileDialog extends JDialog
 {
   ConfigXML config;
-  ClientFramework container = null;
+  ClientFramework framework = null;
   /** the total number of screens to be processed */
   int numScreens;
   /** the screen currently displaying (indexed from 0 to numScreens-1) */
@@ -76,7 +76,7 @@ public class ProfileDialog extends JDialog
   {
     super((Frame)cont, modal);
 
-    container = cont;
+    framework = cont;
 
     numScreens = 2;
     currentScreen = 0;
@@ -390,20 +390,84 @@ public class ProfileDialog extends JDialog
   {
     if (validateFieldContents()) {
       // Create a profile directory
-      String profiledir = config.get("profile_directory", 0);
-      String profilePath = profiledir + File.separator + 
-                           usernameField.getText();
+      String profileDirName = config.get("profile_directory", 0);
+      File profileDirFile = new File(profileDirName);
+      if (!profileDirFile.exists()) {
+        if (!profileDirFile.mkdir()) {
+          // Error creating the directory
+          currentScreen = 0;
+          layoutScreen();
+          String messageText = "Error creating the profiles directory.\n";
+          JOptionPane.showMessageDialog(this, messageText);      
+        }
+      }
+      String username = usernameField.getText();
+      String profilePath = profileDirName + File.separator + username;
       File profileDir = new File(profilePath);
       if (!profileDir.mkdir()) {
         // Error creating the directory
+        currentScreen = 0;
+        layoutScreen();
+        String messageText = "A profile for user \"" + username +
+                             "\" already exists.  Please choose another " +
+                             "username.\n";
+        JOptionPane.showMessageDialog(this, messageText);      
       } else {
-        // Copy default options to that directory
+        try {
+          // Copy default options to that directory
+          String defaultProfile = config.get("default_profile", 0);
+          String profileName = profilePath + File.separator + username + ".xml";
+          FileUtils.copy(defaultProfile, profileName);
 
-        // Create a metacat user 
+          // Store the collected information in the profile
+          ConfigXML profile = new ConfigXML(profileName);
+          boolean success = false;
+          if (! profile.set("username", 0, username)) {
+            success = profile.insert("username", username);
+          }
+          if (! profile.set("firstname", 0, firstNameField.getText())) {
+            success = profile.insert("firstname", firstNameField.getText());
+          }
+          if (! profile.set("lastname", 0, lastNameField.getText())) {
+            success = profile.insert("lastname", lastNameField.getText());
+          }
 
-        // Get rid of the dialog
-        setVisible(false);
-        dispose();
+          profile.save();
+
+          // Create our directories for user data
+          String dataDirName = profile.get("datadir", 0);
+          String dataPath = profilePath + File.separator + dataDirName;
+          File dataDir = new File(dataPath);
+          success = dataDir.mkdir();
+
+          String cacheDirName = profile.get("cachedir", 0);
+          String cachePath = profilePath + File.separator + cacheDirName;
+          File cacheDir = new File(cachePath);
+          success = cacheDir.mkdir();
+
+          String tempDirName = profile.get("tempdir", 0);
+          String tempPath = profilePath + File.separator + tempDirName;
+          File tempDir = new File(tempPath);
+          success = tempDir.mkdir();
+
+          // Create a metacat user 
+  
+          // Get rid of the dialog
+          setVisible(false);
+          dispose();
+   
+          // Log into metacat
+          framework.setProfile(profile);
+          framework.setPassword(passwordField.getText());
+          framework.logIn();
+
+        } catch (IOException ioe) {
+          currentScreen = 0;
+          layoutScreen();
+          String messageText = "Error creating profile for user \"" + 
+                               username + "\".  Please try again.\n";
+          JOptionPane.showMessageDialog(this, messageText);      
+        }
       }
     } else {
       currentScreen = 0;
@@ -414,5 +478,4 @@ public class ProfileDialog extends JDialog
       JOptionPane.showMessageDialog(this, messageText);      
     }
   }
-
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-01 17:24:43 $'
- * '$Revision: 1.8 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-11 02:13:37 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,11 +47,12 @@ public class FileSystemDataStore extends DataStore
   /**
    * opens a file with the given name.  the name should be in the form
    * scope.accnum where the scope is unique to this machine.  The file will
-   * be opened from the &lt;local_xml_directory&gt;/&lt;scope&gt;/ directory 
+   * be opened from the &lt;datadir&gt;/&lt;scope&gt;/ directory 
    * where the filename is the accnum.
-   * Example: name=johnson2343.13223
-   *          local_xml_directory=/usr/local/morpho/data
-   *          complete file path=/usr/local/morpho/data/johnson2343/13223
+   * Example: 
+   *    name=johnson2343.13223
+   *    datadir=data
+   *    complete path=/usr/local/morpho/profiles/johnson/data/johnson2343/13223
    * Any characters after the first separator are assumed to be part of the 
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
@@ -83,11 +84,12 @@ public class FileSystemDataStore extends DataStore
   /**
    * Saves a file with the given name.  if the file does not exist it is created
    * The file is saved according to the name provided.   The file will
-   * be saved to the &lt;local_xml_directory&gt;/&lt;scope&gt;/ directory 
+   * be saved to the &lt;datadir&gt;/&lt;scope&gt;/ directory 
    * where the filename is the accnum.
-   * Example: name=johnson2343.13223
-   *          local_xml_directory=/usr/local/morpho/data
-   *          complete file path=/usr/local/morpho/data/johnson2343/13223
+   * Example: 
+   *    name=johnson2343.13223
+   *    datadir=data
+   *    complete path=/usr/local/morpho/profiles/johnson/data/johnson2343/13223
    * Any characters after the first separator are assumed to be part of the 
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5

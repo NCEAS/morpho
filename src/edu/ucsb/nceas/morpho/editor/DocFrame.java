@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-09 17:35:04 $'
- * '$Revision: 1.23 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-11 02:13:37 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -395,7 +395,6 @@ void putXMLintoTree() {
     CatalogEntityResolver cer = new CatalogEntityResolver();
     ConfigXML config = new ConfigXML("lib/config.xml");
     String local_dtd_directory =config.get("local_dtd_directory",0);     
-    String local_xml_directory =config.get("local_xml_directory",0);     
             
     String xmlcatalogfile = local_dtd_directory+"/catalog"; 
     try {

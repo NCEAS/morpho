@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-07 01:33:33 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2001-06-11 02:13:37 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ public class ClientFramework extends javax.swing.JFrame
   static boolean log_file = false;
   private String metacatURL = null;
   private ConfigXML config;
+  private ConfigXML profile;
   private boolean connected = false;
   private Hashtable menuList = null;
   private TreeMap menuOrder = null;
@@ -101,6 +102,7 @@ public class ClientFramework extends javax.swing.JFrame
   public ClientFramework(ConfigXML config)
   {
     this.config = config;
+    this.profile = null;
 
     // Create the list of menus for use by the framework and plugins
     menuList = new Hashtable();
@@ -174,8 +176,8 @@ public class ClientFramework extends javax.swing.JFrame
       for (Enumeration q = plugins.elements(); q.hasMoreElements();)
       {
         // Start by creating the new bean plugin
-	PluginInterface plugin = (PluginInterface)
-	                createObject((String) (q.nextElement()));
+        PluginInterface plugin = (PluginInterface)
+                        createObject((String) (q.nextElement()));
 
         // Set a reference to the framework in the Plugin
         plugin.initialize(this);
@@ -598,19 +600,19 @@ public class ClientFramework extends javax.swing.JFrame
 
       // Show a confirmation dialog
       int reply = JOptionPane.showConfirmDialog(this,
-						"Do you really want to exit?",
-						"Morpho - Exit",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
+                                                "Do you really want to exit?",
+                                                "Morpho - Exit",
+                                                JOptionPane.YES_NO_OPTION,
+                                                JOptionPane.QUESTION_MESSAGE);
       // If the confirmation was affirmative, handle exiting.
       if (reply == JOptionPane.YES_OPTION)
       {
 */
+        this.setVisible(false);        // hide the Frame
         logOut();
         config.save();
-        this.setVisible(false);	// hide the Frame
-        this.dispose();		// free the system resources
-        System.exit(0);		// close the application
+        this.dispose();                // free the system resources
+        System.exit(0);                // close the application
 /*
       }
 */
@@ -645,7 +647,7 @@ public class ClientFramework extends javax.swing.JFrame
     {
       Object object = event.getSource();
       if (object == ClientFramework.this)
-	  ClientFramework_windowClosing(event);
+          ClientFramework_windowClosing(event);
     }
   }
 
@@ -658,7 +660,7 @@ public class ClientFramework extends javax.swing.JFrame
 
   /** process window closing events */
   private void ClientFramework_windowClosing_Interaction1(java.awt.
-						  event.WindowEvent event)
+                                                  event.WindowEvent event)
   {
     try {
       this.exitApplication();
@@ -942,7 +944,40 @@ public class ClientFramework extends javax.swing.JFrame
   {
     return config;
   } 
-  
+
+  /**
+   * Get the profile for the currently logged in user.  
+   *
+   * @returns ConfigXML the profile object
+   */
+  public ConfigXML getProfile()
+  {
+    return profile;
+  } 
+
+  /**
+   * Set the profile for the currently logged in user
+   * (on startup, or when switching profiles).
+   *
+   * @param profile the profile object
+   */
+  public void setProfile(ConfigXML profile)
+  {
+    this.profile = profile;
+
+    // Load basic profile information
+    String username = profile.get("username", 0);
+    setUserName(username);
+
+    if (! config.set("current_profile", 0, username)) {
+      boolean success = config.insert("current_profile", username);
+    }
+    config.save();
+
+    // Notify plugins that the profile changed
+    // Not yet implemented
+  } 
+
   /**
    * returns the next local id from the config file
    * returns null if configXML was unable to increment the id number
@@ -1045,36 +1080,58 @@ public class ClientFramework extends javax.swing.JFrame
       }
       else
       {
-	if (now.after(warning))
-	{
-	  clf.debug(1, "This beta version of Morpho will expire on " +
+        if (now.after(warning))
+        {
+          clf.debug(1, "This beta version of Morpho will expire on " +
             "Dec 1, 2001. See http://knb.ecoinformatics.org/ for a " +
             "newer version.");
-	  JOptionPane.showMessageDialog(null,
+          JOptionPane.showMessageDialog(null,
             "This beta version of Morpho will expire on Dec 1, 2001.\n" +
             "See http://knb.ecoinformatics.org/ for a newer version.");
-	}
+        }
+
+        String profileDir = config.get("profile_directory", 0);
+        String currentProfile = config.get("current_profile", 0);
+
+        // Load the current profile and log in
+        if (currentProfile == null) {
+          ProfileDialog dialog = new ProfileDialog(clf);
+          dialog.setVisible(true);
+          // Make sure they actually created a profile
+          if (clf.getProfile() == null) {
+            JOptionPane.showMessageDialog(null,
+            "You must create a profile in order to configure Morpho  \n" +
+            "correctly.  Please restart Morpho and try again.");
+            clf.exitApplication();
+          }
+        } else {
+          String profileName = profileDir + File.separator + currentProfile + 
+                        File.separator + currentProfile + ".xml";
+          ConfigXML profile = new ConfigXML(profileName);
+          clf.setProfile(profile);
+          clf.establishConnection();          
+        }
 
         // make the ClientFramework visible.
-	clf.setVisible(true);
-	sf.dispose();
+        clf.setVisible(true);
+        sf.dispose();
 
         // Set up logging as appropriate
-	String log_file_setting = config.get("log_file", 0);
-	if (log_file_setting != null) {
-	  if (log_file_setting.equalsIgnoreCase("true")) {
-	    log_file = true;
-	  } else {
-	    log_file = false;
-	  }
-	}
-	if (log_file) {
-	  FileOutputStream err = new FileOutputStream("stderr.log");
-	  // Constructor PrintStream(OutputStream) has been deprecated.
-	  PrintStream errPrintStream = new PrintStream(err);
-	  System.setErr(errPrintStream);
-	  System.setOut(errPrintStream);
-	}
+        String log_file_setting = config.get("log_file", 0);
+        if (log_file_setting != null) {
+          if (log_file_setting.equalsIgnoreCase("true")) {
+            log_file = true;
+          } else {
+            log_file = false;
+          }
+        }
+        if (log_file) {
+          FileOutputStream err = new FileOutputStream("stderr.log");
+          // Constructor PrintStream(OutputStream) has been deprecated.
+          PrintStream errPrintStream = new PrintStream(err);
+          System.setErr(errPrintStream);
+          System.setOut(errPrintStream);
+        }
       }
     }
     catch(Throwable t)

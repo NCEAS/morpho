@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- Profile-specific options are stored in this file -->
+<profile>
+  <firstname>Matthew</firstname>
+  <lastname>Jones</lastname>
+  <username>jones</username>
+  <datadir>data</datadir>
+  <cachedir>cache</cachedir>
+  <tempdir>temp</tempdir>
+  <queriesdir>queries</queriesdir>
+  <searchmetacat>true</searchmetacat>
+  <searchlocal>true</searchlocal>
+  <casesensitive>false</casesensitive>
+  <doctype_searched>any</doctype_searched>
+  <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
+  <returndoc>-//NCEAS//resource//EN</returndoc>
+  <returnfield>dataset/title</returnfield>
+  <returnfield>originator/responsibleParty/individualName/surName</returnfield>
+  <returnfield>keyword</returnfield>
+  <accessionNumber>
+    <scope>jones</scope>
+    <lastId>1</lastId>
+    <separator>.</separator>
+  </accessionNumber>
+</profile>
