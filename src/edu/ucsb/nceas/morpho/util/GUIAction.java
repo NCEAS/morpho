@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-23 18:21:01 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-23 20:11:12 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,7 +143,7 @@ public class GUIAction extends AbstractAction {
     /**
      * Set the command in this action object
      */
-    public void setCommand(Commant cmd)
+    public void setCommand(Command cmd)
     {
       this.command = cmd;
     }//setCommand
