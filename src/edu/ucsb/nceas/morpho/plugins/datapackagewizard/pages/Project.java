@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-23 19:07:20 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-23 22:55:25 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 
-import java.util.Map;
 import java.util.List;
 import java.util.Iterator;
 
@@ -50,10 +49,6 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
@@ -75,7 +70,6 @@ public class Project extends AbstractWizardPage {
   private JPanel dataPanel;
   private JPanel noDataPanel;
   private JPanel currentPanel;
-  private JLabel radioLabel;
 
   private final String xPathRoot  = "/eml:eml/dataset/project/";
 
@@ -149,8 +143,6 @@ public class Project extends AbstractWizardPage {
   private JTextField  titleField;
   private JLabel      fundingLabel;
   private JTextField  fundingField;
-  private JLabel      urlLabelOnline;
-  private JTextField  urlFieldOnline;
   private JLabel minRequiredLabel;
   private CustomList  partiesList;
   private final String[] colNames =  {"Party", "Role", "Address"};
@@ -190,12 +182,13 @@ public class Project extends AbstractWizardPage {
     panel.add(WidgetFactory.makeHalfSpacer());
     ////
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the Personals information</b> The full name of the person or organization for the"
-      +"project such as agency name, grant and contact numbers.", 2);
+      "<b>Enter the Personnel information</b> The full name of the person or "
+      +"organization responsible for the project, such as agency name, grant "
+      +"and contact numbers.", 2);
     panel.add(desc);
     JPanel vPanel = WidgetFactory.makeVerticalPanel(9);
     minRequiredLabel = WidgetFactory.makeLabel(
-                                " One or more Personals must be defined:", true,
+                                " One or more Personnel must be defined:", true,
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
     vPanel.add(minRequiredLabel);
     partiesList = WidgetFactory.makeList(colNames, editors, 6,
