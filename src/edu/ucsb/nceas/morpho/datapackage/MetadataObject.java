@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-07 17:37:34 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-20 23:17:20 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,10 @@ public class MetadataObject
    private String grammar = "";
 
   // class constructors -----------------------
+  public MetadataObject() {
+    metadataPaths = new Hashtable();
+  }
+
   public MetadataObject(Node node) {
     this.metadataNode = node;
     metadataPaths = new Hashtable();
