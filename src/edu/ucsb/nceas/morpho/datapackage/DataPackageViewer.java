@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-03 23:04:44 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-07-05 19:05:33 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ public class DataPackageViewer extends javax.swing.JFrame
 
 	public DataPackageViewer()
 	{
-		setTitle("DataPackageViewer");
+		setTitle("Data Package Viewer");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(800,600);
@@ -267,6 +267,7 @@ public class DataPackageViewer extends javax.swing.JFrame
       String location = dp.getLocation();
       EntityGUI entityEdit = new EntityGUI(dp, id, location, null, 
                                            framework);
+      entityEdit.dpv = this;
  //     entityEdit.show();
       
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getLeftComponent();

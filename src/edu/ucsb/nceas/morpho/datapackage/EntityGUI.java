@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-03 18:30:45 $'
- * '$Revision: 1.42.2.1 $'
+ *     '$Date: 2002-07-05 19:05:33 $'
+ * '$Revision: 1.42.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,7 @@ public class EntityGUI extends javax.swing.JPanel
   private DataPackageGUI parent;
   
   public JPanel entityPanel;
+  DataPackageViewer dpv = null;
   
   /**
    * Creates a new entity editor.
@@ -452,6 +453,12 @@ public class EntityGUI extends javax.swing.JPanel
    */
   public void editingCompleted(String xmlString, String id, String location)
   {
+     if (this.dpv!=null) {
+    //  dpv.setVisible(false);
+      dpv.dispose();
+      dpv = null;
+    }
+
     ClientFramework.debug(11, "Editing complete: id: " + id + " location: " + 
                               location);
     AccessionNumber a = new AccessionNumber(framework);
@@ -524,9 +531,14 @@ public class EntityGUI extends javax.swing.JPanel
       DataPackage newPackage = new DataPackage(location, packageId, null,
                                                framework);
       //this.dispose();
-      parent.dispose();
+      // parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+
+      DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
+ 
+      this.dpv = dpv;
+      dpv.show();
 
       // Refresh the query results after the update
       try {
@@ -537,11 +549,11 @@ public class EntityGUI extends javax.swing.JPanel
         framework.debug(6, snhe.getMessage());
       }
 
-      EntityGUI newEntitygui;
-      newEntitygui = new EntityGUI(newPackage, entityId, location, newgui, 
-                                   framework);
-      newgui.show();
-      newEntitygui.show();
+  //    EntityGUI newEntitygui;
+  //    newEntitygui = new EntityGUI(newPackage, entityId, location, newgui, 
+  //                                 framework);
+  //    newgui.show();
+  //    newEntitygui.show();
       return;
     }
     
@@ -638,10 +650,16 @@ public class EntityGUI extends javax.swing.JPanel
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                                  framework);
       //this.dispose();
-      parent.dispose();
+      // parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
-      EntityGUI newEntitygui;
+      DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
+ 
+      this.dpv = dpv;
+      dpv.show();
+
+    /* 
+     EntityGUI newEntitygui;
       DataPackage newDataPackage = new DataPackage(location, 
                                            a.incRev(dataPackage.getID()),
                                            null, framework);
@@ -655,6 +673,7 @@ public class EntityGUI extends javax.swing.JPanel
         newEntitygui = new EntityGUI(newDataPackage, a.incRev(entityId), 
                                      location, newgui, framework);
       }
+      */
       // Refresh the query results after the update
       try {
         ServiceProvider provider = 
@@ -664,8 +683,9 @@ public class EntityGUI extends javax.swing.JPanel
         framework.debug(6, snhe.getMessage());
       }
 
-      newgui.show();
-      newEntitygui.show();
+   //   newgui.show();
+   //   newEntitygui.show();
+   
     }
     catch(Exception e)
     {
