@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-23 14:55:06 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-01-09 00:07:01 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,11 +64,18 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
    * flag to set whether or not changes are saved.
    */
   boolean logFlag = false;
+  
+
+  /**
+   *  flag which is set to true whenever anything in the table has been changed
+   */
+  boolean changeFlag = false;
     
   public PersistentTableModel(PersistentVector perV) {
     super();
     pv = perV;
     changeLogStack = new Stack();
+    changeFlag = false;
   }
 
   public PersistentTableModel(PersistentVector perV, Vector colNames) {
@@ -76,6 +83,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     pv = perV;
     this.colNames = colNames;
     changeLogStack = new Stack();
+    changeFlag = false;
   }
         
   public PersistentVector getPersistentVector() {
@@ -84,6 +92,10 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     
   public void setPersistentVector(PersistentVector pv) {
     this.pv = pv;
+  }
+  
+  public boolean getChangeFlag() {
+    return changeFlag;
   }
     
   public void setFieldDelimiter(String s) {
@@ -259,6 +271,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
   
   private void pushLogValues(int row, int col, String oldVal, String newVal,
                        String desc, String annotation) {
+    changeFlag = true;
     if (logFlag) {                     
       String[] log = new String[6];
       log[0] = (new Integer(row)).toString();
