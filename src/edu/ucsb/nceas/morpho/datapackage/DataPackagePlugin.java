@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-06 17:57:59 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2002-09-19 02:12:36 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,18 @@ public class DataPackagePlugin
     // Create the menus and toolbar actions, will register later
     initializeActions();
   }
-
+  
+  /**
+   * Construct of the puglin which will be used in datapackage itself
+   *
+   * @param morpho the morpho for this application
+   */
+  public DataPackagePlugin(Morpho morpho)
+  {
+    this.morpho = morpho;
+  }
+  
+  
   /** 
    * The plugin must store a reference to the Morpho application 
    * in order to be able to call the services available through 
