@@ -1,13 +1,13 @@
 /**
- *  '$RCSfile: DataPackagePlugin.java,v $'
+*  '$RCSfile: DataPackagePlugin.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-29 22:36:05 $'
- * '$Revision: 1.17 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-07-03 18:30:45 $'
+ * '$Revision: 1.17.6.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,14 @@ import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 
 import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.*;
 import java.awt.event.*;
 
 /**
@@ -154,7 +156,8 @@ public class DataPackagePlugin
     //framework.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
     final DataPackageGUI gui = new DataPackageGUI(framework, dp);
-    gui.addWindowListener(new WindowAdapter()
+   /*
+   gui.addWindowListener(new WindowAdapter()
     {
       public void windowClosed(WindowEvent e)
       {
@@ -167,8 +170,25 @@ public class DataPackagePlugin
       }
     });
     gui.setName("Package Editor: " + dp.getID());
-    framework.addWindow(gui);
-    gui.show();
+    
+   // framework.addWindow(gui);
+   // gui.show();
+   */ 
+    JPanel packagePanel = new JPanel();
+    packagePanel.setLayout(new BorderLayout(0,0));
+    packagePanel.add(BorderLayout.CENTER,gui.basicInfoPanel);
+    packagePanel.add(BorderLayout.EAST,gui.listPanel);
+    
+    DataPackageViewer dpv = new DataPackageViewer("DataPackageViewer", dp);
+    dpv.setFramework(framework);
+    //dpv.toppanel = gui.basicInfoPanel;
+    dpv.toppanel = packagePanel;
+    dpv.entityItems = gui.entityitems;
+    
+    dpv.listValueHash = gui.listValueHash;
+    dpv.init();
+    System.out.println("DataPackageViewer created !!!");
+    dpv.setVisible(true);
   }
   
   /**

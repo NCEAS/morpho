@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.53 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-07-03 18:30:45 $'
+ * '$Revision: 1.53.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -641,7 +641,7 @@ public class DataPackage
    */
   public DataPackage upload(boolean updateIds) throws MetacatUploadException
   {
-    ClientFramework.debug(20, "Uploading package.");
+    ClientFramework.debug(20, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxUploading package.");
     
     if(!location.equals(DataPackage.BOTH) && 
       !location.equals(DataPackage.METACAT))

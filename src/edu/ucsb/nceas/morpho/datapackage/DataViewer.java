@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-06-21 22:07:54 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-07-03 18:30:45 $'
+ * '$Revision: 1.17.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,8 @@ import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
-public class DataViewer extends javax.swing.JFrame
+//public class DataViewer extends javax.swing.JFrame
+public class DataViewer extends javax.swing.JPanel
 {
     ClientFramework framework;
     ConfigXML config;
@@ -166,14 +167,18 @@ public class DataViewer extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
-		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(755,483);
+	//	getContentPane().setLayout(new BorderLayout(0,0));
+		setLayout(new BorderLayout(0,0));
+	setSize(755,483);
 		setVisible(false);
+		DataViewerPanel.setLayout(new BorderLayout(0,0));
+	//	getContentPane().add(DataViewerPanel);
+		add(DataViewerPanel);
 		TablePanel.setLayout(new BorderLayout(0,0));
-		getContentPane().add(BorderLayout.CENTER,TablePanel);
+		DataViewerPanel.add(BorderLayout.CENTER, TablePanel);
 		TablePanel.add(BorderLayout.CENTER, DataScrollPanel);
 		ControlPanel.setLayout(new BorderLayout(0,0));
-		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
+		DataViewerPanel.add(BorderLayout.SOUTH, ControlPanel);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 		ControlPanel.add(BorderLayout.CENTER, JPanel1);
 		DataIDLabel.setText("Data ID: ");
@@ -219,13 +224,13 @@ public class DataViewer extends javax.swing.JFrame
         cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
         separator = profile.get("separator", 0);
         separator = separator.trim();
-        setTitle(sTitle);
+     //   setTitle(sTitle);
     }
 
     public DataViewer(String sTitle, String dataID, String dataString)
     {
         this();
-        setTitle(sTitle);
+    //    setTitle(sTitle);
         this.dataID = dataID;
         this.dataString = dataString;
     }
@@ -245,7 +250,7 @@ public class DataViewer extends javax.swing.JFrame
         cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
         separator = profile.get("separator", 0);
         separator = separator.trim();
-        setTitle(sTitle);
+    //   setTitle(sTitle);
         this.dataFile = dataFile;
     }
     
@@ -253,7 +258,7 @@ public class DataViewer extends javax.swing.JFrame
     public void init() {
       boolean missing_metadata_flag = false;
       if (physicalFile==null) {
-          framework.debug(9, "Physical information about the data is missing!");
+          framework.debug(15, "Physical information about the data is missing!");
           missing_metadata_flag = true;
       } else {
           // get format, recordDelimiter, field delimiter
@@ -295,7 +300,7 @@ public class DataViewer extends javax.swing.JFrame
                                                      
       }
       if (entityFile==null) {
-          framework.debug(9, "Entity information about the data is missing!");
+          framework.debug(15, "Entity information about the data is missing!");
           missing_metadata_flag = true;
       } else {
           // get number of records, etc
@@ -317,7 +322,7 @@ public class DataViewer extends javax.swing.JFrame
           
       }
       if (attributeFile==null) {
-          framework.debug(9, "Attribute information about the data is missing!");
+          framework.debug(15, "Attribute information about the data is missing!");
           missing_metadata_flag = true;
       } else {
           // get attribute labels and build column headers
@@ -461,7 +466,7 @@ public class DataViewer extends javax.swing.JFrame
     
     public void setDataID(String dataID) {
         this.dataID = dataID;
-        setTitle("DataFile: "+dataID);
+        //setTitle("DataFile: "+dataID);
         DataIDLabel.setText("DataFile: "+dataID);
     }
 
@@ -494,6 +499,7 @@ public class DataViewer extends javax.swing.JFrame
 	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
+	public javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
 	javax.swing.JPanel TablePanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
@@ -730,7 +736,7 @@ public class DataViewer extends javax.swing.JFrame
 	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		this.hide();
-		this.dispose();
+		//this.dispose();
 			 
 	}
 	
@@ -866,9 +872,9 @@ public class DataViewer extends javax.swing.JFrame
       }
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                                  framework);
-      this.dispose();
-      if (parent!=null) parent.dispose();
-      if (grandParent!=null) grandParent.dispose();
+      //this.dispose();
+  //    if (parent!=null) parent.dispose();
+  //    if (grandParent!=null) grandParent.dispose();
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
 
       // Refresh the query results after the update

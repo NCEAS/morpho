@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.42 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-07-03 18:30:45 $'
+ * '$Revision: 1.42.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,8 @@ import org.xml.sax.InputSource;
 /**
  * Class that implements a GUI to edit an entity
  */
-public class EntityGUI extends javax.swing.JFrame 
+//public class EntityGUI extends javax.swing.JFrame 
+public class EntityGUI extends javax.swing.JPanel 
                        implements ActionListener, 
                                   EditingCompleteListener
 {
@@ -74,8 +75,8 @@ public class EntityGUI extends javax.swing.JFrame
   private String location;
   private Hashtable attributeHash = new Hashtable();
   private boolean editAttribute = false;
-  private File entityFile;
-  
+  public File entityFile;
+  public JButton editEntityButton;
   
   //visual components
   private JLabel name = new JLabel();
@@ -85,6 +86,8 @@ public class EntityGUI extends javax.swing.JFrame
   private JLabel orientation = new JLabel();
   private JList attributeList = new JList();
   private DataPackageGUI parent;
+  
+  public JPanel entityPanel;
   
   /**
    * Creates a new entity editor.
@@ -113,13 +116,13 @@ public class EntityGUI extends javax.swing.JFrame
     this.framework = cf;
     this.dataPackage = dp;
     this.entityId = id;
-    contentPane = getContentPane();
-    setTitle("Table Editor");
+   // contentPane = getContentPane();
+   // setTitle("Table Editor");
     BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
-    contentPane.setLayout(box);
+    setLayout(box);
     parseEntity();
     initComponents();
-    pack();
+   // pack();
     setSize(500, 450);
     /* Center the Frame */
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -211,7 +214,7 @@ public class EntityGUI extends javax.swing.JFrame
   
   private void initComponents()
   {
-    JButton editEntityButton = new JButton("Edit Table Description");
+    editEntityButton = new JButton("Edit Table Description");
     JButton editAttributes = new JButton("Edit Attributes");
     JButton editDataButton = new JButton("View Data");
     if (dataPackage.hasDataFile(entityId)) {
@@ -335,7 +338,7 @@ public class EntityGUI extends javax.swing.JFrame
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new FlowLayout());
     
-    JPanel entityPanel = new JPanel();
+    entityPanel = new JPanel();
     entityPanel.setLayout(new BoxLayout(entityPanel, BoxLayout.Y_AXIS));
     
     JPanel attributePanel = new JPanel();
@@ -412,7 +415,7 @@ public class EntityGUI extends javax.swing.JFrame
     mainPanel.add(editAttributes);
     mainPanel.add(editDataButton);
     
-    contentPane.add(mainPanel);
+    add(mainPanel);
   }
   
   private JPanel createHeadPanel()
@@ -520,7 +523,7 @@ public class EntityGUI extends javax.swing.JFrame
       
       DataPackage newPackage = new DataPackage(location, packageId, null,
                                                framework);
-      this.dispose();
+      //this.dispose();
       parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
@@ -634,7 +637,7 @@ public class EntityGUI extends javax.swing.JFrame
       
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                                  framework);
-      this.dispose();
+      //this.dispose();
       parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
@@ -848,7 +851,7 @@ public class EntityGUI extends javax.swing.JFrame
     
     else if (command.equals("Associate Data")) {
        // a new data file to be associated with this existing metadata is to be entered here 
-      (new NewDataFile(this, dataPackage, framework, entityId)).setVisible(true); 
+      //(new NewDataFile(this, dataPackage, framework, entityId)).setVisible(true); 
     }
   }
   
