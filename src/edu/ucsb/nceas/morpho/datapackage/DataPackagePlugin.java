@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 20:47:37 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2002-12-11 01:04:09 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,9 @@ import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
@@ -418,8 +420,9 @@ public class DataPackagePlugin
     editColumnMetadata.setEnabled(false);
     
     // create new data package menu in file menu
-    GUIAction createNewDataPackage = new GUIAction("New Datapackage...", null, 
-                                  new CreateNewDataPackageCommand(morpho));
+    GUIAction createNewDataPackage = new GUIAction("New Datapackage...", 
+                                      UISettings.NEW_DATAPACKAGE_ICON, 
+                                      new CreateNewDataPackageCommand(morpho));
     createNewDataPackage.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/New16.gif")));
     createNewDataPackage.setToolTipText("Create a new data package");
@@ -743,5 +746,31 @@ public class DataPackagePlugin
     }
     return ret;
   }
+  
+  /**
+   * return an instance of a Command object, identified by one of the integer 
+   * constants defined above
+   *
+   * @param commandIdentifier   integer constant identifying the command 
+   *                            Options include:<ul>
+   *                            <li>NEW_DATAPACKAGE_COMMAND</li>
+   *                            </ul>
+   */
+  public Command getCommandObject(int commandIdentifier) 
+                                                  throws ClassNotFoundException
+  {
+    switch (commandIdentifier) {
+    
+        case DataPackageInterface.NEW_DATAPACKAGE_COMMAND:
+            return new CreateNewDataPackageCommand(morpho);
+        default:
+            ClassNotFoundException e 
+                                = new ClassNotFoundException("command with ID="
+                                            +commandIdentifier+" not found");
+            e.fillInStackTrace();
+            throw e;        
+    }
+  }
+  
   
 }//DataPackagePlugin
