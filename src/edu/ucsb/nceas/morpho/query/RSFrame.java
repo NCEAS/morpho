@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.14 2001-03-05 17:46:56 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.15 2001-04-26 00:10:06 jones Exp $'
  */
 
 
@@ -120,7 +120,7 @@ public class RSFrame extends javax.swing.JFrame
 		
 		
     try {
-        config = new ConfigXML("config.xml");
+        config = new ConfigXML("lib/config.xml");
 //      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
       MetaCatServletURL = config.get("MetaCatServletURL", 0);
     }

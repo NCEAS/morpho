@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: pathqueryXML.java,v 1.7 2001-02-12 22:18:27 higgins Exp $'
+ *     Version: '$Id: pathqueryXML.java,v 1.8 2001-04-26 00:10:06 jones Exp $'
  */
 
 
@@ -46,7 +46,7 @@ public class pathqueryXML
     Vector returnFields;
     
 public pathqueryXML() {
-    ConfigXML config = new ConfigXML("config.xml");
+    ConfigXML config = new ConfigXML("lib/config.xml");
     searchDocTypes = config.get("doctype");
     returnDocTypes = config.get("returndoc");
     returnFields = config.get("returnfield");

@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.17 2001-01-15 02:23:21 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.18 2001-04-26 00:10:06 jones Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -65,7 +65,7 @@ public class LocalQuery extends Thread
     
 public LocalQuery() {
     this(null);
-    ConfigXML config = new ConfigXML("config.xml");
+    ConfigXML config = new ConfigXML("lib/config.xml");
     returnFields = config.get("returnfield");
     doctypes2bsearched = config.get("doctype");
     dt2bReturned = config.get("returndoc");
@@ -106,7 +106,7 @@ public LocalQuery() {
 	}
 
 public LocalQuery(String xpathstring) {
-    ConfigXML config = new ConfigXML("config.xml");
+    ConfigXML config = new ConfigXML("lib/config.xml");
     returnFields = config.get("returnfield");
     doctypes2bsearched = config.get("doctype");
     dt2bReturned = config.get("returndoc");
@@ -144,7 +144,7 @@ public LocalQuery(String xpathstring) {
 }
 
 public LocalQuery(String xpathstring, JButton button) {
-    ConfigXML config = new ConfigXML("config.xml");
+    ConfigXML config = new ConfigXML("lib/config.xml");
     returnFields = config.get("returnfield");
     doctypes2bsearched = config.get("doctype");
     dt2bReturned = config.get("returndoc");
@@ -183,7 +183,7 @@ public LocalQuery(String xpathstring, JButton button) {
 }
     
 public LocalQuery(String[] xpathstrings, boolean and_flag, JButton button) {
-    ConfigXML config = new ConfigXML("config.xml");
+    ConfigXML config = new ConfigXML("lib/config.xml");
     returnFields = config.get("returnfield");
     doctypes2bsearched = config.get("doctype");
     dt2bReturned = config.get("returndoc");

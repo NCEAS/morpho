@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-25 22:23:00 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2001-04-26 00:10:05 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ import com.symantec.itools.javax.swing.borders.LineBorder;
 public class ClientFramework extends javax.swing.JFrame 
                              implements PluginInterface
 {
+  /** The hardcoded XML configuration file */
+  private static String configFile = "lib/config.xml";
+
   /** Constant to indicate a spearator should precede an action */
   public static String SEPARATOR_PRECEDING = "TRUE";
 
@@ -126,7 +129,7 @@ public class ClientFramework extends javax.swing.JFrame
     // Get the configuration file information
     try
     {
-      config = new ConfigXML("config.xml");
+      config = new ConfigXML(configFile);
       String local_dtd_directory = config.get("local_dtd_directory", 0);
       xmlcatalogfile = local_dtd_directory + "/catalog";
       MetaCatServletURL = config.get("MetaCatServletURL", 0);
@@ -883,6 +886,17 @@ public class ClientFramework extends javax.swing.JFrame
   } 
 
   /**
+   * Get the configuration object associated with the framework.  Plugins use
+   * this object to get and set persistent configuration parameters.
+   *
+   * @returns ConfigXML the configuration object
+   */
+  public ConfigXML getConfiguration()
+  {
+    return config;
+  } 
+
+  /**
    * Print debugging messages based on severity level, where severity level 1
    * are the most critical and severity level 9 the most trivial messages.
    * Setting the debug_level to 0 in the configuration file turns all messages
@@ -953,7 +967,7 @@ public class ClientFramework extends javax.swing.JFrame
 	sf.dispose();
         // ConnectionFrame cf = new ConnectionFrame(clf);
         // cf.setVisible(true);
-	ConfigXML config = new ConfigXML("config.xml");
+	ConfigXML config = new ConfigXML(configFile);
 	String log_file_setting = config.get("log_file", 0);
 	if (log_file_setting != null)
 	{

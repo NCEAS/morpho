@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-25 22:23:00 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-04-26 00:10:05 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ public class ConnectionFrame extends javax.swing.JFrame
     connectButton.addActionListener(lSymAction);
     DisconnectButton.addActionListener(lSymAction);
     //}}
-    config = new ConfigXML("config.xml");
+    config = new ConfigXML("lib/config.xml");
     MetaCatServletURL = config.get("MetaCatServletURL", 0);
     
     // Example of loading icon as resource - DFH 

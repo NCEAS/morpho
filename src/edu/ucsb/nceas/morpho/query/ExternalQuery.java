@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.10 2001-02-09 23:27:44 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.11 2001-04-26 00:10:06 jones Exp $'
  */
 
 /*
@@ -71,7 +71,7 @@ public class ExternalQuery implements ContentHandler
 public ExternalQuery(InputStream is, int cols) {
     relations = new Hashtable(); 
     this.is = is;
-    ConfigXML config = new ConfigXML("config.xml");
+    ConfigXML config = new ConfigXML("lib/config.xml");
     returnFields = config.get("returnfield");
     int cnt;
     if (returnFields==null) {
@@ -111,7 +111,7 @@ public ExternalQuery(InputStream is, int cols) {
 public ExternalQuery(InputStream is) {
     relations = new Hashtable(); 
     this.is = is;
-    ConfigXML config = new ConfigXML("config.xml");
+    ConfigXML config = new ConfigXML("lib/config.xml");
     returnFields = config.get("returnfield");
     int cnt;
     if (returnFields==null) {

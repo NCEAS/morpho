@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.14 2001-03-05 17:46:56 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.15 2001-04-26 00:10:06 jones Exp $'
  */
 
 
@@ -241,7 +241,7 @@ public void writeInfo() {
 	void TransformToHTML()
 	{
                 CatalogEntityResolver cer = new CatalogEntityResolver();
-		        config = new ConfigXML("config.xml");
+		        config = new ConfigXML("lib/config.xml");
 		        String local_dtd_directory = config.get("local_dtd_directory",0);
 		        String local_xml_directory = config.get("local_xml_directory",0);
 //            	PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
@@ -297,7 +297,7 @@ public void writeInfo() {
 void putXMLintoTree() {
     if (XMLTextString!=null) {
           CatalogEntityResolver cer = new CatalogEntityResolver();
-		ConfigXML config = new ConfigXML("config.xml");
+		ConfigXML config = new ConfigXML("lib/config.xml");
           String local_dtd_directory =config.get("local_dtd_directory",0);     // DFH
           String local_xml_directory =config.get("local_xml_directory",0);     // DFH
             

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryConfigDialog.java,v 1.4 2001-01-05 16:02:22 higgins Exp $'
+ *     Version: '$Id: QueryConfigDialog.java,v 1.5 2001-04-26 00:10:06 jones Exp $'
  */
 /*
 		A basic implementation of the JDialog class.
@@ -234,7 +234,7 @@ public class QueryConfigDialog extends javax.swing.JDialog
 		}
 		//$$ stringListModel1.move(0,444);
 		//}}
-		config = new ConfigXML("config.xml");
+		config = new ConfigXML("lib/config.xml");
 		Vector vvv = config.get("localdoctypename");
 		Vector searchVec = config.get("doctype");
 		Vector returnVec = config.get("returndoc");

@@ -21,7 +21,7 @@ import edu.ucsb.nceas.dtclient.*;
 //public class Editor extends javax.swing.JFrame
 public class Editor extends JPanel
 {
-    ConfigXML config;
+    ConfigXML config = null;
 
     Vector elementnames;
     public DTD dtd = null;
@@ -859,7 +859,10 @@ return "ONE";
 
 
          CatalogEntityResolver cer = new CatalogEntityResolver();
-	 config = new ConfigXML("config.xml");
+         if (config == null) 
+         {
+	   config = framework.getConfiguration();
+         }
 	 String local_dtd_directory = config.get("local_dtd_directory",0);
 	 String local_xml_directory = config.get("local_xml_directory",0);
             

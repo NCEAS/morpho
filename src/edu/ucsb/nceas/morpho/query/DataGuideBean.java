@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.13 2001-03-05 17:46:56 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.14 2001-04-26 00:10:06 jones Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -260,7 +260,7 @@ public class DataGuideBean extends java.awt.Container
 		
     try {
       // options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-	  ConfigXML config = new ConfigXML("config.xml");
+	  ConfigXML config = new ConfigXML("lib/config.xml");
       MetaCatServletURL = config.get("MetaCatServletURL",0);
       local_dtd_directory = config.get("local_dtd_directory",0);
     }
@@ -344,7 +344,7 @@ public class DataGuideBean extends java.awt.Container
 */
     void create_localDocTypes() {
         localDocTypes = new Hashtable();
-		ConfigXML config = new ConfigXML("config.xml");
+		ConfigXML config = new ConfigXML("lib/config.xml");
         Vector vvv = config.get("localdoctypename");
         for (Enumeration e = vvv.elements();e.hasMoreElements();) {
             String nnn = (String)e.nextElement();

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.43 2001-03-05 17:46:56 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.44 2001-04-26 00:10:06 jones Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -712,7 +712,7 @@ public class QueryBean extends AbstractQueryBean
 		invalidate();
 		setVisible(true);
     try {
-		ConfigXML config = new ConfigXML("config.xml");
+		ConfigXML config = new ConfigXML("lib/config.xml");
 		String local_dtd_directory = config.get("local_dtd_directory",0);
 		MetaCatServletURL = config.get("MetaCatServletURL", 0);
 //      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
@@ -1457,7 +1457,7 @@ public void searchFor(String searchText) {
     public void getConfigData() {
 		// Get the configuration file information
     try {
-      ConfigXML config = new ConfigXML("config.xml");  
+      ConfigXML config = new ConfigXML("lib/config.xml");  
   //    options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
       String local_dtd_directory =config.get("local_dtd_directory",0);     // DFH
       xmlcatalogfile = local_dtd_directory+"/catalog"; 
@@ -1575,7 +1575,7 @@ public void LogIn() {
 
       // Now try to write the document to the database
       try {
-        ConfigXML config = new ConfigXML("config.xml");
+        ConfigXML config = new ConfigXML("lib/config.xml");
 //        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
         String MetaCatServletURL =config.get("MetaCatServletURL",0);     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
@@ -1605,7 +1605,7 @@ public void LogOut() {
 
       // Now try to write the document to the database
       try {
-        ConfigXML config = new ConfigXML("config.xml");
+        ConfigXML config = new ConfigXML("lib/config.xml");
     //    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
         String MetaCatServletURL =config.get("MetaCatServletURL",0);     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
