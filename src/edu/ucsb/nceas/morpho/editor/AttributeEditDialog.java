@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-07 18:00:23 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-01-07 18:33:13 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,11 +180,6 @@ public class AttributeEditDialog extends javax.swing.JDialog //implements TableM
 	  TableCellEditor tce = table.getCellEditor();
 	  if (tce!=null) {
 	    boolean stop = tce.stopCellEditing();  
-      System.out.println("stopEditing = "+stop);
-      if (!stop) {
-        // try again
-        tce.stopCellEditing(); 
-      }
 	  }
     int cnt = dtm.getRowCount();
     Hashtable newattr = new Hashtable();
