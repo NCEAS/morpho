@@ -201,5 +201,5 @@
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
   <lookAndFeel>kunststoff</lookAndFeel>
-  <current_profile>higgins</current_profile>
+  <current_profile></current_profile>
 </config>
