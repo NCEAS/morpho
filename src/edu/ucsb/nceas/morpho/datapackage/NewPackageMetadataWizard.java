@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-09 23:17:02 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-07-10 22:23:10 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -401,14 +401,17 @@ public class NewPackageMetadataWizard extends JFrame
         JPanel layoutpanel = new JPanel();
         layoutpanel.setLayout(new BoxLayout(layoutpanel, BoxLayout.Y_AXIS));
         layoutpanel.add(initLabel);
+        boolean selected = false;
         for(int i=0; i<radioButtons.size(); i++)
         { //add the dynamically created buttons for the file types
           //these file types are specified in the config.xml file
-          if(i==0)
+          JRadioButton jrb = (JRadioButton)radioButtons.elementAt(i);
+          if(jrb.isVisible() && !selected)
           {
-            ((JRadioButton)radioButtons.elementAt(i)).setSelected(true);
+            jrb.setSelected(true);
+            selected = true;
           }
-          layoutpanel.add((JRadioButton)radioButtons.elementAt(i));
+          layoutpanel.add(jrb);
         }
         screenPanel.add(layoutpanel);
         screenPanel.setLayout(new GridLayout(0,1));
