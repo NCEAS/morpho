@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-02 22:01:46 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-16 21:57:46 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,6 +100,11 @@ public class PersistentVector
   private String tmpDir = null;
   
   /**
+   *  flag to indicate whether to ignore consequtiveDelimiters
+   */
+  private boolean ignoreConsecutiveDelimiters = false;
+  
+  /**
    * Constructor of PersistentVector
    *
    */
@@ -119,6 +124,11 @@ public class PersistentVector
       obj = new ObjectFile(objName);  
     }
     catch (Exception w) {}
+  }
+  
+  
+  public void setIgnoreConsecutiveDelimiters(boolean flag) {
+    ignoreConsecutiveDelimiters = flag;
   }
   
   /*
@@ -424,8 +434,8 @@ public class PersistentVector
 	  String oldToken = "";
 	  String token = "";
 	  Vector res = new Vector();
-	  boolean ignoreConsequtiveDelimiters = false;
-	  if (ignoreConsequtiveDelimiters) {
+//	  boolean ignoreConsequtiveDelimiters = false;
+	  if (ignoreConsecutiveDelimiters) {
 	    StringTokenizer st = new StringTokenizer(str, sDelim, false);
 	    while( st.hasMoreTokens() ) {
 	      token = st.nextToken().trim();

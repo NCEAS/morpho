@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 06:07:08 $'
- * '$Revision: 1.17 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-16 21:57:23 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -529,7 +529,9 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
      +"getSubtreeAtReferenceNoClone()");
   }
 
-
+ public boolean ignoreConsecutiveDelimiters(int entityIndex, int physicalIndex) {
+   return false;
+ }
 
 
   /**

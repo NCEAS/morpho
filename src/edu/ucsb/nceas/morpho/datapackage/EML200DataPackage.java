@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-13 21:09:28 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2004-04-16 21:57:23 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.apache.xpath.XPathAPI;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -470,6 +471,59 @@ public  class EML200DataPackage extends AbstractDataPackage
       w.printStackTrace();
     }
     return null;
+  }
+
+  /**
+   *  no tag in eml2.0 for this information
+   *  it is being put in additionalMetadata until a new version of eml is released
+   */
+  public boolean ignoreConsecutiveDelimiters(int entityIndex, int physicalIndex) {
+    boolean ret = false;
+    String temp = "";
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+      Log.debug(20, "No such entity!");
+      return ret;    
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ( (physicals == null) || (physicals.length < 1)) {
+      Log.debug(20, "no physicals!");
+      return ret;   
+    }
+    if (physicalIndex > (physicals.length - 1)) {
+      Log.debug(20, "physical index too large!!");
+      return ret;  
+    }
+    Node physical = physicals[physicalIndex];
+    try{
+      NodeList aNodes = XPathAPI.selectNodeList(physical, "@id");
+      if (aNodes == null) {
+        Log.debug(30, "aNodes is null!");
+        return ret;
+      }
+      if (aNodes.getLength()<1) {
+        Log.debug(30, "aNodes is <1");
+        return ret;
+      }
+      Node attr = aNodes.item(0);
+      String id = attr.getNodeValue();
+      Log.debug(40, "id: "+id);
+      // now know the id of the physical element; look for additionalMetadata
+      // since the additionaMetadata is only added when we want to ignore consecutive delimiter
+      // we don't need to check the actual flag; just the presence of a describes tag with
+      // the physical id
+      NodeList amd = XPathAPI.selectNodeList(this.getMetadataNode(),"additionalMetadata/describes");
+      if ((amd == null)||(amd.getLength()<1)) return ret;
+      for (int j=0;j<amd.getLength();j++) {
+        Node desNode = amd.item(j);
+        String txt = desNode.getFirstChild().getNodeValue();
+        txt = txt.trim();
+        if (txt.equals(id)) return true;
+      }
+    }
+    catch (Exception eee) {
+      Log.debug(1, "exception in EML200");
+    }
+    return ret;
   }
 
 }

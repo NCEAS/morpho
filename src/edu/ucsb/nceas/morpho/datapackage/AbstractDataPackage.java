@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-14 04:59:56 $'
- * '$Revision: 1.96 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-16 21:57:23 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2120,6 +2120,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   * returns boolean indicating whether repeated delimiters should be ignored
+   *
+   */
+   abstract public boolean ignoreConsecutiveDelimiters(int entityIndex, int physicalIndex);
+  
   /**
    *  This method sets the FieldDelimiter for the indexed entity and
    *  physical object.

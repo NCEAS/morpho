@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-14 15:42:22 $'
- * '$Revision: 1.118 $'
+ *     '$Date: 2004-04-16 21:57:23 $'
+ * '$Revision: 1.119 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,6 +162,13 @@ public class DataViewer extends javax.swing.JPanel
    */
    String format = "";
 
+   
+  /**
+   * ignoreConsecutiveDelimiter fleg
+   */
+   boolean ignoreConsecutiveDelimiters = false;
+   
+   
   /**
    *  field delimiter (hex string)
    */
@@ -221,10 +228,6 @@ public class DataViewer extends javax.swing.JPanel
 	 */
 	Vector vec;
 
-	/**
-	 * The DataPackage that contains the data
-	 */
-//DFH	 DataPackage dp = null;
 
    /**
 	 * The AbstractDataPackage that contains the data (eml2.0.0)
@@ -642,6 +645,7 @@ public class DataViewer extends javax.swing.JPanel
               // assume that we always use the first physical object
           Log.debug(20, "format: "+format);
           this.field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
+          this.ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIndex, 0);
           this.delimiter_string = getDelimiterString();
           Log.debug(20, "delimiter_string: "+delimiter_string);
           String nhl = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
@@ -1138,6 +1142,7 @@ public class DataViewer extends javax.swing.JPanel
     pv = new PersistentVector();
     pv.setFieldDelimiter(field_delimiter);
     pv.setFirstRow(num_header_lines);
+    pv.setIgnoreConsecutiveDelimiters(ignoreConsecutiveDelimiters);
     if ((dataFile==null)||(dataFile.length()<1)) {
       Log.debug(20, "Null Data File");
       field_delimiter = ",";
