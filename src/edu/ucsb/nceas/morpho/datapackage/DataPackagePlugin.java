@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-09 18:55:56 $'
- * '$Revision: 1.75 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-02-24 20:47:38 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -632,7 +632,7 @@ public class DataPackagePlugin
 
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
-                "Data Package: "+"new");
+                "Data Package: "+adp.getAccessionNumber());
     packageWindow.setBusy(true);
     packageWindow.setVisible(true);
 
