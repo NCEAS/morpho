@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.28 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-13 17:37:25 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,6 +241,75 @@ public class DocFrame extends javax.swing.JFrame
 	{
 		this();
 		setTitle(sTitle);
+/*		XMLTextString = doctext;
+		putXMLintoTree(treeModel, XMLTextString);
+        tree.setSelectionRow(0);
+
+		// now want to possibly merge the input document with a formatting document
+		// and set the 'editor' and 'help' fields for each node
+		// use the root node name as a key
+		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+        String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+        rootname = rootname+".xml";
+		file = new File("./lib", rootname);
+		DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
+		DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
+		String fXMLString = "";
+		boolean formatflag = true;
+        try{
+            FileReader in = new FileReader(file);
+            StringWriter out = new StringWriter();
+            int c;
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+            in.close();
+            out.close();
+            fXMLString = out.toString();
+        }
+	    catch(Exception e){formatflag = false;}	
+		
+		if (formatflag) {
+		    putXMLintoTree(ftreeModel,fXMLString);
+		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+		    treeUnion(rootNode,frootNode);
+		}
+    
+    
+        if (dtdfile!=null) {
+		    dtdtree = new DTDTree(dtdfile);
+		    dtdtree.setRootElementName(rootnodeName);
+		    dtdtree.parseDTD();
+		
+	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+
+	        // the treeUnion method will 'merge' the input document with
+	        // a template XML document created using the DTD parser from the DTD doc
+		    treeUnion(rootNode,dtdtree.rootNode);
+            // treeTrim will remove nodes in the input that are not in the DTD
+            // remove the following line if this is not wanted
+            treeTrim(rootNode,dtdtree.rootNode);
+		}
+		
+		
+		treeModel.reload();
+		tree.setModel(treeModel);
+        tree.setSelectionRow(0);
+   */     
+	}
+	
+	public DocFrame(File file)
+	{
+	    this();
+	    this.file = file;
+	}
+
+	public DocFrame(ClientFramework cf, String sTitle, String doctext) 
+	{
+	    this();
+	    this.framework = cf;
+	    counter++;
+	    setName("XMLEditor"+counter);
 		XMLTextString = doctext;
 		putXMLintoTree(treeModel, XMLTextString);
         tree.setSelectionRow(0);
@@ -295,20 +364,7 @@ public class DocFrame extends javax.swing.JFrame
 		treeModel.reload();
 		tree.setModel(treeModel);
         tree.setSelectionRow(0);
-	}
-	
-	public DocFrame(File file)
-	{
-	    this();
-	    this.file = file;
-	}
-
-	public DocFrame(ClientFramework cf, String sTitle, String doctext) 
-	{
-	    this(sTitle, doctext);
-	    this.framework = cf;
-	    counter++;
-	    setName("XMLEditor"+counter);
+	    
 	}
 	
 	
