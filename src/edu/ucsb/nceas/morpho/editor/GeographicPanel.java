@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-23 21:27:40 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-05 19:45:46 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,10 +100,10 @@ public class GeographicPanel extends JPanel
         DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();  //Xerces specific
         final Document doc = domNode.getOwnerDocument();
         try{
-        Log.debug(1, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+//        Log.debug(1, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
           // data from the panel is merged back into the DOM tree here
           XMLUtilities.getXPathMapAsDOMTree(awp.getPageData(), domNode);
-        Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+//        Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
           JTree domtree = new DOMTree(doc);
           DefaultMutableTreeNode root = (DefaultMutableTreeNode)domtree.getModel().getRoot();
           DefaultMutableTreeNode parent = (DefaultMutableTreeNode)fnode.getParent();
@@ -122,7 +122,7 @@ public class GeographicPanel extends JPanel
 					nir.setCheckboxFlag(false);
 					(df1.treeModel).reload();
         } catch (Exception e) {
-          Log.debug(5, "Problem in GeographicPanel");
+          Log.debug(20, "Problem in GeographicPanel");
         }
       }
     });

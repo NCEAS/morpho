@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-03 19:25:37 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-05 19:45:46 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ public class AttributePanel extends JPanel
 					nir.setCheckboxFlag(false);
 					(df1.treeModel).reload();
         } catch (Exception e) {
-          Log.debug(5, "Problem in AttributePanel");
+          Log.debug(20, "Problem in AttributePanel");
           e.printStackTrace();
         }
       }
@@ -195,7 +195,7 @@ public class AttributePanel extends JPanel
 			nir.setCheckboxFlag(false);
 //			(df1.treeModel).reload();
     }catch (Exception e) {
-        Log.debug(5, "Problem in AttributePanel: "+e);
+        Log.debug(20, "Problem in AttributePanel: "+e);
         e.printStackTrace();
     }
    }

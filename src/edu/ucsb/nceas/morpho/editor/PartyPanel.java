@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-03 19:26:05 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-03-05 19:45:46 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ public class PartyPanel extends JPanel
 					nir.setCheckboxFlag(false);
 					(df1.treeModel).reload();
         } catch (Exception e) {
-          Log.debug(5, "Problem in PartyPanel");
+          Log.debug(20, "Problem in PartyPanel");
         }
       }
     });
@@ -184,7 +184,7 @@ public class PartyPanel extends JPanel
 					nir.setCheckboxFlag(false);
 					(df1.treeModel).reload();
     } catch (Exception e) {
-          Log.debug(5, "Problem in PartyPanel");
+          Log.debug(20, "Problem in PartyPanel");
     }
   }
   
