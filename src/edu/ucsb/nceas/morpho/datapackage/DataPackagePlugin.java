@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:20 $'
- * '$Revision: 1.91 $'
+ *     '$Date: 2004-04-19 15:12:42 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -761,7 +761,8 @@ public class DataPackagePlugin
                  new StateChangeEvent(
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
-    packageWindow.setBusy(false);
+    adp.loadCustomUnits();
+		packageWindow.setBusy(false);
   }
 
 
@@ -856,7 +857,8 @@ public class DataPackagePlugin
                  new StateChangeEvent(
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
-    packageWindow.setBusy(false);
+    adp.loadCustomUnits();
+		packageWindow.setBusy(false);
   }
 
    /*

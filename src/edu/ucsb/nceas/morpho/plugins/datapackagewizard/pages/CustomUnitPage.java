@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 21:20:53 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-04-19 15:12:42 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,15 +171,26 @@ public class CustomUnitPage extends AbstractUIPage {
 	private void init() {
 		
 		String[] tempUnitTypes = WizardSettings.getUnitDictionaryUnitTypes();
+		String[] customTypes = new String[0];
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if(adp != null) {
+			customTypes = adp.getUnitDictionaryCustomUnitTypes();
+		}
 		basicUnitTypes = WizardSettings.getUnitDictionaryBasicUnitTypes();
 		createDisplayString(basicUnitTypes);
 		String[] SIUnits = WizardSettings.getSIUnits();
 		
-		unitTypes = new String[tempUnitTypes.length + 1];
-		unitTypes[0] = "";
+		List unitTypeList = new ArrayList();
+		unitTypeList.add("");
 		for(int i = 0; i < tempUnitTypes.length; i++)
-			unitTypes[i+1] = WizardSettings.getDisplayFormOfUnitType(tempUnitTypes[i]);
+			unitTypeList.add(WizardSettings.getDisplayFormOfUnitType(tempUnitTypes[i]));
+		for(int i = 0; i<customTypes.length; i++) {
+			if(!unitTypeList.contains(customTypes[i]))
+				unitTypeList.add(WizardSettings.getDisplayFormOfUnitType(customTypes[i]));
+		}
 		
+		unitTypes = new String[unitTypeList.size()];
+		unitTypes = (String[])unitTypeList.toArray(unitTypes);
 		tempUnitTypes = null;
 		
 		setLayout(new BorderLayout());
@@ -743,6 +754,7 @@ public class CustomUnitPage extends AbstractUIPage {
 			map.put(xPathRoot + "/unit[1]/description", desc);
 			
 			String type = (String)this.typeNameComboBox.getSelectedItem();
+			type = WizardSettings.getStandardFormOfUnitType(type);
 			String multiplier = this.existingUnitFactorField.getText();
 			String SIUnit = this.existingSIunitNameField.getText();
 			if(multiplier.trim().equals("")) multiplier = "";
@@ -754,6 +766,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		} else { //new type
 			
 			String type = (String)this.newTypeNameField.getText();
+			type = WizardSettings.getStandardFormOfUnitType(type);
 			map.put(xPathRoot + "/unitType[1]/@id", type);
 			map.put(xPathRoot + "/unitType[1]/@name", type);
 			

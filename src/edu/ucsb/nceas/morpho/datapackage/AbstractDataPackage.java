@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-16 21:57:23 $'
- * '$Revision: 1.97 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-19 15:12:41 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -70,7 +71,10 @@ import org.w3c.dom.NodeList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
-
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -207,6 +211,10 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected File dataPkgFile;
   protected FileSystemDataStore fileSysDataStore;
   protected MetacatDataStore metacatDataStore;
+	
+	private static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
+	private static String[] customUnitDictionaryUnitTypesArray = new String[0];
+  
 
   /*
    *  If the AbstractDataPackage is created by opening an existing document,
@@ -1603,14 +1611,131 @@ public abstract class AbstractDataPackage extends MetadataObject
 
   public Node appendAdditionalMetadata(Node addtMetadata) {
     Document thisDom = getMetadataNode().getOwnerDocument();
-    Node rootNode = thisDom.getDocumentElement();
-    Node newMetadataNode = thisDom.importNode(addtMetadata, true); // 'true' imports children
-    if(rootNode == null) {
-      return null;
-    }
-    return rootNode.appendChild(newMetadataNode);
+		Node rootNode = thisDom.getDocumentElement();
+		Node newMetadataNode = thisDom.importNode(addtMetadata, true); // 'true' imports children
+		if(rootNode == null) {
+			return null;
+		}
+		return rootNode.appendChild(newMetadataNode);
+		
+	}
+	
+	// method to load custom units that the user had defined and are stored in the
+	// 'additionalMetadata' subtree
+	public void loadCustomUnits() {
+		
+		Document thisDom = getMetadataNode().getOwnerDocument();
+		Node rootNode = thisDom.getDocumentElement();
+		NodeList nodeList = rootNode.getChildNodes();
+		Log.debug(40, "in loadCustom data, initial size = " + this.customUnitDictionaryUnitsCacheMap.keySet().size());
+		for(int i = 0; i < nodeList.getLength(); i++) {
+			
+			Node child = nodeList.item(i);
+			if(child.getNodeName().equals("additionalMetadata")) {
+				OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(child);
+				Log.debug(40, "got Map as - " + map.toString());
+				extractUnits(map, "/additionalMetadata");
+			}
+		}
+		Log.debug(40, "Extracted units -- \n");
+		Iterator it = customUnitDictionaryUnitsCacheMap.keySet().iterator();
+		while(it.hasNext()) {
+			String key = (String) it.next();
+			String[] arr = (String[])customUnitDictionaryUnitsCacheMap.get(key);
+			Log.debug(40, key);
+			for(int j = 0; j < arr.length; j++)
+				Log.debug(40, "\t" + arr[j]);
+		}
+		Log.debug(40, "End of Extracted units -- \n");
+	}
+	
+	
+	private void extractUnits(OrderedMap map, String xPath) {
+		
+		xPath += "/unitList[1]";
+		int cnt = 1;
+		while(true) {
+			
+			String name = (String)map.get(xPath + "/unit[" + cnt + "]/@name");
+			if(name == null) break;
+			String type = (String)map.get(xPath + "/unit[" + cnt + "]/@unitType");
+			addNewUnit(type, name);
+			cnt++;
+		}
+	}
+	
+	public String[] getUnitDictionaryCustomUnitTypes() {
+		
+		return customUnitDictionaryUnitTypesArray;
+		/*int len = customUnitDictionaryUnitsCacheMap.keySet().size();
+		String[] returnArr = new String[len];
+		Iterator it = customUnitDictionaryUnitsCacheMap.keySet().iterator();
+		int i = 0;
+		while(it.hasNext()) {
+			returnArr[i++] = (String)it.next();
+		}
+		return returnArr;*/
+	}
+	
+	public String[] getUnitDictionaryUnitsOfType(String type) {
+		
+		String[] ret = (String[]) customUnitDictionaryUnitsCacheMap.get(type);
+		if(ret == null) return new String[0];
+		return ret;
+	}
+	
+	public static void insertObjectIntoArray( Object[] arr, Object value, Object[] newArr) {
+		
+		int idx = Arrays.binarySearch(arr, value);
+		int pos = -(idx + 1);
+		int i = 0;
+		for(i = 0 ;i < pos; i++)
+			newArr[i] = arr[i];
+		newArr[i] = value;
+		for(int j = pos; j < arr.length;j++)
+			newArr[j+1] = arr[j];
+		
+		return;
+	}
+	
+	public boolean isNewCustomUnit(String type, String unit) {
+		
+		boolean newT = customUnitDictionaryUnitsCacheMap.containsKey(type);
+		if(newT) {
+			String[] units = (String[])customUnitDictionaryUnitsCacheMap.get(type);
+			if(units == null) return true;
+			if(Arrays.binarySearch(units, unit) >= 0) return false;
+			else return true;
+		} 
+		return true;
+		
+	}
+	
+	public void addNewUnit(String unitType, String unit) {
+		
+		int idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);
+		if(idx < 0) {
+			String[] newArray = new String[customUnitDictionaryUnitTypesArray.length + 1];
+			insertObjectIntoArray(customUnitDictionaryUnitTypesArray, unitType, newArray);
+			customUnitDictionaryUnitTypesArray = newArray;
+			String units[] = new String[1];
+			units[0] = unit;
+			customUnitDictionaryUnitsCacheMap.put(unitType, units);
+		} else {
+			String[] units = (String[]) customUnitDictionaryUnitsCacheMap.get(unitType);
+			int idx1 = Arrays.binarySearch(units, unit);
+			if(idx1 >= 0) return;
+			String[] newUnitArr = new String[units.length + 1];
+			insertObjectIntoArray(units, unit, newUnitArr);
+			customUnitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
+		}
+		
+	}
 
-  }
+	
+	
+	
+	
 
   /**
    *  This method inserts an attribute at the indexed position

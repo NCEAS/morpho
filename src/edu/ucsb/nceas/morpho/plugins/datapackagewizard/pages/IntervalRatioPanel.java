@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-17 02:22:12 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2004-04-19 15:12:42 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -86,6 +85,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   private JLabel     boundsLabel;
 
   private UnitsPickList unitsPickList;
+	private UnitTypesListItem[] unitTypesListItems;
+	
   private JTextField precisionField;
   private JComboBox  numberTypePickList;
   private CustomList boundsList;
@@ -603,17 +604,15 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 		}
 		
     if (unit != null && !unit.equals("")) {
-      String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
-      int totUnitTypes = unitTypesArray.length;
+      //UnitTypesListItem[] unitTypesListItem = unitTypesListItems;
+      int totUnitTypes = unitTypesListItems.length;
       String[] unitsOfThisType = null;
+			for (int i = 1; i < totUnitTypes; i++) {
 
-      for (int i = 0; i < totUnitTypes; i++) {
-
-        unitsOfThisType
-            = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
+        unitsOfThisType = unitTypesListItems[i].getUnitsOfThisType();
         int pos = -1;
         if ((pos = isPresentInList(unit, unitsOfThisType)) >= 0) {
-          unitsPickList.setSelectedUnit(i + 1, pos);
+					unitsPickList.setSelectedUnit(i, pos);
           break;
         }
       }
@@ -739,9 +738,9 @@ class UnitsPickList extends JPanel {
   private JLabel unitTypeLabel;
   private JPanel parentPanel;
   
-  private ModalDialog customUnitDialog = null;
+  private JDialog customUnitDialog = null;
 
-  private UnitTypesListItem[] unitTypesListItems;
+  
 
   public static final int CUSTOM_UNIT_PANEL_WIDTH = 700;
   public static final int CUSTOM_UNIT_PANEL_HEIGHT = 450;
@@ -814,13 +813,25 @@ class UnitsPickList extends JPanel {
         int dwd = UISettings.POPUPDIALOG_WIDTH - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
 				int dht = UISettings.POPUPDIALOG_HEIGHT - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
 				
-				customUnitDialog = new ModalDialog(customPage,
-                                WizardContainerFrame.getDialogParent(),
-                                dwd, dht);
+				ActionListener okAction = new ActionListener() {
+					public void actionPerformed(ActionEvent ae) {
+						customUnitOKAction();
+					}
+				};
+				ActionListener cancelAction = new ActionListener() {
+					public void actionPerformed(ActionEvent ae) {
+						customUnitDialog.setVisible(false);
+					}
+				};
+				customUnitDialog = WidgetFactory.makeContainerDialogNoParent(customPage, okAction, cancelAction);
 				
-				if (customUnitDialog.USER_RESPONSE == ModalDialog.OK_OPTION) customUnitOKAction();
-				else customPage = null;
-				
+				customUnitDialog.setTitle("New Unit Definition");
+				Point loc = parentPanel.getLocationOnScreen();
+				int wd = parentPanel.getWidth();
+				int ht = parentPanel.getHeight();
+				customUnitDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
+				customUnitDialog.setSize(dwd, dht);
+				customUnitDialog.setVisible(true);
 			}
     });
 
@@ -848,6 +859,7 @@ class UnitsPickList extends JPanel {
 
     if(!customPage.onAdvanceAction())
       return;
+		customUnitDialog.setVisible(false);
 		customPages.add(customPage);
 		String xPath = "/additionalMetadata";
     OrderedMap map = customPage.getPageData(xPath);
@@ -868,10 +880,10 @@ class UnitsPickList extends JPanel {
 			
     } else {
 			// add units to existing type
-			int idx = getIndexOfStandardType(type);
+			int idx = getIndexOfStandardType(WizardSettings.getDisplayFormOfUnitType(type));
       //int idx = Arrays.binarySearch(unitTypesListItems, item);
 			if(idx >=0 && idx < unitTypesListItems.length) {
-				UnitTypesListItem item = this.unitTypesListItems[idx];
+				UnitTypesListItem item = unitTypesListItems[idx];
 				item.addUnit(newUnit);
 				this.unitTypesList.setSelectedItem(item);
 				this.unitsList.setModel(item.getComboBoxModel());
@@ -880,15 +892,20 @@ class UnitsPickList extends JPanel {
 			}
 			
 		}
-		WizardSettings.addNewUnit(type, newUnit, SIUnit);
-		insertIntoDOMTree(map);
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if(adp == null) {
+			
+			Log.debug(7, "Error obtaining the datapackage while trying to add a custom unit!!");
+		} else {
+			adp.addNewUnit(stdType, newUnit);
+			insertIntoDOMTree(adp, map);
+		}
     return;
   }
 
 	
-	private void insertIntoDOMTree(OrderedMap map) {
+	private void insertIntoDOMTree(AbstractDataPackage adp, OrderedMap map) {
 		
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
 		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 		Document doc = impl.createDocument("", "additionalMetadata", null);
 		Node metadataRoot = doc.getDocumentElement();
@@ -933,9 +950,9 @@ class UnitsPickList extends JPanel {
 	
 	private int getIndexOfStandardType(String unitType) {
 		
-		for(int i = 0; i < this.unitTypesListItems.length; i++) {
+		for(int i = 0; i < unitTypesListItems.length; i++) {
 			
-			String type = this.unitTypesListItems[i].toString();
+			String type = unitTypesListItems[i].toString();
 			if(type.equals(unitType)) return i;
 			
 		}
@@ -976,31 +993,83 @@ class UnitsPickList extends JPanel {
 		return WizardSettings.getPreferredType(((UnitTypesListItem)selItem).getOriginalUnitType());
   }
 	
-  public void setSelectedUnit(int unitPos, int typePos) {
-    unitTypesList.setSelectedIndex(unitPos);
+  public void setSelectedUnit(int typePos, int unitPos) {
+		
+		unitTypesList.setSelectedIndex(typePos);
     unitsList.setEnabled(true);
-    unitsList.setSelectedIndex(typePos);
+    unitsList.setSelectedIndex(unitPos);
     return;
   }
 
   private UnitTypesListItem[] getUnitTypesArray() {
-
-    String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
-    int totUnitTypes = unitTypesArray.length;
+		
+		String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
+		String[] totTypesArray = unitTypesArray;
+		
+		String[] customTypesArray = new String[0];
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if(adp != null) {
+			customTypesArray = adp.getUnitDictionaryCustomUnitTypes();
+			if(customTypesArray != null && customTypesArray.length > 0) {
+				List totUnits = new ArrayList();
+				int k = 0;
+				for(k = 0; k < unitTypesArray.length; k++) {
+					totUnits.add(unitTypesArray[k]);
+				}
+				for(int l = 0; l < customTypesArray.length; l++) {
+					if (Arrays.binarySearch(unitTypesArray, customTypesArray[l]) < 0) {
+						totUnits.add(customTypesArray[l]);
+					}
+				}
+				String newArr[] = new String[totUnits.size()];
+				newArr = (String[]) totUnits.toArray(newArr);
+				Arrays.sort(newArr);
+				totTypesArray = newArr;
+			}
+		}
+		
+    int totUnitTypes = totTypesArray.length;
     UnitTypesListItem[] listItemsArray = new UnitTypesListItem[totUnitTypes + 1];
 
     String[] unitsOfThisType = null;
-
-    listItemsArray[0] = new UnitTypesListItem(UNITLIST_DEFAULT,
+		String[] customUnitsOfThisType = null;
+		
+		listItemsArray[0] = new UnitTypesListItem(UNITLIST_DEFAULT,
                                               new String[] {""});
-
-    for (int i=0; i < totUnitTypes; i++) {
-
-      unitsOfThisType
-              = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
-
-      listItemsArray[i + 1] = new UnitTypesListItem(  unitTypesArray[i],
-                                                      unitsOfThisType);
+		
+		String prevType = "";
+		for (int i=0; i < totUnitTypes; i++) {
+			
+			String type = totTypesArray[i];
+			// to avoid duplicate unit types
+			//if(type.equals(prevType)) continue;
+			
+			if(Arrays.binarySearch(unitTypesArray, type) >= 0) { // original unit Type
+				
+				unitsOfThisType
+				= WizardSettings.getUnitDictionaryUnitsOfType(totTypesArray[i]);
+				
+				// could have custom units in it
+				if(Arrays.binarySearch(customTypesArray, totTypesArray[i]) >= 0) {
+					customUnitsOfThisType = adp.getUnitDictionaryUnitsOfType(totTypesArray[i]);
+					String newArr[] = new String[unitsOfThisType.length + customUnitsOfThisType.length];
+					int k = 0;
+					for(k = 0; k < unitsOfThisType.length; k++)
+						newArr[k] = unitsOfThisType[k];
+					for(int l = 0; l < customUnitsOfThisType.length; l++)
+						newArr[k++] = customUnitsOfThisType[l];
+					
+					Arrays.sort(newArr);
+					unitsOfThisType = newArr;
+				}
+				listItemsArray[i + 1] = new UnitTypesListItem(  totTypesArray[i],
+				unitsOfThisType);
+			} else {
+				
+				unitsOfThisType = adp.getUnitDictionaryUnitsOfType(totTypesArray[i]);
+				listItemsArray[i + 1] = new UnitTypesListItem(  totTypesArray[i],
+				unitsOfThisType);
+			}
     }
     return listItemsArray;
   }
@@ -1086,7 +1155,9 @@ class UnitTypesListItem  implements Comparable{
     model = new DefaultComboBoxModel(unitsOfThisType);
 		
   }
-
+	
+	public String[] getUnitsOfThisType() { return this.unitsOfThisType; }
+	
   public int compareTo(Object o) {
 
     return unitTypeDisplayString.compareTo( ((UnitTypesListItem)o).toString());
