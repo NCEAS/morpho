@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-11-21 01:30:52 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-11-27 00:36:49 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public class HelpCommand implements Command
   private HelpBroker mainHB = null;
   private ActionListener helpListener = null;
   // Defaults for Main Help
-  static final String helpsetName = "HolidayHistory";
+  static final String helpsetName = "morpho";
   private String errorMessage = null;
   /**
    * Constructor of HelpCommand
