@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 23:06:37 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2002-09-16 22:34:07 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import java.io.Reader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.CharArrayWriter;
 import java.io.InputStreamReader;
@@ -89,6 +90,7 @@ public class XMLTransformer
 
     private final String CONFIG_KEY_LOCAL_CATALOG_PATH  = "local_catalog_path";
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
+    private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
     private final String GENERIC_STYLESHEET;
     
     private final  Properties       transformerProperties;
@@ -108,7 +110,7 @@ public class XMLTransformer
         transformerProperties = new Properties();
         initEntityResolver();
     }
-    
+
     /**
      *  Used to get a shared instance of the <code>XMLTransformer</code>
      *
@@ -246,6 +248,8 @@ public class XMLTransformer
         CharArrayWriter outputWriter  = new CharArrayWriter();
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
+        tFactory.setURIResolver(new CustomURIResolver());
+        
         Transformer transformer = null;
         try {
             transformer 
@@ -260,8 +264,6 @@ public class XMLTransformer
             e.printStackTrace(new PrintWriter(outputWriter));
         }
         transformer.setErrorListener(new CustomErrorListener());
-        transformer.setURIResolver(new CustomURIResolver());
-        
         Enumeration propertyNames = getTransformerPropertyNames();
 
         while (propertyNames.hasMoreElements()) {
@@ -549,19 +551,30 @@ public class XMLTransformer
     
     class CustomURIResolver implements URIResolver 
     {
-        public Source resolve(String href, String base) 
-                                      throws TransformerException
+        private final String STYLESHEET_LOCATION;
+        private final StringBuffer resolution;
+        
+        protected CustomURIResolver() 
         {
-            Source resolution = null;
-            Log.debug(50,"\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+            STYLESHEET_LOCATION = config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0);
+            resolution = new StringBuffer();
+        }
+        
+        public Source resolve(String href, String base)
+                                                    throws TransformerException
+        {
             Log.debug(50,"CustomURIResolver.resolve() received href="+href
                                                         +" and base="+base);
-            Log.debug(50,"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n");
+            resolution.delete(0,resolution.length());
+            resolution.append(STYLESHEET_LOCATION);
+            resolution.append(href);
 
-            Log.debug(50,"\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
-            Log.debug(50,"CustomURIResolver.resolve() returning "+resolution);
-            Log.debug(50,"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n");
-            return resolution;
+            InputStream stream 
+                      = classLoader.getResourceAsStream(resolution.toString());
+            Log.debug(50,"CustomURIResolver.resolve() returning StreamSource \n"
+                                        +"for InputStream = "+stream
+                                        +"\nfor path = "+resolution.toString());
+            return new StreamSource(stream);
         }
     }
 
