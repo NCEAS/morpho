@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-15 21:45:52 $'
- * '$Revision: 1.25 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-23 22:05:11 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
     setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-    setTitle("Connection");
+    setTitle("Metacat Login");
     getContentPane().setLayout(new BorderLayout(0,0));
     setSize(315,290);
     /* Center the Frame */
@@ -78,69 +78,82 @@ public class ConnectionFrame extends javax.swing.JDialog
             (screenDim.height - frameDim.height) /2);
     setVisible(false);
     JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    JLabel1.setText("Connection Dialog");
+    JLabel1.setText("Metacat Login");
     getContentPane().add(BorderLayout.NORTH,JLabel1);
     JLabel1.setForeground(java.awt.Color.black);
-    JLabel1.setFont(new Font("Dialog", Font.BOLD|Font.ITALIC, 14));
-    JLabel1.setBounds(0,0,315,16);
+    JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
+    //JLabel1.setBounds(0,0,315,16);
+
     JPanel2.setLayout(new BorderLayout(0,0));
     getContentPane().add(BorderLayout.CENTER,JPanel2);
-    JPanel2.setBounds(0,16,315,239);
-    JButtonGroupPanel1.setLayout(new GridLayout(3,1,0,0));
+    //JPanel2.setBounds(0,16,315,239);
+    JButtonGroupPanel1.setLayout(new GridLayout(4,1,0,0));
     JPanel2.add(BorderLayout.NORTH,JButtonGroupPanel1);
-    JButtonGroupPanel1.setBounds(0,0,315,87);
+    //JButtonGroupPanel1.setBounds(0,0,315,87);
+
+    JPanel instructPanel = new JPanel();
+    instructPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+    JButtonGroupPanel1.add(instructPanel);
+    JLabel instructLabel = new JLabel();
+    instructLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+    instructLabel.setForeground(java.awt.Color.black);
+    instructLabel.setText("Enter your Metacat password in order to log in.");
+    instructPanel.add(instructLabel);
+
     JPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
     JButtonGroupPanel1.add(JPanel3);
-    JPanel3.setBounds(0,0,315,29);
+    //JPanel3.setBounds(0,0,315,29);
     Name.setText("Name");
     JPanel3.add(Name);
     Name.setForeground(java.awt.Color.black);
     Name.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Name.setBounds(5,7,34,15);
+    //Name.setBounds(5,7,34,15);
     NameTextField.setColumns(23);
     NameTextField.setText("Enter user name here");
-    JPanel3.add(NameTextField);
-    NameTextField.setBounds(44,5,253,19);
+    //JPanel3.add(NameTextField);
+    JPanel3.add(NameLabel);
+    //NameTextField.setBounds(44,5,253,19);
     JPanel4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
     JButtonGroupPanel1.add(JPanel4);
-    JPanel4.setBounds(0,29,315,29);
+    //JPanel4.setBounds(0,29,315,29);
     Password.setText("Password");
     JPanel4.add(Password);
     Password.setForeground(java.awt.Color.black);
     Password.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Password.setBounds(5,7,56,15);
+    //Password.setBounds(5,7,56,15);
     PWTextField.setColumns(21);
     JPanel4.add(PWTextField);
-    PWTextField.setBounds(66,5,231,19);
+    //PWTextField.setBounds(66,5,231,19);
 //    PWTextField.setText(container.getPassword());
     ActivityLabel.setDoubleBuffered(true);
     ActivityLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
     ActivityLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
     JButtonGroupPanel1.add(ActivityLabel);
     ActivityLabel.setForeground(java.awt.Color.black);
-    ActivityLabel.setBounds(0,58,315,29);
-    ConnectionResultsTextArea.setText("Connection Messages will appear here");
-    JPanel2.add(BorderLayout.CENTER,ConnectionResultsTextArea);
-    ConnectionResultsTextArea.setBounds(0,87,315,152);
+    //ActivityLabel.setBounds(0,58,315,29);
+    //ConnectionResultsTextArea.setText("Connection Messages will appear here");
+    //JPanel2.add(BorderLayout.CENTER,ConnectionResultsTextArea);
+    //ConnectionResultsTextArea.setBounds(0,87,315,152);
+
     JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
     getContentPane().add(BorderLayout.SOUTH,JPanel1);
-    JPanel1.setBounds(0,255,315,35);
-    connectButton.setText("Connect");
+    //JPanel1.setBounds(0,255,315,35);
+    connectButton.setText("Login");
     connectButton.setActionCommand("OK");
     connectButton.setMnemonic(KeyEvent.VK_ENTER);
     JPanel1.add(connectButton);
-    connectButton.setBounds(65,5,81,25);
-    DisconnectButton.setText("Disconnect");
+    //connectButton.setBounds(65,5,81,25);
+    DisconnectButton.setText("Logout");
     DisconnectButton.setActionCommand("Disconnect");
     DisconnectButton.setEnabled(false);
     JPanel1.add(DisconnectButton);
-    DisconnectButton.setBounds(151,5,99,25);
+    //DisconnectButton.setBounds(151,5,99,25);
     CancelButton.setText("Cancel");
     CancelButton.setActionCommand("Cancel");
     CancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
     CancelButton.setEnabled(true);
     JPanel1.add(CancelButton);
-    CancelButton.setBounds(151,5,99,25);
+    //CancelButton.setBounds(151,5,99,25);
     //}}
 
     //{{INIT_MENUS
@@ -156,6 +169,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     
     if (container!=null) {
       NameTextField.setText(container.getUserName());
+      NameLabel.setText(container.getUserName());
       DisconnectButton.setEnabled(container.isConnected());
       if (container.isConnected()) {
         ConnectionResultsTextArea.setText("Currently logged in.");
@@ -172,6 +186,8 @@ public class ConnectionFrame extends javax.swing.JDialog
     } catch (Exception w) {
       ClientFramework.debug(7, "Error in loading images");
     }
+
+    pack();
   }
 
   /**
@@ -208,6 +224,7 @@ public class ConnectionFrame extends javax.swing.JDialog
   javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
   javax.swing.JLabel Name = new javax.swing.JLabel();
   javax.swing.JTextField NameTextField = new javax.swing.JTextField();
+  javax.swing.JLabel NameLabel = new javax.swing.JLabel();
   javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
   javax.swing.JLabel Password = new javax.swing.JLabel();
   javax.swing.JPasswordField PWTextField = new javax.swing.JPasswordField();
@@ -290,9 +307,8 @@ public class ConnectionFrame extends javax.swing.JDialog
       public void run() 
       {
         if (container!=null) {
-          //container.setUserName(NameTextField.getText());
           container.setPassword(PWTextField.getText());
-          container.setProfile(NameTextField.getText());
+          //container.setProfile(NameTextField.getText());
         }
 
         final boolean connected = container.logIn();
@@ -304,6 +320,8 @@ public class ConnectionFrame extends javax.swing.JDialog
             if (connected) {
               dispose();
             } else {
+              ClientFramework.debug(9, "Login failed.\n" + 
+                    "Please check the Caps Lock key and try again.");
               ConnectionResultsTextArea.setText("Login failed.\n" + 
                     "Please check the Caps Lock key and try again.");
               DisconnectButton.setEnabled(false);
@@ -322,7 +340,7 @@ public class ConnectionFrame extends javax.swing.JDialog
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     container.logOut();
-    ConnectionResultsTextArea.setText("You are no longer connected.");
+    ConnectionResultsTextArea.setText("You are no longer logged in.");
     DisconnectButton.setEnabled(false);
   }
 
@@ -331,7 +349,7 @@ public class ConnectionFrame extends javax.swing.JDialog
    */
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    container.setProfile(NameTextField.getText());
+    //container.setProfile(NameTextField.getText());
     
     ConfigXML profile = container.getProfile();
     profile.set("searchmetacat", 0, "false");

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-20 20:32:09 $'
- * '$Revision: 1.77 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-23 22:05:11 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -474,7 +474,7 @@ public class ClientFramework extends javax.swing.JFrame
    */
   private void initializeActions() {
     // FILE MENU ACTIONS
-    fileMenuActions = new Action[3];
+    fileMenuActions = new Action[4];
 
     Action exitItemAction = new AbstractAction("Exit") {
       public void actionPerformed(ActionEvent e) {
@@ -488,13 +488,14 @@ public class ClientFramework extends javax.swing.JFrame
     exitItemAction.putValue("menuPosition", new Integer(-1));
     fileMenuActions[0] = exitItemAction;
 
-    Action connectItemAction = new AbstractAction("Connect...") {
+    Action connectItemAction = new AbstractAction("Login...") {
       public void actionPerformed(ActionEvent e) {
         establishConnection();
       }
     };
-    connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Log In");
+    connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Login");
     connectItemAction.putValue("menuPosition", new Integer(0));
+    connectItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     fileMenuActions[1] = connectItemAction;
 
     Action profileItemAction = new AbstractAction("New profile...") {
@@ -505,6 +506,15 @@ public class ClientFramework extends javax.swing.JFrame
     profileItemAction.putValue(Action.SHORT_DESCRIPTION, "New Profile");
     profileItemAction.putValue("menuPosition", new Integer(1));
     fileMenuActions[2] = profileItemAction;
+
+    Action switchItemAction = new AbstractAction("Switch profile...") {
+      public void actionPerformed(ActionEvent e) {
+        switchProfile();
+      }
+    };
+    switchItemAction.putValue(Action.SHORT_DESCRIPTION, "Switch Profile");
+    switchItemAction.putValue("menuPosition", new Integer(2));
+    fileMenuActions[3] = switchItemAction;
 
     addMenu("File", new Integer(1), fileMenuActions);
 
@@ -715,6 +725,48 @@ public class ClientFramework extends javax.swing.JFrame
   {
     ProfileDialog dialog = new ProfileDialog(this);
     dialog.setVisible(true);
+  }
+
+  /** 
+   * Switch profiles (from one existing profile to another)
+   */
+  private void switchProfile()
+  {
+    String currentProfile = config.get("current_profile", 0);
+    String profileDirName = config.get("profile_directory", 0);
+    File profileDir = new File(profileDirName);
+    String profilesList[] = null;
+    int selection = 0;
+    if (profileDir.isDirectory()) {
+        
+        // Get vector of profiles to be displayed
+        profilesList = profileDir.list();
+        for (selection=0; selection < profilesList.length; selection++) {
+            if (currentProfile.equals(profilesList[selection])) {
+                break;
+            }
+        }
+
+        // Pop up a dialog with the choices
+        String newProfile = (String)JOptionPane.showInputDialog(null,
+                                "Select from existing profiles:", "Input",
+                                JOptionPane.INFORMATION_MESSAGE, null,
+                                profilesList, profilesList[selection]);
+    
+        // Set the new profile to the one selected if it is different
+        if (null != newProfile) {
+            if (currentProfile.equals(newProfile)) {
+                ClientFramework.debug(9, "No change in profile.");
+            } else {
+                setProfile(newProfile);
+                ClientFramework.debug(9, "New profile is: " + newProfile);
+            }
+        }
+    } else {
+        // This is an error
+        ClientFramework.debug(3, "Error: Can not switch profiles.\n " +
+                "profile_directory is not a directory.");
+    }
   }
 
   /** Listen for window closing events */
@@ -1015,6 +1067,7 @@ public class ClientFramework extends javax.swing.JFrame
     Properties prop = new Properties();
     prop.put("action", "login");
     prop.put("qformat", "xml");
+    debug(20, "Logging in using uid: " + userName);
     prop.put("username", userName);
     prop.put("password", passWord);
 
@@ -1182,14 +1235,19 @@ public class ClientFramework extends javax.swing.JFrame
     this.profile = newProfile;
 
     // Load basic profile information
-    String username = profile.get("username", 0);
-    setUserName(username);
+    String profilename = profile.get("profilename", 0);
+    String scope = profile.get("scope", 0);
+    String dn = profile.get("dn", 0);
+    //setUserName(username);
+    debug(20, "Setting username to dn: " + dn);
+    setUserName(dn);
 
-    if (! config.set("current_profile", 0, username)) {
-      boolean success = config.insert("current_profile", username);
+    if (! config.set("current_profile", 0, profilename)) {
+      boolean success = config.insert("current_profile", profilename);
     }
     config.save();
-    setLastID(username);
+    establishConnection();
+    setLastID(scope);
   } 
 
   /**
@@ -1205,8 +1263,8 @@ public class ClientFramework extends javax.swing.JFrame
       String newProfilePath = profileDir + File.separator + newProfileName + 
                               File.separator + newProfileName + ".xml";
       try {
-      ConfigXML newProfile = new ConfigXML(newProfilePath);
-      setProfile(newProfile);
+        ConfigXML newProfile = new ConfigXML(newProfilePath);
+        setProfile(newProfile);
       } catch (FileNotFoundException fnf) {
         ClientFramework.debug(5, "Profile not found!");
       }
@@ -1352,6 +1410,7 @@ public class ClientFramework extends javax.swing.JFrame
         // Load the current profile and log in
         String profileDir = config.get("profile_directory", 0);
         String currentProfile = config.get("current_profile", 0);
+        //String scope = null;
         if (currentProfile == null) {
           ProfileDialog dialog = new ProfileDialog(clf);
           dialog.setVisible(true);
@@ -1367,13 +1426,13 @@ public class ClientFramework extends javax.swing.JFrame
                         File.separator + currentProfile + ".xml";
           ConfigXML profile = new ConfigXML(profileName);
           clf.setProfile(profile);
-          //clf.establishConnection();  
-          // DFH moved outside 'else' so that user will see it the first 
-          // time and get used to connection dialog appearing
+          //scope = profile.get("scope", 0);
         }
         
-        clf.establishConnection();
-        clf.setLastID(clf.getUserName());
+        // mbj removed because it is now called in setProfile for us
+        //clf.establishConnection();
+        //clf.setLastID(scope);
+        
         // Set up logging as appropriate
         String log_file_setting = config.get("log_file", 0);
         if (log_file_setting != null) {
@@ -1431,17 +1490,17 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
   
-  private String getLastID(String username) {
+  private String getLastID(String scope) {
     String result = null;
     Properties lastIDProp = new Properties();
     lastIDProp.put("action","getlastdocid");
-    lastIDProp.put("scope",username);
+    lastIDProp.put("scope",scope);
     String temp = getMetacatString(lastIDProp);
     /*
       if successful temp should be of the form
       <?xml version="1.0"?>
       <lastDocid>
-        <username>fegraus</username>
+        <scope>fegraus</scope>
         <docid>fegraus.53.1</docid>
       </lastDocid>
     */
@@ -1465,9 +1524,9 @@ public class ClientFramework extends javax.swing.JFrame
     return result;
   }
   
-  private void setLastID(String usr) {
+  private void setLastID(String scope) {
     if (connected) {   // only execute if connected to avoid hanging when there is no network connection
-      String id = getLastID(usr);
+      String id = getLastID(scope);
       if (id!=null) {
         int num = (new Integer(id)).intValue();
         String curval = profile.get("lastId", 0);

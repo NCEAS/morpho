@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-11 18:50:21 $'
- * '$Revision: 1.1 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-23 22:05:11 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,9 +73,9 @@ public class ToolPlugin
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
 
-    // Add menus, and toolbars
-    framework.addMenu("File", new Integer(1), menuActions);
-    framework.addToolbarActions(toolbarActions);
+    // Add menus, and toolbars // MBJ removed because it isn't needed in the UI
+    //framework.addMenu("File", new Integer(1), menuActions);
+    //framework.addToolbarActions(toolbarActions);
 
     // Register Services
 /*    try 
@@ -127,5 +127,4 @@ public class ToolPlugin
   {
     //we dont' need any!
   }
-
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-14 03:36:52 $'
- * '$Revision: 1.67 $'
+ *     '$Date: 2001-10-23 22:05:11 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,7 +121,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     StringBuffer searchtext = new StringBuffer();
     searchtext.append("<?xml version=\"1.0\"?>\n");
     searchtext.append("<pathquery version=\"1.0\">\n");
-    searchtext.append("<querytitle>My Data (" + framework.getUserName());
+    String lastname = profile.get("lastname", 0);
+    String firstname = profile.get("firstname", 0);
+    searchtext.append("<querytitle>My Data (" + firstname + " " + lastname);
     searchtext.append(")</querytitle>\n");
     Vector returnDoctypeList = profile.get("returndoc");
     for (int i=0; i < returnDoctypeList.size(); i++) {

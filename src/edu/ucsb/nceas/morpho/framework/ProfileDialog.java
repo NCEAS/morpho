@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-07-27 18:57:46 $'
- * '$Revision: 1.12 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-23 22:05:11 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,12 +53,14 @@ public class ProfileDialog extends JDialog
   JButton cancelButton = new JButton();
 
   ImageIcon forwardIcon = null;
+  JTextField profileNameField = new JTextField();
   JTextField firstNameField = new JTextField();
   JTextField lastNameField = new JTextField();
-  JTextField usernameField = new JTextField();
+  JTextField userIdField = new JTextField();
   JPasswordField passwordField = new JPasswordField();
-  JPasswordField passwordField2 = new JPasswordField();
+  JTextField otherOrgField = new JTextField();
   JTextField constructionField = new JTextField();
+  JList orgList = null;
 
   /**
    * Construct a dialog and set the framework
@@ -78,7 +80,7 @@ public class ProfileDialog extends JDialog
 
     framework = cont;
 
-    numScreens = 1;
+    numScreens = 2;
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -239,7 +241,7 @@ public class ProfileDialog extends JDialog
    * Lay out labels and fields in an orderly grid.
    */
   private void addLabelTextRows(JLabel[] labels,
-                                JTextField[] textFields,
+                                JComponent[] components,
                                 GridBagLayout gridbag,
                                 Container container) {
     GridBagConstraints c = new GridBagConstraints();
@@ -258,8 +260,8 @@ public class ProfileDialog extends JDialog
       //c.fill = GridBagConstraints.HORIZONTAL; // fill remaining space
       c.weightx = 1.0;
       c.anchor = GridBagConstraints.WEST;
-      gridbag.setConstraints(textFields[i], c);
-      container.add(textFields[i]);
+      gridbag.setConstraints(components[i], c);
+      container.add(components[i]);
     }
   }
 
@@ -274,53 +276,82 @@ public class ProfileDialog extends JDialog
     screenPanel.setLayout(gridbag);
 
     if (0 == currentScreen) {
-      String helpText = "<html><p>Enter your first and last name, " +
-                        "a username of your choosing, your organization, " +
-                        "your desired password, and the same password " +
-                        "again (for verification).</p></html>";
+      String helpText = "<html><p>Enter the name for this profile " +
+                        " and your first and last name." +
+                        "</p></html>";
       helpLabel.setText(helpText);
 
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
                             "Basic Information"));
+      JLabel profileNameLabel = new JLabel();
       JLabel firstNameLabel = new JLabel();
       JLabel lastNameLabel = new JLabel();
-      JLabel usernameLabel = new JLabel();
-      JLabel passwordLabel = new JLabel();
-      JLabel passwordLabel2 = new JLabel();
+      profileNameLabel.setText("Name of profile: ");
       firstNameLabel.setText("First name: ");
       lastNameLabel.setText("Last name: ");
-      usernameLabel.setText("Username: ");
-      passwordLabel.setText("Password: ");
-      passwordLabel2.setText("Password again: ");
+      profileNameLabel.setForeground(Color.black);
       firstNameLabel.setForeground(Color.black);
       lastNameLabel.setForeground(Color.black);
-      usernameLabel.setForeground(Color.black);
-      passwordLabel.setForeground(Color.black);
-      passwordLabel2.setForeground(Color.black);
+      profileNameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       firstNameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       lastNameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      passwordLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      passwordLabel2.setFont(new Font("Dialog", Font.PLAIN, 12));
+      profileNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       firstNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       lastNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-      usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-      passwordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-      passwordLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
   
+      profileNameField.setColumns(15);
       firstNameField.setColumns(15);
       lastNameField.setColumns(15);
-      usernameField.setColumns(15);
-      passwordField.setColumns(10);
-      passwordField2.setColumns(10);
   
-      JLabel[] labels = {firstNameLabel, lastNameLabel, usernameLabel,
-                         passwordLabel, passwordLabel2};
-      JTextField[] textFields = {firstNameField, lastNameField, usernameField,
-                         passwordField, passwordField2};
+      JLabel[] labels = {profileNameLabel, firstNameLabel, lastNameLabel};
+      JTextField[] textFields = {profileNameField, firstNameField,
+                        lastNameField};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
     } else if (1 == currentScreen) {
+      String helpText = "<html><p>Enter your Metacat account information. " +
+                        "This will allow you to log in to Metacat " +
+                        "and collaborate with other researchers " +
+                        "through the KNB.  To register for a new " + 
+                        "Metacat account, go to " +
+                        "\"http://knb.ecoinformatics.org\".</p></html>";
+      helpLabel.setText(helpText);
+      screenPanel.setBorder(BorderFactory.createTitledBorder(
+                            BorderFactory.createEmptyBorder(8,8,8,8),
+                            "Metacat Account Information"));
+      JLabel usernameLabel = new JLabel();
+      JLabel passwordLabel = new JLabel();
+      JLabel orgLabel = new JLabel();
+      JLabel otherOrgLabel = new JLabel();
+      usernameLabel.setText("Metacat Username: ");
+      passwordLabel.setText("Metacat Password: ");
+      orgLabel.setText("Organization: ");
+      otherOrgLabel.setText("Other organization: ");
+      usernameLabel.setForeground(Color.black);
+      passwordLabel.setForeground(Color.black);
+      orgLabel.setForeground(Color.black);
+      otherOrgLabel.setForeground(Color.black);
+      usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      passwordLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      orgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      otherOrgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+      passwordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+      orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+      otherOrgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+      userIdField.setColumns(15);
+      passwordField.setColumns(10);
+      String[] organizations = {"NCEAS", "LTER", "NRS", "PISCO", "MARINE"};
+      orgList = new JList(organizations);
+      orgList.setSelectionMode(1);
+      orgList.setVisibleRowCount(3);
+      JScrollPane orgScrollPane = new JScrollPane(orgList);
+      otherOrgField.setColumns(15);
+      JLabel[] labels = {usernameLabel, passwordLabel, orgLabel, otherOrgLabel};
+      JComponent[] components = {userIdField, passwordField, 
+                            orgScrollPane, otherOrgField};
+      addLabelTextRows(labels, components, gridbag, screenPanel);
+    } else if (2 == currentScreen) {
       String helpText = "<html>Enter your contact information.  This " +
                         "data will be used to pre-fill in metadata " +
                         "fields when you are entering data, and so will " +
@@ -369,14 +400,22 @@ public class ProfileDialog extends JDialog
   private boolean validateFieldContents()
   {
     boolean fieldsAreValid = true;
-    if (usernameField.getText() == null || 
-        usernameField.getText().equals("")) {
+    if (profileNameField.getText() == null || 
+        profileNameField.getText().equals("")) {
       fieldsAreValid = false;
     }
 
+    if (userIdField.getText() == null || 
+        userIdField.getText().equals("")) {
+      fieldsAreValid = false;
+    }
+
+    /*
     if (!passwordField.getText().equals(passwordField2.getText())) {
       fieldsAreValid = false;
     }
+    */
+
     return fieldsAreValid;
   }
 
@@ -398,15 +437,21 @@ public class ProfileDialog extends JDialog
           JOptionPane.showMessageDialog(this, messageText);      
         }
       }
-      String username = usernameField.getText();
-      String profilePath = profileDirName + File.separator + username;
-      String profileName = profilePath + File.separator + username + ".xml";
+      String profileName = profileNameField.getText();
+      String username = userIdField.getText();
+      String org = (String)orgList.getSelectedValue();
+      if (null == org) {
+          org = otherOrgField.getText();
+      }
+      String profilePath = profileDirName + File.separator + profileName;
+      String profileFileName = profilePath + File.separator + 
+                        profileName + ".xml";
       File profileDir = new File(profilePath);
       if (!profileDir.mkdir()) {
         // Error creating the directory
         currentScreen = 0;
         layoutScreen();
-        String messageText = "A profile for user \"" + username +
+        String messageText = "A profile named \"" + profileName +
                              "\" already exists.  Would you like to use it?" +
                              "\n\nUse existing profile?\n";
         int result = JOptionPane.showConfirmDialog(this, messageText, 
@@ -414,13 +459,10 @@ public class ProfileDialog extends JDialog
                                                    JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
           try {
-            ConfigXML profile = new ConfigXML(profileName);
+            ConfigXML profile = new ConfigXML(profileFileName);
             // Log into metacat
             framework.setPassword(passwordField.getText());
             framework.setProfile(profile);
- // removed by DFH to avoid initial use error when there is
- // no network connection
-//            framework.logIn();
   
             // Get rid of the dialog
             setVisible(false);
@@ -428,24 +470,30 @@ public class ProfileDialog extends JDialog
           } catch (FileNotFoundException fnf) {
             messageText = "Sorry, I tried, but it looks like that profile\n" +
                           "is corrupted.  You'll have to choose another " +
-                          "username.";
+                          "profile name.";
             JOptionPane.showMessageDialog(this, messageText);      
           }
         } else {
-          messageText = "OK, then please choose another username.\n";
+          messageText = "OK, then please choose another profile name.\n";
           JOptionPane.showMessageDialog(this, messageText);      
         }
       } else {
         try {
           // Copy default profile to the new directory
           String defaultProfile = config.get("default_profile", 0);
-          FileUtils.copy(defaultProfile, profileName);
+          FileUtils.copy(defaultProfile, profileFileName);
 
           // Store the collected information in the profile
-          ConfigXML profile = new ConfigXML(profileName);
+          ConfigXML profile = new ConfigXML(profileFileName);
           boolean success = false;
+          if (! profile.set("profilename", 0, profileName)) {
+            success = profile.insert("profilename", profileName);
+          }
           if (! profile.set("username", 0, username)) {
             success = profile.insert("username", username);
+          }
+          if (! profile.set("organization", 0, org)) {
+            success = profile.insert("organization", org);
           }
           if (! profile.set("firstname", 0, firstNameField.getText())) {
             success = profile.insert("firstname", firstNameField.getText());
@@ -453,10 +501,19 @@ public class ProfileDialog extends JDialog
           if (! profile.set("lastname", 0, lastNameField.getText())) {
             success = profile.insert("lastname", lastNameField.getText());
           }
-          if (! profile.set("scope", 0, username)) {
-            success = profile.insert("scope", username);
+          if (! profile.set("scope", 0, profileName)) {
+            success = profile.insert("scope", profileName);
           }
-
+          StringBuffer dn = new StringBuffer();
+          String uidtag = config.get("uid_tag", 0);
+          String orgtag = config.get("org_tag", 0);
+          String ldapbase = config.get("ldapbase", 0);
+          dn.append(uidtag +"=" + username);
+          dn.append("," + orgtag +"=" + org);
+          dn.append("," + ldapbase);
+          if (! profile.set("dn", 0, dn.toString())) {
+            success = profile.insert("dn", dn.toString());
+          }
           profile.save();
 
           // Create our directories for user data
@@ -477,14 +534,14 @@ public class ProfileDialog extends JDialog
 
           // Copy sample data to the data directory
           Hashtable tokens = new Hashtable();
-          tokens.put("SCOPE", username);
+          tokens.put("SCOPE", profileName);
           String samplePath = config.get("samples_directory", 0);
           File sampleDir = new File(samplePath);
           File[] samplesList = sampleDir.listFiles();
           for (int n=0; n < samplesList.length; n++) {
             File srcFile = samplesList[n];
             if (srcFile.isFile()) {
-              String destDirName = dataPath + File.separator + username;
+              String destDirName = dataPath + File.separator + profileName;
               File destDir = new File(destDirName);
               destDir.mkdirs();
               String destName = destDirName + File.separator + 
@@ -499,9 +556,6 @@ public class ProfileDialog extends JDialog
           // Log into metacat
           framework.setPassword(passwordField.getText());
           framework.setProfile(profile);
- // removed by DFH to avoid initial use error when there is
- // no network connection
- //         framework.logIn();
 
           // Get rid of the dialog
           setVisible(false);
@@ -510,8 +564,8 @@ public class ProfileDialog extends JDialog
         } catch (IOException ioe) {
           currentScreen = 0;
           layoutScreen();
-          String messageText = "Error creating profile for user \"" + 
-                               username + "\".  Please try again.\n";
+          String messageText = "Error creating profile named \"" + 
+                               profileName + "\".  Please try again.\n";
           JOptionPane.showMessageDialog(this, messageText);      
         }
       }
@@ -520,7 +574,7 @@ public class ProfileDialog extends JDialog
       layoutScreen();
       String messageText = "Some required information was invalid.\n\n" +
                            "Please check that you have provided a\n" +
-                           "username and that the two passwords match.\n";
+                           "profile name and a user id.\n";
       JOptionPane.showMessageDialog(this, messageText);      
     }
   }
