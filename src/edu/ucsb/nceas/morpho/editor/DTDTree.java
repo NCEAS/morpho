@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-24 23:38:25 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-29 23:35:18 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ public class DTDTree
 		  DTDElement elem = dtd.rootElement;
       NodeInfo rootNodeInfo = new NodeInfo(elem.name);
       DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode(rootNodeInfo);
-
+      rootNode = rootTreeNode;
 	    buildTree(rootTreeNode);
 	    treeModel = new DefaultTreeModel(rootTreeNode);
 	  }

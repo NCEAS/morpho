@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-25 22:42:02 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-29 23:35:18 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,7 @@ public class DocFrame extends javax.swing.JFrame
     // various global variables
     public DefaultTreeModel treeModel;
     public DefaultMutableTreeNode rootNode;
+    public DTDTree dtdtree;
     DefaultMutableTreeNode selectedNode;
     public JTree tree;
     StringBuffer sb; 
@@ -112,6 +113,9 @@ public class DocFrame extends javax.swing.JFrame
 		DTDParse.setText("Parse DTD");
 		DTDParse.setActionCommand("Parse DTD");
 		ControlPanel.add(DTDParse);
+		TestButton.setText("Test");
+		TestButton.setActionCommand("Test");
+		ControlPanel.add(TestButton);
 		//}}
 		JSplitPane DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
 		       , OutputScrollPanel, NestedPanelScrollPanel);
@@ -132,6 +136,7 @@ public class DocFrame extends javax.swing.JFrame
 		SymChange lSymChange = new SymChange();
 		reload.addActionListener(lSymAction);
 		DTDParse.addActionListener(lSymAction);
+		TestButton.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -238,6 +243,7 @@ public class DocFrame extends javax.swing.JFrame
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
 	javax.swing.JButton reload = new javax.swing.JButton();
 	javax.swing.JButton DTDParse = new javax.swing.JButton();
+	javax.swing.JButton TestButton = new javax.swing.JButton();
 	//}}
 
 	//{{DECLARE_MENUS
@@ -276,6 +282,8 @@ class SymAction implements java.awt.event.ActionListener {
 				reload_actionPerformed(event);
 			else if (object == DTDParse)
 				DTDParse_actionPerformed(event);
+			else if (object == TestButton)
+				TestButton_actionPerformed(event);
 		}
 }
 
@@ -491,7 +499,7 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 
 	void DTDParse_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		DTDTree dtdtree = new DTDTree(dtdfile);
+		dtdtree = new DTDTree(dtdfile);
 		dtdtree.parseDTD();
 		tree.setModel(dtdtree.treeModel);
 	}
@@ -509,6 +517,9 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
  * input tree will be modified using template
  */
 void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+  DefaultMutableTreeNode tNode;
+  DefaultMutableTreeNode nd2;
+  DefaultMutableTreeNode qw = null;
   // first check to see if root nodes have same names
   if (!compareNodes(input, template)) {
     System.out.println( "Root nodes do not match!!!");
@@ -538,32 +549,67 @@ void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
           nextLevelTemplateNodes.addElement(ndt1);
         }
       }
+      // now have a list of all elements in input and template trees at the level being processed
+      // loop over all the template nodes at the 'next' level
+      Enumeration enum = nextLevelTemplateNodes.elements();
+      while (enum.hasMoreElements()) {
+        tNode = (DefaultMutableTreeNode)enum.nextElement();
+        Vector hits = getMatches(tNode, nextLevelInputNodes);
+        // merge hits with template node
+        Enumeration en1 = hits.elements();
+        while (en1.hasMoreElements()) {
+          DefaultMutableTreeNode tempnode = (DefaultMutableTreeNode)en1.nextElement();
+          mergeNodes(tempnode, tNode);  
+        }
+        // Here we need to add nodes that are 'missing'
+        // go to parent of tnode; find matching nodes in input at same level; add children
+        DefaultMutableTreeNode newnode = null;
+        if (hits.size()==0) {
+            DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
+            int index = ptNode.getIndex(tNode);
+            Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
+            Enumeration en2 = parent_hits.elements();
+            while (en2.hasMoreElements()) {
+              DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
+              newnode = deepNodeCopy(tNode);
+ //             newnode = (DefaultMutableTreeNode)tNode.clone();
+              ind.insert(newnode,index);
+              nextLevelInputNodes.addElement(newnode);
+            }
+            
+          if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
+            // in this case, one of the 'children' of the CHOICE node probably exists
+            // in the Info nodes for this level
+            int indx1 = -1;
+            Enumeration q = tNode.children();
+            while (q.hasMoreElements()) {
+              DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)q.nextElement();
+              Enumeration ww = newnode.children();
+              while (ww.hasMoreElements()) {
+                qw = (DefaultMutableTreeNode)ww.nextElement();
+                if (compareNodes(nd1,qw)) {
+                  indx1 = newnode.getIndex(qw);
+                  newnode.remove(qw);
+                }
+              }
+              Vector choice_hits = getMatches(nd1, nextLevelInputNodes);
+              Enumeration qq = choice_hits.elements();
+              while (qq.hasMoreElements()) {
+                nd2 = (DefaultMutableTreeNode)qq.nextElement();
+                newnode.insert(nd2, indx1);
+                nextLevelInputNodes.addElement(nd2);
+              }
+            }
+          }
+            
+        }
+      }
       currentLevelInputNodes = nextLevelInputNodes;
       currentLevelTemplateNodes = nextLevelTemplateNodes;
-      // now have a list of all elements in input and template trees at the level being processed
-      
     }  // end levels loop
   } //end else
 }
   
-
-/*
- * merge the children of the input nodes
- *
- */
-void childUnion(Vector inputs, DefaultMutableTreeNode template) {
-  Enumeration templateChildren = inputs.elements();
-  while (templateChildren.hasMoreElements()) {
-    DefaultMutableTreeNode templateChild = (DefaultMutableTreeNode)templateChildren.nextElement();
-    Vector matchNodes = getMatches(templateChild,inputs);
-    for (int i=0;i<matchNodes.size();i++) {
-      mergeNodes((DefaultMutableTreeNode)matchNodes.elementAt(i),templateChild); 
-    }
-    if (matchNodes.size()==0) {
-      inputs.add(templateChild);  
-    }
-  }
-}
 
 /*
  * return a Vector containing all the nodes in a Vector that match 'match'
@@ -580,20 +626,6 @@ Vector getMatches(DefaultMutableTreeNode match, Vector vec) {
   return matches;
 }
 
-	 /*
- * return a Vector containing all the child nodes of nd2 that do not match 'match'
- */
-Vector getMisses(DefaultMutableTreeNode match, DefaultMutableTreeNode nd2) {
-  Vector misses = new Vector();
-  Enumeration children = nd2.children();
-  while (children.hasMoreElements()) {
-    DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
-    if ( !compareNodes(child,match)) {
-      misses.addElement(child);  
-    }
-  }
-  return misses;
-}
 
 	 
 boolean compareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
@@ -613,4 +645,11 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
   }
 }
 //------------------------------------------------------------	 
+
+	void TestButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	  rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+		treeUnion(rootNode,dtdtree.rootNode);
+	}
+	
 }
