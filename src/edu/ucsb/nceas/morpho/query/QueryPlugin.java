@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-07 00:09:17 $'
- * '$Revision: 1.72.4.1 $'
+ *     '$Date: 2002-08-09 01:12:19 $'
+ * '$Revision: 1.72.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   /** Tabbed panel that displays the data owned by the user */
   private ResultPanel ownerPanel = null;
   
-  ResultPanelAndFrameMediator mediator = new ResultPanelAndFrameMediator();
+  
 
   /**
    * Construct the query plugin.  Initialize our one tab for the 
@@ -222,7 +222,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Create the tabbed pane for the owner queries
     ownerQuery = new Query(getOwnerQuery(), framework);
     ResultSet results = ownerQuery.execute();
-    ownerPanel = new ResultPanel(results, true, false, mediator);
+    ownerPanel = new ResultPanel(results, true, false, null);
 
     // Add the content pane, menus, and toolbars
     framework.setMainContentPane(ownerPanel);
