@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-22 17:39:50 $'
- * '$Revision: 1.5 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-23 17:17:41 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.*;
@@ -1280,6 +1282,25 @@ public class Morpho
                     Log.debug(9, "No change in profile.");
                 } else {
                     setProfile(newProfile);
+                    // Update saved queries depend on new profile
+                    QueryRefreshInterface query;
+                    try 
+                    {
+                      ServiceController services = 
+                                                ServiceController.getInstance();
+                      ServiceProvider provider = 
+                       services.getServiceProvider(QueryRefreshInterface.class);
+                      query = (QueryRefreshInterface)provider;
+                      // Update saved query
+                      query.updateSavedQueryMenuItems(this);
+                    } 
+                    catch (ServiceNotHandledException snhe) 
+                    {
+                        Log.debug(6, "Error in upload");
+                      
+                    }
+                    
+                   
                     Log.debug(9, "New profile is: " + newProfile);
                 }
             }
