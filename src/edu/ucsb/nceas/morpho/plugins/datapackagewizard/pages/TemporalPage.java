@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:11:33 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-03-16 22:40:22 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,11 +44,11 @@ import java.util.Calendar;
 import java.util.List;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -57,6 +57,10 @@ import javax.swing.JTextField;
 
 import com.toedter.calendar.JCalendar;
 
+/**
+ * <p>Thisa is the actual temporal dialog page, where the user enters temporal
+ * range limits</p>
+ */
 public class TemporalPage extends AbstractWizardPage {
 
   private final String pageID     = DataPackageWizardInterface.TEMPORAL_PAGE;
@@ -98,7 +102,7 @@ public class TemporalPage extends AbstractWizardPage {
 
   private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage";
 
-  private static final Dimension PANEL_DIMS = new Dimension(325,220);
+  private static final Dimension PANEL_DIMS = new Dimension(325,280);
   private static final int YYYYMMDD = 8;
   private static final int ALL = 4;
   private static final int MONTH_YEAR = 2;
@@ -147,7 +151,9 @@ public class TemporalPage extends AbstractWizardPage {
     JPanel typeRadioOuterPanel = WidgetFactory.makePanel(2);
     JPanel typeRadioPanel = WidgetFactory.makeRadioPanel(timeTypeText, 0, accessTypeListener);
 
-    typeRadioPanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,0,0));
+    typeRadioPanel.setBorder(
+      new javax.swing.border.EmptyBorder(0, 4*WizardSettings.PADDING, 0, 0));
+
     typeRadioOuterPanel.add(typeRadioPanel);
 
     topPanel.add(WidgetFactory.makeDefaultSpacer());
@@ -158,8 +164,9 @@ public class TemporalPage extends AbstractWizardPage {
     topPanel.add(descLabel);
     topPanel.add(typeRadioOuterPanel);
 
-    topPanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-        0,0));
+    topPanel.setBorder(
+      new javax.swing.border.EmptyBorder(0, 4*WizardSettings.PADDING, 0, 0));
+
     this.add(topPanel, BorderLayout.NORTH);
 
     singlePointPanel = getSinglePointPanel();
@@ -176,21 +183,25 @@ public class TemporalPage extends AbstractWizardPage {
    */
 
   public JPanel getSinglePointPanel() {
+
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
     singleTimeTF = new JTextField();
     singleTimeTF.setEditable(false);
-    singleTimeTF.setBackground(Color.white);
 
     singleTimeCalendar = new JCalendar();
     singleTimeCalendar.setVisible(true);
 
     JPanel singlePanel = getDateTimePanel("Enter date:", "Time",
                                           singleTimeTF, singleTimeCalendar);
+
+    panel.add(Box.createGlue());
+
     panel.add(singlePanel);
-    panel.setBorder(new javax.swing.border.EmptyBorder(0,40*WizardSettings.PADDING,
-        0,4*WizardSettings.PADDING));
+
+    panel.add(Box.createGlue());
+
     return panel;
   }
 
@@ -202,13 +213,13 @@ public class TemporalPage extends AbstractWizardPage {
    */
 
   public JPanel getRangeTimePanel() {
+
     JPanel panel = new JPanel();
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
     startTimeTF = new JTextField();
     startTimeTF.setEditable(false);
-    startTimeTF.setBackground(Color.white);
 
     startTimeCalendar = new JCalendar();
     startTimeCalendar.setVisible(true);
@@ -216,11 +227,12 @@ public class TemporalPage extends AbstractWizardPage {
     JPanel startingPanel = getDateTimePanel("Enter starting date:",
                                             "Start Time", startTimeTF,
                                             startTimeCalendar);
+    panel.add(Box.createGlue());
+
     panel.add(startingPanel);
 
     endTimeTF = new JTextField();
     endTimeTF.setEditable(false);
-    endTimeTF.setBackground(Color.white);
 
     endTimeCalendar = new JCalendar();
     endTimeCalendar.setVisible(true);
@@ -229,8 +241,8 @@ public class TemporalPage extends AbstractWizardPage {
                                           endTimeTF, endTimeCalendar);
     panel.add(endingPanel);
 
-    panel.setBorder(new javax.swing.border.EmptyBorder(0,8*WizardSettings.PADDING,
-        0,4*WizardSettings.PADDING));
+    panel.add(Box.createGlue());
+
     return panel;
   }
 
@@ -258,8 +270,6 @@ public class TemporalPage extends AbstractWizardPage {
         4*WizardSettings.PADDING,0,
         4*WizardSettings.PADDING));
 
-    timeTextField.setText(calendarToString(timeCalendar, ALL));
-    panel.add(timeTextField, BorderLayout.NORTH);
 
     final JCalendar finalTimeCalendar = timeCalendar;
     final JTextField finalTimeTextField = timeTextField;
@@ -279,8 +289,6 @@ public class TemporalPage extends AbstractWizardPage {
       }
     };
 
-    timeCalendar.addPropertyChangeListener(propertyListener);
-    panel.add(timeCalendar, BorderLayout.CENTER);
 
     ActionListener dayTypeListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -305,8 +313,23 @@ public class TemporalPage extends AbstractWizardPage {
       }
     };
 
-    JPanel typeRadioPanel = WidgetFactory.makeRadioPanel(timeText, 2, dayTypeListener);
-    panel.add(typeRadioPanel, BorderLayout.SOUTH);
+
+
+    JPanel typeRadioContainer = WidgetFactory.makeVerticalPanel(4);
+
+    JPanel typeRadioPanel
+        = WidgetFactory.makeRadioPanel(timeText, 2, dayTypeListener);
+
+    typeRadioContainer.add(typeRadioPanel);
+    typeRadioContainer.add(WidgetFactory.makeDefaultSpacer());
+
+    panel.add(typeRadioContainer, BorderLayout.NORTH);
+
+    timeTextField.setText(calendarToString(timeCalendar, ALL));
+    panel.add(timeTextField, BorderLayout.CENTER);
+
+    timeCalendar.addPropertyChangeListener(propertyListener);
+    panel.add(timeCalendar, BorderLayout.SOUTH);
 
     setPrefMinMaxSizes(panel, PANEL_DIMS);
     outerPanel.add(panel);
@@ -435,17 +458,18 @@ public class TemporalPage extends AbstractWizardPage {
 
     returnMap.clear();
     if(currentPanel == singlePointPanel){
+
       returnMap.put(xPathRoot + "/singleDateTime/calendarDate",
                     calendarToString(singleTimeCalendar, YYYYMMDD));
 
     } else {
+
       returnMap.put(xPathRoot + "/rangeOfDates/beginDate/calendarDate",
                     calendarToString(startTimeCalendar, YYYYMMDD));
 
       returnMap.put(xPathRoot + "/rangeOfDates/endDate/calendarDate",
                     calendarToString(endTimeCalendar, YYYYMMDD));
     }
-
     return returnMap;
   }
 
