@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-19 04:16:58 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-19 19:08:22 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,9 +124,11 @@ public class DataPackageFactory
    Log.debug(1,"AccessionNumber: "+dp.getAccessionNumber());
    Log.debug(1,"Keyword: "+dp.getKeywords());
    dp.getEntityArray();
-   Log.debug(1,"number of entities"+dp.entityArray.length);
    Log.debug(1, "entity 1 name: "+dp.getEntityName(0));
    Log.debug(1, "entity 2 name: "+dp.getEntityName(1));
+   Log.debug(1, "entity 1 numRecords: "+dp.getEntityNumRecords(0));
+   Log.debug(1, "entity 1 description: "+dp.getEntityDescription(0));
+   dp.getAttributeArray(0);
     return dp;    
   }
 

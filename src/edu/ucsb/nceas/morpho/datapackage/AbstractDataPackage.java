@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-19 04:16:58 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-19 19:08:22 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,14 +190,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     try{
       entityXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-  Log.debug(1,"entityXpath: "+entityXpath);   
       
-//  NodeList entityNodes = XMLUtilities.getNodeListWithXPath(metadataNode,entityXpath);
-  NodeList entityNodes = XPathAPI.selectNodeList(metadataNode,entityXpath);
-  Log.debug(1,"entityNode name: "+entityNodes.item(0).getNodeName());
-  if (entityNodes==null) Log.debug(1,"entityList is null!");
+      NodeList entityNodes = XMLUtilities.getNodeListWithXPath(metadataNode,entityXpath);
+      //  NodeList entityNodes = XPathAPI.selectNodeList(metadataNode,entityXpath);
+      if (entityNodes==null) Log.debug(1,"entityList is null!");
       entityArray = XMLUtilities.getNodeListAsNodeArray(entityNodes);
-  Log.debug(1, "entityarray[0]: "+entityArray[0]);    
     }
     catch (Exception w) {
       Log.debug(4,"exception in getting entityArray");
@@ -214,9 +211,8 @@ public abstract class AbstractDataPackage extends MetadataObject
     try {
       entityNameXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='entity']/name")).getNodeValue();
-    Log.debug(1, "entityPath: "+  entityNameXpath);    
-      NodeList enameNodes = XPathAPI.selectNodeList(entity, entityNameXpath, metadataNode);
-      if (enameNodes==null) return "XXXX";
+      NodeList enameNodes = XPathAPI.selectNodeList(entity, entityNameXpath);
+      if (enameNodes==null) return "enameNodes is null !";
       Node child = enameNodes.item(entNum).getFirstChild();
       temp = child.getNodeValue();
     }
@@ -225,5 +221,72 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
+
+  public String getEntityNumRecords(int entNum) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
+      return "No such entity!";
+    }
+    Node entity = entityArray[entNum];
+    String entityNumRecordsXpath = "";
+    try {
+      entityNumRecordsXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='entity']/numRecords")).getNodeValue();
+      NodeList eNodes = XPathAPI.selectNodeList(entity, entityNumRecordsXpath);
+      if (eNodes==null) return "eNodes is null !";
+      Node child = eNodes.item(entNum).getFirstChild();
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting entity numRecords"+w.toString());
+    }
+    return temp;
+  }
+
+  public String getEntityDescription(int entNum) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
+      return "No such entity!";
+    }
+    Node entity = entityArray[entNum];
+    String entityXpath = "";
+    try {
+      entityXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='entity']/entityDescription")).getNodeValue();
+      NodeList eNodes = XPathAPI.selectNodeList(entity, entityXpath);
+      if (eNodes==null) return "eNodes is null !";
+      Node child = eNodes.item(entNum).getFirstChild();
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting entity description"+w.toString());
+    }
+    return temp;
+  }
+
+  public Node[] getAttributeArray(int entityIndex) {
+    if(entityIndex>(entityArray.length-1)){
+      Log.debug(1, "entity index > number of entities");
+      return null;
+    }
+    String attributeXpath = "";
+    try{
+      attributeXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='entity']/attributes")).getNodeValue();
+      NodeList attributeNodes = XMLUtilities.getNodeListWithXPath(entityArray[entityIndex],attributeXpath);
+      if (attributeNodes==null) {
+        Log.debug(1,"attributeList is null!");
+        return null;
+      }
+      Node[] attr = XMLUtilities.getNodeListAsNodeArray(attributeNodes);
+      Log.debug(1,"attribute array size is: "+attr.length);
+      return XMLUtilities.getNodeListAsNodeArray(attributeNodes);      
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting attributeArray");
+    }
+    return null;
+  }
+
 }
 
