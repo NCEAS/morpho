@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-18 23:53:03 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2002-09-24 00:56:53 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,8 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 
 /*
@@ -664,15 +666,15 @@ public class DataViewer extends javax.swing.JPanel
               tcuta.setSource(table);
               tca.setSource(table);
               tpa.setTarget(table);
-              MouseListener popupListener = new PopupListener();
-              table.addMouseListener(popupListener);
+              //MouseListener popupListener = new PopupListener();
+              //table.addMouseListener(popupListener);
             }
             else if (dataFile==null) {
               numHeaderLines = "0";
               field_delimiter = ",";
               buildTable();
-              MouseListener popupListener = new PopupListener();
-              table.addMouseListener(popupListener);              
+              //MouseListener popupListener = new PopupListener();
+              //table.addMouseListener(popupListener);              
             }
             else {
               buildTextDisplay();
@@ -1011,9 +1013,11 @@ public class DataViewer extends javax.swing.JPanel
     
     JTableHeader header = table.getTableHeader();
     header.addMouseListener(new HeaderMouseListener());
+    MouseListener popupListener = new PopupListener();
+    table.addMouseListener(popupListener);     
     
     setUpDelimiterEditor(table, field_delimiter, TablePanel);
- 
+   
 	}
   
   /*
@@ -1791,18 +1795,50 @@ public class DataViewer extends javax.swing.JPanel
     /**
      * Mouse click event handler
      */
-    public void mouseClicked(MouseEvent event) 
+    private boolean trigger = false;
+    public void mousePressed(MouseEvent event) 
     {
       TableColumnModel colModel = table.getColumnModel();
       int index = colModel.getColumnIndexAtX(event.getX());
-      int modelIndex = colModel.getColumn(index).getModelIndex();
+      TableColumn column = colModel.getColumn(index);
+      int modelIndex = column.getModelIndex();
       table.setRowSelectionInterval(0, table.getRowCount()-1);
       table.setColumnSelectionInterval(modelIndex, modelIndex);
-      javax.swing.JOptionPane.showMessageDialog(null, "Header Clicked - Column# "+modelIndex); 
+      if (event.isPopupTrigger()) 
+      {
+        // Show popup menu
+        trigger = true;
+      }
+      else
+      {
+        // Fire a state change event to show attribute file in meta panel
+        StateChangeEvent stateEvent = new 
+              StateChangeEvent(column, StateChangeEvent.SELECTDATATABLECOLUMN);
+        StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
+        stateMonitor.notifyStateChange(stateEvent);
+        
+        //javax.swing.JOptionPane.showMessageDialog
+                            //(null, "Header Clicked - Column# "+modelIndex);
+      }  
+    }
+    
+    public void mouseReleased(MouseEvent e) 
+    {
+      maybeShowPopup(e);
     }
 
-    public void mouseReleased(MouseEvent event){}
-    public void mousePressed(MouseEvent event) {}
+    private void maybeShowPopup(MouseEvent e) 
+    {
+      if(e.isPopupTrigger() || trigger) 
+      {     
+        
+	      trigger = false;
+        popup.show(e.getComponent(), e.getX(), e.getY());
+        
+      }
+    }
+    //public void mouseReleased(MouseEvent event){}
+    public void mouseClicked(MouseEvent event) {}
     public void mouseEntered(MouseEvent event) {}
     public void mouseExited(MouseEvent event) {}    
   }
