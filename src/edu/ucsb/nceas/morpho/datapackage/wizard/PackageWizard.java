@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2002-01-10 21:40:15 $'
- * '$Revision: 1.46 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-01-17 20:39:41 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1477,8 +1477,9 @@ public class PackageWizard extends javax.swing.JFrame
         
         if(button != null)
         { //if this item is repeatable add the button  
-          button.setText("<html><b><font color=\"" + getColor(label.getForeground().toString()) + 
-                         "\">" + label.getText() + "</font></b></html>");
+	  button.setForeground(label.getForeground());	
+          button.setText("<html><b><font " + 
+                         ">" + label.getText() + "</font></b></html>");
           layoutpanel.add(button, BorderLayout.WEST);
         }
         else
@@ -1660,8 +1661,9 @@ public class PackageWizard extends javax.swing.JFrame
         
         if(button != null)
         {
-          button.setText("<html><b><font color=\"" + getColor(label.getForeground().toString()) + 
-                         "\">" + label.getText() + "</font></b></html>");
+	  button.setForeground(label.getForeground());	
+          button.setText("<html><b><font " + 
+                         ">" + label.getText() + "</font></b></html>");
           layoutpanel.add(button, BorderLayout.WEST);
           //parentPanel.add(button);
         }
@@ -1913,6 +1915,7 @@ public class PackageWizard extends javax.swing.JFrame
    */
   private static String getColor(String s)
   {
+    System.out.println("ColorString : "+s);		  
     int begindex = s.indexOf("[");
     int endindex = s.indexOf("]");
     String rgb = s.substring(begindex+1, endindex);
