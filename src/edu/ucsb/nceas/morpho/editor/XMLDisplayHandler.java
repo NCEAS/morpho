@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-07 17:50:16 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-10-21 03:13:06 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,10 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 		for (int i=0;i<atts.getLength();i++) {
       if (atts.getLocalName(i).equals("help")) {
         ni.setHelp(atts.getValue(i));
+      }
+      else if(atts.getLocalName(i).equals("editor")) {
+        ni.setEditor(atts.getValue(i));
+		    ni.attr.put(atts.getLocalName(i),atts.getValue(i));
       }
       else if(atts.getLocalName(i).equals("cardinality")) {
         ni.setCardinality(atts.getValue(i));

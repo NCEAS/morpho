@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-10 18:32:15 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-10-21 03:13:06 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,10 +56,10 @@ public class TextAreaPanel extends JPanel
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BorderLayout(0,0));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(300,60));
-        jp2.setMaximumSize(new Dimension(300,200));
-        jp2.setMinimumSize(new Dimension(300,200));
-        jp2.setPreferredSize(new Dimension(300,200));
+        jp1.setMaximumSize(new Dimension(500,80));
+        jp2.setMaximumSize(new Dimension(500,200));
+        jp2.setMinimumSize(new Dimension(500,200));
+        jp2.setPreferredSize(new Dimension(500,200));
         JScrollPane jsp = new JScrollPane();
         jp2.add(BorderLayout.CENTER,jsp);
         jp.add(jp1);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-07 20:45:06 $'
- * '$Revision: 1.121 $'
+ *     '$Date: 2003-10-21 03:13:06 $'
+ * '$Revision: 1.122 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.DBValidate;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.SAXValidate;
-import edu.ucsb.nceas.utilities.*;
+
 
 import java.awt.*;
 import java.awt.event.*;
@@ -51,7 +51,6 @@ import javax.swing.tree.*;
 import org.xml.sax.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.*;
-import org.w3c.dom.*;
 
 /**
  * DocFrame is a container for an XML editor which shows combined outline and
@@ -677,7 +676,7 @@ public class DocFrame extends javax.swing.JFrame
         tree.setModel(treeModel);
 
         tree.expandRow(1);
-        tree.expandRow(2);
+//        tree.expandRow(2);
         tree.setSelectionRow(0);
         setTitle("Morpho Editor:" + id);
         headLabel.setText("Morpho Editor");
@@ -800,119 +799,6 @@ public class DocFrame extends javax.swing.JFrame
     setSelectedNodes(rootNode);
   }
 
-  /*
-   *  this class initializes the editor from a DOM representation
-   *  of an XML document rather than a string.
-   */
-  public void initDoc(Morpho morpho, Node docnode)
-  {
-    DefaultMutableTreeNode frootNode = null;
-    setName("Morpho Editor");
-    treeModel = putDOMintoTree(docnode);
-    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-    setAllNodesAsSelected(rootNode);
-    // if templateFlag is true, don't bother merging the instance
-    // with the template; reset the flag for next time
-    if (templateFlag) {
-      templateFlag = false;
-      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-//      setAllNodesAsSelected(rootNode);  //DFH
-//      setAttributeNames(rootNode);
-      setChoiceNodes(rootNode);
-      setAllNodesAsSelected(rootNode);
-      setSelectedNodes(rootNode);
-      treeModel.reload();
-      tree.setModel(treeModel);
-
-      tree.expandRow(1);
-      tree.expandRow(2);
-      tree.setSelectionRow(0);
-      return;
-    }
-    
-    // now want to possibly merge the input document with a formatting/template document
-    // and set the 'editor' and 'help' fields for each node
-    // use the root node name as a key
-    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-    // the next line sets all the nodes from the instance as selected
-    // this is for initial CHOICES in the merged tree
-    setAllNodesAsSelected(rootNode);  //DFH
-    String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
-    // arbitrary assumption that the formatting document has the rootname +
-    // ".xml" as a file name; the formatting document is XML with the same
-    // tree structure as the document being formatted; 'help' and 'editor' attributes
-    // are used to set help and editor strings for nodes
-    rootname = rootname + ".xml";
-    frootNode = new DefaultMutableTreeNode("froot");
-    DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
-    String fXMLString = "";
-    boolean formatflag = true;
-
-    try {
-      ClassLoader cl = this.getClass().getClassLoader();
-// next 2 lines check for templates inside jar files; at least temporarily
-// changed to look in lib directory to make it easier for user to customize      
-//      BufferedReader in = new BufferedReader(new InputStreamReader(
-//                        cl.getResourceAsStream(rootname)));
-      BufferedReader in = new BufferedReader(new FileReader(
-                        "./lib/"+rootname));
-      StringWriter out = new StringWriter();
-      int c;
-      while ((c = in.read()) != -1) { out.write(c);}
-      in.close();
-      out.flush();
-      out.close();
-      fXMLString = out.toString();
-    
-    // if catch is called, then we don't have a valid template
-    } catch (Exception e) {formatflag = false;}
-    if (formatflag) {
-      // put the template/formatting xml into a tree
-      putXMLintoTree(ftreeModel, fXMLString);
-      frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
-      // formatting info has now been put into a JTree which is merged with
-      // the previously created document tree
-      // first remove all the nodes with visLevel>0 to simplify the display
-      // (the '0' value should be a parameter)
-      removeNodesVisLevel(frootNode, 0);//
-      
-      treeUnion(rootNode, frootNode);
-
-      setAttributeNames(rootNode);
-      setChoiceNodes(rootNode);
-      setAllNodesAsSelected(rootNode);
-      setSelectedNodes(rootNode);
-      setLeafNodes(rootNode);
-    }
-    
-    treeModel.reload();
-    tree.setModel(treeModel);
-
-    tree.expandRow(1);
-    tree.expandRow(2);
-    tree.setSelectionRow(0);
-  }
-  
-  /**
-   *  This method will reset the treeModel rootnode, thus changing
-   *  the node displayed at the top of the tree
-   *
-   *  NOTE: this only works if the treemodel was created from
-   *  a DOM since it uses XPath to search the DOM and then
-   *  looks up the equivalent JTree node
-   */
-  public void setTopOfTree(Node rootNode, String path) {
-    Node nd = null;
-    DOMTree.Model model = (DOMTree.Model)treeModel;
-    try{
-      nd = XMLUtilities.getNodeWithXPath(rootNode, path);
-    } catch (Exception w) {Log.debug(1,"Exception evaluation path");}
-    if (nd!=null) {
-      DefaultMutableTreeNode tn = (DefaultMutableTreeNode)model.getInvNode(nd);
-      treeModel.setRoot(tn);
-    }
-  }
-  
   /**
    * Creates a new DefaultMutableTreeNode with the special
    * NodeInfo userObject used here
@@ -1014,16 +900,8 @@ public class DocFrame extends javax.swing.JFrame
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
     catch (Exception e) {}
-    DocFrame df = new DocFrame();
-    df.setVisible(true);
-    // first create a DOM
-    Node domnode = null;
-    try{
-      domnode = XMLUtilities.getXMLAsDOMTreeRootNode("/test.xml");
-    }
-    catch (Exception e) {Log.debug(4,"Problem in creating DOM!"+e);}
-    // then display it
-    df.initDoc(null, domnode);
+
+    (new DocFrame()).setVisible(true);
   }
 
   
@@ -1201,21 +1079,6 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
-  /**
-   * Create a JTree from a DOM and set the TreeModel
-   * (uses an example class from Xerces samples)
-   *
-   * @param tm       treemodel where XML tree is placed
-   * @param node  DOM node
-   */
-  DefaultTreeModel putDOMintoTree(Node node)
-  {
-    rootnodeName = node.getNodeName();
-    Document doc = node.getOwnerDocument();
-    JTree domtree = new DOMTree(doc);
-    return (DefaultTreeModel)domtree.getModel();
-  }
-  
   /**
    * method to handle changes in the JTree selection
    *
@@ -1556,22 +1419,7 @@ public class DocFrame extends javax.swing.JFrame
     return str1;
   }
 
-  /**
-   *  This method writes a DOM Node based on the TreeNode
-   *   returns the root node of the DOM
-   */
-  Node writeToDOM(DefaultMutableTreeNode node) {
-    String xml = writeXMLString(node);
-    StringReader sr = new StringReader(xml);
-    Node DOMOut = null;
-    try{
-      DOMOut = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
-    }
-    catch (Exception e) {
-      Log.debug(4, "Problem writing DOM from XML string!");
-    }
-    return DOMOut;
-  }
+
   /**
    * recursive routine to create xml output
    *
@@ -2113,10 +1961,32 @@ public class DocFrame extends javax.swing.JFrame
                  (DefaultMutableTreeNode)instChildren.elementAt(instChildrenIndex);
       if(!simpleCompareNodes(instChild, templChild)){
         if (instChildrenIndex<(instChildren.size()-1)) {
-          instance.insert(templChild, instance.getIndex(instChild));
+          // making a clone of a node can be very time consuming;
+          // it is needed, however, because the instance node may appear
+          // more than once; do a lookahead and see if a
+          // name appears again and only clone in that case.
+          DefaultMutableTreeNode clone = templChild;
+          DefaultMutableTreeNode nextInstance = instance.getNextSibling();
+          if (nextInstance!=null) {
+            NodeInfo ni = (NodeInfo)instance.getUserObject();
+            NodeInfo nni = (NodeInfo)nextInstance.getUserObject();
+            if (ni.getName().equals(nni.getName())) {
+              clone = deepNodeCopy(templChild);
+            } 
+          }
+          instance.insert(clone, instance.getIndex(instChild));
         }
         else {
-          instance.add(templChild);
+          DefaultMutableTreeNode clone1 = templChild;
+          DefaultMutableTreeNode nextInstance1 = instance.getNextSibling();
+          if (nextInstance1!=null) {
+            NodeInfo ni1 = (NodeInfo)instance.getUserObject();
+            NodeInfo nni1 = (NodeInfo)nextInstance1.getUserObject();
+            if (ni1.getName().equals(nni1.getName())) {
+              clone1 = deepNodeCopy(templChild);
+            } 
+          }
+          instance.add(clone1);
         }
       }
       else {
@@ -2710,7 +2580,7 @@ public class DocFrame extends javax.swing.JFrame
         tree.setModel(treeModel);
 
         tree.expandRow(1);
-        tree.expandRow(2);
+//        tree.expandRow(2);
         tree.setSelectionRow(0);
         setTitle("Morpho Editor:" + id);
         headLabel.setText("Morpho Editor");
