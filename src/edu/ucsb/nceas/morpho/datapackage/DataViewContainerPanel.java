@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-10 00:55:48 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2002-12-11 22:49:18 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,14 +278,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     // displayed package is local/network or both
     JPanel locationPanel = new JPanel();
   //  locationPanel.setBackground(UISettings.CUSTOM_GRAY);
-    Border margin0 = BorderFactory.createEmptyBorder(4,2,4,2); //top,lft,bot,rgt
-    Border lineBorder1 = BorderFactory.createLineBorder(Color.black);
-    Border outer = new CompoundBorder(margin0, lineBorder1);
-    Border margin1 = BorderFactory.createEmptyBorder(4,2,4,2); //top,lft,bot,rgt
-    // replace margin0 with outer to show line border
-    Border inner = new CompoundBorder(margin0,margin1);
+    Border margin0 = BorderFactory.createEmptyBorder(0, 2,0,2); //top,lft,bot,rgt
     locationPanel.setPreferredSize(UISettings.TITLE_LOCATION_DIMS);
-    locationPanel.setBorder(inner);
+    locationPanel.setBorder(margin0);
     locationPanel.setBackground(UISettings.CUSTOM_GRAY);
     locationPanel.setOpaque(true);
     ImageIcon localIcon 
