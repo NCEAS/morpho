@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2004-03-23 18:12:54 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2004-03-23 20:01:09 $'
+  * '$Revision: 1.6 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -98,12 +98,12 @@
    <xsl:choose>
        <xsl:when test="$permission='allow'">
            <xsl:for-each select="allow">
-           <tr><td width="{$firstColWidth}" class="{$accessfirstColStyle}" valign="top">
-            ALLOW:</td><td width="{$secondColWidth}">
+           <tr><td width="{$firstColWidth}" class="{$accessfirstColStyle}">
+            ALLOW:<br/></td><td width="{$secondColWidth}">
                     <table xsl:use-attribute-sets="cellspacing" class="{$tabledefaultStyle}" width="100%">
                         <tr><td width="{$firstColWidth}" class="{$accessfirstColStyle}">
                         <xsl:for-each select="./permission">
-                            <xsl:text>[</xsl:text><xsl:value-of select="."/><xsl:text>] </xsl:text>
+                            <xsl:text>[</xsl:text><xsl:value-of select="."/><xsl:text>] </xsl:text><br/>
                         </xsl:for-each></td>
                         <td class="{$accessfirstColStyle}" width="{$secondColWidth}">
                         <xsl:for-each select="principal">
@@ -115,12 +115,12 @@
        </xsl:when>
        <xsl:otherwise>
            <xsl:for-each select="deny">
-        <tr><td width="{$firstColWidth}" class="{$accessfirstColStyle}" valign="top">
-            DENY:</td><td width="{$secondColWidth}">
+        <tr><td width="{$firstColWidth}" class="{$accessfirstColStyle}">
+            DENY:<br/></td><td width="{$secondColWidth}">
            <table xsl:use-attribute-sets="cellspacing" class="{$tabledefaultStyle}" width="100%">
               <tr><td width="{$firstColWidth}" class="{$accessfirstColStyle}">
                 <xsl:for-each select="permission">
-                    <xsl:text>[</xsl:text><xsl:value-of select="."/><xsl:text>] </xsl:text>
+                    <xsl:text>[</xsl:text><xsl:value-of select="."/><xsl:text>] </xsl:text><br/>
                 </xsl:for-each></td>
                 <td class="{$accessfirstColStyle}" width="{$secondColWidth}">
                 <xsl:for-each select="principal">
