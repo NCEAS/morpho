@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-04 14:56:47 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-11-23 00:19:14 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import javax.swing.table.*;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.framework.ColumnData;
 
 import javax.xml.parsers.DocumentBuilder;
 //import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -58,6 +59,12 @@ import edu.ucsb.nceas.morpho.framework.*;
  */
 public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements javax.swing.event.ChangeListener
 {
+  /**
+   * an instance of the ColumnData class for sharing information with the
+   * TextImportWizard
+   */ 
+   ColumnData colData = null;
+   
   /**
    * root node of the in-memory DOM structure
    */
@@ -256,9 +263,93 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     precisionPanel.add(precisionTextField);
     this.add(precisionPanel);
     
+		SymAction lSymAction = new SymAction();
+		nameTextField.addActionListener(lSymAction);
+		labelTextField.addActionListener(lSymAction);
+    unitTextField.addActionListener(lSymAction);
+    missingValueTextField.addActionListener(lSymAction);
+    precisionTextField.addActionListener(lSymAction);
+    minimumTextField.addActionListener(lSymAction);
+    maximumTextField.addActionListener(lSymAction);
+    textDefinitionTextField.addActionListener(lSymAction);
+    textPatternTextField.addActionListener(lSymAction);
+    textSourceTextField.addActionListener(lSymAction);
     
+    SymFocus aSymFocus = new SymFocus();
+		nameTextField.addFocusListener(aSymFocus);
+		labelTextField.addFocusListener(aSymFocus);
+    unitTextField.addFocusListener(aSymFocus);
+    missingValueTextField.addFocusListener(aSymFocus);
+    precisionTextField.addFocusListener(aSymFocus);
+    minimumTextField.addFocusListener(aSymFocus);
+    maximumTextField.addFocusListener(aSymFocus);
+    textDefinitionTextField.addFocusListener(aSymFocus);
+    textPatternTextField.addFocusListener(aSymFocus);
+    textSourceTextField.addFocusListener(aSymFocus);
+
   }
   
+  	class SymAction implements java.awt.event.ActionListener
+	{
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{
+      if (colData!=null) {
+			  Object object = event.getSource();
+			  if (object == nameTextField)
+				  colData.colName = getColumnName();
+			  else if (object == labelTextField)
+				  colData.colTitle = getColumnName();
+			  else if (object == unitTextField)
+          colData.colUnits = getUnit();
+			  else if (object == missingValueTextField)
+          colData.colUnits = getMissingValue();
+			  else if (object == precisionTextField)
+          colData.colUnits = getPrecision();
+			  else if (object == minimumTextField)
+          colData.colMin = (new Double(getMinimum())).doubleValue();
+			  else if (object == maximumTextField)
+          colData.colMin = (new Double(getMaximum())).doubleValue();
+			  else if (object == textDefinitionTextField)
+          colData.colTextDefinition = getTextDefinition();
+			  else if (object == textPatternTextField)
+          colData.colTextPattern = getTextPattern();
+			  else if (object == textSourceTextField)
+          colData.colTextSource = getTextSource();
+      }
+		}
+	}
+
+  class SymFocus extends java.awt.event.FocusAdapter
+	{
+		public void focusLost(java.awt.event.FocusEvent event)
+		{
+      if (colData!=null) {
+			  Object object = event.getSource();
+			  if (object == nameTextField)
+				  colData.colName = getColumnName();
+			  else if (object == labelTextField)
+				  colData.colTitle = getColumnName();
+			  else if (object == unitTextField)
+          colData.colUnits = getUnit();
+			  else if (object == missingValueTextField)
+          colData.colUnits = getMissingValue();
+			  else if (object == precisionTextField)
+          colData.colUnits = getPrecision();
+			  else if (object == minimumTextField)
+          colData.colMin = (new Double(getMinimum())).doubleValue();
+			  else if (object == maximumTextField)
+          colData.colMin = (new Double(getMaximum())).doubleValue();
+			  else if (object == textDefinitionTextField)
+          colData.colTextDefinition = getTextDefinition();
+			  else if (object == textPatternTextField)
+          colData.colTextPattern = getTextPattern();
+			  else if (object == textSourceTextField)
+          colData.colTextSource = getTextSource();
+      }
+    }
+  }
+        
+        
   public void setMorpho(Morpho morpho) {
     this.morpho = morpho;    
   }
@@ -808,16 +899,106 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     root.insertBefore(newAttrRoot, nextNode);
   }
  
+ // get Column Info values
   public String getColumnName() {
     return nameTextField.getText();
   } 
+  public String getColumnLabel() {
+    return labelTextField.getText();
+  }
+  public String getColumnDefinition() {
+    return definitionTextArea.getText();
+  }
   public String getUnit() {
     return unitTextField.getText();
   }   
   public String getDataType() {
     return typeComboBox.getSelectedItem().toString();
   }   
+  public String getMissingValue() {
+    return missingValueTextField.getText();
+  }   
+  public String getPrecision() {
+    return precisionTextField.getText();
+  }   
+  public String getMinimum() {
+    return minimumTextField.getText();
+  }   
+  public String getMaximum() {
+    return maximumTextField.getText();
+  }   
+  public String getTextDefinition() {
+    return textDefinitionTextField.getText();
+  }   
+  public String getTextPattern() {
+    return textPatternTextField.getText();
+  }   
+  public String getTextSource() {
+    return textSourceTextField.getText();
+  }   
+  public boolean getEnumButton() {
+    return enumButton.isSelected();
+  }
+  public boolean gettextButton() {
+    return textButton.isSelected();
+  }
+  public boolean getNumButton() {
+    return numButton.isSelected();
+  }
   
+   // set Column Info values
+  public void setColumnName(String val) {
+    nameTextField.setText(val);
+  } 
+  public void setColumnLabel(String val) {
+    labelTextField.setText(val);
+  }
+  public void setColumnDefinition(String val) {
+    definitionTextArea.setText(val);
+  }
+  public void setUnit(String val) {
+    unitTextField.setText(val);
+  }   
+  public void setDataType(String val) {
+    typeComboBox.setSelectedItem(val);
+  }   
+  public void setMissingValue(String val) {
+    missingValueTextField.setText(val);
+  }   
+  public void setPrecision(String val) {
+    precisionTextField.setText(val);
+  }   
+  public void setMinimum(String val) {
+    minimumTextField.setText(val);
+  }   
+  public void setMaximum(String val) {
+    maximumTextField.setText(val);
+  }   
+  public void setTextDefinition(String val) {
+    textDefinitionTextField.setText(val);
+  }   
+  public void setTextPattern(String val) {
+    textPatternTextField.setText(val);
+  }   
+  public void setTextSource(String val) {
+    textSourceTextField.setText(val);
+  }   
+  public void setEnumButton(boolean b) {
+    enumButton.setSelected(b);
+  }
+  public void settextButton(boolean b) {
+    textButton.setSelected(b);
+  }
+  public void setNumButton(boolean b) {
+    numButton.setSelected(b);
+  }
+
+  public void setColumnData(ColumnData cd) {
+    colData = cd;
+  }
+  public ColumnData getColumnData() {
+    return colData;
+  }
   
   //-----------------------------------------
   String fileName = "outtest";
