@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.25 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-24 00:13:04 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,7 +198,23 @@ public class QueryDialog extends JDialog
     //{{INIT_CONTROLS
     setTitle("Search");
     getContentPane().setLayout(new BorderLayout(0, 0));
-    setSize(650, 375);
+    
+    // Set dialog size
+    int parentWidth = parent.getWidth();
+    int parentHeight = parent.getHeight();
+    int dialogWidth = 650;
+    int dialogHeight = 375;
+    setSize(dialogWidth, dialogHeight);
+    
+    // Set location of dialog, it shared same center of parent
+    double parentX = parent.getLocation().getX();
+    double parentY = parent.getLocation().getY();
+    double centerX = parentX + 0.5 * parentWidth;
+    double centerY = parentY + 0.5 * parentHeight;
+    int dialogX = (new Double(centerX - 0.5 * dialogWidth)).intValue();
+    int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
+    setLocation(dialogX, dialogY);
+    
     setVisible(false);
     JPanel queryPanel = new JPanel();
     queryPanel.setLayout(new BoxLayout(queryPanel, BoxLayout.Y_AXIS));
@@ -407,16 +423,7 @@ public class QueryDialog extends JDialog
     //}}
   }
 
-  /**
-   * Construct a new instance of the query dialog
-   *
-   * @param morpho A reference to the Morpho application
-   */
-  public QueryDialog(Morpho morpho)
-  {
-    // Replace this null with a real parent frame
-    this(null, morpho);
-  }
+  
   /**
    * Listens for key events coming from the dialog.  responds to escape and 
    * enter buttons.  escape toggles the cancel button and enter toggles the
