@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-04 03:47:44 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-10-06 21:25:19 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -643,20 +643,19 @@ public class DataFormat extends AbstractWizardPage{
   private OrderedMap getCmplxDelimListAsNVP() {
   
     listResultsMap.clear();
+      
+    // CHECK FOR AND ELIMINATE EMPTY ROWS...
+    list.deleteEmptyRows( CustomList.OR, 
+                          new short[] { CustomList.NULL, 
+                                        CustomList.EMPTY_STRING_NOTRIM } );
     
-    int rowNumber           = -1;
     int predicateIndex      = 1;
     StringBuffer buff       = new StringBuffer();
     List rowLists           = list.getListOfRowLists();
     String fixedDelimStr    = null;
-    boolean[] rowsToDelete  = new boolean[rowLists.size()];
-
-    Arrays.fill(rowsToDelete, false);
-    
+  
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
-      rowNumber++;
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
     
       if (nextRowObj==null) continue;
@@ -664,14 +663,6 @@ public class DataFormat extends AbstractWizardPage{
       List nextRow = (List)nextRowObj;
     
       if (nextRow.size() < 1) continue;
-      
-      if ( nextRow.get(0)==null || nextRow.get(1)==null               
-        || !(nextRow.get(1) instanceof String)
-        || ((String)(nextRow.get(1))).equals(EMPTY_STRING) ) {
-      //note for line above - don't "trim" - could be a space or tab delimeter!
-        rowsToDelete[rowNumber] = true;
-        continue;
-      }      
       
       if (nextRow.get(0).equals(pickListVals[0])) {
       
@@ -681,10 +672,6 @@ public class DataFormat extends AbstractWizardPage{
       
         fixedDelimStr = "textDelimited/fieldDelimiter";
         
-      } else {
-      
-        rowsToDelete[rowNumber] = true;
-        continue;
       }
       
       String nextVal = (String)(nextRow.get(1));
@@ -700,16 +687,6 @@ public class DataFormat extends AbstractWizardPage{
       buff.append(predicateIndex++);
       buff.append("]");
       listResultsMap.put(buff.toString(), nextVal);
-    }
-    
-    // remove rows to be deleted IN REVERSE ORDER - since each removal 
-    // reduces the number of rows
-    for (int i=rowsToDelete.length - 1; i > -1; i--) {
-
-      if (rowsToDelete[i]) {
-  
-        list.removeRow(i);
-      }      
     }
 
     return listResultsMap;

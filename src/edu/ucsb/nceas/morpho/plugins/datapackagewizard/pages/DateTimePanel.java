@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-10-06 21:25:19 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -237,6 +237,14 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
    */
   public boolean validateUserInput() {
 
+    
+    // CHECK FOR AND ELIMINATE EMPTY ROWS...
+    boundsList.deleteEmptyRows( CustomList.AND, 
+                                new short[] { CustomList.EMPTY_STRING_TRIM,
+                                              CustomList.IGNORE,
+                                              CustomList.EMPTY_STRING_TRIM,
+                                              CustomList.IGNORE             } );
+
     if (formatStringField.getText().trim().equals("")) {
 
       WidgetFactory.hiliteComponent(formatStringLabel);
@@ -300,24 +308,18 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     String nextMin = null;
     String nextMax = null;
     Object nextExcl = null;
-  
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
       
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
       
-      boolean minIsNull = (nextRow.get(0)==null);
-      boolean maxIsNull = (nextRow.get(2)==null);
-
-      if (minIsNull && maxIsNull) continue;
-      
       index++;
       
-      if (!minIsNull) {
+      if (nextRow.get(0)!=null) {
       
         nextMin = (String)(nextRow.get(0));
         if (!nextMin.trim().equals("")) {
@@ -335,7 +337,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
         }
       }
       
-      if (!maxIsNull) {
+      if (nextRow.get(2)!=null) {
       
         nextMax = (String)(nextRow.get(2));
         if (!nextMax.trim().equals("")) {

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-02 18:01:13 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-10-06 21:25:19 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,11 +76,20 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   
   private AttributeDialog attributeDialog;
   
-  private String[] numberTypesArray = new String[] { 
+  // note - order must match numberEMLVals array!
+  private String[] numberTypesDisplayVals = new String[] { 
                         "NATURAL (non-zero counting numbers: 1, 2, 3..)", 
                         "WHOLE  (counting numbers & zero: 0, 1, 2, 3..)",
                         "INTEGER (+/- counting nums & zero: -2, -1, 0, 1..)", 
                         "REAL  (+/- fractions & non-fractions: -1/2, 3.14..)" 
+                    };
+                    
+  // note - order must match numberTypesDisplayVals array!
+  private String[] numberEMLVals = new String[] { 
+                        "natural", 
+                        "whole",
+                        "integer", 
+                        "real" 
                     };
   
 //////////////////////////////////////////////////
@@ -194,7 +203,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
           }
         };
 
-    numberTypePickList = WidgetFactory.makePickList(numberTypesArray, 
+    numberTypePickList = WidgetFactory.makePickList(numberTypesDisplayVals, 
                                                     false, 0, listener);
     
     JPanel numberTypePanel = WidgetFactory.makePanel();
@@ -282,6 +291,13 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
    *            required
    */
   public boolean validateUserInput() {
+    
+    // CHECK FOR AND ELIMINATE EMPTY ROWS...
+    boundsList.deleteEmptyRows( CustomList.AND, 
+                                new short[] { CustomList.EMPTY_STRING_TRIM,
+                                              CustomList.IGNORE,
+                                              CustomList.EMPTY_STRING_TRIM,
+                                              CustomList.IGNORE             } );
 
     if (unitsPickList.getSelectedUnit().trim().equals("")) {
 
@@ -308,7 +324,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
       return false;
     }
     WidgetFactory.unhiliteComponent(numberTypeLabel);
-    
+
     if (!containsOnlyNumericValues(boundsList, 0, 2)) {
 
       WidgetFactory.hiliteComponent(boundsLabel);
@@ -404,9 +420,25 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     returnMap.put(  xPathRoot + "/precision", 
                     precisionField.getText().trim());
 
-    returnMap.put(  xPathRoot + "/numericDomain/numberType", 
-                    numberTypePickList.getSelectedItem().toString().trim());
+    String numberType = numberTypePickList.getSelectedItem().toString().trim();
+    String emlNumberType = null;
+    if (numberType.equals(numberTypesDisplayVals[0])) {
     
+      emlNumberType = numberEMLVals[0];  
+    
+    } else if (numberType.equals(numberTypesDisplayVals[1])) {
+    
+      emlNumberType = numberEMLVals[1];  
+    
+    } else if (numberType.equals(numberTypesDisplayVals[2])) {
+    
+      emlNumberType = numberEMLVals[2];  
+    
+    } else if (numberType.equals(numberTypesDisplayVals[3])) {
+    
+      emlNumberType = numberEMLVals[3];  
+    }
+    returnMap.put(  xPathRoot + "/numericDomain/numberType", emlNumberType);
 
     xPathRoot = xPathRoot + "/numericDomain/bounds[";
     int index = 0;
@@ -415,23 +447,18 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     String nextMax = null;
     Object nextExcl = null;
     
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
       
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
       
-      boolean minIsNull = (nextRow.get(0)==null);
-      boolean maxIsNull = (nextRow.get(2)==null);
-
-      if (minIsNull && maxIsNull) continue;
-      
       index++;
       
-      if (!minIsNull) {
+      if (nextRow.get(0)!=null) {
       
         nextMin = (String)(nextRow.get(0));
         if (!nextMin.trim().equals("")) {
@@ -449,7 +476,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
         }
       }
       
-      if (!maxIsNull) {
+      if (nextRow.get(2)!=null) {
       
         nextMax = (String)(nextRow.get(2));
         if (!nextMax.trim().equals("")) {

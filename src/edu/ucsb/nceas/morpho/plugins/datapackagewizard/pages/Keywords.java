@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-04 03:47:44 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-10-06 21:25:19 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -479,15 +479,16 @@ class KeywordsDialog extends WizardPopupDialog {
   
     listResultsMap.clear();
     
+    // CHECK FOR AND ELIMINATE EMPTY ROWS...
+    kwList.deleteEmptyRows( CustomList.OR, 
+                            new short[] {  CustomList.EMPTY_STRING_TRIM  } );
+    
     int rowNumber       = -1;
     int predicateIndex  = 0;
     List rowLists       = kwList.getListOfRowLists();
     String nextKWType   = null;
   
-    boolean[] rowsToDelete  = new boolean[rowLists.size()];
 
-    Arrays.fill(rowsToDelete, false);
-    
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
       rowNumber++;
@@ -497,14 +498,6 @@ class KeywordsDialog extends WizardPopupDialog {
       
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
-      
-      //if user doesn't enter a keyword, mark this row to be deleted...
-      if ( nextRow.get(0)==null 
-        || ((String)(nextRow.get(0))).trim().equals(EMPTY_STRING) ) {
-      
-        rowsToDelete[rowNumber] = true;
-        continue;
-      }
       
       listResultsBuff.delete(0,listResultsBuff.length());
       listResultsBuff.append(xPathRoot);
@@ -525,16 +518,6 @@ class KeywordsDialog extends WizardPopupDialog {
       listResultsBuff.append(predicateIndex);
       listResultsBuff.append("]/@keywordType");
       listResultsMap.put(listResultsBuff.toString(), nextKWType);
-    }
-    
-    // remove rows to be deleted IN REVERSE ORDER - since each removal 
-    // reduces the number of rows
-    for (int i=rowsToDelete.length - 1; i > -1; i--) {
-
-      if (rowsToDelete[i]) {
-  
-        kwList.removeRow(i);
-      }      
     }
     
     return listResultsMap;

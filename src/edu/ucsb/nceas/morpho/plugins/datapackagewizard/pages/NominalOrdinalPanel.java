@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-10-06 21:25:19 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,8 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 
   private final int ENUMERATED_DOMAIN = 10;
   private final int TEXT_DOMAIN       = 20;
+  
+  private final String EMPTY_STRING = "";
   
   private AttributeDialog attributeDialog;
   
@@ -377,7 +379,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
   
   private JLabel getLabel(String text) {
     
-    if (text==null) text="";
+    if (text==null) text=EMPTY_STRING;
     JLabel label = new JLabel(text);
     
     label.setAlignmentX(1.0f);
@@ -407,30 +409,29 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
    *  @return   boolean true if user data validated OK. false if intervention 
    *            required
    */
-  private OrderedMap validationNVP = new OrderedMap();
-  //
   public boolean validateUserInput() {
-
 
     if (currentSubPanel==enumSubPanel) {  //ENUMERATED
     
-        validationNVP.clear();
-        getEnumListData("", validationNVP);
-      
-        if (validationNVP==null || validationNVP.size()<1) {
+        if (!isEnumListDataValid()) {
           WidgetFactory.hiliteComponent(enumDefinitionLabel);
           return false;
         }
 
     } else {    ////////////////////////////TEXT
 
-        if (textDefinitionField.getText().trim().equals("")) {
+        if (textDefinitionField.getText().trim().equals(EMPTY_STRING)) {
 
           WidgetFactory.hiliteComponent(textDefinitionLabel);
           textDefinitionField.requestFocus();
           
           return false;
         }
+    
+        // CHECK FOR AND ELIMINATE EMPTY ROWS...
+        textPatternsList.deleteEmptyRows( CustomList.OR, 
+                                          new short[] {  
+                                              CustomList.EMPTY_STRING_TRIM  } );
     }
     WidgetFactory.unhiliteComponent(enumDefinitionLabel);
     WidgetFactory.unhiliteComponent(textDefinitionLabel);
@@ -496,16 +497,11 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     
       for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
     
-        // CHECK FOR AND ELIMINATE EMPTY ROWS...
         Object nextRowObj = it.next();
         if (nextRowObj==null) continue;
         
         List nextRow = (List)nextRowObj;
         if (nextRow.size() < 1) continue;
-        
-        if (nextRow.get(0)==null) continue;
-        nextStr = (String)(nextRow.get(0));
-        if (nextStr.trim().equals("")) continue;
         
         nomOrdBuff.delete(0, nomOrdBuff.length());
         nomOrdBuff.append(xPathRoot);
@@ -517,7 +513,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
       }
 
       String source = textSourceField.getText().trim();
-      if (!source.equals("")) {
+      if (!source.equals(EMPTY_STRING)) {
         returnMap.put(  xPathRoot + "textDomain[1]/source", source);
       }
     }
@@ -528,23 +524,25 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
   
   // xpathRoot is up to 'enumeratedDomain' (NOT including the slash after)
   private void getEnumListData(String xpathRoot, OrderedMap resultsMap) {
+  
+    enumDefinitionList.deleteEmptyRows( CustomList.OR, 
+                                        new short[] {  
+                                            CustomList.EMPTY_STRING_TRIM,
+                                            CustomList.EMPTY_STRING_TRIM  } );
     
     int index=1;
     StringBuffer buff = new StringBuffer();
     List rowLists = enumDefinitionList.getListOfRowLists();
     Object srcObj = null;
     String srcStr = null;
-  
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
       
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
-      
-      if (nextRow.get(0)==null || nextRow.get(1)==null) continue;
       
       buff.delete(0,buff.length());
       buff.append(xpathRoot);
@@ -560,10 +558,48 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
       srcObj = nextRow.get(2);
       if (srcObj==null) continue;
       srcStr = ((String)srcObj).trim();
-      if (!srcStr.equals("")) resultsMap.put( buff.toString() + "source",
+      if (!srcStr.equals(EMPTY_STRING)) resultsMap.put( buff.toString() + "source",
                                                   srcStr);
     }
   }
+  
+  
+  //
+  //  first eliminates rows that have both first and second columns empty, then 
+  //  check sremaining rows and returns false if either first or second column 
+  //  is empty
+  //
+  private boolean isEnumListDataValid() {
+
+    // CHECK FOR AND ELIMINATE EMPTY ROWS. NOTE THAT ROWS WITH JUST ONE EMPTY 
+    // FIELD WON'T BE DELETED YET - saves user data being deleted by accident 
+    // if not yet complete
+    enumDefinitionList.deleteEmptyRows( CustomList.AND, 
+                                        new short[] {  
+                                            CustomList.EMPTY_STRING_TRIM,
+                                            CustomList.EMPTY_STRING_TRIM,
+                                            CustomList.IGNORE  } );
+
+    List rowLists = enumDefinitionList.getListOfRowLists();
+    
+    if (rowLists==null || rowLists.size()<1) return false;
+    
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+
+      Object nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+    
+      List nextRow = (List)nextRowObj;
+      if (nextRow.size() < 1) continue;
+      
+      if (nextRow.get(0)==null || nextRow.get(1)==null
+        || ((String)(nextRow.get(0))).trim().equals(EMPTY_STRING)
+        || ((String)(nextRow.get(1))).trim().equals(EMPTY_STRING)) return false;
+      
+    }    
+    return true;
+  }
+  
   
   
 }

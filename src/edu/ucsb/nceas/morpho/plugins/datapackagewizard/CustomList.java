@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-04 04:45:14 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2003-10-06 21:25:19 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import java.util.Vector;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import java.awt.Component;
 import java.awt.Insets;
@@ -82,6 +83,15 @@ import javax.swing.event.TableModelEvent;
  */
 
 public class CustomList extends JPanel {
+
+
+  public static final short NULL                = 0;  
+  public static final short EMPTY_STRING_TRIM   =10;
+  public static final short EMPTY_STRING_NOTRIM =20;
+  public static final short IGNORE              =30;
+   
+  public static final short OR                  =51;
+  public static final short AND                 =61;
 
   private CustomJTable table;
 
@@ -596,8 +606,185 @@ public class CustomList extends JPanel {
     table.clearSelection();
   }
 
+
+
+  /**
+   *  Removes any rows that are "empty", as defined by the parameters specified 
+   *  in the passed <code>short</code> array "conditions", as described below. <ul>
+   *  <li>If the value of parameter "logicMode is <em>OR</em>, then the row is  
+   *  deleted if <em>any</em> of the conditions are met.</li>
+   *  <li>If the value of parameter "logicMode is <em>AND</em>, then the row is 
+   *  deleted if <em>all</em> of the conditions are met.</li></ul>
+   *  The elements of the "conditions" array correspond to the columns in the 
+   *  table (so element [0] defines the first column, element [1] the second,
+   *  and so on). Legal values for the "conditions" array are as follows:
+   *
+   *  <ul><li>
+   *  NULL                - if the contents of this column are null, delete the 
+   *                        row
+   *  </li><li>
+   *
+   *  EMPTY_STRING_TRIM   - delete the row if the contents of this column are 
+   *                        null, or if the column contains a non-String value, 
+   *                        or if the column contains the empty string 
+   *                        <em>NOTE: this parameter requires that the String is 
+   *                        TRIMMED before evaluation (@see java.lang.String - 
+   *                        trim()</em>. If you wish to preserve whitespace, use 
+   *                        EMPTY_STRING_NOTRIM
+   *  </li><li>
+   *
+   *  EMPTY_STRING_NOTRIM - delete the row if the contents of this column are 
+   *                        null, or if the column contains a non-String value, 
+   *                        or if the column contains the empty string 
+   *                        <em>NOTE: this parameter requires that the String is 
+   *                        *NOT* TRIMMED before evaluation 
+   *                        (@see java.lang.String - trim()</em>. If you wish to 
+   *                        have whitespace removed before evaluation, use 
+   *                        EMPTY_STRING_TRIM
+   *  </li><li>
+   *
+   *  IGNORE              - do not validate this column
+   *  </li><ul>
+   *
+   *  @param logicMode  the logical mode in which the conditions will be . 
+   *                    processed CustomList.OR signifies that the row is 
+   *                    deleted if <em>any</em> of the conditions are met, and 
+   *                    CustomList.AND signifies that the row is deleted only if 
+   *                    <em>all</em> of the conditions are met.
+   *
+   *  @param conditions The elements of the "conditions" array correspond to the 
+   *                    columns in the table (so element [0] defines the first 
+   *                    column, element [1] the second, and so on). Legal values 
+   *                    for the "conditions" array are:
+   *                    <ul><li>NULL</li>
+   *                    <li>EMPTY_STRING_TRIM</li>
+   *                    <li>EMPTY_STRING_NOTRIM</li>
+   *                    <li>IGNORE</li><ul> 
+   */
+  public void deleteEmptyRows(short logicMode, short[] conditions) {
+  
+    if (conditions==null) return;
+    if (logicMode!=OR && logicMode!=AND) return;
+    
+    List rowLists = this.getListOfRowLists();
+
+    boolean[] rowsToDelete  = new boolean[rowLists.size()];
+
+    Arrays.fill(rowsToDelete, false);
+
+    int rowNumber = -1;
+        
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+  
+      rowNumber++;
+
+      Object nextRowObj = it.next();
+    
+      if (nextRowObj==null) {
+
+        rowsToDelete[rowNumber] = true;
+        continue;
+      }
+            
+      List nextRow = (List)nextRowObj;
+    
+      if (nextRow.size() < 1) {
+
+        rowsToDelete[rowNumber] = true;
+        continue;
+      }
+      
+      if (logicMode==OR) checkColumnContents_OR(  nextRow,      conditions, 
+                                                  rowsToDelete, rowNumber );
+      else               checkColumnContents_AND( nextRow,      conditions, 
+                                                  rowsToDelete, rowNumber );
+    }
+    // remove rows to be deleted IN REVERSE ORDER - since each removal 
+    // reduces the number of rows
+    for (int i=rowsToDelete.length - 1; i > -1; i--) {
+
+      if (rowsToDelete[i]) this.removeRow(i);
+    }
+  }  
+
+  
+  private void checkColumnContents_OR(List nextRow, short[]   conditions, 
+                                      boolean[] rowsToDelete, int rowNumber) {
+
+    for (int colIdx=0; colIdx<conditions.length; colIdx++) {
+    
+      switch (conditions[colIdx]) {
+    
+        case IGNORE:
+          break;
+    
+        case NULL:
+          if (nextRow.get(colIdx)==null) rowsToDelete[rowNumber] = true;
+          break;
+    
+        case EMPTY_STRING_NOTRIM:
+          if (  (nextRow.get(colIdx)==null) 
+            || !(nextRow.get(colIdx) instanceof String)
+            || ((String)(nextRow.get(colIdx))).equals("") ) {
+        
+            rowsToDelete[rowNumber] = true;
+          }
+          break;
+    
+        case EMPTY_STRING_TRIM:
+          if (  (nextRow.get(colIdx)==null) 
+            || !(nextRow.get(colIdx) instanceof String)
+            || ((String)(nextRow.get(colIdx))).trim().equals("") ) {
+        
+            rowsToDelete[rowNumber] = true;
+          }
+          break;
+      }
+    }
+  }
   
   
+  private void checkColumnContents_AND(List nextRow, short[]   conditions, 
+                                       boolean[] rowsToDelete, int rowNumber) {
+
+    boolean result  = true;
+    int ignoreCount = 0;
+    
+    for (int colIdx=0; colIdx<conditions.length; colIdx++) {
+    
+      switch (conditions[colIdx]) {
+    
+        case IGNORE:
+          //check to ensure we dont have ALL conditions == "IGNORE"...
+          ignoreCount++;
+          break;
+    
+        case NULL:
+          result = result && (nextRow.get(colIdx)==null);
+          break;
+    
+        case EMPTY_STRING_NOTRIM:
+          result = result && 
+            (  (nextRow.get(colIdx)==null) 
+            || !(nextRow.get(colIdx) instanceof String)
+            || ((String)(nextRow.get(colIdx))).equals("") );
+          break;
+    
+        case EMPTY_STRING_TRIM:
+          result = result && 
+            (  (nextRow.get(colIdx)==null) 
+            || !(nextRow.get(colIdx) instanceof String)
+            || ((String)(nextRow.get(colIdx))).trim().equals("") );
+          break;
+      }
+    }
+    //check to ensure we dont have ALL conditions == "IGNORE"...
+    if (ignoreCount>=conditions.length) result  = false;
+    
+    rowsToDelete[rowNumber] = result;
+  }
+  
+    
   /**
    *  returns a <code>java.util.List</code> containing elements that are also 
    *  <code>java.util.List</code> objects, each of which represents a row from 
@@ -784,11 +971,6 @@ class AddAction extends AbstractAction {
                           String.valueOf(cellEditor.getCellEditorValue()) : "";
         String colClassName = table.getColumnClass(i).getName();
           
-//        newRowList.add(cellEditor.getCellEditorValue());
-
-System.err.println("\n AddAction setting Column "+i+" cellVal = "+cellVal);
-System.err.println("\n AddAction colClassName = "+colClassName);
-          
         if (colClassName.equals("javax.swing.JTextField")) {
 
           Log.debug(45, "\nAddAction - (JTextField)");
@@ -797,7 +979,7 @@ System.err.println("\n AddAction colClassName = "+colClassName);
         } else if (colClassName.equals("javax.swing.JCheckBox")) {
 
           Log.debug(45, "\nAddAction - (JCheckBox)");
-          newRowList.add(cellVal);
+          newRowList.add(new Boolean(cellVal));
           
         } else if (colClassName.equals("javax.swing.JComboBox")) {
 
