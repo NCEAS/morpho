@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<dataset minOccurs="" maxOccurs="" help="">
-  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems.">
+<dataset minOccurs="" maxOccurs="" help="The dataset element defines extend the ResourceBase complexType in order to provide information that is specific to describing a set of data. Therefore, dataset elements contain all of the general resource elements, but also specific dataset elements." rooteditor="edu.ucsb.nceas.morpho.editor.DataPackagePanel">
+  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
   </identifier>
   <shortName minOccurs="0" maxOccurs="1" help="The 'shortName' field provides a concise name that  describes the resource that is being documented. It is  the appropriate place to store a filename associated with  other storage systems.">
   </shortName>
@@ -50,7 +50,7 @@
   <series minOccurs="0" maxOccurs="1" help="This field describes the series of resources that include the resource being described. For example, a volume of a  journal may be part of a series of the journal for a  particular year.">
   </series>
   <abstract minOccurs="0" maxOccurs="1" help="This field provides a container for one or more paragraph  fields that give a brief overview of the resource  that is being documented.">
-    <paragraph minOccurs="1" maxOccurs="unbounded" help="This field is intended for the text of an abstract that gives a brief overview of the resource. There may be one or more paragraphs within the abstract.">
+    <paragraph minOccurs="1" maxOccurs="unbounded" help="This field is intended for the text of an abstract that gives a brief overview of the resource. There may be one or more paragraphs within the abstract." editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel">
     </paragraph>
   </abstract>
   <keywordSet minOccurs="0" maxOccurs="unbounded" help="The 'keywordSet' element is a container for the 'keyword' and 'keywordThesaurus' fields. Each keywordSet field can contain one or more keywords and a name of a thesaurus for the set of keywords. Each keyword field should contain one and only one  keyword (i.e., keywords should not be separated by commas or other delimiters).">
@@ -60,11 +60,11 @@
     </keywordThesaurus>
   </keywordSet>
   <additionalInfo minOccurs="0" maxOccurs="unbounded" help="This field provides any information that is not  characterized by the other resource metadata fields.">
-    <paragraph minOccurs="1" maxOccurs="unbounded" help="This field is intended for the text  that gives additional information about the resource.  There may be one or more paragraphs.">
+    <paragraph minOccurs="1" maxOccurs="unbounded" help="This field is intended for the text  that gives additional information about the resource.  There may be one or more paragraphs." editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel">
     </paragraph>
   </additionalInfo>
   <rights minOccurs="0" maxOccurs="unbounded" help="Typically, a Rights element will contain a rights management statement  for the resource, or reference a service providing such information.  Rights information often encompasses Intellectual Property Rights (IPR),  Copyright, and various Property Rights. In the case of a data set,  rights might incude requirements for use, requirements for attribution,  or other requirements the owner would like to impose.">
-    <paragraph minOccurs="1" maxOccurs="unbounded" help="This field is intended for the text  that gives additional information about the resource.  There may be one or more paragraphs.">
+    <paragraph minOccurs="1" maxOccurs="unbounded" help="This field is intended for the text  that gives additional information about the resource.  There may be one or more paragraphs." editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel">
     </paragraph>
   </rights>
   <CHOICE1 minOccurs="0" maxOccurs="unbounded" help="">

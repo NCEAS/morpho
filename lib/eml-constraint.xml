@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <eml-constraint minOccurs="" maxOccurs="" help="">
-  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems.">
+  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
   </identifier>
   <constraint minOccurs="1" maxOccurs="unbounded" help="Complete information needed to reconstruct this integrity constraint for enforcement in a system such as a relational database management system.">
     <constraintType minOccurs="1" maxOccurs="1" help="the type of constraint being defined. This is  what kind of constraint this is.">

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<eml-attribute minOccurs="" maxOccurs="" help="">
-  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems.">
+<eml-attribute minOccurs="" maxOccurs="" help="Eml-attribute element represents a list of all attributes in a dataset." rooteditor="edu.ucsb.nceas.morpho.editor.VariablePanel">
+  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
   </identifier>
   <attribute minOccurs="1" maxOccurs="unbounded" help="Attribute element is a descriptor of an attribute in the  data file identified by its name. The attribute element  can contain information about the attribute's definition,  format, storage type and data range, or missing value.">
     <attributeName minOccurs="1" maxOccurs="1" help="This element specifies name of the attribute (field)  in the dataset. This information is typically used as a column header for the field/variable in a spreadsheet. It is usually terse, without spaces, and can be used to 'name' a column in a table definition statement.">

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <eml-physical minOccurs="" maxOccurs="" help="">
-  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems.">
+  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
   </identifier>
   <format minOccurs="1" maxOccurs="1" help="This element contains the name of the file's format. The file's format is typically ASCII, Unicode, or some well-known binary format (e.g., Microsoft Excel 2000).  This could be a mime-type.">
   </format>

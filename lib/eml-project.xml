@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <eml-project minOccurs="" maxOccurs="" help="">
-  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems.">
+  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
   </identifier>
   <researchProject minOccurs="1" maxOccurs="unbounded" help="Research project element is a descriptor of various programmatic aspects within which researchers  created this dataset. It can also include general research goals and motivations, data collection methods, equations, formulas.  But see 'eml-protocol' for more areas to provide methodological detail.">
     <title minOccurs="1" maxOccurs="unbounded" help="A descriptive title for the research project.">

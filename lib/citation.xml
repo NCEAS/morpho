@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <citation minOccurs="" maxOccurs="" help="The 'LitCitation' type contains general information about a literature resource that is being documented, or a piece of literature that is being cited in support of a given resource, such as a dataset. It contains subelements that are specific to a literature resource such as a book, a journal article,  a thesis, etc. It extends the generic resource elements with  literature specific fields.">
-  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems.">
+  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
   </identifier>
   <shortName minOccurs="0" maxOccurs="1" help="The 'shortName' field provides a concise name that  describes the resource that is being documented. It is  the appropriate place to store a filename associated with  other storage systems.">
   </shortName>
