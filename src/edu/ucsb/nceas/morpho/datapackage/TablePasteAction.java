@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-05 18:16:59 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-05 21:53:02 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,6 +95,10 @@ public class TablePasteAction extends AbstractAction {
 
 			// Install the data in the table
 			applySelection(tbl, data);
+      
+      // the following only work on tables with tableModels that implement
+      // AbstrctTableModel interface; without it an update of the display
+      // will not occur
       ((AbstractTableModel)(tbl.getModel())).fireTableStructureChanged();
 		} catch (Exception ex) {
 			// Happens when clipboard content is not a string
