@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:21:59 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-05 23:44:30 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,15 +45,20 @@ public class IOUtil
      *  reads character data from the <code>Reader</code> provided, using a 
      *  buffered read. Returns data as a <code>StringBufer</code>
      *
-     *  @param  reader          <code>Reader</code> object to be read
+     *  @param  reader              <code>Reader</code> object to be read
      *
-     *  @return                 <code>StringBuffer</code> containing characters 
-     *                          read from the <code>Reader</code>
+     *  @param  closeWhenFinished   <code>boolean</code> value to indicate 
+     *                              whether Reader should be closed when reading
+     *                              finished
+     *
+     *  @return                     <code>StringBuffer</code> containing  
+     *                              characters read from the <code>Reader</code>
      *
      *  @throws DocumentNotFoundException if id does not point to a document, or
      *          if requested document exists but cannot be accessed.
      */
-    public static StringBuffer getAsStringBuffer(Reader reader) 
+    public static StringBuffer getAsStringBuffer(   Reader reader, 
+                                                    boolean closeWhenFinished) 
                                                             throws IOException
     {
         if (reader==null) return null;
@@ -71,17 +76,17 @@ public class IOUtil
                                                             +ioe.getMessage());
             throw ioe;
         } finally {
-            try { 
-                if (reader!=null) reader.close();
-            } catch (IOException ce) {  
-                Log.debug(12, "IOUtil.getAsStringBuffer(): closing Reader: "
-                                                             +ce.getMessage());
+            if (closeWhenFinished) {
+                try { 
+                    if (reader!=null) reader.close();
+                } catch (IOException ce) {  
+                    Log.debug(12, "IOUtil.getAsStringBuffer(): closing Reader: "
+                                                            +ce.getMessage());
+                }
             }
         }
         return sb;
     }
-    
-    
 }
 
 
