@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-14 20:53:01 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2004-01-22 18:59:22 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1635,7 +1635,6 @@ public abstract class AbstractDataPackage extends MetadataObject
     Log.debug(20, "id: " + id);
     Log.debug(20, "location: " + location);
     File f = null;
-    Vector fileV = new Vector(); //vector of all files in the package
     boolean localloc = false;
     boolean metacatloc = false;
     if (location.equals(BOTH)) {
@@ -1668,6 +1667,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     savedir.mkdirs(); //create the new directories
     savedirSub.mkdirs();
     cssdirSub.mkdirs();
+    savedirDataSub.mkdirs();
     StringBuffer[] htmldoc = new StringBuffer[2]; //DFH
 
     // for css
@@ -1794,6 +1794,7 @@ public abstract class AbstractDataPackage extends MetadataObject
                 + w.getMessage());
     }
 
+    exportDataFiles(savedirDataSub.getAbsolutePath());
     JOptionPane.showMessageDialog(null,
                                   "Package export is complete ! ");
   }
@@ -1907,6 +1908,111 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
   }
 
+  
+  /**
+   * copies all the data files in a package to a directory indicated
+   * by 'path'. Files are given the original file name, if available
+   */
+  public void exportDataFiles(String path) {
+    String origFileName;
+    File dataFile = null;
+    Morpho morpho = Morpho.thisStaticInstance;
+    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    MetacatDataStore mds = new MetacatDataStore(morpho);
+    getEntityArray();
+    if (entityArray == null) {
+      Log.debug(20, "there is no data!");
+      return; // there is no data!
+    }
+    // assume the package has been saved so that location is either LOCAL or METACAT
+    for (int i = 0; i < entityArray.length; i++) {
+      String urlinfo = getDistributionUrl(i, 0, 0);
+      // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
+      // protocol is probably 'ecogrid'; system name is 'knb'
+      // we just want the local id here
+      int indx2 = urlinfo.indexOf("//");
+      if (indx2 > -1) {
+        urlinfo = urlinfo.substring(indx2 + 2);
+        // now start should be just past the '//'
+      }
+      indx2 = urlinfo.indexOf("/");
+      if (indx2 > -1) {
+        urlinfo = urlinfo.substring(indx2 + 1);
+        //now should be past the system name
+      }
+      indx2 = urlinfo.indexOf("/");
+      if (indx2 > -1) {
+        urlinfo = urlinfo.substring(0, indx2);
+        // should have trimmed 'other'
+      }
+      if (urlinfo.length() == 0) {
+        return;
+      }
+      // if we reach here, urlinfo should be the id in a string
+      // now try to get the original filename
+      origFileName = getPhysicalName(i, 0);
+      if (origFileName.trim().equals("")) {  // original file name missing
+        origFileName = urlinfo;
+      }
+      try {
+        if ( (location.equals(LOCAL)) || (location.equals(BOTH))) {
+          dataFile = fds.openFile(urlinfo);
+        }
+        else if (location.equals(METACAT)) {
+          dataFile = mds.openFile(urlinfo);
+        }
+      }
+      catch (FileNotFoundException fnf) {
+        // if the datfile has NOT been located, a FileNotFoundException will be thrown.
+        // this indicates that the datafile with the url has NOT been saved
+        // the datafile should be stored in the profile temp dir
+        //Log.debug(1, "FileNotFoundException");
+        ConfigXML profile = morpho.getProfile();
+        String separator = profile.get("separator", 0);
+        separator = separator.trim();
+        String temp = new String();
+        temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+        temp += "/" +
+            urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+        try {
+          dataFile = fds.openTempFile(temp);
+        }
+        catch (Exception ex) {
+          Log.debug(5, "Some problem while writing data files has occurred!");
+          ex.printStackTrace();
+        }
+      }
+      catch (Exception q) {
+        // some other problem has occured
+        Log.debug(5, "Some problem with saving data files has occurred!");
+        q.printStackTrace();
+      }
+      // now copy dataFile
+      try{
+        String fosname = path + "/" + origFileName;
+        FileInputStream fis = new FileInputStream(dataFile);
+        FileOutputStream fos = new FileOutputStream(fosname);
+        BufferedInputStream bis = new BufferedInputStream(fis);
+        BufferedOutputStream bos = new BufferedOutputStream(fos);
+        int d = bis.read();
+        while(d != -1)
+        {
+          bos.write(d); //write out everything in the reader
+          d = bis.read();
+        }
+        bis.close();
+        bos.flush();
+        bos.close();
+      }
+      catch (Exception f) {
+        Log.debug(20, "Error exporting data file! (AbstractDataPackage)");
+      }
+
+    }
+  }
+
+  
+  
   //save the StringBuffer to the File path specified
   private void saveToFile(StringBuffer buff, File outputFile) throws
       IOException {

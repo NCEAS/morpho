@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-14 20:53:39 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2004-01-22 18:59:22 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,8 +113,6 @@ public class DataPackageFactory
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
     
-    // temporary stub!!!
-//    AbstractDataPackage dp = new EML200DataPackage();
     morpho = Morpho.thisStaticInstance;  
     if (morpho==null)  {
       Morpho.createMorphoInstance();
@@ -157,13 +155,14 @@ public class DataPackageFactory
       Log.debug(20,"Creating new eml2Beta6 package");
       AbstractDataPackage adptemp = new EML2Beta6DataPackage();
       adptemp.load(location,docid,morpho);
+      adptemp.location = "";
       // adptemp is created using the EML2Beta6DataPackage class
       // however, the load routine for this class currently converts the
       // document to an EML200 doctype, so we really want to return an
       // AbstractDataPackage of that type for later use when the doc is
       // serialized
       dp = getDataPackage(adptemp.metadataNode);
-      dp.location = adptemp.location;
+      dp.location = "";  // has NOT been saved
       Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
     }
 
