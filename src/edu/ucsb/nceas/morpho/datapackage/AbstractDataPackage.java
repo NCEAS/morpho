@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-19 19:24:32 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2003-12-19 22:38:57 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1206,7 +1206,30 @@ public abstract class AbstractDataPackage extends MetadataObject
   public void setDistributionUrl(int entityIndex, int physicalIndex, int distIndex, String urlS) {
     String temp = "";
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
-    if (distNodes==null) return;
+    if (distNodes==null) {
+      // this is the case where no distribution info exists; must create the subtree
+      try{
+        String entityPar = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='package']/entityParent")).getNodeValue();
+        String physicalXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='entity']/physical")).getNodeValue();
+        String distributionXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+           "/xpathKeyMap/contextNode[@name='physical']/distribution")).getNodeValue();        
+        String urlxpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='distribution']/url")).getNodeValue();
+        Node entnode = entityArray[entityIndex].getNode();  
+        String distxpath = entityPar +"/" + entnode.getNodeName() + "["+(entityIndex + 1)+"]/"
+              + physicalXpath +"/" + distributionXpath +"/" + urlxpath;
+//Log.debug(1,"Distribution path: "+distxpath);
+        // there is a problem in the above logic for creating a path if all the
+        // entity nodes are not to the same type (e.g. not all are 'dataTable')
+        // the index is incorrect in that case - DFH
+        XMLUtilities.addTextNodeToDOMTree(getMetadataNode(),distxpath,urlS);
+      } catch (Exception w) {
+        Log.debug(6, "error inside serDistributionUrl method in adp"+w.toString());
+      }
+      return;
+    }
     if (distIndex>distNodes.length-1) return;
     Node distNode = distNodes[distIndex];
     String distXpath = "";
