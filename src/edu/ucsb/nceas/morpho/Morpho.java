@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-09 23:11:16 $'
- * '$Revision: 1.33 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-12 01:02:00 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.HTMLBrowser;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
+import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.framework.SplashFrame;
@@ -136,7 +137,7 @@ public class Morpho
     private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
-    
+    private static Morpho thisStaticInstance;
     /** flag set to indicate that connection to metacat is busy
      *  used by doPing to avoid thread problem
      */
@@ -213,11 +214,43 @@ public class Morpho
 
     /**
      * Set the profile for the currently logged in user (on startup, or when
-     * switching profiles).
+     * switching profiles).  Pops up a Login dialog after profile is set
      *
      * @param newProfile  the profile object
      */
     public void setProfile(ConfigXML newProfile)
+    {
+        setProfileDontLogin(newProfile, false);
+        establishConnection();
+        fireConnectionChangedEvent();
+    }
+
+    /**
+     *  Set the profile for the currently logged in user, but does not popup a 
+     *  login dialog
+     *
+     *  @param newProfile  the profile object
+     */
+    public void setProfileDontLogin(ConfigXML newProfile) 
+    {
+        setProfileDontLogin(newProfile, true);
+    }
+
+    //
+    //  Set the profile for the currently logged in user, but does not popup a 
+    //  login dialog
+    //
+    //  @param newProfile  the profile object
+    //
+    //  @param doFireConnectionChangedEvent boolean flag to tell method whether 
+    //                          to do a <code>fireConnectionChangedEvent</code>;
+    //                          mainly used by calls from the above 
+    //                          "setProfile(ConfigXML newProfile)" method, which 
+    //                          already does its own fireConnectionChangedEvent, 
+    //                          so needs to disable that call here.
+    //
+    private void setProfileDontLogin(ConfigXML newProfile, 
+                                    boolean doFireConnectionChangedEvent)
     {
         this.profile = newProfile;
 
@@ -230,21 +263,39 @@ public class Morpho
         setUserName(dn);
 
         if (!profileConfig.set("current_profile", 0, profilename)) {
-            boolean success = profileConfig.insert("current_profile", 
+            boolean success = profileConfig.insert("current_profile",
                     profilename);
         }
         profileConfig.save();
-        establishConnection();
         setLastID(scope);
-        fireConnectionChangedEvent();
+        
+        if (doFireConnectionChangedEvent) fireConnectionChangedEvent();
     }
-
+    
     /**
      * Set the profile associated with this framework based on its name
      *
      * @param newProfileName  the name of the new profile for the framework
      */
     public void setProfile(String newProfileName)
+    {
+        setProfile(newProfileName, true);
+    }
+    
+    /**
+     * Set the profile associated with this framework based on its name, but 
+     * does not popup a login dialog
+     *
+     * @param newProfileName  the name of the new profile for the framework
+     */
+    public void setProfileDontLogin(String newProfileName)
+    {
+        setProfile(newProfileName, false);
+    }
+    
+    // Set the profile associated with this framework based on its name, and 
+    // either pops up a login dialog or does not, depending on "doLogin" flag
+    private void setProfile(String newProfileName, boolean doLogin)
     {
         String profileDir = config.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
@@ -254,7 +305,8 @@ public class Morpho
                 newProfileName + File.separator + newProfileName + ".xml";
             try {
                 ConfigXML newProfile = new ConfigXML(newProfilePath);
-                setProfile(newProfile);
+                if (doLogin) setProfile(newProfile);
+                else setProfileDontLogin(newProfile);
             } catch (FileNotFoundException fnf) {
                 Log.debug(5, "Profile not found!");
             }
@@ -469,7 +521,7 @@ public class Morpho
     }
 
     /**
-     * Get the profile for the currently logged in user.
+     * Get the profile ConfigXML for the currently logged in user.
      *
      * @returns   ConfigXML the profile object
      */
@@ -478,6 +530,16 @@ public class Morpho
         return profile;
     }
 
+    /**
+     * Get the profile name for the currently logged in user.
+     *
+     * @return  String representation of current profile name
+     */
+    public String getCurrentProfileName()
+    {
+        return profileConfig.get("current_profile", 0);
+    }
+    
     /**
      * Look up the synonyms of a taxon from ITIS, and return the list of names
      *
@@ -770,6 +832,7 @@ public class Morpho
 
             // Create a new instance of our application
             Morpho morpho = new Morpho(config);
+            thisStaticInstance = morpho;
 
             // Set the version number
             //VERSION = config.get("version", 0);
@@ -824,13 +887,19 @@ public class Morpho
                 // Load all of the plugins, their menus, and toolbars
                 morpho.loadPlugins();
 
+
+                //Create a frame with a welcome screen until a plugin takes over
+                MorphoFrame initialFrame = 
+                                        controller.addWindow(INITIALFRAMENAME);
+
+                //initialFrame.setMainContentPane(new InitialScreen(morpho));
+                
+                initialFrame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
+                                     (int)UISettings.DEFAULT_WINDOW_HEIGHT);
+
                 // make the Morpho visible.
                 sf.dispose();
 
-                // Create a blank frame as a placeholder until a plugin
-                // takes over
-                MorphoFrame initialFrame = 
-                                        controller.addWindow(INITIALFRAMENAME);
                 initialFrame.setVisible(true);
             }
         } catch (Throwable t) {
@@ -1034,11 +1103,9 @@ public class Morpho
         connectItemAction.setMenu("File", 0);
         controller.addGuiAction(connectItemAction);
 
-        Command profileCommand = new Command() {
-            public void execute(ActionEvent e) {
-                createNewProfile();
-            }
-        };
+
+        Command profileCommand = new CreateNewProfileCommand();
+
         GUIAction profileItemAction = 
             new GUIAction("New profile...", null, profileCommand);
         profileItemAction.setToolTipText("New Profile...");
@@ -1165,9 +1232,10 @@ public class Morpho
     }
 
     /** Create a new profile */
-    private void createNewProfile()
+    
+    private static void createNewProfile()
     {
-        ProfileDialog dialog = new ProfileDialog(this);
+        ProfileDialog dialog = new ProfileDialog(thisStaticInstance);
         dialog.setVisible(true);
     }
 
@@ -1176,44 +1244,52 @@ public class Morpho
     {
         logOut();
         String currentProfile = profileConfig.get("current_profile", 0);
+
+        String[] profilesList = getProfilesList();
+        
+        int selection = 0;
+        for (selection = 0; selection < profilesList.length; selection++) {
+            if (currentProfile.equals(profilesList[selection])) {
+                break;
+            }
+        }
+
+        // Pop up a dialog with the choices
+        String newProfile = (String)JOptionPane.showInputDialog(null,
+                "Select from existing profiles:", "Input",
+                JOptionPane.INFORMATION_MESSAGE, null,
+                profilesList, profilesList[selection]);
+
+        // Set the new profile to the one selected if it is different
+        if (null != newProfile) {
+            if (currentProfile.equals(newProfile)) {
+                Log.debug(9, "No change in profile.");
+            } else {
+                setProfile(newProfile);
+                // close all old windows and initial a new one
+                cleanUpFrames();
+                Log.debug(9, "New profile is: " + newProfile);
+            }
+        }
+    }
+    
+    public String[] getProfilesList() 
+    {
         String profileDirName = config.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
         File profileDir = new File(profileDirName);
         String profilesList[] = null;
-        int selection = 0;
         if (profileDir.isDirectory()) {
 
             // Get vector of profiles to be displayed
-            profilesList = profileDir.list();
-            for (selection = 0; selection < profilesList.length; selection++) {
-                if (currentProfile.equals(profilesList[selection])) {
-                    break;
-                }
-            }
-
-            // Pop up a dialog with the choices
-            String newProfile = (String)JOptionPane.showInputDialog(null,
-                    "Select from existing profiles:", "Input",
-                    JOptionPane.INFORMATION_MESSAGE, null,
-                    profilesList, profilesList[selection]);
-
-            // Set the new profile to the one selected if it is different
-            if (null != newProfile) {
-                if (currentProfile.equals(newProfile)) {
-                    Log.debug(9, "No change in profile.");
-                } else {
-                    setProfile(newProfile);
-                    // close all old windows and initial a new one
-                    cleanUpFrames();
-                    Log.debug(9, "New profile is: " + newProfile);
-                }
-            }
+            return profileDir.list();
         } else {
             // This is an error
             Log.debug(3, "Error: Can not switch profiles.\n " +
                     "profile_directory is not a directory.");
         }
-    }
+        return null;;
+    }    
     
     /*
      * This method will close all frames and show a blank frame
@@ -1683,8 +1759,15 @@ public class Morpho
                 currentProfile + File.separator + 
                 currentProfile + ".xml";
             ConfigXML profile = new ConfigXML(profileName);
-            setProfile(profile);
+            setProfileDontLogin(profile);
         }
     }
+    
+    public static class CreateNewProfileCommand implements Command {
+        public void execute(ActionEvent e) {
+            createNewProfile();
+        }
+    };
+    
 }
 
