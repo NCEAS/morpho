@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-09 16:44:57 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-09 17:01:28 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,9 @@ public class ResultPanel extends JPanel
   /** Button used to trigger a revision using QueryDialog */
   JButton reviseButton;
 
+  /** The label used to display the query title */
+  JLabel titleLabel;
+
   /**
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
@@ -113,7 +116,7 @@ public class ResultPanel extends JPanel
       setName(results.getQuery().getQueryTitle());
 
       // Set up the Header panel with a title and refresh/revise buttons
-      JLabel titleLabel = new JLabel(results.getQuery().getQueryTitle());
+      titleLabel = new JLabel(results.getQuery().getQueryTitle());
       titleLabel.setForeground(Color.black);
       titleLabel.setFont(new Font(null, Font.BOLD, 18));
       Box headerBox = Box.createHorizontalBox();
@@ -257,6 +260,7 @@ public class ResultPanel extends JPanel
   public void setResults(ResultSet newResults) 
   {
     this.results = newResults;
+    titleLabel.setText(results.getQuery().getQueryTitle());
 
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-09 16:44:57 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2001-05-09 17:01:28 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,12 +86,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
 
     // Create the tabbed pane for the owner queries
     createOwnerPanel();
-/*
-    ownerQuery = new Query(getOwnerQuery(), framework);
-    ResultSet results = ownerQuery.execute();
-    ownerPanel = new ResultPanel(results, true, false);
-    framework.setMainContentPane(ownerPanel);
-*/
+
     // Add the menus and toolbars
     framework.addMenu("Search", new Integer(3), menuActions);
     framework.addToolbarActions(toolbarActions);
@@ -128,7 +123,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     StringBuffer searchtext = new StringBuffer();
     searchtext.append("<?xml version=\"1.0\"?>\n");
     searchtext.append("<pathquery version=\"1.0\">\n");
-    searchtext.append("<querytitle>My Data</querytitle>\n");
+    searchtext.append("<querytitle>My Data (" + framework.getUserName());
+    searchtext.append(")</querytitle>\n");
     Vector returnDoctypeList = config.get("returndoc");
     for (int i=0; i < returnDoctypeList.size(); i++) {
       searchtext.append("<returndoctype>");
@@ -203,7 +199,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
   {
     // Create the tabbed pane for the owner queries
     ownerQuery = new Query(getOwnerQuery(), framework);
-    framework.debug(9, ownerQuery.toString());
     ResultSet results = ownerQuery.execute();
     ownerPanel = new ResultPanel(results, true, false);
 
@@ -218,7 +213,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
   {
     // Create the tabbed pane for the owner queries
     ownerQuery = new Query(getOwnerQuery(), framework);
-    framework.debug(9, ownerQuery.toString());
     ResultSet results = ownerQuery.execute();
     ownerPanel.setResults(results);
   }
