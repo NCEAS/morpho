@@ -37,9 +37,9 @@
     <paragraph editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel"> </paragraph>
   </additionalInfo>
   <triple help="The definition of a relationship between component objects in a resource package">
-    <subject help="Subject is the identifier of the metadata object or file that is the actor in the triple."> </subject>
-    <relationship help="Relationship is a descriptive phrase that specifies the how the subject of the triple is related to the object."> </relationship>
-    <object help="Object is the identifier of the metadata or data object that is acted upon according to the relationship in the triple."> </object>
+    <subject editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="Subject is the identifier of the metadata object or file that is the actor in the triple."> </subject>
+    <relationship editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="Relationship is a descriptive phrase that specifies the how the subject of the triple is related to the object."> </relationship>
+    <object editor="edu.ucsb.nceas.morpho.editor.LockedPanel"  help="Object is the identifier of the metadata or data object that is acted upon according to the relationship in the triple."> </object>
   </triple>
   <temporalCoverage help="This element specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates."> </temporalCoverage>
   <geographicCoverage help="Geographic Coverage is a container for spatial information about a project, a resource, or an entity within a resource."> </geographicCoverage>
