@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-23 23:16:05 $'
- * '$Revision: 1.79 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-24 15:46:59 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ public class DataPackage implements XMLFactoryInterface
   private final FileSystemDataStore fileSysDataStore;
   private final MetacatDataStore    metacatDataStore;
   private final String              HTMLEXTENSION = ".html";
-  private final String              METACATHTML = "metacat";
+  private final String              METACATHTML = "metadata";
 
  
   
