@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-06 18:49:35 $'
- * '$Revision: 1.116 $'
+ *     '$Date: 2003-10-07 02:02:26 $'
+ * '$Revision: 1.117 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -806,11 +806,79 @@ public class DocFrame extends javax.swing.JFrame
    */
   public void initDoc(Morpho morpho, Node docnode)
   {
+    DefaultMutableTreeNode frootNode = null;
     setName("Morpho Editor");
     treeModel = putDOMintoTree(docnode);
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     setAllNodesAsSelected(rootNode);
-//    setTopOfTree(docnode, "/eml:eml/dataset/dataTable");
+    // if templateFlag is true, don't bother merging the instance
+    // with the template; reset the flag for next time
+    if (templateFlag) {
+      templateFlag = false;
+      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+//      setAllNodesAsSelected(rootNode);  //DFH
+//      setAttributeNames(rootNode);
+      setChoiceNodes(rootNode);
+      setAllNodesAsSelected(rootNode);
+      setSelectedNodes(rootNode);
+      treeModel.reload();
+      tree.setModel(treeModel);
+
+      tree.expandRow(1);
+      tree.expandRow(2);
+      tree.setSelectionRow(0);
+      return;
+    }
+    
+    // now want to possibly merge the input document with a formatting/template document
+    // and set the 'editor' and 'help' fields for each node
+    // use the root node name as a key
+    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+    // the next line sets all the nodes from the instance as selected
+    // this is for initial CHOICES in the merged tree
+    setAllNodesAsSelected(rootNode);  //DFH
+    String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+    // arbitrary assumption that the formatting document has the rootname +
+    // ".xml" as a file name; the formatting document is XML with the same
+    // tree structure as the document being formatted; 'help' and 'editor' attributes
+    // are used to set help and editor strings for nodes
+    rootname = rootname + ".xml";
+    frootNode = new DefaultMutableTreeNode("froot");
+    DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
+    String fXMLString = "";
+    boolean formatflag = true;
+
+    try {
+      ClassLoader cl = this.getClass().getClassLoader();
+// next 2 lines check for templates inside jar files; at least temporarily
+// changed to look in lib directory to make it easier for user to customize      
+//      BufferedReader in = new BufferedReader(new InputStreamReader(
+//                        cl.getResourceAsStream(rootname)));
+      BufferedReader in = new BufferedReader(new FileReader(
+                        "./lib/"+rootname));
+      StringWriter out = new StringWriter();
+      int c;
+      while ((c = in.read()) != -1) { out.write(c);}
+      in.close();
+      out.flush();
+      out.close();
+      fXMLString = out.toString();
+    
+    // if catch is called, then we don't have a valid template
+    } catch (Exception e) {formatflag = false;}
+    if (formatflag) {
+      // put the template/formatting xml into a tree
+      putXMLintoTree(ftreeModel, fXMLString);
+      frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+      // formatting info has now been put into a JTree which is merged with
+      // the previously created document tree
+      // first remove all the nodes with visLevel>0 to simplify the display
+      // (the '0' value should be a parameter)
+      removeNodesVisLevel(frootNode, 0);//
+      
+      treeUnion(rootNode, frootNode);
+    }
+    
     treeModel.reload();
     tree.setModel(treeModel);
 
@@ -1136,6 +1204,7 @@ public class DocFrame extends javax.swing.JFrame
    */
   DefaultTreeModel putDOMintoTree(Node node)
   {
+    rootnodeName = node.getNodeName();
     Document doc = node.getOwnerDocument();
     JTree domtree = new DOMTree(doc);
     return (DefaultTreeModel)domtree.getModel();
