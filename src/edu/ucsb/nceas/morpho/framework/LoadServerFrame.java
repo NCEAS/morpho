@@ -1,3 +1,14 @@
+/**
+ *        Name: LoadServerFrame.java
+ *     Purpose: A Class that is the top frame for an XML_Query sample
+ *		application (searchs local collection of XML files
+ *   Copyright: 2000 Regents of the University of California and the
+ *              National Center for Ecological Analysis and Synthesis
+ *     Authors: Dan Higgins
+ *
+ *     Version: '$Id: LoadServerFrame.java,v 1.2 2000-09-11 23:58:20 higgins Exp $'
+ */
+
 /*
 		A basic implementation of the JFrame class.
 */

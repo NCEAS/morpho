@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.11 2000-08-31 23:08:13 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.12 2000-09-11 23:58:20 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -85,7 +85,7 @@ public class ClientFramework extends javax.swing.JFrame
 		setTitle("NCEAS Metadata Desktop Client");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(698,480);
+		setSize(744,525);
 		setVisible(false);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
@@ -95,10 +95,10 @@ public class ClientFramework extends javax.swing.JFrame
 		//$$ openFileDialog.move(0,336);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		getContentPane().add(BorderLayout.NORTH, JPanel2);
-		JPanel2.setBounds(0,0,698,36);
+		JPanel2.setBounds(0,0,744,36);
 		JToolBar1.setAlignmentY(0.222222F);
 		JPanel2.add(JToolBar1);
-		JToolBar1.setBounds(0,0,539,36);
+		JToolBar1.setBounds(0,0,834,36);
 		newButton.setDefaultCapable(false);
 		newButton.setToolTipText("Create a new document");
 		newButton.setMnemonic((int)'N');
@@ -146,50 +146,74 @@ public class ClientFramework extends javax.swing.JFrame
 		aboutButton.setBounds(281,11,35,11);
 		JToolBar1.add(JToolBarSeparator3);
 		JToolBarSeparator3.setBounds(316,9,10,5);
+		ExpertCheckBox.setText("ExpertMode");
+		ExpertCheckBox.setToolTipText("Shows additional 'Search' functions when selected");
+		JToolBar1.add(ExpertCheckBox);
+		ExpertCheckBox.setBackground(new java.awt.Color(204,204,204));
+		ExpertCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
+		ExpertCheckBox.setBounds(326,11,82,21);
+		JToolBar1.add(JToolBarSeparator4);
+		JToolBarSeparator4.setBounds(408,9,10,5);
 		ToolBarSearchText.setColumns(12);
 		JToolBar1.add(ToolBarSearchText);
 		ToolBarSearchText.setFont(new Font("Dialog", Font.PLAIN, 12));
-		ToolBarSearchText.setBounds(326,2,132,32);
+		ToolBarSearchText.setBounds(418,2,132,32);
 		queryButton.setDefaultCapable(false);
 		queryButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-		queryButton.setText("Find Text");
+		queryButton.setText("Quick Search");
 		queryButton.setActionCommand("Find Text");
 		JToolBar1.add(queryButton);
 		queryButton.setFont(new Font("Dialog", Font.PLAIN, 10));
-		queryButton.setBounds(458,11,79,23);
+		queryButton.setBounds(550,11,97,23);
+		LocalSearchCheckBox.setSelected(true);
+		LocalSearchCheckBox.setToolTipText("When selected, locally stored documents are searched");
+		LocalSearchCheckBox.setText("Local Search");
+		LocalSearchCheckBox.setActionCommand("Local Search");
+		JToolBar1.add(LocalSearchCheckBox);
+		LocalSearchCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
+		LocalSearchCheckBox.setBounds(647,11,87,21);
+		CatalogSearchCheckBox.setToolTipText("When selected, catalog on remote server is searched during queries");
+		CatalogSearchCheckBox.setText("Catalog Search");
+		CatalogSearchCheckBox.setActionCommand("Catalog Search");
+		JToolBar1.add(CatalogSearchCheckBox);
+		CatalogSearchCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
+		CatalogSearchCheckBox.setBounds(734,11,98,21);
+		ExpertCheckBox.setActionCommand("ExpertMode");
 		JPanel1.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER, JPanel1);
-		JPanel1.setBounds(0,36,698,444);
+		JPanel1.setBounds(0,36,744,489);
+		JTabbedPane1.setToolTipText("Select tab of interest");
 		JPanel1.add(BorderLayout.CENTER, JTabbedPane1);
-		JTabbedPane1.setBounds(0,0,698,444);
+		JTabbedPane1.setBounds(0,0,744,489);
 		EditorPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(EditorPanel);
-		EditorPanel.setBounds(2,27,693,414);
+		EditorPanel.setBounds(2,27,739,459);
 		EditorPanel.setVisible(false);
 		mdeBean1.setLayout(new BorderLayout(0,0));
 		EditorPanel.add(BorderLayout.CENTER,mdeBean1);
 		mdeBean1.setBounds(0,0,693,414);
 		QueryPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(QueryPanel);
-		QueryPanel.setBounds(2,27,693,414);
+		QueryPanel.setBounds(2,27,739,459);
 		QueryPanel.setVisible(false);
+		queryBean1.setExpertMode(false);
 		QueryPanel.add(BorderLayout.CENTER,queryBean1);
 		queryBean1.setBounds(0,0,693,414);
 		DataViewerPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(DataViewerPanel);
-		DataViewerPanel.setBounds(2,27,693,414);
+		DataViewerPanel.setBounds(2,27,739,459);
 		DataViewerPanel.setVisible(false);
 		UnderConstruction.setText("Under Construction!!!");
-		UnderConstruction.setHorizontalAlignment(SwingConstants.CENTER);
-		DataViewerPanel.add(UnderConstruction);
+		UnderConstruction.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		DataViewerPanel.add(BorderLayout.CENTER,UnderConstruction);
 		UnderConstruction.setForeground(java.awt.Color.red);
 		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
-		UnderConstruction.setBounds(0,0,20,40);
+		UnderConstruction.setBounds(0,0,739,459);
 		JTabbedPane1.setSelectedComponent(QueryPanel);
 		JTabbedPane1.setSelectedIndex(1);
-		JTabbedPane1.setTitleAt(0,"Data Documentation");
-		JTabbedPane1.setTitleAt(1,"Search");
-		JTabbedPane1.setTitleAt(2,"Browse");
+		JTabbedPane1.setTitleAt(0,"Edit Document");
+		JTabbedPane1.setTitleAt(1,"Search Document");
+		JTabbedPane1.setTitleAt(2,"Browse Data");
 		//$$ lineBorder1.move(240,481);
 		//$$ stringListModel1.move(72,406);
 		//$$ stringComboBoxModel1.move(48,481);
@@ -301,6 +325,9 @@ public class ClientFramework extends javax.swing.JFrame
 		OptionsMenuItem.addActionListener(lSymAction);
 		SymChange lSymChange = new SymChange();
 		JTabbedPane1.addChangeListener(lSymChange);
+		LocalSearchCheckBox.addItemListener(lSymItem);
+		CatalogSearchCheckBox.addItemListener(lSymItem);
+		ExpertCheckBox.addItemListener(lSymItem);
 		//}}
 		// Get the configuration file information
     try {
@@ -404,8 +431,12 @@ public class ClientFramework extends javax.swing.JFrame
 	com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator2 = new com.symantec.itools.javax.swing.JToolBarSeparator();
 	javax.swing.JButton aboutButton = new javax.swing.JButton();
 	com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator3 = new com.symantec.itools.javax.swing.JToolBarSeparator();
+	javax.swing.JCheckBox ExpertCheckBox = new javax.swing.JCheckBox();
+	com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator4 = new com.symantec.itools.javax.swing.JToolBarSeparator();
 	javax.swing.JTextField ToolBarSearchText = new javax.swing.JTextField();
 	javax.swing.JButton queryButton = new javax.swing.JButton();
+	javax.swing.JCheckBox LocalSearchCheckBox = new javax.swing.JCheckBox();
+	javax.swing.JCheckBox CatalogSearchCheckBox = new javax.swing.JCheckBox();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
 	javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
@@ -601,8 +632,10 @@ public class ClientFramework extends javax.swing.JFrame
 	}
 
 	void saveserverButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-            LoadServerFrame lsf = new LoadServerFrame(this);
-            lsf.setVisible(true);
+     //       LoadServerFrame lsf = new LoadServerFrame(this);
+    //        lsf.setVisible(true);
+            SubmitDialog sd = new SubmitDialog(this);
+            sd.setVisible(true);
     }
     
 	void saveserverButton_actionPerformed_Interaction1xx(java.awt.event.ActionEvent event) {
@@ -691,6 +724,12 @@ public class ClientFramework extends javax.swing.JFrame
 		public void itemStateChanged(java.awt.event.ItemEvent event)
 		{
 			Object object = event.getSource();
+			if (object == LocalSearchCheckBox)
+				LocalSearchCheckBox_itemStateChanged(event);
+			else if (object == CatalogSearchCheckBox)
+				CatalogSearchCheckBox_itemStateChanged(event);
+			else if (object == ExpertCheckBox)
+				ExpertCheckBox_itemStateChanged(event);
 			
 		}
 	}
@@ -869,4 +908,23 @@ public void LogOut() {
 }
     
     
+
+	void LocalSearchCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+		queryBean1.setSearchLocal(LocalSearchCheckBox.isSelected());
+	}
+	
+	
+	
+	
+
+	void CatalogSearchCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+        queryBean1.setSearchNetwork(CatalogSearchCheckBox.isSelected());
+	}
+
+	void ExpertCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+	    queryBean1.setExpertMode(ExpertCheckBox.isSelected());
+	}
 }

@@ -13,7 +13,7 @@ public class SplashFrame extends javax.swing.JFrame
 		//{{INIT_CONTROLS
 		getContentPane().setLayout(new BorderLayout(0,0));
 		getContentPane().setBackground(java.awt.Color.white);
-		setSize(384,170);
+		setSize(390,267);
 		/* Center the Frame */
 		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
 		Rectangle frameDim = getBounds();
@@ -21,43 +21,43 @@ public class SplashFrame extends javax.swing.JFrame
 		        (screenDim.height - frameDim.height) /2);
 
 		setVisible(false);
-		JLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		getContentPane().add(BorderLayout.WEST,JLabel1);
-		JLabel1.setBounds(0,0,105,145);
-		JLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		getContentPane().add(BorderLayout.EAST,JLabel2);
-		JLabel2.setBounds(293,0,91,145);
-		JPanel3.setLayout(new GridLayout(4,1,0,0));
+		JPanel3.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,JPanel3);
-		JPanel3.setBounds(105,0,188,145);
+		JPanel3.setBounds(0,0,390,242);
 		JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		JLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel3.setText("KDI");
-		JPanel3.add(JLabel3);
+		JLabel3.setText("KDI Desktop Client");
+		JPanel3.add(BorderLayout.NORTH,JLabel3);
 		JLabel3.setForeground(java.awt.Color.red);
-		JLabel3.setFont(new Font("Dialog", Font.PLAIN, 36));
-		JLabel3.setBounds(0,0,188,36);
-		JLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel6.setText("Desktop Client");
-		JPanel3.add(JLabel6);
-		JLabel6.setForeground(java.awt.Color.black);
-		JLabel6.setFont(new Font("Dialog", Font.BOLD, 14));
-		JLabel6.setBounds(0,36,188,36);
-		JLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel7.setText("Created for NSF by NCEAS");
-		JPanel3.add(JLabel7);
-		JLabel7.setForeground(java.awt.Color.black);
-		JLabel7.setBounds(0,72,188,36);
+		JLabel3.setFont(new Font("Dialog", Font.PLAIN, 24));
+		JLabel3.setBounds(0,0,390,28);
+		JPanel3.add(JScrollPane1);
+		JScrollPane1.setBounds(0,28,390,199);
+		JTextArea1.setEditable(false);
+		JTextArea1.setWrapStyleWord(true);
+		JTextArea1.setLineWrap(true);
+		JScrollPane1.getViewport().add(JTextArea1);
+		JTextArea1.setBounds(0,0,387,196);
+		String temp = "This material is based upon work supported by ";
+		temp = temp + "the National Science Foundation under Grant No. DEB99-80154 and ";
+		temp = temp + "Grant No. DBI99-04777. Also supported by the National Center for Ecological Analysis ";
+		temp = temp + "and Synthesis, a Center funded by NSF (Grant #DEB-94-21535),";
+		temp = temp + "the University of California - Santa Barbara, the California Resources Agency, ";
+        temp = temp + "and the California Environmental Protection Agency. ";
+		temp = temp + "Any opinions, findings and conclusions or recommendations expressed in this material ";
+		temp = temp + "are those of the author(s) and do not necessarily reflect the views ";
+		temp = temp + "of the National Science Foundation (NSF).";
+		JTextArea1.setText(temp);
 		JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel8.setText("Version 0.6 - Aug 2000");
-		JPanel3.add(JLabel8);
+		JLabel8.setText("Version 0.7 - Sept 2000");
+		JPanel3.add(BorderLayout.SOUTH,JLabel8);
 		JLabel8.setForeground(java.awt.Color.black);
 		JLabel8.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel8.setBounds(0,108,188,36);
+		JLabel8.setBounds(0,227,390,15);
 		CloseButton.setText("Close");
 		CloseButton.setActionCommand("Close");
 		getContentPane().add(BorderLayout.SOUTH,CloseButton);
-		CloseButton.setBounds(0,145,384,25);
+		CloseButton.setBounds(0,242,390,25);
 		//}}
 
 		//{{INIT_MENUS
@@ -69,12 +69,14 @@ public class SplashFrame extends javax.swing.JFrame
 		//}}
 //      Example of loading icon as resource - DFH 
      try {
-		NCEASIcon = new ImageIcon(getClass().getResource("NCEASlogo.gif"));
-		NSFIcon = new ImageIcon(getClass().getResource("nsf_logo.gif"));
-		JLabel2.setIcon(NSFIcon);
-		JLabel1.setIcon(NCEASIcon);
+	//	NCEASIcon = new ImageIcon(getClass().getResource("NCEASlogo.gif"));
+	//	NSFIcon = new ImageIcon(getClass().getResource("nsf_logo.gif"));
+	    BFlyIcon = new ImageIcon(getClass().getResource("btrfly_lrg.gif"));
+		JLabel3.setIcon(BFlyIcon);
+		JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 	 }
 	 catch (Exception e) {System.out.println("Could not load icons!");}
+
 	}
 
 	public SplashFrame(String sTitle)
@@ -119,18 +121,16 @@ public class SplashFrame extends javax.swing.JFrame
 	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
-	javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
-	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
-	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
-	javax.swing.JLabel JLabel7 = new javax.swing.JLabel();
+	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
+	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
 	javax.swing.JLabel JLabel8 = new javax.swing.JLabel();
 	javax.swing.JButton CloseButton = new javax.swing.JButton();
 	//}}
 
-    javax.swing.ImageIcon NCEASIcon = new javax.swing.ImageIcon();
-    javax.swing.ImageIcon NSFIcon = new javax.swing.ImageIcon();
+    javax.swing.ImageIcon BFlyIcon = new javax.swing.ImageIcon();
+  //  javax.swing.ImageIcon NSFIcon = new javax.swing.ImageIcon();
 	//{{DECLARE_MENUS
 	//}}
 
