@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 17:54:25 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-09-06 17:58:33 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,4 +116,12 @@ public interface DataPackageInterface
    */
   public void createOpenPreviousVersionDialog(String title, int numOfVersion,
                                               Morpho morpho, boolean local);
+                                              
+  /**
+   * returns the next local id from the config file
+   * returns null if configXML was unable to increment the id number
+   *
+   * @param morpho the morpho file
+   */
+  public String getNextId(Morpho morpho);
 }
