@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-19 18:11:52 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2004-03-19 19:28:04 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -676,7 +676,7 @@ public class WizardSettings {
 		Node unitTypeNode = null;
 		String unitTypeXPath = "/stmml:unitList/stmml:unitType[@name='" + unitType + "']";
 		try {
-			SunitTypeNode = XMLUtilities.getNodeWithXPath(rootNode, unitTypeXPath);
+			unitTypeNode = XMLUtilities.getNodeWithXPath(rootNode, unitTypeXPath);
 		} catch (Exception te) {
 			Log.debug(12, "Exception retreving the given unitType node");
 			return null;
