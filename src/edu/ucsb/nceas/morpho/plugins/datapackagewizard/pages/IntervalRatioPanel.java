@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 21:33:10 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-10-01 04:49:01 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,8 +76,12 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   
   private AttributeDialog attributeDialog;
   
-  private String[] numberTypesArray = new String[] { "natural", "whole",
-                                                     "integer", "real" };
+  private String[] numberTypesArray = new String[] { 
+                        "natural", 
+                        "whole",
+                        "integer", 
+                        "real" 
+                    };
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -227,6 +231,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     WidgetFactory.unhiliteComponent(precisionLabel);
     WidgetFactory.unhiliteComponent(numberTypeLabel);
     unhiliteBoundsLabel();
+    precisionField.requestFocus();
   }
   
 

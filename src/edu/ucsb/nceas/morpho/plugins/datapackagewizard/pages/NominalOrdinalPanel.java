@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 19:27:39 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-10-01 04:49:01 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,6 +194,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     else currentSubPanel = textSubPanel;
 
     this.add(currentSubPanel);
+    textDefinitionField.requestFocus();
     attributeDialog.refreshUI();
   }
 

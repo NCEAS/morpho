@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 21:43:05 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-10-01 04:49:01 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,6 +215,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
   
     WidgetFactory.unhiliteComponent(formatStringLabel);
     WidgetFactory.unhiliteComponent(precisionLabel);
+    formatStringField.requestFocus();
   }
   
   /** 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-30 18:50:06 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-10-01 04:49:01 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Iterator;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -361,6 +362,11 @@ public class DataFormat extends AbstractWizardPage{
     }
 
     otherProprietaryTextField = WidgetFactory.makeOneLineTextField();
+    Dimension dim = new Dimension(  
+                          WizardSettings.DIALOG_WIDTH/2, 
+                          WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS.height);
+    otherProprietaryTextField.setPreferredSize(dim);
+    otherProprietaryTextField.setMaximumSize(  dim);
     
     ActionListener listener = new ActionListener() {
       
@@ -383,10 +389,13 @@ public class DataFormat extends AbstractWizardPage{
     proprietaryButtonsText[i] = OTHER_LABEL;
 
     ////
-    JPanel proprietaryPanel 
-          = WidgetFactory.makeVerticalPanel(
-                                (int)(1.5 * proprietaryButtonsText.length) + 1);
+    JPanel proprietaryPanel = new JPanel();
+    proprietaryPanel.setLayout(new BoxLayout(proprietaryPanel, 
+                                              BoxLayout.Y_AXIS));
     
+//          = WidgetFactory.makeVerticalPanel(
+//                                (int)(1.5 * proprietaryButtonsText.length) + 4);
+
     proprietaryLabel = WidgetFactory.makeLabel("Format:", true);
     JPanel leftJustifyPanel = WidgetFactory.makePanel(1);
     leftJustifyPanel.add(proprietaryLabel);
@@ -398,18 +407,55 @@ public class DataFormat extends AbstractWizardPage{
     JPanel radioPanel = WidgetFactory.makeRadioPanel( proprietaryButtonsText, 
                                                       INITIAL_SELECTION, 
                                                       listener);
-    proprietaryText = proprietaryButtonsText[INITIAL_SELECTION];
+    setProprietaryText(proprietaryButtonsText[INITIAL_SELECTION], mimeMap);
     
-    proprietaryPanel.add(radioPanel);
+    JPanel radioJustifyPanel = new JPanel();
+    radioJustifyPanel.setLayout(new BoxLayout(radioJustifyPanel, 
+                                              BoxLayout.X_AXIS));
+    radioJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
+    radioJustifyPanel.add(radioPanel);
+    proprietaryPanel.add(radioJustifyPanel);    
     
-    JPanel otherJustifyPanel = WidgetFactory.makePanel(1);
+    JPanel otherJustifyPanel = new JPanel();
+    otherJustifyPanel.setLayout(new BoxLayout(otherJustifyPanel, 
+                                              BoxLayout.X_AXIS));
+    otherJustifyPanel.setPreferredSize(WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
+    otherJustifyPanel.setMaximumSize(WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
     otherJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
     otherJustifyPanel.add(otherProprietaryTextField);
+    otherJustifyPanel.add(Box.createGlue());
     proprietaryPanel.add(otherJustifyPanel);
     
-  
+    JPanel otherHelpJustifyPanel = new JPanel();
+    otherHelpJustifyPanel.setLayout(new BoxLayout(otherHelpJustifyPanel, 
+                                                  BoxLayout.X_AXIS));
+    otherHelpJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
+    JLabel help = WidgetFactory.makeHTMLLabel(
+      "<font color=\"#666666\">If your format does not appear in the above "
+      +"list, select \""+OTHER_LABEL+"\" and enter a description in the field "
+      +"above. <br>This would preferably be in the form of a standard MIME "
+      +"type (e.g: application/msword ), but if you do not know the MIME type, "
+      +"enter a text description</font>", 2);
+ 
+    Dimension helpDim = new Dimension(
+                      WizardSettings.DIALOG_WIDTH - 
+                            2*WizardSettings.WIZARD_CONTENT_LABEL_DIMS.width,
+                      2*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
     
-////////////////////////////////////////////////////////////////////////////////
+    help.setPreferredSize(helpDim);
+    help.setMaximumSize(helpDim);
+    
+    Dimension helpPanelDim = new Dimension(
+                      WizardSettings.DIALOG_WIDTH,
+                      2*WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height);
+    
+    otherHelpJustifyPanel.setPreferredSize(helpPanelDim);
+    otherHelpJustifyPanel.setMaximumSize(helpPanelDim);
+    
+    otherHelpJustifyPanel.add(help);
+    otherHelpJustifyPanel.add(Box.createGlue());
+    
+    proprietaryPanel.add(otherHelpJustifyPanel);
 
     panel.add(proprietaryPanel);
         
@@ -464,6 +510,8 @@ public class DataFormat extends AbstractWizardPage{
     WidgetFactory.unhiliteComponent(proprietaryLabel);
     WidgetFactory.unhiliteComponent(listLabel);
     WidgetFactory.unhiliteComponent(otherProprietaryTextField);
+    otherProprietaryTextField.setForeground(
+                                      WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
   }
   
   
