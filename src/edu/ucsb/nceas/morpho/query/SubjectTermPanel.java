@@ -3,12 +3,12 @@
  *    Purpose: subpanel repeated in QueryDialog
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Dan Higgins
+ *    Authors: @authors@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-26 00:05:51 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-31 00:59:25 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,21 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-import java.awt.*;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.*;
+import javax.swing.JTextField;
 
 /**
  * This panel contains all the elements for a single text
@@ -41,247 +49,231 @@ import javax.swing.*;
  * term, a search type (e.g. contains, matches, etc.), and
  * some information about the path (e.g. all, title, etc.)
  */
-public class TextQueryTermPanel extends javax.swing.JComponent
+public class TextQueryTermPanel extends JComponent
 {
-	/**
-	 * Constructor
-	 */
-	public TextQueryTermPanel()
-	{
-		//{{INIT_CONTROLS
-		setLayout(new BorderLayout(0,0));
-//		setMaximumSize(new Dimension(685, 60));
-		setBackground(java.awt.Color.lightGray);
-		setSize(685,58);
-		SetChoicesPanel.setAlignmentX(0.496933F);
-		SetChoicesPanel.setLayout(new BoxLayout(SetChoicesPanel,BoxLayout.Y_AXIS));
-		add(BorderLayout.CENTER,SetChoicesPanel);
 
-		QueryTermHelpPanel.setLayout(
-                                   new FlowLayout(FlowLayout.LEFT,5,5));
-		HelpLabel.setText("Check boxes determine metadata fields " +
-                                  "that are searched.");
-		QueryTermHelpPanel.add(HelpLabel);
-		SetChoicesPanel.add(QueryTermHelpPanel);
+  //{{DECLARE_CONTROLS
+  JCheckBox titleCheckBox = new JCheckBox();
+  JCheckBox abstractCheckBox = new JCheckBox();
+  JCheckBox keywordsCheckBox = new JCheckBox();
+  JCheckBox allCheckBox = new JCheckBox();
+  JComboBox searchModeComboBox = new JComboBox();
+  JTextField textValueBox = new JTextField();
+  //}}
 
-		QueryTermPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-                Box checkBoxHorizontal = Box.createHorizontalBox();
-		AllCheckBox.setText("All");
-		AllCheckBox.setActionCommand("All");
-		AllCheckBox.setSelected(true);
-                AllCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-                checkBoxHorizontal.add(AllCheckBox);
+  /**
+   * Constructor
+   */
+  public TextQueryTermPanel()
+  {
+    //{{INIT_CONTROLS
+    setLayout(new BorderLayout(0, 0));
+    setBackground(java.awt.Color.lightGray);
+    setSize(685, 58);
+    JPanel setChoicesPanel = new JPanel();
+    setChoicesPanel.setAlignmentX(0.496933F);
+    setChoicesPanel.setLayout(new
+                              BoxLayout(setChoicesPanel, BoxLayout.Y_AXIS));
+    add(BorderLayout.CENTER, setChoicesPanel);
 
-                JPanel checkBoxVertical = new JPanel();
-                checkBoxVertical.setLayout(new BoxLayout(checkBoxVertical,
+    JPanel queryTermHelpPanel = new JPanel();
+    queryTermHelpPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    JLabel helpLabel = new JLabel();
+    helpLabel.setText("Check boxes determine which metadata fields " +
+                      "are searched.");
+    queryTermHelpPanel.add(helpLabel);
+    setChoicesPanel.add(queryTermHelpPanel);
+
+    JPanel queryTermPanel = new JPanel();
+    queryTermPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    Box checkBoxHorizontal = Box.createHorizontalBox();
+    allCheckBox.setText("All");
+    allCheckBox.setActionCommand("All");
+    allCheckBox.setSelected(true);
+    allCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+    checkBoxHorizontal.add(allCheckBox);
+
+    JPanel checkBoxVertical = new JPanel();
+    checkBoxVertical.setLayout(new BoxLayout(checkBoxVertical,
                                              BoxLayout.Y_AXIS));
-                checkBoxVertical.setAlignmentX(Component.LEFT_ALIGNMENT);
-		TitleCheckBox.setText("Title");
-		TitleCheckBox.setActionCommand("Title");
-		TitleCheckBox.setSelected(true);
-		TitleCheckBox.setEnabled(false);
-		checkBoxVertical.add(TitleCheckBox);
-		AbstractCheckBox.setText("Abstract");
-		AbstractCheckBox.setActionCommand("Abstract");
-		AbstractCheckBox.setSelected(true);
-		AbstractCheckBox.setEnabled(false);
-		checkBoxVertical.add(AbstractCheckBox);
-		KeyWordsCheckBox.setText("Keywords");
-		KeyWordsCheckBox.setActionCommand("Keywords");
-		KeyWordsCheckBox.setSelected(true);
-		KeyWordsCheckBox.setEnabled(false);
-		checkBoxVertical.add(KeyWordsCheckBox);
-                checkBoxHorizontal.add(checkBoxVertical);
-		QueryTermPanel.add(checkBoxHorizontal);
+    checkBoxVertical.setAlignmentX(Component.LEFT_ALIGNMENT);
+    titleCheckBox.setText("Title");
+    titleCheckBox.setActionCommand("Title");
+    titleCheckBox.setSelected(true);
+    titleCheckBox.setEnabled(false);
+    checkBoxVertical.add(titleCheckBox);
+    abstractCheckBox.setText("Abstract");
+    abstractCheckBox.setActionCommand("Abstract");
+    abstractCheckBox.setSelected(true);
+    abstractCheckBox.setEnabled(false);
+    checkBoxVertical.add(abstractCheckBox);
+    keywordsCheckBox.setText("Keywords");
+    keywordsCheckBox.setActionCommand("Keywords");
+    keywordsCheckBox.setSelected(true);
+    keywordsCheckBox.setEnabled(false);
+    checkBoxVertical.add(keywordsCheckBox);
+    checkBoxHorizontal.add(checkBoxVertical);
+    queryTermPanel.add(checkBoxHorizontal);
 
-		QueryTermPanel.add(QueryTypeComboBox);
-		QueryTypeComboBox.setBackground(java.awt.Color.white);
-		//TextLabel.setText("Subject");
-		TextLabel.setText("  ");
-		QueryTermPanel.add(TextLabel);
-		TextLabel.setForeground(java.awt.Color.black);
-		TextLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TextValueBox.setColumns(20);
-		QueryTermPanel.add(TextValueBox);
-		SetChoicesPanel.add(QueryTermPanel);
-		SetChoicesPanel.add(Box.createVerticalGlue());
-		SetChoicesPanel.add(Box.createRigidArea(new Dimension(8,8)));
-		//}}
-		QueryTypeComboBox.addItem("contains");
-		QueryTypeComboBox.addItem("starts-with");
-		QueryTypeComboBox.addItem("ends-with");
-		QueryTypeComboBox.addItem("matches-exactly");
-		QueryTypeComboBox.setSelectedIndex(0);
-		
-		SetChoicesPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-	
-		//{{REGISTER_LISTENERS
-		SymItem lSymItem = new SymItem();
-		AllCheckBox.addItemListener(lSymItem);
-		//}}
-	}
+    queryTermPanel.add(searchModeComboBox);
+    searchModeComboBox.setBackground(java.awt.Color.white);
+    JLabel valueLabel = new JLabel();
+    //valueLabel.setText("Subject");
+    valueLabel.setText("  ");
+    queryTermPanel.add(valueLabel);
+    valueLabel.setForeground(java.awt.Color.black);
+    valueLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    textValueBox.setColumns(20);
+    queryTermPanel.add(textValueBox);
+    setChoicesPanel.add(queryTermPanel);
+    setChoicesPanel.add(Box.createVerticalGlue());
+    setChoicesPanel.add(Box.createRigidArea(new Dimension(8, 8)));
+    //}}
+    searchModeComboBox.addItem("contains");
+    searchModeComboBox.addItem("starts-with");
+    searchModeComboBox.addItem("ends-with");
+    searchModeComboBox.addItem("matches-exactly");
+    searchModeComboBox.setSelectedIndex(0);
 
-	//{{DECLARE_CONTROLS
-	javax.swing.JPanel SetChoicesPanel = new javax.swing.JPanel();
-	javax.swing.JPanel QueryTermPanel = new javax.swing.JPanel();
-	javax.swing.JCheckBox TitleCheckBox = new javax.swing.JCheckBox();
-	javax.swing.JCheckBox AbstractCheckBox = new javax.swing.JCheckBox();
-	javax.swing.JCheckBox KeyWordsCheckBox = new javax.swing.JCheckBox();
-	javax.swing.JCheckBox AllCheckBox = new javax.swing.JCheckBox();
-	javax.swing.JComboBox QueryTypeComboBox = new javax.swing.JComboBox();
-	javax.swing.JLabel TextLabel = new javax.swing.JLabel();
-	javax.swing.JTextField TextValueBox = new javax.swing.JTextField();
-	javax.swing.JPanel QueryTermHelpPanel = new javax.swing.JPanel();
-	javax.swing.JLabel HelpLabel = new javax.swing.JLabel();
-	//}}
+    setChoicesPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-	/**
-	 * for testing
-	 * 
-	 * @param argv
-	 */
-	public static void main(String argv[])
-	{
-		class DriverFrame extends java.awt.Frame
-		{
-			public DriverFrame()
-			{
-				addWindowListener(new java.awt.event.WindowAdapter()
-				{
-					public void windowClosing(java.awt.event.WindowEvent event)
-					{
-						dispose();	  // free the system resources
-						System.exit(0); // close the application
-					}
-				});
-				setLayout(null);
-				setSize(400,300);
-				add(new TextQueryTermPanel());
-			}
-		}
-
-		new DriverFrame().show();
-	}
+    //{{REGISTER_LISTENERS
+    SymItem lSymItem = new SymItem();
+    allCheckBox.addItemListener(lSymItem);
+    //}}
+  }
 
   /**
    * get the text that is to be seached for.
    */
-  public String getValue() {
-    String ret = TextValueBox.getText();
-    return ret;
+  public String getValue()
+  {
+    String ret = textValueBox.getText();
+      return ret;
   }
-  
+
   /**
    * set the text that is to be seached for.
    */
-  public void setValue(String value) {
-    TextValueBox.setText(value);
+  public void setValue(String value)
+  {
+    textValueBox.setText(value);
   }
 
   /**
    * return the value of the combobox which contains the
    * search mode (i.e. contains, starts-with, etc.)
    */
-   public String getSearchMode() {
-      String ret = (String)QueryTypeComboBox.getSelectedItem();
-   return ret;
-   }
-  
+  public String getSearchMode()
+  {
+    String ret = (String) searchModeComboBox.getSelectedItem();
+      return ret;
+  }
+
   /**
    * set the search mode field
    */
-  public void setSearchMode(String value) {
-    for (int i = 0; i < QueryTypeComboBox.getItemCount(); i++) {
-      if (value.equals(QueryTypeComboBox.getItemAt(i))) {
-        QueryTypeComboBox.setSelectedIndex(i);
+  public void setSearchMode(String value)
+  {
+    for (int i = 0; i < searchModeComboBox.getItemCount(); i++)
+    {
+      if (value.equals(searchModeComboBox.getItemAt(i)))
+      {
+        searchModeComboBox.setSelectedIndex(i);
       }
     }
   }
 
-  /*
+  /**
    * get state of 'All' check box
    */
-  public boolean getAllState() {
-    return AllCheckBox.isSelected();
+  public boolean getAllState()
+  {
+    return allCheckBox.isSelected();
   }
- 
-  /*
+
+  /**
    * set state of 'All' check box
    */
-  public void setAllState(boolean state) {
-    AllCheckBox.setSelected(state);
+  public void setAllState(boolean state)
+  {
+    allCheckBox.setSelected(state);
   }
- 
+
   /**
    * returns state of Title checkbox
    */
-  public boolean getTitleState() {
-     return TitleCheckBox.isSelected();
+  public boolean getTitleState()
+  {
+    return titleCheckBox.isSelected();
   }
 
-  /*
+  /**
    * set state of Title check box
    */
-  public void setTitleState(boolean state) {
-    TitleCheckBox.setSelected(state);
+  public void setTitleState(boolean state)
+  {
+    titleCheckBox.setSelected(state);
   }
- 
+
   /**
    * returns state of Abstract checkbox
    */
-  public boolean getAbstractState() {
-    return AbstractCheckBox.isSelected();
+  public boolean getAbstractState()
+  {
+    return abstractCheckBox.isSelected();
   }
 
-  /*
+  /**
    * set state of Abstract check box
    */
-  public void setAbstractState(boolean state) {
-    AbstractCheckBox.setSelected(state);
+  public void setAbstractState(boolean state)
+  {
+    abstractCheckBox.setSelected(state);
   }
- 
+
    /**
     * returns state of Keywords check box
     */
-   public boolean getKeyWordsState() {
-     return KeyWordsCheckBox.isSelected();
-   }
-
-  /*
-   * set state of KeyWords check box
-   */
-  public void setKeyWordsState(boolean state) {
-    KeyWordsCheckBox.setSelected(state);
+  public boolean getKeywordsState()
+  {
+    return keywordsCheckBox.isSelected();
   }
- 
-	class SymItem implements java.awt.event.ItemListener
-	{
-		public void itemStateChanged(java.awt.event.ItemEvent event)
-		{
-			Object object = event.getSource();
-			if (object == AllCheckBox)
-				AllCheckBox_itemStateChanged(event);
-		}
-	}
 
-	/**
-	 * used to change the enabled state of checkbox
-	 * 
-	 * @param event
-	 */
-	void AllCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
-	{
-		if (AllCheckBox.isSelected()) {
-		  TitleCheckBox.setEnabled(false);
-		  AbstractCheckBox.setEnabled(false);
-		  KeyWordsCheckBox.setEnabled(false);
-		}
-		else {
-		  TitleCheckBox.setEnabled(true);
-		  AbstractCheckBox.setEnabled(true);
-		  KeyWordsCheckBox.setEnabled(true);
-		}
-	}
-	
-	
+  /**
+   * set state of Keywords check box
+   */
+  public void setKeywordsState(boolean state)
+  {
+    keywordsCheckBox.setSelected(state);
+  }
+
+  class SymItem implements java.awt.event.ItemListener
+  {
+    public void itemStateChanged(java.awt.event.ItemEvent event)
+    {
+      Object object = event.getSource();
+      if (object == allCheckBox) {
+        allCheckBox_itemStateChanged(event);
+      }
+    }
+  }
+
+  /**
+   * used to change the enabled state of checkbox
+   * 
+   * @param event
+   */
+  void allCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+  {
+    if (allCheckBox.isSelected()) {
+      titleCheckBox.setEnabled(false);
+      abstractCheckBox.setEnabled(false);
+      keywordsCheckBox.setEnabled(false);
+    } else {
+      titleCheckBox.setEnabled(true);
+      abstractCheckBox.setEnabled(true);
+      keywordsCheckBox.setEnabled(true);
+    }
+  }
 }
