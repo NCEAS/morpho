@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-23 05:24:31 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-09-23 23:33:35 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,7 @@ public class DataPackageFactory
    Log.debug(1, "entity 0;attribute0 name: "+dp.getAttributeName(0,0));
    Log.debug(1, "entity 0;attribute1 name: "+dp.getAttributeName(0,1));
    Log.debug(1, "entity 0;physical0 name: "+dp.getPhysicalName(0,0));
+   Log.debug(1, "entity 0;physical0 name: "+dp.getPhysicalFormat(0,0));
    
     return dp;    
   }

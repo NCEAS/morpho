@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-23 05:24:31 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-23 23:33:35 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
+import org.apache.xpath.objects.XObject;
 
 import edu.ucsb.nceas.utilities.*;
 
@@ -355,6 +356,45 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(4,"exception in getting physical objectName description"+w.toString());
     }
     return temp;
+  }
+  
+  public String getPhysicalFormat(int entityIndex, int physicalIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return "no physicals!";
+    if (physicalIndex>(physicals.length-1)) return "physical index too large!";
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      // first see if the format is text
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/isText")).getNodeValue();
+      boolean isText = XMLUtilities.isXPathEvalABoolean(physical, physXpath);
+      if (isText) {
+        XObject xobj = XPathAPI.eval(physical, physXpath);
+        boolean val = xobj.bool();
+        if (val){
+          return "text";
+        } else return "NOT Text";
+      }
+      else {
+        // not text, try another xpath
+        physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/format")).getNodeValue();
+        NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+        if (aNodes==null) return "aNodes is null !";
+        Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+        temp = child.getNodeValue();
+      }
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting physical objectName description"+w.toString());
+    }
+    return temp;
+    
   }
   
 }
