@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 00:04:40 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-29 00:53:42 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,14 @@
  */
 
 package edu.ucsb.nceas.morpho.query;
+
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import javax.swing.JDialog;
@@ -49,23 +54,12 @@ public class OpenPackageCommand implements Command
    
   /**
    * Constructor of SearcCommand
-   * @param myResultPanel the result panel which the openpackage 
+   * @param dialog the open dialog where the open package command happend  
    */
-  public OpenPackageCommand(ResultPanel myResultPanel)
+  public OpenPackageCommand(OpenDialogBox dialog)
   {
-    resultPanel = myResultPanel;
-    open = resultPanel.getDialog();
-    // if Resulpanel's parent is morphoframe, frame value will be set the parent
-    // of resultpanel
-    if ( open == null)
-    {
-      frame = UIController.getInstance().getCurrentActiveWindow();
-    }
-    else
-    {
-      //ResultPanel is in oepn dialog box, frame will be the parent of dialog 
-      frame =open.getParentFrame();
-    }
+    open = dialog;
+   
   }//OpenPackageCommand
   
   
@@ -74,8 +68,50 @@ public class OpenPackageCommand implements Command
    */    
   public void execute()
   {
-     doOpenPackage(resultPanel,frame, open);
-     open = null;
+    // if Resulpanel's parent is morphoframe, frame value will be set the parent
+    // of resultpanel
+    if ( open == null)
+    {
+      frame = UIController.getInstance().getCurrentActiveWindow();
+      resultPanel = RefreshCommand.getResultPanelFromMorphoFrame(frame);
+    }
+    else
+    {
+      //ResultPanel is in oepn dialog box, frame will be the parent of dialog 
+      frame = open.getParentFrame();
+      resultPanel = open.getResultPanel();
+    }
+      
+    if (resultPanel != null)
+    {
+      String selectDocId = resultPanel.getSelectedId();
+      boolean metacatLoc = resultPanel.getMetacatLocation();
+      boolean localLoc = resultPanel.getLocalLocation();
+      String location = null;
+      if(metacatLoc && localLoc)
+      {
+        location = DataPackageInterface.BOTH;
+      }
+      else if(metacatLoc && !localLoc)
+      {
+        location = DataPackageInterface.METACAT;
+      }
+      else if(!metacatLoc && localLoc)
+      {
+        location = DataPackageInterface.LOCAL;
+      }
+      
+      // close the openDialogBox
+      if ( open != null)
+      {
+        open.setVisible(false);
+        open.dispose();
+        open = null;
+      }
+      // Open the pakcage
+      doOpenPackage(selectDocId, location, frame);
+     
+    }
     
   }//execute
 
@@ -83,32 +119,40 @@ public class OpenPackageCommand implements Command
    * Using SwingWorket class to open a package
    *
    */
-  private void doOpenPackage(final ResultPanel results, 
-        final MorphoFrame morphoFrame, final OpenDialogBox box)
+  private void doOpenPackage(final String docid, final String location,  
+                                                final MorphoFrame morphoFrame)
   {
     final SwingWorker worker = new SwingWorker()
     {
       public Object construct()
       {
         morphoFrame.setBusy(true);
-        resultPanel.doOpenDataPackage();
+        try 
+        {
+          ServiceController services = ServiceController.getInstance();
+          ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+          DataPackageInterface dataPackage = (DataPackageInterface)provider;
+          dataPackage.openDataPackage(location, docid, null);
+        }
+        catch (ServiceNotHandledException snhe) 
+        {
+          Log.debug(6, snhe.getMessage());
+        }
         return null;
       }//constructor
       
       public void finished()
       {
-         // close the openDialogBox
-        if ( box!= null)
-        {
-          box.setVisible(false);
-          box.dispose();
-        }
         morphoFrame.setBusy(false);
       }//finish
     };//final
     worker.start();
     
   }//doOpenPakcage
+  
+  
+    
    /**
     * could also have undo functionality; disabled for now
    */ 
