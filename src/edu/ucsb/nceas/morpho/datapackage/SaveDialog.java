@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-12 20:19:46 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-04-13 21:23:16 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -332,15 +332,22 @@ public class SaveDialog extends JDialog
 			  String errormsg = mue.getMessage();
 				if (errormsg.indexOf("ERROR SAVING DATA TO METACAT")>-1) {
 					// error in saving data file
+			  Log.debug(5, "Problem Saving Data to Metacat");
 				}
 				else if (errormsg.indexOf("is already in use")>-1) {
 					// metadata insert error
+			  Log.debug(5, "Problem Saving Data: Id already in use");
 				}
 				else if (errormsg.indexOf("Document not found for Accession number")>-1) {
 					// error in updating data file
+			  Log.debug(5, "Problem Saving Data: Document not found for Accession number");
 				}
+        else if (errormsg.indexOf("Invalid content")>-1) {
+          // validation error
+			  Log.debug(5, "Problem Saving Data due to invalid content");
+        }
 					
-			  Log.debug(5, "Problem Saving\n"+mue.getMessage());
+			  Log.debug(20, "Problem Saving\n"+mue.getMessage());
 				problem = true;
 		}
 		
