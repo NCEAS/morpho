@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 01:52:13 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-18 01:26:21 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
@@ -62,13 +64,17 @@ import java.awt.event.ItemListener;
 
 class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 
-  private JLabel     unitPickListLabel;
+  private JLabel     unitsPickListLabel;
   private JLabel     precisionLabel;
+  private JLabel     numberTypeLabel;
+  
   private JTextField precisionField;
-  private JTextField textSourceField;
-  private CustomList textPatternsList;
+  private JComboBox  numberTypePickList;
   
   private AttributeDialog attributeDialog;
+  
+  private String[] numberTypesArray = new String[] { "natural", "whole",
+                                                     "integer", "real" };
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -102,35 +108,17 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     this.setPreferredSize(dims);
     this.setMaximumSize(dims);
     
-    ItemListener listener = new ItemListener() {
-        
-          public void itemStateChanged(ItemEvent e) {
-
-            String value = e.getItem().toString();
-            Log.debug(45, "PickList state changed: " +value);
-            
-          }
-        };
-
-
     ////////////////////////
-    JComboBox unitPickList = new JComboBox(unitPicklistVals);
+    UnitsPickList unitsPickList = new UnitsPickList();
     
-    unitPickList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    unitPickList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
-    unitPickList.addItemListener(listener);
-    unitPickList.setEditable(false);
-    unitPickList.setSelectedIndex(0);
-
     JPanel pickListPanel = WidgetFactory.makePanel();
-    unitPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true);
-    pickListPanel.add(unitPickListLabel);
-    pickListPanel.add(unitPickList);
+    unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true);
+    pickListPanel.add(unitsPickListLabel);
+    pickListPanel.add(unitsPickList);
  
     JPanel pickListGrid = new JPanel(new GridLayout(1,2));
     pickListGrid.add(pickListPanel);
-    pickListGrid.add(WidgetFactory.makeHTMLLabel(
-        "<font color=\"#666666\"> </font>", 1) );
+    pickListGrid.add(WidgetFactory.makeDefaultSpacer() );
 
     this.add(WidgetFactory.makeDefaultSpacer());
     this.add(pickListGrid);
@@ -154,22 +142,46 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     this.add(precisionGrid);
   
     ////////////////////////
+    
+    ItemListener listener = new ItemListener() {
+        
+          public void itemStateChanged(ItemEvent e) {
+
+            String value = e.getItem().toString();
+            Log.debug(45, "numberTypePickList state changed: " +value);
+            
+          }
+        };
+
+    numberTypePickList = WidgetFactory.makePickList(numberTypesArray, 
+                                                    false, 0, listener);
+    
+    JPanel numberTypePanel = WidgetFactory.makePanel();
+    numberTypeLabel    = WidgetFactory.makeLabel("Number Type:", true);
+    numberTypePanel.add(numberTypeLabel);
+    numberTypePanel.add(numberTypePickList);
+
+    JPanel numberTypeGrid = new JPanel(new GridLayout(1,2));
+    numberTypeGrid.add(numberTypePanel);
+    numberTypeGrid.add(WidgetFactory.makeHTMLLabel(
+        "<font color=\"#666666\">e.g: for an attribute with unit \"meter\", "
+        +"a precision of \"0.1\" would be interpreted as precise to the "
+        +"nearest 1/10th of a meter</font>", 2) );
+
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(numberTypeGrid);
   
+    ////////////////////////
+    
   }
   
  
-
-    
-  
-  
   private static Component makeHalfSpacer() {
     
     return Box.createRigidArea(new Dimension(
                     WizardSettings.DEFAULT_SPACER_DIMS.width/2,
                     WizardSettings.DEFAULT_SPACER_DIMS.height/2));
   }
-
-  
   
 
   /** 
@@ -294,200 +306,168 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 //    }
     return returnMap;
   }
+}
+
+
+
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+
+/**
+ *  Custom widget comprising two JComboBoxes side-by-side. Selecting a unitType 
+ *  in the first combo box will cause the second box to be populated with units 
+ *  of that unitType
+ */
+
+class UnitsPickList extends JPanel {
+
+
+  private final JComboBox unitTypesList = new JComboBox();
+  private final JComboBox unitsList     = new JComboBox();
+
+  public UnitsPickList() {
   
-  private final String[] unitPicklistVals
-                  = { "dimensionless",
-                      "second",
-                      "meter",
-                      "kilogram",
-                      "kelvin",
-                      "coulomb",
-                      "ampere",
-                      "mole",
-                      "candela",
-                      "number",
-                      "cubicMeter",
-                      "nominalMinute",
-                      "nominalHour",
-                      "nominalDay",
-                      "nominalWeek",
-                      "nominalYear",
-                      "nominalLeapYear",
-                      "nanogram",
-                      "microgram",
-                      "milligram",
-                      "centigram",
-                      "decigram",
-                      "gram",
-                      "dekagram",
-                      "hectogram",
-                      "megagram",
-                      "tonne",
-                      "pound",
-                      "ton",
-                      "celsius",
-                      "fahrenheit",
-                      "nanometer",
-                      "micrometer",
-                      "micron",
-                      "millimeter",
-                      "centimeter",
-                      "decimeter",
-                      "dekameter",
-                      "hectometer",
-                      "kilometer",
-                      "megameter",
-                      "angstrom",
-                      "inch",
-                      "Foot_US",
-                      "foot",
-                      "Foot_Gold_Coast",
-                      "fathom",
-                      "nauticalMile",
-                      "yard",
-                      "Yard_Indian",
-                      "Link_Clarke",
-                      "Yard_Sears",
-                      "mile",
-                      "nanosecond",
-                      "microsecond",
-                      "millisecond",
-                      "centisecond",
-                      "decisecond",
-                      "dekasecond",
-                      "hectosecond",
-                      "kilosecond",
-                      "megasecond",
-                      "minute",
-                      "hour",
-                      "kiloliter",
-                      "microliter",
-                      "milliliter",
-                      "liter",
-                      "gallon",
-                      "quart",
-                      "bushel",
-                      "cubicInch",
-                      "pint",
-                      "radian",
-                      "degree",
-                      "grad",
-                      "megahertz",
-                      "kilohertz",
-                      "hertz",
-                      "millihertz",
-                      "newton",
-                      "joule",
-                      "calorie",
-                      "britishThermalUnit",
-                      "footPound",
-                      "lumen",
-                      "lux",
-                      "becquerel",
-                      "gray",
-                      "sievert",
-                      "katal",
-                      "henry",
-                      "megawatt",
-                      "kilowatt",
-                      "watt",
-                      "milliwatt",
-                      "megavolt",
-                      "kilovolt",
-                      "volt",
-                      "millivolt",
-                      "farad",
-                      "ohm",
-                      "ohmMeter",
-                      "siemen",
-                      "weber",
-                      "tesla",
-                      "pascal",
-                      "megapascal",
-                      "kilopascal",
-                      "atmosphere",
-                      "bar",
-                      "millibar",
-                      "kilogramsPerSquareMeter",
-                      "gramsPerSquareMeter",
-                      "milligramsPerSquareMeter",
-                      "kilogramsPerHectare",
-                      "tonnePerHectare",
-                      "poundsPerSquareInch",
-                      "kilogramPerCubicMeter",
-                      "milliGramsPerMilliLiter",
-                      "gramsPerLiter",
-                      "milligramsPerCubicMeter",
-                      "microgramsPerLiter",
-                      "milligramsPerLiter",
-                      "gramsPerCubicCentimeter",
-                      "gramsPerMilliliter",
-                      "gramsPerLiterPerDay",
-                      "litersPerSecond",
-                      "cubicMetersPerSecond",
-                      "cubicFeetPerSecond",
-                      "squareMeter",
-                      "are",
-                      "hectare",
-                      "squareKilometers",
-                      "squareMillimeters",
-                      "squareCentimeters",
-                      "acre",
-                      "squareFoot",
-                      "squareYard",
-                      "squareMile",
-                      "litersPerSquareMeter",
-                      "bushelsPerAcre",
-                      "litersPerHectare",
-                      "squareMeterPerKilogram",
-                      "metersPerSecond",
-                      "metersPerDay",
-                      "feetPerDay",
-                      "feetPerSecond",
-                      "feetPerHour",
-                      "yardsPerSecond",
-                      "milesPerHour",
-                      "milesPerSecond",
-                      "milesPerMinute",
-                      "centimetersPerSecond",
-                      "millimetersPerSecond",
-                      "centimeterPerYear",
-                      "knots",
-                      "kilometersPerHour",
-                      "metersPerSecondSquared",
-                      "waveNumber",
-                      "cubicMeterPerKilogram",
-                      "cubicMicrometersPerGram",
-                      "amperePerSquareMeter",
-                      "amperePerMeter",
-                      "molePerCubicMeter",
-                      "molarity",
-                      "molality",
-                      "candelaPerSquareMeter",
-                      "metersSquaredPerSecond",
-                      "metersSquaredPerDay",
-                      "feetSquaredPerDay",
-                      "kilogramsPerMeterSquaredPerSecond",
-                      "gramsPerCentimeterSquaredPerSecond",
-                      "gramsPerMeterSquaredPerYear",
-                      "gramsPerHectarePerDay",
-                      "kilogramsPerHectarePerYear",
-                      "kilogramsPerMeterSquaredPerYear",
-                      "molesPerKilogram",
-                      "molesPerGram",
-                      "millimolesPerGram",
-                      "molesPerKilogramPerSecond",
-                      "nanomolesPerGramPerSecond",
-                      "kilogramsPerSecond",
-                      "tonnesPerYear",
-                      "gramsPerYear",
-                      "numberPerMeterSquared",
-                      "numberPerKilometerSquared",
-                      "numberPerMeterCubed",
-                      "metersPerGram",
-                      "numberPerGram",
-                      "gramsPerGram",
-                      "microgramsPerGram",
-                      "cubicCentimetersPerCubicCentimeters" };
+    init();
+  }
   
+  
+  private void init() {
+  
+    unitTypesList.setModel(new DefaultComboBoxModel(getUnitTypesArray()));
+    
+    unitTypesList.addItemListener(
+      new ItemListener() {
+    
+        public void itemStateChanged(ItemEvent e) {
+
+          String value = e.getItem().toString();
+          Log.debug(45, "unitTypesList state changed: " +value);
+          unitsList.setModel(
+                        ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
+          unitsList.setSelectedIndex(0);
+        }
+      });
+      
+    setUI(unitTypesList);
+    unitTypesList.setSelectedIndex(0);
+    
+    unitsList.addItemListener(
+      new ItemListener() {
+    
+        public void itemStateChanged(ItemEvent e) {
+
+          String value = e.getItem().toString();
+          Log.debug(45, "unitsList state changed: " +value);
+          
+        }
+      });
+    setUI(unitsList);
+    
+    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    this.add(unitTypesList);
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(unitsList);
+  }
+  
+  public String getSelectedUnit() {
+  
+    return unitsList.getSelectedItem().toString();
+  }
+  
+  
+  private UnitTypesListItem[] getUnitTypesArray() {
+  
+    String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
+    int totUnitTypes = unitTypesArray.length;
+    UnitTypesListItem[] listItemsArray = new UnitTypesListItem[totUnitTypes + 1];
+    
+    String[] unitsOfThisType = null;
+    
+    listItemsArray[0] = new UnitTypesListItem("- Select a Unit Type -", 
+                                              new String[] {""});
+
+    for (int i=0; i < totUnitTypes; i++) {
+    
+      unitsOfThisType 
+              = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
+              
+      listItemsArray[i + 1] = new UnitTypesListItem(  unitTypesArray[i], 
+                                                      unitsOfThisType);
+    }
+    return listItemsArray;
+  }
+  
+  
+  private void setUI(JComboBox list) {
+  
+    list.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    list.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    list.setEditable(false);
+  }
+}
+
+//******************************************************************************
+//******************************************************************************
+//******************************************************************************
+
+
+/**
+ *  container class to hold an array of units of a single unit type (as listed 
+ *  in the eml unit dictionary). Has a toString() method that returns an 
+ *  appropriate entry for the drop-down list.
+ */
+class UnitTypesListItem  {
+
+  private ComboBoxModel model;
+  private String        unitType;
+  private String        unitTypeDisplayString;
+  
+  public UnitTypesListItem(String unitType, String[] unitsOfThisType) { 
+  
+    this.unitType = unitType;
+    unitTypeDisplayString = getUnitTypeDisplayString();
+    model = new DefaultComboBoxModel(unitsOfThisType);
+  }
+
+  public ComboBoxModel getComboBoxModel()   { return this.model;   }
+
+  public String toString() { return unitTypeDisplayString; }
+  
+  
+  private String getUnitTypeDisplayString() {
+  
+    if (unitType==null || unitType.trim().equals("")) return "";
+
+    StringBuffer buff = new StringBuffer();
+    
+    final char SPACE = ' ';
+    
+    int length = unitType.length();
+    
+    char[] originalUnitTypeChars      = new char[length];
+    unitType.getChars(0, length, originalUnitTypeChars, 0);
+
+    char[] upperCaseUnitTypeChars = new char[length];
+    unitType.toUpperCase().getChars(0, length, upperCaseUnitTypeChars, 0);
+    
+    //make first char uppercase:
+    buff.append(upperCaseUnitTypeChars[0]);
+    
+    for (int i=1; i<length; i++) {
+
+      //if it's an uppercase letter, add a space before it:
+      if (originalUnitTypeChars[i]==upperCaseUnitTypeChars[i]) {
+      
+        buff.append(SPACE);
+      }
+      buff.append(originalUnitTypeChars[i]);
+    }
+    Log.debug(45, "initStringRepresentation() created: "+buff.toString()
+                                                    +" from: "+unitType);
+    return buff.toString();
+  }
 }

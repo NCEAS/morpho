@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 00:35:44 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-09-18 01:26:21 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.utilities.IOUtil;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComponent;
@@ -35,6 +37,8 @@ import javax.swing.JComponent;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Font;
+
+import java.io.Reader;
 
 /**
  *  WizardSettings
@@ -46,6 +50,10 @@ public class WizardSettings {
   
   private static String summaryText;
   private static String dataLocation;
+
+  
+  private static final String EML_UNIT_DICTIONARY_PATH 
+                                                = "/xsl/eml-unitDictionary.xml";
 
   protected static final int WIZARD_X_COORD = 100;
 
@@ -220,5 +228,228 @@ public class WizardSettings {
    */
   public static String getDataLocation() { return dataLocation; }
   
+  
+  /**
+   *  from the eml unit dictionary, gets all the unitTypes (both fundamental 
+   *  and derived) 
+   *
+   *  @return String array containing all the unitTypes in the unitdictionary
+   */
+  public static String[] getUnitDictionaryUnitTypes() { 
+  
+    Reader reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
+    
+    return new String[] {"testUnitType1", "testUnitType2", "testUnitType3"};
+  }
+
+  /**
+   *  from the eml unit dictionary, gets all the units of the given unitType 
+   *
+   *  @param  UnitType the String representation of the unitType to look for
+   *
+   *  @return String array containing all the units in the unitdictionary that 
+   *          have the given unitType
+   */
+  public static String[] getUnitDictionaryUnitsOfType(String UnitType) { 
+  
+    return new String[] { UnitType+"_testUnit1", 
+                          UnitType+"_testUnit2", UnitType+"_testUnit3"};
+  }
+  
+//  private final String[] unitPicklistVals
+//                  = { "dimensionless",
+//                      "second",
+//                      "meter",
+//                      "kilogram",
+//                      "kelvin",
+//                      "coulomb",
+//                      "ampere",
+//                      "mole",
+//                      "candela",
+//                      "number",
+//                      "cubicMeter",
+//                      "nominalMinute",
+//                      "nominalHour",
+//                      "nominalDay",
+//                      "nominalWeek",
+//                      "nominalYear",
+//                      "nominalLeapYear",
+//                      "nanogram",
+//                      "microgram",
+//                      "milligram",
+//                      "centigram",
+//                      "decigram",
+//                      "gram",
+//                      "dekagram",
+//                      "hectogram",
+//                      "megagram",
+//                      "tonne",
+//                      "pound",
+//                      "ton",
+//                      "celsius",
+//                      "fahrenheit",
+//                      "nanometer",
+//                      "micrometer",
+//                      "micron",
+//                      "millimeter",
+//                      "centimeter",
+//                      "decimeter",
+//                      "dekameter",
+//                      "hectometer",
+//                      "kilometer",
+//                      "megameter",
+//                      "angstrom",
+//                      "inch",
+//                      "Foot_US",
+//                      "foot",
+//                      "Foot_Gold_Coast",
+//                      "fathom",
+//                      "nauticalMile",
+//                      "yard",
+//                      "Yard_Indian",
+//                      "Link_Clarke",
+//                      "Yard_Sears",
+//                      "mile",
+//                      "nanosecond",
+//                      "microsecond",
+//                      "millisecond",
+//                      "centisecond",
+//                      "decisecond",
+//                      "dekasecond",
+//                      "hectosecond",
+//                      "kilosecond",
+//                      "megasecond",
+//                      "minute",
+//                      "hour",
+//                      "kiloliter",
+//                      "microliter",
+//                      "milliliter",
+//                      "liter",
+//                      "gallon",
+//                      "quart",
+//                      "bushel",
+//                      "cubicInch",
+//                      "pint",
+//                      "radian",
+//                      "degree",
+//                      "grad",
+//                      "megahertz",
+//                      "kilohertz",
+//                      "hertz",
+//                      "millihertz",
+//                      "newton",
+//                      "joule",
+//                      "calorie",
+//                      "britishThermalUnit",
+//                      "footPound",
+//                      "lumen",
+//                      "lux",
+//                      "becquerel",
+//                      "gray",
+//                      "sievert",
+//                      "katal",
+//                      "henry",
+//                      "megawatt",
+//                      "kilowatt",
+//                      "watt",
+//                      "milliwatt",
+//                      "megavolt",
+//                      "kilovolt",
+//                      "volt",
+//                      "millivolt",
+//                      "farad",
+//                      "ohm",
+//                      "ohmMeter",
+//                      "siemen",
+//                      "weber",
+//                      "tesla",
+//                      "pascal",
+//                      "megapascal",
+//                      "kilopascal",
+//                      "atmosphere",
+//                      "bar",
+//                      "millibar",
+//                      "kilogramsPerSquareMeter",
+//                      "gramsPerSquareMeter",
+//                      "milligramsPerSquareMeter",
+//                      "kilogramsPerHectare",
+//                      "tonnePerHectare",
+//                      "poundsPerSquareInch",
+//                      "kilogramPerCubicMeter",
+//                      "milliGramsPerMilliLiter",
+//                      "gramsPerLiter",
+//                      "milligramsPerCubicMeter",
+//                      "microgramsPerLiter",
+//                      "milligramsPerLiter",
+//                      "gramsPerCubicCentimeter",
+//                      "gramsPerMilliliter",
+//                      "gramsPerLiterPerDay",
+//                      "litersPerSecond",
+//                      "cubicMetersPerSecond",
+//                      "cubicFeetPerSecond",
+//                      "squareMeter",
+//                      "are",
+//                      "hectare",
+//                      "squareKilometers",
+//                      "squareMillimeters",
+//                      "squareCentimeters",
+//                      "acre",
+//                      "squareFoot",
+//                      "squareYard",
+//                      "squareMile",
+//                      "litersPerSquareMeter",
+//                      "bushelsPerAcre",
+//                      "litersPerHectare",
+//                      "squareMeterPerKilogram",
+//                      "metersPerSecond",
+//                      "metersPerDay",
+//                      "feetPerDay",
+//                      "feetPerSecond",
+//                      "feetPerHour",
+//                      "yardsPerSecond",
+//                      "milesPerHour",
+//                      "milesPerSecond",
+//                      "milesPerMinute",
+//                      "centimetersPerSecond",
+//                      "millimetersPerSecond",
+//                      "centimeterPerYear",
+//                      "knots",
+//                      "kilometersPerHour",
+//                      "metersPerSecondSquared",
+//                      "waveNumber",
+//                      "cubicMeterPerKilogram",
+//                      "cubicMicrometersPerGram",
+//                      "amperePerSquareMeter",
+//                      "amperePerMeter",
+//                      "molePerCubicMeter",
+//                      "molarity",
+//                      "molality",
+//                      "candelaPerSquareMeter",
+//                      "metersSquaredPerSecond",
+//                      "metersSquaredPerDay",
+//                      "feetSquaredPerDay",
+//                      "kilogramsPerMeterSquaredPerSecond",
+//                      "gramsPerCentimeterSquaredPerSecond",
+//                      "gramsPerMeterSquaredPerYear",
+//                      "gramsPerHectarePerDay",
+//                      "kilogramsPerHectarePerYear",
+//                      "kilogramsPerMeterSquaredPerYear",
+//                      "molesPerKilogram",
+//                      "molesPerGram",
+//                      "millimolesPerGram",
+//                      "molesPerKilogramPerSecond",
+//                      "nanomolesPerGramPerSecond",
+//                      "kilogramsPerSecond",
+//                      "tonnesPerYear",
+//                      "gramsPerYear",
+//                      "numberPerMeterSquared",
+//                      "numberPerKilometerSquared",
+//                      "numberPerMeterCubed",
+//                      "metersPerGram",
+//                      "numberPerGram",
+//                      "gramsPerGram",
+//                      "microgramsPerGram",
+//                      "cubicCentimetersPerCubicCentimeters" };
+//  
 }
 
