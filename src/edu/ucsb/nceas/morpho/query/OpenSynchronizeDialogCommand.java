@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-02 20:33:32 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-26 21:50:07 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,6 +130,10 @@ public class OpenSynchronizeDialogCommand implements Command
     if ( selectDocId != null && !selectDocId.equals("") && 
                                                       !(inLocal && inNetwork))
     {
+      if ((!inLocal) && (!inNetwork)) {
+        Log.debug(1, "Cannot synchronize unsaved package!");
+        return;
+      }
         // Show synchronize dialog
         SynchronizeDialog synchronizeDialog = null;
         if (parentIsOpenDialog)
