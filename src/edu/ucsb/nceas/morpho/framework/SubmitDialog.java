@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.9 2000-12-22 00:13:45 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.10 2000-12-29 19:56:35 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -788,6 +788,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 
    public void startDocument() throws SAXException { 
      elementStack = new Stack();
+     writeSucceeded = false;
    }
 
    public void endDocument() throws SAXException { }
@@ -808,7 +809,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	    else {
 	        String indocid = getdocid();
 	        if (indocid==null) {
-	            JOptionPane.showMessageDialog(this,"Both global and local id parameters must be present!");
+	            JOptionPane.showMessageDialog(this,"ID parameters must be present!");
 	        }
 	        else {
 	            try {
