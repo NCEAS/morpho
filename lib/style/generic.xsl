@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-09-06 21:03:48 $'
-  * '$Revision: 1.2 $'
+  *     '$Date: 2002-09-17 21:59:15 $'
+  * '$Revision: 1.3 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,15 @@
   * suitable for rendering with modern web browsers.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:import href="eml-settings-2.0.0beta6.xsl" />
 
   <xsl:output method="html" encoding="iso-8859-1"/>
   
   <xsl:template match="/">
     <html>
       <head>
+        <link rel="stylesheet" type="text/css" 
+              href="{$stylePath}/{$qformat}.css" />
       </head>
       <body>
         <center>

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-16 22:34:07 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-09-17 21:59:15 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -567,6 +567,7 @@ public class XMLTransformer
                                                         +" and base="+base);
             resolution.delete(0,resolution.length());
             resolution.append(STYLESHEET_LOCATION);
+            resolution.append("/");
             resolution.append(href);
 
             InputStream stream 

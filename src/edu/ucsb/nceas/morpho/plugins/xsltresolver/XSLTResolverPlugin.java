@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-17 21:27:26 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-17 21:59:15 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,13 @@
 
 package edu.ucsb.nceas.morpho.plugins.xsltresolver;
 
-import edu.ucsb.nceas.morpho.Morpho;
+import java.io.Reader;
+import java.io.InputStreamReader;
 
+import java.util.Vector;
+import java.util.Hashtable;
+
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 import edu.ucsb.nceas.morpho.plugins.XSLTResolverInterface;
@@ -39,8 +44,6 @@ import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
-import java.io.Reader;
-import java.io.InputStreamReader;
 
 
 /**
@@ -53,17 +56,24 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
 
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
     private final String GENERIC_STYLESHEET;
+    private final ConfigXML config;
+    private final Hashtable mappings;
 
     private final ClassLoader classLoader;
 
-    private ConfigXML config = Morpho.getConfiguration();
-        
     public XSLTResolverPlugin()
     {
         classLoader = this.getClass().getClassLoader();
+        this.config = Morpho.getConfiguration();
         GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
+        mappings = new Hashtable();
+        initMappings();
     }
     
+    private void initMappings() 
+    {
+        Vector doctypes = config.get("****");
+    }
     /**
      *  Required by PluginInterface; called automatically at runtime
      *
@@ -103,29 +113,36 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
      *
      *  @throws DocumentNotFoundException if no suitable stylesheet is available
      */
-    public Reader getXSLTStylesheetReader(String docType) 
+    public Reader getXSLTStylesheetReader(String docType)
                                               throws DocumentNotFoundException
     {
         Log.debug(50, "\nXSLTResolver got: "+docType);
-        docType = "default";
-        //H A C K ! ! ! ! !
-        //needs to be implemented properly. 
         Reader rdr = null;
+        String xslPathString = (String)mappings.get(docType);
+        if (xslPathString==null || xslPathString.trim().equals("")) {
         
-        if (docType.indexOf("entity")>0) {
-          rdr = new InputStreamReader(
-          classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
-        } else if (docType.indexOf("dataset")>0) {
-          rdr = new InputStreamReader(
-          classLoader.getResourceAsStream("style/eml-dataset-2.0.0beta6.xsl"));
-        } else if (docType.indexOf("attribute")>0) {
-          rdr = new InputStreamReader(
-          classLoader.getResourceAsStream("style/eml-attribute-2.0.0beta6.xsl"));
+            rdr =  new InputStreamReader(
+                            classLoader.getResourceAsStream(GENERIC_STYLESHEET));
+            Log.debug(50, "getXSLTStylesheetReader() failed to find valid "
+                            +"stylesheet for docType: "+docType
+                            +"\n returning default: "+GENERIC_STYLESHEET);
         } else {
-          rdr = new InputStreamReader(
-          classLoader.getResourceAsStream(GENERIC_STYLESHEET));
+            rdr =  new InputStreamReader(
+                            classLoader.getResourceAsStream(xslPathString));
+            Log.debug(50, "getXSLTStylesheetReader() found a value for the "
+                            +"stylesheet for docType: "+docType
+                            +"\n returning: "+xslPathString);
         }
-        Log.debug(50, "\nXSLTResolver returning: "+rdr);
+        Log.debug(50, "\nXSLTResolver returning Reader: "+rdr);
         return rdr;
     }
 }
+//        if (docType.indexOf("entity")>0) {
+//          rdr = new InputStreamReader(
+//          classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
+//        } else if (docType.indexOf("dataset")>0) {
+//          rdr = new InputStreamReader(
+//          classLoader.getResourceAsStream("style/eml-dataset-2.0.0beta6.xsl"));
+//        } else if (docType.indexOf("attribute")>0) {
+//          rdr = new InputStreamReader(
+//          classLoader.getResourceAsStream("style/eml-attribute-2.0.0beta6.xsl"));
