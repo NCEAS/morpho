@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.97 2004-04-15 13:17:52 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.98 2004-04-16 02:08:22 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -52,7 +52,12 @@
       <property name="build.javadocs" value="${build.dir}/docs/api"/>
       <property name="build.xsl" value="${build.dir}/xsl"/>
       <!-- don't modify this value-->
-      <property name="java.help.doc.dir" value="${build.docs}/morphohelp" />
+      <property name="java.help.doc.dir" value="./morphohelp" />
+      <property name="searchDB" value="./JavaHelpSearch"/>
+      <property name="help.system.file" value="morpho.hs"/>
+      <property name="map.file" value="Map.jhm"/>
+      <property name="help.toc" value="morphoTOC.xml"/>
+      <property name="help.index" value="morphoIndex.xml"/>
 
       <property name="dist.dir" value="./dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
@@ -199,7 +204,7 @@
 
 
    <target name="helpjar" depends="emldoc">
-     <mkdir dir="${java.help.doc.dir}" />
+      <mkdir dir="${java.help.doc.dir}" />
       <!-- copy morpho docs-->
       <copy todir="${java.help.doc.dir}" filtering="no">
         <fileset dir="${docuserdir}">
@@ -208,13 +213,18 @@
           <include name="**/*.jpg" />
           <include name="**/*.gif" />
           <include name="*.css" />
+          <exclude name="EMLHandbook.html"/>
+          <exclude name="advanced/**" />
+          <exclude name="EmlDocs/**" />
         </fileset>
       </copy>
-      <copy todir="${build.docs}" filtering="no">
+      <!-- copy help systm files -->
+      <copy todir="." filtering="no">
         <fileset dir="${docuserdir}">
-          <include name="*.xml" />
-          <include name="*.jhm" />
-          <include name="*.hs" />
+          <include name="${help.system.file}" />
+          <include name="${map.file}" />
+          <include name="${help.toc}" />
+          <include name="${help.index}"/>
         </fileset>
       </copy>
       <!-- copy eml docs-->
@@ -232,10 +242,17 @@
       <java jar="${index}" fork="true">
         <arg value="${java.help.doc.dir}"/>
       </java>
+     
+      <!-- delete help jar and create a new jar file -->
       <delete file="${libdir}/${helpjar}" />
-      <jar destfile="${libdir}/${helpjar}" basedir="${build.docs}" includes="*.xml, *.jhm, *.hs, morphohelp/**/*, JavaHelpSearch/**/*">
+      <jar destfile="${libdir}/${helpjar}" basedir="." includes="${help.system.file},${map.file}, ${help.toc}, ${help.index}, morphohelp/**/*, JavaHelpSearch/**/*">
       </jar>
-
+      <!-- clean up the current dir-->
+      <delete>
+        <fileset dir="." includes="${help.system.file},${map.file}, ${help.toc}, ${help.index}, ${java.help.doc.dir}/**/*, ${searchDB}/**/*" />
+      </delete>
+      <delete dir="${java.help.doc.dir}"/>
+      <delete dir="${searchDB}" />
    </target>
 
    <!--
