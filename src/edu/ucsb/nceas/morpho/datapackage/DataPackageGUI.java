@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-18 23:07:58 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-06-20 18:27:28 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     contentPane.setLayout(box);
     initComponents();
     pack();
-    setSize(800, 600);
+    setSize(500, 400);
   }
   
   /**
@@ -130,7 +130,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     headPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
     
     Hashtable relfiles = dataPackage.getRelatedFiles();
-    System.out.println("relfiles: " + relfiles.toString());
+
     Vector otheritems = new Vector();
     Vector dataitems = new Vector();
     Vector entityitems = new Vector();
@@ -170,20 +170,21 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
       }
     }
-    JPanel listPanel = createListPanel(dataitems, entityitems, otheritems);
+    JPanel listPanel = createListPanel(entityitems, otheritems);
     JPanel layoutPanel = new JPanel();
     layoutPanel.setLayout(new BorderLayout());
+    basicInfoPanel.setPreferredSize(new Dimension(450, 200));
     
-    layoutPanel.add(headPanel, BorderLayout.NORTH);
+    //layoutPanel.add(headPanel, BorderLayout.NORTH);
     layoutPanel.add(listPanel, BorderLayout.CENTER);
-    layoutPanel.add(basicInfoPanel, BorderLayout.WEST);
+    layoutPanel.add(basicInfoPanel, BorderLayout.NORTH);
     contentPane.add(layoutPanel);
   }
   
   private JPanel createBasicInfoPanel(String identifier, String title, 
                                       String altTitle, Vector originator)
   {
-    editBaseInfoButton = new JButton("Edit Base Info");
+    editBaseInfoButton = new JButton("Edit Basic Information");
     editBaseInfoButton.addActionListener(this);
     JPanel panel = new JPanel();
     JLabel identifierL = new JLabel("Identifier: ");
@@ -195,32 +196,56 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     
+    ImageIcon logoIcon = new ImageIcon(
+                             framework.getClass().getResource("logo-icon.gif"));
+    JLabel imageLabel = new JLabel();
+    imageLabel.setIcon(logoIcon);
+    panel.add(imageLabel);
+    
     JPanel tempPanel = new JPanel();
+    tempPanel.setBackground(Color.white);
     tempPanel.add(identifierL);
     JLabel idLabel = new JLabel(identifier);
+    idLabel.setForeground(Color.black);
     tempPanel.add(idLabel);
     panel.add(tempPanel);
     
     tempPanel = new JPanel();
+    tempPanel.setBackground(Color.white);
     tempPanel.add(titleL);
-    tempPanel.add(new JLabel(title));
+    JTextArea titleLabel = new JTextArea(title);
+    titleLabel.setPreferredSize(new Dimension(50, 20));
+    titleLabel.setLineWrap(true);
+    titleLabel.setColumns(20);
+    titleLabel.setRows(2);
+    //titleLabel.setBorder(null);
+    titleLabel.setForeground(Color.black);
+    tempPanel.add(titleLabel);
     
     panel.add(tempPanel);
     
     tempPanel = new JPanel();
+    tempPanel.setBackground(Color.white);
     tempPanel.add(altTitleL);
-    JLabel altTitleLabel = new JLabel(altTitle);
+    JTextArea altTitleLabel = new JTextArea(altTitle);
+    altTitleLabel.setLineWrap(true);
+    altTitleLabel.setBorder(null);
+    altTitleLabel.setForeground(Color.black);
     tempPanel.add(altTitleLabel);
     panel.add(tempPanel);
     
     tempPanel = new JPanel();
+    tempPanel.setBackground(Color.white);
     tempPanel.add(originatorL);
     JPanel tempPanel2 = new JPanel();
     tempPanel2.setLayout(new BoxLayout(tempPanel2, BoxLayout.Y_AXIS));
     for(int i=0; i<originator.size(); i++)
     {
       String person = (String)originator.elementAt(i);
-      tempPanel2.add(new JLabel(person));
+      tempPanel2.setBackground(Color.white);
+      JLabel personLabel = new JLabel(person);
+      personLabel.setForeground(Color.black);
+      tempPanel2.add(personLabel);
     }
     tempPanel.add(tempPanel2);
     
@@ -230,7 +255,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     return panel;
   }
   
-  private JPanel createListPanel(Vector datafiles, Vector entityfiles, 
+  private JPanel createListPanel(Vector entityfiles, 
                                  Vector otherfiles)
   { 
     JPanel listPanel = new JPanel();
@@ -249,33 +274,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     buttonPanel.add(dataFileRemove);
     buttonPanel.add(dataFileEdit);
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    
-    ////////////////////data files///////////////////////
-    
-    dataFileList = new JList(datafiles);
-    dataFileList.setPreferredSize(new Dimension(80, 70));
-    dataFileList.setMaximumSize(new Dimension(80, 70));
-    dataFileList.addListSelectionListener(new DataSelectionHandler());
-    dataFileList.addMouseListener(new MouseAdapter()
-    {
-      public void mouseClicked(MouseEvent e)
-      {
-        if(e.getClickCount() == 2) 
-        {
-          actionPerformed(new ActionEvent(this, 0, "Edit"));
-        }
-      }
-    });
-    dataFileList.setVisibleRowCount(10);
-    JScrollPane dataFileScrollPane = new JScrollPane(dataFileList);
-    
-    JPanel dataFileButtonList = new JPanel();
-    dataFileButtonList.setLayout(new BoxLayout(dataFileButtonList,
-                                               BoxLayout.Y_AXIS));
-    dataFileButtonList.add(new JLabel("Data Files"));
-    dataFileButtonList.add(dataFileScrollPane);
-    
-    listPanel.add(dataFileButtonList);
     
     //////////////entity files////////////////////////
     
@@ -570,7 +568,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     public void valueChanged(ListSelectionEvent e)
     {
       otherFileList.clearSelection();
-      dataFileList.clearSelection();
     }
   }
   
@@ -588,7 +585,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     public void valueChanged(ListSelectionEvent e)
     {
       entityFileList.clearSelection();
-      dataFileList.clearSelection();
     }
   }
 }

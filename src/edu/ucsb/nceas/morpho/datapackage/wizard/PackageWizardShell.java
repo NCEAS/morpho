@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-19 22:38:09 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-06-20 18:27:29 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -297,12 +297,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         Hashtable atts = wfcont.attributes;
         String name = (String)atts.get("name");
         String item = name;
+        
         if(name == null)
         {
           name = "Data File";
           item = wfcont.originalDataFilePath;
         }
-        else if(!name.equals("InitialDescription"))
+        else if(!name.equals("InitialDescription") && !name.equals("IGNORE"))
         {
           if(wfcont.attributes.containsKey("displayNamePath"))
           {
@@ -319,6 +320,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         
         if(item != null && !item.equals("InitialDescription"))
         {
+          System.out.println("item: " + item);
           listContent.add(item);
         }
       }
@@ -691,6 +693,10 @@ public class PackageWizardShell extends javax.swing.JFrame
         Vector v = (Vector)packageFiles.elementAt(i);
         String id = (String)v.elementAt(0);
         File f = (File)v.elementAt(1);
+        if(f.getPath().equals("NULLDATAFILE"))
+        {
+          continue;
+        }
         String type = (String)v.elementAt(2);
         //System.out.println("id: " + id + " type: " + type);
         
@@ -704,14 +710,15 @@ public class PackageWizardShell extends javax.swing.JFrame
             publicAcc = true;
           }
           if(!type.equals("WIZARD"))
-          { //this is a data file.  we need to figure out how to handle this
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          { //this is a data file.  send it to metacat
+            ClientFramework.debug(9, "PLEASE NOTE: Currently, metacat does " +
+                                  "not upload DATA FILES.");
+            //mds.newDataFile(id, fr, publicAcc);
           }
           else
           { //this is an xml file
             //send it to metacat
-            mds.newFile(id , fr, publicAcc);
+            mds.newFile(id, fr, publicAcc);
           }
           fr.close();
         }
@@ -1259,21 +1266,30 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
       else
       {
+        String filepath = textfield.getText().trim();
+        
         if(temp && id == null)
         {
           id = "tmp." + tempIdCounter++;
+        }
+        else if(temp && id.equals("NULLDATAFILE"))
+        {
+          if(!filepath.equals(""))
+          {
+            id = "tmp." + tempIdCounter++;
+          }
         }
         else if(!temp && (id.indexOf("tmp") != -1 || id == null))
         {
           id = a.getNextId();
         }
 
-        String filepath = textfield.getText().trim();
         if(!filepath.equals(""))
         {
           file = new File(filepath);
           originalDataFilePath = textfield.getText();
           FileReader fr = null;
+          attributes.put("name", originalDataFilePath);
           try
           {
             fr = new FileReader(file);
@@ -1302,6 +1318,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           file = new File("NULLDATAFILE");
           id = "NULLDATAFILE";
+          attributes.put("name", "IGNORE");
           return this.file;
         }
       }

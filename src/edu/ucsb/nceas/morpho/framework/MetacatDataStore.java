@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 17:03:47 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-20 18:27:29 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -288,6 +288,66 @@ public class MetacatDataStore extends DataStore
          throws MetacatUploadException
   {
     return saveFile(name, file, publicAccess, "insert");
+  }
+  
+  public File newDataFile(String name, Reader file, boolean publicAccess)
+                          throws MetacatUploadException
+  {
+    InputStream metacatInput;
+    InputStreamReader portReader;
+    StringBuffer messageBuf;
+    String access = "no";
+    if(publicAccess)
+    {
+      access = "yes";
+    }
+    
+    Properties prop = new Properties();
+    prop.put("action", "getdataport");
+    prop.put("public", access);
+    prop.put("docid", name);
+    
+    try
+    {
+      metacatInput = framework.getMetacatInputStream(prop, true);
+      portReader = new InputStreamReader(metacatInput);
+      messageBuf = new StringBuffer();
+      int c = portReader.read();
+      while(c != -1)
+      {
+        messageBuf.append((char)c);
+        c = portReader.read();
+      }
+      portReader.close();
+      metacatInput.close();
+    }
+    catch(Exception e)
+    {
+      throw new MetacatUploadException(e.getMessage());
+    }
+    
+    String message = messageBuf.toString();
+    ClientFramework.debug(11, "message from server: " + message);
+    
+    if(message.indexOf("<error>") != -1)
+    {//there was an error
+      throw new MetacatUploadException(message);
+    }
+    else if(message.indexOf("<port>") != -1)
+    {//the operation worked
+      System.out.println("it worked.  connect and send the data file here");
+      String cookie = framework.getSessionCookie();
+      int i1 = cookie.indexOf("JSESSIONID=");
+      int i2 = cookie.indexOf(":", i1);
+      //get just the session id
+      cookie = cookie.substring(i1, i2);
+      //////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
+      ///this isn't done!!!!!!!!!!!!!///////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
+    }
+    
+    return null;
   }
   
   /**

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-20 17:15:30 $'
- * '$Revision: 1.60 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-20 18:27:29 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import java.util.*;
 import java.net.URL;
 import java.lang.reflect.*;
 import java.lang.ClassCastException;
+import java.net.*;
 
 /**
  * The ClientFramework is the main entry point for the Morpho application. It
@@ -72,6 +73,8 @@ public class ClientFramework extends javax.swing.JFrame
   private Hashtable windowsRegistry = null;
   private Vector connectionRegistry = null;
   private boolean pluginsLoaded = false;
+  private String sessionCookie = null;
+  
 
   // Used by addNotify
   boolean frameSizeAdjusted = false;
@@ -749,6 +752,180 @@ public class ClientFramework extends javax.swing.JFrame
     }
     return getMetacatInputStream(prop);
   }
+  
+  /**
+   * attempts to connect a socket, returns null if it is not successful
+   * returns the connected socket if it is successful.
+   */
+  private static Socket getSocket(String host, int port)
+  {
+    Socket s = null;
+    try
+    {
+      s = new Socket(host, port);
+      //we could create a socket on this port so the port is not available
+      //System.out.println("socket connnected");
+      return s;
+    }
+    catch(UnknownHostException u)
+    {
+      System.out.println("unknown host in DataFileUploadInterface.getSocket");
+    }
+    catch(IOException i)
+    {
+      //an ioexception is thrown if the port is not in use
+      //System.out.println("socket not connected");
+      return s;
+    }
+    return s;
+  }
+  
+  /**
+   * sends a non-xml data file to the metacat data file server socket
+   * @param id the id to assign to the file on metacat
+   * @param file the file to send
+   * @param host the metacat host to send the file to
+   * @param port the tcp/ip port to send the data to.  this is gotten from
+   * metacat by performing a query with action=getdataport
+   * @param sessionid the sessionid generated for the metacat session upon 
+   * logging in.  this can be acquired from the cookie that is produced by
+   * metacat.
+   */
+  private static String SendFile(String id, File file, String host, int port, 
+                                String sessionid) 
+  {
+    Socket echoSocket = null;
+    OutputStream out = null;
+    InputStream in = null;
+    DataOutputStream dsout = null;
+    InputStreamReader isr = null;
+    
+		String retmsg = "";
+    
+    try 
+    {
+      echoSocket = getSocket(host, port); //get the socket
+      while(echoSocket == null) 
+      {//loop until the port is there
+        echoSocket = getSocket(host, port);
+      }
+      //echoSocket = new Socket(host, port);
+      out = echoSocket.getOutputStream(); //out to the server
+      in = echoSocket.getInputStream();   //in from server
+      isr = new InputStreamReader(in);
+    } 
+    catch (UnknownHostException e) 
+    {
+      System.err.println("Don't know about host: " + host + 
+                         " : error in DataStreamTest.sendFile: " + 
+                         e.getMessage());
+      e.printStackTrace(System.out);
+      System.exit(1);
+    } 
+    catch (IOException e) 
+    {
+      System.err.println("IO error in DataStreamTest.sendFile: "
+                         + "broken connection to: " + host);
+      System.out.println("error: " + e.getMessage());
+      e.printStackTrace(System.out);
+      System.exit(1);
+    }
+	  
+    try
+    {  
+      //File file = new File(filename); //get the file from the local system
+      dsout = new DataOutputStream(out); 
+      FileInputStream fs = new FileInputStream(file);
+      // first convert the filename to a byte array
+      String fn = id;
+      byte[] fname = fn.getBytes();
+      // now write the string bytes followed by a '0'
+      for (int i=0;i<fname.length;i++) 
+      {
+        dsout.write(fname[i]);    
+      }
+      dsout.write(0);  // marks end of name info
+      
+      //write the session id to the stream
+      byte[] cook = sessionid.getBytes();
+      for(int i=0; i<cook.length; i++)
+      {
+        dsout.write(cook[i]);
+      }
+      dsout.write(0); //follow it with a 0
+      
+      //write the length of the file followed by a 0
+      long flength = file.length();
+      System.out.println("file sized (B): " + flength);
+      String sflength = String.valueOf(flength); //note that this is changed
+                                                 //to a string
+      
+      byte[] fl = sflength.getBytes();
+      for(int i=0; i<fl.length; i++)
+      {
+        dsout.write(fl[i]);
+      }
+      dsout.write(0); //following 0
+      
+      //dsout.write((int)flength);
+      //dsout.write(0);
+      dsout.flush();
+      
+      BufferedReader rin = new BufferedReader(isr);
+
+      // now send the file data
+      byte[] buf = new byte[1024];
+      int cnt = 0;
+      int i = 0;
+      while (cnt!=-1) 
+      {
+        cnt = fs.read(buf); //read the file
+        System.out.println("i = "+ i +" Bytes read = " + cnt);
+        if (cnt!=-1) 
+        {
+          dsout.write(buf, 0, cnt); //write the byte to the server
+        }
+        i++;
+      }
+      fs.close();
+      dsout.flush();
+	  }
+	  catch (Exception w) 
+    {
+      System.out.println("error in DataStreamTest.sendFile: " + w.getMessage());
+    }
+   
+    try
+    { //get the server's response
+      while(!isr.ready()) 
+      {
+        //System.out.println("not ready");
+      }
+      int msg = isr.read();
+      retmsg += (char)msg;
+      System.out.print("Message from server: ");
+      while(msg != -1)
+      {
+        System.out.print((char)msg);
+        System.out.flush();
+        msg = isr.read(); //get the message a character at a time
+        retmsg += (char)msg;
+      }
+      System.out.println();
+      dsout.flush();
+      dsout.close();
+    }
+    catch(Exception e)
+    {
+      System.out.println("error in DataStreamTest.sendFile: " + e.getMessage());
+    }
+	  return retmsg;
+	}
+  
+  public String getSessionCookie()
+  {
+    return sessionCookie;
+  }
 
   /**
    * Send a request to Metacat
@@ -766,6 +943,7 @@ public class ClientFramework extends javax.swing.JFrame
       URL url = new URL(metacatURL);
       HttpMessage msg = new HttpMessage(url);
       returnStream = msg.sendPostMessage(prop);
+      sessionCookie = msg.getCookie();
     }
     catch(Exception e)
     {
