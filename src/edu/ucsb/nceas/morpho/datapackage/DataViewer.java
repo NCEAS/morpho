@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-23 18:42:18 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-02-06 16:59:46 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ public class DataViewer extends javax.swing.JFrame
 
 		//{{INIT_MENUS
 		//}}
+		DataTextArea.setEditable(false);
 	}
 
 	public DataViewer(String sTitle)
