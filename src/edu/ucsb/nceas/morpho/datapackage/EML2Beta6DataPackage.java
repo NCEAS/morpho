@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-09 22:22:02 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-03-22 22:00:55 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -493,6 +493,15 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
 		return node;
 	}
 
-    
+  /**
+   * returns cloned root Node of subtree identified by the passed unique String
+   * refID; returns null if not found
+   *
+   * @param refID unique String refID
+   * @return  cloned root Node of subtree, or null if refID not found
+   */
+  public Node getSubtreeAtReference(String refID) {
+    return null;
+  }    
 }
 

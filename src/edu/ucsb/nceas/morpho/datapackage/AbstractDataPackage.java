@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-22 19:31:17 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2004-03-22 22:00:55 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -526,11 +526,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @param refID unique String refID
    * @return  cloned root Node of subtree, or null if refID not found
    */
-  public Node getSubtreeAtReference(String refID) {
-
-    throw new UnsupportedOperationException(
-      "AbstractDataPackage.getSubtreeAtReference(String refID) not yet implemented!");
-  }
+  abstract public Node getSubtreeAtReference(String refID);
 
 
 
@@ -679,8 +675,6 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return null;
 
-//    throw new UnsupportedOperationException(
-//      "AbstractDataPackage.deleteSubtree(String genericName, int index) not yet implemented!");
   }
 
 

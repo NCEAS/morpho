@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-09 22:22:02 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-03-22 22:00:55 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -327,6 +327,36 @@ public  class EML200DataPackage extends AbstractDataPackage
 		}
 		return referencedNode;
 	}
+
+
+
+  /**
+   * returns cloned root Node of subtree identified by the passed unique String
+   * refID; returns null if not found
+   *
+   * @param refID unique String refID
+   * @return  cloned root Node of subtree, or null if refID not found
+   */
+  public Node getSubtreeAtReference(String refID) {
+    Node refdNode = null;
+    Node refdNodeClone = null;
+    try{
+      Node rootNode = getMetadataNode();
+		  NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+refID+"']");
+		  // there should be a single node with the id (otherwise doc is eml invalid)
+      Node referencedNode = refs2.item(0);
+      // 'referencedNode' is the first order reference
+      // next line calls to see if further references occur								 
+      refdNode = getReferencedNode(referencedNode);
+      Document thisDom = getMetadataNode().getOwnerDocument();
+      refdNodeClone = thisDom.importNode(refdNode, true); // 'true' imports children
+
+    } catch (Exception w) {
+			Log.debug(25, "Exception trying to follow references (in getSubtreeAtReference)!");
+		}
+    return refdNodeClone;
+
+  }
 	
 }
 
