@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-08 09:04:16 $'
- * '$Revision: 1.79 $'
+ *     '$Date: 2003-01-10 00:21:37 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1164,6 +1164,7 @@ public class DataViewer extends javax.swing.JPanel
         row[ii] = "";  
       }
       pv.initEmpty(row);
+      pv.setFieldDelimiter(field_delimiter);
     }
     else {
       pv.init(dataFile, num_header_lines);
