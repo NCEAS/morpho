@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-19 22:50:27 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-11-20 20:40:20 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
       Log.debug(1, "Unable to get tripleFile!!!");
       return;
     }
-Log.debug(1,"ready to create eml2 file");
+//Log.debug(1,"ready to create eml2 file");
     exportToEml2("eml2test");
 
     File packagefile = new File("eml2test");
