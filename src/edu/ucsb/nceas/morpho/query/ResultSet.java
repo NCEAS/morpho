@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-08 00:17:56 $'
- * '$Revision: 1.30.4.3 $'
+ *     '$Date: 2002-08-09 01:15:44 $'
+ * '$Revision: 1.30.4.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,13 +115,13 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   private Vector tripleList;
 
   /** The icon for representing local storage. */
-  private ImageIcon localIcon = null;
+  public static ImageIcon localIcon = null;
   /** The icon for representing metacat storage. */
-  private ImageIcon metacatIcon = null;
+  public static ImageIcon metacatIcon = null;
   /** The icon for representing package */
-  private ImageIcon packageIcon = null;
+  public static ImageIcon packageIcon = null;
   /** The icon for representing pakcage and data file */
-  private ImageIcon packageDataIcon = null;
+  public static ImageIcon packageDataIcon = null;
   /** The icon for representing both local and metacat storage. */
   //private ImageIcon bothIcon = null;
   /** The icon for representing local storage with data. */
@@ -687,9 +687,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     boolean openMetacat = false;
     Vector rowTriples = null;
     try {
-      docid = (String)rowVector.elementAt(numHeaders+2);
-      openLocal = ((Boolean)rowVector.elementAt(numHeaders+5)).booleanValue();
-      openMetacat = ((Boolean)rowVector.elementAt(numHeaders+6)).booleanValue();
+      docid = (String)rowVector.elementAt(DOCIDINDEX);
+      openLocal = ((Boolean)rowVector.elementAt(ISLOCALINDEX)).booleanValue();
+      openMetacat = 
+                ((Boolean)rowVector.elementAt(ISMETACATINDEX)).booleanValue();
       //rowTriples = (Vector)rowVector.get(numHeaders+7);
 /*    // DEBUGGING output to determine if the triples Hash is correct
       for (int j=0; j < rowTriples.size(); j++) {
