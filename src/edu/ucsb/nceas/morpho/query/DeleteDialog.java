@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-11 22:56:10 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-10-01 21:51:49 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,10 @@ public class DeleteDialog extends JDialog
 
   /** A reference to morpho frame */
   MorphoFrame morphoFrame = null;
-
+  
+  /** A string indicating the morpho frame's type*/
+  String morphoFrameType = null;
+  
   /** A reference to open dialog*/
   OpenDialogBox openDialog = null;    
   
@@ -103,15 +106,18 @@ public class DeleteDialog extends JDialog
    * Construct a new instance of the delete dialog which parent is morphoframe
    *
    * @param myParent  The parent frame for this dialog
+   * @param frameType the frame is result search result frame or data package
    * @param mySelecteDocId the selected docid
    * @param myInLocal if the datapackage is in local
    * @param myInNetwork if the datapackage is in network
    */
-  public DeleteDialog(MorphoFrame myParent, String mySelectedDocId, 
-                                      boolean myInLocal, boolean myInNetwork)
+  public DeleteDialog(MorphoFrame myParent, String frameType, 
+                      String mySelectedDocId, boolean myInLocal, 
+                      boolean myInNetwork)
   {
     super(myParent);
     morphoFrame = myParent;
+    morphoFrameType = frameType;
     selectDocId = mySelectedDocId;
     inLocal = myInLocal;
     inNetwork = myInNetwork;
@@ -297,8 +303,8 @@ public class DeleteDialog extends JDialog
         Log.debug(45, "In delete local branch");
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
-                        morphoFrame, DataPackageInterface.LOCAL, selectDocId, 
-                        inLocal, inNetwork));
+                       morphoFrame, morphoFrameType, DataPackageInterface.LOCAL, 
+                       selectDocId, inLocal, inNetwork));
       } 
       else if (object == deleteNetwork) 
       {
@@ -306,8 +312,8 @@ public class DeleteDialog extends JDialog
         Log.debug(50, "In delete network branch");
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog,
-                        morphoFrame, DataPackageInterface.METACAT, selectDocId, 
-                        inLocal, inNetwork));
+                     morphoFrame, morphoFrameType, DataPackageInterface.METACAT, 
+                     selectDocId, inLocal, inNetwork));
       }
       else if (object == deleteBoth)
       {
@@ -315,8 +321,8 @@ public class DeleteDialog extends JDialog
         Log.debug(50, "In delete both branch");
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
-                            morphoFrame, DataPackageInterface.BOTH, selectDocId,
-                            inLocal, inNetwork));
+                        morphoFrame,morphoFrameType, DataPackageInterface.BOTH, 
+                        selectDocId, inLocal, inNetwork));
       }
    }//enableExecuteButton
  
