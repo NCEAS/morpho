@@ -388,101 +388,46 @@ help="The dataset element defines extend the ResourceBase complexType in order t
 
       <dsgpolyo
       help="Data Set G-Polygon Outer G-Ring, the closed nonintersecting boundary of an interior area.">
+    
+        <grngpoin help="A single geographic location.">
+          <gringlat help="The lat">
+          </gringlat>
 
-      </dsgpolyo>
+          <gringlon help="The longitude of a point of the g-ring.">
+          </gringlon>
+        </grngpoin>
+     
+        <gring
+        help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
+
+        </gring>
+
+      </dsgpolyo> 
+
+      <dsgpolyx
+            help="Data Set G-Polygon Exclusion G-Ring, the closed nonintersecting boundary of a void area (or hole in an interior area).">
+        <grngpoin help="A single geographic location.">
+          <gringlat help="The lat">
+          </gringlat>
+
+          <gringlon help="The longitude of a point of the g-ring.">
+          </gringlon>
+        </grngpoin>
+     
+        <gring
+        help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
+
+        </gring>
+
+       </dsgpolyx>
     </dsgpoly>
 
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
 
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
 
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
 
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
 
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
 
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
 
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <gring
-    help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
-
-    </gring>
-
-    <dsgpolyx
-    help="Data Set G-Polygon Exclusion G-Ring, the closed nonintersecting boundary of a void area (or hole in an interior area).">
-
-    </dsgpolyx>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <gring
-    help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
-
-    </gring>
-
-    <grngpoin help="A single geographic location.">
-      <gringlat help="The lat">
-      </gringlat>
-
-      <gringlon help="The longitude of a point of the g-ring.">
-      </gringlon>
-    </grngpoin>
-
-    <gring
-    help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
-
-    </gring>
 
   </geographicCov>
 
