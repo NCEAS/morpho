@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:20:13 $'
- * '$Revision: 1.23 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-28 21:21:22 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -476,8 +476,9 @@ public class DataViewer extends javax.swing.JPanel
               }
               nd = nd.getNextSibling();  
             }
-            temp = "<html><center><small>"+dataTypeString+"<br>"+unitString+"<br></small><b>"
-                                                  +temp+"</b></center></html>";
+            temp = "<html><font face=\"Courier\"><center><small>"+dataTypeString+"<br>"+unitString
+                                                  +"<br></small><b>"
+                                                  +temp+"</b></font></center></html>";
             column_labels.addElement(temp);
           }
         }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-28 16:14:56 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-08-28 21:21:22 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
 import java.io.*;
 import java.util.*;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -111,7 +112,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
-    vertSplit.setDividerLocation(45);
+    vertSplit.setDividerLocation(47);
     this.setVisible(true);
  
   }
@@ -122,12 +123,48 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     this.dp = dp;
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(0,0));
+    
     JLabel refLabel = new JLabel("<html>"+dpgui.referenceLabel+"</html>");
+    refLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     JPanel refPanel = new JPanel();
     refPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-    refPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-    refPanel.add(refLabel);
+    refPanel.setLayout(new BorderLayout(5,5));
+    refPanel.add(BorderLayout.CENTER, refLabel);
     refLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    JPanel locationPanel = new JPanel();
+    locationPanel.setLayout(new BorderLayout(0,0));
+    Border lineBorder = BorderFactory.createLineBorder(Color.black);
+    Border margin = BorderFactory.createEmptyBorder(5,5,5,5);
+    locationPanel.setBorder(new CompoundBorder(lineBorder,margin));
+    ImageIcon localIcon 
+      = new ImageIcon(getClass().getResource("local-package-small.png"));
+    ImageIcon metacatIcon 
+      = new ImageIcon(getClass().getResource("network-package-small.png"));
+    ImageIcon blankIcon 
+      = new ImageIcon(getClass().getResource("blank.gif"));
+    JLabel localLabel = new JLabel("local");
+    localLabel.setIcon(localIcon);
+    localLabel.setToolTipText("Package is stored locally");
+    JLabel netLabel = new JLabel("net");
+    netLabel.setIcon(metacatIcon);
+    netLabel.setToolTipText("Package is stored on the network");
+    String location = dp.getLocation();
+    if (location.equals(DataPackageInterface.METACAT)) {
+      localLabel.setText("");
+      localLabel.setIcon(blankIcon);
+    }
+    else if (location.equals(DataPackageInterface.LOCAL)) {
+      netLabel.setText("");
+      netLabel.setIcon(blankIcon);
+    }
+    else {   // both
+      
+    }
+    locationPanel.add(BorderLayout.NORTH,localLabel);
+    locationPanel.add(BorderLayout.SOUTH, netLabel);
+    refPanel.add(BorderLayout.EAST, locationPanel);
+
+    
     packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
     packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
     packagePanel.add(BorderLayout.NORTH,refPanel);
