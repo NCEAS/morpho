@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-12-11 00:23:34 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2001-12-11 17:57:36 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -845,34 +845,68 @@ public class PackageWizard extends javax.swing.JFrame
         }
         catch(java.lang.ClassCastException cce2)
         { //get the combobox and append its field onto the paths
-          JComboBoxWrapper jcbw = (JComboBoxWrapper)jpw.children.elementAt(i);
-          String allowNullS = "TRUE";
-          boolean allowNullB = true;
-          if(jcbw.element.attributes.containsKey("allowNull"))
+          try
           {
-            allowNullS = (String)jcbw.element.attributes.get("allowNull");
-            allowNullS = allowNullS.toUpperCase();
-            if(allowNullS.equals("NO"))
+            JComboBoxWrapper jcbw = (JComboBoxWrapper)jpw.children.elementAt(i);
+            String allowNullS = "TRUE";
+            boolean allowNullB = true;
+            if(jcbw.element.attributes.containsKey("allowNull"))
             {
-              allowNullB = false;
+              allowNullS = (String)jcbw.element.attributes.get("allowNull");
+              allowNullS = allowNullS.toUpperCase();
+              if(allowNullS.equals("NO"))
+              {
+                allowNullB = false;
+              }
             }
+            //paths.addElement(fields + "/" + jcbw.element.attributes.get("field"));
+            String jcbwContent = (String)jcbw.getSelectedItem();
+            if(jcbwContent.equals("") && !allowNullB)
+            { //this is a flag so that later we can alert the user that they 
+              //are creating an invalid document
+              paths.put("MISSINGREQUIREDELEMENTS", "true");
+            }
+            String localfield = (String)jcbw.element.attributes.get("field");
+            
+            while(paths.containsKey(fields + "/" + localfield))
+            {
+              localfield += " ";
+            }
+            
+            //put the field and the content into the hash.
+            paths.put(fields + "/" + localfield, jcbwContent);
           }
-          //paths.addElement(fields + "/" + jcbw.element.attributes.get("field"));
-          String jcbwContent = (String)jcbw.getSelectedItem();
-          if(jcbwContent.equals("") && !allowNullB)
-          { //this is a flag so that later we can alert the user that they 
-            //are creating an invalid document
-            paths.put("MISSINGREQUIREDELEMENTS", "true");
+          catch(java.lang.ClassCastException cce3)
+          {//get the combobox and append its field onto the paths
+            JTextAreaWrapper jtaw = (JTextAreaWrapper)jpw.children.elementAt(i);
+            String allowNullS = "TRUE";
+            boolean allowNullB = true;
+            if(jtaw.element.attributes.containsKey("allowNull"))
+            {
+              allowNullS = (String)jtaw.element.attributes.get("allowNull");
+              allowNullS = allowNullS.toUpperCase();
+              if(allowNullS.equals("NO"))
+              {
+                allowNullB = false;
+              }
+            }
+            
+            String jtawContent = (String)jtaw.getText();
+            if(jtawContent.equals("") && !allowNullB)
+            { //this is a flag so that later we can alert the user that they 
+              //are creating an invalid document
+              paths.put("MISSINGREQUIREDELEMENTS", "true");
+            }
+            String localfield = (String)jtaw.element.attributes.get("field");
+            
+            while(paths.containsKey(fields + "/" + localfield))
+            {
+              localfield += " ";
+            }
+            
+            //put the field and the content into the hash.
+            paths.put(fields + "/" + localfield, jtawContent);
           }
-          String localfield = (String)jcbw.element.attributes.get("field");
-          
-          while(paths.containsKey(fields + "/" + localfield))
-          {
-            localfield += " ";
-          }
-          
-          //put the field and the content into the hash.
-          paths.put(fields + "/" + localfield, jcbwContent);
         }
       }
       catch(java.util.EmptyStackException ese)
@@ -949,16 +983,32 @@ public class PackageWizard extends javax.swing.JFrame
         }
         catch(java.lang.ClassCastException cce2)
         { //get the combobox and append its field onto the paths
-          JComboBoxWrapper jcbw = (JComboBoxWrapper)jpw.children.elementAt(i);
-          String localpath = fields + "/" + 
-                             (String)jcbw.element.attributes.get("field");
-          while(paths.contains(localpath))
+          try
           {
-            localpath += " ";
+            JComboBoxWrapper jcbw = (JComboBoxWrapper)jpw.children.elementAt(i);
+            String localpath = fields + "/" + 
+                               (String)jcbw.element.attributes.get("field");
+            while(paths.contains(localpath))
+            {
+              localpath += " ";
+            }
+            paths.addElement(localpath);
+            String jcbwContent = (String)jcbw.getSelectedItem();
+            content.put((String)paths.elementAt(paths.size()-1), jcbwContent);
           }
-          paths.addElement(localpath);
-          String jcbwContent = (String)jcbw.getSelectedItem();
-          content.put((String)paths.elementAt(paths.size()-1), jcbwContent);
+          catch(java.lang.ClassCastException cce3)
+          { //get the textarea and append its field info onto the paths
+            JTextAreaWrapper jtaw = (JTextAreaWrapper)jpw.children.elementAt(i);
+            String localpath = fields + "/" + 
+                               (String)jtaw.element.attributes.get("field");
+            while(paths.contains(localpath))
+            {
+              localpath += " ";
+            }
+            paths.addElement(localpath);
+            String jtawContent = (String)jtaw.getText();
+            content.put((String)paths.elementAt(paths.size() - 1), jtawContent);
+          }
         }
       }
       catch(java.util.EmptyStackException ese)
@@ -1288,26 +1338,30 @@ public class PackageWizard extends javax.swing.JFrame
                     int textfieldindex = parentPanel.children.indexOf(textarea);
                     parentPanel.children.insertElementAt(newtextarea, 
                                                          textfieldindex + 1);
-                    
-                    parentPanel2 = (JPanel)textarea.getParent().getParent().getParent();
+                                                 // scrollpane  layoutpanel mainPanel
+                    parentPanel2 = (JPanel)textarea.getParent().getParent()
+                                                   .getParent().getParent();
                     int numcomponents = parentPanel2.getComponentCount();
-                    System.out.println("!!!!!!!!!!!!!1numcomponents: " + numcomponents);
-                    insertindex = numcomponents;
+                    insertindex = numcomponents - 1;
                     for(int j=0; j<numcomponents; j++)
                     {
                       Component nextcomp = parentPanel2.getComponent(j); 
+                      //printComponentContents((Container)nextcomp);
+                      
                       try
                       {
                         
-                        JTextArea t = (JTextArea)((Component)((JPanel)nextcomp).getComponent(1));
-                        System.out.println("??????????????before if");
+                        JScrollPane jsp = (JScrollPane)
+                                ((Component)((JPanel)nextcomp).getComponent(1));
+                        JViewport jvp = (JViewport)jsp.getComponent(0);
+                        JTextArea t = (JTextArea)jvp.getComponent(0);
                         if(t == textarea)
                         {
-                          System.out.println("!!!!!!!!!!!!!!!!!!!!insertindex = " + j);
                           insertindex = j;
+                          break;
                         }
                       }
-                      catch(ClassCastException cce)
+                      catch(ClassCastException cce) 
                       {
                         ClientFramework.debug(11, 
                                        "Exception in packagewizard." +
@@ -1342,7 +1396,7 @@ public class PackageWizard extends javax.swing.JFrame
                     newtextarea.setRows(4);
                     newtextarea.setLineWrap(true);
                     newtextarea.setWrapStyleWord(true);
-                    layoutpanel.add(newtextarea, BorderLayout.EAST);
+                    layoutpanel.add(new JScrollPane(newtextarea), BorderLayout.EAST);
                   }
                   parentPanel2.add(layoutpanel, insertindex + 1);
                   parentPanel2.validate();
@@ -1397,7 +1451,7 @@ public class PackageWizard extends javax.swing.JFrame
         else
         {
           textarea.setColumns(size.intValue());
-          parentPanel.children.addElement(new JScrollPane(textarea));
+          parentPanel.children.addElement(textarea);
         }
         
         //add the new textfield to the children of the parentPanel for later
@@ -1816,7 +1870,7 @@ public class PackageWizard extends javax.swing.JFrame
                     break;
                 }
                 case '\r':
-		case '\t':
+                  case '\t':
                 case '\n': {
                     if (false) {
                         str.append("&#");
@@ -1825,7 +1879,7 @@ public class PackageWizard extends javax.swing.JFrame
                         break;
                     }
                     // else, default append char
-			break;
+                    break;
                 }
                 default: {
                     str.append(ch);
@@ -1837,5 +1891,15 @@ public class PackageWizard extends javax.swing.JFrame
 
     } // normalize(String):String
   
-  
+  /**
+   * prints each component inside of a component to system.out
+   */
+  private static void printComponentContents(Container c)
+  {
+    int count = c.getComponentCount();
+    for(int i=0; i<count; i++)
+    {
+      System.out.println("Component " + i + ": " + c.getComponent(i));
+    }
+  }
 }

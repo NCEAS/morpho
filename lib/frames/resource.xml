@@ -59,6 +59,10 @@
       </combobox>
       </group>
     </group>
+    <group field="abstract">
+      <textbox label="Abstract" field="paragraph" size="15" multiline="yes" tooltip="A brief overview of the resource."/>
+    </group>
+    
     <group label="Keywords" repeatable="no" field="keywordSet">
       <textbox label="Keyword" field="keyword" size="15" repeatable="yes"/>
       <textbox label="Keyword Thesaurus" field="keywordThesaurus" size="15" repeatable="yes"/>
