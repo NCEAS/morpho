@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-09 00:10:05 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2002-05-14 18:15:27 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,14 +121,14 @@ public class XMLPanels extends Component
 //        topPanel.setPreferredSize(new Dimension(400,30));
 //        topPanel.setMinimumSize(new Dimension(400,300));
 //        topPanel.setMaximumSize(new Dimension(300,30));
+         // is there anything to do?
+        if (doc == null) { return; }
         NodeInfo info = (NodeInfo)(doc.getUserObject());
         topPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(info.toString()),
             BorderFactory.createEmptyBorder(4, 4, 4, 4)
             ));
 		    topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));    
-         // is there anything to do?
-        if (doc == null) { return; }
         String temp = info.getRootEditor();
         if (temp!=null) {
           try {
