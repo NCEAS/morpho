@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 19:52:46 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-03-31 16:48:45 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,9 +86,9 @@ public class Geographic extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter information about the Spatial Coverage.</b> You can describe a "
+      "<b>Enter information about the spatial coverage.</b> You can describe a "
       +"geographic region associated with your data and specify a point or bounding "
-      +"box describing the location in latitude/logitude pairs.", 3);
+      +"box describing the location in latitude/longitude pairs.", 3);
     vbox.add(desc);
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());

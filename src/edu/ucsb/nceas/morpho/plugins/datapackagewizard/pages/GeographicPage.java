@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 05:58:53 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-31 16:48:45 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,10 +141,10 @@ public class GeographicPage extends AbstractUIPage {
     vbox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel bbDesc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Set the geographic coordinates which bound the coverage</b> Latitude and longitude"
+        "<p><b>Set the geographic coordinates which bound the coverage:</b> Latitude and longitude "
        +"values are used to create a 'bounding box' containing the region of interest. "
-       +"Drag or click on the map. Then edit the text boxes if necessary. "
-       +"[Default entries are in fractional degrees. To enter in degreea/minutes/seconds, simply "
+       +"Drag or click on the map and then edit the text boxes if necessary. "
+       +"[Default entries are in fractional degrees. To enter in degrees/minutes/seconds, simply "
        +"type a space between the degrees, minutes, and seconds values]</p>", 3);
     vbox.add(bbDesc);
 
