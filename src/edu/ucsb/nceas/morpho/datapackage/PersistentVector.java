@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-13 01:44:58 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-16 16:36:00 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class PersistentVector
   /**
    * allow for header rows
    */
-  int firstRow = 0;
+  public int firstRow = 0;
     
   /**
    * number of items to be stored in memory
@@ -89,7 +89,7 @@ public class PersistentVector
   /*
    * header line vector
    */
-  Vector headerLinesVector;
+  private Vector headerLinesVector;
 
     
   public PersistentVector() {
@@ -108,7 +108,34 @@ public class PersistentVector
    public void setFirstRow(int frow) {
      this.firstRow = frow;
    }
+   
+  /**
+   * Method to get the value of first Row
+   */
+  public int getFirstRow()
+  {
+    return firstRow;
+  }
+  
     
+   /**
+    * Method to get headerLinesVector
+    *
+    */
+   public Vector getHeaderLinesVector()
+   {
+     return headerLinesVector;
+   }
+   
+   /**
+    * Method to set a vector as a header lines vector
+    * @param newHeaderLinesVector
+    */
+   public void setHeaderLinesVector(Vector newHeaderLinesVector)
+   {
+     headerLinesVector = newHeaderLinesVector;
+   }
+   
   /*
    * read a text file and store each line as an object in an ObjectFile
    */
@@ -209,6 +236,14 @@ public class PersistentVector
     
   public void setFieldDelimiter(String s) {
     this.field_delimiter = s.trim();
+  }
+  
+  /**
+   * Method to get field delimiter
+   */
+  public String getFieldDelimiter()
+  {
+    return field_delimiter;
   }
  
   /*
@@ -318,7 +353,17 @@ public class PersistentVector
   public void delete() {
     obj.delete();
     objectList = null;
-  }  
+  }
+
+  /** 
+   * Method to assign a vector to objectList
+   *
+   *  @param newObjectList the new object list vector
+   */
+  public void setObjectList(Vector newObjectList)
+  {
+    objectList = newObjectList;
+  }
     
   private String[] getColumnValues(String str) {
 	  String sDelim = getDelimiterString();
