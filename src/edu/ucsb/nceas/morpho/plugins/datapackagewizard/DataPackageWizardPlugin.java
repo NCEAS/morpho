@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-09-24 02:54:10 $'
- * '$Revision: 1.6 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-09-26 17:08:43 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,9 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public static void main(String[] args) {
   
 // HACK - TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
-    Morpho.main(null);
+//DFH    Morpho.main(null);
+      Morpho.createMorphoInstance();
+
 ///////////////////////    
     
     Log.setDebugLevel(55);
