@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:23:02 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2002-08-21 22:47:08 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -550,10 +550,10 @@ public class EntityGUI extends javax.swing.JPanel
       
       DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
     
-      DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
+  //    DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
  
-      this.dpv = dpv;
-      dpv.show();
+  //    this.dpv = dpv;
+  //    dpv.show();
 
       // Refresh the query results after the update
       try {
@@ -668,11 +668,11 @@ public class EntityGUI extends javax.swing.JPanel
   //    this.dispose();
   //    parent.dispose();
       
-      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
-      DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
+  //    DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
+  //    DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
  
-     this.dpv = dpv;
-     dpv.show();
+  //   this.dpv = dpv;
+  //   dpv.show();
    /*  
      EntityGUI newEntitygui;
       DataPackage newDataPackage = new DataPackage(location, 
