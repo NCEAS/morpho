@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-28 20:26:58 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2002-01-10 22:47:18 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1222,9 +1222,9 @@ public void startImport(String file) {
 	private String getDelimiterStringAsText() {
 	  String str = "";
 	  if (TabCheckBox.isSelected()) str = str+"#x09";
-	  if (CommaCheckBox.isSelected()) str = str + "#x2C";
+	  if (CommaCheckBox.isSelected()) str = str + ",";
 	  if (SpaceCheckBox.isSelected()) str = str + "#x20";
-	  if (SemicolonCheckBox.isSelected()) str = str +"#x3B";
+	  if (SemicolonCheckBox.isSelected()) str = str +";";
 	  if (OtherCheckBox.isSelected()) {
 	    String temp = OtherTextField.getText();
 	    if (temp.length()>0) {
