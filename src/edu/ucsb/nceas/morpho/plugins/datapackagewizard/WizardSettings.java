@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-03 06:35:09 $'
- * '$Revision: 1.61 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-08 19:22:39 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -781,7 +781,7 @@ public class WizardSettings {
         mimeTypesMap.put("XML text",                "application/xml");
         mimeTypesMap.put("HTML text",               "Text/html");
         mimeTypesMap.put("XHTML text",              "application/xhtml+xml");
-        mimeTypesMap.put("mathematica",             "application/mathematica");
+        mimeTypesMap.put("Mathematica",             "application/mathematica");
 
 //  GRASS
 //  matlab

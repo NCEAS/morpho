@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-06 19:42:30 $'
- * '$Revision: 1.32 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-08 19:22:39 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,11 +97,13 @@ public class DataFormat extends AbstractUIPage{
   private JPanel currentPanel;
   private JLabel radioButtonGrpLabel;
   private final String[] buttonsText = new String[] {
-      "Simple delimited text format (uses one of a series of delimiters to indicate the ends of fields)",
-      "Complex text format (delimited fields, fixed width fields, and mixtures of the two)",
-      "Non-text or proprietary formatted object that is externally defined (e.g. 'Microsoft Excel')"
-//      ,"Binary raster image file"
-    };
+    "Simple delimited text format (uses one or more delimiters throughout the "
+    + "file).",
+    "Complex text format (delimited fields, fixed width fields, and mixtures "
+    + "of the two).",
+    "Non-text or proprietary formatted file that is externally defined "
+    + "(e.g. 'Microsoft Excel')."
+  };
 
   private final String[] orientButtonsText = new String[] {
       "Columns",
@@ -133,7 +135,7 @@ public class DataFormat extends AbstractUIPage{
 
   public DataFormat(WizardContainerFrame mainWizFrame) {
     this.mainWizFrame = mainWizFrame;
-    init(); 
+    init();
   }
 
   /**
@@ -141,14 +143,13 @@ public class DataFormat extends AbstractUIPage{
    * are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
-    
+
     this.setLayout(new BorderLayout());
 
     Box topBox = Box.createVerticalBox();
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "Enter some information about your data file. Required fields are "
-      +"highlighted", 2);
+      "<b>Enter some information about your data file</b>.", 2);
     topBox.add(desc);
     topBox.add(WidgetFactory.makeDefaultSpacer());
 
@@ -658,7 +659,7 @@ public class DataFormat extends AbstractUIPage{
                                         CustomList.EMPTY_STRING_NOTRIM } );
 
     int fixedIndex					= 1;
-		int delimitedIndex				= 1;
+    int delimitedIndex				= 1;
     StringBuffer buff       = new StringBuffer();
     List rowLists           = list.getListOfRowLists();
     String fixedDelimStr    = null;

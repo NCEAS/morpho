@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-06 19:42:30 $'
- * '$Revision: 1.35 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-08 19:22:39 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,12 +102,13 @@ public class DataLocation extends AbstractUIPage {
 
   private final String FILECHOOSER_PANEL_TITLE = "File Location:";
 
-  private final String Q1_TITLE = "Where is your data?";
+  private final String Q1_TITLE = "What do you want to do?";
 
   private final String[] Q1_LABELS = new String[] {
-    "CREATE  - create a new, empty data table and its metadata description.",
-    "IMPORT   - import a data file into the package, and create its metadata description",
-    "DESCRIBE - include only a metadata description of a web-accessible, archived or inaccessible data file"
+    "CREATE - Create a new, empty data table.",
+    "IMPORT - Import a data file into the package.",
+    "DESCRIBE - Include only the data file documentation (but not the data "
+    + "file itself) in the package."
   };
 
   private final static int CREATE_CHOICE = 0;
@@ -115,17 +116,20 @@ public class DataLocation extends AbstractUIPage {
   private final static int DESCRIBE_CHOICE = 2;
 
   private final String Q2_TITLE_IMPORT
-                        = "How do you want to enter the metadata description?";
+                        = "How do you want to enter the documentation for "
+                        + "the data?";
   private final String[] Q2_LABELS_IMPORT = new String[] {
-    "AUTOMATIC - Import data file and extract metadata description for review",
-    "MANUAL       - Import data file but enter metadata description manually"
+    "AUTOMATIC - Import the data file and extract the documentation for review.",
+    "MANUAL - Import the data file but enter the documentation manually."
   };
 
   private final String Q2_TITLE_DESCRIBE
-                        = "How do you want to enter the metadata description?";
+                        = "How do you want to enter the documentation for "
+                        + "the data?";
   private final String[] Q2_LABELS_DESCRIBE = new String[] {
-    "AUTOMATIC - create metadata description by inspecting data file (but omit data file from package)",
-    "MANUAL       - Enter metadata description manually"
+    "AUTOMATIC - Create the documentation by inspecting the data file (but "
+    + "omit the data file from the package).",
+    "MANUAL - Enter the documentation manually."
   };
 
   private final String Q3_TITLE = "Data Location?";
@@ -177,19 +181,20 @@ public class DataLocation extends AbstractUIPage {
     Box topBox = Box.createVerticalBox();
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-       "<p>Describe and optionally include a data "
-      +"table in your data package. You may create a table from "
+       "<p><b>Describe and optionally include a data "
+      +"table in your data package.</b> You may create a table from "
       +"scratch and populate it using Morpho's spreadsheet-style data editor, "
       +"or you can import certain types of existing data files and use the "
-      +"wizard to automatically extract much of the metadata from the data "
+      +"wizard to automatically extract much of the documentation from the data "
       +"file itself. If you "
-      +"choose this option, you will be prompted to review the metadata that "
+      +"choose the second option, you will be prompted to review the "
+      +"information that "
       +"is extracted and provide any required fields that can not be generated "
-      +"automatically for each column.<br></br></p>"
+      +"automatically.<br></br></p>"
       +"<p>You can also choose to manually enter all of the required fields "
       +"(rather than using the metadata extractor), which is useful for "
       +"proprietary file types like Excel, or other "
-      +"file types we don't yet support for extraction.</p>", 7);
+      +"file types that are not yet supported.</p>", 7);
     topBox.add(desc);
 
     final JPanel instance = this;
@@ -1118,7 +1123,7 @@ public class DataLocation extends AbstractUIPage {
     }
   }
 
-  
+
   protected boolean isCreateChoice() {
     Container radioPanel = (Container)mainRadioPanel.getComponent(1);
     Container middlePanel = (Container) radioPanel.getComponent(1);
@@ -1128,7 +1133,7 @@ public class DataLocation extends AbstractUIPage {
     return false;
   }
 
-  
+
 }
 
 

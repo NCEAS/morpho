@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.24 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-08 19:22:39 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,9 +100,10 @@ public class Entity extends AbstractUIPage{
     this.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-      "Enter some information about the data table contained in your file. "
+      "<b>Enter some information about the data table contained in your "
+      +"file.</b> "
       +"If you have more than one data table, additional tables may be added "
-      +"after you create your data package. Required fields are highlighted. ",
+      +"after the completion of this wizard.",
                                                                              2);
     this.add(desc1);
 
