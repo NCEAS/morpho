@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-27 22:03:55 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-10-30 18:54:16 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,6 +291,7 @@ public class PartyPanel extends JPanel
         DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
         NodeInfo tni = (NodeInfo)tnode.getUserObject();
         tni.setPCValue(val);
+        break;
       }
     }
   }
@@ -312,6 +313,7 @@ public class PartyPanel extends JPanel
          DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
          NodeInfo tni = (NodeInfo)tnode.getUserObject();
          tni.setPCValue(val);
+        break;
        }
       }
     }
