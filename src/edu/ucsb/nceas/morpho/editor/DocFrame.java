@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-17 20:43:32 $'
- * '$Revision: 1.130 $'
+ *     '$Date: 2003-12-17 23:40:19 $'
+ * '$Revision: 1.131 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2566,13 +2566,10 @@ public class DocFrame extends javax.swing.JFrame
     }
   */  
     String valresult = xmlvalidate(xmlout);
-Log.debug(1,"Valresult: "+valresult);
     if (valresult.indexOf("<valid />")>-1) {
       if (controller!=null) {
-Log.debug(1, "Ready to call editing complete!");
         controller.fireEditingCompleteEvent(this, xmlout);
       // hide the Frame
-Log.debug(1, "Ready to hide frame!");
       this.setVisible(false);
       // free the system resources
       this.dispose();

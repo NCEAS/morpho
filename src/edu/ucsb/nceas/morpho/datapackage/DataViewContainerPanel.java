@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-17 20:45:04 $'
- * '$Revision: 1.80 $'
+ *     '$Date: 2003-12-17 23:39:48 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,10 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
+
+import edu.ucsb.nceas.utilities.*;
+
+import org.w3c.dom.Node;
 
 
 import edu.ucsb.nceas.morpho.framework.*;
@@ -557,21 +561,19 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         vertSplit.setDividerLocation(1.0);
       }
       try{
-//        mdcomponent = md.getDisplayComponent( dp.getID(), dp,
-//                                              new MetaViewListener(vertSplit));
         String tempid = adp.getPackageId();
         if ((tempid==null)||(tempid.equals(""))) tempid = "tempid";
         mdcomponent = md.getDisplayComponent( tempid, adp,
                                               new MetaViewListener(vertSplit));
       }
       catch (Exception m) {
-        Log.debug(5, "Unable to display Datapackage MetaData:\n"+m.getMessage());
+        Log.debug(30, "Unable to display Datapackage MetaData:\n"+m.getMessage());
         // can't display requested ID, so just display empty viewer:
         try{
-//          if (dp!=null) {
-//            mdcomponent = md.getDisplayComponent(dp, null);
             mdcomponent = md.getDisplayComponent(adp, null);
-//          }
+          moreLabel.setText("<html><a href=\".\"><b>less</b></a></html>");
+          vertSplit.setDividerLocation(1.0);
+
         }
         catch (Exception e) {
           Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage());
@@ -1073,175 +1075,38 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   public void editingCompleted(String xmlString, String id, String location) {
 
-    Log.debug(1, "editing complete: id: " + id + " location: " + location);
-    if (location==null) return;
-
-    /* metadisplay class does not 'know' the location of a package
-     * so it is set to null when the editor is called.
-     * We thus get it here by checking the dataPackage instance.
-     */
+    Log.debug(30, "editing complete: id: " + id + " location: " + location);
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     AccessionNumber a = new AccessionNumber(morpho);
-    boolean metacatpublic = false;
-    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-    boolean metacatloc = false;
-    boolean localloc = false;
-    boolean bothloc = false;
-    String newid = "";
-    String newPackageId = "";
-    if(location.equals(DataPackageInterface.BOTH))
-    {
-      metacatloc = true;
-      localloc = true;
+    String curid = adp.getAccessionNumber();
+    String newid = null;
+    if (!curid.equals("")) {
+      newid = a.incRev(curid);
+    } else {
+      newid = a.getNextId();
     }
-    else if(location.equals(DataPackageInterface.METACAT))
-    {
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.LOCAL))
-    {
-      localloc = true;
-    }
+    morphoFrame.setVisible(false);
+    UIController uicontroller = UIController.getInstance();
 
-//DFH - need to rewrite for eml2 !!!!
-/*
-    try
-    {
-      if(localloc)
-      { //save the file locally
-        if(id.trim().equals(dp.getID().trim()))
-        { //we just edited the package file itself
-          String oldid = id;
-          newid = a.incRev(id);
-          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
+    // turn the xml string into a dom root node
+    try{
+      StringReader sr = new StringReader(xmlString);
+      Node nd = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
+      AbstractDataPackage newadp = DataPackageFactory.getDataPackage(nd);
+      newadp.setAccessionNumber(newid);
+      newadp.setLocation("");  // we've changed it and not yet saved
 
-          // remove old version from cache
-          if (LocalQuery.dom_collection.containsKey(oldid)) {
-              LocalQuery.dom_collection.remove(oldid);
-          }
-
-     if (f==null) {
-        Log.debug(1,"file is null!");
-     }
-          String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          fsds.saveFile(newid, new StringReader(newPackageFile));
-          newPackageId = newid;
-        }
-        else
-        { //we edited a file in the package
-          Vector newids = new Vector();
-          Vector oldids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
-          fsds.saveFile(newid, new StringReader(xmlString));
-          newPackageId = a.incRev(dp.getID());
-          oldids.addElement(oldid);
-          oldids.addElement(dp.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
-                                                    oldids,
-                                                    newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile));
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      Log.debug(0, "Error saving file locally"+ id + " to " + location +
-                         "--message: " + e.getMessage());
-      Log.debug(11, "File: " + xmlString);
-      e.printStackTrace();
-    }
-
-    try
-    {
-      if(metacatloc)
-      { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(morpho);
-
-        if(id.trim().equals(dp.getID().trim()))
-        { //edit the package file
-          Vector oldids = new Vector();
-          Vector newids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
-          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          oldids.addElement(oldid);
-          newids.addElement(newid);
-          String newPackageFile = a.incRevInTriples(f, oldids, newids);
-          mds.saveFile(newid, new StringReader(newPackageFile),
-                       dp);
-          newPackageId = newid;
-        }
-        else
-        { //edit another file in the package
-          Vector oldids = new Vector();
-          Vector newids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
- //         mds.saveFile(newid, new StringReader(xmlString), dp);
-          Vector names = new Vector();
-          Vector readers = new Vector();
-          names.addElement(newid);
-          readers.addElement(new StringReader(xmlString));
-          newPackageId = a.incRev(dp.getID());
-          //increment the package files id in the triples
-          oldids.addElement(oldid);
-          oldids.addElement(dp.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
-                                                    oldids,
-                                                    newids);
-//          mds.saveFile(newPackageId, new StringReader(newPackageFile),
-//                       dp);
-          names.addElement(newPackageId);
-          readers.addElement(new StringReader(newPackageFile));
-          String res = mds.saveFilesTransaction(names, readers, dp);
-          Log.debug(20,"Transaction result is: "+res);
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      String message = e.getMessage();
-      if(message.indexOf("Next revision number must be") != -1)
-      {
-        Log.debug(0,"The file you are attempting to update " +
-                                 "has been changed by another user.  " +
-                                 "Please refresh your query screen, " +
-                                 "open the package again and " +
-                                 "re-enter your changes.");
-        return;
-      }
-      Log.debug(0, "Error saving file to metacat "+ id + " to " + location +
-                         "--message: " + e.getMessage());
-      //Log.debug(11, "File: " + xmlString);
-      e.printStackTrace();
-    }
-    MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
-
-    // Show the new package
-    try
-    {
       ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider =
-                      services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newPackageId, null, null, null);
-    }
-    catch (ServiceNotHandledException snhe)
-    {
-       Log.debug(6, snhe.getMessage());
+      ServiceProvider provider = services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+      dataPackageInt.openNewDataPackage(newadp, null);
+      uicontroller.removeWindow(morphoFrame);
+      morphoFrame.dispose();
+      
+    } catch (Exception e) {
+        Log.debug(5, "Exception in converting edited XML to DOM!");
     }
 
-    thisFrame.setVisible(false);
-    UIController controller = UIController.getInstance();
-    controller.removeWindow(thisFrame);
-    thisFrame.dispose();
-*/
   }
 
   public void editingCanceled(String xmlString, String id, String location) {
