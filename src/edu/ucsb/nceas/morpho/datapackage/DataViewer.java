@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 21:19:13 $'
- * '$Revision: 1.108 $'
+ *     '$Date: 2004-04-02 22:01:46 $'
+ * '$Revision: 1.109 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.EventObject;
 import java.awt.event.*;
 import java.util.Stack;
 
@@ -1144,7 +1145,8 @@ public class DataViewer extends javax.swing.JPanel
       for (int ii=0;ii<column_labels.size();ii++) {
         row[ii] = "";
       }
-      pv.initEmpty(row);
+      // arbitrarily create 50 empty rows !
+      pv.initEmpty(row, 50);
       pv.setFieldDelimiter(field_delimiter);
     }
     else {

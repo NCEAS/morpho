@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 20:07:27 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-02 22:01:46 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -273,11 +273,13 @@ public class PersistentVector
   /*
    * initiallize with a single element
    */
-  public void initEmpty(String[] ar) {
+  public void initEmpty(String[] ar, int numEmptyRows) {
     try {
-      long pos = obj.writeObject(ar);  // object added to file
-      Long lpos = new Long(pos);
-      objectList.addElement(lpos); // position added to objectList 
+      for (int i=0;i<numEmptyRows;i++) {
+        long pos = obj.writeObject(ar);  // object added to file
+        Long lpos = new Long(pos);
+        objectList.addElement(lpos); // position added to objectList 
+      }
     }
      catch (Exception e) {}
   }
