@@ -228,8 +228,6 @@
                   </mediumNote>
                 </offline>
                 <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-                  <ANY minOccurs="1" maxOccurs="unbounded" help="">
-                  </ANY>
                 </inline>
               </CHOICE76>
                 <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
@@ -3875,8 +3873,6 @@
               </mediumNote>
             </offline>
             <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats. The data should be de-encoded and de-compressed according to the encodingMethod and compressionMethod fields in eml-physical as if the data had been obtained out-of-band (e.g., from a URL).">
-              <ANY minOccurs="1" maxOccurs="unbounded" help="">
-              </ANY>
             </inline>
           </CHOICE115>
           <SEQUENCE123 minOccurs="1" maxOccurs="1" help="">
@@ -5524,8 +5520,6 @@
               </mediumNote>
             </offline>
             <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats. The data should be de-encoded and de-compressed according to the encodingMethod and compressionMethod fields in eml-physical as if the data had been obtained out-of-band (e.g., from a URL).">
-              <ANY minOccurs="1" maxOccurs="unbounded" help="">
-              </ANY>
             </inline>
           </CHOICE115>
           <SEQUENCE123 minOccurs="1" maxOccurs="1" help="">
@@ -7245,8 +7239,6 @@
               </mediumNote>
             </offline>
             <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats. The data should be de-encoded and de-compressed according to the encodingMethod and compressionMethod fields in eml-physical as if the data had been obtained out-of-band (e.g., from a URL).">
-              <ANY minOccurs="1" maxOccurs="unbounded" help="">
-              </ANY>
             </inline>
           </CHOICE115>
           <SEQUENCE123 minOccurs="1" maxOccurs="1" help="">
@@ -8683,8 +8675,6 @@
               </mediumNote>
             </offline>
             <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats. The data should be de-encoded and de-compressed according to the encodingMethod and compressionMethod fields in eml-physical as if the data had been obtained out-of-band (e.g., from a URL).">
-              <ANY minOccurs="1" maxOccurs="unbounded" help="">
-              </ANY>
             </inline>
           </CHOICE115>
           <SEQUENCE123 minOccurs="1" maxOccurs="1" help="">
@@ -10087,8 +10077,6 @@
               </mediumNote>
             </offline>
             <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats. The data should be de-encoded and de-compressed according to the encodingMethod and compressionMethod fields in eml-physical as if the data had been obtained out-of-band (e.g., from a URL).">
-              <ANY minOccurs="1" maxOccurs="unbounded" help="">
-              </ANY>
             </inline>
           </CHOICE115>
           <SEQUENCE123 minOccurs="1" maxOccurs="1" help="">
@@ -11483,8 +11471,6 @@
               </mediumNote>
             </offline>
             <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats. The data should be de-encoded and de-compressed according to the encodingMethod and compressionMethod fields in eml-physical as if the data had been obtained out-of-band (e.g., from a URL).">
-              <ANY minOccurs="1" maxOccurs="unbounded" help="">
-              </ANY>
             </inline>
           </CHOICE115>
           <SEQUENCE123 minOccurs="1" maxOccurs="1" help="">
