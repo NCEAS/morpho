@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-14 16:47:07 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2002-01-02 23:45:09 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1404,7 +1404,8 @@ public class ClientFramework extends javax.swing.JFrame
       Date expiration = new Date(102, 5, 1);
       Date warning = new Date(102, 4, 15);
       Date now = new Date();
-      if (now.after(expiration))
+ //     if (now.after(expiration))  // removed for release version
+      if (false) 
       {
         clf.debug(1, "This version of Morpho has expired! " +
            "See http://knb.ecoinformatics.org/ for a newer version.");
