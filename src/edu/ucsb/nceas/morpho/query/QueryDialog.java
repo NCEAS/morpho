@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2004-03-24 18:09:21 $'
- * '$Revision: 1.32 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-04 05:27:51 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,7 +308,7 @@ public class QueryDialog extends JDialog
     queryChoicesPanel.setLayout(new BoxLayout(queryChoicesPanel, 
                                               BoxLayout.Y_AXIS));
     queryChoicesPanel.setAlignmentX(0.0F);
-    SubjectTermPanel tqt1 = new SubjectTermPanel();
+    SubjectTermPanel tqt1 = new SubjectTermPanel(keyPressListener);
     textPanels.addElement(tqt1);
     queryChoicesPanel.add(tqt1);
     queryScrollPanel.getViewport().add(queryChoicesPanel);
@@ -350,7 +350,7 @@ public class QueryDialog extends JDialog
     taxonChoicesPanel.setLayout(new BoxLayout(taxonChoicesPanel, 
                                               BoxLayout.Y_AXIS));
     taxonChoicesPanel.setAlignmentX(0.0F);
-    TaxonTermPanel taxonTerm = new TaxonTermPanel();
+    TaxonTermPanel taxonTerm = new TaxonTermPanel(keyPressListener);
     taxonPanels.addElement(taxonTerm);
     taxonChoicesPanel.add(taxonTerm);
     taxonScrollPanel.getViewport().add(taxonChoicesPanel);
@@ -538,7 +538,7 @@ public class QueryDialog extends JDialog
    */
   private void handleMoreButtonAction(ActionEvent event)
   {
-    SubjectTermPanel tq = new SubjectTermPanel();
+    SubjectTermPanel tq = new SubjectTermPanel(keyPressListener);
     queryChoicesPanel.add(tq);
     textPanels.addElement(tq);
     lessButton.setEnabled(true);
@@ -566,7 +566,7 @@ public class QueryDialog extends JDialog
    */
   private void handleTaxonMoreButtonAction(ActionEvent event)
   {
-    TaxonTermPanel term = new TaxonTermPanel();
+    TaxonTermPanel term = new TaxonTermPanel(keyPressListener);
     taxonChoicesPanel.add(term);
     taxonPanels.addElement(term);
     taxonLessButton.setEnabled(true);
@@ -1049,7 +1049,7 @@ public class QueryDialog extends JDialog
         Object obj = subjectChildren.nextElement();
   
         // Create the panel for this subject term, and set defaults
-        SubjectTermPanel tq = new SubjectTermPanel();
+        SubjectTermPanel tq = new SubjectTermPanel(keyPressListener);
         tq.setAllState(true);
         tq.setTitleState(false);
         tq.setAbstractState(false);
@@ -1086,7 +1086,7 @@ public class QueryDialog extends JDialog
         } catch (ClassCastException cce) {
           Log.debug(3, "Query doesn't meet expectations, " +
                           "so couldn't rebuild dialog correctly!");
-          tq = new SubjectTermPanel();
+          tq = new SubjectTermPanel(keyPressListener);
           tq.setAllState(true);
         }
   
@@ -1096,7 +1096,7 @@ public class QueryDialog extends JDialog
       }
       buildSubject = true;
     } else {
-      SubjectTermPanel defaultPanel = new SubjectTermPanel();
+      SubjectTermPanel defaultPanel = new SubjectTermPanel(keyPressListener);
       defaultPanel.setAllState(true);
       queryChoicesPanel.add(defaultPanel);
       textPanels.addElement(defaultPanel);
@@ -1215,7 +1215,7 @@ public class QueryDialog extends JDialog
       while (taxonChildren.hasMoreElements()) {
   
         // Create the panel for this taxon term, and set defaults
-        TaxonTermPanel termPanel = new TaxonTermPanel();
+        TaxonTermPanel termPanel = new TaxonTermPanel(keyPressListener);
   
         try {
           // Process each taxon query group and make a taxon panel out of it
@@ -1252,7 +1252,7 @@ public class QueryDialog extends JDialog
         } catch (ClassCastException cce) {
           Log.debug(3, "Query doesn't meet expectations, " +
                           "so couldn't rebuild dialog correctly!");
-          termPanel = new TaxonTermPanel();
+          termPanel = new TaxonTermPanel(keyPressListener);
         }
   
         // Add the text panel to the dialog
@@ -1261,7 +1261,7 @@ public class QueryDialog extends JDialog
       }
       buildTaxon = true;
     } else {
-      TaxonTermPanel defaultPanel = new TaxonTermPanel();
+      TaxonTermPanel defaultPanel = new TaxonTermPanel(keyPressListener);
       taxonChoicesPanel.add(defaultPanel);
       taxonPanels.addElement(defaultPanel);
     }

@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-09-06 01:25:53 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-04 05:27:52 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -141,6 +142,11 @@ public class SubjectTermPanel extends JComponent
     SymItem lSymItem = new SymItem();
     allCheckBox.addItemListener(lSymItem);
     //}}
+  }
+  
+  public SubjectTermPanel(KeyAdapter ka) {
+    this();
+    textValueBox.addKeyListener(ka);
   }
 
   /**
