@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-06 17:29:06 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2001-07-06 20:53:18 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -956,7 +956,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	            String temp = "";
 	            if (publicIDString!=null) temp = "\""+publicIDString+"\"";
 	            String temp1 = "";
-	            if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
+	            if (systemIDString!=null) temp1 = "\"file://"+systemIDString+"\"";
 	            doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
 	        }
 	        str1 = "<?xml version=\"1.0\"?>\n"+doctype+str1;
@@ -982,7 +982,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	        String temp = "";
 	        if (publicIDString!=null) temp = "\""+publicIDString+"\"";
 	        String temp1 = "";
-	        if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
+	        if (systemIDString!=null) temp1 = "\"file://"+systemIDString+"\"";
 	        doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
 	    }
 	    str1 = "<?xml version=\"1.0\"?>\n"+doctype+str1;
