@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 17:17:42 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-09-10 21:24:49 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,8 +56,7 @@ public class OpenDialogBoxCommand implements Command
   public OpenDialogBoxCommand(Morpho morpho)
   {
     this.morpho = morpho;
-    ownerQuery = new Query(getOwnerQuery(), morpho);
-    
+   
   }//OpenDialogBoxCommand
   
   
@@ -66,6 +65,8 @@ public class OpenDialogBoxCommand implements Command
    */    
   public void execute()
   {
+    // create ownerQuery depend on the suiation when it executed
+    ownerQuery = new Query(getOwnerQuery(), morpho);   
     // Get the current morphoFrame. Maybe change get open dialog parent
     MorphoFrame frame = 
                     UIController.getInstance().getCurrentActiveWindow();
@@ -139,7 +140,6 @@ public class OpenDialogBoxCommand implements Command
     searchtext.append("searchmode=\"contains\">\n");
     searchtext.append("<value>%</value>\n");
     searchtext.append("</queryterm></querygroup></pathquery>");
-
     return searchtext.toString();
   } 
   
