@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-08 23:13:34 $'
- * '$Revision: 1.87 $'
+ *     '$Date: 2002-02-15 16:27:27 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1221,7 +1221,33 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         String pcdata = ni.getPCValue();
         if (pcdata.trim().length()<1) {        // has no text data
           parentNode = (DefaultMutableTreeNode)curNode.getParent();
+          // first build Vector of nodes from current leaf to root
+          Vector path2root = new Vector();
+          path2root.addElement(curNode);
           while (parentNode!=null) {
+            path2root.addElement(parentNode);
+            parentNode = (DefaultMutableTreeNode)parentNode.getParent();
+          }
+          // now go from the root toward the leaf, trimming branches
+          DefaultMutableTreeNode cNode;
+          for (int i=path2root.size()-1;i>-1;i--) {
+            cNode = (DefaultMutableTreeNode)path2root.elementAt(i);
+            NodeInfo cni = (NodeInfo)cNode.getUserObject();
+            String card = cni.getCardinality();
+            // if node is not required, perhaps trim it
+            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
+                // first see if there are nonempty sub-branches
+                if (!hasNonEmptyTextLeaves(cNode)) {
+                    tempNode = cNode;
+                    parentNode = (DefaultMutableTreeNode)cNode.getParent();
+                    if (parentNode!=null) {
+                        parentNode.remove(tempNode);
+                    }
+                }
+            }
+          }
+          
+/*          while (parentNode!=null) {
             NodeInfo pni = (NodeInfo)parentNode.getUserObject();
             String card = pni.getCardinality();
             tempNode = parentNode;
@@ -1235,7 +1261,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	            }
 	          }
 	        }  // end while
-        }
+*/	        
+	        
+        }  // end 'if (pcdata...'
       }
     }
  }
