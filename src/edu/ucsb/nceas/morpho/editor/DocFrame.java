@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-07 02:02:26 $'
- * '$Revision: 1.117 $'
+ *     '$Date: 2003-10-07 15:43:34 $'
+ * '$Revision: 1.118 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -877,6 +877,11 @@ public class DocFrame extends javax.swing.JFrame
       removeNodesVisLevel(frootNode, 0);//
       
       treeUnion(rootNode, frootNode);
+
+      setAttributeNames(rootNode);
+      setChoiceNodes(rootNode);
+      setAllNodesAsSelected(rootNode);
+      setSelectedNodes(rootNode);
     }
     
     treeModel.reload();
