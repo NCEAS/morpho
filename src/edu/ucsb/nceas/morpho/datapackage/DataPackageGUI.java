@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-28 23:04:47 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2002-03-02 00:02:31 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1049,7 +1049,11 @@ public class DataPackageGUI extends javax.swing.JFrame
           Vector newids = new Vector();
           String oldid = id;
           newid = a.incRev(id);
-          mds.saveFile(newid, new StringReader(xmlString), dataPackage);
+ //         mds.saveFile(newid, new StringReader(xmlString), dataPackage);
+          Vector names = new Vector();
+          Vector readers = new Vector();
+          names.addElement(newid);
+          readers.addElement(new StringReader(xmlString));
           newPackageId = a.incRev(dataPackage.getID());
           //increment the package files id in the triples
           oldids.addElement(oldid);
@@ -1059,8 +1063,12 @@ public class DataPackageGUI extends javax.swing.JFrame
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
                                                     oldids,
                                                     newids);
-          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       dataPackage);
+//          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
+//                       dataPackage);
+          names.addElement(newPackageId);
+          readers.addElement(new StringReader(newPackageFile));
+          String res = mds.saveFilesTransaction(names, readers, dataPackage);
+          framework.debug(20,"Transaction result is: "+res);
         }
       }
     }
