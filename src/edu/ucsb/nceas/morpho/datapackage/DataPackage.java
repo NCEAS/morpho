@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:33 $'
- * '$Revision: 1.65 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-27 23:21:04 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,8 +219,8 @@ public class DataPackage
   // @param     identifier                  the unique identifier needed to 
   //                                        locate the desired sub-element. 
   // @return    a <code>java.io.File</code> 
-  // @throws    DocumentNotFoundException   if document cannot be found
-  // @throws    FileNotFoundException       if document cannot succesfully be 
+  // @throws    DocumentNotFoundException   if document cannot be found, or
+  //                                        if document cannot succesfully be 
   //                                        opened and a Reader returned
   private File openAsFile(String identifier) throws  DocumentNotFoundException  
   {
