@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-22 02:01:09 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2003-12-22 19:37:05 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,8 @@ public class DataLocation extends AbstractWizardPage {
   private final String title      = "Data File Information:";
   private final String subtitle   = "Location";
 
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
   private final String FILE_LOCATOR_FIELD_FILENAME_LABEL = "File Name:";
   private final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = "Name/Title:";
 
@@ -83,8 +85,6 @@ public class DataLocation extends AbstractWizardPage {
         = WizardSettings.HTML_TABLE_LABEL_OPENING
         +"Use the \"locate\" button to locate the data file on your computer:"
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
-
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String URN_ROOT = "ecogrid://knb/";
 
@@ -102,8 +102,8 @@ public class DataLocation extends AbstractWizardPage {
 
   private final String FILECHOOSER_PANEL_TITLE = "File Location:";
 
-  private final String Q1_TITLE
-                        = "Where is your data?";
+  private final String Q1_TITLE = "Where is your data?";
+
   private final String[] Q1_LABELS = new String[] {
     "CREATE  - create a new, empty data table and its metadata description.",
     "IMPORT   - import a data file into the package, and create its metadata description",
@@ -124,8 +124,8 @@ public class DataLocation extends AbstractWizardPage {
     "MANUAL       - Enter metadata description manually"
   };
 
-  private final String Q3_TITLE
-                        = "Data Location?";
+  private final String Q3_TITLE = "Data Location?";
+
   private final String[] Q3_LABELS = new String[] {
     "Not available",
     "Online URL",
@@ -136,6 +136,7 @@ public class DataLocation extends AbstractWizardPage {
 
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 
   public DataLocation() {
 
@@ -262,6 +263,7 @@ public class DataLocation extends AbstractWizardPage {
                                                 Q2_LABELS_DESCRIBE,
                                                 q2Listener_describe, -1, true);
 
+
     ////////////////////////////////////////////////////////
     // QUESTION 1 - "CREATE/IMPORT/DESCRIBE" RADIO PANEL
     ////////////////////////////////////////////////////////
@@ -330,33 +332,6 @@ public class DataLocation extends AbstractWizardPage {
 
     currentSecondChoicePanel = blankPanel;
     currentThirdChoicePanel  = blankPanel;
-  }
-
-  private void deselectRadioGroup(JPanel radioPanel)  {
-
-    Component buttonPanelComp = radioPanel.getComponent(1);
-    Container buttonPanel     = (Container)buttonPanelComp;
-    Component dummyButtonComp = buttonPanel.getComponent(0);
-    JRadioButton dummyButton = (JRadioButton)dummyButtonComp;
-    dummyButton.setSelected(true);
-  }
-
-  private void setLastEvent(short eventFlag) { lastEvent = eventFlag; }
-
-  private short getLastEvent() { return lastEvent; }
-
-  private void setQ2(JPanel newPanel) {
-
-    secondChoiceContainer.remove(currentSecondChoicePanel);
-    currentSecondChoicePanel = newPanel;
-    secondChoiceContainer.add(currentSecondChoicePanel);
-  }
-
-  private void setQ3(JPanel newPanel) {
-
-    thirdChoiceContainer.remove(currentThirdChoicePanel);
-    currentThirdChoicePanel = newPanel;
-    thirdChoiceContainer.add(currentThirdChoicePanel);
   }
 
 
@@ -484,6 +459,39 @@ public class DataLocation extends AbstractWizardPage {
 
     return panel;
   }
+
+
+  private void deselectRadioGroup(JPanel radioPanel)  {
+
+    Component buttonPanelComp = radioPanel.getComponent(1);
+    Container buttonPanel     = (Container)buttonPanelComp;
+    Component dummyButtonComp = buttonPanel.getComponent(0);
+    JRadioButton dummyButton = (JRadioButton)dummyButtonComp;
+    dummyButton.setSelected(true);
+  }
+
+
+  private void setLastEvent(short eventFlag) { lastEvent = eventFlag; }
+
+
+  private short getLastEvent() { return lastEvent; }
+
+
+  private void setQ2(JPanel newPanel) {
+
+    secondChoiceContainer.remove(currentSecondChoicePanel);
+    currentSecondChoicePanel = newPanel;
+    secondChoiceContainer.add(currentSecondChoicePanel);
+  }
+
+
+  private void setQ3(JPanel newPanel) {
+
+    thirdChoiceContainer.remove(currentThirdChoicePanel);
+    currentThirdChoicePanel = newPanel;
+    thirdChoiceContainer.add(currentThirdChoicePanel);
+  }
+
 
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -740,7 +748,55 @@ public class DataLocation extends AbstractWizardPage {
    *  settings for this particular wizard page
    *
    *  @return   data the OrderedMap object that contains all the
-   *            key/value paired settings for this particular wizard page
+   *            key/value paired settings for this particular wizard page   *
+   * -----------------
+   *
+   * KEY:
+   * inline/online-urn  - means data would have either "inline" distribution
+   * elements, or would be a separate file (managed by morpho/metacat),
+   * referenced by a URN (ecogrid://etc...), in which case its distribution
+   * would be "online". This is currently a preference in config.xml, and
+   * defaults to online with URN
+   *
+   * online-url  - distrbution is also online, but the data file is a
+   * web-accessible url (eg at http://www.myhost.com/mypath/etc/ or similar),
+   * not an ecogrid:// urn.
+   *
+   * -----------------
+   *
+   * CREATE
+   * has entities, distribution - inline/online-urn - package viewer displays
+   * data table
+   *
+   * IMPORT_AUTO
+   * has entities, distribution - inline/online-urn - package viewer displays
+   * data table
+   *
+   * IMPORT_MAN
+   * has entities, distribution - inline/online-urn - package viewer displays
+   * data table
+   *
+   *
+   * DESCRIBE_AUTO
+   * has entities, distribution - offline - package viewer displays no data
+   * table, or maybe just column headers?
+   * (note - near-future morpho version may also have distribution as
+   * online-url)
+   *
+   * DESCRIBE_MAN_NODATA  ("data not available" - description only)
+   * has entities, *no* distribution elements - package viewer displays no
+   * data table, or maybe just column headers?
+   *
+   * DESCRIBE_MAN_ONLINE
+   * has entities, distribution - online-url - package viewer displays no
+   * data table, or maybe just column headers?
+   * (note - near-future morpho version may follow url and pull data table
+   * for display in data viewer?)
+   *
+   * DESCRIBE_MAN_OFFLINE
+   * has entities, distribution - offline - package viewer displays no data
+   * table, or maybe just column headers?
+   *
    */
   private OrderedMap returnMap = new OrderedMap();
 
@@ -778,13 +834,6 @@ public class DataLocation extends AbstractWizardPage {
       case WizardSettings.NODATA:
         //if no data, then miss out the distribution elements altogether
     }
-
-/*****
-//  O N L I N E  /////////////////////////////////////
-//      returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
-//      returnMap.put(distribXPath + "/url", urlFieldOnline.getText().trim());
-
-****/
     return returnMap;
   }
 
