@@ -3,7 +3,6 @@
 <!ELEMENT beggeol (geolage)>
 <!ELEMENT begtime (#PCDATA)>
 <!ELEMENT citeinfo ANY>
-<!ELEMENT coverage (geographicCov, temporalCov, taxonomicCov)>
 <!ELEMENT enddate (#PCDATA)>
 <!ELEMENT endgeol (geolage)>
 <!ELEMENT endtime (#PCDATA)>
@@ -15,14 +14,12 @@
 <!ELEMENT rngdates ((begdate, begtime?, enddate, endtime?) | (beggeol, endgeol))>
 <!ELEMENT sngdate ((caldate, time?) | geolage)>
 <!ELEMENT taxoncl (taxonrn?, taxonrv?, common*, taxoncl*)>
-<!ELEMENT taxonomicCov (keywtax+, taxonsys?, taxongen?, taxoncl+)>
 <!ELEMENT temporalCov (sngdate | mdattim | rngdates)>
 <!ELEMENT citation ((identifier+, shortName?, title+, originator+, pubDate?, pubPlace?, series?, abstract?, keywordSet*, additionalInfo*, rights*, (onlineURL | offlineMedium)*, triple*), (ISBN?, ISSN?, (article | book | chapter | manuscript | report | thesis)))>
 <!ELEMENT designDescription (protocol*, sampling*, paragraph*, citation*)>
 <!ELEMENT eml-project (identifier+, researchProject+)>
 <!ELEMENT researchProject (title+, personnel+, temporalCov*, geographicCov*, abstract?, funding?, siteDescription*, designDescription*, researchProject*)>
 <!ELEMENT siteDescription (paragraph*, citation*)>
-<!ELEMENT eml-protocol (identifier+, protocol+)>
 <!ELEMENT paragraph (#PCDATA)>
 <!ELEMENT protocol (method*, processingStep*, qualityControl*)>
 <!ELEMENT descgeog (#PCDATA)>
@@ -41,7 +38,6 @@
 <!ELEMENT taxonrv (#PCDATA)>
 <!ELEMENT common (#PCDATA)>
 <!ELEMENT keywtax (taxonkt, taxonkey+)>
-<!ELEMENT taxonsys (classsys+, idref*, ider+, taxonpro, taxoncom?, vouchers*)>
 <!ELEMENT taxongen (#PCDATA)>
 <!ELEMENT identifier (#PCDATA)>
 <!ATTLIST identifier system CDATA #IMPLIED>
