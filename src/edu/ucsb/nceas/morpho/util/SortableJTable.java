@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-02 23:14:48 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-04-12 22:52:10 $'
+ * '$Revision: 1.7.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,6 +96,15 @@ public class SortableJTable extends JTable implements MouseListener
     init();
   }
 
+/**
+  * Reset the table model in Jtable
+  * @param model ColumnSortableTableModel
+  */
+ public void resetModel(ColumnSortableTableModel model)
+ {
+   super.setModel(model);
+ }
+
   /**
    * Get the table if sorted or not
    */
@@ -153,6 +162,7 @@ public class SortableJTable extends JTable implements MouseListener
    */
   public void mouseClicked(MouseEvent event)
   {
+
     // a sort table command
     SortTableCommand sortCommand = null;
     // Get the index in the table (dispaly)

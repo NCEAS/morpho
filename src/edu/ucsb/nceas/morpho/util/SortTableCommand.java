@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:54 $'
- * '$Revision: 1.2 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 22:52:10 $'
+ * '$Revision: 1.2.6.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,17 +38,17 @@ import java.awt.event.ActionEvent;
 /**
  * Class to handle sorting table command
  */
-public class SortTableCommand implements Command 
+public class SortTableCommand implements Command
 {
   /** A reference to the JTable */
   private JTable table = null;
-  
+
   /** Column index by sorting */
   private int indexOfColumn = -1;
-  
+
   /** Order of sorting */
   String order = null;
-  
+
   /**
    * Constructor of SortableCommand
    * @param myTable the table need to be sorted
@@ -61,13 +61,14 @@ public class SortTableCommand implements Command
     indexOfColumn = myIndex;
     order = myOrder;
   }//CancelCommand
-  
-  
+
+
   /**
    * execute sort table command
-   */    
+   */
   public void execute(ActionEvent event)
   {
+
     // table
     SortableJTable sortTable = null;
     // table model
@@ -77,7 +78,7 @@ public class SortTableCommand implements Command
     // table column
     TableColumn column = null;
     int indexInTableModel = -1;
-    if (!(table instanceof SortableJTable) 
+    if (!(table instanceof SortableJTable)
                                     || order.equals(SortableJTable.NONORDERED))
     {
       return; //couldn't sort
@@ -103,13 +104,15 @@ public class SortTableCommand implements Command
     // set order
     sortTable.setOrderOfSortedColumn(order);
     // Sort table
+
     tableModel.sortTableByColumn(indexInTableModel, order);
     sortTable.validate();
+
   }//execute
 
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand

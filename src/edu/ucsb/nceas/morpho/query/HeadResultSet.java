@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-12 16:19:52 $'
- * '$Revision: 1.10.2.1 $'
+ *     '$Date: 2004-04-12 22:52:10 $'
+ * '$Revision: 1.10.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ public class HeadResultSet extends ResultSet
    */
   public Object getValueAt(int row, int col)
   {
-    System.out.println("in get value in headresultset");
+
     Object value = null;
     try {
       Vector rowVector = (Vector)headResultsVector.elementAt(row);
@@ -268,11 +268,13 @@ public class HeadResultSet extends ResultSet
     // sorting
     if (sort)
     {
+
       //look up index in result vector
       int resultColIndex = lookupResultsVectorIndex(col);
       // sort the result vector
       Collections.sort(headResultsVector,
                     new CellComparator(resultColIndex, ascending));
+
     }
 
   }//sortColumn

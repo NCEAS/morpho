@@ -14,9 +14,9 @@
 
  *   '$Author: tao $'
 
- *     '$Date: 2004-04-12 16:19:52 $'
+ *     '$Date: 2004-04-12 22:52:10 $'
 
- * '$Revision: 1.3.10.1 $'
+ * '$Revision: 1.3.10.2 $'
 
  *
 
@@ -103,20 +103,16 @@ public class ToolTippedSortableJTable extends SortableJTable
   public ToolTippedSortableJTable(ColumnSortableTableModel model)
 
   {
-
     super(model);
-
-
-
   }
 
   /**
    *  Default Constructor
    */
-  public ToolTippedSortableJTable()
+  /*public ToolTippedSortableJTable()
   {
     super();
-  }
+  }*/
 
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-12 16:19:52 $'
- * '$Revision: 1.69.2.1 $'
+ *     '$Date: 2004-04-12 22:52:10 $'
+ * '$Revision: 1.69.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -211,8 +211,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 
 
       // Set up the results table
-      table = new ToolTippedSortableJTable();
-      table.setModel(results);
+      table = new ToolTippedSortableJTable(results);
       // Set resize model
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       // Set horizontal line off
@@ -333,7 +332,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    */
   private void doDoubleClickOpen()
   {
-    // Create a open pakcag command
+     // Create a open pakcag command
     OpenPackageCommand open = new OpenPackageCommand(dialog);
     open.execute(null);
   }// doDoubleClickOpen
@@ -417,12 +416,10 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    */
   public void resetResultsVector (Vector newResultVector)
   {
+
     results.setResultsVector(newResultVector);
-    table.setModel(results);
+    table.resetModel(results);
     results.fireTableDataChanged();
-    table.validate();
-    table.repaint();
-    table.setVisible(true);
   }
   /*
    * This method picks column sizes depend on the length of talbe and the

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-12 16:19:52 $'
- * '$Revision: 1.20.2.1 $'
+ *     '$Date: 2004-04-12 22:52:10 $'
+ * '$Revision: 1.20.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -872,8 +872,8 @@ public class Query extends DefaultHandler {
   * Method to display the metacat search result
  */
  private void doMetacatSearchDisplay(final MorphoFrame resultWindow,
-                                            final ResultPanel resultDisplayPanel,
-                                            final Morpho morpho)
+                                     final ResultPanel resultDisplayPanel,
+                                     final Morpho morpho)
  {
    final SwingWorker worker = new SwingWorker()
    {
@@ -891,15 +891,23 @@ public class Query extends DefaultHandler {
 
          Vector allResults = new Vector();
          // if the parsing is not finished, get the synchronzied vector
+         // length of total resultset
+         int length = 0;
          while (!handler.isDone())
          {
            Vector partResult = dataVector.getVector();
+           System.out.println("The part result size is: " + partResult.size());
            // add partReulst inot all Result
            for ( int i=0; i < partResult.size(); i++)
            {
              allResults.add(partResult.elementAt(i));
            }
-           resultDisplayPanel.resetResultsVector(allResults);
+           if ( allResults.size() > length)
+           {
+             resultDisplayPanel.resetResultsVector(allResults);
+             length = allResults.size();
+           }
+
          }
          resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
          StateChangeMonitor.getInstance().notifyStateChange(
@@ -912,8 +920,10 @@ public class Query extends DefaultHandler {
        //Runs on the event-dispatching thread.
        public void finished()
        {
+         System.out.println("the size of vector "+ resultDisplayPanel.getResultSet().getResultsVector().size());
          resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
                                  + " data sets found");
+         System.out.println("set the bufferfly to false");
          resultWindow.setBusy(false);
 
        }
