@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.44 2002-05-10 18:44:47 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.45 2002-07-02 20:41:41 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -82,8 +82,12 @@
                 value="${libdir}/jnet.jar" />
       <property name="httpclient" 
                 value="${libdir}/httpclient.jar" />
+      <property name="kunststoff" 
+                value="${libdir}/kunststoff.jar" />
+      <property name="morpho-config"
+                value="${libdir}/morpho-config.jar" />
       <property name="cpath" 
-                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itisjar}:${httpclient}"/>
+                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itisjar}:${httpclient}:${morpho-config}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
