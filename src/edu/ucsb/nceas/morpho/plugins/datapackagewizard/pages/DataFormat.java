@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-03 00:25:18 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2003-10-03 18:36:49 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -529,6 +529,10 @@ public class DataFormat extends AbstractWizardPage{
    */
   public boolean onAdvanceAction() {
     
+System.err.println("\n\n&&&& calling onAdvanceAction()....");      
+    list.fireEditingStopped();
+System.err.println("\n\n&&&& done fireEditingStopped(); formatXPath = "+formatXPath);      
+
     if (formatXPath==null || currentPanel==null)  {
 
       WidgetFactory.hiliteComponent(radioButtonGrpLabel);
@@ -555,13 +559,19 @@ public class DataFormat extends AbstractWizardPage{
     
 
     } else if (formatXPath==COMPLEX_TEXT_XPATH) {
-    
+
+System.err.println("\n\n&&&& formatXPath==COMPLEX_TEXT_XPATH");      
       OrderedMap listNVP = getCmplxDelimListAsNVP();
       
+System.err.println("\n\n&&&& listNVP = "+listNVP);   
+  
+if (listNVP!=null) System.err.println("\n\n&&&& listNVP.size() = "+listNVP.size()); 
+
       if (listNVP==null || listNVP.size()<1) {
         WidgetFactory.hiliteComponent(listLabel);
         return false;
       }
+System.err.println("\n\n&&&& calling listContainsOnlyPosNumericWidths()....");      
       if (!listContainsOnlyPosNumericWidths()) {
         WidgetFactory.hiliteComponent(listLabel);
         return false;
@@ -614,18 +624,22 @@ public class DataFormat extends AbstractWizardPage{
       boolean nextCol0IsNull = (nextRow.get(0)==null);
       boolean nextCol1IsNull = (nextRow.get(1)==null);
 
+System.err.println("\n\n&&&& nextCol0IsNull = "+nextCol0IsNull);      
+System.err.println("\n\n&&&& nextCol1IsNull = "+nextCol1IsNull);    
+  
       if (nextCol0IsNull || nextCol1IsNull) continue;
 
-      if (nextRow.get(0).equals(pickListVals[1])) continue; //delimited
-
-      // if col 0 is not null and is not delimited, MUST be fixed width...
+      if (nextRow.get(0).equals(pickListVals[0])) {  // fixed width...
+        nextWidthStr = (String)(nextRow.get(1));
+        
+System.err.println("\n\n&&&& FIXED WIDTH FOUND>>>"+nextWidthStr);    
+  
+        if (!(nextWidthStr.trim().equals(EMPTY_STRING))) {
       
-      nextWidthStr = (String)(nextRow.get(1));
-      if (!(nextWidthStr.trim().equals(EMPTY_STRING))) {
-      
-        if (!WizardSettings.isFloat(nextWidthStr)) returnVal = false;
-        else {
-          returnVal = (Float.parseFloat(nextWidthStr) > 0);
+          if (!WizardSettings.isFloat(nextWidthStr)) returnVal = false;
+          else {
+            returnVal = (Float.parseFloat(nextWidthStr) > 0);
+          }
         }
       }  
     }
@@ -645,16 +659,29 @@ public class DataFormat extends AbstractWizardPage{
     StringBuffer buff = new StringBuffer();
     List rowLists = list.getListOfRowLists();
     String fixedDelimStr = null;
+    
+System.err.println("\ngetCmplxDelimListAsNVP:: rowLists = "+rowLists);
   
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
       // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
+      
+System.err.println("\ngetCmplxDelimListAsNVP:: nextRowObj = "+nextRowObj);
+    
       if (nextRowObj==null) continue;
       
       List nextRow = (List)nextRowObj;
+      
+System.err.println("\ngetCmplxDelimListAsNVP:: nextRow = "+nextRow);
+System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.size() = "+nextRow.size());
+    
       if (nextRow.size() < 1) continue;
       
+      
+System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.get(0) = "+nextRow.get(0));
+System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.get(1) = "+nextRow.get(1));
+
       if (nextRow.get(0)==null || nextRow.get(1)==null) continue;
       if (((String)(nextRow.get(1))).equals(EMPTY_STRING)) continue;
       

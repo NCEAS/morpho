@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:41 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2003-10-03 18:36:49 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -462,6 +462,21 @@ public class CustomList extends JPanel {
   }  
   
 
+  
+  
+  /**
+   *  Tells the list to stop editing and commit all edited values to the model. 
+   *  Typically called by a wizard page when next> is pressed, so all changes 
+   *  are committed before validation.
+   */
+  public void fireEditingStopped() {
+      
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
+  }
+        
+      
   /**
    *  returns the index of the currently-selected row, or -1 if none selected
    *
@@ -544,6 +559,11 @@ public class CustomList extends JPanel {
   
     int row = getSelectedRowIndex();
     
+System.err.println("\n\n*****>>>>>>>>>> CustomList.addRow(); rowList.toArray() = ");
+for (int i=0; i<+(rowList.toArray()).length; i++) {
+
+  System.err.println("\n\n*****>>>>>>>>>> "+i+"==> "+(rowList.toArray())[i]);
+}
     if (row < 0) {
     
       row = model.getRowCount();
@@ -553,13 +573,13 @@ public class CustomList extends JPanel {
     
       model.insertRow(++row, rowList.toArray());
     }
-    if (table.getEditorComponent()!=null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
-    }
+    fireEditingStopped();
     table.tableChanged(getTableModelEvent());
     Component comp = table.getComponentAt(row, 0);
+System.err.println("\n\n*****>>>>>>>>>> CustomList.addRow(); comp = "+comp
++" at row; "+row);
     if (comp!=null) {
-//      table.editCellAt(row, 0, new EventObject(comp));
+      table.editCellAt(row, 0, new EventObject(comp));
       comp.requestFocus();
     } 
     table.scrollRectToVisible(table.getCellRect(row,0,true));
@@ -602,9 +622,7 @@ public class CustomList extends JPanel {
   
     //maintain current selection:
     int currentSelection = getSelectedRowIndex();
-    if (table.getEditorComponent()!=null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
-    }
+    fireEditingStopped();
     return (List)(model.getDataVector());
   }
   
@@ -784,9 +802,8 @@ class EditAction extends AbstractAction {
     Log.debug(45, "CustomList EDIT action");  
     int row = table.getSelectedRow();
     if (row < 0) return;
-    if (table.getEditorComponent()!=null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
-    }
+    parentList.fireEditingStopped();
+
     // get object here - only a String surrogate is shown by the cell renderer, 
     // but the entire object is actually in the table model!
   
@@ -817,9 +834,8 @@ class DuplicateAction extends AbstractAction {
     Log.debug(45, "CustomList DUPLICATE action");  
     int row = table.getSelectedRow();
     if (row < 0) return;
-    if (table.getEditorComponent()!=null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
-    }
+    parentList.fireEditingStopped();
+
     // get object here - only a String surrogate is shown by the cell renderer, 
     // but the entire object is actually in the table model!
 
@@ -854,10 +870,8 @@ class DeleteAction extends AbstractAction {
     Log.debug(45, "CustomList DELETE action");  
     int row = table.getSelectedRow();
     if (row < 0) return;
-    if (table.getEditorComponent()!=null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
-    }
-    
+    parentList.fireEditingStopped();
+
     parentList.removeRow(row);
 
   
@@ -893,9 +907,8 @@ class MoveUpAction extends AbstractAction {
     Log.debug(45, "CustomList MOVE UP action");  
     int row = table.getSelectedRow();
     if (row < 0) return;
-    if (table.getEditorComponent()!=null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
-    }
+    parentList.fireEditingStopped();
+
     model.moveRow(row, row, row - 1);
     table.tableChanged(parentList.getTableModelEvent());
     table.setRowSelectionInterval(row - 1, row - 1);
@@ -922,9 +935,8 @@ class MoveDownAction extends AbstractAction {
     Log.debug(45, "CustomList MOVE DOWN action");  
     int row = table.getSelectedRow();
     if (row < 0) return;
-    if (table.getEditorComponent()!=null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
-    }
+    parentList.fireEditingStopped();
+
     model.moveRow(row, row, row + 1);
     table.tableChanged(parentList.getTableModelEvent());
     table.setRowSelectionInterval(row + 1, row + 1);
