@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-05 23:42:55 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-11-08 23:27:57 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -315,6 +315,72 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
+  
+  /**
+   *  This method deletes the indexed entity from the DOM
+   */
+  public void deleteEntity(int entNum) {
+    if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
+      Log.debug(20, "Unable to find entity at index");
+      return;
+    }
+    Node entity = entityArray[entNum];
+    Node parent = entity.getParentNode();
+    parent.removeChild(entity);	  
+  }
+
+    /**
+   *  This method inserts an entity in the DOM at the indexed position
+   */
+  public void insertEntity(Node entity, int pos) {
+    Document thisDom = getMetadataNode().getOwnerDocument();
+    Node newEntityNode = thisDom.importNode(entity, true); // 'true' imports children
+    // now have to figure out where to insert this cloned node and its children
+    // First consider case where there are other entities
+    if ((entityArray!=null)&&(entityArray.length>0)) {
+      if (entityArray.length>pos) {
+				Node par = entityArray[pos].getParentNode();
+				par.insertBefore(newEntityNode,entityArray[pos]);
+				// now in DOM; need to insert in EntityArray
+			  Node[] newEntArray = new Node[entityArray.length + 1];
+				for (int i=0; i<pos; i++) {
+					newEntArray[i] = entityArray[i];
+				}
+				newEntArray[pos] = newEntityNode;
+				for (int i=pos+1; i<entityArray.length; i++) {
+					newEntArray[i] = entityArray[i];
+				}
+			  entityArray = newEntArray;
+			}
+			else {  // insert at end of other entities
+				Node par1 = entityArray[0].getParentNode();
+				par1.appendChild(newEntityNode);
+				// now in DOM; need to insert in EntityArray
+			  Node[] newEntArray = new Node[entityArray.length + 1];
+				for (int i=0; i<entityArray.length; i++) {
+					newEntArray[i] = entityArray[i];
+				}
+				newEntArray[entityArray.length] = newEntityNode;
+			  entityArray = newEntArray;
+			}
+    }
+	  // must handle case where there are no existing entities!!! 
+		else {
+			Node entityPar = null;
+      String temp = "";
+			try {
+        temp = getGenericValue("/xpathKeyMap/contextNode[@name='package']/entityParent"); 
+			  entityPar = XMLUtilities.getNodeWithXPath(getMetadataNode(), temp);
+			} catch (Exception w) {
+				Log.debug(20, "Error adding new entity!");
+			  return;
+			}
+			entityPar.appendChild(newEntityNode);
+			Node[] newEntArray = new Node[1];
+			newEntArray[0] = newEntityNode;
+			entityArray = newEntArray;
+		}
+  }
 
   /**
    *  This method creates an array of attribute Nodes for
@@ -344,6 +410,73 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return null;
   }
+	
+	/**
+	 *  This method deletes the indexed attribute from the indexed
+	 *  entity
+	 */
+	public void deleteAttribute(int entityIndex, int attributeIndex) {
+	  if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      Log.debug(20, "No such entity!");
+			return;
+    }
+		Node[] attributes = getAttributeArray(entityIndex);
+    if ((attributes==null)||(attributes.length<1)) {
+      Log.debug(20, "No such attribute!");
+			return;
+		}
+		Node attrNode = attributes[attributeIndex];
+    Node parent = attrNode.getParentNode();
+    parent.removeChild(attrNode);	  
+	}
+	
+		/**
+	 *  This method inserts an attribute at the indexed position
+	 *  in the indexed entity
+	 */
+	public void insertAttribute(int entityIndex, Node newAttributeNode, int attrIndex) {
+	  if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      Log.debug(20, "No such entity!");
+			return;
+    }
+		Node[] attributes = getAttributeArray(entityIndex);
+    if ((attributes==null)||(attributes.length<1)) {
+      // currently there are NO attributes, so ignore attrIndex
+			// and just insert
+			Node attributeParent = null;
+      String temp = "";
+			try {
+        temp = getGenericValue("/xpathKeyMap/contextNode[@name='entity']/attributeParent"); 
+			  attributeParent = XMLUtilities.getNodeWithXPath(entityArray[entityIndex], temp);
+			} catch (Exception w) {
+				Log.debug(20, "Error adding new attribute!");
+			  return;
+			}
+			if (attributeParent!=null) {
+			  attributeParent.appendChild(newAttributeNode);
+			  //Note: attribute array is dynamically generated, so we don't need to update it here
+			} else {
+				// parent node does not exist in the current dom!!
+				// temp has a path in string form with nodes separated by '/'s
+				// assume that entity node DOES exist
+	      Log.debug(1,"Problem: no attribute parent !!");				
+		  }
+			return;
+	  }
+		
+		// there are current attributes, so must insert in proper location
+		Node currentAttr = attributes[attrIndex];
+		if (attrIndex<(attributes.length-1)) {
+			Node parent = currentAttr.getParentNode();
+			parent.insertBefore(newAttributeNode, currentAttr);
+		} else {
+			// just put at end of current attributes
+			Node parent = currentAttr.getParentNode();
+			parent.appendChild(newAttributeNode);
+		}
+
+  }
+
 
   /*
    *  This method retreives the attribute name at attributeIndex for
