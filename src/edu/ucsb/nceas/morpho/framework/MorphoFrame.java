@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-03 18:05:07 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-10-04 15:35:30 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -352,16 +352,12 @@ public class MorphoFrame extends JFrame
       // Only isBusy is different to current status(busyFlag, it change status
       if(busyFlag ^ isBusy)
       {
-        if (isBusy) {
-          SwingUtilities.invokeLater(indicator);
-        }
-        else {
-          indicator.setBusy(isBusy);
-        }
+        indicator.setBusyFlag(isBusy);
+        SwingUtilities.invokeLater(indicator);
         busyFlag = isBusy;
       }
     }
-
+    
     /**
      * Set the StatusBar to display a message
      *

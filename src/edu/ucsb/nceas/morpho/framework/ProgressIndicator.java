@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-03 18:05:07 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-10-04 15:35:30 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ public class ProgressIndicator extends JPanel implements Runnable
     private static final int RIGHT_ALIGN_OFFSET = 2;
     private ImageIcon busyIcon;
     private ImageIcon notBusyIcon;
-    private JLabel imageLabel;  
+    private JLabel imageLabel;
+    private boolean busyFlag = false;
     
     /**
      * Creates a new instance of ProgressIndicator
@@ -87,13 +88,24 @@ public class ProgressIndicator extends JPanel implements Runnable
     {
         if (isBusy) {
             imageLabel.setIcon(busyIcon);
+            busyFlag = true;
         } else {
             imageLabel.setIcon(notBusyIcon);
+            busyFlag = false;
         }
     }
     
+    public void setBusyFlag(boolean flg) {
+      busyFlag = flg;  
+    }
+    
     public void run() {
-      imageLabel.setIcon(busyIcon);
+      if (busyFlag) {
+        imageLabel.setIcon(busyIcon);
+      }
+      else {
+        imageLabel.setIcon(notBusyIcon);  
+      }
     }
 }
 
