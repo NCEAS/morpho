@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-30 21:35:46 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-01 00:38:45 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class Methods
   private final String nextPageID = DataPackageWizardInterface.ACCESS;
   private final String title = "Methods and Sampling";
   private final String subtitle = "";
-  private final String pageNumber = "12";
+  private final String pageNumber = "13";
   private final String EMPTY_STRING = "";
 
   private final String METHOD_ROOT = "methods/";

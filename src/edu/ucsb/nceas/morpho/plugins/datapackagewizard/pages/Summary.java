@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.21 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-01 00:38:45 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ public class Summary extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String nextPageID = null;
-  public final String pageNumber = "14";
+  public final String pageNumber = "15";
   public final String PACKAGE_WIZ_SUMMARY_TITLE = "Data Package Wizard";
   public final String ENTITY_WIZ_SUMMARY_TITLE  = "New DataTable Wizard";
   public final String SUBTITLE                  = "Summary";

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.23 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-01 00:38:45 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class Access
 
   public final String pageID = DataPackageWizardInterface.ACCESS;
   public final String nextPageID = DataPackageWizardInterface.SUMMARY;
-  public final String pageNumber = "13";
+  public final String pageNumber = "14";
 
   //////////////////////////////////////////////////////////
 

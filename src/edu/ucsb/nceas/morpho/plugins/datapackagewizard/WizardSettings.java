@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-19 20:31:19 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2004-04-01 00:38:45 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -232,7 +232,7 @@ public class WizardSettings {
 
   protected static final String OK_BUTTON_TEXT      = "OK";
 
-  public static String NUMBER_OF_STEPS              = "14";
+  public static String NUMBER_OF_STEPS              = "15";
 
   /* Three variables defined below are used by AccessPage Screen
    */

@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-31 21:01:06 $'
-* '$Revision: 1.14 $'
+*     '$Date: 2004-04-01 00:38:45 $'
+* '$Revision: 1.15 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -92,17 +93,17 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 public class Taxonomic extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.TAXONOMIC;
-  public final String nextPageID = null;
-  public final String pageNumber = "1";
+  private final String nextPageID = DataPackageWizardInterface.METHODS;
+  public final String pageNumber = "12";
 
   //////////////////////////////////////////////////////////
 
-  public final String title      = "Taxonomic Information";
-  public final String subtitle   = " ";
+  public final String title      = "Taxonomic Coverage";
+  public final String subtitle   = "";
 
   ////////////////////////////////////////////////////////////
 
-  private final String heading = "Provide the list of taxa to which the overall set of data applies. Enter the taxonomic names and ranks in the table for upto two taxonomic levels for a given taxon. To define more levels and/or common names for each level, hit the 'Edit' button";
+  private final String heading = "<b>Enter information about the Taxonomic Coverage. </b>Provide the list of taxa to which the overall set of data applies. Enter the taxonomic names and ranks in the table for upto two taxonomic levels for a given taxon. To define more levels and/or common names for each level, hit the 'Edit' button.<br>";
 
   // column titles for the customlist in the main-page
   private String colNames[] = {"Higher Level Taxa", "Rank", "Name",
@@ -257,7 +258,7 @@ public class Taxonomic extends AbstractUIPage {
 		importButton.setPreferredSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
 		importButton.setMinimumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
 		importButton.setMaximumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
-    JLabel headLabel = WidgetFactory.makeHTMLLabel(heading, 2, false);
+    JLabel headLabel = WidgetFactory.makeHTMLLabel(heading, 3, false);
 		
 		Box headPanel = Box.createVerticalBox();
 		headPanel.add(headLabel);
@@ -273,6 +274,7 @@ public class Taxonomic extends AbstractUIPage {
 		
 		taxonPanel.setLayout(new BorderLayout());
 		taxonPanel.add(taxonList, BorderLayout.CENTER);//, BorderLayout.CENTER);
+		taxonPanel.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
 		
     centerPanel.add(headPanel);
     centerPanel.add(WidgetFactory.makeDefaultSpacer());
@@ -281,11 +283,11 @@ public class Taxonomic extends AbstractUIPage {
 		//////////////
 
 		
-		JPanel classTablePanel = WidgetFactory.makePanel(1);
+		JPanel classTablePanel = WidgetFactory.makeVerticalPanel(-1);
 		
-		classTablePanel.add(WidgetFactory.makeLabel("Classification System:", false, new Dimension(130, 20)));
+		classTablePanel.add(WidgetFactory.makeHTMLLabel("<b>Classification System </b>If the list of taxa belong to one or more different classification systems, list the citations for those systems.", 2, false));
+		classTablePanel.add(Box.createVerticalGlue());
 		classList = WidgetFactory.makeList(classColNames, classEditors, -1, true, true, false, true, false, false);
-		classList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		classTablePanel.add(classList);
 		
 		Action classAddAction = new AbstractAction (){
@@ -303,21 +305,19 @@ public class Taxonomic extends AbstractUIPage {
 		classList.setCustomAddAction(classAddAction);
 		classList.setCustomEditAction(classEditAction);
 		
-		
-		classTablePanel.setMaximumSize(new Dimension(2000, 100));
-		classTablePanel.setPreferredSize(new Dimension(2000, 100));
-		classTablePanel.setMinimumSize(new Dimension(2000, 100));
+		classTablePanel.setMaximumSize(new Dimension(2000, 150));
+		classTablePanel.setPreferredSize(new Dimension(2000, 150));
 		
     centerPanel.add(classTablePanel);
     centerPanel.add(WidgetFactory.makeDefaultSpacer());
-    //centerPanel.add(Box.createGlue());
+    
   }
 
 	private void classificationCitationAddAction() {
 		
 		CitationPage citationPage = new CitationPage();
 		ModalDialog wpd = new ModalDialog(citationPage,
-                                UIController.getInstance().getCurrentActiveWindow(),
+                                WizardContainerFrame.getDialogParent(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT);
 		if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
@@ -344,7 +344,7 @@ public class Taxonomic extends AbstractUIPage {
 		citationPage.setPageData(map, "/classificationSystemCitation[1]");
 		
 		ModalDialog wpd = new ModalDialog(citationPage,
-                                UIController.getInstance().getCurrentActiveWindow(),
+                                WizardContainerFrame.getDialogParent(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT);
 		if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
@@ -560,6 +560,10 @@ public class Taxonomic extends AbstractUIPage {
   *  The action to be executed when the page is displayed. May be empty
   */
   public void onLoadAction() {
+		
+		// create the first row when the page is loaded, if there are no rows already
+		if(this.taxonList.getRowCount() == 0) TaxonListAddAction();
+		
   }
 
 
@@ -736,8 +740,7 @@ public class Taxonomic extends AbstractUIPage {
 		}
 		
 		return result;
-    //throw new UnsupportedOperationException(
-      //"getPageData(String rootXPath) Method Not Implemented");
+    
   }
 
 

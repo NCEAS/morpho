@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-31 21:01:06 $'
-* '$Revision: 1.6 $'
+*     '$Date: 2004-04-01 00:38:45 $'
+* '$Revision: 1.7 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,9 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     add(WidgetFactory.makeDefaultSpacer());
 
     ///////////////////
-
+		// height of the labels on the left side
+		int ht = 100;
+		
     table = getCustomTable();
     if(table == null || table.getColumnCount() == 0) {
      
@@ -139,15 +141,13 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		}
     JPanel tablePanel = new JPanel();
     tablePanel.setLayout(new BorderLayout());
-    if(table != null)
+    if(table != null) {
       tablePanel.add(table, BorderLayout.CENTER);
+			ht = table.getHeaderHeight();
+			if(ht < 100) ht = 100;
+		}
 		JPanel sideLabelPanel = new JPanel(new BorderLayout());
 		sideLabelPanel.add(tablePanel, BorderLayout.CENTER);
-		
-		int ht = table.getHeaderHeight();
-		
-		if(ht < 100)
-			ht = 100;
 		
 		JPanel subLabelPanel = new JPanel();
 		subLabelPanel.setLayout(new BoxLayout(subLabelPanel, BoxLayout.Y_AXIS));

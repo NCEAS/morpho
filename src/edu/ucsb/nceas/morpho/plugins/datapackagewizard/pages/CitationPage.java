@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-31 04:46:47 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-04-01 00:38:45 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -514,9 +514,10 @@ public class CitationPage extends AbstractUIPage {
 			surrogate.add(this.titleField.getText());
 		
 		String creatorName = this.salutationField.getText().trim();
-		if(creatorName.indexOf(".") < 0)
-			creatorName += ".";
-		creatorName += " " + this.firstNameField.getText().trim();
+		if(creatorName.trim().length() > 0 && creatorName.indexOf(".") < 0) creatorName+=". ";
+		if(creatorName.trim().length() > 0) creatorName += " ";
+		creatorName += this.firstNameField.getText().trim();
+		if(creatorName.trim().length() > 0) creatorName += " ";
 		creatorName += " " + this.lastNameField.getText();
 		
 		if(creatorName.trim().length() > 0)
