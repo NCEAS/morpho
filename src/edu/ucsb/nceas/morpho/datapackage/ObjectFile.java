@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:20:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-09 18:25:44 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,79 +38,106 @@ import java.util.*;
 
 public class ObjectFile
 {
-    RandomAccessFile dataFile;
-    String sFileName;
+  /*
+   * the randomAccessFile used for storage
+   */
+  RandomAccessFile dataFile;
+  /*
+   * the file name of the random access file
+   */
+  String sFileName;
+
+  /*
+   * ObjectFile constructor
+   * note the the file is named 'ObjectFilen'
+   */    
+  public ObjectFile(String sName) throws IOException
+  {
+    sFileName = sName;
+    File f = new File(sName);
+    if (f.exists()) f.delete();
+    dataFile = new RandomAccessFile(sName, "rw");
+  }
     
-    public ObjectFile(String sName) throws IOException
-    {
-        sFileName = sName;
-        File f = new File(sName);
-        if (f.exists()) f.delete();
-        dataFile = new RandomAccessFile(sName, "rw");
+  /*
+   * write an object to the ObjectFile
+   * returns file postion object was written to.
+   */
+  public synchronized long writeObject(Serializable obj) throws IOException
+  {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ObjectOutputStream oos = new ObjectOutputStream(baos);
+    oos.writeObject(obj);
+    oos.flush();
+        
+    int datalen = baos.size();
+        
+    //append record
+    long pos = dataFile.length();
+    dataFile.seek(pos);
+        
+    //write the length of the output
+    dataFile.writeInt(datalen);
+    dataFile.write(baos.toByteArray());
+        
+    baos = null;
+    oos = null;
+        
+    return pos;
     }
     
-    // returns file postion object was written to.
-    public synchronized long writeObject(Serializable obj) throws IOException
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(obj);
-        oos.flush();
-        
-        int datalen = baos.size();
-        
-        //append record
-        long pos = dataFile.length();
-        dataFile.seek(pos);
-        
-        //write the length of the output
-        dataFile.writeInt(datalen);
-        dataFile.write(baos.toByteArray());
-        
-        baos = null;
-        oos = null;
-        
-        return pos;
-    }
-    
-    // get the current object length
+    /*
+     * get the current object length
+     */
     public synchronized int getObjectLength(long lPos) throws IOException
     {
-        dataFile.seek(lPos);
-        return dataFile.readInt();
+      dataFile.seek(lPos);
+      return dataFile.readInt();
     }
     
+    /*
+     * get an object from the object file
+     */
     public synchronized Object readObject(long lPos) throws IOException, ClassNotFoundException
     {
-        dataFile.seek(lPos);
-        int datalen = dataFile.readInt();
-        if (datalen > dataFile.length()) {
-            throw new IOException("Data file is corrupted. datalen: "+ datalen);
-        }
-        byte[] data = new byte[datalen];
-        dataFile.readFully(data);
+      dataFile.seek(lPos);
+      int datalen = dataFile.readInt();
+      if (datalen > dataFile.length()) {
+        throw new IOException("Data file is corrupted. datalen: "+ datalen);
+      }
+      byte[] data = new byte[datalen];
+      dataFile.readFully(data);
         
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Object o = ois.readObject();
+      ByteArrayInputStream bais = new ByteArrayInputStream(data);
+      ObjectInputStream ois = new ObjectInputStream(bais);
+      Object o = ois.readObject();
         
-        bais = null;
-        ois = null;
-        data = null;
+      bais = null;
+      ois = null;
+      data = null;
         
-        return o;
+      return o;
     }
     
+    /*
+     * get the current object File length
+     */
     public long length() throws IOException
     {
-        return dataFile.length();
+      return dataFile.length();
     }
     
+    /*
+     * close the objectFile
+     */
     public void close() throws IOException
     {
-        dataFile.close();
+      dataFile.close();
     }
     
+    /*
+     * delete the ObjectFile
+     */
     public void delete() {
       try{  
         dataFile.close();
