@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-31 00:28:11 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-04 00:17:44 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,28 +41,17 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.Date;
+
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
@@ -78,25 +67,25 @@ public class SynchronizeDialog extends JDialog
   private JButton executeButton = null;
   private JButton cancelButton = null;
   
-  /** Radio button */
-  private JRadioButton localToNetworkRadio = null;
-  private JRadioButton networkToLocalRadio = null;
+  /** Icons  */
+  private ImageIcon localIcon 
+      = new ImageIcon(getClass().getResource("local-package-small.png"));
+  private ImageIcon networkIcon 
+      = new ImageIcon(getClass().getResource("network-package-small.png"));
+  private ImageIcon arrowIcon = null;
     
   private static final int PADDINGWIDTH = 8;
   
   private static String SYNCHRONIZE =
       "\"Synchronize\" will keep the Data Packages on your local computer "
-      + "identical with those on the network.\n"
+      + "identical    with those on the network.\n"
       + "In order to do this, Morpho will copy the Data Package as shown below:";
  
   private static String WARNING =
       "Note:\n"
       +"  If you are copying from local to network, you may be"
-      + "prompted to renumber the Data Package";
-  private static String LOCALTONETWORK =" will be copied from local to network";
-  private static String NETWORKTOLOCAL =
-                                      " will be copied from network to local";
-      
+      + "prompted to renumber   the Data Package";
+
   
   /**
    * Construct a new instance of the synchonize dialog
@@ -107,9 +96,7 @@ public class SynchronizeDialog extends JDialog
                                                           boolean inNetwork)
   {
     super(parent);
-    String localToNetRadioStr ="Datapackage "+docid+LOCALTONETWORK;
-    String netToLocalRadioStr ="Datapackage "+docid+NETWORKTOLOCAL;
-    
+   
     // Set OpenDialog size depent on parent size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
@@ -148,37 +135,58 @@ public class SynchronizeDialog extends JDialog
                                       Box.createHorizontalStrut(PADDINGWIDTH));
     getContentPane().add(BorderLayout.WEST, 
                                       Box.createHorizontalStrut(PADDINGWIDTH));
-    
-    // Create radio panel
-    JPanel radioPanel = new JPanel();
-    localToNetworkRadio = new JRadioButton(localToNetRadioStr);
-    networkToLocalRadio = new JRadioButton(netToLocalRadioStr);
-    
+   
     GUIAction executeAction = null;
+    String warningMessage = null;
     // If inLocal and not inNetwork do upload
     if (inLocal && !inNetwork)
     {
-      
-     executeAction = new GUIAction("Execute", null, 
+     
+      arrowIcon = new ImageIcon(getClass().getResource("rightarrow.gif"));
+      executeAction = new GUIAction("Execute", null, 
                                   new LocalToNetworkCommand(this)); 
+      warningMessage = WARNING;
     }
+    // down load 
     if (!inLocal && inNetwork)
     {
+      
+      arrowIcon = new ImageIcon(getClass().getResource("leftarrow.gif"));
       executeAction = new GUIAction("Execute", null, 
-                                  new NetworkToLocalCommand(this)); 
+                                  new NetworkToLocalCommand(this));
+      warningMessage = "";
     }
-//    radioPanel.add(localToNetworkRadio);
-//    radioPanel.add(networkToLocalRadio);
     
-    getContentPane().add(BorderLayout.CENTER, radioPanel);
- 
+     // Create icon box
+    Box iconBox = Box.createHorizontalBox();
+    JLabel localLabel = new JLabel("Local", localIcon, SwingConstants.TRAILING);
+    //localLabel.setText("Local");
+    localLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+    JLabel networkLabel = new JLabel("Network", networkIcon, 
+                                                      SwingConstants.TRAILING );
+    //networkLabel.setText("Network");
+    networkLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+    JLabel arrowLabel = new JLabel(arrowIcon);
+    
+    iconBox.add(Box.createHorizontalGlue());
+    iconBox.add(localLabel);
+    iconBox.add(Box.createHorizontalStrut(20));
+    iconBox.add(arrowLabel);
+    iconBox.add(Box.createHorizontalStrut(20));
+    iconBox.add(networkLabel);
+    iconBox.add(Box.createHorizontalGlue());
+    
+    getContentPane().add(BorderLayout.CENTER, iconBox);
+    
     // Create bottom box
     Box bottomBox = Box.createVerticalBox();
     getContentPane().add(BorderLayout.SOUTH, bottomBox);
     //Create padding between result panel and Contorl button box
     bottomBox.add(Box.createVerticalStrut(PADDINGWIDTH));
-    JTextArea warning = new JTextArea(WARNING);
+    JTextArea warning = new JTextArea(warningMessage);
     warning.setEditable(false);
+    warning.setLineWrap(true);
+    warning.setOpaque(false);
     bottomBox.add(warning);
     bottomBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     // Create a controlbuttionBox
