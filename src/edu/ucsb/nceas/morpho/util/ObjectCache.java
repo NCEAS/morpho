@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-21 17:54:16 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-21 19:24:31 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ public class ObjectCache
   /**
    *  get enumeration of current docids (keys)
    */
-  public Enumeration keys() {
+  public Enumeration getKeys() {
     cleanup();
     return object_collection.keys();
   }
