@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-25 21:28:06 $'
- * '$Revision: 1.11 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-02 01:09:56 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ public class AddResearchProjectCommand implements Command {
 
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-    if (showProjectDialog()) {
+    if (backupSubtreeAndShowProjectDialog()) {
 
       try {
         insertProject();
@@ -84,8 +84,20 @@ public class AddResearchProjectCommand implements Command {
   }
 
 
-  private boolean showProjectDialog() {
+  private boolean backupSubtreeAndShowProjectDialog() {
 
+    //backup subtree so it can be restored if user hits cancel:
+    projectRoot = adp.getSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+
+    OrderedMap existingValuesMap = null;
+    if (projectRoot!=null) {
+      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(projectRoot);
+    }
+
+
+
+
+    //show project dialog:
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
     try {
@@ -102,12 +114,8 @@ public class AddResearchProjectCommand implements Command {
 
     projectPage = dpwPlugin.getPage(DataPackageWizardInterface.PROJECT);
 
-    OrderedMap existingValuesMap = null;
-    projectRoot = adp.getSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
 
-    if (projectRoot!=null) {
-      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(projectRoot);
-    }
+
     Log.debug(45, "sending previous data to projectPage -\n\n" + existingValuesMap);
 
     boolean pageCanHandleAllData

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-01 00:40:22 $'
- * '$Revision: 1.84 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-02 01:09:56 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -594,12 +594,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     String IDXpath = "";
     NodeList IDNodes;
     try {
-			Node textNode = XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+      Node textNode = XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
           "/xpathKeyMap/contextNode[@name='package']/"+genericName);
-			if(textNode == null) {
-				Log.debug(40, "Unable to find text node with the given name!");
-				return returnList;
-			}
+      if(textNode == null) {
+        Log.debug(40, "Unable to find text node with the given name!");
+        return returnList;
+      }
       IDXpath = textNode.getNodeValue();
       // example: genericName = 'parties'
       IDNodes = XMLUtilities.getNodeListWithXPath(metadataNode, IDXpath);
@@ -653,7 +653,8 @@ public abstract class AbstractDataPackage extends MetadataObject
    *
    * @param genericName String
    * @param Node subtree root Node
-   * @param index int
+   * @param index int (zero relative). NOTE that subtree will be inserted before
+   * this index if a subtree already exists there
    * @return root Node of inserted subtree, or null if target location not
    * found, so caller can determine whether insertion was successful
    */
@@ -685,7 +686,9 @@ public abstract class AbstractDataPackage extends MetadataObject
         } //
       }
       catch (Exception w) {
-        Log.debug(1, "Error in 'insertSubtree method in AbstractDataPackage");
+        Log.debug(15, "Error in 'insertSubtree method in AbstractDataPackage");
+        w.printStackTrace();
+        return null;
       }
     } else {  // node exists
       Node subTreeNodeParent = subTreeNode.getParentNode();
@@ -723,7 +726,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * whether call was successful
    *
    * @param genericName String
-   * @param index int
+   * @param index int (zero relative)
    * @return root Node of deleted subtree, or null if subtree not found, so
    * caller can determine whether insertion was successful
    */
@@ -750,10 +753,56 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
     } catch (Exception e) {
-      Log.debug(50, "Exception in deleteSubtree!");
+      Log.debug(50, "Exception in deleteSubtree!"+e);
+      e.printStackTrace();
+      return null;
     }
-    return null;
+  }
 
+
+
+
+  /**
+   * replaces subtree at location identified by genericName and index; returns
+   * root Node of replaced subtree, or null if not found, so caller can
+   * determine whether replace was successful
+   *
+   * @param genericName String
+   * @param newSubtreeRootNode the new subtree root Node
+   * @param index int (zero relative)
+   * @return root Node of replaced subtree, or null if subtree not found, so
+   * caller can determine whether replace was successful
+   */
+  public Node replaceSubtree(String genericName, Node newSubtreeRootNode,
+                             int index) {
+
+    //delete subtree to be replaced
+    Node deleted = this.deleteSubtree(genericName, index);
+
+    Node added = null;
+
+    //if deletion worked, then add new subtree
+    if (deleted != null) {
+      added = this.insertSubtree(genericName, newSubtreeRootNode, index);
+    } else {
+      Log.debug(15, "** ERROR in replaceSubtree! - delete was unsuccessful "
+                + "- returning NULL");
+      return null;
+    }
+
+    // if add wasn't successful, return deleted subtree to its former location
+    if (added == null) {
+
+      added = this.insertSubtree(genericName, deleted, index);
+      Log.debug(15, "** ERROR in replaceSubtree! - add was unsuccessful "
+                + "- trying to undo delete...");
+      if (added != null) Log.debug(15, "** ...undo was successful...");
+      else               Log.debug(15, "** ...UNDO FAILED - DATAPACKAGE NOT "
+                                   +"RETURNED TO ORIGINAL STATE!!!...");
+      Log.debug(15, "** ...finally, returning NULL");
+      return null;
+    }
+    return added;
   }
 
 
@@ -846,7 +895,7 @@ public abstract class AbstractDataPackage extends MetadataObject
      }
    }
 
-	 
+
     /**
    * gets a list of taxonomic nodes
    */
@@ -877,7 +926,7 @@ public abstract class AbstractDataPackage extends MetadataObject
        par.removeChild(node);
      }
    }
-	 
+
   /**
    *  insert a coverage subtree (geographic, temporal, or taxonomic)
    *  under the package level coverage node

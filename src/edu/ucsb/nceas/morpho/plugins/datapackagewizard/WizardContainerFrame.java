@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 22:33:49 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2004-04-02 01:09:57 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,8 @@ public class WizardContainerFrame
   private InputMap imap;
   private ActionMap amap;
 
-  private AbstractDataPackage tempDataPackage = new EML200DataPackage();
+  private AbstractDataPackage tempDataPackage;
+
 
   /**
    * Constructor
@@ -107,8 +108,9 @@ public class WizardContainerFrame
         cancelAction();
       }
     });
-
     toBeImportedCount = 0;
+    tempDataPackage = new EML200DataPackage();
+    UIController.getInstance().setWizardIsRunning(tempDataPackage);
   }
 
   /**
@@ -888,7 +890,10 @@ public class WizardContainerFrame
    *  The action to be executed when the "Cancel" button is pressed
    */
   public void cancelAction() {
+
     this.setVisible(false);
+
+    UIController.getInstance().setWizardNotRunning();
 
     listener.wizardCanceled();
 

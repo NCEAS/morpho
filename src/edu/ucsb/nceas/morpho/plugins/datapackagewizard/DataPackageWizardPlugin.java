@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 07:06:06 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-04-02 01:09:57 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,16 +39,16 @@ import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import org.w3c.dom.Node;
 import javax.xml.transform.TransformerException;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import org.w3c.dom.DOMImplementation;
+
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 
 /**
@@ -58,7 +58,6 @@ import org.w3c.dom.Document;
 public class DataPackageWizardPlugin implements PluginInterface,
                                                 ServiceProvider,
                                                 DataPackageWizardInterface {
-
 
   /**
    *  Constructor
@@ -130,17 +129,10 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * method to start the wizard at a given page
    *
    * @param pageID the ID of the page from where the wizard is to be started
-   * @param listener the <code>DataPackageWizardListener</code> to be called
-   *   back when the Entity Wizard has finished
-   * @param title String
+   * @param showPageCount boolean
+   * @param listener String
+   * @param frameTitle String
    */
-  private void startWizardAtPage(
-    String pageID, DataPackageWizardListener listener, String title) {
-
-    startWizardAtPage(pageID, false, listener, title);
-  }
-
-
   private void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {
 
@@ -206,21 +198,19 @@ public class DataPackageWizardPlugin implements PluginInterface,
   }
 
 
-
   /**
-   * sets the fields in the UI page using the Map object that contains all
-   * the key/value paired
+   * inserts data from an AbstractUIPage into the AbstractDataPackage
    *
-   * @param data the Map object that contains all the key/value paired settings
-   *   for this particular UI page
+   * @param adp the AbstractDataPackage where the data will be inserted
+   * @param page AbstractUIPage that is the source of the data
    * @param rootXPath the String that represents the "root" of the XPath to the
-   *   content of this widget, INCLUDING PREDICATES. example - if this is a
-   *   "Party" widget, being used for the second "Creator" entry in a list,
+   *   content of the AbstractUIPage, INCLUDING PREDICATES. example - if this is
+   *   a "Party" widget, being used for the second "Creator" entry in a list,
    *   then xPathRoot = "/eml:eml/dataset[1]/creator[2]
-   * @return boolean true if this page can handle all the data passed in the
-   * OrderedMap, false if not. <em>NOTE that the setPageData() method should
-   * still complete its work and fill out all the UI values, even if it is
-   * returning false</em>
+   * @param subtreeGenericName String (@see lib/eml200KeymapConfig.xml)
+   * @param predicate int the predicate of this entry's subtree root node
+   * @return boolean true if this page data successfully added to the datapkg,
+   * false if not.
    */
   public static boolean addPageDataToDOM(AbstractDataPackage adp,
                                          AbstractUIPage page,
@@ -280,15 +270,14 @@ public class DataPackageWizardPlugin implements PluginInterface,
       return false;
     }
     // add to the datapackage
-    Node check = adp.insertSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
+    Node check = adp.replaceSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
 
     if (check == null) {
 
-      Log.debug(5, "** ERROR: Unable to add new project details to package **");
+      Log.debug(5, "** ERROR: Unable to add new details to package **\n");
+      Log.debug(15, "addPageDataToDOM(): ADP.replaceSubtree() returned NULL");
       return false;
     }
-    //delete old subtree from datapackage
-    adp.deleteSubtree(subtreeGenericName, predicate - 1);
 
     Log.debug(45, "added new project details to package...");
     return true;

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-29 21:19:48 $'
- * '$Revision: 1.32 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-02 01:09:56 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ import org.w3c.dom.Document;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 
 /**
@@ -99,11 +100,14 @@ public class UIController
     public static final String YES = "yes";
     public static final String MENU_PATH = "menu_path";
 
-    /**
-     * Creates a new instance of UIController, but is private because this
-     * is a singleton.
-     */
-    private UIController(Morpho morpho)
+    private AbstractDataPackage wizardTempDataPackage = null;
+  /**
+   * Creates a new instance of UIController, but is private because this is a
+   * singleton.
+   *
+   * @param morpho Morpho
+   */
+  private UIController(Morpho morpho)
     {
         this.morpho = morpho;
         windowList = new Hashtable();
@@ -116,11 +120,14 @@ public class UIController
         subMenuAndPath = new Hashtable();
     }
 
-    /**
-     * Initialize the single instance of the UIController,
-     * creating it if needed.
-     */
-    public static UIController initialize(Morpho morpho)
+
+  /**
+   * Initialize the single instance of the UIController, creating it if needed.
+   *
+   * @param morpho Morpho
+   * @return UIController
+   */
+  public static UIController initialize(Morpho morpho)
     {
         if (controller == null) {
             controller = new UIController(morpho);
@@ -140,14 +147,16 @@ public class UIController
         return controller;
     }
 
-    /**
-     * This method is called by plugins to get a new window that is an
-     * instance of MorphoFrame.  They can set the content of the window
-     * to a panel of their choice using MorphoFrame.setMainContentPane().
-     *
-     * @param windowName the initial title for the window
-     */
-    public MorphoFrame addWindow(String windowName)
+
+  /**
+   * This method is called by plugins to get a new window that is an instance
+   * of MorphoFrame. They can set the content of the window to a panel of
+   * their choice using MorphoFrame.setMainContentPane().
+   *
+   * @param windowName the initial title for the window
+   * @return MorphoFrame
+   */
+  public MorphoFrame addWindow(String windowName)
     {
         String title = "Untitled";
         if (windowName != null) {
@@ -187,7 +196,7 @@ public class UIController
         return window;
     }
 
-		
+
   public MorphoFrame addHiddenWindow(String windowName)
     {
         String title = "Untitled";
@@ -568,6 +577,15 @@ public class UIController
      */
     public AbstractDataPackage getCurrentAbstractDataPackage() {
 
+      if (isWizardRunning()) Log.debug(45,
+                                       "\n\n***********************************"
+                                       +"getCurrentAbstractDataPackage() -"
+                                       + " isWizardRunning() == true. pkg = \n"
+                                       + this.wizardTempDataPackage);
+      // *temporary* AbstractDataPackage that is used to store wizard data
+      // (for references use) while the wizard is running.
+      if (isWizardRunning()) return this.wizardTempDataPackage;
+
       MorphoFrame morphoFrame = this.getCurrentActiveWindow();
 
       if (morphoFrame == null) {
@@ -581,14 +599,74 @@ public class UIController
 
 
     /**
+     * called by DataPackageWizardPlugin whenever wizard starts running, and is
+     * passed a temporary AbstractDataPackage that is used to store wizard data
+     * (for references use) - this ADP will be returned by any calls to
+     * getCurrentAbstractDataPackage() while the wizard is running. <em>NOTE
+     * that this datapackage will be discarded when the wizard is done, because it
+     * may not be complete. It is not used to create the new datapackage!!<em>
+     * When the wizard ends, it should call
+     *
+     * @param tempDataPackage AbstractDataPackage -
+     * a temporary AbstractDataPackage that is used to store wizard data
+     * (for references use) - this ADP will be returned by any calls to
+     * getCurrentAbstractDataPackage() while the wizard is running. <em>NOTE
+     * that this datapackage will be discarded when the wizard is done, because it
+     * may not be complete. It is not used to create the new datapackage!!<em>
+     */
+    public void setWizardIsRunning(AbstractDataPackage tempDataPackage) {
+
+      this.wizardTempDataPackage = tempDataPackage;
+    }
 
 
-  /**
-   * get Morpho
-   */
-  public static Morpho getMorpho() {
-    return morpho;
-  }
+    /**
+     * called by DataPackageWizardPlugin whenever wizard starts running, and is
+     * passed a temporary AbstractDataPackage that is used to store wizard data
+     * (for references use) - this ADP will be returned by any calls to
+     * getCurrentAbstractDataPackage() while the wizard is running. <em>NOTE
+     * that this datapackage will be discarded when the wizard is done, because it
+     * may not be complete. It is not used to create the new datapackage!!<em>
+     * When the wizard ends, it should call
+     *
+     * @param tempDataPackage AbstractDataPackage -
+     * a temporary AbstractDataPackage that is used to store wizard data
+     * (for references use) - this ADP will be returned by any calls to
+     * getCurrentAbstractDataPackage() while the wizard is running. <em>NOTE
+     * that this datapackage will be discarded when the wizard is done, because it
+     * may not be complete. It is not used to create the new datapackage!!<em>
+     */
+    public void setWizardNotRunning() {
+
+      this.wizardTempDataPackage = null;
+    }
+
+    /**
+     * called by DataPackageWizardPlugin whenever wizard starts running, and is
+     * passed a temporary AbstractDataPackage that is used to store wizard data
+     * (for references use) - this ADP will be returned by any calls to
+     * getCurrentAbstractDataPackage() while the wizard is running
+     *
+     * @return the AbstractDataPackage from the currently active MorphoFrame
+     *   window; returns null if current window is null, or if current window
+     *   does not contain an AbstractDataPackage
+     * @param tempDataPackage AbstractDataPackage
+     */
+    public boolean isWizardRunning() {
+
+      return (this.wizardTempDataPackage != null);
+    }
+
+
+    /**
+     * get Morpho
+     *
+     * @return Morpho
+     */
+    public static Morpho getMorpho() {
+
+      return morpho;
+    }
 
 
   /**
@@ -686,10 +764,13 @@ public class UIController
         statusBar.setSSLStatus(morpho.getSslStatus());
     }
 
-    /**
-     * Create a new menubar for use in a window
-     */
-    private static JMenuBar createMenuBar()
+
+  /**
+   * Create a new menubar for use in a window
+   *
+   * @return JMenuBar
+   */
+  private static JMenuBar createMenuBar()
     {
         /*
         Log.debug(50, "Creating menu bar for window...");
@@ -707,10 +788,14 @@ public class UIController
         return null;
     }
 
-    /**
-     * Create new menu items for a particular menu
-     */
-    private static void createMenuItems(String menuName, JMenu currentMenu)
+
+  /**
+   * Create new menu items for a particular menu
+   *
+   * @param menuName String
+   * @param currentMenu JMenu
+   */
+  private static void createMenuItems(String menuName, JMenu currentMenu)
     {
         Vector currentActions = (Vector)orderedMenuActions.get(menuName);
         registerActionToMenu(currentMenu, currentActions);
@@ -719,10 +804,14 @@ public class UIController
 
     }
 
-     /**
-     * Create new menu items for a particular menu
-     */
-    private static void createMenuItemsCopy(String menuName, JMenu currentMenu)
+
+  /**
+   * Create new menu items for a particular menu
+   *
+   * @param menuName String
+   * @param currentMenu JMenu
+   */
+  private static void createMenuItemsCopy(String menuName, JMenu currentMenu)
     {
         Vector currentActions = (Vector)orderedMenuActions.get(menuName);
         Log.debug(20, "Creating menu items for: " + menuName + " (" +
@@ -779,11 +868,15 @@ public class UIController
         }
     }
 
-    /**
-     * Register a array actions to a menu. This method using recursion to handle
-     * pull right submenu.
-     */
-    private static void registerActionToMenu(JMenu currentMenu, Vector actions)
+
+  /**
+   * Register a array actions to a menu. This method using recursion to handle
+   * pull right submenu.
+   *
+   * @param currentMenu JMenu
+   * @param actions Vector
+   */
+  private static void registerActionToMenu(JMenu currentMenu, Vector actions)
     {
       boolean pullRightMenuFlag = false;// flag for a pull right menu
       JMenu currentPullRightMenu = null;// for a pull right menu
@@ -922,10 +1015,14 @@ public class UIController
     }//for
   }//registerActionToMenu
 
-   /**
-    * Check a sub menu path already in the subMenuAndPath hashtable
-    */
-   private static boolean isSubMenuPathExisted(String path)
+
+  /**
+   * Check a sub menu path already in the subMenuAndPath hashtable
+   *
+   * @param path String
+   * @return boolean
+   */
+  private static boolean isSubMenuPathExisted(String path)
    {
        boolean flag = false;
        Enumeration menuPath = subMenuAndPath.elements();
@@ -994,9 +1091,12 @@ public class UIController
             windowYcoord -= UISettings.WINDOW_CASCADE_Y_OFFSET;
         }
    }
-   
+
+
   /**
-   *  method to display the new package after changes have been made
+   * method to display the new package after changes have been made
+   *
+   * @param adp AbstractDataPackage
    */
   public static void showNewPackage(AbstractDataPackage adp) {
     adp.setLocation("");
@@ -1017,23 +1117,23 @@ public class UIController
         adp.setAccessionNumber(nextid);
       }
     }
-*/    
+*/
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    Point pos = morphoFrame.getLocation(); 
+    Point pos = morphoFrame.getLocation();
     Dimension size = morphoFrame.getSize();
-    
+
     try {
       ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
+      ServiceProvider provider =
                 services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
       dataPackage.openHiddenNewDataPackage(adp, null);
       UIController controller = UIController.getInstance();
-		  MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
-		  newMorphoFrame.setLocation(pos);
-		  newMorphoFrame.setSize(size);
-		  newMorphoFrame.setVisible(true);
-		  morphoFrame.setVisible(false);
+      MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
+      newMorphoFrame.setLocation(pos);
+      newMorphoFrame.setSize(size);
+      newMorphoFrame.setVisible(true);
+      morphoFrame.setVisible(false);
 
       controller.removeWindow(morphoFrame);
       morphoFrame.dispose();
@@ -1043,5 +1143,5 @@ public class UIController
       morphoFrame.setVisible(true);
     }
 }
-   
+
 }
