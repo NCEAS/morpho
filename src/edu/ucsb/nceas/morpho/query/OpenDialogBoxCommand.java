@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 01:02:22 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-12-18 17:49:00 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,9 +105,10 @@ public class OpenDialogBoxCommand implements Command
           morphoFrame.setEnabled(true);
           morphoFrame.setBusy(false);
           // Set the open dialog box modal true
-          open.setModal(true);
-          open.setVisible(true);
-          
+          if (open!=null) {
+              open.setModal(true);
+              open.setVisible(true);
+          }
         }
     };
     worker.start();  //required for SwingWorker 3
