@@ -323,6 +323,7 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 	        namespaces.add(new DefaultMutableTreeNode((String)vec.elementAt(i)));
 	      }
 	    }
+	    top.removeAllChildren();
 	    top.add(globalElements);
 	    top.add(globalAttributes);
 	    top.add(globalComplexTypes);
@@ -399,6 +400,7 @@ public class SchemaInfoFrame extends javax.swing.JFrame
             tempStack = new Stack();
             start = new StringBuffer();
             write_loop(node, 0);
+            System.out.println("Finished write_loop");
             String str1 = start.toString();
 
             String doctype = "";
@@ -420,7 +422,9 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 
             out.write(str1);
             out.close();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.out.println("writeXML Problem: "+e.getMessage());  
+        }
     }
 
   /**
@@ -486,12 +490,18 @@ public class SchemaInfoFrame extends javax.swing.JFrame
                     String help = "";
                     String helps = ni.getHelp();
                     if (helps!=null) {
-                      int start = helps.indexOf("<doc:summary >")+14;
-                      int stop = helps.indexOf("</doc:summary");
-                      help = helps.substring(start, stop);
+                      int start = helps.indexOf("<doc:description")+18;
+                      int stop = helps.indexOf("</doc:description");
+                      if ((start>-1)&&(stop>-1)&&(stop>start)) {
+                        help = helps.substring(start, stop);
+                      } 
+                      int start2 = helps.indexOf("<xs:documentation")+19;
+                      int stop2 = helps.indexOf("</xs:documentation");
+                      if ((start2>-1)&&(stop2>-1)&&(stop2>start2)) {
+                          help = helps.substring(start2, stop2);                      
+                      }
                     }
-                    
-                    start1.append(" "+"help=\""+help+"\"");
+                    start1.append(" "+"help=\""+trimMultipleSpaces(help)+"\"");
 
                 start1.append(">");
                 end = "</" + name + ">";
@@ -569,8 +579,25 @@ public class SchemaInfoFrame extends javax.swing.JFrame
         }
     }
 
-
-
+  // remove all sequences of more that one space
+  // also remove any newlines & convert " to '
+  private String trimMultipleSpaces(String inStr) {
+    String res = "";
+    res = inStr.trim();
+    while (res.indexOf("  ")>-1) {
+      int start = res.indexOf("  ");  
+      res = res.substring(0,start) + res.substring(start+1);
+    }
+    while (res.indexOf("\n")>-1) {
+      int start = res.indexOf("\n");  
+      res = res.substring(0,start) + res.substring(start+1);
+    }
+    while (res.indexOf("\"")>-1) {
+      int start = res.indexOf("\"");  
+      res = res.substring(0,start) + "'" + res.substring(start+1);
+    }
+    return res;
+  }
 
 	void SaveButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
