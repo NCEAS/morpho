@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-07-22 20:43:45 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-22 19:04:20 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,8 @@
 
 package edu.ucsb.nceas.morphotest;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 import java.io.FileNotFoundException;
 import java.net.URLStreamHandler;
@@ -46,7 +47,7 @@ public class ConnectTest extends TestCase
   private static String username = "@muser@";
   private static String password = "@mpass@";
 
-  ClientFramework framework = null;
+  Morpho morpho = null;
 
   /**
    * Constructor to build the test
@@ -88,9 +89,9 @@ public class ConnectTest extends TestCase
 
       ConfigXML config = new ConfigXML(configFile);
       config.set("debug_level", 0, "0");
-      framework = new ClientFramework(config);
-      framework.setUserName(username);
-      framework.setPassword(password);
+      morpho = new Morpho(config);
+      morpho.setUserName(username);
+      morpho.setPassword(password);
     } catch (FileNotFoundException fnf) {
       System.err.println("Could not find configuration file!"); 
     }
@@ -101,7 +102,6 @@ public class ConnectTest extends TestCase
    */
   public void tearDown()
   {
-    framework.dispose();
   }
 
   /**
@@ -131,9 +131,9 @@ public class ConnectTest extends TestCase
    */
   public void testValidLogin()
   {
-    boolean connected = framework.logIn();
+    boolean connected = morpho.logIn();
     assertTrue(connected);
-    assertTrue(framework.isConnected());
+    assertTrue(morpho.isConnected());
   }
 
   /**
@@ -141,8 +141,8 @@ public class ConnectTest extends TestCase
    */
   public void testLogout()
   {
-    framework.logOut();
-    assertTrue(framework.isConnected() == false);
+    morpho.logOut();
+    assertTrue(morpho.isConnected() == false);
   }
 
   /**
@@ -150,9 +150,9 @@ public class ConnectTest extends TestCase
    */
   public void testInvalidLogin()
   {
-    framework.setPassword("garbage");
-    boolean connected = framework.logIn();
+    morpho.setPassword("garbage");
+    boolean connected = morpho.logIn();
     assertTrue(connected == false);
-    assertTrue(framework.isConnected() == false);
+    assertTrue(morpho.isConnected() == false);
   }
 }
