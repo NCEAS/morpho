@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-29 19:45:10 $'
- * '$Revision: 1.88 $'
+ *     '$Date: 2002-10-29 22:10:14 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ public class DataPackage implements XMLFactoryInterface
   private final FileSystemDataStore fileSysDataStore;
   private final MetacatDataStore    metacatDataStore;
   private final String              HTMLEXTENSION = ".html";
-  private final String              METACATHTML = "metadata";
+  private final String              METADATAHTML = "metadata";
   private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
   private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
   private final String EXPORTSYLE ="export";
@@ -1325,10 +1325,10 @@ public class DataPackage implements XMLFactoryInterface
             // add some property for style sheet
             transformer.removeAllTransformerProperties();
             transformer.
-                addTransformerProperty("href_path_extension", HTMLEXTENSION);
+                  addTransformerProperty("href_path_extension", HTMLEXTENSION);
             transformer.addTransformerProperty("package_id", id);
             transformer.
-                    addTransformerProperty("package_index_name", METACATHTML);
+                  addTransformerProperty("package_index_name",  METADATAHTML);
             transformer.addTransformerProperty("qformat", EXPORTSYLE);
             transformer.addTransformerProperty("entitystyle", EXPORTSYLE);
             transformer.addTransformerProperty("stylePath", ".");
@@ -1342,7 +1342,8 @@ public class DataPackage implements XMLFactoryInterface
             } finally {
                 xmlInputReader.close();
             }
-
+            transformer.removeAllTransformerProperties();
+            
             try {
               htmldoc[i] = IOUtil.getAsStringBuffer(result, true); 
               //"true" closes Reader after reading
@@ -1378,7 +1379,7 @@ public class DataPackage implements XMLFactoryInterface
         tempPathBuff.append("/");
         if (id.equals(docid))
         {
-          tempPathBuff.append(METACATHTML);
+          tempPathBuff.append(METADATAHTML);
         }
         else
         {
