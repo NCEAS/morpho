@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-28 20:09:17 $'
- * '$Revision: 1.137 $'
+ *     '$Date: 2004-01-28 23:30:29 $'
+ * '$Revision: 1.138 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1705,6 +1705,8 @@ public class DocFrame extends javax.swing.JFrame
           String str = (String)(keys.nextElement());
           String val = (String)((ni.attr).get(str));
           if (!(str.equals("minOccurs")) && (!(str.equals("maxOccurs")))
+            && (!str.equals("editor"))
+            && (!str.equals("help"))
             && (!str.equals("")) 
 //            &&(!(str.indexOf("schemaLocation")>-1))
           ) {
@@ -3403,11 +3405,11 @@ public class DocFrame extends javax.swing.JFrame
    *
    */
   void trimAttributeNames(DefaultMutableTreeNode root) {
-    Enumeration kids = root.children();
+    Enumeration kids = root.breadthFirstEnumeration();
     while(kids.hasMoreElements()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode)kids.nextElement();
       NodeInfo ni = (NodeInfo)node.getUserObject();
-      if(ni.toString().startsWith("attribute")) {  // an attribute node
+      if(ni.toString().startsWith("attribute-")) {  // an attribute node
         ni.setName("attribute");
       }
     }
@@ -3520,6 +3522,8 @@ public class DocFrame extends javax.swing.JFrame
           String value = (String)ni.attr.get(keyName);
           if ( (!keyName.equalsIgnoreCase("minOccurs")) &&
                (!keyName.equalsIgnoreCase("maxOccurs")) &&
+               (!keyName.equalsIgnoreCase("editor")) &&
+               (!keyName.equalsIgnoreCase("help")) &&
                (!(keyName.indexOf("schemaLocation")>-1)) &&
                (!(keyName.equals("")))               
              )
