@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-23 23:30:57 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-11-01 02:41:31 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,7 +308,7 @@ public class NewDataFile extends javax.swing.JDialog
         relationship.indexOf("\\") != -1)
       { //strip out the path info
         int slashindex = relationship.lastIndexOf("/") + 1;
-        if(slashindex == -1)
+        if(slashindex == 0)
         {
           slashindex = relationship.lastIndexOf("\\") + 1;
         }
