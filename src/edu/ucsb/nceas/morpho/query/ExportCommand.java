@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 23:42:15 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-28 16:23:47 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,16 +94,9 @@ public class ExportCommand implements Command
     } 
     else
     {
-        Log.debug(20, "Unkown export format!");
-     }
-    // Get morphoframe and resultPanel if dialog is not null
-    if (dialog != null)
-    {
-      // This command will apply to a dialog
-      morphoFrame = dialog.getParentFrame();
-      resultPane = dialog.getResultPanel();
-    
+       Log.debug(20, "Unkown export format!");
     }
+    
   
   }//LocalToNetworkCommand
   
@@ -113,9 +106,15 @@ public class ExportCommand implements Command
    */    
   public void execute()
   {
-   
-    // If dialog is null, this means the resulpanel is in a morphoframe
-    if (dialog == null)
+     // Get morphoframe and resultPanel if dialog is not null
+    if (dialog != null)
+    {
+     // This command will apply to a dialog
+      morphoFrame = dialog.getParentFrame();
+      resultPane = dialog.getResultPanel();
+     
+    }
+    else// If dialog is null, this means the resulpanel is in a morphoframe
     {
       // current active morphoFrame
       morphoFrame = UIController.getInstance().getCurrentActiveWindow();
@@ -131,15 +130,22 @@ public class ExportCommand implements Command
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))
       {
-          
+          // If it is dialog, destroied it 
+          if ( dialog != null)
+          {
+            dialog.setVisible(false);
+            dialog.dispose();
+            dialog = null;
+          }
           doExport(selectDocId, morphoFrame);
+        
       }//if
     }//if
 
   }//execute
 
   /**
-   * Using SwingWorket class to delete a local package
+   * Using SwingWorket class to export package
    *
    */
  private void doExport(final String docid, final MorphoFrame frame) 
