@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-29 23:41:31 $'
- * '$Revision: 1.1 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-24 00:59:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ import javax.swing.event.ChangeEvent;
  */
 public class StateChangeEvent extends ChangeEvent
 {
+    // An event name for selecting a data table column
+    public static String SELECTDATATABLECOLUMN = "selectDataTableColumn";
+    
     private String changedState;
 
     /**
