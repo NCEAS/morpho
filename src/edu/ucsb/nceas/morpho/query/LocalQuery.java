@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-22 18:02:51 $'
- * '$Revision: 1.28 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-22 23:20:28 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -457,7 +457,8 @@ public class LocalQuery extends DefaultHandler
 // use to get the last element in a path string
    static private String getLastPathElement(String str) {
         String last = "";
-        int ind = str.lastIndexOf("\\");
+        String sep = System.getProperty("file.separator");
+        int ind = str.lastIndexOf(sep);
         if (ind==-1) {
            last = str;     
         }
