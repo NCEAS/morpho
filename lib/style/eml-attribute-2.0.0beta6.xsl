@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 01:02:17 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2002-10-25 16:45:30 $'
+  * '$Revision: 1.5 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
       </head>
       <body>
         <center>
-          <h3>Attribute structure description</h3>
+          <h3>Attribute structure description <xsl:value-of select="$selected_attribute"/></h3>
         </center>
 
         <table class="tabledefault" width="80%"><!-- width needed for NN4 - doesn't recognize width in css -->
@@ -62,7 +62,7 @@
         </tr>
         <xsl:for-each select="eml-attribute/attribute">
           <xsl:choose>
-            <xsl:when test="position() = ($selected_attribute+1)">
+            <xsl:when test="position() = ($selected_attribute+1) or $selected_attribute&lt;0 or normalize-space($selected_attribute)=''">
               <tr valign="top">
                 <xsl:variable name="stripes">
                   <xsl:choose>

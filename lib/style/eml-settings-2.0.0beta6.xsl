@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 01:02:17 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2002-10-25 16:45:30 $'
+  * '$Revision: 1.6 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@
     */ 
 -->
   
-  <xsl:param name="selected_attribute">999</xsl:param>
+  <xsl:param name="selected_attribute">-1</xsl:param>
 
 
 <!-- 
