@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-15 23:13:09 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2001-06-18 15:55:09 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,7 +319,7 @@ public class DocFrame extends javax.swing.JFrame
 	    this();
 	    this.framework = cf;
 	    counter++;
-	    setName("XMLEditor"+counter);
+	    setName("Morpho Editor"+counter);
 		XMLTextString = doctext;
 		putXMLintoTree(treeModel, XMLTextString);
         tree.setSelectionRow(0);
