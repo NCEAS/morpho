@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-13 01:00:58 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-04-16 19:54:35 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1603,6 +1603,8 @@ public class TextImportWizardEml2 extends JFrame {
     om.put(header + "entityDescription",
            XMLUtil.normalize(TableDescriptionTextField.getText()));
     // physical NV pairs are inserted here
+		String physicalID = WizardSettings.getUniqueID();
+		om.put(header + "physical/@id", physicalID);
     om.put(header + "physical/objectName", shortFilename);
     long filesize = dataFile.length();
     String filesizeString = (new Long(filesize)).toString();
@@ -1632,7 +1634,15 @@ public class TextImportWizardEml2 extends JFrame {
     int numrecs = nlines_actual - startingLine + 1 + temp;
     String numRecords = (new Integer(numrecs)).toString();
     om.put(header + "numberOfRecords", XMLUtil.normalize(numRecords));
-
+		
+		if(this.ignoreConsequtiveDelimiters) {
+			// if consecutive delimiters need to be ignored, we have to add this information in the
+			// additionalMetadata section.
+			String addtHeader = "/eml:eml/additionalMetadata";
+			om.put(addtHeader + "/describes", physicalID);
+			om.put(addtHeader + "/consecutiveDelimiters", "true");
+		}
+		
     return om;
   }
 

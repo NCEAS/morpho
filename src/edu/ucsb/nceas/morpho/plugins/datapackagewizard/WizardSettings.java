@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-15 20:51:09 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2004-04-16 19:54:35 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -434,6 +434,7 @@ public class WizardSettings {
       newArr[i] = unitDictionaryUnitTypesArray[i];
     for(int j = 0; j < customUnitDictionaryUnitTypesArray.length; j++)
       newArr[i++] = customUnitDictionaryUnitTypesArray[j];
+		Arrays.sort(newArr);
     return newArr;
   }
 
