@@ -25,11 +25,17 @@
 <table class="tablepanel" cellspacing="0" cellpadding="4" border="0"
  width="100%">
 <!-- 
+
   <tr>
+
    <td colspan=2 width="100%">
+
     <img src="./images/knb.gif" width=350 height=200>
+
    </td>
+
   </tr>
+
  -->
   <tbody>
     <tr>
@@ -140,8 +146,16 @@ created for Java applications.<br>
 &lt;log_file&gt;false&lt;/log_file&gt; --- Changing the value within
 these tags from "false" to "true" will send all error messages to a log
 file. This may
-be useful if you are having problems.<br>
-      <br>
+be useful if you are having problems.&nbsp; Note that in version 1.5,
+the default setting for this parameter has been set to "true". Messages
+are thus automatically written to the log file (which is written to the
+Morpho startup directory and called "stderr.log"). If problems occur,
+this log file can be examined (or sent to the Morpho developers) to
+help determine the cause of the problem. Note that the log file is
+rewritten every time Morpho starts up, so you will need to rename
+it&nbsp; if you want to save the results.<br>
+      </p>
+      <p><br>
 &lt;metacat_url&gt;http://metacat.nceas.ucsb.edu/knb/servlet/metacat&lt;/metacat_url&gt;
 --- The url of the network server where data is stored is set here. You
 may need to change this if you are using a custom server.<br>
@@ -180,8 +194,9 @@ RAM at startup. Some operations will require several minutes to
 complete even on newer computers. One example is the initial display of
 very large (10s of MB) data files.<br>
       <br>
-      <span style="font-weight: bold;"><a name="pastedata"></a>8. How
-can I add data to a data file?</span><br>
+      <span style="font-weight: bold;"><a name="pastedata"></a><b>8.
+How
+can I add data to a data file?</b></span><br>
       <br>
 One can simply paste data from the clipboard into a data file displayed
 in Morpho. However, currently Morpho does not automatically add rows to
@@ -195,7 +210,18 @@ that the default when copying/pasting from Excel is tab-delimited data.
 All the data will end up in the first cell if the data being pasted
 uses a different delimiter that the existing data (e.g. pasting from
 Excel when the existing data is comma-delimited.).</p>
-      <p>&nbsp;</p>
+      <p>&nbsp;<br>
+      <span style="font-weight: bold;">9. What happens with network
+data packages created with older versions of Morpho?</span><br>
+      </p>
+      <p><br>
+Previous versions of Morpho worked with a now obsolete version of EML
+called "Beta 6".&nbsp; Morpho 1.5 will still read these older packages,
+but it will automatically convert them to the newer EML 2.0 format for
+display. These older data packages&nbsp; will not be converted to EML
+2.0 until the owner saves them, at which time a new ID will also be
+assigned.<br>
+      </p>
       </td>
     </tr>
   </tbody>
@@ -204,11 +230,17 @@ Excel when the existing data is comma-delimited.).</p>
 <table class="tablepanel" cellspacing="0" cellpadding="4" border="0"
  width="100%">
 <!-- 
+
   <tr>
+
    <td colspan=2 width="100%">
+
     <img src="./images/knb.gif" width=350 height=200>
+
    </td>
+
   </tr>
+
  -->
   <tbody>
     <tr>
