@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-14 22:16:28 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-05-14 23:09:38 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -322,7 +322,8 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
       }
       else
       {
-        System.out.println("Bad input args: " + filename + ", " + xpathExpression);
+        System.out.println("Bad input args: " + filename + ", " 
+          + xpathExpression);
       }
    } // end of 'for' loop over all files
         
@@ -363,27 +364,39 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
 	return rss;
 	}
 	
+	/*
+	 *  utility routine to return the value of a node defined by
+	 *  a specified XPath; used to build result set from local
+	 *  queries
+	 */
 	private String getValueForPath(String pathstring, String filename) {
-	    String val = "";
+	  String val = "";
 	    try{
 	    // assume that the filename file has already been parsed
         if (dom_collection.containsKey(filename)){
-            Node doc = ((Document)dom_collection.get(filename)).getDocumentElement();
-            NodeList nl = null;
-            nl = XPathAPI.selectNodeList(doc, pathstring);
-            if ((nl!=null)&&(nl.getLength()>0)) {
-                Node cn = nl.item(0).getFirstChild();  // assume 1st child is text node
-                    if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                        val = cn.getNodeValue().trim();
-                    }
-                else { val="";}
+          Node doc = ((Document)dom_collection.get(filename)).getDocumentElement();
+          NodeList nl = null;
+          nl = XPathAPI.selectNodeList(doc, pathstring);
+          if ((nl!=null)&&(nl.getLength()>0)) {
+            // loop over node list is needed if node is repeated; eg key words
+            for (int k=0;k<nl.getLength();k++) {
+              Node cn = nl.item(k).getFirstChild();  // assume 1st child is text node
+              if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
+                String temp = cn.getNodeValue().trim();
+                if (val.length()>0) val = "; "+val; 
+                val = temp + val;
+              }
             }
+          }
         }
-        }
-        catch (Exception e){System.out.println("Error in getValueForPath method");}
+      }
+      catch (Exception e){System.out.println("Error in getValueForPath method");}
 	return val;    
 	}
 	
+	/*  Given a DOM document node, this method returns the DocType
+	 *  as a String
+	 */
 	static private String getDocTypeFromDOM(Document doc){
 	    String ret = null;
 	        DocumentType ddd = doc.getDoctype();
