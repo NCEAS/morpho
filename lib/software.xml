@@ -185,7 +185,7 @@ help="the 'software' element contains general information about a software resou
 
     </medFormat>
 
-    <medNote help="any additional pertitant information about the media">
+    <medNote help="any additional pertinent information about the media">
     </medNote>
   </offlineMedium>
 

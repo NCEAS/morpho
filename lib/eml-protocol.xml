@@ -205,7 +205,7 @@ help="eml-protocol is a set of fields that contains method, processing, and qual
 
           </medFormat>
 
-          <medNote help="any additional pertitant information about the media">
+          <medNote help="any additional pertinent information about the media">
           </medNote>
         </offlineMedium>
 
@@ -812,7 +812,7 @@ help="eml-protocol is a set of fields that contains method, processing, and qual
 
           </medFormat>
 
-          <medNote help="any additional pertitant information about the media">
+          <medNote help="any additional pertinent information about the media">
           </medNote>
         </offlineMedium>
 
@@ -1414,7 +1414,7 @@ help="eml-protocol is a set of fields that contains method, processing, and qual
 
           </medFormat>
 
-          <medNote help="any additional pertitant information about the media">
+          <medNote help="any additional pertinent information about the media">
           </medNote>
         </offlineMedium>
 

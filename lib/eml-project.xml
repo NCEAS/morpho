@@ -489,7 +489,7 @@ help="eml-project elements describe various aspects of the research project with
   
           </medFormat>
   
-          <medNote help="any additional pertitant information about the media">
+          <medNote help="any additional pertinent information about the media">
           </medNote>
         </offlineMedium>
   
@@ -1095,7 +1095,7 @@ help="eml-project elements describe various aspects of the research project with
   
             </medFormat>
   
-            <medNote help="any additional pertitant information about the media">
+            <medNote help="any additional pertinent information about the media">
             </medNote>
           </offlineMedium>
   
@@ -1697,7 +1697,7 @@ help="eml-project elements describe various aspects of the research project with
   
             </medFormat>
   
-            <medNote help="any additional pertitant information about the media">
+            <medNote help="any additional pertinent information about the media">
             </medNote>
           </offlineMedium>
   
@@ -2299,7 +2299,7 @@ help="eml-project elements describe various aspects of the research project with
   
             </medFormat>
   
-            <medNote help="any additional pertitant information about the media">
+            <medNote help="any additional pertinent information about the media">
             </medNote>
           </offlineMedium>
   
@@ -3026,7 +3026,7 @@ help="eml-project elements describe various aspects of the research project with
         
             </medFormat>
         
-            <medNote help="any additional pertitant information about the media">
+            <medNote help="any additional pertinent information about the media">
             </medNote>
           </offlineMedium>
         
@@ -3625,7 +3625,7 @@ help="eml-project elements describe various aspects of the research project with
       
           </medFormat>
       
-          <medNote help="any additional pertitant information about the media">
+          <medNote help="any additional pertinent information about the media">
           </medNote>
         </offlineMedium>
       

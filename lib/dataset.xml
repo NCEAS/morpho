@@ -185,7 +185,7 @@ help="The dataset element defines extend the ResourceBase complexType in order t
 
     </medFormat>
 
-    <medNote help="any additional pertitant information about the media">
+    <medNote help="any additional pertinent information about the media">
     </medNote>
   </offlineMedium>
 
