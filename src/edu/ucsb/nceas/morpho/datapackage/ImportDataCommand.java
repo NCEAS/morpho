@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-22 21:37:24 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-10-24 20:09:10 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,10 +79,10 @@ public class ImportDataCommand implements Command
       if ((dp.hasDataFile(entityId))||(entityId==null)) {
         Morpho morpho = resultPane.getFramework();
         DataPackage dataPackage = resultPane.getDataPackage();
-        morphoFrame.setVisible(false);
         AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
                    dataPackage, morphoFrame, AddMetadataWizard.NOTSHOWMETADATA);
         amw.showImportDataScreen();
+        morphoFrame.setVisible(false);
       }
       else {
         // Log.debug(1,"No Data Branch");
