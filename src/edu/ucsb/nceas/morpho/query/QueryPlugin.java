@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.7 2000-08-10 23:32:03 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.8 2000-08-11 22:23:37 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1124,9 +1124,6 @@ public class QueryBean extends AbstractQueryBean
 	void SearchButton1_actionPerformed(java.awt.event.ActionEvent event)
 	{
    //      simplequery_submitToDatabase("%NCEAS%");
-	    String temp = create_XMLQuery();
-	    LogIn();
-	    squery_submitToDatabase(temp);   
 	    if (SearchButton1.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -1235,15 +1232,16 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
+	    String temp = create_XMLQuery();
+	    LogIn();
+	    squery_submitToDatabase(temp);   
+		
 //	LogOut();
     }
 
 	void SearchButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
    //      simplequery_submitToDatabase("%NCEAS%");
-	    String temp = create_XMLQuery();
-	    LogIn();
-	    squery_submitToDatabase(temp);   
 	    if (SearchButton.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -1329,6 +1327,10 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
+	    String temp = create_XMLQuery();
+	    LogIn();
+	    squery_submitToDatabase(temp);   
+		
 //	LogOut();
 	}
 	

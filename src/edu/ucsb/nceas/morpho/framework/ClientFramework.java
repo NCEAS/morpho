@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.8 2000-08-11 18:02:44 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.9 2000-08-11 22:25:40 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -718,7 +718,9 @@ public class ClientFramework extends javax.swing.JFrame
 
 	void SaveToDatabase_actionPerformed(java.awt.event.ActionEvent event)
 	{
+	    LogIn();
 		mdeBean1.saveDocumentToDatabase();
+		LogOut();
 			 
 	}
 

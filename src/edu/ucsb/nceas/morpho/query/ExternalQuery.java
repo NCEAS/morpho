@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.2 2000-08-10 00:30:41 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.3 2000-08-11 22:23:37 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -71,9 +71,12 @@ public JTable getTable() {
                               String qName, Attributes atts)
            throws SAXException {
       elementStack.push(localName);
- //     if (localName.equals("success")) {
-//        writeSucceeded = true;
-//      }
+      if (localName.equals("document")) {
+            docid = "";
+            docname = "";
+            doctype = "";
+            doctitle = "";
+      }
     }
   
     public void endElement (String uri, String localName,
