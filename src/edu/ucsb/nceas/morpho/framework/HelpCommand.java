@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-12-20 20:26:28 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-12-20 20:46:23 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,10 +54,14 @@ public class HelpCommand implements Command
   private String errorMessage = null;
   // Size of help window
   private int helpWidth = 800;
-  private int helpHeight= 600;
+  private int helpHeight= 520;
   private Dimension size = new Dimension(helpWidth, helpHeight);
   // Location of help window
-  private Point location = null;
+  private Point location = new Point
+                    ((new Double(UISettings.CLIENT_SCREEN_WIDTH/2)).intValue(),
+                    (new Double(UISettings.CLIENT_SCREEN_HEIGHT/2)).intValue());                   
+                                           
+                                         
   /**
    * Constructor of HelpCommand
    */
@@ -82,6 +87,7 @@ public class HelpCommand implements Command
     	  
     mainHB = mainHS.createHelpBroker();
     mainHB.setSize(size);
+    mainHB.setLocation(location);
     helpListener = new CSH.DisplayHelpFromSource(mainHB);
   }//CancelCommand
   
@@ -106,8 +112,8 @@ public class HelpCommand implements Command
         double centerY = parentY + 0.5 * parentHeight;
         int helpX = (new Double(centerX - 0.5 * helpWidth)).intValue();
         int helpY = (new Double(centerY - 0.5 * helpHeight)).intValue();
-        location = new Point(helpX, helpY);
-        mainHB.setLocation(location);
+        location.setLocation(helpX, helpY);
+        mainHB.setLocation(location); 
       }//if
       helpListener.actionPerformed(event);
     }//if
