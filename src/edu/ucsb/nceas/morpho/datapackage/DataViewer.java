@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-28 21:21:22 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2002-08-29 16:26:06 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.io.*;
@@ -873,6 +874,8 @@ public class DataViewer extends javax.swing.JPanel
     DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
     
+    JTableHeader header = table.getTableHeader();
+    header.addMouseListener(new HeaderMouseListener());
   
 	}
 
@@ -1188,4 +1191,25 @@ public class DataViewer extends javax.swing.JPanel
 	}
 
 	
+  class HeaderMouseListener implements MouseListener {
+
+    /**
+     * Mouse click event handler
+     */
+    public void mouseClicked(MouseEvent event) 
+    {
+      TableColumnModel colModel = table.getColumnModel();
+      int index = colModel.getColumnIndexAtX(event.getX());
+      int modelIndex = colModel.getColumn(index).getModelIndex();
+      table.setRowSelectionInterval(0, table.getRowCount()-1);
+      table.setColumnSelectionInterval(modelIndex, modelIndex);
+      javax.swing.JOptionPane.showMessageDialog(null, "Header Clicked - Column# "+modelIndex); 
+    }
+
+    public void mouseReleased(MouseEvent event){}
+    public void mousePressed(MouseEvent event) {}
+    public void mouseEntered(MouseEvent event) {}
+    public void mouseExited(MouseEvent event) {}    
+  }
+  
 }
