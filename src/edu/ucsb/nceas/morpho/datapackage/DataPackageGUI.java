@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:22 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2001-10-22 23:01:22 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -994,16 +994,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       if(metacatloc)
       { //save it to metacat
         MetacatDataStore mds = new MetacatDataStore(framework);
-        int choice = JOptionPane.showConfirmDialog(null, 
-                               "Do you wish to make this file publicly readable "+ 
-                               "(Searchable) on Metacat?", 
-                               "Package Editor", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          metacatpublic = true;
-        }
+        
         if(id.trim().equals(dataPackage.getID().trim()))
         { //edit the package file
           Vector oldids = new Vector();
