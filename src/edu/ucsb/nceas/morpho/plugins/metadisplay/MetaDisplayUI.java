@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 23:04:57 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-09-26 02:46:35 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 
@@ -63,34 +64,18 @@ public class MetaDisplayUI extends JPanel
     private       HTMLPanel             htmlPanel;
     private final HeaderPanel           header;
     private final MetaDisplay           controller;
-
-    private final int TOTAL_WIDTH       = 400;
-    private final int TOTAL_HEIGHT      = 600;
     
-    private static final int BORDER_WIDTH      = 4;
-
-    private static final int HEADER_HEIGHT     = 55;
-    private final int HEADER_WIDTH      = TOTAL_WIDTH - 2 * BORDER_WIDTH;
-
-    private final Dimension OVERALL_DIMS 
-                                    = new Dimension(TOTAL_WIDTH, TOTAL_HEIGHT);
-    protected final Dimension HEADER_DIMS 
-                                    = new Dimension(HEADER_WIDTH, HEADER_HEIGHT);
-    private final Dimension HTML_DIMS   
-                                    = new Dimension(HEADER_WIDTH, TOTAL_HEIGHT 
-                                            - HEADER_HEIGHT - 2*BORDER_WIDTH);
-                                            
-    private static final Color FOCUSED_BORDER_COLOR = new Color(115,147,196);
-    private static final Color UNFOCUSED_BORDER_COLOR = Color.gray;
     private static final Border focusedBorder 
-                = BorderFactory.createMatteBorder(  BORDER_WIDTH, BORDER_WIDTH, 
-                                                    BORDER_WIDTH, BORDER_WIDTH,
-                                                    FOCUSED_BORDER_COLOR );
+        = BorderFactory.createMatteBorder(  
+                  UISettings.FOCUS_BORDER_WIDTH, UISettings.FOCUS_BORDER_WIDTH, 
+                  UISettings.FOCUS_BORDER_WIDTH, UISettings.FOCUS_BORDER_WIDTH,
+                  UISettings.FOCUSED_BORDER_COLOR );
 
     private static final Border unfocusedBorder 
-                = BorderFactory.createMatteBorder(  BORDER_WIDTH, BORDER_WIDTH, 
-                                                    BORDER_WIDTH, BORDER_WIDTH,
-                                                    UNFOCUSED_BORDER_COLOR );
+        = BorderFactory.createMatteBorder(  
+                  UISettings.FOCUS_BORDER_WIDTH, UISettings.FOCUS_BORDER_WIDTH, 
+                  UISettings.FOCUS_BORDER_WIDTH, UISettings.FOCUS_BORDER_WIDTH,
+                  UISettings.UNFOCUSED_BORDER_COLOR );
     
     /**
      *  constructor
@@ -114,24 +99,13 @@ public class MetaDisplayUI extends JPanel
 
     private void initLayout()
     {
-        header.setPreferredSize(HEADER_DIMS);
-        htmlPanel.setPreferredSize(HTML_DIMS);
         JScrollPane htmlScroll = new JScrollPane(htmlPanel);
         
         this.setOpaque(true);
         this.setLayout(new BorderLayout());
-//        Box centerPanel = Box.createVerticalBox();
-//        this.add(centerPanel, BorderLayout.CENTER);
-//
-//        centerPanel.add(header);
-//        centerPanel.add(htmlScroll);
         
         this.add(header, BorderLayout.NORTH);
         this.add(htmlScroll, BorderLayout.CENTER);
-        
-                
-    //    this.setMinimumSize(OVERALL_DIMS);
-        this.setPreferredSize(OVERALL_DIMS);
     }
 
     public boolean isFocusTraversable() 
@@ -141,20 +115,20 @@ public class MetaDisplayUI extends JPanel
     
     private void initFocusBorder()
     {
-        this.setBorder(focusedBorder);
-        final JComponent instance = this;
+        this.setBorder(unfocusedBorder);
+//        final JComponent instance = this;
 //        this.addMouseListener( new MouseAdapter() {
 //            public void mouseClicked(MouseEvent e) {
 //                Log.debug(50,"mouseClicked in MetaDisplayUI");
 //                instance.setBorder(focusedBorder);
 //            }
 //        });
-        this.addFocusListener( new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                Log.debug(50,"mouseClicked in MetaDisplayUI");
-                instance.setBorder(focusedBorder);
-            }
-        });
+//        this.addFocusListener( new FocusAdapter() {
+//            public void focusGained(FocusEvent e) {
+//                Log.debug(50,"mouseClicked in MetaDisplayUI");
+//                instance.setBorder(focusedBorder);
+//            }
+//        });
     }
 
 	
