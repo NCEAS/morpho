@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-01 22:57:25 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2003-12-02 19:27:40 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -431,6 +431,30 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
+  
+  /**
+   *  This method sets the number of records in the entity,
+   *  given the index of the entity in the entityNode array
+   */
+  public void setEntityNumRecords(int entNum, String numRecS) {
+    if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
+      Log.debug(20, "No such entity!");
+      return;
+    }
+    Node entity = (entityArray[entNum]).getNode();
+    String entityNumRecordsXpath = "";
+    try {
+      entityNumRecordsXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='entity']/numRecords")).getNodeValue();
+      NodeList eNodes = XPathAPI.selectNodeList(entity, entityNumRecordsXpath);
+      if (eNodes==null) return;
+      Node child = eNodes.item(entNum).getFirstChild();
+      child.setNodeValue(numRecS);
+    }
+    catch (Exception w) {
+      Log.debug(50,"exception in setting entity numRecords"+w.toString());
+    }
+  }
 
   /**
    *  This method retrieves the entity Description,
@@ -839,6 +863,62 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
+
+  /**
+   *  This method returns the size for the indexed entity and
+   *  physical object. 
+   */
+  public String getPhysicalSize(int entityIndex, int physicalIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return "no physicals!";
+    if (physicalIndex>(physicals.length-1)) return "physical index too large!";
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/size")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(50,"exception in getting physical size"+w.toString());
+    }
+    return temp;
+  }
+
+    /**
+   *  This method sets the size for the indexed entity and
+   *  physical object. 
+   */
+  public void setPhysicalSize(int entityIndex, int physicalIndex, String sizeS) {
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      Log.debug(20, "No such entity!");
+      return;
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return;
+    if (physicalIndex>(physicals.length-1)) return;
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/size")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return;
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      child.setNodeValue(sizeS);
+    }
+    catch (Exception w) {
+      Log.debug(50,"exception in getting physical size"+w.toString());
+    }
+  }
+
   
   /**
    *  This method returns the FieldDelimiter for the indexed entity and
@@ -869,6 +949,33 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
+  /**
+   *  This method sets the FieldDelimiter for the indexed entity and
+   *  physical object. 
+   */
+  public void setPhysicalFieldDelimiter(int entityIndex, int physicalIndex, String delim) {
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      Log.debug(20, "No such entity!");
+      return;
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return;
+    if (physicalIndex>(physicals.length-1)) return;
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/fieldDelimiter")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return;
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      child.setNodeValue(delim);
+    }
+    catch (Exception w) {
+      Log.debug(50,"exception in getting physical field delimiter"+w.toString());
+    }
+  }
+
   /**
    *  This method returns the number of header lines for the indexed entity and
    *  physical object. An empty string is returned when there is no
