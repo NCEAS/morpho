@@ -7,7 +7,7 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *      Created: 2000 July 20
-  *    File Info: '$Id: resource.xsl,v 1.1 2000-12-14 16:18:35 higgins Exp $'  
+  *    File Info: '$Id: resource.xsl,v 1.2 2000-12-19 23:44:57 higgins Exp $'  
   *
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
@@ -16,7 +16,7 @@
     <html>
     <head>
       <link rel="stylesheet" type="text/css" 
-       href="@html-path@/style/rowcol.css" />
+       href="default.css" />
       <title>
         <xsl:value-of select="//title" />
       </title>
@@ -51,9 +51,9 @@
       
       <xsl:for-each select="resource/*/originator">
         <u>
-        <xsl:value-of select="./individualName/salutation" />&nbsp;
-        <xsl:value-of select="./individualName/givenName" />&nbsp;
-        <xsl:value-of select="./individualName/surName" />&nbsp;
+        <xsl:value-of select="./individualName/salutation" /> 
+        <xsl:value-of select="./individualName/givenName" /> 
+        <xsl:value-of select="./individualName/surName" /> 
         </u>
         <br />
         <dir>
@@ -65,7 +65,7 @@
         </xsl:if>
         
         <xsl:if test="count(./contactInfo/phone/voice) &gt; 0">
-          Phone:&nbsp;
+          Phone: 
           <xsl:for-each select="./contactInfo/phone/voice">
            <xsl:value-of select="." />
             <br />
@@ -73,7 +73,7 @@
         </xsl:if>
         
         <xsl:if test="count(./contactInfo/phone/facsimile) &gt; 0">
-          Fax:&nbsp;
+          Fax: 
           <xsl:for-each select="./contactInfo/phone/facsimile">
             <xsl:value-of select="." />
             <br />
@@ -81,10 +81,10 @@
         </xsl:if>
         
         <xsl:if test="count(./contactInfo/phone/other) &gt; 0">
-          Other phone:&nbsp;
+          Other phone: 
           <xsl:for-each select="./contactInfo/phone/other">
             <xsl:value-of select="." />
-            &nbsp;&nbsp;
+              
             <xsl:text>Number type:</xsl:text>
             <xsl:value-of select="/resource/*/*/contactInfo/phone/otherType" />
             <br />
@@ -93,9 +93,9 @@
         
         <xsl:if test="count(./contactInfo/address) &gt; 0">
           <xsl:value-of select="./contactInfo/address/deliveryPoint" /><br/>
-          <xsl:value-of select="./contactInfo/address/city" />,&nbsp;
-          <xsl:value-of select="./contactInfo/address/administrativeArea" />&nbsp;
-          <xsl:value-of select="./contactInfo/address/postalCode" />&nbsp;<br/>
+          <xsl:value-of select="./contactInfo/address/city" />, 
+          <xsl:value-of select="./contactInfo/address/administrativeArea" /> 
+          <xsl:value-of select="./contactInfo/address/postalCode" /> <br/>
           <xsl:value-of select="./contactInfo/address/country" /><br/>
           <xsl:value-of select="./contactInfo/address/electronicMailAddress" />
           <br/>
@@ -112,13 +112,13 @@
         </xsl:if>
         
         <xsl:if test="count(./contactInfo/hoursOfService) &gt; 0">
-          Office hours:&nbsp;
+          Office hours: 
           <xsl:value-of select="./contactInfo/hoursOfService" />
           <br/>
         </xsl:if>
         
         <xsl:if test="count(./contactInfo/contactInstructions) &gt; 0">
-          Contact instructions:&nbsp;
+          Contact instructions: 
           <xsl:value-of select="./contactInfo/contactInstructions" />
           <br/>
         </xsl:if>
@@ -132,9 +132,9 @@
         Publisher:
         
         <xsl:value-of select="resource/*/publisher/individualName/salutation" />
-        &nbsp;
-        <xsl:value-of select="resource/*/publisher/individualName/givenName" />&nbsp;
-        <xsl:value-of select="resource/*/publisher/individualName/surName" />&nbsp;
+         
+        <xsl:value-of select="resource/*/publisher/individualName/givenName" /> 
+        <xsl:value-of select="resource/*/publisher/individualName/surName" /> 
         <br />
         <xsl:if test="count(resource/*/publisher/organizationName) &gt; 0">
           <xsl:value-of select="resource/*/publisher/organizationName" />
@@ -142,7 +142,7 @@
         </xsl:if>
         
         <xsl:if test="count(resource/*/publisher/contactInfo/phone/voice) &gt; 0">
-          Phone:&nbsp;
+          Phone: 
           <xsl:for-each select="resource/*/publisher/contactInfo/phone/voice">
            <xsl:value-of select="." />
             <br />
@@ -150,7 +150,7 @@
         </xsl:if>
         
         <xsl:if test="count(resource/*/publisher/contactInfo/phone/facsimile) &gt; 0">
-          Fax:&nbsp;
+          Fax: 
           <xsl:for-each select="resource/*/publisher/contactInfo/phone/facsimile">
             <xsl:value-of select="." />
             <br />
@@ -158,10 +158,10 @@
         </xsl:if>
         
         <xsl:if test="count(resource/*/publisher/contactInfo/phone/other) &gt; 0">
-          Other phone:&nbsp;
+          Other phone: 
           <xsl:for-each select="resource/*/publisher/contactInfo/phone/other">
             <xsl:value-of select="." />
-            &nbsp;&nbsp;
+              
             <xsl:text>Number type:</xsl:text>
             <xsl:value-of select="/resource/*/*/contactInfo/phone/otherType" />
             <br />
@@ -173,13 +173,13 @@
            select="resource/*/publisher/contactInfo/address/deliveryPoint" />
            <br/>
           <xsl:value-of 
-           select="resource/*/publisher/contactInfo/address/city" />,&nbsp;
+           select="resource/*/publisher/contactInfo/address/city" />, 
           <xsl:value-of 
            select="resource/*/publisher/contactInfo/address/administrativeArea"/>
-           &nbsp;
+            
           <xsl:value-of 
            select="resource/*/publisher/contactInfo/address/postalCode" />
-           &nbsp;<br/>
+            <br/>
           <xsl:value-of 
            select="resource/*/publisher/contactInfo/address/country" /><br/>
           <xsl:value-of 
@@ -208,7 +208,7 @@
         
         <xsl:if 
          test="count(resource/*/publisher/contactInfo/hoursOfService) &gt; 0">
-          Office hours:&nbsp;
+          Office hours: 
           <xsl:value-of 
            select="resource/*/publisher/contactInfo/hoursOfService" />
           <br/>
@@ -216,7 +216,7 @@
         
         <xsl:if 
          test="count(resource/*/publisher/contactInfo/contactInstructions) &gt; 0">
-          Contact instructions:&nbsp;
+          Contact instructions: 
           <xsl:value-of 
            select="resource/*/publisher/contactInfo/contactInstructions" />
           <br/>
@@ -225,23 +225,23 @@
       
       <xsl:if test="count(resource/*/pubdate) &gt; 0">
         Publishing Date:
-        &nbsp; <xsl:value-of select="resource/*/pubdate" /><br/>
+          <xsl:value-of select="resource/*/pubdate" /><br/>
       </xsl:if>
       
       <xsl:if test="count(resource/*/pubplace) &gt; 0">
         Publishing Place: 
-        &nbsp; <xsl:value-of select="resource/*/pubplace" />
+          <xsl:value-of select="resource/*/pubplace" />
         <br/>
       </xsl:if>
       
       <xsl:if test="count(resource/*/series) &gt; 0">
-        Series:&nbsp; <xsl:value-of select="resource/*/series" /><br/>
+        Series:  <xsl:value-of select="resource/*/series" /><br/>
       </xsl:if>
       
       <xsl:if test="count(resource/*/additionalInfo) &gt; 0">
         <h3 class="highlight">Other Information</h3>
         Additional Information:
-        &nbsp; <xsl:value-of select="resource/*/additionalInfo" /><br/>
+          <xsl:value-of select="resource/*/additionalInfo" /><br/>
       </xsl:if>
       
       <!-- display the dataset specific field if present -->
@@ -256,7 +256,7 @@
       </xsl:if>
       
       <xsl:for-each select="resource/*/url">
-        URL:&nbsp; 
+        URL:  
         <a>
         <xsl:attribute name="href">
           <xsl:value-of select="./URL" />

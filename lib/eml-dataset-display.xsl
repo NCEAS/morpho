@@ -8,7 +8,7 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *      Created: 2000 April 5
   *      Version: 0.01
-  *    File Info: '$Id: eml-dataset-display.xsl,v 1.1 2000-07-28 21:46:05 higgins Exp $'
+  *    File Info: '$Id: eml-dataset-display.xsl,v 1.2 2000-12-19 23:44:57 higgins Exp $'
   *
   * This is an XSLT (http://www.w3.org/TR/xslt) stylesheet designed to
   * convert an XML file that is valid with respect to the eml-dataset.dtd
@@ -22,9 +22,10 @@
   <xsl:template match="/">
     <html>
       <head>
-        <link rel="stylesheet" type="text/css" href="rowcol.css" />
+        <link rel="stylesheet" type="text/css" 
+              href="default.css" />
       </head>
-      <body class="emlbody">
+      <body>
         <center>
           <h1>Data set description</h1>
           <h3>Ecological Metadata Language</h3>
@@ -32,7 +33,7 @@
         <xsl:apply-templates/>      
 
         <table width="100%">
-        <tr><td class="rowodd">
+        <tr><td class="highlight">
         <b><xsl:text>Keywords:</xsl:text></b>
         </td></tr>
         <tr><td>
@@ -46,7 +47,7 @@
          
 
         <table width="100%">
-        <tr><td class="rowodd">
+        <tr><td class="highlight">
         <b><xsl:text>Related Metadata and Data Files:</xsl:text></b>
         </td></tr>
         <tr><td>
@@ -71,16 +72,16 @@
   <xsl:template match="meta_file_id">
     <table width="100%">
     <tr>
-    <td class="rowodd"><b><xsl:text>Metadata File ID:</xsl:text></b></td>
+    <td class="highlight"><b><xsl:text>Metadata File ID:</xsl:text></b></td>
     <td><xsl:value-of select="."/></td>
     </tr>
       <xsl:for-each select="//dataset_id|//title">
         <tr>
         <xsl:if test="name(.)='dataset_id'">
-          <td class="rowodd"><b><xsl:text>Data set ID:</xsl:text></b></td>
+          <td class="highlight"><b><xsl:text>Data set ID:</xsl:text></b></td>
         </xsl:if>
         <xsl:if test="name(.)='title'">
-          <td class="rowodd"><b><xsl:text>Title:</xsl:text></b></td>
+          <td class="highlight"><b><xsl:text>Title:</xsl:text></b></td>
         </xsl:if>
         <td><xsl:value-of select="."/></td>
         </tr>
@@ -94,7 +95,7 @@
 
   <xsl:template match="originator[1]">
       <table width="100%">
-      <tr><td class="rowodd">
+      <tr><td class="highlight">
       <b><xsl:text>Data Set Owner(s):</xsl:text></b>
       </td></tr>
       </table>
@@ -154,7 +155,7 @@
   <xsl:template match="abstract">
     <table width="100%">
     <tr>
-    <td class="rowodd"><b><xsl:text>Abstract:</xsl:text></b></td>
+    <td class="highlight"><b><xsl:text>Abstract:</xsl:text></b></td>
     </tr>
     <tr>
     <td><xsl:value-of select="."/></td>

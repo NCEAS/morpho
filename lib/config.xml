@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <root>
-<MetaCatServletURL>http://dev.nceas.ucsb.edu/metadata/servlet/metacat</MetaCatServletURL>
+<MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/metacat/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
-<local_xml_directory>./heather</local_xml_directory>
+<local_xml_directory>./XMLworkFolder</local_xml_directory>
 <searchlocal>true</searchlocal>
 <searchnetwork>false</searchnetwork>
 <pathquery_config>
     <doctypes_searched><doctype>any</doctype></doctypes_searched>
     <doctypes_returned><returndoc>any</returndoc></doctypes_returned>
-    <fields_returned><returnfield>/eml-dataset/keyword_info/keyword</returnfield></fields_returned>
+    <fields_returned><returnfield>/eml-dataset/keyword_info/keyword</returnfield><returnfield>/eml-file/meta_file_id</returnfield><returnfield>/resource/dataset/identifier</returnfield><returnfield>/eml-variable/meta_file_id</returnfield></fields_returned>
 
     <doctypes_searched_default>
         <doctype_default>any</doctype_default>
