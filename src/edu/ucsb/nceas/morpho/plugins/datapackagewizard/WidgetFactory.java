@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
@@ -227,13 +228,28 @@ public class WidgetFactory {
                                   int selectedIndex, ActionListener listener) {
 
     if (buttonsText==null) buttonsText = new String[] { "" };
+    
+    JPanel outerRadioPanel = new JPanel(new BorderLayout());
+    
     JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 
     int totalButtons = buttonsText.length;
 
     JRadioButton[] buttons = new JRadioButton[totalButtons];
     ButtonGroup group = new ButtonGroup();
-
+    //adding an invisible button as the first in the container, and the 
+    //buttongroup, since once any button has been clicked, the group cannot 
+    //be reset so none are selected, other than by "clicking" (programmatically) 
+    //on this hidden jbutton. Note that the existence of this feature is 
+    //transparent to client code.
+    JRadioButton dummyJButton = new JRadioButton("");
+    Dimension hiddenDims = new Dimension(10,1);
+    dummyJButton.setMaximumSize(hiddenDims);
+    dummyJButton.setPreferredSize(hiddenDims);
+    dummyJButton.setVisible(false);
+    group.add(dummyJButton);
+    outerRadioPanel.add(dummyJButton, BorderLayout.NORTH);
+    
     for (int i=0; i<totalButtons; i++) {
 
       buttons[i] = new JRadioButton(buttonsText[i]);
@@ -246,7 +262,9 @@ public class WidgetFactory {
       radioPanel.add(buttons[i]);
     }
     setPrefMaxSizes(radioPanel, getDimForNumberOfLines(5*totalButtons/4));
-    return radioPanel;
+    outerRadioPanel.add(radioPanel, BorderLayout.CENTER);
+    
+    return outerRadioPanel;
   }
 
 

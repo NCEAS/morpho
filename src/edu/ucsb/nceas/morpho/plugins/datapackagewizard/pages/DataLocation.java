@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-17 22:28:51 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2003-12-17 23:47:36 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JFileChooser;
 import javax.swing.JButton;
 import javax.swing.BorderFactory;
-
+import javax.swing.JRadioButton;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -129,23 +129,20 @@ public class DataLocation extends AbstractWizardPage {
     "Archived"
   };
 
-  private final Dimension Q3_RADIOPANEL_DIMS = new Dimension(100, 300);
+  private final Dimension Q3_RADIOPANEL_DIMS = new Dimension(120, 300);
   
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public DataLocation() { 
   
-    String inlineOnlineString 
+    INLINE_OR_ONLINE_XPATH = ONLINE_XPATH;
+
+    String inOnString 
                 = Morpho.getConfiguration().get("dataLocationInlineOnline", 0);
-       
-    if (inlineOnlineString.equalsIgnoreCase("inline")) {
     
+    if ( inOnString!=null && inOnString.equalsIgnoreCase("inline")) {
       INLINE_OR_ONLINE_XPATH = INLINE_XPATH;
-      
-    } else {
-    
-      INLINE_OR_ONLINE_XPATH = ONLINE_XPATH;
     }
     init();
     setLastEvent(CREATE);
@@ -273,6 +270,8 @@ public class DataLocation extends AbstractWizardPage {
 
         //undo any hilites:
         onLoadAction();
+        deselectRadioGroup(q2RadioPanel_import);
+        deselectRadioGroup(q2RadioPanel_describe);
 
         if (e.getActionCommand().equals(Q1_LABELS[0])) { 
 
@@ -328,6 +327,15 @@ public class DataLocation extends AbstractWizardPage {
 
     currentSecondChoicePanel = blankPanel;
     currentThirdChoicePanel  = blankPanel;
+  }
+
+  private void deselectRadioGroup(JPanel radioPanel)  {
+  
+    Component buttonPanelComp = radioPanel.getComponent(1);
+    Container buttonPanel     = (Container)buttonPanelComp;
+    Component dummyButtonComp = buttonPanel.getComponent(0);
+    JRadioButton dummyButton = (JRadioButton)dummyButtonComp;
+    dummyButton.setSelected(true);
   }
 
   private void setLastEvent(short eventFlag) { lastEvent = eventFlag; }
