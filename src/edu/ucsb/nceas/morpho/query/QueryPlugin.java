@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-07 21:14:08 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2001-05-08 18:32:54 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ public class QueryPlugin implements PluginInterface
     menuActions = new Action[3];
     Action searchItemAction = new AbstractAction("Search...") {
       public void actionPerformed(ActionEvent e) {
-        framework.debug(1, "Action fired: Search Dialog :-)");
+        handleSearchAction();
       }
     };
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
@@ -178,5 +178,20 @@ public class QueryPlugin implements PluginInterface
   {
     //MetaCatServletURL = config.get("MetaCatServletURL", 0);
     framework.debug(9, "No config params to load.");
+  }
+
+  /**
+   * Handle the search action by opening the QueryDialog
+   */
+  private void handleSearchAction()
+  {
+    framework.debug(9, "Action fired: Search Dialog");
+
+    // Test the ResultFrame by creating one. This should be
+    // replaced by code that opens the QueryDialog and then
+    // it would create the ResultFrame
+    Query testQuery = new Query(getOwnerQuery(), framework);
+    ResultSet testResults = testQuery.execute();
+    ResultFrame rf = new ResultFrame(framework, testResults);
   }
 }
