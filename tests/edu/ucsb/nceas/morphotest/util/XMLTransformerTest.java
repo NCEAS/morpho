@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-03 01:18:24 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-05 01:03:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,18 +156,35 @@ public class XMLTransformerTest extends TestCase
     public static void main(String args[]) {
         Log.getLog().setDebugLevel(51);
         junit.textui.TestRunner.run(XMLTransformerTest.class);
+        System.exit(0);
     }
 
 
     private static final Reader XML_TESTDOC = new StringReader(
         "<?xml version=\"1.0\"?>"
-//        + "<!DOCTYPE eml-attribute "
-//        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-//        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-//        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
         + "<eml-attribute>"
-        + "  <identifier>TESTDOC_1</identifier>"
+        + "<identifier>TESTDOC_1</identifier>"
+        + "<attribute>"
+        + "  <attributeName>field 1</attributeName>"
+        + "  <attributeLabel>label for attribute 1</attributeLabel>"
+        + "  <attributeDefinition>none whatsoever</attributeDefinition>"
+        + "  <unit>cm</unit>"
+        + "  <dataType>integer</dataType>"
+        + "  <attributeDomain>"
+        + "      <numericDomain>"
+        + "        <minimum>2</minimum>"
+        + "        <maximum>222</maximum>"
+        + "      </numericDomain>"
+        + "  </attributeDomain>"
+        + "  <missingValueCode>~</missingValueCode>"
+        + "  <precision>5</precision>"
+        + "</attribute>"
         + "</eml-attribute>");
+
     
     private static final Reader XSL_TESTDOC = new StringReader(
         "<?xml version=\"1.0\"?>"
