@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 18:27:45 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-03-25 19:51:34 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,15 +138,20 @@ public class AddTemporalCovCommand implements Command {
     // note that the location of 'insertCurrentData' is significant
     // it must occur after the creation of the ModalDialog so that 'onLoadAction' is fired
     // and the list is emptied
-    insertCurrentData();
-    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
-    wpd.setVisible(true);
+    boolean pageCanHandleAllData = insertCurrentData();
+    if (pageCanHandleAllData) {
+      wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
+      wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-      infoAddFlag = true;
-    }
-    else {
-      infoAddFlag = false;
+      if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+        infoAddFlag = true;
+      }
+      else {
+        infoAddFlag = false;
+      }
+    } else {
+      UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+          "coverage", 0);      
     }
 
     return;
@@ -186,15 +191,18 @@ public class AddTemporalCovCommand implements Command {
     return;
   }
 
-  private void insertCurrentData() {
+  private boolean insertCurrentData() {
+    boolean res = true;
     NodeList tempList = adp.getTemporalNodeList();
-    if (tempList==null) return;
+    if (tempList==null) return true;
     for (int i=0;i<tempList.getLength();i++) {
        // create a new TemporalPage and add surrogate to list
        OrderedMap tempMap = XMLUtilities.getDOMTreeAsXPathMap(tempList.item(i));
 //  Log.debug(1, "tempMap: "+tempMap);
-       temporalPage.setPageData(tempMap, "");
+       boolean flag = temporalPage.setPageData(tempMap, "");
+       if (!flag) res = false;
     }
+    return res;
   }
 
   /**

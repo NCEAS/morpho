@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 18:28:29 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-03-25 19:52:46 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -333,12 +333,14 @@ public class Temporal extends AbstractUIPage{
 
  // assume that 'data' is an orderedMap for a single temporalCov subtree
   public boolean setPageData(OrderedMap data, String xPathRoot) { 
+    boolean res = true;
     TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
-    temporalPage.setPageData(data, "/temporalCoverage");
+    boolean flag = temporalPage.setPageData(data, "/temporalCoverage");
+    if(!flag) res = false;
     List newRow = temporalPage.getSurrogate();
     newRow.add(temporalPage);
     timespanList.addRow(newRow);
-    return true; 
+    return res; 
   }
 }
 

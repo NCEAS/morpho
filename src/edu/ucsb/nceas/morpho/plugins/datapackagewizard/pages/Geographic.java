@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 18:28:29 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-03-25 19:52:46 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,12 +308,14 @@ public class Geographic extends AbstractUIPage{
 
 // assume that 'data' is an orderedMap for a single geographicCov subtree
   public boolean setPageData(OrderedMap data, String xPathRoot) { 
+    boolean res = true;
     GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
-    geographicPage.setPageData(data, "/geographicCoverage");
+    boolean flag = geographicPage.setPageData(data, "/geographicCoverage");
+    if(!flag) res = false;
     List newRow = geographicPage.getSurrogate();
     newRow.add(geographicPage);
     geographicspanList.addRow(newRow);
-    return true; 
+    return res; 
   }
 }
 
