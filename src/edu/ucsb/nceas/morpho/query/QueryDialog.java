@@ -3,12 +3,12 @@
  *    Purpose: Visual display for collecting query info from user
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Dan Higgins
+ *    Authors: @authors@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 19:03:26 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-05-30 23:01:24 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,23 +26,36 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.framework.*;
 
-
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Insets;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Date;
 
-import edu.ucsb.nceas.morpho.framework.*;
-
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 
 /**
  * Dialog which collects search information from user
  * to be used to create a Query
  * 
  */
-public class QueryDialog extends javax.swing.JDialog
+public class QueryDialog extends JDialog
 {
   /** A reference to the container framework */
   private ClientFramework framework = null;
@@ -126,8 +139,8 @@ public class QueryDialog extends javax.swing.JDialog
 
     titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
     titlePanel.add(Box.createHorizontalStrut(8));
-    QueryTitleLabel.setText("Query Title ");
-    titlePanel.add(QueryTitleLabel);
+    queryTitleLabel.setText("Query Title ");
+    titlePanel.add(queryTitleLabel);
     titlePanel.add(Box.createHorizontalStrut(8));
     queryTitleTF.setText("Untitled-Search-" + untitledCounter);
 
@@ -149,66 +162,66 @@ public class QueryDialog extends javax.swing.JDialog
     titlePanel.add(queryTitleConstraintPanel);
     titlePanel.add(Box.createHorizontalStrut(8));
     titlePanel.add(Box.createHorizontalGlue());
-    SearchChoicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    CatalogSearchCheckBox.setText("Catalog Search");
-    CatalogSearchCheckBox.setActionCommand("Catalog Search");
-    CatalogSearchCheckBox.setSelected(true);
-    SearchChoicePanel.add(CatalogSearchCheckBox);
-    LocalSearchCheckBox.setText("Local Search");
-    LocalSearchCheckBox.setActionCommand("Local Search");
-    LocalSearchCheckBox.setSelected(true);
-    SearchChoicePanel.add(LocalSearchCheckBox);
-    titlePanel.add(SearchChoicePanel);
+    searchChoicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    catalogSearchCheckBox.setText("Catalog Search");
+    catalogSearchCheckBox.setActionCommand("Catalog Search");
+    catalogSearchCheckBox.setSelected(true);
+    searchChoicePanel.add(catalogSearchCheckBox);
+    localSearchCheckBox.setText("Local Search");
+    localSearchCheckBox.setActionCommand("Local Search");
+    localSearchCheckBox.setSelected(true);
+    searchChoicePanel.add(localSearchCheckBox);
+    titlePanel.add(searchChoicePanel);
     titlePanel.add(Box.createHorizontalStrut(8));
     queryPanel.add(titlePanel);
     queryPanel.add(Box.createVerticalStrut(8));
 
-    queryPanel.add(QueryTabs);
-    SubjectTextPanel.setLayout(new BorderLayout(0, 0));
-    QueryTabs.add(SubjectTextPanel);
-    SubjectTextPanel.setVisible(false);
-    QueryScrollPanel.setOpaque(true);
-    QueryScrollPanel.setPreferredSize(new Dimension(
-                     QueryScrollPanel.getPreferredSize().width, 500 ));
-    SubjectTextPanel.add(BorderLayout.CENTER, QueryScrollPanel);
-    QueryChoicesPanel.setLayout(new BoxLayout(QueryChoicesPanel, 
+    queryPanel.add(queryTabs);
+    subjectTextPanel.setLayout(new BorderLayout(0, 0));
+    queryTabs.add(subjectTextPanel);
+    subjectTextPanel.setVisible(false);
+    queryScrollPanel.setOpaque(true);
+    queryScrollPanel.setPreferredSize(new Dimension(
+                     queryScrollPanel.getPreferredSize().width, 500 ));
+    subjectTextPanel.add(BorderLayout.CENTER, queryScrollPanel);
+    queryChoicesPanel.setLayout(new BoxLayout(queryChoicesPanel, 
                                               BoxLayout.Y_AXIS));
-    QueryScrollPanel.getViewport().add(QueryChoicesPanel);
-    QueryChoicesPanel.setAlignmentX(0.0F);
-    SubjectTextControlsPanel.setLayout(new BorderLayout(0, 0));
-    SubjectTextPanel.add(BorderLayout.SOUTH, SubjectTextControlsPanel);
-    MoreLessControlsPanel.setLayout(new BoxLayout(MoreLessControlsPanel, 
+    queryScrollPanel.getViewport().add(queryChoicesPanel);
+    queryChoicesPanel.setAlignmentX(0.0F);
+    subjectTextControlsPanel.setLayout(new BorderLayout(0, 0));
+    subjectTextPanel.add(BorderLayout.SOUTH, subjectTextControlsPanel);
+    moreLessControlsPanel.setLayout(new BoxLayout(moreLessControlsPanel, 
                                                   BoxLayout.X_AXIS));
-    SubjectTextControlsPanel.add(BorderLayout.CENTER, MoreLessControlsPanel);
-    AndRadioButton.setText("And");
-    AndRadioButton.setActionCommand("And");
-    MoreLessControlsPanel.add(AndRadioButton);
-    OrRadioButton.setText("Or");
-    OrRadioButton.setActionCommand("Or");
-    OrRadioButton.setSelected(true);
-    MoreLessControlsPanel.add(OrRadioButton);
-    MoreButton.setText("More");
-    MoreButton.setActionCommand("More");
-    MoreLessControlsPanel.add(MoreButton);
-    LessButton.setText("Fewer");
-    LessButton.setActionCommand("Fewer");
-    LessButton.setEnabled(false);
-    MoreLessControlsPanel.add(LessButton);
-    MoreLessControlsPanel.add(Box.createHorizontalGlue());
-    OtherTabsCheckBox.setText("Include Queries from Other Tabs");
-    OtherTabsCheckBox.setActionCommand("Include Queries from Other Tabs");
-    MoreLessControlsPanel.add(OtherTabsCheckBox);
-    TaxonomicPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    QueryTabs.add(TaxonomicPanel);
-    TaxonomicPanel.setVisible(false);
-    Spatial.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    QueryTabs.add(Spatial);
-    Spatial.setVisible(false);
-    QueryTabs.setSelectedIndex(0);
-    QueryTabs.setSelectedComponent(SubjectTextPanel);
-    QueryTabs.setTitleAt(0, "Subject/Text");
-    QueryTabs.setTitleAt(1, "Taxonomic");
-    QueryTabs.setTitleAt(2, "Spatial");
+    subjectTextControlsPanel.add(BorderLayout.CENTER, moreLessControlsPanel);
+    andRadioButton.setText("And");
+    andRadioButton.setActionCommand("And");
+    moreLessControlsPanel.add(andRadioButton);
+    orRadioButton.setText("Or");
+    orRadioButton.setActionCommand("Or");
+    orRadioButton.setSelected(true);
+    moreLessControlsPanel.add(orRadioButton);
+    moreButton.setText("More");
+    moreButton.setActionCommand("More");
+    moreLessControlsPanel.add(moreButton);
+    lessButton.setText("Fewer");
+    lessButton.setActionCommand("Fewer");
+    lessButton.setEnabled(false);
+    moreLessControlsPanel.add(lessButton);
+    moreLessControlsPanel.add(Box.createHorizontalGlue());
+    otherTabsCheckBox.setText("Include Queries from Other Tabs");
+    otherTabsCheckBox.setActionCommand("Include Queries from Other Tabs");
+    moreLessControlsPanel.add(otherTabsCheckBox);
+    taxonomicPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    queryTabs.add(taxonomicPanel);
+    taxonomicPanel.setVisible(false);
+    spatialPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    queryTabs.add(spatialPanel);
+    spatialPanel.setVisible(false);
+    queryTabs.setSelectedIndex(0);
+    queryTabs.setSelectedComponent(subjectTextPanel);
+    queryTabs.setTitleAt(0, "Subject/Text");
+    queryTabs.setTitleAt(1, "Taxonomic");
+    queryTabs.setTitleAt(2, "Spatial");
 
     queryPanel.add(Box.createVerticalStrut(8));
     controlButtonsPanel.setLayout(new BoxLayout(controlButtonsPanel,
@@ -228,19 +241,19 @@ public class QueryDialog extends javax.swing.JDialog
     //}}
     textPanels = new Vector();
     TextQueryTermPanel tqt1 = new TextQueryTermPanel();
-    QueryChoicesPanel.add(tqt1);
+    queryChoicesPanel.add(tqt1);
     textPanels.addElement(tqt1);
-    CatalogSearchCheckBox.setSelected(searchMetacat);
-    LocalSearchCheckBox.setSelected(searchLocal);
+    catalogSearchCheckBox.setSelected(searchMetacat);
+    localSearchCheckBox.setSelected(searchLocal);
     // do we want to set the config file each time?
 
     //{{REGISTER_LISTENERS
     SymAction lSymAction = new SymAction();
-    MoreButton.addActionListener(lSymAction);
-    LessButton.addActionListener(lSymAction);
+    moreButton.addActionListener(lSymAction);
+    lessButton.addActionListener(lSymAction);
     SymItem lSymItem = new SymItem();
-    AndRadioButton.addItemListener(lSymItem);
-    OrRadioButton.addItemListener(lSymItem);
+    andRadioButton.addItemListener(lSymItem);
+    orRadioButton.addItemListener(lSymItem);
     executeButton.addActionListener(lSymAction);
     cancelButton.addActionListener(lSymAction);
     //}}
@@ -300,36 +313,29 @@ public class QueryDialog extends javax.swing.JDialog
   private boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-  private javax.swing.JPanel titlePanel = new javax.swing.JPanel();
-  private javax.swing.JPanel queryPanel = new javax.swing.JPanel();
-  private javax.swing.JTabbedPane QueryTabs = new javax.swing.JTabbedPane();
-  private javax.swing.JPanel SubjectTextPanel = new javax.swing.JPanel();
-  private javax.swing.JScrollPane QueryScrollPanel = 
-                      new javax.swing.JScrollPane();
-  //private javax.swing.JPanel Query = new javax.swing.JPanel();
-  private javax.swing.JPanel QueryChoicesPanel = new javax.swing.JPanel();
-  private javax.swing.JPanel SubjectTextControlsPanel = 
-                      new javax.swing.JPanel();
-  private javax.swing.JPanel MoreLessControlsPanel = new javax.swing.JPanel();
-  private javax.swing.JRadioButton AndRadioButton = 
-                      new javax.swing.JRadioButton();
-  private javax.swing.JRadioButton OrRadioButton = 
-                      new javax.swing.JRadioButton();
-  private javax.swing.JButton MoreButton = new javax.swing.JButton();
-  private javax.swing.JButton LessButton = new javax.swing.JButton();
-  private javax.swing.JCheckBox OtherTabsCheckBox = new javax.swing.JCheckBox();
-  private javax.swing.JPanel TaxonomicPanel = new javax.swing.JPanel();
-  private javax.swing.JPanel Spatial = new javax.swing.JPanel();
-  private javax.swing.JPanel controlButtonsPanel = new javax.swing.JPanel();
-  private javax.swing.JLabel QueryTitleLabel = new javax.swing.JLabel();
-  private javax.swing.JTextField queryTitleTF = new javax.swing.JTextField(20);
-  private javax.swing.JPanel SearchChoicePanel = new javax.swing.JPanel();
-  private javax.swing.JCheckBox CatalogSearchCheckBox = 
-                      new javax.swing.JCheckBox();
-  private javax.swing.JCheckBox LocalSearchCheckBox = 
-                      new javax.swing.JCheckBox();
-  private javax.swing.JButton executeButton = new javax.swing.JButton();
-  private javax.swing.JButton cancelButton = new javax.swing.JButton();
+  private JPanel titlePanel = new JPanel();
+  private JPanel queryPanel = new JPanel();
+  private JTabbedPane queryTabs = new JTabbedPane();
+  private JPanel subjectTextPanel = new JPanel();
+  private JScrollPane queryScrollPanel = new JScrollPane();
+  private JPanel queryChoicesPanel = new JPanel();
+  private JPanel subjectTextControlsPanel = new JPanel();
+  private JPanel moreLessControlsPanel = new JPanel();
+  private JRadioButton andRadioButton = new JRadioButton();
+  private JRadioButton orRadioButton = new JRadioButton();
+  private JButton moreButton = new JButton();
+  private JButton lessButton = new JButton();
+  private JCheckBox otherTabsCheckBox = new JCheckBox();
+  private JPanel taxonomicPanel = new JPanel();
+  private JPanel spatialPanel = new JPanel();
+  private JPanel controlButtonsPanel = new JPanel();
+  private JLabel queryTitleLabel = new JLabel();
+  private JTextField queryTitleTF = new JTextField(20);
+  private JPanel searchChoicePanel = new JPanel();
+  private JCheckBox catalogSearchCheckBox = new JCheckBox();
+  private JCheckBox localSearchCheckBox = new JCheckBox();
+  private JButton executeButton = new JButton();
+  private JButton cancelButton = new JButton();
   //}}
 
 
@@ -339,10 +345,10 @@ public class QueryDialog extends javax.swing.JDialog
     public void actionPerformed(java.awt.event.ActionEvent event)
     {
       Object object = event.getSource();
-      if (object == MoreButton)
-        MoreButton_actionPerformed(event);
-      else if (object == LessButton)
-        LessButton_actionPerformed(event);
+      if (object == moreButton)
+        moreButton_actionPerformed(event);
+      else if (object == lessButton)
+        lessButton_actionPerformed(event);
       else if (object == executeButton)
         executeButton_actionPerformed(event);
       else if (object == cancelButton)
@@ -353,28 +359,28 @@ public class QueryDialog extends javax.swing.JDialog
   /**
    * Performs actions associated with pressing the "More" button
    */
-  private void MoreButton_actionPerformed(java.awt.event.ActionEvent event)
+  private void moreButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     TextQueryTermPanel tq = new TextQueryTermPanel();
-    QueryChoicesPanel.add(tq);
+    queryChoicesPanel.add(tq);
     textPanels.addElement(tq);
-    LessButton.setEnabled(true);
-    QueryChoicesPanel.invalidate();
-    SubjectTextPanel.validate();
+    lessButton.setEnabled(true);
+    queryChoicesPanel.invalidate();
+    subjectTextPanel.validate();
   }
 
   /**
    * Performs actions associated with pressing the "Less" button
    */
-  private void LessButton_actionPerformed(java.awt.event.ActionEvent event)
+  private void lessButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     Component comp = (Component) textPanels.lastElement();
-      QueryChoicesPanel.remove(comp);
+      queryChoicesPanel.remove(comp);
       textPanels.removeElementAt(textPanels.size() - 1);
     if (textPanels.size() < 2)
-        LessButton.setEnabled(false);
-      QueryChoicesPanel.invalidate();
-      SubjectTextPanel.validate();
+        lessButton.setEnabled(false);
+      queryChoicesPanel.invalidate();
+      subjectTextPanel.validate();
   }
 
   /**
@@ -385,32 +391,32 @@ public class QueryDialog extends javax.swing.JDialog
     public void itemStateChanged(java.awt.event.ItemEvent event)
     {
       Object object = event.getSource();
-      if (object == AndRadioButton)
-        AndRadioButton_itemStateChanged(event);
-      else if (object == OrRadioButton)
-        OrRadioButton_itemStateChanged(event);
+      if (object == andRadioButton)
+        andRadioButton_itemStateChanged(event);
+      else if (object == orRadioButton)
+        orRadioButton_itemStateChanged(event);
     }
   }
 
   /**
    * Performs actions associated with a state change for the "And" button
    */
-  private void AndRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
+  private void andRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
   {
-    if (AndRadioButton.isSelected())
+    if (andRadioButton.isSelected())
     {
-      OrRadioButton.setSelected(false);
+      orRadioButton.setSelected(false);
     }
   }
 
   /**
    * Performs actions associated with a state change for the "Or" button
    */
-  private void OrRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
+  private void orRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
   {
-    if (OrRadioButton.isSelected())
+    if (orRadioButton.isSelected())
     {
-      AndRadioButton.setSelected(false);
+      andRadioButton.setSelected(false);
     }
   }
 
@@ -427,8 +433,8 @@ public class QueryDialog extends javax.swing.JDialog
       queryTitleTF.setText(new Date().toString());
     }
     newQuery.setQueryTitle(queryTitleTF.getText());
-    newQuery.setSearchMetacat(CatalogSearchCheckBox.isSelected());
-    newQuery.setSearchLocal(LocalSearchCheckBox.isSelected());
+    newQuery.setSearchMetacat(catalogSearchCheckBox.isSelected());
+    newQuery.setSearchLocal(localSearchCheckBox.isSelected());
 
     // Add a query group that combines the tabs (always INTERSECT)
     QueryGroup rootQG = new QueryGroup("INTERSECT");
@@ -452,7 +458,7 @@ public class QueryDialog extends javax.swing.JDialog
     String mode = "contains";
 
     // Add a query group for the overall Subject tab
-    if (OrRadioButton.isSelected()) {
+    if (orRadioButton.isSelected()) {
       op = "UNION";
     } else {
       op = "INTERSECT";
@@ -562,7 +568,7 @@ public class QueryDialog extends javax.swing.JDialog
     // Remove any existing text panels
     for (int i = 0;  i < textPanels.size();  i++) {
       Component comp = (Component) textPanels.lastElement();
-      QueryChoicesPanel.remove(comp);
+      queryChoicesPanel.remove(comp);
       textPanels.removeElementAt(textPanels.size() - 1);
     }
 
@@ -576,11 +582,11 @@ public class QueryDialog extends javax.swing.JDialog
     // Set the And/Or button from operator param in the Subject group
     String op = subjectGroup.getOperator();
     if (op.equalsIgnoreCase("INTERSECT")) {
-      OrRadioButton.setSelected(false);
-      AndRadioButton.setSelected(true);
+      orRadioButton.setSelected(false);
+      andRadioButton.setSelected(true);
     } else {
-      OrRadioButton.setSelected(true);
-      AndRadioButton.setSelected(false);
+      orRadioButton.setSelected(true);
+      andRadioButton.setSelected(false);
     }
 
     // Create a textPanel for each group in the subject group
@@ -611,6 +617,7 @@ public class QueryDialog extends javax.swing.JDialog
           QueryTerm qt = (QueryTerm)obj2;
     
           tq.setValue(qt.getValue());
+          tq.setSearchMode(qt.getSearchMode());
           String pathExpression = qt.getPathExpression();
           if (pathExpression == null) {
             tq.setAllState(true);
@@ -633,17 +640,17 @@ public class QueryDialog extends javax.swing.JDialog
       }
 
       // Add the text panel to the dialog
-      QueryChoicesPanel.add(tq);
+      queryChoicesPanel.add(tq);
       textPanels.addElement(tq);
     }
     if (textPanels.size() < 2) {
-      LessButton.setEnabled(false);
+      lessButton.setEnabled(false);
     } else {
-      LessButton.setEnabled(true);
+      lessButton.setEnabled(true);
     }
 
     // Force the window to redraw
-    QueryChoicesPanel.invalidate();
-    SubjectTextPanel.validate();
+    queryChoicesPanel.invalidate();
+    subjectTextPanel.validate();
   }
 }
