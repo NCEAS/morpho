@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.9 2000-12-27 20:23:31 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.10 2000-12-29 19:57:57 higgins Exp $'
  */
 
 
@@ -76,7 +76,7 @@ public class RSFrame extends javax.swing.JFrame
 		JScrollPane3.setBounds(5,5,223,33);
 		QueryStringTextArea.setColumns(20);
 		QueryStringTextArea.setRows(2);
-		QueryStringTextArea.setText("Query generated on:"+new Date().toString());
+		QueryStringTextArea.setText("Query generated on:Wed Dec 27 10:23:30 PST 2000");
 		QueryStringTextArea.setLineWrap(true);
 		JScrollPane3.getViewport().add(QueryStringTextArea);
 		QueryStringTextArea.setBounds(0,0,220,30);
@@ -94,6 +94,9 @@ public class RSFrame extends javax.swing.JFrame
 		RSScrollPane.setBounds(0,46,745,305);
 		RSScrollPane.getViewport().add(JTable1);
 		JTable1.setBounds(0,0,742,0);
+		saveFileDialog.setMode(FileDialog.SAVE);
+		saveFileDialog.setTitle("Save");
+		//$$ saveFileDialog.move(24,336);
 		//}}
 
 		//{{INIT_MENUS
@@ -110,7 +113,8 @@ public class RSFrame extends javax.swing.JFrame
 		EditmenuItem = new JMenuItem("Edit Document");
 		EditmenuItem.addActionListener(lSymAction);
         popup.add(EditmenuItem);
-		SavemenuItem = new JMenuItem("Save Document");
+		SavemenuItem = new JMenuItem("Save Document as Local File...");
+		SavemenuItem.addActionListener(lSymAction);
         popup.add(SavemenuItem);
 		
 		
@@ -249,6 +253,7 @@ public class RSFrame extends javax.swing.JFrame
 	javax.swing.JCheckBox JCheckBox4 = new javax.swing.JCheckBox();
 	javax.swing.JScrollPane RSScrollPane = new javax.swing.JScrollPane();
 	javax.swing.JTable JTable1 = new javax.swing.JTable();
+	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	//}}
     //Create the popup menu.
         javax.swing.JPopupMenu popup = new JPopupMenu();
@@ -267,8 +272,65 @@ public class RSFrame extends javax.swing.JFrame
 	            EditMenuItem_actionPerformed(event);
 	        else if (object == RelatedmenuItem)
 	            RelatedMenuItem_actionPerformed(event);
+	        else if (object == SavemenuItem)
+	            SavemenuItem_actionPerformed(event);
 	        
 		}
+	}
+
+
+	void SavemenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	   int selectedRow = JTable1.getSelectedRow();
+	    if (local) {
+	        
+	    }
+	    else {
+	        saveFileDialog.setVisible(true);
+	        String filename = saveFileDialog.getFile();
+	        if (filename!=null) {
+	            filename = saveFileDialog.getDirectory()+filename;
+//	            System.out.println(filename);
+	            File file = new File(filename);
+
+            String qtext2 = (String)JTable1.getModel().getValueAt(selectedRow, docidcol);
+                    // assumes that docid is in docidcol column of table
+            String qtext1 = docidFilter(qtext2);
+	        String respType = "xml";
+	        try {
+		        URL url = new URL(MetaCatServletURL);
+		        if (qtext1.startsWith("http://")) {
+		            System.out.println("URL used = "+qtext1);
+		            url = new URL(qtext1);  // case where actual http URL data doc is specified    
+		        }
+		        HttpMessage msg = new HttpMessage(url);
+		        Properties prop = new Properties();
+		        if (!qtext1.startsWith("http://")) {
+		            prop.put("action","read");
+		            prop.put("docid",qtext1);
+		            prop.put("qformat",respType);
+		        }
+		    
+		        InputStream in = msg.sendPostMessage(prop);
+		        String message_sent = MetaCatServletURL+msg.getArgString();
+		        
+		        FileOutputStream fw = new FileOutputStream(file);
+		        int x;
+		        try {
+		        while((x=in.read())!=-1) {
+		             fw.write(x);
+		            }
+		            fw.close();
+		        }
+		        catch (Exception f) {}
+		        in.close();
+		        }
+		        catch (Exception ee) {
+		           ee.printStackTrace();
+		        }                        
+	            
+	        }
+	    }
 	}
 
 
