@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-06-21 16:46:47 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2002-06-21 21:26:24 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,68 +125,31 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   /** The icon for representing both local and metacat storage with data. */
   private ImageIcon bothDataIcon = null;
 
+
+  /**
+   * Construct a ResultSet instance from a vector of vectors;
+   * for use with LocalQuery
+   */
+  public ResultSet(Query query, String source, Vector vec, ClientFramework cf) {
+  
+    init(query, source, cf);
+    this.resultsVector = vec;
+  }
+
   /**
    * Construct a ResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public ResultSet(Query query, String source, InputStream resultsXMLStream,
-                   ClientFramework cf)
-  {
+  public ResultSet( Query query, String source, 
+                    InputStream resultsXMLStream, ClientFramework cf) {
+
+    init(query, source, cf);
     framework.debug(30, "(2.41) Creating result set ...");
-    this.savedQuery = query;
-    this.framework = cf;
-
-    if (source.equals("local")) {
-      isLocal = true;
-      isMetacat = false;
-    } else if (source.equals("metacat")) {
-      isLocal = false;
-      isMetacat = true;
-    }
-
+    initIcons();
     resultsVector = new Vector();
-
-    localIcon = new ImageIcon( getClass().getResource("local-metadata.gif"));
-    metacatIcon = new ImageIcon( getClass().getResource("network-metadata.gif"));
-    bothIcon = new ImageIcon( 
-            getClass().getResource("local+network-metadata.gif"));
-    localDataIcon = new ImageIcon( 
-            getClass().getResource("local-metadata+data.gif"));
-    metacatDataIcon = new ImageIcon( 
-            getClass().getResource("network-metadata+data.gif"));
-    bothDataIcon = new ImageIcon( 
-            getClass().getResource("local+network-metadata+data.gif"));
-
-    this.framework = framework;
-    this.config = framework.getConfiguration();
-    ConfigXML profile = framework.getProfile();
-    returnFields = profile.get("returnfield");
-  
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    } else {
-        cnt = returnFields.size();
-    }
     
-    // Set up the headers
-    // assume at least 5 fixed fields returned, plus add an icon column
-    int numberFixedHeaders = 1;
-    headers = new String[numberFixedHeaders+cnt];  
-    headers[0] = "";  // This is for the icon
-    for (int i=0;i<cnt;i++) {
-      headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
-    /*headers[cnt+1] = "Created";*/
-    /*headers[cnt+2] = "Updated";*/
-    /*headers[cnt+3] = "Doc ID";*/
-    /*headers[cnt+4] = "Document Name";*/
-    /*headers[cnt+5] = "Document Type";*/
-
-    framework.debug(30, "(2.42) Creating result set ...");
     // Parse the incoming XML stream and extract the data
     XMLReader parser = null;
-
     // Set up the SAX document handlers for parsing
     try {
       // Get an instance of the parser
@@ -203,14 +166,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   }
 
 
-  /**
-   * Construct a ResultSet instance from a vector of vectors;
-   * for use with LocalQuery
-   */
-  public ResultSet(Query query, String source, Vector vec, ClientFramework cf)
-  {
-    this.savedQuery = query;
-    this.framework = cf;
+  // common initialization functionality for constructors
+  private void init(Query query, String source, ClientFramework cf) {
+    
+    this.savedQuery   = query;
+    this.framework    = cf;
+    this.config       = framework.getConfiguration();   
+    ConfigXML profile = framework.getProfile();
+    returnFields      = profile.get("returnfield");
 
     if (source.equals("local")) {
       isLocal = true;
@@ -219,30 +182,36 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       isLocal = false;
       isMetacat = true;
     }
-
-    this.framework = framework;
-    this.config = framework.getConfiguration();   
-    ConfigXML profile = framework.getProfile();
-    returnFields = profile.get("returnfield");
-  
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    } else {
-        cnt = returnFields.size();
-    }
-
+    
     // Set up the headers
+    int cnt = (returnFields==null)? 0 : returnFields.size();
     int numberFixedHeaders = 1;
     headers = new String[numberFixedHeaders+cnt];  
-    headers[0] = " ";  // This is for the icon
+    headers[0] = " "; // This is for the icon column;
+                      // *NOTE* we *must* use a space here, *NOT* an empty 
+                      // string ("") - otherwise header height is set too 
+                      // small in windows L&F
     for (int i=0;i<cnt;i++) {
       headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
     }
-
-    this.resultsVector = vec;
   }
+  
+  //initialize icons - called from constructor
+  private void initIcons() {
 
+    localIcon 
+      = new ImageIcon(getClass().getResource("local-metadata.gif"));
+    metacatIcon 
+      = new ImageIcon(getClass().getResource("network-metadata.gif"));
+    bothIcon 
+      = new ImageIcon(getClass().getResource("local+network-metadata.gif"));
+    localDataIcon   
+      = new ImageIcon(getClass().getResource("local-metadata+data.gif"));
+    metacatDataIcon 
+      = new ImageIcon(getClass().getResource("network-metadata+data.gif"));
+    bothDataIcon 
+      = new ImageIcon(getClass().getResource("local+network-metadata+data.gif"));
+  }
 
   /**
    *  get the resultsVector
