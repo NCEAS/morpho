@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-25 22:05:13 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-04-13 21:10:44 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,6 +186,12 @@ public class LocalToNetworkCommand implements Command
             }
             catch(MetacatUploadException mue)
             {
+              String errorMsg = mue.getMessage();
+              if (errorMsg.indexOf("Invalid content")>-1) { // validation problem
+                Log.debug(1,"Synchonization failed due to validation problem!");
+                Log.debug(20, "MetacatUploadException: "+errorMsg);
+                return null;
+              } else {
               //ask the user if he is sure he wants to overwrite the package
               //if he is do it, otherwise return
               String message="A conflict has been found in one or more of the "+ 
@@ -245,6 +251,7 @@ public class LocalToNetworkCommand implements Command
                 
                 return null;
               }
+            }
             }
           
           
