@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:22 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-06-13 07:18:44 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,12 +29,13 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 
+import java.awt.event.ActionEvent;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 
 public class DataPackagePlugin 
        implements PluginInterface, ServiceProvider, DataPackageInterface
@@ -97,38 +98,27 @@ public class DataPackagePlugin
     // Set up the menus for the application
 
     menuActions = new Action[1];
-    Action searchItemAction = new AbstractAction("New Data Package") 
+    Action newItemAction = new AbstractAction("New Data Package") 
     {
       public void actionPerformed(ActionEvent e) 
       {
-        framework.debug(1, "Action fired: New Data Package");
+        framework.debug(20, "Action fired: New Data Package");
         //DataPackage dp = new DataPackage();
         //DataPackageGUI gui = new DataPackageGUI(framework, dp);
         PackageWizardShell pws = new PackageWizardShell(framework);
         pws.show();
       }
     };
-    
-    searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
-    searchItemAction.putValue("menuPosition", new Integer(0));
-    menuActions[0] = searchItemAction;
-    /*Action reviseItemAction = new AbstractAction("Open Data Package") 
-    {
-      public void actionPerformed(ActionEvent e) 
-      {
-        framework.debug(1, "Action fired: Open Data Package");
-      }
-    };
-    
-    reviseItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                              "Revise current search");
-    reviseItemAction.putValue("menuPosition", new Integer(1));
-    menuActions[1] = reviseItemAction;*/
+    newItemAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/New16.gif")));
+    newItemAction.putValue(Action.SHORT_DESCRIPTION, "New data package");
+    newItemAction.putValue("menuPosition", new Integer(0));
+    menuActions[0] = newItemAction;
 
     // Set up the toolbar for the application
     toolbarActions = new Action[1];
-    toolbarActions[0] = searchItemAction;
-    //toolbarActions[1] = reviseItemAction;
+    toolbarActions[0] = newItemAction;
   }
 
   /**
