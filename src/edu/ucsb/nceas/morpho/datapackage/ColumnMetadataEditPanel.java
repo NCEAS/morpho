@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 01:04:57 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-11-27 21:45:24 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,13 +114,14 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     JPanel topLabelPanel = new JPanel();
     topLabelPanel.setPreferredSize(new Dimension(3000,30));
     topLabelPanel.setMaximumSize(new Dimension(3000,30));
-    JLabel topLabel = new JLabel("Column Information");
+    JLabel topLabel = new JLabel("<html><b>Column Information</b></html>");
     topLabelPanel.add(topLabel);
     this.add(topLabelPanel);
     
     JPanel namePanel = new JPanel();
     namePanel.setLayout(new BoxLayout(namePanel,BoxLayout.X_AXIS));
     JLabel nameLabel = new JLabel("Name");
+    nameLabel.setForeground(java.awt.Color.red);
     nameLabel.setBorder(BorderFactory.createEmptyBorder(1,3,1,3));
     String tooltipString = "<html>This element specifies name of the<br>"+
                            "attribute (field) in the dataset. <br>"+
@@ -143,6 +144,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     JPanel labelPanel = new JPanel();
     labelPanel.setLayout(new BoxLayout(labelPanel,BoxLayout.X_AXIS));
     JLabel labelLabel = new JLabel("Label");
+    labelLabel.setForeground(java.awt.Color.red);
     labelLabel.setBorder(BorderFactory.createEmptyBorder(1,3,1,3));
     String labeltooltipString = "<html>A brief label used to describe<br>"+
                                 "the attribute. This is often needed<br>"+
@@ -168,6 +170,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     definitionPanel.setMaximumSize(new Dimension(3000,140));
     definitionPanel.setLayout(new BoxLayout(definitionPanel,BoxLayout.X_AXIS));
     JLabel definitionLabel = new JLabel("Definition");
+    definitionLabel.setForeground(java.awt.Color.red);
     definitionLabel.setBorder(BorderFactory.createEmptyBorder(1,3,1,3));
     String definitiontooltipString = "<html>This element gives a precise<br>"+
                                             "definition of attribute in the<br>"+
