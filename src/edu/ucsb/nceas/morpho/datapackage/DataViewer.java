@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-04 14:56:47 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-09-04 21:17:00 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,9 @@ import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.*;
 import edu.ucsb.nceas.morpho.util.*;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 
 //public class DataViewer extends javax.swing.JFrame
 public class DataViewer extends javax.swing.JPanel
@@ -143,6 +146,11 @@ public class DataViewer extends javax.swing.JPanel
    *   file containing the physical metadata
    */
    File physicalFile = null;
+  
+  /**
+   *  entity file Id
+   */
+   String entityFileId = null;
   
   /**
    * data format
@@ -601,6 +609,11 @@ public class DataViewer extends javax.swing.JPanel
     public void setEntityFile(File ent) {
         this.entityFile = ent;
     }
+    
+    public void setEntityFileId(String id) {
+        this.entityFileId = id;
+    }
+
 
     public void setPhysicalFile(File phys) {
         this.physicalFile = phys;
@@ -1138,7 +1151,9 @@ public class DataViewer extends javax.swing.JPanel
 
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
-    
+    MorphoFrame thisFrame = null;
+    DataPackage newPackage = null;
+    File tempfile = null;
 	  if (dp!=null) {
       // make a temporary copy of the data file
       ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
@@ -1155,10 +1170,31 @@ public class DataViewer extends javax.swing.JPanel
         String physicalDocType = "<!DOCTYPE eml-physical PUBLIC "+
             "\"-//ecoinformatics.org//eml-physical-2.0.0beta6//EN\" "+
             "\"eml-physical.dtd\">";
+            
+        // changes in the attribute metadata should be up-to-date since they
+        // are changed when columns are added or deleted.
+        // thus just save a copy to a file
         PackageUtil.saveDOM(tempdir + "/" + "tempattribute", attributeDoc, attrDocType, framework);
+        
+        // entity metadata needs to be changed due to a change in the number of records
+        // that occurs when rows are added to the dataset
+        // Here we get the current entity metadata and save a new temp copy
+        
         Document doc = PackageUtil.getDoc(entityFile, framework);
+        NodeList nl = doc.getElementsByTagName("numberOfRecords");
+        Node textNode = nl.item(0).getFirstChild(); // assumed to be a text node
+        int rowcnt = ptm.getRowCount();
+        String rowcntS = (new Integer(rowcnt)).toString();
+        textNode.setNodeValue(rowcntS);  //set to new record count
         PackageUtil.saveDOM(tempdir + "/" + "tempentity", doc, entityDocType, framework);
+        
+        // physical metadata needs to be updated due to change in datafile size (and
+        // perhaps the delimiter)
         doc = PackageUtil.getDoc(physicalFile, framework);
+        nl = doc.getElementsByTagName("size");
+        textNode = nl.item(0).getFirstChild(); // assumed to be a text node
+        String sizeS = (new Long(newDataFileLength)).toString();
+        textNode.setNodeValue(sizeS);  //set to new file length
         PackageUtil.saveDOM(tempdir + "/" + "tempphysical", doc, physicalDocType, framework);
       }
       catch (Exception q) {
@@ -1169,7 +1205,7 @@ public class DataViewer extends javax.swing.JPanel
       
         AccessionNumber a = new AccessionNumber(framework);
         FileSystemDataStore fsds = new FileSystemDataStore(framework);
-        //System.out.println(xmlString);
+        MetacatDataStore mds = new MetacatDataStore(framework);
   
         boolean metacatloc = false;
         boolean localloc = false;
@@ -1190,9 +1226,7 @@ public class DataViewer extends javax.swing.JPanel
         {
             localloc = true;
         }
-        
-      if(localloc)
-      { //save it locally
+
         try{
           Vector newids = new Vector();
           Vector oldids = new Vector();
@@ -1200,9 +1234,12 @@ public class DataViewer extends javax.swing.JPanel
           newid = a.incRev(dataID);
           // save data to a temporary file
           FileReader fr = null;
-          try{
+          FileReader frAttr = null;
+          FileReader frPhy = null;
+          FileReader frEnt = null;
+         try{
             ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
-            File tempfile = new File(tempdir + "/" + "tempdata");
+            tempfile = new File(tempdir + "/" + "tempdata");
             fr = new FileReader(tempfile);
           }
           catch (Exception ww) {
@@ -1210,7 +1247,53 @@ public class DataViewer extends javax.swing.JPanel
           }
           
           
-          fsds.saveFile(newid, fr);
+          try{
+            File tempfileAttr = new File(tempdir + "/" + "tempattribute");
+            frAttr = new FileReader(tempfileAttr);
+          }
+          catch (Exception ww) {
+            Log.debug(20,"Problem making Attr FileReader");
+          }
+          String attrFileId = dp.getAttributeFileId(entityFileId);
+          String newAttrFileId = a.incRev(attrFileId);
+          oldids.addElement(attrFileId);
+          newids.addElement(newAttrFileId);
+
+          try{
+            File tempfilePhy = new File(tempdir + "/" + "tempphysical");
+            frPhy = new FileReader(tempfilePhy);
+          }
+          catch (Exception ww) {
+            Log.debug(20,"Problem making Physical FileReader");
+          }
+          String phyFileId = dp.getPhysicalFileId(entityFileId);
+          String newPhyFileId = a.incRev(phyFileId);
+          oldids.addElement(phyFileId);
+          newids.addElement(newPhyFileId);          
+           
+          try{
+            File tempfileEnt = new File(tempdir + "/" + "tempentity");
+            frEnt = new FileReader(tempfileEnt);
+          }
+          catch (Exception ww) {
+            Log.debug(20,"Problem making Entity FileReader");
+          }
+          String newEntFileId = a.incRev(entityFileId);
+          oldids.addElement(entityFileId);
+          newids.addElement(newEntFileId);          
+        
+      if(localloc)
+      { //save it locally
+        try{
+          
+          fsds.saveFile(newid, fr);  // this is the new datafile
+          
+          fsds.saveFile(newAttrFileId, frAttr);  // new attribute file
+
+          fsds.saveFile(newPhyFileId, frPhy);  // new physical file
+
+          fsds.saveFile(newEntFileId, frEnt);  // new entity file
+           
           newPackageId = a.incRev(dp.getID());
           oldids.addElement(oldid);
           oldids.addElement(dp.getID());
@@ -1224,78 +1307,66 @@ public class DataViewer extends javax.swing.JPanel
 
         }
         catch (Exception e) {
-          Log.debug(20, "error in local update of data file");    
+          Log.debug(20, "error in local update");    
         }
       }
       if(metacatloc)
       { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(framework);
-        String oldid = dataID;
+        oldid = dataID;
         newid = a.incRev(dataID);
-        Vector parts = a.getParts(newid);
-        String newFileName = (String)parts.elementAt(1)+(String)parts.elementAt(3)
-                                 +(String)parts.elementAt(2);
-  //      newid = a.getNextId();
-        System.out.println("oldid: " + oldid + " newid: " + newid);          
-        
         try{
-          // save to a temporary file
-          ptm.getPersistentVector().writeObjects(tempdir + "/" + newFileName);
-          File tempfile = new File(tempdir + "/" + newFileName);
-          
- /*         StringReader sr = new StringReader(dataString);
-          File tempfile = new File(tempdir + "/" + newFileName);
-          FileWriter fw = new FileWriter(tempfile);
-          BufferedWriter bfw = new BufferedWriter(fw);
-          int c = sr.read();
-          while(c != -1)
-          {
-            bfw.write(c); //write out everything in the reader
-            c = sr.read();
-          }
-          bfw.flush();
-          bfw.close();
-*/          
+
           mds.newDataFile(newid, tempfile);
-          System.out.println("new data file added:newid="+newid);
+          
+          mds.saveFile(newAttrFileId, frAttr, dp);  // new attribute file
+
+          mds.saveFile(newPhyFileId, frPhy, dp);  // new physical file
+
+          mds.saveFile(newEntFileId, frEnt, dp);  // new entity file
+           
+
           newPackageId = a.incRev(dp.getID());
-          Vector newids = new Vector();
-          Vector oldids = new Vector();
           oldids.addElement(oldid);
           oldids.addElement(dp.getID());
           newids.addElement(newid);
           newids.addElement(newPackageId);
-          System.out.println("ready to increment triples");
+          Log.debug(20, "ready to increment triples");
           
           //increment the package files id in the triples
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
                                                     oldids, 
                                                     newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);          
+          Log.debug(20, "oldid: " + oldid + " newid: " + newid);          
           mds.saveFile(newPackageId, new StringReader(newPackageFile), dp); 
         }
         catch (Exception e) {
             Log.debug(20, "error in metacat update of data file"+e.getMessage());    
         }
       }
-      DataPackage newPackage = new DataPackage(location, newPackageId, null,
+      newPackage = new DataPackage(location, newPackageId, null,
                                                  framework);
-      //this.dispose();
-  //    if (parent!=null) parent.dispose();
-  //    if (grandParent!=null) grandParent.dispose();
-  //    DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
-
- /*
-     // Refresh the query results after the update
-      try {
-        ServiceProvider provider = 
-               framework.getServiceProvider(QueryRefreshInterface.class);
-        ((QueryRefreshInterface)provider).refresh();
-      } catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
+                                                 
+      thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
+      thisFrame.setVisible(false);
       }
-      newgui.show();
-  */    
+      catch (Exception www) {}
+  
+    // Show the new package
+    try 
+    {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.openDataPackage(location, newPackage.getID(), null);
+    }
+    catch (ServiceNotHandledException snhe) 
+    {
+       Log.debug(6, snhe.getMessage());
+    }
+
+    thisFrame.dispose();
+
 	  }		
     
 	}

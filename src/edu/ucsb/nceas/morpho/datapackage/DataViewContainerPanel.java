@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-29 23:12:34 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-09-04 21:17:00 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,6 +278,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     dv.setPhysicalFile(fphysical);
     dv.setAttributeFile(fattribute);
     dv.setEntityFile(entityFile[index]);
+    dv.setEntityFileId(id);
     dv.setDataPackage(this.dp);
     dv.init();
     dv.getEntityInfo();

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.69 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-09-04 21:17:00 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1524,6 +1524,37 @@ public class DataPackage implements XMLFactoryInterface
     return physicalfile;
   }
   
+  public String getPhysicalFileId(String entityID) {
+    File physicalfile = null;
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackageInterface.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackageInterface.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackageInterface.LOCAL))
+    {
+      localloc = true;
+    }
+    // assume that entity is the object;
+    // ie eml-physical is related to entity
+    Vector triplesV = triples.getCollectionByObject(entityID) ;
+    for (int i=0;i<triplesV.size();i++) {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String sub = triple.getSubject();
+         physicalfile = getFileType(sub, "physical");
+         if (physicalfile!=null) return sub;
+         
+    }
+    return null;
+  }
+
+  
   public File getAttributeFile(String entityID) {
     File attributefile = null;
     boolean localloc = false;
@@ -1553,6 +1584,38 @@ public class DataPackage implements XMLFactoryInterface
 
     
     return attributefile;
+  }
+
+  
+    public String getAttributeFileId(String entityID) {
+    File attributefile = null;
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackageInterface.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackageInterface.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackageInterface.LOCAL))
+    {
+      localloc = true;
+    }
+    // assume that entity is the object;
+    // ie eml-attribute is related to entity
+    Vector triplesV = triples.getCollectionByObject(entityID) ;
+    for (int i=0;i<triplesV.size();i++) {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String sub = triple.getSubject();
+         attributefile = getFileType(sub, "attribute");
+         if (attributefile!=null) return sub;
+    }
+
+    
+    return null;
   }
 
   /**
