@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 18:47:09 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-05-31 21:22:18 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -480,6 +480,12 @@ public class QueryDialog extends JDialog
     newQuery.setQueryTitle(queryTitleTF.getText());
     newQuery.setSearchMetacat(catalogSearchCheckBox.isSelected());
     newQuery.setSearchLocal(localSearchCheckBox.isSelected());
+
+    // Set the returndoc and returnfield parameters
+    Vector returndocList = config.get("returndoc");
+    newQuery.setReturnDocList(returndocList);
+    Vector returnFieldList = config.get("returnfield");
+    newQuery.setReturnFieldList(returnFieldList);
 
     // Add a query group that combines the tabs (always INTERSECT)
     QueryGroup rootQG = new QueryGroup("INTERSECT");
