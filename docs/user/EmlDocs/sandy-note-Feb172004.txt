@@ -1,0 +1,42 @@
+Subject:
+Fwd: EML handbook files
+From:
+Sandy Andelman <andelman@nceas.ucsb.edu>
+Date:
+Tue, 17 Feb 2004 17:06:57 -0800
+To:
+schild@nceas.ucsb.edu
+CC:
+fegraus@nceas.ucsb.edu, jones@nceas.ucsb.edu, andelman@nceas.ucsb.edu
+
+
+> Mark,
+
+
+
+As we discussed, attached are the most recent drafts of the EML/Metadata guide that Eric (mainly) and I were working on.  It is now in your hands.
+
+It is fine if you need to consult with Eric for up to 2 hours per week for the next few weeks as you complete this.
+
+As we discussed, the target audience for this document was participants in the distributed graduate seminar (faculty and graduate students, representing fairly typical ecologists users).  We never intended it to be a technical document for data managers.  I think the needs of the two groups are very different.
+
+Sandy
+eml_metadata_guide_v7.doc
+	
+Content-Type:
+	application/msword
+Content-Encoding:
+	base64
+
+EML_simple4.txt
+	
+Content-Type:
+	text/plain
+
+metacat_output_all3.htm
+	
+Content-Type:
+	text/html
+Content-Encoding:
+	quoted-printable
+
