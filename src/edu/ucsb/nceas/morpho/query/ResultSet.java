@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-09 01:15:44 $'
- * '$Revision: 1.30.4.4 $'
+ *     '$Date: 2002-08-14 00:20:09 $'
+ * '$Revision: 1.30.4.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +118,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public static ImageIcon localIcon = null;
   /** The icon for representing metacat storage. */
   public static ImageIcon metacatIcon = null;
+  /** the icon for blank, nothing there */
+  public static ImageIcon blankIcon = null;
   /** The icon for representing package */
   public static ImageIcon packageIcon = null;
   /** The icon for representing pakcage and data file */
@@ -169,12 +171,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
 
   /** Store the height fact for table row height */
   private static final int HEIGHTFACTOR = 2;
+  
+
   /**
    * Construct a ResultSet instance from a vector of vectors;
    * for use with LocalQuery
    */
   public ResultSet(Query query, String source, Vector vec, ClientFramework cf) {
   
+    initIcons();
     init(query, source, cf);
     this.resultsVector = vec;
   }
@@ -206,15 +211,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       framework.debug(6, "(2.432) " + e.toString());
       framework.debug(30, "(2.433) Exception is: " + e.getClass().getName());
     }
-    for (int i = 0; i< resultsVector.size();i++)
-    {
-      Vector newv = (Vector) resultsVector.elementAt(i);
-      for (int j=0; j< newv.size(); j++)
-      {
-        System.out.print(j+"."+ newv.elementAt(j)+"   ");
-      }
-      System.out.println();
-   }
+
   }
 
 
@@ -256,6 +253,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       = new ImageIcon(getClass().getResource("localscreen.gif"));
     metacatIcon 
       = new ImageIcon(getClass().getResource("net.gif"));
+    blankIcon 
+      = new ImageIcon(getClass().getResource("blank.gif"));
     packageIcon
       = new ImageIcon(getClass().getResource("localscreen.gif"));
     packageDataIcon
@@ -274,7 +273,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    *  get the resultsVector
    */
   public Vector getResultsVector() {
-    return resultsVector;
+    return this.resultsVector;
   }
   
   /**
@@ -330,53 +329,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public Object getValueAt(int row, int col)
   {
     Object value = null;
-    try {
-      Vector rowVector = (Vector)resultsVector.elementAt(row);
-      // The oder of header is different to resultsVector, so we need a 
-      // conversion
-      value = rowVector.elementAt(lookupResultsVectorIndex(col));
-      
-      // Add icon rather than ture or false value to col6 and col7
-      if (col == 6)
-      { 
-        // cast value to Boolean object
-        Boolean isLocally = (Boolean)value;
-        if (isLocally.booleanValue())
-        {
-          // If is local, the value will be a local icon
-          value = localIcon;
-        }//if
-        else
-        {
-          // If there isnot local, value is empty String
-          value = "";
-        }//else
-      }//if
-      
-      // Add icon for col6 and col7
-      if (col == 7)
-      { 
-        // cast value to Boolean object
-        Boolean isNet = (Boolean)value;
-        if (isNet.booleanValue())
-        {
-          // If is local, the value will be a local icon
-          value = metacatIcon;
-        }//if
-        else
-        {
-          // If there isnot local, value is empty String
-          value = "";
-        }//else
-      }//if
-         
-    } catch (ArrayIndexOutOfBoundsException aioobe) {
-      String emptyString = "";
-      value = null;
-    } catch (NullPointerException npe) {
-      String emptyString = "";
-      value = emptyString;
-    }
     return value;
   }
   
@@ -392,7 +344,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    *      6                       ISLOCALINDEX(9)
    *      7                       ISMETACATINDEX(10)
    */
-  private int lookupResultsVectorIndex(int headerIndex)
+  protected int lookupResultsVectorIndex(int headerIndex)
   {
     // Array to store the resultSVectorIndex
     int [] lookupArray = {PACKAGEICONINDEX, TITLEINDEX, DOCIDINDEX,SURNAMEINDEX,
@@ -427,7 +379,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   private void createTableHeader()
   {
     int cnt = (returnFields==null)? 0 : returnFields.size();
-    System.out.println("size of returnfields is: "+ cnt);
     int numberFixedHeaders = 5;
     headers = new String[numberFixedHeaders+cnt];  
     headers[0] = " "; // This is for the first package icon column;
@@ -760,13 +711,17 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
           Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
 
           // Determine which icon to use based on the current setting
-          ImageIcon currentIcon = (ImageIcon)originalRow.elementAt(0);
-          if (currentIcon == packageDataIcon) {
+          ImageIcon currentIcon 
+            = (ImageIcon)originalRow.elementAt(PACKAGEICONINDEX);
+       
+          if ((currentIcon.toString()).equals(packageDataIcon.toString())) {
             //originalRow.setElementAt(bothDataIcon, 0);
-            originalRow.setElementAt(packageDataIcon, 0);
+           
+            originalRow.setElementAt(packageDataIcon, PACKAGEICONINDEX);
           } else {
+            
             //originalRow.setElementAt(bothIcon, 0);
-            originalRow.setElementAt(packageIcon, 0);
+            originalRow.setElementAt(packageIcon, PACKAGEICONINDEX);
           }
           //originalRow.setElementAt(new Boolean(true), numColumns+5);
           originalRow.setElementAt(new Boolean(true), ISLOCALINDEX);
@@ -796,10 +751,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    */
   public void sortTableByColumn(int col, boolean ascending)
   {
-    //look up index in result vector
-    int resultColIndex = lookupResultsVectorIndex(col);
-    // sort the result vector
-    Collections.sort(resultsVector,
-                    new CellComparator(resultColIndex, ascending));
+  
+  
   }//sortColumn
 }
