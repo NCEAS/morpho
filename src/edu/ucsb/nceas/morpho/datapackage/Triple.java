@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-03 18:13:34 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-03 18:23:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,49 +39,77 @@ public class Triple
   private String relationship;
   private String object;
   
-  public Triple(String sub, String rel, String obj) 
+  /**
+   * create an initialized, blank Triple object
+   */
+  public Triple()
   {
-    this.subject = sub;
-    this.relationship = rel;
-    this.object = obj;
+    this.subject = new String();
+    this.relationship = new String();
+    this.object = new String();
   }
   
-  public Triple(String sub) 
+  /**
+   * create a new triple with the specified subject relationship and object
+   */
+  public Triple(String subject, String relationship, String object) 
   {
-    this.subject = sub;
-    this.relationship = null;
-    this.object = null;
-  }
-    
-	public String getObject()
-	{
-		return object;
-	}
-
-	public void setObject(String object)
-	{
+    this.subject = subject;
+    this.relationship = relationship;
     this.object = object;
-	}
-	
-	public String getRelationship()
-	{
-		return relationship;
-	}
+  }
 
-	public void setRelationship(String relationship)
-	{
-	  this.relationship = relationship;
-	}
-	public String getSubject()
-	{
-		return subject;
-	}
-
+  /**
+   * Set the subject of this triple
+   */
 	public void setSubject(String subject)
 	{
 	  this.subject = subject;
 	}
   
+  /**
+   * Set the relationship of this triple
+   */
+	public void setRelationship(String relationship)
+	{
+	  this.relationship = relationship;
+	}
+
+  /**
+   * Set the object of this triple
+   */
+	public void setObject(String object)
+	{
+    this.object = object;
+	}
+  
+  /**
+   * get the subject of this triple
+   */
+	public String getSubject()
+	{
+		return subject;
+	}
+
+  /**
+   * get the relationship of this triple
+   */
+	public String getRelationship()
+	{
+		return relationship;
+	}
+  
+  /**
+   * get the object of this triple
+   */
+	public String getObject()
+	{
+		return object;
+	}
+	
+  /**
+   * return this triple as a vector of strings
+   */
   public Vector getTriple()
   {
     Vector triple = new Vector();
@@ -91,6 +119,9 @@ public class Triple
     return triple;
   }
 
+  /**
+   * return this triple as a string
+   */
   public String toString() 
   {
     return "[" + this.subject + "," + 
