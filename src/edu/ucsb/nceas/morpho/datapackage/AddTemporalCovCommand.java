@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 13:49:48 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-25 18:27:45 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,14 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -96,6 +98,7 @@ public class AddTemporalCovCommand implements Command {
 					// inserting new, so remove old
 					adp.removeTemporalNodes();
           insertNewTemporal();
+          UIController.showNewPackage(adp);
         }
         catch (Exception w) {
           Log.debug(20, "Exception trying to modify coverage DOM");
@@ -132,6 +135,9 @@ public class AddTemporalCovCommand implements Command {
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
+    // note that the location of 'insertCurrentData' is significant
+    // it must occur after the creation of the ModalDialog so that 'onLoadAction' is fired
+    // and the list is emptied
     insertCurrentData();
     wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
     wpd.setVisible(true);
@@ -190,5 +196,29 @@ public class AddTemporalCovCommand implements Command {
        temporalPage.setPageData(tempMap, "");
     }
   }
-  
+
+  /**
+   *  method to display the new package after changes have been made
+   */
+/*  public void showNewPackage(AbstractDataPackage adp) {
+      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      morphoFrame.setVisible(false);
+    
+      try {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
+                services.getServiceProvider(DataPackageInterface.class);
+        DataPackageInterface dataPackage = (DataPackageInterface)provider;
+        dataPackage.openNewDataPackage(adp, null);
+        UIController controller = UIController.getInstance();
+        controller.removeWindow(morphoFrame);
+        morphoFrame.dispose();
+      }
+      catch (ServiceNotHandledException snhe) {
+        Log.debug(6, snhe.getMessage());
+        morphoFrame.setVisible(true);
+      }
+    
+  }
+*/  
 }

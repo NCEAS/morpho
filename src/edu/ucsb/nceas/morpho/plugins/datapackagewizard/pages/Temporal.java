@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 23:36:37 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-03-25 18:28:29 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,7 +202,7 @@ public class Temporal extends AbstractUIPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
+    timespanList.removeAllRows();
   }
 
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 05:58:53 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-03-25 18:28:29 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,14 +180,11 @@ public class Geographic extends AbstractUIPage{
 
 
 
-
-
-
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
+    geographicspanList.removeAllRows();
   }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 13:49:47 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-25 18:27:45 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ public class AddGeographicCovCommand implements Command {
 					// inserting new, so remove old
 					adp.removeGeographicNodes();
           insertNewGeographic();
+          UIController.showNewPackage(adp);
         }
         catch (Exception w) {
           Log.debug(20, "Exception trying to modify coverage DOM");
@@ -125,16 +126,18 @@ public class AddGeographicCovCommand implements Command {
       return;
     }
 
-    geographicPage = dpwPlugin.getPage(
-        DataPackageWizardInterface.GEOGRAPHIC);
+    geographicPage = dpwPlugin.getPage(DataPackageWizardInterface.GEOGRAPHIC);
         
-    insertCurrentData();    
     ModalDialog wpd = new ModalDialog(geographicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
 
     wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
+    // note that the location of 'insertCurrentData' is significant
+    // it must occur after the creation of the ModalDialog so that 'onLoadAction' is fired
+    // and the list is emptied
+    insertCurrentData();    
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
