@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-30 17:04:41 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-09-30 19:54:56 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,8 +195,12 @@ public abstract class AbstractDataPackage extends MetadataObject
       
       NodeList entityNodes = XMLUtilities.getNodeListWithXPath(metadataNode,entityXpath);
       //  NodeList entityNodes = XPathAPI.selectNodeList(metadataNode,entityXpath);
-      if (entityNodes==null) Log.debug(1,"entityList is null!");
-      entityArray = XMLUtilities.getNodeListAsNodeArray(entityNodes);
+      if (entityNodes==null) {
+        Log.debug(1,"entityList is null!");
+        entityArray = null;
+      } else {
+        entityArray = XMLUtilities.getNodeListAsNodeArray(entityNodes);
+      }
     }
     catch (Exception w) {
       Log.debug(4,"exception in getting entityArray");
@@ -590,23 +594,25 @@ public abstract class AbstractDataPackage extends MetadataObject
     sb.append("AccessionNumber: "+getAccessionNumber()+"\n");
     sb.append("Author: "+getAuthor()+"\n");
     getEntityArray();
-    for (int i=0;i<entityArray.length;i++) {
-      sb.append("   entity "+i+" name: "+getEntityName(i)+"\n");
-      sb.append("   entity "+i+" numRecords: "+getEntityNumRecords(i)+"\n");
-      sb.append("   entity "+i+" description: "+getEntityDescription(i)+"\n");
-      for (int j=0;j<getAttributeArray(i).length;j++) {
-        sb.append("      entity "+i+" attribute "+j+"--- name: "+getAttributeName(i,j)+"\n");
-        sb.append("      entity "+i+" attribute "+j+"--- unit: "+getAttributeUnit(i,j)+"\n");
-        sb.append("      entity "+i+" attribute "+j+"--- dataType: "+getAttributeDataType(i,j)+"\n");
+    if (entityArray!=null) {
+      for (int i=0;i<entityArray.length;i++) {
+        sb.append("   entity "+i+" name: "+getEntityName(i)+"\n");
+        sb.append("   entity "+i+" numRecords: "+getEntityNumRecords(i)+"\n");
+        sb.append("   entity "+i+" description: "+getEntityDescription(i)+"\n");
+        for (int j=0;j<getAttributeArray(i).length;j++) {
+          sb.append("      entity "+i+" attribute "+j+"--- name: "+getAttributeName(i,j)+"\n");
+          sb.append("      entity "+i+" attribute "+j+"--- unit: "+getAttributeUnit(i,j)+"\n");
+          sb.append("      entity "+i+" attribute "+j+"--- dataType: "+getAttributeDataType(i,j)+"\n");
         
-      }
-      for (int k=0;k<getPhysicalArray(i).length;k++) {
-        sb.append("   entity "+i+" physical "+k+"--- name: "+getPhysicalName(i,k)+"\n");
-        sb.append("   entity "+i+" physical "+k+"--- format: "+getPhysicalFormat(i,k)+"\n");
-        sb.append("   entity "+i+" physical "+k+"--- fieldDelimiter: "+getPhysicalFieldDelimiter(i,k)+"\n");
-        sb.append("   entity "+i+" physical "+k+"--- numHeaderLines: "+getPhysicalNumberHeaderLines(i,k)+"\n");
-        sb.append("      entity "+i+" physical "+k+"------ inline: "+getDistributionInlineData(i,k,0)+"\n");
-        sb.append("      entity "+i+" physical "+k+"------ url: "+getDistributionUrl(i,k,0)+"\n");
+        }
+        for (int k=0;k<getPhysicalArray(i).length;k++) {
+          sb.append("   entity "+i+" physical "+k+"--- name: "+getPhysicalName(i,k)+"\n");
+          sb.append("   entity "+i+" physical "+k+"--- format: "+getPhysicalFormat(i,k)+"\n");
+          sb.append("   entity "+i+" physical "+k+"--- fieldDelimiter: "+getPhysicalFieldDelimiter(i,k)+"\n");
+          sb.append("   entity "+i+" physical "+k+"--- numHeaderLines: "+getPhysicalNumberHeaderLines(i,k)+"\n");
+          sb.append("      entity "+i+" physical "+k+"------ inline: "+getDistributionInlineData(i,k,0)+"\n");
+          sb.append("      entity "+i+" physical "+k+"------ url: "+getDistributionUrl(i,k,0)+"\n");
+        }
       }
     }
     Log.debug(1,sb.toString());

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-26 22:22:52 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-09-30 19:54:56 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,11 @@ public class DataPackageFactory
     // then create the appropriate subclass of AbstractDataPackage and return it.
     
     // temporary stub!!!
+    String location = null;
+    if (metacat && !local) location = AbstractDataPackage.METACAT;
+    if (!metacat && local) location = AbstractDataPackage.LOCAL;
+    if (metacat && local) location = AbstractDataPackage.BOTH;
+
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
     Log.debug(1,"DocTypeInfo: " + type);
@@ -73,7 +78,7 @@ public class DataPackageFactory
       Log.debug(1,"Creating new eml2.0.0 package");
       dp = new EML200DataPackage();
       Log.debug(1,"loading new eml2.0.0 DOM");
-      dp.load("local","jscientist.7.1",null);
+      dp.load(location,"jscientist.7.1",null);
       try{
         Node textNode = XMLUtilities.getTextNodeWithXPath(dp.getMetadataPath(),"/xpathKeyMap/contextNode[@name='package']/title");
         String test = textNode.getNodeValue();
@@ -108,18 +113,8 @@ public class DataPackageFactory
     if (!metacat && local) location = AbstractDataPackage.LOCAL;
     if (metacat && local) location = AbstractDataPackage.BOTH;
     dp.load(location, docid, morpho);
-/*      try{
-        Node textNode = XMLUtilities.getTextNodeWithXPath(dp.getMetadataPath(),"/xpathKeyMap/contextNode[@name='package']/title");
-        String test = textNode.getNodeValue();
-        Log.debug(1,"test:"+test);
-        String temp = dp.getGenericValue("/xpathKeyMap/contextNode[@name='package']/title");
-        Log.debug(1,"temp:"+temp);
-      }
-      catch (Exception w) {
-        Log.debug(1,"exception");
-      }
-*/
-   dp.showPackageSummary();
+
+    dp.showPackageSummary();
    
     return dp;    
   }
@@ -130,12 +125,24 @@ public class DataPackageFactory
    *  needed for use with DPWizard?
    */
   public static AbstractDataPackage getDataPackage(Node node, String doctype) {
-    AbstractDataPackage dp = null;
+    AbstractDataPackage dp = new EML200DataPackage();
+    
+    try{
+      Node metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
+      dp.setMetadataPath(metadataPathNode);
+    }
+    catch (Exception e2) {
+      Log.debug(20, "getting DOM for Paths threw error: " + e2.toString());
+      e2.printStackTrace();
+    }
+
+
     // no 'load' operation is required
     
-//    this.doctype = doctype;
     dp.grammar = doctype;
     dp.metadataNode = node;
+    dp.showPackageSummary();
+    
     return dp;
   }
   
