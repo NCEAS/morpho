@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-24 19:36:04 $'
- * '$Revision: 1.25 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-26 00:19:54 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 
 public class PartyPage extends AbstractUIPage {
@@ -80,7 +81,7 @@ public class PartyPage extends AbstractUIPage {
   private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700, 20);
 
   // xpath for the this page
-  private String xPathRoot = "/eml:eml/dataset/creator[1]";
+  private String rootXPath = "/eml:eml/dataset/creator[1]";
 
   private final String NAME_ROLE_SEPARATOR = ", ";
 
@@ -127,21 +128,21 @@ public class PartyPage extends AbstractUIPage {
   private JTextField urlField;
   private JPanel rolePanel;
   private JPanel middlePanel;
-  private JPanel radioPanel;
+  private JPanel checkBoxPanel;
   private JComboBox listCombo;
   public JLabel desc;
   public JPanel listPanel;
 
   // variables for reference handling capability
-  public PartyPage referedPage;
+  public PartyPage referredPage;
   private String referenceIdString;
-  private String referedIdString;
+  private String referredIdString;
   public boolean isReference;
   public boolean referDiffDP = false;
   private boolean editReference;
 
   //
-  private final String[] radioArray
+  private final String[] checkBoxArray
       = new String[] {
       "Do you want to edit "
       + "the above information?"};
@@ -192,10 +193,10 @@ public class PartyPage extends AbstractUIPage {
         roleString = "Contact";
         break;
       case ASSOCIATED:
-        roleString = (String) rolePickList.getSelectedItem();
+        roleString = getCurrentRole();
         break;
       case PERSONNEL:
-        roleString = (String) rolePickList.getSelectedItem();
+        roleString = getCurrentRole();
         break;
     }
     return roleString;
@@ -233,17 +234,16 @@ public class PartyPage extends AbstractUIPage {
             // If the selected index is 0, then the user has decided not to
             // use any previous entries. Hence clear out all reference pointers,
             // set instance to editable stage, clear out all values and remove
-            // the radioPanel
+            // the checkBoxPanel
             isReference = false;
-            referedIdString = null;
+            referredIdString = null;
 
             instance.setEditable(true);
             instance.setValue(null);
 
-            radioPanel.setVisible(false);
-            Log.debug(45, "Setting referedIdString to null");
-          }
-          else {
+            checkBoxPanel.setVisible(false);
+            Log.debug(45, "Setting referredIdString to null");
+          } else {
             // If selected index is not 0, a previous entry has been chosen for
             // making reference to and copy values...
             int index = source.getSelectedIndex();
@@ -258,44 +258,46 @@ public class PartyPage extends AbstractUIPage {
 
             // From the currentList get the element for the index selected
             // from the comboBox - this element is a List object
-            List currentList = (List) WidgetFactory.responsiblePartyList.get(
-                index);
+            List currentList
+                = (List)WidgetFactory.partyRefsListForAllPkgs.get(index);
 
             // get the 3rd element which is partyPage Object
-            referedPage = (PartyPage) currentList.get(3);
+            referredPage = (PartyPage)currentList.get(3);
 
-            // find out if the referedPage was created in same DP or was
+            // find out if the referredPage was created in same DP or was
             // created in a previously created DP.
-            PartyPage page = partyInSameDP(referedPage);
-            if (page != null) {
-              // referedPage  was created in same DP - so current page would be
+
+            if (partyInSameDP(referredPage)) {
+
+              // referredPage  was created in same DP - so current page would be
               // a reference... get reference Id, set instance non-editable,
               // set value of all fields and radio panel visible
               isReference = true;
-              referedIdString = page.getRefID();
+              referredIdString = referredPage.getRefID();
 
               instance.setEditable(false);
-              instance.setValue(page);
+              instance.setValue(referredPage);
 
-              radioPanel.setVisible(true);
-              Log.debug(45, "The refered page is not in a different DP. "
-                        + "Setting referedIdString to " + referedIdString);
-            }
-            else {
-              // referedPage was not created in same DP - so current page would
+              checkBoxPanel.setVisible(true);
+              Log.debug(45, "The referred page is not in a different DP. "
+                        + "Setting referredIdString to " + referredIdString);
+
+            } else {
+
+              // referredPage was not created in same DP - so current page would
               // not be a reference... set reference Id null, set referDiffDP
               // true, set instance editable as it is not a reference,
               // set value of all fields and radio panel invisible
               isReference = false;
               referDiffDP = true;
-              referedIdString = null;
+              referredIdString = null;
 
               instance.setEditable(true);
-              instance.setValue(referedPage);
+              instance.setValue(referredPage);
 
-              radioPanel.setVisible(false);
-              Log.debug(45, "The refered page is in a different DP. "
-                        + "Setting referedIdString to null.");
+              checkBoxPanel.setVisible(false);
+              Log.debug(45, "The referred page is in a different DP. "
+                        + "Setting referredIdString to null.");
             }
           }
         }
@@ -582,7 +584,7 @@ public class PartyPage extends AbstractUIPage {
             instance.setEditable(true);
             editReference = false;
             isReference = false;
-            referedIdString = null;
+            referredIdString = null;
           }
           else {
             // Cancel - remove selection from source - instance is not editable,
@@ -599,12 +601,12 @@ public class PartyPage extends AbstractUIPage {
     };
 
     // Check box for ediitng the instance - si not visible initially
-    radioPanel = WidgetFactory.makeCheckBoxPanel(radioArray, -1, ilistener1);
-    radioPanel.setBorder(new javax.swing.border.EmptyBorder(0,
+    checkBoxPanel = WidgetFactory.makeCheckBoxPanel(checkBoxArray, -1, ilistener1);
+    checkBoxPanel.setBorder(new javax.swing.border.EmptyBorder(0,
         12 * WizardSettings.PADDING,
         0, 8 * WizardSettings.PADDING));
-    middlePanel.add(radioPanel);
-    radioPanel.setVisible(false);
+    middlePanel.add(checkBoxPanel);
+    checkBoxPanel.setVisible(false);
 
     getPartyList();
   }
@@ -612,7 +614,7 @@ public class PartyPage extends AbstractUIPage {
 
   /**
    * The action removes all previous entries in party list and adds all entries
-   * in WidgetFactory.responsiblePartyList to the list. So in way it refreshes
+   * in WidgetFactory.partyRefsListForAllPkgs to the list. So in way it refreshes
    * the list.
    */
   private void getPartyList() {
@@ -620,9 +622,9 @@ public class PartyPage extends AbstractUIPage {
     listCombo.removeAllItems();
 
     // get all elements from WidgetFactory and add them to responsiblePartyList
-    for (int count = 0; count < WidgetFactory.responsiblePartyList.size();
+    for (int count = 0; count < WidgetFactory.partyRefsListForAllPkgs.size();
          count++) {
-      List rowList = (List) WidgetFactory.responsiblePartyList.get(count);
+      List rowList = (List) WidgetFactory.partyRefsListForAllPkgs.get(count);
       String name = (String) rowList.get(0);
       String role = (String) rowList.get(1);
       String row = "";
@@ -634,41 +636,69 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
+
+
   /**
-   * The action checks if the referedPage was created in present DP.
+   * The action checks if the referredPage was created in present DP.
+
+
+
+
+
+  /**
+   * The action checks if the referredPage was created in present DP.
    *
-   * @return PartyPage Object if referedPage was created in same DP. Otherwise
+   * @return PartyPage Object if referredPage was created in same DP. Otherwise
    *   returns null
-   * @param referedPage PartyPage
+   * @param referredPage PartyPage
    */
-  private PartyPage partyInSameDP(PartyPage referedPage){
+  private boolean partyInSameDP(PartyPage referredPage) {
 
-    List dpList = DataPackageWizardInterface.responsiblePartyList;
+    Log.debug(45, "\n(((((((((((((( partyInSameDP() called ))))))))))))))))))))))))))))))))))))))))))");
+    Log.debug(45, "\n(((((((((((((( referredPage = " + referredPage);
 
-  Iterator it = dpList.iterator();
-  while(it.hasNext()) {
-    List row = (List) it.next();
-    PartyPage page = (PartyPage)row.get(3);
+//    List dpList = WidgetFactory.getPartyRefsListForCurrentPkg();
+//
+//    Iterator it = dpList.iterator();
+//    while (it.hasNext()) {
+//      List row = (List)it.next();
+//      PartyPage page = (PartyPage)row.get(3);
 
-    if(referedPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
-    referedPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
-    referedPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
-    referedPage.getorganizationFieldText().equals(page.getorganizationFieldText()) &&
-    referedPage.getpositionNameFieldText().equals(page.getpositionNameFieldText()) &&
-    referedPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
-    referedPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
-    referedPage.getcityFieldText().equals(page.getcityFieldText()) &&
-    referedPage.getstateFieldText().equals(page.getstateFieldText()) &&
-    referedPage.getzipFieldText().equals(page.getzipFieldText()) &&
-    referedPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
-    referedPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
-    referedPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
-    referedPage.getemailFieldText().equals(page.getemailFieldText()) &&
-    referedPage.geturlFieldText().equals(page.geturlFieldText())){
-      return page;
+    OrderedMap map = getMapForRefID(referredPage.getRefID());
+
+    //if adp returns null, then this ID doesn't exist in the current adp, so it
+    //must be in a different adp
+    if (map == null) return false;
+
+    PartyPage page = (PartyPage)WizardPageLibrary.getPage(
+                                         DataPackageWizardInterface.PARTY_PAGE);
+    if (page.setPageData(map, referredPage.getRootXPath())) {
+
+
     }
-  }
-    return null;
+    if (referredPage.getsalutationFieldText().equals(page.
+                                                     getsalutationFieldText()) &&
+        referredPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
+        referredPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
+        referredPage.getorganizationFieldText().equals(page.
+                                                       getorganizationFieldText()) &&
+        referredPage.getpositionNameFieldText().equals(page.
+                                                       getpositionNameFieldText()) &&
+        referredPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
+        referredPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
+        referredPage.getcityFieldText().equals(page.getcityFieldText()) &&
+        referredPage.getstateFieldText().equals(page.getstateFieldText()) &&
+        referredPage.getzipFieldText().equals(page.getzipFieldText()) &&
+        referredPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
+        referredPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
+        referredPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
+        referredPage.getemailFieldText().equals(page.getemailFieldText()) &&
+        referredPage.geturlFieldText().equals(page.geturlFieldText())) {
+      return true;
+    }
+//    }
+    Log.debug(45, "\n(((((((((((((( partyInSameDP() NO MATCH FOUND!! ))))))))))))))))))))))))))))))))))))))))))\n\n");
+    return false;
   }
 
 
@@ -754,8 +784,12 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
+  protected String getRootXPath() {
+    return this.rootXPath;
+  }
+
   /**
-   * The action sets prefered Min and Max Sizes for the Components
+   * The action sets preferred Min and Max Sizes for the Components
    *
    * @param component JComponent
    * @param dims Dimension
@@ -769,7 +803,7 @@ public class PartyPage extends AbstractUIPage {
   private String getCurrentRole() {
 
      String role = (String) rolePickList.getSelectedItem();
-     return (role!=null)? role.trim() : null;
+     return (role!=null)? role.trim() : "";
   }
 
 
@@ -859,64 +893,89 @@ public class PartyPage extends AbstractUIPage {
       return false;
     }
 
-    // if we are going to edit a previous reference and referedPage is not null,
+    // if we are going to edit a previous reference and referredPage is not null,
     // edit the values of fields in previous page....
-    if (editReference && referedPage != null) {
+    if (editReference && referredPage != null) {
       String nextText = salutationField.getText().trim();
-      referedPage.salutationField.setText(nextText);
+      referredPage.salutationField.setText(nextText);
 
       nextText = firstNameField.getText().trim();
-      referedPage.firstNameField.setText(nextText);
+      referredPage.firstNameField.setText(nextText);
 
       nextText = lastNameField.getText().trim();
-      referedPage.lastNameField.setText(nextText);
+      referredPage.lastNameField.setText(nextText);
 
       nextText = organizationField.getText().trim();
-      referedPage.organizationField.setText(nextText);
+      referredPage.organizationField.setText(nextText);
 
       nextText = positionNameField.getText().trim();
-      referedPage.positionNameField.setText(nextText);
+      referredPage.positionNameField.setText(nextText);
 
       nextText = address1Field.getText().trim();
-      referedPage.address1Field.setText(nextText);
+      referredPage.address1Field.setText(nextText);
 
       nextText = address2Field.getText().trim();
-      referedPage.address2Field.setText(nextText);
+      referredPage.address2Field.setText(nextText);
 
       nextText = cityField.getText().trim();
-      referedPage.cityField.setText(nextText);
+      referredPage.cityField.setText(nextText);
 
       nextText = stateField.getText().trim();
-      referedPage.stateField.setText(nextText);
+      referredPage.stateField.setText(nextText);
 
       nextText = zipField.getText().trim();
-      referedPage.zipField.setText(nextText);
+      referredPage.zipField.setText(nextText);
 
       nextText = countryField.getText().trim();
-      referedPage.countryField.setText(nextText);
+      referredPage.countryField.setText(nextText);
 
       nextText = phoneField.getText().trim();
-      referedPage.phoneField.setText(nextText);
+      referredPage.phoneField.setText(nextText);
 
       nextText = faxField.getText().trim();
-      referedPage.faxField.setText(nextText);
+      referredPage.faxField.setText(nextText);
 
       nextText = emailField.getText().trim();
-      referedPage.emailField.setText(nextText);
+      referredPage.emailField.setText(nextText);
 
       nextText = urlField.getText().trim();
-      referedPage.urlField.setText(nextText);
+      referredPage.urlField.setText(nextText);
     }
+
+    addToPartyRefsLists();
 
     return true;
   }
+
+
+  /**
+   * If appropriate, adds this party object to
+   * WidgetFactory.partyRefsListForAllPkgs
+   */
+  protected void addToPartyRefsLists() {
+
+    Log.debug(45, "addToPartyRefsLists() called - ");
+
+    if (!this.isReference) {
+
+      Log.debug(45,
+                "this id NOT a reference - adding to partyRefsListForAllPkgs...");
+
+      List newRow = this.getSurrogate();
+      newRow.add(this);
+
+      if (!this.referDiffDP) WidgetFactory.partyRefsListForAllPkgs.add(newRow);
+    }
+  }
+
+
+  /**
 
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *  Here, it does nothing because this is just a Panel and not the outer container
    */
-  public void onRewindAction() {
-  }
+  public void onRewindAction() {}
 
   /**
    *  The action to be executed when the page is loaded
@@ -930,7 +989,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return String refID
    */
-  public String getRefID() {
+  protected String getRefID() {
     if (!notNullAndNotEmpty(referenceIdString)) {
       referenceIdString = "ResponsibleParty." +
           PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT++;
@@ -942,61 +1001,61 @@ public class PartyPage extends AbstractUIPage {
 
   /**
    * The action is called from PartyMainPage. It gets updated values of all
-   * fields of referedPage and sets it in 'this' Page. Also it updates Party
-   * list irrespective of whether this is a refered page or not.
+   * fields of referredPage and sets it in 'this' Page. Also it updates Party
+   * list irrespective of whether this is a referred page or not.
    */
-  public void setEditValue() {
+  protected void setEditValue() {
 
     // update the party list because it might be changed since the last time
     // this page was created .. doesnt work thought at present
     // hence TODO
     //getPartyList();
 
-    if (isReference && referedPage != null) {
+    if (isReference && referredPage != null) {
 
-      String nextText = referedPage.salutationField.getText().trim();
+      String nextText = referredPage.salutationField.getText().trim();
       salutationField.setText(nextText);
 
-      nextText = referedPage.firstNameField.getText().trim();
+      nextText = referredPage.firstNameField.getText().trim();
       firstNameField.setText(nextText);
 
-      nextText = referedPage.lastNameField.getText().trim();
+      nextText = referredPage.lastNameField.getText().trim();
       lastNameField.setText(nextText);
 
-      nextText = referedPage.organizationField.getText().trim();
+      nextText = referredPage.organizationField.getText().trim();
       organizationField.setText(nextText);
 
-      nextText = referedPage.positionNameField.getText().trim();
+      nextText = referredPage.positionNameField.getText().trim();
       positionNameField.setText(nextText);
 
-      nextText = referedPage.address1Field.getText().trim();
+      nextText = referredPage.address1Field.getText().trim();
       address1Field.setText(nextText);
 
-      nextText = referedPage.address2Field.getText().trim();
+      nextText = referredPage.address2Field.getText().trim();
       address2Field.setText(nextText);
 
-      nextText = referedPage.cityField.getText().trim();
+      nextText = referredPage.cityField.getText().trim();
       cityField.setText(nextText);
 
-      nextText = referedPage.stateField.getText().trim();
+      nextText = referredPage.stateField.getText().trim();
       stateField.setText(nextText);
 
-      nextText = referedPage.zipField.getText().trim();
+      nextText = referredPage.zipField.getText().trim();
       zipField.setText(nextText);
 
-      nextText = referedPage.countryField.getText().trim();
+      nextText = referredPage.countryField.getText().trim();
       countryField.setText(nextText);
 
-      nextText = referedPage.phoneField.getText().trim();
+      nextText = referredPage.phoneField.getText().trim();
       phoneField.setText(nextText);
 
-      nextText = referedPage.faxField.getText().trim();
+      nextText = referredPage.faxField.getText().trim();
       faxField.setText(nextText);
 
-      nextText = referedPage.emailField.getText().trim();
+      nextText = referredPage.emailField.getText().trim();
       emailField.setText(nextText);
 
-      nextText = referedPage.urlField.getText().trim();
+      nextText = referredPage.urlField.getText().trim();
       urlField.setText(nextText);
     }
   }
@@ -1006,7 +1065,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the salutationField String for this wizard page
    */
-  public String getsalutationFieldText() {
+  protected String getsalutationFieldText() {
     return this.salutationField.getText();
   }
 
@@ -1015,7 +1074,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the firstNameField String for this wizard page
    */
-  public String getfirstNameFieldText() {
+  protected String getfirstNameFieldText() {
     return this.firstNameField.getText();
   }
 
@@ -1024,7 +1083,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the lastNameField String for this wizard page
    */
-  public String getlastNameFieldText() {
+  protected String getlastNameFieldText() {
     return this.lastNameField.getText();
   }
 
@@ -1033,7 +1092,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return  the urlField String for this wizard page
    */
-  public String geturlFieldText() {
+  protected String geturlFieldText() {
     return this.urlField.getText();
   }
 
@@ -1042,7 +1101,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the positionNameField String for this wizard page
    */
-  public String getpositionNameFieldText() {
+  protected String getpositionNameFieldText() {
     return this.positionNameField.getText();
   }
 
@@ -1051,7 +1110,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the cityField String for this wizard page
    */
-  public String getcityFieldText() {
+  protected String getcityFieldText() {
     return this.cityField.getText();
   }
 
@@ -1060,7 +1119,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the faxField String for this wizard page
    */
-  public String getfaxFieldText() {
+  protected String getfaxFieldText() {
     return this.faxField.getText();
   }
 
@@ -1069,7 +1128,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the zipField String for this wizard page
    */
-  public String getzipFieldText() {
+  protected String getzipFieldText() {
     return this.zipField.getText();
   }
 
@@ -1078,7 +1137,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the stateField String for this wizard page
    */
-  public String getstateFieldText() {
+  protected String getstateFieldText() {
     return this.stateField.getText();
   }
 
@@ -1087,7 +1146,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the emailField String for this wizard page
    */
-  public String getemailFieldText() {
+  protected String getemailFieldText() {
     return this.emailField.getText();
   }
 
@@ -1096,7 +1155,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the organizationField String for this wizard page
    */
-  public String getorganizationFieldText() {
+  protected String getorganizationFieldText() {
     return this.organizationField.getText();
   }
 
@@ -1105,7 +1164,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the countryField String for this wizard page
    */
-  public String getcountryFieldText() {
+  protected String getcountryFieldText() {
     return this.countryField.getText();
   }
 
@@ -1114,7 +1173,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the phoneField String for this wizard page
    */
-  public String getphoneFieldText() {
+  protected String getphoneFieldText() {
     return this.phoneField.getText();
   }
 
@@ -1123,7 +1182,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the address1Field String for this wizard page
    */
-  public String getaddress1FieldText() {
+  protected String getaddress1FieldText() {
     return this.address1Field.getText();
   }
 
@@ -1132,7 +1191,7 @@ public class PartyPage extends AbstractUIPage {
    *
    *  @return   the address2Field String for this wizard page
    */
-  public String getaddress2FieldText() {
+  protected String getaddress2FieldText() {
     return this.address2Field.getText();
   }
 
@@ -1227,8 +1286,13 @@ public class PartyPage extends AbstractUIPage {
 
     //role (second column) surrogate:
     if (role == ASSOCIATED || role == PERSONNEL) {
-      surrogate.add(roleString + " ("
-                    +  ((String) rolePickList.getSelectedItem()).trim() + ")");
+      StringBuffer roleBuff = new StringBuffer(roleString);
+      if (notNullAndNotEmpty(getCurrentRole())) {
+        roleBuff.append(" (");
+        roleBuff.append(getCurrentRole());
+        roleBuff.append(")");
+      }
+      surrogate.add(roleBuff.toString());
     }
     else {
       surrogate.add(roleString);
@@ -1299,7 +1363,7 @@ public class PartyPage extends AbstractUIPage {
   /**
    *  gets the Map object that contains all the key/value paired
    *
-   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be
+   *  @param    rootXPath the string xpath to which this dialog's xpaths will be
    *            appended when making name/value pairs.  For example, in the
    *            xpath: /eml:eml/dataset/creator[2]/individualName/surName, the
    *            root would be /eml:eml/dataset/creator[2].
@@ -1313,107 +1377,107 @@ public class PartyPage extends AbstractUIPage {
 
   //
   public OrderedMap getPageData() {
-    return getPageData(xPathRoot);
+    return getPageData(rootXPath);
   }
 
-  public OrderedMap getPageData(String xPathRoot) {
+  public OrderedMap getPageData(String rootXPath) {
 
     returnMap.clear();
     String nextText = null;
 
     if (isReference) {
-      returnMap.put(xPathRoot + "/references", referedIdString);
-      Log.debug(45, "Setting reference to " + referedIdString);
+      returnMap.put(rootXPath + "/references", referredIdString);
+      Log.debug(45, "Setting reference to " + referredIdString);
     }
     else {
 
       if (notNullAndNotEmpty(referenceIdString)) {
-        returnMap.put(xPathRoot + "/@id", referenceIdString);
+        returnMap.put(rootXPath + "/@id", referenceIdString);
         Log.debug(45, "Setting reference as " + referenceIdString);
       }
 
       nextText = salutationField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/individualName/salutation", nextText);
+        returnMap.put(rootXPath + "/individualName/salutation", nextText);
       }
 
       nextText = firstNameField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/individualName/givenName", nextText);
+        returnMap.put(rootXPath + "/individualName/givenName", nextText);
       }
 
       nextText = lastNameField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/individualName/surName", nextText);
+        returnMap.put(rootXPath + "/individualName/surName", nextText);
       }
 
       nextText = organizationField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/organizationName", nextText);
+        returnMap.put(rootXPath + "/organizationName", nextText);
       }
 
       nextText = positionNameField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/positionName", nextText);
+        returnMap.put(rootXPath + "/positionName", nextText);
       }
 
       nextText = address1Field.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/address/deliveryPoint[1]", nextText);
+        returnMap.put(rootXPath + "/address/deliveryPoint[1]", nextText);
       }
 
       nextText = address2Field.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/address/deliveryPoint[2]", nextText);
+        returnMap.put(rootXPath + "/address/deliveryPoint[2]", nextText);
       }
 
       nextText = cityField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/address/city", nextText);
+        returnMap.put(rootXPath + "/address/city", nextText);
       }
 
       nextText = stateField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/address/administrativeArea", nextText);
+        returnMap.put(rootXPath + "/address/administrativeArea", nextText);
       }
 
       nextText = zipField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/address/postalCode", nextText);
+        returnMap.put(rootXPath + "/address/postalCode", nextText);
       }
 
       nextText = countryField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/address/country", nextText);
+        returnMap.put(rootXPath + "/address/country", nextText);
       }
 
       nextText = phoneField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/phone[1]", nextText);
-        returnMap.put(xPathRoot + "/phone[1]/@phonetype", "voice");
+        returnMap.put(rootXPath + "/phone[1]", nextText);
+        returnMap.put(rootXPath + "/phone[1]/@phonetype", "voice");
       }
 
       nextText = faxField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/phone[2]", nextText);
-        returnMap.put(xPathRoot + "/phone[2]/@phonetype", "fax");
+        returnMap.put(rootXPath + "/phone[2]", nextText);
+        returnMap.put(rootXPath + "/phone[2]/@phonetype", "fax");
       }
 
       nextText = emailField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/electronicMailAddress", nextText);
+        returnMap.put(rootXPath + "/electronicMailAddress", nextText);
       }
 
       nextText = urlField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/onlineUrl", nextText);
+        returnMap.put(rootXPath + "/onlineUrl", nextText);
       }
     }
 
     if (role == ASSOCIATED || role == PERSONNEL) {
 
       if (getCurrentRole()!=null && getCurrentRole().length() > 0) {
-        returnMap.put(xPathRoot + "/role", getCurrentRole());
+        returnMap.put(rootXPath + "/role", getCurrentRole());
       }
     }
 
@@ -1421,23 +1485,23 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
-  public boolean setPageData(OrderedMap map, String _xPathRoot) {
+  public boolean setPageData(OrderedMap map, String _rootXPath) {
 
     Log.debug(45,
-              "PartyPage.setPageData() called with _xPathRoot = " + _xPathRoot
+              "PartyPage.setPageData() called with _rootXPath = " + _rootXPath
               + "\n Map = \n" + map);
 
 // ultimately, we need to be able to get a list of available refs from
 // datapackage and display them. For now, just hide picklist
     listCombo.setVisible(false);
 
-    radioPanel.setVisible(false);
+    checkBoxPanel.setVisible(false);
 
-    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot =
-                                                                     _xPathRoot;
+    if (_rootXPath!=null && _rootXPath.trim().length() > 0) this.rootXPath =
+                                                                     _rootXPath;
 
     String xpathRootNoPredicates
-        = XMLUtilities.removeAllPredicates(this.xPathRoot);
+        = XMLUtilities.removeAllPredicates(this.rootXPath);
 
     while (xpathRootNoPredicates.endsWith("/")) {
       xpathRootNoPredicates
@@ -1445,7 +1509,7 @@ public class PartyPage extends AbstractUIPage {
                                             xpathRootNoPredicates.length() - 1);
     }
     Log.debug(45,
-        "PartyPage.setPageData() XMLUtilities.removeAllPredicates(xPathRoot) = "
+        "PartyPage.setPageData() XMLUtilities.removeAllPredicates(rootXPath) = "
               + xpathRootNoPredicates);
 
     map = removeAllButLastPredicatesFromMapKeys(map);
@@ -1454,35 +1518,35 @@ public class PartyPage extends AbstractUIPage {
         "PartyPage.setPageData() after removeAllButLastPredicatesFromMapKeys. map = \n"
               + map);
 
+    isReference = false;
+
     // check if it's a reference:
     String ref = (String)map.get(xpathRootNoPredicates + "/references");
+
     if (notNullAndNotEmpty(ref)) {
 
-      //get party details from AbstractDataPackage...
-      AbstractDataPackage abs
-          = UIController.getInstance().getCurrentAbstractDataPackage();
+      map = getMapForRefID(ref);
 
-      if (abs == null) {
+      if (map != null) {
 
-        Log.debug(45,
-                  "*** ERROR - PartyPage.setPageData() can't get AbstractDataPkg");
-        return false;
-      }
-      Node referencedPartyNode = abs.getSubtreeAtReference(ref);
-
-      if (referencedPartyNode != null) {
-        map = XMLUtilities.getDOMTreeAsXPathMap(referencedPartyNode);
+        isReference = true;
+        this.setEditable(false);
+        checkBoxPanel.setVisible(true);
       } else {
 
-        Log.debug(45,
-                  "*** ERROR - PartyPage.setPageData() can't get referenced party");
+        Log.debug(15, "** ERROR: PartyPage.setPageData() - got a null map back "
+                 +" from AbsDataPkg when asking for reference: "+ref);
         return false;
       }
-      Log.debug(45, "Got referenced map " + map);
+    }
 
-      this.setEditable(false);
+    String id = (String)map.get(xpathRootNoPredicates + "/@id");
+    if (id != null) {
+      referenceIdString = (String)map.get(xpathRootNoPredicates + "/@id");
+      map.remove(xpathRootNoPredicates + "/@id");
+    } else {
 
-      radioPanel.setVisible(true);
+      referenceIdString = this.getRefID();
     }
 
     //role
@@ -1621,5 +1685,34 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
+  private OrderedMap getMapForRefID(String ref) {
+
+    if (!notNullAndNotEmpty(ref)) return null;
+
+    OrderedMap mapForRefID = null;
+
+    //get party details from AbstractDataPackage...
+    AbstractDataPackage abs
+        = UIController.getInstance().getCurrentAbstractDataPackage();
+
+    if (abs == null) {
+      Log.debug(45,
+         "*** ERROR - PartyPage.getMapForRefID() can't get AbstractDataPkg");
+      return null;
+    }
+    Node referencedPartyNode = abs.getSubtreeAtReference(ref);
+
+    if (referencedPartyNode != null) {
+      mapForRefID = XMLUtilities.getDOMTreeAsXPathMap(referencedPartyNode);
+    } else {
+      Log.debug(45,
+         "*** ERROR - PartyPage.getMapForRefID() can't get referenced party");
+      return null;
+    }
+    Log.debug(45, "PartyPage.getMapForRefID() returning referenced map "
+              + mapForRefID);
+
+    return mapForRefID;
+  }
 
 }

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-03-26 00:19:54 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,13 +81,10 @@ public class PartyMainPage
     // A empty row is added to responsiblePartyList if none exists.
     // This is done so that the dropdown list on PartyPage has
     // no entry as the first option
-    if (WidgetFactory.responsiblePartyList.size() == 0) {
+    if (WidgetFactory.partyRefsListForAllPkgs.size() == 0) {
       List newRow = new ArrayList();
-      newRow.add("");
-      newRow.add("");
-      newRow.add("");
-      newRow.add("");
-      WidgetFactory.responsiblePartyList.add(newRow);
+      for (int i=0; i<4; i++) newRow.add("");
+      WidgetFactory.partyRefsListForAllPkgs.add(newRow);
     }
   }
 
@@ -258,12 +255,15 @@ public class PartyMainPage
       List newRow = partyPage.getSurrogate();
       newRow.add(partyPage);
       partiesList.addRow(newRow);
-      if (!partyPage.isReference) {
-        DataPackageWizardInterface.responsiblePartyList.add(newRow);
-        if (!partyPage.referDiffDP) {
-          WidgetFactory.responsiblePartyList.add(newRow);
-        }
-      }
+
+//      partyPage.addToPartyRefsLists();
+
+//      if (!partyPage.isReference) {
+//        WidgetFactory.getPartyRefsListForCurrentPkg().add(newRow);
+//        if (!partyPage.referDiffDP) {
+//          WidgetFactory.partyRefsListForAllPkgs.add(newRow);
+//        }
+//      }
     }
 
     if (oneOrMoreRequired) {
@@ -301,8 +301,7 @@ public class PartyMainPage
       newRow.add(editPartyPage);
       partiesList.replaceSelectedRow(newRow);
       if (!editPartyPage.isReference) {
-        WidgetFactory.responsiblePartyList.add(newRow);
-        DataPackageWizardInterface.responsiblePartyList.add(newRow);
+        WidgetFactory.partyRefsListForAllPkgs.add(newRow);
       }
     }
   }
@@ -393,7 +392,7 @@ public class PartyMainPage
       nextPartyPage = (PartyPage) nextUserObject;
 
       if (nextPartyPage.isReference &&
-          !listContains(rowLists, nextPartyPage.referedPage)) {
+          !listContains(rowLists, nextPartyPage.referredPage)) {
         continue;
       }
 

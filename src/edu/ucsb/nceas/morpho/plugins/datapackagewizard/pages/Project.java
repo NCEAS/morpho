@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2004-03-26 00:19:54 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -261,13 +261,21 @@ public class Project extends AbstractUIPage {
          List newRow = partyPage.getSurrogate();
          newRow.add(partyPage);
          partiesList.addRow(newRow);
-         if(!partyPage.isReference){
-           WidgetFactory.responsiblePartyList.add(newRow);
-         }
+
+         partyPage.addToPartyRefsLists();
+
+//         if (!partyPage.isReference) {
+//           WidgetFactory.getPartyRefsListForCurrentPkg().add(newRow);
+//           if (!partyPage.referDiffDP) {
+//             WidgetFactory.partyRefsListForAllPkgs.add(newRow);
+//           }
+//         }
        }
 
        WidgetFactory.unhiliteComponent(minRequiredLabel);
      }
+
+
 
      /**
       *
@@ -520,7 +528,6 @@ public class Project extends AbstractUIPage {
     }
 
     Iterator persIt = personnelList.iterator();
-    Object nextPersonnelMapObj = null;
     OrderedMap nextPersonnelMap = null;
     int partyPredicate = 1;
 
@@ -529,10 +536,8 @@ public class Project extends AbstractUIPage {
 
     while (persIt.hasNext()) {
 
-      nextPersonnelMapObj = persIt.next();
-      if (nextPersonnelMapObj == null) continue;
-      nextPersonnelMap = (OrderedMap)nextPersonnelMapObj;
-      if (nextPersonnelMap.isEmpty()) continue;
+      nextPersonnelMap = (OrderedMap)persIt.next();
+      if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
 
       PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
           DataPackageWizardInterface.PARTY_PAGE);

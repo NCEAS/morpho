@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 20:02:17 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-03-26 00:19:54 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,9 +93,10 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *                  back when the Package Wizard has finished
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
+
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
                       "New Data Package Wizard");
-    responsiblePartyList.clear();
+
     PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   }
 
