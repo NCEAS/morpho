@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 04:03:39 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2003-09-26 17:09:21 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -345,26 +345,7 @@ public class WizardSettings {
     //0. init - get node array containing all <unit> elements - do only once!
     if (unitsNodeArray==null) {
     
-      NodeList unitsNodeList = null;
-      try {
-        unitsNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, 
-                                                          UNITS_XPATH);
-      } catch (Exception ioe) {
-        Log.debug(12,"Exception getting unitsNodeList: "+ioe);
-        ioe.printStackTrace();
-        return new String[] {"Exception!"};
-      }
-      if (unitsNodeList==null) {
-        Log.debug(1,"Fatal error - unitsNodeList == NULL");
-        return new String[] {"ERROR!"};
-      }    
-    
-      unitsNodeArray = XMLUtilities.getNodeListAsNodeArray(unitsNodeList);
-    
-      if (unitsNodeArray==null) {
-        Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
-        return new String[] {"ERROR!!"};
-      }    
+      unitsNodeArray = getNodeArrayWithXPath();
     }
 
 
@@ -373,18 +354,21 @@ public class WizardSettings {
     //-- on calling this method with a unitType: --
     //
     //1. for each unit element node, get list of attribute nodes;
-    //   - if attributes contains an attrib node called unitType, check if 
-    //     its value==requested unitType. 
-    //   - if so, get value of attrib called "name" and add this to results List  
-    //   
-    //2. Now results list has all units in it that have the requested unitType. 
-    //   - Repeat loop thru' unit element nodes...
-    //   - if results List already contains node attribute "name", continue
-    //   - else if attributes list has *NO* untiType attrib, but *HAS* a parentSI 
-    //     attrib, check if resultsList contains parentSI. If so, get value of 
-    //     attrib called "name" and add this to results List
+    //   - if attributes contains an attrib node called unitType {
     //
-  
+    //        if unitType value==requested unitType add to unitsList 
+    //    } else 
+    //        add to remainderList
+    //    }
+    //
+    //2. for each unit element in remainderList, 
+    //   - if attributes contains an attrib node called parentSI {
+    //
+    //        if unitsList.contains(parentSI value), add to resultsList
+    //    } 
+    //
+    //3. finally, add unitsList to resultsList, make into array, sort and return
+
   
   
   
@@ -445,6 +429,30 @@ public class WizardSettings {
     return returnArray;
   }
   
+
+
+  private Node[] getNodeArrayWithXPath(Node rootNode, String xpath) {
+    
+    NodeList nodeList = null;
+    try {
+      nodeList = XMLUtilities.getNodeListWithXPath(rootNode, xpath);
+    } catch (Exception ioe) {
+      Log.debug(12,"Exception getting unitsNodeList: "+ioe);
+      ioe.printStackTrace();
+      return new String[] {"Exception!"};
+    }
+    if (unitsNodeList==null) {
+      Log.debug(1,"Fatal error - unitsNodeList == NULL");
+      return new String[] {"ERROR!"};
+    }    
+  
+    unitsNodeArray = XMLUtilities.getNodeListAsNodeArray(unitsNodeList);
+  
+    if (unitsNodeArray==null) {
+      Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
+      return new String[] {"ERROR!!"};
+    }    
+  }
   
   /**
    * returns true if the String can be parsed as a float
