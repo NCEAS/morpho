@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-01 00:20:23 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2002-10-01 23:29:04 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -395,7 +395,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   /**
    * Get the version number. This method is for OpenPrevisouVrsionCommand
    */
-  public int getVersion()
+  public int getPreviousVersions()
   {
     return vers;
   }
@@ -585,10 +585,15 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    
       docid = (String)rowV.elementAt(6);
       selectedId = docid;
+      Log.debug(30, "selectedId is: "+docid);
       localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
       metacatLoc = ((Boolean)rowV.elementAt(10)).booleanValue();
-      Log.debug(30, "selectedId is: "+docid);
+      packageName = getIdWithoutVersion(selectedId);
+      Log.debug(30, "the package name is: "+packageName);
+      vers = getNumberOfPrevVersions(selectedId);
+      Log.debug(30, "the number of previous version is: "+vers);
       
+    
       // Fire state change event only in morpho frame
       if (dialog == null)
       {
@@ -616,8 +621,8 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
                       StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED));
         }
         
-        int versions = getNumberOfPrevVersions();
-        if (versions > 0)
+       
+        if (vers > 0)
         {
             // mutipleversion package
             monitor.notifyStateChange(
@@ -656,8 +661,6 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     {
       if(e.isPopupTrigger() || trigger) 
       {     
-        vers = getNumberOfPrevVersions();
-        packageName = getIdWithoutVersion();
         if (vers>0) {
           openPreviousVersion.setEnabled(true);
         }
@@ -677,25 +680,34 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         
       }
     }
-    
-    private int getNumberOfPrevVersions() {
+ 
+  }	
+  
+  /**
+   * Given a docid, caculate the number of its previous versions
+   * @param docId,  docId need to caculate previouse version
+   */
+  public static int getNumberOfPrevVersions(String docId) 
+  {
       int prevVersions = 0;
-      int iii = docid.lastIndexOf(".");
-      String ver = docid.substring(iii+1,docid.length());
+      int iii = docId.lastIndexOf(".");
+      String ver = docId.substring(iii+1,docId.length());
       prevVersions = (new Integer(ver)).intValue();
       prevVersions = prevVersions - 1;
       return prevVersions;
-    }
-    
-    private String getIdWithoutVersion() {
+  }
+  
+  /**
+   * Given a docid, return the string withoutversion
+   * @param docId,  docId need to be trimed version
+   */
+  public static String getIdWithoutVersion(String docId) 
+  {
       int prevVersions = 0;
-      int iii = docid.lastIndexOf(".");
-      String ver = docid.substring(0,iii);
+      int iii = docId.lastIndexOf(".");
+      String ver = docId.substring(0,iii);
       return ver;
-    }
+  }
     
-  }	
-
- 
   
 }
