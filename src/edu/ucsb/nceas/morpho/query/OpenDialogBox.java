@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-26 00:48:23 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-08-27 00:03:36 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,9 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.util.*;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -43,7 +45,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.io.*;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Date;
@@ -215,6 +216,24 @@ public class OpenDialogBox extends JDialog
   }//getParent
  
   /**
+   * Method to get the parent morphoFrame of dialog
+   */
+  public ResultPanel getResultPanel()
+  {
+    return ownerPanel;
+  }//getParent 
+  
+  /** 
+   * Method to set a resultpanel to the dialog
+   *
+   * @param resultPanel the ResultPanel need to be setted
+   */
+  public void setResultPanel(ResultPanel resultPanel)
+  {
+    ownerPanel = resultPanel;
+  }
+
+  /**
    * Listens for key events coming from the dialog.  responds to escape and 
    * enter buttons.  escape toggles the cancel button and enter toggles the
    * Search button
@@ -251,73 +270,5 @@ public class OpenDialogBox extends JDialog
    }// createOwnerPanel
   
   
-
-  
-  public static void main(String [] argus)
-  {
-    // Create the clientFramework object
-    File configurationFile = null;
-    File configDir = null;
-    String configFile = "config.xml";
-    configDir = new File(ConfigXML.getConfigDirectory());
-    
-    try {
-        
-        configurationFile = new File(configDir, configFile);
-        if(configurationFile.createNewFile() || configurationFile.length() == 0) 
-        {
-          FileOutputStream out = new FileOutputStream(configurationFile);
-          ClassLoader cl = Thread.currentThread().getContextClassLoader();
-          InputStream configInput = cl.getResourceAsStream(configFile);
-          if (configInput == null) {
-            Log.debug(1, "Could not find default configuration file.");
-            System.exit(0);
-          }
-          byte buf[] = new byte[4096];
-          int len = 0;
-          while ((len = configInput.read(buf, 0, 4096)) != -1) {
-            out.write(buf, 0, len);
-          }
-          configInput.close();
-          out.close();
-        }
-      } catch (IOException ioe) {
-        Log.debug(1, "Error copying config: " + ioe.getMessage());
-        Log.debug(1, ioe.getClass().getName());
-        ioe.printStackTrace(System.err);
-        System.exit(0);
-      }
-      
-      // Open the configuration file
-      //ConfigXML config = new ConfigXML(configFile);
-      ConfigXML config = null;
-      try
-      {
-        config = new ConfigXML(configurationFile.getAbsolutePath());
-      }
-      catch (FileNotFoundException e)
-      {
-        e.printStackTrace(System.err);
-      }
-      // Create a new instance of our application's frame
-      Morpho morpho = new Morpho(config);
-      String profileDir = ConfigXML.getConfigDirectory() + File.separator +
-                                     config.get("profile_directory", 0);
-      String currentProfile = config.get("current_profile", 0);
-      String profileName = profileDir + File.separator + currentProfile + 
-                        File.separator + currentProfile + ".xml";
-      ConfigXML profile = null;
-      try
-      {
-        profile = new ConfigXML(profileName);
-      }
-      catch (FileNotFoundException e)
-      {
-        e.printStackTrace(System.err);
-      }
-      morpho.setProfile(profile);
-      //OpenDialogBox open = new OpenDialogBox(clf);
-      //open.setVisible(true);
-  }
  
 }
