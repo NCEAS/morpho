@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-29 05:08:41 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2002-10-01 00:21:45 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,7 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
 
 
 /*
@@ -91,7 +92,7 @@ import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
  * Also has ability to Cut/Copy/Paste selections from the table.
  */
 public class DataViewer extends javax.swing.JPanel 
-                        implements EditingCompleteListener
+            implements EditingCompleteListener, StoreStateChangeEvent
 {
   
     
@@ -241,6 +242,9 @@ public class DataViewer extends javax.swing.JPanel
 	 */
   String entityDescription = "";
   
+  // Vector to store stateChange event
+  private Vector storedStateChangeEventlist = new Vector();
+  
   TableCutAction tcuta;
   TableCopyAction tca;
   TablePasteAction tpa;
@@ -311,7 +315,7 @@ public class DataViewer extends javax.swing.JPanel
 //    setSize(755,483);
 		setVisible(false);
 		DataViewerPanel.setLayout(new BorderLayout(0,0));
-		add(DataViewerPanel);
+		//add(DataViewerPanel);
 		TablePanel.setLayout(new BorderLayout(0,0));
 		DataViewerPanel.add(BorderLayout.CENTER, TablePanel);
 		TablePanel.add(BorderLayout.CENTER, DataScrollPanel);
@@ -787,21 +791,28 @@ public class DataViewer extends javax.swing.JPanel
           JLabel imagelabel = new JLabel(icon);
           DataScrollPanel.getViewport().removeAll();
           DataScrollPanel.getViewport().add(imagelabel);
-          StateChangeMonitor.getInstance().notifyStateChange(
-                 new StateChangeEvent( 
-                 this, 
-                 StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
-         
+          /*StateChangeMonitor.getInstance().notifyStateChange(
+               new StateChangeEvent( 
+               DataViewerPanel, 
+               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
+         // Store this event
+         storingStateChangeEvent( new StateChangeEvent( 
+               DataViewerPanel, 
+               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+   
         }
         else if (text_flag) {
           // try building a table
           if ((column_labels!=null)&&(column_labels.size()>0)) {
             if ((field_delimiter.trim().length()>0)) {
               buildTable();
-              StateChangeMonitor.getInstance().notifyStateChange(
+              /*StateChangeMonitor.getInstance().notifyStateChange(
                    new StateChangeEvent( 
-                   this, 
-                   StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
+                   DataViewerPanel, 
+                  StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
+              storingStateChangeEvent( new StateChangeEvent( 
+                    DataViewerPanel,
+                    StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
               
               /*tcuta.setSource(table);
               tca.setSource(table);
@@ -813,19 +824,25 @@ public class DataViewer extends javax.swing.JPanel
               numHeaderLines = "0";
               field_delimiter = ",";
               buildTable();
-              StateChangeMonitor.getInstance().notifyStateChange(
+              /*StateChangeMonitor.getInstance().notifyStateChange(
                   new StateChangeEvent( 
-                  this, 
-                  StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
+                  DataViewerPanel, 
+                  StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
+              storingStateChangeEvent( new StateChangeEvent( 
+                    DataViewerPanel,
+                    StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
               
               //MouseListener popupListener = new PopupListener();
               //table.addMouseListener(popupListener);              
             }
             else {
               buildTextDisplay();
-              StateChangeMonitor.getInstance().notifyStateChange(
+              /*StateChangeMonitor.getInstance().notifyStateChange(
                  new StateChangeEvent( 
-                 this, 
+                 DataViewerPanel, 
+               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
+              storingStateChangeEvent( new StateChangeEvent(
+                 DataViewerPanel,
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
                 
             }
@@ -835,9 +852,12 @@ public class DataViewer extends javax.swing.JPanel
           //Log.debug(9, "Unable to display data!");
           // Couldn't show data view
           showDataView = false;
-          StateChangeMonitor.getInstance().notifyStateChange(
+          /*StateChangeMonitor.getInstance().notifyStateChange(
                  new StateChangeEvent( 
-                 this, 
+                 DataViewerPanel, 
+               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
+          storingStateChangeEvent( new StateChangeEvent(
+                 DataViewerPanel,
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
         
         }
@@ -1496,7 +1516,44 @@ public class DataViewer extends javax.swing.JPanel
   { //do nothing
   }
 
+   /**
+   * Method implements form StoreStateChangeEvent
+   * This method will be called to store a event
+   *
+   * @param event  the state change event need to be stored
+   */
+  public void storingStateChangeEvent(StateChangeEvent event)
+  {
+    if (storedStateChangeEventlist != null)
+    {
+      storedStateChangeEventlist.add(event);
+    }
+  }
   
+    
+  /**
+   * Get the  stored state change event.
+   */
+  public Vector getStoredStateChangeEvent()
+  {
+    return storedStateChangeEventlist;
+  }
+  
+  /**
+   * Broadcast the stored StateChangeEvent
+   */
+  public void broadcastStoredStateChangeEvent()
+  {
+    if (storedStateChangeEventlist != null)
+    {
+      for ( int i = 0; i< storedStateChangeEventlist.size(); i++)
+      {
+        StateChangeEvent event = 
+                (StateChangeEvent) storedStateChangeEventlist.elementAt(i);
+        (StateChangeMonitor.getInstance()).notifyStateChange(event);
+      }//for
+    }//if
+  }
   
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
