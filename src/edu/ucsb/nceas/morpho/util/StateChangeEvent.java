@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-17 18:51:06 $'
- * '$Revision: 1.11 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-01-29 18:43:48 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,6 +223,16 @@ public class StateChangeEvent extends ChangeEvent
     public static String CLIPBOARD_HAS_NO_DATA_TO_PASTE
         = "clipboardHasNoDataToPaste";
     
+    /**
+     *  Public constant to denote that the DOM Editor has finished the current
+     *  editing task
+     */
+    public static String DOM_EDITOR_FINISHED_EDITING
+        = "domEditorFinishedEditing";
+    
+    
+    
+        
 /////////////////////////////////////////////s/////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////// 
 
