@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-10 21:16:20 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-10 21:43:26 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,16 +149,34 @@ public class FileSystemDataStore implements DataStoreInterface
   {
     String filename = args[0];
     String filename2 = args[1];
-    try
+    String action = args[2];
+    if(action.equals("test"))
     {
-      ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
-      FileSystemDataStore fsds = new FileSystemDataStore(cf);
-      File newfile = fsds.openFile(filename);
-      fsds.saveFile(filename2, new FileReader(newfile));
+      try
+      {
+        ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
+        FileSystemDataStore fsds = new FileSystemDataStore(cf);
+        File newfile = fsds.openFile(filename);
+        fsds.saveFile(filename2, new FileReader(newfile));
+      }
+      catch(Exception e)
+      {
+        e.printStackTrace();
+      }
     }
-    catch(Exception e)
+    else if(action.equals("save"))
     {
-      e.printStackTrace();
+      try
+      {
+        ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
+        FileSystemDataStore fsds = new FileSystemDataStore(cf);
+        File newfile = new File(filename);
+        fsds.saveFile(filename2, new FileReader(newfile));
+      }
+      catch(Exception e)
+      {
+        e.printStackTrace();
+      }
     }
     System.out.println("done");
   }
