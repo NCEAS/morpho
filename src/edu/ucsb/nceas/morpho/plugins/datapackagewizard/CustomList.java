@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 23:41:10 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-05 22:29:54 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,7 +176,7 @@ public class CustomList extends JPanel {
     initList(colNames, displayRows, columnEditors);
     
     initButtons();
-    doEnablesDisables(0);
+    doEnablesDisables(-1);
   }
   
   private void initList(String[] colNames, int displayRows, 
@@ -235,9 +235,17 @@ public class CustomList extends JPanel {
         
           if (e.getValueIsAdjusting()) return;
           
-          ListSelectionModel lsModel = ((ListSelectionModel)(e.getSource()));
+//          ListSelectionModel lsModel = ((ListSelectionModel)(e.getSource()));
                 
-          doEnablesDisables(lsModel.getMaxSelectionIndex());
+          Log.debug(45,"ListSelectionListener::valueChanged():");
+          Log.debug(45,"      - ListSelectionEvent first index  = "+e.getFirstIndex());
+          Log.debug(45,"      - ListSelectionEvent last  index  = "+e.getLastIndex());
+          Log.debug(45,"      - getSelectedRowIndex  = "+getSelectedRowIndex());
+          
+//          Log.debug(45,"      - ListSelectionModel.getMaxSelectionIndex()  = "+lsModel.getMaxSelectionIndex());
+          
+//          doEnablesDisables(lsModel.getMaxSelectionIndex());
+          doEnablesDisables(getSelectedRowIndex());
         }
       });
       
@@ -551,10 +559,11 @@ public class CustomList extends JPanel {
    */
   public List getListOfRowLists() {
   
+    //maintain current selection:
+    int currentSelection = getSelectedRowIndex();
     if (table.getEditorComponent()!=null) {
       table.editingStopped(new ChangeEvent(table.getEditorComponent()));
     }
-    table.tableChanged(getTableModelEvent());
     return (List)(model.getDataVector());
   }
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 23:41:11 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-05 22:29:54 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,19 +148,21 @@ public class PartyCreator extends AbstractWizardPage{
   private void showEditPartyDialog() {
     
     List selRowList = creatorList.getSelectedRowList();
+    
     if (selRowList==null || selRowList.size() < 4) return;
     
     Object dialogObj = selRowList.get(3);
+    
     if (dialogObj==null || !(dialogObj instanceof PartyDialog)) return;
     PartyDialog editPartyDialog = (PartyDialog)dialogObj;
 
     editPartyDialog.resetBounds();
     editPartyDialog.setVisible(true);
     
-    if (partyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
+    if (editPartyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
     
-      List newRow = partyDialog.getSurrogate();
-      newRow.add(partyDialog);
+      List newRow = editPartyDialog.getSurrogate();
+      newRow.add(editPartyDialog);
       creatorList.replaceSelectedRow(newRow);
     }
   }
