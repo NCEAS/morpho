@@ -1,10 +1,11 @@
-#
-# script for launching morpho from windows systems
-#
-# '$RCSfile: morpho.bat,v $'
-# '$Author: brooke $'
-# '$Date: 2002-09-24 17:17:45 $'
-# '$Revision: 1.17 $'
+@echo off
+REM # 
+REM # script for launching morpho from windows systems
+REM #
+REM # '$RCSfile: morpho.bat,v $'
+REM # '$Author: brooke $'
+REM # '$Date: 2002-09-25 18:27:35 $'
+REM # '$Revision: 1.18 $'
 
 SET  XMLP=lib\xercesImpl.jar
 SET   API=lib\xml-apis.jar
@@ -21,4 +22,5 @@ SET   LAF=lib\kunststoff.jar
 
 SET CPATH=.;%XMLP%;%API%;%XALAN%;%DMC%;%CFG%;%JLF%;%HTP%;%ITS%;%JSE%;%JCE%;%JNE%;%LAF%
 
+echo CLASSPATH = %CPATH%
 java -Xmx512m -Xss1m -cp %CPATH% edu.ucsb.nceas.morpho.Morpho
