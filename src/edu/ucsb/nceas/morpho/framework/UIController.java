@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:01:04 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-22 16:34:51 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,15 +295,8 @@ public class UIController
     public void refreshWindows()
     {
         Enumeration windows = windowList.elements();
-        MorphoFrame tempFrame = null;
         while (windows.hasMoreElements()) {
-            tempFrame = (MorphoFrame)windows.nextElement();
-            tempFrame.validate();
-            if (tempFrame.equals(getCurrentActiveWindow())) {
-                tempFrame.setEnabled(true);
-            } else {
-                tempFrame.setEnabled(false);
-            }
+            ((MorphoFrame)windows.nextElement()).validate();
         }
     }
 
