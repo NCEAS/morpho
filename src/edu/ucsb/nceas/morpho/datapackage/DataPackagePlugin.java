@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-26 23:25:58 $'
- * '$Revision: 1.93 $'
+ *     '$Date: 2005-01-27 20:19:05 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -305,7 +305,7 @@ public class DataPackagePlugin
     GUIAction addTitleAbstractAction = new GUIAction(
         "Title & Abstract...",
         null, new AddTitleAbstractCommand());
-    addTitleAbstractAction.setToolTipText("Title & Abstract...");
+    addTitleAbstractAction.setToolTipText("Edit Title & Abstract...");
     addTitleAbstractAction.setMenuItemPosition(i);
     addTitleAbstractAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addTitleAbstractAction.setEnabledOnStateChange(
@@ -317,9 +317,9 @@ public class DataPackagePlugin
     controller.addGuiAction(addTitleAbstractAction);
 
     i++;
-    GUIAction addKeywordAction = new GUIAction("Keyword...",
+    GUIAction addKeywordAction = new GUIAction("Keywords...",
         null, new AddKeywordCommand());
-    addKeywordAction.setToolTipText("Keyword...");
+    addKeywordAction.setToolTipText("Add, edit or delete Keywords...");
     addKeywordAction.setMenuItemPosition(i);
     addKeywordAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addKeywordAction.setEnabledOnStateChange(
@@ -333,7 +333,7 @@ public class DataPackagePlugin
     i++;
     GUIAction addCreatorAction = new GUIAction("Creator...",
         null, new AddCreatorCommand());
-    addCreatorAction.setToolTipText("Creator...");
+    addCreatorAction.setToolTipText("Add, edit or delete Creators...");
     addCreatorAction.setMenuItemPosition(i);
     addCreatorAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addCreatorAction.setEnabledOnStateChange(
@@ -347,7 +347,7 @@ public class DataPackagePlugin
     i++;
     GUIAction addContactAction = new GUIAction("Contact...",
         null, new AddContactCommand());
-    addContactAction.setToolTipText("Contact...");
+    addContactAction.setToolTipText("Add, edit or delete Contacts...");
     addContactAction.setMenuItemPosition(i);
     addContactAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addContactAction.setEnabledOnStateChange(
@@ -359,9 +359,10 @@ public class DataPackagePlugin
     controller.addGuiAction(addContactAction);
 
     i++;
-    GUIAction addAdditionalPartyAction = new GUIAction("Additional Party...",
+    GUIAction addAdditionalPartyAction = new GUIAction("Associated Party...",
         null, new AddAdditionalPartyCommand());
-    addAdditionalPartyAction.setToolTipText("Additional Party...");
+    addAdditionalPartyAction.setToolTipText(
+        "Add, edit or delete Associated Parties...");
     addAdditionalPartyAction.setMenuItemPosition(i);
     addAdditionalPartyAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addAdditionalPartyAction.setEnabledOnStateChange(
@@ -376,7 +377,7 @@ public class DataPackagePlugin
     GUIAction addResearchProjectAction = new GUIAction(
         "Research Project...",
         null, new AddResearchProjectCommand());
-    addResearchProjectAction.setToolTipText("Research Project...");
+    addResearchProjectAction.setToolTipText("Edit Research Project details...");
     addResearchProjectAction.setMenuItemPosition(i);
     addResearchProjectAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addResearchProjectAction.setEnabledOnStateChange(
@@ -391,7 +392,7 @@ public class DataPackagePlugin
     GUIAction addUsageRightsAction = new GUIAction(
         "Usage Rights...",
         null, new AddUsageRightsCommand());
-    addUsageRightsAction.setToolTipText("Usage Rights...");
+    addUsageRightsAction.setToolTipText("Edit Usage Rights...");
     addUsageRightsAction.setMenuItemPosition(i);
     addUsageRightsAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addUsageRightsAction.setEnabledOnStateChange(
@@ -449,7 +450,7 @@ public class DataPackagePlugin
     GUIAction addMethodAction = new GUIAction(
         "Methods...",
         null, new AddMethodCommand());
-    addMethodAction.setToolTipText("Methods...");
+    addMethodAction.setToolTipText("Edit Methods...");
     addMethodAction.setMenuItemPosition(i);
     addMethodAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addMethodAction.setEnabledOnStateChange(
@@ -464,7 +465,7 @@ public class DataPackagePlugin
     GUIAction addAccessAction = new GUIAction(
         "Access Permissions...",
         null, new AddAccessCommand());
-    addAccessAction.setToolTipText("Access Permissions...");
+    addAccessAction.setToolTipText("Add, edit or delete Access Permissions...");
     addAccessAction.setMenuItemPosition(i);
     addAccessAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addAccessAction.setEnabledOnStateChange(
