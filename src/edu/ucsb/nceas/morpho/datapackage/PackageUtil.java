@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 21:06:01 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-09-24 16:41:24 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,28 @@ import com.arbortext.catalog.*;
  */
 public class PackageUtil
 {
+  
+  /**
+   * Takes in a vector of paths and searches for each of the paths until a node
+   * is found that matches the paths.  It returns the node of the first path 
+   * in the vector that it matches.  if none of the paths in the vector match
+   * it returns null
+   */
+  public static NodeList getPathContent(File f, Vector paths, 
+                                        ClientFramework framework)
+  {
+    for(int i=0; i<paths.size(); i++)
+    {
+      String s = (String)paths.elementAt(i);
+      NodeList nl = getPathContent(f, s, framework);
+      if(nl != null && nl.getLength() != 0)
+      {
+        return nl;
+      }
+    }
+    return null;
+  }
+  
   /**
    * gets the content of a tag in a given xml file with the given path
    * @param f the file to parse

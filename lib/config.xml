@@ -22,8 +22,10 @@
     <entityNumrecPath>//numberOfRecords</entityNumrecPath>
     <entityCaseSensPath>//caseSensitive</entityCaseSensPath>
     <entityOrientationPath>//orientation</entityOrientationPath>
-    <attributeNamePath>/eml-attribute/attribute/attributeName</attributeNamePath>
+    <attributeNamePath>//attributeName</attributeNamePath>
+    <attributeNamePath>//variable_name</attributeNamePath>
     <attributeNameNode>attributeName</attributeNameNode>
+    <attributeNameNode>variable_name</attributeNameNode>
   </entityEditorPaths>
   <packageEditorPaths>
     <datasetIdPath>/dataset/identifier</datasetIdPath>

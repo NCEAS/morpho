@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-09-21 20:27:13 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-09-24 16:41:23 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,13 +60,13 @@ public class EntityGUI extends javax.swing.JFrame
 {
   private static final String htmlBegin = "<html><p><font color=black>";
   private static final String htmlEnd = "</font></p></html>";
-  private String namePath;
-  private String descPath;
-  private String numrecPath;
-  private String caseSensPath;
-  private String orientationPath;
-  private String attributeNamePath;
-  private String attributeNameNode;
+  private Vector namePath;
+  private Vector descPath;
+  private Vector numrecPath;
+  private Vector caseSensPath;
+  private Vector orientationPath;
+  private Vector attributeNamePath;
+  private Vector attributeNameNode;
   
   private ClientFramework framework;
   private ConfigXML config;
@@ -101,13 +101,13 @@ public class EntityGUI extends javax.swing.JFrame
   {
     config = cf.getConfiguration();
     
-    namePath = config.get("entityNamePath", 0);
-    descPath = config.get("entityDescPath", 0);
-    numrecPath = config.get("entityNumrecPath", 0);
-    caseSensPath = config.get("entityCaseSensPath", 0);
-    orientationPath = config.get("entityOrientationPath", 0);
-    attributeNamePath = config.get("attributeNamePath", 0);
-    attributeNameNode = config.get("attirbuteNameNode", 0);
+    namePath = config.get("entityNamePath");
+    descPath = config.get("entityDescPath");
+    numrecPath = config.get("entityNumrecPath");
+    caseSensPath = config.get("entityCaseSensPath");
+    orientationPath = config.get("entityOrientationPath");
+    attributeNamePath = config.get("attributeNamePath");
+    attributeNameNode = config.get("attributeNameNode");
     
     this.parent = parent;
     this.location = location;
@@ -246,14 +246,33 @@ public class EntityGUI extends javax.swing.JFrame
         return;
       }
       
-      NodeList nl = PackageUtil.getPathContent(f, attributeNamePath, framework);
-      
-      for(int j=0; j<nl.getLength(); j++)
+      /*try
+      { //print out the file to be parsed
+        FileReader fr = new FileReader(f);
+        int c = fr.read();
+        while(c != -1)
+        {
+          System.out.print((char)c);
+          c = fr.read();
+        }
+          
+      }
+      catch(Exception e)
       {
-        Node n = nl.item(j);
-        String att = n.getFirstChild().getNodeValue();
-        attributes.addElement(att.trim());
-        attributeHash.put(att.trim(), id);
+        System.out.println("Error: " + e.getMessage());
+      }*/
+      
+      NodeList nl = PackageUtil.getPathContent(f, attributeNamePath, framework);
+     
+      if(nl != null)
+      {
+        for(int j=0; j<nl.getLength(); j++)
+        {
+          Node n = nl.item(j);
+          String att = n.getFirstChild().getNodeValue();
+          attributes.addElement(att.trim());
+          attributeHash.put(att.trim(), id);
+        }
       }
     }
     
@@ -770,7 +789,8 @@ public class EntityGUI extends javax.swing.JFrame
       }
       String s = PackageUtil.getStringFromFile(f);
       EditorInterface editor = PackageUtil.getEditor(framework);
-      editor.openEditor(s, id, location, attributeNameNode, selectedItem, this);
+      editor.openEditor(s, id, location, (String)attributeNameNode.elementAt(0), 
+                        selectedItem, this);
     }
   }
 }
