@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-02 22:01:46 $'
- * '$Revision: 1.109 $'
+ *     '$Date: 2004-04-02 22:27:25 $'
+ * '$Revision: 1.110 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -796,7 +796,6 @@ public class DataViewer extends javax.swing.JPanel
             }
             else if ((dataFile==null)||((dataFile.length()<1))) {
               numHeaderLines = "0";
-              field_delimiter = ",";
               buildTable();
               /*StateChangeMonitor.getInstance().notifyStateChange(
                   new StateChangeEvent(
