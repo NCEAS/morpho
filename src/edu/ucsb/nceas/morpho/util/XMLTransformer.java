@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 00:32:33 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-06 21:09:13 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ public class XMLTransformer extends DefaultHandler
     private final String SAX_PARSER_NAME = "org.apache.xerces.parsers.SAXParser";
     private final String CONFIG_KEY_LOCAL_CATALOG_PATH = "local_catalog_path";
     
-    private static XMLTransformer   instance;
+    private XMLTransformer   instance;
     private XMLReader        xmlReader;
     
     private EntityResolver          entityResolver;
@@ -99,10 +99,12 @@ public class XMLTransformer extends DefaultHandler
      */    
     public static XMLTransformer getInstance() 
     {
-        if (instance==null) {
-            instance=new XMLTransformer();
-        }
-        return instance;
+//        if (instance==null) {
+//            instance=new XMLTransformer();
+//        }
+//        return instance;
+        return new XMLTransformer();
+        
     }
     
     /**
@@ -139,55 +141,62 @@ public class XMLTransformer extends DefaultHandler
      *
      *  @throws IOException if there are problems reading either of the Readers
      */
-    public Reader transform(Reader xmlDocument, Reader xslStyleSheet)
+    public synchronized Reader transform(Reader xmlDocument, Reader xslStyleSheet)
                                                             throws IOException
     {
         validateInputParam(xmlDocument,   "XML document reader");
         validateInputParam(xslStyleSheet, "XSL stylesheet reader");
-Log.debug(50,"# # # transform called;  xmlDocument = "+xmlDocument);            
-Log.debug(50,"# # # transform called;  xslStyleSheet = "+xslStyleSheet);            
+Log.debug(50,"# # XMLTransformer # # transform called;  xmlDocument = "+xmlDocument);            
+Log.debug(50,"# # XMLTransformer # # transform called;  xslStyleSheet = "+xslStyleSheet);            
 
         PipedReader returnReader = new PipedReader();
         PipedWriter pipedWriter  = new PipedWriter();
         returnReader.connect(pipedWriter);
-Log.debug(50,"# # # pipedWriter = "+pipedWriter);            
+Log.debug(50,"# # XMLTransformer # # pipedWriter = "+pipedWriter);            
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = null;
         try {
             transformer 
                     = tFactory.newTransformer(new StreamSource(xslStyleSheet));
-Log.debug(50,"# # # transformer = "+transformer);            
+Log.debug(50,"# # XMLTransformer # # transformer = "+transformer);            
         } catch (TransformerConfigurationException e) {
             String msg 
                 = "XMLTransformer.transform(): getting Transformer instance. "
                     +"Nested TransformerConfigurationException="+e.getMessage();
+            e.printStackTrace();
             Log.debug(12, msg);
             pipedWriter.write(msg.toCharArray(),0,msg.length());
             e.printStackTrace(new PrintWriter(pipedWriter));
         }
 
-//      transformer.setOutputProperty(OutputKeys.METHOD , outputDocType);
-//      transformer.setParameter("qformat", qformat);
-
         try {
-Log.debug(50,"# # # doing transformer.transform...");            
+Log.debug(50,"# # XMLTransformer # # doing transformer.transform...");            
             transformer.transform(  getAsSaxSource(xmlDocument),
                                     new StreamResult(pipedWriter));
-Log.debug(50,"# # # ...DONE transformer.transform!");            
+Log.debug(50,"# # XMLTransformer # # DONE transformer.transform!");            
         } catch (TransformerException e) {
             String msg
                 = "XMLTransformer.transform(): Error transforming document."
                                 +" Nested TransformerException="+e.getMessage();
+            e.printStackTrace();
+            Log.debug(12, msg);
+            pipedWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(pipedWriter));
+        } catch (Exception e) {
+            String msg
+                = "XMLTransformer.transform(): Unrecognized Error transforming"
+                                +" document: "+e.getMessage();
+            e.printStackTrace();
             Log.debug(12, msg);
             pipedWriter.write(msg.toCharArray(),0,msg.length());
             e.printStackTrace(new PrintWriter(pipedWriter));
         } finally {
-Log.debug(50,"# # # ...finally!");            
+Log.debug(50,"# # XMLTransformer # # 'finally' block");            
             pipedWriter.flush();
             pipedWriter.close();
         }
-Log.debug(50,"# # # returnReader = "+returnReader);            
+Log.debug(50,"# # XMLTransformer # # returnReader = "+returnReader);            
         return returnReader;
     }
 
@@ -254,9 +263,17 @@ Log.debug(50,"# # # returnReader = "+returnReader);
     //  which isn't possible if we just use an InputSource
     private SAXSource getAsSaxSource(Reader xmlDocument) 
     {   
+Log.debug(50,"# # XMLTransformer # # ...getAsSaxSource recvd XML doc Reader: "+xmlDocument);            
+
         InputSource source = new InputSource(xmlDocument);
+Log.debug(50,"# # XMLTransformer # # ...getAsSaxSource created InputSource: "+source);            
+ 
         SAXSource saxSource = new SAXSource(source);
+Log.debug(50,"# # XMLTransformer # # ...getAsSaxSource created saxSource: "+saxSource);            
+
         saxSource.setXMLReader(this.xmlReader);
+Log.debug(50,"# # XMLTransformer # # ...getAsSaxSource did setXMLReader; result of GETXMLReader: "
+                                                      +saxSource.getXMLReader());            
         return saxSource;
     }
 

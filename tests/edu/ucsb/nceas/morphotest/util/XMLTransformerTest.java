@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 00:11:44 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-06 21:09:13 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ public class XMLTransformerTest extends TestCase
         
         System.out.println("testing with null XML reader..."); 
         try {
-            result = transformer.transform(null, XSL_TESTDOC);
+            result = transformer.transform(null, getXSL_testDoc());
         } catch (IOException e) {
             System.out.println("OK: testTransform() IOException: " 
                                                             + e.getMessage());
@@ -121,7 +121,7 @@ public class XMLTransformerTest extends TestCase
 
         System.out.println("testing with null XSL reader..."); 
         try {
-            result = transformer.transform(XML_TESTDOC, null);
+            result = transformer.transform(getXML_testDoc(), null);
         } catch (IOException e) {
             System.out.println("OK: testTransform() IOException: " 
                                                             + e.getMessage());
@@ -133,24 +133,26 @@ public class XMLTransformerTest extends TestCase
         testException = null;
         result = null;
 
-        System.out.println("testing with proper XML *and* XSL reader..."); 
-        try {
-            result = transformer.transform(XML_TESTDOC, XSL_TESTDOC);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Unexpected testTransform() IOException: " + e.getMessage());
-        }
-        assertNotNull(result);
-        try {
-            assertEquals(
-                    IOUtil.getAsStringBuffer(HTML_RESULTDOC,true).toString(),
+        for (int i=0;i<200 ;i++) {
+            System.out.println("test #"+i+" with proper XML *and* XSL reader..."); 
+            try {
+                result = transformer.transform(getXML_testDoc(), getXSL_testDoc());
+            } catch (IOException e) {
+                e.printStackTrace();
+                fail("Unexpected testTransform() IOException: " + e.getMessage());
+            }
+            assertNotNull(result);
+            try {
+                assertEquals(
+                    IOUtil.getAsStringBuffer(getHTML_resultDoc(),true).toString(),
                     IOUtil.getAsStringBuffer(result,true).toString() );
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("IOException trying to read returned Readers "+e);
+            } catch (IOException e) {
+                e.printStackTrace();
+                fail("IOException trying to read returned Readers "+e);
+            }
+            testException = null;
+            result = null;
         }
-        testException = null;
-        result = null;
     }
 
 
@@ -161,64 +163,70 @@ public class XMLTransformerTest extends TestCase
     }
 
 
-    private static final Reader XML_TESTDOC = new StringReader(
-        "<?xml version=\"1.0\"?>"
-        + "<!DOCTYPE eml-attribute "
-        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-        + "<eml-attribute>"
-        + "<identifier>TESTDOC_1</identifier>"
-        + "<attribute>"
-        + "  <attributeName>field 1</attributeName>"
-        + "  <attributeLabel>label for attribute 1</attributeLabel>"
-        + "  <attributeDefinition>none whatsoever</attributeDefinition>"
-        + "  <unit>cm</unit>"
-        + "  <dataType>integer</dataType>"
-        + "  <attributeDomain>"
-        + "      <numericDomain>"
-        + "        <minimum>2</minimum>"
-        + "        <maximum>222</maximum>"
-        + "      </numericDomain>"
-        + "  </attributeDomain>"
-        + "  <missingValueCode>~</missingValueCode>"
-        + "  <precision>5</precision>"
-        + "</attribute>"
-        + "</eml-attribute>");
+    private Reader getXML_testDoc()  {
+        return new StringReader(
+              "<?xml version=\"1.0\"?>"
+            + "<!DOCTYPE eml-attribute "
+            + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+            + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+            + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+            + "<eml-attribute>"
+            + "<identifier>TESTDOC_1</identifier>"
+            + "<attribute>"
+            + "  <attributeName>field 1</attributeName>"
+            + "  <attributeLabel>label for attribute 1</attributeLabel>"
+            + "  <attributeDefinition>none whatsoever</attributeDefinition>"
+            + "  <unit>cm</unit>"
+            + "  <dataType>integer</dataType>"
+            + "  <attributeDomain>"
+            + "      <numericDomain>"
+            + "        <minimum>2</minimum>"
+            + "        <maximum>222</maximum>"
+            + "      </numericDomain>"
+            + "  </attributeDomain>"
+            + "  <missingValueCode>~</missingValueCode>"
+            + "  <precision>5</precision>"
+            + "</attribute>"
+            + "</eml-attribute>");
+    }
+    
+    private  Reader getXSL_testDoc() {
+        return new StringReader(
+             "<?xml version=\"1.0\"?>"
+            +"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">"
+            +"  <xsl:output method=\"html\" encoding=\"iso-8859-1\"/>"
+            +"  <xsl:template match=\"/\">"
+            +"    <html>"
+            +"      <head>"
+            +"      </head>"
+            +"      <body>"
+            +"        <center>"
+            +"          <h1>Attribute structure description</h1>"
+            +"          <h3>Ecological Metadata Language</h3>"
+            +"        </center>"
+            +"          <xsl:value-of select=\"eml-attribute/identifier\"/>"
+            +"      </body>"
+            +"    </html>"
+            +"  </xsl:template>"
+            +"</xsl:stylesheet>");
+    }
+    
 
-    
-    private static final Reader XSL_TESTDOC = new StringReader(
-        "<?xml version=\"1.0\"?>"
-        +"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">"
-        +"  <xsl:output method=\"html\" encoding=\"iso-8859-1\"/>"
-        +"  <xsl:template match=\"/\">"
-        +"    <html>"
-        +"      <head>"
-        +"      </head>"
-        +"      <body>"
-        +"        <center>"
-        +"          <h1>Attribute structure description</h1>"
-        +"          <h3>Ecological Metadata Language</h3>"
-        +"        </center>"
-        +"          <xsl:value-of select=\"eml-attribute/identifier\"/>"
-        +"      </body>"
-        +"    </html>"
-        +"  </xsl:template>"
-        +"</xsl:stylesheet>");
-    
-    private static final Reader HTML_RESULTDOC = new StringReader(
-         "<html>\r\n"
-        +"<head>\r\n"
-        +"<META http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\r\n"
-        +"</head>\r\n"
-        +"<body>\r\n"
-        +"<center>\r\n"
-        +"<h1>Attribute structure description</h1>\r\n"
-        +"<h3>Ecological Metadata Language</h3>\r\n"
-        +"</center>"
-        +"TESTDOC_1"
-        +"</body>\r\n"
-        +"</html>\r\n");
+    private static final Reader getHTML_resultDoc() {
+        return new StringReader(
+             "<html>\r\n"
+            +"<head>\r\n"
+            +"<META http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\r\n"
+            +"</head>\r\n"
+            +"<body>\r\n"
+            +"<center>\r\n"
+            +"<h1>Attribute structure description</h1>\r\n"
+            +"<h3>Ecological Metadata Language</h3>\r\n"
+            +"</center>"
+            +"TESTDOC_1"
+            +"</body>\r\n"
+            +"</html>\r\n");
+    }
 }
 
 

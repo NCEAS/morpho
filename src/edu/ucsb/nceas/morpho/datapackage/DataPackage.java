@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 17:58:21 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2002-09-06 21:09:13 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ import java.util.zip.ZipOutputStream;
 import java.io.File;
 import java.io.Reader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.StringWriter;
 import java.io.StringReader;
 import java.io.BufferedReader;
@@ -1244,13 +1245,19 @@ public class DataPackage implements XMLFactoryInterface
       }
       
       //create a html file from all of the metadata
-      StringBuffer htmldoc = null;
-
-      ClassLoader classLoader = this.getClass().getClassLoader();
+      StringBuffer[] htmldoc        = new StringBuffer[fileV.size()];
+      ClassLoader   classLoader     = this.getClass().getClassLoader();
+      String        stylesheet      = config.get("genericStylesheet", 0);
+      Reader        xmlInputReader  = null;
+      Reader        xslInputReader  = null;
+      Reader        result          = null;
+      StringBuffer  tempPathBuff    = new StringBuffer();
+      
       for(int i=0; i<fileV.size(); i++)
       {
       
-Log.debug(50,"* * DataPackage: LOOP "+i+"...");            
+Log.debug(50,"* * DataPackage: LOOP "+i+"...");       
+     
         FileInputStream fis = new FileInputStream((File)fileV.elementAt(i));
         String header = "";
         for(int j=0; j<10; j++)
@@ -1258,24 +1265,21 @@ Log.debug(50,"* * DataPackage: LOOP "+i+"...");
           header += (char)fis.read();
         }
         fis.close();
+        
 Log.debug(50,"* * DataPackage: header = "+header);            
 
         if (header.indexOf("<?xml") != -1)
         { //this is an xml file so we can transform it.
           //transform each file individually then concatenate all of the 
           //transformations .
+          
 Log.debug(50,"* * DataPackage: doing xml transform");   
          
-            Reader xmlInputReader = new FileReader((File)fileV.elementAt(i));
-
-            String stylesheet = config.get("genericStylesheet", 0);
+            xmlInputReader = new FileReader((File)fileV.elementAt(i));
             
-//            BufferedReader sis = new BufferedReader(new InputStreamReader(
-//                                        classLoader.getResourceAsStream(stylesheet)));
-            Reader xslInputReader 
-                    = new InputStreamReader(
-                                  classLoader.getResourceAsStream(stylesheet));
-            Reader result = null;
+            xslInputReader = new InputStreamReader(
+                                   classLoader.getResourceAsStream(stylesheet));
+
             XMLTransformer transformer = XMLTransformer.getInstance();
             
 Log.debug(50,"* * DataPackage: File ="+((File)fileV.elementAt(i)).getAbsolutePath());            
@@ -1285,24 +1289,26 @@ Log.debug(50,"* * DataPackage: xslInputReader ="+xslInputReader);
 Log.debug(50,"* * DataPackage: transformer ="+transformer); 
            
             try {
-Log.debug(50,"* * DataPackage: GETTING result...");
-Log.debug(50,"* * DataPackage: XML INPUT WAS: ");
-Log.debug(50,"* *             "+IOUtil.getAsStringBuffer(xmlInputReader,false));
-Log.debug(50,"\n* * DataPackage: XSL INPUT WAS: ");
-Log.debug(50,"* *             "+IOUtil.getAsStringBuffer(xslInputReader,false));
             
+Log.debug(50,"* * DataPackage: GETTING result...");
+
               result = transformer.transform(xmlInputReader, xslInputReader);
+              
 Log.debug(50,"* * DataPackage: GOT result: "+result);            
             } catch (IOException e) {
               e.printStackTrace();
               Log.debug(9,"Unexpected Error Styling Document: "+e.getMessage());
               e.fillInStackTrace();
               throw e;
+            } finally {
+                xmlInputReader.close();
+                xslInputReader.close();
             }
 
 Log.debug(50,"* * DataPackage: GETTING HTML DOC...");            
             try {
-              htmldoc = IOUtil.getAsStringBuffer(result, true);
+              htmldoc[i] = IOUtil.getAsStringBuffer(result, true); 
+              //"true" closes Reader after reading
             } catch (IOException e) {
               e.printStackTrace();
               Log.debug(9,"Unexpected Error Reading Styled Document: "
@@ -1311,59 +1317,23 @@ Log.debug(50,"* * DataPackage: GETTING HTML DOC...");
               throw e;
             }
             
-Log.debug(50,"* * DataPackage: HTML DOC = "+htmldoc);            
+Log.debug(50,"* * DataPackage: * * * * * * * * * * * * * * * * * * * * * *");            
+Log.debug(50,"* * DataPackage: HTML DOC "+i+" = \n"+htmldoc[i]);            
 Log.debug(50,"* * DataPackage: * * * * * * * * * * * * * * * * * * * * * *");            
             
-//          CatalogEntityResolver cer = new CatalogEntityResolver();
-//          try 
-//          {
-//            Catalog myCatalog = new Catalog();
-//            myCatalog.loadSystemCatalogs();
-//            String catalogPath = //config.getConfigDirectory() + File.separator +
-//                                             config.get("local_catalog_path", 0);
-//            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-//            URL catalogURL = cl.getResource(catalogPath);
-//        
-//            myCatalog.parseCatalog(catalogURL.toString());
-//            cer.setCatalog(myCatalog);
-//          } 
-//          catch (Exception e) 
-//          {
-//            Log.debug(9, "Problem creating Catalog in " +
-//                         "DataPackage.export" + 
-//                         e.toString());
-//          }
-          
-//          htmldoc.append("<h2>");
-//          htmldoc.append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
-//          htmldoc.append("</h2>");
-//          //do the actual transform
-//          // It need new api from matthew
-//          XSLTProcessor processor = XSLTProcessorFactory.getProcessor();
-//          XMLParserLiaison pl = processor.getXMLProcessorLiaison();
-//          pl.setEntityResolver(cer);
-//          fis = new FileInputStream((File)fileV.elementAt(i));
-//          XSLTInputSource xis = new XSLTInputSource(fis);
-//          StringWriter docstring = new StringWriter();
-//          String stylesheet = config.get("genericStylesheet", 0);
-//          ClassLoader cl = this.getClass().getClassLoader();
-//          BufferedReader sis = new BufferedReader(new InputStreamReader(
-//                                            cl.getResourceAsStream(stylesheet)));
-//                                            
-//          processor.process(xis,                       //xml ("XSLTInputSource")
-//                            new XSLTInputSource(sis),           //the stylesheet
-//                            new XSLTResultTarget(docstring));   //output writer
-//          htmldoc.append(docstring.toString());
-
         } else { 
           //this is a data file so we should link to it in the html
 Log.debug(50,"* * DataPackage: doing data file");            
           
-          htmldoc = new StringBuffer("<html><head></head><body>");
-          Vector triplesV = triples.getCollection();
-          htmldoc.append("<a href=\"");
-          String dataFileName = null;
           String datafileid = getIdFromPath(((File)fileV.elementAt(i)).toString());
+          htmldoc[i] = new StringBuffer("<html><head></head><body>");
+          htmldoc[i].append("<h2>Data File: ");
+          htmldoc[i].append(datafileid);
+          htmldoc[i].append("</h2>");
+
+          Vector triplesV = triples.getCollection();
+          htmldoc[i].append("<a href=\"");
+          String dataFileName = null;
           
           for(int j=0; j<triplesV.size(); j++) {
             Triple triple = (Triple)triplesV.elementAt(j);
@@ -1375,37 +1345,38 @@ Log.debug(50,"* * DataPackage: doing data file");
                 int lparenindex = relationship.indexOf("(");
                 dataFileName = relationship.substring(lparenindex + 1, 
                                                       relationship.length() - 1);
-                htmldoc.append("./metadata/").append(datafileid).append("\">");
-                htmldoc.append("Data File: ");
-                htmldoc.append(dataFileName).append("</a><br>");
+                htmldoc[i].append("./metadata/").append(datafileid).append("\">");
+                htmldoc[i].append("Data File: ");
+                htmldoc[i].append(dataFileName).append("</a><br>");
               }
             }
-            htmldoc.append("<br><hr><br>");
+            htmldoc[i].append("<br><hr><br>");
           }
-          htmldoc.append("</body></html>");      
-        }
-      } //end if data or xml file
-Log.debug(50,"* * DataPackage: getting htmlfile; packagePath = "+packagePath);            
-      
-      File htmlfile = new File(packagePath + "/metadata.html");
-Log.debug(50,"* * DataPackage: htmlfile = "+htmlfile.getAbsolutePath());            
-      FileOutputStream fos = new FileOutputStream(htmlfile);
-      BufferedOutputStream bfos = new BufferedOutputStream(fos);
-      StringReader sr = new StringReader(htmldoc.toString());
-      int c = sr.read();
-      while(c != -1)
-      {
-        bfos.write(c);
-        c = sr.read();
-      }
-      bfos.flush();
-      bfos.close();
+          htmldoc[i].append("</body></html>");      
+        }   //end if...else for xml or data file
+        
+        tempPathBuff.delete(0,tempPathBuff.length());
+        
+        tempPathBuff.append(packagePath);
+        tempPathBuff.append("/metadata_");
+        tempPathBuff.append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
+        tempPathBuff.append(".html");
+        
+        saveToFile(htmldoc[i], new File(tempPathBuff.toString()));
+      }     //end of file vector loop      
     }
     catch(Exception e)
     {
       System.out.println("Error in DataPackage.export(): " + e.getMessage());
       e.printStackTrace();
     }
+  }
+
+  //save the StringBuffer to the File path specified
+  private void saveToFile(StringBuffer buff, File outputFile) throws IOException
+  {
+    FileWriter fileWriter = new FileWriter(outputFile);
+    IOUtil.writeToWriter(buff, fileWriter, true);
   }
   
   /**
