@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 04:57:02 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-03-30 18:39:21 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,20 +125,17 @@ public class ReferencesHandler {
    *   currently in the DataPackage that point to subtree root-nodes
    *   corresponding to the genericName used to instantiate this
    *   ReferencesHandler, and String surrogates for those referenced subtrees.
-   *   An empty array is returned if the passed dataPkg parameter is null
+   *   An empty List is returned if the passed dataPkg parameter is null
    */
-  private ReferenceMapping[] getReferences(AbstractDataPackage dataPkg, int extraSlots) {
+  private List getReferences(AbstractDataPackage dataPkg) {
 
-    if (dataPkg==null) return new ReferenceMapping[0];
+    if (dataPkg==null) return new ArrayList(0);
 
     List idsList = dataPkg.getIDsForNodesWithName(this.genericName);
 
     Iterator idIt = idsList.iterator();
 
-    ReferenceMapping[] returnArray
-        = new ReferenceMapping[extraSlots + idsList.size()];
-
-    int index = 0;
+    List returnVals = new ArrayList();
 
     while (idIt.hasNext()) {
 
@@ -149,10 +146,9 @@ public class ReferencesHandler {
 
       if (nextSubtree == null)continue;
 
-      returnArray[index++] = new ReferenceMapping(nextID,
-                                                  getSurrogate(nextSubtree));
+      returnVals.add(new ReferenceMapping(nextID, getSurrogate(nextSubtree)));
     }
-    return returnArray;
+    return returnVals;
   }
 
 
@@ -189,7 +185,12 @@ public class ReferencesHandler {
     final ReferencesHandler   instance = this;
     final AbstractDataPackage finalPkg = dataPkg;
     final Frame finalParent = parent;
+    final JComboBox finalDropdown = dropdown;
 
+    // listens for selection events. List consistes of an entry at the top which
+    // is the default "none selected" entry (probably just a blank entry), then
+    // the second list item is the one that launches the CopyExternalRefsDialog.
+    // The remaining list items are the available IDs in the current datapackage
     dropdown.addItemListener(new ItemListener() {
 
       public void itemStateChanged(ItemEvent e) {
@@ -202,21 +203,33 @@ public class ReferencesHandler {
         switch (source.getSelectedIndex()) {
 
 
-          case 0: //default (blank) item selected
+          case 0: //top item ("none selected" - blank) selected
+            Log.debug(45, "ReferenceHandler ItemListener - top item "
+                      + "('none selected' - blank) selected ");
             event = new ReferenceSelectionEvent(
                 null, ReferenceSelectionEvent.UNDEFINED, null);
             break;
 
-          case 1: //ref selected from external package
+          case 1: //second item (copy from external package) selected
+            Log.debug(45, "ReferenceHandler ItemListener - second item "
+                      + "(copy from external package) selected");
             event = instance.showCopyExternalRefsDialog(finalPkg, finalParent);
             break;
 
-          default: //ref selected from current pkg
+          default: //third or subsequent item selected (ref from current pkg)
             ReferenceMapping refMap = (ReferenceMapping)(source.getSelectedItem());
-
-            OrderedMap map
-                = XMLUtilities.getDOMTreeAsXPathMap(
-                    finalPkg.getSubtreeAtReference(refMap.getID()));
+            Log.debug(45, "ReferenceHandler ItemListener - third or subsequent "
+                      + "item selected (ref from current pkg); refID = "+refMap.getID());
+            Node subtree = finalPkg.getSubtreeAtReference(refMap.getID());
+            if (subtree == null) {
+              Log.debug(15,
+                        "ReferenceHandler ItemListener - no subtree found with refID: "
+                        + refMap.getID());
+              //list contained an incorrect entry - so refresh list...
+              updateJComboBox(finalPkg, finalDropdown);
+              return;
+            }
+            OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(subtree);
 
             event = new ReferenceSelectionEvent(
               refMap.getID(), ReferenceSelectionEvent.CURRENT_DATA_PACKAGE, map);
@@ -239,54 +252,35 @@ public class ReferencesHandler {
    */
   public void updateJComboBox(AbstractDataPackage dataPkg, JComboBox dropdown) {
 
-//    ReferenceMapping[] refMappings = this.getReferences(dataPkg, 2);
+    List refMapList = this.getReferences(dataPkg);
 
-    ReferenceMapping[] refMappings = this.getReferences(dataPkg, 6);
+    refMapList.add(new ReferenceMapping("", ""));
+    refMapList.add(new ReferenceMapping(" ", " "));
 
+    Object[] array = refMapList.toArray();
 
-
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    refMappings[refMappings.length - 3] = (new ReferenceMapping("2blanks",     "  "));
-    refMappings[refMappings.length - 4] = (new ReferenceMapping("emptystring", ""));
-    refMappings[refMappings.length - 5] = (new ReferenceMapping("4blanks",     "    "));
-    refMappings[refMappings.length - 6] = (new ReferenceMapping("3blanks",     "   "));
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-
-
-
-    refMappings[refMappings.length - 2] = new ReferenceMapping("BBAA", "BBAA");
-    refMappings[refMappings.length - 1] = new ReferenceMapping("AAAA", "AAAA");
-
-Log.debug(1, "BEFORE SORT: array = "+dumpArray(refMappings));
-    Arrays.sort(refMappings, new Comparator() {
+    Arrays.sort(array, new Comparator() {
 
       public int compare(Object o1, Object o2) {
-
         String s1 = o1.toString();
         String s2 = o2.toString();
-
         return (s1.compareTo(s2));
       }
     });
-Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
+
+    int refMappingsLength = 2 + array.length;
+    ReferenceMapping[] refMappings = new ReferenceMapping[refMappingsLength];
 
     refMappings[0] = new ReferenceMapping(DEFAULT_DROPDOWN_ITEM + "0",
                                           DEFAULT_DROPDOWN_ITEM);
     refMappings[1] = new ReferenceMapping(EXT_DIALOG_DROPDOWN_ITEM + "1",
                                           EXT_DIALOG_DROPDOWN_ITEM);
+
+    for (int i=0; i < array.length; i++) {
+
+      if (i > refMappingsLength - 2) break;
+      refMappings[i + 2] = (ReferenceMapping)array[i];
+    }
 
     dropdown.setModel(new DefaultComboBoxModel(refMappings));
     dropdown.invalidate();
@@ -429,9 +423,10 @@ Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
 
         try {
           textNode = XMLUtilities.getTextNodeWithXPath(subtreeRoot,
-                                                       baseXPath + nextEntry);
+                                                      baseXPath + nextEntry);
         } catch (Exception ex) {
-          Log.debug(15, "");
+          Log.debug(15, "exception in ReferenceHandler.getSurrogate() - "+ex);
+          ex.printStackTrace();
         }
         if (textNode!=null) surrogateBuff.append(textNode.getNodeValue());
         else surrogateBuff.append(" ");
