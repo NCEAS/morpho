@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-01 17:06:59 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-10-02 20:28:27 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,12 +66,12 @@ public interface DataPackageInterface
                     Vector relations, ButterflyFlapCoordinator coordinator);
   /**
    * This method is called to upload a datapackage that is currently stored
-   * locally to metacat
+   * locally to metacat and return a new id or orignal id.
    * @param docid the id of the package to upload
    * @param updateIds boolean to tell whether to automatically update ids
    * when a conflict is found.
    */
-  public void upload(String docid, boolean updatedIds) 
+  public String upload(String docid, boolean updatedIds) 
               throws MetacatUploadException;
   
   /**
