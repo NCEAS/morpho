@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-16 16:36:00 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-09-25 21:08:28 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,10 @@
 package edu.ucsb.nceas.morpho.datapackage;
 import java.io.*;
 import java.util.*;
+
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.Morpho;
 
 
 /* 
@@ -91,17 +95,50 @@ public class PersistentVector
    */
   private Vector headerLinesVector;
 
-    
+  /*
+   * tmp directory for object file
+   */
+  private String tmpDir = null;
+  
+  /**
+   * Constructor of PersistentVector
+   *
+   */
   public PersistentVector() {
     objectList = new Vector();
     objNum++;
+    getTempDirFromConfig();
     try{
-      objName = objName + objNum;
-       obj = new ObjectFile(objName);  
+      if (tmpDir != null)
+      {
+        objName=tmpDir+objName+objNum;
+      }
+      else
+      {
+        objName = objName + objNum;
+      }
+      obj = new ObjectFile(objName);  
     }
     catch (Exception w) {}
   }
-    
+  
+  /*
+   * Method to get tmp directory for object file
+   */
+  private void getTempDirFromConfig()
+  {
+    Morpho morpho = UIController.getMorpho();
+    ConfigXML config = morpho.getConfiguration();
+    ConfigXML profile = morpho.getProfile();
+    String profileDirName = config.getConfigDirectory() + 
+                                File.separator +
+                                config.get("profile_directory", 0) + 
+                                File.separator + 
+                                config.get("current_profile", 0);
+    tmpDir = profileDirName + File.separator 
+             + profile.get("tempdir", 0)+File.separator;
+       
+  }
   /*
    * needed for skipping over comments, header info
    */
@@ -135,6 +172,17 @@ public class PersistentVector
    {
      headerLinesVector = newHeaderLinesVector;
    }
+   
+   /**
+    * Method set tmp directory for Object file
+    * 
+    * @param directory  the tmp directory will be set
+    */
+   public void setTmpDir(String directory)
+   {
+     tmpDir = directory;
+   }
+    
    
   /*
    * read a text file and store each line as an object in an ObjectFile
