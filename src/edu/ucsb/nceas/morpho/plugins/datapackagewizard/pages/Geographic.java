@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-14 23:58:00 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-01-15 14:19:50 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,12 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.query.LiveMapPanel;
 import edu.ucsb.nceas.morpho.util.Log;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -229,6 +235,62 @@ public class Geographic extends AbstractWizardPage {
     }
     return res;
   }
+	
+	/**
+	 *  Create a dom subtree with a new location
+	 */
+	private Node createNewLocation( String name, String desc, double north, double west,
+	                        double south, double east) {
+		Node head = null;												
+		if (locationsXML!=null) {
+			Document doc = locationsXML.getDocument();
+			head = doc.createElement("location");
+			Node temp = doc.createElement("name");
+			Node temp1 = doc.createTextNode(name);
+			temp.appendChild(temp1);
+			head.appendChild(temp);
+			
+			temp = doc.createElement("description");
+			temp1 = doc.createTextNode(desc);
+			temp.appendChild(temp1);
+			head.appendChild(temp);
+
+			temp = doc.createElement("north");
+			temp1 = doc.createTextNode((new Double(north)).toString());
+			temp.appendChild(temp1);
+			head.appendChild(temp);
+
+			temp = doc.createElement("west");
+			temp1 = doc.createTextNode((new Double(west)).toString());
+			temp.appendChild(temp1);
+			head.appendChild(temp);
+
+			temp = doc.createElement("south");
+			temp1 = doc.createTextNode((new Double(south)).toString());
+			temp.appendChild(temp1);
+			head.appendChild(temp);
+
+			temp = doc.createElement("east");
+			temp1 = doc.createTextNode((new Double(east)).toString());
+			temp.appendChild(temp1);
+			head.appendChild(temp);
+			
+		}
+		return head;
+	}
+	
+	/**
+	 *  adds a location to the config file
+	 */
+	public void addLocation( String name, String desc, double north, double west,
+	                        double south, double east) {
+		if (locationsXML!=null) {												
+	    Node nd = createNewLocation(name, desc, north, west, south, east);
+      Node root = locationsXML.getRoot();	
+      root.appendChild(nd);	
+			locationsXML.save();
+    }											
+	}
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -323,6 +385,8 @@ public class Geographic extends AbstractWizardPage {
     return label;
   }
   
+	
+	
     /**
    *  This is a static main method configured to test the class 
    */
@@ -332,6 +396,7 @@ public class Geographic extends AbstractWizardPage {
     frame.getContentPane().setLayout(new BorderLayout());
     Geographic geo = new Geographic();
     
+//		geo.addLocation("Test", "Test Location", 1.0, 2.0, 3.0, 4.0);
     frame.getContentPane().add(geo, BorderLayout.CENTER);
     frame.setVisible(true);
 
