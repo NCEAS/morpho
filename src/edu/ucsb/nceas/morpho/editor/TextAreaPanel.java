@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-21 03:13:06 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-02-04 06:55:34 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,15 +91,13 @@ public class TextAreaPanel extends JPanel
 		        if ((info1.name).equals("#PCDATA")) {
 		          txt = info1.getPCValue();
             }
-            if (txt.length()>0) {
-                JTextArea jta = new JTextArea();
-                jta.setLineWrap(true);
-                jta.setWrapStyleWord(true);
-                jta.addFocusListener(new dfhFocus());
-                jsp.getViewport().add(jta);
-                if (txt.equals("text")) { txt = " "; }
-                jta.setText(txt);
-            }
+            JTextArea jta = new JTextArea();
+            jta.setLineWrap(true);
+            jta.setWrapStyleWord(true);
+            jta.addFocusListener(new dfhFocus());
+            jsp.getViewport().add(jta);
+            if (txt.equals("text")) { txt = " "; }
+            jta.setText(txt);
         }
     }
     
