@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-12 03:03:32 $'
- * '$Revision: 1.1 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-05 21:58:20 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ package edu.ucsb.nceas.morpho.plugins;
 
 import java.io.Reader;
 
-import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 
 /**
  *  This interface enables access to XSLT stylesheets that are identified by 

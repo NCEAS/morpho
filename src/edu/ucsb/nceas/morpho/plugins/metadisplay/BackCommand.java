@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-30 04:53:21 $'
- * '$Revision: 1.5 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-05 21:58:20 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import  edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import  edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import  edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
-import  edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import  edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

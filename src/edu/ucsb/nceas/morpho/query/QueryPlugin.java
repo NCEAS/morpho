@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-05 21:33:48 $'
- * '$Revision: 1.108 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-05 21:58:20 $'
+ * '$Revision: 1.109 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Synchronize action
     GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
                           new OpenSynchronizeDialogCommand());
-    synchronizeAction.setMenuItemPosition(9);
+    synchronizeAction.setMenuItemPosition(12);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     synchronizeAction.setMenu("File", 0);
@@ -245,7 +245,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // DeleteDialogAction
     GUIAction deleteDialogAction = new GUIAction("Delete...", null,
                                           new OpenDeleteDialogCommand());
-    deleteDialogAction.setMenuItemPosition(11);
+    deleteDialogAction.setMenuItemPosition(13);
     deleteDialogAction.setToolTipText("Delete...");
     deleteDialogAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     deleteDialogAction.setEnabledOnStateChange(
@@ -266,7 +266,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     GUIAction exportAction = new GUIAction("Export...", null,
 //                            new ExportCommand(null, ExportCommand.REGULAR));
                              new OpenExportDialogCommand());
-    exportAction.setMenuItemPosition(13);
+    exportAction.setMenuItemPosition(14);
     exportAction.setToolTipText("Export data package...");
     exportAction.setMenu("File", 0);
     exportAction.setEnabledOnStateChange(

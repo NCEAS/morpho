@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-12 20:26:49 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-04-05 21:58:20 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,6 @@
  */
 
 package edu.ucsb.nceas.morpho.plugins;
-
-import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
 /**
  *  This Interface enables calling classes to display and be able to print a html
@@ -57,5 +55,21 @@ public interface PrinterInterface
      */
 		 
     public void display (String displayString, String contentType);
+		
+		/**
+     *  method to just print a user-provided String. The print string could be a html 
+		 *	string or a plain text. The content type of the print string is also provided 
+		 *	by the caller.
+     *
+     *  @param displayString  the string to be printed (html or plain text string) 
+     *
+		 *  @param contentType  the contentType of the print string 
+		 *												("text/html" or "text/plain") 
+     *
+     */
+		 
+    public void print (String displayString, String contentType);
+		
+		
 }
 

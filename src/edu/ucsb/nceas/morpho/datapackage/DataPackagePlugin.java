@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-27 21:42:43 $'
- * '$Revision: 1.90 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-05 21:58:20 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -277,7 +277,6 @@ public class DataPackagePlugin
     addDocumentation.setToolTipText("Add/Edit XML documentation...");
     addDocumentation.setMenuItemPosition(i);
     addDocumentation.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
-    addDocumentation.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     addDocumentation.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
@@ -288,6 +287,21 @@ public class DataPackagePlugin
 
 
     i++;
+		GUIAction viewDocumentation = new GUIAction("View Documentation...", null,
+                                          new ViewDocumentationCommand());
+    viewDocumentation.setToolTipText("View Documentation as HTML...");
+    viewDocumentation.setMenuItemPosition(i);
+    viewDocumentation.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    viewDocumentation.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    viewDocumentation.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+                            true, GUIAction.EVENT_LOCAL);
+    viewDocumentation.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(viewDocumentation);
+
+		i++;
     GUIAction addResearchProjectAction = new GUIAction(
         "Research Project...",
         null, new AddResearchProjectCommand());
@@ -594,6 +608,7 @@ public class DataPackagePlugin
     controller.addGuiAction(editColumnMetadata);
 
     addDocumentation.setEnabled(false);
+		viewDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     deleteDatatable.setEnabled(false);
     addResearchProjectAction.setEnabled(false);
