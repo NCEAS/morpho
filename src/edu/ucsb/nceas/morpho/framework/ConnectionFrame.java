@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-13 05:58:59 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2002-12-16 21:42:15 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,7 +158,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
     
     if (container!=null) {
       NameLabel.setText(container.getUserName());
-      DisconnectButton.setEnabled(container.isConnected());
+      updateButtonEnabling();
     }
 
     // Example of loading icon as resource - DFH 
@@ -182,6 +182,14 @@ public class ConnectionFrame  extends javax.swing.JDialog
     
   }
 
+  
+  private void updateButtonEnabling() 
+  {
+    DisconnectButton.setEnabled(container.isConnected());
+    connectButton.setEnabled(!container.isConnected());
+    CancelButton.setEnabled(!container.isConnected());
+  }
+  
   /**
    * Adjust the window size
    */
@@ -315,7 +323,9 @@ public class ConnectionFrame  extends javax.swing.JDialog
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     container.logOut();
-    DisconnectButton.setEnabled(false);
+    updateButtonEnabling();
+    
+//    DisconnectButton.setEnabled(false);
   }
 
   /**
@@ -353,7 +363,8 @@ public class ConnectionFrame  extends javax.swing.JDialog
     } else {
       Log.debug(9, "Login failed.\n" + 
             "Please check the Caps Lock key and try again.");
-      DisconnectButton.setEnabled(false);
+//      DisconnectButton.setEnabled(false);
+      updateButtonEnabling();
       ActivityLabel.setIcon(still);
     }
   }
