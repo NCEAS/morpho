@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.10 2000-10-02 23:00:27 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.11 2000-10-03 23:20:43 higgins Exp $'
  */
 
 
@@ -84,6 +84,7 @@ public class DocFrame extends javax.swing.JFrame
 		JScrollPane2.setVisible(false);
 		JScrollPane2.getViewport().add(HTMLPane);
 		HTMLPane.setBounds(0,0,397,262);
+		HTMLPane.setEditable(false);
 		JPanel1.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(JPanel1);
 		JPanel1.setBounds(2,2,400,265);
