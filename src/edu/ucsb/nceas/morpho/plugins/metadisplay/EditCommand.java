@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-09 18:22:56 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,8 @@ public class EditCommand implements Command {
         // * * * * * * * * * * * * * * * * * * * * * * * * * * * *
         // * *      WHAT ABOUT THE "LOCATION" PARAMETER?       * *
         // * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+        // location is set to the correct value in the 'editingCompleted' method
+        // of the DataViewContainerPanel class - DFH
         String location = null;
         editor.openEditor(buffer.toString(), id, location, controller);
     }

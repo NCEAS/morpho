@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-07 21:51:25 $'
- * '$Revision: 1.33 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-09 18:23:30 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -761,6 +761,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   public void editingCompleted(String xmlString, String id, String location) {
 
     Log.debug(11, "editing complete: id: " + id + " location: " + location);
+    
+    /* metadisplay class does not 'know' the location of a package
+     * so it is set to null when the editor is called.
+     * We thus get it here by checking the dataPackage instance.
+     */
     if (location==null) {
       location = dp.getLocation();
     }
