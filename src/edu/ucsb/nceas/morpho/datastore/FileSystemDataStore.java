@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:34 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-14 17:47:52 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,16 +160,17 @@ public class FileSystemDataStore extends DataStore
       }
       bfw.flush();
       bfw.close();
-      System.out.println("Starting insert");
+      bfile.close();
+      Log.debug(30, "Starting insert");
       String fileWithId = insertIdInFile(tempfile, name); //put the id in
       if(fileWithId == null)
       {
-        System.out.println("fileWithId is null!");
+        Log.debug(30, "fileWithId is null!");
         fileWithId = sw.toString();
-        System.out.println("fileWithId length is: "+fileWithId.length());
+        Log.debug(30, "fileWithId length is: "+fileWithId.length());
       }
       else {
-        System.out.println("fileWithId length is: "+fileWithId.length());
+        Log.debug(30, "fileWithId length is: "+fileWithId.length());
         
       }
       
@@ -285,6 +286,8 @@ public class FileSystemDataStore extends DataStore
   */
   public File saveDataFile(String name, Reader file, String rootDir, DataPackage dp)
   {
+    BufferedWriter bwriter = null;
+    BufferedReader bfile = null;
     try
     {
       String path = parseId(name);
@@ -304,7 +307,7 @@ public class FileSystemDataStore extends DataStore
       }
       
       //save a temp file so that the id can be put in the file.
-      BufferedReader bfile = new BufferedReader(file);
+      bfile = new BufferedReader(file);
 /* 
       StringWriter sw = new StringWriter();
       BufferedWriter bsw = new BufferedWriter(sw);
@@ -334,13 +337,14 @@ public class FileSystemDataStore extends DataStore
 //      {
 //        int x = 1;
 //      }
-      BufferedWriter bwriter = new BufferedWriter(new FileWriter(savefile));
+      bwriter = new BufferedWriter(new FileWriter(savefile));
       int d = bfile.read();
       while(d != -1)
       {
         bwriter.write(d); //write out everything in the reader
         d = bfile.read();
       }
+      bfile.close();
       bwriter.flush();
       bwriter.close();
       return savefile;
@@ -350,6 +354,15 @@ public class FileSystemDataStore extends DataStore
       e.printStackTrace();
       return null;
     }
+    finally {
+      try{
+        if (bfile!=null) bfile.close();
+        if (bwriter!=null) bwriter.flush();
+        if (bwriter!=null) bwriter.close();
+      }
+      catch (Exception t) {}
+    }
+
   }
 
  /**
@@ -361,6 +374,8 @@ public class FileSystemDataStore extends DataStore
   */
   public File saveDataFile(String name, InputStream file, String rootDir, DataPackage dp)
   {
+    BufferedInputStream bfile = null;
+    BufferedOutputStream bos = null;
     try
     {
       String path = parseId(name);
@@ -379,8 +394,8 @@ public class FileSystemDataStore extends DataStore
         }
       }
       
-      BufferedInputStream bfile = new BufferedInputStream(file);
-      BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(savefile));
+      bfile = new BufferedInputStream(file);
+      bos = new BufferedOutputStream(new FileOutputStream(savefile));
       int d = bfile.read();
       while(d != -1)
       {
@@ -396,6 +411,13 @@ public class FileSystemDataStore extends DataStore
     {
       e.printStackTrace();
       return null;
+    }
+    finally {
+      try{
+        if (bfile!=null) bfile.close();
+        if (bos!=null) bos.close();
+      }
+      catch (Exception r) {}
     }
   }
   
