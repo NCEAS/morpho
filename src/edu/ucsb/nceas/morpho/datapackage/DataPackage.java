@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-13 16:01:00 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2002-08-13 17:46:18 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,74 +130,66 @@ public class DataPackage
     this.framework  = framework;
     this.location   = location;
     this.id         = identifier;
-    config          = framework.getConfiguration();
+    this.config          = framework.getConfiguration();
     
     framework.debug(11, "Creating new DataPackage Object");
     framework.debug(11, "id: " + this.id);
     framework.debug(11, "location: " + location);
     
+    //read the file containing the triples - usually the datapackage file:
+    initTripleFile();
+    //initialize global "triples" variable to hold collection of triples:
+    initTriplesCollection();
+    //parse triples file and get basic information (title, Originators etc)
+    parseTripleFile();
+  }
+
+
+  //read the file containing the triples - usually the datapackage file:
+  private void initTripleFile()  {
+    
     if(location.equals(METACAT))
     {
-      try 
-      {
+      try {
         framework.debug(11, "opening metacat file");
         MetacatDataStore mds = new MetacatDataStore(framework);
         tripleFile = mds.openFile(this.id);
         framework.debug(11, "file opened");
-      }
-      catch(FileNotFoundException fnfe)
-      {
+        
+      } catch(FileNotFoundException fnfe) {
+      
         framework.debug(0,"Error in DataPackage constructor: file not found: "
                                                           +fnfe.getMessage());
         fnfe.printStackTrace();
         return;
-      }
-      catch(CacheAccessException cae)
-      {
+        
+      } catch(CacheAccessException cae) {
+      
         framework.debug(0,"Error in DataPackage constructor: cache problem: "
                                                           +cae.getMessage());
         cae.printStackTrace();
         return;
       }
-    }
-    else //not metacat
-    {
-      try 
-      {
+    } else  {  //not metacat
+      try {
         framework.debug(11, "opening local file");
         FileSystemDataStore fsds = new FileSystemDataStore(framework);
         tripleFile = fsds.openFile(this.id);
         framework.debug(11, "file opened");
-      }
-      catch(FileNotFoundException fnfe)
-      {
+        
+      } catch(FileNotFoundException fnfe) {
+      
         framework.debug(0,"Error in DataPackage constructor: file not found: "
                                                           +fnfe.getMessage());
         fnfe.printStackTrace();
         return;
       }
     }
-    //create a collection holding the triples
+  }
+   
+  //initialize the global "triples" variable to hold the collection of triples
+  private void initTriplesCollection()  {
     triples = new TripleCollection(tripleFile, framework);
-    
-    parseTripleFile();
-  }
-  
-  /**
-   * returns the location of the data package.  Either this.METACAT or 
-   * this.LOCAL.
-   */
-  public String getLocation()
-  {
-    return location;
-  }
-  
-  /**
-   * returns the id of the head of this package (i.e. the resource file)
-   */
-  public String getID()
-  {
-    return this.id;
   }
   
   /**
@@ -229,7 +221,7 @@ public class DataPackage
     }
     return new FileReader(xmlFile);
   }
-  
+
   /**
    * returns the dom representation of the triple file.
    */
@@ -237,7 +229,7 @@ public class DataPackage
   {
     return tripleFileDom;
   }
-  
+
   /**
    * parses the triples file and pulls out the basic information (title, 
    * altTitle, Originators)
@@ -249,11 +241,11 @@ public class DataPackage
     InputSource in;
     FileInputStream fs;
     CatalogEntityResolver cer = new CatalogEntityResolver();
-    
+
     //get the DOM rep of the document without triples
     try
     {
-      ConfigXML config = framework.getConfiguration();
+//      ConfigXML config = framework.getConfiguration();
       String catalogPath = config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(tripleFile, catalogPath);
       tripleFileDom = doc;
@@ -265,13 +257,13 @@ public class DataPackage
       e.printStackTrace();
       return;
     }
-    
+
     NodeList originatorNodeList = null;
     NodeList titleNodeList      = null;
     NodeList altTitleNodeList   = null;
     String originatorPath = config.get("originatorPath", 0);
-    String titlePath = config.get("titlePath", 0);
-    String altTitlePath = config.get("altTitlePath", 0);
+    String titlePath      = config.get("titlePath", 0);
+    String altTitlePath   = config.get("altTitlePath", 0);
     try
     {
       //find where the triples go in the file
@@ -283,12 +275,10 @@ public class DataPackage
       {
         titleNodeList = XPathAPI.selectNodeList(doc, "//title");
       }
-      
     }
     catch(SAXException se)
     {
-      System.err.println("parseTripleFile : parse threw: " + 
-                         se.toString());
+      System.err.println("parseTripleFile : parse threw: " + se.toString());
     }
     
     Vector v = new Vector();
@@ -342,9 +332,8 @@ public class DataPackage
     Hashtable filesHash = new Hashtable();
     MetacatDataStore mds = new MetacatDataStore(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
-    ConfigXML config = framework.getConfiguration();
-    String catalogPath = //config.getConfigDirectory() + File.separator +
-                                     config.get("local_catalog_path", 0);
+//    ConfigXML config = framework.getConfiguration();
+    String catalogPath = config.get("local_catalog_path", 0);
     
     for(int i=0; i<tripleVec.size(); i++)
     {
@@ -504,6 +493,16 @@ public class DataPackage
     return filesHash;
   }
   
+  
+  /**
+   * returns the location of the data package.  Either this.METACAT or 
+   * this.LOCAL.
+   */
+  public String getLocation()
+  {
+    return location;
+  }
+
   /**
    * returns a hashtable of vectors with the basic values in it.  Currently,
    * the basic values for the package editor are title, altTitle and 
@@ -531,13 +530,22 @@ public class DataPackage
   }
   
   /**
+   * returns the id of the head of this package (i.e. the resource file)
+   */
+  public String getID()
+  {
+    return this.id;
+  }
+  
+  /**
    * gets the identifier of the package  file
+   * @deprecated  use getID() instead
    */
   public String getIdentifier()
   {
     return getID();
   }
-  
+    
   /**
    * returns the access file's id from the package
    * @return returns the accession number of the access file or null if there
@@ -705,7 +713,6 @@ public class DataPackage
           Integer revI = new Integer(rev);
           int revi = revI.intValue();
           
-//          if(beginFile.indexOf("<?xml") != -1)
           if (!isDataFile(key)) 
           { //its an xml file
             for(int i=1; i<=revi; i++)
@@ -891,7 +898,6 @@ public class DataPackage
     String newPackageId = accNum.getNextId();
     packageFileString = replaceTextInString(packageFileString,
                                             this.id, newPackageId);
-//    updatedFiles.put(newPackageId, packageFileString);
 
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     MetacatDataStore mds = new MetacatDataStore(framework);
@@ -908,34 +914,6 @@ public class DataPackage
                         " in DataPackage.incrementPackageIds(): " +
                         mue.getMessage());
     }
-
-/*
-//------      
-    //now we should have the complete package updated.  we need to go through
-    //and save all of the files.
-    Enumeration packageids = updatedFiles.keys();
-    while(packageids.hasMoreElements())
-    {
-      String fileid = (String)packageids.nextElement();
-      String filestring = (String)updatedFiles.get(fileid);
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      MetacatDataStore mds = new MetacatDataStore(framework);
-      
-      //save the files
-      fsds.newFile(fileid, new StringReader(filestring)); //new local file
-      try
-      {
-        mds.newFile(fileid, new StringReader(filestring)); //new metacat file
-      }
-      catch(MetacatUploadException mue)
-      {
-        framework.debug(0, "Error uploading file " + fileid + " to metacat" +
-                        " in DataPackage.incrementPackageIds(): " +
-                        mue.getMessage());
-      }
-    }
- //-------- 
-*/    
     //create a new package
     DataPackage dp = new DataPackage(this.location, newPackageId, null, 
                                      framework);
@@ -1050,8 +1028,6 @@ public class DataPackage
           }
           else
           { //its a data file
-            //fsds.newFile(key, new FileReader(f));
- //           fsds.saveDataFile(key, new FileReader(f));   //DFH
             fsds.saveDataFile(key, new FileInputStream(f));
           }
         }
@@ -1251,39 +1227,9 @@ public class DataPackage
         bfos.close();
       }
       
-      //copy the data file to the root of the package with its original name
-      //if there is a data file
-      /*
-      Vector triplesV = triples.getCollection();
-      String dataFileName = null;
-      String dataFileId = null;
-      for(int i=0; i<triplesV.size(); i++)
-      {
-        Triple triple = (Triple)triplesV.elementAt(i);
-        String relationship = triple.getRelationship();
-        if(relationship.indexOf("isDataFileFor") != -1)
-        {
-          int lparenindex = relationship.indexOf("(");
-          dataFileName = relationship.substring(lparenindex + 1, 
-                                                relationship.length() - 1);
-          dataFileId = triple.getSubject();
-          File datafile = new File(sourcePath + "/" + dataFileId);
-          File realdatafile = new File(packagePath + "/" + dataFileName);
-          FileInputStream fis = new FileInputStream(datafile);
-          FileOutputStream fos = new FileOutputStream(realdatafile);
-          int c = fis.read();
-          while(c != -1)
-          { //copy the data file with its real name
-            fos.write(c);
-            c = fis.read();
-          }
-        }
-      }
-      */
-      
       //create a html file from all of the metadata
       StringBuffer htmldoc = new StringBuffer();
-      ConfigXML config = framework.getConfiguration();
+//      ConfigXML config = framework.getConfiguration();
       htmldoc.append("<html><head></head><body>");
       for(int i=0; i<fileV.size(); i++)
       {
@@ -1309,7 +1255,6 @@ public class DataPackage
             URL catalogURL = cl.getResource(catalogPath);
         
             myCatalog.parseCatalog(catalogURL.toString());
-            //myCatalog.parseCatalog(catalogPath);
             cer.setCatalog(myCatalog);
           } 
           catch (Exception e) 
@@ -1676,18 +1621,6 @@ public class DataPackage
                   e.printStackTrace();
                 }
               }
-              
-//              File realdatafile = new File(packagePath + "/" + dataFileName);
-//              realdatafile.createNewFile();
-//              FileInputStream fis = new FileInputStream(datafile);
-//              FileOutputStream fos = new FileOutputStream(realdatafile);
-//              int c = fis.read();
-//              while(c != -1)
-//              { //copy the data file with its real name
-//                fos.write(c);
-//                c = fis.read();
-//              }
-              
             }
           }
         }
@@ -1772,7 +1705,7 @@ public class DataPackage
   private File getFileType(String id, String typeString) {
     MetacatDataStore mds = new MetacatDataStore(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
-    ConfigXML config = framework.getConfiguration();
+//    ConfigXML config = framework.getConfiguration();
     String catalogPath = //config.getConfigDirectory() + File.separator +
                                      config.get("local_catalog_path", 0);
     File subfile;
