@@ -258,8 +258,8 @@
  <south>10.500</south>
  <east>-83.500</east>
  </location>
-<location><name>Carpentria Salt Marsh Reserve UCNRS</name>
- <description>Carpentria Salt Marsh Reserve UCNR</description>
+<location><name>Carpinteria Salt Marsh Reserve UCNRS</name>
+ <description>Carpinteria Salt Marsh Reserve UCNRS</description>
  <north>34.4</north>
  <west>-119.525</west>
  <south>34.4</south>
@@ -566,8 +566,8 @@
  <south>0.920</south>
  <east>-90.750</east>
  </location>
-<location> <name>Gault Nature Reserve QB</name>
- <description>Gault Nature Reserve QB</description>
+<location> <name>Gault Nature Reserve QC</name>
+ <description>Gault Nature Reserve QC</description>
  <north>45.517</north>
  <west>-73.133</west>
  <south>45.517</south>
@@ -860,8 +860,8 @@
  <south>32.5</south>
  <east>-106.8</east>
  </location>
-<location> <name>Kananaskis Field Stations ON</name>
- <description>Kananaskis Field Stations ON</description>
+<location> <name>Kananaskis Field Stations AB</name>
+ <description>Kananaskis Field Stations AB</description>
  <north>51.033</north>
  <west>-115.050</west>
  <south>51.033</south>
@@ -2022,8 +2022,8 @@
  <south>37.361</south>
  <east>-118.326</east>
  </location>
-<location> <name>Whittaker's Forest</name>
- <description>Whittaker's Forest</description>
+<location> <name>Whittaker Forest</name>
+ <description>Whittaker Forest</description>
  <north>38.750</north>
  <west>-79.500</west>
  <south>38.750</south>
