@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.3 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-11-26 17:54:20 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,24 +44,24 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 
 public class General extends AbstractWizardPage{
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private final String pageID     = DataPackageWizardInterface.GENERAL;
   private final String nextPageID = DataPackageWizardInterface.KEYWORDS;
-  private final String title      = "General Dataset Information:";
+  private final String title      = "General Dataset Package Information:";
   private final String subtitle   = "Title and Abstract";
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  private JTextField  titleField;  
+
+  private JTextField  titleField;
   private JTextArea   absField;
   private JLabel      titleLabel;
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public General() { init(); }
-  
+
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    * are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -70,66 +70,59 @@ public class General extends AbstractWizardPage{
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JPanel vbox = this;
-    
+
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-      "Each data package may contain multiple data tables, associated "
-      +"methods, and project information.  The title and abstract are "
-      +"used to provide a quick summary of the data package in terms of its "
-      +"purpose and the components being described.", 2);
-    vbox.add(desc);
-    
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-    
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
-        "Enter a descriptive title for the data package as a whole. A rule of "
-        +"thumb is to include organization and project scope information.", 2);
+        "<b>Enter the title of the data package.</b> The title field provides a "
+      +"description of the data that is long enough to differentiate it from "
+      +"other similar data. e.g. vernal pool amphibian density data, Isla Vista, "
+      +"CA USA, 1990-1996", 3);
     vbox.add(titleDesc);
-    
-    JPanel titlePanel = WidgetFactory.makePanel(1);
-    
-    titleLabel = WidgetFactory.makeLabel("Title", true);
 
+    JPanel titlePanel = WidgetFactory.makePanel(1);
+
+    titleLabel = WidgetFactory.makeLabel("Title", true);
     titlePanel.add(titleLabel);
-    
+
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
-    
+
     vbox.add(titlePanel);
-    
+
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    
+
     ////////////////////////////////////////////////////////////////////////////
-    
+
     JLabel absDesc = WidgetFactory.makeHTMLLabel(
-    "Enter a descriptive abstract paragraph that summarizes the "
-    +"purpose and scope of the dataset", 2);
+    "<b>Enter an abstract that describes the data package.</b> This abstract is "
+    +"a paragraph or more that describes the particular data that are being "
+    +"documented. Describ the objectives of the study, key aspects of the study "
+    +"design or methods, etc.", 3);
     vbox.add(absDesc);
-        
+
     JPanel abstractPanel = WidgetFactory.makePanel();
 
     JLabel absLabel = WidgetFactory.makeLabel("Abstract", false);
     absLabel.setVerticalAlignment(SwingConstants.TOP);
     absLabel.setAlignmentY(SwingConstants.TOP);
     abstractPanel.add(absLabel);
-    
+
     absField = WidgetFactory.makeTextArea("", 15, true);
     JScrollPane jscrl = new JScrollPane(absField);
     abstractPanel.add(jscrl);
     vbox.add(abstractPanel);
-    
+
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    
+
   }
-  
-  
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  
-  
+
+
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
@@ -138,37 +131,37 @@ public class General extends AbstractWizardPage{
     WidgetFactory.unhiliteComponent(titleLabel);
     titleField.requestFocus();
   }
-  
-  
+
+
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
   public void onRewindAction() {
-    
+
   }
-  
-  
-  /** 
+
+
+  /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. May be empty, but if so, must 
+   *  or "Finish" button(last page) is pressed. May be empty, but if so, must
    *  return true
    *
-   *  @return boolean true if wizard should advance, false if not 
+   *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    
+
     if (titleField.getText().trim().equals("")) {
-      
+
       WidgetFactory.hiliteComponent(titleLabel);
       titleField.requestFocus();
       return false;
     }
     return true;
   }
-  
-  
+
+
   /**
    *  gets the OrderedMap object that contains all the key/value paired
    *  settings for this particular wizard page
@@ -179,43 +172,43 @@ public class General extends AbstractWizardPage{
   private OrderedMap returnMap = new OrderedMap();
 
   public OrderedMap getPageData() {
-    
+
     returnMap.clear();
-    
+
     returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
-    
+
     if ( !(absField.getText().trim().equals("")) ) {
-      
-      returnMap.put("/eml:eml/dataset/abstract/section/para[1]", 
+
+      returnMap.put("/eml:eml/dataset/abstract/section/para[1]",
                     absField.getText().trim());
     }
     return returnMap;
   }
-  
-  
-  
-  
+
+
+
+
   /**
    *  gets the unique ID for this wizard page
    *
    *  @return   the unique ID String for this wizard page
    */
   public String getPageID() { return pageID; }
-  
+
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
   public String getTitle() { return title; }
-  
+
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
   public String getSubtitle() { return subtitle; }
-  
+
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
    *  button is pressed. If this is the last page, return value must be null
@@ -224,6 +217,6 @@ public class General extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
-  
+
   public void setPageData(OrderedMap data) { }
 }

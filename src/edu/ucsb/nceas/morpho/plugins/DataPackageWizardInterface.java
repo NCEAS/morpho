@@ -1,15 +1,15 @@
 /**
  *  '$RCSfile: DataPackageWizardInterface.java,v $'
- *    Purpose: A class that handles xml messages passed by the 
+ *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.3 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-11-26 17:54:19 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,13 +36,14 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 
 public interface DataPackageWizardInterface {
 
-	
+
   /**	Page IDs of the pages in the DataPackageWizard
     * 	We can request a particular page in the wizard through
-    *	the getPage() method by passing the appropriate page ID.	
+    *	the getPage() method by passing the appropriate page ID.
   **/
-  
+
   public static final String INTRODUCTION       = "INTRODUCTION";
+  public static final String PROJECT            = "PROJECT";
   public static final String GENERAL            = "GENERAL";
   public static final String KEYWORDS           = "KEYWORDS";
   public static final String KEYWORDS_PAGE	= "KEYWORDS_PAGE";
@@ -61,13 +62,13 @@ public interface DataPackageWizardInterface {
   /**
    *  method to start the wizard
    *
-   *  @param listener the <code>DataPackageWizardListener</code> to be called 
+   *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    */
   public void startWizard(DataPackageWizardListener listener);
-  
-  
-  /** 
+
+
+  /**
    *  returns the WizardPage with the corresponding pageID provided
    *
    *  @param pageID the String pageID for the WizardPage to be returned

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-25 18:03:10 $'
- * '$Revision: 1.15 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-11-26 17:54:20 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,26 +61,26 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class Keywords extends AbstractWizardPage{
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
+
   private final String pageID     = DataPackageWizardInterface.KEYWORDS;
   private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Keyword Sets";
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";
-  
+
   private final String[] colNames =  {"Thesaurus", "Keywords"};
   private final Object[] editors  =   null; //makes non-directly-editable
-  
+
   private CustomList  keywordsList;
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Keywords() { init(); }
-  
-  
-  
+
+
+
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    * are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -89,203 +89,204 @@ public class Keywords extends AbstractWizardPage{
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JPanel vbox = this;
-    
+
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-      "A data package may have multiple keywords associated with it to enable "
+      "<b>Enter the keywords.</b> A data package may have multiple keywords "
+      +"associated with it to enable "
       +"easy searching and categorizing.  In addition, one to many keywords "
       +"may be associated with a &quot;keyword thesaurus&quot;, which allows "
       +"one to associate a data package with an authoritative definition. "
       +"Thesauri may also be used for internal categorization.", 3);
     vbox.add(desc1);
-    
+
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    
+
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    
+
     keywordsList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
-    
+
     vbox.add(keywordsList);
-    
+
     initActions();
   }
 
-  
-  /** 
+
+  /**
    *  Custom actions to be initialized for list buttons
    */
   private void initActions() {
-  
-    keywordsList.setCustomAddAction( 
-      
+
+    keywordsList.setCustomAddAction(
+
       new AbstractAction() {
-    
+
         public void actionPerformed(ActionEvent e) {
-      
+
           Log.debug(45, "\nKeywords: CustomAddAction called");
           showNewKeywordsDialog();
         }
       });
-  
-    keywordsList.setCustomEditAction( 
-      
+
+    keywordsList.setCustomEditAction(
+
       new AbstractAction() {
-    
+
         public void actionPerformed(ActionEvent e) {
-      
+
           Log.debug(45, "\nKeywords: CustomEditAction called");
           showEditKeywordsDialog();
         }
       });
   }
-  
+
   private void showNewKeywordsDialog() {
-    
+
     KeywordsPage keywordsPage = (KeywordsPage)WizardPageLibrary.getPage(DataPackageWizardInterface.KEYWORDS_PAGE);
     WizardPopupDialog wpd = new WizardPopupDialog(keywordsPage, WizardContainerFrame.frame, false);
     wpd.setVisible(true);
-	
+
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
-    
+
       List newRow = keywordsPage.getSurrogate();
       newRow.add(keywordsPage);
       keywordsList.addRow(newRow);
     }
   }
-  
+
 
   private void showEditKeywordsDialog() {
-    
+
     List selRowList = keywordsList.getSelectedRowList();
-    
+
     if (selRowList==null || selRowList.size() < 3) return;
-    
+
     Object dialogObj = selRowList.get(2);
-    
+
     if (dialogObj==null || !(dialogObj instanceof KeywordsPage)) return;
     KeywordsPage editKeywordsPage = (KeywordsPage)dialogObj;
 
     WizardPopupDialog wpd = new WizardPopupDialog(editKeywordsPage, WizardContainerFrame.frame, false);
     wpd.resetBounds();
     wpd.setVisible(true);
-    
-    
+
+
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
-    
+
       List newRow = editKeywordsPage.getSurrogate();
       newRow.add(editKeywordsPage);
       keywordsList.replaceSelectedRow(newRow);
     }
   }
 
-  
-  
 
-  
-  
+
+
+
+
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
 
   }
-  
-  
+
+
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
   public void onRewindAction() {}
-  
-  
-  /** 
+
+
+  /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. May be empty, but if so, must 
+   *  or "Finish" button(last page) is pressed. May be empty, but if so, must
    *  return true
    *
-   *  @return boolean true if wizard should advance, false if not 
+   *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-  
-    return true; 
+
+    return true;
   }
-  
-  
-  /** 
+
+
+  /**
    *  gets the Map object that contains all the key/value paired
    *  settings for this particular wizard page
    *
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
-  
+
   private OrderedMap returnMap = new OrderedMap();
   //
   public OrderedMap getPageData() {
-  
+
     returnMap.clear();
-    
+
     int index = 1;
     Object  nextRowObj      = null;
     List    nextRowList     = null;
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
     KeywordsPage nextKeywordsPage = null;
-    
+
     List rowLists = keywordsList.getListOfRowLists();
-    
+
     if (rowLists==null) return null;
-    
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-    
+
       nextRowObj = it.next();
       if (nextRowObj==null) continue;
-      
+
       nextRowList = (List)nextRowObj;
       //column 2 is user object - check it exists and isn't null:
       if (nextRowList.size()<3)     continue;
       nextUserObject = nextRowList.get(2);
       if (nextUserObject==null) continue;
-      
+
       nextKeywordsPage = (KeywordsPage)nextUserObject;
-      
+
       nextNVPMap = nextKeywordsPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
   }
-  
-  
-  
-  
+
+
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  
+
+
   /**
    *  gets the unique ID for this wizard page
    *
    *  @return   the unique ID String for this wizard page
    */
   public String getPageID() { return pageID; }
-  
+
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
   public String getTitle() { return title; }
-  
+
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
   public String getSubtitle() { return subtitle; }
-  
+
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
    *  button is pressed. If this is the last page, return value must be null
@@ -294,7 +295,7 @@ public class Keywords extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
-  
+
   public void setPageData(OrderedMap data) { }
 }
 

@@ -1,15 +1,15 @@
 /**
  *  '$RCSfile: WizardPageLibrary.java,v $'
- *    Purpose: A class that handles xml messages passed by the 
+ *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-11-26 17:54:19 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,14 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 /**
  *  Class       WizardPageLibrary
- *  - a container for all the wizard pages, that can be retrieved by ID using 
+ *  - a container for all the wizard pages, that can be retrieved by ID using
  *  the getPage() method
  */
 public class WizardPageLibrary {
 
   private static final Map pages = new HashMap();
 
-  /** 
+  /**
    *  returns the WizardPage with the corresponding pageID provided
    *
    *  @param pageID the String pageID for the WizardPage to be returned
@@ -51,44 +51,45 @@ public class WizardPageLibrary {
    *  @return  the corresponding WizardPage with this ID
    */
   public static AbstractWizardPage getPage(String pageID) {
-  
+
     if(pageID.equals(DataPackageWizardInterface.ATTRIBUTE_PAGE)) return new AttributePage();
     if(pageID.equals(DataPackageWizardInterface.KEYWORDS_PAGE)) return new KeywordsPage();
     if(pageID.equals(DataPackageWizardInterface.PARTY_PAGE)) return new PartyPage();
     if (containsPageID(pageID)) return (AbstractWizardPage)pages.get(pageID);
-    
+
     return null;
   }
 
 
-  /** 
-   *  returns boolean true if the library contains a non-null WizardPage with 
-   *  the corresponding pageID provided, and boolean false if the pageID doesn't 
+  /**
+   *  returns boolean true if the library contains a non-null WizardPage with
+   *  the corresponding pageID provided, and boolean false if the pageID doesn't
    *  exist, or if the pageID corresponds to a null page
    *
    *  @param    pageID the String pageID for the WizardPage
    *
-   *  @return   boolean true if the library contains a non-null WizardPage with 
-   *            the corresponding pageID provided, and boolean false if the 
-   *            pageID doesn't exist, or if the pageID corresponds to a null 
+   *  @return   boolean true if the library contains a non-null WizardPage with
+   *            the corresponding pageID provided, and boolean false if the
+   *            pageID doesn't exist, or if the pageID corresponds to a null
    *            page
    */
   public static boolean containsPageID(String pageID) {
-    
+
     return (pages.containsKey(pageID) && (pages.get(pageID)!=null) );
   }
-  
+
 
   public WizardPageLibrary() {
-    
+
     pages.put(DataPackageWizardInterface.INTRODUCTION,       new Introduction());
+    pages.put(DataPackageWizardInterface.PROJECT,            new Project());
     pages.put(DataPackageWizardInterface.GENERAL,            new General());
     pages.put(DataPackageWizardInterface.KEYWORDS,           new Keywords());
     pages.put(DataPackageWizardInterface.PARTY_INTRO,        new PartyIntro());
     pages.put(DataPackageWizardInterface.PARTY_CREATOR,      new PartyMainPage(PartyPage.CREATOR));
     pages.put(DataPackageWizardInterface.PARTY_CONTACT,      new PartyMainPage(PartyPage.CONTACT));
     pages.put(DataPackageWizardInterface.PARTY_ASSOCIATED,   new PartyMainPage(PartyPage.ASSOCIATED));
-    
+
     pages.put(DataPackageWizardInterface.USAGE_RIGHTS,       new UsageRights());
     pages.put(DataPackageWizardInterface.DATA_LOCATION,      new DataLocation());
     pages.put(DataPackageWizardInterface.TEXT_IMPORT_WIZARD, new ImportWizard());
@@ -97,6 +98,6 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.SUMMARY,            new Summary());
   }
 
-  
+
 
 }
