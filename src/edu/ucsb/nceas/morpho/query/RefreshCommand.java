@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.13 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-17 18:54:02 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
@@ -173,6 +175,12 @@ public class RefreshCommand implements Command
             resultDisplayPanel.setVisible(true); 
             morphoFrame.setMainContentPane(resultDisplayPanel);
             morphoFrame.setMessage(results.getRowCount() + " data sets found");
+            // Generate a non select event for resulpane
+            StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+            monitor.notifyStateChange(
+                          new StateChangeEvent( 
+                          resultDisplayPanel, 
+                          StateChangeEvent.SEARCH_RESULT_NONSELECTED));
           }//if
           else
           {
