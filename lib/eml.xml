@@ -4348,7 +4348,7 @@
                   </additionalInfo>
                   <attributeList id="" minOccurs="1" maxOccurs="1" help="This complexType defines the structure of the attributeList element. The content model is a choice between one or more attribute elements, and references. References links to an attribute list defined elsewhere.">
                     <CHOICE441 minOccurs="1" maxOccurs="1" help="">
-                      <attribute editor="edu.ucsb.nceas.morpho.editor.AttributePanel" scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="Type definition for the content of an attribute (variable) that can be part of an entity.">
+                      <attribute scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="Type definition for the content of an attribute (variable) that can be part of an entity.">
                         <CHOICE442 minOccurs="1" maxOccurs="1" help="">
                           <SEQUENCE443 minOccurs="1" maxOccurs="1" help="">
                             <attributeName minOccurs="1" maxOccurs="1" help="Attribute name is official name of the attribute. This is usually a short, sometimes cryptic name that is used to refer to the attribute. Many systems have restrictions on the length of attribute names, and on the use of special characters like spaces in the name, so the attribute name is often not particularly useful for display (use attributeLabel for display). The attributeName is usually the name of the variable that is found in the header of a data file.">
