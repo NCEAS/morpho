@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 22:59:30 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-23 22:29:26 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,14 +77,13 @@ public class ReviseSearchCommand implements Command
     Query myQuery = null;
     if (comp != null && comp instanceof ResultPanel)
     {
-      // Set butterfy busy
-      morphoFrame.setBusy(true);
+      
       // Get ResultPanel
       ResultPanel resultPane = (ResultPanel) comp;
       // Get  result set of the result panel
       ResultSet results = resultPane.getResultSet();
       // Save the original identifier
-      String identifier = results.getQuery().getQueryTitle();
+      String oldIdentifier = results.getQuery().getQueryTitle();
 
       // QueryDialog Create and show as modal
       QueryDialog queryDialog1 = null;
@@ -96,16 +95,34 @@ public class ReviseSearchCommand implements Command
       if (queryDialog1.isSearchStarted()) 
       {
         Query query = queryDialog1.getQuery();
-        String currentIdentifier = query.getQueryTitle();
-        if (query != null) 
+        morphoFrame.setBusy(true);
+        doReviseQuery(morphoFrame, query, oldIdentifier);
+      }
+    }//if
+      
+ 
+  }//execute
+  
+  /**
+   * Run revised query in another thread
+   */
+  private void doReviseQuery(final MorphoFrame frame, final Query myQuery, 
+                                                       final String identifier)
+  {
+    final SwingWorker worker = new SwingWorker()
+    {
+      public Object construct()
+      {
+        String currentIdentifier = null;
+        if (myQuery != null) 
         {
-          //query.setIdentifier(identifier);
-          ResultSet newResults = query.execute();
+          currentIdentifier = myQuery.getQueryTitle();
+          ResultSet newResults = myQuery.execute();
           ResultPanel resultDisplayPanel = new ResultPanel(
               newResults, 12, null, morphoFrame.getDefaultContentAreaSize());
           resultDisplayPanel.setVisible(true);
-          morphoFrame.setMainContentPane(resultDisplayPanel);
-          morphoFrame.setMessage(newResults.getRowCount()+ " data sets found");
+          frame.setMainContentPane(resultDisplayPanel);
+          frame.setMessage(newResults.getRowCount()+ " data sets found");
           
           // If the user change the identifier of the query
           // we need change the title of the frame and update window menu
@@ -115,15 +132,21 @@ public class ReviseSearchCommand implements Command
             
             // Change the title of the frame and update the windows menu
             UIController.getInstance().
-                          updateWindow(morphoFrame, currentIdentifier);
+                          updateWindow(frame, currentIdentifier);
           }
-          morphoFrame.setBusy(false);
         }
-      }
-    }//if
+        return null;
+      }//constructor
       
- 
-  }//execute
+      //Runs on the event-dispatching thread.
+      public void finished()
+      {
+         morphoFrame.setBusy(false);
+      }//finished
+    };
+    worker.start();
+     
+  }//doReviseQuery
 
  
   
