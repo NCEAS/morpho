@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-08 15:18:27 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-08 15:24:57 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,19 +107,18 @@ public class DataPackage
     {
       public void actionPerformed(ActionEvent e) 
       {
-        framework.debug(1, "Action fired: Search Dialog :-)");
+        framework.debug(1, "Action fired: New Data Package");
       }
     };
     
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
     searchItemAction.putValue("menuPosition", new Integer(0));
     menuActions[0] = searchItemAction;
-////////////////////////////////////////////////////////////////////////////
     Action reviseItemAction = new AbstractAction("Open Data Package") 
     {
       public void actionPerformed(ActionEvent e) 
       {
-        framework.debug(1, "Action fired: Revise Search :-)");
+        framework.debug(1, "Action fired: Open Data Package");
       }
     };
     
@@ -127,28 +126,11 @@ public class DataPackage
                               "Revise current search");
     reviseItemAction.putValue("menuPosition", new Integer(1));
     menuActions[1] = reviseItemAction;
-////////////////////////////////////////////////////////////////////////////
-    /*Action refreshItemAction = new AbstractAction("Refresh") 
-    {
-      public void actionPerformed(ActionEvent e) 
-      {
-        framework.debug(1, "Action fired: Refresh Search :-)");
-      }
-    };
-    refreshItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                              "Refresh search results");
-    refreshItemAction.putValue("menuPosition", new Integer(2));
-    refreshItemAction.putValue(Action.DEFAULT, 
-                               ClientFramework.SEPARATOR_PRECEDING);
-    menuActions[2] = refreshItemAction;
-    */
-////////////////////////////////////////////////////////////////////////////
+
     // Set up the toolbar for the application
     toolbarActions = new Action[2];
     toolbarActions[0] = searchItemAction;
     toolbarActions[1] = reviseItemAction;
-    //toolbarActions[2] = refreshItemAction;
-
   }
 
   /**
