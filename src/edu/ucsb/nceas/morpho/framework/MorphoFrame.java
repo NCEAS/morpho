@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-04 15:35:30 $'
- * '$Revision: 1.12 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-28 04:01:21 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -104,7 +105,7 @@ public class MorphoFrame extends JFrame
         super("Morpho - Data Management for Ecologists");
         setVisible(false);
         setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
-
+        setIconImage(UISettings.FRAME_AND_TASKBAR_ICON);
         JLayeredPane layeredPane = getLayeredPane();
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout(0, 0));
