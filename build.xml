@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.12 2001-04-27 23:03:43 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.13 2001-05-03 16:54:30 berkley Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -121,7 +121,15 @@
            classpath="${cpath}:${morpho}"
            fork="yes" />
    </target>
-
+   
+   <target name="wizard" depends="install">
+     <java classname="edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard"
+           classpath="${cpath}:${morpho}"
+           fork="yes">
+           <arg file="src/edu/ucsb/nceas/morpho/datapackage/wizard/wizardTest.xml"/>
+     </java>
+   </target>
+   
    <!-- use the ant "junit" task to run JUnit tests. -->
    <target name="test" depends="install">
      <!-- this currently does not work for CLientFramework
