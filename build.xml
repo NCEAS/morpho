@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.58 2002-10-26 00:02:06 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.59 2002-10-29 20:52:24 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -17,7 +17,7 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.2beta2+"/>
+      <property name="release" value="1.2beta4"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
@@ -224,8 +224,6 @@
       <copy todir="${morpho.docs.dev.api}">
         <fileset dir="${build.docs}/api"/>
       </copy>
-      <delete file="./lib/config.xml" />
-      <cvs command="update lib/config.xml" />
       <copy file="./lib/config.xml" todir="${morpho.lib}"/>
       <copy file="./lib/dataset.xml" todir="${morpho.lib}"/>
       <copy file="./lib/eml-variable.xml" todir="${morpho.lib}"/>
@@ -274,6 +272,7 @@
        <delete dir="${morpho.dir}" />
        <delete file="${libdir}/${name}.jar" />
        <delete file="${libdir}/${name}-config.jar" />
+       <delete dir="${dist.dir}"/>
    </target>
 
    <target name="docs" depends="init">
