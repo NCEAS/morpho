@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-08 14:04:02 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2002-01-09 00:10:05 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,9 +198,16 @@ public class XMLPanels extends Component
                ));
             numPanels++;
             if (numPanels<500) {   // limited for performance reasons
-		      new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
+		          new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
               panel.add(new_panel);
               doPanels(nd, new_panel);
+            }
+            else {
+                String message = "<html><p>List Terminated Due to Large Size!<br>";
+                message = message + "Click on SubNodes in the Outline on the Left to Edit those Items</html>";
+                JLabel trunc = new JLabel(message);
+                panel.add(trunc);
+                break;
             }
           }
         }
