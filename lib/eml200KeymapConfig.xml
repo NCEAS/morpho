@@ -7,7 +7,11 @@
     <title>/eml:eml/dataset/title</title>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
-    <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>    
+    <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
+    <coverage>/eml:eml/dataset/coverage</coverage>   
+    <geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>   
+    <temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>   
+    <taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>   
   </contextNode>
   <!-- Xpaths for entity values are defined as relative to top node of entity -->
   <contextNode name="entity"> 
@@ -43,4 +47,21 @@
     <isInline>count(inline)!=0</isInline>
     <inline>inline</inline>
   </contextNode>
+  <insertionList name="coverage">
+    <!-- coverage node should follow these nodes. A node list is needed because a number of nodes
+         may be optional. First node that might appear as preceeding sibling should appear first,
+         followed by preceeding node, and up the tree until a required node is included.
+    -->
+    <prevNode>/eml:eml/dataset/distribution</prevNode>
+    <prevNode>/eml:eml/dataset/intellectualRights</prevNode>
+    <prevNode>/eml:eml/dataset/additionalInfo</prevNode>
+    <prevNode>/eml:eml/dataset/keywordSet</prevNode>
+    <prevNode>/eml:eml/dataset/abstract</prevNode>
+    <prevNode>/eml:eml/dataset/series</prevNode>
+    <prevNode>/eml:eml/dataset/language</prevNode>
+    <prevNode>/eml:eml/dataset/pubdate</prevNode>
+    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
+    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+    <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>
 </xpathKeyMap>
