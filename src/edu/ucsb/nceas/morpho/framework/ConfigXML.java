@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-07 23:43:18 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-16 22:32:57 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import java.io.*;
 import java.util.Vector;
 import java.util.Hashtable;
 import javax.swing.*;
+
 
 /**
  * This class is designed to store configuration information in
@@ -627,6 +628,34 @@ public class ConfigXML
 
   } // normalize(String):String
 
-  //{{DECLARE_CONTROLS
-  //}}
+	/*
+	 *  utility routine to return the value(s) of a node defined by
+	 *  a specified XPath
+	 */
+	public Vector getValuesForPath(String pathstring) {
+	  Vector val = new Vector();
+	  if (!pathstring.startsWith("/")) {
+	    pathstring = "//*/"+pathstring;
+	  }
+	    try{
+          NodeList nl = null;
+          nl = XPathAPI.selectNodeList(doc, pathstring);
+          if ((nl!=null)&&(nl.getLength()>0)) {
+            // loop over node list is needed if node is repeated
+            for (int k=0;k<nl.getLength();k++) {
+              Node cn = nl.item(k).getFirstChild();  // assume 1st child is text node
+              if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
+                String temp = cn.getNodeValue().trim();
+                val.addElement(temp);
+              }
+            }
+          }
+        
+      }
+      catch (Exception e) {
+          System.out.println("Error in getValueForPath method");
+        }
+	return val;    
+	}
+
 }

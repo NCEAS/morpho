@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-09 16:44:56 $'
- * '$Revision: 1.42 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-16 22:32:57 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,6 +148,7 @@ public class ClientFramework extends javax.swing.JFrame
     this.addWindowListener(aSymWindow);
     //}}
 
+
     // Get the configuration file information needed by the framework
     loadConfigurationParameters();
 
@@ -155,7 +156,7 @@ public class ClientFramework extends javax.swing.JFrame
     initializeActions();
 
     // Load all of the plugins, their menus, and toolbars
-    loadPlugins();
+ // DFHtemp   loadPlugins();
   }
 
   /**
@@ -322,8 +323,8 @@ public class ClientFramework extends javax.swing.JFrame
         public void actionPerformed(ActionEvent e) {
           debug(9, "Selected window.");
           JMenuItem source = (JMenuItem)e.getSource();
-          JFrame window = (JFrame)windowsRegistry.get(source);
-          window.toFront();
+          JFrame window1 = (JFrame)windowsRegistry.get(source);
+          window1.toFront();
         }
       };
       windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
