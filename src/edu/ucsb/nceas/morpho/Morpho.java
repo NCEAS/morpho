@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-27 04:21:34 $'
- * '$Revision: 1.16 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-27 20:57:48 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1386,13 +1386,13 @@ public class Morpho
         //check if metacat can be reached:
         origNetworkStatus = networkStatus;
         try {
-            Log.debug(51, "Determining net status ...");
+            Log.debug(55, "Determining net status ...");
             urlConn = metacatPingURL.openConnection();
             urlConn.connect();
             networkStatus = (urlConn.getDate() > 0L);
-            Log.debug(51, "... which is: " + networkStatus);
+            Log.debug(55, "... which is: " + networkStatus);
         } catch (IOException ioe) {
-            Log.debug(51, " - unable to open network connection to Metacat");
+            Log.debug(55, " - unable to open network connection to Metacat");
             networkStatus = false;
             if (profile != null) {
                 profile.set("searchmetacat", 0, "false");
@@ -1410,7 +1410,7 @@ public class Morpho
      */
     private void finishPing(boolean isStartUp)
     {
-        Log.debug(51, "doPing() called - network available?? - " +
+        Log.debug(55, "doPing() called - network available?? - " +
                 networkStatus);
         if (origNetworkStatus != networkStatus) {
             //if lost connection, can't log out, but can still do cleanup
