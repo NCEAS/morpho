@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-04 21:17:00 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2002-09-04 22:42:03 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1164,7 +1164,7 @@ public class DataViewer extends javax.swing.JPanel
         String attrDocType = "<!DOCTYPE eml-attribute PUBLIC "+
             "\"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "+
             "\"eml-attribute.dtd\">";
-        String entityDocType = "<!DOCTYPE eml-entity PUBLIC "+
+        String entityDocType = "<!DOCTYPE table-entity PUBLIC "+
             "\"-//ecoinformatics.org//eml-entity-2.0.0beta6//EN\" "+
             "\"eml-entity.dtd\">";
         String physicalDocType = "<!DOCTYPE eml-physical PUBLIC "+
