@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-30 00:33:10 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-02-03 21:38:05 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,10 +36,13 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -74,6 +77,8 @@ import edu.ucsb.nceas.morpho.datapackage.SavePackageCommand;
  */
 public class MorphoFrame extends JFrame
 {
+    Component gp;
+
     private JMenuBar menuBar;
     private TreeMap menuList;
     private TreeMap menuActions;
@@ -105,6 +110,10 @@ public class MorphoFrame extends JFrame
         JLayeredPane layeredPane = getLayeredPane();
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout(0, 0));
+
+      gp = new CustomGlassPane();
+      setGlassPane(gp);
+      gp.setVisible(false);
 
         // Set up the progress indicator
         ImageIcon bfly = null;
@@ -148,6 +157,7 @@ public class MorphoFrame extends JFrame
                 public void windowActivated(WindowEvent e) 
                 {
                     Log.debug(50, "Processing window activated event");
+                    gp.setVisible(false);
                     UIController controller = UIController.getInstance();
                     controller.setCurrentActiveWindow(instance);
                     controller.refreshWindows();
@@ -160,6 +170,15 @@ public class MorphoFrame extends JFrame
                         close();
                     }
                 }
+                public void windowDeactivated(WindowEvent event)
+                {
+                   Object object = event.getSource();
+                   if (object == MorphoFrame.this) {
+                     gp.setVisible(true);
+                   }
+                }
+
+
             });
         this.addComponentListener(
             new ComponentAdapter() { 
@@ -544,5 +563,17 @@ public class MorphoFrame extends JFrame
         }
         return menuBarHeight;
     }    
+ 
+
+  class CustomGlassPane extends JPanel {
+    public CustomGlassPane() {
+      setOpaque(false);
+      addMouseListener(new MouseAdapter() {
+        public void mousePressed(MouseEvent e) {
+          Log.debug(11, "mousePressed");
+        }
+      });  
+    }
     
+  }
 }
