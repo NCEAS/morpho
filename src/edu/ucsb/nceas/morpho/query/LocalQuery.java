@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.8 2000-09-13 23:38:58 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.9 2000-10-02 15:16:39 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -178,12 +178,15 @@ void queryAll()
         DOMParser parser = new DOMParser();
         CatalogEntityResolver cer = new CatalogEntityResolver();
         try {
-            Catalog myCatalog = new Catalog();
+          System.out.println("xmlcatalogfile is: "+xmlcatalogfile);
+          Catalog myCatalog = new Catalog();
+            System.out.println("new catalog created!");
             myCatalog.loadSystemCatalogs();
+            System.out.println("loadSystemCatalogs completed!");
             myCatalog.parseCatalog(xmlcatalogfile);
             cer.setCatalog(myCatalog);
         }
-        catch (Exception e) {System.out.println("Problem creating Catalog!");}
+        catch (Exception e) {System.out.println("Problem creating Catalog!" + e.toString());}
         parser.setEntityResolver(cer);
         starttime = System.currentTimeMillis();
 	    StringWriter sw = new StringWriter();
