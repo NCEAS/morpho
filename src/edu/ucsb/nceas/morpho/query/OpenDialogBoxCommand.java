@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 18:15:45 $'
- * '$Revision: 1.4 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-20 21:08:49 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,13 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.util.*;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
+import java.util.Vector;
 import javax.swing.JDialog;
+
 
 /**
  * Class to handle Open a dialog box command
@@ -46,12 +50,12 @@ public class OpenDialogBoxCommand implements Command
    *
    * @param morpho the Morpho app to which the cancel command will apply
    */
-  public OpenDialogBoxCommand(Morpho morpho, Query myQuery)
+  public OpenDialogBoxCommand(Morpho morpho)
   {
     this.morpho = morpho;
-    ownerQuery = myQuery;
+    ownerQuery = new Query(getOwnerQuery(), morpho);
     
-   }//OpenDialogBoxCommand
+  }//OpenDialogBoxCommand
   
   
   /**
@@ -65,7 +69,40 @@ public class OpenDialogBoxCommand implements Command
    
   }//execute
 
-  
+  /**
+   * Construct a query suitable for getting the owner documents
+   */
+  private String getOwnerQuery()
+  {
+    ConfigXML profile = morpho.getProfile();
+    StringBuffer searchtext = new StringBuffer();
+    searchtext.append("<?xml version=\"1.0\"?>\n");
+    searchtext.append("<pathquery version=\"1.0\">\n");
+    String lastname = profile.get("lastname", 0);
+    String firstname = profile.get("firstname", 0);
+    searchtext.append("<querytitle>My Data (" + firstname + " " + lastname);
+    searchtext.append(")</querytitle>\n");
+    Vector returnDoctypeList = profile.get("returndoc");
+    for (int i=0; i < returnDoctypeList.size(); i++) {
+      searchtext.append("<returndoctype>");
+      searchtext.append((String)returnDoctypeList.elementAt(i));
+      searchtext.append("</returndoctype>\n");
+    }
+    Vector returnFieldList = profile.get("returnfield");
+    for (int i=0; i < returnFieldList.size(); i++) {
+      searchtext.append("<returnfield>");
+      searchtext.append((String)returnFieldList.elementAt(i));
+      searchtext.append("</returnfield>\n");
+    }
+    searchtext.append("<owner>" + morpho.getUserName() + "</owner>\n");
+    searchtext.append("<querygroup operator=\"UNION\">\n");
+    searchtext.append("<queryterm casesensitive=\"true\" ");
+    searchtext.append("searchmode=\"contains\">\n");
+    searchtext.append("<value>%</value>\n");
+    searchtext.append("</queryterm></querygroup></pathquery>");
+
+    return searchtext.toString();
+  } 
   
   /**
    * could also have undo functionality; disabled for now
