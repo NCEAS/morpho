@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-13 01:43:36 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-09-16 16:34:46 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -329,8 +329,15 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
       String[] newRecord = columnValuesAsArray(vals);
       newpv.addElement(newRecord);
     }
+    // Get fields of pv
+    String oldFieldDelimiter = pv.getFieldDelimiter();
+    int oldFirstRow = pv.getFirstRow();
+    Vector oldHeaderLinesVector = pv.getHeaderLinesVector();
     pv.delete();
-    pv = newpv;  
+    pv = newpv; 
+    pv.setFieldDelimiter(oldFieldDelimiter);
+    pv.setFirstRow(oldFirstRow);
+    pv.setHeaderLinesVector(oldHeaderLinesVector);
     //pv.setFieldDelimiter("#x09");
     pushLogValues(-1, getColumnCount(), "N/A", "N/A", "added column at end","");
     fireTableStructureChanged();
@@ -350,8 +357,15 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
       String[] newRecord = columnValuesAsArray(vals);
       newpv.addElement(newRecord);
     }
+    // Get fields of pv
+    String oldFieldDelimiter = pv.getFieldDelimiter();
+    int oldFirstRow = pv.getFirstRow();
+    Vector oldHeaderLinesVector = pv.getHeaderLinesVector();
     pv.delete();
-    pv = newpv;  
+    pv = newpv;
+    pv.setFieldDelimiter(oldFieldDelimiter);
+    pv.setFirstRow(oldFirstRow);
+    pv.setHeaderLinesVector(oldHeaderLinesVector);
     //pv.setFieldDelimiter("#x09");
     fireTableStructureChanged();
     pushLogValues(-1, colnum, "N/A", "N/A", "added column at "+colnum,"");
@@ -370,8 +384,15 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
       String[] newRecord = columnValuesAsArray(vals);
       newpv.addElement(newRecord);
     }
+    // Get fields of pv
+    String oldFieldDelimiter = pv.getFieldDelimiter();
+    int oldFirstRow = pv.getFirstRow();
+    Vector oldHeaderLinesVector = pv.getHeaderLinesVector();
     pv.delete();
-    pv = newpv;  
+    pv = newpv;
+    pv.setFieldDelimiter(oldFieldDelimiter);
+    pv.setFirstRow(oldFirstRow);
+    pv.setHeaderLinesVector(oldHeaderLinesVector);
     //pv.setFieldDelimiter("#x09");
     pushLogValues(-1, col, "N/A", "N/A", "deleted column","");
     fireTableStructureChanged();   
