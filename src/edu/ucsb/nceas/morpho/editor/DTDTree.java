@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-05 19:39:28 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-12-11 23:31:27 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class DTDTree
     
     // levels is how many levels deep the depth first parse is carried out
     // needs to be specified to provide stopping criteria for recursive DTDs
-    int levels = 12;
+    int levels = 8;
     
  
   public DTDTree() {
@@ -279,7 +279,8 @@ private void DTDItems(DTDItem item, Vector vec) {
     }
   }
   else if (item instanceof DTDSequence) {
-    if (Sequence_Flag) {
+    if ((Sequence_Flag) 
+        &&(!getCardinality(item).equals("ONE"))) {
             cntr++;
             NodeInfo ni = new NodeInfo("(SEQUENCE)"+cntr);
             ni.setItem(item);
