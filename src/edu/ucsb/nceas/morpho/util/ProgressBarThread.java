@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-10 21:52:15 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-04-11 22:19:48 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,6 +99,9 @@ public class ProgressBarThread
     // create cancel button, its action listener and its panel
     ActionListener actionListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        if (customCancelAction != null) {
+          customCancelAction.actionPerformed(null);
+        }
         timer.stop();
         dialog.dispose();
       }
@@ -150,11 +153,6 @@ public class ProgressBarThread
    * Stops the timer, closes the dialog and exits.
    */
   public void exitProgressBarThread() {
-
-    if (customCancelAction != null) {
-      customCancelAction.actionPerformed(null);
-    }
-
     timer.stop();
     dialog.dispose();
   }
