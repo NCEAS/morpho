@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-06 22:40:35 $'
- * '$Revision: 1.42 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-02-24 20:51:44 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ public class WizardContainerFrame extends JFrame {
       return;
     }
 		
-		AbstractWizardPage pageForID = pageLib.getPage(pageID);
+		AbstractWizardPage pageForID = WizardPageLibrary.getPage(pageID);
 		
     if (pageForID == null) {
       Log.debug(15,"setCurrentPage: page library does NOT contain ID: "+pageID);
