@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 17:07:12 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-09-26 21:11:11 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,12 @@
 package edu.ucsb.nceas.morpho.util;
 
 import edu.ucsb.nceas.morpho.framework.UIController;
+
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+
 import javax.swing.Icon;
 import javax.swing.AbstractAction;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -62,8 +66,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         menuPosition = -1;
         toolbarPosition = -1;
         setEnabled(true);
-        enabledList = new Hashtable();
-        commandList = new Hashtable();
+        enabledList = new MappingsTable();
+        commandList = new MappingsTable();
     }
 
     /**
@@ -96,7 +100,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         while (enabledKeys.hasMoreElements()) {
             String key = (String)enabledKeys.nextElement();
             String changedState = new String(key);
-            boolean enabled = ((Boolean)enabledList.get(key)).booleanValue();
+            boolean enabled 
+                      = ((Boolean)enabledList.getNewState(key)).booleanValue();
             clone.setEnabledOnStateChange(changedState, enabled, false);
         }
         // Clone the command list
@@ -104,7 +109,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         while (commandKeys.hasMoreElements()) {
             String key = (String)commandKeys.nextElement();
             String changedState = new String(key);
-            Command command = (Command)commandList.get(key);
+            Command command = (Command)commandList.getNewState(key);
             clone.setCommandOnStateChange(changedState, command, false);
         }
 
@@ -313,7 +318,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setEnabledOnStateChange(String changedState, boolean enabled, 
                                                         boolean localEventsOnly)
     {
-        enabledList.put(changedState, new Boolean(enabled));
+        enabledList.put(changedState, new Boolean(enabled), localEventsOnly);
         StateChangeMonitor.getInstance().addStateChangeListener(changedState,
                 (StateChangeListener)this);
     }
@@ -324,11 +329,15 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      *
      * @param changedState the name of the state change
      * @param command Command that should be set upon a state change
+     * @param localEventsOnly boolean value indicating whether the change should 
+     *                        occur in response only to events originating 
+     *                        within the same frame as this GUIAction's 
+     *                        container
      */
     public void setCommandOnStateChange(String changedState, Command command,
                                                         boolean localEventsOnly)
     {
-        commandList.put(changedState, command);
+        commandList.put(changedState, command, localEventsOnly);
         StateChangeMonitor.getInstance().addStateChangeListener(changedState,
                 (StateChangeListener)this);
     }
@@ -343,19 +352,47 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void handleStateChange(StateChangeEvent event)
     {
         String changedState = event.getChangedState();
-
-        // Check and handle the enabled state changes
+        
         if (enabledList.containsKey(changedState)) {
-            boolean enabled = 
-                ((Boolean)enabledList.get(changedState)).booleanValue();
-            setEnabled(enabled);
-        }
-
-        // Check and handle the command state changes
+            if ( enabledList.respondsLocalOnly(changedState) && !isLocalEvent(event)) {    
+                Log.debug(50,"GUIAction.handleStateChange: event in enabledList"
+                                    +" but not of this frame");
+            } else {
+                // Check and handle the event enabled state changes
+                boolean enabled = ((Boolean)enabledList
+                                    .getNewState(changedState)).booleanValue();
+                setEnabled(enabled);
+            }
+        } 
+        
         if (commandList.containsKey(changedState)) {
-            Command newCommand = (Command)commandList.get(changedState);
-            setCommand(newCommand);
+            if (commandChangesOnlyLocal(changedState) && !isLocalEvent(event)) {
+                Log.debug(50,"GUIAction.handleStateChange: event in commandList"
+                                    +" but not of this frame");
+            } else {
+                // Check and handle the command state changes
+                Command newCommand 
+                              = (Command)commandList.getNewState(changedState);
+                setCommand(newCommand);
+            }
         }
+    }
+    
+    private boolean enableChangesOnlyLocal(String event) 
+    {
+        return true;
+    }
+    
+    private boolean commandChangesOnlyLocal(String event)
+    {
+        return true;
+    }
+      
+    //returns true if event originated in same MorphoFrame as this GUIAction
+    private boolean isLocalEvent(StateChangeEvent event) 
+    {
+        return ( getMorphoFrameAncestor((Component)event.getSource()) 
+                            == UIController.getMorphoFrameContainingGUIAction(this) );
     }
 
     /**
@@ -402,6 +439,11 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         this.originalAction = action;
     }
 
+    private MorphoFrame getMorphoFrameAncestor(Component c) 
+    {
+        return null;
+    }
+    
 // * * *  V A R I A B L E S  * * *
 
     private Command command;
@@ -409,7 +451,73 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     private String menuName;
     private int menuPosition;
     private int toolbarPosition;
-    private Hashtable enabledList; 
-    private Hashtable commandList; 
+    private MappingsTable enabledList; 
+    private MappingsTable commandList; 
     private GUIAction originalAction;
+    
+// * * *  I N N E R  C L A S S  * * *
+    
+    class MappingsTable 
+    {
+        private final int MAX_COLUMNS = 2;
+        private Hashtable table;
+
+        
+        public Object getNewState(String key) { return getColumn(key,1); }
+        
+        public boolean respondsLocalOnly(String key) { 
+        
+            return ((Boolean)getColumn(key,2)).booleanValue();
+        }
+
+        public void put(String key, Object newState, boolean respondsLocalOnly)
+        {
+            if (!table.containsKey(key))  {
+            
+                table.put(  key, 
+                            new Object[] {  newState, 
+                                            new Boolean(respondsLocalOnly) 
+                                         });
+            }
+        }
+
+        // * * * * * * COULD PULL THESE OUT INTO A UTIL CLASS: * * * * * * * * 
+
+        MappingsTable() { table = new Hashtable(); }
+        
+        public Enumeration keys() { return table.keys(); }
+        
+        public boolean containsKey(Object key) { return table.containsKey(key);}
+        
+        //colNum is one-based - imagine a table where col. zero is the key
+        private Object getColumn(Object key, int colNum) 
+        {
+            if (!table.containsKey(key))  {
+                Log.debug(50, "MappingsTable: invalid key" + key);
+                return null;
+            } else if (colNum > MAX_COLUMNS || colNum < 1) {
+                Log.debug(50, "MappingsTable: invalid colNum" + colNum);
+                Log.debug(50, "(max allowed = " + (MAX_COLUMNS) + ")");
+                return null;
+            }
+            return ( (Object[])table.get(key) )[colNum-1];
+        }                     
+          
+        public void put(Object key, Object[] params)
+        {
+            if (params.length > MAX_COLUMNS) {
+                Log.debug(50, "MappingsTable: too many params: "+params.length);
+                return;
+            } else if (params.length < MAX_COLUMNS) {
+                Log.debug(50, "MappingsTable: insufficient params; padding out "
+                                                                +params.length);
+                Object[] newArray = new Object[MAX_COLUMNS];
+                for (int i=0;i<params.length; i++) {
+                    newArray[i] = params[i];
+                }
+                params = newArray;
+            } 
+            table.put(key, params);
+        }
+    }    
 }
