@@ -9,6 +9,35 @@
 
 <body>
 
+<table class="tabledefault">
+  <tr>
+    <td width="14%" height="91"><div align="center" class="title"><img src="./images/KNBLogo.gif" width="107" height="76"></div>
+    </td>
+    <td width="86%">
+      <div class="title">
+        <div align="left">Morpho User Guide</div>
+      </div>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="100%" border="0" cellpadding="4" cellspacing="0"
+       class="tablepanel">
+  <!-- 
+  <tr>
+   <td colspan=2 width="100%">
+    <img src="./images/knb.gif" width=350 height=200>
+   </td>
+  </tr>
+ -->
+  <tr>
+    <td width="41%" height="53" align=center valign=middle>
+      <p><a href="index.html" class="sitelink">Help Index</a></td>
+    <td align=center valign=middle width="59%"> <a href="Creating_a_new_data_package.htm" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Creating
+        a New Data Package&nbsp;</a>&nbsp;&nbsp; &nbsp;&nbsp; <a href="Editing_a_data_package.htm" class="sitelink"> Editing
+        a Data Package<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></td>
+  </tr>
+</table>
 <p>&nbsp;</p>
 
 <!-- put text after this -->
@@ -18,15 +47,553 @@
     <td><b>Adding Data to a Data Package</b></td>
   </tr>
   <tr>
-    <td rowspan="2" width="50%"><p>NOT DONE</p>
+    <td rowspan="2" width="50%"><p>There are two alternate
+        ways to add a data table to a data package in Morpho. One way is to click
+        on &quot;or
+      click here to finish this wizard and add a new data table now...&quot; at the
+        end of the Data package Wizard, shown below.</p>      <p class="tablepanel">&nbsp;</p>
+      <p align="center" class="tablepanel"><img src="images/dpwscreen17.gif" width="711" height="438"></p>      <p class="tablepanel">&nbsp;</p>
+      <p class="tablepanel">Alternatively, after creating a data
+          package, you can select Create/Import New Data Table under the Data
+        menu at the
+          top
+          of the window, shown below.</p>
+      <p class="tablepanel">&nbsp;</p>
+      <p align="center" class="tablepanel"><img src="images/create_import_data.gif" width="711" height="435"></p>      <p class="helpsub">&nbsp;</p>
+      <p class="tablepanel">Either way you will see the New Data Table Wizard,
+        which is described below. Throughout the New Data Package Wizard, items
+        in <span class="required">red</span> are required. The first screen of the New Data
+        Table Wizard is shown below. </p>
       <p>&nbsp;</p>
-      <p class="helpsub">Create/Import New Data Table</p>
+      <p align="center"><img src="images/datawizard1.gif" width="650" height="467"></p>
+      <p>&nbsp; </p>
+      <p>Begin by choosing one of the three options to tell the wizard what you
+        would like to do. Each of these is described below.</p>
+      <ul>
+        <li><a href="#create">CREATE</a></li>
+      </ul>            <p>An empty data table is created where you can type the data directly
+        into Morpho. You also manually create documentation for the data table.</p>
+      <ul>
+        <li><a href="#import">IMPORT</a></li>
+      </ul>            <p>An existing data file is imported into Morpho, and you create the documentation
+        for the data using the wizard, either automatically or manually. </p>
+      <ul>
+        <li><a href="#describe">DESCRIBE</a></li>
+      </ul>      <p>The data are NOT included in the data package, but you create the documentation
+        for the data using the wizard, either automatically or manually.</p>
+      <p>&nbsp;</p>      
+      <p class="tablepanel">Depending on which of these first three options you
+        choose, you will see different subsequent screens and provide different
+        information throughout the New Data Table Wizard. 
+        Each of these three alternate paths is described  below.</p>
+      <p class="helpsub">&nbsp;</p>
+      <p class="helpsub">Create<a name="create"></a></p>            <p class="tablepanel">If &quot;CREATE&quot; is selected in the screen pictured above,
+        you will create a new data table that is empty, where you can type the
+        data
+        in
+        later,
+        and
+        you will also create documentation (metadata) for the table. Clicking
+        &quot;Next&quot; will bring you to the screen pictured below, where you indicate
+        the format of your data.</p>
+      <p align="center"><a name="fileformat"></a><img src="images/datawizard11.gif" width="649" height="466"></p>
+        <p align="center">&nbsp;</p>
+        <p align="left">If the data is in a simple delimited text format, then
+          choose the first option. You will then see the additional prompts shown
+          below. Indicate if the data attributes are arranged in rows or columns.
+          Then
+          choose
+          one
+          or
+          more
+          delimiters
+          used in the formatting to indicate where the end of  fields occur.          </p>
+        <p align="left">&nbsp;</p>        <p align="center"><img src="images/datawizard7.gif" width="652" height="574"></p>
+        <p align="left">&nbsp;</p>
+        <p align="left">If instead the data are in a complex text format, choose
+          the second option. You will then see the additional prompts shown below.
+          Indicate if the data attributes are arranged in rows or columns. You
+          then can define whether the data contain fixed width fields, and
+          if so what the width is, or of the data are delimited, and if so what
+          the delimiter character is. You may add additional data structure documentation
+          to this list, delete existing ones, or change the order of them, by
+          using the buttons to the right of the screen.</p>
+        <p align="left">&nbsp;</p>
+        <p align="center"><img src="images/datawizard12.gif" width="649" height="578"></p>
+        <p align="left">&nbsp;</p>        
+        <p align="left">If the data are not in simple delimited text format or
+          in complex text format, but are instead a Microsoft Excel file, then
+          choose the third option under &quot;What is the format of your data?&quot;. Additional
+          prompts will then appear, shown in the screen pictured below. Choose
+          one of the format types from the list. If the format of your data are
+          not shown, then click &quot;Other&quot; and describe the format on the space
+          provided.</p>
+        <p align="left">&nbsp;</p>
+        <p align="center"><img src="images/datawizard10.gif" width="731" height="589"></p>
+        <p align="left">&nbsp;</p>        
+        <p align="left">Click &quot;Next&quot; when finished describing the
+        file format. You will then see a screen which asks you to describe the
+          data table, also known as an &quot;entity&quot;, pictured below.</p>
+        <p align="left">&nbsp;</p>
+        <p align="center"><img src="images/datawizard13.gif" width="649" height="578"></p>        <p align="left">&nbsp;</p>
+        <p align="left">Begin by typing the name of the table, which is required.
+          Add a description of the entity if desired. This will be helpful in
+          informing future viewers of the data package abut the contents of the
+          table, and will also serve to document the overall meaning of the table
+          as well, and therefore adding a description is recommended. Next, you
+          define the attributes of the data table in a number of ways. Only one
+          attribute is required to be defined, but it is highly recommended that
+          ALL attributes be defined. Click &quot;Add&quot; to define one of the attributes.
+          You will then see the screen pictured below.</p>
+        <p align="left">&nbsp;</p>
+        <p align="center"><img src="images/datawizard14.gif" width="647" height="448"></p>
+        <p align="left">&nbsp;</p>        
+        <p class="tablepanel">Begin by naming the attribute (which is often simply
+          a column in the data table, but not always), and providing a label
+          for the attribute (which should be shorter than the name). In the &quot;Definition&quot;
+          field, provide a precise and descriptive definition of the attribute.
+          This is probably the most important part of defining the attribute
+          because it is where you provide information so that future viewers
+          or users of the data can understand what the attribute means or represents.
+          Next, choose the type of measurement scale for the data in the attribute
+           in the &quot;Category&quot; section. Click &quot;Help&quot; for further explanation
+          of
+          each
+          of
+          these categories.
+          Each measurement scale is also described below.</p>
+        <ul>
+          <li>Unordered (Nominal)</li>
+        </ul>                        <p class="tablepanel">The unordered, or nominal,
+          scale places values into named categories. The different values within
+          a set are unordered.
+          Text fields should be classified as nominal. Examples
+          of unordered, or nominal,
+          scales include gender (Male/Female) and marital status (single/married/divorced).
+        </p>
+        <ul>
+          <li>Ordered (Ordinal)</li>
+        </ul>        
+        <p>The ordered, or ordinal, scale
+          places values in a set order. All ordinal values are also nominal.
+          Ordinal data show
+          a particular value's position relative to other values, such as &quot;low,
+          medium, high, etc.&quot; The ordinal scale doesn't indicate the distance
+          between each item. Examples of ordered, or ordinal, scales include
+          level of agreement (Strongly agree, Agree, Disagree, Strongly disagree),
+          or
+          age class
+          (Adult, Sub-adult, Juvenile).</p>        <ul>
+          <li>Relative (Interval)</li>
+        </ul>                
+          <p class="tablepanel">The relative, or interval, scale uses equal-sized
+          units of measurement on a scale between values. It therefore allows
+          the comparison of the differences between two values on the scale.
+          With interval data, the allowable values start from an arbitrary point
+          (not a meaningful zero), and so there is no concept of 'zero' of the
+          measured quantity. Consequently, ratios of interval values are not
+          meaningful. For example, one can not infer that someone with a value
+          of 80 on an ecology test knows twice as much ecology as someone who
+          scores 40 on the test, or that an object at 40 degrees C has twice
+          the kinetic energy as an object at 20 degrees C. All interval values
+          are also ordered and therefore are ordinal scale values as well. Example
+            of  relative, or interval, scales include the celsius temperature
+            scale and the fahrenheit temperature scale.</p>
+        <ul>
+          <li>Absolute (Ratio)</li>
+        </ul>        
+        <p>The ratio scale is an interval scale with a meaningful zero point.
+          The ratio scale begins at a true zero point that represents an absolute
+          lack of the quality being measured. Thus, ratios of values are meaningful.
+          For example, an object that is at elevation of 100 meters above sea
+          level is twice as high as an object that is at an elevation of 50 meters
+          above sea level (where sea level is the zero point). Also, an object
+          at 300 degrees Kelvin has three times the kinetic energy of an object
+          at 100 degrees Kelvin (where absolute zero (no motion) defines the
+          zero point of the Kelvin scale). Interval values can often be converted
+          to ratio values in order to make ratio comparisons legitimate. For
+          example, an object at 40 degrees C is 313.15 degrees Kelvin, an object
+          at 20 degrees C is 293.15 degrees Kelvin, and so the first object has
+          approximately 1.07 times more kinetic energy (note the wrong answer
+        you would have gotten had you taken the ratio of the values in Celsius).
+          Examples of absolute, or ratio, scales include elevation, height, and
+          the Kelvin temperature scale.</p>        <ul>
+          <li>Date-Time</li>
+          </ul>        
+        <p>Date and time values in the Gregorian calendar are very strange to
+          use in calculations in that they have properties of both interval and
+          ratio scales. They also have some properties that do not conform to
+          the interval scale because of the adjustments that are made to time
+          to account for the variations in the period of the Earth around the
+          sun (e.g. leap years). While the Gregorian calendar has a meaningful
+          zero point, it would be difficult to say that a value taken on midnight
+          January
+          1,
+          1000
+          is twice as old as a value taken on midnight January 1 2000 because
+          the scale has many irregularities in length in practice. However, over
+          short intervals the scale has equidistant points based on the SI second,
+          and so can be considered interval for some purposes, especially with
+          respect to measuring the timing of short-term ecological events. Date
+          and time values can be represented using several distinct notations,
+          and so we have distinct documentation  needs in terms of specifying
+          the format of the value representation. Because of these pragmatic
+          issues,
+          Date-Time has been separated into its own measurement scale. Examples
+        of date-time values are '2003-05-05', '1999/10/10', and '2001-10-10T14:23:20.3'.</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p class="tablepanel">It is important to keep in mind that a given type
+          of data may fall under more than one of these categories because the
+          categories are nested (i.e. ordinal data are also nominal, interval
+          data are also ordinal and nominal, and ratio data are also interval,
+          ordinal, and nominal). This may make choosing one category confusing,
+          so remember to pick the category as low in the list as you can that
+          still accurately describes the attribute's data.</p>
+        <p class="tablepanel">&nbsp;</p>
+        <p class="tablepanel">Choosing one of these five choices will bring about
+          additional prompts, allowing you to describe the categories themselves,
+          units, number types, and other details. You will encounter different
+          screens depending on which category is chosen, and each of these screens
+          is described and shown below.</p>        <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">If &quot;Unordered&quot; is chosen, you will be first prompted
+             to choose if the unordered categories are enumerated values
+            belonging to a predefined list, or if they are text values (that
+            are either free-form or that match a pattern). If you choose &quot;Enumerated
+            values&quot;, you will be promoted to choose if the location of the enumerated
+            values. If you choose &quot;Codes are defined here&quot;, you will see the
+            screen pictured below. Click &quot;Add&quot; to add a code and its definition.
+            For example, in your data table there may be values such as &quot;M&quot; and
+            &quot;F&quot;, which stand for male and female, respectively. Therefore M and
+            F would go under &quot;Code&quot;, and Male and Female would go under &quot;Definition&quot;
+            in the table at the bottom of the screen.</p>
+          <p class="tablepanel">&nbsp;</p>          <p align="center" class="tablepanel"><img src="images/datawizard15.gif" width="647" height="554"></p>          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">Alternatively, you can choose to have the enumerated
+            values (codes and their definitions)  imported from elsewhere,
+            in which case you will see the screen pictured below. At the right
+            of the screen there is a button labeled &quot;locate&quot; which allows you
+            to tell the New Data Table Wizard where the enumerated codes list
+            is located.</p>          
+          <p class="tablepanel">&nbsp;</p>          <p align="center" class="tablepanel"><img src="images/datawizard16.gif" width="668" height="548"></p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">Clicking the &quot;locate&quot; button brings you to the
+            screen pictured below. To import the codes later, choose the first
+            option, &quot;Import the definitions table into Morpho later&quot;. Click
+            &quot;OK&quot; at the bottom of the window.</p>
+          <p class="tablepanel">Alternatively, if the codes
+              and their definitions are already contained
+              in the data table you imported in the New Data Table Wizard, then
+            choose the second option, &quot;The definitions table has already been
+            included
+            in
+            this
+              package&quot;. And example of what you will see when this second option
+              is chosen is pictured below for a sample data table. Choose the
+            two columns which contain the codes and their definitions by clicking
+            the check boxes at the top of those columns, and then click
+              &quot;OK&quot; at the bottom of the window.</p>
+          <p class="tablepanel">&nbsp;</p>          <p align="center" class="tablepanel"><font size="4"><img src="images/datawizard17.gif" width="673" height="450"></font></p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">Unordered, text values</p>
+          <p class="tablepanel">&nbsp;</p>
+          <p align="center" class="tablepanel"><img src="images/datawizard18.gif" width="676" height="546"></p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">If &quot;Ordered&quot; is chosen as the category, then
+            the same prompts and choices that were just described for the &quot;Unordered&quot;
+            category will be shown. Go through the same steps that were just
+            described.</p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">If &quot;Relative&quot; is chosen as the category, then
+            you will be presented with a different set of prompts for
+            documentation than described above. You will see the screen pictured
+            below. Begin by choosing the type of measurement from the first drop-down
+            list. Next, choose the appropriate unit in the drop-down list to
+            the right. </p>
+          <p class="tablepanel">&nbsp;</p>          <p align="center" class="tablepanel"><img src="images/datawizard19.gif" width="676" height="546"></p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">You also have the option of defining a new unit
+            by clicking the &quot;Define new unit&quot; button located at the
+            right of the screen. This option is described in the next paragraph.            </p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">To define a new unit, click on the button that
+            says &quot;Define new unit&quot;. You will then see the screen pictured below.
+            You can either type in the
+              unit
+              type
+              in
+              the
+              first
+              field, or
+              use the
+              drop down list to choose the unit type from a list. Next, click
+            &quot;Add&quot;. You will see a drop-down list of unit types appear under &quot;Unit&quot;.
+                The idea here is to construct your new unit by defining the units
+              it is comprised of, and the power of each component unit in the
+            new
+              unit. As an example, consider the new unit to be of the type &quot;velocity&quot;.
+              You would begin by choosing &quot;velocity&quot; under the Unit Type drop-down
+              list. You would then click &quot;Add&quot; and choose &quot;Length&quot; from the drop
+              down list found under &quot;Unit&quot;. The power of that unit would be 1.
+              You would click &quot;Add&quot; again and choose &quot;Time&quot; from the drop-down
+              list under &quot;Unit&quot;, and the power of that unit would be -1. Putting
+              those two units together according to the indicated powers gives
+              you a new unit of length/time. </p>
+          <p class="tablepanel">&nbsp;</p>          <p align="center" class="tablepanel"><img src="images/datawizard20.gif" width="672" height="500"></p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">Next, you name the new unit. You also will specify
+            the SI unit that corresponds to the new unit you have defined. If
+            known, you can provide the conversion factor in the next field that
+            would convert your unit to the SI unit. You can also provide a description
+            of the new unit in the final field. Click &quot;OK&quot; at the bottom of the
+            window when you are done defining your new unit.</p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">After choosing or defining the unit, indicate
+            the precision of the chosen or defined unit in the data by typing
+            in the field next to &quot;Precision&quot;. Next, choose the number
+            type
+            of the
+            data
+            from the drop-down list. See the next paragraph for further explanation
+            in choosing a number type. Finally, you can indicate the bounds of
+            the values in the attribute or column
+            at the
+            bottom
+            of
+            the screen.
+          Click &quot;Add&quot; to do this, and type in the indicated information.
+          Use &quot;Delete&quot; to remove a set of bounds you entered.</p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">The four number types provided in the drop-down
+            list are not discrete classes &#8211; some
+            overlap, so choosing the appropriate number type can be confusing.
+            Remember to choose the type that most specifically and accurately
+          describes the data in the attribute or column you are defining.</p>
+          <ul>
+            <li>Natural numbers</li>
+          </ul>          
+          <p>Natural numbers are positive and non-zero counting numbers (i.e.
+                  non-fractions), such as 1, 2, 3, and so on. They cannot be
+                negative or zero. When thinking of counting numbers, think about
+                counting
+                  a basket of oranges, or counting something using your fingers
+                (although natural numbers can be larger than ten!). There are
+                no fractions
+                  of oranges or fractions of fingers (hopefully!), and there
+                are no negative numbers of oranges or negative numbers of fingers.
+              Natural numbers are one type of whole numbers.</p>
+          <ul>
+            <li>Whole numbers</li>
+          </ul>          <p>Whole numbers are just like natural numbers, except zero is included
+                in the set of whole numbers, and therefore whole numbers are
+                positive counting numbers and zero: 0, 1, 2, 3, and so on. Just
+                like natural
+                numbers, they cannot be fractions or negative. Whole numbers
+                are a type of integer, and they include natural numbers.</p>          
+          <ul>
+            <li>Integer numbers</li>
+          </ul>          <p>Integers are just like whole numbers, except negative counting numbers
+              are included in this set. Therefore integers are positive and negative
+              counting numbers and zero, such as -3, -2, -1, 0, 1, 2, 3, and
+              so on. Just like whole and natural numbers they cannot be fractions.
+              Integers are a type of rational numbers, and they include whole
+              numbers and natural numbers.</p>          
+          <ul>
+            <li>Real, or rational, numbers</li>
+      </ul>              <p>Real numbers are the broadest set of numbers. They can be negative
+              and positive fractions and counting numbers, and can include zero.
+              Therefore a list of numbers like the following would be a set of
+              rational numbers: -1/2, -0.25, 3.14, 0, 1, -25, 5/8, and so on.
+              As you can see from this list of examples, rational numbers include
+              integers, whole numbers, and natural numbers.<br>
+                  </p>          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">Choosing &quot;Absolute&quot; as the data category will
+            take you through the same set of choices and prompts as was just
+            described above when &quot;Relative&quot; was chosen.</p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">The fifth choice under &quot;Category&quot; is &quot;Date-Time&quot;.
+            If you choose this category, you will see the screen pictured below.</p>
+          <p class="tablepanel">&nbsp;</p>          <p align="center" class="tablepanel"><img src="images/datawizard21.gif" width="673" height="550"></p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">Type the format of the date and/or time in the
+            field next to &quot;Format&quot;, using the examples given to the right of
+            the field as a guide (although formats other than those shown in
+            the examples may be used). Next, provide the precision of the date
+            and/or time format. You may also indicate the upper and/or lower
+            bounds of the date and/or time using the &quot;Bounds&quot; table at the bottom
+            of the screen. Click &quot;Add&quot; to do this, and click &quot;Delete&quot; if you
+            wish to remove a set of bounds you previously entered.</p>
+          <p class="tablepanel">&nbsp;</p>
+          <p class="tablepanel">After choosing one of the five choices for &quot;Category&quot;
+            that have been described here, and after filling out all of the required
+            information and any additional information you wish to include at
+            the bottom of the window, click &quot;OK&quot;. You have just added a description
+            of ONE of the attributes or columns of the data. You should then
+            see the information displayed in the list of attribute descriptions
+            in the screen pictured below. To describe another attribute or column,
+            click &quot;Add&quot; again, and go through this process again for the new
+            attribute
+            you
+            wish
+            to
+            define. After defining multiple attributes, you can delete the descriptions,
+            or change the order of the descriptions, using the buttons to the
+            left of the screen. </p>
+          <p class="tablepanel">&nbsp;</p>
+          <p align="center" class="tablepanel"><img src="images/datawizard13.gif" width="649" height="578"></p>          <p class="helpsub">&nbsp;</p>
+          <p class="tablepanel">After you have added all of the attribute documentation
+            you would like to, click &quot;Next&quot; at the bottom of the screen. You
+            will then see the final screen of the New Data Table Wizard, pictured
+            below.</p>          <p class="helpsub">&nbsp;</p>
+          <p align="center" class="helpsub"><a name="finishscreen"></a><img src="images/datawizard22.gif" width="650" height="512"></p>
+          <p class="helpsub">&nbsp;</p>
+          <p class="tablepanel">Click &quot;Finish&quot; to finish the documentation of
+            the data table, or click on &quot;or click here to finish this wizard
+            and
+            add a new data table now...&quot; to finish adding documentation of the
+            data table and to add documentation for another data table using
+            the New Data Table Wizard again. After clicking &quot;Finish&quot;, you will
+            then be presented with a data package that shows an empty data table,
+            documentation
+            for
+            the attributes or columns of data that you just added using the New
+            Data Table Wizard, and any documentation you had added previously
+            using the Data Package Wizard.
+            You can now type
+            the data directly into the columns in the empty data table.</p>
+          <p class="helpsub">&nbsp;</p>
+          <p class="helpsub">Import<a name="import"></a></p>          
+          <p>On the first screen of the New Data Table Wizard, you are given
+            three choices under &quot;Where is your data?&quot;. If &quot;IMPORT&quot; is selected,
+            you will then see additional prompts, shown in the screen
+            below.</p>
+      <p>&nbsp;</p>      <p align="center"><img src="images/datawizard2.gif" width="652" height="569"></p>
       <p>&nbsp;</p>
-      <p class="helpsub">Importing Other Data Types</p>
+      <p>Under &quot;How do you want to enter the metadata description&quot;, there are
+        two options. Automatic is where the documentation for the data table
+        is automatically extracted from the table itself by Morpho, and is shown
+        to you for review and editing, if necessary. Manual is where the documentation
+        is entered manually by you in the wizard. After choosing one of these
+        two options, tell the wizard where the data is that you would like to
+        import by clicking on &quot;locate...&quot;. You will be shown a map of your computer
+        and can indicate where the data file is. Click &quot;Next&quot; after choosing
+        the file location.</p>
       <p>&nbsp;</p>
-      <p class="helpsub">Manipulating Data Tables</p>    
-      </tr>
+      <p>If you chose to document the data manually, then you will follow the
+        steps that were outlined previously under the &quot;Create&quot; section above
+        (<a href="#fileformat">start here</a>). </p>
+      <p>&nbsp;</p>
+      <p><a name="automatic"></a>If you chose to document the
+          data automatically, then clicking &quot;Next&quot; will being the screen pictured
+          below into view. The screen includes some sample data shown for illustration
+          purposes. Your data might look quite different.</p>      <p>&nbsp;</p>
+      <p align="center"><img src="images/datawizard23.gif" width="655" height="568"></p>
+      <p>&nbsp;</p>
+      <p>Begin by entering the name and a brief description of the data table.
+        Indicate which row you would like the importation of data to start at
+        (for example, you can skip some blank rows that may occur at the top
+        of your data table by starting at a later row). If the first row that
+        you start at contains the column labels, then click the box in the middle
+        of the screen. Click &quot;Next&quot;. You will then see the screen pictured below.</p>
+      <p>&nbsp;</p>      <p align="center"><img src="images/datawizard24.gif" width="655" height="568"></p>
+      <p>&nbsp;</p>
+      <p>Select one or more of the delimiters listed at the top of the screen.
+        Choosing different delimiters will change the layout of your data. The
+        data should be laid out correctly when the correct delimiter or combination
+        of delimiters is chosen. You may also indicate that consecutive delimiters
+        be counted as one by checking the box. Clicking &quot;Next&quot; will begin the
+        process of verifying the documentation that Morpho has automatically
+        generated for each of the columns in the data table. The screen pictured
+        below is an example of what you might see. </p>
+      <p>&nbsp;</p>      <p align="center"><img src="images/datawizard25.gif" width="739" height="548"></p>      <p>&nbsp;</p>
+      <p>Another example is shown below. Note that Morpho automatically placed
+        the codes in the table under &quot;Code&quot;, but you have to provide the
+        definition of the codes. You must also provide definitions of the columns
+        (Morpho does not do this automatically). Examine all
+        of
+        the
+        other
+        areas of
+        documentation,
+        making
+        sure that the
+        category, units, and all other documentation is correct. You may also
+        add to the documentation or change anything that is in error by typing
+        in the fields shown or choosing selections from the drop-down menus.
+        Click &quot;Next&quot; at the bottom of the screen. Each screen provides
+        the documentation for one of the attributes or columns of data. Continue
+      in this way until all of the attributes or columns have been documented.</p>
+      <p>&nbsp;</p>      <p align="center"><img src="images/datawizard26.gif" width="739" height="558"></p>
+      <p>&nbsp;</p>
+      <p>When all of the columns of data have been documented, you will see the
+        final, finish screen, pictured <a href="#finishscreen">here</a>.</p>
+      <p>&nbsp;</p>
+      <p class="helpsub">Describe<a name="describe"></a></p>
+      <p>On the first screen of the New Data Table Wizard, you are given three
+        choices under &quot;Where is your data?&quot;. If &quot;DESCRIBE&quot; is chosen
+        under &quot;Where is your data?&quot;, the data itself will not be included in
+        the data package, but you will provide documentation
+        for it. This is useful for documenting the data for yourself, as well
+        as for telling others about the data if the data package is made viewable
+        by others, without sharing the data itself. </p>
+      <p>&nbsp;</p>
+      <p>If &quot;DESCRIBE&quot; is selected,
+          then additional prompts will appear on the screen, pictured below.
+        To have the documentation for the data extracted automatically from an
+        existing
+          data file (without the data itself being extracted) for your review,
+          then choose &quot;AUTOMATIC&quot;. You will then tell the Wizard where the data
+          file
+          is. Instructions for what to do next if you choose AUTOMATIC have already
+        been provided above (click <a href="#automatic">here</a>).</p>      <p>&nbsp;</p>
+      <p align="center"><img src="images/datawizard3.gif" width="652" height="569"></p>
+      <p>&nbsp;</p>
+      <p>To manually enter the documentation for the data in the Wizard, choose
+        &quot;MANUAL&quot;. You will then be prompted, as shown on the screen pictured
+        below, to indicate where the data resides. If the data are not currently
+        available, then choose &quot;Not available&quot;. </p>
+      <p>&nbsp;</p>
+      <p align="center"><img src="images/datawizard4.gif" width="652" height="569"></p>      <p>&nbsp;</p>
+      <p>If the data are available online, then choose &quot;Online URL&quot;, and type
+        in the file name and URL in the spaces provided, as shown in the screen
+        pictured below.</p>
+      <p>&nbsp;</p>      <p align="center"><img src="images/datawizard5.gif" width="652" height="569"></p>      
+      <p>&nbsp;</p>
+      <p>If the data are archived, such as on a disk or a hardcopy, then choose
+        &quot;Archived&quot;, and provide the medium the data is found in or on, as well
+        as the name or title of the data, in the spaces provided (pictured below).</p>
+      <p>&nbsp;</p>
+      <p align="center"><img src="images/datawizard6.gif" width="652" height="604"></p>
+      <p>&nbsp;</p>
+      <p>After finishing making selections and filling out fields on the first
+        screen of the New Data Table Wizard, click &quot;Next&quot; at the bottom of the
+        screen to continue. Instructions for what to do next if you choose MANUAL
+        have already been provided above (click <a href="#fileformat">here</a>).</p>
+      <p>&nbsp;</p>
+      <p>NOT DONE</p>      <p class="helpsub">Importing Other Data Types</p>
+      <p class="helpsub">&nbsp;</p>      <p class="helpsub">Manipulating Data
+        Tables - maybe add as a separate section</p>    
+  </tr>
 </table>
 
+<p>&nbsp;</p>
+<table width="100%" border="0" cellpadding="4" cellspacing="0"
+       class="tablepanel">
+  <!-- 
+  <tr>
+   <td colspan=2 width="100%">
+    <img src="./images/knb.gif" width=350 height=200>
+   </td>
+  </tr>
+ -->
+  <tr>
+    <td width="41%" height="53" align=center valign=middle>
+      <p><a href="index.html" class="sitelink">Help Index</a></td>
+    <td align=center valign=middle width="59%"> <a href="Creating_a_new_data_package.htm" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Creating
+        a New Data Package&nbsp;</a>&nbsp;&nbsp; &nbsp;&nbsp; <a href="Editing_a_data_package.htm" class="sitelink"> Editing
+        a Data Package<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
 </body>
 </html>
