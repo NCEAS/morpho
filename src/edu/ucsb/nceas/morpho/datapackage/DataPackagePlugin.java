@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-21 23:44:34 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2003-11-24 23:19:44 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,12 +141,18 @@ public class DataPackagePlugin
     // Save dialog box action
     GUIAction saveAction = new GUIAction("Save...", 
                                               UISettings.SAVE_ICON, 
-                                              null);
+                                              new SavePackageCommand());
     saveAction.setMenuItemPosition(4);
     saveAction.setToolTipText("Save...");
     saveAction.setMenu("File", 0);
     saveAction.setToolbarPosition(1);
     saveAction.setEnabled(false);
+    saveAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_LOCAL);
+    saveAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(saveAction);
     
 

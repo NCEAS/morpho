@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-24 19:03:49 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-11-24 23:19:44 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ public class SavePackageCommand implements Command
    */    
   public void execute(ActionEvent event)
   {
-      
+      new SaveDialog();
     
   }//execute
 
