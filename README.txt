@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.1.1 - May 9, 2002
+Version: 1.2Beta1 - Oct 9, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -69,6 +69,8 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 
 Version History
 -------------------------------
+
+Version 1.2 represent a substantial change in the visual interface from previous versions. A 'datacentric' view of datapackages is shown. This view includes a tabular display of a data table along with descriptive information about the data. The data and descriptions are contained in resizable panels. The user can thus enlarge parts of the window of special interest as desired. Menus have also been redesigned and, in some cases, renamed. Rather than presenting a default list of 'owner documents', the default window is empty and the user needs to use the "Open" menu or toolbar button to get a list of user owned documents as is customary in most applications. 
 
 Version 1.1.1 corrects several minor problems in Version 1.1.0 and adds the capability to open previous versions of packages. Previously only the most recent version could be opened. The user can open previous versions using a new menu item in the popup menu that appears when one 'right-clicks' on a row in the table displaying the user's data or the results of a query.
 
