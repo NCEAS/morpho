@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-26 22:30:15 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-28 16:14:56 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
   String entityId;
   Morpho framework;
   ConfigXML config;
-  File entityFile;
+  File[] entityFile;
   
   JSplitPane entityPanel;
   JPanel entityMetadataPanel;
@@ -150,7 +150,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       packageMetadataPanel.removeAll();
       packageMetadataPanel.add(BorderLayout.CENTER,toppanel);
     }
-    if (entityItems==null) System.out.println("EntityItems vector is null!!!");
+    if (entityItems==null) Log.debug(20, "EntityItems vector is null!!!");
+    entityFile = new File[entityItems.size()];
     for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
       tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
@@ -175,7 +176,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       currentEntityMetadataPanel.setMaximumSize(new Dimension(200,4000));
 
       currentEntityPanel.setDividerLocation(600);
-      this.entityFile = entityEdit.entityFile;
+      this.entityFile[i] = entityEdit.entityFile;
     
       // create the data display panel (usually a table) using DataViewer class
       String fn = dp.getDataFileName(id);    
@@ -208,7 +209,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       lastPV.delete();  
     }
   }
-    /**
+   /**
    * creates the data display and puts it into the center of the window
    * This needs to be dynamically done as tabs are selected due to large memory usage
    */
@@ -230,9 +231,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     dv.setDataID(dp.getDataFileID(id));
     dv.setPhysicalFile(fphysical);
     dv.setAttributeFile(fattribute);
-    dv.setEntityFile(entityFile);
+    dv.setEntityFile(entityFile[index]);
     dv.setDataPackage(this.dp);
     dv.init();
+    dv.getEntityInfo();
     lastPV = dv.getPV();
     JPanel tablePanel = dv.DataViewerPanel;
     

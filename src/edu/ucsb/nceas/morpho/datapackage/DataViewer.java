@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-26 22:30:15 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-08-28 16:14:56 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,8 +92,6 @@ public class DataViewer extends javax.swing.JPanel
     DataPackageGUI grandParent;
     EntityGUI parent;
     
-    ColumnMetadataEditPanel cmep;
-    
   /**popup menu for right clicks*/
   private JPopupMenu popup;
   /**menu items for the popup menu*/
@@ -107,7 +105,7 @@ public class DataViewer extends javax.swing.JPanel
   private JMenuItem deleteColumn = new JMenuItem("Delete Selected Column");
   private JMenuItem editColumnMetadata = new JMenuItem("Edit Column Metadata");
 
- // The following instances of JMenuItems are apparently needed to make 
+ // The following instances of JMenu are apparently needed to make a
  // menus that appears in both the menu bar and in a popup menu
   private JMenuItem createNewDatatable1 = new JMenuItem("Create New Datatable...");
   private JMenuItem sortBySelectedColumn1 = new JMenuItem("Sort by Selected Column");
@@ -209,7 +207,17 @@ public class DataViewer extends javax.swing.JPanel
 	 */
 	 DataPackage dp;
 
-
+ 	/**
+	 * value of entityName element
+	 */
+  String entityName = "";
+   
+ 	/**
+	 * value of entityDescription element
+	 */
+  String entityDescription = "";
+  
+  boolean missing_metadata_flag = false;
 
 	public DataViewer()
 	{
@@ -335,7 +343,7 @@ public class DataViewer extends javax.swing.JPanel
     }
     
     public void init() {
-      boolean missing_metadata_flag = false;
+      missing_metadata_flag = false;
       if (physicalFile==null) {
           Log.debug(15, "Physical information about the data is missing!");
           missing_metadata_flag = true;
@@ -398,24 +406,79 @@ public class DataViewer extends javax.swing.JPanel
             catch(Exception w) {}
           }
         }
-          
+        
+        Vector entityNamesPath = new Vector();
+        entityNamesPath.addElement("table-entity/entityName");
+        NodeList entityNamesList = PackageUtil.getPathContent(entityFile, 
+                                                     entityNamesPath, 
+                                                     framework);  
+        if(entityNamesList != null && entityNamesList.getLength() != 0)
+        {
+          String s = entityNamesList.item(0).getFirstChild().getNodeValue();
+          if ((s!=null)&&(s.length()>0))  {
+            try {
+              entityName = s.trim();
+            }
+            catch(Exception w) {}
+          }
+        }
+ 
+        Vector entityDescriptionPath = new Vector();
+        entityDescriptionPath.addElement("table-entity/entityDescription");
+        NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile, 
+                                                     entityDescriptionPath, 
+                                                     framework);  
+        if(entityDescriptionList != null && entityDescriptionList.getLength() != 0)
+        {
+          String s = entityDescriptionList.item(0).getFirstChild().getNodeValue();
+          if ((s!=null)&&(s.length()>0))  {
+            try {
+              entityDescription = s.trim();
+            }
+            catch(Exception w) {}
+          }
+        }
+        if (entityName.length()>0) {
+          headerLabel.setText(entityName);
+        } 
+        if (entityDescription.length()>0) {
+          headerLabel.setText(entityDescription);
+        } 
+
       }
       if (attributeFile==null) {
           Log.debug(15, "Attribute information about the data is missing!");
           missing_metadata_flag = true;
       } else {
         // get attribute labels and build column headers
-        Vector attributeLabelsPath = new Vector();
-        attributeLabelsPath.addElement("eml-attribute/attribute/attributeLabel");
-        NodeList attributeLabelsList = PackageUtil.getPathContent(attributeFile, 
-                                                     attributeLabelsPath, 
+        Vector attributeNamesPath = new Vector();
+        attributeNamesPath.addElement("eml-attribute/attribute/attributeName");
+           // use names rather than Label because name is required!
+        NodeList attributeNamesList = PackageUtil.getPathContent(attributeFile, 
+                                                     attributeNamesPath, 
                                                      framework);  
-        if(attributeLabelsList != null && attributeLabelsList.getLength() != 0)
+       if(attributeNamesList != null && attributeNamesList.getLength() != 0)
         {
           column_labels = new Vector(); 
-          for (int i=0;i<attributeLabelsList.getLength();i++) {
-            String temp = attributeLabelsList.item(i).getFirstChild().getNodeValue();
-            column_labels.addElement(temp); 
+          String unitString = "";
+          String dataTypeString = "";
+          for (int i=0;i<attributeNamesList.getLength();i++) {
+            String temp = attributeNamesList.item(i).getFirstChild().getNodeValue();
+            // attribute Name is a required node; we want the associated
+            // unit and dataType node values, which are NOT required
+            Node nd = attributeNamesList.item(i).getNextSibling();
+            while (nd!=null) {
+              if (nd.getNodeName().equals("dataType")) {
+                dataTypeString = nd.getFirstChild().getNodeValue();
+              }
+              if (nd.getNodeName().equals("unit")) {
+                unitString = nd.getFirstChild().getNodeValue();                
+              }
+              nd = nd.getNextSibling();  
+            }
+            temp = "<html><center><small>"+dataTypeString+"<br>"+unitString+"<br></small><b>"
+                                                  +temp+"</b></center></html>";
+            column_labels.addElement(temp);
           }
         }
       }
@@ -535,6 +598,68 @@ public class DataViewer extends javax.swing.JPanel
         this.dataID = dataID;
         //setTitle("DataFile: "+dataID);
         DataIDLabel.setText("DataFile: "+dataID);
+    }
+    
+    public void getEntityInfo()  {
+      if (entityFile==null) {
+          Log.debug(15, "Entity information about the data is missing!");
+          missing_metadata_flag = true;
+      } else {
+        // get number of records, etc
+        Vector numRecordsPath = new Vector();
+        numRecordsPath.addElement("table-entity/numberOfRecords");
+        NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
+                                                     numRecordsPath, 
+                                                     framework);  
+        if(numRecordsList != null && numRecordsList.getLength() != 0)
+        {
+          String s = numRecordsList.item(0).getFirstChild().getNodeValue();
+          if ((s!=null)&&(s.length()>0))  {
+            try {
+              num_records = (new Integer(s.trim())).intValue();
+            }
+            catch(Exception w) {}
+          }
+        }
+        
+        Vector entityNamesPath = new Vector();
+        entityNamesPath.addElement("table-entity/entityName");
+        NodeList entityNamesList = PackageUtil.getPathContent(entityFile, 
+                                                     entityNamesPath, 
+                                                     framework);  
+        if(entityNamesList != null && entityNamesList.getLength() != 0)
+        {
+          String s = entityNamesList.item(0).getFirstChild().getNodeValue();
+          if ((s!=null)&&(s.length()>0))  {
+            try {
+              entityName = s.trim();
+            }
+            catch(Exception w) {}
+          }
+        }
+ 
+        Vector entityDescriptionPath = new Vector();
+        entityDescriptionPath.addElement("table-entity/entityDescription");
+        NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile, 
+                                                     entityDescriptionPath, 
+                                                     framework);  
+        if(entityDescriptionList != null && entityDescriptionList.getLength() != 0)
+        {
+          String s = entityDescriptionList.item(0).getFirstChild().getNodeValue();
+          if ((s!=null)&&(s.length()>0))  {
+            try {
+              entityDescription = s.trim();
+            }
+            catch(Exception w) {}
+          }
+        }
+        if (entityName.length()>0) {
+          headerLabel.setText(entityName);
+        } 
+        if (entityDescription.length()>0) {
+          headerLabel.setText(entityDescription);
+        } 
+      }
     }
 
 	static public void main(String args[])
@@ -742,6 +867,7 @@ public class DataViewer extends javax.swing.JPanel
  //   table.setCellSelectionEnabled(true);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	  (table.getTableHeader()).setReorderingAllowed(false);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       
     DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
@@ -798,7 +924,6 @@ public class DataViewer extends javax.swing.JPanel
       else if ((object == insertColumnBefore)||(object == insertColumnBefore1)) {
         int sel = table.getSelectedColumn();
         if (sel>-1) {
-          showColumnMetadataEditPanel();
           column_labels.insertElementAt("New Column", sel);
           ptm.insertColumn(sel); 
           pv = ptm.getPersistentVector();
@@ -822,7 +947,7 @@ public class DataViewer extends javax.swing.JPanel
         }
       }
       else if ((object == editColumnMetadata)||(object == editColumnMetadata1)) {
-          showColumnMetadataEditPanel();        
+        
       }
 
     }
@@ -903,7 +1028,7 @@ public class DataViewer extends javax.swing.JPanel
     columnDialog = new JDialog(mf,true);
     columnDialog.getContentPane().setLayout(new BorderLayout(0,0));
     columnDialog.setSize(400,650);
-    cmep = new ColumnMetadataEditPanel();
+    ColumnMetadataEditPanel cmep = new ColumnMetadataEditPanel();
     columnDialog.getContentPane().add(BorderLayout.CENTER, cmep);
     controlPanel = new JPanel();
     controlCancel = new JButton("Cancel");
@@ -925,7 +1050,6 @@ public class DataViewer extends javax.swing.JPanel
 			Object object = event.getSource();
 			if (object == controlOK) {
 				columnDialog.dispose();
-        System.out.println(cmep.output()); 
       }
       else if (object == controlCancel) {
 				columnDialog.dispose();

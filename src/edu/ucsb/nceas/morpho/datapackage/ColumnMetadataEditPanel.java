@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-26 22:30:15 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-28 16:14:56 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,12 +34,36 @@ import java.io.*;
 import java.util.*;
 import javax.swing.table.*;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
+
+import javax.xml.parsers.DocumentBuilder;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+
 import edu.ucsb.nceas.morpho.framework.*;
 /**
  * A panel that displays the metadata for a column in a data table
  */
 public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements javax.swing.event.ChangeListener
 {
+  /**
+   * root node of the in-memory DOM structure
+   */
+  private Node root;
+
+  /**
+   * Document node of the in-memory DOM structure
+   */
+  private Document doc;
 
   // assorted components that need to be global to retreive data 
   JRadioButton enumButton;
@@ -641,4 +665,40 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
         return res;
     }
 
+  void insertNewAttributeAt(int index, String filename) throws FileNotFoundException
+  {
+    DocumentBuilder parser = Morpho.createDomParser();
+    File XMLConfigFile = new File(filename);
+    InputSource in;
+    FileInputStream fs;
+    fs = new FileInputStream(filename);
+    in = new InputSource(fs);
+     try
+    {
+      doc = parser.parse(in);
+      fs.close();
+    } catch(Exception e1) {
+      Log.debug(4, "Parsing " + filename + " threw: " + 
+                            e1.toString());
+      e1.printStackTrace();
+    }
+    root = doc.getDocumentElement();
+    
+    // create the root of the new attribute subtree
+    Node newAttrRoot = doc.createElement("attribute");
+    
+    Node temp = doc.createElement("attributeName");
+    Node newText = doc.createTextNode(normalize(nameTextField.getText()));
+    temp.appendChild(newText);
+    newAttrRoot.appendChild(temp);
+
+    temp = doc.createElement("attributeLabel");
+    newText = doc.createTextNode(normalize(definitionTextArea.getText()));
+    temp.appendChild(newText);
+    newAttrRoot.appendChild(temp);
+    
+    // now find the 'index'th attribute and insert the new branch there
+    
+  }
+    
 }
