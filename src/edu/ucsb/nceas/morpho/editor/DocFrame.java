@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-09 23:24:14 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2001-07-10 20:28:57 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -332,7 +332,7 @@ public class DocFrame extends javax.swing.JFrame
 		  // the previously created document tree
 		  treeUnion(rootNode,frootNode);
 		}
-    
+   
     // if the document instance has a DTD, the DTD is parsed
     // and info from the result is merged into the tree
     if (dtdMergeflag) {
@@ -1180,6 +1180,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                     if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
                     // in this case, one of the 'children' of the CHOICE node probably exists
                     // in the Info nodes for this level
+                        reverseStack(tempStack);
                         while (!tempStack.empty()) {
                             int indx1 = -1;
                             DefaultMutableTreeNode nwnode = (DefaultMutableTreeNode)tempStack.pop();
@@ -1232,6 +1233,18 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         }  // end levels loop
   } //end else
 }
+
+/** reverse the order of items in a stack
+ */
+ private void reverseStack(Stack st) {
+    Vector temp = new Vector();
+    while (!st.empty()) {
+      temp.addElement(st.pop());
+    }
+    for (int i=0;i<temp.size();i++) {
+      st.push(temp.elementAt(i)); 
+    }
+ }
 
 /** given a vector to nodes with the same name, return those with the same parent
   * (first set)
