@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 23:51:35 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-28 17:20:27 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,8 +295,6 @@ public class Entity extends AbstractWizardPage{
     returnMap.put(xPathRoot + "/entityName", 
                   entityNameField.getText().trim());
                   
-//    returnMap.put(xPathRoot + "/@id", WizardSettings.getUniqueID());
-
     String entityDesc = entityDescField.getText().trim();
     if (!entityDesc.equals("")) {
       returnMap.put(xPathRoot + "/entityDescription", entityDesc);
