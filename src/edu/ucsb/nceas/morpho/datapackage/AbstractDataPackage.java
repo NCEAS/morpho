@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-22 18:59:22 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2004-01-23 17:31:09 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -213,8 +213,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    * in classes specific to grammar
    *
    * @param location String
+   *
+   * @return   true if there is no indicated problem; false, otherwise
    */
-  abstract public void serialize(String location);
+  abstract public boolean serialize(String location);
 
 
   /**

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.20 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-23 17:31:09 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,8 @@ import org.xml.sax.InputSource;
 public  class EML200DataPackage extends AbstractDataPackage
 {
   // serialize to the indicated location
-  public void serialize(String location) {
+  public boolean serialize(String location) {
+    boolean resflag = true;
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     StringReader sr = new StringReader(temp);
@@ -79,8 +80,11 @@ public  class EML200DataPackage extends AbstractDataPackage
 
       } catch(Exception e) {
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
+          resflag = false;
+          return resflag;
         }
       }
+    return resflag;  
   }
 
   /*
