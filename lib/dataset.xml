@@ -1,4 +1,4 @@
-<dataset
+<dataset rooteditor="edu.ucsb.nceas.morpho.editor.DataPackagePanel"
 help="The dataset element defines extend the ResourceBase complexType in order to provide information that is specific to describing a set of data. Therefore, dataset elements contain all of the general resource elements, but also specific dataset elements.">
 
   <identifier

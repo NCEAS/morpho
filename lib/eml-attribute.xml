@@ -1,4 +1,4 @@
-<eml-attribute
+<eml-attribute  rooteditor="edu.ucsb.nceas.morpho.editor.VariablePanel"
 help="Eml-attribute element represents a list of all attributes in a dataset.">
   <identifier
   help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a sequence of numbers or letters that are meaningful in a larger context, such as a metadata catalog. That larger system can be identified in the &quot;system&quot; attribute. Multiple identifiers can be listed corresponding to different catalog systems."
