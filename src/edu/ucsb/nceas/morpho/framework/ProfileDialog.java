@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-11 23:32:26 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-11 23:55:32 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -461,13 +461,15 @@ public class ProfileDialog extends JDialog
           File[] samplesList = sampleDir.listFiles();
           for (int n=0; n < samplesList.length; n++) {
             File srcFile = samplesList[n];
-            String destName = dataPath + File.separator + 
-                              username + "." + srcFile.getName();
-            FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
+            if (srcFile.isFile()) {
+              String destName = dataPath + File.separator + 
+                                username + "." + srcFile.getName();
+              FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
+            }
           }
            
           // Create a metacat user
-  
+ 
           // Log into metacat
           framework.setProfile(profile);
           framework.setPassword(passwordField.getText());
