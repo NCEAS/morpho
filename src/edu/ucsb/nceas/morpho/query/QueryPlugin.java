@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 16:53:01 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2002-08-23 00:21:28 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,13 +156,16 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setSmallIcon(new ImageIcon(getClass().
            getResource("revisesearch16.gif")));
     reviseSearchItemAction.setToolTipText("Revise search");
-    reviseSearchItemAction.setMenuItemPosition(4);
+    reviseSearchItemAction.setMenuItemPosition(3);
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Put actions into array which will be added into search menu
     menuActions[0] = searchItemAction;
     menuActions[1] = refreshItemAction;
     menuActions[2] = saveQueryItemAction;
     menuActions[3] = reviseSearchItemAction;
+    
+    // Load user saved the query to search menu too
+    saveCommand.loadSavedQueries();
     
     // Open dialog box action
     GUIAction openDialogBoxAction = new GUIAction("Open", null, 
