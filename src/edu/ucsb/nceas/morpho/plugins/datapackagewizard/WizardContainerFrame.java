@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 20:50:11 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-09-26 23:51:35 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -447,6 +447,11 @@ public class WizardContainerFrame extends JFrame {
       addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
     }
 
+    addIDs(
+      new String[]  {
+                      "/eml:eml/dataset/dataTable",
+                      "/eml:eml/dataset/dataTable/attributeList/attribute"
+                    }, wizData);
     
     
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
@@ -485,7 +490,25 @@ public class WizardContainerFrame extends JFrame {
     listener.wizardComplete(rootNode);
   }
   
+  /**
+   *  adds unique IDs to the elements identified by the *absolute* XPath strings  
+   *  in the elementsThatNeedIDsArray 
+   *  NOTE - if the xpath points to more than one element, then a unique ID 
+   *  will be assigned to each element
+   */
+  private void addIDs(String[] elementsNeedingIDsArray, OrderedMap resultsMap) {
+  
+    for (int i=0; i<elementsNeedingIDsArray.length; i++) {
+    
+      //elementsNeedingIDsArray[i];
+    }
+  }
 
+  /**
+   *  given a WizardPage object (nextPage), calls its getPageData() method to 
+   *  get the NVPs from thae page, and adds these NVPs to the OrderedMap 
+   *  provided (resultMap) 
+   */
   private void addPageDataToResultsMap( WizardPage nextPage, 
                                         OrderedMap resultsMap) {
   
