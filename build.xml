@@ -6,14 +6,14 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.10 2000-11-30 19:48:06 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.10.2.1 2001-04-23 16:16:08 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
   *
   * usage: ant [compile|jar|install|jdoc]
 --> 
-<project name="metacat" default="jar" basedir=".">
+<project name="metacat" default="install" basedir=".">
    <target name="init">
       <property name="installdir" value="/opt/tomcat/webapps/metadata" />
       <property name="name" value="dmanclient"/>
@@ -53,9 +53,12 @@
       <mkdir dir="${build.src}"/>
       <mkdir dir="${build.dest}"/>
 
-      <copydir src="${srcdir}" 
-               dest="${build.src}" 
-               excludes="**/CVS* **/.#* "/>
+      <copy todir="${build.src}" filtering="no">
+        <fileset dir="${srcdir}">
+          <exclude name="**/CVS*"/>
+          <exclude name="**/.#*"/>
+        </fileset>
+      </copy>
    </target>
 
    <target name="compile" depends="prepare">
@@ -66,24 +69,29 @@
    </target> 
 
    <target name="jar" depends="compile">
-       <delete file="${build.dir}/${name}.jar" />
-       <copydir src="${srcdir}/${package.home}/metaedit/images" 
-                dest="${build.dest}/${package.home}/metaedit" />
-       <copydir src="${srcdir}/${package.home}/dtclient/images" 
-                dest="${build.dest}/${package.home}/dtclient" />
-       <copydir src="${srcdir}/${package.home}/querybean/images" 
-                dest="${build.dest}/${package.home}/querybean" />
-       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" />
+      <delete file="${build.dir}/${name}.jar" />
+      <copy todir="${build.dest}/${package.home}/metaedit" filtering="no">
+        <fileset dir="${srcdir}/${package.home}/metaedit/images">
+        </fileset>
+      </copy>
+      <copy todir="${build.dest}/${package.home}/dtclient" filtering="no">
+        <fileset dir="${srcdir}/${package.home}/dtclient/images">
+        </fileset>
+      </copy>
+      <copy todir="${build.dest}/${package.home}/querybean" filtering="no">
+        <fileset dir="${srcdir}/${package.home}/querybean/images">
+        </fileset>
+      </copy>
+      <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" />
    </target> 
 
    <target name="install" depends="jar">
-       <copyfile src="${build.dir}/${name}.jar" 
-                 dest="${libdir}/${name}.jar" />
-       <echo message="Install complete. Use the dmanclient script to run it." />
+      <copy file="${build.dir}/${name}.jar" todir="${libdir}" />
+      <echo message="Install complete. Use the morpho script to run it." />
    </target> 
 
    <target name="clean" depends="init">
-       <deltree dir="${build.dir}" />
+       <delete dir="${build.dir}" />
    </target>
 
    <target name="jdoc" depends="init">
