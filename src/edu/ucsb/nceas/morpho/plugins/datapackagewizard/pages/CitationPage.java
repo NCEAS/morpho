@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-10 02:21:49 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-04-12 02:37:24 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
+import java.text.DateFormat;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -659,7 +661,13 @@ public class CitationPage extends AbstractUIPage {
       return false;
     }
     WidgetFactory.unhiliteComponent(authorLabel);
-
+		
+		String date = this.pubDateField.getText();
+		if(!isDate(date)) {
+			WidgetFactory.hiliteComponent(pubDateLabel);
+      return false;
+		}
+		
     if (citationType==null || citationType.trim().equals("")) {
 
       WidgetFactory.hiliteComponent(citationTypeLabel);
@@ -670,7 +678,28 @@ public class CitationPage extends AbstractUIPage {
     return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
   }
 
-
+	private boolean isDate(String s) {
+    DateFormat dateFormat;
+    Date dt;
+    dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+    boolean res = true;
+    try {
+      dt = dateFormat.parse(s);
+    } catch (Exception w) {
+      try {
+        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        dt = dateFormat.parse(s);
+      } catch (Exception w1) {
+        try {
+          dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+          dt = dateFormat.parse(s);
+        } catch (Exception w2) {
+          res = false;
+        }
+      }
+    }
+    return res;
+  }
 
   /**
    *  @return a List contaiing 2 String elements - one for each column of the
@@ -795,7 +824,7 @@ public class CitationPage extends AbstractUIPage {
 
 	private boolean mapContainsCreator(OrderedMap map, String xPath, int idx) {
 		
-		boolean b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/surName[1]");
+		boolean b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName[1]/surName[1]");
 		if(b) return true;
 		b = map.containsKey(xPath + "/creator[" +idx+ "]/organizationName[1]");
 		if(b) return true;
@@ -820,6 +849,7 @@ public class CitationPage extends AbstractUIPage {
   public boolean setPageData(OrderedMap map, String xPath) {
 		
 		this.titleField.setText((String)map.get(xPath + "/title[1]"));
+		map.remove(xPath + "/title[1]");
 		
 		for(int idx = 1; ; idx++) {
 			
@@ -832,8 +862,10 @@ public class CitationPage extends AbstractUIPage {
 		}
 		
 		String pubn = (String)map.get(xPath + "/pubDate[1]");
-		if(pubn != null)
+		if(pubn != null) {
 			this.pubDateField.setText(pubn);
+			map.remove(xPath + "/pubDate[1]");
+		}
 		
 		citationType = findCitationType(map, xPath);
 		int componentNum = -1;
@@ -860,8 +892,7 @@ public class CitationPage extends AbstractUIPage {
 			this.setCitationType("Report");
 			this.setCitationTypeUI(reportPanel);
 			((WizardPageSubPanelAPI)reportPanel).setPanelData(xPath + "/report[1]", map);
-		} else 
-		
+		}
 		
 		if (componentNum != -1) {
 			
@@ -1041,6 +1072,12 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 		if(vn != null) {
 			this.volumeField.setText(vn);
 			map.remove(xPathRoot + "/volume[1]");
+		}
+		
+		String isbn = (String)map.get(xPathRoot + "/ISBN[1]"); 
+		if(isbn != null) {
+			this.isbnField.setText(isbn);
+			map.remove(xPathRoot + "/ISBN[1]");
 		}
 		
 	}
