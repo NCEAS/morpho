@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:25:31 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-06 17:07:54 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,13 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
+import java.util.Vector;
 
 
 import javax.swing.Box;
@@ -81,8 +80,8 @@ public class DeleteDialog extends JDialog
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
       "Are you sure you want to delete the data package? \n" +
-      "If yes, please choose one option and click the Execute button, " +
-      "otherwise please click the Cancel button.";
+      "If yes, please choose one option and click the Execute button."; 
+
   /** A reference to morpho frame */
   MorphoFrame parent = null;    
   
@@ -116,9 +115,10 @@ public class DeleteDialog extends JDialog
      // Set OpenDialog size depent on parent size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
-    int dialogWidth = 500;
-    int dialogHeight = 250;
+    int dialogWidth = 400;
+    int dialogHeight = 270;
     setSize(dialogWidth, dialogHeight);
+    setResizable(false);
     
     // Set location of dialog, it shared same center of parent
     double parentX = parent.getLocation().getX();
@@ -151,20 +151,28 @@ public class DeleteDialog extends JDialog
     group.add(deleteLocal);
     group.add(deleteNetwork);
     group.add(deleteBoth);
+    // Vector to keep track of enabled radio button
+    Vector enabledRadioButtonList = new Vector();
     // If has local copy
     if (inLocal)
     {
-      deleteLocal.setEnabled(true);  
+      deleteLocal.setEnabled(true);
+      // Add to the list
+      enabledRadioButtonList.add(deleteLocal);
     }
     // If has network copy
     if (inNetwork)
     {
       deleteNetwork.setEnabled(true);
+      // Add to the list
+      enabledRadioButtonList.add(deleteNetwork);
     }
     // If have both
     if (inLocal && inNetwork)
     {
       deleteBoth.setEnabled(true);
+      // Add to the list
+      enabledRadioButtonList.add(deleteBoth);
     }
     
     // Create JPanel and set it border layout
@@ -226,6 +234,17 @@ public class DeleteDialog extends JDialog
     bottomBox.add(controlButtonsBox);
     // Add the margin between controlButtonPanel to the bottom line
     bottomBox.add(Box.createVerticalStrut(10));
+    
+    // set the first radiobutton in enableRadioButtonList as the default 
+    // selected radio button and enable excecute button
+    if (enabledRadioButtonList.size() > 0)
+    {
+      Object obj = enabledRadioButtonList.elementAt(0);
+      JRadioButton selectedRadioButton = (JRadioButton) obj;
+      selectedRadioButton.setSelected(true);
+      enableExecuteButton(selectedRadioButton, this);
+    }
+      
    
     // Register listener for radio button
     RadioButtonListener listener = new RadioButtonListener(this);
@@ -236,21 +255,10 @@ public class DeleteDialog extends JDialog
     setVisible(false);
    
   }
-
-  /** Class to listen for ItemEvents */
-  private class RadioButtonListener implements ItemListener 
-  {
-    private JDialog dialog = null;
-       
-    public RadioButtonListener(JDialog myDialog)
-    {
-      dialog = myDialog;
-    }
-    
-    public void itemStateChanged(ItemEvent event) 
-    {
-      Object object = event.getItemSelectable();
-
+  
+    /** Method to enable executeButton and assign command */
+   private void enableExecuteButton(Object object, JDialog dialog)
+   {
       if (object == deleteLocal) 
       {
         // Enable execute button
@@ -275,7 +283,23 @@ public class DeleteDialog extends JDialog
         executeAction.setCommand( new DeleteCommand(dialog, parent, 
               DataPackageInterface.BOTH, selectDocId, inLocal, inNetwork));
       }
-      
+   }//enableExecuteButton
+ 
+
+  /** Class to listen for ItemEvents */
+  private class RadioButtonListener implements ItemListener 
+  {
+    private JDialog dialogs = null;
+       
+    public RadioButtonListener(JDialog myDialog)
+    {
+      dialogs = myDialog;
+    }
+    
+    public void itemStateChanged(ItemEvent event) 
+    {
+      Object obj = event.getItemSelectable();
+      enableExecuteButton(obj, dialogs);
     }//itemStateChagned
   }//RadioButtonListener
  
