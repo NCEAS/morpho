@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-15 22:57:26 $'
- * '$Revision: 1.95 $'
+ *     '$Date: 2004-03-16 19:04:01 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -715,6 +715,37 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
       return (String)listValueHash.get(entityName);
   }
+
+  /**
+   *  checks the dvArray for dataViewer that may have changed data
+   *  and then saves the changed data
+   */
+  public void saveDataChanges() {
+//    Log.debug(1,"Saving any data changes");
+    if (dvArray!=null) {
+      for (int i=0; i<dvArray.length; i++) {
+        if (dvArray[i]!=null) {
+          boolean changeFlag = dvArray[i].getDataChangedFlag();
+          if (changeFlag) {
+            dvArray[i].saveCurrentTable(false);
+          }
+          dvArray[i].setDataChangedFlag(false);
+        }
+      }  // end of loop over all dvs
+      // note that 'false' parameter passed to saveCurrentTable avoids updating package id
+      // for each data change; thus, do it now
+      AccessionNumber a = new AccessionNumber(morpho);
+			String curid = adp.getAccessionNumber();
+			String newid = null;
+			if (!curid.equals("")) {
+				newid = a.incRev(curid);
+			} else {
+				newid = a.getNextId();
+			}
+			adp.setAccessionNumber(newid);
+    }
+  }
+
 
   /**
    * creates the data display and puts it into the center of the window

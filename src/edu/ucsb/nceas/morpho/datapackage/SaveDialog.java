@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-25 22:04:35 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-16 19:04:02 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,6 +246,10 @@ public class SaveDialog extends JDialog
 
   void executeButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+    Component comp = morphoFrame.getContentComponent();
+    if (comp instanceof DataViewContainerPanel) {
+      ((DataViewContainerPanel)comp).saveDataChanges();
+    }
 		boolean problem = false;
     Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
