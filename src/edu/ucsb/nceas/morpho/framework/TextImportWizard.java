@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-12 19:06:39 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2003-09-24 15:45:53 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1846,6 +1846,7 @@ public void startImport(String file) {
 	  if (!labelsInStartingLine) numHeaderLines = numHeaderLines-1;
     om.put(header+"physical/dataFormat/textFormat/"+"numHeaderLines", ""+numHeaderLines);
     om.put(header+"physical/dataFormat/textFormat/"+"recordDelimiter", "#x0A");
+    om.put(header+"physical/dataFormat/textFormat/"+"attributeOrientation", "column");    
 	  String delimit = getDelimiterStringAsText();
     om.put(header+"physical/dataFormat/textFormat/simpleDelimited/"+"fieldDelimiter", delimit);
     om.put(header+"physical/distribution/online/"+"url", "file://"+filename);
