@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-24 18:18:14 $'
- * '$Revision: 1.83 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-24 18:45:04 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -461,7 +461,7 @@ public class DataPackage implements XMLFactoryInterface
       }
       catch(Exception e)
       {
-        Log.debug(0, "error in DataPackage.getRelatedFiles():(subjects) "
+        Log.debug(10, "error in DataPackage.getRelatedFiles():(subjects) "
                                                               + e.getMessage());
       }
       
@@ -533,7 +533,7 @@ public class DataPackage implements XMLFactoryInterface
       }
       catch(Exception e)
       {
-        Log.debug(0, "error in DataPackage.getRelatedFiles():objects " + 
+        Log.debug(10, "error in DataPackage.getRelatedFiles():objects " + 
                            e.getMessage());
       }
     }
