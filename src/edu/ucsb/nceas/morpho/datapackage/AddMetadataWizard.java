@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-19 01:20:14 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2002-09-19 02:11:52 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1386,19 +1386,16 @@ public class AddMetadataWizard extends JFrame
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
                                              morpho);
-    DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
-    dpg.show();
-    dpg.setName("Package Editor:" + newpackage.getID());
-    //MBJ framework.addWindow(dpg);
-    //MBJ framework.removeWindow(this);
-    try {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
-                      services.getServiceProvider(QueryRefreshInterface.class);
-      ((QueryRefreshInterface)provider).refresh();
-    } catch (ServiceNotHandledException snhe) {
-      Log.debug(6, snhe.getMessage());
-    }
+    this.dataPackage = newpackage;
+    //DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
+    // Close old package and open a new one
+    if ( packageFrame != null)
+    {
+      packageFrame.dispose();
+    }// if
+    DataPackagePlugin plugin = new DataPackagePlugin(morpho);
+    plugin.openDataPackage(location, newpackage.getID(), null);
+   
   }
 
   public void actionPerformed(ActionEvent e) 
