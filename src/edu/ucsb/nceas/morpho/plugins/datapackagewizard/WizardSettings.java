@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-14 00:28:29 $'
- * '$Revision: 1.64 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-15 20:51:09 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -810,13 +810,19 @@ public class WizardSettings {
   }
 
   public static boolean isNewUnit(String type, String unit) {
-
+	
+	type = getStandardFormOfUnitType(type);
     boolean newT = unitDictionaryUnitsCacheMap.containsKey(type);
     if(newT) {
       String[] units = (String[])unitDictionaryUnitsCacheMap.get(type);
       if(Arrays.binarySearch(units, unit) >= 0) return false;
       else return true;
     } else {
+	  String[] oldUnits = (String[])getUnitDictionaryUnitsOfType(type);
+	  if(oldUnits.length > 0) {
+      	if(Arrays.binarySearch(oldUnits, unit) >= 0) return false;
+	  	return true;
+	  }
       String[] units = (String[])customUnitDictionaryUnitsCacheMap.get(type);
       if(units == null) return true;
       if(Arrays.binarySearch(units, unit) >= 0) return false;
@@ -826,6 +832,7 @@ public class WizardSettings {
 
   public static void addNewUnit(String unitType, String unit, String SIUnit) {
 
+	unitType = getStandardFormOfUnitType(unitType);
     int idx = Arrays.binarySearch(unitDictionaryUnitTypesArray, unitType);
     if(idx < 0) {
       idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);
