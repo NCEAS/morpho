@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-14 21:45:57 $'
- * '$Revision: 1.1.2.5 $'
+ *     '$Date: 2002-08-14 23:56:05 $'
+ * '$Revision: 1.1.2.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,8 +175,9 @@ public class MorphoFrame extends JFrame
         // Create a panel to display the plugin if requested
         if (comp != null) {
             getContentPane().add(BorderLayout.CENTER, comp);
-            comp.invalidate();
-            invalidate();
+            //comp.invalidate();
+            //invalidate();
+            pack();
         } else {
             Log.debug(5, "Component was null so I could not set it!");
         }
@@ -189,6 +190,7 @@ public class MorphoFrame extends JFrame
     public void setMenuBar(JMenuBar newMenuBar)
     {
         this.setJMenuBar(newMenuBar);
+        this.getLayeredPane().invalidate();
     }
 
     /**

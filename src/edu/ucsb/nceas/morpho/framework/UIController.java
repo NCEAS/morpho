@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-14 21:45:57 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-14 23:56:05 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,9 +54,9 @@ public class UIController
     private static UIController controller;
     private static Morpho morpho;
 
-    private static Hashtable windowsRegistry;
-    private static Hashtable menuList;
-    private static Vector menuOrder;
+    private static Hashtable windowList;
+    private static Vector orderedMenuList;
+    private static Hashtable orderedMenuActions;
 
     // Constants
     public static final String SEPARATOR_PRECEDING = "separator_preceding";
@@ -69,9 +69,9 @@ public class UIController
     private UIController(Morpho morpho)
     {
         this.morpho = morpho;
-        windowsRegistry = new Hashtable();
-        menuList = new Hashtable();
-        menuOrder = new Vector();
+        windowList = new Hashtable();
+        orderedMenuList = new Vector();
+        orderedMenuActions = new Hashtable();
     }
 
     /**
@@ -115,19 +115,17 @@ public class UIController
         Action windowAction = new AbstractAction(title) {
             public void actionPerformed(ActionEvent e) {
                 JMenuItem source = (JMenuItem)e.getSource();
-                MorphoFrame window1 = (MorphoFrame)windowsRegistry.get(source);
+                Action firedAction = source.getAction();
+                MorphoFrame window1 = (MorphoFrame)windowList.get(firedAction);
                 window1.toFront();
             }
         };
         windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
-        JMenu windowMenu = (JMenu)menuList.get("Window");
-        if (windowMenu != null) {
-            JMenuItem windowMenuItem = windowMenu.add(windowAction);
-            windowsRegistry.put(windowMenuItem, window);
-        }
+        windowList.put(windowAction, window);
+        Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
+        windowMenuActions.addElement(windowAction);
 
-        window.setMenuBar(createMenuBar());
-        //updateMenuBar();
+        updateWindowMenus();
 
         return window;
     }
@@ -142,36 +140,42 @@ public class UIController
     public void removeWindow(MorphoFrame window)
     {
         Log.debug(20, "Removing window.");
-        JMenuItem menuItem = null;
-        JMenu windowMenu = (JMenu)menuList.get("Window");
-        Enumeration keys = windowsRegistry.keys();
+
+        // Look up the Action for this window
+        Action currentAction = null;
+        Enumeration keys = windowList.keys();
         while (keys.hasMoreElements()) {
-            menuItem = (JMenuItem)keys.nextElement();
+            currentAction = (Action)keys.nextElement();
             MorphoFrame savedWindow = 
-                (MorphoFrame)windowsRegistry.get(menuItem);
+                (MorphoFrame)windowList.get(currentAction);
             if (savedWindow == window) {
                 break;
             } else {
-                menuItem = null;
+                currentAction = null;
             }
         } 
         
+        // Remove the action from the menu vector in orderedMenuActions
+        Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
         try {
-            windowMenu.remove(menuItem);
+            windowMenuActions.remove(currentAction);
         } catch(NullPointerException npe) {
             Log.debug(20, "Window already removed from menu.");
         }
         
+        // Remove the window from the windowList
         try {
-            windowsRegistry.remove(menuItem);
+            windowList.remove(currentAction);
         } catch(NullPointerException npe2) {
             Log.debug(20, "Window already removed from registry.");
         }
 
         // Exit application if no windows remain
-        if (windowsRegistry.isEmpty()) {
+        if (windowList.isEmpty()) {
             morpho.exitApplication();
         }
+
+        updateWindowMenus();
     }
 
     /**
@@ -198,31 +202,26 @@ public class UIController
     public void addMenu(String menuName, Integer menuPosition, 
                         Action[] menuActions)
     {
-        JMenu currentMenu = null;
+        Vector currentActions = null;
         // Check if the menu exists already here, otherwise create it
-        if (menuList.containsKey(menuName)) {
-            currentMenu = (JMenu)menuList.get(menuName);
+        if (orderedMenuList.contains(menuName)) {
+            currentActions = (Vector)orderedMenuActions.get(menuName);
         } else {
-            currentMenu = new JMenu(); 
-            currentMenu.setText(menuName);
-            currentMenu.setActionCommand(menuName);
-            menuList.put(menuName, currentMenu);
-            if (menuPosition.intValue() < menuOrder.size()) {
-                menuOrder.insertElementAt(currentMenu,menuPosition.intValue());
+            currentActions = new Vector();
+            orderedMenuActions.put(menuName, currentActions);
+            if (menuPosition.intValue() < orderedMenuList.size()) {
+                orderedMenuList.insertElementAt(menuName,
+                        menuPosition.intValue());
             } else {
-                menuOrder.addElement(currentMenu);
+                orderedMenuList.addElement(menuName);
             }
-
-            updateMenuBar();
         }
     
         // Get the menu items (Actions) and add them to the menu
         if (menuActions != null) {
             for (int j=0; j < menuActions.length; j++) {
                 Action currentAction = menuActions[j];
-                JMenuItem currentItem = null;
-                String hasDefaultSep = 
-                    (String)currentAction.getValue(Action.DEFAULT);
+                
                 Integer itemPosition = 
                     (Integer)currentAction.getValue("menuPosition");
                 int menuPos = 
@@ -230,41 +229,19 @@ public class UIController
         
                 if (menuPos >= 0) {
                     // Insert menus at the specified position
-                    int menuCount = currentMenu.getMenuComponentCount();
+                    int menuCount = currentActions.size();
                     if (menuPos > menuCount) {
                         menuPos = menuCount;
                     }
-                
-                    if (hasDefaultSep != null &&
-                        hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
-                        currentMenu.insertSeparator(menuPos++);
-                    }
-                    currentItem = currentMenu.insert(currentAction, menuPos);
-                    currentItem.setAccelerator(
-                        (KeyStroke)currentAction.getValue(
-                        Action.ACCELERATOR_KEY));
-                    if (hasDefaultSep != null &&
-                        hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
-                        menuPos++;
-                        currentMenu.insertSeparator(menuPos);
-                    }
+                    currentActions.insertElementAt(currentAction, menuPos);
                 } else {
                     // Append everything else at the bottom of the menu
-                    if (hasDefaultSep != null &&
-                        hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
-                        currentMenu.addSeparator();
-                    }
-                    currentItem = currentMenu.add(currentAction);
-                    currentItem.setAccelerator(
-                        (KeyStroke)currentAction.getValue(
-                        Action.ACCELERATOR_KEY));
-                    if (hasDefaultSep != null &&
-                        hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
-                        currentMenu.addSeparator();
-                    }
+                    currentActions.addElement(currentAction);
                 }
             }
         }
+
+        updateWindowMenus();
     }
     
     /**
@@ -276,13 +253,12 @@ public class UIController
      */
     public void removeMenuItem(String menuName, int index)
     {
-        JMenu currentMenu = null;
+        Log.debug(20, "Removing menu item: " + menuName + " (" + index + ")");
         // Check if the menu exists, and if so, remove the item
-        if (menuList.containsKey(menuName)) {
-            currentMenu = (JMenu)menuList.get(menuName);
-            Log.debug(20, "Removing menu item: " + menuName + 
-                    " (" + index + ")");
-            currentMenu.remove(index);
+        if (orderedMenuList.contains(menuName)) {
+            Vector currentActions = (Vector)orderedMenuActions.get(menuName);
+            currentActions.remove(index);
+            updateWindowMenus();
         }
     }
 
@@ -290,10 +266,10 @@ public class UIController
      * Update the mennu bar by rebuilding it when a new menu is added
      * to the list.
      */
-    private void updateMenuBar()
+    private void updateWindowMenus()
     {
         // Notify all of the windows of the changed menubar
-        Enumeration windows = windowsRegistry.elements();
+        Enumeration windows = windowList.elements();
         while (windows.hasMoreElements()) {
             JMenuBar newMenuBar = createMenuBar();
             MorphoFrame currentWindow = (MorphoFrame)windows.nextElement();
@@ -310,10 +286,74 @@ public class UIController
     {
         Log.debug(50, "Creating menu bar for window...");
         JMenuBar newMenuBar = new JMenuBar();
-        for (int j=0; j < menuOrder.size(); j++) {
-            JMenu currentMenu = (JMenu)menuOrder.get(j);
+        for (int j=0; j < orderedMenuList.size(); j++) {
+            String menuName = (String)orderedMenuList.get(j);
+            JMenu currentMenu = new JMenu(menuName);
             newMenuBar.add(currentMenu);
+
+            // Add all of the actions for this menu from its Vector
+            createMenuItems(menuName, currentMenu);
         }
         return newMenuBar;
+    }
+
+    /**
+     * Create new menu items for a particular menu
+     */
+    private void createMenuItems(String menuName, JMenu currentMenu)
+    {
+        Vector currentActions = (Vector)orderedMenuActions.get(menuName);
+        Log.debug(30, "Creating menu items for: " + menuName + " (" +
+                currentActions.size() + " actions)");
+        for (int j=0; j < currentActions.size(); j++) {
+            Action currentAction = (Action)currentActions.elementAt(j);
+
+            JMenuItem currentItem = null;
+            String hasDefaultSep = 
+            (String)currentAction.getValue(Action.DEFAULT);
+            Integer itemPosition = 
+                (Integer)currentAction.getValue("menuPosition");
+            int menuPos = 
+                (itemPosition != null) ? itemPosition.intValue() : -1;
+
+            menuPos = -1; 
+            if (menuPos >= 0) {
+                // Insert menus at the specified position
+                Log.debug(30, "Inserting Action as menu item.");
+                int menuCount = currentMenu.getMenuComponentCount();
+                if (menuPos > menuCount) {
+                    menuPos = menuCount;
+                }
+            
+                if (hasDefaultSep != null &&
+                    hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
+                    currentMenu.insertSeparator(menuPos++);
+                }
+                currentItem = currentMenu.insert(currentAction, menuPos);
+                currentItem.setAccelerator(
+                    (KeyStroke)currentAction.getValue(
+                    Action.ACCELERATOR_KEY));
+                if (hasDefaultSep != null &&
+                    hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
+                    menuPos++;
+                    currentMenu.insertSeparator(menuPos);
+                }
+            } else {
+                // Append everything else at the bottom of the menu
+                Log.debug(30, "Appending Action as menu item.");
+                if (hasDefaultSep != null &&
+                    hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
+                    currentMenu.addSeparator();
+                }
+                currentItem = currentMenu.add(currentAction);
+                currentItem.setAccelerator(
+                    (KeyStroke)currentAction.getValue(
+                    Action.ACCELERATOR_KEY));
+                if (hasDefaultSep != null &&
+                    hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
+                    currentMenu.addSeparator();
+                }
+            }
+        }
     }
 }
