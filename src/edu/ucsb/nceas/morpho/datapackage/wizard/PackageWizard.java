@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 17:01:49 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-05-29 17:12:29 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,110 +103,6 @@ public class PackageWizard extends javax.swing.JFrame
       framework.debug(9, "error initializing custom frame");
       e.printStackTrace();
     }
-  }
-  
-  /**
-   * constructor which creates a package wizard frame in the given contentPane
-   * using the given framefile (xml configuration file).  This constructor
-   * allows you to pass an xml file with content.  the wizard will attempt
-   * to match the content in the file with the paths in the wizard file. 
-   * if a match is made, the content in the wizard is automatically filled in.
-   * @param framework: the framework in which this wizard is created
-   * @param contentPane: the Container in which this wizard is created
-   * @param framefile: the configuration file used to create this wizard
-   * @param xmlfile: the file to open in the wizard
-   */
-  public PackageWizard(ClientFramework framework, Container contentPane, 
-                       String framefile, Reader xmlfile)
-  {
-    try
-    {
-      this.framework = framework;
-      //get configuration information
-      ConfigXML config = framework.getConfiguration();
-      Vector saxparserV = config.get("saxparser");
-      saxparser = (String)saxparserV.elementAt(0);
-      
-      //get the config file and parse it
-      File mainFile = new File(framefile);
-      FileReader xmlConfig = new FileReader(mainFile);
-      pwp = new PackageWizardParser(xmlConfig, saxparser);
-      doc = pwp.getDoc();
-      Hashtable wizardAtts = doc.attributes;
-      String size = (String)wizardAtts.get("size");
-      
-      //create the initial tabbed pane
-      mainTabbedPane = new JTabbedPane();
-      mainTabbedPane.setPreferredSize(parseSize(size));
-      contentPane.add(mainTabbedPane);
-      docPanel = new JPanelWrapper();
-      docPanel.element = doc;
-      //create the content of the initial frame
-      XMLElement newdoc = openFile(doc, xmlfile);
-      createPanel(newdoc, contentPane, docPanel);
-    }
-    catch(Exception e)
-    {
-      framework.debug(9, "error initializing custom frame");
-      e.printStackTrace();
-    }
-  }
-  
-  /**
-   * This method opens an xml file, parses it and attempts to match it's 
-   * paths to the config file that was provided to this PackageWizard object.
-   * when a matching path is found, the defaulttext attribute in the config
-   * file is set to match the content in the xmlfile at the same path.
-   */
-  private XMLElement openFile(XMLElement doc, Reader xmlfile)
-  {
-    PackageWizardOpenFileParser parser = 
-                         new PackageWizardOpenFileParser(xmlfile, saxparser);
-    String configFile = parser.getConfigFile();
-    Hashtable fieldEnum = new Hashtable();
-    createFieldEnum(new XMLElement(doc), fieldEnum);
-    
-    //look at each element in configFile and try to match it to an enumeration in 
-    //fieldEnum
-    Vector configFileV = parser.getConfigFileV();
-    System.out.println("configfile");
-    printVector(configFileV);
-    System.out.println("fieldenum");
-    printHashtable(fieldEnum);
-    for(int i=0; i<configFileV.size(); i++)
-    {
-      String line = (String)configFileV.elementAt(i);
-      String lineField = parser.getField(line);
-      //if line.field matches a field in fieldEnum then take all of the attributes
-      //from fieldEnum and put them into the line in the configFile.
-      //if line.field does not match any field in fieldEnum then delete it from 
-      //configFile
-      if(fieldEnum.containsKey(lineField))
-      { //take attributes from fieldEnum and put them in the line
-        Hashtable fieldEnumAtts = (Hashtable)fieldEnum.get(lineField);
-        String tagtype = (String)fieldEnumAtts.get("type");
-        String linetagtype = line.substring(1, line.indexOf(" ", 1));
-        System.out.println("tagtype: " + tagtype + " linetagtype: " + linetagtype); 
-        if(tagtype.trim().equals(linetagtype.trim()))
-        {
-          line = parser.addAttributes(line, fieldEnumAtts);
-          configFileV.remove(i);
-          configFileV.add(i, line);
-        }
-        else
-        {
-          configFileV.remove(i);
-        }
-      }
-      else
-      { //remove the line from configFile
-        configFileV.remove(i);
-      }
-      
-    }
-    
-    printVector(configFileV);
-    return new XMLElement();
   }
   
   /**
@@ -1060,7 +956,6 @@ public class PackageWizard extends javax.swing.JFrame
             if(layout.equals("flow"))
             {
               tempPanel.setLayout(new FlowLayout());
-              System.out.println("layout: flow");
             }
           }
           
