@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-20 23:17:20 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-21 17:58:57 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import org.xml.sax.InputSource;
 
 import java.util.Vector;
 import java.util.Hashtable;
+import java.io.Reader;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -57,6 +58,10 @@ public class DataPackageFactory
   public static AbstractDataPackage getDataPackage(Reader in, boolean metacat, boolean local) {
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
+    
+    // temporary stub!!!
+    AbstractDataPackage dp = new EML200DataPackage();
+    return dp;
   }
   
    /**
@@ -67,6 +72,11 @@ public class DataPackageFactory
     // first use datastore package to get a stream for the metadata
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
+    
+    // temporary stub!!!
+    AbstractDataPackage dp = new EML200DataPackage();
+    return dp;
+    
   }
   
   
