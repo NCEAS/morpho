@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-22 00:02:45 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,16 +35,20 @@ import javax.swing.JDialog;
 public class OpenPackageCommand implements Command 
 {
   /** A reference to the JDialogBox */
-  private ResultPanel resultPanel = null;
+  private OpenDialogBox open = null;
   
+  /** A reference to the resultPanel */
+   private ResultPanel resultPanel = null;
   /**
    * Constructor of SearcCommand
    * @param myResultPanel the result panel which the openpackage 
+   * @param box the open dialog box which has the open button
    * command will apply
    */
-  public OpenPackageCommand(ResultPanel myResultPanel)
+  public OpenPackageCommand(ResultPanel myResultPanel, OpenDialogBox box)
   {
     resultPanel = myResultPanel;
+    open = box;
   }//OpenPackageCommand
   
   
@@ -54,6 +58,13 @@ public class OpenPackageCommand implements Command
   public void execute()
   {
      resultPanel.doOpenDataPackage();
+     // close the openDialogBox
+     if ( open != null)
+     {
+       open.setVisible(false);
+       open.dispose();
+       open = null;
+     }
   }//execute
 
  
