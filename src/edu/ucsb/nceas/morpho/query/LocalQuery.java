@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:35 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2001-11-02 21:47:24 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,7 +252,9 @@ public class LocalQuery
           if (temp==null) temp = root.getNodeName();
           doctype_collection.put(docid,temp);
           currentDoctype = temp;
-          addToPackageList(root, docid);
+          if ((dt2bReturned.contains("any")) || (dt2bReturned.contains(currentDoctype))) {
+              addToPackageList(root, docid);
+          }
         } // end else
       
         String rootname = root.getNodeName();
@@ -607,6 +609,8 @@ public class LocalQuery
     Node currentNode = null;
     NodeList nl = null;
     String xpathExpression = "//triple";
+    
+    
     try{
       nl = XPathAPI.selectNodeList(docNode, xpathExpression);
     } catch (Exception ee) {
