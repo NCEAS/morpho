@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 07:17:12 $'
- * '$Revision: 1.53 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-13 16:50:41 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1046,11 +1046,11 @@ public class ClientFramework extends javax.swing.JFrame
       if (debug_level > 0 && severity <= debug_level) {
         // Show a dialog for severe errors
         if (severity < 5) {
-          JOptionPane.showMessageDialog(null, message, "Error!",
-                                        JOptionPane.ERROR_MESSAGE);
+          //JOptionPane.showMessageDialog(null, message, "Error!",
+          //                              JOptionPane.ERROR_MESSAGE);
         } else if (severity < 10) {
-          JOptionPane.showMessageDialog(null, message, "Warning!",
-                                        JOptionPane.WARNING_MESSAGE);
+          //JOptionPane.showMessageDialog(null, message, "Warning!",
+          //                              JOptionPane.WARNING_MESSAGE);
         }
 
         // Everything gets printed to standard error
