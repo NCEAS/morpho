@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:34:22 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-06 17:05:42 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,9 +100,10 @@ public class SynchronizeDialog extends JDialog
     // Set OpenDialog size depent on parent size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
-    int dialogWidth = 500;
-    int dialogHeight = 300;
+    int dialogWidth = 400;
+    int dialogHeight = 275;
     setSize(dialogWidth, dialogHeight);
+    setResizable(false);
     
     // Set location of dialog, it shared same center of parent
     double parentX = parent.getLocation().getX();
