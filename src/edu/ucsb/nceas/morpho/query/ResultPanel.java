@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-06 23:20:08 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2002-09-11 23:04:03 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,8 +239,8 @@ public class ResultPanel extends JPanel
       add(scrollPane, BorderLayout.CENTER);
     
       // In open dialog, doesn't show popup
-      if (dialog == null)
-      {
+      //if (dialog == null)
+      //{
         //Build the popup menu for the right click functionality
         popup = new JPopupMenu();
         // Create a openPackage action
@@ -257,8 +257,18 @@ public class ResultPanel extends JPanel
         openPreviousAction.setEnabled(false);
       
         // Create a refresh action
-        GUIAction refreshAction = new GUIAction("Refresh", null, 
-                               new RefreshCommand(null));
+        GUIAction refreshAction = null;
+        if (dialog != null)
+        {
+          // refresh open dialog
+          refreshAction = new GUIAction("Refresh", null,
+                                                new RefreshCommand(dialog));
+        }
+        else
+        {
+          // refresh current acitve frame
+          refreshAction = new GUIAction("Refresh", null, new RefreshCommand());
+        }
         refreshMenu = new JMenuItem(refreshAction);
         popup.add(refreshMenu);
       
@@ -275,7 +285,7 @@ public class ResultPanel extends JPanel
       
         // Create a action to open a delete dialog
         GUIAction openDeleteDialogAction = new GUIAction("Delete...", null,
-                                         new OpenDeleteDialogCommand());
+                                         new OpenDeleteDialogCommand(dialog));
         deleteMenu = new JMenuItem(openDeleteDialogAction);
         popup.add(deleteMenu);                             
         
@@ -290,7 +300,7 @@ public class ResultPanel extends JPanel
                             new ExportCommand(dialog, ExportCommand.ZIP));
         exportToZipMenu = new JMenuItem(exportToZipAction);
         popup.add(exportToZipMenu);
-      }//if
+      //}//if
       
     
       MouseListener popupListener = new PopupListener();
@@ -538,10 +548,10 @@ public class ResultPanel extends JPanel
     public void mouseReleased(MouseEvent e) 
     {
       // Don't show popup in dilog
-      if (dialog == null)
-      {
+      //if (dialog == null)
+      //{
         maybeShowPopup(e);
-      }
+      //}
     }
 
     private void maybeShowPopup(MouseEvent e) 
