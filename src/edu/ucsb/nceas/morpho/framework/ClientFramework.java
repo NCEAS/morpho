@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-15 22:37:29 $'
- * '$Revision: 1.73 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-18 20:12:48 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1449,10 +1449,17 @@ public class ClientFramework extends javax.swing.JFrame
       int ind1 = temp.indexOf("<docid>");
       int ind2 = temp.indexOf("</docid>");
       if ((ind1>0)&&(ind2>0)) {
-        result = temp.substring(ind1, ind2);
-        // now remove the version and header parts of the id
-        result = result.substring(0,result.lastIndexOf("."));
-        result = result.substring(result.indexOf(".")+1,result.length());
+        result = temp.substring(ind1+7, ind2);
+        if(!result.equals("null"))
+        {
+          // now remove the version and header parts of the id
+          result = result.substring(0,result.lastIndexOf("."));
+          result = result.substring(result.indexOf(".")+1,result.length());
+        }
+        else
+        {
+          result = "1";
+        }
       }
     }
     return result;
