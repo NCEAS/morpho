@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-22 23:31:00 $'
- * '$Revision: 1.4 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-23 17:11:01 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,14 @@ public class GUIAction extends AbstractAction {
     public void actionPerformed(ActionEvent actionEvent) {
         command.execute();
     }
+    
+    /**
+     * Get the command in this action object
+     */
+    public Command getCommand()
+    {
+      return command;
+    }//getCommand
 
         
 // * * *  V A R I A B L E S  * * *
