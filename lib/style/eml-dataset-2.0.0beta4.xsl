@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-26 08:04:13 $'
-  * '$Revision: 1.6 $'
+  *     '$Date: 2002-12-18 00:49:56 $'
+  * '$Revision: 1.7 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,31 @@
   <xsl:param name="package_id"></xsl:param>
 
   <xsl:param name="package_index_name"></xsl:param>
+  
+<!-- 
+    /**
+    *   These are the parameters that tell the Resource stylesheet which triple 
+    *   subjects/objects need to be suppressed in the datapackage metaview.  
+    *   Export function uses default value (blank) so they are displayed in the 
+    *   exported HTML file
+    */ 
+-->
+  
+  <xsl:param name="suppress_subjects_identifier"></xsl:param>
+  <xsl:param name="suppress_objects_identifier"></xsl:param>
+
+    
+<!-- 
+    /**
+    *   The file extension (including ".") to be appended to href paths 
+    *   (eg ".html")  Should typically be default blank value for viewing in 
+    *   metaviewer, and should be .htm or .html for export files
+    */ 
+-->
+    
+  <xsl:param name="href_path_extension"></xsl:param>
+  
+  
 
   <xsl:template match="/">
     <html>
@@ -52,9 +77,6 @@
               href="{$stylePath}/{$qformat}.css" />
       </head>
       <body>
-        <center>
-          <h3>Data set description</h3>
-        </center>
         <table width="100%">
         <xsl:apply-templates select="/dataset/title" mode="layout"/>
         <xsl:apply-templates select="/dataset/shortName" mode="layout"/>
@@ -69,8 +91,63 @@
         <b><xsl:text>Related Metadata and Data Files:</xsl:text></b>
         </td></tr>
         <tr><td>
-        <ul>
+        <table>
           <xsl:for-each select="//triple">
+
+            <!-- If the parameter 'suppress_subjects_identifier' contains the SUBJECT,
+                 then don't display the triple at all -->
+            <xsl:if test="not(contains($suppress_subjects_identifier,./subject))">
+              <tr><td width="18%" class="highlight">
+                <xsl:text>&#160;</xsl:text></td><td width="82%" class="">
+                <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+                    <xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" />
+                    </xsl:attribute><xsl:value-of select="./subject"/>
+                </a>
+                <xsl:text> &#160;&#160;</xsl:text>
+                <xsl:value-of select="./relationship"/>
+                <xsl:text> &#160;&#160;</xsl:text>
+        
+                <xsl:choose>
+                  <!-- If the parameter 'suppress_objects_identifier' contains the OBJECT,
+                       then display the object only as text, not as a hyperlink -->
+                  <xsl:when test="contains($suppress_objects_identifier,./object)">
+                      <xsl:value-of select="./object"/>
+                  </xsl:when>
+          
+                  <!-- Otherwise, if the parameter 'suppress_objects_identifier' does *NOT*
+                       contain the OBJECT, then display the object as a hyperlink -->
+                  <xsl:otherwise>
+                      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+                        <xsl:choose>
+                          <!-- If this OBJECT is equal to 'package_id', then replace hyperlink 
+                               with a link to the filename in 'package_index_name'. (for exports, 
+                               where main html file is renamed to be more recognizable by user -->
+                          <xsl:when test="normalize-space($package_index_name)!='' and normalize-space($package_id)!='' and normalize-space(./object)=normalize-space($package_id)">
+                              <xsl:value-of select="normalize-space($package_index_name)"/>
+                          </xsl:when>
+                          <xsl:otherwise>
+                              <xsl:value-of select="./object"/>
+                          </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./object"/>
+                      </a>
+                  </xsl:otherwise>
+          
+                </xsl:choose>
+              </td></tr>
+            </xsl:if>
+          </xsl:for-each>
+          </table>
+
+<!-- ***************************************************************************
+
+
+
+
+
+
+
+
             <li>
               <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
                   <xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" />
@@ -93,6 +170,8 @@
             </li>
           </xsl:for-each>
         </ul>
+**************************************************************************** -->
+        
         </td></tr>
         </table>
 
