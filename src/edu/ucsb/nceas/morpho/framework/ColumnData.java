@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-23 00:20:30 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-11-27 01:04:11 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,16 @@ public class ColumnData
 	    public Vector colUniqueItemsList;
 	    public Vector colUniqueItemsDefs;
 	    public boolean useEnumerationList = false;
-	    
+      public boolean textChoice = true;
+      public boolean numChoice = false;
+      public boolean enumChoice = false;
+      
+      public Vector enumCodeVector = new Vector();
+      public Vector enumDefinitionVector = new Vector();
+      public Vector enumSourceVector = new Vector();
+      
+      
+      
 	    ColumnData(int colnum) {
 	        this.colNumber = colnum;    
 	    }

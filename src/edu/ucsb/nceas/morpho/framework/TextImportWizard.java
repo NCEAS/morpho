@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-23 00:19:35 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2002-11-27 01:04:11 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -329,109 +329,6 @@ public class TextImportWizard extends javax.swing.JFrame
 		JPanel14.setAlignmentX(0.495413F);
 		JPanel14.setLayout(new GridLayout(2,2,6,6));
 		Step3ControlsPanel.add(BorderLayout.CENTER, JPanel14);
-		JPanel19.setAlignmentX(0.495413F);
-		JPanel19.setLayout(new BoxLayout(JPanel19,BoxLayout.Y_AXIS));
-		JPanel14.add(JPanel19);
-		JPanel21.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-		JPanel19.add(JPanel21);
-		JLabel12.setText("Column Label:   ");
-		JPanel21.add(JLabel12);
-		JLabel12.setForeground(java.awt.Color.red);
-		JLabel12.setFont(new Font("Dialog", Font.PLAIN, 12));
-		ColumnLabelTextField.setColumns(12);
-		JPanel21.add(ColumnLabelTextField);
-		ColumnLabelTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JPanel15.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-		JPanel19.add(JPanel15);
-		JLabel9.setText("Column Name:  ");
-		JPanel15.add(JLabel9);
-		JLabel9.setForeground(java.awt.Color.red);
-		JLabel9.setFont(new Font("Dialog", Font.PLAIN, 12));
-		ColumnNameTextField.setColumns(12);
-		JPanel15.add(ColumnNameTextField);
-		ColumnNameTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JPanel18.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-		JPanel19.add(JPanel18);
-		JLabel11.setText("Column Unit:      ");
-		JPanel18.add(JLabel11);
-		JLabel11.setForeground(java.awt.Color.black);
-		JLabel11.setFont(new Font("Dialog", Font.PLAIN, 12));
-		ColumnUnitTextField.setColumns(12);
-		JPanel18.add(ColumnUnitTextField);
-		ColumnUnitTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JPanel20.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel19.add(JPanel20);
-		JLabel15.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-		JLabel15.setText("Min:");
-		JPanel20.add(JLabel15);
-		JLabel15.setForeground(java.awt.Color.black);
-		JLabel15.setFont(new Font("Dialog", Font.PLAIN, 12));
-		MinTextField.setColumns(7);
-		JPanel20.add(MinTextField);
-		JLabel16.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-		JLabel16.setText("Max:");
-		JPanel20.add(JLabel16);
-		JLabel16.setForeground(java.awt.Color.black);
-		JLabel16.setFont(new Font("Dialog", Font.PLAIN, 12));
-		MaxTextField.setColumns(7);
-		JPanel20.add(MaxTextField);
-		JPanel23.setAlignmentX(0.0F);
-		JPanel23.setLayout(new BorderLayout(0,0));
-		JPanel14.add(JPanel23);
-		JLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-		JLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-		JLabel13.setText("Column Definition:");
-		JPanel23.add(BorderLayout.NORTH, JLabel13);
-		JLabel13.setForeground(java.awt.Color.red);
-		JLabel13.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JScrollPane2.setOpaque(true);
-		JPanel23.add(BorderLayout.CENTER, JScrollPane2);
-		ColumnDefTextArea.setLineWrap(true);
-		ColumnDefTextArea.setWrapStyleWord(true);
-		ColumnDefTextArea.setAlignmentX(0.0F);
-		JScrollPane2.getViewport().add(ColumnDefTextArea);
-		ColumnDefTextArea.setBounds(0,0,-75,15);
-		JPanel16.setLayout(new BorderLayout(0,0));
-		JPanel14.add(JPanel16);
-		JLabel10.setText("Data Type:           ");
-		JPanel16.add(BorderLayout.WEST, JLabel10);
-		JLabel10.setForeground(java.awt.Color.black);
-		JLabel10.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JScrollPane1.setOpaque(true);
-		JPanel16.add(BorderLayout.CENTER, JScrollPane1);
-		DataTypeList.setVisibleRowCount(4);
-		JScrollPane1.getViewport().add(DataTypeList);
-		DataTypeList.setBounds(0,0,0,0);
-		JPanel24.setLayout(new BorderLayout(0,0));
-		JPanel14.add(JPanel24);
-		JPanel26.setLayout(new BorderLayout(0,0));
-		JPanel24.add(BorderLayout.CENTER, JPanel26);
-		UniqueItemsScroll.setOpaque(true);
-		JPanel26.add(BorderLayout.CENTER, UniqueItemsScroll);
-		UniqueItemsScroll.getViewport().add(uniq);
-		uniq.setBounds(0,0,-204,0);
-		JPanel27.setLayout(new GridLayout(3,1,0,0));
-		JPanel26.add(BorderLayout.WEST, JPanel27);
-		JLabel14.setText("Unique Item List:");
-		JPanel27.add(JLabel14);
-		JLabel14.setForeground(java.awt.Color.black);
-		JLabel14.setFont(new Font("Dialog", Font.PLAIN, 12));
-		EnumCheckBox.setText("Use in Metadata");
-		EnumCheckBox.setActionCommand("Use in Metadata");
-		JPanel27.add(EnumCheckBox);
-		EnumCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JPanel25.setLayout(new GridLayout(2,1,0,0));
-		JPanel24.add(BorderLayout.SOUTH, JPanel25);
-		NumUniqueLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		NumUniqueLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JPanel25.add(NumUniqueLabel);
-		NumUniqueLabel.setForeground(java.awt.Color.black);
-		NumUniqueLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		MinMaxLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		MinMaxLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JPanel25.add(MinMaxLabel);
-		MinMaxLabel.setForeground(java.awt.Color.black);
-		MinMaxLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
     
     //------------------------------------------------
 		DataPanel.setLayout(new BorderLayout(0,0));
@@ -470,8 +367,6 @@ public class TextImportWizard extends javax.swing.JFrame
 		FinishButton.setActionCommand("Finish");
 		FinishButton.setEnabled(false);
 		JPanelCenter.add(FinishButton);
-		DataTypeList.setSelectedIndex(0);
-		//}}
 
 		//{{REGISTER_LISTENERS
 		SymWindow aSymWindow = new SymWindow();
@@ -481,9 +376,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		BackButton.addActionListener(lSymAction);
 		FinishButton.addActionListener(lSymAction);
 		ShowResultsButton.addActionListener(lSymAction);
-		ColumnNameTextField.addActionListener(lSymAction);
 		SymListSelection lSymListSelection = new SymListSelection();
-		DataTypeList.addListSelectionListener(lSymListSelection);
 		StartingLineTextField.addActionListener(lSymAction);
 		SymFocus aSymFocus = new SymFocus();
 		StartingLineTextField.addFocusListener(aSymFocus);
@@ -494,25 +387,11 @@ public class TextImportWizard extends javax.swing.JFrame
 		SpaceCheckBox.addItemListener(lSymItem);
 		SemicolonCheckBox.addItemListener(lSymItem);
 		OtherCheckBox.addItemListener(lSymItem);
-		ColumnUnitTextField.addActionListener(lSymAction);
 		CancelButton.addActionListener(lSymAction);
-		ColumnLabelTextField.addActionListener(lSymAction);
-		ColumnDefTextArea.addFocusListener(aSymFocus);
-		ColumnNameTextField.addFocusListener(aSymFocus);
-		ColumnLabelTextField.addFocusListener(aSymFocus);
-		ColumnUnitTextField.addFocusListener(aSymFocus);
-		EnumCheckBox.addItemListener(lSymItem);
-		MinTextField.addActionListener(lSymAction);
-		MinTextField.addFocusListener(aSymFocus);
-		MaxTextField.addActionListener(lSymAction);
-		MaxTextField.addFocusListener(aSymFocus);
-		uniq.addFocusListener(aSymFocus);
 		//}}
 		
 		resultsBuffer = new StringBuffer();
-		String[] dataTypes = {"Text", "Integers", "Floating Point", "Date", "Enumeration", "Codes", "skip this column" };
 
-		DataTypeList.setListData(dataTypes);
     ColumnDataPanel.add(BorderLayout.CENTER, cmePanel);
 
     //assign the filename and get the wizard started.
@@ -675,39 +554,6 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JPanel Step3_HelpPanel = new javax.swing.JPanel();
 	javax.swing.JLabel Step3_HelpLabel = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel14 = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel19 = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel21 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel12 = new javax.swing.JLabel();
-	javax.swing.JTextField ColumnLabelTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel15 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel9 = new javax.swing.JLabel();
-	javax.swing.JTextField ColumnNameTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel18 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel11 = new javax.swing.JLabel();
-	javax.swing.JTextField ColumnUnitTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel20 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel15 = new javax.swing.JLabel();
-	javax.swing.JTextField MinTextField = new javax.swing.JTextField();
-	javax.swing.JLabel JLabel16 = new javax.swing.JLabel();
-	javax.swing.JTextField MaxTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel23 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel13 = new javax.swing.JLabel();
-	javax.swing.JScrollPane JScrollPane2 = new javax.swing.JScrollPane();
-	javax.swing.JTextArea ColumnDefTextArea = new javax.swing.JTextArea();
-	javax.swing.JPanel JPanel16 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel10 = new javax.swing.JLabel();
-	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
-	javax.swing.JList DataTypeList = new javax.swing.JList();
-	javax.swing.JPanel JPanel24 = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel26 = new javax.swing.JPanel();
-	javax.swing.JScrollPane UniqueItemsScroll = new javax.swing.JScrollPane();
-	javax.swing.JTable uniq = new javax.swing.JTable();
-	javax.swing.JPanel JPanel27 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel14 = new javax.swing.JLabel();
-	javax.swing.JCheckBox EnumCheckBox = new javax.swing.JCheckBox();
-	javax.swing.JPanel JPanel25 = new javax.swing.JPanel();
-	javax.swing.JLabel NumUniqueLabel = new javax.swing.JLabel();
-	javax.swing.JLabel MinMaxLabel = new javax.swing.JLabel();
 	javax.swing.JPanel DataPanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel ColumnDataPanel = new javax.swing.JPanel();
@@ -799,22 +645,10 @@ public class TextImportWizard extends javax.swing.JFrame
 				BackButton_actionPerformed(event);
 			else if (object == FinishButton)
 				FinishButton_actionPerformed(event);
-			if (object == ShowResultsButton)
+			else if (object == ShowResultsButton)
 				ShowResultsButton_actionPerformed(event);
-			else if (object == ColumnNameTextField)
-				ColumnNameTextField_actionPerformed(event);
-			else if (object == StartingLineTextField)
-				StartingLineTextField_actionPerformed(event);
-			if (object == ColumnUnitTextField)
-				ColumnUnitTextField_actionPerformed(event);
-			if (object == CancelButton)
+			else if (object == CancelButton)
 				CancelButton_actionPerformed(event);
-			else if (object == ColumnLabelTextField)
-				ColumnLabelTextField_actionPerformed(event);
-			else if (object == MinTextField)
-				MinTextField_actionPerformed(event);
-			else if (object == MaxTextField)
-				MaxTextField_actionPerformed(event);
 		}
 	}
 
@@ -1051,30 +885,28 @@ public void startImport(String file) {
                       selectedCol = lsm.getMinSelectionIndex();
                       //selectedCol is selected
                       ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-                      EnumCheckBox.setSelected(cd.useEnumerationList);
                       int numUnique =  cd.colNumUniqueItems;
                       String str = "There are "+numUnique+" unique item(s) in this column";
-                      NumUniqueLabel.setText(str);
                       if (cd.colType.equals("Floating Point")) {
                         String dmin = Double.toString(cd.colMin);
                         String dmax = Double.toString(cd.colMax);
                         String daver = Double.toString(cd.colAverage);
-                        MinMaxLabel.setText("Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver);
-                        MinTextField.setText(dmin);
-                        MaxTextField.setText(dmax);
+//                        MinMaxLabel.setText("Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver);
+//                        MinTextField.setText(dmin);
+//                        MaxTextField.setText(dmax);
                       } 
                       else if ((cd.colType.equals("Integers"))) {
                         String min = Integer.toString((int)cd.colMin);
                         String max = Integer.toString((int)cd.colMax);
                         String aver = Double.toString(cd.colAverage);
-                        MinMaxLabel.setText("Min:"+ min +"  Max:" + max + "  Aver:" +aver);   
-                        MinTextField.setText(min);
-                        MaxTextField.setText(max);
+//                        MinMaxLabel.setText("Min:"+ min +"  Max:" + max + "  Aver:" +aver);   
+//                        MinTextField.setText(min);
+//                        MaxTextField.setText(max);
                      }
                       else {
-                        MinMaxLabel.setText("");
-                        MinTextField.setText("");
-                        MaxTextField.setText("");
+//                        MinMaxLabel.setText("");
+//                        MinTextField.setText("");
+//                        MaxTextField.setText("");
                       }
                       String[] headers = new String[2];
                       headers[0] = "Code";
@@ -1094,18 +926,16 @@ public void startImport(String file) {
                       
             //          JList uniq = new JList(cd.colUniqueItemsList);
             //          JTable uniq = new JTable(dtm);
-                      uniq.setModel(dtm);
-                      UniqueItemsScroll.getViewport().removeAll();
-                      UniqueItemsScroll.getViewport().add(uniq);
-                      ColumnUnitTextField.setText(cd.colUnits);
-                      ColumnNameTextField.setText(cd.colName);
-                      ColumnLabelTextField.setText(cd.colTitle);
-                      String colType = cd.colType;
-                      DataTypeList.setSelectedValue(colType, true);
-                      ColumnDefTextArea.setText(cd.colDefinition);
-                      cmePanel.setColumnName(cd.colName);
-                      cmePanel.setColumnLabel(cd.colTitle);
-                      cmePanel.setColumnDefinition(cd.colDefinition);
+//                      uniq.setModel(dtm);
+//                      UniqueItemsScroll.getViewport().removeAll();
+//                      UniqueItemsScroll.getViewport().add(uniq);
+//                      ColumnUnitTextField.setText(cd.colUnits);
+//                      ColumnNameTextField.setText(cd.colName);
+//                      ColumnLabelTextField.setText(cd.colTitle);
+//                      String colType = cd.colType;
+//                      DataTypeList.setSelectedValue(colType, true);
+//                      ColumnDefTextArea.setText(cd.colDefinition);
+                      cmePanel.setColumnData(cd);
                      
                   }
               }
@@ -1596,7 +1426,7 @@ public void startImport(String file) {
           cd.colAverage = intAverage;
           cd.colMin = minInt;
           cd.colMax = maxInt;
-        return "Integers";  
+        return "integer";  
       }
     }
     if (doubleCount>integerCount) {
@@ -1605,13 +1435,13 @@ public void startImport(String file) {
           cd.colAverage = doubleAverage;
           cd.colMin = minDouble;
           cd.colMax = maxDouble;
-        return "Floating Point";  
+        return "float";  
       }
     }
     if ((dateCount>0)&&((100*(dateCount+emptyCount)/vec.size()))>90) {
-      return "Date";  
+      return "date";  
     }
-    return "Text";
+    return "string";
   }
  
  /**
@@ -1735,82 +1565,38 @@ public void startImport(String file) {
 		}
 	}
 
-	void ColumnNameTextField_actionPerformed(java.awt.event.ActionEvent event)
-	{
-    if (selectedCol>-1) {
-        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-        cd.colName = ColumnNameTextField.getText();
-      }
-
-	}
 
 	void ColumnLabelTextField_actionPerformed(java.awt.event.ActionEvent event)
 	{
     if (selectedCol>-1) {
       if (colTitles.size()>0) {
         colTitles.removeElementAt(selectedCol);
-        colTitles.insertElementAt(ColumnLabelTextField.getText(), selectedCol);
+//        colTitles.insertElementAt(ColumnLabelTextField.getText(), selectedCol);
         buildTable(colTitles, vec);
         ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-        cd.colTitle = ColumnLabelTextField.getText();
+ //       cd.colTitle = ColumnLabelTextField.getText();
       }
     }
 	}
 
-	void ColumnUnitTextField_actionPerformed(java.awt.event.ActionEvent event)
-	{
-        if (selectedCol>-1) {
-            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-            cd.colUnits = ColumnUnitTextField.getText();
-        }
-	}
 
 
-	void ColumnDefTextArea_focusLost(java.awt.event.FocusEvent event)
-	{
-    if (selectedCol>-1) {
-        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-        cd.colDefinition = ColumnDefTextArea.getText();
-      }
-	}
 
 
-	void ColumnNameTextField_focusLost(java.awt.event.FocusEvent event)
-	{
-    if (selectedCol>-1) {
-        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-        cd.colName = ColumnNameTextField.getText();
-      }
-	}
 
 	void ColumnLabelTextField_focusLost(java.awt.event.FocusEvent event)
 	{
     if (selectedCol>-1) {
       if (colTitles.size()>0) {
         colTitles.removeElementAt(selectedCol);
-        colTitles.insertElementAt(ColumnLabelTextField.getText(), selectedCol);
+//        colTitles.insertElementAt(ColumnLabelTextField.getText(), selectedCol);
         buildTable(colTitles, vec);
         ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-        cd.colTitle = ColumnLabelTextField.getText();
+//        cd.colTitle = ColumnLabelTextField.getText();
       }
     }
 	}
 
-	void ColumnUnitTextField_focusLost(java.awt.event.FocusEvent event)
-	{
-        if (selectedCol>-1) {
-            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-            cd.colUnits = ColumnUnitTextField.getText();
-        }
-	}
-
-	void EnumCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
-	{
-		if (selectedCol>-1) {
-            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-		    cd.useEnumerationList = EnumCheckBox.isSelected();    
-		}
-	}
 
 
 	class SymListSelection implements javax.swing.event.ListSelectionListener
@@ -1818,20 +1604,7 @@ public void startImport(String file) {
 		public void valueChanged(javax.swing.event.ListSelectionEvent event)
 		{
 			Object object = event.getSource();
-			if (object == DataTypeList)
-				DataTypeList_valueChanged(event);
 		}
-	}
-
-	void DataTypeList_valueChanged(javax.swing.event.ListSelectionEvent event)
-	{
-    if (selectedCol>-1) {
-      ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-      int indx = DataTypeList.getSelectedIndex();
-      if (indx>-1) {
-        cd.colType = (String)DataTypeList.getSelectedValue();
-      }
-    }
 	}
 
    
@@ -1852,20 +1625,6 @@ public void startImport(String file) {
 			Object object = event.getSource();
 			if (object == StartingLineTextField)
 				StartingLineTextField_focusLost(event);
-			else if (object == ColumnDefTextArea)
-				ColumnDefTextArea_focusLost(event);
-			else if (object == ColumnNameTextField)
-				ColumnNameTextField_focusLost(event);
-			else if (object == ColumnLabelTextField)
-				ColumnLabelTextField_focusLost(event);
-			else if (object == ColumnUnitTextField)
-				ColumnUnitTextField_focusLost(event);
-			else if (object == MinTextField)
-				MinTextField_focusLost(event);
-			else if (object == MaxTextField)
-				MaxTextField_focusLost(event);
-			else if (object == uniq)
-				uniq_focusLost(event);
 		}
 	}
 
@@ -1899,15 +1658,13 @@ public void startImport(String file) {
 				SemicolonCheckBox_itemStateChanged(event);
 			else if (object == OtherCheckBox)
 				OtherCheckBox_itemStateChanged(event);
-			else if (object == EnumCheckBox)
-				EnumCheckBox_itemStateChanged(event);
 		}
 	}
 
 	void ColumnLabelsCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
 	{
-        labelsInStartingLine = ColumnLabelsCheckBox.isSelected();
-    }
+    labelsInStartingLine = ColumnLabelsCheckBox.isSelected();
+  }
   
   
   
@@ -2119,56 +1876,4 @@ public void startImport(String file) {
 
 
 
-	void MinTextField_actionPerformed(java.awt.event.ActionEvent event)
-	{
-        if (selectedCol>-1) {
-            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-            cd.colMin = (new Double(MinTextField.getText())).doubleValue();
-        }
-	}
-
-	void MinTextField_focusLost(java.awt.event.FocusEvent event)
-	{
-        if (selectedCol>-1) {
-            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-            cd.colMin = (new Double(MinTextField.getText())).doubleValue();
-        }
-	}
-
-	void MaxTextField_actionPerformed(java.awt.event.ActionEvent event)
-	{
-        if (selectedCol>-1) {
-            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-            cd.colMax = (new Double(MaxTextField.getText())).doubleValue();
-        }
-	}
-
-	void MaxTextField_focusLost(java.awt.event.FocusEvent event)
-	{
-        if (selectedCol>-1) {
-            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-            cd.colMax = (new Double(MaxTextField.getText())).doubleValue();
-        }
-	}
-
-	void uniq_focusLost(java.awt.event.FocusEvent event)
-	{
-	  if (selectedCol>-1) {
-        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
-		DefaultTableModel dtm = (DefaultTableModel)uniq.getModel();
-        int cnt = dtm.getRowCount();
-        Vector codes = new Vector();
-        Vector defs = new Vector();
-        for (int i=0;i<cnt;i++) {
-          String code = (String)dtm.getValueAt(i, 0);
-          String definition = (String)dtm.getValueAt(i, 1);
-          if ((code.length()>0)) {
-            codes.addElement(code);
-            defs.addElement(definition);
-          }
-        }
-        cd.colUniqueItemsList = codes;
-        cd.colUniqueItemsDefs = defs;
-      }
-	}
 }
