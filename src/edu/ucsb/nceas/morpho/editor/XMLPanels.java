@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-21 03:13:06 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2003-12-29 21:20:43 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -335,7 +335,8 @@ class dfhAction implements java.awt.event.ActionListener
 			if (object instanceof JTextField)  {
 			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
 		    NodeInfo info = (NodeInfo)(nd.getUserObject());
-        info.setPCValue(" "+((JTextField)object).getText());
+//        info.setPCValue(" "+((JTextField)object).getText());
+        info.setPCValue(((JTextField)object).getText());
 			  if (treeModel!=null) {
 				  treeModel.reload();
 				}
@@ -351,7 +352,8 @@ class dfhAction implements java.awt.event.ActionListener
 			if (object instanceof JTextField) {
 			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
 		    NodeInfo info = (NodeInfo)(nd.getUserObject());
-        info.setPCValue(" "+((JTextField)object).getText());
+//        info.setPCValue(" "+((JTextField)object).getText());
+        info.setPCValue(((JTextField)object).getText());
 			  if (treeModel!=null) {
 //				        treeModel.reload();
 				}
