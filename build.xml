@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.40 2002-02-19 21:33:23 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.41 2002-03-14 06:21:28 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -68,10 +68,16 @@
                 value="${libdir}/jlfgr-1_0.jar" />
       <property name="itisjar"
                 value="${libdir}/itislib.jar" />
+      <property name="jsse"
+                value="${libdir}/jsse.jar" />
+      <property name="jcert"
+                value="${libdir}/jcert.jar" />
+      <property name="jnet"
+                value="${libdir}/jnet.jar" />
       <property name="httpclient" 
-                value="lib/httpclient.jar" />
+                value="${libdir}/httpclient.jar" />
       <property name="cpath" 
-                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itisjar}:${httpclient}"/>
+                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itisjar}:${httpclient}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -180,6 +186,9 @@
       <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xerces.jar" todir="${morpho.lib}"/> 
       <copy file="./lib/httpclient.jar" todir="${morpho.lib}"/> 
+      <copy file="./lib/jsse.jar" todir="${morpho.lib}"/> 
+      <copy file="./lib/jcert.jar" todir="${morpho.lib}"/> 
+      <copy file="./lib/jnet.jar" todir="${morpho.lib}"/> 
        
       <delete file="./lib/morpho-${release}.zip"/>
       <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
