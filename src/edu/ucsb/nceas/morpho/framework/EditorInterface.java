@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-13 16:49:56 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-12-08 19:39:42 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,9 @@ import javax.swing.Action;
 import java.awt.Component;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import org.w3c.dom.Document;
+
 
 /**
  * All component plugins that require the editing of XML documents should implement
@@ -74,6 +77,13 @@ public interface EditorInterface
                         String nodeName, String nodeValue,
                         EditingCompleteListener listener);
 
+  /**
+   * This method is called to open a XML editor with the indicated
+   * xml structure in a DOM and an editingCompletedListener to be notified when
+   * the editing is completed
+   */
+ public void openEditor(Document doc, String id, String location,
+                        EditingCompleteListener listener);
    
    
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-09 18:22:56 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-08 19:39:17 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,9 @@ import  edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import  edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 
 import java.awt.event.ActionEvent;
+
+import org.w3c.dom.Document;
+
 
 public class EditCommand implements Command {
 
@@ -95,6 +98,8 @@ public class EditCommand implements Command {
         // location is set to the correct value in the 'editingCompleted' method
         // of the DataViewContainerPanel class - DFH
         String location = null;
-        editor.openEditor(buffer.toString(), id, location, controller);
+//DFH        editor.openEditor(buffer.toString(), id, location, controller);
+        Document thisdoc = controller.getFactory().openAsDom(id);
+        editor.openEditor(thisdoc, id, location, controller);
     }
 }

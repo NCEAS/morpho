@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-07 17:50:16 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2003-12-08 19:40:08 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,9 @@ import java.util.Hashtable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+
+import org.w3c.dom.Document;
+
 
 public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInterface {
 
@@ -192,6 +195,20 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     editorframe.setController(this);
 //    editorframe.setVisible(true);
     editorframe.initDoc(morpho, xmlText);
+    this.id = id;
+    this.location = location;
+    //MBJ if (framework!=null) {
+      //MBJ framework.addWindow(editorframe);
+    //MBJ }
+    docframes.put(editorframe, listener);
+  }
+
+  public void openEditor(Document doc, String id, String location, 
+                         EditingCompleteListener listener) {
+    DocFrame editorframe = new DocFrame();
+    editorframe.setController(this);
+    editorframe.setVisible(true);
+    editorframe.initDoc(morpho, doc);
     this.id = id;
     this.location = location;
     //MBJ if (framework!=null) {

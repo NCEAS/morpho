@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-02 22:13:40 $'
- * '$Revision: 1.127 $'
+ *     '$Date: 2003-12-08 19:40:08 $'
+ * '$Revision: 1.128 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -916,6 +916,17 @@ public class DocFrame extends javax.swing.JFrame
     tree.expandRow(1);
 //    tree.expandRow(2);
     tree.setSelectionRow(0);
+  }
+
+  /*
+   *  this class initializes the editor from a DOM Document
+   *  rather than a string. Document is simply used to get the
+   *  root node
+   */
+  public void initDoc(Morpho morpho, Document doc) 
+  {
+    Node docnode = doc.getDocumentElement() ;
+    initDoc(morpho, docnode);
   }
   
   /**
