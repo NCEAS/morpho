@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.16 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-06-21 22:07:54 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,6 +105,16 @@ public class DataViewer extends javax.swing.JFrame
    * delimiter
    */
    String delimiter_string = "";
+   
+  /**
+   * numHeaderLines
+   */
+   String numHeaderLines = "";
+
+  /**
+   * num_header_lines
+   */
+   int num_header_lines = 0;
    
    /**
     * number of columns
@@ -270,6 +280,17 @@ public class DataViewer extends javax.swing.JFrame
         {
           String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
           this.field_delimiter = s;
+        }
+        
+        Vector numHeaderLinesPath = new Vector();
+        numHeaderLinesPath.addElement("eml-physical/numHeaderLines");
+        NodeList numHeaderLinesList = PackageUtil.getPathContent(physicalFile, 
+                                                     numHeaderLinesPath, 
+                                                     framework); 
+        if(numHeaderLinesList != null && numHeaderLinesList.getLength() != 0) 
+        {
+          String s = numHeaderLinesList.item(0).getFirstChild().getNodeValue();
+          this.numHeaderLines = s;
         }
                                                      
       }
@@ -655,7 +676,7 @@ public class DataViewer extends javax.swing.JFrame
 	 * @param data
 	 */
 	private void buildTable() {
-	    vec = new Vector();
+	  vec = new Vector();
       final JTable table = new JTable();
       DefaultTableModel model = new DefaultTableModel(vec, column_labels);
       table.setModel(model);
@@ -679,7 +700,12 @@ public class DataViewer extends javax.swing.JFrame
       DataScrollPanel.getViewport().removeAll();
       DataScrollPanel.getViewport().add(table);
       parseFile();
-      for (int i=0;i<nlines;i++) {
+      num_header_lines = 0;
+      Integer temp = new Integer(numHeaderLines);
+      if (temp!=null) {
+        num_header_lines = temp.intValue();  
+      }
+      for (int i=num_header_lines;i<nlines;i++) {
         Vector rowvals = getColumnValues(lines[i]); 
         model.addRow(rowvals);
       }
@@ -713,12 +739,12 @@ public class DataViewer extends javax.swing.JFrame
 	 */
 	void vecToString() {
 	  Vector innerVec;
-	  StringBuffer coltitles = new StringBuffer();
+	  StringBuffer headerlines = new StringBuffer();
 	  StringBuffer resultString = new StringBuffer();
-	  for (int k=0;k<column_labels.size();k++){
-	      coltitles.append((String)column_labels.elementAt(k)+delimiter_string);
+	  for (int k=0;k<num_header_lines;k++){
+        headerlines.append(lines[k].trim()+"\n");
 	  }
-	  resultString.append(coltitles.toString()+"\n");
+	  resultString.append(headerlines.toString());
 	  for (int i=0;i<nlines-1;i++) {
 	    StringBuffer lineString = new StringBuffer();
 	    innerVec = (Vector)vec.elementAt(i);
