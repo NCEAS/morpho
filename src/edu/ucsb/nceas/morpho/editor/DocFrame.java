@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 00:29:35 $'
- * '$Revision: 1.160 $'
+ *     '$Date: 2004-03-29 17:44:20 $'
+ * '$Revision: 1.161 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -347,13 +347,12 @@ public class DocFrame extends javax.swing.JFrame
     OpenButton.setVisible(false);  
     
     ButtonPanel.add(OpenButton);
-//    CancelButton.setText("Cancel");
-    CancelButton.setText("Revert");
+    CancelButton.setText("Cancel");
     CancelButton.setActionCommand("Cancel");
     ButtonPanel.add(CancelButton);
 //    EditingExit.setText("Save Changes");
-    EditingExit.setText("Finish");
-    EditingExit.setActionCommand("Finish");
+    EditingExit.setText("OK");
+    EditingExit.setActionCommand("OK");
     ButtonPanel.add(EditingExit);
     NotesPanel.setLayout(new GridLayout(2, 2, 6, 0));
     ControlPanel.add(BorderLayout.WEST, NotesPanel);
@@ -765,7 +764,7 @@ public class DocFrame extends javax.swing.JFrame
         tree.setModel(treeModel);
 
         tree.expandRow(1);
-        tree.expandRow(2);
+        tree.expandRow(5);
         tree.setSelectionRow(0);
         setTitle("Morpho Editor:" + id);
         headLabel.setText("Morpho Editor");
@@ -926,6 +925,7 @@ public class DocFrame extends javax.swing.JFrame
       tree.setModel(treeModel);
 
       tree.expandRow(1);
+      tree.expandRow(5);
       tree.setSelectionRow(0);
       return;
     }
@@ -2963,7 +2963,7 @@ Log.debug(20, xmlout);
         tree.setModel(treeModel);
 
         tree.expandRow(1);
-        tree.expandRow(2);
+        tree.expandRow(5);
         tree.setSelectionRow(0);
         setTitle("Morpho Editor:" + id);
         headLabel.setText("Morpho Editor");
@@ -3696,7 +3696,7 @@ Log.debug(20, xmlout);
                (!(keyName.equals("")))               
              )
           {
-             if ((value==null)||(value.length()==0)) value = "";
+            if ((value==null)||(value.length()==0)) value = "";
             NodeInfo newni = new NodeInfo(keyName);
             newni.setXMLAttribute(true);
             newni.setCardinality("ONE");
