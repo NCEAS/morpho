@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-19 22:41:04 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2004-03-19 23:15:35 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -573,22 +573,19 @@ public abstract class AbstractDataPackage extends MetadataObject
       count--;
       if (count<index) {
         stn = getSubtreeNoClone(genericName, count);
-        subTreeNodeParent.insertBefore(newSubtree,stn);        
-        // just append if index is larger than current list
-      } else {
-        stn = getSubtreeNoClone(genericName, index);
-        Node nextNode = stn.getNextSibling();
-        if (nextNode!=null) {
-          subTreeNodeParent.insertBefore(newSubtree,nextNode);  
+        Node nnode = stn.getNextSibling();
+        if (nnode!=null) {
+          subTreeNodeParent.insertBefore(newSubtree,nnode);
         } else {
           subTreeNodeParent.appendChild(newSubtree);
         }
+      } else {
+        stn = getSubtreeNoClone(genericName, index);
+          subTreeNodeParent.insertBefore(newSubtree,stn);  
       }
       return newSubtree;
     }
     return null;
-//    throw new UnsupportedOperationException(
-//      "AbstractDataPackage.insertSubtree(String genericName, Node subtreeRootNode, int index) not yet implemented!");
   }
 
 

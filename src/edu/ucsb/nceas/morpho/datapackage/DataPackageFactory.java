@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-19 22:41:04 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2004-03-19 23:15:35 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -403,9 +403,9 @@ public class DataPackageFactory
       String val = node.getFirstChild().getNodeValue();
       Log.debug(1, "node: "+val);
       node.getFirstChild().setNodeValue("No Rights for YOU!");
-//      Node delNode = adp.deleteSubtree("intellectualRights",0);
-//      Log.debug(1, "delNode: "+delNode);
-      Node insNode = adp.insertSubtree("intellectualRights", node, 3);
+      Node delNode = adp.deleteSubtree("intellectualRights",0);
+      Log.debug(1, "delNode: "+delNode);
+      Node insNode = adp.insertSubtree("intellectualRights", node, 1);
       Log.debug(1,"insNode: "+insNode);
 /*      
       // now let us test the add attribute
