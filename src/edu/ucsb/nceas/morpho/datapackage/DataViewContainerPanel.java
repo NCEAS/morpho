@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-30 00:02:01 $'
- * '$Revision: 1.104 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-01-21 02:03:18 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    *  the value of the current URL, if there is one
    */
   private String currentURLInfo = null;
-  
+
   // Store the event
   private Vector storedStateChangeEventlist = new Vector();
   /*
@@ -713,9 +713,40 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    *  checks the dvArray for dataViewer and reload unsaved information
    */
   public void removeDataChanges() {
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    adp = morphoFrame.getAbstractDataPackage();
+
+    boolean local = false;
+    boolean metacat = false;
+
+    if(adp.getLocation().equals(AbstractDataPackage.LOCAL)){
+      local = true;
+    } else if(adp.getLocation().equals(AbstractDataPackage.METACAT)){
+      metacat = true;
+    } else {
+      local = true;
+      metacat = true;
+    }
+
+    AbstractDataPackage tempAdp = null;
+    Entity[] entArray = null;
+    try{
+      tempAdp = DataPackageFactory.getDataPackage(adp.id, metacat, local);
+      entArray = tempAdp.getEntityArray();
+    }catch(Exception e){
+      Log.debug(20,"Unable to read the file in RevertCommand.java");
+    }
+
     if (dvArray!=null) {
       for (int i=0; i<dvArray.length; i++) {
         if (dvArray[i]!=null) {
+          int entityIndex = dvArray[i].getEntityIndex();
+          if(tempAdp!=null && tempAdp.getAttributeCountForAnEntity(entityIndex)
+              != adp.getAttributeCountForAnEntity(entityIndex)){
+              // column has been added or deleted
+              adp.deleteEntity(entityIndex);
+              adp.insertEntity(entArray[entityIndex], entityIndex);
+          }
           dvArray[i].init();
         }
       }

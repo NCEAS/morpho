@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:21:40 $'
- * '$Revision: 1.3 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-01-21 02:03:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 
 import java.awt.event.ActionEvent;
+import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.util.Log;
 
 
 /**
@@ -78,10 +80,38 @@ public class RevertCommand implements Command
        dvcp = morphoFrame.getDataViewContainerPanel();
     }//if
     if (dvcp!=null) {
+      adp = morphoFrame.getAbstractDataPackage();
+      boolean local = false;
+      boolean metacat = false;
+      if(adp.getLocation().equals(AbstractDataPackage.LOCAL)){
+        local = true;
+      } else if(adp.getLocation().equals(AbstractDataPackage.METACAT)){
+        metacat = true;
+      } else {
+        local = true;
+        metacat = true;
+      }
+
+      AbstractDataPackage tempAdp = null;
+      Entity[] entArray = null;
+      try{
+        tempAdp = DataPackageFactory.getDataPackage(adp.id, metacat, local);
+        entArray = tempAdp.getEntityArray();
+      }catch(Exception e){
+        Log.debug(20,"Unable to read the file in RevertCommand.java");
+      }
+
       DataViewer dv = dvcp.getCurrentDataViewer();
+      int entityIndex = dv.getEntityIndex();
+
+      if(tempAdp!=null && tempAdp.getAttributeCountForAnEntity(entityIndex)!=
+          adp.getAttributeCountForAnEntity(entityIndex)){
+        // column has been added or deleted
+        adp.deleteEntity(entityIndex);
+        adp.insertEntity(entArray[entityIndex], entityIndex);
+      }
       dv.init();
     }
-
   }//execute
 
 

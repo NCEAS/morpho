@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 23:12:16 $'
- * '$Revision: 1.103 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-01-21 02:03:17 $'
+ * '$Revision: 1.104 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,10 +212,10 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected File dataPkgFile;
   protected FileSystemDataStore fileSysDataStore;
   protected MetacatDataStore metacatDataStore;
-	
+
 	private static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 	private static String[] customUnitDictionaryUnitTypesArray = new String[0];
-  
+
 
   /*
    *  If the AbstractDataPackage is created by opening an existing document,
@@ -1475,9 +1475,16 @@ public abstract class AbstractDataPackage extends MetadataObject
     Node entity = (entityArray[entNum]).getNode();
     Node parent = entity.getParentNode();
     parent.removeChild(entity);
-    entityArray = null;
+    Entity[] newEntityArray = new Entity[entityArray.length-1];
+
+    int newCount=0;
+    for(int count=0; count < entityArray.length; count++){
+      if(count != entNum)
+         newEntityArray[newCount++] = entityArray[count];
+    }
+    entityArray = newEntityArray;
   }
-	
+
 	/**
 	* This method deletes the indexed entity from the DOM
 	*
@@ -1490,7 +1497,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		Node parent = (entityArray[0]).getNode().getParentNode();
 		for(int i = 0; i < entityArray.length; i++) {
-			
+
 			Node entity = (entityArray[i]).getNode();
 			parent.removeChild(entity);
 		}
@@ -1531,27 +1538,32 @@ public abstract class AbstractDataPackage extends MetadataObject
         Node par = ( (entityArray[pos]).getNode()).getParentNode();
         par.insertBefore(newEntityNode, (entityArray[pos]).getNode());
         // now in DOM; need to insert in EntityArray
-        Entity[] newEntArray = new Entity[entityArray.length + 1];
-        for (int i = 0; i < pos; i++) {
-          newEntArray[i] = entityArray[i];
-        }
-        newEntArray[pos] = new Entity(newEntityNode, this);
-        for (int i = pos + 1; i < entityArray.length; i++) {
-          newEntArray[i] = entityArray[i];
-        }
-        entityArray = newEntArray;
+        //Commenting out these lines and adding a call to getEntityArray below
+        //Entity[] newEntArray = new Entity[entityArray.length + 1];
+        //for (int i = 0; i < pos; i++) {
+        //  newEntArray[i] = entityArray[i];
+        //}
+        //newEntArray[pos] = new Entity(newEntityNode, this);
+        //for (int i = pos + 1; i < entityArray.length; i++) {
+        //  newEntArray[i] = entityArray[i];
+        //}
+        //entityArray = newEntArray;
+
       }
       else { // insert at end of other entities
         Node par1 = ( (entityArray[0]).getNode()).getParentNode();
         par1.appendChild(newEntityNode);
         // now in DOM; need to insert in EntityArray
-        Entity[] newEntArray = new Entity[entityArray.length + 1];
-        for (int i = 0; i < entityArray.length; i++) {
-          newEntArray[i] = entityArray[i];
-        }
-        newEntArray[entityArray.length] = new Entity(newEntityNode, this);
-        entityArray = newEntArray;
+        // Commenting out these lines and adding a call to getEntityArray below
+        //Entity[] newEntArray = new Entity[entityArray.length + 1];
+        //for (int i = 0; i < entityArray.length; i++) {
+        //  newEntArray[i] = entityArray[i];
+        //}
+        //newEntArray[entityArray.length] = new Entity(newEntityNode, this);
+        //entityArray = newEntArray;
       }
+      entityArray = null;
+      entityArray = getEntityArray();
     }
     // must handle case where there are no existing entities!!!
     else {
@@ -1638,19 +1650,19 @@ public abstract class AbstractDataPackage extends MetadataObject
 			return null;
 		}
 		return rootNode.appendChild(newMetadataNode);
-		
+
 	}
-	
+
 	// method to load custom units that the user had defined and are stored in the
 	// 'additionalMetadata' subtree
 	public void loadCustomUnits() {
-		
+
 		Document thisDom = getMetadataNode().getOwnerDocument();
 		Node rootNode = thisDom.getDocumentElement();
 		NodeList nodeList = rootNode.getChildNodes();
 		Log.debug(40, "in loadCustom data, initial size = " + this.customUnitDictionaryUnitsCacheMap.keySet().size());
 		for(int i = 0; i < nodeList.getLength(); i++) {
-			
+
 			Node child = nodeList.item(i);
 			if(child.getNodeName().equals("additionalMetadata")) {
 				OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(child);
@@ -1669,14 +1681,14 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		Log.debug(40, "End of Extracted units -- \n");
 	}
-	
-	
+
+
 	private void extractUnits(OrderedMap map, String xPath) {
-		
+
 		xPath += "/unitList[1]";
 		int cnt = 1;
 		while(true) {
-			
+
 			String name = (String)map.get(xPath + "/unit[" + cnt + "]/@name");
 			if(name == null) break;
 			String type = (String)map.get(xPath + "/unit[" + cnt + "]/@unitType");
@@ -1684,9 +1696,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 			cnt++;
 		}
 	}
-	
+
 	public String[] getUnitDictionaryCustomUnitTypes() {
-		
+
 		return customUnitDictionaryUnitTypesArray;
 		/*int len = customUnitDictionaryUnitsCacheMap.keySet().size();
 		String[] returnArr = new String[len];
@@ -1697,16 +1709,16 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return returnArr;*/
 	}
-	
+
 	public String[] getUnitDictionaryUnitsOfType(String type) {
-		
+
 		String[] ret = (String[]) customUnitDictionaryUnitsCacheMap.get(type);
 		if(ret == null) return new String[0];
 		return ret;
 	}
-	
+
 	public static void insertObjectIntoArray( Object[] arr, Object value, Object[] newArr) {
-		
+
 		int idx = Arrays.binarySearch(arr, value);
 		int pos = -(idx + 1);
 		int i = 0;
@@ -1715,25 +1727,25 @@ public abstract class AbstractDataPackage extends MetadataObject
 		newArr[i] = value;
 		for(int j = pos; j < arr.length;j++)
 			newArr[j+1] = arr[j];
-		
+
 		return;
 	}
-	
+
 	public boolean isNewCustomUnit(String type, String unit) {
-		
+
 		boolean newT = customUnitDictionaryUnitsCacheMap.containsKey(type);
 		if(newT) {
 			String[] units = (String[])customUnitDictionaryUnitsCacheMap.get(type);
 			if(units == null) return true;
 			if(Arrays.binarySearch(units, unit) >= 0) return false;
 			else return true;
-		} 
+		}
 		return true;
-		
+
 	}
-	
+
 	public void addNewUnit(String unitType, String unit) {
-		
+
 		int idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);
 		if(idx < 0) {
 			String[] newArray = new String[customUnitDictionaryUnitTypesArray.length + 1];
@@ -1750,13 +1762,13 @@ public abstract class AbstractDataPackage extends MetadataObject
 			insertObjectIntoArray(units, unit, newUnitArr);
 			customUnitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
 		}
-		
+
 	}
 
-	
-	
-	
-	
+
+
+
+
 
   /**
    *  This method inserts an attribute at the indexed position
@@ -2271,7 +2283,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *
    */
    abstract public boolean ignoreConsecutiveDelimiters(int entityIndex, int physicalIndex);
-  
+
   /**
    *  This method sets the FieldDelimiter for the indexed entity and
    *  physical object.
@@ -2732,7 +2744,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           InputStream dfis = new FileInputStream(dataFile);
           try{
             mds.newDataFile(urlinfo, dataFile);
-          } 
+          }
           catch (MetacatUploadException mue) {
             // if we reach here, most likely there has been a problem saving the datafile
             // on metacat because the id is already in use
@@ -3310,32 +3322,32 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		Log.debug(1, sb.toString());
 	}
-	
+
 	// methods to implement the XMLFactoryInterface
 	public Reader openAsReader(String id) throws DocumentNotFoundException {
 		return null;
 	}
-	
+
 	public Document openAsDom(String id) {
 		// ignore the id and just return the dom for this instance
 		return (this.getMetadataNode()).getOwnerDocument();
 	}
-	
+
 	// Code Import stuff
-	
+
 	private List toBeImported = null;
 	private int toBeImportedCount = 0;
-	
+
 	private List lastImportedAttributes;
 	private String lastImportedEntityName;
 	private Vector lastImportedDataSet;
 	private Entity[] originalEntities = null;
-	
-	
+
+
 	public void addAttributeForImport(String entityName, String attributeName,
 	String scale, OrderedMap omap, String xPath,
 	boolean newTable) {
-		
+
 		List t = new ArrayList();
 		t.add(entityName);
 		t.add(attributeName);
@@ -3353,10 +3365,10 @@ public abstract class AbstractDataPackage extends MetadataObject
 		"Adding Attr to Import - (" + entityName + ", " + attributeName +
 		") ; count = " + toBeImportedCount);
 	}
-	
-	
+
+
 	public String getCurrentImportEntityName() {
-		
+
 		if (toBeImportedCount == 0) {
 			return null;
 		}
@@ -3366,9 +3378,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return (String) t.get(0);
 	}
-	
+
 	public String getCurrentImportAttributeName() {
-		
+
 		if (toBeImportedCount == 0) {
 			return null;
 		}
@@ -3378,7 +3390,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return (String) t.get(1);
 	}
-	
+
 	public String getCurrentImportScale() {
 		if (toBeImportedCount == 0) {
 			return null;
@@ -3389,7 +3401,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return (String) t.get(2);
 	}
-	
+
 	public OrderedMap getCurrentImportMap() {
 		if (toBeImportedCount == 0) {
 			return null;
@@ -3400,7 +3412,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return (OrderedMap) t.get(3);
 	}
-	
+
 	public OrderedMap getSecondImportMap() {
 		if (toBeImportedCount < 2) {
 			return null;
@@ -3411,7 +3423,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return (OrderedMap) t.get(3);
 	}
-	
+
 	public String getCurrentImportXPath() {
 		if (toBeImportedCount == 0) {
 			return null;
@@ -3422,7 +3434,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return (String) t.get(4);
 	}
-	
+
 	public boolean isCurrentImportNewTable() {
 		if (toBeImportedCount == 0) {
 			return false;
@@ -3433,11 +3445,11 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		return ( (Boolean) t.get(5)).booleanValue();
 	}
-	
+
 	public int getAttributeImportCount() {
 		return toBeImportedCount;
 	}
-	
+
 	public void removeAttributeForImport() {
 		if (toBeImportedCount == 0) {
 			return;
@@ -3445,48 +3457,48 @@ public abstract class AbstractDataPackage extends MetadataObject
 		toBeImported.remove(0);
 		toBeImportedCount--;
 	}
-	
+
 	public void setLastImportedEntity(String name) {
 		lastImportedEntityName = name;
 	}
-	
+
 	public void setLastImportedDataSet(Vector data) {
 		lastImportedDataSet = data;
 	}
-	
+
 	public void setLastImportedAttributes(List attr) {
 		lastImportedAttributes = attr;
 	}
-	
+
 	public String getLastImportedEntity() {
 		return lastImportedEntityName;
 	}
-	
+
 	public List getLastImportedAttributes() {
 		return lastImportedAttributes;
 	}
-	
+
 	public Vector getLastImportedDataSet() {
 		return lastImportedDataSet;
 	}
-	
+
 	public Entity[] getOriginalEntityArray() {
 		return this.originalEntities;
 	}
-	
+
 	public void setOriginalEntityArray(Entity[] arr) {
 		this.originalEntities = arr;
 	}
-	
+
 	public void clearAllAttributeImports() {
-		
+
 		this.originalEntities = null;
 		toBeImported = null;
 		toBeImportedCount = 0;
 		lastImportedAttributes = null;
 		lastImportedEntityName = null;
 		lastImportedDataSet = null;
-		
+
 	}
 }
 
