@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 04:40:38 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-24 21:33:10 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   private JLabel     unitsPickListLabel;
   private JLabel     precisionLabel;
   private JLabel     numberTypeLabel;
+  private JLabel     boundsLabel;
   
   private UnitsPickList unitsPickList;
   private JTextField precisionField;
@@ -167,7 +168,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
         
     JPanel boundsPanel = WidgetFactory.makePanel();
 
-    JLabel boundsLabel = WidgetFactory.makeLabel("    Bounds:", false);
+    boundsLabel = WidgetFactory.makeLabel("    Bounds:", false);
     final Dimension boundsLabelDim 
               = new Dimension(WizardSettings.WIZARD_CONTENT_LABEL_DIMS.width/2,
                               WizardSettings.WIZARD_CONTENT_LABEL_DIMS.height);
@@ -225,6 +226,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     WidgetFactory.unhiliteComponent(unitsPickListLabel);
     WidgetFactory.unhiliteComponent(precisionLabel);
     WidgetFactory.unhiliteComponent(numberTypeLabel);
+    unhiliteBoundsLabel();
   }
   
 
@@ -263,12 +265,69 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     }
     WidgetFactory.unhiliteComponent(numberTypeLabel);
     
+    if (!containsOnlyNumericValues(boundsList, 0, 2)) {
+
+      WidgetFactory.hiliteComponent(boundsLabel);
+      
+      return false;
+    }
+    unhiliteBoundsLabel();
+
     return true; 
   }
 
+  
+  //need to set foreground, because unhilite reverts back to red foreground
+  private void unhiliteBoundsLabel() {
+  
+    WidgetFactory.unhiliteComponent(boundsLabel);
+    boundsLabel.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+  }
+  
+  //
+  //  returns true if either column A or column B contains a non-float number
+  //  list is the list to check
+  //
+  //  idxColA, idxColB are the indices of the 2 columns to check.
+  //
+  private boolean containsOnlyNumericValues(CustomList   list, 
+                                            int idxColA, int idxColB) {
+  
+    boolean returnVal = true;
+    List rowLists = list.getListOfRowLists();
+    String nextColAStr = null;
+    String nextColBStr = null;
+  
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
+      Object nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+    
+      List nextRow = (List)nextRowObj;
+      if (nextRow.size() < 1) continue;
+    
+      boolean nextColAIsNull = (nextRow.get(idxColA)==null);
+      boolean nextColBIsNull = (nextRow.get(idxColB)==null);
 
-  /** 
+      if (nextColAIsNull && nextColBIsNull) continue;
+    
+      if (!nextColAIsNull) {
+        nextColAStr = (String)(nextRow.get(idxColA));
+        if (!(nextColAStr.trim().equals("")) 
+            && !WizardSettings.isFloat(nextColAStr)) returnVal = false;
+      }
+    
+      if (!nextColBIsNull) {
+        nextColBStr = (String)(nextRow.get(idxColB));
+        if (!(nextColBStr.trim().equals("")) 
+            && !WizardSettings.isFloat(nextColBStr)) returnVal = false;
+      }
+    }
+    return returnVal;
+  }
+  
+
+  /**
    *  gets the Map object that contains all the key/value paired
    *
    *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 

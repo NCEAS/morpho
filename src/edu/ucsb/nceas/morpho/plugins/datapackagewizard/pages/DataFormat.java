@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 04:40:38 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-09-24 21:33:10 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -299,7 +299,7 @@ public class DataFormat extends AbstractWizardPage{
     panel.add(listLabel);
   
  
-    JComboBox pickList = WidgetFactory.makePickList(pickListVals, false, 1, 
+    JComboBox pickList = WidgetFactory.makePickList(pickListVals, false, 0, 
     
         new ItemListener() {
         
@@ -426,12 +426,18 @@ public class DataFormat extends AbstractWizardPage{
     } else if (formatXPath==COMPLEX_TEXT_XPATH) {
     
 
-      OrderedMap listNVP = getCmplxDelimListAsNVP();
-      
-      if (listNVP==null || listNVP.size()<1) {
+      if (!listContainsOnlyPosNumericWidths()) {
         WidgetFactory.hiliteComponent(listLabel);
         return false;
       }
+      WidgetFactory.unhiliteComponent(listLabel);
+    
+//      OrderedMap listNVP = getCmplxDelimListAsNVP();
+//      
+//      if (listNVP==null || listNVP.size()<1) {
+//        WidgetFactory.hiliteComponent(listLabel);
+//        return false;
+//      }
 
     } else if (formatXPath==PROPRIETARY_XPATH) {
 
@@ -451,6 +457,49 @@ public class DataFormat extends AbstractWizardPage{
     return true;
   }
   
+
+
+  //
+  //  returns false if any column 0 entry is "fixed width" and its corresponding 
+  //  col 1 entry is not a number
+  //
+  private boolean listContainsOnlyPosNumericWidths() {
+  
+    boolean returnVal = true;
+    List rowLists = list.getListOfRowLists();
+    String nextWidthStr = null;
+  
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+
+      Object nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+    
+      List nextRow = (List)nextRowObj;
+      if (nextRow.size() < 1) continue;
+    
+      boolean nextCol0IsNull = (nextRow.get(0)==null);
+      boolean nextCol1IsNull = (nextRow.get(1)==null);
+
+      if (nextCol0IsNull || nextCol1IsNull) continue;
+
+      if (nextRow.get(0).equals(pickListVals[1])) continue; //delimited
+
+      // if col 0 is not null and is not delimited, MUST be fixed width...
+      
+      nextWidthStr = (String)(nextRow.get(1));
+      if (!(nextWidthStr.trim().equals(""))) {
+      
+        if (!WizardSettings.isFloat(nextWidthStr)) returnVal = false;
+        else {
+          returnVal = (Float.parseFloat(nextWidthStr) > 0);
+        }
+      }  
+    }
+    return returnVal;
+  }
+
+
+
   
   private OrderedMap listResultsMap = new OrderedMap();
   //
