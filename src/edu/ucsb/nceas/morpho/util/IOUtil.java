@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 21:10:54 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-12-16 21:49:36 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,6 +135,44 @@ public class IOUtil
                 }
             }
         }
+    }
+    
+    
+    
+    
+    /**
+     *  Given an array of <code>String</code> objects, returns the array 
+     *  elements as a single string, formatted as a "list" for printing to 
+     *  command line or logging
+     *
+     *  @param  stringArray         an array of <code>String</code> objects
+     *
+     *  @return                     the array elements in a single string, 
+     *                              formatted as a "list" for printing to 
+     *                              command line or logging
+     */
+    public static String getStringArrayAsString(String[] stringArray) 
+    {
+        if (stringArray==null) {
+            return "\n* * * RECEIVED NULL ARRAY! * * *";
+        }
+        if (stringArray.length<1) {
+            return "\n* * * RECEIVED EMPTY ARRAY! (length=0) * * *";
+        }
+        if (!(stringArray[0] instanceof String)) {
+            return "\n* * * ARRAY DOES NOT CONTAIN STRINGS! * * *";
+        }
+        StringBuffer buffer = new StringBuffer();
+        
+        buffer.append("\n---------------------------\n");
+        for (int i = 0; i < stringArray.length; i++) {
+            buffer.append(" element["+i+"] => ");
+            buffer.append(stringArray[i]);
+            buffer.append("\n");
+        }
+        buffer.append("---------------------------\n");
+        
+        return buffer.toString();;
     }
 }
 
