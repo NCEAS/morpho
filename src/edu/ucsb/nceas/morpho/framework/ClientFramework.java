@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-18 20:12:48 $'
- * '$Revision: 1.74 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-18 21:33:59 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1458,7 +1458,7 @@ public class ClientFramework extends javax.swing.JFrame
         }
         else
         {
-          result = "1";
+          result = null;
         }
       }
     }
@@ -1472,7 +1472,7 @@ public class ClientFramework extends javax.swing.JFrame
       String curval = profile.get("lastId", 0);
       int curnum = (new Integer(curval)).intValue();
       if (curnum<num) {
-        num = num + 5;  // required because Metacat does not return the latest id
+        num = num + 1;  // required because Metacat does not return the latest id
         id = (new Integer(num)).toString();
         profile.set("lastId",0,id);
         profile.save();
