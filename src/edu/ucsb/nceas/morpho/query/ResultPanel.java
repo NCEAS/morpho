@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-29 22:36:05 $'
- * '$Revision: 1.26 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-02-05 21:57:16 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -339,18 +339,32 @@ public class ResultPanel extends JPanel
    */
   private void exportDataset(String id)
   {
+  /*  FileDialog saveFileDialog = new FileDialog(new Frame());
+    saveFileDialog.setMode(FileDialog.SAVE);
+    saveFileDialog.setTitle("Save");
+    saveFileDialog.setDirectory(System.getProperty("user.dir"));
+    saveFileDialog.setFile(id);
+    saveFileDialog.setVisible(true);
+    System.out.println("Dir: "+saveFileDialog.getDirectory());
+    System.out.println("File: "+saveFileDialog.getFile());
+  */  
     String curdir = System.getProperty("user.dir");
     JFileChooser filechooser = new JFileChooser(curdir);
-    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     filechooser.setDialogTitle("Export Datapackage to Selected Directory");
     filechooser.setApproveButtonText("Export");
     filechooser.setApproveButtonMnemonic('E');
     filechooser.setApproveButtonToolTipText("Choose a directory to export " +
                                             "this Datapackage to.");
  //   filechooser.updateUI();
+    String msg = "ALERT: Please select a DIRECTORY, not a file in the File Dialog which will appear next!";
+//    JOptionPane.showMessageDialog(null, msg, "Please select a Directory!",  JOptionPane.ERROR_MESSAGE);       
+ 
     File exportDir;
     int result = filechooser.showSaveDialog(this);
-    exportDir = filechooser.getSelectedFile();
+    
+//    exportDir = filechooser.getSelectedFile();
+    exportDir = filechooser.getCurrentDirectory();
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
       DataPackageInterface dataPackage;
@@ -393,13 +407,16 @@ public class ResultPanel extends JPanel
   private void exportDatasetToZip(String id)
   {
     String curdir = System.getProperty("user.dir");
+    curdir = curdir + System.getProperty("file.separator") + id + ".zip";
+    File zipFile = new File(curdir);
     JFileChooser filechooser = new JFileChooser(curdir);
-    //filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    filechooser.setDialogTitle("Export Datapackage to Selected Directory");
+    filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    filechooser.setDialogTitle("Export Datapackage to Selected Zip File");
     filechooser.setApproveButtonText("Export");
     filechooser.setApproveButtonMnemonic('E');
-    filechooser.setApproveButtonToolTipText("Choose a directory to export " +
+    filechooser.setApproveButtonToolTipText("Choose a file to export " +
                                             "this Datapackage to.");
+    filechooser.setSelectedFile(zipFile);                                        
     //filechooser.updateUI();
     File exportDir;
     int result = filechooser.showSaveDialog(this);
