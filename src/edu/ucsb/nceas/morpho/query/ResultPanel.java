@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-09 23:42:34 $'
- * '$Revision: 1.40.4.5 $'
+ *     '$Date: 2002-08-14 00:18:58 $'
+ * '$Revision: 1.40.4.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,12 +247,7 @@ public class ResultPanel extends JPanel
  
       // Set up the results table
       table = new ToolTippedSortableJTable(results);
-      for (int i=0; i<table.getColumnCount(); i++)
-      {
-        System.out.println("column class: "+table.getColumnClass(i).getName());
-        
-      }
-      
+           
       // Set resize model
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       // Set horizontal line off
@@ -260,16 +255,18 @@ public class ResultPanel extends JPanel
       table.setShowVerticalLines(false);
       
       ToolTippedTextRenderer stringRenderer = 
-                                        new ToolTippedTextRenderer(fontSize);
+                                       new ToolTippedTextRenderer(fontSize);
+     
       //stringRenderer.setRows(5);
       //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
       table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
-      table.setDefaultRenderer(javax.swing.ImageIcon.class, new ImageRenderer());
+      table.setDefaultRenderer
+                            (javax.swing.ImageIcon.class, new ImageRenderer());
      
       // Create the scroll pane and add the table to it. 
       JScrollPane scrollPane = new JScrollPane(table);
-      System.out.println("width: "+getWidth());
+      
       // Set JScrollPane background color white
       scrollPane.getViewport().setBackground(Color.white);
       // Initialize column, pass the width of virwport to the table
@@ -369,11 +366,9 @@ public class ResultPanel extends JPanel
       column = table.getColumnModel().getColumn(i);
       // Get the percentage of width for this column from the array
       percentage = columnWidth[i];
-      System.out.println("percentage: "+percentage);
-      System.out.println("percentage*width: "+percentage*width);
       // Get the width as preferred width
       preferredSize = (new Double(width*percentage)).intValue();
-      System.out.println("preferredSize: "+ preferredSize);
+     
       // Get the minimum size
       minimumSize =(new Double(preferredSize*minFactor)).intValue();
       // Get the maxmum size
@@ -440,11 +435,11 @@ public class ResultPanel extends JPanel
    * multiple rows are selected, open them all.
    */
   private void openResultRecord(JTable table) {
-    System.out.println("in openResultRecord");
+   
     int[] selectedRows = table.getSelectedRows();
 
     for (int i = 0; i < selectedRows.length; i++) {
-      System.out.println("row: " + selectedRows[i]);
+     
       results.openResultRecord(selectedRows[i]);
     }
   }
@@ -587,7 +582,7 @@ public class ResultPanel extends JPanel
     
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
-			System.out.println("in MenuAction");
+			
       Object object = event.getSource();
       String docid = selectedId;
       DataPackageInterface dataPackage;
@@ -604,7 +599,7 @@ public class ResultPanel extends JPanel
       }
 			if (object == openMenu)
       { 
-        System.out.println("in openMenu");
+        
         doOpenDataPackage();
         //open the current selection in the package editor
       }
@@ -792,7 +787,7 @@ public class ResultPanel extends JPanel
    */
   public void reviseQuery()
   {
-    System.out.println("in reviseQuery");
+    
     // Save the original identifier
     String identifier = results.getQuery().getIdentifier();
 
@@ -1347,7 +1342,7 @@ private void doExportToZip() {
 }
 
   public void doOpenDataPackage() {
-    System.out.println("in doOpenDataPackage");
+   
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
           bflyLabel.setIcon(flapping);
