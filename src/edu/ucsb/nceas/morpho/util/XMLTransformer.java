@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 21:09:13 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-06 23:09:48 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import java.io.PipedReader;
 import java.io.PipedWriter;
 
 import java.net.URL;
+import java.net.MalformedURLException;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.sax.SAXSource;
@@ -69,12 +70,12 @@ public class XMLTransformer extends DefaultHandler
 
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-    private final String SAX_PARSER_NAME = "org.apache.xerces.parsers.SAXParser";
-    private final String CONFIG_KEY_LOCAL_CATALOG_PATH = "local_catalog_path";
+    private final String CONFIG_KEY_SAX_PARSER_NAME     = "saxparser";
+    private final String CONFIG_KEY_LOCAL_CATALOG_PATH  = "local_catalog_path";
     
-    private XMLTransformer   instance;
-    private XMLReader        xmlReader;
+    private static XMLTransformer   instance;
     
+    private XMLReader               xmlReader;
     private EntityResolver          entityResolver;
     private ConfigXML               config;
     
@@ -99,12 +100,10 @@ public class XMLTransformer extends DefaultHandler
      */    
     public static XMLTransformer getInstance() 
     {
-//        if (instance==null) {
-//            instance=new XMLTransformer();
-//        }
-//        return instance;
-        return new XMLTransformer();
-        
+        if (instance==null) {
+            instance=new XMLTransformer();
+        }
+        return instance;
     }
     
     /**
@@ -124,6 +123,7 @@ public class XMLTransformer extends DefaultHandler
      */
     public Reader transform(Reader xmlDocument) throws IOException
     {
+        String stylesheet = config.get("genericStylesheet", 0);
         throw new IOException("XMLTransformer: method not implemented!");
     }
     
@@ -200,29 +200,6 @@ Log.debug(50,"# # XMLTransformer # # returnReader = "+returnReader);
         return returnReader;
     }
 
-    /**
-     *  Uses the stylesheet provided, to apply XSLT to the XML document provided
-     *
-     *  @param xmlDocument  A <code>java.io.Reader</code> to allow reading of
-     *                      the XML document to be styled.
-     *
-     *  @param directory    A <code>XSLLookupInterface</code> to allow this
-     *                      transformer to get the required XSL document, given
-     *                      the DocType in the XML doc to be styled
-     *
-     *  @return             A <code>java.io.Reader</code> to allow reading of
-     *                      the results of styling the XML document
-     *
-     *  @throws IOException if there are problems reading the Reader
-     *  @throws DocumentNotFoundException if XSLLookupInterface does not return 
-     *  a valid reference to a suitable XSL stylesheet
-     */
-//    public Reader transform(Reader xmlDocument, XSLLookupInterface directory)
-//                                  throws IOException, DocumentNotFoundException
-//    {
-//        return new StringReader("XMLTransformer: method not implemented!");
-//    }
-
 
     //ensure passed parameter is non-null.  If is null, throws IOException, 
     //using "paramDescription" in exception message
@@ -238,13 +215,14 @@ Log.debug(50,"# # XMLTransformer # # returnReader = "+returnReader);
             throw exception;
         }
     }
+    
 
     //initialize entity resolver class variable 
     private void initEntityResolver() 
     {
         CatalogEntityResolver catalogEntResolver = new CatalogEntityResolver();
         try {
-            Catalog catalog = new Catalog();
+            Catalog catalog = new InnerCatalog();
             catalog.loadSystemCatalogs();
             String catalogPath = config.get(CONFIG_KEY_LOCAL_CATALOG_PATH, 0);
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -258,6 +236,7 @@ Log.debug(50,"# # XMLTransformer # # returnReader = "+returnReader);
         this.entityResolver = (EntityResolver)catalogEntResolver;
     }
 
+    
     //  Create a SAXSource to enable the transformer to access the Reader
     //  - Necessary because we need to set the entity resolver for this source, 
     //  which isn't possible if we just use an InputSource
@@ -277,17 +256,20 @@ Log.debug(50,"# # XMLTransformer # # ...getAsSaxSource did setXMLReader; result 
         return saxSource;
     }
 
+    
     /* Set up the SAX parser for reading the XML serialized ACL */
     private void initXMLReader() throws SAXException
     {
       // Get an instance of the xmlReader
-      xmlReader = XMLReaderFactory.createXMLReader(SAX_PARSER_NAME);
-      xmlReader.setFeature("http://xml.org/sax/features/validation", true);
-      xmlReader.setContentHandler((ContentHandler)this);
-      xmlReader.setEntityResolver(getEntityResolver());
-      xmlReader.setErrorHandler(new CustomErrorHandler());
+        xmlReader = XMLReaderFactory.createXMLReader(
+                                    config.get(CONFIG_KEY_SAX_PARSER_NAME, 0));
+        xmlReader.setFeature("http://xml.org/sax/features/validation", true);
+        xmlReader.setContentHandler((ContentHandler)this);
+        xmlReader.setEntityResolver(getEntityResolver());
+        xmlReader.setErrorHandler(new CustomErrorHandler());
     }
 
+    
     /**
      *  Sets the <code>EntityResolver</code> for the XML parser that will be 
      *  used by this transformer.  This is used to resolve PUBLIC and SYSTEM 
@@ -338,4 +320,54 @@ Log.debug(50,"# # XMLTransformer # # ...getAsSaxSource did setXMLReader; result 
             throw ((SAXException)exception);
         }
     }
+    
+    class InnerCatalog extends Catalog 
+    {
+        public String resolvePublic(String publicID, String systemID) 
+                                      throws MalformedURLException, IOException
+        {
+            String resolution = super.resolvePublic(publicID, systemID);
+            Log.debug(50,"InnerCatalog.resolvePublic(): "+resolution);
+            URL testURL = new URL("jar:file:/D:/_PROJECTS_/_ N C E A S _/MORPHO_ROOT/CVS_CHECKOUTS/morpho/lib/morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd");
+            URL resolvedURL = new URL(resolution);
+            Log.debug(50,"InnerCatalog.resolvedURL.getFile: "+resolvedURL.getFile());
+            Log.debug(50,"InnerCatalog.testURL.getFile:     "+testURL);
+            Log.debug(50,"InnerCatalog.resolvePublic():sameFile?: "+resolvedURL.sameFile(testURL));
+            return resolution;
+//            <listdoctypes>
+//              <entitydoctype>-//ecoinformatics.org//eml-entity-2.0.0beta6//EN</entitydoctype>
+//              <resourcedoctype>-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN</resourcedoctype>
+//              <attributedoctype>-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN</attributedoctype>
+//              <entitydoctype>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</entitydoctype>
+//              <resourcedoctype>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</resourcedoctype>
+//              <attributedoctype>-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN</attributedoctype>
+//            </listdoctypes>
+            
+        }
+    }
+    
 }
+
+
+    /**
+     *  Uses the stylesheet provided, to apply XSLT to the XML document provided
+     *
+     *  @param xmlDocument  A <code>java.io.Reader</code> to allow reading of
+     *                      the XML document to be styled.
+     *
+     *  @param directory    A <code>XSLLookupInterface</code> to allow this
+     *                      transformer to get the required XSL document, given
+     *                      the DocType in the XML doc to be styled
+     *
+     *  @return             A <code>java.io.Reader</code> to allow reading of
+     *                      the results of styling the XML document
+     *
+     *  @throws IOException if there are problems reading the Reader
+     *  @throws DocumentNotFoundException if XSLLookupInterface does not return 
+     *  a valid reference to a suitable XSL stylesheet
+     */
+//    public Reader transform(Reader xmlDocument, XSLLookupInterface directory)
+//                                  throws IOException, DocumentNotFoundException
+//    {
+//        return new StringReader("XMLTransformer: method not implemented!");
+//    }
