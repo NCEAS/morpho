@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-22 19:31:17 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2004-04-22 23:02:13 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -279,7 +279,7 @@ public class DataPackageFactory
     int endIndex = 0;
     int startIndex = 0;
     StringBuffer buffer = new StringBuffer();
-    boolean comment =false;
+    boolean comment = false;
     char thirdPreviousCharacter = '?';
     char secondPreviousCharacter ='?';
     char previousCharacter = '?';
@@ -303,8 +303,7 @@ public class DataPackageFactory
         }
       
         //this is not comment
-        if (previousCharacter =='<'  && !comment)
-        {
+        if (currentCharacter != '!' && previousCharacter == '<' && !comment) {
           count ++;
         }
         // get target line
