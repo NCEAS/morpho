@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.0.0 Beta 1.3</version>
+  <version>1.0.0 Beta 2</version>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
@@ -11,8 +11,8 @@
   <default_profile>./lib/default-profile.xml</default_profile>
   <local_dtd_directory>./lib/catalog</local_dtd_directory>
   <local_catalog_path>./lib/catalog/catalog</local_catalog_path>
-  <debug_level>20</debug_level>
-  <log_file>false</log_file>
+  <debug_level>9</debug_level>
+  <log_file>true</log_file>
   <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
