@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-01 22:01:35 $'
- * '$Revision: 1.17.6.3 $'
+ *     '$Date: 2002-08-05 15:35:18 $'
+ * '$Revision: 1.17.6.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,26 +154,27 @@ public class DataPackagePlugin
                     identifier + " from " + location + ".");
     DataPackage dp = new DataPackage(location, identifier, 
                                      relations, framework);
-    //framework.debug(11, "location: " + location + " identifier: " + identifier +
-    //                " relations: " + relations.toString());
     final DataPackageGUI gui = new DataPackageGUI(framework, dp);
-    JPanel packagePanel = new JPanel();
     JLabel refLabel = new JLabel("<html>"+gui.referenceLabel+"</html>");
     refLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(0,0));
     packagePanel.add(BorderLayout.CENTER,gui.basicInfoPanel);
     packagePanel.add(BorderLayout.EAST,gui.listPanel);
     packagePanel.add(BorderLayout.NORTH,refLabel);
-    
+
     DataPackageViewer dpv = new DataPackageViewer("DataPackageViewer", dp);
     gui.dpv = dpv;
-    dpv.setFramework(framework);
-    //dpv.toppanel = gui.basicInfoPanel;
-    dpv.toppanel = packagePanel;
-    dpv.entityItems = gui.entityitems;
-    
-    dpv.listValueHash = gui.listValueHash;
-    dpv.init();
+    DataViewContainerPanel dvcp = dpv.getDataViewContainerPanel();
+
+    dvcp.setFramework(framework);
+
+    dvcp.setTopPanel(packagePanel);
+    dvcp.setEntityItems(gui.entityitems);
+    dvcp.setListValueHash(gui.listValueHash);
+    dvcp.init();
+
+    dvcp.setVisible(true);
     dpv.setVisible(true);
   }
   

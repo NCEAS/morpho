@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-05 19:05:33 $'
- * '$Revision: 1.42.2.2 $'
+ *     '$Date: 2002-08-05 15:35:18 $'
+ * '$Revision: 1.42.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ public class EntityGUI extends javax.swing.JPanel
   private DataPackageGUI parent;
   
   public JPanel entityPanel;
-  DataPackageViewer dpv = null;
+  JFrame dpv = null;
   
   /**
    * Creates a new entity editor.
