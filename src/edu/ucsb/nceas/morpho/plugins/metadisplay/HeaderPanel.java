@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-12 20:07:09 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-09-26 02:45:14 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import javax.swing.border.EmptyBorder;
 
 import  edu.ucsb.nceas.morpho.util.Command;
 import  edu.ucsb.nceas.morpho.util.GUIAction;
+import  edu.ucsb.nceas.morpho.util.UISettings;
 
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 
@@ -60,49 +61,49 @@ public class HeaderPanel extends JPanel
     private static final String BACK_BUTTON_TEXT    = "< back";
     private static final String EDIT_BUTTON_TEXT    = "edit";
     private static final String CLOSE_BUTTON_TEXT   = "hide X";
-    private static final String TITLEBAR_INIT_TEXT  = "Metadata View";
-    private static final String PATH_INIT_TEXT      = "You are here:\n";
+    private static final String TITLEBAR_INIT_TEXT  = "Documentation";
+    private static final String PATH_INIT_TEXT      = ""; //You are here:\n";
     private static final String PATH_SEPARATOR      = ">>";
  
 
     // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
 
-    private final Font TITLE_FONT  = new Font(null, Font.BOLD, 14);
-    private final Font BUTTON_FONT = new Font(null, Font.BOLD, 11);
-    
-    private final static Color TITLE_TEXT_COLOR       = Color.white;
-    private final static Color BACKBUTTON_TEXT_COLOR  = new Color(0, 198, 255);
-    private final static Color CLOSEBUTTON_TEXT_COLOR = BACKBUTTON_TEXT_COLOR;
-    private final static Color EDITBUTTON_TEXT_COLOR  = new Color(0, 255, 0);
+//    private final Font TITLE_FONT  = new Font(null, Font.BOLD, 12);
+//    private final Font BUTTON_FONT = new Font(null, Font.BOLD, 11);
+//    
+//    private final static Color TITLE_TEXT_COLOR       = Color.white;
+//    private final static Color BACKBUTTON_TEXT_COLOR  = new Color(0, 198, 255);
+//    private final static Color CLOSEBUTTON_TEXT_COLOR = BACKBUTTON_TEXT_COLOR;
+//    private final static Color EDITBUTTON_TEXT_COLOR  = new Color(0, 255, 0);
     
     
     // * * * * * *  D E F A U L T   D I M E N S I O N S  * * * * * * * * * * * * 
     
-    private final int TITLEBAR_HEIGHT           = 27;
-    private final int TITLEBAR_TOP_PADDING      = 0;
-    private final int TITLEBAR_SIDES_PADDING    = 0;
-    private final int TITLEBAR_BOTTOM_PADDING   = 2;
-
-    private final int PATHBAR_TOP_PADDING       = 2;
-    private final int PATHBAR_SIDES_PADDING     = 0;
-    private final int PATHBAR_BOTTOM_PADDING    = 2;
-
-    private final int DUMMY_WIDTH = 100;    //ignored by BorderLayout
-
-    protected final Dimension TITLEBAR_DIMS 
-                                  = new Dimension(DUMMY_WIDTH,TITLEBAR_HEIGHT);
-    private final Dimension BOTTOMLINE_DIMS = new Dimension(DUMMY_WIDTH, 2);
-    private final int TITLEBAR_COMPONENT_HEIGHT 
-            = TITLEBAR_HEIGHT - TITLEBAR_TOP_PADDING - TITLEBAR_BOTTOM_PADDING;
-        
-    // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
-    
-    private final static Color TITLEBAR_COLOR       = Color.gray;
-    private final static Color BACKGROUND_COLOR     = Color.lightGray;
-    private final static Color BOTTOMLINE_COLOR     = Color.darkGray;
-    private final static Color BACKBUTTON_COLOR     = TITLEBAR_COLOR;
-    private final static Color CLOSEBUTTON_COLOR    = TITLEBAR_COLOR;
-    private final static Color EDITBUTTON_COLOR     = TITLEBAR_COLOR;
+//    private final int TITLEBAR_HEIGHT           = 27;
+//    private final int TITLEBAR_TOP_PADDING      = 0;
+//    private final int TITLEBAR_SIDES_PADDING    = 0;
+//    private final int TITLEBAR_BOTTOM_PADDING   = 2;
+//
+//    private final int PATHBAR_TOP_PADDING       = 2;
+//    private final int PATHBAR_SIDES_PADDING     = 0;
+//    private final int PATHBAR_BOTTOM_PADDING    = 2;
+//
+//    private final int DUMMY_WIDTH = 100;    //ignored by BorderLayout
+//
+//    protected final Dimension TITLEBAR_DIMS 
+//                                  = new Dimension(DUMMY_WIDTH,TITLEBAR_HEIGHT);
+//    private final Dimension BOTTOMLINE_DIMS = new Dimension(DUMMY_WIDTH, 2);
+//    private final int TITLEBAR_COMPONENT_HEIGHT 
+//            = TITLEBAR_HEIGHT - TITLEBAR_TOP_PADDING - TITLEBAR_BOTTOM_PADDING;
+//        
+//    // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
+//    
+//    private final static Color TITLEBAR_COLOR       = Color.gray;
+//    private final static Color BACKGROUND_COLOR     = Color.lightGray;
+//    private final static Color BOTTOMLINE_COLOR     = Color.darkGray;
+//    private final static Color BACKBUTTON_COLOR     = TITLEBAR_COLOR;
+//    private final static Color CLOSEBUTTON_COLOR    = TITLEBAR_COLOR;
+//    private final static Color EDITBUTTON_COLOR     = TITLEBAR_COLOR;
 
     private JButton backButton;
     
@@ -120,7 +121,7 @@ public class HeaderPanel extends JPanel
     {
         this.setLayout(new BorderLayout(0,0));
         this.setOpaque(true);
-        this.setBackground(BACKGROUND_COLOR);
+        this.setBackground(UISettings.BACKGROUND_COLOR);
         addTitleBar();
         addPathBar();
         addBottomLine();
@@ -134,12 +135,12 @@ public class HeaderPanel extends JPanel
         //add titlebar itself:
         titleBar = new JPanel();
         titleBar.setLayout(new BorderLayout(0,0));
-        titleBar.setPreferredSize(TITLEBAR_DIMS);
-        titleBar.setBorder(new EmptyBorder( TITLEBAR_TOP_PADDING,
-                                            TITLEBAR_SIDES_PADDING,
-                                            TITLEBAR_BOTTOM_PADDING,
-                                            TITLEBAR_SIDES_PADDING ));
-        setTitleBarColor(TITLEBAR_COLOR);
+        titleBar.setPreferredSize(UISettings.TITLEBAR_DIMS);
+        titleBar.setBorder(new EmptyBorder( UISettings.TITLEBAR_TOP_PADDING,
+                                            UISettings.TITLEBAR_SIDES_PADDING,
+                                            UISettings.TITLEBAR_BOTTOM_PADDING,
+                                            UISettings.TITLEBAR_SIDES_PADDING ));
+        setTitleBarColor(UISettings.TITLEBAR_COLOR);
         titleBar.setOpaque(true);
         this.add(titleBar, BorderLayout.NORTH);
 
@@ -147,16 +148,16 @@ public class HeaderPanel extends JPanel
         GUIAction backAction 
             = new GUIAction(BACK_BUTTON_TEXT, null,new BackCommand(controller));
         backButton = new JButton(backAction);
-        backButton.setBackground(BACKBUTTON_COLOR);
-        backButton.setForeground(BACKBUTTON_TEXT_COLOR);
+        backButton.setBackground(UISettings.BACKBUTTON_COLOR);
+        backButton.setForeground(UISettings.BACKBUTTON_TEXT_COLOR);
         backButton.setFocusPainted(false);
-        backButton.setFont(BUTTON_FONT);
+        backButton.setFont(UISettings.BUTTON_FONT);
         titleBar.add(backButton, BorderLayout.WEST);
         
         //add title text label
         titleTextLabel = new JLabel(TITLEBAR_INIT_TEXT);
-        titleTextLabel.setForeground(TITLE_TEXT_COLOR);
-        titleTextLabel.setFont(TITLE_FONT);
+        titleTextLabel.setForeground(UISettings.TITLE_TEXT_COLOR);
+        titleTextLabel.setFont(UISettings.TITLE_FONT);
         titleTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleBar.add(titleTextLabel, BorderLayout.CENTER);
         
@@ -165,10 +166,10 @@ public class HeaderPanel extends JPanel
             = new GUIAction(CLOSE_BUTTON_TEXT, null, 
                                                 new CloseCommand(controller));
         JButton closeButton = new JButton(closeAction);
-        closeButton.setBackground(CLOSEBUTTON_COLOR);
-        closeButton.setForeground(CLOSEBUTTON_TEXT_COLOR);
+        closeButton.setBackground(UISettings.CLOSEBUTTON_COLOR);
+        closeButton.setForeground(UISettings.CLOSEBUTTON_TEXT_COLOR);
         closeButton.setFocusPainted(false);
-        closeButton.setFont(BUTTON_FONT);
+        closeButton.setFont(UISettings.BUTTON_FONT);
         titleBar.add(closeButton, BorderLayout.EAST);
     }
 
@@ -188,10 +189,10 @@ public class HeaderPanel extends JPanel
         JPanel pathBar = new JPanel();
         
         pathBar.setLayout(new BorderLayout(0,0));
-        pathBar.setBorder(new EmptyBorder(  PATHBAR_TOP_PADDING,
-                                            PATHBAR_SIDES_PADDING,
-                                            PATHBAR_BOTTOM_PADDING,
-                                            PATHBAR_SIDES_PADDING ));
+        pathBar.setBorder(new EmptyBorder(  UISettings.PATHBAR_TOP_PADDING,
+                                            UISettings.PATHBAR_SIDES_PADDING,
+                                            UISettings.PATHBAR_BOTTOM_PADDING,
+                                            UISettings.PATHBAR_SIDES_PADDING ));
         this.add(pathBar, BorderLayout.CENTER);
  
         //add path display
@@ -205,10 +206,10 @@ public class HeaderPanel extends JPanel
         GUIAction editAction
             = new GUIAction(EDIT_BUTTON_TEXT, null,new EditCommand(controller));
         JButton editButton = new JButton(editAction);
-        editButton.setBackground(EDITBUTTON_COLOR);
-        editButton.setForeground(EDITBUTTON_TEXT_COLOR);
+        editButton.setBackground(UISettings.EDITBUTTON_COLOR);
+        editButton.setForeground(UISettings.EDITBUTTON_TEXT_COLOR);
         editButton.setFocusPainted(false);
-        editButton.setFont(BUTTON_FONT);
+        editButton.setFont(UISettings.BUTTON_FONT);
         Box buttonBox = Box.createVerticalBox();
         buttonBox.add(Box.createVerticalGlue());
         buttonBox.add(editButton);
@@ -219,8 +220,8 @@ public class HeaderPanel extends JPanel
     private void addBottomLine() 
     {
         JPanel bottomLine = new JPanel();
-        bottomLine.setPreferredSize(BOTTOMLINE_DIMS);
-        bottomLine.setBackground(BOTTOMLINE_COLOR);
+        bottomLine.setPreferredSize(UISettings.HEADER_BOTTOMLINE_DIMS);
+        bottomLine.setBackground(UISettings.BOTTOMLINE_COLOR);
         bottomLine.setOpaque(true);
         this.add(bottomLine, BorderLayout.SOUTH);
     }
@@ -240,16 +241,27 @@ public class HeaderPanel extends JPanel
     }
     
     /**
-    *  set color of title bar (ie main part of header above path bar)
-    *   this may need to be called for example to change titlebar color for 
-    *   focus/non-focus indocation
-    *
-    *  @param color the <code>java.awt.Color</code> to use
-    */
+     *  set color of title bar (ie main part of header above path bar)
+     *   this may need to be called for example to change titlebar color for 
+     *   focus/non-focus indocation
+     *
+     *  @param color the <code>java.awt.Color</code> to use
+     */
     protected void setTitleBarColor(Color color) 
     {
         titleBar.setBackground(color);
         titleBar.invalidate();
+    }
+    
+    /**
+     *  set text of title bar (ie main part of header above path bar)
+     *
+     *  @param color the <code>java.awt.Color</code> to use
+     */
+    protected void setTitleBarText(String text) 
+    {
+        titleTextLabel.setText(text);
+        titleTextLabel.invalidate();
     }
     
    
