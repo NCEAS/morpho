@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-04 20:11:50 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-04 20:39:55 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,8 +85,7 @@ public class SaveDialog extends JDialog
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
-      "Please choose where the current DataPackage \n" +
-      " should be saved."; 
+      "Please choose where you would like to save the data package.";
 
   /** A reference to morpho frame */
   MorphoFrame morphoFrame = null;
