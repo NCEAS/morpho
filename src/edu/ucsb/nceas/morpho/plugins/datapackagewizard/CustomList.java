@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-16 23:51:20 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2004-03-16 23:58:48 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -319,11 +318,7 @@ public class CustomList extends JPanel {
 							InputVerifier iv = ((JTextField)editor).getInputVerifier();
 							if(iv != null)
 								jtf.setInputVerifier(iv);
-							FocusListener fl[] = ((JTextField)editor).getFocusListeners();
-							for(int k = 0; k < fl.length; k++) {
-								jtf.addFocusListener(fl[k]);
-								System.out.println("adding FL " +k);
-							}
+							
 							jtf.setForeground(((JTextField)editor).getForeground());
 							jtf.setDisabledTextColor(((JTextField)editor).getDisabledTextColor());
 							jtf.setBackground(((JTextField)editor).getBackground());
