@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-10 22:23:10 $'
- * '$Revision: 1.15 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-07-23 16:01:33 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ public class NewPackageMetadataWizard extends JFrame
     this.addWindowListener(this);
     
     //if functionality to add an existing file is added, remove this line.
-    existingFile.setEnabled(false);
+    //existingFile.setEnabled(false);
     
     numScreens = 5;
     currentScreen = 0;
@@ -510,9 +510,10 @@ public class NewPackageMetadataWizard extends JFrame
         editor.openEditor(dummydoc, null, null, this);
         this.hide();
       }
-      /*else
+      else
       { //the user wishes to put an existing file into the package.
         addedFile = new File(fileTextField.getText());
+/*
         StringBuffer sb;
         try
         {
@@ -532,7 +533,6 @@ public class NewPackageMetadataWizard extends JFrame
           e.printStackTrace();
           return;
         }
-        
         String fileString = sb.toString();
         if(fileString.indexOf("<?xml") != -1)
         { //this is an xml file
@@ -556,7 +556,10 @@ public class NewPackageMetadataWizard extends JFrame
           {
             return;
           }
+ */       
           
+/*
+          // This sections establishes the relationships to go in triples
           relatedFileIds = (Vector)packageFiles.get(relatedto.trim());
           if(relatedFileIds != null && relatedFileIds.size() == 1)
           {
@@ -588,8 +591,12 @@ public class NewPackageMetadataWizard extends JFrame
               }
             }
           }
+*/
+
+/*
         }
-      }*/
+*/
+      }
     }
     else if(3 == currentScreen)
     {

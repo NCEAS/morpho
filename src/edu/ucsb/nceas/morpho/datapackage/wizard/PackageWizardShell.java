@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-07-22 22:35:09 $'
- * '$Revision: 1.33 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-07-23 16:01:33 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -721,12 +721,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           }
           if((!type.equals("WIZARD")) && (!type.equals("ACL")))
           { //this is a data file.  send it to metacat
-            ClientFramework.debug(9, "PLEASE NOTE: Currently, metacat does " +
-                                  "not upload DATA FILES.");
-            ////////////////////////////////////////////////////////////////////
-            //this is broken because metacat needs to be updated...see bugzilla
-            ////////////////////////////////////////////////////////////////////
-            //mds.newDataFile(id, fr, publicAcc);
+            mds.newDataFile(id, f);
           }
           else
           { //this is an xml file
