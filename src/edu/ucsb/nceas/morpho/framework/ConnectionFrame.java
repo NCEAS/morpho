@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-31 22:32:13 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2001-12-03 22:12:33 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     DisconnectButton.setActionCommand("Disconnect");
     DisconnectButton.setEnabled(false);
     JPanel1.add(DisconnectButton);
-    CancelButton.setText("Cancel");
+    CancelButton.setText("Skip Login");
     CancelButton.setActionCommand("Cancel");
     CancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
     CancelButton.setEnabled(true);
