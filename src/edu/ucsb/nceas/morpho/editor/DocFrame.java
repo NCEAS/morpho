@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-17 23:40:19 $'
- * '$Revision: 1.131 $'
+ *     '$Date: 2003-12-18 16:53:35 $'
+ * '$Revision: 1.132 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1704,7 +1704,8 @@ public class DocFrame extends javax.swing.JFrame
           String str = (String)(keys.nextElement());
           String val = (String)((ni.attr).get(str));
           if (!(str.equals("minOccurs")) && (!(str.equals("maxOccurs")))
-            && (!str.equals("")) &&(!(str.indexOf("schemaLocation")>-1))
+            && (!str.equals("")) 
+//            &&(!(str.indexOf("schemaLocation")>-1))
           ) {
             start1.append(" " + str + "=\"" + val + "\"");
           }
