@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-25 23:58:02 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-03 22:21:28 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,9 +91,6 @@ public class CreateNewDataPackageCommand implements Command
           AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
           Log.debug(30, "AbstractDataPackage complete");
 
-          Morpho morpho = Morpho.thisStaticInstance;
-          AccessionNumber an = new AccessionNumber(morpho);
-          adp.setAccessionNumber(an.getNextId());
 
           try {
             ServiceController services = ServiceController.getInstance();
