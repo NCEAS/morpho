@@ -8,7 +8,7 @@
           </shortName>
           <title minOccurs="1" maxOccurs="unbounded" help="The 'title' field provides a description of the resource that is being documented that is long enough to differentiate it from other similar resources. Multiple titles may be provided, particularly when trying to express the title in more than one language (use the 'xml:lang' attribute to indicate the language if not English/en).">
           </title>
-          <creator scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
+          <creator editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
             <CHOICE3 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE4 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE5 minOccurs="1" maxOccurs="unbounded" help="">
@@ -406,7 +406,7 @@
               </comment>
             </changeHistory>
           </maintenance>
-          <contact scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
+          <contact editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
             <CHOICE125 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE126 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE127 minOccurs="1" maxOccurs="unbounded" help="">
