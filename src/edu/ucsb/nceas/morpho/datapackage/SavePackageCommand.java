@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-04 20:11:50 $'
- * '$Revision: 1.5 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:14 $'
+ * '$Revision: 1.5.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,7 @@ public class SavePackageCommand implements Command
        dvcp = morphoFrame.getDataViewContainerPanel();
     }//if
     if (dvcp!=null) {
+      dvcp.saveDataChanges();  // needed to flag datatable changes
       adp = dvcp.getAbstractDataPackage();
     }
     new SaveDialog(adp, showPackageFlag);

@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-10 02:21:49 $'
- * '$Revision: 1.5 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:15 $'
+ * '$Revision: 1.5.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
+import java.text.DateFormat;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -221,7 +223,8 @@ public class CitationPage extends AbstractUIPage {
 		
 		// Pub Date
     JPanel pubDatePanel = WidgetFactory.makePanel(1);
-    pubDatePanel.add(WidgetFactory.makeLabel("Pubication Date:", false));
+		pubDateLabel = WidgetFactory.makeLabel("Pubication Date:", false);
+    pubDatePanel.add(pubDateLabel);
     pubDateField = WidgetFactory.makeOneLineTextField();
     pubDatePanel.add(pubDateField);
     //salutationPanel.setBorder(new javax.swing.border.EmptyBorder(0,
@@ -659,7 +662,13 @@ public class CitationPage extends AbstractUIPage {
       return false;
     }
     WidgetFactory.unhiliteComponent(authorLabel);
-
+		
+		String date = this.pubDateField.getText();
+		if(!date.trim().equals("") && !isDate(date)) {
+			WidgetFactory.hiliteComponent(pubDateLabel);
+      return false;
+		}
+		
     if (citationType==null || citationType.trim().equals("")) {
 
       WidgetFactory.hiliteComponent(citationTypeLabel);
@@ -670,7 +679,28 @@ public class CitationPage extends AbstractUIPage {
     return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
   }
 
-
+	private boolean isDate(String s) {
+    DateFormat dateFormat;
+    Date dt;
+		dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+    boolean res = true;
+    try {
+		  dt = dateFormat.parse(s);
+		} catch (Exception w) {
+      try {
+        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+				dt = dateFormat.parse(s);
+      } catch (Exception w1) {
+        try {
+          dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+					dt = dateFormat.parse(s);
+        } catch (Exception w2) {
+          res = false;
+        }
+      }
+    }
+		return res;
+  }
 
   /**
    *  @return a List contaiing 2 String elements - one for each column of the
@@ -679,7 +709,7 @@ public class CitationPage extends AbstractUIPage {
    */
   public List getSurrogate() {
 
-    List surrogate = new ArrayList();
+		List surrogate = new ArrayList();
 		surrogate.add(this.titleField.getText());
 		
 		Iterator it = authorList.getListOfRowLists().iterator();
@@ -734,8 +764,7 @@ public class CitationPage extends AbstractUIPage {
     return this.getPageData(xPathRoot);
   }
   public OrderedMap getPageData(String xPath) {
-
-	
+		
 		OrderedMap map = new OrderedMap();
 		
 		map.put(xPath + "/title[1]", this.titleField.getText());
@@ -751,7 +780,6 @@ public class CitationPage extends AbstractUIPage {
 			map.putAll(partyMap);
 			idx++;
 		}
-		
 		String pubn = this.pubDateField.getText(); 
 		if(!pubn.trim().equals(""))
 			map.put(xPath + "/pubDate[1]", pubn);
@@ -797,6 +825,8 @@ public class CitationPage extends AbstractUIPage {
 		
 		boolean b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/surName[1]");
 		if(b) return true;
+		b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName[1]/surName[1]");
+		if(b) return true;
 		b = map.containsKey(xPath + "/creator[" +idx+ "]/organizationName[1]");
 		if(b) return true;
 		b = map.containsKey(xPath + "/creator[" +idx+ "]/positionName[1]");
@@ -815,25 +845,33 @@ public class CitationPage extends AbstractUIPage {
    * Code Definitions"
    *
    * @param map - Data is passed as OrderedMap of xPath-value pairs. xPaths in
-   *   this map are absolute xPath and not the relative xPaths
+   *   this map are relative to the xPath provided
+	 * @param xPath - the relative xPath
+	 *
    */
   public boolean setPageData(OrderedMap map, String xPath) {
 		
 		this.titleField.setText((String)map.get(xPath + "/title[1]"));
+		map.remove(xPath + "/title[1]");
 		
 		for(int idx = 1; ; idx++) {
 			
-			if(!mapContainsCreator(map, xPath, idx)) break;
+			if(!mapContainsCreator(map, xPath, idx)) {
+				break;
+			}
+			OrderedMap copyMap = (OrderedMap)map.clone();
 			PartyPage page = (PartyPage)WizardPageLibrary.getPage( DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
-			page.setPageData(map, xPath + "/creator[" + idx + "]");
+			page.setPageData(copyMap, xPath + "/creator[" + idx + "]");
 			List row = page.getSurrogate();
 			row.add(page);
 			authorList.addRow(row);
 		}
 		
 		String pubn = (String)map.get(xPath + "/pubDate[1]");
-		if(pubn != null)
+		if(pubn != null) {
 			this.pubDateField.setText(pubn);
+			map.remove(xPath + "/pubDate[1]");
+		}
 		
 		citationType = findCitationType(map, xPath);
 		int componentNum = -1;
@@ -860,8 +898,7 @@ public class CitationPage extends AbstractUIPage {
 			this.setCitationType("Report");
 			this.setCitationTypeUI(reportPanel);
 			((WizardPageSubPanelAPI)reportPanel).setPanelData(xPath + "/report[1]", map);
-		} else 
-		
+		}
 		
 		if (componentNum != -1) {
 			
@@ -1043,6 +1080,12 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 			map.remove(xPathRoot + "/volume[1]");
 		}
 		
+		String isbn = (String)map.get(xPathRoot + "/ISBN[1]"); 
+		if(isbn != null) {
+			this.isbnField.setText(isbn);
+			map.remove(xPathRoot + "/ISBN[1]");
+		}
+		
 	}
 	
 }
@@ -1193,11 +1236,10 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 		OrderedMap map = new OrderedMap();
 		map.put(xPathRoot + "/journal[1]", journalField.getText());
 		map.put(xPathRoot + "/volume[1]", volumeField.getText());
-		map.put(xPathRoot + "/pageRange[1]", this.rangeField.getText());
-		
 		String issue = (String) this.issueField.getText();
 		if(!issue.trim().equals("")) map.put(xPathRoot + "/issue[1]", issue);
 		
+		map.put(xPathRoot + "/pageRange[1]", this.rangeField.getText());
 		String pub = (String)this.publisherField.getText();
 		if(pub.trim().equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
 		
@@ -1336,11 +1378,11 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 		
 		OrderedMap map = new OrderedMap();
 		
-		String pub = this.publisherField.getText().trim();
-		if(!pub.equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
-		
 		String rn = this.numberField.getText().trim();
 		if(!rn.equals("")) map.put(xPathRoot + "/reportNumber[1]", rn);
+		
+		String pub = this.publisherField.getText().trim();
+		if(!pub.equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
 		
 		String pn = this.pagesField.getText();
 		if(!pn.trim().equals("")) map.put(xPathRoot + "/totalPages[1]", pn);

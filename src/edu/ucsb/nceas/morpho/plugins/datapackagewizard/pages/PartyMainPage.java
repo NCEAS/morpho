@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-09 19:51:12 $'
- * '$Revision: 1.37 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:15 $'
+ * '$Revision: 1.37.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -269,7 +269,7 @@ public class PartyMainPage
         //have been editing an original reference via another party's dialog, so
         //if the original ref is in this current page's list, update its
         //PartyPage object before we write it to DOM...
-        updateOriginalRefPartyPage(partyPage.getReferencesNodeIDString());
+        updateOriginalRefPartyPage(partyPage);
       }
      //update datapackage...
       updateDOMFromListOfPages();
@@ -309,8 +309,8 @@ public class PartyMainPage
   //have been editing an original reference via another party's dialog, so
   //if the original ref is in this current page's list, update its
   //PartyPage object before we write it to DOM...
-  private void updateOriginalRefPartyPage(String originalRefID) {
-
+  private void updateOriginalRefPartyPage(PartyPage partyPage) {
+    String originalRefID = partyPage.getReferencesNodeIDString();
     AbstractDataPackage adp
         = UIController.getInstance().getCurrentAbstractDataPackage();
     if (adp == null) {
@@ -328,6 +328,7 @@ public class PartyMainPage
       //column 3 is user object - check it exists and isn't null:
       if (nextRowList.size() < 4)continue;
       nextPage = (PartyPage)nextRowList.get(3);
+      if (nextPage == partyPage) continue; //DFH (don't add the page that has just been added
       if (nextPage == null)continue;
       if (nextPage.getRefID().equals(originalRefID)) {
 
@@ -342,6 +343,7 @@ public class PartyMainPage
 
         boolean checkParty = nextPage.setPageData(
             map, "/" + DATAPACKAGE_PARTY_GENERIC_NAME);
+Log.debug(1, "HALT:" + "\n Map = \n" + map);            
       }
     }
   }
@@ -381,7 +383,7 @@ public class PartyMainPage
         //have been editing an original reference via another party's dialog, so
         //if the original ref is in this current page's list, update its
         //PartyPage object before we write it to DOM...
-        updateOriginalRefPartyPage(editPartyPage.getReferencesNodeIDString());
+        updateOriginalRefPartyPage(editPartyPage);
       }
       //update datapackage...
       updateDOMFromListOfPages();

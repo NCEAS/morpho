@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-09 18:28:51 $'
- * '$Revision: 1.23 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:15 $'
+ * '$Revision: 1.23.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -721,7 +721,7 @@ public class AttributePage extends AbstractUIPage {
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPath+"/measurementScale/"+measurementScale) );
     }
-		if(measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) {
+		if( measurementScale != null && (measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) ) {
 			
 			boolean p = returnMap.containsKey(xPath+"/measurementScale/"+measurementScale + "/additionalMetadata/ANY/unitList/unit[1]/@name");
 			if(p) {

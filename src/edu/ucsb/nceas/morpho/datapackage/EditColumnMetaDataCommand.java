@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.12 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:14 $'
+ * '$Revision: 1.12.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,6 +111,7 @@ public class EditColumnMetaDataCommand implements Command
     // make sure resulPanel is not null
     if (resultPane != null)
     {
+       
        dataView = resultPane.getCurrentDataViewer();
        if (dataView != null)
        {
@@ -155,7 +156,7 @@ public class EditColumnMetaDataCommand implements Command
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT
-, false);
+                                , false);
     attributePage.refreshUI();
     wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
     wpd.validate();
@@ -164,7 +165,8 @@ public class EditColumnMetaDataCommand implements Command
 
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-
+      adp.setLocation("");
+      resultPane.saveDataChanges();  // needed to flag datatable changes
       map = attributePage.getPageData(xPath);
       if(entityIndex == -1) {
         Log.debug(10, "Unable to get the Index of the current Entity, in EditColumnMetaData.");

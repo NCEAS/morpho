@@ -6,9 +6,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-07 18:02:33 $'
- * '$Revision: 1.20 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:14 $'
+ * '$Revision: 1.20.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,6 +114,7 @@ public class SaveDialog extends JDialog
    */
   public SaveDialog(AbstractDataPackage adp)
   {
+    setModal(true);
     this.adp = adp;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     initialize(morphoFrame);

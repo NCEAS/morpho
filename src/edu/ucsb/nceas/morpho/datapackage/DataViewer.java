@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-08 19:09:56 $'
- * '$Revision: 1.116 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:14 $'
+ * '$Revision: 1.116.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,21 +124,6 @@ public class DataViewer extends javax.swing.JPanel
   // new JMenuItem("Edit Column Metadata");
   private GUIAction editColumnMetadataAction = null;
 
-  // The following instances of JMenu are apparently needed to make a
-  // menus that appears in both the menu bar and in a popup menu
-  // (JComponents all have a single 'parent'. This means that the components
-  // cannot be reused (because they have only one parent container)
-  // One thus needs to duplicate the menu items for the Menu and Popup
-  private JMenuItem addDocumentation1 = null;
-  private JMenuItem createNewDatatable1 = null;
-  private JMenuItem sortBySelectedColumn1 = new JMenuItem("Sort by Selected Column");
-  private JMenuItem insertRowAfter1 = new JMenuItem("Insert Row After Selected Row");
-  private JMenuItem insertRowBefore1 = new JMenuItem("Insert Row Before Selected Row");
-  private JMenuItem deleteRow1 = new JMenuItem("Delete Selected Row");
-  private JMenuItem insertColumnBefore1 = new JMenuItem("Insert Column Before Selected Column");
-  private JMenuItem insertColumnAfter1 = new JMenuItem("Insert Column After Selected Column");
-  private JMenuItem deleteColumn1 = new JMenuItem("Delete Selected Column");
-  private JMenuItem editColumnMetadata1 = new JMenuItem("Edit Column Metadata");
 
 
   /**
@@ -422,7 +407,9 @@ public class DataViewer extends javax.swing.JPanel
     popup.add(deleteColumn);
     popup.add(new JSeparator());
 
-    editColumnMetadataAction = new GUIAction("Edit Column Metadata", null,
+    editColumnMetadataAction = new GUIAction("Edit Column "+
+                                     DataPackagePlugin.METADATA_MENU_LABEL,
+                               null,
                                new EditColumnMetaDataCommand());
     editColumnMetadata = new JMenuItem(editColumnMetadataAction);
     popup.add(editColumnMetadata);

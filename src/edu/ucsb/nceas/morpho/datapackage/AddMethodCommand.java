@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-30 21:34:33 $'
- * '$Revision: 1.2 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:14 $'
+ * '$Revision: 1.2.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,14 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import javax.xml.transform.TransformerException;
+
+import java.awt.event.ActionEvent;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -37,15 +45,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import javax.xml.transform.TransformerException;
-
-import java.awt.event.ActionEvent;
-
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 /**
  * Class to handle add method command
@@ -163,7 +162,6 @@ public class AddMethodCommand
                 + "XMLUtilities.getXPathMapAsDOMTree(map, methodRoot) with \n"
                 + "map = " + map
                 + " and methodRoot = " + methodRoot);
-      w.printStackTrace();
       return;
     }
     //delete old method from datapackage

@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-05 20:28:01 $'
- * '$Revision: 1.61 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 23:28:15 $'
+ * '$Revision: 1.61.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -572,8 +572,10 @@ public class WizardContainerFrame
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.USAGE_RIGHTS);
     AbstractUIPage GEOGRAPHIC
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GEOGRAPHIC);
-    AbstractUIPage TEMPORAL
+		AbstractUIPage TEMPORAL
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEMPORAL);
+    AbstractUIPage TAXONOMIC
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TAXONOMIC);
     AbstractUIPage ACCESS
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.ACCESS);
     AbstractUIPage DATA_LOCATION
@@ -638,7 +640,12 @@ public class WizardContainerFrame
     if (TEMPORAL != null) {
       addPageDataToResultsMap( TEMPORAL, wizData);
     }
-
+		
+		//TAXONOMIC
+    if (TAXONOMIC != null) {
+      addPageDataToResultsMap( TAXONOMIC, wizData);
+    }
+		
     //CONTACT:
     if (PARTY_CONTACT_PAGE != null) {
       addPageDataToResultsMap( PARTY_CONTACT_PAGE, wizData);
