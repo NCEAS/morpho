@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 23:45:46 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2002-08-16 21:38:47 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,26 +254,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
       refreshOwnerPanel();
   }
   
-private void doQuery(final ResultFrame rsf, final Query query) {
-  
-  final SwingWorker worker = new SwingWorker() {
-        ResultSet frs;
-        public Object construct() {
-          frs = query.execute();
-        
-          return null;  
-        }
 
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          rsf.setTitle(frs.getQuery().getQueryTitle());
-          rsf.setName(frs.getQuery().getQueryTitle());
-          
-          rsf.addResultPanel(frs);
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
   
   
 }
