@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-10-23 22:48:21 $'
- * '$Revision: 1.72 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-23 23:30:57 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1869,7 +1869,9 @@ public class DataViewer extends javax.swing.JPanel
         triples.addTriple(tacc);
     
         // connect this entity to the new datafile
-        Triple t1 = new Triple(entityFileId, "isRelatedTo", dataid);
+        Triple t1 = new Triple(entityFileId, 
+                              "provides table-entity information for DATAFILE", 
+                              dataid);
         triples.addTriple(t1);
         return triples;
   }

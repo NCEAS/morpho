@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-22 21:37:24 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-10-23 23:30:57 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -328,7 +328,9 @@ public class NewDataFile extends javax.swing.JDialog
     triples.addTriple(tacc);
     
     // connect this entity to the new datafile
-    Triple t1 = new Triple(entityId, "isRelatedTo", newid);
+    Triple t1 = new Triple(entityId, 
+                       "provides table-entity information for DATAFILE",
+                       newid);
     triples.addTriple(t1);
     
     File packageFile = dataPackage.getTriplesFile();
