@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:12:29 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2003-11-19 22:50:27 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -451,7 +451,8 @@ public class DataPackagePlugin
     DataPackageGUI gui = null;
     Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
-    if ((doctype!=null)&&(doctype.indexOf("eml://ecoinformatics.org/eml-2.0.0")>-1)) {
+//DFH    if ((doctype!=null)&&(doctype.indexOf("eml://ecoinformatics.org/eml-2.0.0")>-1)) {
+    if ((doctype!=null)&&(true)) {
       boolean metacat = false;
       boolean local = false;
       if ((location.equals(DataPackageInterface.METACAT))||

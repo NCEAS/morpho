@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-18 22:50:08 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2003-11-19 22:50:27 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,12 +218,15 @@ public abstract class AbstractDataPackage extends MetadataObject
   public static final String BOTH     = "localmetacat";
 
     // util to read the file from either FileSystemDataStore or MetacatDataStore
-  protected File getFileWithID(String ID) throws Throwable {
+  protected File getFileWithID(String ID, Morpho morpho) throws Throwable {
     
     File returnFile = null;
     if(location.equals(METACAT)) {
       try {
         Log.debug(11, "opening metacat file");
+        if (metacatDataStore==null) {
+          metacatDataStore = new MetacatDataStore(morpho);
+        }
         dataPkgFile = metacatDataStore.openFile(ID);
         Log.debug(11, "metacat file opened");
       
@@ -244,6 +247,9 @@ public abstract class AbstractDataPackage extends MetadataObject
     } else {  //not metacat
       try {
         Log.debug(11, "opening local file");
+        if (fileSysDataStore==null) {
+          fileSysDataStore = new FileSystemDataStore(morpho);
+        }
         dataPkgFile = fileSysDataStore.openFile(ID);
         Log.debug(11, "local file opened");
       
