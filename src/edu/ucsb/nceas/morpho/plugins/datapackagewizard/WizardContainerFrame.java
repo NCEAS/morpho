@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-23 20:02:17 $'
- * '$Revision: 1.50 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-24 20:21:06 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -542,7 +542,7 @@ public class WizardContainerFrame extends JFrame {
     //ABSTRACT:
     if (generalMap!=null)       {
 
-      final String abstractXPath = "/eml:eml/dataset/abstract/section/para[1]";
+      final String abstractXPath = "/eml:eml/dataset/abstract/para[1]";
       Object abstractObj = generalMap.get(abstractXPath);
       if (abstractObj!=null) wizData.put( abstractXPath,
         XMLUtilities.normalize(abstractObj));
