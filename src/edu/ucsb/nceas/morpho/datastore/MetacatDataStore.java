@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-26 23:08:14 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-04-17 20:44:09 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,6 +195,136 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     }
   }
 
+  /**
+   * Opens a file from Metacat and returns a File object that represents the
+   * metacat file.  If the file does not exist in the local cache, or is
+   * outdated in the local cache, this method adds the new file to the cache
+   * for later access.
+   *
+   * differs from 'openFile' in that no filtering is done on special characters
+   * This is needed for binary data files.
+   *
+   * @param name: the docid of the metacat file in &lt;scope&gt;.&lt;number&gt;
+   * or &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
+   */
+  public File openDataFile(String name) throws FileNotFoundException, 
+                                           CacheAccessException
+  {
+    String path = parseId(name);
+    String dirs = path.substring(0, path.lastIndexOf("/"));
+    StringBuffer response = new StringBuffer();
+    FileOutputStream fos;
+    FileWriter writer;
+    FileReader reader;
+    
+    File localfile = new File(cachedir + "/" + path); //the path to the file
+    File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
+    
+    if((localfile.exists())&&(localfile.length()>0))
+    { //if the file is cached locally, read it from the hard drive
+      Log.debug(11, "MetacatDataStore: getting cached file");
+      return localfile;
+    }
+    else
+    { // if the filelength is zero, delete it
+      if (localfile.length()==0) {
+        localfile.delete();
+      }
+      
+      //if the file is not cached, get it from metacat and cache it.
+      //-get file from metacat
+      //-write file to cache directory
+      //-reread file to check for errors
+      //-throw exception if file is an error and delete file
+      //-return the file pointer if the file is not an error
+      
+      Log.debug(11,"MetacatDataStore: getting file from Metacat");
+      Properties props = new Properties();
+      props.put("action", "read");
+      props.put("docid", name);
+      props.put("qformat", "xml");
+      
+      try
+      {
+        localdir.mkdirs(); //create any directories
+      }
+      catch(Exception ee)
+      {
+        ee.printStackTrace();
+      }
+      
+      try
+      {
+        fos = new FileOutputStream(localfile);
+        BufferedOutputStream bfos = new BufferedOutputStream(fos);
+        InputStream metacatInput = morpho.getMetacatInputStream(props);
+        // set here because previous line call to getMetacatInputStream will set
+        // to false
+        Morpho.connectionBusy = true;
+
+        BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
+        int c = bmetacatInputStream.read();
+        while(c != -1)
+        {
+          bfos.write(c);
+          c = bmetacatInputStream.read();
+        }
+        bfos.flush();
+        bfos.close();
+        
+        // just look for error in first 1000 bytes - DFH
+        int cnt = 0;
+        reader = new FileReader(localfile);
+        BufferedReader breader = new BufferedReader(reader);
+        c = breader.read();
+        while((c != -1)&&(cnt<1000))
+        {
+          cnt++;  
+          response.append((char)c);
+          c = breader.read();
+        }
+        String responseStr = response.toString();
+        if(responseStr.indexOf("<error>") != -1)
+        {//metacat reported some error
+          bfos.close();
+          breader.close();
+          bmetacatInputStream.close();
+          metacatInput.close();
+          if(!localfile.delete())
+          {
+            throw new CacheAccessException("A cached file could not be " + 
+                                  "deleted.  Please check your access " +
+                                  "permissions on the cache directory." +
+                                  "Failing to delete cached files can " +
+                                  "result in erroneous operation of morpho." +
+                                  "You may want to manually clear your cache " +
+                                  "now.");
+          }
+          throw new FileNotFoundException(name + " does not exist on your " +
+                                          "current Metacat system: ");
+        }
+        
+        bfos.close();
+        breader.close();
+        bmetacatInputStream.close();
+        metacatInput.close();
+        Morpho.connectionBusy = false;
+        return localfile;
+      }
+      catch (FileNotFoundException mde) {
+        throw mde;
+      }
+      catch(Exception e)
+      {
+        e.printStackTrace();
+        Morpho.connectionBusy = false;
+        return null;
+      }
+    }
+  }
+  
+  
+  
   /**
    * Checks to see if a document with the id exists on Metacat
    *
