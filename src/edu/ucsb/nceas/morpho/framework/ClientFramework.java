@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-27 15:39:31 $'
- * '$Revision: 1.67 $'
+ *     '$Date: 2001-07-27 18:57:46 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1021,6 +1021,7 @@ public class ClientFramework extends javax.swing.JFrame
   public void logOut()
   {
     if (connected) {
+      passWord = "none";   // get rid of existing password info
       Properties prop = new Properties();
       prop.put("action", "logout");
       prop.put("qformat", "xml");
@@ -1065,6 +1066,13 @@ public class ClientFramework extends javax.swing.JFrame
   {
     this.passWord = pword;
   } 
+  
+  /**
+   *  get password associated with this framework
+   */
+   public String getPassword() {
+      return passWord;
+   }
 
   /**
    * Determines if the framework has a valid login

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-13 22:38:29 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-07-27 18:57:46 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,6 +112,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     PWTextField.setColumns(21);
     JPanel4.add(PWTextField);
     PWTextField.setBounds(66,5,231,19);
+    PWTextField.setText(container.getPassword());
     ActivityLabel.setDoubleBuffered(true);
     ActivityLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
     ActivityLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);

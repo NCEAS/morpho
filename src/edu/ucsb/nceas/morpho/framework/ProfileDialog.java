@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-07-20 23:30:28 $'
- * '$Revision: 1.11 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-27 18:57:46 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -418,7 +418,9 @@ public class ProfileDialog extends JDialog
             // Log into metacat
             framework.setPassword(passwordField.getText());
             framework.setProfile(profile);
-            framework.logIn();
+ // removed by DFH to avoid initial use error when there is
+ // no network connection
+//            framework.logIn();
   
             // Get rid of the dialog
             setVisible(false);
@@ -497,7 +499,9 @@ public class ProfileDialog extends JDialog
           // Log into metacat
           framework.setPassword(passwordField.getText());
           framework.setProfile(profile);
-          framework.logIn();
+ // removed by DFH to avoid initial use error when there is
+ // no network connection
+ //         framework.logIn();
 
           // Get rid of the dialog
           setVisible(false);
