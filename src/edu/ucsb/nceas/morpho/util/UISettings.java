@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-12 00:38:12 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-12-12 01:03:42 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,11 +59,34 @@ public class UISettings
                                   
     // * * * * * *  D E F A U L T   D I M E N S I O N S  * * * * * * * * * * * * 
     
+
+    /**
+     *  overall screen width (in pixels)
+     */
     public static final int CLIENT_SCREEN_WIDTH       = (int)scrDim.getWidth();
+
+    /**
+     *  overall screen height (in pixels)
+     */
     public static final int CLIENT_SCREEN_HEIGHT      = (int)scrDim.getHeight();
-    //a guess at how high most taskbars will be:
+
+    /**
+     *  a guess at how high most taskbars will be (in pixels)
+     */
     public static final int TASKBAR_HEIGHT = 100;
     
+    /**
+     *  overall width (pixels) of MorphoFrame (after making allowance 
+     *  for client screen width etc)
+     */
+    public static final double DEFAULT_WINDOW_WIDTH     = getWindowWidth();
+    /**
+     *  overall height (pixels) of MorphoFrame (after making allowance 
+     *  for client screen height, taskbar etc)
+     */
+    public static final double DEFAULT_WINDOW_HEIGHT    = getWindowHeight();
+
+
     public  static final int FOCUS_BORDER_WIDTH         = 4;
 
     private static final int TITLEBAR_HEIGHT            = 27;
@@ -329,24 +352,6 @@ public class UISettings
             = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no.gif");
 
 
-    /////////////////////////////////////////////
-    
-    private static Object cpLocator = null;
-    
-    // needs classpath-relative path string (i.e. starts with a "/")
-    private static Image getAsImage(String path) {
-        
-        if (cpLocator==null) cpLocator = new Object();
-        return new ImageIcon(cpLocator.getClass().getResource(path)).getImage();
-    }
-
-    // needs classpath-relative path string (i.e. starts with a "/")
-    private static Icon getAsImageIcon(String path) {
-        
-        return new ImageIcon(getAsImage(path));
-    }
-
-    
     
     // * * * * * * * * * *    T E X T   L A B E L S    * * * * * * * * * * * * *
     
@@ -424,6 +429,46 @@ public class UISettings
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+    // determine default window size
+    private static double getWindowWidth() 
+    {
+        if (CLIENT_SCREEN_WIDTH >= MAX_WINDOW_WIDTH) {
+            return MAX_WINDOW_WIDTH;
+        } else {
+            return CLIENT_SCREEN_WIDTH;
+        }
+    }
+    
+    private static double getWindowHeight() 
+    {
+        if (CLIENT_SCREEN_HEIGHT >= MAX_WINDOW_HEIGHT) {
+            return MAX_WINDOW_HEIGHT - TASKBAR_HEIGHT;
+        } else {
+            return CLIENT_SCREEN_HEIGHT - UISettings.TASKBAR_HEIGHT;
+        }
+    }
+    
+    
+    
+    /////////////////////////////////////////////
+    
+    private static Object cpLocator = null;
+    
+    // needs classpath-relative path string (i.e. starts with a "/")
+    private static Image getAsImage(String path) {
+        
+        if (cpLocator==null) cpLocator = new Object();
+        return new ImageIcon(cpLocator.getClass().getResource(path)).getImage();
+    }
+
+    // needs classpath-relative path string (i.e. starts with a "/")
+    private static Icon getAsImageIcon(String path) {
+        
+        return new ImageIcon(getAsImage(path));
+    }
+
+    
+    
 
     /**
      *  private constructor - no instantiation, since all methods static
