@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:14:55 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-03-10 20:10:36 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -280,6 +280,7 @@ public class DeleteCommand implements Command
          */
         private void refreshDataPackageFrame()
         {
+          
          
           // if pakcage have local and network copy and not delete both
           // reopen the package
@@ -301,12 +302,7 @@ public class DeleteCommand implements Command
           }
           else
           {
-            // create a new blank frame
-            String title = BLANK + index;
-            MorphoFrame newFrame = UIController.getInstance().addWindow(title);
-            newFrame.setVisible(true);
-            index++;
-            
+          // new action - don't create a blank window DFH March 2004
           } 
           
           // Distroy old frame
