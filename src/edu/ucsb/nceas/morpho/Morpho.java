@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-10 01:47:49 $'
- * '$Revision: 1.1.2.3 $'
+ *     '$Date: 2002-08-14 00:17:28 $'
+ * '$Revision: 1.1.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1181,13 +1181,20 @@ public class Morpho
           System.setOut(errPrintStream);
         }
 
+        // Set up the Service Controller
+        // not implemented yet
+
+        // Set up the User Interface controller (UIController)
+        UIController controller = UIController.getInstance();
+
         // Load all of the plugins, their menus, and toolbars
         clf.loadPlugins();
 
         // make the Morpho visible.
         sf.dispose();
         
-        MorphoFrame tempFrame = new MorphoFrame(config);
+        //MorphoFrame tempFrame = new MorphoFrame();
+        MorphoFrame tempFrame = controller.addWindow("Test window");
         tempFrame.setVisible(true);
 
         Log.debug(1, "Finished main, what to do now? Exit?");

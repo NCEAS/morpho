@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-13 21:35:54 $'
- * '$Revision: 1.1.2.3 $'
+ *     '$Date: 2002-08-14 00:17:28 $'
+ * '$Revision: 1.1.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,9 +57,8 @@ public class MorphoFrame extends JFrame
     /**
      * Creates a new instance of MorphoFrame
      *
-     * @param config  Description of Parameter
      */
-    public MorphoFrame(ConfigXML config)
+    public MorphoFrame()
     {
         setVisible(false);
         setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
@@ -103,7 +102,7 @@ public class MorphoFrame extends JFrame
         toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.X_AXIS));
         morphoToolbar = new JToolBar();
         morphoToolbar.add(Box.createVerticalStrut(toolbarHeight));
-        toolbarPanel.add(morphoToolbar);
+        //toolbarPanel.add(morphoToolbar);
 
         Action cutItemAction = new AbstractAction("Cut") {
             public void actionPerformed(ActionEvent e) {
@@ -113,21 +112,23 @@ public class MorphoFrame extends JFrame
         cutItemAction.putValue(Action.SMALL_ICON, 
                         new ImageIcon(getClass().
             getResource("/toolbarButtonGraphics/general/Cut16.gif")));
-        //cutItemAction.setAlignmentY(Component.LEFT_ALIGNMENT);
         JButton toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolButton = morphoToolbar.add(cutItemAction);
-        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+        //toolButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         morphoToolbar.add(
             Box.createHorizontalGlue());
-        toolbarPanel.add(
+        toolButton = morphoToolbar.add(cutItemAction);
+        //toolbarPanel.add(
+        morphoToolbar.add(
             Box.createHorizontalStrut((int)(indicator.getSize().getWidth())));
-        getContentPane().add(BorderLayout.NORTH, toolbarPanel);
+        //getContentPane().add(BorderLayout.NORTH, toolbarPanel);
+        getContentPane().add(BorderLayout.NORTH, morphoToolbar);
 
         // Put in a default content area that is blank
         JPanel content = new JPanel();
@@ -204,6 +205,8 @@ public class MorphoFrame extends JFrame
     private void close()
     {
         this.setVisible(false);
+        UIController controller = UIController.getInstance();
+        controller.removeWindow(this);
         this.dispose();
     }
 }
