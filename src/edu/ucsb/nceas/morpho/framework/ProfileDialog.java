@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-16 23:19:50 $'
- * '$Revision: 1.20 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-20 18:06:41 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,10 +80,8 @@ public class ProfileDialog extends JDialog
    */
   public ProfileDialog(Morpho cont, boolean modal)
   {
-    /*
-    super((Frame)cont, modal);
-    */
     super();
+    setModal(true);
     framework = cont;
 
     numScreens = 3;
