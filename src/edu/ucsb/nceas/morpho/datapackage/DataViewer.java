@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-13 22:57:49 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2002-09-16 16:32:56 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -959,6 +959,7 @@ public class DataViewer extends javax.swing.JPanel
     table = new JTable();
     pv = new PersistentVector();
     pv.setFieldDelimiter(field_delimiter);
+    pv.setFirstRow(num_header_lines);
     if (dataFile==null) {
       Log.debug(20, "Null Data File");
       String[] row = new String[column_labels.size()];
@@ -1073,6 +1074,7 @@ public class DataViewer extends javax.swing.JPanel
             column_labels.insertElementAt(newHeader, sel);
             ptm.insertColumn(sel); 
             pv = ptm.getPersistentVector();
+          
           }
         }
       }
@@ -1515,8 +1517,11 @@ public class DataViewer extends javax.swing.JPanel
     File tempfile = null;
 	  if (dp!=null) {
       // make a temporary copy of the data file
-      ptm.setFieldDelimiter(delimiter_string);
-      ptm.getPersistentVector().setFieldDelimiter(delimiter_string);
+      // PersistentVector get from ptm
+      //PersistentVector pVector = ptm.getPersistentVector(); 
+      //ptm.setFieldDelimiter(delimiter_string);
+      //pVector.setFieldDelimiter(delimiter_string);
+      //pVector.setFirstRow(num_header_lines);
       ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
       File newDataFile = new File(tempdir + "/" + "tempdata");
       long newDataFileLength = newDataFile.length();
