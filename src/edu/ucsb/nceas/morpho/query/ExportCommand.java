@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-24 21:59:34 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-03-25 19:20:13 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,10 @@ import javax.swing.JOptionPane;
 public class ExportCommand implements Command 
 {
     
-  /** A reference to the dialog */
+  /** A reference to the export dialog */
+   private ExportDialog exportDialog = null;
+
+   /** A reference to the dialog */
    private OpenDialogBox dialog = null;
    
   /** A reference to the MorphoFrame */
@@ -64,6 +67,7 @@ public class ExportCommand implements Command
   /** Constant String to show state of delete */
   public static final String ZIP = "ZIP";
   public static final String REGULAR = "REGULAR";
+  public static final String TOEML2 = "TOEML2";
  
   /** Constant String for zip file extension*/
   private String ZIPEXTENSION = "zip";
@@ -84,8 +88,9 @@ public class ExportCommand implements Command
    * @param dialog a export command will be happened at this dialog 
    * @param myFormat the format for export, regular or zip
    */
-  public ExportCommand(OpenDialogBox box, String myFormat)
+  public ExportCommand(OpenDialogBox box, String myFormat, ExportDialog exportDialog)
   {
+    this.exportDialog = exportDialog;
     dialog = box;
     // Decide export format
     if (myFormat.equals(ZIP))
@@ -98,7 +103,11 @@ public class ExportCommand implements Command
     {
        // regular format
        format = REGULAR;
-    } 
+    }
+    else if (myFormat.equals(TOEML2))
+    {
+       format = TOEML2;
+    }
     else
     {
        Log.debug(20, "Unkown export format!");
@@ -113,6 +122,7 @@ public class ExportCommand implements Command
    */    
   public void execute(ActionEvent event)
   { 
+    (new CancelCommand(exportDialog)).execute(null);
      try 
      {
         ServiceController services = ServiceController.getInstance();
@@ -200,6 +210,10 @@ public class ExportCommand implements Command
           {
             exportDatasetToZip(docid);
           }
+          else if (format.equals(TOEML2))
+          {
+            
+          }
           return null;  
           
         }
@@ -238,7 +252,7 @@ public class ExportCommand implements Command
     // Choose the parent of savedialog
     int result;
     if (dialog == null)
-    {
+     {
       result = filechooser.showSaveDialog(morphoFrame);
     }
     else

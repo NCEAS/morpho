@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-01 23:29:04 $'
- * '$Revision: 1.67 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-03-25 19:20:14 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -297,13 +297,15 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       
         // Create export
         GUIAction exportAction = new GUIAction("Export...", null, 
-                            new ExportCommand(dialog, ExportCommand.REGULAR));
-        exportMenu = new JMenuItem(exportAction);
+//                            new ExportCommand(dialog, ExportCommand.REGULAR));
+                             new OpenExportDialogCommand(dialog));
+                            exportMenu = new JMenuItem(exportAction);
         popup.add(exportMenu);
-        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null, 
-                            new ExportCommand(dialog, ExportCommand.ZIP));
-        exportToZipMenu = new JMenuItem(exportToZipAction);
-        popup.add(exportToZipMenu);
+//        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null, 
+  //                            new ExportCommand(dialog, ExportCommand.ZIP));
+//                             new OpenExportDialogCommand(dialog));
+//        exportToZipMenu = new JMenuItem(exportToZipAction);
+//        popup.add(exportToZipMenu);
       //}//if
       
     

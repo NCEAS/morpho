@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-11 01:01:05 $'
- * '$Revision: 1.101 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-03-25 19:20:13 $'
+ * '$Revision: 1.102 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,7 +281,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     
     // Export action
     GUIAction exportAction = new GUIAction("Export...", null, 
-                            new ExportCommand(null, ExportCommand.REGULAR));
+//                            new ExportCommand(null, ExportCommand.REGULAR));
+                             new OpenExportDialogCommand());
     exportAction.setMenuItemPosition(13);
     exportAction.setToolTipText("Export data package...");
     exportAction.setMenu("File", 0);
@@ -298,22 +299,23 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(exportAction);
     
     // Export to zip action
-    GUIAction exportZipAction = new GUIAction("Export to Zip...", null,
-                             new ExportCommand(null, ExportCommand.ZIP));
-    exportZipAction.setMenuItemPosition(14);
-    exportZipAction.setToolTipText("Export data package into zip file...");
-    exportZipAction.setMenu("File", 0);
-    exportZipAction.setEnabledOnStateChange(
-                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
-                      true, GUIAction.EVENT_LOCAL);
-    exportZipAction.setEnabledOnStateChange(
-                      StateChangeEvent.SEARCH_RESULT_SELECTED, 
-                      true, GUIAction.EVENT_LOCAL);
-    exportZipAction.setEnabledOnStateChange(
-                      StateChangeEvent.SEARCH_RESULT_NONSELECTED, 
-                      false, GUIAction.EVENT_LOCAL);
-    exportZipAction.setEnabled(false);
-    controller.addGuiAction(exportZipAction);
+//    GUIAction exportZipAction = new GUIAction("Export to Zip...", null,
+   //                             new ExportCommand(null, ExportCommand.ZIP));
+//                             new OpenExportDialogCommand());
+//    exportZipAction.setMenuItemPosition(14);
+//    exportZipAction.setToolTipText("Export data package into zip file...");
+//    exportZipAction.setMenu("File", 0);
+//    exportZipAction.setEnabledOnStateChange(
+//                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+//                      true, GUIAction.EVENT_LOCAL);
+//    exportZipAction.setEnabledOnStateChange(
+//                      StateChangeEvent.SEARCH_RESULT_SELECTED, 
+//                      true, GUIAction.EVENT_LOCAL);
+//    exportZipAction.setEnabledOnStateChange(
+//                      StateChangeEvent.SEARCH_RESULT_NONSELECTED, 
+//                      false, GUIAction.EVENT_LOCAL);
+//    exportZipAction.setEnabled(false);
+//    controller.addGuiAction(exportZipAction);
     
   }
 
