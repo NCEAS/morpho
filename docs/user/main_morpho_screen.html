@@ -32,20 +32,59 @@
 
 <hr>
 <br>&nbsp;
-<p><!-- put text after this -->
+<!-- put text after this -->
 <table BORDER=0 CELLSPACING=0 CELLPADDING="5" WIDTH="100%" class="tablepanel" >
 <tr class="tablehead">
-    <td colspan="2"><b>The 'Blank' Morpho Screen</b></td>
+    <td colspan="2"><b>The Morpho Screen</b></td>
 </tr>
 
   <tr> 
     <td colspan="2" WIDTH="100%"><br>
-      The first time you login the main morpho screen looks like the image below. 
+      <p>Initial Morpho Screen</p>
+       After you running morpho, the intial screen looks like the image below. 
       <br>
       <img src="images/main2.gif"><br>
+      <br>
+      <table width="75%">
+        <tr>
+          <td>
+            <p>It has three sub-frames in this screen. In Current Profile 
+            sub-frame, it showes the current profile and user can chose another
+            proflie from the drop list too. User also can create a new profile. </p>
+            <p>Status of connection to network (NOT Logged In) is shown in 
+            Network Status sub-frame. You can type password in Password text 
+            box to log in network using current profile.</p>
+            <p>In Work with you data sub-frame, User can create a new package 
+            only locally. And user can open an exsiting pakcage and search 
+            packages both locally and as guest user in network.</p>
+           </td>
+           <td width="200">&nbsp;</td>
+        </tr>
+      </table>
         <br>
-        This morpho screen has several features: 
-      <li>Menu (File, Edit, Search, Data, Window, Help) and a toolbar containing 
+        <br>
+        <p>Morpho Screen after Logged In</p>
+        <br>
+        <img src="images/mainlogged.gif">
+        <br>
+        <table width="75%">
+          <tr>
+            <td>
+               <p>After loggin in network, the above image will be shown. 
+               Current profile sub-frame will show the profile used when user 
+               login. User can chose another profile to login again and create a
+               new profile. </p>
+               <p>Network Status sub-frame shows that user is "Logged In". </p>
+               <p>In Work with your data sub-frame, user can do creating, 
+               opening and searching package both locally and as its user name 
+               in network.</p>
+            </td>
+            <td width="200">&nbsp;</td>
+          </tr>
+       </table>
+        <br>
+        These morpho screens have several features: 
+       <li>Menu (File, Edit, Search, Data, Window, Help) and a toolbar containing 
         icons. <br>
         <img src="images/search_icon.gif" width="24" height="24"> The search 
         icon begins the data package search process.<br>
@@ -53,7 +92,7 @@
         new data package icon begins the process required to create your own data 
         package<br>
         <img src="images/openicon.jpg" width="24" height="26"> The open package icon 
-        allows you to open a data package that is saved locally.<br>
+        allows you to open one of your own data package .<br>
         <p></p>
       <li>Network icons (lower right of screen).</li>
       <br>
@@ -109,25 +148,33 @@
       <p></p>
       <a name="package"></a> 
       <div class="helpsub">Data Packages</div>
-      <p>Morpho uses the term "Data Package" to describe a set of metadata and 
-        /or data, and is represented by a &quot;Data Package&quot; screen, illustrated 
-        below.</p>
-      <p>This screen consists of several parts, illustrated below. The toolbar 
-        and menu are at the top of the screen. Below, there are three windows: 
-        the package window with documentation about the package, the data window 
-        with tabs to view different tables within the package, and a table documentation 
-        window with documentation for the table and table attributes (variables). 
-        All windows are adjustable using the bars that divide them.</p> 
-      <p>This data package is either stored locally and /or on a metacat server. 
-        Data packages, while created locally, can be uploaded to a Metacat server 
-        to become a shared Metacat Data Package. Data Packages are uploaded by 
-        choosing File, then Synchronize.</p>
-      <img src="images/packagecopy.jpg" width="939" height="550"><br>
+      <table width="85%">
+        <tr>
+          <td>
+            <p>Morpho uses the term "Data Package" to describe a set of metadata and 
+            /or data, and is represented by a &quot;Data Package&quot; screen, illustrated 
+            below.</p>
+           <p>This screen consists of several parts, illustrated below. The toolbar 
+           and menu are at the top of the screen. Below, there are three windows: 
+           the package window with documentation about the package, the data window 
+           with tabs to view different tables within the package, and a table documentation 
+           window with documentation for the table and table attributes (variables). 
+           All windows are adjustable using the bars that divide them.</p> 
+           <p>This data package is either stored locally and /or on a metacat server. 
+           Data packages, while created locally, can be uploaded to a Metacat server 
+           to become a shared Metacat Data Package. Data Packages are uploaded by 
+           choosing File, then Synchronize.</p>
+         </td>
+         <td width="100">&nbsp;</td>
+        </tr>
+      </table>
+      <img src="images/packagecopy.gif"><br>
         <br>
         <font color="yellow"> </font>
       
       <p>Open an Existing Data Package:</p>
       <img src="images/opencopy.jpg" width="974" height="297">
+      <br>
       <ul>
         <li>Select the open icon <img src="images/openicon.jpg" width="24" height="26"> 
           or from the File menu, choose &quot;open&quot;.</li>
@@ -148,12 +195,19 @@
         <img src="images/searchscreen.jpg" width="586" height="332"> <br>
         <br>
         <br>
-      <p> The search interface allows you to name the query ("Query Title") in 
-        order to save it for repeated use. The "catalog" and "local" checkboxes 
-        imply your search will occur both locally and on a Metacat server. The 
-        tabs (Subject, Taxonomic, Spatial, Options) provide more detailed search 
-        criteria. After entering your search criteria your results are displayed 
-        as in the example below. </p>
+      <table width="85%">
+        <tr>
+          <td>
+            <p> The search interface allows you to name the query ("Query Title") in 
+            order to save it for repeated use. The "catalog" and "local" checkboxes 
+            imply your search will occur both locally and on a Metacat server. The 
+            tabs (Subject, Taxonomic, Spatial, Options) provide more detailed search 
+            criteria. After entering your search criteria your results are displayed 
+            as in the example below. </p>
+          </td>
+          <td width="100">&nbsp;</td>
+        </tr>
+      </table>
       <img src="images/searchresult.jpg" width="887" height="226"><br>
       </p>
       <p>Search Icons:<br>
@@ -184,18 +238,18 @@
  </tr>
   <tr>
    <td>
-      <table width="90%">
+      <table width="95%">
         <tr>
-          <td width="150">
+          <td width="300">
              &nbsp;
           </td>
-          <td>
+          <td width = "35%">
              <a href="index.html" class="sitelink">Help Home</a>
           </td>
-          <td width="200">
+          <td width="100">
              &nbsp;
           </td>
-          <td>
+          <td width = "65%">
            <a href="getting_started.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Previous</a>
             &nbsp; &nbsp; &nbsp; 
            <a href="packagesteps.html" class="sitelink">Creating a New DataPackage<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a>
