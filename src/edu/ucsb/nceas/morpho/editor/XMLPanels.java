@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-03 05:00:14 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2002-12-04 19:34:08 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,7 +247,9 @@ public class XMLPanels extends Component
         }
         if (helpString.length()>0) {
           JScrollPane jsp = new JScrollPane();
+          jsp.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
           JTextArea jta = new JTextArea();
+          jta.setFont(new Font("Dialog", Font.PLAIN, 10));
           jta.setLineWrap(true);
           jta.setWrapStyleWord(true);
           jta.setEditable(false);
