@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-16 21:49:36 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-12-16 22:13:22 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,7 +172,7 @@ public class IOUtil
         }
         buffer.append("---------------------------\n");
         
-        return buffer.toString();;
+        return buffer.toString();
     }
 }
 
