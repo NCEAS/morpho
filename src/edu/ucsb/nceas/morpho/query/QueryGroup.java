@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 01:21:01 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-30 19:00:29 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,6 +144,9 @@ public class QueryGroup
       } else {
         System.err.println("qobject wrong type: fatal error");
       }
+    }
+    for (int i = 0; i < indent; i++) {
+      self.append(" ");
     }
     self.append("</querygroup>\n");
 
