@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-21 23:26:14 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2004-04-26 17:21:29 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.ReferencesHandler;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -42,6 +43,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,9 +61,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.ReferencesHandler;
-import edu.ucsb.nceas.utilities.XMLUtilities;
+
 import org.w3c.dom.Node;
 
 public class Project extends AbstractUIPage {
@@ -83,7 +83,7 @@ public class Project extends AbstractUIPage {
 
   private final String TITLE_REL_XPATH     = "title[1]";
   private final String FUNDING_REL_XPATH   = "funding[1]/para[1]";
-  private final String PERSONNEL_REL_XPATH = "personnel[";
+  private final String PERSONNEL_REL_XPATH = "personnel";
   private final String DATAPACKAGE_PERSONNEL_GENERIC_NAME = "personnel";
 
   private String xPathRoot = PROJECT_ROOT;
@@ -242,7 +242,7 @@ public class Project extends AbstractUIPage {
         new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         Log.debug(45, "\nResearchProjInfo: CustomAddAction called");
-        updateDOMFromListOfPages();
+
         showNewPartyDialog();
       }
     });
@@ -251,7 +251,7 @@ public class Project extends AbstractUIPage {
         new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         Log.debug(45, "\nResearchProjInfo: CustomEditAction called");
-        updateDOMFromListOfPages();
+
         showEditPartyDialog();
       }
     });
@@ -299,34 +299,14 @@ public class Project extends AbstractUIPage {
         updateOriginalRefPartyPage(partyPage);
       }
       //update datapackage...
-      updateDOMFromListOfPages();
+      DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                       DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                       DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                         DataPackageWizardInterface.PARTY_PERSONNEL);
+
     }
     WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
-
-     private void updateDOMFromListOfPages() {
-
-       //update datapackage...
-       List nextRowList = null;
-       List pagesList = new ArrayList();
-       AbstractUIPage nextPage = null;
-
-       for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) {
-
-         nextRowList = (List)it.next();
-         //column 3 is user object - check it exists and isn't null:
-         nextPage = (AbstractUIPage)nextRowList.get(3);
-         if (nextPage == null)continue;
-         pagesList.add(nextPage);
-       }
-       DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
-           UIController.getInstance().getCurrentAbstractDataPackage(),
-           pagesList, "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME,
-           DATAPACKAGE_PERSONNEL_GENERIC_NAME);
-
-       updateListFromDOM();
-     }
-
 
 
 
@@ -404,7 +384,11 @@ public class Project extends AbstractUIPage {
            updateOriginalRefPartyPage(editPartyPage);
          }
          //update datapackage...
-         updateDOMFromListOfPages();
+         DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                          DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                          DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                         DataPackageWizardInterface.PARTY_PERSONNEL);
+
        }
      }
 
@@ -441,7 +425,11 @@ public class Project extends AbstractUIPage {
            //delete the subtree from the dom, so we have to do it ourselves...
            partiesList.removeRow(partiesList.getSelectedRowIndex());
 
-           updateDOMFromListOfPages();
+           DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                            DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                            DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                         DataPackageWizardInterface.PARTY_PERSONNEL);
+
          }
 
        }
@@ -450,33 +438,10 @@ public class Project extends AbstractUIPage {
        //Do not update datapackage as we do for add/edit, because we've already
        //manipulated the DOM directly
 
-       updateListFromDOM();
-     }
-
-
-     private void updateListFromDOM() {
-
-       AbstractDataPackage adp
-           = UIController.getInstance().getCurrentAbstractDataPackage();
-       if (adp == null) {
-         Log.debug(15, "\npackage from UIController is null");
-         Log.debug(5, "ERROR: cannot update!");
-         return;
-       }
-
-       List personnelList = adp.getSubtrees(DATAPACKAGE_PERSONNEL_GENERIC_NAME);
-       Log.debug(45, "updateListFromDOM - personnelList.size() = "
-                 + personnelList.size());
-
-       List personnelOrderedMapList = new ArrayList();
-
-       for (Iterator it = personnelList.iterator(); it.hasNext(); ) {
-
-         personnelOrderedMapList.add(
-             XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
-       }
-
-       populatePartiesList(personnelOrderedMapList, "/"+PERSONNEL_REL_XPATH + "[");
+       DataPackageWizardPlugin.updatePartiesListFromDOM(partiesList,
+                                                 DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                 DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                         DataPackageWizardInterface.PARTY_PERSONNEL);
      }
 
 
@@ -486,7 +451,10 @@ public class Project extends AbstractUIPage {
    */
   public void onLoadAction() {
 
-    updateListFromDOM();
+    DataPackageWizardPlugin.updatePartiesListFromDOM(partiesList,
+                                              DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                              DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                                         DataPackageWizardInterface.PARTY_PERSONNEL);
     WidgetFactory.unhiliteComponent(titleLabel);
     WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
@@ -495,7 +463,13 @@ public class Project extends AbstractUIPage {
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
-  public void onRewindAction() {}
+  public void onRewindAction() {
+
+    DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                   DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                   DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                   DataPackageWizardInterface.PARTY_PERSONNEL);
+  }
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
@@ -523,6 +497,11 @@ public class Project extends AbstractUIPage {
       }
       WidgetFactory.unhiliteComponent(minRequiredLabel);
     }
+    DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                   DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                   DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+                                   DataPackageWizardInterface.PARTY_PERSONNEL);
+
     return true;
   }
 
@@ -547,7 +526,7 @@ public class Project extends AbstractUIPage {
     if (!rootXPath.endsWith("/")) rootXPath += "/";
 
     returnMap.clear();
-//    updateListFromDOM();
+//    updatePartiesListFromDOM();
 
     if (currentPanel == dataPanel) {
 
@@ -579,7 +558,7 @@ public class Project extends AbstractUIPage {
 
         nextPartyPage = (PartyPage)nextUserObject;
 
-        nextNVPMap = nextPartyPage.getPageData(rootXPath + PERSONNEL_REL_XPATH
+        nextNVPMap = nextPartyPage.getPageData(rootXPath + PERSONNEL_REL_XPATH + "["
                                                + (index++) + "]");
         returnMap.putAll(nextNVPMap);
       }
@@ -693,7 +672,7 @@ public class Project extends AbstractUIPage {
         fundingField.setText(nextVal);
         toDeleteList.add(nextXPathObj);
 
-      } else if (nextXPath.startsWith(PERSONNEL_REL_XPATH)) {
+      } else if (nextXPath.startsWith(PERSONNEL_REL_XPATH + "[")) {
 
         Log.debug(45,">>>>>>>>>> adding to personnelList: nextXPathObj="
                   +nextXPathObj+"; nextValObj="+nextValObj);
@@ -707,8 +686,13 @@ public class Project extends AbstractUIPage {
       }
     }
 
-    boolean partyRetVal = populatePartiesList(personnelList, this.xPathRoot
-                                                 + PERSONNEL_REL_XPATH + "[");
+    boolean partyRetVal
+        = DataPackageWizardPlugin.populatePartiesList(partiesList,
+                                                      personnelList,
+                                                      this.xPathRoot
+                                                      + PERSONNEL_REL_XPATH,
+                                                      DataPackageWizardInterface.
+                                                      PARTY_PERSONNEL);
 
     //check party return values...
     if (!partyRetVal) {
@@ -728,40 +712,6 @@ public class Project extends AbstractUIPage {
                 + map);
     }
     return (returnVal && partyRetVal);
-  }
-
-
-  //personnelXPathRoot looks like:
-  //      /project/personnel[
-  private boolean populatePartiesList(List personnelOrderedMapList,
-                                      String personnelXPathRoot) {
-
-    Iterator persIt = personnelOrderedMapList.iterator();
-    OrderedMap nextPersonnelMap = null;
-    int partyPredicate = 1;
-
-    partiesList.removeAllRows();
-    boolean partyRetVal = true;
-
-    while (persIt.hasNext()) {
-
-      nextPersonnelMap = (OrderedMap)persIt.next();
-      if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
-
-      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
-          DataPackageWizardInterface.PARTY_PERSONNEL);
-
-      boolean checkParty = nextParty.setPageData(nextPersonnelMap,
-                                                 personnelXPathRoot
-                                                 + (partyPredicate++) + "]");
-
-      if (!checkParty)partyRetVal = false;
-      List newRow = nextParty.getSurrogate();
-      newRow.add(nextParty);
-
-      partiesList.addRow(newRow);
-    }
-    return partyRetVal;
   }
 
 
@@ -791,7 +741,7 @@ public class Project extends AbstractUIPage {
 
     if (nextPersonnelXPathObj == null) return;
     String nextPersonnelXPath = (String)nextPersonnelXPathObj;
-    int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH);
+    int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH + "[");
 
 // NOTE predicate is 1-relative, but List indices are 0-relative!!!
     if (predicate >= personnelList.size()) {

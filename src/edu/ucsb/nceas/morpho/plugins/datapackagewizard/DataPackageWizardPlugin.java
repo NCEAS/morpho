@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-20 00:00:40 $'
- * '$Revision: 1.38 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-26 17:21:29 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,15 +40,19 @@ import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.io.StringReader;
-import javax.swing.JOptionPane;
+
 import javax.xml.transform.TransformerException;
+
+import javax.swing.JOptionPane;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
@@ -97,29 +101,29 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *                  back when the Package Wizard has finished
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
-    
+
     boolean isRunning = UIController.getInstance().isWizardRunning();
     if (isRunning) {
       JOptionPane.showConfirmDialog(null,
         "Sorry, only one instance of the Data Package Wizard can be running at a time!",
-                                   "Wizard already running", 
+                                   "Wizard already running",
                                    JOptionPane.DEFAULT_OPTION,
                                    JOptionPane.WARNING_MESSAGE);
       return;
     }
-		
-		AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
+
+    AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
       getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML200_DOCUMENT_TEXT));
-		if(tempDataPackage == null) return;
-    		
+    if(tempDataPackage == null) return;
+
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
-		
+
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
                       "New Data Package Wizard");
-	  
+
   }
-	
-	private Node getNewEmptyDataPackageDOM(String DocText) {
+
+  private Node getNewEmptyDataPackageDOM(String DocText) {
 
     Node rootNode = null;
 
@@ -246,7 +250,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * @param rootXPath the String that represents the "root" of the XPath to the
    * content of each AbstractUIPage, NOT INCLUDING PREDICATES. example - if the
    * list contains "Party" widgets, being used for "creator" entries, then
-   *   xPathRoot = "/creator/"
+   *   xPathRoot = "creator"
    * @param subtreeGenericName String - eg "contact", "project" etc
    * (@see lib/eml200KeymapConfig.xml)
    * @return boolean true if this page data successfully added to the datapkg,
@@ -262,8 +266,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
       Log.debug(15, "** ERROR - deleteExistingAndAddPageDataToDOM() Got NULL AbstractDataPackage");
       return false;
     }
-    if (pageList==null || pageList.size() < 1) {
-      Log.debug(15, "** ERROR - deleteExistingAndAddPageDataToDOM() Got NULL/empty pageList");
+    if (pageList==null) {
+      Log.debug(15, "** ERROR - deleteExistingAndAddPageDataToDOM() Got NULL pageList");
       return false;
     }
     if (subtreeGenericName==null || subtreeGenericName.trim().length()==0) {
@@ -275,9 +279,18 @@ public class DataPackageWizardPlugin implements PluginInterface,
       Log.debug(15, "** ERROR - deleteExistingAndAddPageDataToDOM() Got NULL rootXPath");
       return false;
     }
+    // if pageList is empty, don't need to do anything
+    if (pageList.size() < 1) {
+      Log.debug(15, "deleteExistingAndAddPageDataToDOM() Got empty pageList - returning true");
+      return true;
+    }
 
+    //ensure root xpath starts with a slash...
     rootXPath = rootXPath.trim();
     if (!rootXPath.startsWith("/")) rootXPath = "/" + rootXPath;
+
+    // given a rootXPath like: /eml/dataset/whatever[2]/aName[3], we want to end
+    //up with rootNodeName="aName"...
     boolean errorOccurred = false;
     String rootNodeName = rootXPath;
     //strip trailing slashes...
@@ -368,6 +381,147 @@ public class DataPackageWizardPlugin implements PluginInterface,
            "\n** ERROR - data NOT added - datapackage reset to original values"
          : "\n>> data added successfully ") );
     return true;
+  }
+
+
+
+  /**
+   * Given a CustomList containing Party listings, updates the DOM to contain
+   * those listings
+   *
+   * @param partiesCustomList CustomList the UI CustomList containing the party objects
+   * to be added to the DOM
+   * @param rootXPath the String that represents the "root" of the XPath to the
+   * content of each AbstractUIPage, NOT INCLUDING PREDICATES. example - if the
+   * list contains "Party" widgets, being used for "creator" entries, then
+   *   xPathRoot = "creator"
+   * @param subtreeGenericName String - eg "contact", "project" etc
+   * (@see lib/eml200KeymapConfig.xml)
+   * @param pageType the type of page object to use, as defined in the
+   * DataPackageWizardInterface class - eg:
+   * DataPackageWizardInterface.PARTY_CREATOR
+   * DataPackageWizardInterface.PARTY_PERSONNEL
+   * etc...
+   */
+  public static void updateDOMFromPartiesList(CustomList partiesCustomList,
+                                              String rootXPath,
+                                              String subtreeGenericName,
+                                              String pageType) {
+
+    //update datapackage...
+    List nextRowList = null;
+    List pagesList = new ArrayList();
+    Object nextPageObj = null;
+
+    for (Iterator it = partiesCustomList.getListOfRowLists().iterator(); it.hasNext(); ) {
+
+      nextRowList = (List)it.next();
+      //column 3 is user object - check it exists and isn't null:
+      if (nextRowList.size() < 4) continue;
+      nextPageObj = nextRowList.get(3);
+      if (nextPageObj == null)continue;
+      if (!(nextPageObj instanceof AbstractUIPage)) continue;
+      pagesList.add((AbstractUIPage)nextPageObj);
+    }
+
+    deleteExistingAndAddPageDataToDOM(
+        UIController.getInstance().getCurrentAbstractDataPackage(),
+        pagesList, rootXPath, subtreeGenericName);
+
+    updatePartiesListFromDOM(partiesCustomList, rootXPath, subtreeGenericName, pageType);
+  }
+
+
+  /**
+   * Given a CustomList containing Party listings, updates that list to contain
+   * the parties in the DOM
+   *
+   * @param partiesCustomList CustomList the UI CustomList containing the party objects
+   * to be added to the DOM
+   * @param rootXPath the String that represents the "root" of the XPath to the
+   * content of each AbstractUIPage, NOT INCLUDING PREDICATES. example - if the
+   * list contains "Party" widgets, being used for "creator" entries, then
+   *   xPathRoot = "creator"
+   * @param subtreeGenericName String - eg "contact", "project" etc
+   * (@see lib/eml200KeymapConfig.xml)
+   */
+
+  public static void updatePartiesListFromDOM(CustomList partiesCustomList,
+                                       String rootXPath,
+                                       String subtreeGenericName,
+                                       String pageType) {
+
+    AbstractDataPackage adp
+        = UIController.getInstance().getCurrentAbstractDataPackage();
+    if (adp == null) {
+      Log.debug(15, "\npackage from UIController is null");
+      Log.debug(5, "ERROR: cannot update!");
+      return;
+    }
+
+    List partySubtreesList = adp.getSubtrees(subtreeGenericName);
+    Log.debug(45, "updatePartiesListFromDOM - partySubtreesList.size() = "
+              + partySubtreesList.size());
+
+    List partiesOrderedMapList = new ArrayList();
+
+    for (Iterator it = partySubtreesList.iterator(); it.hasNext(); ) {
+
+      partiesOrderedMapList.add(
+          XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
+    }
+
+    populatePartiesList(partiesCustomList, partiesOrderedMapList, rootXPath, pageType);
+  }
+
+
+  /**
+   * Given a UI CustomList, populates it from the nvps in the List of OrderedMap
+   * objects passed as partiesOrderedMapList
+   *
+   * @param partiesCustomList CustomList the CustomList of parties to be updated
+   * @param partiesOrderedMapList List the list OrderedMaps containing party
+   * nvps to be made into entries on the parties list
+   * @param partyXPathRoot String - the xpath relative to the subtree root we're
+   * dealing with - so for example, if we're in dataset, contact's path would be:
+   *   /contact
+   * or if we're dealing with project, the path would be
+   *   /project/personnel etc
+   * @return boolean
+   */
+  public static boolean populatePartiesList(CustomList partiesCustomList,
+                                            List partiesOrderedMapList,
+                                            String partyXPathRoot,
+                                            String pageType) {
+
+    Iterator persIt = partiesOrderedMapList.iterator();
+    OrderedMap nextPersonnelMap = null;
+    int partyPredicate = 1;
+
+    partiesCustomList.removeAllRows();
+    boolean partyRetVal = true;
+
+    if (!partyXPathRoot.startsWith("/")) partyXPathRoot = "/" + partyXPathRoot;
+    if (!partyXPathRoot.endsWith("["))   partyXPathRoot = partyXPathRoot + "[";
+
+    while (persIt.hasNext()) {
+
+      nextPersonnelMap = (OrderedMap)persIt.next();
+      if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
+
+      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(pageType);
+
+      boolean checkParty = nextParty.setPageData(nextPersonnelMap,
+                                                 partyXPathRoot
+                                                 + (partyPredicate++) + "]");
+
+      if (!checkParty)partyRetVal = false;
+      List newRow = nextParty.getSurrogate();
+      newRow.add(nextParty);
+
+      partiesCustomList.addRow(newRow);
+    }
+    return partyRetVal;
   }
 
 }

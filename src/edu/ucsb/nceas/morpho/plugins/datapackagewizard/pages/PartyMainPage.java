@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-21 23:26:14 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2004-04-26 17:21:29 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +42,8 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,11 +54,10 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import org.w3c.dom.Node;
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
-public class PartyMainPage
-    extends AbstractUIPage {
+import org.w3c.dom.Node;
+
+public class PartyMainPage extends AbstractUIPage {
 
   private String pageID;
   private String nextPageID;
@@ -147,21 +146,6 @@ public class PartyMainPage
           + "For example, the person who maintains the database is an "
           + "associated party with the role of 'custodian'.<br></br><p>";
 
-//    } else if (role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) {
-//
-//      oneOrMoreRequired = true;
-//      subtitle = "Personnel";
-//      xPathRoot = "/eml:eml/dataset/project/personnel[";
-//      description =
-//          "<p>b>Enter information about Personnel</b>: This is information about "
-//          +
-//          "the people or organizations who should be associated with the resource. These "
-//          +
-//          "parties might play various roles in the creation or maintenance of "
-//          +
-//          "the resource, and these roles should be indicated in the \"role\" "
-//          + "element.<br></br></p>";
-
     } else {
 
       Log.debug(5, "Unrecognized role parameter passed to PartyPage: " + role);
@@ -217,7 +201,7 @@ public class PartyMainPage
       public void actionPerformed(ActionEvent e) {
 
         Log.debug(45, "\nPartyPage: CustomAddAction called");
-        updateDOMFromListOfPages();
+
         showNewPartyDialog();
       }
     });
@@ -229,7 +213,7 @@ public class PartyMainPage
       public void actionPerformed(ActionEvent e) {
 
         Log.debug(45, "\nPartyPage: CustomEditAction called");
-        updateDOMFromListOfPages();
+
         showEditPartyDialog();
       }
     });
@@ -274,37 +258,13 @@ public class PartyMainPage
         updateOriginalRefPartyPage(partyPage);
       }
      //update datapackage...
-      updateDOMFromListOfPages();
+      DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                       DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                       DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                         role);
     }
     if (oneOrMoreRequired)WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
-
-
-  private void updateDOMFromListOfPages() {
-
-    //update datapackage...
-    List nextRowList = null;
-    List pagesList = new ArrayList();
-    AbstractUIPage nextPage = null;
-
-    for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) {
-
-      nextRowList = (List)it.next();
-      //column 3 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 4)continue;
-      nextPage = (AbstractUIPage)nextRowList.get(3);
-      if (nextPage == null)continue;
-      pagesList.add(nextPage);
-    }
-    DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
-        UIController.getInstance().getCurrentAbstractDataPackage(),
-        pagesList, DATAPACKAGE_PARTY_GENERIC_NAME,
-        DATAPACKAGE_PARTY_GENERIC_NAME);
-
-
-    updateListFromDOM();
-  }
-
 
 
 
@@ -387,7 +347,11 @@ public class PartyMainPage
         updateOriginalRefPartyPage(editPartyPage);
       }
       //update datapackage...
-      updateDOMFromListOfPages();
+      DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                       DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                       DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                         role);
+
     }
   }
 
@@ -423,77 +387,23 @@ public class PartyMainPage
         //delete the subtree from the dom, so we have to do it ourselves...
         partiesList.removeRow(partiesList.getSelectedRowIndex());
 
-        updateDOMFromListOfPages();
+        DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                         DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                         DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                         role);
       }
     }
     Log.debug(45, "AFTER: adp=" + adp);
 
     //Do not update datapackage as we do for add/edit, because we've already
     //manipulated the DOM directly
-    //updateDOMFromListOfPages();
+    //updateDOMFromPartiesList();
 
     if (oneOrMoreRequired)WidgetFactory.unhiliteComponent(minRequiredLabel);
-    updateListFromDOM();
-  }
-
-
-  private void updateListFromDOM() {
-
-    AbstractDataPackage adp
-        = UIController.getInstance().getCurrentAbstractDataPackage();
-    if (adp == null) {
-      Log.debug(15, "\npackage from UIController is null");
-      Log.debug(5, "ERROR: cannot update!");
-      return;
-    }
-
-    List personnelList = adp.getSubtrees(DATAPACKAGE_PARTY_GENERIC_NAME);
-    Log.debug(45, "updateListFromDOM - personnelList.size() = "
-              + personnelList.size());
-
-    List personnelOrderedMapList = new ArrayList();
-
-    for (Iterator it = personnelList.iterator(); it.hasNext(); ) {
-
-      personnelOrderedMapList.add(
-          XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
-    }
-
-    populatePartiesList(personnelOrderedMapList,
-                        "/"+DATAPACKAGE_PARTY_GENERIC_NAME + "[");
-  }
-
-
-  //personnelXPathRoot looks like:
-  //      /contact[
-  private boolean populatePartiesList(List personnelOrderedMapList,
-                                      String personnelXPathRoot) {
-
-    Iterator persIt = personnelOrderedMapList.iterator();
-    OrderedMap nextPersonnelMap = null;
-    int partyPredicate = 1;
-
-    partiesList.removeAllRows();
-    boolean partyRetVal = true;
-
-    while (persIt.hasNext()) {
-
-      nextPersonnelMap = (OrderedMap)persIt.next();
-      if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
-
-      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(this.role);
-
-      boolean checkParty = nextParty.setPageData(nextPersonnelMap,
-                                                 personnelXPathRoot
-                                                 + (partyPredicate++) + "]");
-
-      if (!checkParty) partyRetVal = false;
-      List newRow = nextParty.getSurrogate();
-      newRow.add(nextParty);
-
-      partiesList.addRow(newRow);
-    }
-    return partyRetVal;
+    DataPackageWizardPlugin.updatePartiesListFromDOM(partiesList,
+                                              DATAPACKAGE_PARTY_GENERIC_NAME,
+                                              DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                         role);
   }
 
 
@@ -503,7 +413,10 @@ public class PartyMainPage
    */
   public void onLoadAction() {
 
-    updateListFromDOM();
+    DataPackageWizardPlugin.updatePartiesListFromDOM(partiesList,
+                                              DATAPACKAGE_PARTY_GENERIC_NAME,
+                                              DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                         role);
     partiesList.focusAddButton();
   }
 
@@ -516,6 +429,12 @@ public class PartyMainPage
     if (oneOrMoreRequired) {
       WidgetFactory.unhiliteComponent(minRequiredLabel);
     }
+
+    //update datapackage...
+    DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                     DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                     DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                     role);
   }
 
   /**
@@ -533,6 +452,13 @@ public class PartyMainPage
       WidgetFactory.hiliteComponent(minRequiredLabel);
       return false;
     }
+
+    //update datapackage...
+    DataPackageWizardPlugin.updateDOMFromPartiesList(partiesList,
+                                                     DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                     DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                     role);
+
     return true;
   }
 
@@ -549,7 +475,10 @@ public class PartyMainPage
   public OrderedMap getPageData() {
 
     returnMap.clear();
-    updateListFromDOM();
+    DataPackageWizardPlugin.updatePartiesListFromDOM(partiesList,
+                                              DATAPACKAGE_PARTY_GENERIC_NAME,
+                                              DATAPACKAGE_PARTY_GENERIC_NAME,
+                                                         role);
 
     int index = 1;
     List nextRowList = null;
