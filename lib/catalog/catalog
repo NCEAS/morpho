@@ -1,40 +1,58 @@
 OVERRIDE YES
 PUBLIC "eml-dataset" "eml-dataset.dtd"
+PUBLIC "-//NCEAS//eml-dataset//EN" "eml-dataset.dtd"
 SYSTEM "urn:nceas:test-eml-dataset" "eml-dataset.dtd"
 SYSTEM "eml-dataset.dtd" "eml-dataset.dtd"
 
 OVERRIDE YES
 PUBLIC "eml-context" "eml-context.dtd"
+PUBLIC "-//NCEAS//eml-context//EN" "eml-context.dtd"
 SYSTEM "urn:nceas:test-eml-context" "eml-context.dtd"
 SYSTEM "eml-context.dtd" "eml-context.dtd"
 
 OVERRIDE YES
 PUBLIC "eml-access" "eml-access.dtd"
+PUBLIC "-//NCEAS//eml-access//EN" "eml-access.dtd"
 SYSTEM "urn:nceas:test-eml-access" "eml-access.dtd"
 SYSTEM "eml-access.dtd" "eml-access.dtd"
 
 OVERRIDE YES
 PUBLIC "eml-file" "eml-file.dtd"
+PUBLIC "-//NCEAS//eml-file//EN" "eml-file.dtd"
 SYSTEM "urn:nceas:test-eml-file" "eml-file.dtd"   
 SYSTEM "eml-file.dtd" "eml-file.dtd"
 
 OVERRIDE YES
-PUBLIC "NCEAS//eml-software" "eml-software.dtd"
+PUBLIC "eml-software" "eml-software.dtd"
+PUBLIC "-//NCEAS//eml-software//EN" "eml-software.dtd"
 SYSTEM "urn:nceas:test-eml-software" "eml-software.dtd"   
 SYSTEM "eml-software.dtd" "eml-software.dtd"
 
 OVERRIDE YES
 PUBLIC "eml-status" "eml-status.dtd"
+PUBLIC "-//NCEAS//eml-status//EN" "eml-status.dtd"
 SYSTEM "urn:nceas:test-eml-status" "eml-status.dtd"   
 SYSTEM "eml-status.dtd" "eml-status.dtd"
 
+OVERRIDE YES                
+PUBLIC "resource" "resource.dtd"
+PUBLIC "-//NCEAS//resource//EN" "resource.dtd"
+SYSTEM "resource.dtd" "resource.dtd"
+
+OVERRIDE YES                
+PUBLIC "package" "package.dtd"
+PUBLIC "-//NCEAS//package//EN" "resource.dtd"
+SYSTEM "package.dtd" "package.dtd"
+
 OVERRIDE YES
 PUBLIC "eml-supplement" "eml-supplement.dtd"
+PUBLIC "-//NCEAS//eml-supplement//EN" "eml-supplement.dtd"
 SYSTEM "urn:nceas:test-eml-supplement" "eml-supplement.dtd"   
 SYSTEM "eml-supplement" "eml-supplement"
 
 OVERRIDE YES
 PUBLIC "eml-variable" "eml-variable.dtd"
+PUBLIC "-//NCEAS//eml-variable//EN" "eml-variable.dtd"
 SYSTEM "urn:nceas:test-eml-variable" "eml-variable.dtd" 
 SYSTEM "eml-variable.dtd" "eml-variable.dtd"
 
