@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-20 19:33:04 $'
- * '$Revision: 1.93 $'
+ *     '$Date: 2002-12-09 22:05:12 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,10 @@ public class DataPackageGUI extends javax.swing.JFrame
                                        WindowListener
 {
   public JPanel basicInfoPanel;
-  public String referenceLabel = "";
+  public String authorRefLabel = "";
+  public String titleRefLabel = "";
+  public String accessionRefLabel = "";
+  public String keywordsRefLabel = "";
   Morpho morpho;
   private ConfigXML config;
   Container contentPane;
@@ -389,7 +392,6 @@ public class DataPackageGUI extends javax.swing.JFrame
    */
   public JPanel createBasicInfoPanel()
   {
-    referenceLabel = "";
     String authorList = "";
     
     String idPath = config.get("datasetIdPath", 0);
@@ -508,8 +510,9 @@ public class DataPackageGUI extends javax.swing.JFrame
                   htmlize(keywords, "Keywords") + 
                   htmlize(abstractS, "Abstract");
     
-    referenceLabel = referenceLabel + "<b><i>" + title + "</i></b></td></tr>" +
-           "<tr><td><b>Accession Number " + id + "</b>  Keywords: " + keywords+"</td></tr></table>"; 
+    titleRefLabel = title;
+    accessionRefLabel = "Accession Number " + id;
+    keywordsRefLabel = "Keywords: " + keywords;
     
     String originators = "<br><b>Originator(s)</b><br>";
     String name = "";
@@ -630,7 +633,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                      
       authorList = authorList + name + ", ";          
     }
-    referenceLabel = "<table width=3000><tr><td>"+authorList + referenceLabel;
+    authorRefLabel = authorList;
     
  //   System.out.println("Ref Label: "+referenceLabel);
     

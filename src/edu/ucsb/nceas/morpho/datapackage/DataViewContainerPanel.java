@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-06 22:37:30 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2002-12-09 22:05:12 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   
   Vector entityItems = null;
   PersistentVector lastPV = null;
-  JLabel more_lessLabel;
+  JLabel moreLabel;
+  
 
   private static MetaDisplayFactoryInterface metaDisplayFactory = null;
   
@@ -199,8 +200,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         }
       });
     
+    // this panel added just so splitter colors can be set
+    JPanel entitiesContainerPanel = new JPanel();
+//    entitiesContainerPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    entitiesContainerPanel.setLayout(new BorderLayout(0,0));
+    entitiesContainerPanel.add(BorderLayout.CENTER, tabbedEntitiesPanel);
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, packageMetadataPanel,
-                                                          tabbedEntitiesPanel);
+                                                          entitiesContainerPanel);
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
     vertSplit.setDividerLocation(UISettings.VERT_SPLIT_INIT_LOCATION);
@@ -224,21 +230,49 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
 // the following code builds the datapackage summary at the top of
 // the DataViewContainerPanel
-    JLabel refLabel = new JLabel("<html>"+dpgui.referenceLabel+"</html>");
-    refLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    refLabel.setOpaque(true);
-    refLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    JLabel authorRefLabel = new JLabel(dpgui.authorRefLabel);
+    authorRefLabel.setFont(UISettings.TITLE_CITATION_FONT);
+    JLabel titleRefLabel = new JLabel(dpgui.titleRefLabel);
+    titleRefLabel.setFont(UISettings.TITLE_CITATION_FONT_BOLD);
+    JLabel accessionRefLabel = new JLabel(dpgui.accessionRefLabel);
+    accessionRefLabel.setFont(UISettings.TITLE_CITATION_FONT_BOLD);
+    JLabel keywordsRefLabel = new JLabel(dpgui.keywordsRefLabel);
+    keywordsRefLabel.setFont(UISettings.TITLE_CITATION_FONT);
+    moreLabel = new JLabel("<html><a href=\".\"><b>more</b></a></html>");
+    moreLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    moreLabel.addMouseListener(this);
+    moreLabel.setToolTipText("Show more/less of package documentation");
+
+    JPanel refPanelTop = new JPanel();
+    refPanelTop.setPreferredSize(UISettings.TITLE_CITATION_DIMS);
+    refPanelTop.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+    refPanelTop.setLayout(new BorderLayout(0,0));
+    refPanelTop.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
     JPanel refPanel = new JPanel();
-    refPanel.setPreferredSize(UISettings.TITLE_CITATION_DIMS);
-    refPanel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-    refPanel.setLayout(new BorderLayout(0,0));
-    refPanel.add(BorderLayout.CENTER, refLabel);
-    refLabel.setFont(UISettings.TITLE_CITATION_FONT);
+    refPanel.setLayout(new GridLayout(3,1));
+    refPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    JPanel refPanelLine1 = new JPanel();
+    refPanelLine1.setLayout(new BorderLayout(0,0));
+    refPanelLine1.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    refPanelLine1.add(BorderLayout.WEST, authorRefLabel);
+    refPanelLine1.add(BorderLayout.CENTER, titleRefLabel);
+    JPanel refPanelLine2 = new JPanel();
+    refPanelLine2.setLayout(new BorderLayout(0,0));
+    refPanelLine2.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    refPanelLine2.add(BorderLayout.WEST, accessionRefLabel);
+    refPanelLine2.add(BorderLayout.CENTER, keywordsRefLabel);
+    refPanel.add(refPanelLine1);
+    refPanel.add(refPanelLine2);
+    refPanel.add(moreLabel);
+    refPanelTop.add(BorderLayout.CENTER, refPanel);
+    
+ //   refPanel.add(BorderLayout.CENTER, refLabel);
+ //   refLabel.setFont(UISettings.TITLE_CITATION_FONT);
 
     // location panel contains 2 labels whose icons indicate wether the
     // displayed package is local/network or both
     JPanel locationPanel = new JPanel();
-    locationPanel.setLayout(new BorderLayout(0,0));
+  //  locationPanel.setBackground(UISettings.CUSTOM_GRAY);
     Border margin0 = BorderFactory.createEmptyBorder(4,2,4,2); //top,lft,bot,rgt
     Border lineBorder1 = BorderFactory.createLineBorder(Color.black);
     Border outer = new CompoundBorder(margin0, lineBorder1);
@@ -247,7 +281,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     Border inner = new CompoundBorder(margin0,margin1);
     locationPanel.setPreferredSize(UISettings.TITLE_LOCATION_DIMS);
     locationPanel.setBorder(inner);
-    locationPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    locationPanel.setBackground(UISettings.CUSTOM_GRAY);
     locationPanel.setOpaque(true);
     ImageIcon localIcon 
       = new ImageIcon(getClass().getResource("local-package-small.png"));
@@ -256,13 +290,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     ImageIcon blankIcon 
       = new ImageIcon(getClass().getResource("blank.gif"));
     JLabel localLabel = new JLabel("local");
-    localLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    localLabel.setBackground(UISettings.CUSTOM_GRAY);
     localLabel.setOpaque(true);
     localLabel.setFont(UISettings.TITLE_LOCATION_FONT);
     localLabel.setIcon(localIcon);
     localLabel.setToolTipText("Package is stored locally");
     JLabel netLabel = new JLabel("net");
-    netLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    netLabel.setBackground(UISettings.CUSTOM_GRAY);
     netLabel.setFont(UISettings.TITLE_LOCATION_FONT);
     netLabel.setOpaque(true);
     netLabel.setIcon(metacatIcon);
@@ -282,32 +316,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     locationPanel.add(BorderLayout.NORTH,localLabel);
     locationPanel.add(BorderLayout.SOUTH, netLabel);
     
-    // a panel which contains 'more'/'less' buttons/text
-    JPanel more_lessPanel = new JPanel();
-    more_lessPanel.setLayout(new BorderLayout(0,0));
-    more_lessPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    more_lessPanel.setOpaque(true);
-    String more_lessLabelText = "<html><table><tr><td> </td></tr>"+
-              "<tr><td><u> more </u></td></tr></html>";
-    // html string is used to match layout of reference text          
-    more_lessLabel = new JLabel();
-    more_lessLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    more_lessLabel.setFont(UISettings.TITLE_CITATION_FONT);
-    more_lessLabel.setForeground(Color.blue);
-    more_lessLabel.setText(more_lessLabelText);
-    more_lessLabel.addMouseListener(this);
-    more_lessLabel.setToolTipText("Show more/less of package documentation");
-    more_lessPanel.add(BorderLayout.CENTER, more_lessLabel);
-    
-    JPanel rightsidePanel = new JPanel();
-    rightsidePanel.setLayout(new BorderLayout(0,0));
-    rightsidePanel.add(BorderLayout.EAST, locationPanel);
-    rightsidePanel.add(BorderLayout.WEST,more_lessPanel);
-    refPanel.add(BorderLayout.EAST, rightsidePanel);
+    refPanelTop.add(BorderLayout.EAST, locationPanel);
     
 // refpanel is created in this class and added to the top of the 
 // panel in the next statement  
-    packagePanel.add(BorderLayout.NORTH,refPanel);
+    packagePanel.add(BorderLayout.NORTH,refPanelTop);
     this.morpho = dpgui.morpho;
     this.toppanel = packagePanel;
     this.entityItems = dpgui.getEntityitems();
@@ -351,6 +364,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                       new StateChangeEvent(this, 
                           StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
       }
+      moreLabel.setVisible(false);
       initDPMetaView(false);
       return;
     }
@@ -449,6 +463,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       }//else
       initDPMetaView(true);
     } else {
+      moreLabel.setEnabled(false);
       initDPMetaView(false);
     }
   }
@@ -864,6 +879,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
               if (entitySplitPane.getOrientation()==JSplitPane.VERTICAL_SPLIT){
                 closedPosition = UISettings.VERT_SPLIT_INIT_LOCATION;
                 Log.debug(50,"VERTICAL_SPLIT, closedPosition="+closedPosition);
+                moreLabel.setText("<html><a href=\".\"><b>more</b></a></html>");
               } else {
                 closedPosition = entitySplitPane.getWidth();
                 Log.debug(50,"HORIZONAL_SPLIT, closedPosition="+closedPosition);
@@ -1052,25 +1068,19 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    }
 
    public void mouseEntered(MouseEvent e) {
-     more_lessLabel.setForeground(Color.red);
-   }
+  }
 
    public void mouseExited(MouseEvent e) {
-     more_lessLabel.setForeground(Color.blue);
    }
 
   public void mouseClicked(MouseEvent e) {
-    String more ="<html><table><tr><td> </td></tr>"+
-              "<tr><td><u> more </u></td></tr></html>";
-    String less = "<html><table><tr><td> </td></tr>"+
-              "<tr><td><u> less </u></td></tr></html>";
-    String temp = more_lessLabel.getText();
+    String temp = moreLabel.getText();
     if (temp.indexOf("more")>-1) {
-      more_lessLabel.setText(less);
+      moreLabel.setText("<html><a href=\".\"><b>less</b></a></html>");
       vertSplit.setDividerLocation(1.0);
     }
     else {
-      more_lessLabel.setText(more);
+      moreLabel.setText("<html><a href=\".\"><b>more</b></a></html>");
       vertSplit.setDividerLocation(UISettings.VERT_SPLIT_INIT_LOCATION);
     }
  }

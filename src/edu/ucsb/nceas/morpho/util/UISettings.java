@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-28 04:12:06 $'
- * '$Revision: 1.5 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-09 22:05:37 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@ public class UISettings
     public static final Font BUTTON_FONT  = new Font("Dialog", Font.BOLD, 11);
     public static final Font TITLE_CITATION_FONT 
                                           = new Font("Dialog", Font.PLAIN, 12);
+    public static final Font TITLE_CITATION_FONT_BOLD 
+                                          = new Font("Dialog", Font.BOLD, 12);
     public static final Font TITLE_LOCATION_FONT 
                                           = new Font("Dialog", Font.PLAIN, 9);
                                           
@@ -114,7 +116,7 @@ public class UISettings
     public static final Color BACKBUTTON_COLOR     = TITLEBAR_COLOR;
     public static final Color CLOSEBUTTON_COLOR    = TITLEBAR_COLOR;
     public static final Color EDITBUTTON_COLOR     = TITLEBAR_COLOR;
-
+    public static final Color CUSTOM_GRAY          = new Color(180,180,180);
     public static final Color FOCUSED_BORDER_COLOR = new Color(115,147,196);
     public static final Color UNFOCUSED_BORDER_COLOR = Color.gray;
     
