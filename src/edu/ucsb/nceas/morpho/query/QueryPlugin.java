@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 07:25:44 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2001-06-14 03:36:52 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,12 +76,12 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
 
-    // Create the tabbed pane for the owner queries
-    createOwnerPanel();
-
     // Add the menus and toolbars
     framework.addMenu("Search", new Integer(3), menuActions);
     framework.addToolbarActions(toolbarActions);
+
+    // Create the tabbed pane for the owner queries
+    createOwnerPanel();
 
     // Listen for changes to the connection status
     framework.addConnectionListener(this);
@@ -203,6 +203,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
 
     // Add the content pane, menus, and toolbars
     framework.setMainContentPane(ownerPanel);
+
+    // Reload any saved queries in the search menu
+    ownerPanel.loadSavedQueries();
   }
 
   /**
@@ -214,5 +217,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     ownerQuery = new Query(getOwnerQuery(), framework);
     ResultSet results = ownerQuery.execute();
     ownerPanel.setResults(results);
+
+    // Reload any saved queries in the search menu
+    ownerPanel.loadSavedQueries();
   }
 }

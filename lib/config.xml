@@ -30,5 +30,5 @@
       <frameConfigFile>./lib/frames/entity.xml</frameConfigFile>
     </frame>
   </customFrames>
-  <current_profile>berkley</current_profile>
+  <current_profile></current_profile>
 </config>

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.57 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-14 03:36:52 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,6 +295,24 @@ public class ClientFramework extends javax.swing.JFrame
   }
 
   /**
+   * This method is called by plugins to remove a menu item from
+   * a menu based on the index of the menu item.
+   *
+   * @param menuName the name of the menu from which to remove the item
+   * @param index the  position of the menu item to remove
+   */
+  public void removeMenuItem(String menuName, int index)
+  {
+    JMenu currentMenu = null;
+    // Check if the menu exists, and if so, remove the item
+    if (menuList.containsKey(menuName)) {
+      currentMenu = (JMenu)menuList.get(menuName);
+      debug(20, "Removing menu item: " + menuName + " (" + index + ")");
+      currentMenu.remove(index);
+    }
+  }
+
+  /**
    * This method is called by plugins to register a toolbar Action. 
    *
    * @param toolbarActions an array of Actions to be added to the toolbar
@@ -462,7 +480,7 @@ public class ClientFramework extends javax.swing.JFrame
     editMenuActions = new Action[4];
     Action cutItemAction = new AbstractAction("Cut") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Cut requested.");
+        debug(9, "Cut is not yet implemented.");
       }
     };
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -476,7 +494,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     Action copyItemAction = new AbstractAction("Copy") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Copy requested.");
+        debug(9, "Copy is not yet implemented.");
       }
     };
     copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -490,7 +508,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     Action pasteItemAction = new AbstractAction("Paste") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Paste requested.");
+        debug(9, "Paste is not yet implemented.");
       }
     };
     pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -504,7 +522,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     Action prefsItemAction = new AbstractAction("Preferences...") {
       public void actionPerformed(ActionEvent e) {
-        debug(9, "Preferences requested. GUI not yet implemented!");
+        debug(9, "Preferences dialog not yet implemented!");
       }
     };
     prefsItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -514,6 +532,7 @@ public class ClientFramework extends javax.swing.JFrame
            getResource("/toolbarButtonGraphics/general/Preferences16.gif")));
     prefsItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     prefsItemAction.putValue("menuPosition", new Integer(5));
+    prefsItemAction.setEnabled(false);
     editMenuActions[3] = prefsItemAction;
 
     addMenu("Edit", new Integer(2), editMenuActions);

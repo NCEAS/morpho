@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:28 $'
- * '$Revision: 1.16 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-14 03:36:52 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,17 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Hashtable;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -41,6 +47,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -56,33 +63,26 @@ public class ResultPanel extends JPanel
 {
   /** A reference to the ResultSet being displayed */
   private ResultSet results = null;
-
   /** A reference to the framework */
   private ClientFramework framework = null;
-
   /** The table used to display the results */
   JTable table = null;
-
   /** Indicate whether the refresh button should appear */
   private boolean hasRefreshButton = false;
-
   /** Indicate whether the revise button should appear */
   private boolean hasReviseButton = false;
-
   /** Button used to trigger a re-execution of the query */
-  JButton refreshButton;
-
+  private JButton refreshButton;
   /** Button used to trigger a revision using QueryDialog */
-  JButton reviseButton;
-
+  private JButton reviseButton;
   /** Button used to trigger a save of the current Query */
-  JButton saveButton;
-
+  private JButton saveButton;
   /** The label used to display the query title */
-  JLabel titleLabel;
-
+  private JLabel titleLabel;
   /** The label used to display the number of records */
-  JLabel recordCountLabel;
+  private JLabel recordCountLabel;
+  /** A static hash listing all of the search menu query Actions by id */
+  private static Hashtable savedQueriesList;
 
   /**
    * Construct a new ResultPanel and display the result set.  By default
@@ -335,27 +335,13 @@ public class ResultPanel extends JPanel
     }
 
     try {
+      ClientFramework.debug(10, "Saving query to disk...");
       query.save();
+      ClientFramework.debug(10, "Adding query to menu...");
+      addQueryToMenu(query);
 
-      // Add a menu item in the framework to execute this query
-      Action[] menuActions = new Action[1];
-      Action savedSearchItemAction = new AbstractAction(query.getQueryTitle()) {
-        public void actionPerformed(ActionEvent e) {
-          /*
-          if (query != null) {
-            ResultSet rs = query.execute();
-            ResultFrame rsf = new ResultFrame(framework, rs);
-          }
-          */
-        }
-      };
-      savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                            "Execute saved search");
-      menuActions[0] = savedSearchItemAction;
-      framework.addMenu("Search", new Integer(3), menuActions);
     } catch (IOException ioe) {
-      ClientFramework.debug(6, "Failed to saved query: I/O error.");
-      ClientFramework.debug(6, ioe.getMessage());
+      ClientFramework.debug(6, "Failed to save query: I/O error.");
     }
   }
 
@@ -385,5 +371,97 @@ public class ResultPanel extends JPanel
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);
     initColumnSizes(table, results);
+  }
+
+  /**
+   * Load the saved queries into the Search menu so that the user can launch
+   * any queries they saved from previosu sessions.
+   */
+  public void loadSavedQueries()
+  {
+    ClientFramework.debug(20, "Loading saved queries...");
+    // See if the query list is null, and initialize it if so
+    if (savedQueriesList == null) {
+      savedQueriesList = new Hashtable();
+    }
+
+    // Make sure the list is empty (because this may be called when the
+    // profile is being switched)
+    if (!savedQueriesList.isEmpty()) {
+      for (int i = savedQueriesList.size()+1; i > 1; i--) {
+        // Clear the search menu too 
+        framework.removeMenuItem("Search", i);
+      }
+      savedQueriesList = new Hashtable();
+    }
+
+    // Look in the profile queries directory and load any pathquery docs
+    ConfigXML config = framework.getConfiguration();
+    ConfigXML profile = framework.getProfile();
+    String queriesDirName = config.get("profile_directory", 0) +
+                            File.separator +
+                            config.get("current_profile", 0) +
+                            File.separator +
+                            profile.get("queriesdir", 0); 
+    File queriesDir = new File(queriesDirName);
+    if (queriesDir.exists()) {
+      File[] queriesList = queriesDir.listFiles();
+      for (int n=0; n < queriesList.length; n++) {
+        File queryFile = queriesList[n];
+        if (queryFile.isFile()) {
+          try {
+            FileReader xml = new FileReader(queryFile);
+            Query newQuery = new Query(xml, framework);
+            addQueryToMenu(newQuery);
+          } catch (FileNotFoundException fnf) {
+            ClientFramework.debug(9, "Poof. The query disappeared.");
+          }
+        }
+      }
+    }
+    ClientFramework.debug(20, "Finished loading saved queries.");
+  }
+
+  /**
+   * Add a new menu item to the Search menu for the query
+   *
+   * @param query the query to be added to the Search menu
+   */
+  private void addQueryToMenu(Query query)
+  {
+    // See if the query list is null, and initialize it if so
+    if (savedQueriesList == null) {
+      savedQueriesList = new Hashtable();
+    }
+
+    // Add a menu item in the framework to execute this query, but only
+    // if the menu item doesn't already exist, which is determined
+    // by seeing if the query identifier is in the static list of queries
+    if (! savedQueriesList.containsKey(query.getIdentifier())) {
+      Action[] menuActions = new Action[1];
+      Action savedSearchItemAction = 
+             new AbstractAction(query.getQueryTitle()) {
+        public void actionPerformed(ActionEvent e) {
+          Action queryAction = ((JMenuItem)e.getSource()).getAction();
+          Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
+          if (savedQuery != null) {
+            ResultSet rs = savedQuery.execute();
+            ResultFrame rsf = new ResultFrame(framework, rs);
+          }
+        }
+      };
+      savedSearchItemAction.putValue("SAVED_QUERY_OBJ", query);
+      savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
+                            "Execute saved search");
+      menuActions[0] = savedSearchItemAction;
+      framework.addMenu("Search", new Integer(3), menuActions);
+      savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
+    } else {
+      // The menu already exists, so update its title and query object
+      Action savedQueryAction = 
+             (Action)savedQueriesList.get(query.getIdentifier());
+      savedQueryAction.putValue(Action.NAME, query.getQueryTitle());
+      savedQueryAction.putValue("SAVED_QUERY_OBJ", query);
+    }
   }
 }
