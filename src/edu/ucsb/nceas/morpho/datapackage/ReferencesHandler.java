@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-01 21:31:19 $'
- * '$Revision: 1.8 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-02 18:56:39 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -66,7 +65,7 @@ public class ReferencesHandler {
 
   private final String EXT_DIALOG_DROPDOWN_ITEM = "Select from a different data package";
 
-  private QueryRefreshInterface queryRefreshInterface;
+
   private String genericName;
   private String[] surrogateXPaths;
   private ModalDialog externalRefsDialog;
@@ -324,7 +323,7 @@ public class ReferencesHandler {
 
     //first get a list of available local datapackages
     //then set these in dialog and show it
-    doQueryAndPopulateDialog();
+    //doQueryAndPopulateDialog();
 
     //...and get corresponding node from external datapackage
 
@@ -336,60 +335,6 @@ public class ReferencesHandler {
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-
-
-  /**
-   * Run the local search query
-   *
-   * @return boolean
-   */
-  private boolean doQueryAndPopulateDialog() {
-
-    final QueryRefreshInterface queryPlugin = getQueryPlugin();
-
-    if (queryPlugin == null) return false;
-
-
-    final SwingWorker worker = new SwingWorker() {
-
-      private AbstractTableModel resultsModel;
-
-      public Object construct() {
-
-        resultsModel = queryPlugin.doOwnerQueryForCurrentUser();
-
-        return null;
-      }
-
-
-      //Runs on the event-dispatching thread.
-      public void finished() {
-        externalRefsPage.setQueryResults(resultsModel);
-      }
-    };
-    worker.start(); //required for SwingWorker 3
-    return true;
-  }//doQuery
-
-
-  private QueryRefreshInterface getQueryPlugin() {
-
-    if (queryRefreshInterface == null) {
-
-      ServiceController sc;
-      QueryRefreshInterface queryRefreshInterface = null;
-      try {
-        sc = ServiceController.getInstance();
-        queryRefreshInterface = (QueryRefreshInterface)sc.getServiceProvider(
-            QueryRefreshInterface.class);
-      } catch (ServiceNotHandledException se) {
-        Log.debug(6, se.getMessage());
-        se.printStackTrace();
-      }
-    }
-    return queryRefreshInterface;
-  }
 
 
 
