@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-21 02:03:17 $'
- * '$Revision: 1.104 $'
+ *     '$Date: 2005-01-21 17:01:03 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3144,7 +3144,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         // should have trimmed 'other'
       }
       if (urlinfo.length() == 0) {
-        return;
+        continue;
       }
       // if we reach here, urlinfo should be the id in a string
       // now try to get the original filename
