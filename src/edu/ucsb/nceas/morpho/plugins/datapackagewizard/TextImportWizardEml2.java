@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 00:10:05 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-12-24 04:24:32 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -652,14 +652,12 @@ public class TextImportWizardEml2 extends JFrame {
       try {
         while ((temp = in.readLine()) != null) {
           // do not count blank lines
-					StringBuffer buff = new StringBuffer();
-          if (temp.length() > 0) {
+					if (temp.length() > 0) {
             nlines_actual++;
             if (nlines < nlines_max) {
               nlines++;
-              buff.append(temp);
-              buff.append("\n");
-              linesList.add(buff.toString());
+              temp+="\n";
+              linesList.add(temp);
             }
           }
         }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 02:56:05 $'
- * '$Revision: 1.45 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-24 04:24:32 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -750,7 +750,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     else {
       currentAttr = attributes[attrIndex];
     }
-    if (attrIndex < (attributes.length - 1)) {
+    if (attrIndex <= (attributes.length - 1)) {
       Node parent = currentAttr.getParentNode();
       parent.insertBefore(newAttributeNode, currentAttr);
     }

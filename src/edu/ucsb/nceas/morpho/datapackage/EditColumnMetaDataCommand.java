@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 00:10:05 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-12-24 04:24:32 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,9 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.event.ActionEvent;
@@ -82,6 +85,7 @@ public class EditColumnMetaDataCommand implements Command
 		Node[] attributes = null;
 		int selectedCol = -1;
 		int entityIndex = -1;
+		JTable table = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
@@ -108,7 +112,8 @@ public class EditColumnMetaDataCommand implements Command
          	
 					//DataPackage dataPackage = resultPane.getDataPackage();
 					String entityId = dataView.getEntityFileId();
-					selectedCol = dataView.getDataTable().getSelectedColumn();
+					table = dataView.getDataTable();
+					selectedCol = table.getSelectedColumn();
 					entityIndex = dataView.getEntityIndex();
 					attributes = adp.getAttributeArray(entityIndex);
        }
@@ -171,7 +176,14 @@ public class EditColumnMetaDataCommand implements Command
 				
 				PersistentVector pv = dataView.getPV();
 				PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
-				dataView.getDataTable().setModel(ptm);
+				table.setModel(ptm);
+				//DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
+				//dlsm.addSelectionInterval(selectedCol, selectedCol);
+				table.setColumnSelectionInterval(selectedCol,	selectedCol);
+				StateChangeEvent stateEvent = new 
+              StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
+        StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
+        stateMonitor.notifyStateChange(stateEvent);
 			}
 		} else {
 			

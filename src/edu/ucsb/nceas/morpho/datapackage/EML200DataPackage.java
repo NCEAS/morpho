@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-23 21:52:17 $'
- * '$Revision: 1.18 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-24 04:24:32 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,6 +98,9 @@ public  class EML200DataPackage extends AbstractDataPackage
     String urlinfo = null;
     Vector res = new Vector();
     Entity[] ents = getEntityArray();
+		// if package has no data 
+		if(ents == null)
+			return res;
     for (int i=0;i<ents.length;i++) {
       if (getDistributionUrl(i, 0,0).length()>0) {  // there is a url link
         urlinfo = getDistributionUrl(i, 0,0);
