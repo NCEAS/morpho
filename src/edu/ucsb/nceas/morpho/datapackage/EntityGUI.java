@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-06 16:59:24 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2002-03-04 23:03:22 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -831,11 +831,13 @@ public class EntityGUI extends javax.swing.JFrame
           e1.printStackTrace();
         }
         DataViewer dv = new DataViewer("DataFile: "+fn);
+        dv.setDataID(fn);
+        dv.setDataString(dataString);
         dv.show();
-        JTextArea ta = new JTextArea(dataString);
-        ta.setEditable(false);
-        dv.JScrollPane1.getViewport().removeAll();
-        dv.JScrollPane1.getViewport().add(ta);
+//        JTextArea ta = new JTextArea(dataString);
+//        ta.setEditable(false);
+//        dv.JScrollPane1.getViewport().removeAll();
+//        dv.JScrollPane1.getViewport().add(ta);
       }
       else{
         JOptionPane.showMessageDialog(null, 
