@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-09 19:06:08 $'
- * '$Revision: 1.35 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-10 00:07:06 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -527,7 +527,24 @@ public abstract class AbstractDataPackage extends MetadataObject
     parent.removeChild(entity);	  
   }
 
-    /**
+  
+  /**
+   *  This method automatically adds an entity in the DOM at the next 
+   *  available position
+   */
+  public void addEntity(Entity entity) {
+
+    if (entityArray==null) { 
+    
+      insertEntity(entity, 0);
+    
+    } else {
+    
+      insertEntity(entity, entityArray.length); 
+    }
+  }  
+  
+  /**
    *  This method inserts an entity in the DOM at the indexed position
    */
   public void insertEntity(Entity entity, int pos) {

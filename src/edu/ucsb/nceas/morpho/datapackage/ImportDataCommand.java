@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-02 22:11:39 $'
- * '$Revision: 1.5 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-10 00:07:06 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,19 @@ import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
+
+import org.w3c.dom.Node;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * Class to handle import data file command
@@ -70,7 +78,7 @@ public class ImportDataCommand implements Command
     if ( resultPane != null)
     {
       DataPackage dp = resultPane.getDataPackage();
-      AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+      final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
       DataViewer dv = resultPane.getCurrentDataViewer();
       String entityId = null;
       if (dv!=null) {
@@ -91,7 +99,53 @@ public class ImportDataCommand implements Command
                          entityId)).setVisible(true);
         }
       } else { // new AbstractDataPackage/Wizard calls will go here
-        Log.debug(1, "Cslls back to the second part of the Wizard will happen here!");
+
+        Log.debug(20, "Action fired: Entity Wizard");
+        DataPackageWizardInterface dpw = null;
+        try {
+          ServiceController services = ServiceController.getInstance();
+          ServiceProvider provider = 
+             services.getServiceProvider(DataPackageWizardInterface.class);
+          dpw = (DataPackageWizardInterface)provider;
+        
+        } catch (ServiceNotHandledException snhe) {
+      
+          Log.debug(6, snhe.getMessage());
+        }
+  
+        dpw.startEntityWizard(
+        
+          new DataPackageWizardListener() {
+      
+            public void wizardComplete(Node newDOM) {
+          
+              Log.debug(45, "\n\n********** Entity Wizard finished: DOM:");
+              Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+
+              Log.debug(30,"Entity Wizard complete - creating Entity object..");
+            
+              Entity entity = new Entity(newDOM);
+
+              Log.debug(30,"Adding Entity object to AbstractDataPackage..");
+              adp.addEntity(entity);
+            }
+  
+            public void wizardCanceled() {
+    
+              Log.debug(45, "\n\n********** Wizard canceled!");
+            }
+          });
+
+
+
+
+
+
+
+
+
+
+
       }
     }//if
   
