@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-17 05:14:13 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-12-21 06:08:13 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,32 +28,19 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
-import java.util.Map;
-
-import javax.swing.JLabel;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Frame;
-
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.TextImportListener;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.UIController;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.TextImportWizardEml2;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
+import java.io.File;
 
 
 public class ImportWizard extends     AbstractWizardPage
@@ -65,8 +52,6 @@ public class ImportWizard extends     AbstractWizardPage
 
   public final String title      = "Data Package Wizard";
   public final String subtitle   = "Import Data/Information";
-
-  private final String IMPORT_WIZ_TITLE = "Text Import Wizard";
 
   private WizardContainerFrame mainWizFrame;
   private OrderedMap resultsMap;
@@ -98,10 +83,9 @@ public class ImportWizard extends     AbstractWizardPage
 
       AbstractWizardPage locationPage
           = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
-      String fileTextName = ((DataLocation)locationPage).getImportFileURL();
-      short dataLocation  = ((DataLocation)locationPage).getDataLocation();
+      File dataFileObj = ((DataLocation)locationPage).getDataFile();
 
-      importWizFrame = new TextImportWizardEml2(fileTextName, this, dataLocation);
+      importWizFrame = new TextImportWizardEml2(dataFileObj, this);
 
       importWizFrame.setBounds(mainWizFrame.getX(),     mainWizFrame.getY(),
                                mainWizFrame.getWidth(), mainWizFrame.getHeight());
@@ -118,7 +102,7 @@ public class ImportWizard extends     AbstractWizardPage
   /** TextImportListener interface
    * This method is called when editing is complete
    *
-   * @param xmlString is the edited XML in String format
+   * @param om is the OrderedMap returned by the TIW
    */
   public void importComplete(OrderedMap om) {
 

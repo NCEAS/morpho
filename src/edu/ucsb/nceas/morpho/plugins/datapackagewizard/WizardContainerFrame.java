@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.26 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-21 06:08:12 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,6 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportWizard;
-import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -45,14 +43,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener ;
 
@@ -65,6 +58,8 @@ import java.util.Set;
 import java.io.StringReader;
 
 import org.w3c.dom.Node;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  *  provides a top-level container for AbstractWizardPage objects. The top (title) panel
@@ -86,9 +81,15 @@ public class WizardContainerFrame extends JFrame {
     super();
     frame = this;
     this.listener = listener;
-    pageStack   = new Stack();
+    pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     init();
+
+    this.addWindowListener(new WindowAdapter() {
+
+      public void windowClosing(WindowEvent e) { cancelAction(); }
+    });
+
   }
 
 
@@ -109,7 +110,7 @@ public class WizardContainerFrame extends JFrame {
   /**
    *  sets the wizard content for the center pane
    *
-   *  @param content  the String pageID of the wizard content to be loaded into
+   *  @param pageID  the String pageID of the wizard content to be loaded into
    *                  the center pane
    */
   public void setCurrentPage(String pageID) {
@@ -131,9 +132,9 @@ public class WizardContainerFrame extends JFrame {
 
 
   /**
-   *  sets the wizard content for the center pane
+   * sets the wizard content for the center pane
    *
-   *  @param content the wizard content for the center pane
+   * @param newPage the wizard content for the center pane
    */
   public void setCurrentPage(AbstractWizardPage newPage) {
 
@@ -505,11 +506,14 @@ public class WizardContainerFrame extends JFrame {
   private final String ID_ATTR_XPATH  = "/@id";
   private final StringBuffer tempBuff = new StringBuffer();
   private final OrderedMap idMap      = new OrderedMap();
+
   /**
-   *  adds unique IDs to the elements identified by the *absolute* XPath strings
-   *  in the elementsThatNeedIDsArray
-   *  NOTE - if the xpath points to more than one element, then a unique ID
-   *  will be assigned to each element
+   * adds unique IDs to the elements identified by the *absolute* XPath strings
+   * in the elementsThatNeedIDsArray NOTE - if the xpath points to more than one
+   * element, then a unique ID will be assigned to each element
+   *
+   * @param elementsNeedingIDsArray String[]
+   * @param resultsMap OrderedMap
    */
   private void addIDs(String[] elementsNeedingIDsArray, OrderedMap resultsMap) {
 
@@ -585,10 +589,14 @@ public class WizardContainerFrame extends JFrame {
     return false;
   }
 
+
   /**
-   *  given a WizardPage object (nextPage), calls its getPageData() method to
-   *  get the NVPs from thae page, and adds these NVPs to the OrderedMap
-   *  provided (resultMap)
+   * given a WizardPage object (nextPage), calls its getPageData() method to get
+   * the NVPs from thae page, and adds these NVPs to the OrderedMap provided
+   * (resultMap)
+   *
+   * @param nextPage WizardPage
+   * @param resultsMap OrderedMap
    */
   private void addPageDataToResultsMap( WizardPage nextPage,
                                         OrderedMap resultsMap) {
@@ -649,7 +657,6 @@ public class WizardContainerFrame extends JFrame {
 
     // now clean up
     doCleanUp();
-
   }
 
   private void doCleanUp() {
@@ -680,11 +687,14 @@ public class WizardContainerFrame extends JFrame {
     subtitleLabel.setText(newSubTitle);
   }
 
+
   /**
-   *  adds a button with a specified title and action to the bottom panel
-   *  @param title text to be shown on the button
-   *  @param actionListener the ActionListener that will respond
-   *                       to the button press
+   * adds a button with a specified title and action to the bottom panel
+   *
+   * @param title text to be shown on the button
+   * @param actionListener the ActionListener that will respond to the button
+   *   press
+   * @return JButton
    */
   private JButton addButton(String title, ActionListener actionListener) {
 

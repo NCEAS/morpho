@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-20 03:43:15 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-12-21 06:08:12 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,26 +25,19 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
-import edu.ucsb.nceas.morpho.util.Base64;
-import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -69,7 +62,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -145,14 +137,9 @@ public class TextImportWizardEml2 extends JFrame {
    */
   private String[] lines;
 
-  private String filename;
+  private File dataFile;
 
   private String shortFilename;
-  /**
-   * selected column variable
-   */
-
-  private int selectedCol = -1;
 
   /**
    * flag used to avoid parsing everytime a checkbox is changed
@@ -168,9 +155,6 @@ public class TextImportWizardEml2 extends JFrame {
    * StringBuffer used to store results from various parts of the wizard
    */
   private StringBuffer resultsBuffer;
-  // indicates whether input is text
-
-  private boolean textFlag;
 
   // starting line
   private int startingLine = 1;
@@ -197,13 +181,7 @@ public class TextImportWizardEml2 extends JFrame {
    */
   private Vector vec;
 
-  private boolean save_flag = false;
-
   private TextImportListener listener = null;
-
-  private boolean finishFlag = false;
-
-  private String delimiter = "";
 
   // Column Model of the table containting all the columns
   private TableColumnModel fullColumnModel;
@@ -219,31 +197,17 @@ public class TextImportWizardEml2 extends JFrame {
   private short distribution = WizardSettings.ONLINE;
 
   /**
-   *  constructor
+   * constructor
    *
-   *  @param dataFileName the full path and filename of the data file to be
-   *  imported or inspected
-   *
-   *  @param listener the <code>TextImportListener</code> object to be called
-   *  back when import is complete
-   *
-   *  @param distribution determines how data is stored and referenced:<ul><li>
-   *
-   *  if ONLINE, a copy of the data file is given a new accession number (id)
-   *  and copied to the temp file directory of the current profile
-   *  online url is set to "ecogrid://[id]</li><li>
-   *
-   *  if INLINE, the data is inserted 'inline' in the XML DOM</li><li>
-   *
-   *  if OFFLINE, no data is present, and offline tags are inserted into the eml
-   *  </li></ul>
+   * @param file the full path and filename of the data file to be imported or
+   *   inspected
+   * @param listener the <code>TextImportListener</code> object to be called
+   *   back when import is complete
    */
-  public TextImportWizardEml2(String filename,
-                              TextImportListener listener, short distribution) {
+  public TextImportWizardEml2(File file, TextImportListener listener) {
 
     this.listener = listener;
-
-    this.filename = filename;
+    this.dataFile = file;
 
     setDistribution(distribution);
 
@@ -254,9 +218,8 @@ public class TextImportWizardEml2 extends JFrame {
     resultsBuffer = new StringBuffer();
 
     //assign the filename and get the wizard started.
-    if (filename != null) {
-      File ff = new File(filename);
-      shortFilename = ff.getName();
+    if (file != null) {
+      shortFilename = file.getName();
       startImport(shortFilename);
     }
   }
@@ -578,8 +541,7 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   public static void main(String args[]) {
-    new TextImportWizardEml2(args[0], null,
-        WizardSettings.ONLINE).startImport(args[0]);
+    new TextImportWizardEml2(new File(args[0]), null).startImport(args[0]);
   }
 
 
@@ -596,7 +558,7 @@ public class TextImportWizardEml2 extends JFrame {
     }
     Vector title = new Vector();
     title.addElement("#");
-    title.addElement("Lines in " + filename);
+    title.addElement("Lines in " + dataFile.getName());
     UneditableTableModel linesTM = new UneditableTableModel(vec, title);
     table = new JTable(linesTM);
     table.setFont(new Font("MonoSpaced", Font.PLAIN, 14));
@@ -618,13 +580,11 @@ public class TextImportWizardEml2 extends JFrame {
    */
   private void parsefile(String f) {
     int i;
-    int pos;
-    String temp, temp1;
+    String temp;
 
     if (isTextFile(f)) {
       resultsBuffer = new StringBuffer("");
       resultsBuffer.append(f + " is apparently a text file\n");
-      textFlag = true;
       try {
         BufferedReader in = new BufferedReader(new FileReader(f));
         nlines = 0;
@@ -670,56 +630,10 @@ public class TextImportWizardEml2 extends JFrame {
     } else {
       resultsBuffer = new StringBuffer("");
       resultsBuffer.append(f + " is NOT a text file\n");
-      textFlag = false;
       JOptionPane.showMessageDialog(this, "Selected File is NOT a text file!",
                                     "Message", JOptionPane.INFORMATION_MESSAGE, null);
 
     }
-  }
-
-
-  /**
-   * parses data input string into an array of lines (Strings)
-   *
-   * @param s input string
-   */
-
-  private void parseString(String s) {
-    int i;
-    int pos;
-    String temp, temp1;
-    BufferedReader in = new BufferedReader(new StringReader(s));
-    nlines = 0;
-    try {
-      while ((temp = in.readLine()) != null) {
-        if (temp.length() > 0) { // do not count blank lines
-          nlines++;
-        }
-      }
-      in.close();
-    } catch (Exception e) {}
-    ;
-
-    nlines_actual = nlines;
-    if (nlines > nlines_max)nlines = nlines_max;
-    lines = new String[nlines];
-    // now read again since we know how many lines
-    BufferedReader in1 = new BufferedReader(new StringReader(s));
-    try {
-      for (i = 0; i < nlines; i++) {
-        temp = in1.readLine();
-        while (temp.length() == 0) {temp = in1.readLine();
-        }
-        lines[i] = temp + "\n";
-
-      }
-      in1.close();
-    } catch (Exception e) {}
-    ;
-    resultsBuffer = new StringBuffer("");
-    resultsBuffer.append("Number of lines: " + nlines_actual + "\n");
-    resultsBuffer.append("Most probable delimiter is " + guessDelimiter()
-                         + "\n");
   }
 
 
@@ -853,11 +767,9 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   /**
-   * builds JTable from input data ans includes event code for handling clicks on
-   * table (e.g. column selection)
+   * builds JTable from input data
    */
   private void buildTable() {
-    //     final JTable table = new JTable(vec, colTitles);
     UneditableTableModel myTM = new UneditableTableModel(vec, colTitles);
     table = new JTable(myTM);
 
@@ -865,27 +777,7 @@ public class TextImportWizardEml2 extends JFrame {
     table.setRowSelectionAllowed(false);
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
     fullColumnModel = table.getColumnModel();
-
-    ListSelectionModel colSM = table.getColumnModel().getSelectionModel();
-    colSM.addListSelectionListener(new ListSelectionListener() {
-      public void valueChanged(ListSelectionEvent e) {
-        //Ignore extra messages.
-        if (e.getValueIsAdjusting())return;
-
-        ListSelectionModel lsm =
-            (ListSelectionModel)e.getSource();
-        if (lsm.isSelectionEmpty()) {
-          //no columns are selected
-        } else {
-
-          selectedCol = lsm.getMinSelectionIndex();
-
-        }
-      }
-    });
-
     DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
   }
@@ -1109,26 +1001,10 @@ public class TextImportWizardEml2 extends JFrame {
         columnAttributes.size() - 1);
 
     // info should be null if all fields are not blank
-    if (!ad.onAdvanceAction()) {
-      return;
-      /*int  choice = JOptionPane.showConfirmDialog(null,
-             "This package may be invalid because certain metadata" +
-       "fields which refer to columns \n"+info+"\n contain no information. \n " +
-             "To correct this, please press Cancel or No\n" +
-             "and then select each column in the table\n" +
-             "and enter the appropriate metadata information.\n\n"+
-             "Are you sure you want to save now?",
-             "Invalid Document",
-             JOptionPane.YES_NO_CANCEL_OPTION,
-             JOptionPane.WARNING_MESSAGE);
-       if((choice == JOptionPane.CANCEL_OPTION)||(choice == JOptionPane.NO_OPTION)) {
-        return;
-             }*/
-    }
+    if (!ad.onAdvanceAction()) return;
 
-    if (listener != null) {
-      listener.importComplete(createEml2NVPairs());
-    }
+    if (listener != null) listener.importComplete(createEml2NVPairs());
+
     this.dispose();
   }
 
@@ -1674,23 +1550,24 @@ public class TextImportWizardEml2 extends JFrame {
     om.put(header + "entityDescription",
            XMLUtil.normalize(TableDescriptionTextField.getText()));
     // physical NV pairs are inserted here
-    om.put(header + "physical/" + "objectName", shortFilename);
-    long filesize = (new File(filename)).length();
+    om.put(header + "physical/objectName", shortFilename);
+    long filesize = dataFile.length();
     String filesizeString = (new Long(filesize)).toString();
-    om.put(header + "physical/" + "size", filesizeString);
-    om.put(header + "physical/" + "size/@unit", "byte");
+    om.put(header + "physical/size", filesizeString);
+    om.put(header + "physical/size/@unit", "byte");
     int numHeaderLines = startingLine;
     if (!labelsInStartingLine)numHeaderLines = numHeaderLines - 1;
-    om.put(header + "physical/dataFormat/textFormat/" + "numHeaderLines",
+    om.put(header + "physical/dataFormat/textFormat/numHeaderLines",
            "" + numHeaderLines);
-    om.put(header + "physical/dataFormat/textFormat/" + "recordDelimiter",
+    om.put(header + "physical/dataFormat/textFormat/recordDelimiter",
            "#x0A");
-    om.put(header + "physical/dataFormat/textFormat/" + "attributeOrientation",
+    om.put(header + "physical/dataFormat/textFormat/attributeOrientation",
            "column");
     String delimit = getDelimiterStringAsText();
-    om.put(header + "physical/dataFormat/textFormat/simpleDelimited/"
-           + "fieldDelimiter", delimit);
-
+    om.put(header
+           + "physical/dataFormat/textFormat/simpleDelimited/fieldDelimiter",
+           delimit);
+/**
     switch (distribution) {
 
       case WizardSettings.ONLINE:
@@ -1713,7 +1590,7 @@ public class TextImportWizardEml2 extends JFrame {
       case WizardSettings.NODATA:
         //if no data, then miss out the distribution elements altogether
     }
-
+**/
     Enumeration e = columnAttributes.elements();
     int index = 1;
     while (e.hasMoreElements()) {
@@ -1738,45 +1615,45 @@ public class TextImportWizardEml2 extends JFrame {
    * assign id to the data file and save a copy with that id as the
    * name
    */
-  private String saveDataFileAsTemp(String fn) {
-    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-    String id = an.getNextId();
-    File f = new File(fn);
-    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
-    try {
-      File res = fds.saveTempDataFile(id, new FileReader(f));
-    } catch (Exception w) {Log.debug(1, "error in TIW saving temp data file!");
-    }
-    return id;
-  }
+//  private String saveDataFileAsTemp(String fn) {
+//    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+//    String id = an.getNextId();
+//    File f = new File(fn);
+//    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
+//    try {
+//      File res = fds.saveTempDataFile(id, new FileReader(f));
+//    } catch (Exception w) {Log.debug(1, "error in TIW saving temp data file!");
+//    }
+//    return id;
+//  }
 
 
   /*
    *  this method converts the input file to a byte array and then
    *  encodes it as a Base64 string
    */
-  private String encodeAsBase64(File f) {
-    byte[] b = null;
-    long len = f.length();
-    if (len > 200000) { // choice of 200000 is arbitrary - DFH
-      Log.debug(1, "Data file is too long to be put 'inline'!");
-      return null;
-    }
-    try {
-      FileReader fsr = new FileReader(f);
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      int chr = 0;
-      while ((chr = fsr.read()) != -1) {
-        baos.write(chr);
-      }
-      fsr.close();
-      baos.close();
-      b = baos.toByteArray();
-    } catch (Exception e) {Log.debug(1, "Problem encoding data as Base64!");
-    }
-    String enc = Base64.encode(b);
-    return enc;
-  }
+//  private String encodeAsBase64(File f) {
+//    byte[] b = null;
+//    long len = f.length();
+//    if (len > 200000) { // choice of 200000 is arbitrary - DFH
+//      Log.debug(1, "Data file is too long to be put 'inline'!");
+//      return null;
+//    }
+//    try {
+//      FileReader fsr = new FileReader(f);
+//      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//      int chr = 0;
+//      while ((chr = fsr.read()) != -1) {
+//        baos.write(chr);
+//      }
+//      fsr.close();
+//      baos.close();
+//      b = baos.toByteArray();
+//    } catch (Exception e) {Log.debug(1, "Problem encoding data as Base64!");
+//    }
+//    String enc = Base64.encode(b);
+//    return enc;
+//  }
 
 
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event) {
@@ -1828,10 +1705,6 @@ public class TextImportWizardEml2 extends JFrame {
   private JPanel JPanel11 = new JPanel();
   private JPanel Step2_ConsequtivePanel = new JPanel();
   private JCheckBox ConsecutiveCheckBox = new JCheckBox();
-  private JPanel Step3ControlsPanel = new JPanel();
-  private JPanel Step3_HelpPanel = new JPanel();
-  private JLabel Step3_HelpLabel = new JLabel();
-  private JPanel ColDataSummaryPanel = new JPanel();
   private JPanel DataPanel = new JPanel();
   private JScrollPane DataScrollPanel = new JScrollPane();
   private JScrollPane ColumnDataScrollPanel = new JScrollPane();
@@ -1844,11 +1717,5 @@ public class TextImportWizardEml2 extends JFrame {
   private JButton BackButton = new JButton();
   private JButton NextButton = new JButton();
   private JButton FinishButton = new JButton();
-  private JLabel ColDataSummaryLabel = new JLabel(
-      "<html><b>Column Contents:</b></html>");
-  private JScrollPane UniqueItemsScrollPane = new JScrollPane();
-  private JList UniqueItemsList = new JList();
-  private JPanel TopColSummaryPanel = new JPanel();
-  private JPanel BottomColSummaryPanel = new JPanel();
 
 }
