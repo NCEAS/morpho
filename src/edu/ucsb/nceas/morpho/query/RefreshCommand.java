@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 23:46:42 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-08-28 20:00:07 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,18 +146,22 @@ public class RefreshCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          // null means the resultpanel would NOT be setted to a Jdialog
-          ResultPanel resultDisplayPanel = new ResultPanel(
-              null,results,12, null, morphoFrame.getDefaultContentAreaSize());
-          resultDisplayPanel.setVisible(true);
+          ResultPanel resultDisplayPanel = null;
           // For morphoframe
           if (dialog ==null)
           {
+            // The size of resultpanel for morpho frame
+           resultDisplayPanel = new ResultPanel(
+              null, results, 12, null, morphoFrame.getDefaultContentAreaSize());
+            resultDisplayPanel.setVisible(true); 
             morphoFrame.setMainContentPane(resultDisplayPanel);
             morphoFrame.setMessage(results.getRowCount() + " data sets found");
           }
           else
           {
+            // Default size of result panel
+            resultDisplayPanel = new ResultPanel(dialog, results, null);
+            resultDisplayPanel.setVisible(true);
             // For dialog
             dialog.setResultPanel(resultDisplayPanel);
           }
