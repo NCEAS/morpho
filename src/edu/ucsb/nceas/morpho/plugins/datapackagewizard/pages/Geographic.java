@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-15 20:32:06 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-01-16 23:14:13 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,9 +91,9 @@ public class Geographic extends AbstractWizardPage {
     vbox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel coverageDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Enter a description of the geographic coverage.</b> This provides a "
-       +"textual description about the area relevent to the data. "
-       +"It can used to provide further detail concerning the geographic area of concern.", 2);
+        "<b>Enter a description of the geographic coverage.</b> Enter a general "
+        +"description of the geographic area in which the data were collected. "
+        +"This can be a simple place name (e.g., Santa Barbara) or a fuller description.", 2);
     vbox.add(coverageDesc);
 
     JPanel covDescPanel = WidgetFactory.makePanel();
@@ -128,7 +128,7 @@ public class Geographic extends AbstractWizardPage {
     bboxLabel.setAlignmentY(SwingConstants.TOP);
     bboxPanel.add(bboxLabel);
     
-    lmp = new LiveMapPanel();
+    lmp = new LiveMapPanel(true);
     bboxPanel.add(lmp);
 
     bboxPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
