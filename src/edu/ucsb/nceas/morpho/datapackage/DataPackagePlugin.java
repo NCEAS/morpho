@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 22:51:37 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2002-09-24 23:48:19 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ public class DataPackagePlugin
    */
   private void initializeActions() 
   {
-    dataMenuActions = new Action[9];
+    dataMenuActions = new Action[10];
     GUIAction addDocumentation = new 
                                   GUIAction("Add Documentation...", null, null);
     GUIAction createNewDatatable = new GUIAction("Create New Datatable...", null, null);
