@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 22:37:04 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2001-06-29 17:33:17 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,9 +51,13 @@ import edu.ucsb.nceas.morpho.framework.*;
 
 
 /**
- * DocFrame is an example container for an XML editor which
+ * DocFrame is a container for an XML editor which
  * shows combined outline and nested panel views of an XML
- * document.
+ * document. This class uses a DTDParser to 'merge' an existing
+ * XML instance with a template created from its DTD. This
+ * merging adds optional nodes missing from the original
+ * document. Help information and special custom node editors
+ * are also loaded from a 'template'.
  * 
  * @author higgins
  */
@@ -267,23 +271,30 @@ public class DocFrame extends javax.swing.JFrame
 	    this();
 	    this.file = file;
 	}
-
+  
+  /**
+   *   This constructor actual handles the creation of a tree and panel for displaying
+   *   and editing the information is an XML document, as represented in the String 'doctext'
+   */
 	public DocFrame(ClientFramework cf, String sTitle, String doctext) 
 	{
-	    this();
-	    setTitle("Morpho Editor");
-	    this.framework = cf;
-	    counter++;
-	    setName("Morpho Editor"+counter);
-		  XMLTextString = doctext;
-		  putXMLintoTree(treeModel, XMLTextString);
-//      tree.setSelectionRow(0);
+	  this();
+	  setTitle("Morpho Editor");
+	  this.framework = cf;
+	  counter++;
+	  setName("Morpho Editor"+counter);
+		XMLTextString = doctext;
+		putXMLintoTree(treeModel, XMLTextString);
 
 		// now want to possibly merge the input document with a formatting document
 		// and set the 'editor' and 'help' fields for each node
 		// use the root node name as a key
 		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+    // arbitrary assumption that the formatting document has the rootname +
+    // ".xml" as a file name; the formatting document is XML with the same
+    // tree structure as the document being formatted; 'help' and 'editor' attributes
+    // are used to set help and editor strings for nodes
     rootname = rootname+".xml";
 		file = new File("./lib", rootname);
 		DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
@@ -306,10 +317,13 @@ public class DocFrame extends javax.swing.JFrame
 		if (formatflag) {
 		  putXMLintoTree(ftreeModel,fXMLString);
 		  frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+		  // formatting info has now been put into a JTree which is merged with
+		  // the previously created document tree
 		  treeUnion(rootNode,frootNode);
 		}
     
-    
+    // if the document instance has a DTD, the DTD is parsed
+    // and info from the result is merged into the tree
     if (dtdfile!=null) {
 		  dtdtree = new DTDTree(dtdfile);
 		  dtdtree.setRootElementName(rootnodeName);
@@ -348,7 +362,7 @@ public class DocFrame extends javax.swing.JFrame
 
 /** this version allows one to create a new DocFrame and set the initially selected
  *  nodename/nodetext
-  */
+ */
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location,
 	                       String nodeName, String nodeValue) {
     this(cf, sTitle, doctext, id, location);
@@ -424,8 +438,8 @@ public class DocFrame extends javax.swing.JFrame
             // remove the following line if this is not wanted
         treeTrim(rootNode,dtdtree.rootNode);
 		  }
-		// add this tree to the collection
-		docRoots.addElement(rootNode);
+		  // add this tree to the collection
+		  docRoots.addElement(rootNode);
 		} // end while loop over strings
 		DefaultMutableTreeNode newrootNode = new DefaultMutableTreeNode();
 		NodeInfo newni = new NodeInfo("DataPackage");
@@ -1500,6 +1514,7 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	    // if hit is true at this point, then there is a match
 	    // otherwise, there was no match
 	    if (hit) {
+	      // special case hardcoded to select the parent of the node
 	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)nd.getParent();
 	      setTreeValueFlag(false);
 		    TreePath tp = new TreePath(parent.getPath());
@@ -1541,6 +1556,9 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	    // if hit is true at this point, then there is a match
 	    // otherwise, there was no match
 	    if (hit) {
+	      // special case hardcoded to select the 'parent' of the node that
+	      // matches the selection criteria;
+	      // should allow more flexible path selection criteria
 	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)nd.getParent();
 		    TreePath tp = new TreePath(parent.getPath());
 		    tree.setSelectionPath(tp);

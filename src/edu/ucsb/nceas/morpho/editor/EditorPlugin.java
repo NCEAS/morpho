@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 22:13:16 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-29 17:33:17 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,15 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
    */
   private Hashtable docframes = null;
   
+  /**
+   *  the id of a document being edited
+   */
   private String id = null;
+  
+  /**
+   *  the location (local,metacat) of a document being edited
+   */
+  
   private String location = null;
   
   /** 
@@ -88,6 +96,8 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
     // Add the menus and toolbars
+    
+ //Comment out the following line to remove the Editor menu from the ClientFramework
     framework.addMenu("Editor", new Integer(4), menuActions);
     framework.addToolbarActions(toolbarActions);
 
@@ -126,22 +136,6 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     openItemAction.putValue(Action.SHORT_DESCRIPTION, "Open Editor");
     openItemAction.putValue("menuPosition", new Integer(0));
     menuActions[0] = openItemAction;
-/*    Action searchItemAction = new AbstractAction("Search...") {
-      public void actionPerformed(ActionEvent e) {
-        handleSearchAction();
-      }
-    };
-    searchItemAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().
-           getResource("/toolbarButtonGraphics/general/Search16.gif")));
-    searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
-    searchItemAction.putValue("menuPosition", new Integer(0));
-    menuActions[0] = searchItemAction;
-
-    // Set up the toolbar for the application
-    toolbarActions = new Action[1];
-    toolbarActions[0] = searchItemAction;
- */
   }
  
   /**

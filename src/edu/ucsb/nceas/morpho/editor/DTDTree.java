@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-14 22:10:59 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-29 17:33:17 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,9 @@ public class DTDTree
 {
     private String DTDFileName;
     
+    // assorted global variables
     Vector elementnames;
+    // after parsing, root node of instance tree is 'rootNode'
     public DefaultMutableTreeNode rootNode;
     public DefaultTreeModel treeModel;
     
@@ -51,12 +53,15 @@ public class DTDTree
     StringBuffer end_buffer;
     Stack tempStack;
     int indent = 0;
-
-    int levels = 9;
-    DTDItem oldItem;
-    
     String rootElementName = null;
     DTDElement rootElement = null;
+
+    DTDItem oldItem;
+    
+    // levels is how many levels deep the depth first parse is carried out
+    // needs to be specified due to existence of recursive DTDs
+    int levels = 9;
+    
  
   public DTDTree() {
     this.DTDFileName = "";
@@ -71,7 +76,10 @@ public class DTDTree
   public void setRootElementName(String name) {
     this.rootElementName = name; 
   }
-    
+  
+  /**
+   *  parses a dtd file and creates a tree of document instance
+   */
 	public void parseDTD() {
 		try {
 			FileReader reader = new FileReader(DTDFileName);

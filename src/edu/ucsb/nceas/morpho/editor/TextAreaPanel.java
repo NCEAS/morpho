@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-18 21:18:36 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-29 17:33:16 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,15 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.util.*;
 
+/**
+ * TextAreaPanel is an example of a special panel editor for
+ * use with the DocFrame class. It is designed to use a
+ * scrolling TextArea region for displaying large amounts of
+ * text that may be associated with some XML data nodes (e.g.
+ * 'paragraph' nodes in eml).
+ * 
+ * @author higgins
+ */
 public class TextAreaPanel extends JPanel
 {  
     

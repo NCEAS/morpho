@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-29 04:22:53 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-06-29 17:33:16 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,9 @@ import com.wutka.dtd.*;
  * structure. This includes the node text and icon. When the tree is used to show
  * the hierarchy of an XML document, it also contains all all information in the
  * attributes of the XML node, as well as other information like the cardinality
- * of the node.
+ * of the node. 
+ * Content information from a DTD/schema can thus be stored along with actual
+ * XML element data
  * 
  * @author higgins
  */
@@ -117,6 +119,8 @@ public class NodeInfo implements Serializable
         
   }
   
+  
+  // Accesors
   public String getHelp() {
     return help;
   }

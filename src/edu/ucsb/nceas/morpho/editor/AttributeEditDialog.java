@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-25 23:32:19 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-29 17:33:17 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,7 @@
 
 package edu.ucsb.nceas.morpho.editor;
 
-/*
-		A basic implementation of the JDialog class.
-*/
+
 
 import java.awt.*;
 import javax.swing.*;
@@ -37,6 +35,17 @@ import javax.swing.table.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
+/**
+ * This is a simple dialog which allows the viewing/editing of
+ * the attributes of an XML element as stored in the DocFrame
+ * JTree XML editor. The viewer is a two column table with the
+ * attibute name in the first column and the attribute value
+ * in the second column. Attributes can be edited or added
+ * simply by entering values in the table. NO CHECKING FOR THE
+ * VALIDITY OF ATTRIBUTES IS CARRIED OUT!!!
+ * 
+ * @author higgins
+ */
 public class AttributeEditDialog extends javax.swing.JDialog //implements TableModelListener
 {
   public DefaultTableModel dtm;
@@ -83,6 +92,10 @@ public class AttributeEditDialog extends javax.swing.JDialog //implements TableM
 		//}}
 	}
   
+  /** 
+   *   dialog is given a DefaultMutableTreeNode (nd) with the attribute data
+   *   to be displayed
+   */
 	public AttributeEditDialog(Frame parent, String title, DefaultMutableTreeNode nd) {
     this(parent);
     setTitle(title);

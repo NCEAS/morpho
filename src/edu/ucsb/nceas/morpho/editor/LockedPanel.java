@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-18 21:18:36 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-29 17:33:16 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,12 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.util.*;
 
+/**
+ * Locked panel is an example of a very simple plug-in panel to
+ * be used by the XML editor. It displays the text value of
+ * an XML element in a 'locked', non-editable panel (as compared
+ * to the editable text field used by default
+ */
 public class LockedPanel extends JPanel
 {  
     
