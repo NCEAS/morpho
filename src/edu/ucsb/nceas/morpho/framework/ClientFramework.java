@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-09-27 20:07:22 $'
- * '$Revision: 1.71 $'
+ *     '$Date: 2001-10-15 21:47:02 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1189,6 +1189,7 @@ public class ClientFramework extends javax.swing.JFrame
       boolean success = config.insert("current_profile", username);
     }
     config.save();
+    setLastID(username);
   } 
 
   /**
@@ -1323,8 +1324,8 @@ public class ClientFramework extends javax.swing.JFrame
       SplashFrame sf = new SplashFrame(true);
       sf.setVisible(true);
 
-      Date expiration = new Date(101, 11, 1);
-      Date warning = new Date(101, 10, 15);
+      Date expiration = new Date(102, 3, 1);
+      Date warning = new Date(102, 2, 15);
       Date now = new Date();
       if (now.after(expiration))
       {
@@ -1340,10 +1341,10 @@ public class ClientFramework extends javax.swing.JFrame
         if (now.after(warning))
         {
           clf.debug(1, "This version of Morpho will expire on " +
-            "Aug 1, 2001. See http://knb.ecoinformatics.org/ for a " +
+            "April 1, 2002. See http://knb.ecoinformatics.org/ for a " +
             "newer version.");
           JOptionPane.showMessageDialog(null,
-            "This version of Morpho will expire on Aug 1, 2001.\n" +
+            "This version of Morpho will expire on April 1, 2002.\n" +
             "See http://knb.ecoinformatics.org/ for a newer version.");
         }
 
@@ -1370,8 +1371,9 @@ public class ClientFramework extends javax.swing.JFrame
           // DFH moved outside 'else' so that user will see it the first 
           // time and get used to connection dialog appearing
         }
-        clf.establishConnection();
         
+        clf.establishConnection();
+        clf.setLastID(clf.getUserName());
         // Set up logging as appropriate
         String log_file_setting = config.get("log_file", 0);
         if (log_file_setting != null) {
@@ -1426,6 +1428,41 @@ public class ClientFramework extends javax.swing.JFrame
       t.printStackTrace();
       //Ensure the application exits with an error condition.
       System.exit(1);
+    }
+  }
+  
+  private String getLastID(String username) {
+    String result = null;
+    Properties lastIDProp = new Properties();
+    lastIDProp.put("action","getlastdocid");
+    lastIDProp.put("username",username);
+    String temp = getMetacatString(lastIDProp);
+    /*
+      if successful temp should be of the form
+      <?xml version="1.0"?>
+      <lastDocid>
+        <username>fegraus</username>
+        <docid>fegraus.53.1</docid>
+      </lastDocid>
+    */
+    if (temp!=null) {
+      int ind1 = temp.indexOf("<docid>");
+      int ind2 = temp.indexOf("</docid>");
+      if ((ind1>0)&&(ind2>0)) {
+        result = temp.substring(ind1, ind2);
+        // now remove the version and header parts of the id
+        result = result.substring(0,result.lastIndexOf("."));
+        result = result.substring(result.indexOf(".")+1,result.length());
+      }
+    }
+    return result;
+  }
+  
+  private void setLastID(String usr) {
+    String id = getLastID(usr);
+    if (id!=null) {
+      profile.set("lastId",0,id);
+      profile.save();
     }
   }
 }
