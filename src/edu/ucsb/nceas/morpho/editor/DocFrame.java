@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-13 17:37:25 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2001-06-13 21:18:13 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -860,7 +860,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	  name = ni.name;
 	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
 	    // completely ignore NOT SELECTED nodes AND their children
-	    if (!name.equals("(CHOICE)")) {
+	    if ((!name.equals("(CHOICE)"))&&(!name.equals("Empty"))) {
 	      // ignore (CHOICE) nodes but process their children
 	      start1.append("\n"+indentString+"<"+name);  
 	    
@@ -896,7 +896,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      write_loop(nd, indent+2);
 	    }
 	  }
-	    if (!name.equals("(CHOICE)")) {
+	    if ((!name.equals("(CHOICE)"))&&(!name.equals("Empty"))) {
 	      if (textnode) {
 	        if (notempty) {
 	            start.append((String)(tempStack.pop()));
