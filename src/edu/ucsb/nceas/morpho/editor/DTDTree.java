@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-28 03:55:03 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-02-28 05:01:11 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,13 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
     else {
       for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
         NodeInfo node = (NodeInfo)(e.nextElement());
-        node.setCardinality(ni.getCardinality());
+        if (first) {
+            node.setCardinality(ni.getCardinality());
+            first = false;
+        }
+        else {
+            node.setCardinality("ZERO to MANY");
+        }
 		DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(node);
         parentNode.add(newNode);
         vec1.addElement(newNode);
