@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 15:53:45 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-09-11 20:41:31 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 
+import javax.xml.transform.dom.DOMSource;
+
 import org.w3c.dom.Document;
 
 import org.xml.sax.XMLReader;
@@ -88,7 +90,6 @@ public class XMLTransformer extends DefaultHandler
     private static XMLTransformer   instance;
     private static String           latestDocID;
     
-    private XMLReader               xmlReader;
     private EntityResolver          entityResolver;
     private ConfigXML               config;
 
@@ -98,12 +99,6 @@ public class XMLTransformer extends DefaultHandler
         this.config = Morpho.getConfiguration();
         classLoader = this.getClass().getClassLoader();
         initEntityResolver();
-//        try {
-//            initXMLReader();
-//        } catch (SAXException se) {
-//            Log.debug(9,"XMLTransformer: error initializing XMLReader " + se);
-//            se.printStackTrace();
-//        }
     }
     
     /**
@@ -134,8 +129,7 @@ public class XMLTransformer extends DefaultHandler
      */
     public Reader transform(Reader xmlDocReader) throws IOException
     {
-        Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called;\n"
-                        +"xmlDocReader = "+xmlDocReader);            
+        Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
         String stylesheet = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
         Reader xslInputReader 
             = new InputStreamReader(classLoader.getResourceAsStream(stylesheet));
@@ -162,9 +156,7 @@ public class XMLTransformer extends DefaultHandler
                                         Reader xslStyleSheet) throws IOException
     {
         Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader, "
-                        +"Reader xslStyleSheet) called;\n"
-                        +"xmlDocReader = " +xmlDocReader            
-                        +"xslStyleSheet = "+xslStyleSheet);            
+                        +"Reader xslStyleSheet) called");            
         validateInputParam(xmlDocReader,   "XML document reader");
         validateInputParam(xslStyleSheet, "XSL stylesheet reader");
         return doTransform(xmlDocReader, xslStyleSheet);
@@ -174,6 +166,9 @@ public class XMLTransformer extends DefaultHandler
     private synchronized Reader doTransform(Reader xmlDocReader, 
                                         Reader xslStyleSheet) throws IOException
     {
+        Log.debug(50,"--> XMLTransformer.doTransform() (private method) called;"
+                        +"\n    xmlDocReader = " +xmlDocReader            
+                        +"\n    xslStyleSheet = "+xslStyleSheet); 
         PipedReader returnReader = new PipedReader();
         PipedWriter pipedWriter  = new PipedWriter();
         returnReader.connect(pipedWriter);
@@ -194,10 +189,12 @@ public class XMLTransformer extends DefaultHandler
         }
         
         transformer.setErrorListener(new CustomErrorListener());
-
-        Document domDoc = null;
+        
+        DOMSource source = null;
+//        SAXSource source = null;
         try {
-            domDoc = getDOMDocument(xmlDocReader);
+            source = getAsDOMSource(xmlDocReader);
+//            source = getAsSAXSource(xmlDocReader);
         } catch (IOException e) {
             lazyThrow(e, "IOException");
         } catch (SAXException e) {
@@ -208,39 +205,33 @@ public class XMLTransformer extends DefaultHandler
             lazyThrow(e, "ParserConfigurationException");
         }
        
-        System.err.println("@ @ @ @ @ domDoc public = "+domDoc.getDoctype().getPublicId());
-        System.err.println("@ @ @ @ @ domDoc root elem = "+domDoc.getDocumentElement().getTagName());
-        
-        
-//        try {
-//            Log.debug(50,"XMLTransformer doing transformer.transform...");
-//
-//            transformer.transform(  getAsDOMSource(xmlDocReader),
-//                                    new StreamResult(pipedWriter));
 
-//            transformer.transform(  getAsSaxSource(xmlDocReader),
-//                                    new StreamResult(pipedWriter));
-//            Log.debug(50,"XMLTransformer DONE transformer.transform!");            
-//        } catch (TransformerException e) {
-//            String msg
-//                = "XMLTransformer.transform(): Error transforming document."
-//                                +" Nested TransformerException="+e.getMessage();
-//            e.printStackTrace();
-//            Log.debug(12, msg);
-//            pipedWriter.write(msg.toCharArray(),0,msg.length());
-//            e.printStackTrace(new PrintWriter(pipedWriter));
-//        } catch (Exception e) {
-//            String msg
-//                = "XMLTransformer.transform(): Unrecognized Error transforming"
-//                                +" document: "+e.getMessage();
-//            e.printStackTrace();
-//            Log.debug(12, msg);
-//            pipedWriter.write(msg.toCharArray(),0,msg.length());
-//            e.printStackTrace(new PrintWriter(pipedWriter));
-//        } finally {
-//            pipedWriter.flush();
-//            pipedWriter.close();
-//        }
+        try {
+            Log.debug(50,"XMLTransformer doing transformer.transform...");
+
+            transformer.transform(  source,
+                                    new StreamResult(pipedWriter));
+            Log.debug(50,"XMLTransformer DONE transformer.transform!");            
+        } catch (TransformerException e) {
+            String msg
+                = "XMLTransformer.transform(): Error transforming document."
+                                +" Nested TransformerException="+e.getMessage();
+            e.printStackTrace();
+            Log.debug(12, msg);
+            pipedWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(pipedWriter));
+        } catch (Exception e) {
+            String msg
+                = "XMLTransformer.transform(): Unrecognized Error transforming"
+                                +" document: "+e.getMessage();
+            e.printStackTrace();
+            Log.debug(12, msg);
+            pipedWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(pipedWriter));
+        } finally {
+            pipedWriter.flush();
+            pipedWriter.close();
+        }
         return returnReader;
     }
 
@@ -281,47 +272,50 @@ public class XMLTransformer extends DefaultHandler
     }
 
     
-//    //  Create a SAXSource to enable the transformer to access the Reader
-//    //  - Necessary because we need to set the entity resolver for this source, 
-//    //  which isn't possible if we just use an InputSource
-//    private SAXSource getAsSaxSource(Reader xmlDocReader) 
-//    {   
-//        InputSource source = new InputSource(xmlDocReader);
-//        SAXSource saxSource = new SAXSource(source);
-//        saxSource.setXMLReader(this.xmlReader);
-//        return saxSource;
-//    }
+    //  Create a SAXSource to enable the transformer to access the Reader
+    //  - Necessary because we need to set the entity resolver for this source, 
+    //  which isn't possible if we just use a StreamSource to read the Reader
+    private SAXSource getAsSAXSource(Reader xmlDocReader) throws SAXException
+    {   
+        InputSource source = new InputSource(xmlDocReader);
+        SAXSource saxSource = new SAXSource(source);
+        XMLReader xmlReader = XMLReaderFactory.createXMLReader(
+                                    config.get(CONFIG_KEY_SAX_PARSER_NAME, 0));
+        xmlReader.setFeature("http://xml.org/sax/features/validation",true);
+        xmlReader.setContentHandler(this);
+        xmlReader.setEntityResolver(getEntityResolver());
+        xmlReader.setErrorHandler(new CustomErrorHandler());
+        saxSource.setXMLReader(xmlReader);
+        return saxSource;
+    }
 
     
-    private synchronized Document getDOMDocument(Reader inputXMLReader) 
+    //  Create a DOMSource to enable the transformer to access the Reader
+    //  - Necessary because we need to set the entity resolver for this source, 
+    //  which isn't possible if we just use a StreamSource to read the Reader
+    private synchronized DOMSource getAsDOMSource(Reader xmlDocReader) 
                                             throws  IOException,
                                                     SAXException,
                                                     FactoryConfigurationError, 
                                                     ParserConfigurationException
     {
+        InputSource source = new InputSource(xmlDocReader);
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(true);
+        
         DocumentBuilder docBuilder = factory.newDocumentBuilder();
         docBuilder.setEntityResolver(getEntityResolver());
         docBuilder.setErrorHandler(new CustomErrorHandler());
-        InputSource source = new InputSource(inputXMLReader);
-        Log.debug(50,"XMLTransformer: InputSource = "+source.toString());
-        return docBuilder.parse(source);
+        
+        Document doc = docBuilder.parse(source);
+     
+        DOMSource domSource = new DOMSource(doc,
+                                            doc.getDoctype().getSystemId() );
+        
+        return domSource;
     }
-    
-    
-//    /* Set up the SAX parser for reading the XML serialized ACL */
-//    private void initXMLReader() throws SAXException
-//    {
-//      // Get an instance of the xmlReader
-//        xmlReader = XMLReaderFactory.createXMLReader(
-//                                    config.get(CONFIG_KEY_SAX_PARSER_NAME, 0));
-//        xmlReader.setFeature("http://xml.org/sax/features/validation", true);
-//        xmlReader.setContentHandler(this);
-//        xmlReader.setEntityResolver(getEntityResolver());
-//        xmlReader.setErrorHandler(new CustomErrorHandler());
-//    }
 
     
     /**
@@ -437,7 +431,7 @@ public class XMLTransformer extends DefaultHandler
     private void lazyThrow(Throwable e, String type) throws IOException 
     {
         String msg 
-            = "XMLTransformer.doTransform(): getting DOM document. "
+            = "\nXMLTransformer.doTransform(): getting DOM document. "
                 +"Nested "+type+" = "+e.getMessage()+"\n";
         e.fillInStackTrace();
         e.printStackTrace();
