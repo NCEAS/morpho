@@ -186,8 +186,7 @@ public class CodeImportPage extends AbstractUIPage {
 			
 			arr = adp.getEntityArray();
 			if(arr == null) {
-				Log.debug(5, "Cant get entities");
-				return;
+				arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];
 			}
 			adp.setOriginalEntityArray(arr);
 		}
