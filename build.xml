@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.8 2000-09-25 19:59:14 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.9 2000-09-26 15:05:36 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -71,6 +71,8 @@
                 dest="${build.dest}/${package.home}/metaedit" />
        <copydir src="${srcdir}/${package.home}/dtclient/images" 
                 dest="${build.dest}/${package.home}/dtclient" />
+       <copydir src="${srcdir}/${package.home}/querybean/images" 
+                dest="${build.dest}/${package.home}/querybean" />
        <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" />
    </target> 
 
