@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:30 $'
- * '$Revision: 1.26.2.2 $'
+ *     '$Date: 2002-05-08 20:11:43 $'
+ * '$Revision: 1.26.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 /**
  * A ResultSet encapsulates the list of results returned from either a
@@ -187,21 +185,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     framework.debug(10, "(2.42) Creating result set ...");
     // Parse the incoming XML stream and extract the data
-    String parserName = "org.apache.xerces.parsers.SAXParser";
     XMLReader parser = null;
 
     // Set up the SAX document handlers for parsing
     try {
       // Get an instance of the parser
-      SAXParserFactory spfactory = SAXParserFactory.newInstance();
-      SAXParser saxp = spfactory.newSAXParser();
-      parser = saxp.getXMLReader();
-      framework.debug(10, "Created parser with class: " + 
-              parser.getClass().getName());
-      //parser = XMLReaderFactory.createXMLReader(parserName);
+      parser = framework.createSaxParser((ContentHandler)this, null);
       framework.debug(10, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
       parser.parse(new InputSource(resultsXMLStream));
       framework.debug(10, "(2.44) Creating result set ...");
     } catch (Exception e) {
