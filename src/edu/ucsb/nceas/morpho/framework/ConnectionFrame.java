@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-02 15:09:23 $'
- * '$Revision: 1.35 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-13 05:58:59 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ import java.awt.event.KeyEvent;
  * A graphical window for obtaining login information from the
  * user and logging into Metacat
  */
-public class ConnectionFrame extends javax.swing.JDialog
+public class ConnectionFrame  extends javax.swing.JDialog 
+                              implements LoginClientInterface
 {
   Morpho container = null;
   javax.swing.ImageIcon still = null;
@@ -304,38 +305,8 @@ public class ConnectionFrame extends javax.swing.JDialog
     ActivityLabel.invalidate();
     JPanel2.validate();
     JPanel2.paint(JPanel2.getGraphics());
-     
-    Thread worker = new Thread() 
-    {
-      public void run() 
-      {
-        if (container!=null) {
-          container.setPassword(PWTextField.getText());
-        }
-
-        final boolean connected = container.logIn();
-                                           
-        SwingUtilities.invokeLater(new Runnable() 
-        {
-          public void run() 
-          {
-            if (connected) {
-              ConfigXML profile = container.getProfile();
-              profile.set("searchmetacat", 0, "true");
-              profile.save();
-              
-              dispose();
-            } else {
-              Log.debug(9, "Login failed.\n" + 
-                    "Please check the Caps Lock key and try again.");
-              DisconnectButton.setEnabled(false);
-              ActivityLabel.setIcon(still);
-            }
-          }
-        });
-      }
-    };
-    worker.start();
+    
+    new LoginCommand(container, this).execute(event);
   }
   
   /**
@@ -358,4 +329,33 @@ public class ConnectionFrame extends javax.swing.JDialog
     profile.save();
     dispose();
   }
+  
+  /**
+   *  gets the user-entered password from the client
+   *
+   *  @return   the user-entered password as a String
+   */
+  public String getPassword()
+  {
+    return new String(PWTextField.getPassword());
+  }
+  
+  /**
+   *  notifies client whether login was successful or not
+   *
+   *  @return   boolean flag indicating whether login was successful (true) or 
+   *            not (false)
+   */
+  public void setLoginSuccessful(boolean success)
+  {
+    if (success) {
+      dispose();
+    } else {
+      Log.debug(9, "Login failed.\n" + 
+            "Please check the Caps Lock key and try again.");
+      DisconnectButton.setEnabled(false);
+      ActivityLabel.setIcon(still);
+    }
+  }
+  
 }
