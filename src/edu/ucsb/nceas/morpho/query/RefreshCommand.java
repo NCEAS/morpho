@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-06 23:19:24 $'
- * '$Revision: 1.10 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-11 21:53:30 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,21 +87,20 @@ public class RefreshCommand implements Command
     }//if
     
     resultPane = getResultPanelFromMorphoFrame(morphoFrame);
-    SortableJTable table = resultPane.getJTable();
-    boolean sorted = false;
-    int index = -1;
-    String order = null;
-    if ( table != null)
-    {
-      sorted = table.getSorted();
-      index = table.getIndexOfSortedColumn();
-      order = table.getOrderOfSortedColumn();
-    }
-    
     // make sure resulPanel is not null
     if ( resultPane != null)
     {
-      
+      SortableJTable table = resultPane.getJTable();
+      boolean sorted = false;
+      int index = -1;
+      String order = null;
+      if ( table != null)
+      {
+        sorted = table.getSorted();
+        index = table.getIndexOfSortedColumn();
+        order = table.getOrderOfSortedColumn();
+      }
+    
       Query myQuery = null;
       myQuery = resultPane.getResultSet().getQuery();
       if (myQuery != null)
