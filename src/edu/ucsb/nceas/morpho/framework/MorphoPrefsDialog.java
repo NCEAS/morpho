@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 19:38:53 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-02-27 23:10:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,16 +47,14 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		setTitle("Morpho Preferences");
 		setModal(true);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(560,350);
+		setSize(560,400);
 		setVisible(false);
-		CenterPanel.setLayout(new GridLayout(6,1,0,0));
+		CenterPanel.setLayout(new GridLayout(7,1,0,0));
 		getContentPane().add(BorderLayout.CENTER,CenterPanel);
 		aboutLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		aboutLabel.setText("Morpho Preferences");
     aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 		CenterPanel.add(aboutLabel);
-		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		CenterPanel.add(JPanel1);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel2);
 		metacatURLLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -101,6 +99,15 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
     LFCombo.addItem("motif L&F");
     LFCombo.setSelectedIndex(0);
     
+    clearButton.setText("Clear Temporary Storage");
+		JPanel6.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+    JPanel6.add(clearButton);
+		CenterPanel.add(JPanel6);
+    
+		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		CenterPanel.add(JPanel1);
+
+    
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
 		setButton.setText("Set");
@@ -118,6 +125,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		SymAction lSymAction = new SymAction();
 		setButton.addActionListener(lSymAction);
 		cancelButton.addActionListener(lSymAction);
+		clearButton.addActionListener(lSymAction);
 
 		SymItem lSymItem = new SymItem();
 		logYes.addItemListener(lSymItem);
@@ -172,12 +180,14 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	javax.swing.JLabel debugLevelLabel = new javax.swing.JLabel();
 	javax.swing.JTextField debugLevelTextField = new javax.swing.JTextField();
 	javax.swing.JPanel JPanel5 = new javax.swing.JPanel();
+	javax.swing.JPanel JPanel6 = new javax.swing.JPanel();
 	javax.swing.JLabel LFLabel = new javax.swing.JLabel();
 	javax.swing.JComboBox LFCombo = new javax.swing.JComboBox();
 
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
 	javax.swing.JButton setButton = new javax.swing.JButton();
 	javax.swing.JButton cancelButton = new javax.swing.JButton();
+  javax.swing.JButton clearButton = new javax.swing.JButton();
 	//}}
 
 	class SymWindow extends java.awt.event.WindowAdapter
@@ -210,10 +220,18 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
 			Object object = event.getSource();
-			if (object == setButton)
+			if (object == setButton) {
 				setButton_actionPerformed(event);
-			else if (object == cancelButton)
+      }
+			else if (object == cancelButton) {
 				cancelButton_actionPerformed(event);
+      }
+			else if (object == clearButton) {
+        Morpho.thisStaticInstance.cleanCache();
+        Morpho.thisStaticInstance.cleanTemp();
+        JOptionPane.showMessageDialog(null, "Temporary Storage Areas Emptied!",
+               "Message", JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 	}
 
