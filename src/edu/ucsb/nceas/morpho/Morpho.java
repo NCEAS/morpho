@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-29 20:07:05 $'
- * '$Revision: 1.75 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-07-23 17:46:47 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1624,7 +1624,13 @@ public class Morpho
             if (profile != null) {
                 profile.set("searchmetacat", 0, "false");
             }
-        }
+        } catch (NullPointerException npe) {
+              Log.debug(55, " - unable to open network connection to Metacat");
+              networkStatus = false;
+              if (profile != null) {
+                  profile.set("searchmetacat", 0, "false");
+              }
+          }
     }
 
     /**
