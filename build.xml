@@ -6,14 +6,14 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.20 2001-06-01 22:40:21 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.21 2001-06-04 22:05:32 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
   *
   * usage: ant [compile|jar|install|jdoc]
 --> 
-<project name="metacat" default="install" basedir=".">
+<project name="morpho" default="install" basedir=".">
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
@@ -21,6 +21,7 @@
 
       <filter token="release" value="${release}"/>
 
+      <property name="itisdir" value="../itislib" />
       <property name="srcdir" value="./src" />
       <property name="libdir" value="./lib" />
 
@@ -49,10 +50,10 @@
                 value="${libdir}/junit.jar" />
       <property name="jlf" 
                 value="${libdir}/jlfgr-1_0.jar" />
-      <property name="easylay"
-                value="${libdir}/easylay.jar" />
+      <property name="itisjar"
+                value="${libdir}/itislib.jar" />
       <property name="cpath" 
-                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${easylay}"/>
+                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itislib}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -72,7 +73,7 @@
        -->
    </target>
 
-   <target name="compile" depends="prepare">
+   <target name="compile" depends="itis,prepare">
 
       <javac srcdir="${srcdir}" 
              destdir="${build.dest}" 
@@ -183,12 +184,10 @@
      </java>
    </target>
 
-   <target name="itis" depends="install">
-     <java classname="edu.ucsb.nceas.itis.Itis"
-           classpath="${cpath}:${morpho}"
-           fork="yes">
-           <arg value="Ursus"/>
-     </java>
+   <!-- build the itis library for querying ITIS -->
+   <target name="itis" depends="init">
+     <ant dir="${itisdir}" />
+     <copy file="${itisdir}/lib/itislib.jar" todir="${libdir}" />
    </target>
    
 </project>
