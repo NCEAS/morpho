@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-07 23:12:17 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-03-19 19:14:00 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,11 +54,21 @@ public class DataViewer extends javax.swing.JFrame
     EntityGUI parent;
     
 
+
+    /**
+     *   file containing the data
+     */
+     File dataFile = null;
+     
 	/**
 	 * number of parsed lines in file
 	 */
 	int nlines; 
 	
+	/**
+	 *  max nlines
+	 */
+	 int nlines_max = 2000;
 
 	/**
 	 * array of line strings
@@ -152,16 +162,16 @@ public class DataViewer extends javax.swing.JFrame
 	{
 		this();
 		this.framework = framework;
-    config = framework.getConfiguration();
-    ConfigXML profile = framework.getProfile();
-    String profileDirName = config.get("profile_directory", 0) + 
+        config = framework.getConfiguration();
+        ConfigXML profile = framework.getProfile();
+        String profileDirName = config.get("profile_directory", 0) + 
                             File.separator +
                             config.get("current_profile", 0);
-    datadir = profileDirName + File.separator + profile.get("datadir", 0);
-    tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
-    cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
-    separator = profile.get("separator", 0);
-    separator = separator.trim();
+        datadir = profileDirName + File.separator + profile.get("datadir", 0);
+        tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
+        cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
+        separator = profile.get("separator", 0);
+        separator = separator.trim();
 		setTitle(sTitle);
 	}
 
@@ -173,6 +183,25 @@ public class DataViewer extends javax.swing.JFrame
         this.dataString = dataString;
     }
     
+    public DataViewer(ClientFramework framework, String sTitle, File dataFile)
+    {
+        this();
+		this.framework = framework;
+        config = framework.getConfiguration();
+        ConfigXML profile = framework.getProfile();
+        String profileDirName = config.get("profile_directory", 0) + 
+                            File.separator +
+                            config.get("current_profile", 0);
+        datadir = profileDirName + File.separator + profile.get("datadir", 0);
+        tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
+        cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
+        separator = profile.get("separator", 0);
+        separator = separator.trim();
+        setTitle(sTitle);
+        this.dataFile = dataFile;
+    }
+    
+    
     public void setDataPackage(DataPackage dp) {
         this.dp = dp;
     }
@@ -183,7 +212,11 @@ public class DataViewer extends javax.swing.JFrame
         ta.setEditable(false);
         JScrollPane1.getViewport().removeAll();
         JScrollPane1.getViewport().add(ta);
-	    parseString(dataString);
+        if (dataFile!=null) {
+            parseFile(dataFile);
+        } else {
+	        parseString(dataString);
+        }
 	    parseDelimited();
         
     }
@@ -363,6 +396,50 @@ public class DataViewer extends javax.swing.JFrame
           }
           catch (Exception e) {};
     }            
+
+
+    /**
+     * parses data input string into an array of lines (Strings)
+     * 
+     * @param s input file
+     */
+
+    private void parseFile (File f) {
+        int i;
+        int pos;
+        String temp, temp1;
+        try{
+          BufferedReader in = new BufferedReader(new FileReader(f));
+          nlines = 0;
+          try {
+            while (((temp = in.readLine())!=null)&&(nlines<nlines_max)) {
+                if (temp.length()>0) {   // do not count blank lines
+                nlines++;} 
+            }
+            in.close();
+          }
+        catch (Exception e) {};
+        }
+        catch (Exception w) {};
+        
+        lines = new String[nlines];
+          // now read again since we know how many lines
+        try{  
+          BufferedReader in1 = new BufferedReader(new FileReader(f));
+          try {
+            for (i=0;i<nlines;i++) {
+                temp = in1.readLine();
+                while (temp.length()==0) {temp=in1.readLine();}
+                lines[i] = temp + "\n";
+
+            }
+            in1.close();
+          }
+          catch (Exception e) {};
+        }
+        catch (Exception w1) {};
+    }            
+
 
   /* returns the number of occurances of a substring in specified input string 
    * inS is input string

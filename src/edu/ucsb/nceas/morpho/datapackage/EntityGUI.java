@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-06 23:39:53 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2002-03-19 19:14:00 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -808,7 +808,7 @@ public class EntityGUI extends javax.swing.JFrame
       File f = dataPackage.getDataFile(entityId);
       if(dataPackage.isDataFileText(entityId)) {
         String dataString = "";
-        try{
+ /*       try{
           if (f!=null) {
             FileReader fis = new FileReader(f);
             BufferedReader bfis = new BufferedReader(fis);
@@ -830,7 +830,9 @@ public class EntityGUI extends javax.swing.JFrame
           System.out.println("Error in EntityGUI:actionPerformed(): " + e1.getMessage());
           e1.printStackTrace();
         }
-        DataViewer dv = new DataViewer(framework, "DataFile: "+fn);
+ */       
+//        DataViewer dv = new DataViewer(framework, "DataFile: "+fn);
+        DataViewer dv = new DataViewer(framework, "DataFile: "+fn, f);
         dv.setDataID(dataPackage.getDataFileID(entityId));
         dv.setDataString(dataString);
         dv.setDataPackage(this.dataPackage);
