@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-07 16:52:36 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-04-07 18:02:33 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -347,7 +347,16 @@ public class SaveDialog extends JDialog
 	  this.dispose();
      
     if (!problem) {
-      UIController.showNewPackage(adp);
+      if (showPackageFlag) {
+        UIController.showNewPackageNoLocChange(adp);
+      }
+      else {
+        MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+        morphoFrame.setVisible(false);
+        UIController controller = UIController.getInstance();
+        controller.removeWindow(morphoFrame);
+        morphoFrame.dispose();
+      }
 	  }
 
 	}
