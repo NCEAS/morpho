@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-28 04:01:21 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-12-09 23:18:40 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -79,18 +78,11 @@ public class MorphoFrame extends JFrame
     private StatusBar statusBar;
     private ProgressIndicator indicator;
     private Component contentComponent;
-    private Dimension screenSize;
-    private Dimension windowSize;
     private Dimension contentAreaSize;
     private final MorphoFrame instance;
     private static int menuBarHeight = 0;
     private boolean busyFlag =false;
 
-    // Constants (probably should be set in a property file, but what the hell)
-    private static final int MAX_WINDOW_WIDTH = 1024;
-    private static final int MAX_WINDOW_HEIGHT = 768;
-    private static final int SCREEN_PADDING = 50;
-    
     // A string indicating which frame it is 
     public static final String SEARCHRESULTFRAME = "searchResultFrame";
     public static final String DATAPACKAGEFRAME = "dataPackageFrame";
@@ -126,7 +118,7 @@ public class MorphoFrame extends JFrame
 
         // Set up the menu bar
         menuList = new TreeMap();
-	menuActions = new TreeMap();
+	    menuActions = new TreeMap();
         menuBar = new JMenuBar();
         setMenuBar(menuBar);
 
@@ -473,28 +465,23 @@ public class MorphoFrame extends JFrame
      */
     private void calculateDefaultSizes()
     {
-        // determine screen size
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        screenSize = tk.getScreenSize();
-        Log.debug(50, "Screen size (w, h): (" + screenSize.getWidth() +
-                ", " + screenSize.getHeight() + ")");
-
+        Log.debug(50,"Screen size (w,h): ("+UISettings.CLIENT_SCREEN_WIDTH+", " 
+                                           +UISettings.CLIENT_SCREEN_HEIGHT+")");
         // determine default window size
         double windowWidth;
         double windowHeight;
-        if (screenSize.getWidth() >= MAX_WINDOW_WIDTH) {
-            windowWidth = MAX_WINDOW_WIDTH - SCREEN_PADDING;
+        if (UISettings.CLIENT_SCREEN_WIDTH >= UISettings.MAX_WINDOW_WIDTH) {
+            windowWidth = UISettings.MAX_WINDOW_WIDTH;
         } else {
-            windowWidth = screenSize.getWidth() - SCREEN_PADDING;
+            windowWidth = UISettings.CLIENT_SCREEN_WIDTH;
         }
-        if (screenSize.getHeight() >= MAX_WINDOW_HEIGHT) {
-            windowHeight = MAX_WINDOW_HEIGHT - SCREEN_PADDING;
+        if (UISettings.CLIENT_SCREEN_HEIGHT >= UISettings.MAX_WINDOW_HEIGHT) {
+            windowHeight = UISettings.MAX_WINDOW_HEIGHT    
+                                                  - UISettings.TASKBAR_HEIGHT;
         } else {
-            windowHeight = screenSize.getHeight() - SCREEN_PADDING;
+            windowHeight = UISettings.CLIENT_SCREEN_HEIGHT 
+                                                  - UISettings.TASKBAR_HEIGHT;
         }
-        windowSize = new Dimension((int)windowWidth, (int)windowHeight);
-        Log.debug(50, "Window size (w, h): (" + windowSize.getWidth() +
-                ", " + windowSize.getHeight() + ")");
 
         // determine default content size
         Insets insets = getInsets();
