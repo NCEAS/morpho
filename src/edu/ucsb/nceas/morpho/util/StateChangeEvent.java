@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 23:08:03 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-28 00:25:02 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.util;
 
 import javax.swing.event.ChangeEvent;
+
+import java.awt.Component;
 
 /**
  * An event that represents a state change in the application, showing
@@ -48,7 +50,7 @@ public class StateChangeEvent extends ChangeEvent
      *  Public constant to denote that a data table column has been selected 
      */
     public static String SELECT_DATATABLE_COLUMN 
-                                      = "selectDataTableColumn";
+        = "selectDataTableColumn";
 
                                       
                                       
@@ -56,15 +58,32 @@ public class StateChangeEvent extends ChangeEvent
      *  Public constant to denote that a datapackage CONTAINING ONE OR MORE 
      *  ENTITIES has been opened
      */
-    public static String CREATE_ENTITY_DATAPACKAGE_FRAME 
+    public static String CREATE_DATAPACKAGE_FRAME 
         = "createEntityDataPackageFrame";
+ 
  
     /**
      *  Public constant to denote that a datapackage CONTAINING NO ENTITIES OR 
-     *  DATA has been opened
+     *  ASCII DATA has been opened
      */
     public static String CREATE_NOENTITY_DATAPACKAGE_FRAME 
         = "createNoEntityDataPackageFrame";
+
+    /**
+     *  Public constant to denote that a datapackage CONTAINING ONE OR MORE 
+     *  ASCII ENTITIES has been opened
+     */
+    public static String CREATE_TEXTENTITY_DATAPACKAGE_FRAME 
+        = "createTextEntityDataPackageFrame";
+     
+    /**
+     *  Public constant to denote that a datapackage has been opened CONTAINING 
+     *  ONE OR MORE ENTITIES THAT ARE NOT EDITABLE (e.g. binary data such as 
+     *  images etc, or possibly a package that has entity metadata but the 
+     *  corresponding data cannot be read) 
+     */
+    public static String CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME 
+        = "createNonEditableEntityDataPackageFrame";
 
     /**
      *  Public constant to denote that a datapackage has been opened, but that 
@@ -142,6 +161,38 @@ public class StateChangeEvent extends ChangeEvent
     public static String SEARCH_RESULT_SELECTED_VERSIONS
         = "searchResultSelectedVersionAvailable";
  
+
+ 
+
+    /**
+     *  Public constant to denote that the "Hide" button has been pressed in the 
+     *  MetaData Viewer
+     */
+    public static String METAVIEWER_HIDE_BUTTON_PRESSED
+        = "metaViewerHideButtonPressed";
+
+    /**
+     *  Public constant to denote that a navigation event has been triggered in 
+     *  the MetaData Viewer.  This could be any navigation event, such as 
+     *  clicking on a URL or traversing the History using the Back button etc.
+     */
+    public static String METAVIEWER_NAVIGATION
+        = "metaViewerNavigation";
+                                      
+    /**
+     *  Public constant to denote that user has requested the previous document 
+     *  from History in the MetaData Viewer.  
+     */
+    public static String METAVIEWER_HISTORY_BACK
+        = "metaViewerHistoryBack";
+
+    /**
+     *  Public constant to denote that user has issued a command to edit the 
+     *  metadata in the MetaData Viewer.  
+     */
+    public static String METAVIEWER_BEGIN_EDIT
+        = "metaViewerBeginEdit";
+
     
 //////////////////////////////////////////////////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////// 
@@ -151,10 +202,17 @@ public class StateChangeEvent extends ChangeEvent
     /**
      * Construct a new StateChange event.
      *
-     * @param source the object whose state has changed
+     * @param source  if the source of the state change is a 
+     *                <code>java.awt.Component</code>, then a reference to that 
+     *                Component should be passed.  However, if the object whose 
+     *                state has changed is *not* an instance of 
+     *                <code>java.awt.Component</code>, pass a reference to the 
+     *                closest <code>java.awt.Component</code> (which could be a
+     *                <code>java.awt.Container</code> in which the object is 
+     *                embedded.
      * @param changedState the label for the state that has changed
      */
-    public StateChangeEvent(Object source, String changedState)
+    public StateChangeEvent(Component source, String changedState)
     {
         super(source);
         this.changedState = changedState;
