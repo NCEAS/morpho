@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-29 17:33:17 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-07-05 19:12:27 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public class DTDTree
     DTDItem oldItem;
     
     // levels is how many levels deep the depth first parse is carried out
-    // needs to be specified due to existence of recursive DTDs
+    // needs to be specified to provide stopping criteria for recursive DTDs
     int levels = 9;
     
  
@@ -161,16 +161,27 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
       DTDItems(items[i],vec2);
     }
     boolean first = true;
-    for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
-      NodeInfo node = (NodeInfo)(e.nextElement());
-      if (first) {
-        node.setCardinality("SELECTED");
+    if ((ni.getCardinality().equalsIgnoreCase("ONE"))) {
+      for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
+        NodeInfo node = (NodeInfo)(e.nextElement());
+        if (first) {
+          node.setCardinality("SELECTED");
+        }
+        else {node.setCardinality("NOT SELECTED");}
+        first = false;
+		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(node);
+        parentNode.add(newNode);
+        vec1.addElement(newNode);
       }
-      else {node.setCardinality("NOT SELECTED");}
-      first = false;
-		  DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (node);
-      parentNode.add(newNode);
-      vec1.addElement(newNode);
+    }
+    else {
+      for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
+        NodeInfo node = (NodeInfo)(e.nextElement());
+        node.setCardinality("ZERO to MANY");
+		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(node);
+        parentNode.add(newNode);
+        vec1.addElement(newNode);
+      }
     }
   }
   else {

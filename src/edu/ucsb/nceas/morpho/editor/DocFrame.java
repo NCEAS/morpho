@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-03 22:44:42 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2001-07-05 19:12:28 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,6 +109,11 @@ public class DocFrame extends javax.swing.JFrame
     
     //* nodeCopy is the 'local clipboard' for node storage
     DefaultMutableTreeNode nodeCopy = null;
+    
+    //* trimNodesNotInDTDflag indicates whether nodes not in DTD should be removed
+    boolean trimNodesNotInDTDflag = true;
+    //* indicates whether DTD info should be merged 
+    boolean dtdMergeflag = true;
     
     javax.swing.JMenuItem menuItem;
     javax.swing.JMenuItem CardmenuItem;
@@ -330,19 +335,23 @@ public class DocFrame extends javax.swing.JFrame
     
     // if the document instance has a DTD, the DTD is parsed
     // and info from the result is merged into the tree
-    if (dtdfile!=null) {
-		  dtdtree = new DTDTree(dtdfile);
-		  dtdtree.setRootElementName(rootnodeName);
-		  dtdtree.parseDTD();
+    if (dtdMergeflag) {
+      if (dtdfile!=null) {
+		    dtdtree = new DTDTree(dtdfile);
+		    dtdtree.setRootElementName(rootnodeName);
+		    dtdtree.parseDTD();
 		
-	    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+	      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 
 	        // the treeUnion method will 'merge' the input document with
 	        // a template XML document created using the DTD parser from the DTD doc
-	    treeUnion(rootNode,dtdtree.rootNode);
+	      treeUnion(rootNode,dtdtree.rootNode);
             // treeTrim will remove nodes in the input that are not in the DTD
             // remove the following line if this is not wanted
-      treeTrim(rootNode,dtdtree.rootNode);
+        if (trimNodesNotInDTDflag) {
+          treeTrim(rootNode,dtdtree.rootNode);
+        }
+      }
 		}
 		
 		
