@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-16 19:54:35 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-04-17 02:22:12 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1137,7 +1137,12 @@ public class TextImportWizardEml2 extends JFrame {
 
     o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
     if(o1 != null) return "Interval";
+		o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
+    if(o1 != null) return "Interval";
+    
     o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
+    if(o1 != null) return "Ratio";
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
     if(o1 != null) return "Ratio";
 
     o1 = map.get(xPath + "/measurementScale/datetime/formatString");

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-16 19:54:35 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2004-04-17 02:22:12 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -809,31 +809,35 @@ public class WizardSettings {
     String res = (String)(unitPreferenceMap.get(unitType.toLowerCase()));
     return res;
   }
-
-  public static boolean isNewUnit(String type, String unit) {
 	
-	type = getStandardFormOfUnitType(type);
+	
+  public static boolean isCustomUnit(String type, String unit) {
+	
+		type = getStandardFormOfUnitType(type);
     boolean newT = unitDictionaryUnitsCacheMap.containsKey(type);
     if(newT) {
       String[] units = (String[])unitDictionaryUnitsCacheMap.get(type);
       if(Arrays.binarySearch(units, unit) >= 0) return false;
       else return true;
     } else {
-	  String[] oldUnits = (String[])getUnitDictionaryUnitsOfType(type);
-	  if(oldUnits.length > 0) {
-      	if(Arrays.binarySearch(oldUnits, unit) >= 0) return false;
-	  	return true;
-	  }
+			return true;
+		}
+	}
+	
+	public static boolean isNewCustomUnit(String type, String unit) {
+		type = getStandardFormOfUnitType(type);
+    boolean newT = customUnitDictionaryUnitsCacheMap.containsKey(type);
+    if(newT) {
       String[] units = (String[])customUnitDictionaryUnitsCacheMap.get(type);
       if(units == null) return true;
       if(Arrays.binarySearch(units, unit) >= 0) return false;
       else return true;
-    }
+    } else return true;
   }
 
   public static void addNewUnit(String unitType, String unit, String SIUnit) {
 
-	unitType = getStandardFormOfUnitType(unitType);
+		unitType = getStandardFormOfUnitType(unitType);
     int idx = Arrays.binarySearch(unitDictionaryUnitTypesArray, unitType);
     if(idx < 0) {
       idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);

@@ -5,9 +5,9 @@
 *    Authors: @tao@
 *    Release: @release@
 *
-*   '$Author: brooke $'
-*     '$Date: 2004-03-18 02:21:40 $'
-* '$Revision: 1.17 $'
+*   '$Author: sambasiv $'
+*     '$Date: 2004-04-17 02:22:12 $'
+* '$Revision: 1.18 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -259,7 +259,12 @@ public class InsertColumnCommand implements Command
 
     o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
     if(o1 != null) return "Interval";
+		o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
+    if(o1 != null) return "Interval";
+		
     o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
+    if(o1 != null) return "Ratio";
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
     if(o1 != null) return "Ratio";
 
     o1 = map.get(xPath + "/measurementScale/datetime/formatString");
@@ -272,9 +277,14 @@ public class InsertColumnCommand implements Command
 
     Object o1 = map.get(xPath + "/measurementScale/interval" + "/unit/standardUnit");
     if(o1 != null) return (String)o1;
+		o1 = map.get(xPath + "/measurementScale/interval" + "/unit/customUnit");
+    if(o1 != null) return (String)o1;
     o1 = map.get(xPath + "/measurementScale/ratio" + "/unit/standardUnit");
     if(o1 != null) return (String)o1;
-    return "";
+    o1 = map.get(xPath + "/measurementScale/ratio" + "/unit/customUnit");
+    if(o1 != null) return (String)o1;
+    
+		return "";
   }
 
   void insertNewAttributeAt(int index, Document doc)

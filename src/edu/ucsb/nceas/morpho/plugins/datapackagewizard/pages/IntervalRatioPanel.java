@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 21:26:09 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2004-04-17 02:22:12 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,13 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import javax.xml.transform.TransformerException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +90,10 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   private JComboBox  numberTypePickList;
   private CustomList boundsList;
 	private AbstractUIPage customPage = null;
-
+	
+	//list of custom pages.. one for each custom unit defined in this attribute page
+	private List customPages = new ArrayList();
+	
   // note - order must match numberEMLVals array!
   private String[] numberTypesDisplayVals = new String[] {
                         "NATURAL (non-zero counting numbers: 1, 2, 3..)",
@@ -475,16 +485,19 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     returnMap.clear();
 		String type = this.unitsPickList.getSelectedType().trim();
 		String unit = unitsPickList.getSelectedUnit().trim();
-		if(WizardSettings.isNewUnit(type, unit)) {
-			if(customPage != null) {
-				String SIUnit = this.unitsPickList.getSelectedSIUnit();
-				WizardSettings.addNewUnit(type, unit, SIUnit);
-				OrderedMap map = customPage.getPageData(xPathRoot + "/additionalMetadata/ANY");
+		if(WizardSettings.isCustomUnit(type, unit)) {
+			/*Iterator it = customPages.iterator();
+			int cnt = 1;
+			while(it.hasNext()) {
+				CustomUnitPage cPage = (CustomUnitPage) it.next();
+				OrderedMap map = cPage.getPageData(xPathRoot + "/additionalMetadata[" + cnt + "]");
+				cnt++;
 				returnMap.putAll(map);
-				returnMap.put(  xPathRoot + "/unit/customUnit", unit);
-			}
-		} else {
+			}*/
+			returnMap.put(  xPathRoot + "/unit/customUnit", unit);
 			
+			
+		} else {
 			returnMap.put(  xPathRoot + "/unit/standardUnit", unit);
 		}
 		
@@ -835,7 +848,8 @@ class UnitsPickList extends JPanel {
 
     if(!customPage.onAdvanceAction())
       return;
-		String xPath = "/additionalMetadata/ANY";
+		customPages.add(customPage);
+		String xPath = "/additionalMetadata";
     OrderedMap map = customPage.getPageData(xPath);
 		
     String type = getUnitTypeOfNewUnit(map, xPath);
@@ -855,21 +869,51 @@ class UnitsPickList extends JPanel {
     } else {
 			// add units to existing type
 			int idx = getIndexOfStandardType(type);
-      
       //int idx = Arrays.binarySearch(unitTypesListItems, item);
 			if(idx >=0 && idx < unitTypesListItems.length) {
 				UnitTypesListItem item = this.unitTypesListItems[idx];
 				item.addUnit(newUnit);
 				this.unitTypesList.setSelectedItem(item);
+				this.unitsList.setModel(item.getComboBoxModel());
 				this.unitsList.setSelectedItem(newUnit);
 				this.unitsList.hidePopup();
 			}
 			
 		}
-		
+		WizardSettings.addNewUnit(type, newUnit, SIUnit);
+		insertIntoDOMTree(map);
     return;
   }
 
+	
+	private void insertIntoDOMTree(OrderedMap map) {
+		
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+		Document doc = impl.createDocument("", "additionalMetadata", null);
+		Node metadataRoot = doc.getDocumentElement();
+		try {
+			XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot);
+			
+		}
+		catch (TransformerException w) {
+			Log.debug(5, "Unable to add addtmetadata details to package!");
+			Log.debug(15, "TransformerException (" + w + ") calling "
+			+ "XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot) with \n"
+			+ "map = " + map
+			+ " and methodRoot = " + metadataRoot);
+			w.printStackTrace();
+			return;
+		}
+		Node check1 = adp.appendAdditionalMetadata(metadataRoot);
+		if (check1 != null) {
+			Log.debug(45, "added new addt metadata details to package...");
+		} else {
+			Log.debug(45, "cldnt added new metadata details to package...");
+		}
+		
+	}
+	
   private String getUnitTypeOfNewUnit( OrderedMap map, String xPath) {
 
     String t = (String) map.get(xPath + "/unitList/unit[1]/@unitType");
@@ -1036,10 +1080,11 @@ class UnitTypesListItem  implements Comparable{
 
   public void addUnit(String newUnit) {
 
-    String[] newArr = new String[unitsOfThisType.length + 1];
+		String[] newArr = new String[unitsOfThisType.length + 1];
     WizardSettings.insertObjectIntoArray(unitsOfThisType, newUnit, newArr);
     unitsOfThisType = newArr;
     model = new DefaultComboBoxModel(unitsOfThisType);
+		
   }
 
   public int compareTo(Object o) {

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-12 20:40:08 $'
- * '$Revision: 1.13 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-17 02:22:12 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -279,7 +279,12 @@ public class EditColumnMetaDataCommand implements Command
 
     o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
     if(o1 != null) return "Interval";
+		o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
+    if(o1 != null) return "Interval";
+		
     o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
+    if(o1 != null) return "Ratio";
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
     if(o1 != null) return "Ratio";
 
     o1 = map.get(xPath + "/measurementScale/datetime/formatString");
@@ -292,8 +297,13 @@ public class EditColumnMetaDataCommand implements Command
 
     Object o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
     if(o1 != null) return (String)o1;
+		o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
+    if(o1 != null) return (String)o1;
     o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
     if(o1 != null) return (String)o1;
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
+    if(o1 != null) return (String)o1;
+    
     return "";
   }
 

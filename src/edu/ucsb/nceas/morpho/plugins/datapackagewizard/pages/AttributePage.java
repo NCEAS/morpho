@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 21:20:53 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-04-17 02:22:12 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -722,31 +722,31 @@ public class AttributePage extends AbstractUIPage {
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPath+"/measurementScale/"+measurementScale) );
     }
-		if( measurementScale != null && (measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) ) {
-			boolean p = returnMap.containsKey(xPath+"/measurementScale/"+measurementScale + "/additionalMetadata/ANY/unitList/unit[1]/@name");
-			if(p) {
-				OrderedMap map = new OrderedMap();
-				Iterator it = returnMap.keySet().iterator();
-				while(it.hasNext()) {
-					String key = (String)it.next();
-					int idx = key.indexOf("/additionalMetadata");
-					if(idx > 0) {
-						map.put(key.substring(idx), (String)returnMap.get(key));
-						it.remove();
-					}
+		/*if( measurementScale != null && (measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) ) {
+			
+			// look for several additionalMetadata subtrees in the map.
+			for(int i = 1; ; i++) {
+				
+				String prefix = xPath+"/measurementScale/"+measurementScale + "/additionalMetadata[" + i + "]";
+				boolean p = returnMap.containsKey(prefix + "/unitList/unit[1]/@name");
+				if(p) {
+					OrderedMap map = this.extractKeysContaining(returnMap, "/additionalMetadata["+i+"]");
+					insertIntoDOMTree(map);
+				} else {
+					break;
 				}
-				insertIntoDOMTree(map);
-			} 
-		}
+			}
+			
+		}*/
     return returnMap;
   }
 
-	private void insertIntoDOMTree(OrderedMap map) {
+	/*private void insertIntoDOMTree(OrderedMap map) {
 		
 		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
 		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 		Document doc = impl.createDocument("", "additionalMetadata", null);
-		
+		System.out.println("metadata xpaths = " + map.toString());
 		Node metadataRoot = doc.getDocumentElement();
 		try {
 			XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot);
@@ -761,6 +761,7 @@ public class AttributePage extends AbstractUIPage {
 			w.printStackTrace();
 			return;
 		}
+		System.out.println("DOM tree of addt metadatas - " + XMLUtilities.getDOMTreeAsString(metadataRoot));
 		Node check1 = adp.appendAdditionalMetadata(metadataRoot);
 		if (check1 != null) {
 			Log.debug(45, "added new addt metadata details to package...");
@@ -769,64 +770,91 @@ public class AttributePage extends AbstractUIPage {
 		}
 		
 		
+	}*/
+	
+	
+	private OrderedMap extractKeysContaining(OrderedMap map, String xPath) {
+		
+		OrderedMap resultMap = new OrderedMap();
+		Iterator it = map.keySet().iterator();
+		while(it.hasNext()) {
+			
+			String key = (String) it.next();
+			int idx = key.indexOf(xPath);
+			if(idx >= 0) {
+				String substring = key.substring(idx);
+				// key now starts with "/additionalMetadata"
+				// now, have to remove the subscript of additionalMetadata
+				int idx2 = substring.substring(1).indexOf("/"); // indx of "/" after the predicate
+				String correctKey = "/additionalMetadata" + substring.substring(idx2 + 1); 
+				resultMap.put(correctKey, map.get(key));
+				it.remove();
+			}
+		}
+		
+		return resultMap;
 	}
-
-  private String findMeasurementScale(OrderedMap map) {
-
-  ///// check for Nominal
-
-  Object o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
-  if(o1 != null) return "Nominal";
-  boolean b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
-  if(b1) return "Nominal";
-  o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain[1]/definition");
-  if(o1 != null) return "Nominal";
-  o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
-  if(o1 != null) return "Nominal";
-  b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
-
-  if(b1) return "Nominal";
-  o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain/definition");
-  if(o1 != null) return "Nominal";
-
-  ///// check for Ordinal
-
-  o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
-  if(o1 != null) return "Ordinal";
-  b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
-  if(b1) return "Ordinal";
-  o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain[1]/definition");
-  if(o1 != null) return "Ordinal";
-  o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
-  if(o1 != null) return "Ordinal";
-  b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
-  if(b1) return "Ordinal";
-  o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain/definition");
-  if(o1 != null) return "Ordinal";
-
-  ///// check for Ratio
-
-  o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/unit/standardUnit");
-  if(o1 != null) return "Ratio";
-  o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/numericDomain/numberType");
-  if(o1 != null) return "Ratio";
-
-  ///// check for Interval
-
-  o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/unit/standardUnit");
-  if(o1 != null) return "Interval";
-  o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/numericDomain/numberType");
-  if(o1 != null) return "Interval";
-
-  ///// check for DateTime
-
-  o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/formatString");
-  if(o1 != null) return "Datetime";
-  o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/dateTimePrecision");
-  if(o1 != null) return "Datetime";
-
-  return "";
-  }
+	
+	private String findMeasurementScale(OrderedMap map) {
+		
+		///// check for Nominal
+		
+		Object o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) return "Nominal";
+		boolean b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Nominal";
+		o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain[1]/definition");
+		if(o1 != null) return "Nominal";
+		o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
+		if(o1 != null) return "Nominal";
+		b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
+		
+		if(b1) return "Nominal";
+		o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain/definition");
+		if(o1 != null) return "Nominal";
+		
+		///// check for Ordinal
+		
+		o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) return "Ordinal";
+		b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Ordinal";
+		o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain[1]/definition");
+		if(o1 != null) return "Ordinal";
+		o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
+		if(o1 != null) return "Ordinal";
+		b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
+		if(b1) return "Ordinal";
+		o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain/definition");
+		if(o1 != null) return "Ordinal";
+		
+		///// check for Ratio
+		
+		o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/unit/standardUnit");
+		if(o1 != null) return "Ratio";
+		o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/unit/customUnit");
+		if(o1 != null) return "Ratio";
+		o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/numericDomain/numberType");
+		if(o1 != null) return "Ratio";
+		
+		///// check for Interval
+		
+		o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/unit/standardUnit");
+		if(o1 != null) return "Interval";
+		o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/unit/customUnit");
+		if(o1 != null) return "Interval";
+		o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/numericDomain/numberType");
+		if(o1 != null) return "Interval";
+		
+		///// check for DateTime
+		
+		o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/formatString");
+		if(o1 != null) return "Datetime";
+		o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/dateTimePrecision");
+		if(o1 != null) return "Datetime";
+		
+		return "";
+	}
 
 
   /**
@@ -1126,11 +1154,21 @@ public class AttributePage extends AbstractUIPage {
     else mainXPath = AttributeSettings.Ratio_xPath;
 
     String unit = (String) map.get(mainXPath + "/unit/standardUnit");
+		if(unit != null) {
+			text += "<tr>";
+			text += "<td class = \"highlight\"  width = \"35%\" > Standard Unit: </td>";
+			text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + unit + "</td>";
+			text += "</tr>";
 
-    text += "<tr>";
-    text += "<td class = \"highlight\"  width = \"35%\" > Standard Unit: </td>";
-    text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + unit + "</td>";
-    text += "</tr>";
+		} else {
+			unit = (String) map.get(mainXPath + "/unit/customUnit");
+			if(unit != null) {
+				text += "<tr>";
+				text += "<td class = \"highlight\"  width = \"35%\" > Custom Unit: </td>";
+				text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + unit + "</td>";
+				text += "</tr>";
+			}
+		}
 
     String precision = (String) map.get(mainXPath + "/precision");
 
