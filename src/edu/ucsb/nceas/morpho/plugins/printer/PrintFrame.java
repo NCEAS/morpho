@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-12-19 01:44:02 $'
-* '$Revision: 1.2 $'
+*     '$Date: 2003-12-29 22:18:33 $'
+* '$Revision: 1.3 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.plugins.printer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JScrollBar;
 import javax.swing.JEditorPane;
 import javax.swing.JButton;
 import javax.swing.JComponent; 
@@ -81,6 +82,7 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 		editor.setText(text);
 		editor.setEditable(false);
 		editor.addHyperlinkListener(this);
+		editor.setCaretPosition(0);
 		
 		pageSetupButton.addActionListener(this);
 		printButton.addActionListener(this);
@@ -186,8 +188,7 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 			setComponent(c);
 			
 			Rectangle componentBounds = c.getBounds(null);
-			System.out.println("Bounds - " + componentBounds.width +";" + componentBounds.height);
-			
+						
 			setSize(componentBounds.width, componentBounds.height);
 			setScale(1, 1);
 		}
