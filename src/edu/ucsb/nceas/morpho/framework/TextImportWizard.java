@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-19 23:03:11 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-12-28 20:26:58 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1221,10 +1221,10 @@ public void startImport(String file) {
 
 	private String getDelimiterStringAsText() {
 	  String str = "";
-	  if (TabCheckBox.isSelected()) str = str+"&#x09;";
-	  if (CommaCheckBox.isSelected()) str = str + "&#x2C;";
-	  if (SpaceCheckBox.isSelected()) str = str + "&#x20;";
-	  if (SemicolonCheckBox.isSelected()) str = str +"&#x3B;";
+	  if (TabCheckBox.isSelected()) str = str+"#x09";
+	  if (CommaCheckBox.isSelected()) str = str + "#x2C";
+	  if (SpaceCheckBox.isSelected()) str = str + "#x20";
+	  if (SemicolonCheckBox.isSelected()) str = str +"#x3B";
 	  if (OtherCheckBox.isSelected()) {
 	    String temp = OtherTextField.getText();
 	    if (temp.length()>0) {
@@ -2039,7 +2039,7 @@ public void startImport(String file) {
       XMLBuffer.append("    <format> Text</format>\n");  // text import wizard only handles text 
       XMLBuffer.append("    <size unit=\"bytes\">"+filesizeString+"</size>\n");  
       XMLBuffer.append("    <numHeaderLines>"+numHeaderLines+"</numHeaderLines>\n");  
-      XMLBuffer.append("    <recordDelimiter>"+"&#x0A;"+"</recordDelimiter>\n"); 
+      XMLBuffer.append("    <recordDelimiter>"+"#x0A"+"</recordDelimiter>\n"); 
       XMLBuffer.append("    <fieldDelimiter>"+delimit+"</fieldDelimiter>\n"); 
       XMLBuffer.append("</eml-physical>\n");
 	  return XMLBuffer.toString();
