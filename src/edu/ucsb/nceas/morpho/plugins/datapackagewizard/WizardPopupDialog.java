@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:17 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,11 +102,16 @@ public class WizardPopupDialog extends JDialog {
    *  resets location and dimensions to original values
    */
   public void resetBounds() {
-
-    int xcoord = ( parent.getX() + parent.getWidth()/2 )
+		
+		int xcoord, ycoord;
+		if(parent == null) {
+			xcoord = ycoord = 50;
+		} else {
+			xcoord = ( parent.getX() + parent.getWidth()/2 )
                                               - WizardSettings.DIALOG_WIDTH/2;
-    int ycoord = ( parent.getY() + parent.getHeight()/2 )
+			ycoord = ( parent.getY() + parent.getHeight()/2 )
                                               - WizardSettings.DIALOG_HEIGHT/2;
+		}
 
     this.setBounds(xcoord, ycoord,  WizardSettings.DIALOG_WIDTH,
                                     WizardSettings.DIALOG_HEIGHT);

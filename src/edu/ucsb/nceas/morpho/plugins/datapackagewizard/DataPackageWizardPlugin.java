@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.19 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,8 +114,22 @@ public class DataPackageWizardPlugin implements PluginInterface,
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
                       "New Datatable Wizard");
   }
-
-
+	
+	/**
+   *  method to start the wizard at a given page
+   *
+	 *	@param pageID	 the ID of the page from where the wizard is to be started
+	 *
+   *  @param listener the <code>DataPackageWizardListener</code> to be called
+   *                  back when the Entity Wizard has finished
+   */
+	 
+	 
+	public void startWizardAtPage(String pageID, DataPackageWizardListener listener) {
+		
+		startWizardAtPage(pageID, false, listener, "Import Code Definitions");
+	}
+	
   private void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {
 

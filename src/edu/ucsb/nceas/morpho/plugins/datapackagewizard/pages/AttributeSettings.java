@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 00:16:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-02-04 02:25:51 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,9 @@ public class AttributeSettings
 	public static final String MeasurementScale_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale";
 	public static final String MissingValueCode_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/missingValueCode";
 	public static final String Nominal_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/nominal/nonNumericDomain";
+	
 	public static final String Ordinal_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/ordinal/nonNumericDomain";
+	
 	public static final String Interval_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/interval";
 	public static final String Ratio_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/ratio";
 	public static final String DateTime_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/datetime";

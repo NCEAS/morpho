@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-27 21:33:15 $'
- * '$Revision: 1.56 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,9 @@ import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
 
 
 /**
@@ -578,6 +580,47 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
 
+	/**
+   * This method retrieves entity index information, given the name of the entity
+   * in the entityNode array
+   *
+   * @param entName String - name of the Entity whose index in the entity array is
+	 *													required
+   * @return int	the index of the entity in the entity array. If that entity is not
+	 *							found, -1 is returned
+   */
+  public int getEntityIndex(String entName) {
+    String temp = "";
+		System.out.println("in getEntityIndex");
+    if ( (entityArray == null)) {
+      return -1;
+    }
+		
+		for(int i = 0; i < entityArray.length; i++) 
+		{
+			Node entity = (entityArray[i]).getNode();
+			String entityNameXpath = "";
+			try {
+				entityNameXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+				"/xpathKeyMap/contextNode[@name='entity']/name")).getNodeValue();
+				NodeList enameNodes = XPathAPI.selectNodeList(entity, entityNameXpath);
+				if (enameNodes == null) {
+					continue;
+				}
+				Node child = enameNodes.item(0).getFirstChild();
+				temp = child.getNodeValue();
+			}
+			catch (Exception w) {
+				Log.debug(50, "exception in getting entity name" + w.toString());
+				continue;
+			}
+			if(temp.equals(entName))
+				return i;
+		}
+		
+    return -1;
+  }
+	
   /**
    * This method retrieves the number of records in thr entity, given the index
    * of the entity in the entityNode array
@@ -608,8 +651,34 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
+	
+	/**
+   * This method gets the count of the entities present in the package
+   *
+   * @return int the number of entities in the package
+   */
+	public int getEntityCount() {
+		if(entityArray == null) return 0;
+		return entityArray.length;
+	}
 
-
+	/**
+   * This method gets the count of the attributes present in a particular entity
+   *
+	 * @param  entityIndex the index of the entity whose attribute count is desired
+   * @return int the number of attributes in that entity
+   */
+	public int getAttributeCountForAnEntity(int entityIndex) {
+		
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+      return 0;
+    }
+    Node[] attributes = getAttributeArray(entityIndex);
+    if (attributes == null)
+			return 0;
+		return attributes.length;
+	}
+	
   /**
    * This method sets the number of records in the entity, given the index of
    * the entity in the entityNode array
@@ -672,7 +741,77 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
-
+	
+	
+	
+	/**
+   * This method retrieves the entity ID, given the index of the entity
+   * in the entityNode array
+   *
+   * @param entNum the entity Index of the entity whose ID is required
+   * @return String the entity ID
+   */
+  public String getEntityID(int entNum) {
+    String id = "";
+    if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
+      return "No such entity!";
+    }
+    Node entity = (entityArray[entNum]).getNode();
+		NamedNodeMap nnm = entity.getAttributes();
+		if(nnm !=null) {
+			Node idNode = nnm.getNamedItem("id");
+			if(idNode != null)
+				id = idNode.getNodeValue();
+			else {
+				Log.debug(45, "No ID Attributes for the given entity " +
+								getEntityName(entNum));
+			}
+		}else {
+			Log.debug(45, "No Attributes for the given entity : "+getEntityName(entNum));
+		}
+		
+    return id;
+  }
+	
+	/**
+   * This method sets the entity ID, given the index of the entity
+   * in the entityNode array and the ID. Caller must ensure that the ID is
+   * unique. No check for uniqueness is made here.
+	 *
+	 * Though the DataPackage Wizard automatically assigns an ID to all entities,
+	 * it is possible that some old data sets may not have the ID assigned to
+	 * them. For such cases, this method provides a way to set an ID
+	 *
+   * @param entNum the entity Index of the entity whose ID is required
+	 * @param ID the unique ID for this entity
+   *
+   */
+	 
+  public void setEntityID(int entNum, String ID) {
+    
+    if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
+      return;
+    }
+    Node entity = (entityArray[entNum]).getNode();
+		NamedNodeMap nnm = entity.getAttributes();
+		if(nnm !=null) {
+			Node idNode = nnm.getNamedItem("id");
+			if(idNode != null) {
+				idNode.setNodeValue(ID);
+				return;
+			}
+			else {
+				Log.debug(45, "No ID Attributes for the given entity " +
+								getEntityName(entNum) + " - Adding the ID Attribute");
+			}
+		}else {
+			Log.debug(45, "No Attributes for the given entity : "+getEntityName(entNum) + " - Adding ID Attribute");
+		}
+		((Element)entity).setAttribute("id", ID);
+		
+  }
+	
+	
   /**
    * This method deletes the indexed entity from the DOM
    *
@@ -907,6 +1046,82 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+	/**
+   *  This method retreives the attribute index given an Attribute Name and the
+   * 	index of the entity that the attribute is present in. 
+	 * 	@param entityIndex  the index of the entity thats contains the given attribute
+	 *	@param attributeName the name of the attribute whose index is required
+	 *	@return int the index of the attribute in the given array. Returns -1 if the
+	 *					attribute is not found in the entity.
+   *
+   */
+	 
+  public int getAttributeIndex(int entityIndex, String attributeName) {
+		
+    String temp = "";
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+      return -1;
+    }
+    Node[] attributes = getAttributeArray(entityIndex);
+    if ( (attributes == null) || (attributes.length < 1)) {
+      return -1;
+    }
+		for(int i = 0; i < attributes.length; i++) {
+			
+			Node attribute = attributes[i];
+			String attrXpath = "";
+			try {
+				attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+				"/xpathKeyMap/contextNode[@name='attribute']/name")).getNodeValue();
+				NodeList aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
+				if (aNodes == null) {
+					continue;
+				}
+				Node child = aNodes.item(0).getFirstChild(); // get first ?; (only 1?)
+				temp = child.getNodeValue();
+			}
+			catch (Exception w) {
+				Log.debug(50, "exception in getting entity description" + w.toString());
+				continue;
+			}
+			if(temp.equals(attributeName))
+				return i;
+		}
+    return -1;
+  }
+	
+	/*
+   *  This method retreives the attribute ID at attributeIndex for
+   *  the given entityIndex. i.e. getAttributeID(0,1) would return
+   *  the first attribute ID for the zeroth entity (indices are ) based)
+   */
+  public String getAttributeID(int entityIndex, int attributeIndex) {
+    String id = "";
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+      return "No such entity!";
+    }
+    Node[] attributes = getAttributeArray(entityIndex);
+    if ( (attributes == null) || (attributes.length < attributeIndex)) {
+      return "no attributes!";
+    }
+    Node attribute = attributes[attributeIndex];
+    NamedNodeMap nnm = attribute.getAttributes();
+		if(nnm !=null) {
+			Node idNode = nnm.getNamedItem("id");
+			if(idNode != null)
+				id = idNode.getNodeValue();
+			else {
+				Log.debug(45, "No ID Attributes for the given column " +
+								getAttributeName(entityIndex, attributeIndex));
+					
+			}
+		}else {
+			Log.debug(45, "No attributes for the given column : " +
+						getAttributeName(entityIndex, attributeIndex));
+		}
+		return id;
+	}
+		
   /*
    *  This method retreives the attribute datatype at attributeIndex for
    *  the given entityIndex. i.e. getAttributeDataType(0,1) would return
@@ -2209,3 +2424,4 @@ public abstract class AbstractDataPackage extends MetadataObject
     return (this.getMetadataNode()).getOwnerDocument();
   }
 }
+

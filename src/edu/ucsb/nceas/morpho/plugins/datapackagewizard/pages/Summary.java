@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:37:44 $'
- * '$Revision: 1.15 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:51 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +133,8 @@ public class Summary extends AbstractWizardPage {
 
       return "<p>If you want to add more data tables to your package, "
         +"select the \"Create New Datatable\" option on the \"Data\" menu</p>";
-    }
+				
+    } 
     return "";
   }
 
@@ -141,7 +142,8 @@ public class Summary extends AbstractWizardPage {
 
     String ID = mainWizFrame.getFirstPageID();
     if (ID==null) return "";
-    if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) return "data table";
+		if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) 
+			return "data table";
     else return "data package";
   }
 
@@ -153,7 +155,7 @@ public class Summary extends AbstractWizardPage {
     desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p>This wizard has now collected all the information that is required to "
-      +"create your new "+getProductName()+".</p>"
+      + "create your new " + getProductName()+".</p>"
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     desc2.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -162,10 +164,11 @@ public class Summary extends AbstractWizardPage {
                   +"</b></p><br></br>"
                   +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
-    desc4 .setText( WizardSettings.HTML_TABLE_LABEL_OPENING
+    desc4.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
                   +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     updateShowMeButton();
+		
   }
 
   private JComponent getShowMeButton() {
@@ -242,7 +245,7 @@ public class Summary extends AbstractWizardPage {
     }
   }
 
-
+	
   private String getDataLocation() {
 
     String summaryText = WizardSettings.getSummaryText();
@@ -275,7 +278,9 @@ public class Summary extends AbstractWizardPage {
    *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() { return true; }
+  public boolean onAdvanceAction() {
+		return true; 
+	}
 
 
   /**

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:36:46 $'
- * '$Revision: 1.10 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,11 +63,13 @@ public interface DataPackageWizardInterface {
   public static final String DATA_FORMAT        = "DATA_FORMAT";
   public static final String ENTITY             = "ENTITY";
   public static final String ATTRIBUTE_PAGE     = "ATTRIBUTE_PAGE";
-  public static final String PARTY_PAGE         = "PARTY_PAGE";
+	public static final String CODE_IMPORT_PAGE   = "CODE_IMPORT_PAGE";
+	public static final String PARTY_PAGE         = "PARTY_PAGE";
   public static final String ACCESS             = "ACCESS";
   public static final String ACCESS_PAGE        = "ACCESS_PAGE";
   public static final String SUMMARY            = "SUMMARY";
-
+	public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
+	public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
 
   /**
    *  method to start the Package wizard

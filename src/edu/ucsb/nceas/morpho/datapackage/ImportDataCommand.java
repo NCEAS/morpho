@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-07 19:56:40 $'
- * '$Revision: 1.13 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,60 +106,66 @@ public class ImportDataCommand implements Command
           new DataPackageWizardListener() {
 
             public void wizardComplete(Node newDOM) {
-
-              Log.debug(45, "\n\n********** Entity Wizard finished: DOM:");
-              Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-              Log.debug(30,"Entity Wizard complete - creating Entity object..");
-
-// DFH --- Note: newDOM is root node (eml:eml), not the entity node
-              Node entNode = null;
-              String entityXpath = "";
-              try{
-                entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
-                       "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-                NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
-                         entityXpath);
-                entNode = entityNodes.item(0);
-              }
-              catch (Exception w) {
-                Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
-              }
-
-
-                //              Entity entity = new Entity(newDOM);
-              Entity entity = new Entity(entNode);
-
-              Log.debug(30,"Adding Entity object to AbstractDataPackage..");
-              adp.addEntity(entity);
-
-       // ---DFH
-              Morpho morpho = Morpho.thisStaticInstance;
-              AccessionNumber an = new AccessionNumber(morpho);
-              String curid = adp.getAccessionNumber();
-              String newid = null;
-              if (!curid.equals("")) {
-                newid = an.incRev(curid);
-              } else {
-                newid = an.getNextId();
-              }
-              adp.setAccessionNumber(newid);
-              adp.setLocation("");  // we've changed it and not yet saved
-              try
-              {
-                ServiceController services = ServiceController.getInstance();
-                ServiceProvider provider =
-                      services.getServiceProvider(DataPackageInterface.class);
-                DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-                dataPackageInt.openNewDataPackage(adp, null);
-              }
-              catch (ServiceNotHandledException snhe)
-              {
-                Log.debug(6, snhe.getMessage());
-              }
+							
+							if(newDOM != null) {
+								
+								Log.debug(45, "\n\n********** Entity Wizard finished: DOM:");
+								Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+								Log.debug(30,"Entity Wizard complete - creating Entity object..");
+								
+								// DFH --- Note: newDOM is root node (eml:eml), not the entity node
+								Node entNode = null;
+								String entityXpath = "";
+								try{
+									entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
+									"/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
+									NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
+									entityXpath);
+									entNode = entityNodes.item(0);
+								}
+								catch (Exception w) {
+									Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
+								}
+								
+								
+								//              Entity entity = new Entity(newDOM);
+								Entity entity = new Entity(entNode);
+								
+								Log.debug(30,"Adding Entity object to AbstractDataPackage..");
+								adp.addEntity(entity);
+								
+								// ---DFH
+								Morpho morpho = Morpho.thisStaticInstance;
+								AccessionNumber an = new AccessionNumber(morpho);
+								String curid = adp.getAccessionNumber();
+								String newid = null;
+								if (!curid.equals("")) {
+									newid = an.incRev(curid);
+								} else {
+									newid = an.getNextId();
+								}
+								adp.setAccessionNumber(newid);
+								adp.setLocation("");  // we've changed it and not yet saved
+								
+							}
+							
+							try
+							{
+								ServiceController services = ServiceController.getInstance();
+								ServiceProvider provider =
+								services.getServiceProvider(DataPackageInterface.class);
+								DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+								dataPackageInt.openNewDataPackage(adp, null);
+							}
+							catch (ServiceNotHandledException snhe)
+							{
+								Log.debug(6, snhe.getMessage());
+							}
 							morphoFrame.setVisible(false);
-              UIController controller = UIController.getInstance();
-              controller.removeWindow(morphoFrame);
-              morphoFrame.dispose();
+							UIController controller = UIController.getInstance();
+							controller.removeWindow(morphoFrame);
+							morphoFrame.dispose();
+							
             }
 
             public void wizardCanceled() {
@@ -169,6 +175,7 @@ public class ImportDataCommand implements Command
           });
 
     }//if
+		
 
   }//execute
 

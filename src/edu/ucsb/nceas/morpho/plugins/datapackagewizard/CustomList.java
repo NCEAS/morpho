@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-01-08 22:52:33 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -406,6 +406,16 @@ public class CustomList extends JPanel {
 		this.columnWidthPercentages = columnWidths;
 	}
 
+	/**
+   *  Sets the border widths for the button Panel.
+   *
+	 *	@param top the spacing on top of the button panel
+	 *	@param left the spacing on left of the button panel
+	 *	@param bottom the spacing on bottom of the button panel
+	 *	@param right the spacing on right of the button panel
+   *
+   */
+	 
 	public void setBorderForButtonPanel(int top, int left, int bottom, int right) {
 
 		buttonBox.setBorder(new EmptyBorder(top, left, bottom, right));
@@ -414,6 +424,8 @@ public class CustomList extends JPanel {
 		this.validate();
 		this.repaint();
 	}
+	
+	
   private int getHeaderWidth(int colNumber, TableColumn column) {
 
     TableCellRenderer headerRenderer = column.getHeaderRenderer();
@@ -428,14 +440,33 @@ public class CustomList extends JPanel {
     return (ins.left + headerWidth + ins.right);
   }
 
-
+	/**
+   *  Sets the dimensions for all the buttons in the custom list.
+   *
+	 *	@param dims the required Dimension for all the buttons
+	 *
+   */
   public void setListButtonDimensions(Dimension dims) {
 
     if (dims==null) buttonDims = WizardSettings.LIST_BUTTON_DIMS;
     else buttonDims = dims;
     resizeButtons();
   }
-
+	
+	/**
+   *  Scrolls the CustomList (if necessary) to the particular row such that 
+	 *	it becomes visible. This can be used to scroll the custom list to the
+	 *	top or bottom.
+   *
+	 *	@param row the row to be scrolled to.  
+	 *
+   */
+	public void scrollToRow(int row) {
+		if(row < 0 || row > table.getRowCount()) 
+			return;
+		table.scrollRectToVisible(table.getCellRect(row,0,true));
+	}
+	
   private void initButtons() {
 
     buttonBox = new JPanel();
@@ -521,7 +552,7 @@ public class CustomList extends JPanel {
     selectionExists = (selRows !=null && selRows.length > 0);
 
     // ADD always available:
-    //if (showAddButton) addButton.setEnabled(true);
+    if(showAddButton) addButton.setEnabled(true);
 
     // EDIT available only if a row selected:
     if (showEditButton) editButton.setEnabled(selectionExists);
@@ -730,7 +761,7 @@ public class CustomList extends JPanel {
    *
    */
   public void removeAllRows() {
-	  for(int i = 0; table.getRowCount() > 0 && i<10;i++)
+	  for(; table.getRowCount() > 0 ;)
 		  model.removeRow(0);
 
   }
@@ -1054,6 +1085,10 @@ public class CustomList extends JPanel {
     return this.customDeleteAction;
   }
 
+	public void setEditable(boolean editable) {
+		table.setEditableForAllColumns(editable);
+	}
+	
 }
 
 
@@ -1263,6 +1298,7 @@ class MoveDownAction extends AbstractAction {
     this.table = table;
     this.parentList = parentList;
     model = (DefaultTableModel)(table.getModel());
+		
   }
 
   public void actionPerformed(ActionEvent e) {
@@ -1433,6 +1469,12 @@ class CustomJTable extends JTable  {
 
       columnsEditableFlags[col] = false;
     }
+		
+		public void setEditableForAllColumns(boolean editable) {
+			
+			for(int i = 0; i < getColumnCount(); i++)
+				columnsEditableFlags[i] = editable;
+		}
 
     public boolean isCellEditable(int row, int col) {
 

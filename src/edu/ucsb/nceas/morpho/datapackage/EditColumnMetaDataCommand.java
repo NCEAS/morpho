@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 04:24:32 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,16 @@ import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -65,7 +68,17 @@ public class EditColumnMetaDataCommand implements Command
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
   
- 
+  private AbstractDataPackage adp = null;
+	private DataViewer dataView = null;
+	private int attrIndex = -1;
+	private int entityIndex = -1;
+	private JTable table = null;
+	private OrderedMap map = null;
+	private String columnName;
+	private String mScale;
+	
+	private String xPath = "/attribute";
+	
   /**
    * Constructor of edit column meta data command
    */
@@ -80,12 +93,9 @@ public class EditColumnMetaDataCommand implements Command
   public void execute(ActionEvent event)
   {   
     DataViewContainerPanel resultPane = null;
-		AbstractDataPackage adp = null;
-		DataViewer dataView = null;
+		
 		Node[] attributes = null;
-		int selectedCol = -1;
-		int entityIndex = -1;
-		JTable table = null;
+		
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
@@ -113,7 +123,7 @@ public class EditColumnMetaDataCommand implements Command
 					//DataPackage dataPackage = resultPane.getDataPackage();
 					String entityId = dataView.getEntityFileId();
 					table = dataView.getDataTable();
-					selectedCol = table.getSelectedColumn();
+					attrIndex = table.getSelectedColumn();
 					entityIndex = dataView.getEntityIndex();
 					attributes = adp.getAttributeArray(entityIndex);
        }
@@ -121,14 +131,14 @@ public class EditColumnMetaDataCommand implements Command
 			 
     }//if
 		
-		if(attributes == null || selectedCol == -1)
+		if(attributes == null || attrIndex == -1)
 		{
-			Log.debug(16, " Couldnt get the attributes in	EditColumnMetaDataCommand for selectedCol = " + selectedCol);
+			Log.debug(16, " Couldnt get the attributes in	EditColumnMetaDataCommand for attrIndex = " + attrIndex);
 			return;
 		}
 		
-		Node currentAttr = attributes[selectedCol];
-		OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(currentAttr, 
+		Node currentAttr = attributes[attrIndex];
+		map = XMLUtilities.getDOMTreeAsXPathMap(currentAttr, 
 										"/eml:eml/dataset/dataTable/attributeList");
 		
 		ServiceController sc;
@@ -143,6 +153,7 @@ public class EditColumnMetaDataCommand implements Command
 			return;
 		AttributePage attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
 		attributePage.setPageData(map);
+		String firstKey = (String)map.keySet().iterator().next();
 		
 		WizardPopupDialog wpd = new WizardPopupDialog(attributePage, morphoFrame, false);
 		attributePage.refreshUI();
@@ -150,72 +161,126 @@ public class EditColumnMetaDataCommand implements Command
 		wpd.validate();
 		wpd.setVisible(true);
 		
+		
+		
 		if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
-			map = attributePage.getPageData("/attribute");
+			
+			map = attributePage.getPageData(xPath);
 			if(entityIndex == -1) {
 				Log.debug(10, "Unable to get the Index of the current Entity, in EditColumnMetaData.");
 				return;
 			}
-				
-			Attribute attr = new Attribute(map);
-			adp.deleteAttribute(entityIndex, selectedCol);
-			adp.insertAttribute(entityIndex, attr, selectedCol);
 			
-			// modify the 
-			String newHeader = getColumnName(map);
-			if (newHeader.trim().length()==0) newHeader = "New Column";
-			String type = getMeasurementScale(map);
-			String unit = getUnit(map);
-				newHeader = "<html><font face=\"Courier\"><center><small>"+type+
-				"<br>"+unit +"</small><br><b>"+
-				newHeader+"</b></center></font></html>";
-			if(dataView != null) {
+			columnName = getColumnName(map, xPath );
+			mScale = getMeasurementScale(map, xPath);
+			System.out.println("In EditCol, got mScale as " + mScale);
+			if(attributePage.isImportNeeded()) {
+				CodeImportPage codeImportPage = (CodeImportPage)dpwPlugin.getPage(DataPackageWizardInterface.CODE_IMPORT_PAGE);
+				String entityName = adp.getEntityName(entityIndex);
 				
-				Vector colLabels = dataView.getColumnLabels();
-				colLabels.set(selectedCol, newHeader);
+				codeImportPage.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
+				DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
+					public void wizardComplete(Node newDOM) {
+						System.out.println("wizardComplete");
+						modifyAttribute();
+						try
+						{
+							ServiceController services = ServiceController.getInstance();
+							ServiceProvider provider =
+							services.getServiceProvider(DataPackageInterface.class);
+							DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+							dataPackageInt.openNewDataPackage(adp, null);
+						}
+						catch (ServiceNotHandledException snhe)
+						{
+							Log.debug(6, snhe.getMessage());
+						}
+						UIController controller = UIController.getInstance();
+						morphoFrame.setVisible(false);
+						controller.removeWindow(morphoFrame);
+						morphoFrame.dispose();
+					}
+					public void wizardCanceled() {
+						System.out.println("wizardCancelled");
+						return;
+					}
+				};
+				dpwPlugin.startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, dpwListener);
 				
-				PersistentVector pv = dataView.getPV();
-				PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
-				table.setModel(ptm);
-				//DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
-				//dlsm.addSelectionInterval(selectedCol, selectedCol);
-				table.setColumnSelectionInterval(selectedCol,	selectedCol);
-				StateChangeEvent stateEvent = new 
-              StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
-        StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
-        stateMonitor.notifyStateChange(stateEvent);
+			} else { // if import is not needed
+				
+				modifyAttribute();
 			}
-		} else {
 			
-		}
-  
-  }//execute
-  
-  private String getColumnName(OrderedMap map) {
+		} // end of if USER_RESPONSE == OK_OPTION
 		
-		Object o1 = map.get("/attribute/attributeName");
+	} // end of execute
+	
+	private void modifyAttribute() 
+	{
+		
+		// get the ID of old attribute and set it for the new one
+		map.put("/attribute/@id", adp.getAttributeID(entityIndex, attrIndex));
+		
+		Attribute attr = new Attribute(map);
+		adp.deleteAttribute(entityIndex, attrIndex);
+		adp.insertAttribute(entityIndex, attr, attrIndex);
+		
+		String unit = getUnit(map);
+		
+		// modify the 
+		String newHeader = "<html><font face=\"Courier\"><center><small>"+ mScale +
+		"</small><br><small>"+unit +"</small><br><b>"+
+		columnName +"</b></center></font></html>";
+		if(dataView != null) {
+			
+			Vector colLabels = dataView.getColumnLabels();
+			colLabels.set(attrIndex, newHeader);
+			
+			PersistentVector pv = dataView.getPV();
+			PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
+			table.setModel(ptm);
+			//DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
+			//dlsm.addSelectionInterval(attrIndex, attrIndex);
+			table.setColumnSelectionInterval(attrIndex,	attrIndex);
+			StateChangeEvent stateEvent = new 
+			StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
+			StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
+			stateMonitor.notifyStateChange(stateEvent);
+			
+		} 
+		
+	}//end of modifyAttribute
+	
+  private String getColumnName(OrderedMap map, String xPath) {
+		
+		Object o1 = map.get(xPath + "/attributeName");
 		if(o1 == null) return "";
 		else return (String) o1;                       
 	}
 	
-	private String getMeasurementScale(OrderedMap map) {
+	private String getMeasurementScale(OrderedMap map, String xPath) {
 		
-		Object o1 = map.get("/attribute/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
 		if(o1 != null) return "Nominal";
-		o1 = map.get("/attribute/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
+		boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Nominal";
+		o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
 		if(o1 != null) return "Nominal";
 		
-		o1 = map.get("/attribute/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
 		if(o1 != null) return "Ordinal";
-		o1 = map.get("/attribute/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
+		b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Ordinal";
+		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
 		if(o1 != null) return "Ordinal";
 		
-		o1 = map.get("/attribute/measurementScale/interval/unit/standardUnit");
+		o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
 		if(o1 != null) return "Interval";
-		o1 = map.get("/attribute/measurementScale/ratio/unit/standardUnit");
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
 		if(o1 != null) return "Ratio";
 		
-		o1 = map.get("/attribute/measurementScale/datetime/formatString");
+		o1 = map.get(xPath + "/measurementScale/datetime/formatString");
 		if(o1 != null) return "Datetime";
 		
 		return "";

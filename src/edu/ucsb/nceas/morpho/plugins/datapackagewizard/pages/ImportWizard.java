@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.19 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:51 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public class ImportWizard extends     AbstractWizardPage
                           implements  TextImportListener {
 
   public final String pageID     = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
-  public final String nextPageID = DataPackageWizardInterface.SUMMARY;
+  public String nextPageID = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "";
 
   public final String title      = "Data Package Wizard";
@@ -83,7 +83,7 @@ public class ImportWizard extends     AbstractWizardPage
           = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
       File dataFileObj = ((DataLocation)locationPage).getDataFile();
 
-      importWizFrame = new TextImportWizardEml2(dataFileObj, this);
+      importWizFrame = new TextImportWizardEml2(dataFileObj, this, mainWizFrame);
 
       importWizFrame.setBounds(mainWizFrame.getX(), mainWizFrame.getY(),
                            mainWizFrame.getWidth(), mainWizFrame.getHeight());

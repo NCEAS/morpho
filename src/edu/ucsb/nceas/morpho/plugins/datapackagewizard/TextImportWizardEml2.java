@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-08 00:33:30 $'
- * '$Revision: 1.13 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,9 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportWizard;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
+
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.io.BufferedReader;
@@ -45,6 +47,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.Iterator;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -188,6 +191,8 @@ public class TextImportWizardEml2 extends JFrame {
 
   private short distribution = WizardSettings.ONLINE;
 
+	private WizardContainerFrame mainWizFrame;
+	
   /**
    * constructor
    *
@@ -196,12 +201,13 @@ public class TextImportWizardEml2 extends JFrame {
    * @param listener the <code>TextImportListener</code> object to be called
    *   back when import is complete
    */
-  public TextImportWizardEml2(File file, TextImportListener listener) {
+  public TextImportWizardEml2(File file, TextImportListener listener, WizardContainerFrame container) {
 
     this.listener = listener;
     this.dataFile = file;
     this.shortFilename = dataFile.getName();
-
+		this.mainWizFrame = container;
+		
     setDistribution(distribution);
 
     initControls();
@@ -556,7 +562,7 @@ public class TextImportWizardEml2 extends JFrame {
 
   public static void main(String args[]) {
     File f = new File(args[0]);
-    new TextImportWizardEml2(f, null);
+    new TextImportWizardEml2(f, null, null);
   }
 
 
@@ -1010,11 +1016,87 @@ public class TextImportWizardEml2 extends JFrame {
 
     // info should be null if all fields are not blank
     if (!ad.onAdvanceAction()) return;
-
+		
+		int attrsToBeImported = mainWizFrame.getAttributeImportCount();
+		
+		Iterator it = columnAttributes.iterator();
+		int cnt = 0;
+		boolean importNeeded = false;
+		
+		int currentEntityID;
+		String entityName = TableNameTextField.getText();
+		List colNames = new ArrayList();
+		while(it.hasNext()) {
+			ad = (AttributePage) it.next();
+			OrderedMap map1 = ad.getPageData(AttributeSettings.Attribute_xPath);
+			String colName = getColumnName(map1, AttributeSettings.Attribute_xPath);
+			
+			if(ad.isImportNeeded()) {
+				
+				String mScale = getMeasurementScale(map1, AttributeSettings.Attribute_xPath);
+				mainWizFrame.addAttributeForImport(entityName, colName, mScale, map1, AttributeSettings.Attribute_xPath, true);
+				importNeeded = true;
+			}
+			colNames.add(colName);
+			cnt++;
+			map1 = null;
+		}
+		
+		mainWizFrame.setLastImportedEntity(entityName);
+		mainWizFrame.setLastImportedAttributes(colNames);
+		
+		String prevPageID = mainWizFrame.getPreviousPageID();
+		
+		if(attrsToBeImported > 0) {
+			if(listener != null)
+				((ImportWizard)listener).nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
+		} else if(importNeeded) {
+			if(listener != null)
+			((ImportWizard)listener).nextPageID=DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+		} else {
+			if(listener != null)
+				((ImportWizard)listener).nextPageID = DataPackageWizardInterface.SUMMARY;
+		}
+		
+		
     if (listener != null) listener.importComplete(createEml2NVPairs());
 
     this.dispose();
   }
+	
+	private String getColumnName(OrderedMap map, String xPath) {
+		
+		Object o1 = map.get(xPath + "/attributeName");
+		if(o1 == null) return "";
+		else return (String) o1;                       
+	}
+	
+	private String getMeasurementScale(OrderedMap map, String xPath) {
+		
+		Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) return "Nominal";
+		boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Nominal";
+		o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
+		if(o1 != null) return "Nominal";
+		
+		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) return "Ordinal";
+		b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Ordinal";
+		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
+		if(o1 != null) return "Ordinal";
+		
+		o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
+		if(o1 != null) return "Interval";
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
+		if(o1 != null) return "Ratio";
+		
+		o1 = map.get(xPath + "/measurementScale/datetime/formatString");
+		if(o1 != null) return "Datetime";
+		
+		return "";
+	}
 
 
   /*

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-01-08 22:52:33 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-02-04 02:25:51 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -134,7 +135,7 @@ public class AttributePage extends AbstractWizardPage {
   private final String[] buttonsText
       = {
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"Unordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          +"Unordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
           +" unordered categories or text 	(statistically &nbsp;<b>nominal</b>) "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
           + "e.g: Male, Female"
@@ -142,7 +143,7 @@ public class AttributePage extends AbstractWizardPage {
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"Ordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          +"Ordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
           +"ordered categories (statistically &nbsp;<b>ordinal</b>) "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
           +"e.g: Low, High"
@@ -159,7 +160,7 @@ public class AttributePage extends AbstractWizardPage {
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"Absolute:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          +"Absolute:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
           +"measurement scale with a meaningful zero point "
           +"(statistically &nbsp;<b>ratio</b>) "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
@@ -168,7 +169,7 @@ public class AttributePage extends AbstractWizardPage {
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"Date-Time:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+          +"Date-Time:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
           +"date or time values from the Gregorian calendar "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
           +"e.g: 2002-10-24"
@@ -211,6 +212,18 @@ public class AttributePage extends AbstractWizardPage {
   }
 
 
+	public boolean isImportNeeded() {
+		if(measurementScale.equalsIgnoreCase("nominal")) {
+			return ((NominalOrdinalPanel)nominalPanel).isImportNeeded();
+		}
+		
+		if(measurementScale.equalsIgnoreCase("ordinal")) {
+			return ((NominalOrdinalPanel)ordinalPanel).isImportNeeded();
+		}
+		
+		return false;
+	}
+	
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -343,20 +356,28 @@ public class AttributePage extends AbstractWizardPage {
     helpButton.setEnabled(true);
     helpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     helpButton.setFocusPainted(false);
-    helpButton.setToolTipText("More Information about the Catgories");
+    helpButton.setToolTipText("More Information about the Categories");
+		Point loc1 = getLocation();
+		
     helpButton.addActionListener( new ActionListener() {
       private JDialog helpDialog = null;
       public void actionPerformed(ActionEvent ae) {
 
         if(helpDialog == null) {
           helpDialog = new CategoryHelpDialog();
-        }
-        if(!helpDialog.isVisible())
-          helpDialog.setBounds( (int)AttributePage.this.getX()+100,
-                (int)AttributePage.this.getY() + 50,
-                HELP_DIALOG_SIZE.width, HELP_DIALOG_SIZE.height);
-        helpDialog.setVisible(true);
-        helpDialog.toFront();
+					Point loc = getLocationOnScreen();
+					 
+					helpDialog.setLocation( (int)loc.getX() +100, (int)loc.getY() + 50);
+					helpDialog.setSize(HELP_DIALOG_SIZE);
+					helpDialog.setVisible(true);
+          
+        } else {
+					Point loc = getLocationOnScreen();
+					helpDialog.setLocation( (int)loc.getX() +100, (int)loc.getY() + 50);
+					helpDialog.setSize(HELP_DIALOG_SIZE);
+					helpDialog.setVisible(true);
+        	helpDialog.toFront();
+				}
       }
     });
 
@@ -643,30 +664,30 @@ public class AttributePage extends AbstractWizardPage {
 
     return this.getPageData(xPathRoot);
   }
-  public OrderedMap getPageData(String xPathRoot) {
+  public OrderedMap getPageData(String xPath) {
 
     returnMap.clear();
 
     String attribName = attribNameField.getText().trim();
     if (attribName!=null && !attribName.equals("")) {
-      returnMap.put(xPathRoot + "/attributeName", attribName);
+      returnMap.put(xPath + "/attributeName", attribName);
     }
 
     String attribLabel = attribLabelField.getText().trim();
     if(attribLabel != null && !attribLabel.equals("")) {
-      returnMap.put(xPathRoot + "/attributeLabel", attribLabel);
+      returnMap.put(xPath + "/attributeLabel", attribLabel);
     }
 
     String attribDef = attribDefinitionField.getText().trim();
     if (attribDef!=null && !attribDef.equals("")) {
-      returnMap.put(xPathRoot + "/attributeDefinition", attribDef);
+      returnMap.put(xPath + "/attributeDefinition", attribDef);
     }
 
     if (measurementScale!=null && !measurementScale.equals("")) {
 
       returnMap.putAll(
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
-                            xPathRoot+"/measurementScale/"+measurementScale) );
+                            xPath+"/measurementScale/"+measurementScale) );
     }
 
     return returnMap;
@@ -676,39 +697,58 @@ public class AttributePage extends AbstractWizardPage {
 
   private String findMeasurementScale(OrderedMap map) {
 
-  Object o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+	///// check for Nominal
+	
+  Object o1 = map.get( AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
   if(o1 != null) return "Nominal";
+	boolean b1 = map.containsKey( AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/entityCodeList/entityReference");
+	if(b1) return "Nominal";
   o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
   if(o1 != null) return "Nominal";
-	o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain/codeDefinition/code");
+	o1 = map.get( AttributeSettings.Nominal_xPath+"/enumeratedDomain/codeDefinition/code");
   if(o1 != null) return "Nominal";
+	b1 = map.containsKey( AttributeSettings.Nominal_xPath+"/enumeratedDomain/entityCodeList/entityReference");
+	
+	if(b1) return "Nominal";
   o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain/definition");
   if(o1 != null) return "Nominal";
 
-  o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+	///// check for Ordinal
+	
+  o1 = map.get( AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
   if(o1 != null) return "Ordinal";
+	b1 = map.containsKey( AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/entityCodeList/entityReference");
+	if(b1) return "Ordinal";
   o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
   if(o1 != null) return "Ordinal";
-	o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain/codeDefinition/code");
+	o1 = map.get( AttributeSettings.Ordinal_xPath+"/enumeratedDomain/codeDefinition/code");
   if(o1 != null) return "Ordinal";
+	b1 = map.containsKey( AttributeSettings.Ordinal_xPath+"/enumeratedDomain/entityCodeList/entityReference");
+	if(b1) return "Ordinal";
   o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain/definition");
   if(o1 != null) return "Ordinal";
 
+	///// check for Ratio
+	
   o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
   if(o1 != null) return "Ratio";
   o1 = map.get(AttributeSettings.Ratio_xPath+"/numericDomain/numberType");
   if(o1 != null) return "Ratio";
 
+	///// check for Interval
+	
   o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
   if(o1 != null) return "Interval";
   o1 = map.get(AttributeSettings.Interval_xPath+"/numericDomain/numberType");
   if(o1 != null) return "Interval";
 
+	///// check for DateTime
+	
   o1 = map.get(AttributeSettings.DateTime_xPath+"/formatString");
   if(o1 != null) return "Datetime";
   o1 = map.get(AttributeSettings.DateTime_xPath+"/dateTimePrecision");
   if(o1 != null) return "Datetime";
-
+	
   return "";
   }
 
@@ -732,7 +772,8 @@ public class AttributePage extends AbstractWizardPage {
 			 map = stripIndexOneFromMapKeys(map);
 
 		 String mScale = findMeasurementScale(map);
-		 String xPathRoot = AttributeSettings.Attribute_xPath;
+		 
+		 //String xPathRoot = AttributeSettings.Attribute_xPath;
      name = (String)map.get(xPathRoot + "/attributeName");
      if(name != null)
        attribNameField.setText(name);
@@ -803,14 +844,16 @@ public class AttributePage extends AbstractWizardPage {
 		 while(it.hasNext()) {
 			 String key = (String) it.next();
 			 String val = (String)map.get(key);
-			 if(key.indexOf("[1]") < 0) {
+			 int pos;
+			 if((pos = key.indexOf("[1]")) < 0) {
 				 newMap.put(key, val);
 				 continue;
 			 }
-			 StringTokenizer st = new StringTokenizer(key, "\\[1\\]");
 			 String newKey = "";
-			 while(st.hasMoreTokens())
-				 newKey += st.nextToken();
+			 for(;pos != -1; pos = key.indexOf("[1]")){
+				 newKey += key.substring(0,pos);
+				 key = key.substring(pos + 3);
+			 }
 			 newMap.put(newKey, val);
 		 }
 		 return newMap;
@@ -1143,6 +1186,7 @@ public class AttributePage extends AbstractWizardPage {
       CategoryHelpDialog() {
         super();
         init();
+				setVisible(false);
       }
 
       void init() {

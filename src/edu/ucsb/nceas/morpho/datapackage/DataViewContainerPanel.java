@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-30 01:07:25 $'
- * '$Revision: 1.91 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,6 @@ import edu.ucsb.nceas.morpho.framework.*;
  * A panel that presents a data-centric view of a dataPackage. In fact, the panel is somewhat
  * complicated, with numerous subpanels and components
  * The panel is made up of several JSplitPanes. The Top of the first split pane shows datapackage
- * level metadata. A summary can be seen at the top showing a summary of the datapackage in
  * a reference like format, followed by more package level metadata details. The bottom of this
  * splitPane contains a tabbed pane which has a tab for each entity in the package.
  * For each tab, another splitPane appears with a data display taking up most of the room on

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-11-25 18:03:10 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-02-04 02:25:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,5 +67,22 @@ public interface WizardPageSubPanelAPI {
    *            key/value paired settings for this particular panel
    */
   public OrderedMap getPanelData(String xPathRoot);
+	
+	
+	/**
+	*	  sets the data in the sub panel using the key/values paired Map object
+	*
+	*  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
+  *            appended when making name/value pairs.  For example, in the 
+  *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
+  *            root would be /eml:eml/dataset/keywordSet[2]
+  *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
+  *            SQUARE BRACKETS []
+	*  @param  map - OrderedMap of xPath-value pairs. xPaths in this map
+	*		    		are absolute xPath and not the relative xPaths
+	*
+	**/
+
+	public void setPanelData(String xPathRoot, OrderedMap map);
 }
 
