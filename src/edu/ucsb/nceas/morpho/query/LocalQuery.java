@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.5 2000-08-31 15:17:05 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.6 2000-08-31 16:40:15 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -50,10 +50,10 @@ public LocalQuery() {
     PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
     local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
     local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    
-    xmlcatalogfile = local_dtd_directory+"/catalog"; 
+    local_xml_directory = local_xml_directory.trim();
+    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
     xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory;
+    xmlFileFolder = local_xml_directory.trim();
 
 		//{{INIT_CONTROLS
 		//}}
@@ -65,10 +65,10 @@ public LocalQuery(String xpathstring) {
     PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
     local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
     local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    
-    xmlcatalogfile = local_dtd_directory+"/catalog"; 
+    local_xml_directory = local_xml_directory.trim();
+    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
     xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory;
+    xmlFileFolder = local_xml_directory.trim();
     this.xpathExpression = xpathstring;
 }
 
@@ -79,10 +79,10 @@ public LocalQuery(String xpathstring, JButton button) {
     PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
     local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
     local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    
-    xmlcatalogfile = local_dtd_directory+"/catalog"; 
+    local_xml_directory = local_xml_directory.trim();
+    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
     xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory;
+    xmlFileFolder = local_xml_directory.trim();
     this.xpathExpression = xpathstring;
 }
     
@@ -93,10 +93,10 @@ public LocalQuery(String[] xpathstrings, boolean and_flag, JButton button) {
     PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
     local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
     local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    
-    xmlcatalogfile = local_dtd_directory+"/catalog"; 
+    local_xml_directory = local_xml_directory.trim();
+    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
     xpathExpression = "//*[contains(text(),\"NCEAS\")]";
-    xmlFileFolder = local_xml_directory;
+    xmlFileFolder = local_xml_directory.trim();
     this.xpathExpressions = xpathstrings;
     setAndFlag(and_flag);
 }

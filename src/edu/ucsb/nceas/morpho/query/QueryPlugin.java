@@ -5,12 +5,13 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.13 2000-08-25 23:36:48 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.14 2000-08-31 16:40:15 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -65,7 +66,12 @@ public class QueryBean extends AbstractQueryBean
 	LocalQuery lq = null;
 	String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};
     JTable table;
-
+    MouseListener popupListener;
+    
+    JMenuItem ShowmenuItem;
+    JMenuItem DeletemenuItem;
+    JMenuItem EditmenuItem;
+    
 	public QueryBean() 
 	{
 	    setLayout(new BorderLayout(0,0));
@@ -675,6 +681,16 @@ public class QueryBean extends AbstractQueryBean
 		NetworkCheckBox.addItemListener(lSymItem);
 		NetworkCheckBox1.addItemListener(lSymItem);
 		//}}
+
+		popupListener = new PopupListener();
+		ShowmenuItem = new JMenuItem("Display Document");
+		ShowmenuItem.addActionListener(lSymAction);
+        popup.add(ShowmenuItem);
+		EditmenuItem = new JMenuItem("Edit Document");
+        popup.add(EditmenuItem);
+		DeletemenuItem = new JMenuItem("Delete Document");
+        popup.add(DeletemenuItem);
+
 		invalidate();
 		setVisible(true);
     try {
@@ -826,6 +842,8 @@ public class QueryBean extends AbstractQueryBean
 	com.symantec.itools.javax.swing.models.StringTreeModel eml_access = new com.symantec.itools.javax.swing.models.StringTreeModel();
 	com.symantec.itools.javax.swing.borders.EtchedBorder etchedBorder1 = new com.symantec.itools.javax.swing.borders.EtchedBorder();
 	//}}
+    //Create the popup menu.
+        javax.swing.JPopupMenu popup = new JPopupMenu();
 
 	public static void main(String argv[])
 	{
@@ -890,6 +908,23 @@ public class QueryBean extends AbstractQueryBean
 		}
 	}
 
+    class PopupListener extends MouseAdapter {
+              public void mousePressed(MouseEvent e) {
+                  maybeShowPopup(e);
+              }
+
+              public void mouseReleased(MouseEvent e) {
+                  maybeShowPopup(e);
+              }
+
+              private void maybeShowPopup(MouseEvent e) {
+                  if (e.isPopupTrigger()) {
+                     popup.show(e.getComponent(), e.getX(), e.getY());
+                  }
+                      
+              }
+    }
+    	
 
 	void AndRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
 	{
@@ -923,11 +958,26 @@ public class QueryBean extends AbstractQueryBean
 				LessButton_actionPerformed(event);
 			else if (object == SearchButton)
 				SearchButton_actionPerformed(event);
+			else if (object == ShowmenuItem) 
+				ShowMenuItem_actionPerformed(event);
 			if (object == SearchButton1)
 				SearchButton1_actionPerformed(event);
 			
 		}
 	}
+
+	void ShowMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	   int sel = table.getSelectedRow();
+	   if (sel>-1) {
+            String filename = (String)table.getModel().getValueAt(sel, 0);
+            File file = new File(filename);
+            DocFrame df = new DocFrame(file);
+            df.setVisible(true);
+            df.writeInfo();
+	   }
+	}
+
 
 	void MoreButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
@@ -1024,9 +1074,10 @@ public class QueryBean extends AbstractQueryBean
 		     lq = new LocalQuery(paths, op1, SearchButton1);
 	 }   
 		     table = lq.getRSTable();
+             table.addMouseListener(popupListener);
 		     
 		     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            ListSelectionModel rowSM = table.getSelectionModel();
+/*            ListSelectionModel rowSM = table.getSelectionModel();
             rowSM.addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     //Ignore extra messages.
@@ -1045,27 +1096,11 @@ public class QueryBean extends AbstractQueryBean
                         df.setVisible(true);
                         df.writeInfo();
                         
-     /*                   try{
-                            File file = new File("./xmlfiles/"+filename);
-                            FileReader in = new FileReader(file);
-                            StringWriter out = new StringWriter();
-                            int c;
-                            while ((c = in.read()) != -1) {
-                                out.write(c);
-                            }
-                            in.close();
-                            out.close();
-                        DocFrame df = new DocFrame();
-                        df.setVisible(true);
-                        df.;
-                        }
-                        catch (Exception w) {;}
-       */
                     }
                 }
             });
         
-		     
+*/		     
 		     
 		     RSScrollPane1.getViewport().add(table);
 //		     lq.queryAll();
@@ -1125,9 +1160,10 @@ public class QueryBean extends AbstractQueryBean
 	    lq = new LocalQuery(paths,op1, SearchButton);
 	    
 		     table = lq.getRSTable();
+             table.addMouseListener(popupListener);
 		     
 		     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            ListSelectionModel rowSM = table.getSelectionModel();
+ /*           ListSelectionModel rowSM = table.getSelectionModel();
             rowSM.addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     //Ignore extra messages.
@@ -1146,27 +1182,11 @@ public class QueryBean extends AbstractQueryBean
                         df.setVisible(true);
                         df.writeInfo();
                         
-     /*                   try{
-                            File file = new File("./xmlfiles/"+filename);
-                            FileReader in = new FileReader(file);
-                            StringWriter out = new StringWriter();
-                            int c;
-                            while ((c = in.read()) != -1) {
-                                out.write(c);
-                            }
-                            in.close();
-                            out.close();
-                        DocFrame df = new DocFrame();
-                        df.setVisible(true);
-                        df.;
-                        }
-                        catch (Exception w) {;}
-       */
                     }
                 }
             });
         
-		     
+*/		     
 		     
 		     RSScrollPane.getViewport().add(table);
 //		     lq.queryAll();
