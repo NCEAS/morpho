@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-11 18:50:21 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-10-12 22:02:28 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,9 @@ import java.net.*;
 import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Date;
+
+import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
+
 /**
  * 'Text Import Wizard' is modeled after
  * the text import wizard in Excel. Its  purpose is to automatically 
@@ -130,6 +133,16 @@ public class TextImportWizard extends javax.swing.JFrame
 	 */
 	Vector vec;
   
+  /**
+   * entity wizard
+   */
+  PackageWizard entityWizard = null;
+  
+  /**
+   * attribute wizard
+   */
+  PackageWizard attributeWizard = null;
+   
   
 	public TextImportWizard()
 	{
@@ -431,6 +444,13 @@ public class TextImportWizard extends javax.swing.JFrame
 		setTitle(sTitle);
 	}
 	
+	public void setEntityWizard(PackageWizard entity) {
+	  this.entityWizard = entity;
+	}
+	public void setAttributeWizard(PackageWizard attribute) {
+	  this.attributeWizard = attribute;
+	}
+	
 	/**
 	 * The entry point for this application.
 	 * Sets the Look and Feel to the System Look and Feel.
@@ -569,6 +589,12 @@ public class TextImportWizard extends javax.swing.JFrame
 
 	void exitApplication()
 	{
+	  if (entityWizard!=null) {
+	    entityWizard.setXMLString(createXMLEntityString());
+	  }
+	  if (attributeWizard!=null) {
+	    attributeWizard.setXMLString(createXMLAttributeString());
+	  }
 	  this.setVisible(false);
 	  this.dispose();
 /*		try {
@@ -1579,15 +1605,15 @@ public void startImport(String file) {
 	  XMLBuffer.append("<!DOCTYPE eml-attribute PUBLIC \"-//NCEAS//eml-attribute-2.0//EN\" \"eml-attribute-2.0.dtd\">\n");
 	  XMLBuffer.append("<eml-attribute>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
-	  XMLBuffer.append("    <attribute>\n");
 	  for (int i=0;i<colTitles.size();i++) {
-	    XMLBuffer.append("        <attributeName>"+colTitles.elementAt(i)+"</attributeName>\n");
-	    XMLBuffer.append("        <attributeLabel>"+colTitles.elementAt(i)+"</attributeLabel>\n");
+	    XMLBuffer.append("    <attribute>\n");
+	    XMLBuffer.append("        <attributeName> "+colTitles.elementAt(i)+"</attributeName>\n");
+	    XMLBuffer.append("        <attributeLabel> "+colTitles.elementAt(i)+"</attributeLabel>\n");
 	    XMLBuffer.append("        <attributeDefinition>"+colTitles.elementAt(i)+"</attributeDefinition>\n");
-	    XMLBuffer.append("        <unit>"+units.elementAt(i)+"</unit>\n");
-	    XMLBuffer.append("        <dataType>"+colTypes.elementAt(i)+"</dataType>\n");
+	    XMLBuffer.append("        <unit> "+units.elementAt(i)+"</unit>\n");
+	    XMLBuffer.append("        <dataType> "+colTypes.elementAt(i)+"</dataType>\n");
+	    XMLBuffer.append("    </attribute>\n");
     }	  
-	  XMLBuffer.append("    </attribute>\n");
 	  XMLBuffer.append("</eml-attribute>\n");
 	  return XMLBuffer.toString();
 	}
@@ -1602,10 +1628,12 @@ public void startImport(String file) {
 	  XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//NCEAS//eml-entity-2.0//EN\" \"eml-entity-2.0.dtd\">\n");
 	  XMLBuffer.append("<table-entity>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
-	  XMLBuffer.append("    <entityName>"+TableNameTextField.getText()+"</entityName>\n");
-	  XMLBuffer.append("    <entityDescription>"+TableDescriptionTextField.getText()+"</entityDescription>\n");
-	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"/>\n");
-	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"/>\n");
+	  XMLBuffer.append("    <entityName> "+TableNameTextField.getText()+"</entityName>\n");
+	  XMLBuffer.append("    <entityDescription> "+TableDescriptionTextField.getText()+"</entityDescription>\n");
+	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"> </orientation>\n");
+	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"> </caseSensitive>\n");
+	  String numRecords = (new Integer(nlines - startingLine + 1)).toString();
+	  XMLBuffer.append("    <numberOfRecords> "+numRecords+"</numberOfRecords>\n");
 	  XMLBuffer.append("</table-entity>\n");
 	  return XMLBuffer.toString();
 	}
