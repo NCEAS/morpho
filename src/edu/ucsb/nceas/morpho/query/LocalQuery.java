@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-25 01:55:14 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2001-05-26 00:05:51 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -598,80 +598,72 @@ public class LocalQuery extends DefaultHandler
 // -------------------------------------------------------------------------
 
 
-
-/**
- * given a QueryTerm, construct a XPath expression
- */
-private String QueryTermToXPath(QueryTerm qt) {
-  String xpath;
-  boolean caseSensitive = qt.isCaseSensitive();
-  String searchMode = qt.getSearchMode();
-  String value = qt.getValue();
-  if (!caseSensitive) {
-    value = value.toLowerCase();
-  }
-  String pathExpression = qt.getPathExpression();
-
-  // construct path part of XPath
-  if (pathExpression==null) {
-    xpath = "//*"; 
-  }
-  // is path absolute or relative
-  else if (pathExpression.startsWith("/")) {      // absolute
-    xpath =   pathExpression;
-  }
-  else {
-    xpath = "//"+pathExpression;
-  }
-  if ((value.equals("%"))||(value.equals("*"))) {
+  /**
+   * given a QueryTerm, construct a XPath expression
+   */
+  private String QueryTermToXPath(QueryTerm qt) {
+    String xpath;
+    boolean caseSensitive = qt.isCaseSensitive();
+    String searchMode = qt.getSearchMode();
+    String value = qt.getValue();
+    if (!caseSensitive) {
+      value = value.toLowerCase();
+    }
+    String pathExpression = qt.getPathExpression();
+  
+    // construct path part of XPath
+    if (pathExpression==null) {
+      xpath = "//*"; 
+    } else if (pathExpression.startsWith("/")) {
+      // path is absolute 
+      xpath =   pathExpression;
+    } else {
+      // path is relative 
+      xpath = "//"+pathExpression;
+    }
+  
     // wild card text search case
-    xpath = xpath+"[text()]";
-    return xpath;
-  }
-  else {
-    if (!caseSensitive) { // use translate function to convert text() to lowercase
-          // check on searchMode
-    if (searchMode.equals("starts-with")) {
-      xpath = xpath+"[starts-with(translate(text(),"
-          +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
-          +value+"\")]";    
-    }
-    else if (searchMode.equals("ends-with")) {
-      xpath = xpath+"[contains(translate(text(),"
-          +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
-          +value+"\")]";
-            // not correct - fix later
-    }
-    else if (searchMode.equals("contains")) {
-      xpath = xpath+"[contains(translate(text(),"
-          +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
-          +value+"\")]";
-    }
-    else if (searchMode.equals("matches-exactly")) {
-      xpath = xpath+"[translate(text(),"
-        +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\")=\""
-        +value+"\"]";
-    } 
+    if ((value==null) || (value.equals("%")) || (value.equals("*")) ||
+        (value.equals("")) ) {
+      xpath = xpath+"[text()]";
+      return xpath;
+    } else {
+      if (!caseSensitive) { 
+        // use translate function to convert text() to lowercase
+        // check on searchMode
+        if (searchMode.equals("starts-with")) {
+          xpath = xpath+"[starts-with(translate(text(),"
+            +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
+            +value+"\")]";    
+        } else if (searchMode.equals("ends-with")) {
+          xpath = xpath+"[contains(translate(text(),"
+            +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
+            +value+"\")]";
+          // not correct - fix later
+        } else if (searchMode.equals("contains")) {
+          xpath = xpath+"[contains(translate(text(),"
+            +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
+            +value+"\")]";
+        } else if (searchMode.equals("matches-exactly")) {
+          xpath = xpath+"[translate(text(),"
+            +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\")=\""
+            +value+"\"]";
+        } 
+      } else {
+        if (searchMode.equals("starts-with")) {
+          xpath = xpath+"[starts-with(text(),\""+value+"\")]";    
+        } else if (searchMode.equals("ends-with")) {
+          xpath = xpath+"[contains(text(),\""+value+"\")]";
+                          // not correct - fix later
+        } else if (searchMode.equals("contains")) {
+          xpath = xpath+"[contains(text(),\""+value+"\")]";
+        } else if (searchMode.equals("matches-exactly")) {
+          xpath = xpath+"[text()=\""+value+"\"]";
+        } 
       }
-  else {
-    if (searchMode.equals("starts-with")) {
-      xpath = xpath+"[starts-with(text(),\""+value+"\")]";    
     }
-    else if (searchMode.equals("ends-with")) {
-      xpath = xpath+"[contains(text(),\""+value+"\")]";
-                        // not correct - fix later
-    }
-    else if (searchMode.equals("contains")) {
-      xpath = xpath+"[contains(text(),\""+value+"\")]";
-    }
-    else if (searchMode.equals("matches-exactly")) {
-      xpath = xpath+"[text()=\""+value+"\"]";
-    } 
-  }
-
-  }
-return xpath;
-}               
+    return xpath;
+  }               
 
 
   /**

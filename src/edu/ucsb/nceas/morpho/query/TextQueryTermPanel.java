@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-17 20:03:41 $'
- * '$Revision: 1.2 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-26 00:05:51 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-
 import java.awt.*;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -35,19 +34,15 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.*;
 
-
 /**
  * This panel contains all the elements for a single text
  * query term. It is repeated for multiple combined queries.
  * It is essential a query component that can return a search
  * term, a search type (e.g. contains, matches, etc.), and
  * some information about the path (e.g. all, title, etc.)
- * 
- * @author higgins
  */
 public class TextQueryTermPanel extends javax.swing.JComponent
 {
-
 	/**
 	 * Constructor
 	 */
@@ -61,39 +56,56 @@ public class TextQueryTermPanel extends javax.swing.JComponent
 		SetChoicesPanel.setAlignmentX(0.496933F);
 		SetChoicesPanel.setLayout(new BoxLayout(SetChoicesPanel,BoxLayout.Y_AXIS));
 		add(BorderLayout.CENTER,SetChoicesPanel);
+
+		QueryTermHelpPanel.setLayout(
+                                   new FlowLayout(FlowLayout.LEFT,5,5));
+		HelpLabel.setText("Check boxes determine metadata fields " +
+                                  "that are searched.");
+		QueryTermHelpPanel.add(HelpLabel);
+		SetChoicesPanel.add(QueryTermHelpPanel);
+
 		QueryTermPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		SetChoicesPanel.add(QueryTermPanel);
+                Box checkBoxHorizontal = Box.createHorizontalBox();
+		AllCheckBox.setText("All");
+		AllCheckBox.setActionCommand("All");
+		AllCheckBox.setSelected(true);
+                AllCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+                checkBoxHorizontal.add(AllCheckBox);
+
+                JPanel checkBoxVertical = new JPanel();
+                checkBoxVertical.setLayout(new BoxLayout(checkBoxVertical,
+                                             BoxLayout.Y_AXIS));
+                checkBoxVertical.setAlignmentX(Component.LEFT_ALIGNMENT);
 		TitleCheckBox.setText("Title");
 		TitleCheckBox.setActionCommand("Title");
 		TitleCheckBox.setSelected(true);
 		TitleCheckBox.setEnabled(false);
-		QueryTermPanel.add(TitleCheckBox);
+		checkBoxVertical.add(TitleCheckBox);
 		AbstractCheckBox.setText("Abstract");
 		AbstractCheckBox.setActionCommand("Abstract");
 		AbstractCheckBox.setSelected(true);
 		AbstractCheckBox.setEnabled(false);
-		QueryTermPanel.add(AbstractCheckBox);
-		KeyWordsCheckBox.setText("Key Words");
-		KeyWordsCheckBox.setActionCommand("Key Words");
+		checkBoxVertical.add(AbstractCheckBox);
+		KeyWordsCheckBox.setText("Keywords");
+		KeyWordsCheckBox.setActionCommand("Keywords");
 		KeyWordsCheckBox.setSelected(true);
 		KeyWordsCheckBox.setEnabled(false);
-		QueryTermPanel.add(KeyWordsCheckBox);
-		AllCheckBox.setText("All");
-		AllCheckBox.setActionCommand("All");
-		AllCheckBox.setSelected(true);
-		QueryTermPanel.add(AllCheckBox);
+		checkBoxVertical.add(KeyWordsCheckBox);
+                checkBoxHorizontal.add(checkBoxVertical);
+		QueryTermPanel.add(checkBoxHorizontal);
+
 		QueryTermPanel.add(QueryTypeComboBox);
 		QueryTypeComboBox.setBackground(java.awt.Color.white);
-		TextLabel.setText("Subject");
+		//TextLabel.setText("Subject");
+		TextLabel.setText("  ");
 		QueryTermPanel.add(TextLabel);
 		TextLabel.setForeground(java.awt.Color.black);
 		TextLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		TextValueBox.setColumns(20);
 		QueryTermPanel.add(TextValueBox);
-		QueryTermHelpPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		SetChoicesPanel.add(QueryTermHelpPanel);
-		HelpLabel.setText("Check boxes indicate metadata areas to be searched; \'Subject\' indicates text to be found");
-		QueryTermHelpPanel.add(HelpLabel);
+		SetChoicesPanel.add(QueryTermPanel);
+		SetChoicesPanel.add(Box.createVerticalGlue());
+		SetChoicesPanel.add(Box.createRigidArea(new Dimension(8,8)));
 		//}}
 		QueryTypeComboBox.addItem("contains");
 		QueryTypeComboBox.addItem("starts-with");
@@ -151,62 +163,97 @@ public class TextQueryTermPanel extends javax.swing.JComponent
 		new DriverFrame().show();
 	}
 
-/**
- * get the text that is to be seached for.
- */
-public String getValue() {
-  String ret = TextValueBox.getText();
-  return ret;
-}
+  /**
+   * get the text that is to be seached for.
+   */
+  public String getValue() {
+    String ret = TextValueBox.getText();
+    return ret;
+  }
+  
+  /**
+   * set the text that is to be seached for.
+   */
+  public void setValue(String value) {
+    TextValueBox.setText(value);
+  }
 
-/**
- * return the value of the combobox which contains the
- * search mode (i.e. contains, starts-with, etc.)
- */
- public String getSearchMode() {
-    String ret = (String)QueryTypeComboBox.getSelectedItem();
- return ret;
- }
+  /**
+   * return the value of the combobox which contains the
+   * search mode (i.e. contains, starts-with, etc.)
+   */
+   public String getSearchMode() {
+      String ret = (String)QueryTypeComboBox.getSelectedItem();
+   return ret;
+   }
+  
+  /**
+   * set the search mode field
+   */
+  public void setSearchMode(String value) {
+    for (int i = 0; i < QueryTypeComboBox.getItemCount(); i++) {
+      if (value.equals(QueryTypeComboBox.getItemAt(i))) {
+        QueryTypeComboBox.setSelectedIndex(i);
+      }
+    }
+  }
 
-/**
- * returns state of 'All' checkbox
- */
-/*
- * get state of searchAll check box
- */
- public boolean getAllState() {
+  /*
+   * get state of 'All' check box
+   */
+  public boolean getAllState() {
     return AllCheckBox.isSelected();
- }
+  }
  
-/**
- * returns state of Title checkbox
- */
-/*
- * get state of searchTitle check box
- */
- public boolean getTitleState() {
-    return TitleCheckBox.isSelected();
- }
+  /*
+   * set state of 'All' check box
+   */
+  public void setAllState(boolean state) {
+    AllCheckBox.setSelected(state);
+  }
+ 
+  /**
+   * returns state of Title checkbox
+   */
+  public boolean getTitleState() {
+     return TitleCheckBox.isSelected();
+  }
 
-/**
- * returns state of Abstract checkbox
- */
-/*
- * get state of searchAbstract check box
- */
- public boolean getAbstractState() {
+  /*
+   * set state of Title check box
+   */
+  public void setTitleState(boolean state) {
+    TitleCheckBox.setSelected(state);
+  }
+ 
+  /**
+   * returns state of Abstract checkbox
+   */
+  public boolean getAbstractState() {
     return AbstractCheckBox.isSelected();
- }
+  }
 
-/**
- * returns state of Keywords check box
- */
-/*
- * get state of searchKeyWords check box
- */
- public boolean getKeyWordsState() {
-    return KeyWordsCheckBox.isSelected();
- }
+  /*
+   * set state of Abstract check box
+   */
+  public void setAbstractState(boolean state) {
+    AbstractCheckBox.setSelected(state);
+  }
+ 
+   /**
+    * returns state of Keywords check box
+    */
+   public boolean getKeyWordsState() {
+     return KeyWordsCheckBox.isSelected();
+   }
+
+  /*
+   * set state of KeyWords check box
+   */
+  public void setKeyWordsState(boolean state) {
+    KeyWordsCheckBox.setSelected(state);
+  }
+ 
 	class SymItem implements java.awt.event.ItemListener
 	{
 		public void itemStateChanged(java.awt.event.ItemEvent event)

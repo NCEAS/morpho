@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-25 16:02:27 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-26 00:05:51 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,23 +110,63 @@ public class QueryDialog extends javax.swing.JDialog
     //{{INIT_CONTROLS
     setTitle("Search");
     getContentPane().setLayout(new BorderLayout(0, 0));
-    setSize(718, 347);
+    setSize(650, 375);
     setVisible(false);
-    QueryPanel.setLayout(new BorderLayout(0, 0));
-    getContentPane().add(BorderLayout.CENTER, QueryPanel);
-    QueryPanel.add(BorderLayout.CENTER, QueryTabs);
+    queryPanel.setLayout(new BoxLayout(queryPanel, BoxLayout.Y_AXIS));
+    getContentPane().add(BorderLayout.CENTER, queryPanel);
+    queryPanel.add(Box.createVerticalStrut(8));
+
+    titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+    titlePanel.add(Box.createHorizontalStrut(8));
+    QueryTitleLabel.setText("Query Title ");
+    titlePanel.add(QueryTitleLabel);
+    titlePanel.add(Box.createHorizontalStrut(8));
+    //queryTitleTF.setColumns(20);
+    queryTitleTF.setText("Untitled-Search-1");
+
+    //Make the textfield a fixed height.
+    JPanel queryTitleConstraintPanel = new JPanel() {
+      public Dimension getMinimumSize() {
+        return getPreferredSize();
+      }
+      public Dimension getPreferredSize() {
+        return new Dimension(super.getPreferredSize().width, 24);
+      }
+      public Dimension getMaximumSize() {
+        return getPreferredSize();
+      }
+    };
+
+    queryTitleConstraintPanel.add(queryTitleTF);
+
+    titlePanel.add(queryTitleConstraintPanel);
+    titlePanel.add(Box.createHorizontalStrut(8));
+    titlePanel.add(Box.createHorizontalGlue());
+    SearchChoicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    CatalogSearchCheckBox.setText("Catalog Search");
+    CatalogSearchCheckBox.setActionCommand("Catalog Search");
+    CatalogSearchCheckBox.setSelected(true);
+    SearchChoicePanel.add(CatalogSearchCheckBox);
+    LocalSearchCheckBox.setText("Local Search");
+    LocalSearchCheckBox.setActionCommand("Local Search");
+    LocalSearchCheckBox.setSelected(true);
+    SearchChoicePanel.add(LocalSearchCheckBox);
+    titlePanel.add(SearchChoicePanel);
+    titlePanel.add(Box.createHorizontalStrut(8));
+    queryPanel.add(titlePanel);
+    queryPanel.add(Box.createVerticalStrut(8));
+
+    queryPanel.add(QueryTabs);
     SubjectTextPanel.setLayout(new BorderLayout(0, 0));
     QueryTabs.add(SubjectTextPanel);
-    SubjectTextPanel.setBounds(2, 24, 713, 277);
     SubjectTextPanel.setVisible(false);
     QueryScrollPanel.setOpaque(true);
+    QueryScrollPanel.setPreferredSize(new Dimension(
+                     QueryScrollPanel.getPreferredSize().width, 500 ));
     SubjectTextPanel.add(BorderLayout.CENTER, QueryScrollPanel);
-    Query.setLayout(new BorderLayout(0, 0));
-    QueryScrollPanel.getViewport().add(Query);
     QueryChoicesPanel.setLayout(new BoxLayout(QueryChoicesPanel, 
                                               BoxLayout.Y_AXIS));
-    Query.add(BorderLayout.CENTER, QueryChoicesPanel);
-    Query.setBounds(0, 0, 710, 249);
+    QueryScrollPanel.getViewport().add(QueryChoicesPanel);
     QueryChoicesPanel.setAlignmentX(0.0F);
     SubjectTextControlsPanel.setLayout(new BorderLayout(0, 0));
     SubjectTextPanel.add(BorderLayout.SOUTH, SubjectTextControlsPanel);
@@ -153,25 +193,27 @@ public class QueryDialog extends javax.swing.JDialog
     MoreLessControlsPanel.add(OtherTabsCheckBox);
     TaxonomicPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     QueryTabs.add(TaxonomicPanel);
-    TaxonomicPanel.setBounds(2, 24, 713, 277);
+    //TaxonomicPanel.setBounds(2, 24, 713, 277);
     TaxonomicPanel.setVisible(false);
     Spatial.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     QueryTabs.add(Spatial);
-    Spatial.setBounds(2, 24, 713, 277);
+    //Spatial.setBounds(2, 24, 713, 277);
     Spatial.setVisible(false);
     QueryTabs.setSelectedIndex(0);
     QueryTabs.setSelectedComponent(SubjectTextPanel);
     QueryTabs.setTitleAt(0, "Subject/Text");
     QueryTabs.setTitleAt(1, "Taxonomic");
     QueryTabs.setTitleAt(2, "Spatial");
-    QueryNamePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    QueryPanel.add(BorderLayout.SOUTH, QueryNamePanel);
+
+    //queryPanel.add(Box.createVerticalGlue());
+
+/*
     QueryTitleLabel.setText("  Query Title ");
-    QueryNamePanel.add(QueryTitleLabel);
-    QueryTitleTF.setColumns(20);
-    QueryNamePanel.add(QueryTitleTF);
+    controlButtonsPanel.add(QueryTitleLabel);
+    queryTitleTF.setColumns(20);
+    controlButtonsPanel.add(queryTitleTF);
     SearchChoicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    QueryNamePanel.add(SearchChoicePanel);
+    controlButtonsPanel.add(SearchChoicePanel);
     CatalogSearchCheckBox.setText("Catalog Search");
     CatalogSearchCheckBox.setActionCommand("Catalog Search");
     CatalogSearchCheckBox.setSelected(true);
@@ -180,11 +222,25 @@ public class QueryDialog extends javax.swing.JDialog
     LocalSearchCheckBox.setActionCommand("Local Search");
     LocalSearchCheckBox.setSelected(true);
     SearchChoicePanel.add(LocalSearchCheckBox);
-    ExecuteButton.setText("Begin Search");
-    ExecuteButton.setActionCommand("Begin Search");
-    QueryNamePanel.add(ExecuteButton);
+*/
+    //controlButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    queryPanel.add(Box.createVerticalStrut(8));
+    controlButtonsPanel.setLayout(new BoxLayout(controlButtonsPanel,
+                                  BoxLayout.X_AXIS));
+    controlButtonsPanel.add(Box.createHorizontalStrut(8));
+    controlButtonsPanel.add(Box.createHorizontalGlue());
+    executeButton.setText("Search");
+    executeButton.setActionCommand("Search");
+    controlButtonsPanel.add(executeButton);
+    cancelButton.setText("Cancel");
+    cancelButton.setActionCommand("Cancel");
+    controlButtonsPanel.add(Box.createHorizontalStrut(8));
+    controlButtonsPanel.add(cancelButton);
+    controlButtonsPanel.add(Box.createHorizontalStrut(8));
+    queryPanel.add(controlButtonsPanel);
+    queryPanel.add(Box.createVerticalStrut(8));
     //}}
-    QueryNamePanel.setBorder(BorderFactory.createRaisedBevelBorder());
+    //controlButtonsPanel.setBorder(BorderFactory.createRaisedBevelBorder());
     textPanels = new Vector();
     TextQueryTermPanel tqt1 = new TextQueryTermPanel();
     QueryChoicesPanel.add(tqt1);
@@ -200,7 +256,8 @@ public class QueryDialog extends javax.swing.JDialog
     SymItem lSymItem = new SymItem();
     AndRadioButton.addItemListener(lSymItem);
     OrRadioButton.addItemListener(lSymItem);
-    ExecuteButton.addActionListener(lSymAction);
+    executeButton.addActionListener(lSymAction);
+    cancelButton.addActionListener(lSymAction);
     //}}
   }
 
@@ -258,12 +315,13 @@ public class QueryDialog extends javax.swing.JDialog
   private boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-  private javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
+  private javax.swing.JPanel titlePanel = new javax.swing.JPanel();
+  private javax.swing.JPanel queryPanel = new javax.swing.JPanel();
   private javax.swing.JTabbedPane QueryTabs = new javax.swing.JTabbedPane();
   private javax.swing.JPanel SubjectTextPanel = new javax.swing.JPanel();
   private javax.swing.JScrollPane QueryScrollPanel = 
                       new javax.swing.JScrollPane();
-  private javax.swing.JPanel Query = new javax.swing.JPanel();
+  //private javax.swing.JPanel Query = new javax.swing.JPanel();
   private javax.swing.JPanel QueryChoicesPanel = new javax.swing.JPanel();
   private javax.swing.JPanel SubjectTextControlsPanel = 
                       new javax.swing.JPanel();
@@ -277,15 +335,16 @@ public class QueryDialog extends javax.swing.JDialog
   private javax.swing.JCheckBox OtherTabsCheckBox = new javax.swing.JCheckBox();
   private javax.swing.JPanel TaxonomicPanel = new javax.swing.JPanel();
   private javax.swing.JPanel Spatial = new javax.swing.JPanel();
-  private javax.swing.JPanel QueryNamePanel = new javax.swing.JPanel();
+  private javax.swing.JPanel controlButtonsPanel = new javax.swing.JPanel();
   private javax.swing.JLabel QueryTitleLabel = new javax.swing.JLabel();
-  private javax.swing.JTextField QueryTitleTF = new javax.swing.JTextField();
+  private javax.swing.JTextField queryTitleTF = new javax.swing.JTextField(20);
   private javax.swing.JPanel SearchChoicePanel = new javax.swing.JPanel();
   private javax.swing.JCheckBox CatalogSearchCheckBox = 
                       new javax.swing.JCheckBox();
   private javax.swing.JCheckBox LocalSearchCheckBox = 
                       new javax.swing.JCheckBox();
-  private javax.swing.JButton ExecuteButton = new javax.swing.JButton();
+  private javax.swing.JButton executeButton = new javax.swing.JButton();
+  private javax.swing.JButton cancelButton = new javax.swing.JButton();
   //}}
 
 
@@ -299,8 +358,10 @@ public class QueryDialog extends javax.swing.JDialog
         MoreButton_actionPerformed(event);
       else if (object == LessButton)
         LessButton_actionPerformed(event);
-      else if (object == ExecuteButton)
-        ExecuteButton_actionPerformed(event);
+      else if (object == executeButton)
+        executeButton_actionPerformed(event);
+      else if (object == cancelButton)
+        cancelButton_actionPerformed(event);
     }
   }
 
@@ -310,11 +371,11 @@ public class QueryDialog extends javax.swing.JDialog
   private void MoreButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     TextQueryTermPanel tq = new TextQueryTermPanel();
-      QueryChoicesPanel.add(tq);
-      textPanels.addElement(tq);
-      LessButton.setEnabled(true);
-      QueryChoicesPanel.invalidate();
-      SubjectTextPanel.validate();
+    QueryChoicesPanel.add(tq);
+    textPanels.addElement(tq);
+    LessButton.setEnabled(true);
+    QueryChoicesPanel.invalidate();
+    SubjectTextPanel.validate();
   }
 
   /**
@@ -463,20 +524,29 @@ public class QueryDialog extends javax.swing.JDialog
    * Save the query when the execute button is set, making it accessible to
    * the getQuery() method
    */
-  private void ExecuteButton_actionPerformed(java.awt.event.ActionEvent event)
+  private void executeButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     String temp = buildTextPathQuery();
-    if (QueryTitleTF.getText().length() < 1)
+    if (queryTitleTF.getText().length() < 1)
     {
-      QueryTitleTF.setText(new Date().toString());
+      queryTitleTF.setText(new Date().toString());
     }
 
     Query query = new Query(temp, framework);
-    query.setQueryTitle(QueryTitleTF.getText());
+    query.setQueryTitle(queryTitleTF.getText());
     query.setSearchMetacat(CatalogSearchCheckBox.isSelected());
     query.setSearchLocal(LocalSearchCheckBox.isSelected());
     savedQuery = query;
     setVisible(false);
+  }
+
+  /**
+   * Close the dialog when the cancel button is pressed
+   */
+  private void cancelButton_actionPerformed(java.awt.event.ActionEvent event)
+  {
+    setVisible(false);
+    dispose();
   }
 
   /**
@@ -494,7 +564,65 @@ public class QueryDialog extends javax.swing.JDialog
   {
     this.savedQuery = query;
 
+    queryTitleTF.setText(query.getQueryTitle());
     // Now refill all of the screen widgets with the query info
     framework.debug(9, "Warning: setQuery implementation not complete!");
+    QueryGroup rootGroup = savedQuery.getQueryGroup();
+    initializeSubjectSearch(rootGroup);
+  }
+
+  /**
+   * Fill in the fields in the subject query with the proper values from
+   * a QueryGroup
+   */
+  private void initializeSubjectSearch(QueryGroup rootGroup) 
+  {
+    // Remove any existing text panels
+    for (int i = 0;  i < textPanels.size();  i++) {
+      Component comp = (Component) textPanels.lastElement();
+      QueryChoicesPanel.remove(comp);
+      textPanels.removeElementAt(textPanels.size() - 1);
+    }
+
+    // Find the QueryGroup containing the subject parameters
+    Enumeration rootChildren = rootGroup.getChildren();
+    QueryGroup subjectGroup = (QueryGroup)rootChildren.nextElement();
+    Enumeration subjectChildren = subjectGroup.getChildren();
+    while (subjectChildren.hasMoreElements()) {
+
+      Object obj = subjectChildren.nextElement();
+      framework.debug(9, "Class instance is: " + obj.getClass().getName());
+/*
+      // Process each subject query group and make a text panel out of it
+      // By getting the params out of the contained QueryTerms
+      QueryGroup currentGroup = (QueryGroup)subjectChildren.nextElement();
+      Enumeration qtList = currentGroup.getChildren();
+*/
+      try {
+        QueryTerm qt = (QueryTerm)obj;
+        framework.debug(9, "Query Term found:");
+        framework.debug(9, "   path:" + qt.getPathExpression());
+        framework.debug(9, "  value:" + qt.getValue());
+        framework.debug(9, "   mode:" + qt.getSearchMode());
+        framework.debug(9, "   case:" + (new Boolean(qt.isCaseSensitive())));
+  
+        TextQueryTermPanel tq = new TextQueryTermPanel();
+        tq.setValue(qt.getValue());
+        if (qt.getPathExpression() == null) {
+          tq.setAllState(true);
+        }
+        QueryChoicesPanel.add(tq);
+        textPanels.addElement(tq);
+      } catch (ClassCastException cce) {
+        framework.debug(9, cce.getMessage());
+      }
+    }
+    if (textPanels.size() < 2) {
+      LessButton.setEnabled(false);
+    } else {
+      LessButton.setEnabled(true);
+    }
+    QueryChoicesPanel.invalidate();
+    SubjectTextPanel.validate();
   }
 }
