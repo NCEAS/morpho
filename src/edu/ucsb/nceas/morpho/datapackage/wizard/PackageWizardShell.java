@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-24 21:11:00 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2001-07-26 17:32:00 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -339,7 +339,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                                            "readable (on Metacat)?", true);
       //saveToMetacatButton = new JButton("Save To Metacat");
       JList idlist = new JList(listContent);
-      idlist.setPreferredSize(new Dimension(100,100));
+      idlist.setPreferredSize(new Dimension(100,1000));
       JLabel listLabel = new JLabel("You are creating the following package " +
                                     "members: ");
       donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
