@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.7 2000-09-25 20:43:09 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.8 2000-09-29 22:52:57 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -433,7 +433,7 @@ public void LogOut() {
         XMLList xmll = new XMLList(in,"doctype");
         Vector vec1 = xmll.getListVector();
         for (Enumeration e = vec1.elements() ; e.hasMoreElements() ;) {
-            vec.add(e.nextElement());
+            vec.addElement(e.nextElement());
         }
         
         DocTypeList.setListData(vec);

@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: XMLList.java,v 1.1 2000-08-22 19:16:09 higgins Exp $'
+ *     Version: '$Id: XMLList.java,v 1.2 2000-09-29 22:52:57 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -101,7 +101,7 @@ public void setListItem(String item) {
       String currentTag = (String)elementStack.peek();
       if (currentTag.equals(ListItem)) {
         if(!(inputString.trim().endsWith(".xsl"))) {   // filter out xsl docs
-          listVector.add(inputString.trim());
+          listVector.addElement(inputString.trim());
         }
       }
     }

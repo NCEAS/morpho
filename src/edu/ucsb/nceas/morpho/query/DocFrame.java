@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.8 2000-09-25 20:01:36 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.9 2000-09-29 22:52:57 higgins Exp $'
  */
 
 
@@ -60,35 +60,38 @@ public class DocFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
+		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(405,305);
 		setVisible(false);
 		DocControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.NORTH,DocControlPanel);
-		DocControlPanel.setBounds(0,0,405,35);
+		DocControlPanel.setBounds(0,0,405,10);
 		JTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
 		getContentPane().add(BorderLayout.CENTER,JTabbedPane1);
-		JTabbedPane1.setBounds(0,35,405,270);
+		JTabbedPane1.setBounds(0,10,405,295);
 		JScrollPane1.setOpaque(true);
 		JTabbedPane1.add(JScrollPane1);
-		JScrollPane1.setBounds(2,2,400,240);
+		JScrollPane1.setBounds(2,2,400,265);
 		JScrollPane1.setVisible(false);
+		XMLText.setWrapStyleWord(true);
+		XMLText.setLineWrap(true);
 		JScrollPane1.getViewport().add(XMLText);
-		XMLText.setBounds(0,0,397,237);
+		XMLText.setBounds(0,0,397,262);
 		JScrollPane2.setOpaque(true);
 		JTabbedPane1.add(JScrollPane2);
-		JScrollPane2.setBounds(2,2,400,240);
+		JScrollPane2.setBounds(2,2,400,265);
 		JScrollPane2.setVisible(false);
 		JScrollPane2.getViewport().add(HTMLPane);
-		HTMLPane.setBounds(0,0,397,237);
+		HTMLPane.setBounds(0,0,397,262);
 		JPanel1.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(JPanel1);
-		JPanel1.setBounds(2,2,400,240);
+		JPanel1.setBounds(2,2,400,265);
 		JPanel1.setVisible(false);
 		JPanel1.add(BorderLayout.WEST,OutputScrollPanel);
-		OutputScrollPanel.setBounds(0,0,3,240);
+		OutputScrollPanel.setBounds(0,0,3,265);
 		JPanel1.add(BorderLayout.CENTER,NestedPanelScrollPanel);
-		NestedPanelScrollPanel.setBounds(3,0,397,240);
+		NestedPanelScrollPanel.setBounds(3,0,397,265);
 		JTabbedPane1.setSelectedComponent(JScrollPane1);
 		JTabbedPane1.setSelectedIndex(0);
 		JTabbedPane1.setTitleAt(0,"Text");
