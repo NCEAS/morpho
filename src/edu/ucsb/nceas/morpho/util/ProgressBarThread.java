@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-10 20:12:09 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-04-10 21:52:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -275,7 +275,7 @@ public class ProgressBarThread
    *
    * @param a <code>javax.swing.Action</code> to be executed
    */
-  public void setCustomEditAction(Action a) {
+  public void setCustomCancelAction(Action a) {
 
     this.customCancelAction = a;
   }
