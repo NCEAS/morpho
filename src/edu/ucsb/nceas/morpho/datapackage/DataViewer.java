@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-02 20:33:38 $'
- * '$Revision: 1.89 $'
+ *     '$Date: 2003-12-10 18:24:31 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -338,8 +338,8 @@ public class DataViewer extends javax.swing.JPanel
 		DataIDLabel.setText("Data ID: ");
 		DataIDLabel.setNextFocusableComponent(CancelButton);
 		ButtonControlPanel.add(DataIDLabel);
-		CancelButton.setText("Cancel");
-		CancelButton.setActionCommand("Cancel");
+		CancelButton.setText("Revert");
+		CancelButton.setActionCommand("Revert");
     String canceltext = "Removes all changes since last Update";
     CancelButton.setToolTipText(canceltext);
 		ButtonControlPanel.add(CancelButton);
