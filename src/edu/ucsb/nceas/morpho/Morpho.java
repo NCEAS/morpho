@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-11 21:57:18 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2004-02-27 23:08:42 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -327,6 +327,52 @@ public class Morpho
                 Log.debug(5, "Profile not found!");
             }
         }
+    }
+    
+    /**
+     *  delete all files in cache
+     */
+    public void cleanCache() {
+      String profileDir = config.getConfigDirectory() + File.separator +
+                config.get("profile_directory", 0);
+      String cacheDir = profileDir + File.separator + getCurrentProfileName() +
+                         File.separator + "cache";
+      File cacheDirFile = new File(cacheDir);
+      String[] cacheList = cacheDirFile.list();
+      for (int i=0;i<cacheList.length;i++) {
+        File f = new File(cacheDir + File.separator + cacheList[i]);
+        if (f.isDirectory()) {
+          String[] fList = f.list();
+          for (int j=0;j<fList.length;j++) {
+            File ff = new File(f.getAbsolutePath() + File.separator + fList[j]);
+            ff.delete();
+          }
+        }
+        f.delete();
+      }
+    }
+    
+    /**
+     *  delete all files in temp
+     */
+    public void cleanTemp() {
+      String profileDir = config.getConfigDirectory() + File.separator +
+                config.get("profile_directory", 0);
+      String cacheDir = profileDir + File.separator + getCurrentProfileName() +
+                         File.separator + "temp";
+      File cacheDirFile = new File(cacheDir);
+      String[] cacheList = cacheDirFile.list();
+      for (int i=0;i<cacheList.length;i++) {
+        File f = new File(cacheDir + File.separator + cacheList[i]);
+        if (f.isDirectory()) {
+          String[] fList = f.list();
+          for (int j=0;j<fList.length;j++) {
+            File ff = new File(f.getAbsolutePath() + File.separator + fList[j]);
+            ff.delete();
+          }
+        }
+        f.delete();
+      }
     }
 
     /**
@@ -904,6 +950,7 @@ public class Morpho
             //get rid of the splash window
             sf.dispose();
             
+           
         } catch (Throwable t) {
             t.printStackTrace();
             //Ensure the application exits with an error condition.
