@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:59:45 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-21 03:26:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public class HeaderPanel extends JPanel
  
      private void init()
      {
-         this.setBackground(Color.darkGray);
+         this.setBackground(Color.gray);
          this.setOpaque(true);
      }
 

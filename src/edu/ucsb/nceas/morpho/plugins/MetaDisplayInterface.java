@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:49:12 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-21 03:26:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import java.awt.event.ActionListener;
 
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.exception.NullArgumentException;
 
 
 /**
@@ -86,11 +87,13 @@ public interface MetaDisplayInterface
      *
      *  @throws DocumentNotFoundException if id does not point to a document, or
      *          if requested document exists but cannot be accessed.
+     *  @throws NullArgumentException if XML Factory is null.
      */
     public Component getDisplayComponent(   String identifier,
                                             XMLFactoryInterface factory,
                                             ActionListener listener )
-                                            throws DocumentNotFoundException;
+                                            throws  NullArgumentException, 
+                                                    DocumentNotFoundException;
                                             
     /**
      *  method to display metadata in an existing instance of a visual component 
@@ -102,7 +105,7 @@ public interface MetaDisplayInterface
      *  @throws DocumentNotFoundException if id does not point to a document, or
      *          if requested document exists but cannot be accessed.
      */
-    public void display(String identifier)  throws DocumentNotFoundException;
+    public void display(String identifier)  throws  DocumentNotFoundException;
     
     /**
      *  method to display metadata in an existing instance of a visual component 
@@ -117,11 +120,12 @@ public interface MetaDisplayInterface
      *
      *  @param XMLDocument  a Reader for the character-based XML document
      * 
-     *  @throws DocumentNotFoundException if id does not point to a document, or
-     *          if requested document exists but cannot be accessed.
+     *  @throws NullArgumentException if id not provided.
+     *  @throws DocumentNotFoundException if Reader cannot be read.
      */
     public void display(String identifier, Reader XMLDocument) 
-                                            throws DocumentNotFoundException;
+                                            throws  NullArgumentException, 
+                                                    DocumentNotFoundException;
                                             
     /**
      *  method to redisplay the current metadata, by re-obtaining the latest 

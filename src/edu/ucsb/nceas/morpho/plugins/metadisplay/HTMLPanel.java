@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:59:45 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-21 03:26:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,10 @@
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
 import java.awt.Color;
+import java.awt.BorderLayout;
 
 //import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
@@ -44,20 +47,36 @@ public class HTMLPanel extends JPanel
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-
+    private JTextArea textArea;
+    
     /**
      *  constructor
      *
      */
     public HTMLPanel() {
+        this("METADATA");
+    }
+
+    /**
+     *  constructor
+     *
+     */
+    public HTMLPanel(String html) {
         init();
+        setHTML(html);
     }
 
 
     private void init()
     {
-        this.setBackground(Color.white);
+        this.setBackground(Color.red);
         this.setOpaque(true);
+        this.setLayout(new BorderLayout());
+        textArea = new JTextArea();
+        textArea.setBackground(Color.white);
+        textArea.setOpaque(true);
+        textArea.setLineWrap(true);
+        this.add(textArea, BorderLayout.CENTER);
     }
 
 
@@ -66,10 +85,11 @@ public class HTMLPanel extends JPanel
 	 *
      *  @return  a reference to the embedded HeaderPanel object
 	 */
-//	public HeaderPanel getHeader()
-//	{
-//		return this.header;
-//	}
-//
-//	
+	public void setHTML(String html)
+	{
+		textArea.setText(html);
+        this.validate();
+	}
+
+	
 }

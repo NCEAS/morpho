@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 22:34:46 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-21 03:26:06 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,9 @@
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
 import java.io.Reader;
+import java.io.IOException;
 
-import java.util.Stack;
+import java.util.Vector;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -37,14 +38,17 @@ import javax.swing.JLabel;
 
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
+import edu.ucsb.nceas.morpho.util.IOUtil;
+
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
-
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.exception.NullArgumentException;
 
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  *  Top-level controller/Mediator class for an instance of a metadata display 
@@ -54,9 +58,12 @@ public class MetaDisplay implements MetaDisplayInterface
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-    private final MetaDisplayUI   display;
-    private final XMLTransformer    transformer;
-    private final Stack             history;
+    private final   MetaDisplayUI           display;
+    private final   XMLTransformer          transformer;
+    private final   History                 history;
+    private final   Vector                  listenerList;
+    private         XMLFactoryInterface     factory;
+    private         String                  identifier;
 
     
     /**
@@ -64,9 +71,10 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public MetaDisplay()
     {
-        display     = new MetaDisplayUI();
-        transformer = new XMLTransformer();
-        history     = new Stack();
+        listenerList    = new Vector();
+        display         = new MetaDisplayUI();
+        transformer     = new XMLTransformer();
+        history         = new History();
     }
 
     /**
@@ -92,15 +100,57 @@ public class MetaDisplay implements MetaDisplayInterface
      *
      *  @throws DocumentNotFoundException if id does not point to a document, or
      *          if requested document exists but cannot be accessed.
+     *  @throws NullArgumentException if XML Factory is null.
      */
     public Component getDisplayComponent(   String identifier,
                                             XMLFactoryInterface factory,
                                             ActionListener listener )
-                                            throws DocumentNotFoundException
+                                            throws  NullArgumentException, 
+                                                    DocumentNotFoundException
     {
-        return new JLabel("Not Yet Implemented");
+        //set ID and add to history
+        try  {
+            setIdentifier(identifier);
+        } catch (NullArgumentException nae) {
+            Log.debug(12, "NullArgumentException setting identifier: "
+                                            +identifier+"; "+nae.getMessage());
+            DocumentNotFoundException dnfe 
+                =  new DocumentNotFoundException("Nested NullArgumentException:"
+                                                                          +nae);
+            dnfe.fillInStackTrace();
+            throw dnfe;
+        }
+        
+        //set XML factory
+        setFactory(factory);
+        
+        //add ActionListener to list
+        addActionListener(listener);
+        
+        Reader reader = factory.openAsReader(identifier);
+
+        display.setHTML(getAsString(reader));
+        return display;
     }
 
+    //
+    private String getAsString(Reader reader) throws DocumentNotFoundException
+    {
+        String doc = null;
+        try {
+            doc = IOUtil.getAsStringBuffer(reader).toString();
+        } catch (IOException ioe) {
+            Log.debug(12, "Error reading reader "+ioe.getMessage());
+            DocumentNotFoundException dnfe =  new DocumentNotFoundException(
+             "MetaDisplay.getAsString() - Nested IOException " + ioe);
+            dnfe.fillInStackTrace();
+            throw dnfe;
+        }
+        return doc;
+    }
+    
+    
+    
     /**
      *  method to display metadata in an existing instance of a visual component 
      *  (metadata identified by the <code>identifier</code> parameter).
@@ -111,8 +161,22 @@ public class MetaDisplay implements MetaDisplayInterface
      *  @throws DocumentNotFoundException if id does not point to a document, or
      *          if requested document exists but cannot be accessed.
      */
-    public void display(String identifier)  throws DocumentNotFoundException
+    public void display(String identifier) throws DocumentNotFoundException
     {
+        //set ID and add to history
+        try  {
+            setIdentifier(identifier);
+        } catch (NullArgumentException nae) {
+            Log.debug(12, "NullArgumentException setting identifier: "
+                                            +identifier+"; "+nae.getMessage());
+            DocumentNotFoundException dnfe 
+                =  new DocumentNotFoundException("Nested NullArgumentException:"
+                                                                          +nae);
+            dnfe.fillInStackTrace();
+            throw dnfe;
+        }
+        Reader reader = factory.openAsReader(identifier);
+        display.setHTML(getAsString(reader));
     }
   
     /**
@@ -128,12 +192,22 @@ public class MetaDisplay implements MetaDisplayInterface
      *
      *  @param XMLDocument  a Reader for the character-based XML document
      * 
-     *  @throws DocumentNotFoundException if id does not point to a document, or
-     *          if requested document exists but cannot be accessed.
+     *  @throws NullArgumentException if id not provided.
+     *  @throws DocumentNotFoundException if Reader cannot be read.
      */
     public void display(String identifier, Reader XMLDocument) 
-                                          throws DocumentNotFoundException
+                                            throws  NullArgumentException, 
+                                                    DocumentNotFoundException
     {
+        if (XMLDocument==null) {
+            DocumentNotFoundException dnfe =  new DocumentNotFoundException(
+                    "MetaDisplay.display() - received NULL XMLDocument Reader");
+            dnfe.fillInStackTrace();
+            throw dnfe;
+        }
+        //set ID and add to history
+        setIdentifier(identifier);
+        display.setHTML(getAsString(XMLDocument));
     }
                                           
     /**
@@ -156,6 +230,11 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public void addActionListener(ActionListener    listener)
     {
+        if (listener==null) {
+            return;
+        } else  {
+            listenerList.add(listener);
+        }
     }
   
     /**
@@ -167,4 +246,65 @@ public class MetaDisplay implements MetaDisplayInterface
     public void removeActionListener(ActionListener listener)
     {
     }
+
+	
+	/**
+	 *  Get the current XML factory, used to resolve IDs into XML documents 
+	 *
+	 *  @return factory     an instance of a class that implements 
+	 *                      <code>XMLFactoryInterface</code> to enable this obj
+	 *                      to obtain the actual XML document to display, given 
+	 *                      the <code>identifier</code> parameter
+	 *
+	 */
+	public XMLFactoryInterface getFactory()
+	{
+		return this.factory;
+	}
+
+    
+	/**
+	 *  Set the current XML factory, used to resolve IDs into XML documents 
+	 *
+	 *  @param factory      an instance of a class that implements 
+	 *                      <code>XMLFactoryInterface</code> to enable this obj
+	 *                      to obtain the actual XML document to display, given 
+	 *                      the <code>identifier</code> parameter
+	 *
+	 *  @throws NullArgumentException if factory not provided.
+	 */
+	public void setFactory(XMLFactoryInterface factory) 
+                                                    throws NullArgumentException
+	{
+        if (factory!=null)  {
+		    this.factory = factory;
+        } else  {
+            NullArgumentException iae 
+                    = new NullArgumentException("XML Factory may not be null");
+            iae.fillInStackTrace();
+            throw iae;            
+        }
+	}
+
+	
+	private String getIdentifier()
+	{
+		return this.identifier;
+	}
+
+    //sets ID and adds it to history
+	private void setIdentifier(String identifier) throws NullArgumentException
+	{
+        if (identifier == null || identifier.trim().equals("")) {
+		    NullArgumentException nae 
+		        = new NullArgumentException("identifier must have a value");
+		    nae.fillInStackTrace();
+		    throw nae;
+		} else  {
+		    this.identifier = identifier;
+            history.add(this.identifier);
+		}
+	}
 }
+
+

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:59:45 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-21 03:26:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,13 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+
 import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 
-import java.awt.Dimension;
 
 //import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
@@ -48,7 +50,7 @@ public class MetaDisplayUI extends JPanel
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
     private final HeaderPanel header;
-    private final HTMLPanel htmlDisplay;
+    private final HTMLPanel htmlPanel;
 
     private final int TOTAL_WIDTH     = 400;
     private final int TOTAL_HEIGHT    = 600;
@@ -58,6 +60,8 @@ public class MetaDisplayUI extends JPanel
     private final int HEADER_HEIGHT    = 100;
     private final int HEADER_WIDTH     = TOTAL_WIDTH - 2 * PADDING;
 
+    private final Dimension OVERALL_DIMS 
+        = new Dimension(TOTAL_WIDTH, TOTAL_HEIGHT);
     private final Dimension HEADER_DIMS 
         = new Dimension(HEADER_WIDTH, HEADER_HEIGHT);
     private final Dimension HTML_DIMS   
@@ -69,22 +73,31 @@ public class MetaDisplayUI extends JPanel
      */
     public MetaDisplayUI() {
         header = new HeaderPanel();
-        htmlDisplay = new HTMLPanel();
+        htmlPanel = new HTMLPanel();
         initLayout();
     }
 
     private void initLayout()
     {
         header.setPreferredSize(HEADER_DIMS);
-        header.setPreferredSize(HTML_DIMS);
-
+        htmlPanel.setPreferredSize(HTML_DIMS);
         this.setOpaque(true);
-        this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-        this.add(Box.createVerticalStrut(PADDING));
-        this.add(header);
-        this.add(Box.createVerticalStrut(PADDING));
-        this.add(htmlDisplay);
-        this.add(Box.createVerticalStrut(PADDING));
+        
+        this.setLayout(new BorderLayout());
+        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.WEST);
+        JPanel centerPanel = new JPanel();
+        this.add(centerPanel, BorderLayout.CENTER) ;
+        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.EAST);
+
+        centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
+        centerPanel.add(Box.createVerticalStrut(PADDING));
+        centerPanel.add(header);
+        centerPanel.add(Box.createVerticalStrut(PADDING));
+        centerPanel.add(htmlPanel);
+        centerPanel.add(Box.createVerticalStrut(PADDING));
+        
+        this.setMinimumSize(OVERALL_DIMS);
+        this.setPreferredSize(OVERALL_DIMS);
     }
 
 	
@@ -104,8 +117,18 @@ public class MetaDisplayUI extends JPanel
 	 *
 	 *  @return  a reference to the embedded HTMLDisplay object
 	 */
+	public void setHTML(String html)
+	{
+		getHTMLPanel().setHTML(html);
+	}
+
+	/**
+	 *  get a reference to the embedded HTMLPanel object
+	 *
+	 *  @return  a reference to the embedded HTMLDisplay object
+	 */
 	public HTMLPanel getHTMLPanel()
 	{
-		return this.htmlDisplay;
+		return this.htmlPanel;
 	}
 }
