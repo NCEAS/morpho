@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-26 22:38:50 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2001-06-27 21:36:39 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -573,7 +573,9 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     else if(command.equals("Add"))
     {
-      ClientFramework.debug(9, "Adding-doesn't work yet!");
+      //ClientFramework.debug(9, "Adding-doesn't work yet!");
+      NewPackageMetadataWizard npmw = new NewPackageMetadataWizard(framework);
+      npmw.show();
     }
     else if(command.equals("Remove"))
     {
