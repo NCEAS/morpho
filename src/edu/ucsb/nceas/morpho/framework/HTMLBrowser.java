@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-09-27 20:07:22 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-10-11 19:05:21 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,25 +245,9 @@ public class HTMLBrowser extends javax.swing.JFrame
 
 	void exitApplication()
 	{
-		try {
-	    	// Beep
-	    	Toolkit.getDefaultToolkit().beep();
-	    	// Show a confirmation dialog
-	    	int reply = JOptionPane.showConfirmDialog(this, 
-	    	                                          "Do you really want to exit?", 
-	    	                                          "HTML Browser - Exit" , 
-	    	                                          JOptionPane.YES_NO_OPTION, 
-	    	                                          JOptionPane.QUESTION_MESSAGE);
-			// If the confirmation was affirmative, handle exiting.
-			if (reply == JOptionPane.YES_OPTION)
-			{
-		    	this.setVisible(false);    // hide the Frame
-		    	this.dispose();            // free the system resources
-		    	System.exit(0);            // close the application
-			}
-		} catch (Exception e) {
-		}
-	}
+    this.setVisible(false);
+    this.dispose();
+  }
 
 	class SymWindow extends java.awt.event.WindowAdapter
 	{
