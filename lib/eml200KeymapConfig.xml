@@ -19,7 +19,7 @@
   <contextNode name="attribute"> 
     <name>attributeName</name>
     <dataType>numberOfRecords</dataType>
-    <unit>entityDescription</unit>
+    <unit>measurementScale/interval/unit/standardUnit|measurementScale/ratio/unit/standardUnit</unit>
   </contextNode>
   <contextNode name="physical"> 
     <name>objectName</name>
