@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-21 03:43:02 $'
- * '$Revision: 1.31.2.7 $'
+ *     '$Date: 2001-04-23 16:50:01 $'
+ * '$Revision: 1.31.2.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ public class ClientFramework extends javax.swing.JFrame
     //{{REGISTER_LISTENERS
     SymWindow aSymWindow = new SymWindow();
     this.addWindowListener(aSymWindow);
-    SymAction lSymAction = new SymAction();
+    //SymAction lSymAction = new SymAction();
 
     //}}
 
@@ -201,9 +201,11 @@ public class ClientFramework extends javax.swing.JFrame
     // Load all of the plugins, their menus, and toolbars
     loadPlugins();
 
-    JTabbedPane1_stateChanged(null);
+    //JTabbedPane1_stateChanged(null);
+/*
     queryBean1.setEditor(mdeBean1);
     queryBean1.setTabbedPane(JTabbedPane1);
+*/
 
   }
 
@@ -456,7 +458,7 @@ public class ClientFramework extends javax.swing.JFrame
     String serviceName = request.getServiceName();
     if (serviceName.equals("LogService")) {
       String message = (String)request.getDataObject("Message");
-      System.out.println(message);
+      debug(1, message);
     } else {
       throw (new ServiceNotHandledException(serviceName));
     }
@@ -597,12 +599,16 @@ public class ClientFramework extends javax.swing.JFrame
        */
       SplashFrame sf = new SplashFrame(true);
       sf.setVisible(true);
+
+      // Create a new instance of our application's frame
+      ClientFramework clf = new ClientFramework();
+
       Date expiration = new Date(101, 5, 1);
       Date warning = new Date(101, 4, 1);
       Date now = new Date();
       if (now.after(expiration))
       {
-	System.out.println ("This beta version of Morpho has expired! " +
+	clf.debug(1, "This beta version of Morpho has expired! " +
            "See http://knb.ecoinformatics.org/ for a newer version.");
 	JOptionPane.showMessageDialog(null,
            "This beta version of Morpho has expired! " +
@@ -613,15 +619,15 @@ public class ClientFramework extends javax.swing.JFrame
       {
 	if (now.after(warning))
 	{
-	  System.out.println("This beta version of Morpho will expire on " +
+	  clf.debug(1, "This beta version of Morpho will expire on " +
             "May 1, 2001. See http://knb.ecoinformatics.org/ for a " +
             "newer version.");
 	  JOptionPane.showMessageDialog(null,
             "This beta version of Morpho will expire on May 1, 2001. " +
             "See http://knb.ecoinformatics.org/ for a newer version.");
 	}
-	//Create a new instance of our application's frame, and make it visible.
-	ClientFramework clf = new ClientFramework();
+
+        // make the ClientFramework visible.
 	clf.setVisible(true);
 	sf.dispose();
         // ConnectionFrame cf = new ConnectionFrame(clf);
@@ -708,13 +714,16 @@ public class ClientFramework extends javax.swing.JFrame
   javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
 
   //}}
+/*
   edu.ucsb.nceas.metaedit.AbstractMdeBean mdeBean1 =
     (edu.ucsb.nceas.metaedit.AbstractMdeBean)
     createObject("edu.ucsb.nceas.metaedit.mdeBean");
-
+*/
+/*
   edu.ucsb.nceas.querybean.AbstractQueryBean queryBean1 =
     (edu.ucsb.nceas.querybean.AbstractQueryBean)
     createObject("edu.ucsb.nceas.querybean.QueryBean");
+*/
 
   //{{DECLARE_MENUS
   //}}
@@ -753,7 +762,7 @@ public class ClientFramework extends javax.swing.JFrame
     try {
       this.requestService(req);
     } catch (ServiceNotHandledException snhe) {
-      System.out.println(snhe);
+      debug(1, snhe.toString());
     }
 /*
     int reply = JOptionPane.showConfirmDialog(this,
@@ -792,12 +801,12 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
+/*
   class SymAction implements java.awt.event.ActionListener
   {
     public void actionPerformed(java.awt.event.ActionEvent event)
     {
       Object object = event.getSource();
-/*
       if (object == openItem)
 	  openItem_actionPerformed(event);
       else if (object == saveItem)
@@ -836,10 +845,10 @@ public class ClientFramework extends javax.swing.JFrame
 	  newButton_actionPerformed(event);
       else if (object == SaveDataItem)
 	  SaveDataItem_actionPerformed(event);
-*/
     }
   }
-
+*/
+/*
   void SaveDataItem_actionPerformed(java.awt.event.ActionEvent event)
   {
     SubmitDataDialog sd = new SubmitDataDialog(this);
@@ -902,46 +911,46 @@ public class ClientFramework extends javax.swing.JFrame
   {
     mdeBean1.saveDocument();
   }
+*/
 
-
+/*
   class SymItem implements java.awt.event.ItemListener
   {
     public void itemStateChanged(java.awt.event.ItemEvent event)
     {
       Object object = event.getSource();
-/*
       if (object == LocalSearchCheckBox)
 	  LocalSearchCheckBox_itemStateChanged(event);
       else if (object == CatalogSearchCheckBox)
 	  CatalogSearchCheckBox_itemStateChanged(event);
       else if (object == ExpertCheckBox)
 	  ExpertCheckBox_itemStateChanged(event);
-*/
     }
   }
+*/
 
+/*
   void queryButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-/*
     if (ToolBarSearchText.getText() != "")
     {
       JTabbedPane1.setSelectedIndex(1);
       queryBean1.searchFor(ToolBarSearchText.getText());
     }
-*/
   }
+*/
 
+/*
   void ToolBarSearchText_actionPerformed(java.awt.event.ActionEvent event)
   {
-/*
     if (ToolBarSearchText.getText() != "")
     {
       // JTabbedPane1.setSelectedIndex(1);
       queryBean1.searchFor(ToolBarSearchText.getText());
     }
-*/
   }
-
+*/
+/*
   void newItem_actionPerformed(java.awt.event.ActionEvent event)
   {
     mdeBean1.newDocument();
@@ -969,7 +978,8 @@ public class ClientFramework extends javax.swing.JFrame
   {
     mdeBean1.showOptions();;
   }
-
+*/
+/*
   class SymChange implements javax.swing.event.ChangeListener
   {
     public void stateChanged(javax.swing.event.ChangeEvent event)
@@ -979,12 +989,12 @@ public class ClientFramework extends javax.swing.JFrame
 	  JTabbedPane1_stateChanged(event);
     }
   }
-
+*/
+/*
   void JTabbedPane1_stateChanged(javax.swing.event.ChangeEvent event)
   {
     if (JTabbedPane1.getSelectedIndex() == 0)
     {
-/*
       ElementChoiceMenuItem.setEnabled(true);
       ElementTextMenuItem.setEnabled(true);
       newItem.setEnabled(true);
@@ -996,11 +1006,9 @@ public class ClientFramework extends javax.swing.JFrame
       openButton.setEnabled(true);
       saveButton.setEnabled(true);
       // saveserverButton.setEnabled(true);
-*/
     }
     if (JTabbedPane1.getSelectedIndex() == 1)
     {
-/*
       ElementChoiceMenuItem.setEnabled(false);
       ElementTextMenuItem.setEnabled(false);
       newItem.setEnabled(false);
@@ -1012,11 +1020,9 @@ public class ClientFramework extends javax.swing.JFrame
       openButton.setEnabled(false);
       saveButton.setEnabled(false);
       // saveserverButton.setEnabled(false);
-*/
     }
     if (JTabbedPane1.getSelectedIndex() == 2)
     {
-/*
       ElementChoiceMenuItem.setEnabled(false);
       ElementTextMenuItem.setEnabled(false);
       newItem.setEnabled(false);
@@ -1028,44 +1034,48 @@ public class ClientFramework extends javax.swing.JFrame
       openButton.setEnabled(false);
       saveButton.setEnabled(false);
       // saveserverButton.setEnabled(false);
-*/
     }
   }
+*/
 
-  // use to dynamically create an object from its name at run time
-  // uses reflection
-  static Object createObject(String className)
+  /**
+   *  use to dynamically create an object from its name at run time
+   *  uses reflection
+   */
+  private Object createObject(String className)
   {
     Object object = null;
-      try
+    try
     {
       Class classDefinition = Class.forName(className);
-        object = classDefinition.newInstance();
+      object = classDefinition.newInstance();
     }
     catch(InstantiationException e)
     {
-      System.out.println(e);
+      debug(1, e.toString());
     }
     catch(IllegalAccessException e)
     {
-      System.out.println(e);
+      debug(1, e.toString());
     }
     catch(ClassNotFoundException e)
     {
-      System.out.println(e);
+      debug(1, e.toString());
     }
     return object;
   }
 
+  /**
+   * Log into metacat
+   */
   public void LogIn()
   {
     Properties prop = new Properties();
-      prop.put("action", "Login Client");
+    prop.put("action", "Login Client");
 
-    // Now try to write the document to the database
+    // Now contact metacat
       try
     {
-      //MBJEXCISE//ConfigXML config = new ConfigXML("config.xml");
       String MetaCatServletURL = config.get("MetaCatServletURL", 0);
         debug(9, "Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
@@ -1082,15 +1092,18 @@ public class ClientFramework extends javax.swing.JFrame
       returnStream.close();
       String res = sw.toString();
       sw.close();
-      System.out.println(res);
+      debug(5, res);
 
     }
     catch(Exception e)
     {
-      System.out.println("Error logging into system");
+      debug(1, "Error logging into system");
     }
   }
 
+  /**
+   * Log out of metacat
+   */
   public void LogOut()
   {
     Properties prop = new Properties();
@@ -1099,7 +1112,6 @@ public class ClientFramework extends javax.swing.JFrame
     // Now try to write the document to the database
     try
     {
-      //MBJEXCISE//ConfigXML config = new ConfigXML("config.xml");
       String MetaCatServletURL = config.get("MetaCatServletURL", 0);
         debug(9, "Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
@@ -1117,41 +1129,42 @@ public class ClientFramework extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      System.out.println("Error logging out of system");
+      debug(1, "Error logging out of system");
     }
   }
 
+/*
   void LocalSearchCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
   {
-/*
     queryBean1.setSearchLocal(LocalSearchCheckBox.isSelected());
-*/
   }
+*/
 
+/*
   void CatalogSearchCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
   {
-/*
     queryBean1.setSearchNetwork(CatalogSearchCheckBox.isSelected());
-*/
   }
+*/
 
+/*
   void ExpertCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
   {
-/*
     queryBean1.setExpertMode(ExpertCheckBox.isSelected());
-*/
   }
+*/
 
+/*
   void ConnectMenuItem_actionPerformed(java.awt.event.ActionEvent event)
   {
     ConnectionFrame cf = new ConnectionFrame(this);
     cf.setVisible(true);
   }
-
   void newButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     mdeBean1.newDocument();
   }
+*/
 
   /**
    * Print debugging messages based on severity level, where severity level 1
