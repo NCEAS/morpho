@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-19 15:12:42 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2004-04-20 00:51:35 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -868,7 +868,9 @@ class UnitsPickList extends JPanel {
     String newUnit = getNewUnit(map, xPath);
 		String SIUnit = getSIUnit(map, xPath);
     String stdType = WizardSettings.getStandardFormOfUnitType(type);
-    if(isNewType(map, xPath)) {
+		int idx = getIndexOfStandardType(WizardSettings.getDisplayFormOfUnitType(type));
+		
+    if(idx < 0) {
 			UnitTypesListItem item = new UnitTypesListItem(stdType, newUnit);
       UnitTypesListItem[] newArray = new UnitTypesListItem[unitTypesListItems.length + 1];
       WizardSettings.insertObjectIntoArray(unitTypesListItems, item, newArray);
@@ -880,8 +882,6 @@ class UnitsPickList extends JPanel {
 			
     } else {
 			// add units to existing type
-			int idx = getIndexOfStandardType(WizardSettings.getDisplayFormOfUnitType(type));
-      //int idx = Arrays.binarySearch(unitTypesListItems, item);
 			if(idx >=0 && idx < unitTypesListItems.length) {
 				UnitTypesListItem item = unitTypesListItems[idx];
 				item.addUnit(newUnit);
@@ -890,7 +890,6 @@ class UnitsPickList extends JPanel {
 				this.unitsList.setSelectedItem(newUnit);
 				this.unitsList.hidePopup();
 			}
-			
 		}
 		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
 		if(adp == null) {
@@ -964,12 +963,9 @@ class UnitsPickList extends JPanel {
   private boolean isNewType(OrderedMap map, String xPath) {
 
     String t = (String) map.get(xPath + "/unitList/unitType[1]/@name");
-    if(t != null)
-      return true;
-    else
-      return false;
-
-
+    if(t == null) return false;
+    // check if the given type has already been defined
+		return true;
   }
 	
 	public String getSelectedUnit() {
@@ -1148,7 +1144,8 @@ class UnitTypesListItem  implements Comparable{
   public String toString() { return unitTypeDisplayString; }
 
   public void addUnit(String newUnit) {
-
+		
+		if(Arrays.binarySearch(unitsOfThisType, newUnit) >= 0) return;
 		String[] newArr = new String[unitsOfThisType.length + 1];
     WizardSettings.insertObjectIntoArray(unitsOfThisType, newUnit, newArr);
     unitsOfThisType = newArr;

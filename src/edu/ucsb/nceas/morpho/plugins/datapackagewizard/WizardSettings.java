@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-17 02:22:12 $'
- * '$Revision: 1.67 $'
+ *     '$Date: 2004-04-20 00:51:35 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -692,7 +692,9 @@ public class WizardSettings {
   public static void insertObjectIntoArray( Object[] arr, Object value, Object[] newArr) {
 
     int idx = Arrays.binarySearch(arr, value);
-    int pos = -(idx + 1);
+		int pos = 0;
+		if(idx >= 0) pos = idx; 
+    else pos = -(idx + 1);
     int i = 0;
     for(i = 0 ;i < pos; i++)
       newArr[i] = arr[i];

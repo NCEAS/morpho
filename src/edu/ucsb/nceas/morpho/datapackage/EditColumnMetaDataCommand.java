@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-17 02:22:12 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-20 00:51:35 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -225,8 +225,8 @@ public class EditColumnMetaDataCommand implements Command
     map.put("/attribute/@id", adp.getAttributeID(entityIndex, attrIndex));
 
     Attribute attr = new Attribute(map);
-    adp.deleteAttribute(entityIndex, attrIndex);
     adp.insertAttribute(entityIndex, attr, attrIndex);
+		adp.deleteAttribute(entityIndex, attrIndex + 1);
 
     String unit = getUnit(map, xPath);
 
