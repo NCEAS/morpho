@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-26 18:14:47 $'
- * '$Revision: 1.91 $'
+ *     '$Date: 2002-09-27 21:05:52 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,11 +172,28 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openDialogBoxAction.setMenu("File", 0);
     openDialogBoxAction.setToolbarPosition(1);
     controller.addGuiAction(openDialogBoxAction);
-        
+    
+    // Open a data package action
+    GUIAction openPackageAction = new GUIAction("Open Package", null,
+                            new OpenPackageCommand(null));
+    openPackageAction.setMenuItemPosition(6);
+    openPackageAction.setToolTipText("Open a package...");
+    openPackageAction.setMenu("File", 0);
+    controller.addGuiAction(openPackageAction);
+    
+    // Create a OpenPreviousVersion action
+    GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
+                                new OpenPreviousVersionCommand(null, morpho));
+    openPreviousAction.setMenuItemPosition(7);
+    openPreviousAction.setToolTipText("Open a previous version...");
+    openPreviousAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    openPreviousAction.setMenu("File", 0);
+    controller.addGuiAction(openPreviousAction);
+    
     // Synchronize action
     GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
                           new OpenSynchronizeDialogCommand());
-    synchronizeAction.setMenuItemPosition(6);
+    synchronizeAction.setMenuItemPosition(9);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     synchronizeAction.setMenu("File", 0);
@@ -186,7 +203,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // DeleteDialogAction
     GUIAction deleteDialogAction = new GUIAction("Delete...", null,
                                           new OpenDeleteDialogCommand());
-    deleteDialogAction.setMenuItemPosition(8);
+    deleteDialogAction.setMenuItemPosition(11);
     deleteDialogAction.setToolTipText("Delete...");
     deleteDialogAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     deleteDialogAction.setMenu("File", 0);
@@ -196,7 +213,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Export action
     GUIAction exportAction = new GUIAction("Export...", null, 
                             new ExportCommand(null, ExportCommand.REGULAR));
-    exportAction.setMenuItemPosition(10);
+    exportAction.setMenuItemPosition(13);
     exportAction.setToolTipText("Export data package...");
     exportAction.setMenu("File", 0);
     //exportAction.setToolbarPosition(1);
@@ -205,7 +222,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Export to zip action
     GUIAction exportZipAction = new GUIAction("Export to Zip...", null,
                              new ExportCommand(null, ExportCommand.ZIP));
-    exportZipAction.setMenuItemPosition(11);
+    exportZipAction.setMenuItemPosition(14);
     exportZipAction.setToolTipText("Export data package into zip file...");
     //exportZipAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     exportZipAction.setMenu("File", 0);
