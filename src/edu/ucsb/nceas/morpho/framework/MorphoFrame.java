@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-20 21:04:08 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-21 23:57:46 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ public class MorphoFrame extends JFrame
     private Dimension screenSize;
     private Dimension windowSize;
     private Dimension contentAreaSize;
+    private final MorphoFrame instance;
 
     // Constants (probably should be set in a property file, but what the hell)
     private static final int MAX_WINDOW_WIDTH = 1024;
@@ -113,7 +114,9 @@ public class MorphoFrame extends JFrame
                 public void windowActivated(WindowEvent e) 
                 {
                     Log.debug(50, "Processing window activated event");
-                    UIController.getInstance().refreshWindows();
+                    UIController controller = UIController.getInstance();
+                    controller.setCurrentActiveWindow(instance);
+                    controller.refreshWindows();
                     indicator.repaint();
                 } 
                 public void windowClosing(WindowEvent event)
@@ -134,6 +137,7 @@ public class MorphoFrame extends JFrame
 
         // Size the window properly
         pack();
+        instance = this;
     }
     
  
