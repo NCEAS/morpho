@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 05:26:10 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-07-30 19:44:01 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,7 +212,6 @@ public class WizardContainerFrame extends JFrame {
   
     middlePanel = new JPanel();
     middlePanel.setLayout(new BorderLayout());
-    middlePanel.setBackground(WizardSettings.WIZARD_CONTENT_BG_COLOR);
     middlePanel.setBorder(new EmptyBorder(PADDING,3*PADDING,PADDING,3*PADDING));
     contentPane.add(middlePanel, BorderLayout.CENTER);
   }
@@ -279,43 +278,51 @@ public class WizardContainerFrame extends JFrame {
     } else {
       
     // * * * F I N I S H * * *
-    
-      //this is the last page - user just pressed "finish"
-      this.setVisible(false);
-      
-      Iterator pagesIterator = pageStack.iterator();
-      OrderedMap wizData = new OrderedMap();
-      OrderedMap nextPgData  = new OrderedMap();
-      String nextKey = null;
-      String nextVal = null;
-      
-      while (pagesIterator.hasNext()) {
-      
-        nextPgData = ((WizardPage)(pagesIterator.next())).getPageData();
-        
-        if (nextPgData==null) continue;
-        
-        Iterator  it = nextPgData.keySet().iterator();
-        
-        if (it==null) continue;
-    
-        while (it.hasNext()) {
-    
-          nextKey = (String)it.next();
-    
-          if (nextKey==null || nextKey.trim().equals("")) continue;
-    
-          nextVal = (String)nextPgData.get(nextKey);
-          wizData.put(nextKey, nextVal);
-          
-        } // end while
-      }
-      Log.debug(45,wizData.toString());
+      pageStack.push(this.getCurrentPage());
+      doFinish();
       return;
     }
   }
   
 
+  
+  // call this when user presses "finish"
+  private void doFinish() {
+  
+    this.setVisible(false);
+  
+    Iterator pagesIterator = pageStack.iterator();
+    
+    OrderedMap wizData = new OrderedMap();
+    OrderedMap nextPgData  = new OrderedMap();
+    String nextKey = null;
+    String nextVal = null;
+  
+    while (pagesIterator.hasNext()) {
+
+      nextPgData = ((WizardPage)(pagesIterator.next())).getPageData();
+    
+      if (nextPgData==null) continue;
+    
+      Iterator  it = nextPgData.keySet().iterator();
+    
+      if (it==null) continue;
+
+      while (it.hasNext()) {
+
+        nextKey = (String)it.next();
+
+        if (nextKey==null || nextKey.trim().equals("")) continue;
+
+        nextVal = (String)nextPgData.get(nextKey);
+        wizData.put(nextKey, nextVal);
+      
+      } // end while
+    }
+    Log.debug(45,wizData.toString());
+  }
+  
+  
   /** 
    *  The action to be executed when the "Prev" button is pressed
    */

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 05:26:10 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-07-30 19:44:01 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,36 +68,46 @@ public class WizardSettings {
   
   protected static final Font  TITLE_FONT          
                                       = new Font("Sans-Serif", Font.BOLD,  12);
+                                      
   protected static final Color TITLE_TEXT_COLOR    
                                       = new Color(255,255,255);
+                                      
   protected static final Font  SUBTITLE_FONT       
                                       = new Font("Sans-Serif", Font.PLAIN, 11);
+                                      
   protected static final Color SUBTITLE_TEXT_COLOR 
                                       = new Color(255,255,255);
 
   protected static final Font  BUTTON_FONT         
                                       = new Font("Sans-Serif",Font.BOLD,12);
+                                      
   protected static final Color BUTTON_TEXT_COLOR   
                                       = new Color(51, 51, 51);
 
   public static final  Font  WIZARD_CONTENT_FONT 
                                       = new Font("Sans-Serif",Font.PLAIN,11);
+                                      
   public static final  Color WIZARD_CONTENT_TEXT_COLOR  
                                       = new Color(51, 51, 51);
+                                      
   public static final  Color WIZARD_CONTENT_REQD_TEXT_COLOR  
                                       = new Color(221, 0, 0);
-  public static final  Color WIZARD_CONTENT_REQD_TEXT_REVERSEFIELD_COLOR  
+                                      
+  public static final  Color WIZARD_CONTENT_HILITE_BG_COLOR
+                                      = new Color(175, 0, 0);
+  
+  public static final  Color WIZARD_CONTENT_HILITE_FG_COLOR
                                       = new Color(255, 255, 255);
                                       
   public static final  Dimension WIZARD_CONTENT_LABEL_DIMS  
                                       = new Dimension(100,20);
+  // x-dimension is ignored:
   public static final  Dimension WIZARD_CONTENT_TEXTFIELD_DIMS  
                                       = new Dimension(2000,20);
 
+  // x-dimension is ignored:
   protected static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS  
                                       = new Dimension(2000,20);
-  protected static final  Color WIZARD_CONTENT_BG_COLOR    
-                                      = new Color(221, 221, 221);
 
   protected static final String FINISH_BUTTON_TEXT  = "Finish";
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-29 19:26:31 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-07-30 19:44:01 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,8 @@ public class DataPackageWizardPlugin implements DataPackageWizardInterface,
   
   // for testing/development
   public static void main(String[] args) {
+  
+    Log.setDebugLevel(55);
     DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
     plugin.startWizard();
     dpWiz.setVisible(true);

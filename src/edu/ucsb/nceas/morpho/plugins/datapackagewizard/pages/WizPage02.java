@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 05:26:10 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-07-30 19:44:01 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,16 +54,23 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 public class WizPage02 extends AbstractWizardPage{
   
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  
   private final String pageID     = WizardPageLibrary.PAGE02_ID;
   private final String nextPageID = null;
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Title and Abstract";
   
-  private JTextField titleField;  
-  private JTextArea  absField;
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
+  private JTextField  titleField;  
+  private JTextArea   absField;
+  private JLabel      titleLabel;
+  
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
   public WizPage02() { init(); }
-  
+  JPanel titlePanel;
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    * are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -71,60 +78,66 @@ public class WizPage02 extends AbstractWizardPage{
   private void init() {
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
-    JTextArea desc = WidgetFactory.makeMultilineTextArea(
+    JPanel vbox = this;
+    
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+
+    JTextArea desc = WidgetFactory.makeTextArea(
       "Each data package may contain multiple data tables, associated "
       +"methods, and project information.  The title and abstract are "
       +"used to provide a quick summary of the data package in terms of its "
-      +"purpose and the components being described.", false);
-    this.add(desc);
+      +"purpose and the components being described.", 2, false);
+    JPanel descPanel = WidgetFactory.makePanel(2);
+    descPanel.add(desc);
+    vbox.add(descPanel);
     
-    this.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
     
-    JTextArea titleDesc = WidgetFactory.makeMultilineTextArea(
-    "Enter a descriptive title for the data package as a whole. A rule of "
-    +"thumb is to include organization and project scope information.", false);
-    this.add(titleDesc);
+    JTextArea titleDesc = WidgetFactory.makeTextArea(
+        "Enter a descriptive title for the data package as a whole. A rule of "
+        +"thumb is to include organization and project scope information.",
+        1, false);
+    JPanel tdPanel = WidgetFactory.makePanel(1);
+    tdPanel.add(titleDesc);
+    vbox.add(tdPanel);
     
-    JPanel titlePanel = WidgetFactory.makeOneLinePanel();
+    titlePanel = WidgetFactory.makePanel(1);
     
-    JLabel titleLabel = WidgetFactory.makeLabel("Title", true);
+    titleLabel = WidgetFactory.makeLabel("Title", true);
 
     titlePanel.add(titleLabel);
     
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
     
-    this.add(titlePanel);
+    vbox.add(titlePanel);
     
-    this.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
     
     ////////////////////////////////////////////////////////////////////////////
     
-    JTextArea absDesc = WidgetFactory.makeMultilineTextArea(
+    JTextArea absDesc = WidgetFactory.makeTextArea(
     "Enter a descriptive abstract paragraph that summarizes the "
-    +"purpose and scope of the dataset", false);
-
-    this.add(absDesc);
+    +"purpose and scope of the dataset", 1, false);
+    JPanel absPanel = WidgetFactory.makePanel(1);
+    absPanel.add(absDesc);
+    vbox.add(absPanel);
         
-    JPanel abstractPanel = new JPanel();
-    abstractPanel.setOpaque(false);
-    abstractPanel.setLayout(new BoxLayout(abstractPanel, BoxLayout.X_AXIS));
+    JPanel abstractPanel = WidgetFactory.makePanel();
 
     JLabel absLabel = WidgetFactory.makeLabel("Abstract", false);
     absLabel.setAlignmentY(SwingConstants.TOP);
     abstractPanel.add(absLabel);
     
-    absField = WidgetFactory.makeMultilineTextArea("",true);
-    absField.setRows(25);
-    absField.setColumns(100);
+    absField = WidgetFactory.makeTextArea("", 18, true);
     JScrollPane jscrl = new JScrollPane(absField);
     abstractPanel.add(jscrl);
-    this.add(abstractPanel);
+    vbox.add(abstractPanel);
     
-    this.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
     
-    this.add(Box.createVerticalGlue());
   }
   
   
@@ -134,6 +147,7 @@ public class WizPage02 extends AbstractWizardPage{
    */
   public void onLoadAction() {
 
+    WidgetFactory.unhiliteComponent(titleLabel);
   }
   
   
@@ -158,8 +172,7 @@ public class WizPage02 extends AbstractWizardPage{
     
     if (titleField.getText().trim().equals("")) {
       
-      titleField.setBackground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
-      titleField.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_REVERSEFIELD_COLOR);
+      WidgetFactory.hiliteComponent(titleLabel);
       return false;
     }
     return true;
@@ -177,7 +190,10 @@ public class WizPage02 extends AbstractWizardPage{
 
   public OrderedMap getPageData() {
     
+    returnMap.clear();
+    
     returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
+    
     if ( !(absField.getText().trim().equals("")) ) {
       
       returnMap.put("/eml:eml/dataset/abstract/section/para[1]", 
