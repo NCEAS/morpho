@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-26 21:35:50 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-30 19:53:03 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 
 import org.w3c.dom.Node;
 
@@ -115,6 +117,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
       new DataPackageWizardListener() {
       
         public void wizardComplete(Node newDOM) {
+        
+          DataPackageFactory.getDataPackage(newDOM, "eml:eml");
         
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, true));
