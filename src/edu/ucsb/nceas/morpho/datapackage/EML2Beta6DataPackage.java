@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-05 23:25:25 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-12-29 20:56:34 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,8 +239,8 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     }
     savedirSub.delete();
     
-    JOptionPane.showMessageDialog(null,
-                    "Conversion to EML2 Complete ! ");
+//    JOptionPane.showMessageDialog(null,
+//                    "Conversion to EML2 Complete ! ");
     
   }
 

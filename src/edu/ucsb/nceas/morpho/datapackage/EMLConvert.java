@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-07-14 17:51:12 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-29 20:56:34 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,7 +126,6 @@ public class EMLConvert
       // does not work correctly if there is a space in the path!
       File f1 = new File("./xsl/triple_info.xsl");
       File f2 = new File("./xsl/emlb6toeml2.xsl");
-      
       TransformerHandler tHandler1 = saxTFactory.newTransformerHandler(new StreamSource(f1));
       TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2)); 
       
