@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-12 22:22:41 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-02-15 21:52:26 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,17 @@ public class NodeInfo implements Serializable
     
     /** help string for this node */
     String help = null;
+    
+    /** indicates whether this node is a CHOICE node */
+    boolean choice_flag;
+    
+    
+    /** indicates whether this node is SELECTED 
+     *  only meaningful if choice_flag is true
+     */
+     boolean selected_flag;
+
+    
  /**
   * creates a new NodeInfo object with the indicated name.
   * 
@@ -90,6 +101,8 @@ public class NodeInfo implements Serializable
     this.name = name;
     this.iconName  = "green.gif";
     setIcon("green.gif");
+    choice_flag = false;
+    selected_flag = false;
  }
  
   public String toString() {
@@ -114,32 +127,50 @@ public class NodeInfo implements Serializable
     this.cardinality = card;
        
   if(card.equalsIgnoreCase("ONE")) {
-//    setIcon("bluesq.gif");    
     setIcon("red.gif");    
   }
   if(card.equalsIgnoreCase("OPTIONAL")) {
-//    setIcon("bluequmark.gif");    
     setIcon("yellow.gif");    
   }
   if(card.equalsIgnoreCase("ZERO to MANY")) {
-//    setIcon("blueasterisk.gif");    
     setIcon("green.gif");    
   }
   if(card.equalsIgnoreCase("ONE to MANY")) {
-//    setIcon("blueplus.gif");    
     setIcon("blue.gif");    
   }
-  if(card.equalsIgnoreCase("SELECTED")) {
-    setIcon("sel.gif");    
+  if (choice_flag && selected_flag) {
+    setIcon("sel.gif");  
   }
-  if(card.equalsIgnoreCase("NOT SELECTED")) {
-    setIcon("unsel.gif");    
+  if (choice_flag && !selected_flag) {
+    setIcon("unsel.gif");
   }
-        
+  
   }
   
   
   // Accesors
+  public boolean isChoice() {
+    return choice_flag;  
+  }
+  
+  public void setChoice(boolean flg) {
+    this.choice_flag = flg;
+  }
+
+  public boolean isSelected() {
+    return selected_flag;  
+  }
+  
+  public void setSelected(boolean flg) {
+    this.selected_flag = flg;
+    if (choice_flag && selected_flag) {
+        setIcon("sel.gif");  
+    }
+    if (choice_flag && !selected_flag) {
+        setIcon("unsel.gif");  
+    }
+  }
+  
   public String getHelp() {
     return help;
   }
@@ -192,7 +223,6 @@ public class NodeInfo implements Serializable
   public void setIcon(String name) {
     iconName = name;
     if (!icons.containsKey(name)) {    //see if icon is not already in hashtable
- //     ImageIcon temp = new ImageIcon("icons"+System.getProperty("file.separator")+name);
       ImageIcon temp = new ImageIcon(getClass().getResource(name));
       icons.put(name,temp);
     }
@@ -220,6 +250,8 @@ public class NodeInfo implements Serializable
     clone.PCDataValue = this.PCDataValue;
     clone.Item = this.Item;
     clone.editor = this.editor;
+    clone.choice_flag = this.choice_flag;
+    clone.selected_flag = this.selected_flag;
     clone.rooteditor = this.rooteditor;
     clone.help = this.help;
     Enumeration enum = this.attr.keys();
