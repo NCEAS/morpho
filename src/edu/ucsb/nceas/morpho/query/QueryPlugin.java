@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-28 00:40:13 $'
- * '$Revision: 1.95 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-28 04:08:11 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,11 +193,11 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     saveCommand.loadSavedQueries();
     
     // Open dialog box action
-    GUIAction openDialogBoxAction = new GUIAction("Open", null, 
+    GUIAction openDialogBoxAction = new GUIAction("Open...", null, 
                           new OpenDialogBoxCommand(morpho));
     openDialogBoxAction.setSmallIcon( new ImageIcon(getClass().
                   getResource("/toolbarButtonGraphics/general/Open16.gif")));
-    openDialogBoxAction.setMenuItemPosition(0);
+    openDialogBoxAction.setMenuItemPosition(2);
     openDialogBoxAction.setToolTipText("Open...");
     openDialogBoxAction.setMenu("File", 0);
     openDialogBoxAction.setToolbarPosition(1);
@@ -214,9 +214,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Create a OpenPreviousVersion action
     GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
                                 new OpenPreviousVersionCommand(null, morpho));
-    openPreviousAction.setMenuItemPosition(7);
+    openPreviousAction.setMenuItemPosition(3);
     openPreviousAction.setToolTipText("Open a previous version...");
-    openPreviousAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     openPreviousAction.setMenu("File", 0);
     controller.addGuiAction(openPreviousAction);
     

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 23:08:03 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-09-28 04:08:11 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1031,9 +1031,9 @@ public class Morpho
             }
         };
         GUIAction connectItemAction = 
-            new GUIAction("Login", null, connectCommand);
-        connectItemAction.setToolTipText("Login");
-        connectItemAction.putValue("menuPosition", new Integer(0));
+            new GUIAction("Login/Logout", null, connectCommand);
+        connectItemAction.setToolTipText("Login/Logout...");
+        connectItemAction.setMenuItemPosition(5);
         connectItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
         connectItemAction.setMenu("File", 0);
         controller.addGuiAction(connectItemAction);
@@ -1045,8 +1045,8 @@ public class Morpho
         };
         GUIAction profileItemAction = 
             new GUIAction("New profile...", null, profileCommand);
-        profileItemAction.setToolTipText("New Profile");
-        profileItemAction.putValue("menuPosition", new Integer(1));
+        profileItemAction.setToolTipText("New Profile...");
+        profileItemAction.setMenuItemPosition(6);
         profileItemAction.setMenu("File", 0);
         controller.addGuiAction(profileItemAction);
 
@@ -1057,14 +1057,16 @@ public class Morpho
         };
         GUIAction switchItemAction =
             new GUIAction("Switch profile...", null, switchCommand);
-        switchItemAction.setToolTipText("Switch Profile");
-        switchItemAction.putValue("menuPosition", new Integer(2));
+        switchItemAction.setToolTipText("Switch Profile...");
+        switchItemAction.setMenuItemPosition(7);
+        switchItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         switchItemAction.setMenu("File", 0);
-        switchItemAction.setEnabledOnStateChange("DISABLE", false, 
-                                                        GUIAction.EVENT_LOCAL);
-        switchItemAction.setEnabledOnStateChange("ENABLE",  true, 
-                                                        GUIAction.EVENT_LOCAL);
         controller.addGuiAction(switchItemAction);
+        
+//        switchItemAction.setEnabledOnStateChange("DISABLE", false, 
+//                                                        GUIAction.EVENT_LOCAL);
+//        switchItemAction.setEnabledOnStateChange("ENABLE",  true, 
+//                                                        GUIAction.EVENT_LOCAL);
 
 //        Command enableCommand = new Command() {
 //            public void execute(ActionEvent e) {
