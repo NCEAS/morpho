@@ -6,9 +6,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 10:26:20 $'
- * '$Revision: 1.38 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-14 17:29:12 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,7 +291,7 @@ public class Project extends AbstractUIPage {
            //have been editing an original reference via another party's dialog, so
            //if the original ref is in this current page's list, update its
            //PartyPage object before we write it to DOM...
-           updateOriginalRefPartyPage(partyPage.getReferencesNodeIDString());
+           updateOriginalRefPartyPage(partyPage);
          }
          //update datapackage...
          updateDOMFromListOfPages();
@@ -328,8 +328,8 @@ public class Project extends AbstractUIPage {
      //have been editing an original reference via another party's dialog, so
      //if the original ref is in this current page's list, update its
      //PartyPage object before we write it to DOM...
-     private void updateOriginalRefPartyPage(String originalRefID) {
-
+     private void updateOriginalRefPartyPage(PartyPage partyPage) {
+       String originalRefID = partyPage.getReferencesNodeIDString();
        AbstractDataPackage adp
            = UIController.getInstance().getCurrentAbstractDataPackage();
        if (adp == null) {
@@ -347,6 +347,7 @@ public class Project extends AbstractUIPage {
          //column 3 is user object - check it exists and isn't null:
          if (nextRowList.size() < 4)continue;
          nextPage = (PartyPage)nextRowList.get(3);
+         if (nextPage == partyPage) continue; //DFH (don't add the page that has just been added
          if (nextPage == null)continue;
          if (nextPage.getRefID().equals(originalRefID)) {
 
@@ -395,7 +396,7 @@ public class Project extends AbstractUIPage {
            //have been editing an original reference via another party's dialog, so
            //if the original ref is in this current page's list, update its
            //PartyPage object before we write it to DOM...
-           updateOriginalRefPartyPage(editPartyPage.getReferencesNodeIDString());
+           updateOriginalRefPartyPage(editPartyPage);
          }
          //update datapackage...
          updateDOMFromListOfPages();
