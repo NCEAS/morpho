@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-22 17:03:49 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-22 17:39:50 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,20 +31,20 @@ import com.sun.net.ssl.internal.ssl.*;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
+import edu.ucsb.nceas.morpho.framework.*;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.HttpMessage;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
-import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.framework.HTMLBrowser;
-import edu.ucsb.nceas.morpho.framework.SplashFrame;
+import edu.ucsb.nceas.morpho.framework.HttpMessage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.ProfileDialog;
+import edu.ucsb.nceas.morpho.framework.SplashFrame;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.framework.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -84,11 +84,6 @@ public class Morpho
     public static String SEPARATOR_PRECEDING = "separator_preceding";
     /** Constant to indicate a separator should follow an action */
     public static String SEPARATOR_FOLLOWING = "separator_following";
-    /**
-     * The polling interval, in milliSeconds, between attempts to verify that  
-     * MetaCat is available over the network
-     */
-    private static final int METACAT_PING_INTERVAL = 5000;
 
     // redirects standard out and err streams
     static boolean log_file = false;
@@ -116,17 +111,21 @@ public class Morpho
     private URL metacatPingURL = null;
     private URLConnection urlConn = null;
     private boolean origNetworkStatus = false;
+    /**
+     * The polling interval, in milliSeconds, between attempts to verify that
+     * MetaCat is available over the network
+     */
+    private final static int METACAT_PING_INTERVAL = 5000;
 
     /** The hardcoded XML configuration file */
     private static String configFile = "config.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
-    //Java 1.3 or greater
 
     /**
      * Creates a new instance of Morpho
      *
-     * @param config  Description of Parameter
+     * @param config  the configuration object for the application
      */
     public Morpho(ConfigXML config)
     {
@@ -140,13 +139,13 @@ public class Morpho
         // Get the configuration file information needed by the framework
         loadConfigurationParameters();
 
-        // NOTE: current test for SSL connection is to determine whether metacat_url
-        // is set to be "https://..." in the config.xml file.  This check happens
-        // only ONCE on start-up, so if Morpho is ever revised to allow users to
-        // change metacat urls whilst it is running, we need to revise this to check
-        // more often. 05/20/02- Currently, SSL is not used, so will always be false
+        // NOTE: current test for SSL connection is to determine whether 
+        // metacat_url is set to be "https://..." in the config.xml file.  
+        // This check happens only ONCE on start-up, so if Morpho is ever 
+        // revised to allow users to change metacat urls whilst it is running, 
+        // we need to revise this to check more often. 
+        // 05/20/02- Currently, SSL is not used, so will always be false
         sslStatus = (metacatURL.indexOf("https://") == 0);
-        //metacatURL is iniatilized in the loadConfigurationParameters() call, above
 
         //create URL object to poll for metacat connectivity
         try {
@@ -155,7 +154,7 @@ public class Morpho
             Log.debug(5, "unable to read or resolve Metacat URL");
         }
 
-        // detects whether metacat is available, and if so, sets 
+        // detects whether metacat is available, and if so, sets
         // networkStatus = true
         // Boolean "true" tells doPing() method this is startup, so we don't get
         // "No such service registered." exception from getServiceProvider()
@@ -168,7 +167,6 @@ public class Morpho
         timer.setRepeats(true);
         timer.start();
     }
-
 
     /**
      * Set the username associated with this framework
@@ -247,7 +245,7 @@ public class Morpho
      *
      * @param prop           the properties to be sent to Metacat
      * @param requiresLogin  indicates whether a valid connection is required
-     *      for the operation
+     *                       for the operation
      * @return               InputStream as returned by Metacat
      */
     public InputStream getMetacatInputStream(Properties prop,
@@ -286,9 +284,9 @@ public class Morpho
         /*
             Note:  The reason that there are three try statements all executing
             the same code is that there is a problem with the initial connection
-            using the HTTPClient protocol handler.  These try statements make sure
-            that a connection is made because it gives each connection a 2nd and
-            3rd chance to work before throwing an error.
+            using the HTTPClient protocol handler.  These try statements make 
+            sure that a connection is made because it gives each connection a 
+            2nd and 3rd chance to work before throwing an error.
             THIS IS A TOTAL HACK.  THIS NEEDS TO BE LOOKED INTO AFTER THE BETA1
             RELEASE OF MORPHO!!!  cwb (7/24/01)
           */
@@ -309,14 +307,16 @@ public class Morpho
                 return returnStream;
             } catch (Exception e2) {
                 try {
-                    Log.debug(20, "Sending data (again)(again) to: " + metacatURL);
+                    Log.debug(20, "Sending data (again)(again) to: " + 
+                        metacatURL);
                     URL url = new URL(metacatURL);
                     HttpMessage msg = new HttpMessage(url);
                     returnStream = msg.sendPostMessage(prop);
                     sessionCookie = msg.getCookie();
                     return returnStream;
                 } catch (Exception e3) {
-                    Log.debug(1, "Fatal error sending data to Metacat: " + e3.getMessage());
+                    Log.debug(1, "Fatal error sending data to Metacat: " + 
+                        e3.getMessage());
                     e.printStackTrace(System.err);
                 }
             }
@@ -340,7 +340,7 @@ public class Morpho
                 establishConnection();
             }
         }
-        return (String) getMetacatString(prop);
+        return (String)getMetacatString(prop);
     }
 
     /**
@@ -414,8 +414,8 @@ public class Morpho
     }
 
     /**
-     * Determine whether a network connection is available before 
-     * trying to open a socket, since this would cause an error
+     * Determine whether a network connection is available before trying to open
+     * a socket, since this would cause an error
      *
      * @return   boolean true if the network is reachable
      */
@@ -428,8 +428,7 @@ public class Morpho
      * Get the configuration object associated with the framework. Plugins use
      * this object to get and set persistent configuration parameters.
      *
-     * @return    The Configuration value
-     * @returns   ConfigXML the configuration object
+     * @return   ConfigXML the configuration object
      */
     public ConfigXML getConfiguration()
     {
@@ -439,7 +438,6 @@ public class Morpho
     /**
      * Get the profile for the currently logged in user.
      *
-     * @return    The Profile value
      * @returns   ConfigXML the profile object
      */
     public ConfigXML getProfile()
@@ -470,9 +468,11 @@ public class Morpho
                 try {
                     Vector synonyms = itis.getSynonymTsnList(newTsn);
                     for (int i = 0; i < synonyms.size(); i++) {
-                        long synonymTsn = ((Long) synonyms.elementAt(i)).longValue();
+                        long synonymTsn = 
+                            ((Long)synonyms.elementAt(i)).longValue();
                         Taxon synonymTaxon = itis.getTaxon(synonymTsn);
-                        synonymList.addElement(synonymTaxon.getScientificName());
+                        synonymList.addElement(
+                            synonymTaxon.getScientificName());
                     }
                 } catch (ItisException ie) {
                     Log.debug(20, "Problem with ITIS lookup for: " + taxonName);
@@ -494,7 +494,9 @@ public class Morpho
         return this.versionFlag;
     }
 
-    /** Exit the application, asking the user if they are sure  */
+    /** 
+     * Exit the application, asking the user if they are sure 
+     */
     public void exitApplication()
     {
         try {
@@ -543,13 +545,13 @@ public class Morpho
             dataStreams.put("datafile", filename);
 
             /*
-                Note:  The reason that there are three try statements all executing
-                the same code is that there is a problem with the initial connection
-                using the HTTPClient protocol handler.  These try statements make sure
-                that a connection is made because it gives each connection a 2nd and
-                3rd chance to work before throwing an error.
-                THIS IS A TOTAL HACK.  THIS NEEDS TO BE LOOKED INTO AFTER THE BETA1
-                RELEASE OF MORPHO!!!  cwb (7/24/01)
+            Note:  The reason that there are three try statements all executing
+            the same code is that there is a problem with the initial connection
+            using the HTTPClient protocol handler.  These try statements make 
+            sure that a connection is made because it gives each connection a 
+            2nd and 3rd chance to work before throwing an error.
+            THIS IS A TOTAL HACK.  THIS NEEDS TO BE LOOKED INTO AFTER THE BETA1
+            RELEASE OF MORPHO!!!  cwb (7/24/01)
               */
             try {
                 returnStream = msg.sendPostData(args, dataStreams);
@@ -573,9 +575,9 @@ public class Morpho
     }
 
     /**
-     * Log into metacat
+     * Log into metacat.
      *
-     * @return   Description of the Returned Value
+     * @return   boolean true if the attempt to log in succeeded
      */
     public boolean logIn()
     {
@@ -607,7 +609,9 @@ public class Morpho
         return connected;
     }
 
-    /** Log out of metacat  */
+    /** 
+     * Log out of metacat 
+     */
     public void logOut()
     {
         if (connected) {
@@ -623,7 +627,9 @@ public class Morpho
     }
 
 
-    /** Log out of metacat when exiting  */
+    /** 
+     * Log out of metacat when exiting.
+     */
     public void logOutExit()
     {
         if (connected) {
@@ -645,8 +651,7 @@ public class Morpho
      * the Connection status. Any change in the username, password, or other
      * connect change will trigger notification.
      *
-     * @param listener                 a reference to the object to be notified
-     *      of changes
+     * @param listener  a reference to the object to be notified of changes
      * @throws ServiceExistsException
      */
     public void addConnectionListener(ConnectionListener listener)
@@ -670,9 +675,12 @@ public class Morpho
         if ((iver0 == 1) && (iver1 < 3)) {
             versionFlag = false;
             JOptionPane.showMessageDialog(null,
-                    "Version " + ver + " of the Java Virtual Machine(JVM) is currently in use.\n" +
-                    "Although most of Morpho will operate using early versions of the JVM,\n" +
-                    "Version 1.3 or greater is required for all functions to work properly!");
+                    "Version " + ver + " of the Java Virtual Machine(JVM) " +
+                    "is currently in use.\n" +
+                    "Although most of Morpho will operate using early " +
+                    "versions of the JVM,\n" +
+                    "Version 1.3 or greater is required for all " +
+                    "functions to work properly!");
         }
     }
 
@@ -691,14 +699,17 @@ public class Morpho
             java.net.URL.setURLStreamHandlerFactory(
                 new java.net.URLStreamHandlerFactory()
                 {
-                    public java.net.URLStreamHandler createURLStreamHandler(final String protocol)
+                    public java.net.URLStreamHandler createURLStreamHandler(
+                        final String protocol)
                     {
                         if ("http".equals(protocol)) {
                             try {
-                                URLStreamHandler urlsh = new HTTPClient.http.Handler();
+                                URLStreamHandler urlsh = 
+                                    new HTTPClient.http.Handler();
                                 return urlsh;
                             } catch (Exception e) {
-                                System.out.println("Error setting URL StreamHandler!");
+                                System.out.println(
+                                    "Error setting URL StreamHandler!");
                                 return null;
                             }
                         }
@@ -710,7 +721,8 @@ public class Morpho
             System.setProperty("javax.net.ssl.trustStore", "./lib/morphocacerts");
 
             // add provider for SSL support
-            java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+            java.security.Security.addProvider(
+                new com.sun.net.ssl.internal.ssl.Provider());
 
             // Show the Splash frame
             SplashFrame sf = new SplashFrame(true);
@@ -730,12 +742,17 @@ public class Morpho
             // Make sure the config file has been copied to the proper directory
             try {
                 configurationFile = new File(configDir, configFile);
-                if (configurationFile.createNewFile() || configurationFile.length() == 0) {
-                    FileOutputStream out = new FileOutputStream(configurationFile);
-                    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                    InputStream configInput = cl.getResourceAsStream(configFile);
+                if (configurationFile.createNewFile() || 
+                    configurationFile.length() == 0) {
+                    FileOutputStream out =
+                        new FileOutputStream(configurationFile);
+                    ClassLoader cl = 
+                        Thread.currentThread().getContextClassLoader();
+                    InputStream configInput = 
+                        cl.getResourceAsStream(configFile);
                     if (configInput == null) {
-                        Log.debug(1, "Could not find default configuration file.");
+                        Log.debug(1, 
+                            "Could not find default configuration file.");
                         System.exit(0);
                     }
                     byte buf[] = new byte[4096];
@@ -756,7 +773,7 @@ public class Morpho
             // Open the configuration file
             ConfigXML config = new ConfigXML(
                     configurationFile.getAbsolutePath());
-            
+
             // Set up logging, possibly to a file as appropriate
             initializeLogging(config);
 
@@ -776,25 +793,29 @@ public class Morpho
             //     if (now.after(expiration))  // removed for release version
             if (false) {
                 Log.debug(1, "This version of Morpho has expired! " +
-                        "See http://knb.ecoinformatics.org/ for a newer version.");
+                        "See http://knb.ecoinformatics.org/ " +
+                        "for a newer version.");
                 JOptionPane.showMessageDialog(null,
                         "This version of Morpho has expired!\n" +
-                        "See http://knb.ecoinformatics.org/ for a newer version.");
+                        "See http://knb.ecoinformatics.org/ " +
+                        "for a newer version.");
                 System.exit(1);
             } else {
                 //       if (now.after(warning))
                 if (false) {
                     Log.debug(1, "This version of Morpho will expire on " +
-                            "April 1, 2002. See http://knb.ecoinformatics.org/ for a " +
-                            "newer version.");
+                            "April 1, 2002. See http://knb.ecoinformatics.org/ "
+                            + "for a newer version.");
                     JOptionPane.showMessageDialog(null,
-                            "This version of Morpho will expire on April 1, 2002.\n" +
-                            "See http://knb.ecoinformatics.org/ for a newer version.");
+                            "This version of Morpho will expire on " +
+                            "April 1, 2002.\n" +
+                            "See http://knb.ecoinformatics.org/ " +
+                            "for a newer version.");
                 }
 
                 // Load the current profile and log in
-                String profileDir = ConfigXML.getConfigDirectory() + File.separator +
-                        config.get("profile_directory", 0);
+                String profileDir = ConfigXML.getConfigDirectory() + 
+                    File.separator + config.get("profile_directory", 0);
                 String currentProfile = config.get("current_profile", 0);
                 if (currentProfile == null) {
                     ProfileDialog dialog = new ProfileDialog(morpho);
@@ -802,13 +823,16 @@ public class Morpho
                     // Make sure they actually created a profile
                     if (morpho.getProfile() == null) {
                         JOptionPane.showMessageDialog(null,
-                                "You must create a profile in order to configure Morpho  \n" +
-                                "correctly.  Please restart Morpho and try again.");
+                                "You must create a profile in order " +
+                                "to configure Morpho  \n" +
+                                "correctly.  Please restart Morpho " +
+                                "and try again.");
                         morpho.exitApplication();
                     }
                 } else {
-                    String profileName = profileDir + File.separator + currentProfile +
-                            File.separator + currentProfile + ".xml";
+                    String profileName = profileDir + File.separator + 
+                        currentProfile + File.separator + 
+                        currentProfile + ".xml";
                     ConfigXML profile = new ConfigXML(profileName);
                     morpho.setProfile(profile);
                 }
@@ -861,7 +885,8 @@ public class Morpho
             parser = saxp.getXMLReader();
 
             if (parser != null) {
-                parser.setFeature("http://xml.org/sax/features/namespaces", true);
+                parser.setFeature("http://xml.org/sax/features/namespaces", 
+                    true);
                 Log.debug(30, "Parser created is: " +
                         parser.getClass().getName());
             } else {
@@ -904,7 +929,8 @@ public class Morpho
                     cl.getClass().getName());
             Thread t = Thread.currentThread();
             t.setContextClassLoader(cl);
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = 
+                DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             parser = factory.newDocumentBuilder();
             if (parser != null) {
@@ -929,7 +955,7 @@ public class Morpho
     private void setLastID(String scope)
     {
         //MB 05-21-02: if (connected && networkStatus) {
-        // only execute if connected to avoid hanging when there is 
+        // only execute if connected to avoid hanging when there is
         // no network connection
         if (networkStatus) {
             String id = getLastID(scope);
@@ -977,7 +1003,8 @@ public class Morpho
                 if (!result.equals("null")) {
                     // now remove the version and header parts of the id
                     result = result.substring(0, result.lastIndexOf("."));
-                    result = result.substring(result.indexOf(".") + 1, result.length());
+                    result = result.substring(result.indexOf(".") + 1, 
+                        result.length());
                 } else {
                     result = null;
                 }
@@ -996,22 +1023,22 @@ public class Morpho
         Vector plugins = config.get("plugin");
         // Dynamically load the plugins and their associated menus and toolbars
         try {
-            for (Enumeration q = plugins.elements(); q.hasMoreElements();) {
-                
+            for (Enumeration q = plugins.elements(); q.hasMoreElements(); ) {
+
                 // Start by creating the new plugin
                 PluginInterface plugin = (PluginInterface)
-                    createObject((String) (q.nextElement()));
+                        createObject((String)(q.nextElement()));
 
                 // Set a reference to the framework in the Plugin
                 plugin.initialize(this);
             }
             pluginsLoaded = true;
-        } catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             Log.debug(5, "Error loading plugin: wrong class!");
         }
     }
 
-    /** Set up the actions for menus and toolbars for the application  */
+    /** Set up the actions for menus and toolbars for the application */
     private void initializeActions()
     {
 
@@ -1145,7 +1172,8 @@ public class Morpho
                 "Open the Preferences dialog.");
         prefsItemAction.putValue(Action.SMALL_ICON,
                 new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Preferences16.gif")));
+                getResource(
+                "/toolbarButtonGraphics/general/Preferences16.gif")));
         prefsItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
         prefsItemAction.putValue("menuPosition", new Integer(5));
         prefsItemAction.setEnabled(false);
@@ -1201,7 +1229,7 @@ public class Morpho
         controller.addToolbarActions(containerToolbarActions);
     }
 
-    /** Create a new connection to metacat  */
+    /** Create a new connection to metacat */
     private void establishConnection()
     {
         if (networkStatus) {
@@ -1213,14 +1241,14 @@ public class Morpho
         }
     }
 
-    /** Create a new profile  */
+    /** Create a new profile */
     private void createNewProfile()
     {
         ProfileDialog dialog = new ProfileDialog(this);
         dialog.setVisible(true);
     }
 
-    /** Switch profiles (from one existing profile to another)  */
+    /** Switch profiles (from one existing profile to another) */
     private void switchProfile()
     {
         logOut();
@@ -1241,7 +1269,7 @@ public class Morpho
             }
 
             // Pop up a dialog with the choices
-            String newProfile = (String) JOptionPane.showInputDialog(null,
+            String newProfile = (String)JOptionPane.showInputDialog(null,
                     "Select from existing profiles:", "Input",
                     JOptionPane.INFORMATION_MESSAGE, null,
                     profilesList, profilesList[selection]);
@@ -1305,7 +1333,7 @@ public class Morpho
     {
         for (int i = 0; i < connectionRegistry.size(); i++) {
             ConnectionListener listener =
-                    (ConnectionListener) connectionRegistry.elementAt(i);
+                    (ConnectionListener)connectionRegistry.elementAt(i);
             if (listener != null) {
                 listener.connectionChanged(isConnected());
             }
@@ -1320,14 +1348,14 @@ public class Morpho
     {
         for (int i = 0; i < connectionRegistry.size(); i++) {
             ConnectionListener listener =
-                    (ConnectionListener) connectionRegistry.elementAt(i);
+                    (ConnectionListener)connectionRegistry.elementAt(i);
             if (listener != null) {
                 listener.usernameChanged(getUserName());
             }
         }
     }
 
-    /** Load configuration parameters from the config file as needed  */
+    /** Load configuration parameters from the config file as needed */
     private void loadConfigurationParameters()
     {
         metacatURL = config.get("metacat_url", 0);
@@ -1335,14 +1363,13 @@ public class Morpho
         userName = (temp_uname != null) ? temp_uname : "public";
     }
 
-// takes a hashtable where the key is an Integer and returns a Vector of hashtable
-// values sorted by key values
-// this is a quick hack!!! DFH
     /**
-     * Description of the Method
+     * Takes a hashtable where the key is an Integer and returns a 
+     * Vector of hashtable values sorted by key values.
+     * this is a quick hack!!! DFH
      *
-     * @param hash  Description of Parameter
-     * @return      Description of the Returned Value
+     * @param hash  the data to sort
+     * @return      sorted version of the hash table
      */
     private Vector sortValues(Hashtable hash)
     {
@@ -1363,22 +1390,8 @@ public class Morpho
     }
 
     /**
-     * This ActionListener is notified by the swing.Timer every
-     * METACAT_PING_INTERVAL milliSeconds, upon which it tries to contact the
-     * Metacat defined by "metacatURL"
-     */
-    ActionListener pingActionListener =
-        new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                doPing();
-            }
-        };
-        
-    /** 
-     * overload to give default functionality; boolean flag needed 
-     * only at startup
+     * overload to give default functionality; boolean flag needed only at
+     * startup
      */
     private void doPing()
     {
@@ -1395,28 +1408,29 @@ public class Morpho
     private void doPing(final boolean isStartUp)
     {
 
-        final SwingWorker sbUpdater = new SwingWorker()
-        {
-            public Object construct()
+        final SwingWorker sbUpdater =
+            new SwingWorker()
             {
-                startPing();
-                return null;
-                //return value not used by this program
-            }
+                public Object construct()
+                {
+                    startPing();
+                    return null;
+                    //return value not used by this program
+                }
 
-            //Runs on the event-dispatching thread.
-            public void finished()
-            {
-                finishPing(isStartUp);
-            }
-        };
+                //Runs on the event-dispatching thread.
+                public void finished()
+                {
+                    finishPing(isStartUp);
+                }
+            };
         sbUpdater.start();
     }
 
     /**
-     * Start the ping operation.  At startup this is called in the main
-     * application thread, but later it is used in a distinct thread to
-     * keep the application responsive.
+     * Start the ping operation. At startup this is called in the main
+     * application thread, but later it is used in a distinct thread to keep the
+     * application responsive.
      */
     private void startPing()
     {
@@ -1438,13 +1452,16 @@ public class Morpho
     }
 
     /**
-     * Finish the ping operation.  At startup this is called in the main
-     * application thread, but later it is used in a distinct thread to
-     * keep the application responsive.
+     * Finish the ping operation. At startup this is called in the main
+     * application thread, but later it is used in a distinct thread to keep the
+     * application responsive.
+     *
+     * @param isStartUp  set to true if this is the startup sequence before
+     *                   plugins have been loaded
      */
     private void finishPing(boolean isStartUp)
     {
-        Log.debug(21, "doPing() called - network available?? - " + 
+        Log.debug(21, "doPing() called - network available?? - " +
                 networkStatus);
         if (origNetworkStatus != networkStatus) {
             //if lost connection, can't log out, but can still do cleanup
@@ -1473,6 +1490,20 @@ public class Morpho
     }
 
     /**
+     * This ActionListener is notified by the swing.Timer every
+     * METACAT_PING_INTERVAL milliSeconds, upon which it tries to contact the
+     * Metacat defined by "metacatURL"
+     */
+    ActionListener pingActionListener =
+        new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                doPing();
+            }
+        };
+
+    /**
      * set look & feel to system default
      *
      * @param lnf  The new LookAndFeel value
@@ -1484,24 +1515,33 @@ public class Morpho
                 if (lnf.equalsIgnoreCase("kunststoff")) {
                     Log.debug(19, "kunststoff - loading");
                     try {
-                        Class classDefinition = Class.forName("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
-                        LookAndFeel test = (LookAndFeel) classDefinition.newInstance();
+                        Class classDefinition = Class.forName(
+                            "com.incors.plaf.kunststoff.KunststoffLookAndFeel");
+                        LookAndFeel test = 
+                            (LookAndFeel)classDefinition.newInstance();
                         UIManager.setLookAndFeel(test);
                     } catch (ClassNotFoundException www) {
-                        Log.debug(19, "couldn't set L&F to kunststoff - using Java default");
+                        Log.debug(19, 
+                            "Couldn't set L&F to kunststoff. " +
+                            "Using Java default");
                         return;
                     }
                 } else if (lnf.equalsIgnoreCase("metal")) {
-                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                    UIManager.setLookAndFeel(
+                        UIManager.getCrossPlatformLookAndFeelClassName());
                 } else if (lnf.equalsIgnoreCase("windows")) {
-                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                    UIManager.setLookAndFeel(
+                        "com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
                 } else if (lnf.equalsIgnoreCase("motif")) {
-                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+                    UIManager.setLookAndFeel(
+                        "com.sun.java.swing.plaf.motif.MotifLookAndFeel");
                 } else {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    UIManager.setLookAndFeel(
+                        UIManager.getSystemLookAndFeelClassName());
                 }
             } else {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
             }
 
         } catch (Exception e) {
@@ -1510,11 +1550,11 @@ public class Morpho
     }
 
     /**
-     * attempts to connect a socket, returns null if it is not successful
+     * Attempts to connect a socket, returns null if it is not successful
      * returns the connected socket if it is successful.
      *
-     * @param host  Description of Parameter
-     * @param port  Description of Parameter
+     * @param host  the fully qualified host name for the connection
+     * @param port  the port number for the connection
      * @return      The Socket value
      */
     private static Socket getSocket(String host, int port)
@@ -1522,14 +1562,12 @@ public class Morpho
         Socket s = null;
         try {
             s = new Socket(host, port);
-            //we could create a socket on this port so the port is not available
-            //System.out.println("socket connnected");
             return s;
         } catch (UnknownHostException u) {
-            System.out.println("unknown host in DataFileUploadInterface.getSocket");
+            System.out.println("unknown host in " +
+                "DataFileUploadInterface.getSocket");
         } catch (IOException i) {
             //an ioexception is thrown if the port is not in use
-            //System.out.println("socket not connected");
             return s;
         }
         return s;
@@ -1537,6 +1575,8 @@ public class Morpho
 
     /**
      * Set up the logging system during startup
+     *
+     * @param config  the configuration object for the application
      */
     private static void initializeLogging(ConfigXML config)
     {
@@ -1563,3 +1603,4 @@ public class Morpho
         }
     }
 }
+
