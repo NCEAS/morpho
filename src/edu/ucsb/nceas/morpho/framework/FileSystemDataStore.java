@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-08-29 17:47:10 $'
- * '$Revision: 1.20 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-12 23:00:31 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ public class FileSystemDataStore extends DataStore
       }
       FileWriter writer = new FileWriter(savefile);
       int d = sr.read();
-      System.out.println("writing file: ");
+//      System.out.println("writing file: ");
       while(d != -1)
       {
         writer.write(d); //write out everything in the reader
