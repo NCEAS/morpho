@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-12 17:59:08 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2003-11-13 21:50:43 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -550,11 +550,13 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 *  This method inserts an attribute at the indexed position
 	 *  in the indexed entity
 	 */
-	public void insertAttribute(int entityIndex, Node newAttributeNode, int attrIndex) {
+	public void insertAttribute(int entityIndex, Node newAttrNode, int attrIndex) {
 	  if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
       Log.debug(20, "No such entity!");
 			return;
     }
+    Document thisDom = getMetadataNode().getOwnerDocument();
+    Node newAttributeNode = thisDom.importNode(newAttrNode, true); // 'true' imports children
 		Node[] attributes = getAttributeArray(entityIndex);
     if ((attributes==null)||(attributes.length<1)) {
       // currently there are NO attributes, so ignore attrIndex
@@ -581,7 +583,12 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  }
 		
 		// there are current attributes, so must insert in proper location
-		Node currentAttr = attributes[attrIndex];
+    Node currentAttr = null;
+    if (attrIndex>attributes.length-1) {
+		  currentAttr = attributes[attributes.length-1];
+    } else {
+		  currentAttr = attributes[attrIndex];
+    }
 		if (attrIndex<(attributes.length-1)) {
 			Node parent = currentAttr.getParentNode();
 			parent.insertBefore(newAttributeNode, currentAttr);
