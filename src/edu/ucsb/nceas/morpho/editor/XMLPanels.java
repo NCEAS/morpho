@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-02 21:58:56 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-02-17 19:27:30 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -270,6 +270,7 @@ public class XMLPanels extends Component
           jta.setLineWrap(true);
           jta.setWrapStyleWord(true);
           jta.setEditable(false);
+          jta.setEnabled(false); // adding this line makes the help text gray & skips focus on help
           jta.setBackground(jp1.getBackground());
           jsp.getViewport().add(jta);
 //          int helplen = helpString.length();
