@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:51 $'
- * '$Revision: 1.19 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-09 23:10:15 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -691,5 +691,134 @@ void queryAll()
             removeTableColumn(tcm,0);
         }
   }
+
+// given a QueryTerm, construct a XPath expression
+//
+String QueryTermToXPath(QueryTerm qt) {
+	String xpath;
+  boolean caseSensitive = qt.isCaseSensitive();
+  String searchMode = qt.getSearchMode();
+	String value = qt.getValue();
+	if (!caseSensitive) {
+    value = value.toLowerCase();
+	}
+	String pathExpression = qt.getPathExpression();
+
+	// construct path part of XPath
+	// is path absolute or relative
+	if (pathExpression.startsWith("/")) {      // absolute
+    xpath =	 pathExpression;
+	}
+	else {
+    xpath = "//*"+pathExpression;
+	}
+  if ((value.equals("%"))||(value.equals("*"))) {
+		// wild card text search case
+    xpath = xpath+"[text()]";
+		return xpath;
+	}
+	else {
+	  if (!caseSensitive) { // use translate function to convert text() to lowercase
+        	// check on searchMode
+		if (searchMode.equals("starts-with")) {
+      xpath = xpath+"[starts-with(translate(text(),"
+          +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),"
+          +value+")]";		
+		}
+		else if (searchMode.equals("ends-with")) {
+      xpath = xpath+"[contains(translate(text(),"
+          +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),"
+          +value+")]";
+            // not correct - fix later
+		}
+		else if (searchMode.equals("contains")) {
+      xpath = xpath+"[contains(translate(text(),"
+          +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),"
+          +value+")]";
+		}
+		else if (searchMode.equals("matches-exactly")) {
+      xpath = xpath+"[translate(text(),"
+        +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\")="
+        +value+"]";
+		} 
+	    }
+  else {
+		if (searchMode.equals("starts-with")) {
+      xpath = xpath+"[starts-with(text(),"+value+")]";		
+		}
+		else if (searchMode.equals("ends-with")) {
+      xpath = xpath+"[contains(text(),"+value+")]";
+                        // not correct - fix later
+		}
+		else if (searchMode.equals("contains")) {
+      xpath = xpath+"[contains(text(),"+value+")]";
+		}
+		else if (searchMode.equals("matches-exactly")) {
+      xpath = xpath+"[text()="+value+"]";
+		} 
+  }
+
+	}
+return xpath;
+}               
+
+
+
+// executes a single xpath query and returns a set of result objects
+// in a Vector; a null return indicates that no datacollections have been found
+Vector executeXPathQuery(String xpath) {
+  Vector ret = new Vector();
+  
+  return ret;
+}
+
+// local Query execution 
+// recursive handling of QueryTerms 
+// Vector res is the result set when started
+// it is used here to pass current results for recursion
+Vector executeLocal(QueryGroup qg, Vector res) { 
+	Vector rs = res;
+	Vector currentResults = null;
+
+	Enumeration children = qg.getChildren();
+	while (children.hasMoreElements()) {
+    Object child = children.nextElement();
+		if (child instanceof QueryTerm) {
+      String xpath = QueryTermToXPath((QueryTerm)child);
+      currentResults = executeXPathQuery(xpath);
+			if ((currentResults==null)&&(qg.getOperator().equalsIgnoreCase("intersect"))) {
+                         	// exit loop since one the results sets is null
+				rs = null;
+				break;
+			}
+			// add these results to previous ones
+			if (qg.getOperator().equalsIgnoreCase("intersect")) {
+				if (rs==null) rs = (Vector)currentResults.clone(); // 1st time
+				Vector temp = (Vector)rs.clone();
+				rs.removeAllElements();
+        Enumeration w = currentResults.elements();
+				while(w.hasMoreElements()) {
+					Object obj = w.nextElement();
+					if (temp.contains(obj)) {
+            rs.addElement(obj);
+					}	
+				}
+			}
+			if (qg.getOperator().equalsIgnoreCase("union")) {
+        Enumeration q = currentResults.elements();
+				while(q.hasMoreElements()) {
+					Object obj = q.nextElement();
+					if (!rs.contains(obj)) {
+            rs.addElement(obj);
+					}	
+				}
+			}
+		}
+		else {  // QueryGroup
+      executeLocal((QueryGroup)child, rs);
+		}
+	}
+return rs;
+}   
    
 }
