@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 00:55:38 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2002-09-24 15:55:41 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 
+import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
@@ -396,6 +397,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                           equals(StateChangeEvent.SELECTDATATABLECOLUMN))
     {
       // Get attribute file id and show it the metacat panel
+      showDataViewAndAttributePanel();
     }
   }
   
@@ -405,9 +407,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * large memory usage
    */
   private void setDataViewer(int index) {
-    //JSplitPane entireDataPanel = (
-          //JSplitPane)(tabbedEntitiesPanel.getComponentAt(lastTabSelected));
-    
+   
     TabbedContainer comp = 
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
     JSplitPane entireDataPanel = comp.getSplitPane();
@@ -475,16 +475,24 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   }
   
   /*  Method to create a attribute panel to replace entity */
-  private JSplitPane createAttributePanel() 
+  private void showDataViewAndAttributePanel() 
   {
-    JPanel attributeMetadataPanel = new JPanel();
-    attributeMetadataPanel.setLayout(new BorderLayout(0,0));
-    entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, 
-                                      attributeMetadataPanel);
-    entityPanel.setOneTouchExpandable(true);
-    entityPanel.setDividerLocation(700);
+    TabbedContainer container = 
+        (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
+    MetaDisplayInterface meta = container.getMetaDisplayInterface();
+    // Get attribute file identifier
+    String item = (String)entityItems.elementAt(lastTabSelected);
+    String id = (String)listValueHash.get(item);
+    String identifier = dp.getAttributeFileId(id);
+    try
+    {
+      meta.display(identifier);
+    }
+    catch (DocumentNotFoundException m)
+    {
+      Log.debug(5, "Unable to display Attribute:\n"+m.getMessage()); 
+    }
     
-    return entityPanel;
   }
   
   public void stateChanged(javax.swing.event.ChangeEvent event) {
