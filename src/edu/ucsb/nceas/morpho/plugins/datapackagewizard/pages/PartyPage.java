@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-03 01:42:04 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-03-17 04:17:46 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -656,6 +656,9 @@ public class PartyPage extends AbstractWizardPage {
       if (!lastNameOK) {
 
         WidgetFactory.hiliteComponent(lastNameLabel);
+        warningLabel.setText("Warning: If you provide a salutation and/or "
+                             +"first name, a last name must also be provided");
+
         warningPanel.setVisible(true);
         WidgetFactory.hiliteComponent(warningLabel);
         return false;
@@ -681,6 +684,8 @@ public class PartyPage extends AbstractWizardPage {
       WidgetFactory.hiliteComponent(lastNameLabel);
       WidgetFactory.hiliteComponent(organizationLabel);
       WidgetFactory.hiliteComponent(positionNameLabel);
+      warningLabel.setText("Warning: at least one of the three entries is "
+                           +"required: Last Name, Position Name or Organization");
       warningPanel.setVisible(true);
       WidgetFactory.hiliteComponent(warningLabel);
       return false;
