@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.14 2000-09-15 20:59:33 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.15 2000-09-25 20:02:34 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -42,6 +42,7 @@ public class ClientFramework extends javax.swing.JFrame
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
     PropertyResourceBundle options = null;
+    boolean connected = false;
 
 	edu.ucsb.nceas.querybean.LocalQuery lq = null;
 //	String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};

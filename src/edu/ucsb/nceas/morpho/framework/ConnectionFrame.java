@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.5 2000-09-13 23:40:04 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.6 2000-09-25 20:02:34 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -95,6 +95,11 @@ public class ConnectionFrame extends javax.swing.JFrame
 		connectButton.setActionCommand("OK");
 		JPanel1.add(connectButton);
 		connectButton.setBounds(118,5,81,25);
+		DisconnectButton.setText("Disconnect");
+		DisconnectButton.setActionCommand("Disconnect");
+		DisconnectButton.setEnabled(false);
+		JPanel1.add(DisconnectButton);
+		DisconnectButton.setBounds(0,0,35,40);
 		//}}
 
 		//{{INIT_MENUS
@@ -105,6 +110,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 		RegisteredUserRadioButton.addItemListener(lSymItem);
 		SymAction lSymAction = new SymAction();
 		connectButton.addActionListener(lSymAction);
+		DisconnectButton.addActionListener(lSymAction);
 		//}}
 	}
 
@@ -117,6 +123,10 @@ public class ConnectionFrame extends javax.swing.JFrame
 	public ConnectionFrame(ClientFramework cont) {
 	    this();
 	    container = cont;
+	    if (container!=null) {
+		    DisconnectButton.setEnabled(container.connected);
+		}
+	    
 	}
 
 	public void setVisible(boolean b)
@@ -169,6 +179,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 	javax.swing.JTextArea ConnectionResultsTextArea = new javax.swing.JTextArea();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JButton connectButton = new javax.swing.JButton();
+	javax.swing.JButton DisconnectButton = new javax.swing.JButton();
 	//}}
 
 	//{{DECLARE_MENUS
@@ -209,6 +220,8 @@ public class ConnectionFrame extends javax.swing.JFrame
 			Object object = event.getSource();
 			if (object == connectButton)
 				connectButton_actionPerformed(event);
+			else if (object == DisconnectButton)
+				DisconnectButton_actionPerformed(event);
 			
 		}
 	}
@@ -232,6 +245,7 @@ public class ConnectionFrame extends javax.swing.JFrame
         InputStream returnStream = msg.sendPostMessage(prop);
 	    StringWriter sw = new StringWriter();
 	    int c;
+	    container.connected = true;
 	    while ((c = returnStream.read()) != -1) {
            sw.write(c);
         }
@@ -247,8 +261,10 @@ public class ConnectionFrame extends javax.swing.JFrame
         ConnectionResultsTextArea.setText(res); 
         }
       } catch (Exception e) {
-        System.out.println("Error logging into system");
-        e.getMessage();
+		JOptionPane.showMessageDialog(this,"Error logging into server! ");
+		dispose();
+//        System.out.println("Error logging into system");
+//        e.getMessage();
         }
 	    }
 	 else {
@@ -271,6 +287,7 @@ public class ConnectionFrame extends javax.swing.JFrame
         
         InputStream returnStream = msg.sendPostMessage(prop);
 	    StringWriter sw = new StringWriter();
+	    container.connected = true;
 	    int c;
 	    while ((c = returnStream.read()) != -1) {
            sw.write(c);
@@ -287,9 +304,54 @@ public class ConnectionFrame extends javax.swing.JFrame
         ConnectionResultsTextArea.setText(res); 
         }
       } catch (Exception e) {
-        System.out.println("Error logging into system");
+		JOptionPane.showMessageDialog(this,"Error logging into server! ");
+		dispose();
+//        System.out.println("Error logging into system");
+//        e.getMessage();
       }
      }
 			 
+	}
+	
+	
+	
+public void LogOut() {
+      Properties prop = new Properties();
+       prop.put("action","Logout");
+
+      // Now try to write the document to the database
+      try {
+        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+        InputStream returnStream = msg.sendPostMessage(prop);
+	    StringWriter sw = new StringWriter();
+	    int c;
+	    while ((c = returnStream.read()) != -1) {
+           sw.write(c);
+        }
+        returnStream.close();
+        String res = sw.toString();
+        sw.close();
+ //       System.out.println(res);
+        JOptionPane.showMessageDialog(this,"You have closed the connection to the remote server.");
+		 
+      } catch (Exception e) {
+  //      System.out.println("Error logging out of system");
+            JOptionPane.showMessageDialog(this,"Error logging out of system");
+      }
+}
+	
+
+	void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		LogOut();
+	    DisconnectButton.setEnabled(false);
+	}
+	
+	public void enableDisconnect() {
+	    DisconnectButton.setEnabled(true);
 	}
 }
