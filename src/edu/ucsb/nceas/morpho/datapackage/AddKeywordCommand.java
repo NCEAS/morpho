@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-26 23:25:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2005-01-27 16:28:01 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -164,13 +164,15 @@ public class AddKeywordCommand
 
     OrderedMap map = keywordPage.getPageData("/keywordSet[");
 
-    Log.debug(45, "\n insertKeyword() Got keyword details from "
-         + "Keyword page -\n" + map.toString());
-
-    if (map == null || map.isEmpty()) {
+    if (map == null) {
       Log.debug(5, "Unable to get keyword details from input!");
       return;
+    } else if (map.isEmpty()){
+      Log.debug(45, "Empty map returned. Deleting all previous keywords!");
     }
+
+    Log.debug(45, "\n insertKeyword() Got keyword details from "
+         + "Keyword page -\n" + map.toString());
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
     //delete old title from datapackage
