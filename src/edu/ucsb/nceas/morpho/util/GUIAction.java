@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-27 01:13:37 $'
- * '$Revision: 1.15 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-27 17:25:52 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 
 import javax.swing.Icon;
 import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.MenuComponent;
 import java.awt.event.ActionEvent;
@@ -193,7 +194,19 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setSmallIcon(Icon smallIcon) {
         super.putValue(AbstractAction.SMALL_ICON, smallIcon);
     }
-   
+    
+    /**
+     * set a accelerator key for this action
+     * @param key  the accelerator key
+     */
+    public void setAcceleratorKey(String key)
+    {
+      if (key != null)
+      {
+        super.putValue(AbstractAction.ACCELERATOR_KEY,
+                       KeyStroke.getKeyStroke(key));
+      }
+    }
     /** 
      *  sets the action pull right submenu
      *
