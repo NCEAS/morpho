@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-14 21:45:57 $'
- * '$Revision: 1.1.2.5 $'
+ *     '$Date: 2002-08-15 07:45:43 $'
+ * '$Revision: 1.1.2.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1209,7 +1209,6 @@ public class Morpho
         tempFrame2.setVisible(true);
         MorphoFrame tempFrame3 = controller.addWindow("Test 3 window");
         tempFrame3.setVisible(true);
-        
       }
     } catch(Throwable t) {
       t.printStackTrace();

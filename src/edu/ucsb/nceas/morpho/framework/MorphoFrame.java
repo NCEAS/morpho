@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-14 23:56:05 $'
- * '$Revision: 1.1.2.6 $'
+ *     '$Date: 2002-08-15 07:45:43 $'
+ * '$Revision: 1.1.2.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,24 +53,24 @@ public class MorphoFrame extends JFrame
     private JToolBar morphoToolbar;
     private StatusBar statusBar;
     private ProgressIndicator indicator;
+    private Dimension screenSize;
+    private Dimension windowSize;
+    private Dimension contentAreaSize;
 
     /**
-     * Creates a new instance of MorphoFrame
-     *
+     * Creates a new instance of MorphoFrame, but is private because 
+     * getInstance() should be used to obtain new MorphoFrame instances
      */
-    public MorphoFrame()
+    private MorphoFrame()
     {
+        super("Morpho - Data Management for Ecologists");
         setVisible(false);
         setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 
         JLayeredPane layeredPane = getLayeredPane();
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout(0, 0));
-        setTitle("Morpho - Data Management for Ecologists");
-
-        // Set up the menu bar
-        //morphoMenuBar = new JMenuBar();
-        //setMenuBar(morphoMenuBar);
+        //setTitle("Morpho - Data Management for Ecologists");
 
         // Set up the progress indicator
         ImageIcon bfly = null;
@@ -126,16 +126,6 @@ public class MorphoFrame extends JFrame
         //getContentPane().add(BorderLayout.NORTH, toolbarPanel);
         getContentPane().add(BorderLayout.NORTH, morphoToolbar);
 
-        // Put in a default content area that is blank
-        JPanel content = new JPanel();
-        content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
-        Component hstrut = Box.createHorizontalStrut(600);
-        Component vstrut = Box.createVerticalStrut(800);
-        content.add(hstrut);
-        content.add(vstrut);
-        content.setBackground(Color.darkGray);
-        setMainContentPane(content);
-
         // Set up and add a StatusBar
         statusBar = StatusBar.getInstance();
         getContentPane().add(BorderLayout.SOUTH, statusBar);
@@ -161,6 +151,16 @@ public class MorphoFrame extends JFrame
 
         // Size the window properly
         pack();
+    }
+
+    /**
+     * Create a new instance and set its default size
+     */
+    public static MorphoFrame getInstance() {
+        MorphoFrame window = new MorphoFrame();
+        window.calculateDefaultSizes();
+        window.addDefaultContentArea();
+        return window;
     }
 
     /**
@@ -204,6 +204,27 @@ public class MorphoFrame extends JFrame
         indicator.setBusy(isBusy);
     }
 
+    /**
+     * Set the StatusBar to display a message
+     *
+     * @param message the message to display in the StatusBar
+     */
+    public void setStatusMessage(String message)
+    {
+        // Not implemented yet because StatusBar is currently a singleton
+    }
+
+    /**
+     * Returns the default size that the content area should be on this
+     * screen.  This is determined by considering the screen size, the sizes
+     * of the window insets, and sizes of internal components of the
+     * MorphoFrame such as the ProgressIndicator and StatusBar.
+     */
+    public Dimension getDefaultContentAreaSize()
+    {
+        return contentAreaSize;
+    }
+
     /** 
      * Properly locate the progress indicator
      * when the window size changes
@@ -227,5 +248,65 @@ public class MorphoFrame extends JFrame
         controller.removeWindow(this);
         this.dispose();
     }
-}
 
+    /**
+     * Determine the default sizes for various window components based on
+     * the screen size
+     */
+    private void calculateDefaultSizes()
+    {
+        // determine screen size
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        screenSize = tk.getScreenSize();
+        Log.debug(50, "Screen size (w, h): (" + screenSize.getWidth() +
+                ", " + screenSize.getHeight() + ")");
+
+        // determine default window size
+        double windowWidth;
+        double windowHeight;
+        if (screenSize.getWidth() >= 1024) {
+            windowWidth = 1024 - 50;
+        } else {
+            windowWidth = screenSize.getWidth() - 50;
+        }
+        if (screenSize.getHeight() >= 768) {
+            windowHeight = 768 - 50;
+        } else {
+            windowHeight = screenSize.getHeight() - 50;
+        }
+        windowSize = new Dimension((int)windowWidth, (int)windowHeight);
+        Log.debug(50, "Window size (w, h): (" + windowSize.getWidth() +
+                ", " + windowSize.getHeight() + ")");
+
+        // determine default content size
+        Insets insets = getInsets();
+        Log.debug(50, "Insets (t, b, l, r): (" + insets.top + ", " +
+                insets.bottom + ", " + insets.left + ", " + insets.right + ")");
+        double indicatorHeight = indicator.getSize().getHeight();
+        double statusHeight = statusBar.getSize().getHeight();
+        double contentWidth = windowWidth - insets.left - insets.right;
+        double contentHeight = windowHeight - insets.top - insets.bottom -
+            indicatorHeight - statusHeight;
+        contentAreaSize = new Dimension((int)contentWidth, (int)contentHeight);
+        Log.debug(50, "Content size (w, h): (" + contentAreaSize.getWidth() +
+                ", " + contentAreaSize.getHeight() + ")");
+    }
+
+    /**
+     * Create a content pane with the default size
+     */
+    private void addDefaultContentArea()
+    {
+        // Put in a default content area that is blank
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
+        Component hstrut = Box.createHorizontalStrut(
+                (int)contentAreaSize.getWidth());
+        Component vstrut = Box.createVerticalStrut(
+                (int)contentAreaSize.getHeight());
+        content.add(hstrut);
+        content.add(vstrut);
+        content.setBackground(Color.darkGray);
+        setMainContentPane(content);
+    }
+}

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-14 23:56:05 $'
- * '$Revision: 1.1.2.3 $'
+ *     '$Date: 2002-08-15 07:45:43 $'
+ * '$Revision: 1.1.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,7 +110,8 @@ public class UIController
             title = windowName;
         }
         Log.debug(30, "Adding window: " + title);
-        MorphoFrame window = new MorphoFrame();
+        //MorphoFrame window = new MorphoFrame();
+        MorphoFrame window = MorphoFrame.getInstance();
         window.setTitle(title);
         Action windowAction = new AbstractAction(title) {
             public void actionPerformed(ActionEvent e) {
@@ -139,7 +140,7 @@ public class UIController
      */
     public void removeWindow(MorphoFrame window)
     {
-        Log.debug(20, "Removing window.");
+        Log.debug(50, "Removing window.");
 
         // Look up the Action for this window
         Action currentAction = null;
@@ -253,7 +254,7 @@ public class UIController
      */
     public void removeMenuItem(String menuName, int index)
     {
-        Log.debug(20, "Removing menu item: " + menuName + " (" + index + ")");
+        Log.debug(50, "Removing menu item: " + menuName + " (" + index + ")");
         // Check if the menu exists, and if so, remove the item
         if (orderedMenuList.contains(menuName)) {
             Vector currentActions = (Vector)orderedMenuActions.get(menuName);
@@ -303,7 +304,7 @@ public class UIController
     private void createMenuItems(String menuName, JMenu currentMenu)
     {
         Vector currentActions = (Vector)orderedMenuActions.get(menuName);
-        Log.debug(30, "Creating menu items for: " + menuName + " (" +
+        Log.debug(50, "Creating menu items for: " + menuName + " (" +
                 currentActions.size() + " actions)");
         for (int j=0; j < currentActions.size(); j++) {
             Action currentAction = (Action)currentActions.elementAt(j);
@@ -319,7 +320,7 @@ public class UIController
             menuPos = -1; 
             if (menuPos >= 0) {
                 // Insert menus at the specified position
-                Log.debug(30, "Inserting Action as menu item.");
+                Log.debug(50, "Inserting Action as menu item.");
                 int menuCount = currentMenu.getMenuComponentCount();
                 if (menuPos > menuCount) {
                     menuPos = menuCount;
@@ -340,7 +341,7 @@ public class UIController
                 }
             } else {
                 // Append everything else at the bottom of the menu
-                Log.debug(30, "Appending Action as menu item.");
+                Log.debug(50, "Appending Action as menu item.");
                 if (hasDefaultSep != null &&
                     hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
                     currentMenu.addSeparator();
