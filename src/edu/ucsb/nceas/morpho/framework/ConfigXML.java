@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:48:00 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-01-15 13:42:32 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,6 +163,20 @@ public class ConfigXML
     return result;
   }
 
+	/**
+	 *  Gets the document for this DOM
+	 */
+	public Document getDocument() {
+		return doc;
+	} 
+
+	/**
+	 *  Gets the root Node for this DOM
+	 */
+	public Node getRoot() {
+		return root;
+	} 
+	
   /**
    * Gets the value(s) corresponding to a key string (i.e. the 
    * value(s) for a named parameter.
