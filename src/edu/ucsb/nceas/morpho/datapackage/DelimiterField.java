@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-04 00:33:46 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,11 +53,11 @@ public class DelimiterField extends JTextField
      * @param value the value of input
      * @param columns the number of column need to be set
      */
-    public DelimiterField(JPanel containter, String delimiter, 
+    public DelimiterField(JPanel container, String delimiter, 
                           String value, int columns) 
     {
         super(columns);
-        parent = containter;
+        parent = container;
         this.delimiter = delimiter;
         setValue(value);
     }
@@ -80,6 +80,14 @@ public class DelimiterField extends JTextField
     public void setValue(String value) 
     {
         setText(value);
+    }
+    
+    /**
+     *  overrides the setTextMethod to insure that text is selected
+     */
+    public void setText(String value) {
+      super.setText(value);
+      selectAll();
     }
     
     /**

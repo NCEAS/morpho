@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-02 23:21:57 $'
- * '$Revision: 1.111 $'
+ *     '$Date: 2004-04-04 00:33:46 $'
+ * '$Revision: 1.112 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import java.util.Enumeration;
 import java.util.EventObject;
 import java.awt.event.*;
 import java.util.Stack;
+import java.util.EventObject;
 
 
 //import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -1210,6 +1211,11 @@ public class DataViewer extends javax.swing.JPanel
                 public Object getCellEditorValue()
                 {
                     return new String(delimiterField.getValue());
+                }
+                public boolean shouldSelectCell(EventObject evnt) {
+                  super.shouldSelectCell(evnt);
+                  delimiterField.selectAll();
+                  return true;
                 }
             };
        TableColumnModel columnModel = jtable.getColumnModel();
