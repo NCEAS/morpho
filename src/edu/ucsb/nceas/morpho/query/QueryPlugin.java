@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 00:18:23 $'
- * '$Revision: 1.74 $'
+ *     '$Date: 2002-08-15 18:32:29 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,10 +125,18 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     searchItemAction.putValue(Action.DEFAULT, 
                              ClientFramework.SEPARATOR_FOLLOWING);*/
     menuActions[0] = searchItemAction;
-
-    // Set up the toolbar for the application
-    toolbarActions = new Action[1];
+    
+    GUIAction openDialogBoxAction = new GUIAction("Open", null, 
+                new OpenDialogBoxCommand(framework));
+    openDialogBoxAction.setSmallIcon( new ImageIcon(getClass().
+                                      getResource("openButton.gif")));
+    openDialogBoxAction.setToolTipText("Open...");
+    
+     // Set up the toolbar for the application
+    toolbarActions = new Action[2];
     toolbarActions[0] = searchItemAction;
+    toolbarActions[1] = openDialogBoxAction;
+   
   }
 
   /**
