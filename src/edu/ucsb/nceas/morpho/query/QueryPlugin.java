@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-17 18:52:38 $'
- * '$Revision: 1.99 $'
+ *     '$Date: 2002-10-17 22:56:06 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,6 +228,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                       false, GUIAction.EVENT_LOCAL);
     openPreviousAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS, 
+                      false, GUIAction.EVENT_LOCAL);
+    openPreviousAction.setEnabledOnStateChange(
+                      StateChangeEvent.SEARCH_RESULT_NONSELECTED, 
                       false, GUIAction.EVENT_LOCAL);
     openPreviousAction.setEnabled(false);
     controller.addGuiAction(openPreviousAction);
