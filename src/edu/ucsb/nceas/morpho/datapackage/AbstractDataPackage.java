@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-25 20:53:38 $'
- * '$Revision: 1.76 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-25 23:38:32 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,21 +53,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.JOptionPane;
 
+import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
-import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import java.util.List;
+import java.util.ArrayList;
 
 
 
@@ -205,7 +206,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected File dataPkgFile;
   protected FileSystemDataStore fileSysDataStore;
   protected MetacatDataStore metacatDataStore;
-  
+
   /*
    *  If the AbstractDataPackage is created by opening an existing document,
    *  the id of the document being opened is stored here. Note that the id is also
@@ -213,7 +214,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  ids do not agree! (even though they should). This value remains null if there
    *  is no intial ID
    */
-  protected String initialId = null; 
+  protected String initialId = null;
 
   protected Entity[] entityArray;
 
@@ -355,8 +356,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   public String getInitialId() {
     return initialId;
   }
-  
-  
+
+
   /**
    * Method to return the location
    *
@@ -417,7 +418,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         Log.debug(10,"Internal Id DOES NOT match Storage Id!!!");
       }
       temp = initId;
-    } 
+    }
     return temp;
   }
 
@@ -442,7 +443,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public void setAccessionNumber(String id) {
     setGenericValue("/xpathKeyMap/contextNode[@name='package']/accessionNumber", id);
-		setInitialId(null);
+    setInitialId(null);
   }
 
 
@@ -575,6 +576,24 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
 
+  /**
+   * returns a <code>java.util.List</code> containing IDs of all the rootnodes
+   * of all the subtrees identified by the passed unique String.  Returns an
+   * empty string if none found. <em>NOTE - should never return null</em>
+   *
+   * @param refID unique String refID
+   * @return  a <code>java.util.List</code> containing IDs of all the rootnodes
+   * of all the subtrees identified by the passed unique String.  Returns an
+   * empty string if none found. <em>NOTE - should never return null</em>
+   */
+  public List getIDsForNodesWithName(String genericName) {
+
+    List returnList = new ArrayList();
+
+    //do some clever stuff here...
+
+    return returnList;
+  }
 
   /**
    * inserts subtree rooted at Node, at location identified by genericName
@@ -713,7 +732,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return null;
   }
-  
+
   /**
    * gets a list of geographic nodes
    */
@@ -729,7 +748,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     catch (Exception w) {
       Log.debug(50, "exception in getting geoNodeLIst");
     }
-    return geoNodes;    
+    return geoNodes;
   }
 
   /**
@@ -744,8 +763,8 @@ public abstract class AbstractDataPackage extends MetadataObject
        par.removeChild(node);
      }
    }
-   
-   
+
+
     /**
    * gets a list of temporal nodes
    */
@@ -761,7 +780,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     catch (Exception w) {
       Log.debug(50, "exception in getting tempoNodeLIst");
     }
-    return tempNodes;    
+    return tempNodes;
   }
 
     /**
