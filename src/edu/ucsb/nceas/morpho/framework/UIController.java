@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-07 18:03:50 $'
- * '$Revision: 1.35 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-13 01:00:58 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -598,7 +598,29 @@ public class UIController
       return morphoFrame.getAbstractDataPackage();
     }
 
+		/**
+     * get AbstractDataPackage from currently active window. Even if a wizard is running
+		 *	currently, it returns the ADP of the currently open package for which the wizard is 
+		 *	running
+     *
+     *  @return  the AbstractDataPackage from the currently active MorphoFrame
+     * window; returns null if current window is null, or if current window does
+     * not contain an AbstractDataPackage
+     */
+    public AbstractDataPackage getCurrentExistingAbstractDataPackage() {
 
+      MorphoFrame morphoFrame = this.getCurrentActiveWindow();
+
+      if (morphoFrame == null) {
+
+        Log.debug(20, "UIController.getCurrentAbstractDataPackage() - "
+                  +"morphoFrame==null, returning NULL");
+        return null;
+      }
+      return morphoFrame.getAbstractDataPackage();
+    }
+		
+		
     /**
      * called by DataPackageWizardPlugin whenever wizard starts running, and is
      * passed a temporary AbstractDataPackage that is used to store wizard data

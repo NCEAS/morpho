@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.18 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-13 01:00:58 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,6 +177,11 @@ public class TextImportWizardEml2 extends JFrame {
    * vector containing AttributePage objects
    */
   private Vector columnAttributes;
+	
+	/**
+   * vector containing Orderedmaps of the AttributePage objects
+   */
+  private Vector columnMaps;
 
   private boolean[] needToSetPageData;
 
@@ -1055,26 +1060,29 @@ public class TextImportWizardEml2 extends JFrame {
     int attrsToBeImported = mainWizFrame.getAttributeImportCount();
 
     Iterator it = columnAttributes.iterator();
-    int cnt = 0;
+		int index = 1;
     boolean importNeeded = false;
 
     int currentEntityID;
     String entityName = TableNameTextField.getText();
     List colNames = new ArrayList();
+		columnMaps = new Vector();
+		String prefix = AttributeSettings.Attribute_xPath;
     while(it.hasNext()) {
       ad = (AttributePage) it.next();
-      OrderedMap map1 = ad.getPageData(AttributeSettings.Attribute_xPath);
-      String colName = getColumnName(map1, AttributeSettings.Attribute_xPath);
+      OrderedMap map1 = ad.getPageData(prefix + "[" + index + "]");
+			columnMaps.add(map1);
+      String colName = getColumnName(map1, prefix + "[" + index + "]");
+			
+			if(ad.isImportNeeded()) {
 
-      if(ad.isImportNeeded()) {
-
-        String mScale = getMeasurementScale(map1, AttributeSettings.Attribute_xPath);
-        mainWizFrame.addAttributeForImport(entityName, colName, mScale, map1, AttributeSettings.Attribute_xPath, true);
+        String mScale = getMeasurementScale(map1, prefix + "[" + index + "]");
+        mainWizFrame.addAttributeForImport(entityName, colName, mScale, map1, prefix + "[" + index + "]", true);
         importNeeded = true;
       }
+			index++;
       colNames.add(colName);
-      cnt++;
-      map1 = null;
+      
     }
 
     mainWizFrame.setLastImportedEntity(entityName);
@@ -1612,12 +1620,10 @@ public class TextImportWizardEml2 extends JFrame {
     om.put(header
            + "physical/dataFormat/textFormat/simpleDelimited/fieldDelimiter",
            delimit);
-    Enumeration e = columnAttributes.elements();
+    Enumeration e = columnMaps.elements();
     int index = 1;
     while (e.hasMoreElements()) {
-      AttributePage ad = (AttributePage)e.nextElement();
-      OrderedMap map = ad.getPageData(header + "attributeList/attribute["
-                                      + (index++) + "]");
+      OrderedMap map = (OrderedMap) e.nextElement();
       om.putAll(map);
     }
 

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-12 06:43:09 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-04-13 01:00:58 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ import javax.xml.transform.TransformerException;
 
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -722,7 +723,6 @@ public class AttributePage extends AbstractUIPage {
                             xPath+"/measurementScale/"+measurementScale) );
     }
 		if( measurementScale != null && (measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) ) {
-			
 			boolean p = returnMap.containsKey(xPath+"/measurementScale/"+measurementScale + "/additionalMetadata/ANY/unitList/unit[1]/@name");
 			if(p) {
 				OrderedMap map = new OrderedMap();
@@ -743,12 +743,11 @@ public class AttributePage extends AbstractUIPage {
 
 	private void insertIntoDOMTree(OrderedMap map) {
 		
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		AbstractDataPackage adp = UIController.getInstance().getCurrentExistingAbstractDataPackage();
 		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 		Document doc = impl.createDocument("", "additionalMetadata", null);
 		
 		Node metadataRoot = doc.getDocumentElement();
-		
 		try {
 			XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot);
 			
@@ -762,14 +761,11 @@ public class AttributePage extends AbstractUIPage {
 			w.printStackTrace();
 			return;
 		}
-		
-		// add to the datapackage
-		Node check = adp.insertSubtree("additionalMetadata", metadataRoot, 0);
-		
-		if (check != null) {
-			Log.debug(45, "added new method details to package...");
+		Node check1 = adp.appendAdditionalMetadata(metadataRoot);
+		if (check1 != null) {
+			Log.debug(45, "added new addt metadata details to package...");
 		} else {
-			Log.debug(45, "cldnt added new method details to package...");
+			Log.debug(45, "cldnt added new metadata details to package...");
 		}
 		
 		
