@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-06-26 15:41:17 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-07-12 17:21:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -410,11 +410,11 @@ public class MultipartForm
                     if (cnt!=-1) {
                         out.write(buf, 0, cnt);
                         out.flush();
-                        fs.close();    // added by DFH after e-mail from MJones
-		        pos += cnt;
+		                    pos += cnt;
                     }
                 }
-               
+                fs.close();    // added by DFH after e-mail from MJones
+
 /*
                 // Not sure why this is here -- seems unnecessary to me -- mbj
 		if ((pos-start) >= boundary.length  &&
