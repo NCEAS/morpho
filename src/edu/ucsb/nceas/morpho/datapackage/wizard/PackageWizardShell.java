@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:36 $'
- * '$Revision: 1.14 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -982,10 +982,14 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   public static void main(String[] args)
   {
-    ConfigXML cxml = new ConfigXML("./lib/config.xml");
-    ClientFramework cf = new ClientFramework(cxml);
-    PackageWizardShell pws = new PackageWizardShell(cf);
-    pws.show();
+    try {
+      ConfigXML cxml = new ConfigXML("./lib/config.xml");
+      ClientFramework cf = new ClientFramework(cxml);
+      PackageWizardShell pws = new PackageWizardShell(cf);
+      pws.show();
+    } catch (FileNotFoundException fnf) {
+      System.err.println("Failed to find the configuration file.");
+    }
   }
   
   private class WizardFrameContainer

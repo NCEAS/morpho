@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-12 21:00:42 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ public class LocalQuery
       myCatalog.parseCatalog(xmlcatalogfile);
       cer.setCatalog(myCatalog);
     } catch (Exception e) {
-      ClientFramework.debug(9,"Problem creating Catalog!" + e.toString());
+      ClientFramework.debug(6,"Problem creating Catalog!" + e.toString());
     }
     parser.setEntityResolver(cer);
     // set start time variable
@@ -211,7 +211,6 @@ public class LocalQuery
     for (int i=0;i<filevector.size();i++) {
       File currentfile = (File)filevector.elementAt(i);
       String filename = currentfile.getPath();
-      ClientFramework.debug(9, "Searching local file: " + filename);
       String docid = currentfile.getParentFile().getName() + separator +
                      currentfile.getName();
       // skips subdirectories
@@ -228,15 +227,16 @@ public class LocalQuery
           try {
             in = new InputSource(new FileInputStream(filename));
           } catch (FileNotFoundException fnf) {
-            ClientFramework.debug(9,"FileInputStream of " + filename + 
+            ClientFramework.debug(6,"FileInputStream of " + filename + 
                                " threw: " + fnf.toString());
             continue;
           }
           try {
             parser.parse(in);
           } catch(Exception e1) {
-            ClientFramework.debug(9,"Parsing " + filename + 
-                               " threw: " + e1.toString());
+            // Either this isn't an XML doc, or its broken, so skip it
+            ClientFramework.debug(20,"Parsing error: " + filename);
+            ClientFramework.debug(20,e1.toString());
             continue;
           }
 
@@ -276,18 +276,18 @@ public class LocalQuery
                   }
                 }
               } catch (Exception rogue) {
-                ClientFramework.debug(9, "Rogue exception: ");
-                ClientFramework.debug(9, rogue.getMessage());
+                ClientFramework.debug(1, "Rogue exception: ");
+                ClientFramework.debug(1, rogue.getMessage());
               }
             }
           }
         } catch (Exception e2) {
-          ClientFramework.debug(9,"selectNodeList threw: " + e2.toString() 
+          ClientFramework.debug(6,"selectNodeList threw: " + e2.toString() 
             + " perhaps your xpath didn't select any nodes");
           continue;
         }
       } else {
-        ClientFramework.debug(9,"Bad input args: " + filename + ", " 
+        ClientFramework.debug(6,"Bad input args: " + filename + ", " 
           + xpathExpression);
       }
     } // end of 'for' loop over all files
@@ -373,7 +373,7 @@ public class LocalQuery
         }
       }
     } catch (Exception e){
-      ClientFramework.debug(9,"Error in getValueForPath method");
+      ClientFramework.debug(6,"Error in getValueForPath method");
     }
     return val;
   }
@@ -565,8 +565,8 @@ public class LocalQuery
   public static void main(String[] args) 
   {
     if (args.length < 1) {
-      ClientFramework.debug(9, "Wrong number of arguments!!!");
-      ClientFramework.debug(9, "USAGE: java LocalQuery <xmlfile>");
+      ClientFramework.debug(1, "Wrong number of arguments!!!");
+      ClientFramework.debug(1, "USAGE: java LocalQuery <xmlfile>");
       return;
     } else {
       int i = 0;
@@ -586,7 +586,7 @@ public class LocalQuery
         ResultSet rs = qspec.execute();
          
        } catch (IOException e) {
-         ClientFramework.debug(9, e.getMessage());
+         ClientFramework.debug(1, e.getMessage());
        }
      }
   }
@@ -613,7 +613,7 @@ public class LocalQuery
     try{
       nl = XPathAPI.selectNodeList(root, xpathExpression);
     } catch (Exception ee) {
-      ClientFramework.debug(9, "Error in building PackageList!");  
+      ClientFramework.debug(6, "Error in building PackageList!");  
     }
     if ((nl!=null)&&(nl.getLength()>0)) {
       for (int m=0;m<nl.getLength();m++) {
@@ -657,98 +657,4 @@ public class LocalQuery
       }
     }
   }
- 
-  /** 
-   * Builds package list by looping over all files
-   * in the local XML directory
-   * Uses XPath to find all <triple> elements and builds list
-   */
-/*
-  // MBJ Removed this method because it inappropriately loads its own
-  // configuration object using hardcoded paths.  Now that we are using
-  // profiles to store user data and options, there is no way to correctly
-  // determine which profile to use until the user has logged in and thus
-  // the config objects have been instantiated.  Thus, this static method
-  // would by definition run before the information it needs is available
-  // and all heck would break loose.  Plus, its redundant anyway (the
-  // caches get initialized on the first search)
-
-  private static void buildPackageList() 
-  {
-    ConfigXML tempconfig = new ConfigXML("./lib/config.xml");
-    String local_xml_dir = tempconfig.get("local_xml_directory", 0);
-    String xmlcatfile = tempconfig.get("local_dtd_directory", 0);
-    Node root;
-    long starttime, curtime, fm;
-    DOMParser parser = new DOMParser();
-    // first set up the catalog system for handling locations of DTDs
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    try {
-      Catalog myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
-      myCatalog.parseCatalog(xmlcatfile+"/catalog");
-      cer.setCatalog(myCatalog);
-    } catch (Exception e) {
-      ClientFramework.debug(9, "Problem creating Catalog!" + e.toString());
-    }
-    parser.setEntityResolver(cer);
-    // set start time variable
-    starttime = System.currentTimeMillis();
-    StringWriter sw = new StringWriter();
-
-    File xmldir = new File("./XMLworkFolder");
-    Vector filevector = new Vector();
-    // get a list of all files to be searched
-    getFiles(xmldir, filevector);
-  
-    // iterate over all the files that are in the local xml directory
-    for (int i=0;i<filevector.size();i++) {
-      File currentfile = (File)filevector.elementAt(i);
-      String filename = currentfile.getPath();
-      
-      // skips subdirectories
-      if (currentfile.isFile()) {
-        // checks to see if doc has already been placed in DOM cache
-        // if so, no need to parse again
-        if (dom_collection.containsKey(filename)){
-          root = ((Document)dom_collection.get(filename)).getDocumentElement();
-        } else {
-          InputSource in;
-          try {
-            in = new InputSource(new FileInputStream(filename));
-          } catch (FileNotFoundException fnf) {
-            ClientFramework.debug(9, "FileInputStream of " + filename + 
-                               " threw: " + fnf.toString());
-            continue;
-          }
-          try {
-            parser.parse(in);
-          }
-          catch(Exception e1) {
-            ClientFramework.debug(9, "Parsing " + filename + 
-                               " threw: " + e1.toString());
-            continue;
-          }
-
-          // Get the documentElement from the parser, which is what 
-          // the selectNodeList method expects
-          Document current_doc = parser.getDocument();
-          root = parser.getDocument().getDocumentElement();
-          dom_collection.put(filename,current_doc);
-          String temp = getDocTypeFromDOM(current_doc);
-          if (temp==null) temp = root.getNodeName();
-          doctype_collection.put(filename,temp);
-        } // end else
-      
-        addToPackageList(root, currentfile.getName());  
-      
-      } else {
-        ClientFramework.debug(9, "Bad input args: " + filename + ", " );
-      }
-    } // end of 'for' loop over all files
-        
-    curtime = System.currentTimeMillis();
-    ClientFramework.debug(9, "Build Package List Completed");
-  }
-*/
 }

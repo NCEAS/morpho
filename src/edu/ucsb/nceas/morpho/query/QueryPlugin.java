@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 22:24:32 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,18 +115,19 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
    */
   private String getOwnerQuery()
   {
+    ConfigXML profile = framework.getProfile();
     StringBuffer searchtext = new StringBuffer();
     searchtext.append("<?xml version=\"1.0\"?>\n");
     searchtext.append("<pathquery version=\"1.0\">\n");
     searchtext.append("<querytitle>My Data (" + framework.getUserName());
     searchtext.append(")</querytitle>\n");
-    Vector returnDoctypeList = config.get("returndoc");
+    Vector returnDoctypeList = profile.get("returndoc");
     for (int i=0; i < returnDoctypeList.size(); i++) {
       searchtext.append("<returndoctype>");
       searchtext.append((String)returnDoctypeList.get(i));
       searchtext.append("</returndoctype>\n");
     }
-    Vector returnFieldList = config.get("returnfield");
+    Vector returnFieldList = profile.get("returnfield");
     for (int i=0; i < returnFieldList.size(); i++) {
       searchtext.append("<returnfield>");
       searchtext.append((String)returnFieldList.get(i));
@@ -147,8 +148,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
    */
   private void loadConfigurationParameters()
   {
-    //MetaCatServletURL = config.get("MetaCatServletURL", 0);
-    framework.debug(9, "No config params to load.");
   }
 
   /**
@@ -175,7 +174,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
    */
   public void usernameChanged(String newUsername)
   {
-    framework.debug(9, "New username: " + newUsername);
+    framework.debug(20, "New username: " + newUsername);
     refreshOwnerPanel();
   }
 
@@ -185,7 +184,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
    */
   public void connectionChanged(boolean connected)
   {
-    framework.debug(9, "Connection changed: " + 
+    framework.debug(20, "Connection changed: " + 
                     (new Boolean(connected)).toString());
     refreshOwnerPanel();
   }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 19:03:26 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,9 +62,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Query extends DefaultHandler {
  
-  /** The string representation of the pathquery (XML format) */
-  private String queryString;
-
   /** flag determining whether extended query terms are present */
   private boolean containsExtendedSQL=false;
   /** Identifier for this query document */
@@ -119,27 +116,14 @@ public class Query extends DefaultHandler {
     elementStack = new Stack();
     queryStack   = new Stack();
 
-    // Store the text of the initial query
-    StringBuffer qtext = new StringBuffer();
-    int len = 0;
-    char[] characters = new char[512];
-    try {
-      while ((len = queryspec.read(characters, 0, 512)) != -1) {
-        qtext.append(characters);
-        characters = new char[512];
-      }
-    } catch (IOException ioe) {
-      framework.debug(4, "Error reading the query.");
-    }
-    queryString = qtext.toString();
-
     // Initialize the parser and read the queryspec
     XMLReader parser = initializeParser();
     if (parser == null) {
       framework.debug(1, "SAX parser not instantiated properly.");
     }
     try {
-      parser.parse(new InputSource(new StringReader(queryString.trim())));
+      //parser.parse(new InputSource(new StringReader(queryString.trim())));
+      parser.parse(new InputSource(queryspec));
     } catch (IOException ioe) {
       framework.debug(4, "Error reading the query during parsing.");
     } catch (SAXException e) {
@@ -769,7 +753,6 @@ public class Query extends DefaultHandler {
    * This should become a way to get the XML serialization of the query.
    */
   public String toString() {
-    //return queryString;
     return toXml();
   }
 
@@ -842,11 +825,12 @@ public class Query extends DefaultHandler {
    */
   private void loadConfigurationParameters()
   {
+    ConfigXML profile = framework.getProfile();
     parserName = config.get("saxparser", 0);
-    accNumberSeparator = config.get("accNumberSeparator", 0);
-    String searchMetacatString = config.get("searchmetacat", 0);
+    accNumberSeparator = profile.get("separator", 0);
+    String searchMetacatString = profile.get("searchmetacat", 0);
     searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
-    String searchLocalString = config.get("searchlocal", 0);
+    String searchLocalString = profile.get("searchlocal", 0);
     searchLocal = (new Boolean(searchLocalString)).booleanValue();
   }
 
@@ -854,8 +838,8 @@ public class Query extends DefaultHandler {
   static public void main(String[] args) 
   {
      if (args.length < 1) {
-       System.err.println("Wrong number of arguments!!!");
-       System.err.println("USAGE: java Query [-noindex] <xmlfile>");
+       ClientFramework.debug(1, "Wrong number of arguments!!!");
+       ClientFramework.debug(1, "USAGE: java Query [-noindex] <xmlfile>");
        return;
      } else {
        int i = 0;
@@ -902,7 +886,7 @@ public class Query extends DefaultHandler {
          frame.setVisible(true);
 */
        } catch (IOException e) {
-         System.err.println(e.getMessage());
+         ClientFramework.debug(4, e.getMessage());
        }
      }
   }

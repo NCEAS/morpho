@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-02 22:09:35 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.framework.tests;
 
 import edu.ucsb.nceas.morpho.framework.*;
+
+import java.io.FileNotFoundException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -60,10 +62,14 @@ public class ConnectTest extends TestCase
    */
   public void setUp()
   {
-    ConfigXML config = new ConfigXML(configFile);
-    framework = new ClientFramework(config);
-    framework.setUserName(username);
-    framework.setPassword(password);
+    try {
+      ConfigXML config = new ConfigXML(configFile);
+      framework = new ClientFramework(config);
+      framework.setUserName(username);
+      framework.setPassword(password);
+    } catch (FileNotFoundException fnf) {
+      System.err.println("Could not find configuration file!"); 
+    }
   }
 
   /**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-12 21:00:42 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,8 +306,10 @@ public class ResultPanel extends JPanel
     if (parent instanceof ResultFrame) {
       ResultFrame rsf = (ResultFrame)parent;
       rsf.setTitle(newTitle);
+    } else if (parent instanceof ClientFramework) {
     } else {
-      framework.debug(9, "Parent instance of: " + parent.getClass().getName());
+      framework.debug(1, "Error: Parent instance of: " + 
+                      parent.getClass().getName());
     }
  
     // Update the record count

@@ -1,88 +1,33 @@
 <?xml version="1.0"?>
-<root>
-<plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
-<plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
-<plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
-<MetaCatServletURL>http://dev.nceas.ucsb.edu/jones/servlet/metacat</MetaCatServletURL>
-<profile_directory>./profiles</profile_directory>
-<samples_directory>./lib/sampledata</samples_directory>
-<default_profile>./lib/default-profile.xml</default_profile>
-<local_dtd_directory>./lib/catalog</local_dtd_directory>
-<local_catalog_path>./lib/catalog/catalog</local_catalog_path>
-<local_xml_directory>./XMLworkFolder</local_xml_directory>
-<local_cache_directory>./cache</local_cache_directory>
-<debug_level>9</debug_level>
-<log_file>false</log_file>
-<searchmetacat>true</searchmetacat>
-<searchlocal>true</searchlocal>
-<pathquery_config>
-  <doctypes_searched><doctype>any</doctype></doctypes_searched>
-  <doctypes_returned>
-    <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
-    <returndoc>-//NCEAS//resource//EN</returndoc>
-  </doctypes_returned>
-  <fields_returned>
-  <returnfield>dataset/title</returnfield>
-  <returnfield>dataset/originator/responsibleParty/individualName/surName</returnfield>
-  <returnfield>keyword</returnfield>
-  </fields_returned>
-
-  <doctypes_searched_default>
-    <doctype_default>any</doctype_default>
-  </doctypes_searched_default>
-  <doctypes_returned_default>
-    <returndoc_default>-//NCEAS//eml-dataset-2.0//EN</returndoc_default>
-    <returndoc_default>-//NCEAS//resource//EN</returndoc_default>
-  </doctypes_returned_default>
-  <fields_returned_default>
-    <returnfield_default>dataset/title</returnfield_default>
-    <returnfield_default>dataset/originator/responsibleParty/individualName/surName</returnfield_default>
-    <returnfield_default>keyword</returnfield_default>
-  </fields_returned_default>
-</pathquery_config>
-<localdoctypes>
-    <localdoctypename>resource</localdoctypename>
-    <localdoctypedtd>resource.dtd</localdoctypedtd>
-    <localdoctypename>eml-dataset</localdoctypename>
-    <localdoctypedtd>eml-dataset.dtd</localdoctypedtd>
-    <localdoctypename>eml-access</localdoctypename>
-    <localdoctypedtd>eml-access.dtd</localdoctypedtd>
-    <localdoctypename>eml-context</localdoctypename>
-    <localdoctypedtd>eml-context.dtd</localdoctypedtd>
-    <localdoctypename>eml-file</localdoctypename>
-    <localdoctypedtd>eml-file.dtd</localdoctypedtd>
-    <localdoctypename>eml-status</localdoctypename>
-    <localdoctypedtd>eml-status.dtd</localdoctypedtd>
-    <localdoctypename>eml-software</localdoctypename>
-    <localdoctypedtd>eml-software.dtd</localdoctypedtd>
-    <localdoctypename>eml-supplement</localdoctypename>
-    <localdoctypedtd>eml-supplement.dtd</localdoctypedtd>
-    <localdoctypename>eml-variable</localdoctypename>
-    <localdoctypedtd>eml-variable.dtd</localdoctypedtd>
-</localdoctypes>
-<saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
-<username>jones</username>
-<packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
-<tempDir>./tmp</tempDir>
-<accessionNumber>
-  <scope>USERNAME</scope>
-  <lastId>802</lastId>
-  <separator>.</separator>
-</accessionNumber>
-<packageEditor>
-  <paths>
-    <titlePath>/dataset/title</titlePath>
-    <originatorPath>/dataset/originator/individualName/surName</originatorPath>
-    <altTitlePath>/dataset/shortName</altTitlePath>
-  </paths>
-</packageEditor>
-<customFrames>
-  <mainFrame>Resource</mainFrame>
-  <frame>
-    <frameName>Resource</frameName>
-    <frameConfigFile>./lib/frames/resource.xml</frameConfigFile>
-    <frameName>Entity</frameName>
-    <frameConfigFile>./lib/frames/entity.xml</frameConfigFile>
-  </frame>
-</customFrames>
-</root>
+<config>
+  <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
+  <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
+  <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
+  <metacat_url>http://dev.nceas.ucsb.edu/jones/servlet/metacat</metacat_url>
+  <profile_directory>./profiles</profile_directory>
+  <samples_directory>./lib/sampledata</samples_directory>
+  <default_profile>./lib/default-profile.xml</default_profile>
+  <local_dtd_directory>./lib/catalog</local_dtd_directory>
+  <local_catalog_path>./lib/catalog/catalog</local_catalog_path>
+  <debug_level>9</debug_level>
+  <log_file>false</log_file>
+  <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
+  <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
+  <tempDir>./tmp</tempDir>
+  <packageEditor>
+    <paths>
+      <titlePath>/dataset/title</titlePath>
+      <originatorPath>/dataset/originator/individualName/surName</originatorPath>
+      <altTitlePath>/dataset/shortName</altTitlePath>
+    </paths>
+  </packageEditor>
+  <customFrames>
+    <mainFrame>Resource</mainFrame>
+    <frame>
+      <frameName>Resource</frameName>
+      <frameConfigFile>./lib/frames/resource.xml</frameConfigFile>
+      <frameName>Entity</frameName>
+      <frameConfigFile>./lib/frames/entity.xml</frameConfigFile>
+    </frame>
+  </customFrames>
+</config>

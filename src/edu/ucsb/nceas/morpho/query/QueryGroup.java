@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 19:00:29 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
  */
 
 package edu.ucsb.nceas.morpho.query;
+
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 
 import java.util.Vector;
 import java.util.Enumeration;
@@ -112,7 +114,7 @@ public class QueryGroup
         QueryTerm qt = (QueryTerm)qobject;
         self.append(qt.printSQL(useXMLIndex));
       } else {
-        System.err.println("qobject wrong type: fatal error");
+        ClientFramework.debug(4, "qobject wrong type: fatal error");
       }
     }
     self.append(") \n");
@@ -142,7 +144,7 @@ public class QueryGroup
         QueryTerm qt = (QueryTerm)qobject;
         self.append(qt.toXml(indent+2));
       } else {
-        System.err.println("qobject wrong type: fatal error");
+        ClientFramework.debug(4, "qobject wrong type: fatal error");
       }
     }
     for (int i = 0; i < indent; i++) {

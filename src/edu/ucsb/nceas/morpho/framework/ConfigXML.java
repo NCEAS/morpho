@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-11 02:13:37 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,35 +85,24 @@ public class ConfigXML
    * 
    * @param filename name of XML file
    */
-  public ConfigXML(String filename)
+  public ConfigXML(String filename) throws FileNotFoundException
   {
-    fileName = filename;
-    //   out = new PrintWriter(new OutputStreamWriter(System.out));
+    this.fileName = filename;
 
     DOMParser parser = new DOMParser();
     File XMLConfigFile = new File(filename);
     InputSource in;
     FileInputStream fs;
-      try
-    {
-      fs = new FileInputStream(filename);
-      in = new InputSource(fs);
-    }
-    catch(FileNotFoundException fnf)
-    {
-      System.err.println("FileInputStream of " + filename + " threw: " +
-			 fnf.toString());
-      //        fnf.printStackTrace();
-      return;
-    }
+    fs = new FileInputStream(filename);
+    in = new InputSource(fs);
+
     try
     {
       parser.parse(in);
       fs.close();
-    }
-    catch(Exception e1)
-    {
-      System.err.println("Parsing " + filename + " threw: " + e1.toString());
+    } catch(Exception e1) {
+      ClientFramework.debug(4, "Parsing " + filename + " threw: " + 
+                            e1.toString());
       e1.printStackTrace();
     }
     doc = parser.getDocument();
@@ -191,7 +180,6 @@ public class ConfigXML
     if (nl.getLength() <= i)
     {
       result = false;
-      //System.out.println("Error setting XMLConfig value: index too large");
     }
     else
     {
@@ -257,7 +245,8 @@ public class ConfigXML
     {
       if (nl.getLength() <= i)
       {
-        System.out.println("Error setting XMLConfig value: index too large");
+        ClientFramework.debug(7, "Error setting XMLConfig value: " +
+                                 "index too large");
       }
       else
       {
@@ -285,7 +274,8 @@ public class ConfigXML
     {
       if (nl.getLength() <= i)
       {
-        System.out.println("Error setting XMLConfig value: index too large");
+        ClientFramework.debug(7, "Error setting XMLConfig value: " +
+                                 "index too large");
       }
       else
       {
@@ -310,7 +300,8 @@ public class ConfigXML
     {
       if (nl.getLength() <= i)
       {
-        System.out.println("Error setting XMLConfig value: index too large");
+        ClientFramework.debug(7, "Error setting XMLConfig value: " +
+                                 "index too large");
       }
       else
       {
@@ -633,7 +624,7 @@ public class ConfigXML
         }
       }
     } catch (Exception e) {
-      System.out.println("Error in getValueForPath method");
+      ClientFramework.debug(4, "Error in getValueForPath method");
     }
     return val;    
   }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:36 $'
- * '$Revision: 1.18 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:25 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,7 +145,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     this.framework = framework;
     this.config = framework.getConfiguration();   
-    returnFields = config.get("returnfield");
+    ConfigXML profile = framework.getProfile();
+    returnFields = profile.get("returnfield");
   
     int cnt;
     if (returnFields==null) {
@@ -180,7 +181,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       parser.setContentHandler(this);
       parser.parse(new InputSource(resultsXMLStream));
     } catch (Exception e) {
-      framework.debug(9, e.toString());
+      framework.debug(6, e.toString());
     }
   }
 
@@ -204,7 +205,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     this.framework = framework;
     this.config = framework.getConfiguration();   
-    returnFields = config.get("returnfield");
+    ConfigXML profile = framework.getProfile();
+    returnFields = profile.get("returnfield");
   
     int cnt;
     if (returnFields==null) {
@@ -523,10 +525,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       }
 */
     } catch (ArrayIndexOutOfBoundsException aioobe) {
-      System.out.println("array index out of bounds");
+      ClientFramework.debug(1, "array index out of bounds");
       docid = null;
     } catch (NullPointerException npe) {
-      System.out.println("null pointer exception");
+      ClientFramework.debug(1, "null pointer exception");
       docid = null;
     }
 

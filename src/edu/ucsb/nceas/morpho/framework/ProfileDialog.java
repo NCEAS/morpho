@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-12 21:00:42 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ public class ProfileDialog extends JDialog
     nextButton.addActionListener(myActionHandler);
     cancelButton.addActionListener(myActionHandler);
 
-    config = new ConfigXML("lib/config.xml");
+    config = framework.getConfiguration();
   }
 
   /**

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-07 17:45:23 $'
- * '$Revision: 1.8 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:22 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,6 @@ public class DataPackagePlugin
    */
   public void initialize(ClientFramework cf)
   {
-    cf.debug(9, "initializing the DataPackagePlugin");
     this.framework = cf;
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
@@ -79,7 +78,7 @@ public class DataPackagePlugin
     try 
     {
       framework.addService(DataPackageInterface.class, this);
-      framework.debug(6, "Service added: DataPackageInterface.");
+      framework.debug(20, "Service added: DataPackageInterface.");
     } 
     catch (ServiceExistsException see) 
     {
@@ -87,7 +86,7 @@ public class DataPackagePlugin
       framework.debug(6, see.toString());
     }
 
-    cf.debug(9, "Init DataPackage Plugin"); 
+    cf.debug(20, "Init DataPackage Plugin"); 
   }
 
   /**

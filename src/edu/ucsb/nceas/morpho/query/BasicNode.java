@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 01:51:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -188,7 +189,7 @@ public class BasicNode {
         attributes.put(attName, attValue);
  
       } else {
-        System.err.println("Attribute name must not be null!");
+        ClientFramework.debug(4, "Attribute name must not be null!");
       }
     }
 

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 21:22:18 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-06-13 03:11:24 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,9 +149,10 @@ public class QueryDialog extends JDialog
     if (temp != null) {
         keywordSearchPath = temp;
     }
-    String searchMetacatString = config.get("searchmetacat", 0);
+    ConfigXML profile = framework.getProfile();
+    String searchMetacatString = profile.get("searchmetacat", 0);
     searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
-    String searchLocalString = config.get("searchlocal", 0);
+    String searchLocalString = profile.get("searchlocal", 0);
     searchLocal = (new Boolean(searchLocalString)).booleanValue();
 
     untitledCounter++;
@@ -356,15 +357,6 @@ public class QueryDialog extends JDialog
     this((Frame)framework, framework);
   }
 
-  /**
-   * main method for testing
-   */
-  static public void main(String args[])
-  {
-     (new QueryDialog(new ClientFramework(
-          new ConfigXML("./lib/config.xml")))).setVisible(true);
-  }
-
   /** Used by visual cafe -- but why? */
   public void addNotify()
   {
@@ -482,9 +474,10 @@ public class QueryDialog extends JDialog
     newQuery.setSearchLocal(localSearchCheckBox.isSelected());
 
     // Set the returndoc and returnfield parameters
-    Vector returndocList = config.get("returndoc");
+    ConfigXML profile = framework.getProfile();
+    Vector returndocList = profile.get("returndoc");
     newQuery.setReturnDocList(returndocList);
-    Vector returnFieldList = config.get("returnfield");
+    Vector returnFieldList = profile.get("returnfield");
     newQuery.setReturnFieldList(returnFieldList);
 
     // Add a query group that combines the tabs (always INTERSECT)
@@ -523,7 +516,6 @@ public class QueryDialog extends JDialog
       rootQG.addChild(taxonGroup);
     }
 
-    framework.debug(9, newQuery.toXml());
     return newQuery;
   }
 

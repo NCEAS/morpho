@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:45:18 $'
- * '$Revision: 1.3 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     try 
     {
       framework.addService(EditorInterface.class, this);
-      framework.debug(6, "Service added: EditorInterface.");
+      framework.debug(20, "Service added: EditorInterface.");
     } 
     catch (ServiceExistsException see) 
     {
@@ -141,8 +141,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
    */
   private void loadConfigurationParameters()
   {
-    //MetaCatServletURL = config.get("MetaCatServletURL", 0);
-    framework.debug(9, "No config params to load.");
+    //myparam = config.get("myparam", 0);
   }
  
   

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:36 $'
- * '$Revision: 1.51 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,7 +205,7 @@ public class ClientFramework extends javax.swing.JFrame
       comp.invalidate();
       invalidate();
     } else {
-      debug(9, "Component was null so I could not set it!");
+      debug(5, "Component was null so I could not set it!");
     }
   }
 
@@ -310,10 +310,9 @@ public class ClientFramework extends javax.swing.JFrame
   {
     String windowName = window.getName();
     if (!windowsRegistry.containsValue(window)) {
-      debug(7, "Adding window: " + windowName);
+      debug(20, "Adding window: " + windowName);
       Action windowAction = new AbstractAction(windowName) {
         public void actionPerformed(ActionEvent e) {
-          debug(9, "Selected window.");
           JMenuItem source = (JMenuItem)e.getSource();
           JFrame window1 = (JFrame)windowsRegistry.get(source);
           window1.toFront();
@@ -335,7 +334,7 @@ public class ClientFramework extends javax.swing.JFrame
    */
   public void removeWindow(JFrame window)
   {
-    debug(9, "Removing window.");
+    debug(20, "Removing window.");
     JMenuItem menuItem = null;
     JMenu windowMenu = (JMenu)menuList.get("Window");
     Enumeration keys = windowsRegistry.keys();
@@ -369,7 +368,7 @@ public class ClientFramework extends javax.swing.JFrame
     if (servicesRegistry.containsKey(serviceInterface)) {
       throw (new ServiceExistsException(serviceInterface.getName()));
     } else {
-      debug(7, "Adding service: " + serviceInterface.getName());
+      debug(20, "Adding service: " + serviceInterface.getName());
       servicesRegistry.put(serviceInterface, provider);
     }
   }
@@ -717,8 +716,7 @@ public class ClientFramework extends javax.swing.JFrame
     // Now contact metacat and send the request
     try
     {
-      //String metacatURL = config.get("MetaCatServletURL", 0);
-      debug(9, "Sending data to: " + metacatURL);
+      debug(20, "Sending data to: " + metacatURL);
       URL url = new URL(metacatURL);
       HttpMessage msg = new HttpMessage(url);
       returnStream = msg.sendPostMessage(prop);
@@ -774,7 +772,6 @@ public class ClientFramework extends javax.swing.JFrame
       returnStream.close();
       response = sw.toString();
       sw.close();
-      debug(5, response);
     }
     catch(Exception e)
     {
@@ -838,12 +835,6 @@ public class ClientFramework extends javax.swing.JFrame
   {
     if (!userName.equals(uname)) {
       this.userName = uname;
-      boolean success = config.set("username", 0, uname);
-      if (!success)
-      {
-        config.insert("username", uname);
-      }
-
       fireUsernameChangedEvent();
     }
   } 
@@ -889,7 +880,7 @@ public class ClientFramework extends javax.swing.JFrame
   public void addConnectionListener(ConnectionListener listener)
   {
     if (!connectionRegistry.contains(listener)) {
-      debug(7, "Adding listener: " + listener.toString());
+      debug(20, "Adding listener: " + listener.toString());
       connectionRegistry.add(listener);
     }
   }
@@ -949,11 +940,11 @@ public class ClientFramework extends javax.swing.JFrame
    * Set the profile for the currently logged in user
    * (on startup, or when switching profiles).
    *
-   * @param profile the profile object
+   * @param newProfile the profile object
    */
-  public void setProfile(ConfigXML profile)
+  public void setProfile(ConfigXML newProfile)
   {
-    this.profile = profile;
+    this.profile = newProfile;
 
     // Load basic profile information
     String username = profile.get("username", 0);
@@ -969,19 +960,40 @@ public class ClientFramework extends javax.swing.JFrame
   } 
 
   /**
+   * Set the profile associated with this framework based on its name
+   *
+   * @param newProfileName the name of the new profile for the framework
+   */
+  public void setProfile(String newProfileName)
+  {
+    String profileDir = config.get("profile_directory", 0);
+    String currentProfile = config.get("current_profile", 0);
+    if (!newProfileName.equals(currentProfile)) {
+      String newProfilePath = profileDir + File.separator + newProfileName + 
+                              File.separator + newProfileName + ".xml";
+      try {
+      ConfigXML newProfile = new ConfigXML(newProfilePath);
+      setProfile(newProfile);
+      } catch (FileNotFoundException fnf) {
+        ClientFramework.debug(5, "Profile not found!");
+      }
+    }
+  } 
+
+  /**
    * returns the next local id from the config file
    * returns null if configXML was unable to increment the id number
    */
   public String getNextId()
   {
-    String scope = config.get("scope", 0);
-    String lastidS = config.get("lastId", 0);
+    String scope = profile.get("scope", 0);
+    String lastidS = profile.get("lastId", 0);
     int lastid = (new Integer(lastidS)).intValue();
-    String separator = config.get("separator", 0);
+    String separator = profile.get("separator", 0);
     
     if(scope.trim().equals("USERNAME"))
     { //this keyword means to use the username for the scope
-      String username = config.get("username", 0);
+      String username = profile.get("username", 0);
       scope = username;
     }
     
@@ -990,7 +1002,7 @@ public class ClientFramework extends javax.swing.JFrame
     String s = "" + lastid;
     if(!config.set("lastId", 0, s))
     {
-      debug(0, "Error incrementing the accession number id");
+      debug(1, "Error incrementing the accession number id");
       return null;
     }
     else
@@ -1001,7 +1013,7 @@ public class ClientFramework extends javax.swing.JFrame
 
   /**
    * Print debugging messages based on severity level, where severity level 1
-   * are the most critical and severity level 9 the most trivial messages.
+   * are the most critical and higher numbers are more trivial messages.
    * Setting the debug_level to 0 in the configuration file turns all messages
    * off.
    *
@@ -1022,11 +1034,11 @@ public class ClientFramework extends javax.swing.JFrame
    */
   private void loadConfigurationParameters()
   {
-    metacatURL = config.get("MetaCatServletURL", 0);
+    metacatURL = config.get("metacat_url", 0);
     String temp_uname = config.get("username", 0);
     userName = (temp_uname != null) ? temp_uname : "public";
     debug_level = (new Integer(config.get("debug_level", 0))).intValue();
-    debug(9, "Debug_level set to: " + debug_level);
+    debug(20, "Debug_level set to: " + debug_level);
   }
 
   /**

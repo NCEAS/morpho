@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:49 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,27 +39,12 @@ import com.symantec.itools.javax.swing.icons.ImageIcon;
  * A graphical window for obtaining login information from the
  * user and logging into Metacat
  */
-//public class ConnectionFrame extends javax.swing.JFrame
 public class ConnectionFrame extends javax.swing.JDialog
 {
-  ConfigXML config;
-  String MetaCatServletURL;
   ClientFramework container = null;
   javax.swing.ImageIcon still = null;
   javax.swing.ImageIcon flapping = null;
 
-  /**
-   * Construct a frame with a title
-   * @deprecated Will be removed, as this constructor does not
-   *             set the ClientFramework correctly and produces erroneous results
-   */
-/*
-  public ConnectionFrame(String sTitle)
-  {
-    this();
-    setTitle(sTitle);
-  }
-*/ 
   /**
    * Construct a frame and set the framework
    *
@@ -166,8 +151,6 @@ public class ConnectionFrame extends javax.swing.JDialog
     DisconnectButton.addActionListener(lSymAction);
     CancelButton.addActionListener(lSymAction);
     //}}
-    config = new ConfigXML("lib/config.xml");
-    MetaCatServletURL = config.get("MetaCatServletURL", 0);
     
     if (container!=null) {
       NameTextField.setText(container.getUserName());
@@ -184,21 +167,10 @@ public class ConnectionFrame extends javax.swing.JDialog
       still = new javax.swing.ImageIcon(getClass().getResource("Btfly.gif"));
       ActivityLabel.setIcon(still);
       flapping = new javax.swing.ImageIcon(getClass().getResource("Btfly4.gif"));
-    }
-    catch (Exception w) {
-      System.out.println("Error in loading images");
+    } catch (Exception w) {
+      ClientFramework.debug(7, "Error in loading images");
     }
   }
-
-  /**
-   * Test the frame
-   */
-/*
-  static public void main(String args[])
-  {
-    (new ConnectionFrame()).setVisible(true);
-  }
-*/
 
   /**
    * Adjust the window size
@@ -289,8 +261,9 @@ public class ConnectionFrame extends javax.swing.JDialog
       public void run() 
       {
         if (container!=null) {
-          container.setUserName(NameTextField.getText());
+          //container.setUserName(NameTextField.getText());
           container.setPassword(PWTextField.getText());
+          container.setProfile(NameTextField.getText());
         }
 
         final boolean connected = container.logIn();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:50 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,6 @@ public class HttpMessage
       {
         cookie = cookie.substring(0, k);
       }
-      System.err.println("Sending cookie: " + cookie);
       con.setRequestProperty("Cookie", cookie);
       // add 10/26/00 by DFH so Metacat can determine where request come from
       con.setRequestProperty("User-Agent", "MORPHO");
@@ -120,12 +119,6 @@ public class HttpMessage
         cookie = cookie.substring(0, k);
       }
     }
-    System.err.println("Got cookie: " + cookie);
-//        String str;
-//        for (int i=1;i<10;i++) {
-//            str = con.getHeaderFieldKey(i);
-//            System.out.println(str);
-//        }
     out.close();
 
     return con.getInputStream();

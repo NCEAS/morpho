@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-12 23:35:31 $'
- * '$Revision: 1.27 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -406,7 +406,7 @@ class SymAction implements java.awt.event.ActionListener {
     void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
         if (xmlText!=null) {
         CatalogEntityResolver cer = new CatalogEntityResolver();
-        ConfigXML config = new ConfigXML("lib/config.xml");
+        config = framework.getConfiguration();
         String local_dtd_directory =config.get("local_dtd_directory",0);     
             
         String xmlcatalogfile = local_dtd_directory+"/catalog"; 

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:35 $'
- * '$Revision: 1.15 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:22 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -359,11 +359,12 @@ public class DataPackageGUI extends javax.swing.JFrame
       e.printStackTrace();
     }
   }
-  
+/*  
   public static void main(String[] args)
   {
     ConfigXML conf = new ConfigXML("./lib/config.xml");
     ClientFramework cf = new ClientFramework(conf);
     //new DataPackageGUI(cf, new DataPackage()).show();
   }
+*/
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:36 $'
- * '$Revision: 1.10 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,6 +182,6 @@ public class FileSystemDataStore extends DataStore
         e.printStackTrace();
       }
     }
-    System.out.println("done");
+    ClientFramework.debug(20, "done");
   }
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:36 $'
- * '$Revision: 1.8 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:23 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ public class MetacatDataStore extends DataStore
       }
       catch(Exception ee)
       {
-        ee.printStackTrace(System.out);
+        ee.printStackTrace();
       }
       
       try
@@ -120,7 +120,8 @@ public class MetacatDataStore extends DataStore
           response.append((char)reader.read());
         }
         String responseStr = response.toString();
-        System.out.println("responseStr: " + responseStr/*.substring(22,29)*/);
+        ClientFramework.debug(20, "responseStr: " + 
+                              responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
           writer.close();
@@ -212,14 +213,10 @@ public class MetacatDataStore extends DataStore
       prop.put("public", access);
       prop.put("doctext", fileText.toString());
       prop.put("docid", name);
-      System.out.println("sending docid: " + name + " to metacat");
-      System.out.println("action: " + action);
-      System.out.println("public access: " + access);
-      System.out.println("file: " + fileText.toString());
-      //framework.debug(9,"sending docid: " + name + " to metacat");
-      //framework.debug(9,"action: " + action);
-      //framework.debug(9,"public access: " + access);
-      //framework.debug(9,"file: " + fileText.toString());
+      ClientFramework.debug(20, "sending docid: " + name + " to metacat");
+      ClientFramework.debug(20, "action: " + action);
+      ClientFramework.debug(20, "public access: " + access);
+      ClientFramework.debug(20, "file: " + fileText.toString());
       
       InputStream metacatInput = null;
       metacatInput = framework.getMetacatInputStream(prop, true);
@@ -231,7 +228,7 @@ public class MetacatDataStore extends DataStore
       }
       
       String message = messageBuf.toString();
-      //System.out.println("message from server: " + message);
+      //ClientFramework.debug(20, "message from server: " + message);
       
       if(message.indexOf("<error>") != -1)
       {//there was an error
@@ -267,7 +264,7 @@ public class MetacatDataStore extends DataStore
     {
       //metacatInputReader.close();
       //metacatInput.close();
-      System.out.println("Error in MetacatDataStore.saveFile(): " + 
+      ClientFramework.debug(4, "Error in MetacatDataStore.saveFile(): " + 
                           e.getMessage());
       e.printStackTrace();
       return null;
@@ -306,7 +303,7 @@ public class MetacatDataStore extends DataStore
     
       //File metacatfile = mds.newFile(id, fr, true);
       File metacatfile = mds.saveFile(id, fr, true);
-      System.out.println("file done");
+      ClientFramework.debug(20, "file done");
     }
     catch(Exception e)
     {

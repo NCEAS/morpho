@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:35 $'
- * '$Revision: 1.16 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 03:11:22 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -535,6 +535,7 @@ public class DataPackage
     return this.identifier;
   }
   
+/*
   public static void main(String[] args)
   {
     String filename = args[0];
@@ -553,4 +554,5 @@ public class DataPackage
       
     }
   }
+*/
 }
