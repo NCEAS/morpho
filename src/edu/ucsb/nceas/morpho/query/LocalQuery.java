@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-30 23:00:26 $'
- * '$Revision: 1.36 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-06 19:45:27 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,6 +98,9 @@ public class LocalQuery
   
   /** The file used by the catalog system for looking up public identifiers */
   private String xmlcatalogfile; 
+  
+  /** The separator used in accesion numbers */
+  private String separator;
  
   /** list of field to be returned from query */
   private Vector returnFields;
@@ -304,6 +307,9 @@ public class LocalQuery
   
   /** Create a row vector that matches that needed for the ResultSet vector */
   private Vector createRSRow(String filename) {
+    int iii = filename.indexOf(separator);
+    filename = filename.substring(0,iii) + System.getProperty("file.separator")
+                 + filename.substring(iii+1,filename.length());
     File fn = new File(local_xml_directory, filename);
     String fullfilename = fn.getPath();
     Vector rss = new Vector();
@@ -411,15 +417,19 @@ public class LocalQuery
    
    /** use to get the last element in a path string */
    static private String getLastPathElement(String str) {
+        ConfigXML tempconfig = new ConfigXML("./lib/config.xml");
+        String local_xml_dir = tempconfig.get("local_xml_directory", 0);
+        String separator = tempconfig.get("separator", 0);
         String last = "";
+        int pos = str.indexOf("./"+local_xml_dir);
+        char[] separ = separator.toCharArray();
         String sep = System.getProperty("file.separator");
-        int ind = str.lastIndexOf(sep);
-        if (ind==-1) {
-           last = str;     
-        }
-        else {
-           last = str.substring(ind+1);     
-        }
+        char[] sp = sep.toCharArray();
+        pos = pos + local_xml_dir.length()+2;
+        last = str.substring(pos, str.length());
+        //last should now have the part of the path after the local_xml_directory
+        last = last.replace(sp[0], separ[0]);
+                
         return last;
    }
  
@@ -562,6 +572,7 @@ public class LocalQuery
     dt2bReturned = config.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     local_xml_directory = config.get("local_xml_directory", 0);
+    separator = config.get("separator", 0);
   }
 
   /** Main routine for testing */
@@ -670,6 +681,9 @@ public class LocalQuery
    */
   private static void buildPackageList() 
   {
+    ConfigXML tempconfig = new ConfigXML("./lib/config.xml");
+    String local_xml_dir = tempconfig.get("local_xml_directory", 0);
+    String xmlcatfile = tempconfig.get("local_dtd_directory", 0);
     Node root;
     long starttime, curtime, fm;
     DOMParser parser = new DOMParser();
@@ -678,7 +692,7 @@ public class LocalQuery
     try {
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
-      myCatalog.parseCatalog("./lib/catalog/catalog");
+      myCatalog.parseCatalog(xmlcatfile+"/catalog");
       cer.setCatalog(myCatalog);
     } catch (Exception e) {
       ClientFramework.debug(9, "Problem creating Catalog!" + e.toString());
