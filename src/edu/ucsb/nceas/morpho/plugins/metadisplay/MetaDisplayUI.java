@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:26:06 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-21 20:15:19 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ public class MetaDisplayUI extends JPanel
 	 *
 	 *  @return  a reference to the embedded HTMLDisplay object
 	 */
-	public HTMLPanel getHTMLPanel()
+	protected HTMLPanel getHTMLPanel()
 	{
 		return this.htmlPanel;
 	}

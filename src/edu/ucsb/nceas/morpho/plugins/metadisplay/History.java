@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:20:13 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-21 20:15:19 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,11 +91,26 @@ public class History
 	 *  Looks at the String identifier that was most recently added to history,
      *  <em>without actually removing it from history</em>
 	 *
-	 *  @return  the String identifier that was most recently added to history
+	 *  @return  the String identifier that was most recently added to history.
+     *           Returns null if the History is empty
 	 */
   	public String previewPrevious()
 	{
 	    if (historyStack.empty()) return null;
         return (String)(historyStack.peek());
 	}
+    
+	/**
+	 *  returns a String representation of all the elements in the History,
+	 *  <em>without actually removing them from history</em>
+	 *
+	 *  @return  the String representation of all the elements in the History
+	 */
+	public String toString()
+	{
+	    if (historyStack.empty()) return "";
+
+	    return historyStack.toString();
+	}
+    
 }

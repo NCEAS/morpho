@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 18:10:12 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-21 20:15:19 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,12 @@ package edu.ucsb.nceas.morpho.plugins.metadisplay;
 import java.io.Reader;
 import java.io.IOException;
 
-import java.util.Vector;
-
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.util.Vector;
+import java.util.Enumeration;
 
 import javax.swing.JLabel;
 
@@ -108,6 +110,7 @@ public class MetaDisplay implements MetaDisplayInterface
                                             throws  NullArgumentException, 
                                                     DocumentNotFoundException
     {
+        Log.debug(50, "getDisplayComponent() called; id = "+identifier);
         //set ID and add to history
         try  {
             setIdentifier(identifier);
@@ -130,6 +133,7 @@ public class MetaDisplay implements MetaDisplayInterface
         Reader reader = factory.openAsReader(getIdentifier());
 
         display.setHTML(getAsString(reader));
+        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
         return display;
     }
 
@@ -168,6 +172,7 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public void display(String identifier) throws DocumentNotFoundException
     {
+        Log.debug(50, "display(String identifier) called; id = "+identifier);
         //set ID and add to history
         try  {
             setIdentifier(identifier);
@@ -181,6 +186,7 @@ public class MetaDisplay implements MetaDisplayInterface
             throw dnfe;
         }
         Reader reader = factory.openAsReader(getIdentifier());
+        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
         display.setHTML(getAsString(reader));
     }
   
@@ -204,6 +210,9 @@ public class MetaDisplay implements MetaDisplayInterface
                                             throws  NullArgumentException, 
                                                     DocumentNotFoundException
     {
+        Log.debug(50, 
+                  "display(String identifier, Reader XMLDocument) called; id = "
+                                                                  +identifier);
         //set ID and add to history
         setIdentifier(identifier);
         
@@ -214,6 +223,7 @@ public class MetaDisplay implements MetaDisplayInterface
         } else {
             display.setHTML(getAsString(XMLDocument));
         }
+        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
     }
                                           
     /**
@@ -226,6 +236,8 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public void redisplay() throws DocumentNotFoundException
     {
+        Log.debug(50, "redisplay() called");
+        display(getIdentifier());
     }
   
     /**
@@ -236,11 +248,11 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public void addActionListener(ActionListener    listener)
     {
-        if (listener==null) {
-            return;
-        } else  {
-            listenerList.add(listener);
-        }
+        Log.debug(50, "addActionListener() called");
+        
+        if (listener==null) return;
+        
+        if (!listenerList.contains(listener)) listenerList.add(listener);
     }
   
     /**
@@ -251,8 +263,40 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public void removeActionListener(ActionListener listener)
     {
+        Log.debug(50, "removeActionListener() called");
+        if (listenerList.contains(listener)) listenerList.remove(listener);
     }
 
+    /**
+     *  Does callback to <code>actionPerformed()</code> method of each 
+     *  <code>java.awt.event.ActionListener</code> in the list of  registered 
+     *  listeners.  
+     *
+     *  @param descriptionInt   integer describing the type of event; eg:
+     *                          <ul>
+     *                            <li>MetaDisplayInterface.NAVIGATION_EVENT</li>
+     *                            <li>MetaDisplayInterface.CLOSE_EVENT</li>
+     *                            <li>MetaDisplayInterface.EDIT_BEGIN_EVENT</li>
+     *                            <li>...etc</li></ul>
+     *                            @see also <code>MetaDisplayInterface</code>
+     *                            
+     *  @param descriptionInt   String description of the event that will allow 
+     *                          listeners to determine specific information 
+     *                          about the action and act accordingly.  Could be 
+     *                          any unique string identifier 
+     */
+    protected void fireActionEvent(int descriptionInt, String commandStr)
+    {
+        Log.debug(50, "fireActionEvent(); description int: "+descriptionInt
+                                       +" command string : "+commandStr);
+                                       
+        ActionEvent ae = new ActionEvent(this,descriptionInt,commandStr);
+        Enumeration listeners = listenerList.elements();
+        while (listeners.hasMoreElements()) {
+            ((ActionListener)listeners.nextElement()).actionPerformed(ae);
+        }
+        
+    }
 	
 	/**
 	 *  Get the current XML factory, used to resolve IDs into XML documents 

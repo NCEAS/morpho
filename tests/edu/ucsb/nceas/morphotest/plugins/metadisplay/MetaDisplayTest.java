@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:26:06 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-21 20:15:19 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,14 +53,19 @@ import edu.ucsb.nceas.morpho.exception.NullArgumentException;
  */
 public class MetaDisplayTest extends TestCase
 {
-    private static final String         IDENTIFIER = "1.1";
+    private static final String         ID1 = "1.1";
+    private static final String         ID2 = "2.2";
+    private static final String         ID3 = "3.3";
+    private static final String         ID4 = "4.4";
     
-    private        Component            comp;
     private static MetaDisplay          display;
     private static XMLFactoryInterface  factory;
     private static ActionListener       listener;
-    private static Exception            testException;
     private static JFrame               frame;
+    
+    private static Component            testComponent;
+    private static Exception            testException;
+    private static ActionEvent          testActionEvent;
     
     //put these in a static block.  If they are in constructor, they get called 
     //before every single test, for some bizzarre reason...
@@ -85,6 +90,20 @@ public class MetaDisplayTest extends TestCase
     */
     public MetaDisplayTest(String name) {  super(name); }
 
+    /**
+    * NOTE - this gets called before *each* *test* 
+    */
+    public void setUp() {
+        testComponent   = null;
+        testException   = null;
+        testActionEvent = null;
+    }
+    
+    /**
+    * Release any objects after tests are complete
+    */
+    public void tearDown() {}
+    
 
 ////////////////////////////////////////////////////////////////////////////////
 //                    S T A R T   T E S T   M E T H O D S                     //
@@ -105,7 +124,7 @@ public class MetaDisplayTest extends TestCase
         getDisplay_bad_params(null,         factory,    listener);
         
         System.err.println("testing getDisplay with null factory..."); 
-        getDisplay_bad_params(IDENTIFIER,   null,       listener);
+        getDisplay_bad_params(ID1,   null,       listener);
         
         System.err.println("testing getDisplay with null listener..."); 
         getDisplay_null_listener();
@@ -120,7 +139,7 @@ public class MetaDisplayTest extends TestCase
     {
         //display(String id) * * * * * * * * * * * * * * * * * * * * * * * * * *
         try {
-            display.display(IDENTIFIER);
+            display.display(ID2);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -143,7 +162,7 @@ public class MetaDisplayTest extends TestCase
 
         //display(String id, Reader xmldoc) * * * * * * * * * * * * * * * * * * 
         try {
-            display.display(IDENTIFIER, new StringReader(TEST_XML_DOC));
+            display.display(ID3, new StringReader(TEST_XML_DOC_3));
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -158,7 +177,7 @@ public class MetaDisplayTest extends TestCase
         
         //null id - not allowed - should throw NullArgumentException:* * * * * *
         try {
-            display.display(null, new StringReader(TEST_XML_DOC));
+            display.display(null, new StringReader(TEST_XML_DOC_1));
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -174,7 +193,7 @@ public class MetaDisplayTest extends TestCase
 
         //null Reader - should be handled gracefully - display blank document* *
         try {
-            display.display(IDENTIFIER, null);
+            display.display(ID1, null);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -187,21 +206,59 @@ public class MetaDisplayTest extends TestCase
         System.err.println("testDisplay(id,NULL) completed OK...");
         doSleep(1);
     }
-
-    /**
-    * Test if the addActionListener() function works
-    */
-    public void testAddActionListener()
+    /** 
+     *  Test the redisplay() function
+     */
+    public void testRedisplay()
     {
+        try {
+            display.redisplay();
+        } catch (DocumentNotFoundException dnfe) {
+            dnfe.printStackTrace();
+            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+                                                          + dnfe.getMessage());
+        }
+        System.err.println("testRedisplay() completed OK...");
+        doSleep(1);
     }
-
+    
     /**
     * Test if the removeActionListener() function works 
     */
     public void testRemoveActionListener()
     {
+        assertNull(testActionEvent);
+        display.removeActionListener(listener);
+        try {
+            display.redisplay();    
+        } catch (DocumentNotFoundException dnfe) {
+            dnfe.printStackTrace();
+            fail("testAddActionListener() DocumentNotFoundException: " 
+                                                          + dnfe.getMessage());
+        }
+        assertNull(testActionEvent);
+        testActionEvent = null;
     }
     
+    /**
+    * Test if the addActionListener() function works
+    */
+    public void testAddActionListener()
+    {
+        assertNull(testActionEvent);
+        display.addActionListener(listener);
+        //assert should happen in callback to actionPerformed():
+        try {
+            display.redisplay();    
+        } catch (DocumentNotFoundException dnfe) {
+            dnfe.printStackTrace();
+            fail("testAddActionListener() DocumentNotFoundException: " 
+                                                          + dnfe.getMessage());
+        }
+        assertNotNull(testActionEvent);
+        testActionEvent = null;
+    }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                      E N D   T E S T   M E T H O D S                       //
@@ -211,9 +268,9 @@ public class MetaDisplayTest extends TestCase
     // * * * ALL PARAMS GOOD - SHOULD WORK OK: * * *
     private void getDisplayAll_OK() {
 
-        comp = null;
+        testComponent = null;
         try {
-            comp = display.getDisplayComponent(IDENTIFIER, factory, listener);
+            testComponent = display.getDisplayComponent(ID1, factory, listener);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -223,10 +280,10 @@ public class MetaDisplayTest extends TestCase
             fail("testGetDisplayComponent() NullArgumentException: " 
                                                           + nae.getMessage());
         }
-        assertNotNull(comp);
+        assertNotNull(testComponent);
         System.err.println("testGetDisplayComponent() returned OK...");
         System.err.println("...now displaying in test frame...");
-        displayInJFrame(comp);
+        displayInJFrame(testComponent);
     }
     
     
@@ -235,9 +292,9 @@ public class MetaDisplayTest extends TestCase
     private void getDisplay_bad_params( String id, 
                                       XMLFactoryInterface f, ActionListener l) {
 
-        comp = null;
+        testComponent = null;
         try {
-            comp = display.getDisplayComponent(id, f, l);
+            testComponent = display.getDisplayComponent(id, f, l);
         } catch (DocumentNotFoundException dnfe) {
             System.out.println("OK - testGetDisplayComponent() DocumentNotFoundException: " 
                                                           + dnfe.getMessage());
@@ -249,7 +306,7 @@ public class MetaDisplayTest extends TestCase
         }
         assertNotNull(testException);
         testException = null;
-        assertNull(comp);
+        assertNull(testComponent);
     }
     
 
@@ -257,9 +314,9 @@ public class MetaDisplayTest extends TestCase
 
     private void getDisplay_null_listener() {
     
-        comp = null;
+        testComponent = null;
         try {
-            comp = display.getDisplayComponent(IDENTIFIER, factory, null);
+            testComponent = display.getDisplayComponent(ID4, factory, null);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
             fail("testGetDisplayComponent() DocumentNotFoundException: " 
@@ -269,18 +326,8 @@ public class MetaDisplayTest extends TestCase
             fail("testGetDisplayComponent() NullArgumentException: " 
                                                           + nae.getMessage());
         }
-        assertNotNull(comp);
+        assertNotNull(testComponent);
     }
-    
-    /**
-    * NOTE - this gets called before *each* *test* 
-    */
-    public void setUp() {}
-    
-    /**
-    * Release any objects after tests are complete
-    */
-    public void tearDown() {}
     
     private void displayInJFrame(Component comp) {
         if (comp==null) fail("displayInJFrame received NULL arg");
@@ -309,11 +356,12 @@ public class MetaDisplayTest extends TestCase
     {
         factory = new XMLFactoryInterface() {
         public Reader openAsReader(String id) throws DocumentNotFoundException {
-            if (id != IDENTIFIER ) {
-                throw new DocumentNotFoundException("document not found for id:"
+            if      (id.equals(ID1)) return new StringReader(TEST_XML_DOC_1);
+            else if (id.equals(ID2)) return new StringReader(TEST_XML_DOC_2);
+            else if (id.equals(ID3)) return new StringReader(TEST_XML_DOC_3);
+            else if (id.equals(ID4)) return new StringReader(TEST_XML_DOC_4);
+            else throw new DocumentNotFoundException("document not found for id:"
                                                                            +id);
-            }
-            return new StringReader(TEST_XML_DOC);
           }
         };
     }
@@ -323,72 +371,125 @@ public class MetaDisplayTest extends TestCase
         listener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 assertNotNull(ae);
+                testActionEvent = ae;
                 System.out.println("\n* * * ActionListener received callback:\n"
                     +"ActionEvent = "+ae.paramString());
             }
         };
     }    
     
-    private static final String TEST_XML_DOC =
+    private static final String TEST_XML_DOC_1 =
         "<?xml version=\"1.0\"?>"
         + "<!DOCTYPE eml-attribute "
         + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
         + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
         + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
         + "<eml-attribute>"
-        + "  <identifier>brooke2.122.4</identifier>"
-        + "  <attribute>"
-        + "    <attributeName>field 1</attributeName>"
-        + "    <attributeLabel>label for attribute 1</attributeLabel>"
-        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
-        + "    <unit>cm</unit>"
-        + "    <dataType>integer</dataType>"
-        + "    <attributeDomain>"
-        + "        <numericDomain>"
-        + "          <minimum>2</minimum>"
-        + "          <maximum>222</maximum>"
-        + "        </numericDomain>"
-        + "    </attributeDomain>"
-        + "    <missingValueCode>~</missingValueCode>"
-        + "    <precision>5</precision>"
-        + "  </attribute>"
-        + "  <attribute>"
-        + "    <attributeName>field 2</attributeName>"
-        + "    <attributeLabel>label for attribute 1</attributeLabel>"
-        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
-        + "    <unit>cm</unit>"
-        + "    <dataType>integer</dataType>"
-        + "    <attributeDomain>"
-        + "          <enumeratedDomain>"
-        + "            <code>CD</code>"
-        + "            <definition>CoDe</definition>"
-        + "            <source>FIPS</source>"
-        + "          </enumeratedDomain>"
-        + "    </attributeDomain>"
-        + "    <missingValueCode>~</missingValueCode>"
-        + "    <precision>5</precision>"
-        + "  </attribute>"
-        + "  <attribute>"
-        + "    <attributeName>field 3</attributeName>"
-        + "    <attributeLabel>label for attribute 1</attributeLabel>"
-        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
-        + "    <unit>cm</unit>"
-        + "    <dataType>integer</dataType>"
-        + "    <attributeDomain>"
-        + "          <enumeratedDomain>"
-        + "            <code> </code>"
-        + "            <definition> </definition>"
-        + "          </enumeratedDomain>"
-        + "          <textDomain>"
-        + "            <definition>textD</definition>"
-        + "            <pattern>*[^~#]</pattern>"
-        + "            <source>Dunno</source>"
-        + "          </textDomain>"
-        + "    </attributeDomain>"
-        + "    <missingValueCode>^</missingValueCode>"
-        + "    <precision>5</precision>"
-        + "  </attribute>"
+        + "  <identifier> * * * * TESTDOC 1 1 1 1 1 * * * * </identifier>"
         + "</eml-attribute>";
+    
+    private static final String TEST_XML_DOC_2 =
+        "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<eml-attribute>"
+        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
+        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
+        + "</eml-attribute>";
+        
+    private static final String TEST_XML_DOC_3 =
+        "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<eml-attribute>"
+        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
+        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
+        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
+        + "</eml-attribute>";
+        
+    private static final String TEST_XML_DOC_4 =
+        "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<eml-attribute>"
+        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
+        + "</eml-attribute>";
+    
+
+//    private static final String TEST_XML_DOC_ORIG =
+//        "<?xml version=\"1.0\"?>"
+//        + "<!DOCTYPE eml-attribute "
+//        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+//        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+//        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+//        + "<eml-attribute>"
+//        + "  <identifier>brooke2.122.4</identifier>"
+//        + "  <attribute>"
+//        + "    <attributeName>field 1</attributeName>"
+//        + "    <attributeLabel>label for attribute 1</attributeLabel>"
+//        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
+//        + "    <unit>cm</unit>"
+//        + "    <dataType>integer</dataType>"
+//        + "    <attributeDomain>"
+//        + "        <numericDomain>"
+//        + "          <minimum>2</minimum>"
+//        + "          <maximum>222</maximum>"
+//        + "        </numericDomain>"
+//        + "    </attributeDomain>"
+//        + "    <missingValueCode>~</missingValueCode>"
+//        + "    <precision>5</precision>"
+//        + "  </attribute>"
+//        + "  <attribute>"
+//        + "    <attributeName>field 2</attributeName>"
+//        + "    <attributeLabel>label for attribute 1</attributeLabel>"
+//        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
+//        + "    <unit>cm</unit>"
+//        + "    <dataType>integer</dataType>"
+//        + "    <attributeDomain>"
+//        + "          <enumeratedDomain>"
+//        + "            <code>CD</code>"
+//        + "            <definition>CoDe</definition>"
+//        + "            <source>FIPS</source>"
+//        + "          </enumeratedDomain>"
+//        + "    </attributeDomain>"
+//        + "    <missingValueCode>~</missingValueCode>"
+//        + "    <precision>5</precision>"
+//        + "  </attribute>"
+//        + "  <attribute>"
+//        + "    <attributeName>field 3</attributeName>"
+//        + "    <attributeLabel>label for attribute 1</attributeLabel>"
+//        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
+//        + "    <unit>cm</unit>"
+//        + "    <dataType>integer</dataType>"
+//        + "    <attributeDomain>"
+//        + "          <enumeratedDomain>"
+//        + "            <code> </code>"
+//        + "            <definition> </definition>"
+//        + "          </enumeratedDomain>"
+//        + "          <textDomain>"
+//        + "            <definition>textD</definition>"
+//        + "            <pattern>*[^~#]</pattern>"
+//        + "            <source>Dunno</source>"
+//        + "          </textDomain>"
+//        + "    </attributeDomain>"
+//        + "    <missingValueCode>^</missingValueCode>"
+//        + "    <precision>5</precision>"
+//        + "  </attribute>"
+//        + "</eml-attribute>";
+
+
+    public static void main(String args[]) {
+        junit.textui.TestRunner.run(MetaDisplayTest.class);
+    }
 }
 
 
