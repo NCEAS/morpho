@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,19 +43,14 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import javax.swing.JLabel;
-import javax.swing.JFrame;
 import javax.swing.BoxLayout;
-import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 import javax.swing.border.EmptyBorder;
 
-import java.util.Map;
 import java.util.List;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.ArrayList;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;

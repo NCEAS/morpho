@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,6 @@
  */
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-
-import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.BoxLayout;
@@ -68,7 +64,7 @@ public class Introduction extends AbstractWizardPage {
     JLabel desc = WidgetFactory.makeHTMLLabel(
     "<p>If you do not have a basic understanding of metadata and "
     +"related concepts you should start by reading the <a>Ecological Metadata "
-    +"Language(EML) Guide</a>. It provides background information on metadata "
+    +"Language (EML) Guide</a>. It provides background information on metadata "
     +"and contains metadata creation examples. This wizard creates a <i>Data "
     +"Package</i> that consists of the metadata that describes your data and the "
     +"data itself. The wizard uses a subset of EML to describe your data. If "

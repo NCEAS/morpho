@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.31 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -490,7 +490,7 @@ public class WizardContainerFrame extends JFrame {
 
 
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
-    Log.debug(10, wizData.toString());
+    Log.debug(45, wizData.toString());
 
     ////////////////////////////////////////////////////////////////////////////
     // this is the end of the page processing - wizData OrderedMap should now

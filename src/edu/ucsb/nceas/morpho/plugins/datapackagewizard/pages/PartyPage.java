@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 05:45:44 $'
- * '$Revision: 1.7 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,35 +28,26 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
-
-import javax.swing.JLabel;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.BoxLayout;
-import javax.swing.JTextField;
-import javax.swing.JPanel;
-import javax.swing.JComponent;
-import javax.swing.JComboBox;
+import java.util.List;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 import java.awt.Font;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
-import edu.ucsb.nceas.utilities.OrderedMap;
-
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class PartyPage extends AbstractWizardPage {
 

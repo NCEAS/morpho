@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.11 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ public class Summary extends AbstractWizardPage {
     "<p>You can press the \""+WizardSettings.FINISH_BUTTON_TEXT+"\" button, "
     +"or you can use the \""+WizardSettings.PREV_BUTTON_TEXT
     +"\" button to return to previous pages "
-    +"and change the information you have added.</p>", 2);
+    +"and change the information you have added.", 2);
     this.add(desc3);
   }
 

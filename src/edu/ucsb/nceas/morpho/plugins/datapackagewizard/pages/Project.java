@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-23 22:55:25 $'
- * '$Revision: 1.9 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -237,7 +237,6 @@ public class Project extends AbstractWizardPage {
     /**
      *
      */
-
      private void showNewPartyDialog() {
        PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
        partyPage.setRole(PartyPage.PERSONNEL);
@@ -247,14 +246,17 @@ public class Project extends AbstractWizardPage {
          List newRow = partyPage.getSurrogate();
          newRow.add(partyPage);
          partiesList.addRow(newRow);
+         if(!partyPage.isReference){
+           WidgetFactory.responsiblePartyList.add(newRow);
+         }
        }
+
        WidgetFactory.unhiliteComponent(minRequiredLabel);
      }
 
      /**
       *
       */
-
      private void showEditPartyDialog() {
        List selRowList = partiesList.getSelectedRowList();
        if (selRowList==null || selRowList.size() < 4) return;

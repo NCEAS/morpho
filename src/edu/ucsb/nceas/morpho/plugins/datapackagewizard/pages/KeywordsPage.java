@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-18 17:27:20 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,33 +33,26 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import javax.swing.JLabel;
-import javax.swing.JFrame;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
-import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 import javax.swing.border.EmptyBorder;
 
 import java.util.Map;
 import java.util.List;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ArrayList;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.BorderLayout;
 
 public class KeywordsPage extends AbstractWizardPage {
@@ -72,6 +65,7 @@ public class KeywordsPage extends AbstractWizardPage {
 
   private final String EMPTY_STRING = "";
   private JTextField thesaurusField;
+  private JLabel thesaurusLabel;
   private JComboBox  kwTypePickList;
   private JLabel kwLabel;
   private CustomList kwList;
@@ -136,10 +130,12 @@ public class KeywordsPage extends AbstractWizardPage {
         onLoadAction();
 
         if (e.getActionCommand().equals(buttonsText[0])) {
-          thesaurusField.disable();
+          thesaurusField.setVisible(false);
+          thesaurusLabel.setVisible(false);
           thesaurusField.setText("");
         } else if (e.getActionCommand().equals(buttonsText[1])) {
-          thesaurusField.enable();
+          thesaurusField.setVisible(true);
+          thesaurusLabel.setVisible(true);
         }
       }
     };
@@ -150,9 +146,11 @@ public class KeywordsPage extends AbstractWizardPage {
     middlePanel.add(radioPanel);
 
     JPanel thesaurusPanel = WidgetFactory.makePanel(1);
-    thesaurusPanel.add(WidgetFactory.makeLabel("Thesaurus name:", false));
+    thesaurusLabel = WidgetFactory.makeLabel("Thesaurus name:", false);
+    thesaurusPanel.add(thesaurusLabel);
+    thesaurusLabel.setVisible(false);
     thesaurusField = WidgetFactory.makeOneLineTextField();
-    thesaurusField.disable();
+    thesaurusField.setVisible(false);
     thesaurusPanel.add(thesaurusField);
     thesaurusPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,
         WizardSettings.PADDING));

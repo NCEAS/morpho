@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-22 18:03:53 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-12-30 17:08:47 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,6 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.Action;
-import javax.swing.JFrame;
 import javax.swing.AbstractAction;
 import javax.swing.border.EmptyBorder;
 
