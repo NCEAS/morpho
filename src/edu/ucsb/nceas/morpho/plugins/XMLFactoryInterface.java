@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:49:12 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-06 19:33:16 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.plugins;
 import java.io.Reader;
 
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import org.w3c.dom.Document;
 
 /**
  *  This Interface enables calling classes to gain access to resources that are 
@@ -51,5 +52,16 @@ public interface XMLFactoryInterface
      *          if requested document exists but cannot be accessed.
      */
     public Reader openAsReader(String id) throws DocumentNotFoundException;
+		
+		/**
+		 *  method to return a DOM Document rather than a Reader
+		 *  Since the real purppose is to provide the source for an XSLT transform
+		 *  a DOM can passed instead of a Reader. This avoids the need to convert
+		 *  a Reader to the DOM. Return of a 'null' Document is allowed as an indication
+		 *  that one should use the 'openAsReader' method.
+		 *
+     *  @param id  a unique identifier used to determine what resource to return 
+		 */
+		public Document openAsDom(String id);
 }
 
