@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.92 2004-04-09 00:19:11 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.93 2004-04-09 00:36:52 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -53,8 +53,8 @@
       <property name="build.javadocs" value="${build.dir}/docs/api"/>
       <property name="build.xsl" value="${build.dir}/xsl"/>
       <!-- don't modify this value-->
-      <property name="java.help.doc.dir" value="${build.docs}/morphohelp" /> 
-      
+      <property name="java.help.doc.dir" value="${build.docs}/morphohelp" />
+
       <property name="dist.dir" value="./dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
       <property name="morpho.lib" value="${morpho.dir}/lib"/>
@@ -185,7 +185,7 @@
 
    <target name="helpjar" depends="emldoc">
      <mkdir dir="${java.help.doc.dir}" />
-      <!-- copy morpho docs--> 
+      <!-- copy morpho docs-->
       <copy todir="${java.help.doc.dir}" filtering="no">
         <fileset dir="${docuserdir}">
           <include name="**/*.html" />
@@ -194,7 +194,7 @@
           <include name="*.css" />
         </fileset>
       </copy>
-      <copy todir="${build.docs}" filtering="no">   
+      <copy todir="${build.docs}" filtering="no">
         <fileset dir="${docuserdir}">
           <include name="*.xml" />
           <include name="*.jhm" />
@@ -275,7 +275,7 @@
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
    </target>
 
-   <target name="install" depends="jar, helpjar">
+   <target name="install" depends="jar">
       <copy file="${build.dir}/${name}.jar" todir="${libdir}" />
       <copy file="${build.dir}/${name}-config.jar" todir="${libdir}" />
       <echo message="Install complete. Use the morpho script to run it." />
