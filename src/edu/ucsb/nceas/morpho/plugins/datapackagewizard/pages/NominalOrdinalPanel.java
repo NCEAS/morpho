@@ -6,9 +6,9 @@
 *    Authors: Chad Berkley
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-04-26 14:16:47 $'
-* '$Revision: 1.31 $'
+*   '$Author: cjones $'
+*     '$Date: 2004-06-23 21:21:04 $'
+* '$Revision: 1.32 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -68,21 +68,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-
-
-
-
 class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
-
-
-
-
 
   private JPanel currentSubPanel;
   private JPanel textSubPanel;
   private JPanel enumSubPanel;
   // the panel that contains the code definition customlist
   private JPanel enumPanel;
+  private String enforcedField = "";
 
   private JLabel     textDefinitionLabel;
   private JTextField textDefinitionField;
@@ -115,8 +108,6 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
   private static final String TO_BE_IMPORTED = "Imported later";
   private static final String SELECT_TABLE = "--select table--";
-
-
 
   private static final short CODES_DEFINED_HERE = 10;
   private static final short CODES_IMPORTED = 20;
@@ -638,12 +629,17 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   public OrderedMap getPanelData(String xPathRoot) {
 
     returnMap.clear();
+    
+    // handle <enumeratedDomain enforced="" >
+    String enforced = enforcedField.trim();
+    if (enforced !=null && !enforced.equals("")) {
+      returnMap.put( xPathRoot + 
+      "/nonNumericDomain/enumeratedDomain[1]/@enforced", enforced);
+    }
 
     nomOrdBuff.delete(0, nomOrdBuff.length());
-
     nomOrdBuff.append(xPathRoot);
     nomOrdBuff.append("/nonNumericDomain/");
-
     xPathRoot = nomOrdBuff.toString();
 
     if (currentSubPanel==enumSubPanel) {  //ENUMERATED
@@ -652,7 +648,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         getEnumListData(xPathRoot + "enumeratedDomain[1]", returnMap);
       }
       else {
-				if(codeImportPanel == null)	codeImportPanel = new CodeDefnPanel();
+	if(codeImportPanel == null)
+        codeImportPanel = new CodeDefnPanel();
         OrderedMap importMap = codeImportPanel.getPanelData(xPathRoot +
         "enumeratedDomain[1]/entityCodeList");
         returnMap.putAll(importMap);
@@ -789,7 +786,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
 
   /**
-  *  sets the Data in the NominalOrdinal Panel. This is called by the setData() function
+  *  sets the Data in the NominalOrdinal Panel. This is called by the setPageData() function
   *  of AttributePage.
   *
   *  @param  xPathRoot - this is the relative xPath of the current attribute
@@ -800,14 +797,31 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   **/
 
   public void setPanelData(String xPathRoot, OrderedMap map) {
+    
+    Log.debug(50, "datapackagewizard: NominalOrdinalPanel.setPanelData() " +
+      "called with xPathRoot = " + xPathRoot);
 
-    // check for taxonomic lookups first
+    // future enhancements to the NominalOrdinalPanel dialog should map
+    // the following xml attribute to an appropriate widget, and should also
+    // handle multiple enumeratedDomains
+    String enforced = (String)map.get(xPathRoot + "/enumeratedDomain[1]/@enforced");
+    if ( enforced != null && !enforced.equals("") ) {
+      enforcedField = enforced.toString();
+      map.remove(xPathRoot + "enumeratedDomain[1]/@enforced");
+    } else {
+      enforced = (String)map.get(xPathRoot + "/enumeratedDomain/@enforced");
+      if ( enforced != null && !enforced.equals("") ) {
+      enforcedField = enforced.toString();
+      map.remove(xPathRoot + "/enumeratedDomain/@enforced");
+      }
+    }
+
+    // check for code list lookups (enumeratedDomain/entityCodeList subtree)
     boolean b1 = map.containsKey(xPathRoot + "/enumeratedDomain[1]/entityCodeList/entityReference");
     if(!b1)
       b1 = map.containsKey(xPathRoot + "/enumeratedDomain/entityCodeList/entityReference");
 
-    // first set the free text checkbox if needed
-
+    // check for free text definitions (textDomain subtree)
     String defn = (String)map.get(xPathRoot + "/textDomain[1]/definition");
 
     if(defn == null) {
@@ -816,8 +830,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     } else {
 			map.remove(xPathRoot + "/textDomain[1]/definition");
 		}
-
-
+    // set the checkbox if there are no pattern constraints on the text
     if(defn!=null) {
 
       if (defn.equals("Free text (unrestricted)")) {
@@ -863,6 +876,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
       }
     }
 
+    // set the textDomain/definition field value
     if (defn != null) {
       textDefinitionField.setText(defn);
       domainPickList.setSelectedItem(this.textEnumPicklistVals[1]);
@@ -870,11 +884,12 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     setTextListData(xPathRoot + "/textDomain[1]", map);
     setTextListData(xPathRoot + "/textDomain", map);
 
+    // set the textDomain/source field value
     String source = (String)map.get(xPathRoot + "/textDomain[1]/source");
-
     if (source == null) {
       source = (String)map.get(xPathRoot + "/textDomain/source");
-			if(source != null) map.remove(xPathRoot + "/textDomain/source");
+
+    if(source != null) map.remove(xPathRoot + "/textDomain/source");
     } else {
       map.remove(xPathRoot + "/textDomain[1]/source");
     }
