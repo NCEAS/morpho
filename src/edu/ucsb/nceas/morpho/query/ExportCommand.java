@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 21:49:43 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-03-26 18:48:49 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,10 +278,46 @@ public class ExportCommand implements Command
    */
   private void exportDatasetToEml2(String id)
   {
+    String curdir = System.getProperty("user.dir");
+    curdir = curdir + System.getProperty("file.separator") + id + "_eml2.xml";
+    File eml2File = new File(curdir);
+    JFileChooser filechooser = new JFileChooser(curdir);
+    filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    filechooser.setDialogTitle("Export Datapackage to EML2 File");
+    filechooser.setApproveButtonText("Export");
+    filechooser.setApproveButtonMnemonic('E');
+    filechooser.setApproveButtonToolTipText("Choose a file name to export " +
+                                            "this Datapackage to.");
+    filechooser.setSelectedFile(eml2File);                                        
+    
+    File exportDir;
+      // Choose the parent of savedialog
+    int result;
+    if (dialog == null)
+    {
+      result = filechooser.showSaveDialog(morphoFrame);
+    }
+    else
+    {
+      result = filechooser.showSaveDialog(dialog);
+    }
+   
+    exportDir = filechooser.getSelectedFile();
+    if (result==JFileChooser.APPROVE_OPTION) {
+      //now we know where to export the files to, so export them.
+      if ( exportDir != null)
+      {
+        // Check the file name if it has .zip extension
+        String fileName = exportDir.getAbsolutePath();
+        if (fileName != null)
+        {
+          String location = getLocation();
+          //export it.
+          dataPackage.exportToEml2(id, fileName, location);
+        }
+      }
+    }
 
-      String location = getLocation();
-       //export it.
-      dataPackage.exportToEml2(id, "./", location);
   }
 
   
