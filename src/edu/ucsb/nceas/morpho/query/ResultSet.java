@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-14 17:03:47 $'
- * '$Revision: 1.20 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-15 09:02:35 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   private Query savedQuery = null;
 
   /** Store each row of the result set as a row in a Vector */
-  private Vector resultsVector = null;
+  protected Vector resultsVector = null;
 
   /**
    * a list of the desired return fields from the configuration file. 
@@ -499,9 +499,22 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   }
  
   /**
-   * Open a given row of the result set using a delegated handler class
+   * Open a given row index of the result set using a delegated handler class
    */
   public void openResultRecord(int row)
+  {
+    try {
+      Vector rowVector = (Vector)resultsVector.get(row);
+      openResultRecord(rowVector);
+    } catch (ArrayIndexOutOfBoundsException aioobe) {
+      ClientFramework.debug(1, "array index out of bounds");
+    }
+  }
+
+  /**
+   * Open a given row of the result set using a delegated handler class
+   */
+  protected void openResultRecord(Vector rowVector)
   {
     int numHeaders = headers.length;
     String docid = null;
@@ -509,7 +522,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     boolean openMetacat = false;
     Vector rowTriples = null;
     try {
-      Vector rowVector = (Vector)resultsVector.get(row);
       docid = (String)rowVector.get(numHeaders+2);
       openLocal = ((Boolean)rowVector.get(numHeaders+5)).booleanValue();
       openMetacat = ((Boolean)rowVector.get(numHeaders+6)).booleanValue();

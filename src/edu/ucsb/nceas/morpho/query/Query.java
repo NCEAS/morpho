@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 07:25:44 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-06-15 09:02:35 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -796,7 +796,7 @@ public class Query extends DefaultHandler {
     // if appropriate, query metacat
     ResultSet metacatResults = null;
     if (searchMetacat) {
-      metacatResults = new ResultSet(this, "metacat", 
+      metacatResults = new HeadResultSet(this, "metacat", 
                                      queryMetacat(), framework);
     }
 

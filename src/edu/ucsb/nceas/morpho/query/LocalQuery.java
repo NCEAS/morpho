@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 18:54:54 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2001-06-15 09:02:34 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,7 +169,8 @@ public class LocalQuery
         row = createRSRow(packageName);
         rowCollection.addElement(row);
       }
-      rs = new ResultSet(savedQuery, "local", rowCollection, framework);
+      //rs = new ResultSet(savedQuery, "local", rowCollection, framework);
+      rs = new HeadResultSet(savedQuery, "local", rowCollection, framework);
     } 
 
     return rs;
