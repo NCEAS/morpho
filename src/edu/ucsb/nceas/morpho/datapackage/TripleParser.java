@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-07 17:36:28 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-09-07 20:28:08 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
 
+import com.arbortext.catalog.*;
+
 /** 
  * A Class implementing callback bethods for the SAX parser.  This class finds
  * any triple tag in the xml file and creates a TripleCollection of Triple objects.
@@ -63,6 +65,16 @@ public class TripleParser extends DefaultHandler
   
   public TripleParser(Reader xml, String parserName)
   {
+    doInit(xml, parserName, null);
+  }
+  
+  public TripleParser(Reader xml, String parserName, CatalogEntityResolver cer)
+  {
+    doInit(xml, parserName, cer);
+  }
+  
+  private void doInit(Reader xml, String parserName, CatalogEntityResolver cer)
+  {
     XMLReader parser = initializeParser(parserName);
     if (parser == null) 
     {
@@ -70,6 +82,10 @@ public class TripleParser extends DefaultHandler
     }
     try 
     {
+      if(cer != null)
+      {
+        parser.setEntityResolver(cer);
+      }
       parser.parse(new InputSource(xml));
     } 
     catch (SAXException e) 
