@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 01:04:05 $'
- * '$Revision: 1.46 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-10 20:45:52 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,7 +200,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    * Construct a ResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public ResultSet( Query query, String source,
+  /*public ResultSet( Query query, String source,
                     InputStream resultsXMLStream, Morpho morpho) {
 
     initIcons();
@@ -225,7 +225,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       Log.debug(30, "(2.433) Exception is: " + e.getClass().getName());
     }
 
-  }
+  }*/
 
 
   // common initialization functionality for constructors
