@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-25 17:32:19 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-09-25 21:09:23 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,7 +396,14 @@ public class UIController
     {
         return currentActiveWindow;
     }
-
+    
+    /**
+     * get Morpho
+     */
+    public static Morpho getMorpho()
+    {
+      return morpho;
+    }
     /**
      * Register a window by creating an action and adding it to the
      * list of windows for the application. All existing windows are
