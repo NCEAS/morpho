@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-15 09:17:29 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-07-20 23:30:28 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -487,7 +487,7 @@ public class ProfileDialog extends JDialog
               destDir.mkdirs();
               String destName = destDirName + File.separator + 
                                 srcFile.getName();
-              ClientFramework.debug(9, destName);
+              ClientFramework.debug(20, destName);
               FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
             }
           }
