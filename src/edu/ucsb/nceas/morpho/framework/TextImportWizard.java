@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-31 17:25:58 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-11-07 18:08:45 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1172,10 +1172,10 @@ public void startImport(String file) {
 	    checkColumnInfo(i);
 	  }
 	  
-	  resultsBuffer.append("\n");
-	  resultsBuffer.append(createXMLEntityString());
-	  resultsBuffer.append("\n\n");
-	  resultsBuffer.append(createXMLAttributeString());
+//	  resultsBuffer.append("\n");
+//	  resultsBuffer.append(createXMLEntityString());
+//	  resultsBuffer.append("\n\n");
+//	  resultsBuffer.append(createXMLAttributeString());
 	  
 	  save_eml_table_entity.setEnabled(true);
 	  save_eml_attribute.setEnabled(true);
