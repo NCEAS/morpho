@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:54 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-27 22:14:01 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,59 @@ import javax.swing.event.ChangeEvent;
  */
 public class StateChangeEvent extends ChangeEvent
 {
-    // An event name for selecting a data table column
-    public static String SELECTDATATABLECOLUMN = "selectDataTableColumn";
     
+    
+//////////////////////////////////////////////////////////////////////////////// 
+//      PUBLIC STATIC STATE CHANGE EVENT TYPE CONSTANTS
+//////////////////////////////////////////////////////////////////////////////// 
+
+
+    /**
+     *  Public constant to denote that a data table column has been selected 
+     */
+    public static String SELECT_DATATABLE_COLUMN 
+                                      = "selectDataTableColumn";
+
+    /**
+     *  Public constant to denote that a datapackage CONTAINING ONE OR MORE 
+     *  ENTITIES has been opened
+     */
+    public static String CREATE_ENTITY_DATAPACKAGE_FRAME 
+                                      = "createEntityDataPackageFrame";
+ 
+    /**
+     *  Public constant to denote that a datapackage CONTAINING NO ENTITIES OR 
+     *  DATA has been opened
+     */
+    public static String CREATE_NOENTITY_DATAPACKAGE_FRAME 
+                                      = "createNoEntityDataPackageFrame";
+ 
+    /**
+     *  Public constant to denote that a search result frame has been opened
+     */
+    public static String CREATE_SEARCH_RESULT_FRAME 
+                                      = "createRearchResultFrame";
+  
+
+    /**
+     *  Public constant to denote that an entry in a search result frame has 
+     *  been selected, and that the local and network versions of the selected 
+     *  package are *not* in sync 
+     */
+    public static String SEARCH_RESULT_SELECTED_UNSYNCRONIZED 
+                                      = "unsynchronizedSearchResultSelected";
+ 
+    /**
+     *  Public constant to denote that an entry in a search result frame has 
+     *  been selected, and that the local and network versions of the selected 
+     *  package *are* in sync 
+     */
+    public static String SEARCH_RESULT_SELECTED_SYNCRONIZED 
+                                      = "synchronizedSearchResultSelected";
+
+    
+//////////////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////////////// 
     private String changedState;
 
     /**

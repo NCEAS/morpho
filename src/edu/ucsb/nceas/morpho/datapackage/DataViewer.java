@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 16:16:14 $'
- * '$Revision: 1.57 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-27 22:14:01 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1725,7 +1725,7 @@ public class DataViewer extends javax.swing.JPanel
       {
         // Fire a state change event to show attribute file in meta panel
         StateChangeEvent stateEvent = new 
-              StateChangeEvent(column, StateChangeEvent.SELECTDATATABLECOLUMN);
+              StateChangeEvent(column,StateChangeEvent.SELECT_DATATABLE_COLUMN);
         StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
         stateMonitor.notifyStateChange(stateEvent);
         

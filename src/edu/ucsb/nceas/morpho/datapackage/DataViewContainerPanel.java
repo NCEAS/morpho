@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:58:24 $'
- * '$Revision: 1.24 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-27 22:14:01 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -368,7 +368,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // monitor
       StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
       stateMonitor.addStateChangeListener
-                                (StateChangeEvent.SELECTDATATABLECOLUMN, this);
+                                (StateChangeEvent.SELECT_DATATABLE_COLUMN,this);
     }
   }
 
@@ -426,7 +426,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     // Handle select data table column
     if ((event.getChangedState()).
-                          equals(StateChangeEvent.SELECTDATATABLECOLUMN))
+                          equals(StateChangeEvent.SELECT_DATATABLE_COLUMN))
     {
       // Get attribute file id and show it the metacat panel
       showDataViewAndAttributePanel();
