@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-24 21:58:42 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2002-10-26 08:07:39 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.MalformedURLException;
 
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Enumeration;
 
@@ -93,12 +94,12 @@ public class XMLTransformer
     private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
     private final String GENERIC_STYLESHEET;
     
-    private final  Properties       transformerProperties;
     private final  ClassLoader      classLoader;
     private static XMLTransformer   instance;
     private static String           latestDocID;
     private static XSLTResolverInterface  resolver;
-    
+
+    private Properties              transformerProperties;
     private EntityResolver          entityResolver;
     private ConfigXML               config;
 
@@ -438,6 +439,49 @@ public class XMLTransformer
         this.transformerProperties.clear();
     }
 
+    /**
+     *  The <code>Properties</code> object passed to this method will be used to 
+     *  set <em>all</em> the name/value pairs describing the properties to be 
+     *  set for the transformer.  The new settings will supersede any previous 
+     *  settings
+     *
+     *  @param newProps     the <code>Properties</code> containing all the 
+     *                      object name/value pairs describing the properties to 
+     *                      be set for the transformer
+     */
+    public void setTransformerProperties(Properties newProps) 
+    {
+        this.transformerProperties = newProps;
+    }
+
+    /**
+     *  Returns <em>all</em> name/value pairs describing the properties to be 
+     *  set for the transformer, in the form of a <code>Properties</code> object
+     *
+     *  *NOTE* this method returns a clone of the Properties, not a reference to 
+     *  the Properties object itself!
+     *
+     *  @return             A clone of the <code>Properties</code> containing 
+     *                      object name/value pairs describing the properties to 
+     *                      be set for the transformer
+     */
+    public Properties getCurrentTransformerProperties() 
+    {
+        Properties returnProps = new Properties();
+        if (this.transformerProperties.isEmpty()) return returnProps;
+        Iterator keys = this.transformerProperties.keySet().iterator();
+        String nextKey = null;
+        while (keys.hasNext()) {
+            nextKey = String.valueOf(keys.next());
+            returnProps.setProperty(String.valueOf(nextKey),
+                              this.transformerProperties.getProperty(nextKey));
+        }
+        Log.debug(50,
+        "XMLTransformer.getCurrentTransformerProperties() returning "+returnProps);
+        return returnProps;
+    }
+
+    
     /**
      *  Gets an <code>Enumeration</code> containing the names (keys of all the 
      *  properties to be set for the transformer 
