@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-27 01:13:37 $'
- * '$Revision: 1.15 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-27 04:21:34 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,10 +105,10 @@ public class Morpho
     private boolean networkStatus = false;
     private boolean sslStatus = false;
 
-    private Action[] fileMenuActions = null;
-    private Action[] editMenuActions = null;
-    private Action[] helpMenuActions = null;
-    private Action[] containerToolbarActions = null;
+    //private Action[] fileMenuActions = null;
+    //private Action[] editMenuActions = null;
+    //private Action[] helpMenuActions = null;
+    //private Action[] containerToolbarActions = null;
     private Vector connectionRegistry = null;
     private boolean pluginsLoaded = false;
     private String sessionCookie = null;
@@ -1107,67 +1107,6 @@ public class Morpho
         controller.addGuiAction(exitItemAction);
 
 /*
-        controller.addMenu("File", new Integer(0), fileMenuActions);
-
-        // EDIT MENU ACTIONS
-        editMenuActions = new Action[4];
-        Action cutItemAction =
-            new AbstractAction("Cut")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    Log.debug(9, "Cut is not yet implemented.");
-                }
-            };
-        cutItemAction.putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke("control X"));
-        cutItemAction.putValue(Action.SHORT_DESCRIPTION,
-                "Cut the selection and put it on the Clipboard");
-        cutItemAction.putValue(Action.SMALL_ICON,
-                new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Cut16.gif")));
-        cutItemAction.putValue("menuPosition", new Integer(1));
-        cutItemAction.setEnabled(false);
-        editMenuActions[0] = cutItemAction;
-
-        Action copyItemAction =
-            new AbstractAction("Copy")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    Log.debug(9, "Copy is not yet implemented.");
-                }
-            };
-        copyItemAction.putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke("control C"));
-        copyItemAction.putValue(Action.SHORT_DESCRIPTION,
-                "Copy the selection and put it on the Clipboard");
-        copyItemAction.putValue(Action.SMALL_ICON,
-                new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Copy16.gif")));
-        copyItemAction.putValue("menuPosition", new Integer(2));
-        copyItemAction.setEnabled(false);
-        editMenuActions[1] = copyItemAction;
-
-        Action pasteItemAction =
-            new AbstractAction("Paste")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    Log.debug(9, "Paste is not yet implemented.");
-                }
-            };
-        pasteItemAction.putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke("control P"));
-        pasteItemAction.putValue(Action.SHORT_DESCRIPTION,
-                "Paste the selection.");
-        pasteItemAction.putValue(Action.SMALL_ICON,
-                new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Paste16.gif")));
-        pasteItemAction.putValue("menuPosition", new Integer(3));
-        pasteItemAction.setEnabled(false);
-        editMenuActions[2] = pasteItemAction;
-
         Action prefsItemAction =
             new AbstractAction("Preferences...")
             {
@@ -1185,57 +1124,39 @@ public class Morpho
         prefsItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
         prefsItemAction.putValue("menuPosition", new Integer(5));
         prefsItemAction.setEnabled(false);
-        editMenuActions[3] = prefsItemAction;
-
-        controller.addMenu("Edit", new Integer(1), editMenuActions);
-        controller.addMenu("Search", new Integer(2));
-        controller.addMenu("Data", new Integer(3));
-        controller.addMenu("View", new Integer(4));
-        controller.addMenu("Window", new Integer(5));
-
+*/
         // HELP MENU ACTIONS
-        helpMenuActions = new Action[2];
-        Action aboutItemAction =
-            new AbstractAction("About...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    SplashFrame sf = new SplashFrame();
-                    sf.setVisible(true);
-                }
-            };
+        Command aboutCommand = new Command() {
+            public void execute(ActionEvent event) {
+                SplashFrame sf = new SplashFrame();
+                sf.setVisible(true);
+            }
+        };
+        GUIAction aboutItemAction = 
+            new GUIAction("About...", null, aboutCommand);
         aboutItemAction.putValue(Action.SHORT_DESCRIPTION, "About Morpho");
         aboutItemAction.putValue(Action.SMALL_ICON,
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/About16.gif")));
         aboutItemAction.putValue("menuPosition", new Integer(1));
+        aboutItemAction.setMenu("Help", 5);
+        controller.addGuiAction(aboutItemAction);
 
-        Action helpItemAction =
-            new AbstractAction("Help...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    HTMLBrowser hb = new HTMLBrowser();
-                    hb.setVisible(true);
-                }
-            };
+        Command helpCommand = new Command() {
+            public void execute(ActionEvent event) {
+                HTMLBrowser hb = new HTMLBrowser();
+                hb.setVisible(true);
+            }
+        };
+        GUIAction helpItemAction = 
+            new GUIAction("Help...", null, helpCommand);
         helpItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho Help");
         helpItemAction.putValue(Action.SMALL_ICON,
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/Help16.gif")));
         helpItemAction.putValue("menuPosition", new Integer(2));
-
-        helpMenuActions[0] = aboutItemAction;
-        helpMenuActions[1] = helpItemAction;
-        controller.addMenu("Help", new Integer(6), helpMenuActions);
-
-        // Set up the toolbar for the application
-        containerToolbarActions = new Action[3];
-        containerToolbarActions[0] = cutItemAction;
-        containerToolbarActions[1] = copyItemAction;
-        containerToolbarActions[2] = pasteItemAction;
-        controller.addToolbarActions(containerToolbarActions);
-*/
+        helpItemAction.setMenu("Help", 5);
+        controller.addGuiAction(helpItemAction);
     }
 
     /** Create a new connection to metacat */
