@@ -35,157 +35,409 @@
  <east>-149.6</east>
  </location>
  <location><name>Baltimore Ecosystem Study LTER (BES)</name>
+ <description> </description>
+ <north>39.1</north>
+ <west>-76.3</west>
+ <south>39.1</south>
+ <east>-76.3</east>
+ </location>
+ <location><name>Bonanza Creek LTER (BNZ)</name>
+ <description> </description>
+ <north>64.8</north>
+ <west>-148.0</west>
+ <south>64.8</south>
+ <east>-148.0</east>
+ </location>
+ <location><name>Central Arizona - Phoenix LTER (CAP)</name>
+ <description> </description>
+ <north>33.54</north>
+ <west>-112.07</west>
+ <south>33.54</south>
+ <east>-112.07</east>
+ </location>
+ <location><name>Cedar Creek LTER (CDR)</name>
+ <description> </description>
+ <north>45.4</north>
+ <west>-93.2</west>
+ <south>45.4</south>
+ <east>-93.2</east>
+ </location>
+ <location><name>Coweeta Hydrologic Lab LTER (CWT)</name>
+ <description> </description>
+ <north>35.0</north>
+ <west>-83.5</west>
+ <south>35.0</south>
+ <east>-83.5</east>
+ </location>
+ <location><name>Harvard Forest LTER (HFR)</name>
+ <description> </description>
+ <north>42.5</north>
+ <west>-72.2</west>
+ <south>42.5</south>
+ <east>-72.2</east>
+ </location>
+ <location><name>Hubbard Brook LTER (HBR)</name>
+ <description> </description>
+ <north>43.9</north>
+ <west>-71.8</west>
+ <south>43.9</south>
+ <east>-71.8</east>
+ </location>
+ <location><name>Jornada LTER (JRN)</name>
+ <description> </description>
+ <north>32.5</north>
+ <west>-106.8</west>
+ <south>32.5</south>
+ <east>-106.8</east>
+ </location>
+ <location><name>W.K. Kellogg Biological Station LTER (KBS)</name>
+ <description> </description>
+ <north>42.4</north>
+ <west>-85.4</west>
+ <south>42.4</south>
+ <east>-85.4</east>
+ </location>
+ <location><name>Konza Prairie LTER (KNZ)</name>
+ <description> </description>
+ <north>39.1</north>
+ <west>-94.6</west>
+ <south>39.1</south>
+ <east>-94.6</east>
+ </location>
+ <location><name>Luquillo Experimental Forest LTER (LUQ)</name>
+ <description> </description>
+ <north>18.3</north>
+ <west>-65.8</west>
+ <south>18.3</south>
+ <east>-65.8</east>
+ </location>
+ <location><name>McMurdo Dry Valleys LTER (MCM)</name>
+ <description> </description>
+ <north>-78.0</north>
+ <west>165.0</west>
+ <south>-78.0</south>
+ <east>165.0</east>
+ </location>
+ <location><name>Niwot Ridge/Green Lakes Valley LTER (NWT)</name>
+ <description> </description>
+ <north>40.1</north>
+ <west>-105.6</west>
+ <south>40.1</south>
+ <east>-105.6</east>
+ </location>
+ <location><name>North Temperate Lakes LTER (NTL)</name>
+ <description> </description>
+ <north>46.0</north>
+ <west>-89.7</west>
+ <south>46.0</south>
+ <east>-89.7</east>
+ </location>
+ <location><name>Palmer Station LTER (PAL)</name>
+ <description> </description>
+ <north>-64.7</north>
+ <west>-64.0</west>
+ <south>-64.7</south>
+ <east>-64.0</east>
+ </location>
+ <location><name>Plum Island Ecosystem LTER (PIE)</name>
+ <description> </description>
+ <north>42.4</north>
+ <west>-70.5</west>
+ <south>42.4</south>
+ <east>-70.5</east>
+ </location>
+ <location><name>Sevilleta LTER (SEV)</name>
+ <description> </description>
+ <north>34.3</north>
+ <west>-106.8</west>
+ <south>34.3</south>
+ <east>-106.8</east>
+ </location>
+ <location><name>Shortgrass Steppe LTER (SGS)</name>
+ <description> </description>
+ <north>40.8</north>
+ <west>-104.8</west>
+ <south>40.8</south>
+ <east>-104.8</east>
+ </location>
+ <location><name>Virginia Coast Reserve LTER (VCR)</name>
+ <description> </description>
+ <north>37.5</north>
+ <west>-74.8</west>
+ <south>37.5</south>
+ <east>-74.8</east>
+ </location>
+ <location><name>Florida Coastal Everglades LTER (FCE)</name>
+ <description> </description>
+ <north>25.0</north>
+ <west>-80.0</west>
+ <south>25.0</south>
+ <east>-80.0</east>
+ </location>
+ <location><name>Georgia Coastal Ecosystems LTER (GCE)</name>
+ <description> </description>
+ <north>31.4</north>
+ <west>-81.3</west>
+ <south>31.4</south>
+ <east>-81.3</east>
+ </location>
+ <location><name>Santa Barbara Coastal LTER (SBC)</name>
+ <description> </description>
+ <north>34.0</north>
+ <west>-119.0</west>
+ <south>34.0</south>
+ <east>-119.0</east>
+ </location>
+ <location><name>Angelo Coast Range Reserve UCNRS</name>
 <description> </description>
-<north>39.1</north>
-<west>-76.3</west>
-<south>39.1</south>
-<east>-76.3</east>
+<north>39.72916666666667</north>
+<west>-123.64444444444445</west>
+<south>39.72916666666667</south>
+<east>-123.64444444444445</east>
 </location>
-<location><name>Bonanza Creek LTER (BNZ)</name>
+<location><name>Ano Nuevo Island Reserve UCNRS</name>
 <description> </description>
-<north>64.8</north>
-<west>-148.0</west>
-<south>64.8</south>
-<east>-148.0</east>
+<north>37.108333333333334</north>
+<west>-122.33611111111111</west>
+<south>37.108333333333334</south>
+<east>-122.33611111111111</east>
 </location>
-<location><name>Central Arizona - Phoenix LTER (CAP)</name>
+<location><name>Bodega Marine Reserve UCNRS</name>
 <description> </description>
-<north>33.54</north>
-<west>-112.07</west>
-<south>33.54</south>
-<east>-112.07</east>
+<north>38.30694444444444</north>
+<west>-123.065</west>
+<south>38.30694444444444</south>
+<east>-123.065</east>
 </location>
-<location><name>Cedar Creek LTER (CDR)</name>
+<location><name>Boyd Deep Canyon Desert Research Center UCNRS</name>
 <description> </description>
-<north>45.4</north>
-<west>-93.2</west>
-<south>45.4</south>
-<east>-93.2</east>
+<north>38.75</north>
+<west>-79.5</west>
+<south>38.75</south>
+<east>-79.5</east>
 </location>
-<location><name>Coweeta Hydrologic Lab LTER (CWT)</name>
+<location><name>Box Springs Reserve UCNRS</name>
 <description> </description>
-<north>35.0</north>
-<west>-83.5</west>
-<south>35.0</south>
-<east>-83.5</east>
+<north>33.99194444444444</north>
+<west>-117.29527777777777</west>
+<south>33.99194444444444</south>
+<east>-117.29527777777777</east>
 </location>
-<location><name>Harvard Forest LTER (HFR)</name>
+<location><name>Burns Pinon Ridge Reserve UCNRS</name>
 <description> </description>
-<north>42.5</north>
-<west>-72.2</west>
-<south>42.5</south>
-<east>-72.2</east>
+<north>34.138888888888886</north>
+<west>-116.45277777777778</west>
+<south>34.138888888888886</south>
+<east>-116.45277777777778</east>
 </location>
-<location><name>Hubbard Brook LTER (HBR)</name>
+<location><name>Carpentria Salt Marsh Reserve UCNRS</name>
 <description> </description>
-<north>43.9</north>
-<west>-71.8</west>
-<south>43.9</south>
-<east>-71.8</east>
+<north>34.4</north>
+<west>-119.525</west>
+<south>34.4</south>
+<east>-119.525</east>
 </location>
-<location><name>Jornada LTER (JRN)</name>
+<location><name>Chickering American River Reserve UCNRS</name>
 <description> </description>
-<north>32.5</north>
-<west>-106.8</west>
-<south>32.5</south>
-<east>-106.8</east>
+<north>39.24675</north>
+<west>-120.3253</west>
+<south>39.24675</south>
+<east>-120.3253</east>
 </location>
-<location><name>W.K. Kellogg Biological Station LTER (KBS)</name>
+<location><name>Coal Oil Point Natural Reserve UCNRS</name>
 <description> </description>
-<north>42.4</north>
-<west>-85.4</west>
-<south>42.4</south>
-<east>-85.4</east>
+<north>34.416666666666664</north>
+<west>-119.875</west>
+<south>34.416666666666664</south>
+<east>-119.875</east>
 </location>
-<location><name>Konza Prairie LTER (KNZ)</name>
+<location><name>Dawson Los Monos Canyon Reserve UCNRS</name>
 <description> </description>
-<north>39.1</north>
-<west>-94.6</west>
-<south>39.1</south>
-<east>-94.6</east>
+<north>33.141666666666666</north>
+<west>-117.25555555555556</west>
+<south>33.141666666666666</south>
+<east>-117.25555555555556</east>
 </location>
-<location><name>Luquillo Experimental Forest LTER (LUQ)</name>
+<location><name>Eagle Lake Field Station UCNRS</name>
 <description> </description>
-<north>18.3</north>
-<west>-65.8</west>
-<south>18.3</south>
-<east>-65.8</east>
+<north>40.617222222222225</north>
+<west>-120.72694444444444</west>
+<south>40.617222222222225</south>
+<east>-120.72694444444444</east>
 </location>
-<location><name>McMurdo Dry Valleys LTER (MCM)</name>
+<location><name>Elliot Chaparral Reserve UCNRS</name>
 <description> </description>
-<north>-78.0</north>
-<west>165.0</west>
-<south>-78.0</south>
-<east>165.0</east>
+<north>32.86833333333333</north>
+<west>-117.14250000000001</west>
+<south>32.86833333333333</south>
+<east>-117.14250000000001</east>
 </location>
-<location><name>Niwot Ridge/Green Lakes Valley LTER (NWT)</name>
+<location><name>Emerson Oaks Reserve UCNRS</name>
 <description> </description>
-<north>40.1</north>
-<west>-105.6</west>
-<south>40.1</south>
-<east>-105.6</east>
+<north>33.46666666666667</north>
+<west>-117.03944444444444</west>
+<south>33.46666666666667</south>
+<east>-117.03944444444444</east>
 </location>
-<location><name>North Temperate Lakes LTER (NTL)</name>
+<location><name>Fort Ord Natural Reserve UCNRS</name>
 <description> </description>
-<north>46.0</north>
-<west>-89.7</west>
-<south>46.0</south>
-<east>-89.7</east>
+<north>36.666666666666664</north>
+<west>-121.76666666666667</west>
+<south>36.666666666666664</south>
+<east>-121.76666666666667</east>
 </location>
-<location><name>Palmer Station LTER (PAL)</name>
+<location><name>Hastings Natural History Reservation UCNRS</name>
 <description> </description>
-<north>-64.7</north>
-<west>-64.0</west>
-<south>-64.7</south>
-<east>-64.0</east>
+<north>36.38805555555555</north>
+<west>-121.55</west>
+<south>36.38805555555555</south>
+<east>-121.55</east>
 </location>
-<location><name>Plum Island Ecosystem LTER (PIE)</name>
+<location><name>James San Jacinto Mountains Reserve UCNRS</name>
 <description> </description>
-<north>42.4</north>
-<west>-70.5</west>
-<south>42.4</south>
-<east>-70.5</east>
+<north>33.80833333333333</north>
+<west>-116.77777777777777</west>
+<south>33.80833333333333</south>
+<east>-116.77777777777777</east>
 </location>
-<location><name>Sevilleta LTER (SEV)</name>
+<location><name>Oasis de los Osos (James Reserve) UCNRS</name>
 <description> </description>
-<north>34.3</north>
-<west>-106.8</west>
-<south>34.3</south>
-<east>-106.8</east>
+<north>33.89175</north>
+<west>-116.68826666666666</west>
+<south>33.89175</south>
+<east>-116.68826666666666</east>
 </location>
-<location><name>Shortgrass Steppe LTER (SGS)</name>
+<location><name>Jepson Prairie Reserve UCNRS</name>
 <description> </description>
-<north>40.8</north>
-<west>-104.8</west>
-<south>40.8</south>
-<east>-104.8</east>
+<north>38.45055555555555</north>
+<west>-123.37805555555555</west>
+<south>38.45055555555555</south>
+<east>-123.37805555555555</east>
 </location>
-<location><name>Virginia Coast Reserve LTER (VCR)</name>
+<location><name>Kendall-Frost Mission Bay Marsh Reserve UCNRS</name>
 <description> </description>
-<north>37.5</north>
-<west>-74.8</west>
-<south>37.5</south>
-<east>-74.8</east>
+<north>32.793055555555554</north>
+<west>-117.21666666666667</west>
+<south>32.793055555555554</south>
+<east>-117.21666666666667</east>
 </location>
-<location><name>Florida Coastal Everglades LTER (FCE)</name>
+<location><name>Landels-Hill Big Creek Reserve UCNRS</name>
 <description> </description>
-<north>25.0</north>
-<west>-80.0</west>
-<south>25.0</south>
-<east>-80.0</east>
+<north>36.06666666666667</north>
+<west>-121.58333333333333</west>
+<south>36.06666666666667</south>
+<east>-121.58333333333333</east>
 </location>
-<location><name>Georgia Coastal Ecosystems LTER (GCE)</name>
+<location><name>McLaughlin Natural Reserve UCNRS</name>
 <description> </description>
-<north>31.4</north>
-<west>-81.3</west>
-<south>31.4</south>
-<east>-81.3</east>
+<north>38.87388888888889</north>
+<west>-122.43166666666667</west>
+<south>38.87388888888889</south>
+<east>-122.43166666666667</east>
 </location>
-<location><name>Santa Barbara Coastal LTER (SBC)</name>
+<location><name>Motte Rimrock Reserve UCNRS</name>
+<description> </description>
+<north>33.8125</north>
+<west>-117.25833333333334</west>
+<south>33.8125</south>
+<east>-117.25833333333334</east>
+</location>
+<location><name>Kenneth S. Norris Rancho Marino Reserve UCNRS</name>
+<description> </description>
+<north>35.52813333333334</north>
+<west>-121.07641666666666</west>
+<south>35.52813333333334</south>
+<east>-121.07641666666666</east>
+</location>
+<location><name>Hans Jenny Pygmy Forest Reserve UCNRS</name>
+<description> </description>
+<north>39.28333333333333</north>
+<west>-123.75694444444444</west>
+<south>39.28333333333333</south>
+<east>-123.75694444444444</east>
+</location>
+<location><name>Quail Ridge Reserve UCNRS</name>
+<description> </description>
+<north>38.81777777777778</north>
+<west>-122.24111111111111</west>
+<south>38.81777777777778</south>
+<east>-122.24111111111111</east>
+</location>
+<location><name>San Joaquin Freshwater Marsh Reserve UCNRS</name>
+<description> </description>
+<north>33.65833333333333</north>
+<west>-117.85833333333333</west>
+<south>33.65833333333333</south>
+<east>-117.85833333333333</east>
+</location>
+<location><name>Santa Cruz Island Reserve UCNRS</name>
 <description> </description>
 <north>34.0</north>
-<west>-119.0</west>
+<west>-119.73333333333333</west>
 <south>34.0</south>
-<east>-119.0</east>
+<east>-119.73333333333333</east>
+</location>
+<location><name>Sedgwick Reserve UCNRS</name>
+<description> </description>
+<north>34.6725</north>
+<west>-120.00916666666667</west>
+<south>34.6725</south>
+<east>-120.00916666666667</east>
+</location>
+<location><name>Scripps Coastal Reserve UCNRS</name>
+<description> </description>
+<north>32.875</north>
+<west>-117.25416666666666</west>
+<south>32.875</south>
+<east>-117.25416666666666</east>
+</location>
+<location><name>Stebbins Cold Canyon Reserve UCNRS</name>
+<description> </description>
+<north>38.856388888888894</north>
+<west>-122.17444444444445</west>
+<south>38.856388888888894</south>
+<east>-122.17444444444445</east>
+</location>
+<location><name>Stunt Ranch Santa Monica Mountains Reserve UCNRS</name>
+<description> </description>
+<north>34.1</north>
+<west>-118.65</west>
+<south>34.1</south>
+<east>-118.65</east>
+</location>
+<location><name>Sweeney Granite Mountains Desert Reserve Center UCNRS</name>
+<description> </description>
+<north>34.80555555555555</north>
+<west>-115.66388888888889</west>
+<south>34.80555555555555</south>
+<east>-115.66388888888889</east>
+</location>
+<location><name>Sacramento Mountains UCNRS</name>
+<description> </description>
+<north>34.7975</north>
+<west>-114.73083333333334</west>
+<south>34.7975</south>
+<east>-114.73083333333334</east>
+</location>
+<location><name>Valentine Eastern Sierra (SNARL) UCNRS</name>
+<description> </description>
+<north>37.61416666666667</north>
+<west>-118.82972222222222</west>
+<south>37.61416666666667</south>
+<east>-118.82972222222222</east>
+</location>
+<location><name>Valentine Eastern Sierra (Valentine Camp) UCNRS</name>
+<description> </description>
+<north>37.625</north>
+<west>-118.99166666666667</west>
+<south>37.625</south>
+<east>-118.99166666666667</east>
+</location>
+<location><name>Younger Lagoon Reserve UCNRS</name>
+<description> </description>
+<north>36.950833333333335</north>
+<west>-122.06583333333333</west>
+<south>36.950833333333335</south>
+<east>-122.06583333333333</east>
 </location>
 </locationList>
