@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!ELEMENT begdate (#PCDATA)>
 <!ELEMENT beggeol (geolage)>
 <!ELEMENT begtime (#PCDATA)>
@@ -39,9 +38,9 @@
 <!ELEMENT eastbc (#PCDATA)>
 <!ELEMENT northbc (#PCDATA)>
 <!ELEMENT southbc (#PCDATA)>
-<!ELEMENT boundalt (altmin, almax, altunits)>
-<!ELEMENT dsgpolyo ((grngpoin, grngpoin, grngpoin, grngpoin+) | gring)>
-<!ELEMENT dsgpolyx ((grngpoin, grngpoin, grngpoin, grngpoin+) | gring)>
+<!ELEMENT boundalt (altmin, altmax, altunits)>
+<!ELEMENT dsgpolyo (grngpoin+ | gring)>
+<!ELEMENT dsgpolyx (grngpoin+ | gring)>
 <!ELEMENT taxonkt (#PCDATA)>
 <!ELEMENT taxonkey (#PCDATA)>
 <!ELEMENT classsys (classcit, classmod?)>

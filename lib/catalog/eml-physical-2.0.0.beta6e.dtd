@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!ELEMENT eml-physical (identifier+, format, characterEncoding?, size?, authentication*, compressionMethod?, encodingMethod?, numHeaderLines?, recordDelimiter?, maxRecordLength?, quoteCharacter*, literalCharacter*, (fieldStartColumn?, (fieldWidth | fieldDelimiter))*)>
 <!ELEMENT identifier (#PCDATA)>
 <!ATTLIST identifier system CDATA #IMPLIED>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!ELEMENT citation ((identifier+, shortName?, title+, originator+, pubDate?, pubPlace?, series?, abstract?, keywordSet*, additionalInfo*, rights*, (onlineURL | offlineMedium)*, triple*), (ISBN?, ISSN?, (article | book | chapter | manuscript | report | thesis)))>
 <!ELEMENT identifier (#PCDATA)>
 <!ATTLIST identifier system CDATA #IMPLIED>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!ELEMENT acl (identifier+, (allow | deny)+)>
 <!ATTLIST acl order (allowFirst | denyFirst) #REQUIRED authSystem CDATA #REQUIRED>
 <!ELEMENT begdate (#PCDATA)>
