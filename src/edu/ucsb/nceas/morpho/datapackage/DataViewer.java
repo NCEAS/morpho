@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-25 21:07:24 $'
- * '$Revision: 1.53 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-25 22:10:24 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -702,7 +702,6 @@ public class DataViewer extends javax.swing.JPanel
         }
       }
       
-      
     }
     
     public void setDataPackage(DataPackage dp) {
@@ -1028,7 +1027,10 @@ public class DataViewer extends javax.swing.JPanel
     JTableHeader header = table.getTableHeader();
     header.addMouseListener(new HeaderMouseListener());
     MouseListener popupListener = new PopupListener();
-    table.addMouseListener(popupListener);     
+    table.addMouseListener(popupListener);  
+    
+    table.setRowSelectionInterval(0,0);
+    table.setColumnSelectionInterval(0,0);
     
     setUpDelimiterEditor(table, field_delimiter, TablePanel);
    
