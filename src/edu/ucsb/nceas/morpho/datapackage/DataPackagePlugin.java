@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-21 22:33:45 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2003-11-21 23:44:34 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,6 +137,19 @@ public class DataPackagePlugin
   private void initializeActions() 
   {
     UIController controller = UIController.getInstance();
+    
+    // Save dialog box action
+    GUIAction saveAction = new GUIAction("Save...", 
+                                              UISettings.SAVE_ICON, 
+                                              null);
+    saveAction.setMenuItemPosition(4);
+    saveAction.setToolTipText("Save...");
+    saveAction.setMenu("File", 0);
+    saveAction.setToolbarPosition(1);
+    saveAction.setEnabled(false);
+    controller.addGuiAction(saveAction);
+    
+
     
     // For edit menu
     GUIAction copy = new GUIAction("Copy", null, new TableCopyCommand());
