@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-16 19:20:51 $'
- * '$Revision: 1.81 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-16 21:54:01 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,24 +145,66 @@ public class DataPackagePlugin
                       true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(saveAction);
 
-    GUIAction revertAction = new GUIAction("Revert",
-                                              null,
-                                              new RevertCommand());
-    revertAction.setMenuItemPosition(5);
-    revertAction.setToolTipText("Revert");
-    revertAction.setMenu("File", 0);
-    revertAction.setEnabled(false);
-/*
-    revertAction.setEnabledOnStateChange(
-                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
-                      true, GUIAction.EVENT_LOCAL);
-    revertAction.setEnabledOnStateChange(
-                      StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
-                      true, GUIAction.EVENT_LOCAL);
-*/
-    controller.addGuiAction(revertAction);
 
+    GUIAction revertTab = new GUIAction("Revert Tab", null, new RevertCommand());
+    revertTab.setToolTipText("Revert to original data shown in current tab");
+    revertTab.setMenuItemPosition(0);
+    revertTab.setMenu("Edit", EDITMENUPOSITION);
+    revertTab.setEnabled(false);
+    revertTab.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    revertTab.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    revertTab.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    revertTab.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                   false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(revertTab);
 
+    GUIAction revertAll = new GUIAction("Revert All Tabs", null, new RevertAllCommand());
+    revertAll.setToolTipText("Revert to original data shown in all tabs");
+    revertAll.setMenuItemPosition(1);
+    revertAll.setMenu("Edit", EDITMENUPOSITION);
+    revertAll.setEnabled(false);
+    revertAll.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    revertAll.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    revertAll.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    revertAll.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                   false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(revertAll);
+
+    GUIAction cut = new GUIAction("Cut", null, new TableCutCommand());
+    cut.setToolTipText("Cut value in data table cells");
+    cut.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Cut16.gif")));
+    cut.setAcceleratorKeyString(CUTKEY);
+    cut.setMenuItemPosition(2);
+    cut.setSeparatorPosition(Morpho.SEPARATOR_PRECEDING);
+    cut.setMenu("Edit", EDITMENUPOSITION);
+    cut.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    cut.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    cut.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    cut.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                   false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(cut);
 
     // For edit menu
     GUIAction copy = new GUIAction("Copy", null, new TableCopyCommand());
@@ -170,7 +212,7 @@ public class DataPackagePlugin
     copy.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Copy16.gif")));
     copy.setAcceleratorKeyString(COPYKEY);
-    copy.setMenuItemPosition(0);
+    copy.setMenuItemPosition(3);
     copy.setMenu("Edit", EDITMENUPOSITION);
     copy.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -187,33 +229,13 @@ public class DataPackagePlugin
 
     controller.addGuiAction(copy);
 
-    GUIAction cut = new GUIAction("Cut", null, new TableCutCommand());
-    cut.setToolTipText("Cut value in data table cells");
-    cut.setSmallIcon(new ImageIcon(getClass().
-           getResource("/toolbarButtonGraphics/general/Cut16.gif")));
-    cut.setAcceleratorKeyString(CUTKEY);
-    cut.setMenuItemPosition(1);
-    cut.setMenu("Edit", EDITMENUPOSITION);
-    cut.setEnabledOnStateChange(
-                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                      true, GUIAction.EVENT_LOCAL);
-    cut.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
-                            false, GUIAction.EVENT_LOCAL);
-    cut.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
-                            false, GUIAction.EVENT_LOCAL);
-    cut.setEnabledOnStateChange(
-                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                   false, GUIAction.EVENT_LOCAL);
-    controller.addGuiAction(cut);
 
     GUIAction paste = new GUIAction("Paste", null, new TablePasteCommand());
     paste.setToolTipText("Paste value in data table cells");
     paste.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Paste16.gif")));
     paste.setAcceleratorKeyString(PASTEKEY);
-    paste.setMenuItemPosition(2);
+    paste.setMenuItemPosition(4);
     paste.setMenu("Edit", EDITMENUPOSITION);
    /*
     paste.setEnabledOnStateChange(

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-09 18:14:48 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-16 21:54:01 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import javax.swing.JDialog;
 
 
 /**
- * Class to Revert to oroginal AbstractDataPackage
+ * Class to Revert to current tab to original data sets
  */
 public class RevertCommand implements Command 
 {
@@ -57,7 +57,7 @@ public class RevertCommand implements Command
   public RevertCommand()
   {
 
-  }//SavePackageCommand
+  }
   
   /**
    * Constructor of RevertCommand
@@ -70,7 +70,7 @@ public class RevertCommand implements Command
   }
   
   /**
-   * execute the save datapackage command
+   * execute the revert command
    */    
   public void execute(ActionEvent event)
   {
@@ -82,9 +82,9 @@ public class RevertCommand implements Command
                           getDataViewContainerPanelFromMorphoFrame(morphoFrame);
     }//if
     if (dvcp!=null) {
-      adp = dvcp.getAbstractDataPackage();
+      DataViewer dv = dvcp.getCurrentDataViewer();
+      dv.init();
     }
-    new SaveDialog(adp);
     
   }//execute
 

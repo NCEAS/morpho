@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-16 19:04:01 $'
- * '$Revision: 1.106 $'
+ *     '$Date: 2004-03-16 21:54:01 $'
+ * '$Revision: 1.107 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -335,7 +335,8 @@ public class DataViewer extends javax.swing.JPanel
 		ControlPanel.setLayout(new BorderLayout(0,0));
 		DataViewerPanel.add(BorderLayout.SOUTH, ControlPanel);
 		ButtonControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
-//		ControlPanel.add(BorderLayout.CENTER, ButtonControlPanel);
+//  Update and Revert functionality moved to menus; controls thus removed by not displaying panel   
+//  ControlPanel.add(BorderLayout.CENTER, ButtonControlPanel);
 		DataIDLabel.setText("Data ID: ");
 		DataIDLabel.setNextFocusableComponent(CancelButton);
 		ButtonControlPanel.add(DataIDLabel);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-16 19:04:01 $'
- * '$Revision: 1.96 $'
+ *     '$Date: 2004-03-16 21:54:01 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -746,6 +746,18 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
   }
 
+  /**
+   *  checks the dvArray for dataViewer and reload unsaved information
+   */
+  public void removeDataChanges() {
+    if (dvArray!=null) {
+      for (int i=0; i<dvArray.length; i++) {
+        if (dvArray[i]!=null) {
+          dvArray[i].init();
+        }
+      }
+    }    
+  }
 
   /**
    * creates the data display and puts it into the center of the window
