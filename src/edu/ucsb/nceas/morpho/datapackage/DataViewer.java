@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-26 19:32:54 $'
- * '$Revision: 1.77 $'
+ *     '$Date: 2003-01-08 08:12:40 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1794,7 +1794,10 @@ public class DataViewer extends javax.swing.JPanel
 	private TripleCollection buildTriplesForNewData(String accessId, 
                                   String entityFileId,
                                   String dataid) {
-        Triple t = new Triple(dataid, "isDataFileFor", dp.getID());
+        AccessionNumber a = new AccessionNumber(morpho);
+        String newPackageId = a.incRev(dp.getID());
+
+        Triple t = new Triple(dataid, "isDataFileFor", newPackageId);
         TripleCollection triples = new TripleCollection();
         triples.addTriple(t);
     
