@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 00:11:44 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-06 00:32:33 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ public class XMLTransformer extends DefaultHandler
     private final String CONFIG_KEY_LOCAL_CATALOG_PATH = "local_catalog_path";
     
     private static XMLTransformer   instance;
-    private static XMLReader        xmlReader;
+    private XMLReader        xmlReader;
     
     private EntityResolver          entityResolver;
     private ConfigXML               config;
@@ -144,16 +144,20 @@ public class XMLTransformer extends DefaultHandler
     {
         validateInputParam(xmlDocument,   "XML document reader");
         validateInputParam(xslStyleSheet, "XSL stylesheet reader");
+Log.debug(50,"# # # transform called;  xmlDocument = "+xmlDocument);            
+Log.debug(50,"# # # transform called;  xslStyleSheet = "+xslStyleSheet);            
 
         PipedReader returnReader = new PipedReader();
         PipedWriter pipedWriter  = new PipedWriter();
         returnReader.connect(pipedWriter);
+Log.debug(50,"# # # pipedWriter = "+pipedWriter);            
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = null;
         try {
             transformer 
                     = tFactory.newTransformer(new StreamSource(xslStyleSheet));
+Log.debug(50,"# # # transformer = "+transformer);            
         } catch (TransformerConfigurationException e) {
             String msg 
                 = "XMLTransformer.transform(): getting Transformer instance. "
@@ -167,8 +171,10 @@ public class XMLTransformer extends DefaultHandler
 //      transformer.setParameter("qformat", qformat);
 
         try {
+Log.debug(50,"# # # doing transformer.transform...");            
             transformer.transform(  getAsSaxSource(xmlDocument),
                                     new StreamResult(pipedWriter));
+Log.debug(50,"# # # ...DONE transformer.transform!");            
         } catch (TransformerException e) {
             String msg
                 = "XMLTransformer.transform(): Error transforming document."
@@ -177,9 +183,11 @@ public class XMLTransformer extends DefaultHandler
             pipedWriter.write(msg.toCharArray(),0,msg.length());
             e.printStackTrace(new PrintWriter(pipedWriter));
         } finally {
+Log.debug(50,"# # # ...finally!");            
             pipedWriter.flush();
             pipedWriter.close();
         }
+Log.debug(50,"# # # returnReader = "+returnReader);            
         return returnReader;
     }
 
