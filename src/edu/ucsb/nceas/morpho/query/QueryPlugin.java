@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.9 2000-08-18 20:22:13 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.10 2000-08-22 19:16:09 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -49,6 +49,7 @@ import org.apache.xalan.xslt.XSLTInputSource;
 import org.apache.xalan.xslt.XSLTResultTarget;
 import org.apache.xalan.xslt.XSLTProcessor;
 import org.apache.xalan.xpath.xml.*;
+import edu.ucsb.nceas.querybean.DataGuideBean;
 
 //public class QueryBean extends java.awt.Container 
 public class QueryBean extends AbstractQueryBean 
@@ -95,7 +96,7 @@ public class QueryBean extends AbstractQueryBean
 //		Query.setMaximumSize(new Dimension(688,150));
 //		Query.setPreferredSize(new Dimension(688,160));
 		Query1.setPreferredSize(new Dimension(688,160));
-		Query2.setPreferredSize(new Dimension(688,160));
+		Query2.setPreferredSize(new Dimension(688,240));
 //		QueryTypePanel.setBounds(2,2,716,33);
 //		TextChoiceButtonPanel.setBounds(5,5,408,23);
 		RefineQueryPanel.setLayout(new BorderLayout(0,0));
@@ -111,6 +112,7 @@ public class QueryBean extends AbstractQueryBean
 		QueryControls.add(SearchButton);
 		SearchButton.setBounds(0,0,75,25);
 		LocalCheckBox.setText("Local Only?");
+		LocalCheckBox.setActionCommand("Local Only?");
 		QueryControls.add(LocalCheckBox);
 		LocalCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
 		LocalCheckBox.setBounds(0,0,21,40);
@@ -356,6 +358,7 @@ public class QueryBean extends AbstractQueryBean
 		QueryControls1.add(SearchButton1);
 		SearchButton1.setBounds(0,0,75,25);
 		LocalCheckBox1.setText("Local Only?");
+		LocalCheckBox1.setActionCommand("Local Only?");
 		QueryControls1.add(LocalCheckBox1);
 		LocalCheckBox1.setFont(new Font("Dialog", Font.PLAIN, 12));
 		LocalCheckBox1.setBounds(0,0,21,40);
@@ -526,11 +529,12 @@ public class QueryBean extends AbstractQueryBean
 		JPanel33.setLayout(new GridLayout(2,1,0,0));
 		JPanel30.add(BorderLayout.EAST, JPanel33);
 		JPanel33.setBounds(493,0,227,46);
-		JCheckBox10.setText("Detach (New Window)");
-		JCheckBox10.setActionCommand("Detach (New Window)");
-		JPanel33.add(JCheckBox10);
-		JCheckBox10.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JCheckBox10.setBounds(0,0,227,23);
+		DetachCheckBox1.setText("Detach (New Window)");
+		DetachCheckBox1.setActionCommand("Detach (New Window)");
+		JPanel33.add(DetachCheckBox1);
+		DetachCheckBox1.setFont(new Font("Dialog", Font.PLAIN, 12));
+		DetachCheckBox1.setBounds(0,0,227,23);
+		JPanel33.add(DetachCheckBox1);
 		JCheckBox11.setText("Refine Search (Using these Results)");
 		JCheckBox11.setActionCommand("Refine Search (Using these Results)");
 		JPanel33.add(JCheckBox11);
@@ -546,173 +550,10 @@ public class QueryBean extends AbstractQueryBean
 		Query2.setLayout(new BorderLayout(0,0));
 		DocumentTypePanel.add(BorderLayout.NORTH,Query2);
 		Query2.setBounds(0,0,0,0);
-		RefineQueryPanel2.setLayout(new BorderLayout(0,0));
-		Query2.add(BorderLayout.CENTER, RefineQueryPanel2);
-		RefineQueryPanel2.setBounds(0,0,0,0);
-		QueryControls2.setAlignmentX(0.0F);
-		QueryControls2.setLayout(new BoxLayout(QueryControls2,BoxLayout.Y_AXIS));
-		RefineQueryPanel2.add(BorderLayout.EAST, QueryControls2);
-		QueryControls2.setBounds(641,0,75,257);
-		SearchButton2.setText("Search");
-		SearchButton2.setActionCommand("Search");
-		QueryControls2.add(SearchButton2);
-		SearchButton2.setBounds(0,0,75,25);
-		LocalCheckBox2.setText("Local Only?");
-		QueryControls2.add(LocalCheckBox2);
-		LocalCheckBox2.setFont(new Font("Dialog", Font.PLAIN, 12));
-		LocalCheckBox2.setBounds(0,0,21,40);
-		DocTypePanel.setLayout(new BorderLayout(0,0));
-		RefineQueryPanel2.add(BorderLayout.WEST, DocTypePanel);
-		DocTypePanel.setBounds(0,0,96,257);
-		DocTypeNameScrollPane.setOpaque(true);
-		DocTypePanel.add(BorderLayout.CENTER, DocTypeNameScrollPane);
-		DocTypeNameScrollPane.setBounds(0,0,96,242);
-		DocTypeList.setModel(DocTypeListModel);
-		DocTypeNameScrollPane.getViewport().add(DocTypeList);
-		DocTypeList.setBounds(0,0,93,239);
-		JLabel2.setText("Select Doc Types");
-		DocTypePanel.add(BorderLayout.SOUTH, JLabel2);
-		JLabel2.setForeground(java.awt.Color.black);
-		JLabel2.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel2.setBounds(0,242,96,15);
-		QueryChoicesPanel12.setLayout(new BorderLayout(0,0));
-		RefineQueryPanel2.add(BorderLayout.CENTER, QueryChoicesPanel12);
-		QueryChoicesPanel12.setBounds(96,0,545,257);
-		JScrollPane5.setOpaque(true);
-		QueryChoicesPanel12.add(BorderLayout.CENTER, JScrollPane5);
-		JScrollPane5.setBounds(0,0,545,222);
-		JPanel17.setAlignmentX(0.496933F);
-		JPanel17.setLayout(new BoxLayout(JPanel17,BoxLayout.Y_AXIS));
-		JScrollPane5.getViewport().add(JPanel17);
-		JPanel17.setBounds(0,0,542,219);
-		TextChoices1A.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel17.add(TextChoices1A);
-		TextChoices1A.setBounds(0,0,542,36);
-		JLabel17.setText("Text #1");
-		TextChoices1A.add(JLabel17);
-		JLabel17.setForeground(java.awt.Color.black);
-		JLabel17.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel17.setBounds(5,9,39,15);
-		TextMatch1A.setModel(MatchTypesModel);
-		TextChoices1A.add(TextMatch1A);
-		TextMatch1A.setBackground(java.awt.Color.white);
-		TextMatch1A.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TextMatch1A.setBounds(49,5,115,24);
-		TextValue1A.setColumns(30);
-		TextValue1A.setText("NCEAS");
-		TextChoices1A.add(TextValue1A);
-		TextValue1A.setBounds(169,7,330,19);
-		TextChoices2A.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel17.add(TextChoices2A);
-		TextChoices2A.setBounds(0,36,542,36);
-		TextChoices2A.setVisible(false);
-		JLabel18.setText("Text #2");
-		TextChoices2A.add(JLabel18);
-		JLabel18.setForeground(java.awt.Color.black);
-		JLabel18.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel18.setBounds(5,9,39,15);
-		TextMatch2A.setModel(MatchTypesModel2);
-		TextChoices2A.add(TextMatch2A);
-		TextMatch2A.setBackground(java.awt.Color.white);
-		TextMatch2A.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TextMatch2A.setBounds(49,5,115,24);
-		TextValue2A.setColumns(30);
-		TextChoices2A.add(TextValue2A);
-		TextValue2A.setBounds(169,7,330,19);
-		TextChoices3A.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel17.add(TextChoices3A);
-		TextChoices3A.setBounds(0,72,542,36);
-		TextChoices3A.setVisible(false);
-		JLabel20.setText("Text #3");
-		TextChoices3A.add(JLabel20);
-		JLabel20.setForeground(java.awt.Color.black);
-		JLabel20.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel20.setBounds(5,9,39,15);
-		TextMatch3A.setModel(MatchTypesModel3);
-		TextChoices3A.add(TextMatch3A);
-		TextMatch3A.setBackground(java.awt.Color.white);
-		TextMatch3A.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TextMatch3A.setBounds(49,5,115,24);
-		TextValue3A.setColumns(30);
-		TextChoices3A.add(TextValue3A);
-		TextValue3A.setBounds(169,7,330,19);
-		TextChoices4A.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel17.add(TextChoices4A);
-		TextChoices4A.setBounds(0,108,542,36);
-		TextChoices4A.setVisible(false);
-		JLabel21.setText("Text #4");
-		TextChoices4A.add(JLabel21);
-		JLabel21.setForeground(java.awt.Color.black);
-		JLabel21.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel21.setBounds(5,9,39,15);
-		TextMatch4A.setModel(MatchTypesModel4);
-		TextChoices4A.add(TextMatch4A);
-		TextMatch4A.setBackground(java.awt.Color.white);
-		TextMatch4A.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TextMatch4A.setBounds(49,5,115,24);
-		TextValue4A.setColumns(30);
-		TextChoices4A.add(TextValue4A);
-		TextValue4A.setBounds(169,7,330,19);
-		TextChoices5A.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel17.add(TextChoices5A);
-		TextChoices5A.setBounds(0,144,542,36);
-		TextChoices5A.setVisible(false);
-		JLabel22.setText("Text #5");
-		TextChoices5A.add(JLabel22);
-		JLabel22.setForeground(java.awt.Color.black);
-		JLabel22.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel22.setBounds(5,9,39,15);
-		TextMatch5A.setModel(MatchTypesModel5);
-		TextChoices5A.add(TextMatch5A);
-		TextMatch5A.setBackground(java.awt.Color.white);
-		TextMatch5A.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TextMatch5A.setBounds(49,5,115,24);
-		TextValue5A.setColumns(30);
-		TextChoices5A.add(TextValue5A);
-		TextValue5A.setBounds(169,7,330,19);
-		TextChoices6A.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel17.add(TextChoices6A);
-		TextChoices6A.setBounds(0,180,542,36);
-		TextChoices6A.setVisible(false);
-		JLabel23.setText("Text #6");
-		TextChoices6A.add(JLabel23);
-		JLabel23.setForeground(java.awt.Color.black);
-		JLabel23.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel23.setBounds(5,9,39,15);
-		TextMatch6A.setModel(MatchTypesModel6);
-		TextChoices6A.add(TextMatch6A);
-		TextMatch6A.setBackground(java.awt.Color.white);
-		TextMatch6A.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TextMatch6A.setBounds(49,5,115,24);
-		TextValue6A.setColumns(30);
-		TextChoices6A.add(TextValue6A);
-		TextValue6A.setBounds(169,7,330,19);
-		More_Less_Buttons_Panel1.setLayout(new FlowLayout(FlowLayout.LEFT,20,5));
-		QueryChoicesPanel12.add(BorderLayout.SOUTH, More_Less_Buttons_Panel1);
-		More_Less_Buttons_Panel1.setFont(new Font("Dialog", Font.PLAIN, 10));
-		More_Less_Buttons_Panel1.setBounds(0,222,545,35);
-		AndRadioButton1.setText("And");
-		AndRadioButton1.setActionCommand("And");
-		More_Less_Buttons_Panel1.add(AndRadioButton1);
-		AndRadioButton1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		AndRadioButton1.setBounds(20,6,46,23);
-		OrRadioButton1.setSelected(true);
-		OrRadioButton1.setText("Or");
-		OrRadioButton1.setActionCommand("Or");
-		More_Less_Buttons_Panel1.add(OrRadioButton1);
-		OrRadioButton1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		OrRadioButton1.setBounds(86,6,38,23);
-		MoreButton1.setText("More");
-		MoreButton1.setActionCommand("More");
-		More_Less_Buttons_Panel1.add(MoreButton1);
-		MoreButton1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		MoreButton1.setBounds(144,5,61,25);
-		LessButton1.setText("Fewer");
-		LessButton1.setActionCommand("Fewer");
-		LessButton1.setEnabled(false);
-		More_Less_Buttons_Panel1.add(LessButton1);
-		LessButton1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		LessButton1.setBounds(225,5,69,25);
+		dataGuideBean1.setLayout(new GridLayout(1,2,2,2));
+		Query2.add(BorderLayout.CENTER, dataGuideBean1);
+		dataGuideBean1.setBackground(java.awt.Color.lightGray);
+		dataGuideBean1.setBounds(0,0,635,453);
 		RS_Panel2.setLayout(new BorderLayout(0,0));
 		DocumentTypePanel.add(BorderLayout.CENTER,RS_Panel2);
 		RS_Panel2.setBackground(java.awt.Color.white);
@@ -754,7 +595,7 @@ public class QueryBean extends AbstractQueryBean
 		JCheckBox13.setBounds(0,23,227,23);
 		RS_Panel2.add(BorderLayout.CENTER, RSScrollPane2);
 		RSScrollPane2.setBounds(0,46,720,118);
-		JPanel11.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		JPanel11.setLayout(new BorderLayout(0,0));
 		QueryChoiceTabs.add(JPanel11);
 		JPanel11.setBounds(2,27,724,462);
 		JPanel11.setVisible(false);
@@ -774,17 +615,10 @@ public class QueryBean extends AbstractQueryBean
 		QueryChoiceTabs.setTitleAt(3,"Taxonomic");
 		QueryChoiceTabs.setTitleAt(4,"Spatial");
 		QueryChoiceTabs.setTitleAt(5,"Data");
-		TextMatch3A.setSelectedIndex(0);
-		DocTypeList.setSelectedIndex(2);
 		TextMatch5.setSelectedIndex(0);
-		TextMatch2A.setSelectedIndex(0);
-		TextMatch1A.setSelectedIndex(0);
 		TextMatch4.setSelectedIndex(0);
 		TextMatch2.setSelectedIndex(0);
 		TextMatch3.setSelectedIndex(0);
-		TextMatch4A.setSelectedIndex(0);
-		TextMatch6A.setSelectedIndex(0);
-		TextMatch5A.setSelectedIndex(0);
 		TextMatch1.setSelectedIndex(0);
 		TextMatch6.setSelectedIndex(0);
 		//}}
@@ -799,17 +633,11 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton.addActionListener(lSymAction);
 		AllCheckBox.addItemListener(lSymItem);
 		DetachCheckBox.addItemListener(lSymItem);
-		MoreButton1.addActionListener(lSymAction);
-		LessButton1.addActionListener(lSymAction);
-		AndRadioButton1.addItemListener(lSymItem);
-		OrRadioButton1.addItemListener(lSymItem);
 		AndButton2.addItemListener(lSymItem);
 		OrButton2.addItemListener(lSymItem);
 		SearchButton1.addActionListener(lSymAction);
-		SearchButton2.addActionListener(lSymAction);
 		LocalCheckBox.addItemListener(lSymItem);
 		LocalCheckBox1.addItemListener(lSymItem);
-		LocalCheckBox2.addItemListener(lSymItem);
 		//}}
 		invalidate();
 		setVisible(true);
@@ -904,51 +732,12 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JScrollPane JScrollPane6 = new javax.swing.JScrollPane();
 	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
 	javax.swing.JPanel JPanel33 = new javax.swing.JPanel();
-	javax.swing.JCheckBox JCheckBox10 = new javax.swing.JCheckBox();
+	javax.swing.JCheckBox DetachCheckBox1 = new javax.swing.JCheckBox();
 	javax.swing.JCheckBox JCheckBox11 = new javax.swing.JCheckBox();
 	javax.swing.JScrollPane RSScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JPanel DocumentTypePanel = new javax.swing.JPanel();
 	javax.swing.JPanel Query2 = new javax.swing.JPanel();
-	javax.swing.JPanel RefineQueryPanel2 = new javax.swing.JPanel();
-	javax.swing.JPanel QueryControls2 = new javax.swing.JPanel();
-	javax.swing.JButton SearchButton2 = new javax.swing.JButton();
-	javax.swing.JCheckBox LocalCheckBox2 = new javax.swing.JCheckBox();
-	javax.swing.JPanel DocTypePanel = new javax.swing.JPanel();
-	javax.swing.JScrollPane DocTypeNameScrollPane = new javax.swing.JScrollPane();
-	javax.swing.JList DocTypeList = new javax.swing.JList();
-	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
-	javax.swing.JPanel QueryChoicesPanel12 = new javax.swing.JPanel();
-	javax.swing.JScrollPane JScrollPane5 = new javax.swing.JScrollPane();
-	javax.swing.JPanel JPanel17 = new javax.swing.JPanel();
-	javax.swing.JPanel TextChoices1A = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel17 = new javax.swing.JLabel();
-	javax.swing.JComboBox TextMatch1A = new javax.swing.JComboBox();
-	javax.swing.JTextField TextValue1A = new javax.swing.JTextField();
-	javax.swing.JPanel TextChoices2A = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel18 = new javax.swing.JLabel();
-	javax.swing.JComboBox TextMatch2A = new javax.swing.JComboBox();
-	javax.swing.JTextField TextValue2A = new javax.swing.JTextField();
-	javax.swing.JPanel TextChoices3A = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel20 = new javax.swing.JLabel();
-	javax.swing.JComboBox TextMatch3A = new javax.swing.JComboBox();
-	javax.swing.JTextField TextValue3A = new javax.swing.JTextField();
-	javax.swing.JPanel TextChoices4A = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel21 = new javax.swing.JLabel();
-	javax.swing.JComboBox TextMatch4A = new javax.swing.JComboBox();
-	javax.swing.JTextField TextValue4A = new javax.swing.JTextField();
-	javax.swing.JPanel TextChoices5A = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel22 = new javax.swing.JLabel();
-	javax.swing.JComboBox TextMatch5A = new javax.swing.JComboBox();
-	javax.swing.JTextField TextValue5A = new javax.swing.JTextField();
-	javax.swing.JPanel TextChoices6A = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel23 = new javax.swing.JLabel();
-	javax.swing.JComboBox TextMatch6A = new javax.swing.JComboBox();
-	javax.swing.JTextField TextValue6A = new javax.swing.JTextField();
-	javax.swing.JPanel More_Less_Buttons_Panel1 = new javax.swing.JPanel();
-	javax.swing.JRadioButton AndRadioButton1 = new javax.swing.JRadioButton();
-	javax.swing.JRadioButton OrRadioButton1 = new javax.swing.JRadioButton();
-	javax.swing.JButton MoreButton1 = new javax.swing.JButton();
-	javax.swing.JButton LessButton1 = new javax.swing.JButton();
+	edu.ucsb.nceas.querybean.DataGuideBean dataGuideBean1 = new edu.ucsb.nceas.querybean.DataGuideBean();
 	javax.swing.JPanel RS_Panel2 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel34 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel35 = new javax.swing.JPanel();
@@ -1020,11 +809,7 @@ public class QueryBean extends AbstractQueryBean
 				AllCheckBox_itemStateChanged(event);
 			else if (object == DetachCheckBox)
 				DetachCheckBox_itemStateChanged(event);
-			else if (object == AndRadioButton1)
-				AndRadioButton1_itemStateChanged(event);
-			else if (object == OrRadioButton1)
-				OrRadioButton1_itemStateChanged(event);
-			else if (object == AndButton2)
+			if (object == AndButton2)
 				AndButton2_itemStateChanged(event);
 			else if (object == OrButton2)
 				OrButton2_itemStateChanged(event);
@@ -1032,8 +817,7 @@ public class QueryBean extends AbstractQueryBean
 				LocalCheckBox_itemStateChanged(event);
 			else if (object == LocalCheckBox1)
 				LocalCheckBox1_itemStateChanged(event);
-			else if (object == LocalCheckBox2)
-				LocalCheckBox2_itemStateChanged(event);
+			
 		}
 	}
 
@@ -1046,16 +830,6 @@ public class QueryBean extends AbstractQueryBean
 	void OrRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
 	{
 		if(OrRadioButton.isSelected()) AndRadioButton.setSelected(false);
-	}
-
-	void AndRadioButton1_itemStateChanged(java.awt.event.ItemEvent event)
-	{
-		if(AndRadioButton1.isSelected()) OrRadioButton1.setSelected(false);
-	}
-
-	void OrRadioButton1_itemStateChanged(java.awt.event.ItemEvent event)
-	{
-		if(OrRadioButton1.isSelected()) AndRadioButton1.setSelected(false);
 	}
 
 	void AndButton2_itemStateChanged(java.awt.event.ItemEvent event)
@@ -1080,14 +854,9 @@ public class QueryBean extends AbstractQueryBean
 				LessButton_actionPerformed(event);
 			else if (object == SearchButton)
 				SearchButton_actionPerformed(event);
-			else if (object == MoreButton1)
-				MoreButton1_actionPerformed(event);
-			else if (object == LessButton1)
-				LessButton1_actionPerformed(event);
-			else if (object == SearchButton1)
+			if (object == SearchButton1)
 				SearchButton1_actionPerformed(event);
-			else if (object == SearchButton2)
-				SearchButton2_actionPerformed(event);
+			
 		}
 	}
 
@@ -1116,35 +885,6 @@ public class QueryBean extends AbstractQueryBean
         else if (TextChoices2.isVisible()) 
             {TextChoices2.setVisible(false);
              LessButton.setEnabled(false);}
-	}
-
-	void MoreButton1_actionPerformed(java.awt.event.ActionEvent event)
-	{
-        if(TextChoices6A.isVisible()) {}  // do nothing
-        else if (TextChoices5A.isVisible()) 
-            {TextChoices6A.setVisible(true);
-              MoreButton1.setEnabled(false);}
-        else if (TextChoices4A.isVisible()) TextChoices5A.setVisible(true);
-        else if (TextChoices3A.isVisible()) TextChoices4A.setVisible(true);
-        else if (TextChoices2A.isVisible()) TextChoices3A.setVisible(true);
-        else if (TextChoices1A.isVisible()) 
-          { TextChoices2A.setVisible(true);
-            LessButton1.setEnabled(true); }
-	}
-	
-	
-
-	void LessButton1_actionPerformed(java.awt.event.ActionEvent event)
-	{
-        if(TextChoices6A.isVisible()) 
-            {TextChoices6A.setVisible(false);
-             MoreButton1.setEnabled(true);}  
-        else if (TextChoices5A.isVisible()) TextChoices5A.setVisible(false);
-        else if (TextChoices4A.isVisible()) TextChoices4A.setVisible(false);
-        else if (TextChoices3A.isVisible()) TextChoices3A.setVisible(false);
-        else if (TextChoices2A.isVisible()) 
-            {TextChoices2A.setVisible(false);
-             LessButton1.setEnabled(false);}			 
 	}
 
 	void SearchButton1_actionPerformed(java.awt.event.ActionEvent event)
@@ -1363,122 +1103,6 @@ public class QueryBean extends AbstractQueryBean
 //	LogOut();
 	}
 	
-	void SearchButton2_actionPerformed(java.awt.event.ActionEvent event)
-	{
-   //      simplequery_submitToDatabase("%NCEAS%");
-	    String temp = create_XMLQuery();
-//	    squery_submitToDatabase(temp);   
-	    if (SearchButton2.getText().equalsIgnoreCase("Halt")) {
-	        if (lq!=null) {
-	            lq.setStopFlag();
-	            lq = null;
-	        }
-	        SearchButton2.setText("Search");
-	    }
-	    else {
-	    String path;
-	    String root = "";
-	    String[] paths = {"", "", "", "", "", ""};
-	    String op = "and";
-	    
-	    root="/"+DocTypeList.getSelectedValue().toString();
-	    
-	    if(TextValue1A.getText().length()>0) {
-	    String mode, match;
-	    if (OrRadioButton1.isSelected()) op = "or";
-	    
-		if ((TextChoices1A.isVisible())&&(TextValue1A.getText().length()>0)) {
-		    mode = TextMatch1A.getSelectedItem().toString();
-		    match = TextValue1A.getText();
-		    paths[0] = getPath(mode,match);
-		}
-		if ((TextChoices2A.isVisible())&&(TextValue2A.getText().length()>0)) {
-		    mode = TextMatch2A.getSelectedItem().toString();
-		    match = TextValue2A.getText();
-		    paths[1] = getPath(mode,match);
-		}
-		if ((TextChoices3A.isVisible())&&(TextValue3A.getText().length()>0)) {
-		    mode = TextMatch3A.getSelectedItem().toString();
-		    match = TextValue3A.getText();
-		    paths[2] = getPath(mode,match);
-		}
-		if ((TextChoices4A.isVisible())&&(TextValue4A.getText().length()>0)) {
-		    mode = TextMatch4A.getSelectedItem().toString();
-		    match = TextValue4A.getText();
-		    paths[3] = getPath(mode,match);
-		}
-		if ((TextChoices5A.isVisible())&&(TextValue5A.getText().length()>0)) {
-		    mode = TextMatch5A.getSelectedItem().toString();
-		    match = TextValue5A.getText();
-		    paths[4] = getPath(mode,match);
-		}
-		if ((TextChoices6A.isVisible())&&(TextValue6A.getText().length()>0)) {
-		    mode = TextMatch6A.getSelectedItem().toString();
-		    match = TextValue6A.getText();
-		    paths[5] = getPath(mode,match);
-		}
-         
-            if (paths[0].length()>0) paths[0] = root+"//*["+paths[0]+ "]";
-            if (paths[1].length()>0) paths[1] = root+"//*["+paths[1]+ "]";
-            if (paths[2].length()>0) paths[2] = root+"//*["+paths[2]+ "]";
-            if (paths[3].length()>0) paths[3] = root+"//*["+paths[3]+ "]";
-            if (paths[4].length()>0) paths[4] = root+"//*["+paths[4]+ "]";
-            if (paths[5].length()>0) paths[5] = root+"//*["+paths[5]+ "]";
-            QueryStringTextArea.setText(paths[0]+"\n"+paths[1]+"\n"+paths[2]+"\n"+paths[3]+"\n"+paths[4]+"\n"+paths[5]);
-	        boolean op1 = true;
-	        if (op.equalsIgnoreCase("or")) op1 = false;
-		     lq = new LocalQuery(paths, op1, SearchButton2);
-	 }   
-		     table = lq.getRSTable();
-		     
-		     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            ListSelectionModel rowSM = table.getSelectionModel();
-            rowSM.addListSelectionListener(new ListSelectionListener() {
-                public void valueChanged(ListSelectionEvent e) {
-                    //Ignore extra messages.
-                    if (e.getValueIsAdjusting()) return;
-                    
-                    ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-                    if (lsm.isSelectionEmpty()) {
-                        System.out.println("No rows are selected.");
-                    } else {
-                        int selectedRow = lsm.getMinSelectionIndex();
-//                        System.out.println("Row " + selectedRow
-//                                           + " is now selected.");
-                        String filename = (String)table.getModel().getValueAt(selectedRow, 0);
-                        File file = new File("xmlfiles/"+filename);
-                        DocFrame df = new DocFrame(file);
-                        df.setVisible(true);
-                        df.writeInfo();
-                        
-     /*                   try{
-                            File file = new File("./xmlfiles/"+filename);
-                            FileReader in = new FileReader(file);
-                            StringWriter out = new StringWriter();
-                            int c;
-                            while ((c = in.read()) != -1) {
-                                out.write(c);
-                            }
-                            in.close();
-                            out.close();
-                        DocFrame df = new DocFrame();
-                        df.setVisible(true);
-                        df.;
-                        }
-                        catch (Exception w) {;}
-       */
-                    }
-                }
-            });
-		     RSScrollPane2.getViewport().add(table);
-//		     lq.queryAll();
-            lq.start();
-		} 
-		if(!localonly) {
-	    }	
-		
-	}
-	
 	
 	String create_XMLQuery() {
 	    String out = "";
@@ -1541,37 +1165,6 @@ public class QueryBean extends AbstractQueryBean
 		}
 //		pqx.end_querygroup();
 	 }
-	 if (QueryChoiceTabs.getSelectedIndex()==2) {
-	    String root = "/"+DocTypeList.getSelectedValue().toString();
-		pqx.add_querygroup(op);
-		if ((TextChoices1.isVisible())&&(TextValue1.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue1.getText(),root+"//*",searchmode[TextMatch1.getSelectedIndex()],true);
-		}
-		if ((TextChoices2.isVisible())&&(TextValue2.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue2.getText(),"root+//*",searchmode[TextMatch2.getSelectedIndex()],true);
-		}
-		if ((TextChoices3.isVisible())&&(TextValue3.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue3.getText(),"root+//*",searchmode[TextMatch3.getSelectedIndex()],true);
-		}
-		if ((TextChoices4.isVisible())&&(TextValue4.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue4.getText(),"root+//*",searchmode[TextMatch4.getSelectedIndex()],true);
-		}
-		if ((TextChoices5.isVisible())&&(TextValue5.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue5.getText(),"root+//*",searchmode[TextMatch5.getSelectedIndex()],true);
-		}
-		if ((TextChoices6.isVisible())&&(TextValue6.getText().length()>0)) {
-		    pqx.add_queryterm(TextValue6.getText(),"root+//*",searchmode[TextMatch6.getSelectedIndex()],true);
-		}
-//		pqx.end_querygroup();
-	 }
-//	    if ((TextChoices2.isVisible())&&(TextValue2.getText().length()>0)&&(QueryChoiceTabs.getSeletedIndex()==0))
-//	    {
-//	        pqx.end_query_plus(op);
-//	    }
-//	    else {
-		    pqx.end_query();
-//		}
-	//	System.out.println(pqx.get_XML());
 		try{
 		    out = pqx.get_XML();
 		    StringReader sr = new StringReader(pqx.get_XML());
@@ -1799,10 +1392,5 @@ public void LogOut() {
 	void LocalCheckBox1_itemStateChanged(java.awt.event.ItemEvent event)
 	{
 		localonly = LocalCheckBox1.isSelected();
-	}
-
-	void LocalCheckBox2_itemStateChanged(java.awt.event.ItemEvent event)
-	{
-		localonly = LocalCheckBox2.isSelected();
 	}
 }
