@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-12 23:07:33 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-01-14 23:58:00 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ import java.awt.Insets;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 
 public class Geographic extends AbstractWizardPage {
@@ -65,7 +67,8 @@ public class Geographic extends AbstractWizardPage {
   private JList regionList;
   private LiveMapPanel lmp;
 
-
+  private ConfigXML locationsXML = null;
+  
   public Geographic() {
 
     init();
@@ -83,7 +86,8 @@ public class Geographic extends AbstractWizardPage {
 
     JLabel coverageDesc = WidgetFactory.makeHTMLLabel(
         "<b>Enter a description of the geographic coverage.</b> This provides a "
-       +"textual description about the area relevent to the data", 2);
+       +"textual description about the area relevent to the data. "
+       +"It can used to provide further detail concerning the geographic area of concern.", 2);
     vbox.add(coverageDesc);
 
     JPanel covDescPanel = WidgetFactory.makePanel();
@@ -113,7 +117,7 @@ public class Geographic extends AbstractWizardPage {
 
     JPanel bboxPanel = WidgetFactory.makePanel();
     
-    JLabel bboxLabel = WidgetFactory.makeLabel("Bounding Box:", true);
+    JLabel bboxLabel = WidgetFactory.makeLabel(" Bounding Box:", true);
     bboxLabel.setVerticalAlignment(SwingConstants.TOP);
     bboxLabel.setAlignmentY(SwingConstants.TOP);
     bboxPanel.add(bboxLabel);
@@ -130,20 +134,14 @@ public class Geographic extends AbstractWizardPage {
     regionPanel.setLayout(new GridLayout(1,2));
     JPanel regionSelectionPanel = WidgetFactory.makePanel(4);
 
-    regionSelectionLabel = WidgetFactory.makeLabel("Named Regions:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    regionSelectionLabel = WidgetFactory.makeLabel(" Named Regions:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     regionSelectionLabel.setVerticalAlignment(SwingConstants.TOP);
     regionSelectionLabel.setAlignmentY(SwingConstants.TOP);
     regionSelectionPanel.add(regionSelectionLabel);
 
-    String[] regions = new String[5];
-    regions[0] = "anywhere";
-    regions[1] = "region 1";
-    regions[2] = "region 2";
-    regions[3] = "region 3";
-    regions[4] = "region 4";
     
-    
-    regionList = new JList(regions);
+    Vector names = getLocationNames();
+    regionList = new JList(names);
     regionList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     regionList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     regionList.setSelectedIndex(0);
@@ -160,8 +158,12 @@ public class Geographic extends AbstractWizardPage {
     selectButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         String selection = (String)regionList.getSelectedValue();
-        Log.debug(1,"Selection: "+selection);
-        lmp.setBoundingBox(45.0, -46.0, -47.0, 48.0);
+//        Log.debug(1,"Selection: "+selection);
+        double n = (new Double(getNorth(selection))).doubleValue();
+        double w = (new Double(getWest(selection))).doubleValue();
+        double s = (new Double(getSouth(selection))).doubleValue();
+        double e = (new Double(getEast(selection))).doubleValue();
+        lmp.setBoundingBox(n, w, s, e);
       }
     });
 
@@ -180,6 +182,53 @@ public class Geographic extends AbstractWizardPage {
     
   }
 
+  
+  /**
+   *  gets info for location list from file
+   */
+  private Vector getLocationNames() {
+    try{
+      locationsXML = new ConfigXML("./lib/locations.xml");
+      Vector vec = locationsXML.getValuesForPath("name");
+      return vec;
+    } catch (Exception w) {
+      Log.debug(5, "problem reading locations file!");      
+    }
+    return null;
+  }
+  
+  private String getNorth(String locname) {
+    String res = "";
+    if (locationsXML!=null) {
+     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../north");
+     res = (String)vec.firstElement();
+    }
+    return res;
+  }
+  private String getWest(String locname) {
+    String res = "";
+    if (locationsXML!=null) {
+     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../west");
+     res = (String)vec.firstElement();
+    }
+    return res;
+  }
+  private String getSouth(String locname) {
+    String res = "";
+    if (locationsXML!=null) {
+     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../south");
+     res = (String)vec.firstElement();
+    }
+    return res;
+  }
+  private String getEast(String locname) {
+    String res = "";
+    if (locationsXML!=null) {
+     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../east");
+     res = (String)vec.firstElement();
+    }
+    return res;
+  }
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -282,6 +331,7 @@ public class Geographic extends AbstractWizardPage {
     frame.setSize(800, 600);
     frame.getContentPane().setLayout(new BorderLayout());
     Geographic geo = new Geographic();
+    
     frame.getContentPane().add(geo, BorderLayout.CENTER);
     frame.setVisible(true);
 
