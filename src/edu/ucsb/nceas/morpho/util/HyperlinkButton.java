@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-12 00:37:41 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-12-13 23:34:57 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ public class HyperlinkButton extends JButton{
     private GUIAction action;
     private String originalTextLabel;
     private StringBuffer buff = new StringBuffer(); 
+    private MouseAdapter mouseAdapter;
     
     /**
      * Constructor
@@ -81,9 +82,10 @@ public class HyperlinkButton extends JButton{
         styleRolloverText();
         setRolloverIcon(action.getRolloverSmallIcon());
         
-        addMouseListener(new MouseAdapter() {
+        
+        mouseAdapter = new MouseAdapter() {
             
-            String upText = null;
+            String upText = action.getTextLabel();
             
             public void mouseEntered(MouseEvent e) {
                 upText = getText();
@@ -93,10 +95,11 @@ public class HyperlinkButton extends JButton{
                 setText(upText);
             }
             
-        });
+        };
+        addMouseListener(mouseAdapter);
     }
     
-    private void styleText(){
+    private void styleText() {
     
         buff.delete(0,buff.length());
         buff.append(UISettings.HYPERLINK_FONT_HTML_OPENTAGS);
@@ -106,7 +109,7 @@ public class HyperlinkButton extends JButton{
         this.setText(action.getTextLabel());
     }
 
-    private void styleRolloverText(){
+    private void styleRolloverText() {
 
         buff.delete(0,buff.length());
         buff.append(UISettings.HYPERLINK_FONT_OVER_HTML_OPENTAGS);
@@ -114,5 +117,10 @@ public class HyperlinkButton extends JButton{
         buff.append(UISettings.HYPERLINK_FONT_OVER_HTML_CLOSETAGS);
         action.setRolloverTextLabel(buff.toString());
     }
-
+    
+    public void resetRollovers() {
+    
+        mouseAdapter.mouseExited(null);
+    }
+    
 }
