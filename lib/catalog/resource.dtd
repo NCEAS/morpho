@@ -1,0 +1,100 @@
+<!--         
+      '$RCSfile: resource.dtd,v $'
+      Purpose: This dtd mimics the content model found in 
+               resource-2000-07-06.xsd.
+    Copyright: 2000 Regents of the University of California and the
+               National Center for Ecological Analysis and Synthesis
+      Authors: Chad Berkley
+
+     '$Author: higgins $'
+     '$Date: 2000-09-25 20:13:44 $'
+     '$Revision: 1.1 $'
+-->
+
+<!-- The root element -->
+<!ELEMENT resource (dataset | literature)>
+
+
+
+<!ELEMENT keywordInfo (keyword?, keywordType?, keywordThesaurus*)>
+<!ELEMENT keyword (#PCDATA)>
+<!ELEMENT keywordType (#PCDATA)>
+<!ELEMENT keywordThesaurus (#PCDATA)>
+
+<!-- common fields -->
+<!ELEMENT identifier (#PCDATA)>
+<!ELEMENT datasetid (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT alternateTitle (#PCDATA)>
+<!ELEMENT originator (responsibleParty)>
+<!ELEMENT pubdate (#PCDATA)>
+<!ELEMENT pubplace (#PCDATA)>
+<!ELEMENT series (#PCDATA)>
+<!ELEMENT abstract (#PCDATA)>
+<!ELEMENT url (URL)>
+<!ELEMENT additionalInfo (#PCDATA)>
+
+<!-- entity to conglomerate these fields into one name -->
+
+<!-- The dataset branch -->
+<!ELEMENT dataset ((identifier?, datasetid?, title, alternateTitle?, 
+                     originator+, pubdate?,
+                     pubplace?, series?, abstract?, 
+                     keywordInfo*, url*, additionalInfo?), geoForm)>  
+<!ELEMENT geoForm (#PCDATA)>
+
+
+<!-- The literature branch -->
+<!ELEMENT literature ((identifier?, datasetid?, title, alternateTitle?, 
+                     originator+, pubdate?,
+                     pubplace?, series?, abstract?, 
+                     keywordInfo*, url*, additionalInfo?), ISBN?, ISSN?, editor*, 
+                      edition?, volume?)>
+<!ELEMENT ISBN (#PCDATA)>
+<!ELEMENT ISSN (#PCDATA)>
+<!ELEMENT editor (#PCDATA)>
+<!ELEMENT edition (#PCDATA)>
+<!ELEMENT volume (#PCDATA)>
+ 
+<!ELEMENT responsibleParty ((individualName | organizationName | positionName)+,
+                             contactInfo*, roleCode+)>
+
+<!ELEMENT individualName (salutation, givenName, surName)>
+<!ELEMENT salutation (#PCDATA)>
+<!ELEMENT givenName (#PCDATA)>
+<!ELEMENT surName (#PCDATA)>
+
+<!ELEMENT organizationName (#PCDATA)>
+<!ELEMENT positionName (#PCDATA)>
+
+<!ELEMENT contactInfo (phone, address?, onlineResource?, hoursOfService?,
+                       contactInstructions?)>
+<!ELEMENT phone (voice+, (facsimile | (other, otherType))* )>
+<!ELEMENT voice (#PCDATA)>
+<!ELEMENT facsimile (#PCDATA)>
+<!ELEMENT other (#PCDATA)>
+<!ELEMENT otherType (#PCDATA)>
+<!ELEMENT address (deliveryPoint*, city?, administrativeArea?, postalCode?, country?,
+                   electronicMailAddress*)>
+<!ELEMENT deliveryPoint (#PCDATA)>
+<!ELEMENT city (#PCDATA)>
+<!ELEMENT administrativeArea (#PCDATA)>
+<!ELEMENT postalCode (#PCDATA)>
+<!ELEMENT country (#PCDATA)>
+<!ELEMENT electronicMailAddress (#PCDATA)>
+
+<!ELEMENT onlineResource (linkage, protocol?, applicationProfile?, name?, description?, 
+                          functionCode?)>
+<!ELEMENT linkage (URL)>
+<!ELEMENT URL (#PCDATA)> <!-- could restrict URL syntax here -->
+<!ELEMENT protocol (#PCDATA)>
+<!ELEMENT applicationProfile (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT functionCode (#PCDATA)>
+
+<!ELEMENT hoursOfService (#PCDATA)>
+<!ELEMENT contactInstructions (#PCDATA)>
+<!ELEMENT roleCode (#PCDATA)>
+
+<!-- EOF -->
