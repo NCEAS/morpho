@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-03 18:26:28 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2003-02-12 18:40:20 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -818,6 +818,9 @@ public class Morpho
     public static void main(String args[])
     {
         try {
+          SplashFrame sf = new SplashFrame(true);
+          sf.setVisible(true);            
+      
             // Set system property to use HTTPClient or ssl protocol
             // System.setProperty("java.protocol.handler.pkgs","HTTPClient");
 
@@ -850,9 +853,6 @@ public class Morpho
                 new com.sun.net.ssl.internal.ssl.Provider());
 
 
-            // Show the Splash frame
-            //SplashFrame sf = new SplashFrame(true);
-           // sf.setVisible(true);
 
             //initialize the config
             initializeConfiguration();
@@ -867,10 +867,6 @@ public class Morpho
             // Set the version number
             //VERSION = config.get("version", 0);
 
-            // Show the Splash frame
-            // must occur after the VERSION number has been retrieved
-            SplashFrame sf = new SplashFrame(true);
-            sf.setVisible(true);
             
             // set to the Look and Feel of the native system.
             setLookAndFeel(config.get("lookAndFeel", 0));
