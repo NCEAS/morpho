@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 20:41:31 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-09-11 21:54:54 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
@@ -82,9 +82,9 @@ public class XMLTransformer extends DefaultHandler
 
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-    private final String CONFIG_KEY_SAX_PARSER_NAME     = "saxparser";
     private final String CONFIG_KEY_LOCAL_CATALOG_PATH  = "local_catalog_path";
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
+    private final String GENERIC_STYLESHEET;
     
     private final  ClassLoader      classLoader;
     private static XMLTransformer   instance;
@@ -97,6 +97,7 @@ public class XMLTransformer extends DefaultHandler
     private XMLTransformer() 
     {
         this.config = Morpho.getConfiguration();
+        GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
         classLoader = this.getClass().getClassLoader();
         initEntityResolver();
     }
@@ -130,12 +131,9 @@ public class XMLTransformer extends DefaultHandler
     public Reader transform(Reader xmlDocReader) throws IOException
     {
         Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
-        String stylesheet = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
-        Reader xslInputReader 
-            = new InputStreamReader(classLoader.getResourceAsStream(stylesheet));
-        Reader returnReader = transform(xmlDocReader, xslInputReader);
+        validateInputParam(xmlDocReader,  "XML document reader");
         
-        return returnReader;
+        return transform(xmlDocReader, getDefaultStyleSheetReader());
     }
     
     /**
@@ -152,23 +150,85 @@ public class XMLTransformer extends DefaultHandler
      *
      *  @throws IOException if there are problems reading either of the Readers
      */
-    public Reader transform(Reader xmlDocReader, 
-                                        Reader xslStyleSheet) throws IOException
+    public Reader transform(Reader xmlDocReader, Reader xslStyleSheet) 
+                                                              throws IOException
     {
-        Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader, "
-                        +"Reader xslStyleSheet) called");            
-        validateInputParam(xmlDocReader,   "XML document reader");
+        Log.debug(50,"XMLTransformer.transform(Reader, Reader) called");            
+        validateInputParam(xmlDocReader,  "XML document reader");
         validateInputParam(xslStyleSheet, "XSL stylesheet reader");
-        return doTransform(xmlDocReader, xslStyleSheet);
+        Document doc = null;
+        try {
+            doc = getAsDOMDocument(xmlDocReader);
+        } catch (IOException e) {
+            lazyThrow(e, "IOException");
+        } catch (SAXException e) {
+            lazyThrow(e, "SAXException");
+        } catch (FactoryConfigurationError e) {
+            lazyThrow(e, "FactoryConfigurationError");
+        } catch (ParserConfigurationException e) {
+            lazyThrow(e, "ParserConfigurationException");
+        }
+        return transform(doc, xslStyleSheet);
     }
-    
+
+
+    /**
+     *  transforms the passed XML document, using a "generic" stylesheet, whose
+     *  name is obtained from the config.xml file
+     *
+     *  @param domDoc       A <code>javax.xml.parsers.Document</code> 
+     *                      containing the XML document to be styled.
+     *
+     *  @return             A <code>java.io.Reader</code> to allow reading of
+     *                      the (character-based) results of styling the XML 
+     *                      document
+     *
+     *  @throws IOException if there are problems reading the Reader
+     */
+    public Reader transform(Document domDoc) throws IOException
+    {
+        Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
+        validateInputParam(domDoc,        "XML DOM Document");
+
+        return transform(domDoc, getDefaultStyleSheetReader());
+    }
+    /**
+     *  Uses the stylesheet provided, to apply XSLT to the XML DOM Document 
+     *  provided
+     *
+     *  @param domDoc         A <code>javax.xml.parsers.Document</code> 
+     *                        containing the XML document to be styled.
+     *
+     *  @param xslStyleSheet  A <code>java.io.Reader</code> to allow reading of
+     *                      the XSL stylesheet to be used
+     *
+     *  @return               A <code>java.io.Reader</code> to allow reading of
+     *                        the results of styling the XML document
+     *
+     *  @throws IOException if there are problems reading either of the Readers
+     */
+    public Reader transform(Document domDoc, Reader xslStyleSheet) 
+                                                              throws IOException
+    {
+        Log.debug(50,"XMLTransformer.transform(Document, Reader) called");            
+        validateInputParam(domDoc,        "XML DOM Document");
+        validateInputParam(xslStyleSheet, "XSL stylesheet reader");
+        
+        DOMSource domSource 
+                    = new DOMSource(domDoc, domDoc.getDoctype().getSystemId());
+        
+        return doTransform(domSource, xslStyleSheet);
+    }
+
+   
     //common method used to do transforms
-    private synchronized Reader doTransform(Reader xmlDocReader, 
+    private synchronized Reader doTransform(Source source, 
                                         Reader xslStyleSheet) throws IOException
     {
-        Log.debug(50,"--> XMLTransformer.doTransform() (private method) called;"
-                        +"\n    xmlDocReader = " +xmlDocReader            
+        Log.debug(50,"--> XMLTransformer.doTransform(Source, Reader) called;"
+                        +"\n    Source = "       +source            
                         +"\n    xslStyleSheet = "+xslStyleSheet); 
+        
         PipedReader returnReader = new PipedReader();
         PipedWriter pipedWriter  = new PipedWriter();
         returnReader.connect(pipedWriter);
@@ -189,22 +249,6 @@ public class XMLTransformer extends DefaultHandler
         }
         
         transformer.setErrorListener(new CustomErrorListener());
-        
-        DOMSource source = null;
-//        SAXSource source = null;
-        try {
-            source = getAsDOMSource(xmlDocReader);
-//            source = getAsSAXSource(xmlDocReader);
-        } catch (IOException e) {
-            lazyThrow(e, "IOException");
-        } catch (SAXException e) {
-            lazyThrow(e, "SAXException");
-        } catch (FactoryConfigurationError e) {
-            lazyThrow(e, "FactoryConfigurationError");
-        } catch (ParserConfigurationException e) {
-            lazyThrow(e, "ParserConfigurationException");
-        }
-       
 
         try {
             Log.debug(50,"XMLTransformer doing transformer.transform...");
@@ -275,25 +319,25 @@ public class XMLTransformer extends DefaultHandler
     //  Create a SAXSource to enable the transformer to access the Reader
     //  - Necessary because we need to set the entity resolver for this source, 
     //  which isn't possible if we just use a StreamSource to read the Reader
-    private SAXSource getAsSAXSource(Reader xmlDocReader) throws SAXException
-    {   
-        InputSource source = new InputSource(xmlDocReader);
-        SAXSource saxSource = new SAXSource(source);
-        XMLReader xmlReader = XMLReaderFactory.createXMLReader(
-                                    config.get(CONFIG_KEY_SAX_PARSER_NAME, 0));
-        xmlReader.setFeature("http://xml.org/sax/features/validation",true);
-        xmlReader.setContentHandler(this);
-        xmlReader.setEntityResolver(getEntityResolver());
-        xmlReader.setErrorHandler(new CustomErrorHandler());
-        saxSource.setXMLReader(xmlReader);
-        return saxSource;
-    }
+//    private SAXSource getAsSAXSource(Reader xmlDocReader) throws SAXException
+//    {   
+//        InputSource source = new InputSource(xmlDocReader);
+//        SAXSource saxSource = new SAXSource(source);
+//        XMLReader xmlReader = XMLReaderFactory.createXMLReader(
+//                                    config.get(CONFIG_KEY_SAX_PARSER_NAME, 0));
+//        xmlReader.setFeature("http://xml.org/sax/features/validation",true);
+//        xmlReader.setContentHandler(this);
+//        xmlReader.setEntityResolver(getEntityResolver());
+//        xmlReader.setErrorHandler(new CustomErrorHandler());
+//        saxSource.setXMLReader(xmlReader);
+//        return saxSource;
+//    }
 
     
-    //  Create a DOMSource to enable the transformer to access the Reader
+    //  Create a DOM Document to enable the transformer to access the Reader
     //  - Necessary because we need to set the entity resolver for this source, 
     //  which isn't possible if we just use a StreamSource to read the Reader
-    private synchronized DOMSource getAsDOMSource(Reader xmlDocReader) 
+    private synchronized Document getAsDOMDocument(Reader xmlDocReader) 
                                             throws  IOException,
                                                     SAXException,
                                                     FactoryConfigurationError, 
@@ -309,12 +353,7 @@ public class XMLTransformer extends DefaultHandler
         docBuilder.setEntityResolver(getEntityResolver());
         docBuilder.setErrorHandler(new CustomErrorHandler());
         
-        Document doc = docBuilder.parse(source);
-     
-        DOMSource domSource = new DOMSource(doc,
-                                            doc.getDoctype().getSystemId() );
-        
-        return domSource;
+        return docBuilder.parse(source);
     }
 
     
@@ -409,22 +448,8 @@ public class XMLTransformer extends DefaultHandler
         {
             String resolution = super.resolvePublic(publicID, systemID);
             Log.debug(50,"InnerCatalog.resolvePublic(): "+resolution);
-//            URL testURL = new URL("jar:file:/D:/_PROJECTS_/_ N C E A S _/MORPHO_ROOT/CVS_CHECKOUTS/morpho/lib/morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd");
-//            URL resolvedURL = new URL(resolution);
-//            Log.debug(50,"InnerCatalog.resolvedURL.getFile: "+resolvedURL.getFile());
-//            Log.debug(50,"InnerCatalog.testURL.getFile:     "+testURL);
-//            Log.debug(50,"InnerCatalog.resolvePublic():sameFile?: "+resolvedURL.sameFile(testURL));
             XMLTransformer.latestDocID = resolution;
             return resolution;
-
-//            <listdoctypes>
-//              <entitydoctype>-//ecoinformatics.org//eml-entity-2.0.0beta6//EN</entitydoctype>
-//              <resourcedoctype>-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN</resourcedoctype>
-//              <attributedoctype>-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN</attributedoctype>
-//              <entitydoctype>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</entitydoctype>
-//              <resourcedoctype>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</resourcedoctype>
-//              <attributedoctype>-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN</attributedoctype>
-//            </listdoctypes>
         }
     }
     
@@ -439,6 +464,14 @@ public class XMLTransformer extends DefaultHandler
         throw new IOException(msg);
     }
     
+
+    //returns a new Reader to access the generic default stylesheet
+    private Reader getDefaultStyleSheetReader() 
+    {
+        return new InputStreamReader(
+                          classLoader.getResourceAsStream(GENERIC_STYLESHEET));
+    }
+
 }
 
 
