@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-13 17:46:18 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2002-08-13 17:59:20 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -535,15 +535,6 @@ public class DataPackage
   public String getID()
   {
     return this.id;
-  }
-  
-  /**
-   * gets the identifier of the package  file
-   * @deprecated  use getID() instead
-   */
-  public String getIdentifier()
-  {
-    return getID();
   }
     
   /**
