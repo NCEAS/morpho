@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 19:54:33 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2002-12-18 22:36:13 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ public class UISettings
     /**
      *  Width in pixels for each of 3 panels on the left side of initial screen
      */
-    public static final int INIT_SCRN_LEFT_PANELS_WIDTH = 340;
+    public static final int INIT_SCRN_LEFT_PANELS_WIDTH     = 340;
     
     public static final int INIT_SCRN_PROFILE_PANEL_HEIGHT  = 110;
     public static final int INIT_SCRN_LOGIN_PANEL_HEIGHT    = 120;
@@ -278,7 +278,8 @@ public class UISettings
     /**
      *  Settings for MetaData Viewer panels 
      */
-    public static final Color BACKBUTTON_TEXT_COLOR   = new Color(178,238,255);
+    public static final Color BACKBUTTON_TEXT_COLOR   
+                                = verifyButtonTextColor(new Color(178,238,255));
 
     /**
      *  Settings for MetaData Viewer panels 
@@ -288,7 +289,8 @@ public class UISettings
     /**
      *  Settings for MetaData Viewer panels 
      */
-    public static final Color EDITBUTTON_TEXT_COLOR   = new Color(153, 255, 153);
+    public static final Color EDITBUTTON_TEXT_COLOR  
+                                = verifyButtonTextColor(new Color(153,255,153));
 
     /**
      *  Settings for MetaData Viewer panels 
@@ -509,8 +511,39 @@ public class UISettings
         }
     }
     
+    /////////////////////////////////////////////
     
     
+    /**
+     *   If on mac OSX, changes the value of the color to make it more visible 
+     *   against the Mac light-grey buttons.
+     *   @param proposedColor the proposedColor color
+     *   @return either the same proposed color, if not on Mac OSX, or a darker 
+     *                  value version of the proposed Color for OSX
+     */
+    private static Color verifyButtonTextColor(Color proposedColor) 
+    {
+        if (((System.getProperty("os.name")).toUpperCase()).indexOf("MAC")<0) {
+            
+            return proposedColor;
+            
+        } else {
+        
+            float[] hsb = new float[3];
+            Color.RGBtoHSB(proposedColor.getRed(),proposedColor.getGreen(),
+                                                  proposedColor.getBlue(),hsb);
+            //increase saturation if less than 50%
+            if (hsb[1]<=0.5f) hsb[1] =  1.0f;
+            //decrease brightness if greater than 50%
+            if (hsb[2]>0.5f) hsb[2] =  0.5f;
+            
+            return new Color(Color.HSBtoRGB(hsb[0],hsb[1],hsb[2]));
+        }
+        
+    }
+ 
+
+ 
     /////////////////////////////////////////////
     
     private static Object cpLocator = null;
