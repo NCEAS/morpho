@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-18 17:06:38 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-23 22:22:08 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -96,21 +97,23 @@ public class DataPackagePlugin
   {
     // Set up the menus for the application
 
-    menuActions = new Action[2];
+    menuActions = new Action[1];
     Action searchItemAction = new AbstractAction("New Data Package") 
     {
       public void actionPerformed(ActionEvent e) 
       {
         framework.debug(1, "Action fired: New Data Package");
         DataPackage dp = new DataPackage();
-        DataPackageGUI gui = new DataPackageGUI(framework, dp);
+        //DataPackageGUI gui = new DataPackageGUI(framework, dp);
+        PackageWizardShell pws = new PackageWizardShell();
+        pws.show();
       }
     };
     
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
     searchItemAction.putValue("menuPosition", new Integer(0));
     menuActions[0] = searchItemAction;
-    Action reviseItemAction = new AbstractAction("Open Data Package") 
+    /*Action reviseItemAction = new AbstractAction("Open Data Package") 
     {
       public void actionPerformed(ActionEvent e) 
       {
@@ -121,12 +124,12 @@ public class DataPackagePlugin
     reviseItemAction.putValue(Action.SHORT_DESCRIPTION, 
                               "Revise current search");
     reviseItemAction.putValue("menuPosition", new Integer(1));
-    menuActions[1] = reviseItemAction;
+    menuActions[1] = reviseItemAction;*/
 
     // Set up the toolbar for the application
-    toolbarActions = new Action[2];
+    toolbarActions = new Action[1];
     toolbarActions[0] = searchItemAction;
-    toolbarActions[1] = reviseItemAction;
+    //toolbarActions[1] = reviseItemAction;
   }
 
   /**

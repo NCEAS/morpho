@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard size="780x250" dtd="eml-resource.dtd">
+<wizard size="780x250" dtd="eml-resource.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
   <group label="Base Information" field="dataset" type="panel">
     <group size="480x100">
       <textbox label="Identifier" field="identifier" size="10" allowNull="false" defaulttext="knb.1"/>
