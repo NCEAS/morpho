@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-09 20:47:39 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-13 01:44:58 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,7 +230,8 @@ public class PersistentVector
          String[] s = (String[])this.elementAt(i);
          String sss = s[0];
          for (int ii=1;ii<s.length;ii++) {
-           sss = sss + "\t" + s[ii];
+           //sss = sss + "\t" + s[ii];
+           sss = sss + field_delimiter + s[ii];
          } 
          out.write(sss, 0, sss.length());
          out.newLine();
