@@ -1,7 +1,13 @@
+#
+# script for launching morpho from windows systems
+#
+# '$RCSfile: morpho.bat,v $'
+# '$Author: brooke $'
+# '$Date: 2002-09-24 17:17:45 $'
+# '$Revision: 1.17 $'
 
 SET  XMLP=lib\xercesImpl.jar
 SET   API=lib\xml-apis.jar
-# SET   API=lib\xmlParserAPIs.jar
 SET XALAN=lib\xalan.jar
 SET   DMC=lib\morpho.jar
 SET   CFG=lib\morpho-config.jar
