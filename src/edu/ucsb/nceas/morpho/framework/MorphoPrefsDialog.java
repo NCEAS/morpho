@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-31 18:33:33 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-04-02 19:38:53 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		setTitle("Morpho Preferences");
 		setModal(true);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(447,250);
+		setSize(560,350);
 		setVisible(false);
 		CenterPanel.setLayout(new GridLayout(6,1,0,0));
 		getContentPane().add(BorderLayout.CENTER,CenterPanel);
@@ -65,7 +65,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		JPanel2.add(metacatURLLabel);
 		metacatURLLabel.setForeground(java.awt.Color.black);
 		metacatURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		metacataURLTextField.setColumns(40);
+		metacataURLTextField.setColumns(35);
 		JPanel2.add(metacataURLTextField);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel3);
