@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.0.5 - February 19, 2002
+Version: 1.0.6 - February 26, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -23,7 +23,7 @@ simple to obtain one: just register at http://knb.ecoinformatics.org.
 
 Morpho's main features include:
   1. Flexible metadata creation and editing
-  2. Compiance with Ecological Metadata Language
+  2. Compliance with Ecological Metadata Language
   3. Powerful metadata search for data on the network or locally
   4. Comprehensive revision control for changing data and metadata
   5. Easy-to-use collaboration features via the KNB system
@@ -127,7 +127,10 @@ of nodes inside choice elements were handled incorrectly.
 ---
 Version 1.0.5 of Morpho fixes some additional bugs in the editor, especially
 with CHOICE nodes. Changes for speeding up several function have also been made.
-Also inceased the memory the JVM asks for to 128M from 64M.
+Also inceased the memory the JVM asks for to 128M from 64M.  
+---
+Version 1.0.6 fixes an error in the editor which did not allow deletion/creation
+of certain elements in eml-access documents.
 
 Legalese
 --------
