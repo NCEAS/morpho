@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-22 21:37:24 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-10-24 23:14:02 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -240,6 +240,7 @@ public class InsertColumnCommand implements Command
        for (int j = 0; j< columns; j++)
        {
           columnModel.getColumn(j).setCellEditor(delimiterEditor);
+          columnModel.getColumn(j).setPreferredWidth(85);
        }
      
     }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-23 23:30:57 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2002-10-24 23:14:02 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1233,6 +1233,7 @@ public class DataViewer extends javax.swing.JPanel
        for (int j = 0; j< columns; j++)
        {
           columnModel.getColumn(j).setCellEditor(delimiterEditor);
+          columnModel.getColumn(j).setPreferredWidth(85);
        }
      
     }
