@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-01 21:52:19 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,15 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
@@ -41,7 +45,8 @@ public class OpenDeleteDialogCommand implements Command
 {
   /** A reference to OpenDialogBox */
   private OpenDialogBox openDialog = null;
-
+  
+ 
   /**
    * Constructor of OpenDeleteDialogCommand
    */
@@ -60,13 +65,17 @@ public class OpenDeleteDialogCommand implements Command
     openDialog = myDialog;
   }//OpenDialogBoxCommand
   /**
-   * execute cancel command
+   * execute open delete dialog command
    */    
   public void execute(ActionEvent event)
   {
-    ResultPanel resultPane = null;
-    MorphoFrame frame  = null;
+    ResultPanel resultPane     = null;
+    MorphoFrame frame          = null;
+    DeleteDialog deleteDialog  = null;
     boolean parentIsOpenDialog = false;
+    String selectDocId         = null;
+    boolean inNetwork          = false;
+    boolean inLocal            = false;
     // Get result panle from open dialog if open dialog is not null
     if ( openDialog != null)
     {
@@ -87,15 +96,14 @@ public class OpenDeleteDialogCommand implements Command
     // make sure the resultPane is not null
     if ( resultPane != null)
     {
-        String selectDocId = resultPane.getSelectedId();
-        boolean inNetwork = resultPane.getMetacatLocation();
-        boolean inLocal = resultPane.getLocalLocation();
+        selectDocId = resultPane.getSelectedId();
+        inNetwork = resultPane.getMetacatLocation();
+        inLocal = resultPane.getLocalLocation();
       
         // Make sure selected a id, and there no package in metacat
         if ( selectDocId != null && !selectDocId.equals(""))
         {
-          // Show synchronize dialog
-          DeleteDialog deleteDialog = null;
+          // Show delete dialog
           if (parentIsOpenDialog)
           {
             deleteDialog = 
@@ -103,13 +111,48 @@ public class OpenDeleteDialogCommand implements Command
           }
           else
           {
-            deleteDialog = new DeleteDialog(frame, selectDocId, inLocal, inNetwork);
+            deleteDialog = 
+              new DeleteDialog(frame, MorphoFrame.SEARCHRESULTFRAME, 
+                               selectDocId, inLocal, inNetwork);
           }
           deleteDialog.setModal(true);
           deleteDialog.setVisible(true);
         }
      
     }//if
+    else
+    {
+      // if resultPane is null, try if the morpho frame is data package frame
+      DataPackageInterface dataPackage = null;
+      try 
+      {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
+                   services.getServiceProvider(DataPackageInterface.class);
+        dataPackage = (DataPackageInterface)provider;
+      } 
+      catch (ServiceNotHandledException snhe) 
+      {
+        Log.debug(6, snhe.getMessage());
+        return;
+      }
+       //Try if it is datapackage frame
+      selectDocId = dataPackage.getDocIdFromMorphoFrame(frame);
+      inNetwork   = dataPackage.isDataPackageInNetwork(frame);
+      inLocal     = dataPackage.isDataPackageInLocal(frame);
+       // Make sure selected a id, and there is local pacakge
+      if ( selectDocId != null && !selectDocId.equals(""))
+      {
+        
+        deleteDialog = 
+              new DeleteDialog(frame, MorphoFrame.DATAPACKAGEFRAME, 
+                               selectDocId, inLocal, inNetwork);
+        deleteDialog.setModal(true);
+        deleteDialog.setVisible(true);
+        
+      }//if
+     
+    }//else
       
     
   }//execute
