@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-23 07:07:49 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2001-05-24 18:10:15 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,7 +131,7 @@ public class LocalQuery extends DefaultHandler
   private Vector returnFieldList;
   private Vector ownerList;
   private Vector siteList;
-  private QueryGroup query = null;
+  private QueryGroup rootQG = null;
 
   private Stack elementStack;
   private Stack queryStack;
@@ -181,6 +181,7 @@ public class LocalQuery extends DefaultHandler
 
     // Store the text of the initial query
     queryString = savedQuery.toString();
+    framework.debug(9, queryString);
 
     // Initialize the parser and read the queryspec
     XMLReader parser = initializeParser();
@@ -204,18 +205,22 @@ public class LocalQuery extends DefaultHandler
   public ResultSet execute() 
   {
     // first, get a list of all packages that meet the query requirements
-    Vector packageList = executeLocal(this.query, null);
+    Vector packageList = executeLocal(this.rootQG, null);
     Vector row = null;
     Vector rowCollection = new Vector();
     
     // now build a Vector of Vectors (tablemodel)
-    Enumeration pl = packageList.elements();
-    while (pl.hasMoreElements()) {
-      String packageName = (String)pl.nextElement();
-      row = createRSRow(packageName);
-      rowCollection.addElement(row);
-    }
-    ResultSet rs = new ResultSet(savedQuery, "local", rowCollection, framework);
+    ResultSet rs = null;
+    if (packageList != null) {
+      Enumeration pl = packageList.elements();
+      while (pl.hasMoreElements()) {
+        String packageName = (String)pl.nextElement();
+        row = createRSRow(packageName);
+        rowCollection.addElement(row);
+      }
+      rs = new ResultSet(savedQuery, "local", rowCollection, framework);
+    } 
+
     return rs;
   }
 
@@ -351,59 +356,59 @@ public class LocalQuery extends DefaultHandler
     
   
 
-	private String getDoctypeFor(String filename) {
-	  String ret = "";
-	  if (doctype_collection.containsKey(filename)) {
-	    ret = (String)doctype_collection.get(filename);   
-	  }
-	return ret;
-	}
-	
-	
-	private Vector createRSRow(String filename) {
-	    File fn = new File(local_xml_directory, filename);
-	    String fullfilename = fn.getPath();
-	    Vector rss = new Vector();
+  private String getDoctypeFor(String filename) {
+    String ret = "";
+    if (doctype_collection.containsKey(filename)) {
+      ret = (String)doctype_collection.get(filename);   
+    }
+  return ret;
+  }
+  
+  
+  private Vector createRSRow(String filename) {
+      File fn = new File(local_xml_directory, filename);
+      String fullfilename = fn.getPath();
+      Vector rss = new Vector();
       // add icon
       rss.addElement(localIcon);
 
-	    for (int i=0;i<returnFields.size();i++) {
-	      String tmp = (String)returnFields.elementAt(i);  
-	      rss.addElement(getValueForPath(tmp,fullfilename));   
-	    }
-	    File fl = new File(fullfilename);
-	    Date creationDate = new Date(fl.lastModified());
-	    String date = creationDate.toString();
-	    rss.addElement(date);                                 // create date
-	    rss.addElement(date);                                 // update date
-	    rss.addElement(filename);                             // docid
-	    Document doc = (Document)dom_collection.get(fullfilename);
+      for (int i=0;i<returnFields.size();i++) {
+        String tmp = (String)returnFields.elementAt(i);  
+        rss.addElement(getValueForPath(tmp,fullfilename));   
+      }
+      File fl = new File(fullfilename);
+      Date creationDate = new Date(fl.lastModified());
+      String date = creationDate.toString();
+      rss.addElement(date);                                 // create date
+      rss.addElement(date);                                 // update date
+      rss.addElement(filename);                             // docid
+      Document doc = (Document)dom_collection.get(fullfilename);
             String docname = doc.getNodeName();
-	    rss.addElement(docname);                              // docname
-	    String temp = (String)doctype_collection.get(fullfilename);
-	    rss.addElement(temp);                                 // doctype
-	    rss.addElement(new Boolean(true));                    // isLocal
-	    rss.addElement(new Boolean(false));                   // isMetacat
+      rss.addElement(docname);                              // docname
+      String temp = (String)doctype_collection.get(fullfilename);
+      rss.addElement(temp);                                 // doctype
+      rss.addElement(new Boolean(true));                    // isLocal
+      rss.addElement(new Boolean(false));                   // isMetacat
             // need to add the triple list vector, but the current
             // data structure differs from the one in ResultSet so need
             // to decide on a common structure
-	    //rss.addElement(new Vector());                       // tripleList
+      //rss.addElement(new Vector());                       // tripleList
 
-	return rss;
-	}
-	
-	/*
-	 *  utility routine to return the value of a node defined by
-	 *  a specified XPath; used to build result set from local
-	 *  queries
-	 */
-	private String getValueForPath(String pathstring, String filename) {
-	  String val = "";
-	  if (!pathstring.startsWith("/")) {
-	    pathstring = "//*/"+pathstring;
-	  }
-	    try{
-	    // assume that the filename file has already been parsed
+  return rss;
+  }
+  
+  /*
+   *  utility routine to return the value of a node defined by
+   *  a specified XPath; used to build result set from local
+   *  queries
+   */
+  private String getValueForPath(String pathstring, String filename) {
+    String val = "";
+    if (!pathstring.startsWith("/")) {
+      pathstring = "//*/"+pathstring;
+    }
+      try{
+      // assume that the filename file has already been parsed
         if (dom_collection.containsKey(filename)){
           Node doc = ((Document)dom_collection.get(filename)).getDocumentElement();
           NodeList nl = null;
@@ -422,32 +427,32 @@ public class LocalQuery extends DefaultHandler
         }
       }
       catch (Exception e){System.out.println("Error in getValueForPath method");}
-	return val;    
-	}
-	
-	/*  Given a DOM document node, this method returns the DocType
-	 *  as a String
-	 */
-	static private String getDocTypeFromDOM(Document doc){
-	    String ret = null;
-	        DocumentType ddd = doc.getDoctype();
-	        ret = ddd.getPublicId();
-	        if (ret==null) {
-	            ret = ddd.getSystemId();
-	            if (ret==null){
-	                ret = ddd.getName();   
-	            }
-	        }
-	return ret;
-	}
-	
-	
+  return val;    
+  }
+  
+  /*  Given a DOM document node, this method returns the DocType
+   *  as a String
+   */
+  static private String getDocTypeFromDOM(Document doc){
+      String ret = null;
+          DocumentType ddd = doc.getDoctype();
+          ret = ddd.getPublicId();
+          if (ret==null) {
+              ret = ddd.getSystemId();
+              if (ret==null){
+                  ret = ddd.getName();   
+              }
+          }
+  return ret;
+  }
+  
+  
    // given a directory, return a vector of files it contains
    // including subdirectories
    static private void getFiles(File directoryFile, Vector vec) {
-	    String[] files = directoryFile.list();
-	    
-	    for (int i=0;i<files.length;i++)
+      String[] files = directoryFile.list();
+      
+      for (int i=0;i<files.length;i++)
         {
             String filename = files[i];
             File currentfile = new File(directoryFile, filename);
@@ -522,8 +527,8 @@ public class LocalQuery extends DefaultHandler
     if (currentNode.getTagName().equals("querygroup")) {
       QueryGroup currentGroup = new QueryGroup(
                                 currentNode.getAttribute("operator"));
-      if (query == null) {
-        query = currentGroup;
+      if (rootQG == null) {
+        rootQG = currentGroup;
       } else {
         QueryGroup parentGroup = (QueryGroup)queryStack.peek();
         parentGroup.addChild(currentGroup);
@@ -599,73 +604,73 @@ public class LocalQuery extends DefaultHandler
 *
 */
 String QueryTermToXPath(QueryTerm qt) {
-	String xpath;
+  String xpath;
   boolean caseSensitive = qt.isCaseSensitive();
   String searchMode = qt.getSearchMode();
-	String value = qt.getValue();
-	if (!caseSensitive) {
+  String value = qt.getValue();
+  if (!caseSensitive) {
     value = value.toLowerCase();
-	}
-	String pathExpression = qt.getPathExpression();
+  }
+  String pathExpression = qt.getPathExpression();
 
-	// construct path part of XPath
-	if (pathExpression==null) {
-	  xpath = "//*"; 
-	}
-	// is path absolute or relative
-	else if (pathExpression.startsWith("/")) {      // absolute
-    xpath =	 pathExpression;
-	}
-	else {
+  // construct path part of XPath
+  if (pathExpression==null) {
+    xpath = "//*"; 
+  }
+  // is path absolute or relative
+  else if (pathExpression.startsWith("/")) {      // absolute
+    xpath =   pathExpression;
+  }
+  else {
     xpath = "//*"+pathExpression;
-	}
+  }
   if ((value.equals("%"))||(value.equals("*"))) {
-		// wild card text search case
+    // wild card text search case
     xpath = xpath+"[text()]";
-		return xpath;
-	}
-	else {
-	  if (!caseSensitive) { // use translate function to convert text() to lowercase
-        	// check on searchMode
-		if (searchMode.equals("starts-with")) {
+    return xpath;
+  }
+  else {
+    if (!caseSensitive) { // use translate function to convert text() to lowercase
+          // check on searchMode
+    if (searchMode.equals("starts-with")) {
       xpath = xpath+"[starts-with(translate(text(),"
           +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
-          +value+"\")]";		
-		}
-		else if (searchMode.equals("ends-with")) {
+          +value+"\")]";    
+    }
+    else if (searchMode.equals("ends-with")) {
       xpath = xpath+"[contains(translate(text(),"
           +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
           +value+"\")]";
             // not correct - fix later
-		}
-		else if (searchMode.equals("contains")) {
+    }
+    else if (searchMode.equals("contains")) {
       xpath = xpath+"[contains(translate(text(),"
           +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
           +value+"\")]";
-		}
-		else if (searchMode.equals("matches-exactly")) {
+    }
+    else if (searchMode.equals("matches-exactly")) {
       xpath = xpath+"[translate(text(),"
         +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\")=\""
         +value+"\"]";
-		} 
-	    }
+    } 
+      }
   else {
-		if (searchMode.equals("starts-with")) {
-      xpath = xpath+"[starts-with(text(),\""+value+"\")]";		
-		}
-		else if (searchMode.equals("ends-with")) {
+    if (searchMode.equals("starts-with")) {
+      xpath = xpath+"[starts-with(text(),\""+value+"\")]";    
+    }
+    else if (searchMode.equals("ends-with")) {
       xpath = xpath+"[contains(text(),\""+value+"\")]";
                         // not correct - fix later
-		}
-		else if (searchMode.equals("contains")) {
+    }
+    else if (searchMode.equals("contains")) {
       xpath = xpath+"[contains(text(),\""+value+"\")]";
-		}
-		else if (searchMode.equals("matches-exactly")) {
+    }
+    else if (searchMode.equals("matches-exactly")) {
       xpath = xpath+"[text()=\""+value+"\"]";
-		} 
+    } 
   }
 
-	}
+  }
 return xpath;
 }               
 
@@ -680,57 +685,68 @@ Vector executeXPathQuery(String xpath) {
   return ret;
 }
 
-/* local Query execution 
- * recursive handling of QueryTerms 
- * Vector res is the result set when started
- * it is used here to pass current results for recursion
- */
-Vector executeLocal(QueryGroup qg, Vector res) { 
-	Vector rs = res;
-	Vector currentResults = null;
-
-	Enumeration children = qg.getChildren();
-  while (children.hasMoreElements()) {
-    Object child = children.nextElement();
-		if (child instanceof QueryTerm) {
-      String xpath = QueryTermToXPath((QueryTerm)child);
-      currentResults = executeXPathQuery(xpath);
-      if (currentResults==null) System.out.println("current is null!");
-			if ((currentResults==null)&&(qg.getOperator().equalsIgnoreCase("intersect"))) {
-                         	// exit loop since one the results sets is null
-				rs = null;
-				break;
-			}
-			// add these results to previous ones
-			if (qg.getOperator().equalsIgnoreCase("intersect")) {
-				if (rs==null) rs = (Vector)currentResults.clone(); // 1st time
-				Vector temp = (Vector)rs.clone();
-				rs.removeAllElements();
-        Enumeration w = currentResults.elements();
-				while(w.hasMoreElements()) {
-					Object obj = w.nextElement();
-					if (temp.contains(obj)) {
-            rs.addElement(obj);
-					}	
-				}
-			}
-			if (qg.getOperator().equalsIgnoreCase("union")) {
-				if (rs==null) rs = (Vector)currentResults.clone(); // 1st time
-        Enumeration q = currentResults.elements();
-				while(q.hasMoreElements()) {
-					String temp = (String)q.nextElement();
-					if (!rs.contains(temp)) {
-            rs.addElement(temp);
-					}	
-				}
-			}
-		}
-		else {  // QueryGroup
-      executeLocal((QueryGroup)child, rs);
-		}
-  }
-return rs;
-}   
+  /**
+   * local Query execution, with recursive handling of QueryTerms and
+   * QueryGroups
+   * @param qg the QueryGroup containing query parameters
+   * @param res is the result set from the previous call to executeLocal.
+   *            It is used here to pass current results for recursion
+   */
+  private Vector executeLocal(QueryGroup qg, Vector res) { 
+    Vector rs = res;
+    Vector currentResults = null;
+  
+    Enumeration children = qg.getChildren();
+    while (children.hasMoreElements()) {
+      Object child = children.nextElement();
+      if (child instanceof QueryTerm) {
+        String xpath = QueryTermToXPath((QueryTerm)child);
+        currentResults = executeXPathQuery(xpath);
+      } else {  // QueryGroup
+        currentResults = executeLocal((QueryGroup)child, rs);
+      }
+  
+      if (currentResults==null) {
+        System.out.println("current is null!");
+      }
+      if ((currentResults==null) &&
+        (qg.getOperator().equalsIgnoreCase("intersect"))) {
+        // exit loop since one the results sets is null
+        rs = null;
+        break;
+      }
+      // add these results to previous ones
+      if (qg.getOperator().equalsIgnoreCase("intersect")) {
+        if (rs==null) {
+          rs = (Vector)currentResults.clone(); // 1st time
+        } else {
+          Vector temp = (Vector)rs.clone();
+          rs.removeAllElements();
+          Enumeration w = currentResults.elements();
+          while(w.hasMoreElements()) {
+            Object obj = w.nextElement();
+            if (temp.contains(obj)) {
+              rs.addElement(obj);
+            }  
+          }
+        }
+      }
+      if (qg.getOperator().equalsIgnoreCase("union")) {
+        if (rs==null) {
+          rs = (Vector)currentResults.clone(); // 1st time
+        } else {
+          Enumeration q = currentResults.elements();
+          while(q.hasMoreElements()) {
+            String temp = (String)q.nextElement();
+            if (!rs.contains(temp)) {
+              rs.addElement(temp);
+            }  
+          }
+        }
+      }
+    }
+    return rs;
+  }   
 
   /**
    * Load the configuration parameters that we need
