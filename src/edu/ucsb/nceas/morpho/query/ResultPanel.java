@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 18:15:45 $'
- * '$Revision: 1.46 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-20 21:12:51 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,7 +143,7 @@ public class ResultPanel extends JPanel
    */
   public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator)
   {
-    this(results, true, true, myMediator, new Dimension(775,500));
+    this(results, 12, myMediator, new Dimension(775,500));
   }
 
   /**
@@ -156,56 +156,24 @@ public class ResultPanel extends JPanel
   public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator,
           Dimension preferredSize)
   {
-    this(results, true, true, myMediator, preferredSize);
+    this(results, 12, myMediator, preferredSize);
   }
+
 
   /**
    * Construct a new ResultPanel and display the result set
    *
    * @param results the result listing to display
-   * @param showRefresh boolean true if the Refresh button should appear
-   * @param showRevise boolean true if the Revise button should appear
-   * @param myMediator the mediaor passed from frame to control table
-   */
-  public ResultPanel(ResultSet results, boolean showRefresh, 
-                 boolean showRevise, ResultPanelAndFrameMediator myMediator)
-  {
-    this(results, showRefresh, showRevise, 12, myMediator, 
-            new Dimension(775, 500));
-  }
-
-  /**
-   * Construct a new ResultPanel and display the result set
-   *
-   * @param results the result listing to display
-   * @param showRefresh boolean true if the Refresh button should appear
-   * @param showRevise boolean true if the Revise button should appear
-   * @param myMediator the mediaor passed from frame to control table
-   */
-  public ResultPanel(ResultSet results, boolean showRefresh, 
-                 boolean showRevise, ResultPanelAndFrameMediator myMediator,
-                 Dimension preferredSize)
-  {
-    this(results, showRefresh, showRevise, 12, myMediator, preferredSize);
-  }
-
-  /**
-   * Construct a new ResultPanel and display the result set
-   *
-   * @param results the result listing to display
-   * @param showRefresh boolean true if the Refresh button should appear
-   * @param showRevise boolean true if the Revise button should appear
    * @param fontSize the fontsize for the cells of the table
    * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(ResultSet results, boolean showRefresh,
-       boolean showRevise, int fontSize, ResultPanelAndFrameMediator myMediator,
-       Dimension preferredSize)
+  public ResultPanel(ResultSet results, int fontSize, 
+            ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
     super();
     this.results = results;
-    this.hasRefreshButton = showRefresh;
-    this.hasReviseButton = showRevise;
+    //this.hasRefreshButton = showRefresh;
+    //this.hasReviseButton = showRevise;
     this.morpho = results.getFramework();
     this.mediator = myMediator;
     this.preferredSize = preferredSize;
@@ -232,60 +200,7 @@ public class ResultPanel extends JPanel
     if (results != null) {
       setName(results.getQuery().getQueryTitle());
 
-      // Set up the Header panel with a title and refresh/revise buttons
-      /*titleLabel = new JLabel(results.getQuery().getQueryTitle());
-      titleLabel.setForeground(Color.black);
-      titleLabel.setFont(new Font("Dialog", Font.BOLD, 18));
-      Box headerBox = Box.createHorizontalBox();
-      headerBox.setBackground(Color.white);
-      headerBox.add(Box.createHorizontalStrut(8));
-      headerBox.add(titleLabel);
-      headerBox.add(Box.createHorizontalGlue());
-      recordCountLabel = new JLabel(results.getRowCount() + " data packages");
-      recordCountLabel.setForeground(Color.black);
-      recordCountLabel.setFont(new Font("Dialog", Font.BOLD, 18));
-      bflyLabel = new JLabel(bfly);
-      headerBox.add(recordCountLabel);
-      headerBox.add(Box.createHorizontalStrut(4));
-      refreshButton = new JButton("Refresh", new ImageIcon( getClass().
-          getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
-      refreshButton.setText(null);
-      refreshButton.setToolTipText("Refresh");
-      if (hasRefreshButton) {
-        headerBox.add(refreshButton);
-        headerBox.add(Box.createHorizontalStrut(4));
-      }
-      reviseButton = new JButton("Revise", new ImageIcon( getClass().
-          getResource("/toolbarButtonGraphics/general/Search16.gif")));
-      reviseButton.setText(null);
-      reviseButton.setToolTipText("Revise search");
-      if (hasReviseButton) {
-        headerBox.add(reviseButton);
-        headerBox.add(Box.createHorizontalStrut(4));
-      }
-      saveButton = new JButton("Save search", new ImageIcon( getClass().
-          getResource("/toolbarButtonGraphics/general/Save16.gif")));
-      saveButton.setText(null);
-      saveButton.setToolTipText("Save search");
-      if (hasReviseButton) {
-        headerBox.add(saveButton);
-        headerBox.add(Box.createHorizontalStrut(4));
-      }
-      headerBox.add(bflyLabel);
-      ActionHandler dispatcher = new ActionHandler();
-      refreshButton.addActionListener(dispatcher);
-      reviseButton.addActionListener(dispatcher);
-      saveButton.addActionListener(dispatcher);
- 
-      JPanel headerPanel = new JPanel();
-      headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-      headerPanel.setBackground(Color.white);
-      headerPanel.add(Box.createVerticalStrut(4));
-      headerPanel.add(headerBox);
-      headerPanel.add(Box.createVerticalStrut(4));
-      Border headerBorder = BorderFactory.createLineBorder(Color.black);
-      headerPanel.setBorder(headerBorder);
-      add(headerPanel, BorderLayout.NORTH);*/
+
  
       // Set up the results table
       table = new ToolTippedSortableJTable(results);
@@ -372,6 +287,13 @@ public class ResultPanel extends JPanel
     }
   }
 
+  /**
+   * Get the result set from ResultPanel
+   */
+  public ResultSet getResultSet()
+  {
+    return results;
+  }//
   /*
    * This method picks column sizes depend on the length of talbe and the 
    * value for every column in an array.
@@ -999,8 +921,7 @@ public class ResultPanel extends JPanel
             resultWindow.setVisible(true);
             ResultSet results = savedQuery.execute();
             ResultPanel resultDisplayPanel = new ResultPanel(
-                results, true, true, 12, null, 
-                resultWindow.getDefaultContentAreaSize());
+                results,12, null, resultWindow.getDefaultContentAreaSize());
             resultDisplayPanel.setVisible(true);
             resultWindow.setMainContentPane(resultDisplayPanel);
             resultWindow.setMessage(results.getRowCount() + " data sets found");
