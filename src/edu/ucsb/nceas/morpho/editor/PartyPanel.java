@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-27 19:45:05 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-10-27 22:03:55 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -199,6 +199,7 @@ public class PartyPanel extends JPanel
     setPrefMinMaxSizes(faxLabel, PARTY_2COL_LABEL_DIMS);
     phoneFaxPanel.add(faxLabel);
     faxField = WidgetFactory.makeOneLineTextField();
+    faxField.setText(getValue(nd, "phone", "phonetype", "facsimile"));
     phoneFaxPanel.add(faxField);
     panel.add(phoneFaxPanel);
   
@@ -249,6 +250,31 @@ public class PartyPanel extends JPanel
     }
     return ret;
   }
+  
+    /**
+   *  This method searches for a descendent of the specified node
+   *  with the specified name, and the specified attribute with the given name
+   *  and returns the text value.
+   */
+  private String getValue(DefaultMutableTreeNode node, String name, String attrName, String attrVal) {
+    String ret = null;
+    Enumeration enum = node.breadthFirstEnumeration();
+    while (enum.hasMoreElements()) {
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+      NodeInfo ni = (NodeInfo)nd.getUserObject();
+      String nodeName = (ni.getName()).trim();
+     if (nodeName.equals(name)) {
+        if ((ni.attr.containsKey(attrName))&&(((String)(ni.attr.get(attrName))).equals(attrVal))) {
+          DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
+          NodeInfo tni = (NodeInfo)tnode.getUserObject();
+          ret = tni.getPCValue();
+          return ret;
+        }
+      }
+    }
+    return ret;
+  }
+
 
   /**
    *  This method searches for a descendent of the specified node
@@ -265,6 +291,28 @@ public class PartyPanel extends JPanel
         DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
         NodeInfo tni = (NodeInfo)tnode.getUserObject();
         tni.setPCValue(val);
+      }
+    }
+  }
+
+  /**
+   *  This method searches for a descendent of the specified node
+   *  with the specified name, specified attribute name & value
+   *  and and sets the text value.
+   */
+  private void setValue(DefaultMutableTreeNode node, String name, String val, String attrName, String attrVal) {
+    String ret = null;
+    Enumeration enum = node.breadthFirstEnumeration();
+    while (enum.hasMoreElements()) {
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+      NodeInfo ni = (NodeInfo)nd.getUserObject();
+      String nodeName = (ni.getName()).trim();
+     if (nodeName.equals(name)) {
+       if ((ni.attr.containsKey(attrName))&&(((String)(ni.attr.get(attrName))).equals(attrVal))) {
+         DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
+         NodeInfo tni = (NodeInfo)tnode.getUserObject();
+         tni.setPCValue(val);
+       }
       }
     }
   }
@@ -290,55 +338,55 @@ class dfhFocus extends java.awt.event.FocusAdapter {
         String val = salutationField.getText();
         setValue(nd, "salutation", val);	      
       }
-      if (object == firstNameField) {
+       else if (object == firstNameField) {
         String val = firstNameField.getText();
         setValue(nd, "givenName", val);	      
       }
-      if (object == lastNameField) {
+      else if (object == lastNameField) {
         String val = lastNameField.getText();
         setValue(nd, "surName", val);	      
       }
-      if (object == organizationField) {
+      else if (object == organizationField) {
         String val = organizationField.getText();
         setValue(nd, "organizationName", val);	      
       }
-      if (object == positionNameField) {
+      else if (object == positionNameField) {
         String val = positionNameField.getText();
         setValue(nd, "positionName", val);	      
       }
-      if (object == address1Field) {
+      else if (object == address1Field) {
         String val = address1Field.getText();
         setValue(nd, "deliveryPoint", val);	      
       }
-      if (object == cityField) {
+      else if (object == cityField) {
         String val = cityField.getText();
         setValue(nd, "city", val);	      
       }
-      if (object == stateField) {
+      else if (object == stateField) {
         String val = stateField.getText();
         setValue(nd, "administrativeArea", val);	      
       }
-      if (object == zipField) {
+      else if (object == zipField) {
         String val = zipField.getText();
         setValue(nd, "postalCode", val);	      
       }
-      if (object == countryField) {
+      else if (object == countryField) {
         String val = countryField.getText();
         setValue(nd, "country", val);	      
       }
-      if (object == phoneField) {
+      else if (object == phoneField) {
         String val = phoneField.getText();
         setValue(nd, "phone", val);	      
       }
-      if (object == faxField) {
+      else if (object == faxField) {
         String val = faxField.getText();
         setValue(nd, "phone", val);	      //NEED to handle attribute to determine voice or fax
       }
-      if (object == emailField) {
+      else if (object == emailField) {
         String val = emailField.getText();
         setValue(nd, "electronicMailAddress", val);	      
       }
-      if (object == urlField) {
+      else if (object == urlField) {
         String val = urlField.getText();
         setValue(nd, "onlineUrl", val);	      
       }
