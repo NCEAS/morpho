@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-03 01:39:36 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-03-04 03:51:46 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class General extends AbstractWizardPage{
 
   private final String pageID     = DataPackageWizardInterface.GENERAL;
   private final String nextPageID = DataPackageWizardInterface.KEYWORDS;
-  private final String title      = "General Dataset Package Information";
+  private final String title      = "General Data Package Information";
   private final String subtitle   = "Title and Abstract";
   public final String pageNumber  = "2";
 
