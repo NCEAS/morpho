@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-09 00:52:30 $'
- * '$Revision: 1.103 $'
+ *     '$Date: 2003-01-09 04:57:00 $'
+ * '$Revision: 1.104 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -739,6 +739,18 @@ public class DataPackage implements XMLFactoryInterface
         v.addElement(obj.trim());
       }
     }
+    // often access control needs to be first 
+    // so lets go ahead and put it 1st in this vector
+    String accessID = getAccessFileIdForDataPackage();
+    accessID = accessID.trim();
+    int accessLoc = v.indexOf(accessID);
+    if (accessLoc>-1) {
+      // first remove access element
+      v.removeElementAt(accessLoc);
+      // now put it at start of vector
+      v.insertElementAt(accessID,0);
+    }
+    
     return v;
   }
   
@@ -807,7 +819,7 @@ public class DataPackage implements XMLFactoryInterface
 
         try
         {
-          Log.debug(1, "Uploading " + key);
+          Log.debug(20, "Uploading " + key);
           AccessionNumber a = new AccessionNumber(morpho);
           Vector idVec = a.getParts(key);
           String scope = (String)idVec.elementAt(0);
