@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-02 15:11:19 $'
- * '$Revision: 1.11 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-02 20:29:20 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -280,10 +280,7 @@ public class DeleteCommand implements Command
          */
         private void refreshDataPackageFrame()
         {
-          // Distroy old frame
-          UIController.getInstance().removeWindow(morphoFrame);
-          morphoFrame.dispose();
-          morphoFrame = null;
+         
           // if pakcage have local and network copy and not delete both
           // reopen the package
           if ( inLocal && inNetwork && !state.equals(DataPackageInterface.BOTH))
@@ -311,6 +308,11 @@ public class DeleteCommand implements Command
             index++;
             
           } 
+          
+          // Distroy old frame
+          UIController.getInstance().removeWindow(morphoFrame);
+          morphoFrame.dispose();
+          morphoFrame = null;
           //
         }
         
