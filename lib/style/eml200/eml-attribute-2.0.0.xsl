@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-24 01:15:04 $'
-  * '$Revision: 1.6 $'
+  *     '$Date: 2003-12-24 01:59:23 $'
+  * '$Revision: 1.7 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -1099,7 +1099,7 @@
           <xsl:for-each select="$references">
              <xsl:choose>
                 <xsl:when test="attributeLabel!=''">
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                      <xsl:for-each select="attributeLabel">
                        <xsl:value-of select="."/>
                          &#160;<br />
@@ -1107,7 +1107,7 @@
                   </td>
                 </xsl:when>
                 <xsl:otherwise>
-                   <td  align="center" class="{$stripes}">
+                   <td  align="center">
                        &#160;<br />
                    </td>
                 </xsl:otherwise>
@@ -1117,7 +1117,7 @@
         <xsl:otherwise>
              <xsl:choose>
                 <xsl:when test="attributeLabel!=''">
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                      <xsl:for-each select="attributeLabel">
                        <xsl:value-of select="."/>
                          &#160;<br/>
@@ -1125,7 +1125,7 @@
                   </td>
                 </xsl:when>
                 <xsl:otherwise>
-                   <td  align="center" class="{$stripes}">
+                   <td  align="center">
                        &#160;<br />
                    </td>
                 </xsl:otherwise>
@@ -1151,13 +1151,13 @@
           <xsl:variable name="ref_id" select="references"/>
           <xsl:variable name="references" select="$ids[@id=$ref_id]" />
            <xsl:for-each select="$references">
-             <td  align="center" class="{$stripes}">
+             <td  align="center">
                <xsl:value-of select="attributeDefinition"/>
              </td>
            </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <td  align="center" class="{$stripes}">
+          <td  align="center">
              <xsl:value-of select="attributeDefinition"/>
           </td>
         </xsl:otherwise>
@@ -1183,7 +1183,7 @@
           <xsl:for-each select="$references">
             <xsl:choose>
               <xsl:when test="storageType!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                     <xsl:for-each select="storageType">
                       <xsl:value-of select="."/>
                        &#160;<br/>
@@ -1191,7 +1191,7 @@
                  </td>
               </xsl:when>
               <xsl:otherwise>
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                        &#160;
                    </td>
               </xsl:otherwise>
@@ -1201,7 +1201,7 @@
         <xsl:otherwise>
            <xsl:choose>
               <xsl:when test="storageType!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                     <xsl:for-each select="storageType">
                       <xsl:value-of select="."/>
                        &#160;<br/>
@@ -1209,7 +1209,7 @@
                  </td>
               </xsl:when>
               <xsl:otherwise>
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                        &#160;
                    </td>
               </xsl:otherwise>
@@ -1235,7 +1235,7 @@
           <xsl:variable name="ref_id" select="references"/>
           <xsl:variable name="references" select="$ids[@id=$ref_id]" />
           <xsl:for-each select="$references">
-            <td  align="center" class="{$stripes}">
+            <td  align="center">
               <xsl:for-each select="measurementScale">
                  <xsl:value-of select="local-name(./*)"/>
               </xsl:for-each>
@@ -1243,7 +1243,7 @@
          </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-           <td  align="center" class="{$stripes}">
+           <td  align="center">
               <xsl:for-each select="measurementScale">
                  <xsl:value-of select="local-name(./*)"/>
               </xsl:for-each>
@@ -1275,28 +1275,28 @@
           <xsl:variable name="ref_id" select="references"/>
           <xsl:variable name="references" select="$ids[@id=$ref_id]" />
           <xsl:for-each select="$references">
-            <td  align="center" class="{$stripes}">
+            <td  align="center">
               <xsl:for-each select="measurementScale">
                 <xsl:call-template name="measurementscale">
                     <xsl:with-param name="docid" select="$docid"/>
                     <xsl:with-param name="entitytype" select="$entitytype"/>
                     <xsl:with-param name="entityindex" select="$entityindex"/>
                     <xsl:with-param name="attributeindex" select="position()"/>
-                    <xsl:with-param name="stripes" select="$innerstripes"/>
+                    <xsl:with-param name="stripes" select="$innercoloddStyle"/>
                 </xsl:call-template>
               </xsl:for-each>
             </td>
          </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-           <td  align="center" class="{$stripes}">
+           <td  align="center">
               <xsl:for-each select="measurementScale">
                 <xsl:call-template name="measurementscale">
                       <xsl:with-param name="docid" select="$docid"/>
                       <xsl:with-param name="entitytype" select="$entitytype"/>
                       <xsl:with-param name="entityindex" select="$entityindex"/>
                       <xsl:with-param name="attributeindex" select="position()"/>
-                      <xsl:with-param name="stripes" select="$innerstripes"/>
+                      <xsl:with-param name="stripes" select="$innercoloddStyle"/>
                 </xsl:call-template>
               </xsl:for-each>
            </td>
@@ -1330,7 +1330,7 @@
           <xsl:for-each select="$references">
             <xsl:choose>
               <xsl:when test="missingValueCode!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                     <table xsl:use-attribute-sets="cellspacing" class="tableinattribute" width="100%">
                        <xsl:for-each select="missingValueCode">
                           <tr><td width="{$firstColWidth}" class="{$innerstripes}"><b>Code</b></td>
@@ -1343,7 +1343,7 @@
                  </td>
               </xsl:when>
               <xsl:otherwise>
-                <td  class="{$stripes}">
+                <td >
                    &#160;
                 </td>
               </xsl:otherwise>
@@ -1353,7 +1353,7 @@
         <xsl:otherwise>
            <xsl:choose>
               <xsl:when test="missingValueCode!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                     <table xsl:use-attribute-sets="cellspacing" class="tableinattribute" width="100%">
                        <xsl:for-each select="missingValueCode">
                           <tr><td width="{$firstColWidth}" class="{$innerstripes}"><b>Code</b></td>                              <td width="{$secondColWidth}" class="{$innerstripes}"><xsl:value-of select="code"/></td></tr>
@@ -1365,7 +1365,7 @@
                  </td>
               </xsl:when>
               <xsl:otherwise>
-                <td  align="center" class="{$stripes}">
+                <td  align="center">
                    &#160;
                 </td>
               </xsl:otherwise>
@@ -1394,14 +1394,14 @@
           <xsl:for-each select="$references">
             <xsl:choose>
                <xsl:when test="accuracy!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                     <xsl:for-each select="accuracy">
                           <xsl:value-of select="attributeAccuracyReport"/>
                     </xsl:for-each>
                  </td>
               </xsl:when>
               <xsl:otherwise>
-                <td  align="center" class="{$stripes}">
+                <td  align="center">
                   &#160;
                 </td>
               </xsl:otherwise>
@@ -1411,14 +1411,14 @@
         <xsl:otherwise>
            <xsl:choose>
                <xsl:when test="accuracy!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                     <xsl:for-each select="accuracy">
                           <xsl:value-of select="attributeAccuracyReport"/>
                     </xsl:for-each>
                  </td>
               </xsl:when>
               <xsl:otherwise>
-                <td  align="center" class="{$stripes}">
+                <td  align="center">
                   &#160;
                 </td>
               </xsl:otherwise>
@@ -1452,7 +1452,7 @@
           <xsl:for-each select="$references">
             <xsl:choose>
                <xsl:when test="accuracy/quantitativeAttributeAccuracyAssessment!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                    <xsl:for-each select="accuracy">
                      <table xsl:use-attribute-sets="cellspacing" class="tableinattribute" width="100%">
                        <xsl:for-each select="quantitativeAttributeAccuracyAssessment">
@@ -1468,7 +1468,7 @@
                </td>
              </xsl:when>
              <xsl:otherwise>
-                <td  align="center" class="{$stripes}">
+                <td  align="center">
                   &#160;
                 </td>
              </xsl:otherwise>
@@ -1478,7 +1478,7 @@
         <xsl:otherwise>
            <xsl:choose>
                <xsl:when test="accuracy/quantitativeAttributeAccuracyAssessment!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                    <xsl:for-each select="accuracy">
                      <table xsl:use-attribute-sets="cellspacing" class="tableinattribute" width="100%">
                        <xsl:for-each select="quantitativeAttributeAccuracyAssessment">
@@ -1494,7 +1494,7 @@
                </td>
              </xsl:when>
              <xsl:otherwise>
-                <td  align="center" class="{$stripes}">
+                <td  align="center">
                   &#160;
                 </td>
              </xsl:otherwise>
@@ -1523,7 +1523,7 @@
           <xsl:for-each select="$references">
             <xsl:choose>
                <xsl:when test="coverage!=''">
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                     <xsl:for-each select="coverage">
                       <xsl:call-template name="attributecoverage">
                          <xsl:with-param name="docid" select="$docid"/>
@@ -1535,7 +1535,7 @@
                   </td>
                </xsl:when>
                <xsl:otherwise>
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                    &#160;
                   </td>
                </xsl:otherwise>
@@ -1545,7 +1545,7 @@
         <xsl:otherwise>
           <xsl:choose>
                <xsl:when test="coverage!=''">
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                     <xsl:for-each select="coverage">
                       <xsl:call-template name="attributecoverage">
                          <xsl:with-param name="docid" select="$docid"/>
@@ -1557,7 +1557,7 @@
                   </td>
                </xsl:when>
                <xsl:otherwise>
-                  <td  align="center" class="{$stripes}">
+                  <td  align="center">
                    &#160;
                   </td>
                </xsl:otherwise>
@@ -1587,7 +1587,7 @@
           <xsl:for-each select="$references">
             <xsl:choose>
                <xsl:when test="method!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                    <xsl:for-each select="method">
                      <xsl:call-template name="attributemethod">
                        <xsl:with-param name="docid" select="$docid"/>
@@ -1599,7 +1599,7 @@
                  </td>
                </xsl:when>
                <xsl:otherwise>
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                    &#160;
                  </td>
                </xsl:otherwise>
@@ -1609,7 +1609,7 @@
         <xsl:otherwise>
            <xsl:choose>
                <xsl:when test="method!=''">
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                    <xsl:for-each select="method">
                      <xsl:call-template name="attributemethod">
                        <xsl:with-param name="docid" select="$docid"/>
@@ -1621,7 +1621,7 @@
                  </td>
                </xsl:when>
                <xsl:otherwise>
-                 <td  align="center" class="{$stripes}">
+                 <td  align="center">
                    &#160;
                  </td>
                </xsl:otherwise>
