@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 23:37:59 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-19 16:40:55 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -189,6 +189,17 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
   }
   
 
+  
+
+  /** 
+   *  The action to be executed when the panel is displayed. May be empty
+   */
+  public void onLoadAction() {
+  
+    WidgetFactory.unhiliteComponent(formatStringLabel);
+    WidgetFactory.unhiliteComponent(precisionLabel);
+  }
+  
   /** 
    *  checks that the user has filled in required fields - if not, highlights 
    *  labels to draw attention to them
@@ -196,22 +207,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
    *  @return   boolean true if user data validated OK. false if intervention 
    *            required
    */
-  private OrderedMap validationNVP = new OrderedMap();
-  //
   public boolean validateUserInput() {
-
-
-    
-//    validationNVP.clear();
-//    getEnumListData("", validationNVP);
-//  
-//    if (validationNVP==null || validationNVP.size()<1) {
-//      WidgetFactory.hiliteComponent(enumDefinitionLabel);
-//      return false;
-//    }
-//
-//
-
 
     if (formatStringField.getText().trim().equals("")) {
 
@@ -232,8 +228,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     return true; 
   }
 
-
-
+  
   /** 
    *  gets the Map object that contains all the key/value paired
    *
@@ -256,26 +251,19 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap   returnMap  = new OrderedMap();
-  private StringBuffer intRatBuff = new StringBuffer();
   ////////////////////////////////////////////////////////
   public OrderedMap getPanelData(String xPathRoot) {
 
     returnMap.clear();
-
-    intRatBuff.delete(0, intRatBuff.length());
-    
    
     returnMap.put(  xPathRoot + "/formatString", 
                     formatStringField.getText().trim());
 
-    intRatBuff.delete(0, intRatBuff.length());
-    intRatBuff.append(xPathRoot);
-    intRatBuff.append("/numericDomain/");
-
+    returnMap.put(  xPathRoot + "/dateTimePrecision", 
+                    precisionField.getText().trim());
+                
     
-    intRatBuff.append("bounds[");
-
-    xPathRoot = intRatBuff.toString();
+    xPathRoot = xPathRoot + "/dateTimeDomain/bounds[";
     
     int index = 0;
     List rowLists = boundsList.getListOfRowLists();

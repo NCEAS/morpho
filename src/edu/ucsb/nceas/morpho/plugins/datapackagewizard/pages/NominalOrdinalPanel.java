@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 21:59:40 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-19 16:40:55 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -331,8 +331,9 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
  
     panel.add(WidgetFactory.makeHalfSpacer());
             
-    enumDefinitionFreeTextCheckBox = new JCheckBox(
-      "Attribute contains free-text in addition to those values listed above");
+    enumDefinitionFreeTextCheckBox = WidgetFactory.makeCheckBox(
+        "Attribute contains free-text in addition to those values listed above", 
+        false);
  
     JPanel cbPanel = WidgetFactory.makePanel();
     cbPanel.add(enumDefinitionFreeTextCheckBox);
@@ -363,6 +364,16 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
   
   
 
+  /** 
+   *  The action to be executed when the panel is displayed. May be empty
+   */
+  public void onLoadAction() {
+  
+    WidgetFactory.unhiliteComponent(enumDefinitionLabel);
+    WidgetFactory.unhiliteComponent(textDefinitionLabel);
+  }
+
+  
   /** 
    *  checks that the user has filled in required fields - if not, highlights 
    *  labels to draw attention to them

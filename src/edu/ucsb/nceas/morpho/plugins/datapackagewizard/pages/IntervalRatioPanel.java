@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 22:57:00 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-19 16:40:55 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -204,27 +204,24 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   
 
   /** 
+   *  The action to be executed when the panel is displayed. May be empty
+   */
+  public void onLoadAction() {
+  
+    WidgetFactory.unhiliteComponent(unitsPickListLabel);
+    WidgetFactory.unhiliteComponent(precisionLabel);
+    WidgetFactory.unhiliteComponent(numberTypeLabel);
+  }
+  
+
+  /** 
    *  checks that the user has filled in required fields - if not, highlights 
    *  labels to draw attention to them
    *
    *  @return   boolean true if user data validated OK. false if intervention 
    *            required
    */
-  private OrderedMap validationNVP = new OrderedMap();
-  //
   public boolean validateUserInput() {
-
-
-    
-//    validationNVP.clear();
-//    getEnumListData("", validationNVP);
-//  
-//    if (validationNVP==null || validationNVP.size()<1) {
-//      WidgetFactory.hiliteComponent(enumDefinitionLabel);
-//      return false;
-//    }
-//
-//
 
     if (unitsPickList.getSelectedUnit().trim().equals("")) {
 
@@ -277,13 +274,10 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap   returnMap  = new OrderedMap();
-  private StringBuffer intRatBuff = new StringBuffer();
   ////////////////////////////////////////////////////////
   public OrderedMap getPanelData(String xPathRoot) {
 
     returnMap.clear();
-
-    intRatBuff.delete(0, intRatBuff.length());
     
     returnMap.put(  xPathRoot + "/unit/standardUnit",
                     unitsPickList.getSelectedUnit().trim());
@@ -291,17 +285,11 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     returnMap.put(  xPathRoot + "/precision", 
                     precisionField.getText().trim());
 
-    intRatBuff.delete(0, intRatBuff.length());
-    intRatBuff.append(xPathRoot);
-    intRatBuff.append("/numericDomain/");
-
-    returnMap.put(  xPathRoot + "/numberType", 
+    returnMap.put(  xPathRoot + "/numericDomain/numberType", 
                     numberTypePickList.getSelectedItem().toString().trim());
     
-    intRatBuff.append("bounds[");
 
-    xPathRoot = intRatBuff.toString();
-    
+    xPathRoot = xPathRoot + "/numericDomain/bounds[";
     int index = 0;
     List rowLists = boundsList.getListOfRowLists();
     String nextMin = null;
@@ -390,6 +378,7 @@ class UnitsPickList extends JPanel {
           unitsList.setModel(
                       ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
           unitsList.setSelectedIndex(0);
+          unitsList.showPopup();
         }
       });
       
@@ -524,8 +513,6 @@ class UnitTypesListItem  {
       }
       buff.append(originalUnitTypeChars[i]);
     }
-    Log.debug(45, "initStringRepresentation() created: "+buff.toString()
-                                                    +" from: "+unitType);
     return buff.toString();
   }
 }

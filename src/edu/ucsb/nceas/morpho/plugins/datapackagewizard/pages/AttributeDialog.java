@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 23:37:59 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-19 16:40:55 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -290,6 +290,7 @@ class AttributeDialog extends WizardPopupDialog {
     middlePanel.remove(currentPanel);
     currentPanel = panel;
     middlePanel.add(currentPanel);
+    ((DialogSubPanelAPI)currentPanel).onLoadAction();
     middlePanel.validate();
     middlePanel.repaint();
   }

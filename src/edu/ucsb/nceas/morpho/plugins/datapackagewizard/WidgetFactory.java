@@ -252,6 +252,18 @@ public class WidgetFactory {
   }
 
   
+  public static JCheckBox makeCheckBox(String labelStr, boolean hiliteRequired) {
+   
+    JCheckBox cb = new JCheckBox(labelStr);
+    if (hiliteRequired) {
+      cb.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    } else { 
+      cb.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    }
+    cb.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    return cb;
+  };
+
   
   public static JComboBox makePickList(String[] listValues, boolean isEditable,
                                     int selectedIndex, ItemListener listener) {

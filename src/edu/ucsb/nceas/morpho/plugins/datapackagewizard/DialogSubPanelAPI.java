@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 00:35:44 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-19 16:40:55 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,11 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 
 public interface DialogSubPanelAPI {
 
+
+  /** 
+   *  The action to be executed when the panel is displayed. May be empty
+   */
+  public void onLoadAction();
 
   /** 
    *  checks that the user has filled in required fields - if not, highlights 
