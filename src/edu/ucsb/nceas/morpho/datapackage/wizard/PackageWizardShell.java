@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-24 20:10:25 $'
- * '$Revision: 1.78 $'
+ *     '$Date: 2002-12-11 01:12:47 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -679,6 +679,10 @@ public class PackageWizardShell extends javax.swing.JFrame
         aclt = new Triple(aclID, "provides access control rules for", wfc2.id);
         aclTriples.addElement(aclt);
       }
+      // add triple with acl pointing to itself
+      aclt = new Triple(aclID, "provides access control rules for", aclID);
+      aclTriples.addElement(aclt);
+
     }
     
     Hashtable tripleNames = new Hashtable();
