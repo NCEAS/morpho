@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-28 21:21:22 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-08-29 21:21:15 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,12 +107,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
    //ScrollTabLayout only works for Java 1.4; commented out for now so will compile unbder 1.3
    // tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
     tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
-   tabbedEntitiesPanel.addChangeListener(this);
+    tabbedEntitiesPanel.addChangeListener(this);
     
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
-    vertSplit.setDividerLocation(47);
+    vertSplit.setDividerLocation(52);
     this.setVisible(true);
  
   }
@@ -122,20 +122,26 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     this();
     this.dp = dp;
     JPanel packagePanel = new JPanel();
-    packagePanel.setLayout(new BorderLayout(0,0));
-    
+    packagePanel.setLayout(new BorderLayout(5,5));
+
+    // the following code builds the datapackage summary at the top of
+    // the DataViewContainerPanel
     JLabel refLabel = new JLabel("<html>"+dpgui.referenceLabel+"</html>");
     refLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     JPanel refPanel = new JPanel();
-    refPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+    refPanel.setPreferredSize(new Dimension(5000,50));
+    Border margin = BorderFactory.createEmptyBorder(2,2,2,2);
+    Border lineBorder = BorderFactory.createLineBorder(Color.black);
+    refPanel.setBorder(new CompoundBorder(margin, lineBorder));
     refPanel.setLayout(new BorderLayout(5,5));
     refPanel.add(BorderLayout.CENTER, refLabel);
     refLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
     JPanel locationPanel = new JPanel();
     locationPanel.setLayout(new BorderLayout(0,0));
-    Border lineBorder = BorderFactory.createLineBorder(Color.black);
-    Border margin = BorderFactory.createEmptyBorder(5,5,5,5);
-    locationPanel.setBorder(new CompoundBorder(lineBorder,margin));
+    Border lineBorder1 = BorderFactory.createLineBorder(Color.black);
+    Border margin1 = BorderFactory.createEmptyBorder(5,5,5,5);
+    Border inner = new CompoundBorder(lineBorder1,margin1);
+    locationPanel.setBorder(new CompoundBorder(margin,inner));
     ImageIcon localIcon 
       = new ImageIcon(getClass().getResource("local-package-small.png"));
     ImageIcon metacatIcon 
@@ -163,7 +169,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     locationPanel.add(BorderLayout.NORTH,localLabel);
     locationPanel.add(BorderLayout.SOUTH, netLabel);
     refPanel.add(BorderLayout.EAST, locationPanel);
-
+  // ------------------------------------
     
     packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
     packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
@@ -174,6 +180,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     
     this.listValueHash = dpgui.listValueHash;
     this.setVisible(true);
+   
+   // trying to get the height here always gives zero
+  //  vertSplit.setDividerLocation(refPanel.getHeight());
 
   }
  

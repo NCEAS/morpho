@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:20:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-29 21:21:15 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,6 +178,18 @@ public class PersistentVector
       this.firstRow = fRow;
       init(f);
     }    
+    
+   /*
+   * initiallize with a single element
+   */
+   public void initEmpty(String[] ar) {
+     try {
+       long pos = obj.writeObject(ar);  // object added to file
+       Long lpos = new Long(pos);
+       objectList.addElement(lpos); // position added to objectList 
+     }
+     catch (Exception e) {}
+   }
     
     public void setFieldDelimiter(String s) {
       this.field_delimiter = s.trim();

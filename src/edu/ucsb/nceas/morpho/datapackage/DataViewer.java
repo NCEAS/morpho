@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-29 16:26:06 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2002-08-29 21:21:15 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ public class DataViewer extends javax.swing.JPanel
 	public DataViewer()
 	{
 		setLayout(new BorderLayout(0,0));
-    setSize(755,483);
+//    setSize(755,483);
 		setVisible(false);
 		DataViewerPanel.setLayout(new BorderLayout(0,0));
 		add(DataViewerPanel);
@@ -555,12 +555,19 @@ public class DataViewer extends javax.swing.JPanel
           if ((column_labels!=null)&&(column_labels.size()>0)) {
             if ((field_delimiter.trim().length()>0)) {
               buildTable();
+              MouseListener popupListener = new PopupListener();
+              table.addMouseListener(popupListener);
+            }
+            else if (dataFile==null) {
+              numHeaderLines = "0";
+              field_delimiter = ",";
+              buildTable();
+              MouseListener popupListener = new PopupListener();
+              table.addMouseListener(popupListener);              
             }
             else {
               buildTextDisplay();
             }
-            MouseListener popupListener = new PopupListener();
-            table.addMouseListener(popupListener);
           }
         }
         else {
@@ -859,7 +866,17 @@ public class DataViewer extends javax.swing.JPanel
     table = new JTable();
     pv = new PersistentVector();
     pv.setFieldDelimiter(field_delimiter);
-    pv.init(dataFile, num_header_lines);
+    if (dataFile==null) {
+      Log.debug(20, "Null Data File");
+      String[] row = new String[column_labels.size()];
+      for (int ii=0;ii<column_labels.size();ii++) {
+        row[ii] = "";  
+      }
+      pv.initEmpty(row);
+    }
+    else {
+      pv.init(dataFile, num_header_lines);
+    }
     ptm = new PersistentTableModel(pv, column_labels);
     ptm.setFieldDelimiter(field_delimiter);
     table.setModel(ptm);
