@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:22 $'
- * '$Revision: 1.17 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-13 22:21:27 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,9 +93,9 @@ public class DataPackage
     this.location = location;
     this.id = identifier;
     
-    framework.debug(9, "Creating new DataPackage Object");
-    framework.debug(9, "id: " + identifier);
-    framework.debug(9, "location: " + location);
+    framework.debug(11, "Creating new DataPackage Object");
+    framework.debug(11, "id: " + identifier);
+    framework.debug(11, "location: " + location);
     this.identifier = identifier;
     if(relations != null)
     { //if the relations are provided don't reparse the document
@@ -131,7 +131,7 @@ public class DataPackage
     
     if(location.equals(METACAT))
     {
-      framework.debug(9, "opening metacat file");
+      framework.debug(11, "opening metacat file");
       MetacatDataStore mds = new MetacatDataStore(framework);
       try
       {
@@ -150,12 +150,12 @@ public class DataPackage
     }
     else if(location.equals(LOCAL))
     {
-      framework.debug(9, "opening local file");
+      framework.debug(11, "opening local file");
       FileSystemDataStore fsds = new FileSystemDataStore(framework);
       try
       {
         File resourcefile = fsds.openFile(identifier);
-        framework.debug(9, "file opened");
+        framework.debug(11, "file opened");
         tripleFile = resourcefile;
       }
       catch(FileNotFoundException fnfe)
@@ -302,7 +302,7 @@ public class DataPackage
     } 
     catch (Exception e) 
     {
-      ClientFramework.debug(9, "Problem creating Catalog in " +
+      ClientFramework.debug(11, "Problem creating Catalog in " +
                    "packagewizardshell.handleFinishAction!" + e.toString());
       throw new Exception(e.getMessage());
     }

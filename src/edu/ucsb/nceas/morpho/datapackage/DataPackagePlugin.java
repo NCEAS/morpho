@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 07:18:44 $'
- * '$Revision: 1.10 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-13 22:21:27 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,11 +132,11 @@ public class DataPackagePlugin
   public void openDataPackage(String location, String identifier, 
                               Vector relations)
   {
-    framework.debug(9, "DataPackage: Got service request to open: " + 
+    framework.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
     DataPackage dp = new DataPackage(location, identifier, 
                                      relations, framework);
-    //framework.debug(9, "location: " + location + " identifier: " + identifier +
+    //framework.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
     DataPackageGUI gui = new DataPackageGUI(framework, dp);
   }

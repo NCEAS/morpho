@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.15 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-13 22:21:27 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -506,7 +506,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         } 
         catch (Exception e) 
         {
-          ClientFramework.debug(9, "Problem creating Catalog in " +
+          ClientFramework.debug(11, "Problem creating Catalog in " +
                        "packagewizardshell.handleFinishAction!" + e.toString());
         }
         
@@ -534,13 +534,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         //get the DOM rep of the document without triples
         doc = parser.getDocument();
-        DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+        //DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
         
         //System.out.println("DOCTYPES " + dt.getPublicId() + " " + 
         //                  dt.getSystemId());
-        String publicid = dt.getPublicId();
-        String systemid = dt.getSystemId();
-        String nameid = dt.getName();
+        //String publicid = dt.getPublicId();
+        //String systemid = dt.getSystemId();
+        //String nameid = dt.getName();
         NodeList tripleNodeList = triples.getNodeList();
         NodeList docTriplesNodeList = null;
         
@@ -591,15 +591,17 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         
         //write out the tiples file
-        String docString = "<?xml version=\"1.0\"?>";
-        docString += "\n<!DOCTYPE " + nameid +  " PUBLIC \"" + publicid + 
-                    "\" \"" + systemid + "\">\n";
+        //String docString = "<?xml version=\"1.0\"?>";
+        //docString += "\n<!DOCTYPE " + nameid +  " PUBLIC \"" + publicid + 
+        //            "\" \"" + systemid + "\">\n";
+        
+        String docString = printDoctype(doc);
         docString += print(doc.getDocumentElement());
         
         StringReader sr = new StringReader(docString);
         FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
         localDataStore.saveFile(wfc.id, sr, false); //write out the file
-        //framework.debug(9, "saving file: " + wfc.id);
+        //framework.debug(11, "saving file: " + wfc.id);
         //System.out.println("xml with triples: " + 
         //                      print(doc.getDocumentElement()));
       }
@@ -608,7 +610,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     if(saveToMetacatCheckBox.isSelected())
     {
       //save the package to metacat here
-      framework.debug(9, "saving the package to metacat");
+      framework.debug(11, "saving the package to metacat");
       
       //System.out.println("packageFiles: size: " + packageFiles.size());
       //System.out.println("packageFiles: " + packageFiles.toString());
@@ -669,7 +671,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       String location = DataPackage.LOCAL;
       String identifier = wfc.id;
       Vector relations = triples.getCollection();
-      //framework.debug(9, "location: " + location + " identifier: " + 
+      //framework.debug(11, "location: " + location + " identifier: " + 
       //                identifier + " relations: " + relations.toString());
       DataPackage dp = new DataPackage(location, identifier, 
                                      relations, framework);
@@ -692,7 +694,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     JFileChooser filechooser = new JFileChooser();
     FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
     
-    framework.debug(9, "action fired: |" + command + "|");
+    framework.debug(11, "action fired: |" + command + "|");
     
     if(command.equals("<< Previous"))
     { 
@@ -792,7 +794,7 @@ public class PackageWizardShell extends javax.swing.JFrame
    * @param node node usually set to the 'doc' node for complete XML file
    * re-write
    */
-  public String print(Node node)
+  public static String print(Node node)
   {
     StringBuffer sb = new StringBuffer();
     // is there anything to do?
@@ -897,7 +899,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   }
   
   /** Returns a sorted list of attributes. Taken from configXML.java*/
-  protected Attr[] sortAttributes(NamedNodeMap attrs)
+  protected static Attr[] sortAttributes(NamedNodeMap attrs)
   {
 
     int len = (attrs != null) ? attrs.getLength() : 0;
@@ -932,7 +934,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   } // sortAttributes(NamedNodeMap):Attr[]
 
   /** Normalizes the given string. Taken from configXML.java*/
-  protected String normalize(String s)
+  protected static String normalize(String s)
   {
     StringBuffer str = new StringBuffer();
 
@@ -977,6 +979,23 @@ public class PackageWizardShell extends javax.swing.JFrame
     return (str.toString());
   } 
   
+  /** 
+   * prints out the doctype part of and xml document.  this can be appended to 
+   * the output from print().
+   * @param doc the dom of the document to print the doctype for
+  */
+  public static String printDoctype(Document doc)
+  {
+    DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+    String publicid = dt.getPublicId();
+    String systemid = dt.getSystemId();
+    String nameid = dt.getName();
+    String docString = "<?xml version=\"1.0\"?>";
+    docString += "\n<!DOCTYPE " + nameid +  " PUBLIC \"" + publicid + 
+                 "\" \"" + systemid + "\">\n";
+    return docString;
+  }
+  
   /**
    * Test method
    */
@@ -1015,6 +1034,7 @@ public class PackageWizardShell extends javax.swing.JFrame
      */
     protected File getFile(boolean temp)
     {
+      AccessionNumber a = new AccessionNumber(framework);
       if(type.equals("WIZARD"))
       {
         if(temp && id == null)
@@ -1023,7 +1043,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         else if(!temp && (id.indexOf("tmp") != -1 || id == null))
         {
-          id = framework.getNextId();
+          id = a.getNextId();
         }
       
         String xml = wizard.getXML();
@@ -1051,7 +1071,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         else if(!temp && (id.indexOf("tmp") != -1 || id == null))
         {
-          id = framework.getNextId();
+          id = a.getNextId();
         }
 
         file = new File(textfield.getText());

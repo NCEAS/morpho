@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-12 23:09:35 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2001-06-13 22:21:27 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ public class PackageWizard extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      framework.debug(9, "error initializing custom frame");
+      framework.debug(11, "error initializing custom frame");
       e.printStackTrace();
     }
   }
@@ -397,7 +397,14 @@ public class PackageWizard extends javax.swing.JFrame
             { //end the overlapping tags.
               String endTag = (String)elements.remove(j);  
               //System.out.println(spaces + "</" + endTag+ ">");
-              doc.append(spaces + "</" + endTag.trim() + ">\n");
+              if(endTag.equals("ENDEMPTY"))
+              {
+                doc.append("/>\n");
+              }
+              else
+              {
+                doc.append(spaces + "</" + endTag.trim() + ">\n");
+              }
               spaces = spaces.substring(0, spaces.length() - 2);
             }
           }

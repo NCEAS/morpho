@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 07:25:45 $'
- * '$Revision: 1.15 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-13 22:21:28 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -325,10 +326,11 @@ public class ResultPanel extends JPanel
   public void saveQuery()
   {
     // Serialize the query in the profiles directory
+    AccessionNumber a = new AccessionNumber(framework);
     Query query = results.getQuery();
     String identifier = query.getIdentifier();
     if (identifier == null) {
-      identifier = framework.getNextId();
+      identifier = a.getNextId();
       query.setIdentifier(identifier);
     }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 16:50:41 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-06-13 22:21:28 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class MetacatDataStore extends DataStore
     
     if(localfile.exists())
     { //if the file is cached locally, read it from the hard drive
-      framework.debug(9, "MetacatDataStore: getting cached file");
+      framework.debug(11, "MetacatDataStore: getting cached file");
       return localfile;
     }
     else
@@ -79,7 +79,7 @@ public class MetacatDataStore extends DataStore
       //-throw exception if file is an error and delete file
       //-return the file pointer if the file is not an error
       
-      framework.debug(9,"MetacatDataStore: getting file from Metacat");
+      framework.debug(11,"MetacatDataStore: getting file from Metacat");
       Properties props = new Properties();
       props.setProperty("action", "read");
       props.setProperty("docid", name);
@@ -124,7 +124,7 @@ public class MetacatDataStore extends DataStore
           c = reader.read();
         }
         String responseStr = response.toString();
-        ClientFramework.debug(9, "responseStr: " + 
+        ClientFramework.debug(11, "responseStr: " + 
                               responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
@@ -218,10 +218,10 @@ public class MetacatDataStore extends DataStore
       prop.put("public", access);
       prop.put("doctext", fileText.toString());
       prop.put("docid", name);
-      ClientFramework.debug(9, "sending docid: " + name + " to metacat");
-      ClientFramework.debug(9, "action: " + action);
-      ClientFramework.debug(9, "public access: " + access);
-      ClientFramework.debug(9, "file: " + fileText.toString());
+      ClientFramework.debug(11, "sending docid: " + name + " to metacat");
+      ClientFramework.debug(11, "action: " + action);
+      ClientFramework.debug(11, "public access: " + access);
+      ClientFramework.debug(11, "file: " + fileText.toString());
       
       InputStream metacatInput = null;
       metacatInput = framework.getMetacatInputStream(prop, true);
@@ -235,7 +235,7 @@ public class MetacatDataStore extends DataStore
       }
       
       String message = messageBuf.toString();
-      ClientFramework.debug(9, "message from server: " + message);
+      ClientFramework.debug(11, "message from server: " + message);
       
       if(message.indexOf("<error>") != -1)
       {//there was an error

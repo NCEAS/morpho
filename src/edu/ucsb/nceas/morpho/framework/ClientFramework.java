@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 20:10:16 $'
- * '$Revision: 1.56 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-13 22:21:27 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -991,38 +991,6 @@ public class ClientFramework extends javax.swing.JFrame
       }
     }
   } 
-
-  /**
-   * returns the next local id from the config file
-   * returns null if configXML was unable to increment the id number
-   */
-  public synchronized String getNextId()
-  {
-    String scope = profile.get("scope", 0);
-    String lastidS = profile.get("lastId", 0);
-    int lastid = (new Integer(lastidS)).intValue();
-    String separator = profile.get("separator", 0);
-    
-    if(scope.trim().equals("USERNAME"))
-    { //this keyword means to use the username for the scope
-      String username = profile.get("username", 0);
-      scope = username;
-    }
-    
-    String identifier = scope + separator + lastid;
-    lastid++;
-    String s = "" + lastid;
-    if(!profile.set("lastId", 0, s))
-    {
-      debug(1, "Error incrementing the accession number id");
-      return null;
-    }
-    else
-    {
-      profile.save();
-      return identifier + ".1"; 
-    }
-  }
 
   /**
    * Print debugging messages based on severity level, where severity level 1

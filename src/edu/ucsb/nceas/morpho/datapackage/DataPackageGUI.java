@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:22 $'
- * '$Revision: 1.16 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-13 22:21:27 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,7 +241,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   public void actionPerformed(ActionEvent e) 
   {
     String command = e.getActionCommand();
-    framework.debug(9, "action fired: " + command);
+    framework.debug(11, "action fired: " + command);
     EditorInterface editor;
     
     if(command.equals("Edit"))
@@ -324,6 +324,9 @@ public class DataPackageGUI extends javax.swing.JFrame
   public void editingCompleted(String xmlString, String id, String location)
   {
     System.out.println("editing complete: id: " + id + " location: " + location);
+    AccessionNumber a = new AccessionNumber(framework);
+    boolean metacatpublic = false;
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
     //System.out.println(xmlString);
     try
     {
@@ -338,19 +341,50 @@ public class DataPackageGUI extends javax.swing.JFrame
                                JOptionPane.WARNING_MESSAGE);
         if(choice == JOptionPane.YES_OPTION)
         {
-          System.out.println("saving file with public access");
-          mds.saveFile(id, new StringReader(xmlString), true);
+          metacatpublic = true;
+        }
+        if(id.trim().equals(dataPackage.getID().trim()))
+        { //edit the package file
+          String oldid = id;
+          id = a.incRev(id);
+          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
+          String newPackageFile = a.incRevInTriples(f, oldid, id);
+          mds.saveFile(id, new StringReader(newPackageFile), metacatpublic);
         }
         else
-        {
-          mds.saveFile(id, new StringReader(xmlString), false);
+        { //edit another file in the package
+          String oldid = id;
+          id = a.incRev(id);
+          mds.saveFile(id, new StringReader(xmlString), metacatpublic);
+          String newPackageId = a.incRev(dataPackage.getID());
+          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
+                                                    oldid,
+                                                    id);
+          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
+                       metacatpublic);
         }
-      
       }
       else if(location.equals(DataPackage.LOCAL))
       { //save it locally
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
-        fsds.saveFile(id, new StringReader(xmlString), false);
+        if(id.trim().equals(dataPackage.getID().trim()))
+        { //we just edited the package file itself
+          String oldid = id;
+          id = a.incRev(id);
+          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
+          String newPackageFile = a.incRevInTriples(f, oldid, id);
+          fsds.saveFile(id, new StringReader(newPackageFile), false);
+        }
+        else
+        { //we edited a file in the package
+          String oldid = id;
+          id = a.incRev(id);
+          fsds.saveFile(id, new StringReader(xmlString), false);
+          String newPackageId = a.incRev(dataPackage.getID());
+          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
+                                                    oldid, 
+                                                    id);
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile), false);
+        }
       }
     }
     catch(Exception e)
@@ -359,12 +393,4 @@ public class DataPackageGUI extends javax.swing.JFrame
       e.printStackTrace();
     }
   }
-/*  
-  public static void main(String[] args)
-  {
-    ConfigXML conf = new ConfigXML("./lib/config.xml");
-    ClientFramework cf = new ClientFramework(conf);
-    //new DataPackageGUI(cf, new DataPackage()).show();
-  }
-*/
 }
