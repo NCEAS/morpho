@@ -435,6 +435,7 @@ public class Catalog {
 	try {
 	    // tack on a basename because URLs point to files not dirs
 	    String userdir = fixSlashes(System.getProperty("user.dir"));
+	    if (userdir.startsWith("/")) userdir = userdir.substring(1,userdir.length());
 	    catalogCwd = new URL("file:///" + userdir + "/basename");
 	} catch (MalformedURLException e) {
 	    String userdir = fixSlashes(System.getProperty("user.dir"));
