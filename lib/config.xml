@@ -18,6 +18,7 @@
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>
   <tempDir>tmp</tempDir>
+  <morphoConfigJarLocation>lib/morpho-config.jar</morphoConfigJarLocation>
   <stylesheetLocation>style/</stylesheetLocation>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
   <accessFileType>
@@ -202,6 +203,8 @@
   <uid_tag>uid</uid_tag>
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
-  <lookAndFeel>kunststoff</lookAndFeel>
+  <lookAndFeel></lookAndFeel>
   <current_profile></current_profile>
+  <doctype_xslt_mappings>
+  </doctype_xslt_mappings>
 </config>
