@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-20 21:32:50 $'
- * '$Revision: 1.152 $'
+ *     '$Date: 2004-02-20 22:53:36 $'
+ * '$Revision: 1.153 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1002,7 +1002,7 @@ public class DocFrame extends javax.swing.JFrame
     treeModel.reload();
     tree.setModel(treeModel);
 
-    tree.expandRow(1);
+    tree.expandRow(4);
 //    tree.expandRow(2);
     tree.setSelectionRow(0);
     headLabel.setText("Morpho Editor");
@@ -1082,6 +1082,7 @@ public class DocFrame extends javax.swing.JFrame
    *  Then selects the node found
    */
    private void findNode(DefaultMutableTreeNode treeNode, String name, int n) {
+     if (name==null) name = "dataset";
      DefaultMutableTreeNode startNode = treeNode;
      String newName = name;
      // handle the special case of the 'name' being a simple xpath

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-20 21:32:50 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2004-02-20 22:53:36 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,11 +209,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     DocFrame editorframe = new DocFrame();
     editorframe.setController(this);
     editorframe.setVisible(true);
-    if (nodeName!=null) {
-      editorframe.initDoc(morpho, doc, id, location, nodeName, cnt);      
-    } else {
-      editorframe.initDoc(morpho, doc, id, location);
-    }
+    editorframe.initDoc(morpho, doc, id, location, nodeName, cnt);      
     this.id = id;
     this.location = location;
     //MBJ if (framework!=null) {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-20 21:33:47 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-02-20 22:54:07 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ public class EditCommand implements Command {
         Document thisdoc = controller.getFactory().openAsDom(id);
 
         String entIndS = controller.getTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP);
-        int entIndex = 0;
+        int entIndex = -1;
         if (entIndS!=null) {
           entIndex = ((new Integer(entIndS)).intValue()) -1; // is '1' based, so shbtract 1
         } 
@@ -112,11 +112,11 @@ public class EditCommand implements Command {
         if (attrIndS!=null) {
           attrIndex = ((new Integer(attrIndS)).intValue()) -1; // is '1' based, so shbtract 1
         } 
-        if(entIndex>0) {
+        if(entIndex>-1) {
           editor.openEditor(thisdoc, id, location, controller, 
                             "dataTable["+entIndex+"]/attribute-", attrIndex);
         } else {
-          editor.openEditor(thisdoc, id, location, controller, "dattribute-", attrIndex);
+          editor.openEditor(thisdoc, id, location, controller, null, 0);
         }
     }
 }
