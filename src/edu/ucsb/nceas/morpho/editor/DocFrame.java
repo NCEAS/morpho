@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-05 21:07:54 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-06-05 22:52:30 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,6 +104,7 @@ public class DocFrame extends javax.swing.JFrame
     javax.swing.JMenuItem CardmenuItem;
     javax.swing.JMenuItem DeletemenuItem;
     javax.swing.JMenuItem DupmenuItem;
+    javax.swing.JMenuItem AttrmenuItem;
     
     
  /**
@@ -166,6 +167,9 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(DupmenuItem);
     DeletemenuItem = new JMenuItem("Delete");
     popup.add(DeletemenuItem);
+    popup.add(new JSeparator());
+    AttrmenuItem = new JMenuItem("Edit Attributes");
+    popup.add(AttrmenuItem);
 	
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
@@ -180,7 +184,7 @@ public class DocFrame extends javax.swing.JFrame
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
-		
+		AttrmenuItem.addActionListener(lSymAction);
     //Create the popup menu.
     javax.swing.JPopupMenu popup = new JPopupMenu();
 		
@@ -344,6 +348,8 @@ class SymAction implements java.awt.event.ActionListener {
 				Del_actionPerformed(event);
 			else if (object == DupmenuItem)
 				Dup_actionPerformed(event);
+			else if (object == AttrmenuItem)
+				Attr_actionPerformed(event);
 			else if (object == reload)
 				reload_actionPerformed(event);
 			else if (object == DTDParse)
@@ -551,6 +557,17 @@ public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
   return newnode;
 }
 	
+void Attr_actionPerformed(java.awt.event.ActionEvent event) {
+  TreePath tp = tree.getSelectionPath();
+	if (tp!=null) {
+	  Object ob = tp.getLastPathComponent();
+	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+	  Hashtable attr = ((NodeInfo)node.getUserObject()).attr;
+	  String title = "Attributes of "+ ((NodeInfo)node.getUserObject()).getName();
+    AttributeEditDialog aed = new AttributeEditDialog(this,title,attr);
+    aed.show();
+  }
+}
 	
 void Dup_actionPerformed(java.awt.event.ActionEvent event) {
   TreePath tp = tree.getSelectionPath();
