@@ -1,368 +1,264 @@
 <root>
-<descgeog help="A geographic extent description is especially important when the 
-               extent of the data set is not well described by the 
-               &quot;Bounding_Rectangle_Coordinates&quot;, or in the case of data which 
-               are not specifically geospatial, to provide a geographic setting 
-               for the item being documented. Assuming the 
-               &quot;Bounding_Rectangle_Coordinates&quot; do not adequately describe the 
-               extent of the data set, the discrepancy can be identified and 
-               described in this data element. If the item being documented is 
-               not specifically geospatial, the &quot;Bounding_Rectangle_Coordinates&quot;
-               can define a general polygon, such as a rectangle around a 
-               country, with this &quot;Description_of_Geographic_Extent&quot; element 
-               containing a disclaimer concerning the 
-               &quot;Bounding_Rectangle_Coordinates&quot; and/or further detail concerning
-               the geographic area of concern for the item being documented. For
-               example, a study of the diseases of salmon may not have a 
-               specific geographic extent associated with it, but the salmon 
-               involved in the study were collected in Washington and Oregon 
-               states, thus the &quot;Bounding_Rectangle_Coordinates&quot; might form a 
-               general rectangle around the states of Washington and Oregon, but
-               the &quot;Description_of_Geographic_Extent&quot; might describe the fact 
-               that the extent within Washington and Oregon included only 
-               certain rivers within those states. This data element differs 
-               from the standard data element &quot;Place_Keyword&quot; in that it allows 
-               a free text description of the geographic extent, rather than 
-               just a list of words or phrases useful as an index of location 
-               names associated with the data set." >
+  <descgeog
+  help="A geographic extent description is especially important when the extent of the data set is not well described by the &quot;Bounding_Rectangle_Coordinates&quot;, or in the case of data which are not specifically geospatial, to provide a geographic setting for the item being documented. Assuming the &quot;Bounding_Rectangle_Coordinates&quot; do not adequately describe the extent of the data set, the discrepancy can be identified and described in this data element. If the item being documented is not specifically geospatial, the &quot;Bounding_Rectangle_Coordinates&quot; can define a general polygon, such as a rectangle around a country, with this &quot;Description_of_Geographic_Extent&quot; element containing a disclaimer concerning the &quot;Bounding_Rectangle_Coordinates&quot; and/or further detail concerning the geographic area of concern for the item being documented. For example, a study of the diseases of salmon may not have a specific geographic extent associated with it, but the salmon involved in the study were collected in Washington and Oregon states, thus the &quot;Bounding_Rectangle_Coordinates&quot; might form a general rectangle around the states of Washington and Oregon, but the &quot;Description_of_Geographic_Extent&quot; might describe the fact that the extent within Washington and Oregon included only certain rivers within those states. This data element differs from the standard data element &quot;Place_Keyword&quot; in that it allows a free text description of the geographic extent, rather than just a list of words or phrases useful as an index of location names associated with the data set.">
 
-</descgeog>
-<bounding help="The limits of coverage of a data set expressed by latitude 
-              and longitude values in the order western-most, eastern-most, 
-              northern-most, and southern-most.  For data sets that include 
-              a complete band of latitude around the earth, the West 
-              Bounding Coordinate shall be assigned the value -180.0, and 
-              the East Bounding Coordinate shall be assigned the value 180.0" >
-<westbc help="The west bounding coordinate field defines the western-most
-                    point of the bounding box that is being described.
-                    This longitude c" >
+  </descgeog>
 
-</westbc>
-<eastbc help="The east bounding coordinate field defines the eastern-most
-                    point of the bounding box that is being described.
-                    This longitude coordinate should be expressed in decimal 
-                    fractions of degrees. Whole degrees of longitude shall be 
-                    represented by a three-digit decimal number ranging from 0 
-                    through 180. When a decimal fraction of a degree is 
-                    specified, it should be separated from the whole number of 
-                    degrees by a decimal point. Decimal fractions of a degree 
-                    may be expressed to the precision desired.  Longitudes east 
-                    of the prime meridian shall be specified by a plus sign (+),
-                    or by the absence of a minus sign (-), preceding the three 
-                    digits designating degrees of longitude. Longitudes west of 
-                    the meridian shall be designated by minus sign (-) preceding
-                    the three digits designating degrees. A point on the prime 
-                    meridian shall be assigned to the Eastern Hemisphere. A 
-                    point on the 180th meridian shall be assigned to the Western
-                    Hemisphere. One exception to this last convention is 
-                    permitted. For the special condition of describing a band of
-                    latitude around the earth, the East Bounding Coordinate data
-                    element shall be assigned the value +180 (180) degrees." >
+  <bounding
+  help="The limits of coverage of a data set expressed by latitude and longitude values in the order western-most, eastern-most, northern-most, and southern-most. For data sets that include a complete band of latitude around the earth, the West Bounding Coordinate shall be assigned the value -180.0, and the East Bounding Coordinate shall be assigned the value 180.0">
 
-</eastbc>
-<northbc help="The north bounding coordinate field defines the northern-most
-                    point of the bounding box that is being described.
-                    This latitude coordinate should be expressed in decimal 
-                    fractions of degrees. Whole degrees of latitude shall be 
-                    represented by a two-digit decimal number ranging from 0 
-                    through 90.  When a decimal fraction of a degree is 
-                    specified, it shall be separated from the whole number of 
-                    degrees by a decimal point. Decimal fractions of a degree 
-                    may be expressed to the precision desired.  Latitudes north 
-                    of the equator shall be specified by a plus sign (+), or by 
-                    the absence of a minus sign (-), preceding the two digits 
-                    designating degrees. Latitudes south of the Equator shall be
-                    designated by a minus sign (-) preceding the two digits 
-                    designating degrees. A point on the Equator shall be 
-                    assigned to the Northern Hemisphere.  Any spatial address 
-                    with a latitude of +90 (90) or -90 degrees will specify the 
-                    position at the North or South Pole, respectively." >
+    <westbc
+    help="The west bounding coordinate field defines the western-most point of the bounding box that is being described. This longitude c">
 
-</northbc>
-<southbc help="The south bounding coordinate field defines the northern-most
-                    point of the bounding box that is being described.
-                    This latitude coordinate should be expressed in decimal 
-                    fractions of degrees. Whole degrees of latitude shall be 
-                    represented by a two-digit decimal number ranging from 0 
-                    through 90.  When a decimal fraction of a degree is 
-                    specified, it shall be separated from the whole number of 
-                    degrees by a decimal point. Decimal fractions of a degree 
-                    may be expressed to the precision desired.  Latitudes north 
-                    of the equator shall be specified by a plus sign (+), or by 
-                    the absence of a minus sign (-), preceding the two digits 
-                    designating degrees. Latitudes south of the Equator shall be
-                    designated by a minus sign (-) preceding the two digits 
-                    designating degrees. A point on the Equator shall be 
-                    assigned to the Northern Hemisphere.  Any spatial address 
-                    with a latitude of +90 (90) or -90 degrees will specify the 
-                    position at the North or South Pole, respectively." >
+    </westbc>
 
-</southbc>
-<boundalt help="The bounding altitude field is intended to contain
-                    altitudinal (elevation) measurements in relation to the
-                    bounding box being described.  It allows for minimum and
-                    maximum altitude fields, as well as a field for the units of
-                    measure.  The combination of these fields provide the
-                    vertical extent information for the bounding box.  The units
-                    should refer to an accepted datum as the baseline." >
-<altmin help="The minimum altitude extent of coverage for the 
-                          bounding box that is being described.  The minimum
-                          altitude should be in reference to a known datum,
-                          which should be described in the altitude units field." >
+    <eastbc
+    help="The east bounding coordinate field defines the eastern-most point of the bounding box that is being described. This longitude coordinate should be expressed in decimal fractions of degrees. Whole degrees of longitude shall be represented by a three-digit decimal number ranging from 0 through 180. When a decimal fraction of a degree is specified, it should be separated from the whole number of degrees by a decimal point. Decimal fractions of a degree may be expressed to the precision desired. Longitudes east of the prime meridian shall be specified by a plus sign (+), or by the absence of a minus sign (-), preceding the three digits designating degrees of longitude. Longitudes west of the meridian shall be designated by minus sign (-) preceding the three digits designating degrees. A point on the prime meridian shall be assigned to the Eastern Hemisphere. A point on the 180th meridian shall be assigned to the Western Hemisphere. One exception to this last convention is permitted. For the special condition of describing a band of latitude around the earth, the East Bounding Coordinate data element shall be assigned the value +180 (180) degrees.">
 
-</altmin>
-<almax help="The maximum altitude extent of coverage for the 
-                          bounding box that is being described.  The maximum
-                          altitude should be in reference to a known datum,
-                          which should be described in the altitude units field.." >
+    </eastbc>
 
-</almax>
-<altunits help="Units in which altitude is measured. This field should
-                          be in relation to a known datum which is described in
-                          the units." >
+    <northbc
+    help="The north bounding coordinate field defines the northern-most point of the bounding box that is being described. This latitude coordinate should be expressed in decimal fractions of degrees. Whole degrees of latitude shall be represented by a two-digit decimal number ranging from 0 through 90. When a decimal fraction of a degree is specified, it shall be separated from the whole number of degrees by a decimal point. Decimal fractions of a degree may be expressed to the precision desired. Latitudes north of the equator shall be specified by a plus sign (+), or by the absence of a minus sign (-), preceding the two digits designating degrees. Latitudes south of the Equator shall be designated by a minus sign (-) preceding the two digits designating degrees. A point on the Equator shall be assigned to the Northern Hemisphere. Any spatial address with a latitude of +90 (90) or -90 degrees will specify the position at the North or South Pole, respectively.">
 
-</altunits>
+    </northbc>
 
-</boundalt>
+    <southbc
+    help="The south bounding coordinate field defines the northern-most point of the bounding box that is being described. This latitude coordinate should be expressed in decimal fractions of degrees. Whole degrees of latitude shall be represented by a two-digit decimal number ranging from 0 through 90. When a decimal fraction of a degree is specified, it shall be separated from the whole number of degrees by a decimal point. Decimal fractions of a degree may be expressed to the precision desired. Latitudes north of the equator shall be specified by a plus sign (+), or by the absence of a minus sign (-), preceding the two digits designating degrees. Latitudes south of the Equator shall be designated by a minus sign (-) preceding the two digits designating degrees. A point on the Equator shall be assigned to the Northern Hemisphere. Any spatial address with a latitude of +90 (90) or -90 degrees will specify the position at the North or South Pole, respectively.">
 
-</bounding>
-<dsgpoly help="Data Set G-Polygon coordinates defining the outline of an 
-              area covered by a data set." >
-<dsgpolyo help="Data Set G-Polygon Outer G-Ring, the closed 
-                     nonintersecting boundary of an interior area." >
-</dsgpolyo>
-</dsgpoly>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
+    </southbc>
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+    <boundalt
+    help="The bounding altitude field is intended to contain altitudinal (elevation) measurements in relation to the bounding box being described. It allows for minimum and maximum altitude fields, as well as a field for the units of measure. The combination of these fields provide the vertical extent information for the bounding box. The units should refer to an accepted datum as the baseline.">
 
-  </gringlon>
+      <altmin
+      help="The minimum altitude extent of coverage for the bounding box that is being described. The minimum altitude should be in reference to a known datum, which should be described in the altitude units field.">
 
+      </altmin>
+
+      <almax
+      help="The maximum altitude extent of coverage for the bounding box that is being described. The maximum altitude should be in reference to a known datum, which should be described in the altitude units field..">
+
+      </almax>
+
+      <altunits
+      help="Units in which altitude is measured. This field should be in relation to a known datum which is described in the units.">
+
+      </altunits>
+    </boundalt>
+  </bounding>
+
+  <dsgpoly
+  help="Data Set G-Polygon coordinates defining the outline of an area covered by a data set.">
+
+    <dsgpolyo
+    help="Data Set G-Polygon Outer G-Ring, the closed nonintersecting boundary of an interior area.">
+
+    </dsgpolyo>
+  </dsgpoly>
+
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
+
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
 
-  </gringlon>
-
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
 
-  </gringlon>
-
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
 
-  </gringlon>
-
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<gring help="A set of ordered pairs of floating-point numbers, separated by commas,
-          in which the first number in each pair is the longitude of a point and 
-          the second is the latitude of the point.  Longitude and latitude are 
-          specified in decimal degrees with north latitudes positive and south 
-          negative, east longitude positive and west negative">
+
+  <gring
+  help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
 
   </gring>
-<dsgpolyx help="Data Set G-Polygon Exclusion G-Ring, the closed 
-                     nonintersecting boundary of a void area (or hole in an 
-                     interior area)." >
-                     </dsgpolyx>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+  <dsgpolyx
+  help="Data Set G-Polygon Exclusion G-Ring, the closed nonintersecting boundary of a void area (or hole in an interior area).">
 
-  </gringlon>
+  </dsgpolyx>
 
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
+
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
 
-  </gringlon>
-
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
 
-  </gringlon>
-
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<grngpoin help="A single geographic location.">
-<gringlat help="The lat">
 
-  </gringlat>
-<gringlon help="The longitude of a point of the g-ring.">
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
 
-  </gringlon>
-
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
   </grngpoin>
-<gring help="A set of ordered pairs of floating-point numbers, separated by commas,
-          in which the first number in each pair is the longitude of a point and 
-          the second is the latitude of the point.  Longitude and latitude are 
-          specified in decimal degrees with north latitudes positive and south 
-          negative, east longitude positive and west negative">
+
+  <gring
+  help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
 
   </gring>
-<grngpoin help="A single geographic location." >
-<gringlat help="The lat" >
 
-</gringlat>
-<gringlon help="The longitude of a point of the g-ring." >
+  <grngpoin help="A single geographic location.">
+    <gringlat help="The lat">
+    </gringlat>
 
-</gringlon>
+    <gringlon help="The longitude of a point of the g-ring.">
+    </gringlon>
+  </grngpoin>
 
-</grngpoin>
-<gring help="A set of ordered pairs of floating-point numbers, separated by commas,
-          in which the first number in each pair is the longitude of a point and 
-          the second is the latitude of the point.  Longitude and latitude are 
-          specified in decimal degrees with north latitudes positive and south 
-          negative, east longitude positive and west negative" >
+  <gring
+  help="A set of ordered pairs of floating-point numbers, separated by commas, in which the first number in each pair is the longitude of a point and the second is the latitude of the point. Longitude and latitude are specified in decimal degrees with north latitudes positive and south negative, east longitude positive and west negative">
 
-</gring>
-<keywtax help="" >
-<taxonkt help="Reference to a formally registered thesaurus or similar 
-                    authoritative source of taxonomic keywords." >
+  </gring>
 
-</taxonkt>
-<taxonkey help="Common use words or phrases describing the taxonomy covered 
-                    by the data set." >
+  <keywtax help="">
+    <taxonkt
+    help="Reference to a formally registered thesaurus or similar authoritative source of taxonomic keywords.">
 
-</taxonkey>
+    </taxonkt>
 
-</keywtax>
-<taxonsys help="Documentation of taxonomic sources, procedures, and treatments." >
-<classsys help="Information about the classification system or 
-                    authority used." >
-<classcit help="Relevant literature for documenting the used 
-                          classification system." >
-<citeinfo></citeinfo>
-<classmod help="A description of any modifications or exceptions made 
-                          to the classification system or authority used." >
+    <taxonkey
+    help="Common use words or phrases describing the taxonomy covered by the data set.">
 
-</classmod>
+    </taxonkey>
+  </keywtax>
 
-</classcit>
-</classsys>
-<idref help="Information on any nonauthoritative materials (e.g. field 
-                    guides) useful for reconstructing the actual 
-                    identification process." >
-<citeinfo></citeinfo>
-</idref>
-<ider help="Information about the individual(s) responsible for the 
-                    identification(s) of the specimens or sightings, etc." >
-<cntinfo help="Information about the individual(s) responsible for the 
-                          identification(s) of the specimens or sightings, etc." >
+  <taxonsys
+  help="Documentation of taxonomic sources, procedures, and treatments.">
+    <classsys
+    help="Information about the classification system or authority used.">
+      <classcit
+      help="Relevant literature for documenting the used classification system.">
 
-</cntinfo>
+        <citeinfo>
+        </citeinfo>
 
-</ider>
-<taxonpro help="Description of the methods used for the taxonomic identification." >
+        <classmod
+        help="A description of any modifications or exceptions made to the classification system or authority used.">
 
-</taxonpro>
-<taxoncom help="Information concerning the proportions and treatment of 
-                    unidentified materials ; estimates of the importance, 
-                    and identities of misidentifications, uncertain 
-                    determinations, synonyms or other incorrect usages; taxa 
-                    not well treated or requiring further work; and 
-                    expertise of field workers." >
+        </classmod>
+      </classcit>
+    </classsys>
 
-</taxoncom>
-<vouchers help="Information on the types of specimen, the repository, 
-                    and the individuals who identified the vouchers." >
-<specimen help="A word or phrase describing the type of 
-                          specimen collected." >
+    <idref
+    help="Information on any nonauthoritative materials (e.g. field guides) useful for reconstructing the actual identification process.">
 
-</specimen>
-<reposit help="Information about the curator or contact 
-                          person and/or agency responsible for the 
-                          specimens." >
-<cntinfo>
-</cntinfo>
+      <citeinfo>
+      </citeinfo>
+    </idref>
 
-</reposit>
+    <ider
+    help="Information about the individual(s) responsible for the identification(s) of the specimens or sightings, etc.">
 
-</vouchers>
-</taxonsys>
-<taxongen help="A description of the range of taxa addressed in the data set or 
-              collection." >
+      <cntinfo
+      help="Information about the individual(s) responsible for the identification(s) of the specimens or sightings, etc.">
 
-</taxongen>
-<taxoncl help="Information about the range of taxa addressed in the data set or 
-          collection.  It is recommended that one provide information starting 
-          from the taxonomic rank of kingdom, to a level which reflects the 
-          data set or collection being documented.  The levels of Kingdom, 
-          Division/Phylum, Class, Order, Family, Genus, and Species should be 
-          included as ranks as appropriate. Because the taxonomic ranks are
-          hierarchical, the Taxonomic Classification field is self-referencing
-          to allow for an arbitrary depth of rank, down to species.">
-<taxonrn help="The name of the taxonomic rank for which the Taxon rank value 
-                is provided.  This field allows for the name one of the accepted 
-                levels of Taxa.">
+      </cntinfo>
+    </ider>
 
-  </taxonrn>
-<taxonrv help="The name representing the taxonomic rank of the taxon 
-                being described. The values included may be referenced from an
-                authoritative source such as the Integrated Taxonomic
-                Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) 
-                and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget).  Also, 
-                Species2000 is another source of taxonomic information, found at
-                (http://www.sp2000.org)">
+    <taxonpro
+    help="Description of the methods used for the taxonomic identification.">
+    </taxonpro>
 
-  </taxonrv>
-<common help="Specification of applicable common names.  These common names 
-                may be general descriptions of a group of organisms if 
-                appropriate.">
+    <taxoncom
+    help="Information concerning the proportions and treatment of unidentified materials ; estimates of the importance, and identities of misidentifications, uncertain determinations, synonyms or other incorrect usages; taxa not well treated or requiring further work; and expertise of field workers.">
 
-  </common>
+    </taxoncom>
 
+    <vouchers
+    help="Information on the types of specimen, the repository, and the individuals who identified the vouchers.">
+
+      <specimen
+      help="A word or phrase describing the type of specimen collected.">
+      </specimen>
+
+      <reposit
+      help="Information about the curator or contact person and/or agency responsible for the specimens.">
+
+        <cntinfo>
+        </cntinfo>
+      </reposit>
+    </vouchers>
+  </taxonsys>
+
+  <taxongen
+  help="A description of the range of taxa addressed in the data set or collection.">
+
+  </taxongen>
+
+  <taxoncl
+  help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
+
+    <taxonrn
+    help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
+
+    </taxonrn>
+
+    <taxonrv
+    help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
+
+    </taxonrv>
+
+    <common
+    help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
+
+    </common>
   </taxoncl>
-<taxoncl help="Information about the range of taxa addressed in the data set or 
-          collection.  It is recommended that one provide information starting 
-          from the taxonomic rank of kingdom, to a level which reflects the 
-          data set or collection being documented.  The levels of Kingdom, 
-          Division/Phylum, Class, Order, Family, Genus, and Species should be 
-          included as ranks as appropriate. Because the taxonomic ranks are
-          hierarchical, the Taxonomic Classification field is self-referencing
-          to allow for an arbitrary depth of rank, down to species." >
-<taxonrn help="The name of the taxonomic rank for which the Taxon rank value 
-                is provided.  This field allows for the name one of the accepted 
-                levels of Taxa." >
 
-</taxonrn>
-<taxonrv help="The name representing the taxonomic rank of the taxon 
-                being described. The values included may be referenced from an
-                authoritative source such as the Integrated Taxonomic
-                Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) 
-                and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget).  Also, 
-                Species2000 is another source of taxonomic information, found at
-                (http://www.sp2000.org)" >
+  <taxoncl
+  help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
 
-</taxonrv>
-<common help="Specification of applicable common names.  These common names 
-                may be general descriptions of a group of organisms if 
-                appropriate." >
+    <taxonrn
+    help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
 
-</common>
+    </taxonrn>
 
-</taxoncl>
+    <taxonrv
+    help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
+
+    </taxonrv>
+
+    <common
+    help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
+
+    </common>
+  </taxoncl>
 </root>
 
