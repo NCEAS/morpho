@@ -18,8 +18,8 @@
   </contextNode>
   <contextNode name="attribute"> 
     <name>attributeName</name>
-    <numberType>measurementScale/interval/numericDomain/numberType|measurementScale/ratio/numericDomain/numberType|</numberType> 
-    <isText>measurementScale/nominal|measurementScale/ordinal</isText>
+    <numberType>measurementScale/interval/numericDomain/numberType|measurementScale/ratio/numericDomain/numberType</numberType> 
+    <isText>measurementScale/nominal|measurementScale/ordinal|measurementScale/nominal|measurementScale/ordinal</isText>
     <isDate>measurementScale/datetime</isDate>
     <unit>measurementScale/interval/unit/standardUnit|measurementScale/ratio/unit/standardUnit</unit>
   </contextNode>
@@ -27,6 +27,6 @@
     <name>objectName</name>
     <size>size</size>
     <format>dataFormat/externallyDefinedFormat/formatName</format>
-    <isText>dataFormat/textFormat</isText>
+    <isText>count(dataFormat/textFormat)!=0</isText>
   </contextNode>
 </xpathKeyMap>
