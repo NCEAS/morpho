@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-09-21 20:27:13 $'
- * '$Revision: 1.54 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-03 15:50:43 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,14 +396,16 @@ public class DataPackageGUI extends javax.swing.JFrame
         Node n = children.item(i);
         if(n.getNodeName().equals("paragraph"))
         {
-          String nodeval = n.getFirstChild().getNodeValue();
+          String nodeval = getTextValue(n);
+//          String nodeval = n.getFirstChild().getNodeValue();
           if(nodeval.trim().equals(""))
           {
             abstractS += "";
           }
           else
           {
-            abstractS += "<p>" + n.getFirstChild().getNodeValue() + "</p>";
+            abstractS += "<p>" + getTextValue(n) + "</p>";
+//            abstractS += "<p>" + n.getFirstChild().getNodeValue() + "</p>";
           }
         }
       }
@@ -452,18 +454,21 @@ public class DataPackageGUI extends javax.swing.JFrame
           {
             if(children.item(j).getNodeName().trim().equals("givenName"))
             {
-              firstName = children.item(j).getFirstChild().getNodeValue().trim();
+              firstName = getTextValue(children.item(j));
+//              firstName = children.item(j).getFirstChild().getNodeValue().trim();
             }
             else if(children.item(j).getNodeName().trim().equals("surName"))
             {
-              lastName = children.item(j).getFirstChild().getNodeValue().trim();
+              lastName = getTextValue(children.item(j));
+//              lastName = children.item(j).getFirstChild().getNodeValue().trim();
             }
           }
           name = firstName + " " + lastName;
         }
         else if(nodename.equals("organizationName"))
         {
-          orgname = n.getFirstChild().getNodeValue().trim();
+          orgname = getTextValue(n);
+//          orgname = n.getFirstChild().getNodeValue().trim();
         }
         else if(nodename.equals("address"))
         {
@@ -478,19 +483,23 @@ public class DataPackageGUI extends javax.swing.JFrame
             String cnn = cn.getNodeName().trim(); //child node name
             if(cnn.equals("deliveryPoint"))
             {
-              dp = cn.getFirstChild().getNodeValue().trim();
+              dp = getTextValue(cn);
+ //             dp = cn.getFirstChild().getNodeValue().trim();
             }
             else if(cnn.equals("city"))
             {
-              city = cn.getFirstChild().getNodeValue().trim();
+              city = getTextValue(cn);
+//              city = cn.getFirstChild().getNodeValue().trim();
             }
             else if(cnn.equals("administrativeArea"))
             {
-              aa = cn.getFirstChild().getNodeValue().trim();
+              aa = getTextValue(cn);
+//              aa = cn.getFirstChild().getNodeValue().trim();
             }
             else if(cnn.equals("postalCode"))
             {
-              pc = cn.getFirstChild().getNodeValue().trim();
+              pc = getTextValue(cn);
+//              pc = cn.getFirstChild().getNodeValue().trim();
             }
           }
           
@@ -505,19 +514,23 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
         else if(nodename.equals("phone"))
         {
-          phone = n.getFirstChild().getNodeValue().trim();
+          phone = getTextValue(n);
+ //         phone = n.getFirstChild().getNodeValue().trim();
         }
         else if(nodename.equals("electronicMailAddress"))
         {
-          email = n.getFirstChild().getNodeValue().trim();
+          email = getTextValue(n);
+//          email = n.getFirstChild().getNodeValue().trim();
         }
         else if(nodename.equals("onlineLink"))
         {
-          web = n.getFirstChild().getNodeValue().trim();
+          web = getTextValue(n);
+//          web = n.getFirstChild().getNodeValue().trim();
         }
         else if(nodename.equals("role"))
         {
-          role = n.getFirstChild().getNodeValue().trim();
+          role = getTextValue(n);
+//          role = n.getFirstChild().getNodeValue().trim();
         }
       }
       originators += htmlize(name) + htmlize(orgname) + htmlize(address) + 
@@ -1116,4 +1129,15 @@ public class DataPackageGUI extends javax.swing.JFrame
       entityFileList.clearSelection();
     }
   }
+  
+  
+  private String getTextValue(Node nd) {
+    String val = "";
+    Node child = nd.getFirstChild();
+    if (child!=null) {
+      val = child.getNodeValue().trim();
+    }
+    return val;
+  }
+  
 }
