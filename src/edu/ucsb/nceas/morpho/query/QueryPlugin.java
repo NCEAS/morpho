@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:20 $'
- * '$Revision: 1.109 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-06 00:58:21 $'
+ * '$Revision: 1.110 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -395,21 +395,12 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 
     OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
     Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
-    HeadResultSet originalSet = (HeadResultSet)ownerQuery.execute();
-    Query query = originalSet.getQuery();
-    String source = "local";
-    Vector resultVector = originalSet.getResultsVector();
-    Morpho morpho = originalSet.getMorpho();
-
-    // create a new headresultset base on the new vector
-    HeadResultSet newResultSet = new HeadResultSet(
-                                           query, source, resultVector, morpho);
+    LocalQuery localOwnerQuery = new LocalQuery(ownerQuery, morpho);
+    HeadResultSet originalSet = (HeadResultSet)localOwnerQuery.execute();
     // reset the header name
-    newResultSet.setHeader(headNames);
-    // reset the mapping
-    //newResultSet.setMapping(mapping);
-    return (ColumnSortableTableModel) newResultSet;
-    //return (ColumnSortableTableModel) originalSet;
+    originalSet.setHeader(headNames);
+
+    return (ColumnSortableTableModel) originalSet;
   }
 
 
