@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-22 16:34:51 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-22 17:03:49 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,6 +133,8 @@ public class UIController
 
         updateWindowMenus();
         window.addToolbarActions(toolbarList);
+
+        updateStatusBar(window.getStatusBar());
 
         if (getCurrentActiveWindow()==null) setCurrentActiveWindow(window);
         return window;
@@ -301,6 +303,32 @@ public class UIController
     }
 
     /**
+     * updates status bar in response to changes in connection parameters
+     */
+    public void updateAllStatusBars()
+    {
+        Enumeration windows = windowList.elements();
+        while (windows.hasMoreElements()) {
+            StatusBar statusBar = 
+                ((MorphoFrame)windows.nextElement()).getStatusBar();
+            updateStatusBar(statusBar);
+        }
+    }
+
+    /**
+     * Updates a single StatusBar to reflect the current network state
+     *
+     * @param statusBar the status bar to be updated
+     */
+    private void updateStatusBar(StatusBar statusBar)
+    {
+        statusBar.setConnectStatus(morpho.getNetworkStatus());
+        statusBar.setLoginStatus(morpho.isConnected() && 
+                morpho.getNetworkStatus());
+        statusBar.setSSLStatus(morpho.getSslStatus());
+    }
+
+    /**
      * set currently active window
      *
      *  @param window the currently active MorphoFrame window
@@ -319,6 +347,7 @@ public class UIController
     {
         return currentActiveWindow;
     }
+
     /**
      * Update the menu bar by rebuilding it when a new menu is added
      * to the list.

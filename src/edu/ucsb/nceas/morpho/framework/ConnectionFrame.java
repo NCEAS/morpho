@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-16 23:19:50 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2002-08-22 17:03:49 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     super((Frame)cont, modal);
     */
     super();
+    this.setModal(true);
     
     container = cont;
 

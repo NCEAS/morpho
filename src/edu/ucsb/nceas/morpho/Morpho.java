@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-22 17:03:49 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,10 +80,15 @@ public class Morpho
     /** The version of this release of Morpho */
     public static String VERSION = "0.0.0";
 
-    /** Constant to indicate a spearator should precede an action */
+    /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
-    /** Description of the Field */
+    /** Constant to indicate a separator should follow an action */
     public static String SEPARATOR_FOLLOWING = "separator_following";
+    /**
+     * The polling interval, in milliSeconds, between attempts to verify that  
+     * MetaCat is available over the network
+     */
+    private static final int METACAT_PING_INTERVAL = 5000;
 
     // redirects standard out and err streams
     static boolean log_file = false;
@@ -108,13 +113,6 @@ public class Morpho
 
     private boolean versionFlag = true;
 
-    /**
-     * sets networkStatus to boolean true if metacat connection can be made
-     *
-     * @param isStartUp  - set to boolean "true" when calling for first time, so
-     *      we don't get "No such service registered." exception from
-     *      getServiceProvider()
-     */
     private URL metacatPingURL = null;
     private URLConnection urlConn = null;
     private boolean origNetworkStatus = false;
@@ -157,18 +155,18 @@ public class Morpho
             Log.debug(5, "unable to read or resolve Metacat URL");
         }
 
-        /*
-            /detects whether metacat is available, and if so, sets networkStatus = true
-            / Boolean "true" tells doPing() method this is startup, so we don't get
-            / "No such service registered." exception from getServiceProvider()
-            doPing(true);
-            updateStatusBar();
-            /start a Timer to check periodically whether metacat remains available
-            /over the network...
-            Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
-            timer.setRepeats(true);
-            timer.start();
-          */
+        // detects whether metacat is available, and if so, sets 
+        // networkStatus = true
+        // Boolean "true" tells doPing() method this is startup, so we don't get
+        // "No such service registered." exception from getServiceProvider()
+        startPing();
+        finishPing(true);
+
+        //start a Timer to check periodically whether metacat remains available
+        //over the network...
+        Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
+        timer.setRepeats(true);
+        timer.start();
     }
 
 
@@ -374,18 +372,6 @@ public class Morpho
         return response;
     }
 
-
-    /**
-     * allows other classes to determine whether network connection to metacat
-     * is available before trying to contact it, since this would cause an error
-     *
-     * @return   The MetacatAvailable value
-     */
-    public boolean isMetacatAvailable()
-    {
-        return networkStatus;
-    }
-
     /**
      * Get the username associated with this framework
      *
@@ -410,12 +396,32 @@ public class Morpho
     /**
      * Determines if the framework has a valid login
      *
-     * @return    The Connected value
-     * @returns   boolean true if connected, false otherwise
+     * @return   boolean true if connected to Metacat, false otherwise
      */
     public boolean isConnected()
     {
         return connected;
+    }
+
+    /**
+     * Determines if the framework is using an ssl connection
+     *
+     * @return   boolean true if using SSL, false otherwise
+     */
+    public boolean getSslStatus()
+    {
+        return sslStatus;
+    }
+
+    /**
+     * Determine whether a network connection is available before 
+     * trying to open a socket, since this would cause an error
+     *
+     * @return   boolean true if the network is reachable
+     */
+    public boolean getNetworkStatus()
+    {
+        return networkStatus;
     }
 
     /**
@@ -591,7 +597,10 @@ public class Morpho
         }
 
         if (wasConnected != connected) {
-            updateStatusBar();
+            UIController controller = UIController.getInstance();
+            if (controller != null) {
+                controller.updateAllStatusBars();
+            }
             fireConnectionChangedEvent();
         }
 
@@ -703,6 +712,10 @@ public class Morpho
             // add provider for SSL support
             java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
 
+            // Show the Splash frame
+            SplashFrame sf = new SplashFrame(true);
+            sf.setVisible(true);
+
             // Make sure the config directory exists
             File configurationFile = null;
             File configDir = null;
@@ -741,8 +754,11 @@ public class Morpho
             }
 
             // Open the configuration file
-            //ConfigXML config = new ConfigXML(configFile);
-            ConfigXML config = new ConfigXML(configurationFile.getAbsolutePath());
+            ConfigXML config = new ConfigXML(
+                    configurationFile.getAbsolutePath());
+            
+            // Set up logging, possibly to a file as appropriate
+            initializeLogging(config);
 
             // Create a new instance of our application
             Morpho morpho = new Morpho(config);
@@ -752,10 +768,6 @@ public class Morpho
 
             // set to the Look and Feel of the native system.
             setLookAndFeel(config.get("lookAndFeel", 0));
-
-            // Show the Splash frame
-            SplashFrame sf = new SplashFrame(true);
-            sf.setVisible(true);
 
             // Check expiration date
             Date expiration = new Date(102, 5, 1);
@@ -801,25 +813,6 @@ public class Morpho
                     morpho.setProfile(profile);
                 }
 
-                // Set up logging as appropriate
-                Log log = Log.getLog();
-                debug_level = (new Integer(config.get("debug_level", 0))).intValue();
-                log.setDebugLevel(debug_level);
-                String log_file_setting = config.get("log_file", 0);
-                if (log_file_setting != null) {
-                    if (log_file_setting.equalsIgnoreCase("true")) {
-                        log_file = true;
-                    } else {
-                        log_file = false;
-                    }
-                }
-                if (log_file) {
-                    FileOutputStream err = new FileOutputStream("stderr.log");
-                    PrintStream errPrintStream = new PrintStream(err);
-                    System.setErr(errPrintStream);
-                    System.setOut(errPrintStream);
-                }
-
                 // Set up the Service Controller
                 ServiceController services = ServiceController.getInstance();
 
@@ -835,24 +828,8 @@ public class Morpho
                 // make the Morpho visible.
                 sf.dispose();
 
-/*
-    // Set up a test service
-    Beep beeper = new Beep();
-    beeper.initialize();
-    Action testServiceAction = new AbstractAction("Test Service") {
-      public void actionPerformed(ActionEvent e) {
-        testService();
-      }
-    };
-    testServiceAction.putValue(Action.SHORT_DESCRIPTION, "Test");
-    testServiceAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
-    testServiceAction.putValue("menuPosition", new Integer(2));
-    Action[] testActions = new Action[1];
-    testActions[0] = testServiceAction;
-    controller.addToolbarActions(testActions);
-*/
-    
-                // Create a blank frame as a placeholder until a plugin takes over
+                // Create a blank frame as a placeholder until a plugin
+                // takes over
                 MorphoFrame initialFrame = controller.addWindow("Morpho");
                 initialFrame.setVisible(true);
             }
@@ -862,19 +839,7 @@ public class Morpho
             System.exit(1);
         }
     }
-/*
-    public static void testService()
-    {
-    try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                   services.getServiceProvider(BeepService.class);
-        ((BeepService)provider).beep();
-      } catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
-      }
-    }
-*/    
+
     /**
      * Set up a SAX parser for reading an XML document
      *
@@ -964,8 +929,9 @@ public class Morpho
     private void setLastID(String scope)
     {
         //MB 05-21-02: if (connected && networkStatus) {
+        // only execute if connected to avoid hanging when there is 
+        // no network connection
         if (networkStatus) {
-            // only execute if connected to avoid hanging when there is no network connection
             String id = getLastID(scope);
             if (id != null) {
                 int num = (new Integer(id)).intValue();
@@ -1243,7 +1209,7 @@ public class Morpho
             cf.setVisible(true);
         } else {
             profile.set("searchmetacat", 0, "false");
-            Log.debug(6, "No MetaCat connection available - can't log in");
+            Log.debug(6, "No network connection available - can't log in");
         }
     }
 
@@ -1327,41 +1293,8 @@ public class Morpho
     {
         HttpMessage.setCookie(null);
         connected = false;
-        updateStatusBar();
+        UIController.getInstance().updateAllStatusBars();
         fireConnectionChangedEvent();
-    }
-
-    /**
-     * updates status bar in response to changes in connection parameters
-     */
-    private void updateStatusBar()
-    {
-        /*
-            Log.debug(19,"updateStatusBar() called; networkStatus = "+networkStatus);
-            statusBar.setConnectStatus(networkStatus);
-            statusBar.setLoginStatus  (connected && networkStatus);
-            statusBar.setSSLStatus    (sslStatus);
-            statusBar.setMessage(makeStatusBarMessage());
-            statusBar.validate();
-          */
-    }
-
-
-    /**
-     * Description of the Method
-     *
-     * @return   Description of the Returned Value
-     */
-    private String makeStatusBarMessage()
-    {
-        /*
-            if (networkStatus) {
-            if (connected)  return STATUSBAR_MSG_LOGGED_IN + metacatURL;
-            else            return STATUSBAR_MSG_NET_OK_NOT_LOGGED_IN + metacatURL;
-            }
-            return STATUSBAR_MSG_NO_NET_NOT_LOGGED_IN + metacatURL;
-          */
-                return null;
     }
 
     /**
@@ -1443,73 +1376,100 @@ public class Morpho
             }
         };
         
-    //overload to give default functionality; boolean flag needed only at startup
-    /** Description of the Method */
+    /** 
+     * overload to give default functionality; boolean flag needed 
+     * only at startup
+     */
     private void doPing()
     {
         doPing(false);
     }
 
     /**
-     * Description of the Method
+     * Sets networkStatus to boolean true if metacat connection can be made
      *
-     * @param isStartUp  Description of Parameter
+     * @param isStartUp  - set to boolean "true" when calling for first time, so
+     *      we don't get "No such service registered." exception from
+     *      getServiceProvider()
      */
     private void doPing(final boolean isStartUp)
     {
 
-        final SwingWorker sbUpdater =
-            new SwingWorker()
+        final SwingWorker sbUpdater = new SwingWorker()
+        {
+            public Object construct()
             {
+                startPing();
+                return null;
+                //return value not used by this program
+            }
 
-                public Object construct()
-                {
-                    //check if metacat can be reached:
-                    origNetworkStatus = networkStatus;
-                    try {
-                        urlConn = metacatPingURL.openConnection();
-                        urlConn.connect();
-                        networkStatus = (urlConn.getDate() > 0L);
-                    } catch (IOException ioe) {
-                        Log.debug(19, " - unable to open network connection to Metacat");
-                        networkStatus = false;
-                        if (profile != null) {
-                            profile.set("searchmetacat", 0, "false");
-                        }
-                    }
-                    return null;
-                    //return value not used by this program
-                }
-
-                //Runs on the event-dispatching thread.
-                public void finished()
-                {
-                    Log.debug(21, "doPing() called - network available?? - " + networkStatus);
-                    if (origNetworkStatus != networkStatus) {
-                        //if lost connection, can't log out, but can still do cleanup
-                        if (!networkStatus) {
-                            profile.set("searchmetacat", 0, "false");
-                            doLogoutCleanup();
-                        } else {
-                            if (!isStartUp) {
-                                //update package list
-                                /*
-                                    try {
-                                    ServiceProvider provider
-                                    = getServiceProvider(QueryRefreshInterface.class);
-                                    ((QueryRefreshInterface)provider).refresh();
-                                    } catch (ServiceNotHandledException snhe) {
-                                    Log.debug(6, snhe.getMessage());
-                                    }
-                                  */
-                            }
-                            //update status bar
-                            updateStatusBar();
-                        }
-                    }
-                }
-            };
+            //Runs on the event-dispatching thread.
+            public void finished()
+            {
+                finishPing(isStartUp);
+            }
+        };
         sbUpdater.start();
+    }
+
+    /**
+     * Start the ping operation.  At startup this is called in the main
+     * application thread, but later it is used in a distinct thread to
+     * keep the application responsive.
+     */
+    private void startPing()
+    {
+        //check if metacat can be reached:
+        origNetworkStatus = networkStatus;
+        try {
+            Log.debug(19, "Determining net status ...");
+            urlConn = metacatPingURL.openConnection();
+            urlConn.connect();
+            networkStatus = (urlConn.getDate() > 0L);
+            Log.debug(19, "... which is: " + networkStatus);
+        } catch (IOException ioe) {
+            Log.debug(19, " - unable to open network connection to Metacat");
+            networkStatus = false;
+            if (profile != null) {
+                profile.set("searchmetacat", 0, "false");
+            }
+        }
+    }
+
+    /**
+     * Finish the ping operation.  At startup this is called in the main
+     * application thread, but later it is used in a distinct thread to
+     * keep the application responsive.
+     */
+    private void finishPing(boolean isStartUp)
+    {
+        Log.debug(21, "doPing() called - network available?? - " + 
+                networkStatus);
+        if (origNetworkStatus != networkStatus) {
+            //if lost connection, can't log out, but can still do cleanup
+            if (!networkStatus) {
+                profile.set("searchmetacat", 0, "false");
+                doLogoutCleanup();
+            } else {
+                if (!isStartUp) {
+                    //update package list
+                    /*
+                        try {
+                        ServiceProvider provider
+                        = getServiceProvider(QueryRefreshInterface.class);
+                        ((QueryRefreshInterface)provider).refresh();
+                        } catch (ServiceNotHandledException snhe) {
+                        Log.debug(6, snhe.getMessage());
+                        }
+                      */
+                }
+                //update status bar
+            }
+            if (!isStartUp) {
+                UIController.getInstance().updateAllStatusBars();
+            }
+        }
     }
 
     /**
@@ -1573,5 +1533,33 @@ public class Morpho
             return s;
         }
         return s;
+    }
+
+    /**
+     * Set up the logging system during startup
+     */
+    private static void initializeLogging(ConfigXML config)
+    {
+        Log log = Log.getLog();
+        debug_level = (new Integer(config.get("debug_level", 0))).intValue();
+        log.setDebugLevel(debug_level);
+        String log_file_setting = config.get("log_file", 0);
+        if (log_file_setting != null) {
+            if (log_file_setting.equalsIgnoreCase("true")) {
+                log_file = true;
+            } else {
+                log_file = false;
+            }
+        }
+        if (log_file) {
+            try {
+                FileOutputStream err = new FileOutputStream("stderr.log");
+                PrintStream errPrintStream = new PrintStream(err);
+                System.setErr(errPrintStream);
+                System.setOut(errPrintStream);
+            } catch (FileNotFoundException fnfe) {
+                Log.debug(10, "Warning: Failure to redirect log to a file.");
+            }
+        }
     }
 }
