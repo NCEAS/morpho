@@ -6,9 +6,9 @@
 *    Authors: Chad Berkley
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-03-31 21:56:48 $'
-* '$Revision: 1.28 $'
+*   '$Author: brooke $'
+*     '$Date: 2004-04-21 18:00:54 $'
+* '$Revision: 1.29 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -747,8 +747,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     if(codeLocationValue == CODES_DEFINED_HERE)
       return false;
-    if(codeImportPanel.getTableName() == null)
-      return true;
+    if(codeImportPanel!=null
+       && codeImportPanel.getTableName() == null) return true;
     return false;
   }
 
@@ -816,8 +816,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     } else {
 			map.remove(xPathRoot + "/textDomain[1]/definition");
 		}
-		
-		
+
+
     if(defn!=null) {
 
       if (defn.equals("Free text (unrestricted)")) {
