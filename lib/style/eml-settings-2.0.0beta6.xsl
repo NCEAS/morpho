@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: cjones $'
-  *     '$Date: 2002-09-26 01:57:52 $'
-  * '$Revision: 1.2 $'
+  *   '$Author: brooke $'
+  *     '$Date: 2002-10-24 16:34:20 $'
+  * '$Revision: 1.3 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,39 @@
 
     <xsl:param name="tripleURI"></xsl:param>
     
+<!-- 
+    /**
+    *   The file extension (including ".") to be appended to href paths 
+    *   (eg ".html")  Should typically be default blank value for viewing in 
+    *   metaviewer, and should be .htm or .html for export files
+    */ 
+-->
+    
+  <xsl:param name="href_path_extension"></xsl:param>
+  
+<!-- 
+    /**
+    *   (primarily beta 6)
+    *   When exporting html to files on disk, Morpho renames the DataSet file 
+    *   with a "real" name (instead of just the package ID), so the user can 
+    *   easily determine which is the "main" file that they shoudl open (the one 
+    *   which contains the links to the others). 
+    *   When doing exports, therefore, the stylesheet needs to know which package 
+    *   ID number refers to the DataSet file, and what is the "real" filename it 
+    *   should substitute for this package i.d. number when constructing the 
+    *   href links. 
+    *
+    *   * * * NOTE * * *  - "real" filename should not include the "." or the 
+    *   extension - this is taken care of by the "href_path_extension" parameter 
+    *   described above
+    */ 
+-->
+  
+<!--    which package ID number refers to the DataSet file? (see note above) -->
+  <xsl:param name="package_id"></xsl:param>
+  
+<!--    what name will be given to the DataSet file on disk?(see note above) -->
+  <xsl:param name="package_index_name"></xsl:param>
   
 <!-- 
     /**

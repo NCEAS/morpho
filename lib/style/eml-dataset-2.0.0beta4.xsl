@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-23 22:39:32 $'
-  * '$Revision: 1.3 $'
+  *     '$Date: 2002-10-24 16:34:20 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -32,19 +32,28 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
   <xsl:output method="html" encoding="iso-8859-1"/>
-  
-  <xsl:param name="qformat">default</xsl:param>
+
+  <xsl:param name="qformat">export</xsl:param>
+
+  <xsl:param name="stylePath"></xsl:param>
+
+  <xsl:param name="tripleURI"></xsl:param>
+ 
+  <xsl:param name="href_path_extension">.TEST_EXTENSION</xsl:param>
+
+  <xsl:param name="package_id">TEST_PKG_ID</xsl:param>
+
+  <xsl:param name="package_index_name">TEST_PKG_NAME</xsl:param>
 
   <xsl:template match="/">
     <html>
       <head>
         <link rel="stylesheet" type="text/css" 
-              href="/default.css" />
+              href="{$stylePath}/{$qformat}.css" />
       </head>
       <body>
         <center>
           <h1>Data set description</h1>
-          <h3>Ecological Metadata Language</h3>
         </center>
         <table width="100%">
         <xsl:apply-templates select="/dataset/title" mode="layout"/>
@@ -63,18 +72,11 @@
         <ul>
           <xsl:for-each select="//triple">
             <li>
-              <a><xsl:attribute name="href"><xsl:value-of select="./subject"/></xsl:attribute><xsl:value-of select="./subject"/></a>
+              <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./subject"/></a>
                  <xsl:text> &#160;&#160;</xsl:text>
                  <xsl:value-of select="./relationship"/>
                  <xsl:text> &#160;&#160;</xsl:text>
-              <a><xsl:attribute name="href"><xsl:value-of select="./object"/></xsl:attribute><xsl:value-of select="./object"/></a>
-<!--
-             <a><xsl:attribute name="href"><![CDATA[@html-path@/servlet/metacat?action=read&qformat=@default-style@&docid=]]><xsl:value-of select="./subject"/></xsl:attribute><xsl:value-of select="./subject"/></a>
-             <xsl:text> </xsl:text>
-             <xsl:value-of select="./relationship"/>
-             <xsl:text> </xsl:text>
-             <a><xsl:attribute name="href"><![CDATA[@html-path@/servlet/metacat?action=read&qformat=@default-style@&docid=]]><xsl:value-of select="./object"/></xsl:attribute><xsl:value-of select="./object"/></a>
--->
+              <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./object"/></xsl:attribute><xsl:value-of select="./object"/></a>
             </li>
           </xsl:for-each>
         </ul>

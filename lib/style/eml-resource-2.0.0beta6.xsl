@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: tao $'
-  *     '$Date: 2002-10-03 22:08:56 $'
-  * '$Revision: 1.3 $'
+  *   '$Author: brooke $'
+  *     '$Date: 2002-10-24 16:34:20 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@
   <xsl:template name="renderTriple">
     <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
       <xsl:text>&#160;</xsl:text></td><td width="{$secondColWidth}" class="{$secondColStyle}">
-      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./subject"/></xsl:attribute><xsl:value-of select="./subject"/></a>
+      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./subject"/></a>
          <xsl:text> &#160;&#160;</xsl:text>
          <xsl:value-of select="./relationship"/>
          <xsl:text> &#160;&#160;</xsl:text>
