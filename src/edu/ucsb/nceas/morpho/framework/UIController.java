@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-13 01:00:58 $'
- * '$Revision: 1.36 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-13 22:43:36 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -277,7 +277,7 @@ public class UIController
       // Set frame new title
       window.setTitle(title);
 
-      registerWindow(window);
+      putFrameIntoWindowList(window);
 
       if (getCurrentActiveWindow()==null) {
           setCurrentActiveWindow(window);
@@ -754,7 +754,15 @@ public class UIController
             window.addGuiAction(clone);
         }
 
-        // add a new menu item for this window by greating a GUIAction for it
+        putFrameIntoWindowList(window);
+    }
+     
+      /*
+      * Method to put a morpho frame into window list
+      */
+     private void putFrameIntoWindowList(MorphoFrame window)
+      {
+         // add a new menu item for this window by greating a GUIAction for it
         String title = window.getTitle();
         Command command = new Command() {
             public void execute(ActionEvent e) {
@@ -772,8 +780,8 @@ public class UIController
         action.setToolTipText("Select Window");
         windowList.put(action, window);
         addGuiAction(action);
-    }
-
+      }
+     
     /**
      * Updates a single StatusBar to reflect the current network state
      *
