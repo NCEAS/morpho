@@ -13,6 +13,7 @@
   <casesensitive>false</casesensitive>
   <includesynonyms>false</includesynonyms>
   <doctype>any</doctype>
+  <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</returndoc>
   <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
   <returndoc>-//NCEAS//resource//EN</returndoc>
   <returnfield>dataset/title</returnfield>
