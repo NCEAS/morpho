@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 23:48:19 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2002-09-25 15:29:24 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -209,7 +210,7 @@ public class DataPackagePlugin
   }
 
   public void openDataPackage(String location, String identifier, 
-                              Vector relations)
+                       Vector relations, ButterflyFlapCoordinator coordinator)
   {
     Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
@@ -224,6 +225,13 @@ public class DataPackagePlugin
                 "Data Package");
     packageWindow.setVisible(true);
     
+    // Stop butterfly flapping for old window.
+    packageWindow.setBusy(true);
+    if (coordinator != null)
+    {
+      coordinator.stopFlap();
+    }
+    
     DataViewContainerPanel dvcp = new DataViewContainerPanel(dp, gui);
     dvcp.setFramework(morpho);
 
@@ -235,7 +243,7 @@ public class DataPackagePlugin
     dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());
 //    dvcp.setVisible(true);
     packageWindow.setMainContentPane(dvcp);
-
+    packageWindow.setBusy(false);
   }
   
   /**
