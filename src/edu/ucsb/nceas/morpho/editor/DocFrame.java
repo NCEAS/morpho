@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-14 00:14:04 $'
- * '$Revision: 1.148 $'
+ *     '$Date: 2004-02-17 03:21:37 $'
+ * '$Revision: 1.149 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ public class DocFrame extends javax.swing.JFrame
    *  most recent instance of DocFrame
    *  (for use by specialized editors)
    */
-  static DocFrame lastDocFrameInstance = null; 
+  static DocFrame currentDocFrameInstance = null; 
    
   /**
    *   cached copy of template tree
@@ -249,11 +249,28 @@ public class DocFrame extends javax.swing.JFrame
   /** This constructor builds the contents of the DocFrame Display  */
 
   public DocFrame()  {
-    lastDocFrameInstance = this;
+    currentDocFrameInstance = this;
     setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
     setSize(800, 600);
     setVisible(false);
+		final DocFrame df = this;
+		// Register window listeners
+    this.addWindowListener(
+      new WindowAdapter() {
+                public void windowActivated(WindowEvent e) 
+                {
+                  Log.debug(50, "Processing window activated event");
+								  currentDocFrameInstance = df;
+                } 
+                public void windowClosing(WindowEvent event)
+                {
+                 }
+                public void windowDeactivated(WindowEvent event)
+                {
+                }
+      });
+
     ControlsPanel.setLayout(new BorderLayout(0, 0));
     OutputScrollPanelContainer.setLayout(new BorderLayout(0, 0));
     getContentPane().add(OutputScrollPanelContainer);
@@ -824,6 +841,10 @@ public class DocFrame extends javax.swing.JFrame
       // the previously created document tree
       // first remove all the nodes with visLevel>0 to simplify the display
       // (the '0' value should be a parameter)
+
+			// remove 'references' nodes from template
+      removeAllReferences(frootNode);
+			
       removeNodesVisLevel(frootNode, 0);//
       
       treeUnion(rootNode, frootNode);
@@ -945,7 +966,10 @@ public class DocFrame extends javax.swing.JFrame
       // first remove all the nodes with visLevel>0 to simplify the display
       // (the '0' value should be a parameter)
       removeNodesVisLevel(frootNode, 0);//
-
+			
+			// remove 'references' nodes from template
+      removeAllReferences(frootNode);
+		 
     // if catch is called, then we don't have a valid template
     } catch (Exception e) {
       formatflag = false;
@@ -3730,6 +3754,63 @@ Log.debug(20, xmlout);
   return "<valid />";
   }
 
+  /**
+	 *  locate the first node in the template tree by name
+	 *  return null if unable to locate
+	 *  to be used to get subtrees
+	 */
+  public DefaultMutableTreeNode findTemplateNodeByName(String nodeName) {
+		if (frootNode==null) return null;
+		Enumeration enum = frootNode.breadthFirstEnumeration();
+		while (enum.hasMoreElements()) {
+			DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
+			NodeInfo ni = (NodeInfo)(nd).getUserObject();
+			String ndname = ni.getName();
+			if (ndname.equals(nodeName)) {
+				return nd;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 *   look for any nodes named 'references' (eml2 specific)
+	 *   when found, there should be a 'parent' CHOICE node and probably
+	 *   a sibling SEQUENCE node. remove references node, parent CHOOICE
+	 *   to simplify (apply this to the eml2 template tree
+	 */
+	void removeAllReferences(DefaultMutableTreeNode node) {
+		Vector refsnodes = new Vector();
+		// first, list all 'references' nodes
+		Enumeration enum = node.depthFirstEnumeration();
+		while (enum.hasMoreElements()) {
+			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)(enum.nextElement());
+			NodeInfo ni = (NodeInfo)(dmtn.getUserObject());
+			if ((ni.getName()).equals("references")) {
+			  refsnodes.addElement(dmtn);
+			}
+		}
+		for (int i=0; i<refsnodes.size();i++) {
+			DefaultMutableTreeNode nd = (DefaultMutableTreeNode)refsnodes.elementAt(i);
+			DefaultMutableTreeNode parent = (DefaultMutableTreeNode)(nd.getParent());
+			NodeInfo pni = (NodeInfo)parent.getUserObject();
+			String parname = pni.getName();
+			if (parname.indexOf("SEQUENCE")>-1) {
+				nd = parent;
+				parent = (DefaultMutableTreeNode)(parent.getParent());
+			}
+			DefaultMutableTreeNode grandparent = (DefaultMutableTreeNode)(parent.getParent());
+			nd.removeFromParent();
+			parent.removeFromParent();
+			Enumeration kids = parent.children();
+			while (kids.hasMoreElements()) {
+				DefaultMutableTreeNode cnd = (DefaultMutableTreeNode)kids.nextElement();
+				grandparent.add(cnd);
+			}
+		}
+	}
+	
+	
 }
 
 
