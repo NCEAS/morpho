@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-13 06:01:29 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-12-13 23:35:37 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,6 +155,16 @@ public class UISettings
     public static final Dimension INIT_SCRN_LEFT_PANELS_PICKLISTDIMS  
                                                     = new Dimension(130, 20);
     
+
+    /**
+     *  size of the hyperlink buttons on the left side of the initial screen
+     */
+    public static final Dimension INIT_SCR_LINKBUTTON_DIMS  
+                                                    = new Dimension(280, 20);
+    
+
+
+
     /**
      *  Width in pixels for each of 3 panels on the left side of initial screen
      */
@@ -370,7 +380,7 @@ public class UISettings
                         +"font-size: 9px; align: left;\">&nbsp;"
                         +"Current profile:"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                        +"&nbsp;&nbsp;&nbsp;";
+                        +"&nbsp;&nbsp;";
     
     /**
      *  html tags and text for title bar on the "Login" panel to the left of  
@@ -382,7 +392,7 @@ public class UISettings
                         +"font-size: 9px; align: left;\">&nbsp;"
                         +"Network Status:"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                        +"&nbsp;&nbsp;&nbsp;";
+                        +"&nbsp;";
     
     /**
      *  html tags and text for title bar on the "Data" panel to the left of  
