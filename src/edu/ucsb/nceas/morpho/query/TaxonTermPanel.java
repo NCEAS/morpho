@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 18:47:09 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-31 18:54:35 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ public class TaxonTermPanel extends JComponent
     rankComboBox.addItem("Genus");
     rankComboBox.addItem("Species");
     rankComboBox.addItem("Subspecies");
-    rankComboBox.setSelectedIndex(0);
+    rankComboBox.setSelectedIndex(9);
     rankComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(rankComboBox);
 
