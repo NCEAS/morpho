@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-21 03:13:06 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-02-05 22:37:32 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,24 +88,24 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 		//  Create new Node
 		NodeInfo ni = new NodeInfo(localName);
 		for (int i=0;i<atts.getLength();i++) {
-      if (atts.getLocalName(i).equals("help")) {
+      if (atts.getQName(i).equals("help")) {
         ni.setHelp(atts.getValue(i));
       }
-      else if(atts.getLocalName(i).equals("editor")) {
+      else if(atts.getQName(i).equals("editor")) {
         ni.setEditor(atts.getValue(i));
-		    ni.attr.put(atts.getLocalName(i),atts.getValue(i));
+		    ni.attr.put(atts.getQName(i),atts.getValue(i));
       }
-      else if(atts.getLocalName(i).equals("cardinality")) {
+      else if(atts.getQName(i).equals("cardinality")) {
         ni.setCardinality(atts.getValue(i));
       }
-      else if(atts.getLocalName(i).equals("nodeVisLevel")) {
+      else if(atts.getQName(i).equals("nodeVisLevel")) {
         String visLevel = atts.getValue(i);
         int nvl = (new Integer(visLevel)).intValue();
         ni.setNodeVisLevel(nvl);
       }
       else {
-		    ni.attr.put(atts.getLocalName(i),atts.getValue(i));
-//        System.out.println("key:"+atts.getLocalName(i)+"   value:"+atts.getValue(i));
+		    ni.attr.put(atts.getQName(i),atts.getValue(i));
+//        System.out.println("key:"+atts.getQName(i)+"   value:"+atts.getValue(i));
       }
 		}
     setCardinality(ni);
