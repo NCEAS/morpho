@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-05 23:30:05 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2003-12-06 19:34:36 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -543,8 +543,8 @@ public class MetaDisplay implements MetaDisplayInterface,
                                                       throws NullArgumentException
 	  {
 
-      		this.factory = factory;  //DFH
-/*          if (factory!=null)  {
+//      		this.factory = factory;  //DFH
+          if (factory!=null)  {
 		      this.factory = factory;
           } else  {
               NullArgumentException iae
@@ -552,7 +552,7 @@ public class MetaDisplay implements MetaDisplayInterface,
               iae.fillInStackTrace();
               throw iae;
           }
-*/          
+          
 	  }
 
 
@@ -584,7 +584,9 @@ public class MetaDisplay implements MetaDisplayInterface,
 	          throw dnfe;
 	      }
 	      try  {
+					if (factory.openAsDom(ID)==null) {
 	          xmlReader = factory.openAsReader(ID);
+					}
 	      } catch (DocumentNotFoundException dnfe) {
 	        
 	          Log.debug(12, "DocumentNotFoundException getting Reader for ID: "
@@ -593,7 +595,12 @@ public class MetaDisplay implements MetaDisplayInterface,
 	          dnfe.fillInStackTrace();
 	          throw dnfe;
 	      }
-	      Reader resultReader = doTransform(xmlReader);
+				Reader resultReader = null;
+				if (factory.openAsDom(ID)==null) {
+	        resultReader = doTransform(xmlReader);
+				} else {
+	        resultReader = doTransform(factory.openAsDom(ID));
+				}
         String htmlDoc = getAsString(resultReader);
 	      fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
         ui.setHTML(htmlDoc);
@@ -607,6 +614,11 @@ public class MetaDisplay implements MetaDisplayInterface,
 	  private Reader doTransform(Reader xml) throws DocumentNotFoundException
 	  {
 	      Reader result = null;
+				Document doc = factory.openAsDom(identifier);
+				if (doc!=null) {
+					result = doTransform(doc);
+					return result;
+				}
 	      try {
 	          result = transformer.transform(xml);
 	      } catch (IOException ioe) {

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-14 21:25:09 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-06 19:34:36 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ import java.awt.Component;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
+
+import org.w3c.dom.Document;
 
 import javax.swing.JFrame;
 
@@ -148,25 +150,16 @@ public class MetaDisplayPlugin implements   PluginInterface,
      *                  responding to close actions, clicked links etc 
      */
     public static void main(String[] args) {
-    
       String id = "DEFAULT";
-      
       Log.getLog().setDebugLevel(51);
-
       XMLFactoryInterface xmlFactory  
-      
         = new XMLFactoryInterface() {
-        
             public Reader openAsReader(String id) 
                                               throws DocumentNotFoundException {
-            
-              Log.debug(50,"XMLFactoryInterface openAsReader got: "+id);
-              
+             Log.debug(50,"XMLFactoryInterface openAsReader got: "+id);
               Reader reader = null;
-              
               if (id.trim().equals("DEFAULT")) {
-              
-                reader = new StringReader(
+               reader = new StringReader(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                     +"<eml:eml packageId=\"eml.1.1\" system=\"knb\" "
                     +"xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
@@ -175,14 +168,16 @@ public class MetaDisplayPlugin implements   PluginInterface,
                     +"xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
                     +"<dataset/> "
                   + "</eml:eml>");
-              
               } else {
                 throw new DocumentNotFoundException(
                                               "XMLFactory - no match for "+id);
               }
               Log.debug(50,"XMLFactoryInterface openAsReader returning: "+reader);
               return reader;
-            }};
+            }
+						public Document openAsDom(String id) {
+							return null;
+						}};
 
       ActionListener listener = null;
       
