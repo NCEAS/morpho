@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.10 2000-12-29 19:56:35 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.11 2001-01-19 20:58:11 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -735,6 +735,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
           JOptionPane.showMessageDialog(this,message);
         }
         else {
+//          System.out.println("Failure message = "+errorMessage);  
           JOptionPane.showMessageDialog(this,"Writing the document to the databse failed.");
         }
           } // end of 'result' if
@@ -784,6 +785,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
       if (currentTag.equals("error")) {
         errorMessage = inputString;
       }
+//      System.out.println(currentTag +":"+inputString+"\n");
     }
 
    public void startDocument() throws SAXException { 
