@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.26 2001-07-21 01:00:16 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.27 2001-08-01 01:08:21 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -17,9 +17,12 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="0.0.0alpha3"/>
+      <property name="release" value="1.0.0beta1"/>
 
       <filter token="release" value="${release}"/>
+
+      <filter token="server" value="http://knb.ecoinformatics.org"/>
+      <filter token="docrooturl" value="/"/>
 
       <property name="itisdir" value="../itislib" />
       <property name="srcdir" value="./src" />
@@ -28,11 +31,11 @@
       <property name="build.dir" value="./build"/>
       <property name="build.src" value="${build.dir}/src"/>
       <property name="build.dest" value="${build.dir}/classes"/>
-      <property name="build.docs" value="${build.dir}/docs/html"/>
+      <property name="build.docs" value="${build.dir}/docs"/>
       <property name="build.samples" value="${build.dir}/samples"/>
       <property name="build.tests" value="${build.dir}/tests"/>
       <property name="build.data" value="${build.dir}/data"/>
-      <property name="build.javadocs" value="${build.dir}/docs/apiDocs"/>
+      <property name="build.javadocs" value="${build.dir}/docs/api"/>
 
       <property name="dist.dir" value="./dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
@@ -43,7 +46,9 @@
       <property name="morpho.lib.style" value="${morpho.lib}/style"/>
       <property name="morpho.lib.HTTPClient" value="${morpho.lib}/HTTPClient"/>
       <property name="morpho.src" value="${morpho.dir}/src"/>
-      
+      <property name="morpho.docs" value="${morpho.dir}/docs"/>
+      <property name="morpho.docs.dev" value="${morpho.docs}/dev"/>
+      <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
 
       <property name="xml4j" 
                 value="${libdir}/xml4j.jar" />
@@ -123,7 +128,7 @@
       <echo message="Install complete. Use the morpho script to run it." />
    </target>
 
-   <target name="dist" depends="install">
+   <target name="dist" depends="install,docs,jdoc">
       <mkdir dir="${dist.dir}"/>
       <delete dir="${morpho.dir}" />
       <mkdir dir="${morpho.dir}"/>
@@ -132,6 +137,9 @@
       <mkdir dir="${morpho.lib.frames}"/>
       <mkdir dir="${morpho.lib.sampledata}"/>
       <mkdir dir="${morpho.lib.style}"/>
+      <mkdir dir="${morpho.docs}"/>
+      <mkdir dir="${morpho.docs.dev}"/>
+      <mkdir dir="${morpho.docs.dev.api}"/>
       <copy file="./LICENSE" todir="${morpho.dir}"/>
       <copy file="./morpho" todir="${morpho.dir}"/>
       <copy file="./morpho.bat" todir="${morpho.dir}"/>
@@ -147,6 +155,17 @@
       </copy>
       <copy todir="${morpho.lib.style}">
         <fileset dir="./lib/style"/>
+      </copy>
+      <copy todir="${morpho.docs}">
+        <fileset dir="${build.docs}">
+          <exclude name="**/api"/>
+        </fileset>
+      </copy>
+      <copy todir="${morpho.docs.dev}">
+        <fileset dir="./docs/dev"/>
+      </copy>
+      <copy todir="${morpho.docs.dev.api}">
+        <fileset dir="${build.docs}/api"/>
       </copy>
       <delete file="./lib/config.xml" />
       <cvs command="update lib/config.xml" />
@@ -193,9 +212,25 @@
        <delete dir="${morpho.dir}" />
    </target>
 
+   <target name="docs" depends="init">
+     <mkdir dir="${build.docs}"/>
+     <copy todir="${build.docs}" filtering="no">
+       <fileset dir="./docs/user">
+         <include name="default.css"/>
+         <include name="*.png"/>
+         <include name="*.gif"/>
+       </fileset>
+     </copy>
+     <copy todir="${build.docs}" filtering="yes">
+       <fileset dir="./docs/user">
+         <include name="*.html"/>
+       </fileset>
+     </copy>
+   </target>
+
    <target name="jdoc" depends="init">
        <mkdir dir="${build.javadocs}" />
-       <javadoc packagenames="edu.ucsb.nceas"
+       <javadoc packagenames="edu.ucsb.nceas.*"
            sourcepath="src"
            destdir="${build.javadocs}"
            author="true"
