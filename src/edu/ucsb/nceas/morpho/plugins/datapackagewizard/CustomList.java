@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2004-03-06 00:17:28 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -309,13 +309,17 @@ public class CustomList extends JPanel {
 
           Log.debug(45, "\nsetting Column "+i+" Editor = "+editor);
           if (editor instanceof JTextField) {
+						
+							JTextField jtf = new JTextField();
+							if(! ((JTextField)editor).isEditable() )
+									jtf.setEditable(false);
+							jtf.setBackground(((JTextField)editor).getBackground());
+							Log.debug(45, "(JTextField)");
+							DefaultCellEditor cellEd = new DefaultCellEditor(jtf);
+							cellEd.setClickCountToStart(1);
+							column.setCellEditor(cellEd);
 
-            Log.debug(45, "(JTextField)");
-            DefaultCellEditor cellEd = new DefaultCellEditor(new JTextField());
-            cellEd.setClickCountToStart(1);
-            column.setCellEditor(cellEd);
-
-          } else if (editor instanceof JCheckBox) {
+					} else if (editor instanceof JCheckBox) {
 
             Log.debug(45, "(JCheckBox)");
             DefaultCellEditor cellEd = new DefaultCellEditor((JCheckBox)editor);
@@ -658,19 +662,20 @@ public class CustomList extends JPanel {
    *          null if none selected
    */
   public List getSelectedRowList() {
-
+		
+		int selRow = this.getSelectedRowIndex();
+    if (selRow < 0) return null;
+		
     List listOfRowLists = this.getListOfRowLists();
     if (listOfRowLists==null) return null;
-
-    int selRow = this.getSelectedRowIndex();
-    if (selRow < 0) return null;
-
+		
     Object rowObj = listOfRowLists.get(selRow);
     if (rowObj==null) return null;
 
     return (List)rowObj;
   }
 
+	
 
   /**
    * replaces the currently-selected row with the Objects in the List provided,
@@ -690,6 +695,22 @@ public class CustomList extends JPanel {
     model.insertRow(selRow, newRow.toArray());
   }
 
+	/**
+   * replaces the row corresponding to the given row number with the Objects in the 
+	 *	List provided,or with a blank row if the List is null. Row numbers are 0-indexed.
+   *
+	 * @param rowIndex index of the row to be replaced
+   * @param newRow List containing the objects in the new row that will replace
+   *   the currently-selected row.
+   */
+  public void replaceRow(int rowIndex, List newRow) {
+		
+		if(model.getRowCount() <= rowIndex) return;
+    if (newRow==null) newRow = new ArrayList();
+		
+		removeRow(rowIndex);
+    model.insertRow(rowIndex, newRow.toArray());
+  }
 
 
   /**
@@ -1439,7 +1460,16 @@ class CustomJTable extends JTable  {
 						 }
 				 };
 			}
-
+			if (colClass.getName().equals("javax.swing.JTextField")) {
+	       final JTextField origTextField = (JTextField)(editors[col]);
+				 DefaultTableCellRenderer defaultR = new DefaultTableCellRenderer();
+				 if(!origTextField.isEditable()) 
+								defaultR.setEnabled(false);
+				 defaultR.setBackground(origTextField.getBackground());
+				 return defaultR;
+				 
+			}
+			
       return defaultRenderer;
     }
 
