@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.9 2000-09-29 22:52:57 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.10 2000-10-02 23:00:27 higgins Exp $'
  */
 
 
@@ -342,6 +342,8 @@ void putXMLintoTree() {
          XMLPanels xp = new XMLPanels(node);
          xp.setTreeModel(treeModel);
          NestedPanelScrollPanel.getViewport().add(xp.topPanel);
+         xp.invalidate();
+         NestedPanelScrollPanel.repaint();
 		}
 		
 		

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.4 2000-09-21 22:50:58 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.5 2000-10-02 23:00:27 higgins Exp $'
  */
 
 
@@ -72,7 +72,7 @@ public class RSFrame extends javax.swing.JFrame
 		JScrollPane3.setBounds(5,5,223,33);
 		QueryStringTextArea.setColumns(20);
 		QueryStringTextArea.setRows(2);
-		QueryStringTextArea.setText("Query Summary String");
+		QueryStringTextArea.setText("Query generated on:"+new Date().toString());
 		QueryStringTextArea.setLineWrap(true);
 		JScrollPane3.getViewport().add(QueryStringTextArea);
 		QueryStringTextArea.setBounds(0,0,220,30);

@@ -14,7 +14,7 @@ import java.util.Enumeration;
  * @author Dan Higgins
  */
  
-public class XMLPanels
+public class XMLPanels extends Component
 {
  
  public JPanel topPanel;

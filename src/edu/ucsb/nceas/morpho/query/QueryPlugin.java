@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.21 2000-09-28 23:43:47 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.22 2000-10-02 23:00:27 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -322,9 +322,10 @@ public class QueryBean extends AbstractQueryBean
 		JPanel23.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel22.add(BorderLayout.CENTER, JPanel23);
 		JPanel23.setBounds(233,0,-469,46);
-		JLabel11.setText("Results of Search");
+		JLabel11.setText("Results of Local Search");
 		JPanel23.add(JLabel11);
 		JLabel11.setForeground(java.awt.Color.black);
+		JLabel11.setFont(new Font("Dialog", Font.BOLD, 12));
 		JLabel11.setBounds(-285,5,101,15);
 		JPanel24.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel22.add(BorderLayout.WEST, JPanel24);
@@ -332,9 +333,8 @@ public class QueryBean extends AbstractQueryBean
 		JScrollPane3.setOpaque(true);
 		JPanel24.add(JScrollPane3);
 		JScrollPane3.setBounds(5,5,223,33);
-		QueryStringTextArea.setColumns(20);
 		QueryStringTextArea.setRows(2);
-		QueryStringTextArea.setText("Query Summary String");
+		QueryStringTextArea.setWrapStyleWord(true);
 		QueryStringTextArea.setLineWrap(true);
 		JScrollPane3.getViewport().add(QueryStringTextArea);
 		QueryStringTextArea.setBounds(0,0,220,30);
@@ -351,6 +351,7 @@ public class QueryBean extends AbstractQueryBean
 		JPanel25.add(JCheckBox4);
 		JCheckBox4.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JCheckBox4.setBounds(0,23,227,23);
+		JCheckBox4.setVisible(false);
 		RS_Panel.add(BorderLayout.CENTER, RSScrollPane);
 		RSScrollPane.setBounds(0,46,-9,-263);
 		AllTextPanel.setLayout(new BorderLayout(0,0));
@@ -524,9 +525,10 @@ public class QueryBean extends AbstractQueryBean
 		JPanel31.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel30.add(BorderLayout.CENTER, JPanel31);
 		JPanel31.setBounds(233,0,-465,46);
-		JLabel24.setText("Results of Search");
+		JLabel24.setText("Results of Local Search");
 		JPanel31.add(JLabel24);
 		JLabel24.setForeground(java.awt.Color.black);
+		JLabel24.setFont(new Font("Dialog", Font.BOLD, 12));
 		JLabel24.setBounds(-283,5,101,15);
 		JPanel32.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel30.add(BorderLayout.WEST, JPanel32);
@@ -534,9 +536,8 @@ public class QueryBean extends AbstractQueryBean
 		JScrollPane6.setOpaque(true);
 		JPanel32.add(JScrollPane6);
 		JScrollPane6.setBounds(5,5,223,33);
-		QueryStringTextArea1.setColumns(20);
 		QueryStringTextArea1.setRows(2);
-		QueryStringTextArea1.setText("Query Summary String");
+		QueryStringTextArea1.setWrapStyleWord(true);
 		QueryStringTextArea1.setLineWrap(true);
 		JScrollPane6.getViewport().add(QueryStringTextArea1);
 		QueryStringTextArea1.setBounds(0,0,220,30);
@@ -554,6 +555,7 @@ public class QueryBean extends AbstractQueryBean
 		JPanel33.add(JCheckBox11);
 		JCheckBox11.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JCheckBox11.setBounds(0,23,227,23);
+		JCheckBox11.setVisible(false);
 		RS_Panel1.add(BorderLayout.CENTER, RSScrollPane1);
 		RSScrollPane1.setBounds(0,46,-5,-406);
 		DocumentTypePanel.setLayout(new BorderLayout(0,0));
@@ -564,10 +566,10 @@ public class QueryBean extends AbstractQueryBean
 		Query2.setLayout(new BorderLayout(0,0));
 		DocumentTypePanel.add(BorderLayout.NORTH,Query2);
 		Query2.setBounds(0,0,-5,4);
-		dataGuideBean1.setLayout(new GridLayout(1,2,2,2));
-		Query2.add(BorderLayout.CENTER, dataGuideBean1);
-		dataGuideBean1.setBackground(java.awt.Color.lightGray);
-		dataGuideBean1.setBounds(0,0,635,453);
+//		dataGuideBean1.setLayout(new GridLayout(1,2,2,2));
+//		Query2.add(BorderLayout.CENTER, dataGuideBean1);
+//		dataGuideBean1.setBackground(java.awt.Color.lightGray);
+//		dataGuideBean1.setBounds(0,0,635,453);
 		RS_Panel2.setLayout(new BorderLayout(0,0));
 		DocumentTypePanel.add(BorderLayout.CENTER,RS_Panel2);
 		RS_Panel2.setBackground(java.awt.Color.white);
@@ -578,9 +580,10 @@ public class QueryBean extends AbstractQueryBean
 		JPanel35.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel34.add(BorderLayout.CENTER, JPanel35);
 		JPanel35.setBounds(233,0,-465,46);
-		JLabel25.setText("Results of Search");
+		JLabel25.setText("Results of Local Search");
 		JPanel35.add(JLabel25);
 		JLabel25.setForeground(java.awt.Color.black);
+		JLabel25.setFont(new Font("Dialog", Font.BOLD, 12));
 		JLabel25.setBounds(-283,5,101,15);
 		JPanel36.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel34.add(BorderLayout.WEST, JPanel36);
@@ -588,9 +591,8 @@ public class QueryBean extends AbstractQueryBean
 		JScrollPane8.setOpaque(true);
 		JPanel36.add(JScrollPane8);
 		JScrollPane8.setBounds(5,5,223,33);
-		QueryStringTextArea2.setColumns(20);
 		QueryStringTextArea2.setRows(2);
-		QueryStringTextArea2.setText("Query Summary String");
+		QueryStringTextArea2.setWrapStyleWord(true);
 		QueryStringTextArea2.setLineWrap(true);
 		JScrollPane8.getViewport().add(QueryStringTextArea2);
 		QueryStringTextArea2.setBounds(0,0,220,30);
@@ -607,6 +609,7 @@ public class QueryBean extends AbstractQueryBean
 		JPanel37.add(JCheckBox13);
 		JCheckBox13.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JCheckBox13.setBounds(0,23,227,23);
+		JCheckBox13.setVisible(false);
 		RS_Panel2.add(BorderLayout.CENTER, RSScrollPane2);
 		RSScrollPane2.setBounds(0,46,-5,-164);
 		JPanel11.setLayout(new BorderLayout(0,0));
@@ -687,7 +690,8 @@ public class QueryBean extends AbstractQueryBean
 		setVisible(true);
     try {
       options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      xmlcatalogfile = (String)options.handleGetObject("xmlcatalogfile");
+      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+      xmlcatalogfile = local_dtd_directory+"/catalog"; 
       MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
 /*      String searchlocalstring = (String)options.handleGetObject("searchlocal");
       if (searchlocalstring.equalsIgnoreCase("true")) {
@@ -1056,7 +1060,7 @@ public class QueryBean extends AbstractQueryBean
             if (paths[3].length()>0) paths[3] = "//*["+paths[3]+ "]";
             if (paths[4].length()>0) paths[4] = "//*["+paths[4]+ "]";
             if (paths[5].length()>0) paths[5] = "//*["+paths[5]+ "]";
-            QueryStringTextArea.setText(paths[0]+"\n"+paths[1]+"\n"+paths[2]+"\n"+paths[3]+"\n"+paths[4]+"\n"+paths[5]);
+            QueryStringTextArea1.setText("Query generated on:"+new Date().toString());
 	        boolean op1 = true;
 	        if (op.equalsIgnoreCase("or")) op1 = false;
 		     lq = new LocalQuery(paths, op1, SearchButton1);
@@ -1146,6 +1150,7 @@ public class QueryBean extends AbstractQueryBean
 	    if (TextValue22.getText().length()>0) {
             paths[3] = "/eml-dataset/originator/party/party_individual/surname[(contains(text(),\""+TextValue22.getText()+"\"))]";
 	    }
+        QueryStringTextArea.setText("Query generated on:"+new Date().toString());
         
 	    boolean op1 = true;
 	    if (op.equalsIgnoreCase("or")) op1 = false;
@@ -1379,7 +1384,8 @@ public void searchFor(String searchText) {
 		// Get the configuration file information
     try {
       options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      xmlcatalogfile = (String)options.handleGetObject("xmlcatalogfile");
+      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+      xmlcatalogfile = local_dtd_directory+"/catalog"; 
       MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
