@@ -5,9 +5,9 @@
 *    Authors: @tao@
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-02-06 19:46:02 $'
-* '$Revision: 1.11 $'
+*   '$Author: higgins $'
+*     '$Date: 2004-03-16 17:00:40 $'
+* '$Revision: 1.12 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -218,7 +218,7 @@ public class InsertColumnCommand implements Command
 		dataView.setColumnLabels(columnLabels);
 		table.setModel(ptm);
 		setUpDelimiterEditor();
-		dataView.saveCurrentTable();
+		dataView.saveCurrentTable(true);
 		
 		if(openNewWindow) {
 			

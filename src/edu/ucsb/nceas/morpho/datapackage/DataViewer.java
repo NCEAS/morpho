@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-16 00:21:04 $'
- * '$Revision: 1.104 $'
+ *     '$Date: 2004-03-16 17:00:40 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1487,11 +1487,11 @@ public class DataViewer extends javax.swing.JPanel
 	*	Method to save the current data table after a change has been made. This is
 	*	equivalent to the user pressing the 'Update' button, except that a new window is
 	*	not opened
+  *
+  * changePackageId of 'true' means to increment the package id
 	*/
 	
-	public void saveCurrentTable() {
-		
-		
+	public void saveCurrentTable(boolean changePackageId) {
 		if (adp!=null) {  // new eml2.0.0 handling
 			String id = "";
 			AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
@@ -1517,16 +1517,17 @@ public class DataViewer extends javax.swing.JPanel
 			adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
 			adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
 			adp.setLocation("");
-			
-			AccessionNumber a = new AccessionNumber(morpho);
-			String curid = adp.getAccessionNumber();
-			String newid = null;
-			if (!curid.equals("")) {
-				newid = a.incRev(curid);
-			} else {
-				newid = a.getNextId();
-			}
-			adp.setAccessionNumber(newid);
+			if (changePackageId) {
+			  AccessionNumber a = new AccessionNumber(morpho);
+			  String curid = adp.getAccessionNumber();
+			  String newid = null;
+			  if (!curid.equals("")) {
+				  newid = a.incRev(curid);
+			  } else {
+				  newid = a.getNextId();
+			  }
+			  adp.setAccessionNumber(newid);
+      }  
 		}
 		
 	}
@@ -1535,7 +1536,7 @@ public class DataViewer extends javax.swing.JPanel
 	{
     
 		MorphoFrame thisFrame = null;
-		saveCurrentTable();
+		saveCurrentTable(true);
 		// Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
 		// Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
 		// Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
