@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-12-18 01:21:03 $'
- * '$Revision: 1.70 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-01-24 22:52:50 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -610,8 +610,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     //////////////entity files////////////////////////
     
     entityFileList = new JList(entityfiles);
-    entityFileList.setPreferredSize(new Dimension(60, 70));
-    entityFileList.setMaximumSize(new Dimension(60, 70));
+ //   entityFileList.setPreferredSize(new Dimension(60, 70));
+ //   entityFileList.setMaximumSize(new Dimension(60, 70));
     entityFileList.addListSelectionListener(new EntitySelectionHandler());
     entityFileList.addMouseListener(new MouseAdapter()
     {
@@ -623,7 +623,7 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
       }
     });
-    entityFileList.setVisibleRowCount(10);
+//    entityFileList.setVisibleRowCount(10);
     JScrollPane entityFileScrollPane = new JScrollPane(entityFileList);
     JPanel entityFileButtonList = new JPanel();
     entityFileButtonList.setLayout(new BoxLayout(entityFileButtonList,
@@ -636,8 +636,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     ////////////////other files//////////////////////
     
     otherFileList = new JList(otherfiles);
-    otherFileList.setPreferredSize(new Dimension(60, 70));
-    otherFileList.setMaximumSize(new Dimension(60, 70));
+//    otherFileList.setPreferredSize(new Dimension(60, 70));
+//    otherFileList.setMaximumSize(new Dimension(60, 70));
     otherFileList.addListSelectionListener(new OtherSelectionHandler());
     otherFileList.addMouseListener(new MouseAdapter()
     {
@@ -649,7 +649,7 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
       }
     });
-    otherFileList.setVisibleRowCount(10);
+//    otherFileList.setVisibleRowCount(10);
     JScrollPane otherFileScrollPane = new JScrollPane(otherFileList);
     JPanel otherFileButtonList = new JPanel();
     otherFileButtonList.setLayout(new BoxLayout(otherFileButtonList,
