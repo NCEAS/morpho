@@ -7,10 +7,8 @@
                editable="no" defaulttext="to be assigned" visible="no"/>
       <group field="variable" repeatable="yes">
         <textbox label="Field Name" field="variable_name" size="15" allowNull="no"
-                 defaulttext="Enter Field Name here"
                  tooltip="The name of the field"/>
         <textbox label="Definition" field="variable_definition" size="15" allowNull="no" 
-                 defaulttext="Enter Field Definition here" 
                  tooltip="The definition of the field"/>
         <textbox label="Units" field="unit" size="15"
                  tooltip="The measuring units encoded in this field"/>

@@ -6,7 +6,6 @@
       <textbox label="identifier" size="10" visible="no" field="identifier" 
                required="yes"/>
       <textbox label="Name" field="entityName" size="20" allowNull="no" 
-               defaulttext="Enter Table Name Here"
                tooltip="The name of the table"/>
       <textbox label="Description" field="entityDescription"  size="20" 
                tooltip="A description of the table"/>
