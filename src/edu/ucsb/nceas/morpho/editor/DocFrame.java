@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-03 23:27:00 $'
- * '$Revision: 1.77 $'
+ *     '$Date: 2002-01-05 03:27:44 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -400,19 +400,21 @@ public class DocFrame extends javax.swing.JFrame
 		  DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
 		  String fXMLString = "";
 		  boolean formatflag = true;
+		  
       try{
-        FileReader in = new FileReader(file);
+        BufferedReader in = new BufferedReader(new FileReader(file));
         StringWriter out = new StringWriter();
         int c;
         while ((c = in.read()) != -1) {
           out.write(c);
         }
         in.close();
+        out.flush();
         out.close();
         fXMLString = out.toString();
       }
 	    catch(Exception e){formatflag = false;}	
-		
+
 		  if (formatflag) {
 		    putXMLintoTree(ftreeModel,fXMLString);
 		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
