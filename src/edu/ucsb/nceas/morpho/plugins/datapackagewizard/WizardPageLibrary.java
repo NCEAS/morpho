@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 18:42:51 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-22 04:51:48 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.*;
  */
 public class WizardPageLibrary {
 
-  private Map pages;
+  private static final Map pages = new HashMap();
 
   /** 
    *  returns the WizardPage with the corresponding pageID provided
@@ -49,7 +49,7 @@ public class WizardPageLibrary {
    *
    *  @return  the corresponding WizardPage with this ID
    */
-  public AbstractWizardPage getPage(String pageID) {
+  public static AbstractWizardPage getPage(String pageID) {
   
     if (containsPageID(pageID)) return (AbstractWizardPage)pages.get(pageID);
     
@@ -69,15 +69,13 @@ public class WizardPageLibrary {
    *            pageID doesn't exist, or if the pageID corresponds to a null 
    *            page
    */
-  public boolean containsPageID(String pageID) {
+  public static boolean containsPageID(String pageID) {
   
     return (pages.containsKey(pageID) && (pages.get(pageID)!=null) );
   }
   
 
   public WizardPageLibrary() {
-
-    pages = new HashMap();
     
     pages.put(INTRODUCTION,       new Introduction());
     pages.put(GENERAL,            new General());

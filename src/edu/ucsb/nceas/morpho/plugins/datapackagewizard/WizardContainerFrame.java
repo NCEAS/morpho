@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-20 01:11:33 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-09-22 04:51:48 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener ;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.Stack;
 import java.util.Iterator;
@@ -197,28 +198,30 @@ public class WizardContainerFrame extends JFrame {
     ImportWizard importPage 
         = (ImportWizard)(pageLib.getPage(WizardPageLibrary.TEXT_IMPORT_WIZARD));
     
-    importPage.setTextImportListener( new TextImportListener() {
+    importPage.setTextImportListener( 
+    
+      new TextImportListener() {
 
-                /** TextImportListener interface
-                 * This method is called when editing is complete
-                 *
-                 * @param xmlString is the edited XML in String format
-                 */
-                public void importComplete(OrderedMap om) {
+        /** TextImportListener interface
+         * This method is called when editing is complete
+         *
+         * @param xmlString is the edited XML in String format
+         */
+        public void importComplete(OrderedMap om) {
 
-                  Log.debug(5, "WizardContainerFrame.importComplete() called");
-                  nextFinishAction();
-                }
+          Log.debug(45, "WizardContainerFrame.importComplete() called");
+          nextFinishAction();
+        }
 
-                /** TextImportListener interface
-                 * this method handles canceled editing
-                 */
-                public void importCanceled() {
+        /** TextImportListener interface
+         * this method handles canceled editing
+         */
+        public void importCanceled() {
 
-                  Log.debug(5, "WizardContainerFrame.importCanceled() called");
-                  previousAction();
-                }
-              });
+          Log.debug(45, "WizardContainerFrame.importCanceled() called");
+          previousAction();
+        }
+      });
   }
   
   private void initContentPane() {
@@ -345,13 +348,40 @@ public class WizardContainerFrame extends JFrame {
     //of writing data to the DOM. We therefore convert the Stack to a Vector and 
     //access the pages non-sequentially in a feat of hard-coded madness:
     //
-    Vector pagesVector = (Vector)pageStack;
+    List pagesVector = (Vector)pageStack;
     
-  
-//    extractData(
-//      ((WizardPage)(pagesVector.get(pageLib.getPage(
-//                                        WizardPageLibrary.PARTY_CREATOR)))), 
-//      wizData);
+    int GENERAL 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.GENERAL));
+    int KEYWORDS 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.KEYWORDS));
+    
+    int PARTY_CREATOR 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CREATOR));
+    int PARTY_CONTACT 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CONTACT));
+    int PARTY_ASSOCIATED 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_ASSOCIATED));
+    int USAGE_RIGHTS 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.USAGE_RIGHTS));
+    int DATA_LOCATION 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.DATA_LOCATION));
+    int TEXT_IMPORT_WIZARD 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.TEXT_IMPORT_WIZARD));
+    int DATA_FORMAT 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.DATA_FORMAT));
+    int ENTITY 
+        = pagesVector.indexOf(pageLib.getPage(WizardPageLibrary.ENTITY));
+        
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(GENERAL)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(KEYWORDS)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(PARTY_CREATOR)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(PARTY_CONTACT)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(PARTY_ASSOCIATED)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(USAGE_RIGHTS)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(DATA_LOCATION)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(TEXT_IMPORT_WIZARD)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(DATA_FORMAT)),wizData);
+    addPageDataToResultsMap((WizardPage)(pagesVector.get(ENTITY)),wizData);
     
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
     Log.debug(45, wizData.toString());
@@ -392,7 +422,8 @@ public class WizardContainerFrame extends JFrame {
   }
   
 
-  private void extractData(WizardPage nextPage, OrderedMap resultsMap) {
+  private void addPageDataToResultsMap( WizardPage nextPage, 
+                                        OrderedMap resultsMap) {
   
     String nextKey = null;
     String nextVal = null;

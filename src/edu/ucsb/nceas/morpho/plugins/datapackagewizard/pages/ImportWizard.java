@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 18:42:51 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-22 04:51:48 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,13 +85,13 @@ public class ImportWizard extends     AbstractWizardPage
 
 // HACK - TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
     Morpho.main(null);
-// use config file as input for now:
-    String fileTextName = System.getProperty("user.home") 
-                                          + java.io.File.separator 
-                                          + ".morpho"
-                                          + java.io.File.separator
-                                          +"config.xml";
-                          
+///////////////////////    
+    
+    AbstractWizardPage locWizPage 
+                  = WizardPageLibrary.getPage(WizardPageLibrary.DATA_LOCATION);
+
+    String fileTextName = ((DataLocation)locWizPage).getImportFilePath();
+                  
     importWiz = new TextImportWizard(fileTextName, this);
     importWiz.setVisible(true);
   }
