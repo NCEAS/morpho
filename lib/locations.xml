@@ -13,13 +13,6 @@
  <south>-23.74556</south>
  <east>15.162781</east>
  </location>
- <location> <name>Carpinteria Salt Marsh Reserve</name>
- <description>Carpinteria Salt Marsh Reserve</description>
- <north>34.4</north>
- <west>-119.525</west>
- <south>34.4</south>
- <east>-119.5249</east>
- </location>
  <location> <name>[Belize] Jaguar Creek</name>
  <description>[Belize] Jaguar Creek</description>
  <north>17.16072</north>
@@ -27,4 +20,172 @@
  <south>17.16072</south>
  <east>-88.679</east>
  </location>
- </locationList>
+ <location><name>H.J. Andrews LTER (AND)</name>
+ <description>H.J. Andrews LTER (AND)</description>
+ <north>44.2</north>
+ <west>-122.2</west>
+ <south>44.2</south>
+ <east>-122.2</east>
+ </location>
+ <location><name>Artic LTER (ARC)</name>
+ <description>H.J. Andrews LTER (AND)</description>
+ <north>68.6</north>
+ <west>-149.6</west>
+ <south>68.6</south>
+ <east>-149.6</east>
+ </location>
+ <location><name>Baltimore Ecosystem Study LTER (BES)</name>
+<description> </description>
+<north>39.1</north>
+<west>-76.3</west>
+<south>39.1</south>
+<east>-76.3</east>
+</location>
+<location><name>Bonanza Creek LTER (BNZ)</name>
+<description> </description>
+<north>64.8</north>
+<west>-148.0</west>
+<south>64.8</south>
+<east>-148.0</east>
+</location>
+<location><name>Central Arizona - Phoenix LTER (CAP)</name>
+<description> </description>
+<north>33.54</north>
+<west>-112.07</west>
+<south>33.54</south>
+<east>-112.07</east>
+</location>
+<location><name>Cedar Creek LTER (CDR)</name>
+<description> </description>
+<north>45.4</north>
+<west>-93.2</west>
+<south>45.4</south>
+<east>-93.2</east>
+</location>
+<location><name>Coweeta Hydrologic Lab LTER (CWT)</name>
+<description> </description>
+<north>35.0</north>
+<west>-83.5</west>
+<south>35.0</south>
+<east>-83.5</east>
+</location>
+<location><name>Harvard Forest LTER (HFR)</name>
+<description> </description>
+<north>42.5</north>
+<west>-72.2</west>
+<south>42.5</south>
+<east>-72.2</east>
+</location>
+<location><name>Hubbard Brook LTER (HBR)</name>
+<description> </description>
+<north>43.9</north>
+<west>-71.8</west>
+<south>43.9</south>
+<east>-71.8</east>
+</location>
+<location><name>Jornada LTER (JRN)</name>
+<description> </description>
+<north>32.5</north>
+<west>-106.8</west>
+<south>32.5</south>
+<east>-106.8</east>
+</location>
+<location><name>W.K. Kellogg Biological Station LTER (KBS)</name>
+<description> </description>
+<north>42.4</north>
+<west>-85.4</west>
+<south>42.4</south>
+<east>-85.4</east>
+</location>
+<location><name>Konza Prairie LTER (KNZ)</name>
+<description> </description>
+<north>39.1</north>
+<west>-94.6</west>
+<south>39.1</south>
+<east>-94.6</east>
+</location>
+<location><name>Luquillo Experimental Forest LTER (LUQ)</name>
+<description> </description>
+<north>18.3</north>
+<west>-65.8</west>
+<south>18.3</south>
+<east>-65.8</east>
+</location>
+<location><name>McMurdo Dry Valleys LTER (MCM)</name>
+<description> </description>
+<north>-78.0</north>
+<west>165.0</west>
+<south>-78.0</south>
+<east>165.0</east>
+</location>
+<location><name>Niwot Ridge/Green Lakes Valley LTER (NWT)</name>
+<description> </description>
+<north>40.1</north>
+<west>-105.6</west>
+<south>40.1</south>
+<east>-105.6</east>
+</location>
+<location><name>North Temperate Lakes LTER (NTL)</name>
+<description> </description>
+<north>46.0</north>
+<west>-89.7</west>
+<south>46.0</south>
+<east>-89.7</east>
+</location>
+<location><name>Palmer Station LTER (PAL)</name>
+<description> </description>
+<north>-64.7</north>
+<west>-64.0</west>
+<south>-64.7</south>
+<east>-64.0</east>
+</location>
+<location><name>Plum Island Ecosystem LTER (PIE)</name>
+<description> </description>
+<north>42.4</north>
+<west>-70.5</west>
+<south>42.4</south>
+<east>-70.5</east>
+</location>
+<location><name>Sevilleta LTER (SEV)</name>
+<description> </description>
+<north>34.3</north>
+<west>-106.8</west>
+<south>34.3</south>
+<east>-106.8</east>
+</location>
+<location><name>Shortgrass Steppe LTER (SGS)</name>
+<description> </description>
+<north>40.8</north>
+<west>-104.8</west>
+<south>40.8</south>
+<east>-104.8</east>
+</location>
+<location><name>Virginia Coast Reserve LTER (VCR)</name>
+<description> </description>
+<north>37.5</north>
+<west>-74.8</west>
+<south>37.5</south>
+<east>-74.8</east>
+</location>
+<location><name>Florida Coastal Everglades LTER (FCE)</name>
+<description> </description>
+<north>25.0</north>
+<west>-80.0</west>
+<south>25.0</south>
+<east>-80.0</east>
+</location>
+<location><name>Georgia Coastal Ecosystems LTER (GCE)</name>
+<description> </description>
+<north>31.4</north>
+<west>-81.3</west>
+<south>31.4</south>
+<east>-81.3</east>
+</location>
+<location><name>Santa Barbara Coastal LTER (SBC)</name>
+<description> </description>
+<north>34.0</north>
+<west>-119.0</west>
+<south>34.0</south>
+<east>-119.0</east>
+</location>
+</locationList>
