@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-05 18:17:42 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-09-06 18:06:00 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,12 +99,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     dataViewPanel.setLayout(new BorderLayout(0,0));
     JPanel AttributeMetadataPanel = new JPanel();
 		
-    JSplitPane TableDataPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel,AttributeMetadataPanel);
-    TableDataPanel.setOneTouchExpandable(true);
-    
-    entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,entityMetadataPanel,TableDataPanel);
-    entityPanel.setOneTouchExpandable(true);
-    
+  
    //ScrollTabLayout only works for Java 1.4; commented out for now so will compile unbder 1.3
    // tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
     tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
@@ -171,9 +166,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     locationPanel.add(BorderLayout.SOUTH, netLabel);
     refPanel.add(BorderLayout.EAST, locationPanel);
   // ------------------------------------
-    
+  // this is where the datapackage metadata is inserted into the container !!!!! 
+  // simply add Component to the packagePanel container, which has a Border
+  // layout. leave the 'NORTH' region empty, since the
+  // refpanel is added there later
     packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
     packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
+    
+  // refpanel is created in this class and added to the top of the 
+  // panel in the next statement  
     packagePanel.add(BorderLayout.NORTH,refPanel);
     this.framework = dpgui.morpho;
     this.toppanel = packagePanel;
@@ -203,6 +204,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       JSplitPane currentEntityPanel = createEntityPanel();
       tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
       String item = (String)entityItems.elementAt(i);
+      // id is the id of the Entity metadata module
+      // code from here to 'end_setup' comment sets up the display for the
+      // entity metadata
       String id = (String)listValueHash.get(item);
       String location = dp.getLocation();
       EntityGUI entityEdit = new EntityGUI(dp, id, location, null, framework);
@@ -216,8 +220,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       entityInfoPanel.add(BorderLayout.NORTH, new JLabel("Entity Information"));
       JPanel entityEditControls = new JPanel();
       entityEditControls.add(entityEdit.editEntityButton);
+      // ---------------------end_setup
       
-      
+      // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
+      // add Component to 'currentEntityMetadataPanel' which has a borderlayout
       currentEntityMetadataPanel.add(BorderLayout.CENTER, entityInfoPanel);                                     
       currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
       currentEntityMetadataPanel.setMaximumSize(new Dimension(200,4000));
