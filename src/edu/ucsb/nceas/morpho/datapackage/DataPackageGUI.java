@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-12 20:50:48 $'
- * '$Revision: 1.81 $'
+ *     '$Date: 2002-08-14 22:03:42 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.*;
-import edu.ucsb.nceas.morpho.framework.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
