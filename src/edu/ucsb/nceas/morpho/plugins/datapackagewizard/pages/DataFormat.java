@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.30 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-05 23:01:03 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -640,7 +640,8 @@ public class DataFormat extends AbstractUIPage{
                           new short[] { CustomList.NULL,
                                         CustomList.EMPTY_STRING_NOTRIM } );
 
-    int predicateIndex      = 1;
+    int fixedIndex					= 1;
+		int delimitedIndex				= 1;
     StringBuffer buff       = new StringBuffer();
     List rowLists           = list.getListOfRowLists();
     String fixedDelimStr    = null;
@@ -657,11 +658,11 @@ public class DataFormat extends AbstractUIPage{
 
       if (nextRow.get(0).equals(pickListVals[0])) {
 
-        fixedDelimStr = "textFixed/fieldWidth";
+        fixedDelimStr = "textFixed[" + (fixedIndex++) + "]/fieldWidth";
 
       } else if (nextRow.get(0).equals(pickListVals[1])) {
 
-        fixedDelimStr = "textDelimited/fieldDelimiter";
+        fixedDelimStr = "textDelimited[" + (delimitedIndex++) + "]/fieldDelimiter";
 
       }
 
@@ -674,9 +675,6 @@ public class DataFormat extends AbstractUIPage{
       buff.delete(0,buff.length());
       buff.append(COMPLEX_TEXT_XPATH);
       buff.append(fixedDelimStr);
-      buff.append("[");
-      buff.append(predicateIndex++);
-      buff.append("]");
       listResultsMap.put(buff.toString(), nextVal);
     }
 
