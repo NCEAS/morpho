@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-26 08:04:13 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2002-12-19 01:00:15 $'
+  * '$Revision: 1.6 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -68,39 +68,39 @@
   </xsl:template>
 
   <xsl:template match="entityName">
-    <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
-    Name:</td><td width="{$secondColWidth}" class="{$secondColStyle}">
+    <tr><td width="{$entityFirstColWidth}" class="{$firstColStyle}">
+    Name:</td><td width="{$entitySecondColWidth}" class="{$secondColStyle}">
     <b><xsl:value-of select="."/></b></td></tr>
   </xsl:template>
 
   <xsl:template match="entityDescription">
         <xsl:if test="../entityDescription and normalize-space(../entityDescription)!=''">
-            <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
-            Description:</td><td width="{$secondColWidth}" class="{$secondColStyle}">
+            <tr><td width="{$entityFirstColWidth}" class="{$firstColStyle}">
+            Description:</td><td width="{$entitySecondColWidth}" class="{$secondColStyle}">
             <xsl:value-of select="."/></td></tr>
         </xsl:if>
   </xsl:template>
 
   <xsl:template match="caseSensitive">
         <xsl:if test="../caseSensitive and normalize-space(../caseSensitive/@yesorno)!=''">
-            <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
-            Case Sensitive?:</td><td width="{$secondColWidth}" class="{$secondColStyle}">
+            <tr><td width="{$entityFirstColWidth}" class="{$firstColStyle}">
+            Case Sensitive?:</td><td width="{$entitySecondColWidth}" class="{$secondColStyle}">
             <xsl:value-of select="./@yesorno"/></td></tr>
         </xsl:if>
   </xsl:template>
 
   <xsl:template match="numberOfRecords">
         <xsl:if test="../numberOfRecords and normalize-space(../numberOfRecords)!=''">
-            <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
-            Number Of Records:</td><td width="{$secondColWidth}" class="{$secondColStyle}">
+            <tr><td width="{$entityFirstColWidth}" class="{$firstColStyle}">
+            Number Of Records:</td><td width="{$entitySecondColWidth}" class="{$secondColStyle}">
             <xsl:value-of select="."/></td></tr>
         </xsl:if>
   </xsl:template>
 
   <xsl:template match="orientation">
     <xsl:if test="(../orientation)">
-      <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
-          Orientation:</td><td width="{$secondColWidth}" class="{$secondColStyle}">
+      <tr><td width="{$entityFirstColWidth}" class="{$firstColStyle}">
+          Orientation:</td><td width="{$entitySecondColWidth}" class="{$secondColStyle}">
       <xsl:if test="normalize-space(@columnorrow)='columnmajor'">
         <xsl:text>Column-major</xsl:text>
       </xsl:if>
