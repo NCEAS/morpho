@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 15:46:10 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-05-29 17:01:49 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1026,7 +1026,7 @@ public class PackageWizard extends javax.swing.JFrame
                     newtempPanel.element = newtempElement;
                     XMLElement newe = new XMLElement();
                     newe.content.addElement(newtempElement);
-                    createPanel(newe, contentPane, parentPanel, 
+                    createPanel(newe, contentPane, parentPanel,
                                 new Integer(parentPanel.children.indexOf(tempPanel))); 
                     contentPane.repaint();
                   }
@@ -1051,10 +1051,18 @@ public class PackageWizard extends javax.swing.JFrame
             tempPanel.setPreferredSize(parseSize(size));
           }
           
-          //tempPanel.setLayout(new /*GridLayout(0,2)*/FlowLayout());
-          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           //layout management for internal panels
+          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           tempPanel.setLayout(box);
+          if(tempElement.attributes.containsKey("layout"))
+          { 
+            String layout = (String)tempElement.attributes.get("layout");
+            if(layout.equals("flow"))
+            {
+              tempPanel.setLayout(new FlowLayout());
+              System.out.println("layout: flow");
+            }
+          }
           
           if(prevIndex == null)
           { //add this group as a child of it's parent for later reconstruction.
@@ -1262,15 +1270,29 @@ public class PackageWizard extends javax.swing.JFrame
                   //note that you have to use getParent here because all 
                   //text and combo boxes are inside of another panel for layout
                   //reasons
-                  int numcomponents = parentPanel.getParent().getComponentCount();
+                  JPanel parentPanel2 = (JPanel)combofield.getParent().getParent();
+                  int numcomponents = parentPanel2.getComponentCount();
                   int insertindex = numcomponents;
                   
                   for(int j=0; j<numcomponents; j++)
                   { //add the combo box in the correct position
-                    Component nextcomp = parentPanel.getParent().getComponent(j);
-                    if(nextcomp == combofield)
+                    Component nextcomp = parentPanel2.getComponent(j); 
+                    try
                     {
-                      insertindex = j;
+                      JComboBox c = (JComboBox)((Component)
+                                            ((JPanel)nextcomp).getComponent(1));
+                      if(c == combofield)
+                      {
+                        insertindex = j;
+                      }
+                    }
+                    catch(ClassCastException cce)
+                    {
+                      
+                    }
+                    catch(ArrayIndexOutOfBoundsException aioobe)
+                    {
+                      
                     }
                   }
                   
@@ -1284,7 +1306,7 @@ public class PackageWizard extends javax.swing.JFrame
                   JPanel layoutpanel = new JPanel();
                   layoutpanel.add(newLabel);
                   layoutpanel.add(newcombofield);
-                  parentPanel.add(layoutpanel, insertindex);
+                  parentPanel2.add(layoutpanel, insertindex + 1);
                   //parentPanel.add(newLabel, insertindex + 1);
                   //parentPanel.add(newcombofield, insertindex + 2);
                   contentPane.repaint();
