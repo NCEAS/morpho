@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-06-06 22:22:58 $'
- * '$Revision: 1.35 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-03 15:40:36 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1974,7 +1974,7 @@ public void startImport(String file) {
 	  XMLBuffer.append("    <entityDescription> "+normalize(TableDescriptionTextField.getText())+"</entityDescription>\n");
 	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"></orientation>\n");
 	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"></caseSensitive>\n");
-	  String numRecords = (new Integer(nlines_actual - startingLine + 1)).toString();
+	  String numRecords = (new Integer(nlines_actual - startingLine)).toString();
 	  XMLBuffer.append("    <numberOfRecords> "+normalize(numRecords)+"</numberOfRecords>\n");
 	  XMLBuffer.append("</table-entity>\n");
 	  return XMLBuffer.toString();
