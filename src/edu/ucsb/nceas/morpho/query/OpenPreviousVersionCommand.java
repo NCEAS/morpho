@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 23:36:49 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-28 18:21:09 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,14 +82,7 @@ public class OpenPreviousVersionCommand implements Command
   {
     dialog = box;
     morpho = myMorpho;
-    // If dialog is null, get resultPanel from dialog
-    if (dialog != null)
-    {
-      // This command will apply to a dialog
-      morphoFrame = dialog.getParentFrame();
-      resultPane = dialog.getResultPanel();
-    }
- 
+  
   }//LocalToNetworkCommand
   
  
@@ -98,8 +91,16 @@ public class OpenPreviousVersionCommand implements Command
    */    
   public void execute()
   {
+     // If dialog is null, get resultPanel from dialog
+    if (dialog != null)
+    {
+      // This command will apply to a dialog
+      morphoFrame = dialog.getParentFrame();
+      resultPane = dialog.getResultPanel();
+     
+    }
     // If dialog is null, get resultPanel from current active window
-    if (dialog == null)
+    else
     {
       // If the command would not applyto a dialog, moreFrame will be set to be
       // current active morphoFrame
@@ -117,6 +118,14 @@ public class OpenPreviousVersionCommand implements Command
       // Make sure selected a id, and there is local pacakge
       if ( packageName != null && !packageName.equals("") && version != -1)
       {
+        
+        // If it is dialog, destroied it 
+        if ( dialog != null)
+        {
+          dialog.setVisible(false);
+          dialog.dispose();
+          dialog = null;
+        }
         doOpenPreviousVersion
                           (packageName, version, morpho, localLoc, morphoFrame);
       }
