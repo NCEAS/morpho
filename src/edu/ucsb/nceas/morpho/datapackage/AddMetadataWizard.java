@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-18 18:32:23 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-03-22 21:51:04 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -262,6 +262,7 @@ public class AddMetadataWizard extends JFrame
     previousButton.addActionListener(myActionHandler);
     nextButton.addActionListener(myActionHandler);
     cancelButton.addActionListener(myActionHandler);
+    
   }
 
   /**
@@ -806,6 +807,10 @@ public class AddMetadataWizard extends JFrame
     Triple t = new Triple(newid, relationship, dataPackage.getID());
     TripleCollection triples = new TripleCollection();
     triples.addTriple(t);
+    // assign the access file for the package as access for this new doc
+    Triple ta = new Triple(dataPackage.getAccessFileIdForDataPackage(), 
+                               "provides access control rules for", newid);
+    triples.addTriple(ta);                           
     File packageFile = dataPackage.getTriplesFile();
     //add the triple to the triple file
     String docString = PackageUtil.addTriplesToTriplesFile(triples, 
@@ -924,6 +929,7 @@ public class AddMetadataWizard extends JFrame
     String docString = "";
     String currentFileName;
     Triple t = null;
+    Triple ta = null;
     TripleCollection triples = new TripleCollection();
     FileSystemDataStore fsds = null;
     AccessionNumber a = new AccessionNumber(framework);
@@ -973,6 +979,10 @@ public class AddMetadataWizard extends JFrame
     if (i==0) {
         if (hasData) {
             t = new Triple(newid, relationship, dataPackage.getID());
+            // assign the access file for the package as access for this new doc
+            ta = new Triple(dataPackage.getAccessFileIdForDataPackage(), 
+                               "provides access control rules for", newid);
+
             dataFileID = newid;
         }
     }
@@ -981,10 +991,16 @@ public class AddMetadataWizard extends JFrame
       if (hasData) {
         relationship = "provides table-entity information for DATAFILE"; 
         t = new Triple(newid, relationship, dataFileID);
+        // assign the access file for the package as access for this new doc
+        ta = new Triple(dataPackage.getAccessFileIdForDataPackage(), 
+                               "provides access control rules for", newid);
       }
       else {
         relationship = "provides table-entity information for package"; 
         t = new Triple(newid, relationship, dataPackage.getID());
+        // assign the access file for the package as access for this new doc
+        ta = new Triple(dataPackage.getAccessFileIdForDataPackage(), 
+                               "provides access control rules for", newid);
       }
       entityFileID = newid;
       
@@ -998,12 +1014,15 @@ public class AddMetadataWizard extends JFrame
         relationship = "provides eml-physical information for Table";
       }
       t = new Triple(newid, relationship, entityFileID);      
+      // assign the access file for the package as access for this new doc
+      ta = new Triple(dataPackage.getAccessFileIdForDataPackage(), 
+                               "provides access control rules for", newid);
     }
     
     if (((i==0)&&(hasData))||(i>0)) {
       
         triples.addTriple(t);
-    
+        triples.addTriple(ta);
         if(locLocal)
         {
         File newPackageMember;
@@ -1201,8 +1220,12 @@ public class AddMetadataWizard extends JFrame
     { //create a new id and a new triple for the triple file.
       newid = a.getNextId();
       Triple t = new Triple(newid, "isRelatedTo", relatedtoId);
+      // assign the access file for the package as access for this new doc
+      Triple ta = new Triple(dataPackage.getAccessFileIdForDataPackage(), 
+                               "provides access control rules for", newid);
       TripleCollection triples = new TripleCollection();
       triples.addTriple(t);
+      triples.addTriple(ta);
       //add the triple to the triple file
       docString = PackageUtil.addTriplesToTriplesFile(triples, dataPackage, 
                                                       framework);
