@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-04 21:58:23 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2002-10-22 21:37:24 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ public class DataViewer extends javax.swing.JPanel
   /**
    * numHeaderLines
    */
-   String numHeaderLines = "";
+   String numHeaderLines = "0";
 
   /**
    * num_header_lines
@@ -505,6 +505,14 @@ public class DataViewer extends javax.swing.JPanel
     {
       return column_labels;
     }
+
+    /**
+     * Method to set the column_lables
+     */
+    public void setColumnLabels(Vector collabels)
+    {
+      column_labels = collabels;
+    }
     
     /**
      * Method to get field_delimiter string
@@ -596,7 +604,7 @@ public class DataViewer extends javax.swing.JPanel
         {
           String s = formatList.item(0).getFirstChild().getNodeValue();
           this.format = s;
-          Log.debug(30, "format: "+format);
+          Log.debug(20, "format: "+format);
         }
         
         Vector fieldDelimiterPath = new Vector();
@@ -1561,6 +1569,7 @@ public class DataViewer extends javax.swing.JPanel
   
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
+    TripleCollection triples = null;
     MorphoFrame thisFrame = null;
     DataPackage newPackage = null;
     File tempfile = null;
@@ -1577,7 +1586,8 @@ public class DataViewer extends javax.swing.JPanel
       ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
       File newDataFile = new File(tempdir + "/" + "tempdata");
       long newDataFileLength = newDataFile.length();
-  
+           
+      
       try {
         String attrDocType = "<!DOCTYPE eml-attribute PUBLIC "+
             "\"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "+
@@ -1620,7 +1630,6 @@ public class DataViewer extends javax.swing.JPanel
       }
       
       
-      
         AccessionNumber a = new AccessionNumber(morpho);
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         MetacatDataStore mds = new MetacatDataStore(morpho);
@@ -1649,7 +1658,12 @@ public class DataViewer extends javax.swing.JPanel
           Vector newids = new Vector();
           Vector oldids = new Vector();
           String oldid = dataID;
-          newid = a.incRev(dataID);
+          if (oldid.length()>0) {
+           newid = a.incRev(dataID);
+          }
+          else {
+            newid = a.getNextId();
+          }
           // save data to a temporary file
           FileReader fr = null;
           FileReader frAttr = null;
@@ -1661,7 +1675,7 @@ public class DataViewer extends javax.swing.JPanel
             tempfile = new File(tempdir + "/" + "tempdata");
           }
           catch (Exception ww) {
-            Log.debug(20,"Problem making temporary copy of data");
+            Log.debug(1,"Problem making temporary copy of data");
           }
           
           
@@ -1701,6 +1715,7 @@ public class DataViewer extends javax.swing.JPanel
       frAttr = new FileReader(tempfileAttr);
       frPhy = new FileReader(tempfilePhy);
       frEnt = new FileReader(tempfileEnt);
+      
 
       if(localloc)
       { //save it locally
@@ -1723,6 +1738,16 @@ public class DataViewer extends javax.swing.JPanel
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
                                                     oldids, 
                                                     newids);
+          // handle case where there us currently no datafile in the package
+          // by adding triples for non-existing datefile and access file
+          // and add triple connecting entity to data
+          if (!dp.hasDataFile(entityFileId)) {
+            triples = buildTriplesForNewData(dp.getAccessId(), newEntFileId, newid);
+            newPackageFile = PackageUtil.addTriplesToTriplesString(triples,
+                                                    newPackageFile,
+                                                    morpho); 
+          }
+   System.out.println(newPackageFile);       
           fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
           
           fr.close();
@@ -1767,6 +1792,17 @@ public class DataViewer extends javax.swing.JPanel
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
                                                     oldids, 
                                                     newids);
+
+          // handle case where there us currently no datafile in the package
+          // by adding triples for non-existing datefile and access file
+          // and add triple connecting entity to data
+          if (!dp.hasDataFile(entityFileId)) {
+            triples = buildTriplesForNewData(dp.getAccessId(),newEntFileId,newid);
+            newPackageFile = PackageUtil.addTriplesToTriplesString(triples,
+                                                    newPackageFile,
+                                                    morpho); 
+          }
+          
           Log.debug(20, "oldid: " + oldid + " newid: " + newid);          
           mds.saveFile(newPackageId, new StringReader(newPackageFile), dp); 
           
@@ -1786,7 +1822,7 @@ public class DataViewer extends javax.swing.JPanel
       thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
       }
       catch (Exception www) {
-        Log.debug(20, "Error!"+www.getMessage());
+        Log.debug(1, "Error!"+www.getMessage());
       }
   
     // Show the new package
@@ -1813,7 +1849,23 @@ public class DataViewer extends javax.swing.JPanel
     
 	}
 
-	
+	private TripleCollection buildTriplesForNewData(String accessId, 
+                                  String entityFileId,
+                                  String dataid) {
+        Triple t = new Triple(dataid, "isDataFileFor", dp.getID());
+        TripleCollection triples = new TripleCollection();
+        triples.addTriple(t);
+    
+        // add an access triple for the new datafile
+        Triple tacc = new Triple(accessId,"provides access control rules for", dataid);
+        triples.addTriple(tacc);
+    
+        // connect this entity to the new datafile
+        Triple t1 = new Triple(entityFileId, "isRelatedTo", dataid);
+        triples.addTriple(t1);
+        return triples;
+  }
+  
   class HeaderMouseListener implements MouseListener {
 
     /**

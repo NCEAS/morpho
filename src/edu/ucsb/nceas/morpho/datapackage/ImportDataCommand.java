@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-22 21:37:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -64,16 +66,29 @@ public class ImportDataCommand implements Command
        resultPane = AddDocumentationCommand.
                           getDataViewContainerPanelFromMorphoFrame(morphoFrame);
     }//if
-    
     // make sure resulPanel is not null
     if ( resultPane != null)
     {
-       Morpho morpho = resultPane.getFramework();
-       DataPackage dataPackage = resultPane.getDataPackage();
-       morphoFrame.setVisible(false);
-       AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
+      DataPackage dp = resultPane.getDataPackage();
+      DataViewer dv = resultPane.getCurrentDataViewer();
+      String entityId = null;
+      if (dv!=null) {
+        entityId = dv.getEntityFileId();
+      }
+    
+      if ((dp.hasDataFile(entityId))||(entityId==null)) {
+        Morpho morpho = resultPane.getFramework();
+        DataPackage dataPackage = resultPane.getDataPackage();
+        morphoFrame.setVisible(false);
+        AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
                    dataPackage, morphoFrame, AddMetadataWizard.NOTSHOWMETADATA);
-       amw.showImportDataScreen();
+        amw.showImportDataScreen();
+      }
+      else {
+        // Log.debug(1,"No Data Branch");
+        (new NewDataFile(morphoFrame, dp, resultPane.getFramework(),
+                         entityId)).setVisible(true);
+      }
     }//if
   
   }//execute

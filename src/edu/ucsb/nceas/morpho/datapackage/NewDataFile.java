@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:20:13 $'
- * '$Revision: 1.8 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-22 21:37:24 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,9 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
@@ -206,7 +208,6 @@ public class NewDataFile extends javax.swing.JDialog
 
 	void AddFileButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-	    String dataPackageId = null;
 	    // first add the file
 	    String fileName = FileNameTextField.getText();
 	    if (fileName.length()>0) {
@@ -220,7 +221,14 @@ public class NewDataFile extends javax.swing.JDialog
                                    JOptionPane.WARNING_MESSAGE);
 	            return;
 	        }
+      doAddFile(addedFile);
+
 	    }
+  }
+  
+  public void doAddFile(File addedFile) {
+	    String dataPackageId = null;
+      
         AccessionNumber a = new AccessionNumber(morpho);
         String newid = "";
         String location = dataPackage.getLocation();
@@ -246,7 +254,6 @@ public class NewDataFile extends javax.swing.JDialog
             newid = a.getNextId();
             dataPackageId = handleAddDataFile(locLocal, locMetacat, newid);
         }
-	     
 	    // now remove this window
 		  this.hide();
 		  this.dispose();
@@ -256,26 +263,33 @@ public class NewDataFile extends javax.swing.JDialog
       //  eu.dispose();
       //  (eu.getDataPackageGui()).dispose();
 		
-      DataPackage newPackage = new DataPackage(location, dataPackageId, null,
-                                               morpho);
-      
-      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
+    //refresh the package editor that this wizard came from.
+    DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
+                                             dataPackageId, null,
+                                             morpho);
+    this.dataPackage = newpackage;
+    
+    MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
 
-      // Refresh the query results after the update
-      try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-               services.getServiceProvider(QueryRefreshInterface.class);
-        ((QueryRefreshInterface)provider).refresh();
-      } catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
-      }
+    // Show the new package
+    try 
+    {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.openDataPackage(location, newpackage.getID(), null, null);
+    }
+    catch (ServiceNotHandledException snhe) 
+    {
+       Log.debug(6, snhe.getMessage());
+    }
+    
+    thisFrame.setVisible(false);
+    UIController controller = UIController.getInstance();
+    controller.removeWindow(thisFrame);
+    thisFrame.dispose();
 
-      EntityGUI newEntitygui;
-      newEntitygui = new EntityGUI(newPackage, entityId, location, newgui, 
-                                   morpho);
-      newgui.show();
-      newEntitygui.show();
 	
       }
 	}
@@ -308,6 +322,11 @@ public class NewDataFile extends javax.swing.JDialog
     TripleCollection triples = new TripleCollection();
     triples.addTriple(t);
     
+    // add an access triple for the new datafile
+    String accessId = dataPackage.getAccessFileIdForDataPackage();
+    Triple tacc = new Triple(accessId,"provides access control rules for", newid);
+    triples.addTriple(tacc);
+    
     // connect this entity to the new datafile
     Triple t1 = new Triple(entityId, "isRelatedTo", newid);
     triples.addTriple(t1);
@@ -321,7 +340,7 @@ public class NewDataFile extends javax.swing.JDialog
     File newDPTempFile;
     //get a new id for the package file
     dataPackageId = a.incRev(dataPackage.getID());
-    System.out.println("datapackageid: " + dataPackage.getID() + " newid: " + dataPackageId);
+    Log.debug(20, "datapackageid: " + dataPackage.getID() + " newid: " + dataPackageId);
     try
     { //this handles the package file
       //save a temp file with the new id

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-18 23:30:19 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-10-22 21:37:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,8 @@ public class InsertColumnCommand implements Command
   private JButton controlCancel;
   private JDialog columnDialog;
   
+  private DataViewContainerPanel resultPane;
+  
   /**
    * Constructor of Import data command
    */
@@ -88,7 +90,7 @@ public class InsertColumnCommand implements Command
    */    
   public void execute(ActionEvent event)
   {   
-    DataViewContainerPanel resultPane = null;
+    resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
@@ -163,11 +165,15 @@ public class InsertColumnCommand implements Command
           if (beforeFlag)
           {
             column_labels.insertElementAt(newHeader, sel);
+            DataViewer dataView = resultPane.getCurrentDataViewer();
+            dataView.setColumnLabels(column_labels);
             ptm.insertColumn(sel);
           }
           else
           {
             column_labels.insertElementAt(newHeader, sel+1);
+            DataViewer dataView = resultPane.getCurrentDataViewer();
+            dataView.setColumnLabels(column_labels);
             ptm.insertColumn(sel+1);
           }
           pv = ptm.getPersistentVector();

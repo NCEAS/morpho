@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-14 21:44:38 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2002-10-22 21:37:24 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
@@ -1188,7 +1189,7 @@ public class AddMetadataWizard extends JFrame
         return;
       }
     }
-    
+    Log.debug(40, "Preparing to Refresh");
     refreshPackage(dataPackageId); 
     
   }
@@ -1209,8 +1210,34 @@ public class AddMetadataWizard extends JFrame
     String location = dataPackage.getLocation();
     this.dataPackage = newpackage;                                         
 
-    DataPackagePlugin dataPlugin = new DataPackagePlugin(morpho);
-    dataPlugin.openDataPackage(location, newpackage.getID(), null, null);
+    this.dataPackage = newpackage;
+    
+    MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
+
+    //DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
+    // Close old package and open a new one
+    if ( packageFrame != null)
+    {
+      packageFrame.dispose();
+    }// if
+    // Show the new package
+    try 
+    {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.openDataPackage(location, newpackage.getID(), null, null);
+    }
+    catch (ServiceNotHandledException snhe) 
+    {
+       Log.debug(6, snhe.getMessage());
+    }
+    
+    thisFrame.setVisible(false);
+    UIController controller = UIController.getInstance();
+    controller.removeWindow(thisFrame);
+    thisFrame.dispose();
  
   }
   
@@ -1373,14 +1400,33 @@ public class AddMetadataWizard extends JFrame
                                              dataPackageId, null,
                                              morpho);
     this.dataPackage = newpackage;
+    
+    MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
+
     //DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
     // Close old package and open a new one
     if ( packageFrame != null)
     {
       packageFrame.dispose();
     }// if
-    DataPackagePlugin plugin = new DataPackagePlugin(morpho);
-    plugin.openDataPackage(location, newpackage.getID(), null, null);
+    // Show the new package
+    try 
+    {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.openDataPackage(location, newpackage.getID(), null, null);
+    }
+    catch (ServiceNotHandledException snhe) 
+    {
+       Log.debug(6, snhe.getMessage());
+    }
+    
+    thisFrame.setVisible(false);
+    UIController controller = UIController.getInstance();
+    controller.removeWindow(thisFrame);
+    thisFrame.dispose();
    
   }
 

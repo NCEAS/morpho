@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-04 14:56:47 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-10-22 21:37:24 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -723,6 +723,106 @@ public class PackageUtil
     docString += PackageUtil.print(doc.getDocumentElement());
     return docString;
   }
+
+  /**
+   * method to add a collection of triples to a triples string.  this method
+   * searches for any triples already in the string and appends the new
+   * ones after the existing ones.  
+   * @param triples the collection of triples to add
+   * @param dataPackageString the package that you want to add the triples to
+   * @param morpho the morpho object that is currently running.
+   */
+  public static String addTriplesToTriplesString(TripleCollection triples,
+                                               String dataPackageString, 
+                                               Morpho morpho)
+  {
+    String triplesTag = morpho.getConfiguration().get("triplesTag", 0);
+    Document doc = null;
+    DocumentBuilder parser = Morpho.createDomParser();
+    InputSource in;
+    StringReader sr;
+    
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try 
+    {
+      Catalog myCatalog = new Catalog();
+      myCatalog.loadSystemCatalogs();
+      ConfigXML config = morpho.getConfiguration();
+      String catalogPath = //config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path", 0);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
+      //myCatalog.parseCatalog(catalogPath);
+      cer.setCatalog(myCatalog);
+    } 
+    catch (Exception e) 
+    {
+      Log.debug(9, "Problem creating Catalog in " +
+                   "PackageUtil.updateTriplesFile" + 
+                   e.toString());
+    }
+    
+    parser.setEntityResolver(cer);
+    
+    try
+    { //parse the wizard created file with existing triples
+      sr = new StringReader(dataPackageString);
+      in = new InputSource(sr);
+    }
+    catch(Exception fnf)
+    {
+      fnf.printStackTrace();
+      return null;
+    }
+    try
+    {
+      doc = parser.parse(in);
+      sr.close();
+    }
+    catch(Exception e1)
+    {
+      System.err.println(e1.toString());
+    }
+    //get the DOM rep of the document with existing triples
+    NodeList tripleNodeList = triples.getNodeList();
+    NodeList docTriplesNodeList = null;
+    
+    try
+    {
+      //find where the triples go in the file
+      docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
+    }
+    catch(TransformerException se)
+    {
+      System.err.println(se.toString());
+    }
+    
+    Node docNode = doc.getDocumentElement();
+    for(int j=0; j<tripleNodeList.getLength(); j++)
+    { //add the triples to the appropriate position in the file
+      Node n = doc.importNode(tripleNodeList.item(j), true);
+      int end = docTriplesNodeList.getLength() - 1;
+      Node triplesNode = docTriplesNodeList.item(end);
+      Node parent = triplesNode.getParentNode();
+      if(triplesNode.getNextSibling() == null)
+      {
+        parent.appendChild(n);
+      }
+      else
+      {
+        parent.insertBefore(n, triplesNode.getNextSibling());
+      }
+    }
+    
+    String docString = PackageUtil.printDoctype(doc);
+    docString += PackageUtil.print(doc.getDocumentElement());
+    return docString;
+  }
+
+
+
   
   /**
    * method to delete triples with a specified string from the triples file 
