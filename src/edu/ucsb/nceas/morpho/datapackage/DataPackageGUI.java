@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-25 21:38:39 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2001-07-30 23:40:44 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -343,7 +343,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     headerPanel.add(headerLabel);
     headerPanel.add(Box.createHorizontalGlue());
     headerPanel.add(editBaseInfoButton);
-    headerPanel.add(uploadButton);
+    //headerPanel.add(uploadButton);
     headerPanel.setBackground(Color.white);
     
     Document doc = dataPackage.getTripleFileDom();
