@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-04-13 01:09:32 $'
- * '$Revision: 1.34 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-21 18:56:56 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -485,6 +485,11 @@ public class Access
         Log.debug(45, ">>>>>>>>>> adding to accessDenystepList: nextXPathObj="
             + nextXPathObj + "; nextValObj=" + nextValObj);
         addToAccess(nextXPathObj, nextValObj, accessDenyList, DENY_REL_XPATH);
+        toDeleteList.add(nextXPathObj);
+
+      } else if (nextXPath.startsWith("@scope")) {
+         
+        //get rid of scope attribute, if it exists
         toDeleteList.add(nextXPathObj);
       }
     }

@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-20 18:58:46 $'
- * '$Revision: 1.46 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-21 18:56:56 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -820,7 +820,7 @@ public class PartyPage extends AbstractUIPage {
       WidgetFactory.hiliteComponent(warningLabel);
       return false;
     }
-    
+
     String urlstring = urlField.getText();
     if (notNullAndNotEmpty(urlstring.trim())) {
       if (!isURL(urlstring)) {
@@ -1285,6 +1285,12 @@ public class PartyPage extends AbstractUIPage {
 
     map = keepOnlyLastPredicateInKeys(map);
 
+
+    //get rid of scope attribute, if it exists
+    String scope = (String)map.get(xpathRootNoPredicates + "/@scope");
+    if (scope != null)  map.remove(xpathRootNoPredicates + "/@scope");
+
+
     //do role first, since it applies even if this is a reference
     getRoleFromMapAndRemove(map, xpathRootNoPredicates);
 
@@ -1493,12 +1499,14 @@ public class PartyPage extends AbstractUIPage {
       String firstPart = null;
       String lastPart = null;
 
-      //if its the id attribute, delete *all* the predicates...
+      //if its the id or scope attribute, delete *all* the predicates...
 
       int lastOpenBracketIndex = key.lastIndexOf("[");
 
       if (lastOpenBracketIndex > -1
-          && lastOpenBracketIndex < key.length() && key.indexOf("@id") < 0) {
+          && lastOpenBracketIndex < key.length() 
+          && key.indexOf("@id") < 0
+          && key.indexOf("@scope") < 0) {
 
         firstPart = XMLUtilities.removeAllPredicates(
             key.substring(0, lastOpenBracketIndex));
@@ -1626,7 +1634,7 @@ public class PartyPage extends AbstractUIPage {
     emailField.setText(EMPTY_STRING);
     urlField.setText(EMPTY_STRING);
   }
-  
+
   private boolean isURL(String urltext) {
     boolean ret = true;
     try{

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-15 04:48:14 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2004-04-21 18:56:56 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -683,6 +683,11 @@ public class Project extends AbstractUIPage {
         Log.debug(45,">>>>>>>>>> adding to personnelList: nextXPathObj="
                   +nextXPathObj+"; nextValObj="+nextValObj);
         addToPersonnel(nextXPathObj, nextValObj, personnelList);
+        toDeleteList.add(nextXPathObj);
+        
+      } else if (nextXPath.startsWith("@scope")) {
+        
+        //get rid of scope attribute, if it exists
         toDeleteList.add(nextXPathObj);
       }
     }
