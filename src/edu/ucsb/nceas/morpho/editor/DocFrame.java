@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-29 23:27:47 $'
- * '$Revision: 1.124 $'
+ *     '$Date: 2003-10-30 18:55:41 $'
+ * '$Revision: 1.125 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,9 +230,11 @@ public class DocFrame extends javax.swing.JFrame
     JLabel test = new JLabel("Choice: ");
     String[] choices = {"eml", "dataset", "creator", "contact", "keywordSet"};
     choiceCombo = new JComboBox(choices);
+    choiceCombo.setVisible(false);
     choiceCombo.addItemListener(new SymItemListener());
     TreeChoicePanel.add(test);
     TreeChoicePanel.add(choiceCombo);
+    choiceCombo.setVisible(true);
     TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
     OutputScrollPanelContainer.add(BorderLayout.SOUTH, TreeControlPanel);
     TrimTreeButton.setText("Trim");
@@ -926,6 +928,34 @@ public class DocFrame extends javax.swing.JFrame
       tree.expandRow(1);
       tree.setSelectionRow(0);
 
+    }
+  }
+
+  /**
+   *  This method will reset the treeModel rootnode, thus changing
+   *  the node displayed at the top of the tree
+   *
+   *  'name' is name of new node to be at top of tree
+   */
+  public void setTopOfTree(DefaultMutableTreeNode rootTreeNode, String name) {
+    DefaultMutableTreeNode nd = null;
+    DefaultMutableTreeNode tn = null;
+    Enumeration enum = rootTreeNode.breadthFirstEnumeration();
+    while (enum.hasMoreElements()) {
+      nd = (DefaultMutableTreeNode)enum.nextElement();
+      NodeInfo ni = (NodeInfo)nd.getUserObject();
+      String nodeName = (ni.getName()).trim();
+      if (nodeName.equals(name)) {
+        tn = nd;
+        break;
+      }
+    }
+    if (tn!=null) {
+      treeModel.setRoot(tn);
+      treeModel.reload();
+      tree.setModel(treeModel);
+      tree.expandRow(1);
+      tree.setSelectionRow(0);
     }
   }
   
@@ -3121,7 +3151,7 @@ public class DocFrame extends javax.swing.JFrame
           tree.setSelectionRow(0);
         }
         else {
-          setTopOfTree(DOMNode, "//"+sel);
+          setTopOfTree(rootNode, sel);
         }
       }
     }
