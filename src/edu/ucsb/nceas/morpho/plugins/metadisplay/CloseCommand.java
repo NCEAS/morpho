@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-28 00:46:14 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,8 +49,8 @@ public class CloseCommand implements Command {
      */    
     public void execute(ActionEvent event) 
     {
-        Log.debug(50,"CloseCommand.execute() called. Firing EDIT_BEGIN_EVENT...");
-        controller.fireActionEvent( MetaDisplayInterface.EDIT_BEGIN_EVENT,
+        Log.debug(50,"CloseCommand.execute() called. Firing CLOSE_EVENT...");
+        controller.fireActionEvent( MetaDisplayInterface.CLOSE_EVENT,
                                     controller.getIdentifier() );
     }
 }
