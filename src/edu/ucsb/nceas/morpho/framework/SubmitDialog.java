@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.2 2000-09-27 15:47:30 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.3 2000-09-28 00:03:13 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -45,7 +45,8 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
     private String errorMessage = "";
     String documentID;
     String parserName = "org.apache.xerces.parsers.SAXParser";
-     
+    String tempXMLFileName = null;
+    boolean idExistsFlag = false;
     
     
 	public SubmitDialog(Frame parent)
@@ -258,7 +259,6 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		DeleteButton.addActionListener(lSymAction);
 		UpdateButton.addActionListener(lSymAction);
 		//}}
-		localidTextBox.setText(get_id());
 	}
 
 	public SubmitDialog()
@@ -280,6 +280,30 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 	    userName = cf.userName;
 	    passWord = cf.passWord;
 	    this.setModal(true);
+		//now save current xml doc as file and get id
+	    String temp = container.mdeBean1.getSaveString();
+		    System.out.println("temp string created");
+	    
+		if ((temp==null)||(temp.length()==0)) {
+		    JOptionPane.showMessageDialog(this,"Unable to obtain current XML document!");
+		    localidTextBox.setText(get_id());
+		}
+		else {
+		    saveAsTempFile(temp);
+		    System.out.println("temp file created:");
+		    String idstring = getIDFromFile(tempXMLFileName,"meta_file_id");
+		    if (idstring!=null) {
+		        if (idstring.indexOf(":")>0) {  // no colon -->invalid id
+                    String global = idstring.substring(0,idstring.indexOf(":"));
+                    String local =  idstring.substring(idstring.indexOf(":")+1,idstring.length());
+                    globalidTextBox.setText(global);
+                    localidTextBox.setText(local);
+                    idExistsFlag = true;
+		        }
+		    }
+		}
+
+	    
 	}
 
 	public void setVisible(boolean b)
@@ -554,9 +578,60 @@ public void ReplaceFile(String file_in, String tag, String newid) {
     infile.delete();
     outfile.renameTo(infile);
 }	
-	
 
-	void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
+// retrieves the current value of a named tag (the id tag)
+public String getXMLID(InputStream is, String tagname) {
+    BufferedReader in = new BufferedReader(new InputStreamReader(is));
+    try {
+        String line = in.readLine();
+        while (line!=null) {
+            if (line.indexOf(tagname)>=0) {   // tag name found!
+                int iii = line.indexOf(tagname)+tagname.length();
+                int jjj = line.indexOf(">",iii); // end of start tag
+                while (jjj<0) {   // end of start tag not on this line
+                    line = line + in.readLine();
+                    jjj = line.indexOf(">",iii);
+                }
+                
+                int kkk = line.indexOf("</",jjj+1);
+                while (kkk<0) {   // beginning of tag not on this line
+                    line = line + in.readLine();
+                    kkk = line.indexOf("</",jjj+1);
+                }
+                String outputString = line.substring(jjj+1,kkk-1);
+                outputString.trim();
+                in.close();
+                return outputString;
+            }
+            line = in.readLine();  // next line
+        }
+        
+        in.close();
+    }
+    catch (Exception e) {System.out.println("Error replacing XMLText!");}
+    return null;
+    
+}
+
+public String getIDFromFile(String file_in, String tag) {
+    System.out.println("file in = " + file_in);
+/*    File infile = new File(file_in);
+        if (infile==null) System.out.println("infile is null!!");
+    try{
+        FileInputStream instream = new FileInputStream(infile);
+        if (instream==null) System.out.println("instream is null!!");
+        String ID = getXMLID(instream, tag);
+        return ID;
+    }
+    catch (Exception e) {
+        System.out.println("Returning null");
+        return null;
+        }
+ */
+     return "xxx:yyy";
+}
+
+void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    if (!CurrentCheckBox.isSelected()) {
 	        if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
@@ -601,6 +676,11 @@ public void ReplaceFile(String file_in, String tag, String newid) {
 		         }
 		        fr.close();
 		    }
+		    int result = JOptionPane.NO_OPTION;
+		    if (idExistsFlag) {
+		       result = JOptionPane.showConfirmDialog(null, "ID already in document. Do you want to insert a new copy?", "choose one", JOptionPane.YES_NO_OPTION); 
+		    }
+		  if (result==JOptionPane.YES_OPTION) {
             System.err.println("Trying: " + container.MetaCatServletURL);
 		    URL url = new URL(container.MetaCatServletURL);
 		    HttpMessage msg = new HttpMessage(url);
@@ -641,13 +721,25 @@ public void ReplaceFile(String file_in, String tag, String newid) {
 	                String newID = globalidTextBox.getText()+":"+localidTextBox.getText();
 		            ReplaceFile(DocumentTextBox.getText(),idtagTextField.getText(),newID);
 		        }
+		        else {
+		            JOptionPane.showMessageDialog(this,"Either global or local id is missing!");
+		        }
+		    }
 		    else {
 		        // this is where the returned id should be put into the current document.
-		        JOptionPane.showMessageDialog(this,"Currently, you must save the current xml document as a file and then enter the id number shown here! ");
-		    }
-		}
-		else {
-		        JOptionPane.showMessageDialog(null, "A file must first be selected.", "Alert", JOptionPane.INFORMATION_MESSAGE);
+		        if (tempXMLFileName!=null) {
+		            File tmp = new File(tempXMLFileName);
+		            if (tmp.exists()) {
+	                    if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
+	                        String newID = globalidTextBox.getText()+":"+localidTextBox.getText();
+		                    ReplaceFile(tempXMLFileName,idtagTextField.getText(),newID);
+		                    container.mdeBean1.openDocument(tmp);
+		                }
+		            }
+		        }
+		        else {
+		            JOptionPane.showMessageDialog(this,"Unable to update current file with ID!");
+		        }
 		}
             String message = "Success. The docid is " + documentID + ".";
             if (change_flag) {
@@ -658,30 +750,14 @@ public void ReplaceFile(String file_in, String tag, String newid) {
         else {
           JOptionPane.showMessageDialog(this,"Writing the document to the databse failed.");
         }
-
+          } // end of 'result' if
       } catch (Exception e) {
         System.out.println("Error inserting to database.");
         JOptionPane.showMessageDialog(this,"Error inserting to database.");
       }
     }
-
+        
 	
-		
-		    
-/*		    txt = new StringBuffer();
-		    try {
-		    while((x=in.read())!=-1) {
-		        txt.append((char)x);
-		    }
-		    }
-		    catch (Exception e) {}
-		    String txt1 = txt.toString();
-		    System.out.println(txt1);
-		    
-        }
-        catch (Exception e) {}
-        }
-*/
     }	
 	
 	private String getdocid() {
@@ -864,5 +940,34 @@ public void ReplaceFile(String file_in, String tag, String newid) {
       }
 	        }
 	    }
+	}
+	
+	
+	private void saveAsTempFile(String str) {
+	    StringReader sr = new StringReader(str);
+        File  tempXMLFile = null;
+        File tmp = new File("./tmp/");
+        if (!tmp.exists()) { 
+          tmp.mkdir();
+        }
+        tempXMLFileName = "./tmp/";
+        long timeStamp = System.currentTimeMillis();
+        String tempFileID = Long.toString(timeStamp) +
+                            Long.toString(Runtime.getRuntime().freeMemory());
+        tempXMLFileName = tempXMLFileName + tempFileID + ".xml";
+        tempXMLFile = new File(tempXMLFileName);
+        try {
+            FileWriter fw = new FileWriter(tempXMLFile);
+            int x;
+		    while((x=sr.read())!=-1) {
+		        fw.write(x); 
+		    }
+		    fw.close();
+		}
+		catch (Exception e) {
+		    System.out.println("Error in saving temporary file");
+		    }
+        
+
 	}
 }
