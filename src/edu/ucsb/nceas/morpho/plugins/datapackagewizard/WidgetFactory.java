@@ -12,6 +12,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JComponent;
 import javax.swing.BorderFactory;
+import javax.swing.SwingConstants;
 
 public class WidgetFactory {
   
@@ -33,13 +34,36 @@ public class WidgetFactory {
     return area;
   }
   
-  public static JLabel makeLabel(String text, boolean hiliteRequired) {
+
+  private static final StringBuffer buff = new StringBuffer();
   
+  public static JLabel makeHTMLLabel(String text, int numberOfLines) {
+  
+    buff.delete(0, buff.length());
+    buff.append("<html><table width=\"95%\"><tr><td valign=\"top\">");
+    buff.append(text);
+    buff.append("</td></tr></table></html>");
+    
+    return makeLabel( buff.toString(), false, 
+                      getDimForNumberOfLines(numberOfLines));
+  
+  }
+
+
+  public static JLabel makeLabel(String text, boolean hiliteRequired) {
+
+    return makeLabel( text, hiliteRequired, 
+                      WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+  }
+  
+  public static JLabel makeLabel( String text, 
+                                  boolean hiliteRequired, Dimension dims) {
+    
     JLabel label = new JLabel(text);
     
-    setPrefMaxSizes(label, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-    label.setMinimumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-    
+    setPrefMaxSizes(label, dims);
+    label.setMinimumSize(dims);
+    label.setAlignmentX(SwingConstants.LEFT);
     label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     
     label.setBorder(BorderFactory.createMatteBorder(1,3,1,3, (Color)null));

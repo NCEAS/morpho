@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 19:44:01 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-07-30 20:24:45 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,25 +82,24 @@ public class WizPage02 extends AbstractWizardPage{
     
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
-    JTextArea desc = WidgetFactory.makeTextArea(
+    JLabel desc = WidgetFactory.makeHTMLLabel(
       "Each data package may contain multiple data tables, associated "
       +"methods, and project information.  The title and abstract are "
       +"used to provide a quick summary of the data package in terms of its "
-      +"purpose and the components being described.", 2, false);
+      +"purpose and the components being described.", 2);
     JPanel descPanel = WidgetFactory.makePanel(2);
     descPanel.add(desc);
-    vbox.add(descPanel);
+    vbox.add(desc);
     
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
     
-    JTextArea titleDesc = WidgetFactory.makeTextArea(
+    JLabel titleDesc = WidgetFactory.makeHTMLLabel(
         "Enter a descriptive title for the data package as a whole. A rule of "
-        +"thumb is to include organization and project scope information.",
-        1, false);
+        +"thumb is to include organization and project scope information.", 2);
     JPanel tdPanel = WidgetFactory.makePanel(1);
     tdPanel.add(titleDesc);
-    vbox.add(tdPanel);
+    vbox.add(titleDesc);
     
     titlePanel = WidgetFactory.makePanel(1);
     
@@ -118,12 +117,12 @@ public class WizPage02 extends AbstractWizardPage{
     
     ////////////////////////////////////////////////////////////////////////////
     
-    JTextArea absDesc = WidgetFactory.makeTextArea(
+    JLabel absDesc = WidgetFactory.makeHTMLLabel(
     "Enter a descriptive abstract paragraph that summarizes the "
-    +"purpose and scope of the dataset", 1, false);
+    +"purpose and scope of the dataset", 2);
     JPanel absPanel = WidgetFactory.makePanel(1);
     absPanel.add(absDesc);
-    vbox.add(absPanel);
+    vbox.add(absDesc);
         
     JPanel abstractPanel = WidgetFactory.makePanel();
 
