@@ -4,8 +4,8 @@
 #
 # '$RCSfile: morpho,v $'
 # '$Author: brooke $'
-# '$Date: 2003-09-22 16:14:27 $'
-# '$Revision: 1.26 $'
+# '$Date: 2003-09-24 05:07:42 $'
+# '$Revision: 1.27 $'
 
 if ! ls $JAVA_HOME/bin/ | grep -q java; then
  echo ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ LAF=./lib/kunststoff.jar
 LMP=./lib/liveMap.jar 
 UTL=./lib/utilities.jar
 
-CPATH=$JAVA_HOME/jre/lib/rt.jar:$LMP:$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF:$UTL:$JHELP:$HELP
+CPATH=.:$JAVA_HOME/jre/lib/rt.jar:$LMP:$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF:$UTL:$JHELP:$HELP
 echo "----------------------------------"
 
 $JAVA_HOME/bin/java -version
