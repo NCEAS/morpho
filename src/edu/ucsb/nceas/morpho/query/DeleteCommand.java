@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:24:01 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-11 22:53:59 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,8 +45,11 @@ import javax.swing.JOptionPane;
 public class DeleteCommand implements Command 
 {
     
-  /** A reference to the dialog */
-   private JDialog dialog = null;
+  /** A reference to the delete dialog */
+   private JDialog deleteDialog = null;
+   
+  /** A reference to the open dialog */
+   private OpenDialogBox openDialog = null;
    
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
@@ -84,19 +87,28 @@ public class DeleteCommand implements Command
   /** flag to indicate selected data package has local copy */
   private boolean inNetwork = false;
  
+  /** flag for if the delete command come from a open dialog */
+  private boolean comeFromOpenDialog = false;
   /**
    * Constructor of DeleteCommand
-   * @param dialog a delete dialog need to be destroied
-   * @param myFrame the parent frame of delete dialog
+   * @param myOpenDialog the open dialog which 
+   * @param myDeleteDialog a delete dialog need to be destroied
+   * @param myFrame the parent frame of delete dialog or parent of open dialog
    * @param selectId the id of data package need to be deleted
    * @param myState which deletion will happend, local, network or both
    * @param myInLocal if the datapackage has a local copy
    * @param myInNetwork if the datapackage has a network copy
    */
-  public DeleteCommand(JDialog box, MorphoFrame myFrame, String myState,
-                      String selectId,  boolean myInLocal, boolean myInNetwork)
+  public DeleteCommand(OpenDialogBox myOpenDialog, JDialog myDeleteDialog, 
+                      MorphoFrame myFrame, String myState, String selectId,  
+                      boolean myInLocal, boolean myInNetwork)
   {
-    dialog = box;
+    if ( myOpenDialog != null)
+    { 
+      openDialog = myOpenDialog;
+      comeFromOpenDialog = true;
+    }
+    deleteDialog = myDeleteDialog;
     morphoFrame = myFrame;
     selectDocId = selectId;
     state = myState;
@@ -141,15 +153,15 @@ public class DeleteCommand implements Command
       // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals("") && execute)
       {
-        // Destroy the dialog
-        if (dialog != null)
+        // Destroy the delete dialog
+        if (deleteDialog != null)
         {
-          dialog.setVisible(false);
-          dialog.dispose();
-          dialog = null;
+          deleteDialog.setVisible(false);
+          deleteDialog.dispose();
+          deleteDialog = null;
         }
       
-        doDelete(selectDocId, morphoFrame);
+        doDelete(selectDocId, openDialog, morphoFrame);
       }
    
   }//execute
@@ -158,7 +170,8 @@ public class DeleteCommand implements Command
    * Using SwingWorket class to delete a local package
    *
    */
- private void doDelete(final String docid, final MorphoFrame frame) 
+ private void doDelete(final String docid, final OpenDialogBox open, 
+                                                      final MorphoFrame frame) 
  {
   final SwingWorker worker = new SwingWorker() 
   {
@@ -174,7 +187,16 @@ public class DeleteCommand implements Command
           }
           DataPackageInterface dataPackage;
           // Create a refresh command finished
-          RefreshCommand refresh = new RefreshCommand(frame);
+          RefreshCommand refresh = null;
+          if (comeFromOpenDialog)
+          {
+            refresh = new RefreshCommand(open);
+          }
+          else
+          {
+            refresh = new RefreshCommand(frame);
+          }
+          
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -193,10 +215,21 @@ public class DeleteCommand implements Command
 		      //delete the local package
           Log.debug(20, "Deleteing the package.");
           int choice = JOptionPane.YES_OPTION;
-          choice = JOptionPane.showConfirmDialog(frame, message, 
+          // come from open dialog
+          if (comeFromOpenDialog)
+          {
+             choice = JOptionPane.showConfirmDialog(open, message, 
                                "Morpho", 
                                JOptionPane.YES_NO_CANCEL_OPTION,
                                JOptionPane.WARNING_MESSAGE);
+          }
+          else
+          {
+            choice = JOptionPane.showConfirmDialog(frame, message, 
+                               "Morpho", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+          }
                                
           if(choice == JOptionPane.YES_OPTION)
           {
