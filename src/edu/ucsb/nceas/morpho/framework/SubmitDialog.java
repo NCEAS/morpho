@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.7 2000-12-14 22:39:05 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.8 2000-12-19 23:46:51 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -122,25 +122,14 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		JPanel7.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel4.add(JPanel7);
 		JPanel7.setBounds(2,2,402,34);
-		JLabel6.setText("global");
+		JLabel6.setText("Document ID:");
 		JPanel7.add(JLabel6);
 		JLabel6.setForeground(java.awt.Color.black);
 		JLabel6.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel6.setBounds(71,7,34,15);
-		globalidTextBox.setColumns(8);
+		JLabel6.setBounds(51,7,75,15);
+		globalidTextBox.setColumns(20);
 		JPanel7.add(globalidTextBox);
-		globalidTextBox.setBounds(110,5,88,19);
-		JLabel5.setText(".");
-		JPanel7.add(JLabel5);
-		JLabel5.setBounds(203,7,3,15);
-		localidTextBox.setColumns(8);
-		JPanel7.add(localidTextBox);
-		localidTextBox.setBounds(211,5,88,19);
-		JLabel7.setText("local");
-		JPanel7.add(JLabel7);
-		JLabel7.setForeground(java.awt.Color.black);
-		JLabel7.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel7.setBounds(304,7,26,15);
+		globalidTextBox.setBounds(131,5,220,19);
 		JPanel12.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel4.add(JPanel12);
 		JPanel12.setBounds(2,36,402,34);
@@ -228,13 +217,16 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		JPanel11.add(SubmitButton);
 		SubmitButton.setBounds(17,5,75,25);
 		DeleteButton.setText("Delete");
+		DeleteButton.setActionCommand("Delete");
 		JPanel11.add(DeleteButton);
 		DeleteButton.setBounds(97,5,71,25);
 		UpdateButton.setText("Update");
+		UpdateButton.setActionCommand("Update");
 		JPanel11.add(UpdateButton);
 		UpdateButton.setBounds(173,5,75,25);
 		InsertButton.setToolTipText("Insert ID Number in ID Label tag of local document");
 		InsertButton.setText("Insert ID in Local File");
+		InsertButton.setActionCommand("Insert ID in Local File");
 		JPanel11.add(InsertButton);
 		InsertButton.setBounds(253,5,151,25);
 		CancelButton.setText("Cancel");
@@ -293,10 +285,8 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		    String idstring = getIDFromFile(tempXMLFileName,"meta_file_id");
 		    if (idstring!=null) {
 		        if (idstring.lastIndexOf(sepchar)>0) {  // no colon -->invalid id
-                    String global = idstring.substring(0,idstring.lastIndexOf(sepchar));
-                    String local =  idstring.substring(idstring.lastIndexOf(sepchar)+1,idstring.length());
+                    String global = idstring;
                     globalidTextBox.setText(global);
-                    localidTextBox.setText(local);
                     idExistsFlag = true;
 		        }
 		    }
@@ -358,9 +348,6 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 	javax.swing.JPanel JPanel7 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
 	javax.swing.JTextField globalidTextBox = new javax.swing.JTextField();
-	javax.swing.JLabel JLabel5 = new javax.swing.JLabel();
-	javax.swing.JTextField localidTextBox = new javax.swing.JTextField();
-	javax.swing.JLabel JLabel7 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel12 = new javax.swing.JPanel();
 	javax.swing.JRadioButton UserRadioButton = new javax.swing.JRadioButton();
 	javax.swing.JRadioButton LocalRadioButton = new javax.swing.JRadioButton();
@@ -429,7 +416,6 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 	{
 	    
 	    globalidTextBox.setText("");
-	    localidTextBox.setText("");
 	    ServerRadioButton.setSelected(true);
 		StringBuffer txt = new StringBuffer();
 		try {
@@ -445,10 +431,8 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		    String idstring = getIDFromFile(file,idtagTextField.getText());
 		    if (idstring!=null) {
 		        if (idstring.lastIndexOf(sepchar)>0) {  // no colon -->invalid id
-                    String global = idstring.substring(0,idstring.lastIndexOf(sepchar));
-                    String local =  idstring.substring(idstring.lastIndexOf(sepchar)+1,idstring.length());
+                    String global = idstring; 
                     globalidTextBox.setText(global);
-                    localidTextBox.setText(local);
                     idExistsFlag = true;
 		        }
 		    }
@@ -503,9 +487,7 @@ void CurrentCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
             LocalRadioButton.setSelected(false);
             ServerRadioButton.setSelected(false);
             globalidTextBox.setText("");
-            localidTextBox.setText("");
             globalidTextBox.setEditable(true);
-            localidTextBox.setEditable(true);
         }
 	}
 
@@ -515,9 +497,7 @@ void CurrentCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
             LocalRadioButton.setSelected(false);
             UserRadioButton.setSelected(false);
             globalidTextBox.setText("");
-		    localidTextBox.setText("");
             globalidTextBox.setEditable(false);
-            localidTextBox.setEditable(false);
         }
 	}
 
@@ -527,9 +507,7 @@ void CurrentCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
             ServerRadioButton.setSelected(false);
             UserRadioButton.setSelected(false);
             globalidTextBox.setText("MY_ID");
-		    localidTextBox.setText(get_id());
             globalidTextBox.setEditable(true);
-            localidTextBox.setEditable(true);
         }
 	}
 	
@@ -643,8 +621,8 @@ public String getIDFromFile(String file_in, String tag) {
 void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    if (!CurrentCheckBox.isSelected()) {
-	        if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	            String newID = globalidTextBox.getText()+sepchar+localidTextBox.getText();
+	        if ((globalidTextBox.getText().length()>0)) {
+	            String newID = globalidTextBox.getText();
 		        ReplaceFile(DocumentTextBox.getText(),idtagTextField.getText(),newID);
 		    }
 		    else {
@@ -717,16 +695,13 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 
         if (writeSucceeded) {
    //       System.out.println("Success. The docid is " + documentID + ".");
-            String global = documentID.substring(0,documentID.lastIndexOf(sepchar));
-            String local =  documentID.substring(documentID.lastIndexOf(sepchar)+1,documentID.length());
+            String global = documentID;
             boolean change_flag = false;
             if (globalidTextBox.getText().equals(global)) change_flag=true;
-            if (localidTextBox.getText().equals(local)) change_flag=true;
             globalidTextBox.setText(global);
-            localidTextBox.setText(local);
 	        if (!CurrentCheckBox.isSelected()) {
-	            if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	                String newID = globalidTextBox.getText()+sepchar+localidTextBox.getText();
+	            if ((globalidTextBox.getText().length()>0)) {
+	                String newID = globalidTextBox.getText();
 		            ReplaceFile(DocumentTextBox.getText(),idtagTextField.getText(),newID);
 		        }
 		        else {
@@ -738,8 +713,8 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		        if (tempXMLFileName!=null) {
 		            File tmp = new File(tempXMLFileName);
 		            if (tmp.exists()) {
-	                    if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	                        String newID = globalidTextBox.getText()+sepchar+localidTextBox.getText();
+	                    if ((globalidTextBox.getText().length()>0)) {
+	                        String newID = globalidTextBox.getText();
 		                    ReplaceFile(tempXMLFileName,idtagTextField.getText(),newID);
 		                    container.mdeBean1.openDocument(tmp);
 		                }
@@ -771,8 +746,8 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	private String getdocid() {
 	    String result = null;
 //	    if (!ServerRadioButton.isSelected()) {
-	       if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	            result =  globalidTextBox.getText()+sepchar+localidTextBox.getText();
+	       if ((globalidTextBox.getText().length()>0)) {
+	            result =  globalidTextBox.getText();
 //	       }
 	    }
 	    return result;
@@ -938,9 +913,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
             String local =  documentID.substring(documentID.lastIndexOf(sepchar)+1,documentID.length());
             boolean change_flag = false;
             if (!globalidTextBox.getText().equals(global)) change_flag=true;
-            if (!localidTextBox.getText().equals(local)) change_flag=true;
             globalidTextBox.setText(global);
-            localidTextBox.setText(local);
             String message = "Success. The docid is " + documentID + ".";
             if (change_flag) {
                 message = message + " New docid provided by server!";
