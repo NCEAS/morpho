@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-11-24 18:33:17 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-25 18:03:10 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,10 +36,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -147,18 +144,7 @@ public class Keywords extends AbstractWizardPage{
   
   private void showNewKeywordsDialog() {
     
-    ServiceController sc;
-    DataPackageWizardInterface dpwPlugin = null;
-    try {
-      sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardInterface)sc.getServiceProvider(DataPackageWizardInterface.class);
-    } catch (ServiceNotHandledException se) {
-	    Log.debug(6, se.getMessage());
-      se.printStackTrace();
-    }
-    if(dpwPlugin == null) return;
-    
-    KeywordsPage keywordsPage = (KeywordsPage)dpwPlugin.getPage(DataPackageWizardInterface.KEYWORDS_PAGE);
+    KeywordsPage keywordsPage = (KeywordsPage)WizardPageLibrary.getPage(DataPackageWizardInterface.KEYWORDS_PAGE);
     WizardPopupDialog wpd = new WizardPopupDialog(keywordsPage, WizardContainerFrame.frame, false);
     wpd.setVisible(true);
 	

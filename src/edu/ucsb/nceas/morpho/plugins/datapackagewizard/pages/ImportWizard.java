@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-11-25 18:03:10 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,13 +49,11 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.UIController;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+
 
 public class ImportWizard extends     AbstractWizardPage 
                           implements  TextImportListener {
@@ -97,18 +95,7 @@ public class ImportWizard extends     AbstractWizardPage
     // a "cancel"), start up the import wizard.
     if (!importCompletedOK) {
 
-      ServiceController sc;
-      DataPackageWizardPlugin dpwPlugin = null;
-      try {
-	      sc = ServiceController.getInstance();
-	      dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
-      } catch (ServiceNotHandledException se) {
-	      Log.debug(6, se.getMessage());
-      }
-      if(dpwPlugin == null) 
-	return;
-      
-      AbstractWizardPage locationPage = dpwPlugin.getPage(DataPackageWizardInterface.DATA_LOCATION);
+      AbstractWizardPage locationPage = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
 
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
                 

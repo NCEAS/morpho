@@ -1,13 +1,12 @@
-/**
- *  '$RCSfile: DataViewer.java,v $'
+/*  '$RCSfile: DataViewer.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
  *    Authors: @authors@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:18 $'
- * '$Revision: 1.86 $'
+ *     '$Date: 2003-11-25 18:03:10 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -597,6 +596,9 @@ public class DataViewer extends javax.swing.JPanel
    }
     
     
+   public int getEntityIndex() {
+     return this.entityIndex;
+   }
     /**
      * Initialization code which collects information about the data
      * from various metadata modules associated with the entity to
@@ -959,6 +961,10 @@ public class DataViewer extends javax.swing.JPanel
     
     public void setAbstractDataPackage(AbstractDataPackage adp) {
       this.adp = adp;
+    }
+    
+    public AbstractDataPackage getAbstractDataPackage() {
+      return this.adp;
     }
     
     public void setDataPackage(DataPackage dp) {

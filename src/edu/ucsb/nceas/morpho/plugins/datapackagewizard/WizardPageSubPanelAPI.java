@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-11-25 18:03:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 
 
 /**
- *  Interface   DialogSubPanelAPI
+ *  Interface   WizardSubPanelAPI
  *
  */
 

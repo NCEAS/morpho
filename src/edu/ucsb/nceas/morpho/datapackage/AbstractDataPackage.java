@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-11-21 22:33:45 $'
- * '$Revision: 1.25 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-25 18:03:10 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -352,7 +352,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       if (entityNodes==null) {
         Log.debug(20,"entityList is null!");
         entityArray = null;
-      } else {
+      } else {       
         Node[] entityArrayNodes = XMLUtilities.getNodeListAsNodeArray(entityNodes);
         entityArray = new Entity[entityArrayNodes.length];
         for (int i=0;i<entityArrayNodes.length;i++) {

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-11-25 18:03:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,10 +50,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -199,17 +196,8 @@ public class PartyMainPage extends AbstractWizardPage{
   }
   
   private void showNewPartyDialog() {
-    ServiceController sc;
-    DataPackageWizardPlugin dpwPlugin = null;
-    try {
-	sc = ServiceController.getInstance();
-	dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
-    } catch (ServiceNotHandledException se) {
-	Log.debug(6, se.getMessage());
-    }
-    if(dpwPlugin == null) 
-	return;
-    PartyPage partyPage = (PartyPage)dpwPlugin.getPage(DataPackageWizardInterface.PARTY_PAGE);
+    
+    PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
     partyPage.setRole(role);
     WizardPopupDialog wpd = new WizardPopupDialog(partyPage, WizardContainerFrame.frame);
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
