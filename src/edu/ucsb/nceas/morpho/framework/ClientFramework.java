@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-05-22 17:27:48 $'
- * '$Revision: 1.93 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-05-23 23:21:08 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1515,9 +1515,23 @@ public class ClientFramework extends javax.swing.JFrame
          }
        */
        
-      // Set system property to use HTTPClient or ssl protocol
-      System.setProperty("java.protocol.handler.pkgs","HTTPClient");
-      
+     // Set system property to use HTTPClient or ssl protocol
+     // System.setProperty("java.protocol.handler.pkgs","HTTPClient");
+     
+     java.net.URL.setURLStreamHandlerFactory(new java.net.URLStreamHandlerFactory() {
+         public java.net.URLStreamHandler createURLStreamHandler(final String protocol) {
+         if ("http".equals(protocol)) {
+           try { 
+             URLStreamHandler urlsh = new HTTPClient.http.Handler(); 
+              return urlsh; 
+           }
+           catch (Exception e) {return null;}           
+         }
+         return null;
+         }
+     });
+
+ 
       // Set the keystore used
       System.setProperty("javax.net.ssl.trustStore", "./lib/morphocacerts");
 
