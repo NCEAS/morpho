@@ -5,7 +5,7 @@
 <!ATTLIST identifier system CDATA #IMPLIED>
 <!ELEMENT shortName (#PCDATA)>
 <!ELEMENT title (#PCDATA)>
-<!ELEMENT originator ((individualName | organizationName | positionName), address*, phone*, electronicMailAddress*, onlineLink*, role+)>
+<!ELEMENT originator ((individualName | organizationName | positionName)+, address*, phone*, electronicMailAddress*, onlineLink*, role+)>
 <!ELEMENT pubDate (#PCDATA)>
 <!ELEMENT pubPlace (#PCDATA)>
 <!ELEMENT series (#PCDATA)>
