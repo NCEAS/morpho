@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-02 01:21:05 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-03 18:47:43 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class ConfigXML
   /**
    * Print writer (output)
    */
-  protected PrintWriter out;
+  private PrintWriter out;
 
 
   /**
