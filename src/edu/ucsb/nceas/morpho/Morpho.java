@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-07-23 17:46:47 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2004-12-14 22:07:00 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1285,7 +1285,7 @@ public class Morpho
         helpItemAction.setMenu("Help", 6);
         controller.addGuiAction(helpItemAction);
 
-        Command mdIntroCommand = new HelpMetadataIntroCommand();
+        Command mdIntroCommand = new HelpCommand("metadata");
         GUIAction mdIntroItemAction =
             new GUIAction("Intro to Metadata...", null, mdIntroCommand);
         mdIntroItemAction.putValue(Action.SHORT_DESCRIPTION, "Intro to Metadata");
@@ -1295,6 +1295,18 @@ public class Morpho
         mdIntroItemAction.putValue("menuPosition", new Integer(3));
         mdIntroItemAction.setMenu("Help", 6);
         controller.addGuiAction(mdIntroItemAction);
+
+        Command mdEMLSpecCommand = new HelpCommand("eml_index");
+        GUIAction mdEMLSpecItemAction =
+            new GUIAction("EML Specifications...", null, mdEMLSpecCommand);
+        mdEMLSpecItemAction.putValue(Action.SHORT_DESCRIPTION, "EML Specifications");
+        mdEMLSpecItemAction.putValue(Action.SMALL_ICON,
+            new ImageIcon(getClass().
+            getResource("/toolbarButtonGraphics/general/Help16.gif")));
+        mdEMLSpecItemAction.putValue("menuPosition", new Integer(4));
+        mdEMLSpecItemAction.setMenu("Help", 6);
+        controller.addGuiAction(mdEMLSpecItemAction);
+
     }
 
     /** Create a new connection to metacat */
