@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-04 01:05:00 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,12 +134,15 @@ public class CustomList extends JPanel {
   private void initList(String[] colNames, int displayRows, 
                                                       Object[] columnEditors) {
     
-    Vector colNamesVec = new Vector(colNames.length);
+    Vector colNamesVec = new Vector(colNames.length + 1);
     
     for (int i=0; i<colNames.length; i++) {
     
       colNamesVec.add(i, colNames[i]);
     }
+    // The last column is never displayed, but is used to hold a pointer to any 
+    // Object the user wants to associate with the row
+    colNamesVec.add(colNames.length, "UserObject");
     
     Vector rowsData = new Vector();
     
@@ -149,6 +152,20 @@ public class CustomList extends JPanel {
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
+
+    // The last column is never displayed, but is used to hold a pointer to any 
+    // Object the user wants to associate with the row
+    
+    int userObjColIndex = table.getColumnCount() - 1;
+    
+    System.err.println("\n***** table.getColumnModel().getColumn("
+      +userObjColIndex+") = "+table.getColumnModel().getColumn(userObjColIndex));
+      
+    table.getColumnModel().getColumn(userObjColIndex).setMaxWidth(0);
+    table.getColumnModel().getColumn(userObjColIndex).setWidth(0);
+    table.makeColumnNotEditable(userObjColIndex);
+    
+    /////////////////////////////////
     
     final JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.getViewport().setBackground(java.awt.Color.white);
@@ -164,7 +181,7 @@ public class CustomList extends JPanel {
     tableModelEvent = new TableModelEvent(table.getModel());
       
     addAction = new AddAction(table, this);
-//    addAction.addRowNoDialog();
+//    addAction.addRowNoCustomAction();
 
 //    if (table.getComponentAt(0, 0)!=null) {
 //      table.editCellAt(0, 0, new EventObject(table.getComponentAt(0, 0)));
@@ -195,6 +212,7 @@ public class CustomList extends JPanel {
       
       for (int i=0; i<columnEditors.length; i++) {
     
+        if (i>=table.getColumnCount()) continue;
         Object editor = columnEditors[i];
         TableColumn column = table.getColumnModel().getColumn(i);
       
@@ -364,6 +382,32 @@ public class CustomList extends JPanel {
                                         && selRow < (table.getRowCount() - 1));
   }  
   
+
+  /**
+   *  returns the index of the currently-selected row, or -1 if none selected
+   *
+   *  @return the index of the currently-selected row, or -1 if none selected
+   */
+  public int getSelectedRow() {
+  
+    return table.getSelectedRow();
+  }
+
+  
+  /**
+   *  removes the row with the specified index from the list
+   *
+   *  @param the index of the row to be removed
+   */
+  public void removeRow(int row) {
+  
+    ((DefaultTableModel)(table.getModel())).removeRow(row);
+//    if (table.getRowCount() < 1) addFirstRowBack();
+    table.tableChanged(CustomList.getTableModelEvent());
+    table.clearSelection();
+  }
+
+  
   
   /**
    *  returns a <code>java.util.List</code> containing elements that are also 
@@ -524,7 +568,7 @@ class AddAction extends AbstractAction {
 
     Log.debug(45, "CustomList ADD action");
     
-    addRowNoDialog();
+    addRowNoCustomAction();
     
     //execute the user's custom action:
     if (parentList.getCustomAddAction()!=null) {
@@ -533,7 +577,7 @@ class AddAction extends AbstractAction {
   }
   
   
-  protected void addRowNoDialog() {
+  protected void addRowNoCustomAction() {
   
     int row = table.getSelectedRow();
     if (row < 0) {
@@ -649,10 +693,8 @@ class DeleteAction extends AbstractAction {
     if (table.getEditorComponent()!=null) {
       table.editingStopped(new ChangeEvent(table.getEditorComponent()));
     }
-    model.removeRow(row);
-//    if (table.getRowCount() < 1) addFirstRowBack();
-    table.tableChanged(CustomList.getTableModelEvent());
-    table.clearSelection();
+    
+    parentList.removeRow(row);
 
   
     //execute the user's custom action:
@@ -664,7 +706,7 @@ class DeleteAction extends AbstractAction {
 //  private void addFirstRowBack() {
 //  
 //    if (addAction==null) addAction = new AddAction(table, parentList);
-//    CustomList.addAction.addRowNoDialog();
+//    CustomList.addAction.addRowNoCustomAction();
 //  }
 }
 
@@ -775,67 +817,3 @@ class CustomJTable extends JTable  {
     }
     
 }
-
-
-
-
-
-//class EditableStringRenderer extends JTextField implements TableCellRenderer {
-//
-//
-//  public EditableStringRenderer() {
-//  
-//    Dimension prefSize 
-//        = new Dimension(1000, this.getFontMetrics(this.getFont()).getHeight());
-//    this.setPreferredSize(prefSize);
-//  }
-//  
-//  
-//  public Component getTableCellRendererComponent( final JTable table,
-//                                                  Object  value,
-//                                                  boolean isSelected,
-//                                                  boolean hasFocus,
-//                                                  int     row,
-//                                                  int     col ) {
-//                                                
-//    if (value==null)                return this;
-//    if (!(value instanceof String)) return null;
-//    
-//    this.setEnabled(table.isEnabled());
-//    this.setFont(table.getFont());
-//    this.setOpaque(true);
-//
-//    if (isSelected) {
-//      this.setBackground(table.getSelectionBackground());
-//      this.setForeground(table.getSelectionForeground());
-//    } else {
-//      this.setBackground(table.getBackground());
-//      this.setForeground(table.getForeground());
-//    }
-//
-//    this.setText((String)value);
-//    table.addMouseListener(new MouseAdapter() {
-//    
-//      public void mouseClicked(MouseEvent e) {
-//        Log.debug(45, "\n***** EditableStringRenderer -> mouseClicked");
-//        int i = table.getSelectedRow();
-//        int j = table.getSelectedColumn();
-//        if (i > -1 && j > -1) {
-//          table.editCellAt(  
-//              i, j, new ChangeEvent(table.getModel().getValueAt(i, j)));
-//          
-//          Component comp = table.getComponentAt(i, j);
-//          
-//          if (comp instanceof JTextField) {
-//            JTextField field = (JTextField)comp;
-//            Log.debug(45, "\n***** EditableStringRenderer -> JTextField text = "+field.getText());
-//            field.setCaretPosition(field.getText().length());
-//            field.requestFocus();
-//          }
-//        }
-//        
-//      }
-//    });
-//    return this;
-//  }
-//}

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-04 01:05:00 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -439,7 +439,7 @@ public class DataFormat extends AbstractWizardPage{
     } else if (formatXPath==COMPLEX_TEXT_XPATH) {
     
 
-      OrderedMap listNVP = getListAsNVP();
+      OrderedMap listNVP = getCmplxDelimListAsNVP();
       
       if (listNVP==null || listNVP.size()<1) {
         WidgetFactory.hiliteComponent(listLabel);
@@ -467,7 +467,7 @@ public class DataFormat extends AbstractWizardPage{
   
   private OrderedMap listResultsMap = new OrderedMap();
   //
-  private OrderedMap getListAsNVP() {
+  private OrderedMap getCmplxDelimListAsNVP() {
   
     listResultsMap.clear();
     
@@ -476,7 +476,7 @@ public class DataFormat extends AbstractWizardPage{
     List rowLists = list.getListOfRowLists();
     String fixedDelimStr = null;
   
-    for (Iterator it = rowLists.iterator(); it.hasNext();) {
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
       // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
@@ -584,7 +584,7 @@ public class DataFormat extends AbstractWizardPage{
     
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationComplex);
       
-      returnMap = getListAsNVP();
+      returnMap.putAll(getCmplxDelimListAsNVP());
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-04 01:05:00 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
-//import java.util.Map;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.Action;
@@ -109,8 +109,19 @@ public class PartyCreator extends AbstractWizardPage{
   
   private void showPartyDialog() {
     
+    int row = creatorList.getSelectedRow();
+    if (row < 0) return;
+    
     partyDialog 
             = new PartyDialog(WizardContainerFrame.frame, PartyDialog.CREATOR);
+            
+    if (partyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
+    
+      List newRow = (List)(creatorList.getListOfRowLists().get(row));
+      newRow = partyDialog.getSurrogate();
+    } else {
+      creatorList.removeRow(row);
+    }
   }
   
   

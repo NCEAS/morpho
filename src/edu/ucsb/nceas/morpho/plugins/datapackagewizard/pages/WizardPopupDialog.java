@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-04 01:05:00 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,12 +69,18 @@ public abstract class WizardPopupDialog extends JDialog {
     initBottomPanel();
     initButtons();
   }
-
-  /**
-   *  resets all textfields etc to blank or original values
-   */
-  public abstract void resetContent();
   
+  /** 
+   *  The action to be executed when the "OK" button is pressed. If no onAdvance 
+   *  processing is required, implementation must return boolean true.
+   *
+   *  @return boolean true if dialog should close and return to wizard, false 
+   *          if not (e.g. if a required field hasn't been filled in)
+   */
+   public abstract boolean onAdvanceAction();
+  
+  
+
   /**
    *  resets location and dimensions to original values
    */
@@ -157,17 +163,24 @@ public abstract class WizardPopupDialog extends JDialog {
 
   private void okAction() {
   
-    this.setVisible(false);
+    if (onAdvanceAction()) this.setVisible(false);
+    USER_RESPONSE = OK_OPTION;
   }
 
   private void cancelAction() {
   
     this.setVisible(false);
+    USER_RESPONSE = CANCEL_OPTION;
   }
 
 
   // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * *
 
+  public short USER_RESPONSE;
+  public static final short OK_OPTION      = 10;
+  public static final short CANCEL_OPTION  = 20;
+  public static final short CLOSED_OPTION  = 30;
+  
   private int PADDING = WizardSettings.PADDING;
   private JFrame parent;
   private Container contentPane;
