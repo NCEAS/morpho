@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 21:35:18 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2004-02-03 19:34:26 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ import org.xml.sax.XMLReader;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.5.0alpha4.0";
+    public static String VERSION = "1.5.0alpha5.0";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -826,6 +826,7 @@ public class Morpho
                     "This means that it is very fragile and known to\n" +
                     "contain errors. Please do not expect flawless operation.\n");
 
+            
         try {
           SplashFrame sf = new SplashFrame(true);
           sf.setVisible(true);            
