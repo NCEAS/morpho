@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-06 16:48:43 $'
- * '$Revision: 1.31 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-21 20:21:55 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -475,6 +475,31 @@ public class PackageWizardShell extends javax.swing.JFrame
       String id = (String)wfc.id;
     }
     
+    // Now create an AccessControl XML document for the dataset
+    AccessionNumber aa = new AccessionNumber(framework);
+    String newid = aa.getNextId();
+    File aclFile = getACLFile(newid);
+    
+    Vector fvec = new Vector();
+    fvec.addElement(newid);
+    fvec.addElement(aclFile);
+    fvec.addElement("ACL");
+    packageFiles.addElement(fvec);
+    
+    // now create a triple for the ACL relating it to datapackage file
+    Triple aclt = null;
+    for(int m=0; m<frameWizards.size(); m++) {
+        // loop to find the triple file
+        WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
+        if(((String)wfc2.attributes.get("name")).equals(triplesFile)) {
+            aclt = new Triple(newid, "isRelatedTo", wfc2.id);
+            break;
+        }
+    }
+    
+    
+    // ---------------
+    
     Hashtable tripleNames = new Hashtable();
     for(int i=0; i<frameWizards.size(); i++)
     { //create a hashtable of file names to ids for use in triple creation
@@ -544,6 +569,10 @@ public class PackageWizardShell extends javax.swing.JFrame
           tc.addTriple(t);
         }
       }
+    }
+    // add acl triple
+    if (aclt!=null) {
+        tc.addTriple(aclt);
     }
     
     triples = tc;
@@ -838,8 +867,9 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     previous.addActionListener(this);
     next.addActionListener(this);
-    cancelButton = new JButton("Cancel", new ImageIcon(getClass().
-                   getResource("/toolbarButtonGraphics/general/Stop16.gif")));
+//    cancelButton = new JButton("Cancel", new ImageIcon(getClass().
+//                   getResource("/toolbarButtonGraphics/general/Stop16.gif")));
+    cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(this);
     BoxLayout buttonLayout = new BoxLayout(buttonPanel, BoxLayout.X_AXIS);
     buttonPanel.setLayout(buttonLayout);
@@ -911,6 +941,39 @@ public class PackageWizardShell extends javax.swing.JFrame
     } catch (FileNotFoundException fnf) {
       System.err.println("Failed to find the configuration file.");
     }
+  }
+ 
+  /** create a new ACL file */
+  private File getACLFile(String id) {
+    StringBuffer sb = new StringBuffer();
+    sb.append("<?xml version=\"1.0\"?>\n");
+    sb.append("<!DOCTYPE dataset PUBLIC \"-//NCEAS//eml-access-2.0//EN\" \"eml-access.dtd\">\n");
+    sb.append("<acl authSystem=\"knb\" order=\"allowFirst\">\n");
+    sb.append("<identifier system=\"knb\">" + id + "</identifier>\n");
+    sb.append("<allow>\n");
+    sb.append("<principal>" + framework.getUserName() + "</principal>\n");
+    sb.append("<permission>all</permission>\n");
+    sb.append("</allow>\n");
+    if (publicAccessCheckBox.isSelected()) {
+        sb.append("<allow>\n");
+        sb.append("<principal>public</principal>\n");
+        sb.append("<permission>read</permission>\n");
+        sb.append("</allow>\n");
+    }
+    else {
+        sb.append("<deny>\n");
+        sb.append("<principal>public</principal>\n");
+        sb.append("<permission>all</permission>\n");
+        sb.append("</deny>\n");
+    }
+    sb.append("</acl>");
+    String aclString = sb.toString();
+    System.out.println(aclString);
+    StringReader aclReader = new StringReader(aclString);
+    FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
+    File file = localDataStore.saveFile(id, aclReader, false);
+    
+    return file;
   }
   
   /**
