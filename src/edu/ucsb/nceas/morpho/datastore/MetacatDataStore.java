@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-17 20:44:09 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-04-30 16:54:27 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,12 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         int c = bmetacatInputStream.read();
         while(c != -1)
         {
+          /* the following checks for values of 'c' >127 and <32 are driven by the
+             fact that metacat can return xml documents with special characters in this 
+             range which cause parsing problems. This code 'filters' the values into xml
+             character references ('&#xxxx;'). This is only appropriate for XML streams.
+             Binary data should be called using the 'openDataFile' method.
+          */
           if (c>127) {
             bfos.write('&');
             bfos.write('#');
