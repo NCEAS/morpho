@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-24 23:18:05 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-11-25 23:19:21 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,8 +69,9 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     metacatDataStore = new MetacatDataStore(morpho);
   }
   
-  public void serialize() {
-    
+  public void serialize(String location) {
+    // this method should serialize the ENTIRE package by
+    // going though all the modules referenced in the triples!
   }
   
   public void load(String location, String identifier, Morpho morpho) {

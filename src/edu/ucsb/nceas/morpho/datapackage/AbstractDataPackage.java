@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-25 18:03:10 $'
- * '$Revision: 1.26 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-11-25 23:19:21 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,7 +194,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  be saved in the file system or metacat. Actual implementation is done in classes
    *  specific to grammar
    */
-  abstract public void serialize();
+  abstract public void serialize(String location);
   
   /**
    *  This abstract method loads a datapackage from metacat or the local file
@@ -267,7 +267,7 @@ public abstract class AbstractDataPackage extends MetadataObject
  /**
   *  Method to return the location
   */
-  String getLocation() {
+  public String getLocation() {
     return location;
   }
 
@@ -307,6 +307,14 @@ public abstract class AbstractDataPackage extends MetadataObject
     temp = getAccessionNumber();    
     return temp;
   }
+  
+    /**
+   *  convenience method to set accession number from DOM
+   */
+  public void setAccessionNumber(String id) {
+    setGenericValue("/xpathKeyMap/contextNode[@name='package']/accessionNumber", id);    
+  }
+
   
   /**
    *  convenience method for getting package keywords

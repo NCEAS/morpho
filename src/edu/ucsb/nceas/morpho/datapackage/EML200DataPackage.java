@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-20 05:16:50 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-11-25 23:19:21 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,9 +58,21 @@ import edu.ucsb.nceas.utilities.*;
  */
 public  class EML200DataPackage extends AbstractDataPackage
 {
-  public void serialize() {
+  public void serialize(String location) {
+  Log.debug(1, "Starting serialize - location: "+location);  
+    Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
-    System.out.print(temp);
+    StringReader sr = new StringReader(temp);
+      if((location.equals(AbstractDataPackage.LOCAL))||
+                 (location.equals(AbstractDataPackage.BOTH))) {
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);  
+      Log.debug(1,"AccessionNum: "+getAccessionNumber());
+        fsds.saveFile(getAccessionNumber(),sr);
+      }
+      if((location.equals(AbstractDataPackage.METACAT))||
+                 (location.equals(AbstractDataPackage.BOTH))) {
+                   
+      }
   }
   
   public void load(String location, String identifier, Morpho morpho) {
