@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-28 18:59:44 $'
- * '$Revision: 1.83 $'
+ *     '$Date: 2002-02-03 18:20:16 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1416,7 +1416,7 @@ void expandTreeToLevel(JTree jt, int level) {
                         newnode.setUserObject(tNodeNI.cloneNodeInfo());
 
                         trimSpecialAttributes(newnode);
-                        int index1 = findDuplicateIndex(nextLevelInputNodes,index);
+                        int index1 = findDuplicateIndex(ind.children(),index);
                         if (index1>=ind.getChildCount()) {
                           if (newnode!=null) {
                             ind.add(newnode);
@@ -1542,19 +1542,16 @@ private Vector sameParent(Vector list) {
 /** input tree can have duplicate node, while DTDParser tree only has single copy
  *  of each node. Need to determine index in tree with duplicates that corresponds
  *  to index in tree without duplicates
- *  vec is a vector with duplicates
+ *  enum is Enumeration with duplicates
  */
- private int findDuplicateIndex(Vector vec, int indx) {
+ private int findDuplicateIndex(Enumeration enum, int indx) {
     int dupcount = 0;
-    int uniquecount = 0;
-    int cnt = 0;
+    int uniquecount = 1;
     if (indx==0) return 0;
-    if (indx>=(vec.size())) return indx;
-    DefaultMutableTreeNode oldnd = (DefaultMutableTreeNode)vec.elementAt(0);
-    while ((uniquecount<indx)&&(cnt<(vec.size()-1))) {
-      cnt++;  
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)vec.elementAt(cnt);
-      if (!simpleCompareNodes(oldnd, nd)) { 
+    DefaultMutableTreeNode oldnd = (DefaultMutableTreeNode)enum.nextElement();
+    while ((uniquecount<=indx)&&(enum.hasMoreElements())) {
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+      if (!compareNodes(oldnd, nd)) { 
         uniquecount++; 
       }
       else {
