@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 21:50:23 $'
- * '$Revision: 1.110 $'
+ *     '$Date: 2003-03-26 00:45:54 $'
+ * '$Revision: 1.111 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1521,10 +1521,10 @@ public class DataPackage implements XMLFactoryInterface
    
     String packagePath = path + "/" + id + ".package";
     String sourcePath = packagePath + "/metadata";
-//    String dataPath = packagePath + "/data";
+    String dataPath = packagePath + "/data";
     File savedir = new File(packagePath);
     File savedirSub = new File(sourcePath);
-//    File savedirDataSub = new File(dataPath);
+    File savedirDataSub = new File(dataPath);
     savedir.mkdirs(); //create the new directories
     savedirSub.mkdirs();
     Hashtable dataFileNameMap = getMapBetweenDataIdAndDataFileName();
@@ -1542,10 +1542,10 @@ public class DataPackage implements XMLFactoryInterface
         // if it is data file user filename to replace docid
         if (dataFileNameMap.containsKey(docid))
         {
-//          savedirDataSub.mkdirs();
-//          String dataFile = (String)dataFileNameMap.get(docid);
-//          dataFile =trimFullPathFromFileName(dataFile);
-//          f = new File(dataPath + "/" + dataFile);
+          savedirDataSub.mkdirs();
+          String dataFile = (String)dataFileNameMap.get(docid);
+          dataFile =trimFullPathFromFileName(dataFile);
+          f = new File(dataPath + "/" + dataFile);
         }
         else
         {
@@ -1562,7 +1562,7 @@ public class DataPackage implements XMLFactoryInterface
           openfile = metacatDataStore.openFile(docid);
         }
         
-        if (f!=null) {
+//        if (f!=null) {
           fileV.addElement(openfile);
           FileInputStream fis = new FileInputStream(openfile);
           BufferedInputStream bfis = new BufferedInputStream(fis);
@@ -1577,15 +1577,23 @@ public class DataPackage implements XMLFactoryInterface
           bfos.flush();
           bfis.close();
           bfos.close();
-        }
-        
+//        }
       }
       catch(Exception e)
       {
-        System.out.println("Error in DataPackage.export(): " + e.getMessage());
+        System.out.println("Error in DataPackage.exportToEml2(): " + e.getMessage());
         e.printStackTrace();
       }
     }//for 
+    try{
+      EMLConvert.doTransform(id + ".package/metadata/"+id);
+    }
+    catch (Exception ee) {
+        System.out.println("Error in EMLConvert.export(): " + ee.getMessage());
+        ee.printStackTrace();
+}
+    JOptionPane.showMessageDialog(null,
+                    "Conversion to EML2 Complete ! ");
     
   }
   
