@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 21:20:53 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2004-04-14 21:26:09 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -797,32 +797,14 @@ class UnitsPickList extends JPanel {
 
       public void actionPerformed(ActionEvent ae) {
 
-        ActionListener okAction = new ActionListener() {
-          public void actionPerformed(ActionEvent ae) {
-            customUnitOKAction();
-          }
-        };
-        ActionListener cancelAction = new ActionListener() {
-          public void actionPerformed(ActionEvent ae) {
-            customUnitDialog.setVisible(false);
-						customPage = null;
-          }
-        };
         customPage = WizardPageLibrary.getPage(DataPackageWizardInterface.CUSTOM_UNIT_PAGE);
-        /*customUnitDialog = WidgetFactory.makeContainerDialogNoParent(customPage, okAction, cancelAction);
-        customUnitDialog.setTitle("New Unit Definition");*/
-				int dwd = UISettings.POPUPDIALOG_WIDTH - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
+        int dwd = UISettings.POPUPDIALOG_WIDTH - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
 				int dht = UISettings.POPUPDIALOG_HEIGHT - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
 				
 				customUnitDialog = new ModalDialog(customPage,
                                 WizardContainerFrame.getDialogParent(),
                                 dwd, dht);
 				
-				//Point loc = parentPanel.getLocationOnScreen();
-				//int wd = parentPanel.getWidth();
-				//int ht = parentPanel.getHeight();
-				//customUnitDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
-				//customUnitDialog.setSize(dwd, dht);
 				if (customUnitDialog.USER_RESPONSE == ModalDialog.OK_OPTION) customUnitOKAction();
 				else customPage = null;
 				

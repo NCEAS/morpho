@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-12 02:37:24 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2004-04-14 21:26:09 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1849,9 +1849,7 @@ class CustomJTable
 							((FocusListener)list[i]).focusLost(new FocusEvent(jtf, FocusEvent.FOCUS_LOST));
 						InputVerifier iv = jtf.getInputVerifier();
 						if(iv != null) { 
-							System.out.print("Firing input verifier - ");
 							boolean res = iv.verify(jtf);
-							System.out.println("got result as "+ res);
 							if(!res) jtf.requestFocus();
 						}
 							

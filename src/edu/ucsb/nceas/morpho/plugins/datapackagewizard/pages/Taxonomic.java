@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-14 20:29:00 $'
-* '$Revision: 1.24 $'
+*     '$Date: 2004-04-14 21:26:09 $'
+* '$Revision: 1.25 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -842,7 +842,6 @@ public class Taxonomic extends AbstractUIPage {
     boolean result = true;
 
     if (data==null || data.isEmpty()) return true;
-		System.out.println("xpath = " + _xPathRoot);
 		
     data.remove(_xPathRoot + "/@scope");
     data.remove(_xPathRoot + "/@id");
@@ -922,7 +921,6 @@ public class Taxonomic extends AbstractUIPage {
     this.taxonList.editCellAt(0, 2);
 
     if(data.keySet().size() > 0) {
-			System.out.println("Keys still left - " + data);
 			return false;
 		}
     else return true;
@@ -1011,14 +1009,12 @@ public class Taxonomic extends AbstractUIPage {
 
   private void removeAllKeysStartingWith(String path, OrderedMap map) {
 
-		System.out.println("in remove keys - ");
-    Iterator it = map.keySet().iterator();
+		Iterator it = map.keySet().iterator();
     while(it.hasNext()) {
 
       String key = (String)it.next();
       if(key.startsWith(path))  {
 				it.remove();
-				System.out.println("removing " + key);
 			}
     }
     return;
