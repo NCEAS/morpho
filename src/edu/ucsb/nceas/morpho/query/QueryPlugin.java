@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.41 2001-02-12 22:18:27 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.42 2001-02-12 23:32:35 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1558,6 +1558,7 @@ public void searchFor(String searchText) {
                 JTable ttt = rq.getTable();
                 TableModel tm = ttt.getModel();
                 rs.JTable1.setModel(tm);
+                rs.relations = rq.getRelations();
                 rs.pack();
  
 		    in.close();
