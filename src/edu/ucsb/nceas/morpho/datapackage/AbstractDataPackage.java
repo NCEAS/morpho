@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-22 22:00:55 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2004-03-22 23:47:51 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -480,6 +480,11 @@ public abstract class AbstractDataPackage extends MetadataObject
   /**
    * returns cloned root Node of subtree identified by genericName String and int
    * index; returns null if not found
+   * NOTE: the cloned subtree is a new node but it is still part of the original
+   * DOM Document. All DOM nodes can only exist as part of a Document. In this case
+   * the original document is used to hold the clone since it will probably be placed
+   * back in the same Document tree after editing. This means that one should NOT use
+   * getDocument to find the root node of the subtree.
    *
    * @param genericName String
    * @param index int
