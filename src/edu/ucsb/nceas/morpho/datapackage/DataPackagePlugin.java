@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-25 22:04:35 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2004-01-30 01:07:25 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -670,7 +670,6 @@ public class DataPackagePlugin
     DataViewContainerPanel dvcp = null;
     dvcp = new DataViewContainerPanel(adp);
     dvcp.setFramework(morpho);
-
     dvcp.init();
     long stoptime1 = System.currentTimeMillis();
     Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));

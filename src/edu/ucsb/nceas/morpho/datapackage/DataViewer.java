@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 22:13:05 $'
- * '$Revision: 1.99 $'
+ *     '$Date: 2004-01-30 01:07:25 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -688,7 +688,7 @@ public class DataViewer extends javax.swing.JPanel
         buildTextDisplay();
       }
       else {
-//Log.debug(1,"format: "+format);
+        //Log.debug(1,"format: "+format);
         if (format.indexOf("text")>-1){
           text_flag=true;
         }
@@ -755,10 +755,11 @@ public class DataViewer extends javax.swing.JPanel
                StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
 
         }
-        else if (text_flag) {
+        else if ((text_flag)&&(dataFile!=null)) {
           // try building a table
           if ((column_labels!=null)&&(column_labels.size()>0)) {
-            if ((field_delimiter.trim().length()>0)&&((dataFile.length()>0))) {
+            if ((field_delimiter.trim().length()>0)&&
+                (dataFile.length()>0)) {
               buildTable();
               /*StateChangeMonitor.getInstance().notifyStateChange(
                    new StateChangeEvent(

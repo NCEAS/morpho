@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 22:13:05 $'
- * '$Revision: 1.90 $'
+ *     '$Date: 2004-01-30 01:07:25 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -822,9 +822,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       else if (adp.getDistributionArray(index, 0)==null) {
         // case where there is no distribution data in the package
 //        Log.debug(1, "This entity has NO distribution information!");
-        JOptionPane.showMessageDialog(null,
-                  "This entity has NO distribution information!",
-                  "Information", JOptionPane.INFORMATION_MESSAGE );
+//        JOptionPane.showMessageDialog(null,
+//                  "This entity has NO distribution information!",
+//                  "Information", JOptionPane.INFORMATION_MESSAGE );
       }
       dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
       dv.setAbstractDataPackage(adp);
@@ -1097,6 +1097,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
     // turn the xml string into a dom root node
     try{
+//  Log.debug(1,xmlString);    
       StringReader sr = new StringReader(xmlString);
       Node nd = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
       AbstractDataPackage newadp = DataPackageFactory.getDataPackage(nd);
@@ -1111,7 +1112,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       morphoFrame.dispose();
 
     } catch (Exception e) {
-        Log.debug(5, "Exception in converting edited XML to DOM!");
+        Log.debug(5, "Exception in converting edited XML to DOM!"+e.getMessage());
     }
 
   }
