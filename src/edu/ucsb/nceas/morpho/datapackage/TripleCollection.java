@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:34:32 $'
- * '$Revision: 1.8 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2002-02-27 18:49:55 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
+
+import com.arbortext.catalog.*;
 
 import java.util.*;
 import java.io.*;
@@ -140,6 +142,17 @@ public class TripleCollection
   {
     TripleParser tp = new TripleParser(xml, 
                                        "org.apache.xerces.parsers.SAXParser");
+    this.triples = tp.getTriples().getCollection();
+  }
+  
+  /**
+   * read an xml file, build the collection from any triples in the xml file.
+   */
+  public TripleCollection(Reader xml, CatalogEntityResolver cer)
+  {
+    TripleParser tp = new TripleParser(xml, 
+                                       "org.apache.xerces.parsers.SAXParser",
+                                       cer);
     this.triples = tp.getTriples().getCollection();
   }
   
