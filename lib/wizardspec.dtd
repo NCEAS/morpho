@@ -1,25 +1,69 @@
+<!--
+/**
+ *  '$RCSfile: wizardspec.dtd,v $'
+ *    Purpose: A class that creates a custom data entry form that is made
+ *             by parsing an xml file.  XML is then produced from the form
+ *  Copyright: 2000 Regents of the University of California and the
+ *             National Center for Ecological Analysis and Synthesis
+ *    Authors: Chad Berkley
+ *    Release: @release@
+ *
+ *   '$Author: berkley $'
+ *     '$Date: 2001-05-29 17:28:40 $'
+ * '$Revision: 1.2 $'
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+ This file defines the specification for the package wizard configuration file.
+ For an example of an implementation of this file see WizardTest.xml.
+
+-->
+
 <!ELEMENT wizard (group)>
-<!ATTLIST wizard size (#PCDATA)
-                 dtd  (#PCDATA)>
+<!ATTLIST wizard size (#PCDATA) <!--the size of the whole frame-->
+                 dtd  (#PCDATA)><!--the dtd that this frame fulfills-->
 
 <!ELEMENT group (group* | textbox* | combobox*)>
-<!ATTLIST group label (#PCDATA)
-                field (#PCDATA)
-                size  (#PCDATA)
-                type  (panel | pathgrouping) "pathgrouping"
-                repeatable (yes | no) "no">
+<!ATTLIST group label (#PCDATA) <!--the text label for the group-->
+                field (#PCDATA) <!--the xml field that this group encompasses-->
+                size  (#PCDATA) <!--the size (in pixels) in NxM form-->
+                type  (panel | pathgrouping) "pathgrouping" 
+                <!--a panel group will create a new tab in the tabbed pane,
+                    a pathgrouping panel simply adds a new path to the nesting-->
+                repeatable (yes | no) "no" <!--makes this panel repeatable-->
+                layout     (flow | box) "box"> <!--chooses the layout manager
+                                                   for the contents of this 
+                                                   panel. -->
 
 <!ELEMENT textbox>
-<!ATTLIST textbox label       (#PCDATA)
-                  field       (#PCDATA)
-                  size        (#PCDATA)
-                  defaulttext (#PCDATA)
-                  editable    (yes | no) "yes"
-                  repeatable  (yes | no) "no"
-                  allowNull   (yes | no) "yes">
+<!ATTLIST textbox label       (#PCDATA) <!--the label for the text box-->
+                  field       (#PCDATA) <!--the field that the text box defines-->
+                  size        (#PCDATA) <!--the number of columns that this 
+                                            textbox should cover-->
+                  defaulttext (#PCDATA) <!--the default text that should appear
+                                            in the text box when it is created-->
+                  editable    (yes | no) "yes" <!--tells whether the user can
+                                                   edit the content of this 
+                                                   textbox-->
+                  repeatable  (yes | no) "no" <!--is this text box repeatable?-->
+                  allowNull   (yes | no) "yes"> <!--can this text box be left 
+                                                    with empty content-->
 
 <!ELEMENT combobox (item+)>
-<!ATTLIST combobox label       (#PCDATA)
+<!ATTLIST combobox label       (#PCDATA)  <!--same as textbox fields-->
                    field       (#PCDATA)
                    size        (#PCDATA)
                    defaulttext (#PCDATA)
@@ -27,5 +71,5 @@
                    allowNull   (yes | no) "yes">
                    
 <!ELEMENT item (#PCDATA)>
-<!ATTLIST item value (#PCDATA)>
+<!ATTLIST item value (#PCDATA)> <!--the value of the item in the combobox-->
 
