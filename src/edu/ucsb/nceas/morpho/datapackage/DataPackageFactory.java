@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-21 17:58:57 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-08-21 22:58:46 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import org.xml.sax.InputSource;
 
 import java.util.Vector;
 import java.util.Hashtable;
-import java.io.Reader;
+import java.io.*;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -60,6 +60,7 @@ public class DataPackageFactory
     // then create the appropriate subclass of AbstractDataPackage and return it.
     
     // temporary stub!!!
+    Log.debug(1,"DocTypeInfo: " + getDocTypeInfo(in));
     AbstractDataPackage dp = new EML200DataPackage();
     return dp;
   }
@@ -86,8 +87,79 @@ public class DataPackageFactory
    *  then the systemId. If no docType, then look for the nameSpace of the root element; otherwise
    *  record the root element name
    */
-  private static void getDocTypeInfo(Reader in) {
+  private static String getDocTypeInfo(Reader in) {
+    String temp = getSchemaLine(in,2);
+    return temp;
+  }
+
+  
+  // 'borrowed' from MetaCatServlet class of metacat
+  // this method should return everything inside the linenum set of angle brackets
+    private static String getSchemaLine(Reader xml, int linenum)   {
+    // find the line
+    String secondLine = null;
+    int count =0;
+    int endIndex = 0;
+    int startIndex = 0;
+    StringBuffer buffer = new StringBuffer();
+    boolean comment =false;
+    char thirdPreviousCharacter = '?';
+    char secondPreviousCharacter ='?';
+    char previousCharacter = '?';
+    char currentCharacter = '?';
     
+    try {
+    
+      while ( (currentCharacter = (char) xml.read()) != -1)
+      {
+        //in a comment
+        if (currentCharacter =='-' && previousCharacter == '-'  && 
+          secondPreviousCharacter =='!' && thirdPreviousCharacter == '<')
+        {
+          comment = true;
+        }
+        //out of comment
+        if (comment && currentCharacter == '>' && previousCharacter == '-' && 
+          secondPreviousCharacter =='-')
+        {
+           comment = false;
+        }
+      
+        //this is not comment
+        if (previousCharacter =='<'  && !comment)
+        {
+          count ++;
+        }
+        // get target line
+        if (count == linenum && currentCharacter !='>')
+        {
+          buffer.append(currentCharacter);
+        }
+        if (count == linenum && currentCharacter == '>')
+        {
+            break;
+        }
+        thirdPreviousCharacter = secondPreviousCharacter;
+        secondPreviousCharacter = previousCharacter;
+        previousCharacter = currentCharacter;
+      
+      }
+      secondLine = buffer.toString();
+      Log.debug(25, "the second line string is: "+secondLine);
+//      xml.reset();
+      xml.close();
+    } catch (Exception e) {Log.debug(6, "Error in getSchemaLine!");}
+    return secondLine;
+  }
+  
+  static public void main(String args[]) {
+    try{
+      File f = new File("test.xml");
+      FileReader in = new FileReader(f);
+      DataPackageFactory.getDataPackage(in, false, true);
+      in.close();
+      System.exit(0);
+    } catch (Exception w) {}
   }
 
 }
