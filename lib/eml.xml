@@ -56,7 +56,7 @@
                 </references>
             </CHOICE3>
           </creator>
-          <metadataProvider scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
+          <metadataProvider editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
             <CHOICE10 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE11 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE12 minOccurs="1" maxOccurs="unbounded" help="">
@@ -104,7 +104,7 @@
                 </references>
             </CHOICE10>
           </metadataProvider>
-          <associatedParty scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The 'associatedParty' element provides the full name of other people, organizations, or positions who should be associated with the resource. These parties might play various roles in the creation or maintenance of the resource, and these roles should be indicated in the 'role' element.">
+          <associatedParty editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The 'associatedParty' element provides the full name of other people, organizations, or positions who should be associated with the resource. These parties might play various roles in the creation or maintenance of the resource, and these roles should be indicated in the 'role' element.">
             <CHOICE17 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE18 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE19 minOccurs="1" maxOccurs="unbounded" help="">
