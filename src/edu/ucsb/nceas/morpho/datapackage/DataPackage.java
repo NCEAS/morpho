@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2002-01-16 19:09:45 $'
- * '$Revision: 1.43 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-01-29 21:54:21 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -939,6 +939,7 @@ public class DataPackage
             //this is a bad assumption but it works for now...
             beginFile += (char)fis.read();
           }
+          fis.close();  //DFH
         }
         catch(Exception e)
         {
@@ -976,7 +977,8 @@ public class DataPackage
           }
           else
           { //its a data file
-            fsds.newFile(key, new FileReader(f));
+            //fsds.newFile(key, new FileReader(f));
+            fsds.saveDataFile(key, new FileReader(f));   //DFH
           }
         }
         catch(Exception e)

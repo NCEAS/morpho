@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-24 21:06:51 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2002-01-29 21:54:21 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +133,7 @@ public class FileSystemDataStore extends DataStore
       //save a temp file so that the id can be put in the file.
       BufferedReader bfile = new BufferedReader(file);
       StringWriter sw = new StringWriter();
-      BufferedWriter bsw = new BufferedWriter(sw);
+//      BufferedWriter bsw = new BufferedWriter(sw);
       File tempfile = new File(tempdir + "/local.noid");
       FileWriter fw = new FileWriter(tempfile);
       BufferedWriter bfw = new BufferedWriter(fw);
@@ -141,15 +141,22 @@ public class FileSystemDataStore extends DataStore
       while(c != -1)
       {
         bfw.write(c); //write out everything in the reader
-        bsw.write(c);
+        sw.write(c);
         c = bfile.read();
       }
       bfw.flush();
       bfw.close();
+      System.out.println("Starting insert");
       String fileWithId = insertIdInFile(tempfile, name); //put the id in
       if(fileWithId == null)
       {
+        System.out.println("fileWithId is null!");
         fileWithId = sw.toString();
+        System.out.println("fileWithId length is: "+fileWithId.length());
+      }
+      else {
+        System.out.println("fileWithId length is: "+fileWithId.length());
+        
       }
       
       //now that the id has been put in the file, we can save it.

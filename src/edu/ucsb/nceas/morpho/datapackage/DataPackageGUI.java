@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-24 22:52:50 $'
- * '$Revision: 1.71 $'
+ *     '$Date: 2002-01-29 21:54:21 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -569,7 +569,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     wholelabel += originators + "</html>";
     JLabel biglabel = new JLabel(wholelabel);
-    biglabel.setPreferredSize(new Dimension(375,1000));
+    biglabel.setMaximumSize(new Dimension(350,1000));
     JPanel biglabelPanel = new JPanel();
     biglabelPanel.setLayout(new BoxLayout(biglabelPanel, BoxLayout.Y_AXIS));
     biglabelPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
