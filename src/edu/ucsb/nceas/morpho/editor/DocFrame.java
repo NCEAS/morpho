@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-23 22:45:58 $'
- * '$Revision: 1.157 $'
+ *     '$Date: 2004-03-08 23:53:27 $'
+ * '$Revision: 1.158 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3783,8 +3783,18 @@ Log.debug(20, xmlout);
     StringReader sr = new StringReader(xml);
     try {
       SAXValidate validator = new SAXValidate(true);
-      validator.runTest(sr, "DEFAULT", "eml://ecoinformatics.org/eml-2.0.0 ./xsd/eml.xsd");
-      return "<valid />";
+      File fff = new File("./xsd/eml.xsd");
+      String emlpath = "";
+      if (fff.exists()) {
+        emlpath = fff.getAbsolutePath();
+        emlpath = emlpath.trim();
+        while (emlpath.indexOf(" ")>-1) {
+          int pos = emlpath.indexOf(" ");
+          emlpath = emlpath.substring(0,pos)+"%20"+emlpath.substring(pos+1,emlpath.length());
+        }
+      }
+      validator.runTest(sr, "DEFAULT", "eml://ecoinformatics.org/eml-2.0.0 "+"file:///"+emlpath);
+     return "<valid />";
     }
     catch(IOException ioe)
     {
