@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.4.0
+Version: 1.4.1
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -79,6 +79,10 @@ The large dataset problem has been fixed in Morpho 1.3.0.
 
 Version History
 -------------------------------
+***
+Version 1.4.1
+This version includes several minor bug fixes plus a greatly speeded up XML editor. In particular, the opening of eml-project files is about 30 times faster than previous versions!
+
 
 ***
 Version 1.4
