@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE eml-variable PUBLIC "-//NCEAS//eml-variable//EN" "file:///dmanclient/catalog/eml-variable.dtd" >
-<eml-variable>
+<eml-variable rooteditor="edu.ucsb.nceas.morpho.editor.VariablePanel">
   <meta_file_id help="Unique identifier of this metadata record"></meta_file_id>
   <variable help="Variable information">
     <variable_name help="Unique variable name or code"></variable_name>
