@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-11-19 16:37:16 $'
- * '$Revision: 1.28 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-11-21 01:34:46 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1132,12 +1132,7 @@ public class Morpho
         aboutItemAction.setMenu("Help", 5);
         controller.addGuiAction(aboutItemAction);
 
-        Command helpCommand = new Command() {
-            public void execute(ActionEvent event) {
-                HTMLBrowser hb = new HTMLBrowser();
-                hb.setVisible(true);
-            }
-        };
+        Command helpCommand = new HelpCommand();
         GUIAction helpItemAction = 
             new GUIAction("Help...", null, helpCommand);
         helpItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho Help");
