@@ -1,0 +1,18 @@
+ .page    {font-family: Tahoma, sans-serif; background-color:white}
+
+ .emlbody    {font-family: Tahoma, sans-serif; background-color:white}
+
+ .rowodd  {background-color: #CCCCCC; color: black; vertical-align: top}
+
+ .roweven {background-color: #F8F8F8; color: black; vertical-align: top}
+
+ .rowlight {background-color: #CCCCFF; color: black; vertical-align: top}
+
+ .rowwhite {background-color: #FFFFFF; color: black; vertical-align: top}
+
+ .coleven {}
+
+ .colodd  {}
+
+ .shaded  {background-color: #DDDDDD; color: black}
+
