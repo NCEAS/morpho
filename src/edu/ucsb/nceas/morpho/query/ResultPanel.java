@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-08 18:12:55 $'
- * '$Revision: 1.34 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.34.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -718,7 +718,8 @@ public class ResultPanel extends JPanel
     // Look in the profile queries directory and load any pathquery docs
     ConfigXML config = framework.getConfiguration();
     ConfigXML profile = framework.getProfile();
-    String queriesDirName = config.get("profile_directory", 0) +
+    String queriesDirName = config.getConfigDirectory() + File.separator +
+                            config.get("profile_directory", 0) +
                             File.separator +
                             config.get("current_profile", 0) +
                             File.separator +

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-08 03:19:02 $'
- * '$Revision: 1.14 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.14.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,22 +197,23 @@ public class DataViewer extends javax.swing.JFrame
 		
 	}
 
-	public DataViewer(ClientFramework framework, String sTitle)
-	{
-		this();
-		this.framework = framework;
-    config = framework.getConfiguration();
-    ConfigXML profile = framework.getProfile();
-    String profileDirName = config.get("profile_directory", 0) + 
-                            File.separator +
-                            config.get("current_profile", 0);
-    datadir = profileDirName + File.separator + profile.get("datadir", 0);
-    tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
-    cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
-    separator = profile.get("separator", 0);
-    separator = separator.trim();
-		setTitle(sTitle);
-	}
+    public DataViewer(ClientFramework framework, String sTitle)
+    {
+        this();
+        this.framework = framework;
+        config = framework.getConfiguration();
+        ConfigXML profile = framework.getProfile();
+        String profileDirName = config.getConfigDirectory() + 
+                                File.separator +
+                                config.get("profile_directory", 0) + 
+                                config.get("current_profile", 0);
+        datadir = profileDirName + File.separator + profile.get("datadir", 0);
+        tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
+        cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
+        separator = profile.get("separator", 0);
+        separator = separator.trim();
+        setTitle(sTitle);
+    }
 
     public DataViewer(String sTitle, String dataID, String dataString)
     {
@@ -228,7 +229,8 @@ public class DataViewer extends javax.swing.JFrame
 		    this.framework = framework;
         config = framework.getConfiguration();
         ConfigXML profile = framework.getProfile();
-        String profileDirName = config.get("profile_directory", 0) + 
+        String profileDirName = config.getConfigDirectory() + File.separator +
+                            config.get("profile_directory", 0) + 
                             File.separator +
                             config.get("current_profile", 0);
         datadir = profileDirName + File.separator + profile.get("datadir", 0);

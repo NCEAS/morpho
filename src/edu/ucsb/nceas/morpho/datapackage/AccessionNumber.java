@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-19 16:14:48 $'
- * '$Revision: 1.8 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.8.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -165,7 +165,8 @@ public class AccessionNumber
     try
     {
       ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
+      String catalogPath = //config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(xmlfile, catalogPath);
     }
     catch (Exception e)

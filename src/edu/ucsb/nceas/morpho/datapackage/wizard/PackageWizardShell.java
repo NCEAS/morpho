@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-26 19:29:28 $'
- * '$Revision: 1.65 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.65.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import javax.swing.border.*;
 import java.io.*;
 import java.util.*;
 import java.lang.*;
+import java.net.URL;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -159,8 +160,11 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     try
     {
-      File xmlfile = new File(wizardFile);
-      FileReader xml = new FileReader(xmlfile);
+      //File xmlfile = new File(wizardFile);
+      //FileReader xml = new FileReader(xmlfile);
+      ClassLoader cl = this.getClass().getClassLoader();
+      BufferedReader xml = new BufferedReader(new InputStreamReader(
+                                            cl.getResourceAsStream(wizardFile)));
       pwsp = new PackageWizardShellParser(xml, saxparser);
     }
     catch(Exception e)
@@ -811,7 +815,11 @@ public class PackageWizardShell extends javax.swing.JFrame
           myCatalog.loadSystemCatalogs();
           ConfigXML config = framework.getConfiguration();
           String catalogPath = config.get("local_catalog_path", 0);
-          myCatalog.parseCatalog(catalogPath);
+          ClassLoader cl = Thread.currentThread().getContextClassLoader();
+          URL catalogURL = cl.getResource(catalogPath);
+        
+          myCatalog.parseCatalog(catalogURL.toString());
+         // myCatalog.parseCatalog(catalogPath);
           cer.setCatalog(myCatalog);
         } 
         catch (Exception e) 
@@ -839,7 +847,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         catch(Exception e1)
         {
-          System.err.println("File: " + f.getPath() + " : parse threw: " + 
+          System.err.println("File: " + f.getPath() + " : parse threw (8): " + 
                              e1.toString());
         }
         //get the DOM rep of the document without triples
@@ -854,7 +862,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         catch(SAXException se)
         {
-          System.err.println("file: " + f.getPath() + " : parse threw: " + 
+          System.err.println("File: " + f.getPath() + " : parse threw (9): " + 
                              se.toString());
         }
         
@@ -875,7 +883,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         catch(SAXException se)
         {
-          System.err.println("file: " + f.getPath() + " : parse threw: " + 
+          System.err.println("File: " + f.getPath() + " : parse threw (10): " + 
                              se.toString());
         }
         

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-28 20:38:51 $'
- * '$Revision: 1.11 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.11.6.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,8 @@ public class ConfigXML
    */
   private PrintWriter out;
 
-
+  private static final String configDirectory = ".morpho";
+  
   /**
    * String passed to the creator is the XML config file name
    * 
@@ -109,6 +110,30 @@ public class ConfigXML
     root = doc.getDocumentElement();
   }
 
+   /**
+   * String passed to the creator is the XML config file name
+   * 
+   * @param input stream containing the XML configuration data
+   */
+  public ConfigXML(InputStream configStream) throws FileNotFoundException
+  {
+    DOMParser parser = new DOMParser();
+    InputSource in;
+    in = new InputSource(configStream);
+
+    try
+    {
+      parser.parse(in);
+      configStream.close();
+    } catch(Exception e1) {
+      ClientFramework.debug(4, "Parsing config file threw: " + 
+                            e1.toString());
+      e1.printStackTrace();
+    }
+    doc = parser.getDocument();
+    root = doc.getDocumentElement();
+  }
+  
   /**
    * Gets the value(s) corresponding to a key string (i.e. the 
    * value(s) for a named parameter.
@@ -646,5 +671,14 @@ public class ConfigXML
       System.err.println(se.toString());
       return null;
     }
+  }
+  
+  /**
+   * Determine the home directory in which configuration files should be located
+   * 
+   * @returns String name of the path to the configuration directory
+   */
+  public static String getConfigDirectory() {
+    return System.getProperty("user.home") + File.separator + configDirectory;
   }
 }

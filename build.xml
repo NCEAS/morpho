@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.42 2002-04-08 15:22:21 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.42.2.1 2002-04-10 00:06:23 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -114,6 +114,7 @@
 
    <target name="jar" depends="compile">
       <delete file="${build.dir}/${name}.jar" />
+      <delete file="${build.dir}/${name}-config.jar" />
       <copy todir="${build.dest}/${package.home}/morpho/framework" filtering="no">
         <fileset dir="${srcdir}/${package.home}/morpho/framework/images">
         </fileset>
@@ -126,11 +127,19 @@
         <fileset dir="${srcdir}/${package.home}/morpho/editor/images">
         </fileset>
       </copy>
+      <!--
+      <copy todir="${build.dest}" filtering="no">
+        <fileset dir="${libdir}" excludes="*.jar,HTTPClient/**,*.zip,*.gz"/>
+      </copy>
+      -->
       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" />
-   </target> 
+      <jar jarfile="${build.dir}/${name}-config.jar" basedir="${libdir}"
+           excludes="*.jar,HTTPClient/**,*.zip,*.gz"/>
+   </target>
 
    <target name="install" depends="jar">
       <copy file="${build.dir}/${name}.jar" todir="${libdir}" />
+      <copy file="${build.dir}/${name}-config.jar" todir="${libdir}" />
       <echo message="Install complete. Use the morpho script to run it." />
    </target>
 

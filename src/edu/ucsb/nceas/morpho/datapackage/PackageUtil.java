@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-28 17:56:26 $'
- * '$Revision: 1.15 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.15.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.lang.*;
 
@@ -101,8 +102,12 @@ public class PackageUtil
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
       ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
+      String catalogPath = // config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path", 0);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
       cer.setCatalog(myCatalog);
     } 
     catch (Exception e) 
@@ -131,7 +136,7 @@ public class PackageUtil
     }
     catch(Exception e1)
     {
-      System.err.println("File: " + f.getPath() + " : parse threw: " + 
+      System.err.println("File: " + f.getPath() + " : parse threw (1): " + 
                          e1.toString());
       return null;
     }
@@ -145,7 +150,7 @@ public class PackageUtil
     }
     catch(SAXException se)
     {
-      System.err.println("file: " + f.getPath() + " : parse threw: " + 
+      System.err.println("File: " + f.getPath() + " : parse threw (2): " + 
                          se.toString());
       return null;
     }
@@ -171,8 +176,13 @@ public class PackageUtil
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
       //ConfigXML config = framework.getConfiguration();
-      //String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
+      //String catalogPath = config.getConfigDirectory() + File.separator +
+                                        //config.get("local_catalog_path", 0);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
+      //myCatalog.parseCatalog(catalogPath);
       cer.setCatalog(myCatalog);
     } 
     catch (Exception e) 
@@ -571,8 +581,13 @@ public class PackageUtil
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
       ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
+      String catalogPath = //config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path", 0);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
+      //myCatalog.parseCatalog(catalogPath);
       cer.setCatalog(myCatalog);
     } 
     catch (Exception e) 
@@ -601,7 +616,7 @@ public class PackageUtil
     }
     catch(Exception e1)
     {
-      System.err.println("File: " + packageFile.getPath() + " : parse threw: " + 
+      System.err.println("File: " + packageFile.getPath() + " : parse threw (3): " + 
                          e1.toString());
     }
     //get the DOM rep of the document with existing triples
@@ -616,7 +631,7 @@ public class PackageUtil
     }
     catch(SAXException se)
     {
-      System.err.println("file: " + packageFile.getPath() + " : parse threw: " + 
+      System.err.println("File: " + packageFile.getPath() + " : parse threw (4): " + 
                          se.toString());
     }
     
@@ -666,8 +681,13 @@ public class PackageUtil
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
       ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
+      String catalogPath = //config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path", 0);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
+      //myCatalog.parseCatalog(catalogPath);
       cer.setCatalog(myCatalog);
     } 
     catch (Exception e) 
@@ -696,7 +716,7 @@ public class PackageUtil
     }
     catch(Exception e1)
     {
-      System.err.println("File: " + packageFile.getPath() + " : parse threw: " + 
+      System.err.println("File: " + packageFile.getPath() + " : parse threw (5): " + 
                          e1.toString());
     }
     //get the DOM rep of the document with existing triples
@@ -710,7 +730,7 @@ public class PackageUtil
     }
     catch(SAXException se)
     {
-      System.err.println("file: " + packageFile.getPath() + " : parse threw: " + 
+      System.err.println("File: " + packageFile.getPath() + " : parse threw (6): " + 
                          se.toString());
     }
     
@@ -736,8 +756,8 @@ public class PackageUtil
             }
             catch(SAXException se2)
             {
-              System.err.println("file: " + packageFile.getPath() + 
-                                 " : parse threw: " + 
+              System.err.println("File: " + packageFile.getPath() + 
+                                 " : parse threw (7): " + 
                                  se2.toString());
             }
             

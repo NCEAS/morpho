@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-26 22:38:51 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.6.6.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,10 @@ import java.util.Enumeration;
 import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.Hashtable;
-import java.io.FileReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -65,11 +66,11 @@ public class PackageWizardShellParser extends DefaultHandler
   private boolean startflag = false;
   
   /**
-   * @param xml a FileReader object that reprents a stream of XML
+   * @param xml a Reader object that reprents a stream of XML
    * @param parserName the fully specifified parser name to be used in 
    * processing
    */
-  public PackageWizardShellParser(FileReader xml, String parserName)
+  public PackageWizardShellParser(Reader xml, String parserName)
   {
     XMLReader parser = initializeParser(parserName);
     if (parser == null) 

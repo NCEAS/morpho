@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-02 17:57:14 $'
- * '$Revision: 1.95 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.95.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -491,14 +491,16 @@ public class DocFrame extends javax.swing.JFrame
 //    if (!helpTrees.containsKey(rootname)) {
     if (true) {
       rootname = rootname+".xml";
-		  file = new File("./lib", rootname);
 		  frootNode = new DefaultMutableTreeNode("froot");
 		  DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
 		  String fXMLString = "";
 		  boolean formatflag = true;
 		  
       try{
-        BufferedReader in = new BufferedReader(new FileReader(file));
+        //MBJ//BufferedReader in = new BufferedReader(new FileReader(file));
+        ClassLoader cl = this.getClass().getClassLoader();
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                                         cl.getResourceAsStream(rootname)));
         StringWriter out = new StringWriter();
         int c;
         while ((c = in.read()) != -1) {
@@ -750,13 +752,20 @@ class SymAction implements java.awt.event.ActionListener {
         if (xmlText!=null) {
         CatalogEntityResolver cer = new CatalogEntityResolver();
         config = framework.getConfiguration();
-        String local_dtd_directory =config.get("local_dtd_directory",0);     
+        String local_dtd_directory = config.getConfigDirectory() + File.separator +
+                                                    config.get("local_dtd_directory",0);     
+        String catalogPath = //config.getConfigDirectory() + File.separator +
+                                                    config.get("local_catalog_path",0);     
             
         String xmlcatalogfile = local_dtd_directory+"/catalog"; 
        try {
             myCatalog = new Catalog();
             myCatalog.loadSystemCatalogs();
-            myCatalog.parseCatalog(xmlcatalogfile);
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            URL catalogURL = cl.getResource(catalogPath);
+        
+            myCatalog.parseCatalog(catalogURL.toString());
+            //myCatalog.parseCatalog(xmlcatalogfile);
             cer.setCatalog(myCatalog);
         }
         catch (Exception e) {System.out.println("Problem creating Catalog!");}

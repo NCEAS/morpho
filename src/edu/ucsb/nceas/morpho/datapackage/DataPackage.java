@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-29 18:41:12 $'
- * '$Revision: 1.52 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.52.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.framework.*;
 
 import java.util.*;
 import java.io.*;
+import java.net.URL;
 import java.util.zip.*;
 
 import org.apache.xerces.parsers.DOMParser;
@@ -232,7 +233,8 @@ public class DataPackage
     try
     {
       ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
+      String catalogPath = //config.getConfigDirectory() + File.separator +
+                                        config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(tripleFile, catalogPath);
       tripleFileDom = doc;
     }
@@ -321,7 +323,8 @@ public class DataPackage
     MetacatDataStore mds = new MetacatDataStore(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     ConfigXML config = framework.getConfiguration();
-    String catalogPath = config.get("local_catalog_path", 0);
+    String catalogPath = //config.getConfigDirectory() + File.separator +
+                                     config.get("local_catalog_path", 0);
     
     for(int i=0; i<tripleVec.size(); i++)
     {
@@ -553,7 +556,8 @@ public class DataPackage
         throw cae;
       }
       
-      String catalogpath = config.get("local_catalog_path",0);
+      String catalogpath = //config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path",0);
       String publicid = null;
       
       try
@@ -1098,7 +1102,8 @@ public class DataPackage
     {
       //export the package in an uncompressed format to the temp directory
       //then zip it up and save it to the specified path
-      String tempdir = config.get("tempDir", 0);
+      String tempdir = config.getConfigDirectory() + File.separator +
+                                config.get("tempDir", 0);
       export(tempdir + "/tmppackage");
       File zipfile = new File(path);
       FileOutputStream fos = new FileOutputStream(zipfile);
@@ -1278,8 +1283,13 @@ public class DataPackage
           {
             Catalog myCatalog = new Catalog();
             myCatalog.loadSystemCatalogs();
-            String catalogPath = config.get("local_catalog_path", 0);
-            myCatalog.parseCatalog(catalogPath);
+            String catalogPath = //config.getConfigDirectory() + File.separator +
+                                             config.get("local_catalog_path", 0);
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            URL catalogURL = cl.getResource(catalogPath);
+        
+            myCatalog.parseCatalog(catalogURL.toString());
+            //myCatalog.parseCatalog(catalogPath);
             cer.setCatalog(myCatalog);
           } 
           catch (Exception e) 
@@ -1300,8 +1310,9 @@ public class DataPackage
           XSLTInputSource xis = new XSLTInputSource(fis);
           StringWriter docstring = new StringWriter();
           String stylesheet = config.get("genericStylesheet", 0);
-          File stylefile = new File(stylesheet);
-          FileReader sis = new FileReader(stylefile);
+          ClassLoader cl = this.getClass().getClassLoader();
+          BufferedReader sis = new BufferedReader(new InputStreamReader(
+                                            cl.getResourceAsStream(stylesheet)));
           processor.process(xis,
                             new XSLTInputSource(sis),
                             new XSLTResultTarget(docstring));
@@ -1742,7 +1753,8 @@ private File getFileType(String id, String typeString) {
     MetacatDataStore mds = new MetacatDataStore(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     ConfigXML config = framework.getConfiguration();
-    String catalogPath = config.get("local_catalog_path", 0);
+    String catalogPath = //config.getConfigDirectory() + File.separator +
+                                     config.get("local_catalog_path", 0);
     File subfile;
     String name = "unknown";
       try

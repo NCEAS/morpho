@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2002-02-27 18:49:55 $'
- * '$Revision: 1.9 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.9.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,8 @@ public class TripleCollection
      try
      {
        ConfigXML config = framework.getConfiguration();
-       String catalogPath = config.get("local_catalog_path", 0);
+       String catalogPath = //config.getConfigDirectory() + File.separator +
+                                        config.get("local_catalog_path", 0);
        doc = PackageUtil.getDoc(triplesFile, catalogPath);
      }
      catch(Exception e)

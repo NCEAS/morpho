@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:22 $'
- * '$Revision: 1.14 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-10 00:06:25 $'
+ * '$Revision: 1.14.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,8 @@ public abstract class DataStore implements DataStoreInterface
     this.framework = cf;
     config = framework.getConfiguration();
     ConfigXML profile = framework.getProfile();
-    String profileDirName = config.get("profile_directory", 0) + 
+    String profileDirName = config.getConfigDirectory() + File.separator +
+                            config.get("profile_directory", 0) + 
                             File.separator +
                             config.get("current_profile", 0);
     datadir = profileDirName + File.separator + profile.get("datadir", 0);
@@ -117,7 +118,8 @@ public abstract class DataStore implements DataStoreInterface
    */
   protected String insertIdInFile(File file, String id)
   {
-    String catalogPath = config.get("local_catalog_path", 0);
+    String catalogPath = //config.getConfigDirectory() + File.separator +
+                                     config.get("local_catalog_path", 0);
     Document doc;
     try
     {
