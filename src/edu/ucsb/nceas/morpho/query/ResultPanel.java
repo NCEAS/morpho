@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-12 22:53:34 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2002-04-30 20:39:34 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class ResultPanel extends JPanel
   private JPopupMenu popup;
   /**menu items for the popup menu*/
   private JMenuItem openMenu = new JMenuItem("Open");
-  private JMenu openPreviousVersion = new JMenu("Open Previous Version");
+  private JMenuItem openPreviousVersion = new JMenuItem("Open Previous Version");
 
   private JMenuItem uploadMenu = new JMenuItem("Upload to Metacat");
   private JMenuItem downloadMenu = new JMenuItem("Download from Metacat");
@@ -116,7 +116,10 @@ public class ResultPanel extends JPanel
   int threadCount = 0;
   int selectedRow = -1;
   
-  DynamicMenuAction dynamicmenuhandler;
+  int vers;
+  String packageName = "";
+  
+ // DynamicMenuAction dynamicmenuhandler;
   
   /**
    * Construct a new ResultPanel and display the result set.  By default
@@ -275,8 +278,9 @@ public class ResultPanel extends JPanel
       refreshMenu.addActionListener(menuhandler);
       exportMenu.addActionListener(menuhandler);
       exportToZipMenu.addActionListener(menuhandler);
+      openPreviousVersion.addActionListener(menuhandler);
       
-      dynamicmenuhandler = new DynamicMenuAction();
+//      dynamicmenuhandler = new DynamicMenuAction();
       
       MouseListener popupListener = new PopupListener();
       table.addMouseListener(popupListener);
@@ -500,6 +504,13 @@ public class ResultPanel extends JPanel
         doOpenDataPackage();
         //open the current selection in the package editor
       }
+      else if (object == openPreviousVersion)
+      {
+        if (vers>1) {
+          OpenPreviousDialog opd = new OpenPreviousDialog(packageName,vers,framework,localLoc );
+          opd.setVisible(true);
+        }
+      }
 			else if (object == uploadMenu)
       { 
         doUpload();
@@ -625,17 +636,10 @@ public class ResultPanel extends JPanel
     {
       if(e.isPopupTrigger() || trigger) 
       {     
-        int vers = getNumberOfPrevVersions();
- //       System.out.println("Number of versions: "+vers);
-        openPreviousVersion.removeAll();
-        if (vers>0) {
-          String temp = getIdWithoutVersion();
+        vers = getNumberOfPrevVersions();
+        packageName = getIdWithoutVersion();
+        if (vers>1) {
           openPreviousVersion.setEnabled(true);
-          for (int k=0;k<vers;k++) {
-            JMenuItem jmi = new JMenuItem(temp+"."+(k+1));
-            jmi.addActionListener(dynamicmenuhandler);
-            openPreviousVersion.add(jmi);
-          }
         }
         else {
           openPreviousVersion.setEnabled(false);
@@ -999,6 +1003,9 @@ private void doDeleteLocal() {
         public Object construct() {
           bflyLabel.setIcon(flapping);
           threadCount++;
+          
+          Hashtable ht = new Hashtable();
+          ht.put("test",null);
           
           String docid = selectedId;
           DataPackageInterface dataPackage;
