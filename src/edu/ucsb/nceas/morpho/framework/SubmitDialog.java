@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.8 2000-12-19 23:46:51 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.9 2000-12-22 00:13:45 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -233,6 +233,9 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		CancelButton.setActionCommand("Cancel");
 		JPanel11.add(CancelButton);
 		CancelButton.setBounds(409,5,73,25);
+		JPanel18.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		getContentPane().add(JPanel18);
+		JPanel18.setBounds(0,0,499,300);
 		//}}
 	
 		//{{REGISTER_LISTENERS
@@ -373,6 +376,7 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 	javax.swing.JButton UpdateButton = new javax.swing.JButton();
 	javax.swing.JButton InsertButton = new javax.swing.JButton();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
+	javax.swing.JPanel JPanel18 = new javax.swing.JPanel();
 	//}}
 
 
@@ -430,11 +434,11 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		    DocumentTextBox.setText(file);
 		    String idstring = getIDFromFile(file,idtagTextField.getText());
 		    if (idstring!=null) {
-		        if (idstring.lastIndexOf(sepchar)>0) {  // no colon -->invalid id
-                    String global = idstring; 
-                    globalidTextBox.setText(global);
-                    idExistsFlag = true;
-		        }
+		    //    if (idstring.lastIndexOf(sepchar)>0) {  // no colon -->invalid id
+            //        String global = idstring; 
+            //        globalidTextBox.setText(global);
+            //        idExistsFlag = true;
+		    //    }
 		    }
 		}
     }
@@ -664,7 +668,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		    }
 		    int result = JOptionPane.YES_OPTION;
 		    if (idExistsFlag) {
-		       result = JOptionPane.showConfirmDialog(null, "ID already in document. Do you want to insert a new copy?", "choose one", JOptionPane.YES_NO_OPTION); 
+		       result = JOptionPane.showConfirmDialog(null, "An ID already in document. Do you want to insert a new ID?", "choose one", JOptionPane.YES_NO_OPTION); 
 		    }
 		  if (result==JOptionPane.YES_OPTION) {
             System.err.println("Trying: " + container.MetaCatServletURL);

@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.27 2000-11-30 19:45:04 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.28 2000-12-22 00:13:45 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -282,6 +282,9 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 		SaveToDatabase.setText("Save To Database...");
 		SaveToDatabase.setActionCommand("Save To Database...");
 		fileMenu.add(SaveToDatabase);
+		SaveDataItem.setText("Save Data to Server...");
+		SaveDataItem.setActionCommand("Save Data to Server...");
+		fileMenu.add(SaveDataItem);
 		PreviewXML.setText("Preview XML");
 		PreviewXML.setActionCommand("Preview XML");
 		fileMenu.add(PreviewXML);
@@ -379,6 +382,7 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 		newItem.addActionListener(lSymAction);
 		saveAsItem.addActionListener(lSymAction);
 		SaveToDatabase.addActionListener(lSymAction);
+		SaveDataItem.addActionListener(lSymAction);
 		PreviewXML.addActionListener(lSymAction);
 		OptionsMenuItem.addActionListener(lSymAction);
 		SymChange lSymChange = new SymChange();
@@ -642,6 +646,7 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 	javax.swing.JCheckBoxMenuItem ElementTextMenuItem = new javax.swing.JCheckBoxMenuItem();
 	javax.swing.JMenu helpMenu = new javax.swing.JMenu();
 	javax.swing.JMenuItem aboutItem = new javax.swing.JMenuItem();
+	javax.swing.JMenuItem SaveDataItem = new javax.swing.JMenuItem();
 	//}}
 	edu.ucsb.nceas.metaedit.AbstractMdeBean mdeBean1 = (edu.ucsb.nceas.metaedit.AbstractMdeBean)createObject("edu.ucsb.nceas.metaedit.mdeBean");
     
@@ -736,10 +741,18 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 				ConnectMenuItem_actionPerformed(event);
 			else if (object == newButton)
 				newButton_actionPerformed(event);
+			else if (object == SaveDataItem)
+				SaveDataItem_actionPerformed(event);
 			
 			
 		}
 	}
+
+	void SaveDataItem_actionPerformed(java.awt.event.ActionEvent event) {
+            SubmitDataDialog sd = new SubmitDataDialog(this);
+            sd.setVisible(true);
+    }
+
 
 	void openItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
