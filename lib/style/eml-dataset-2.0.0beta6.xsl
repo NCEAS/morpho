@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-26 08:04:13 $'
-  * '$Revision: 1.6 $'
+  *     '$Date: 2002-12-18 00:49:19 $'
+  * '$Revision: 1.7 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -44,10 +44,6 @@
               href="{$stylePath}/{$qformat}.css" />
       </head>
       <body>
-        <center>
-          <h3>Data set description</h3>
-          
-        </center>
         <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
           <xsl:apply-templates select="." mode="resource"/>
           <xsl:apply-templates select="dataset"/>
