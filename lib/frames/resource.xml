@@ -1,23 +1,52 @@
 <?xml version="1.0"?>
 <wizard size="500x500" dtd="eml-resource.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
   <group label="Base Information" field="dataset" type="panel">
-    <group size="480x100">
+    <group size="480x100" layout="flow">
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" editable="no" defaulttext="knb.1" />
       <textbox label="Short Name" field="shortName" size="10" />
       <textbox label="Title" field="title" size="10" allowNull="no"/>
     </group>
     
-    <group label="Originator Information" type="panel" size="480x100">
-      <group label="Originator" repeatable="yes" size="470x200" field="originator">
-        <group label="Idenfication Information" repeatable="yes" allowNull="no" size="150x250"> 
-            <textbox label="Salutation" field="salutation" size="5" repeatable="yes"/>
-            <textbox label="Given Name" field="givenName" size="10" repeatable="yes"/>
-            <textbox label="Sur Name" field="surName" size="10" allowNull="no"/>
+    <group label="Originator Information" type="panel" size="480x500">
+      <group label="Originator" repeatable="yes" size="470x490" field="originator">
+        <group>
+        <group label="Idenfication Information" repeatable="yes" allowNull="no" > 
+          <textbox label="Salutation" field="individualName/salutation" size="5" repeatable="yes"/>
+          <textbox label="Given Name" field="individualName/givenName" size="10" repeatable="yes"/>
+          <textbox label="Sur Name" field="individualName/surName" size="10" allowNull="no"/>
           
           <textbox label="Organization" field="organizationName" size="10" repeatable="yes"/>
           <textbox label="Position" field="positionName" size="10" />
         </group>
+        </group>
+        <group>
+        <group label="Contact Information" field="contactInfo" repeatable="yes" type="pathgrouping" >
+          <textbox label="Voice Phone" field="phone/voice" size="10" />
+          <textbox label="Fax" field="phone/facsimile" size="10" />
+          <textbox label="Address" field="address/deliveryPoint" size="10" />
+          <textbox label="City" field="address/city" size="10" />
+          <textbox label="State" field="address/administrativeArea" size="10" />
+          <textbox label="ZIP" field="address/postalCode" size="10" />
+          <textbox label="Email address" field="address/electronicMailAddress" size="10" />
+          <textbox label="Web Site" field="onlineResource/linkage/URL" size="10" allowNull="no" repeatable="yes" defaulttext="knb.ecoinformatics.org"/>
+          <textbox label="Contact Instructions" field="contactInstructions" size="30" />
+        </group>
+        </group>
         
+        <combobox label="Originators Role" field="roleCode" size="10" allowNull="no" repeatable="yes" defaulttext="originator">
+          <item value="contentProvider"/>
+          <item value="custodianSteward"/>
+          <item value="owner"/>
+          <item value="distributor"/>
+          <item value="metadataProvider"/>
+          <item value="originator"/>
+          <item value="pointOfContact"/>
+          <item value="principalInvestigator"/>
+          <item value="processor"/>
+          <item value="publisher"/>
+          <item value="author"/>
+          <item value="editor"/>
+        </combobox>
       </group>
     </group>
   </group>

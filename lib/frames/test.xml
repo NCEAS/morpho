@@ -15,16 +15,16 @@
       </group>
       <group field="@test2" size="190x100">
         <textbox label="test1" field="FIELDVALUE" size="10"/>
-        <textbox label="att1" field="att" size="10"/>
+        <textbox label="att1" field="att" size="10" repeatable="yes"/>
         <textbox label="att2" field="att2" size="10"/>
-      </group>
-      <textbox label="m" field="ca" size="10"/>
+      </group> 
+      <textbox label="m" field="ca" size="10" repeatable="yes"/>
       <textbox label="clkj" field="123cba" size="10"/>
     </group>
     <group field="a" size="200x50">
       <textbox label="m" field="cba" size="10"/>
-      <textbox label="clkj" field="cba" size="10"/>
-      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no">
+      <textbox label="clkj" field="cba" size="10" repeatable="yes"/>
+      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no" repeatable="yes">
           <item name="No" value="no" />
           <item name="Yes" value="yesasd"/>
           <item name="Yes" value="yesfd"/>
