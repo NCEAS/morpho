@@ -4,7 +4,7 @@
 <meta_file_id description="Unique identifier of this metadata record">
  </meta_file_id>
 <file description="Data set file">
-<file_name description="File name">build.xml</file_name>
+<file_name description="File name">config.xml</file_name>
 <file_size description="Size of file">
 <amount description="Amount">
  </amount>

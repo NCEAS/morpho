@@ -4,8 +4,8 @@
 <dataset>
 <identifier>
 text</identifier>
-<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/client.properties</datasetid>
-<title >Client Properties</title>
+<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/config.xml</datasetid>
+<title >Configuration Dialog</title>
 <alternateTitle>
 </alternateTitle>
 <originator>
@@ -71,7 +71,7 @@ text</identifier>
 <abstract>
 </abstract>
 <keywordInfo>
-<keyword>test</keyword>
+<keyword>configuration</keyword>
 <keywordType>
 </keywordType>
 <keywordThesaurus>
