@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-13 05:10:24 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2002-12-13 17:14:08 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,6 +209,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                                                           entitiesContainerPanel);
     if (UIManager.getSystemLookAndFeelClassName().indexOf(
                                                 "WindowsLookAndFeel")>-1) {
+      Log.debug(1,"Setting LNF of SplitBar");                                           
       vertSplit.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
     }
     SymComponent aSymComponent = new SymComponent();
@@ -721,7 +722,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     dataViewPanel.setLayout(new BorderLayout(0,0));
     
     entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, entityMetadataPanel);
-    entityPanel.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
+    if (UIManager.getSystemLookAndFeelClassName().indexOf("WindowsLookAndFeel")>-1) {
+      entityPanel.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
+    }
     entityPanel.setOneTouchExpandable(true);
     entityPanel.setDividerLocation(700);
     
