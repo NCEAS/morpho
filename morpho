@@ -4,8 +4,8 @@
 #
 # '$RCSfile: morpho,v $'
 # '$Author: higgins $'
-# '$Date: 2002-03-12 23:57:19 $'
-# '$Revision: 1.10 $'
+# '$Date: 2002-03-22 21:54:47 $'
+# '$Revision: 1.11 $'
 
 XMLP=./lib/xerces.jar
 XALAN=./lib/xalan.jar
@@ -17,4 +17,4 @@ JSE=./lib/jsse.jar
 JCE=./lib/jcert.jar
 JNE=./lib/jnet.jar
 CPATH=$XMLP:$XALAN:$DMC:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE
-java -Xmx128m -cp $CPATH edu.ucsb.nceas.morpho.framework.ClientFramework
+java -Xmx512m -cp $CPATH edu.ucsb.nceas.morpho.framework.ClientFramework
