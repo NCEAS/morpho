@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-01 17:09:17 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@ public class ExportCommand implements Command
    
   /** A refernce to the ResultPanel */
    private ResultPanel resultPane = null;
+   
+   DataPackageInterface dataPackage = null;
    
   /** Constant String to show state of delete */
   public static final String ZIP = "ZIP";
@@ -110,8 +112,21 @@ public class ExportCommand implements Command
    * execute delete local package command
    */    
   public void execute(ActionEvent event)
-  {
-     // Get morphoframe and resultPanel if dialog is not null
+  { 
+     try 
+     {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
+                   services.getServiceProvider(DataPackageInterface.class);
+        dataPackage = (DataPackageInterface)provider;
+     } 
+     catch (ServiceNotHandledException snhe) 
+     {
+        Log.debug(6, snhe.getMessage());
+        return;
+     }
+    
+    // Get morphoframe and resultPanel if dialog is not null
     if (dialog != null)
     {
      // This command will apply to a dialog
@@ -146,6 +161,18 @@ public class ExportCommand implements Command
         
       }//if
     }//if
+    else
+    {
+      //Try if it is datapackage frame
+      selectDocId = dataPackage.getDocIdFromMorphoFrame(morphoFrame);
+      metacatLoc = dataPackage.isDataPackageInNetwork(morphoFrame);
+      localLoc = dataPackage.isDataPackageInLocal(morphoFrame);
+       // Make sure selected a id, and there is local pacakge
+      if ( selectDocId != null && !selectDocId.equals(""))
+      {
+        doExport(selectDocId, morphoFrame);
+      }//if
+    }
 
   }//execute
 
@@ -223,20 +250,7 @@ public class ExportCommand implements Command
     exportDir = filechooser.getCurrentDirectory();
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
-      DataPackageInterface dataPackage;
-      try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                   services.getServiceProvider(DataPackageInterface.class);
-        dataPackage = (DataPackageInterface)provider;
-      } 
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-        return;
-      }
-    
+
       String location = getLocation();
        //export it.
       dataPackage.export(id, exportDir.toString(), location);
@@ -321,20 +335,6 @@ public class ExportCommand implements Command
     exportDir = filechooser.getSelectedFile();
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
-      DataPackageInterface dataPackage;
-      try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                   services.getServiceProvider(DataPackageInterface.class);
-        dataPackage = (DataPackageInterface)provider;
-      } 
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-        return;
-      }
-    
       String location = getLocation();
       if ( exportDir != null)
       {
