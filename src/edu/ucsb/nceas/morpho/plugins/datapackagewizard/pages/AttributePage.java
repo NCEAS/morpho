@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-14 00:06:21 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-03-02 19:31:07 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,6 +190,8 @@ public class AttributePage extends AbstractWizardPage {
 
   private final Dimension HELP_DIALOG_SIZE = new Dimension(400, 500);
 
+  private String storageType = "";
+  
   public AttributePage() {
 
     initNames();
@@ -686,6 +688,10 @@ public class AttributePage extends AbstractWizardPage {
     if (attribDef!=null && !attribDef.equals("")) {
       returnMap.put(xPath + "/attributeDefinition", attribDef);
     }
+    
+    if(!storageType.equals("")) {
+      returnMap.put(xPath + "/storageType", storageType);
+    }
 
     if (measurementScale!=null && !measurementScale.equals("")) {
 
@@ -693,8 +699,6 @@ public class AttributePage extends AbstractWizardPage {
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPath+"/measurementScale/"+measurementScale) );
     }
-//		returnMap.put(xPath + "/storageType", measurementScale);
-// this should be inserted BEFORE measurementScale --- DFH
     return returnMap;
   }
 
@@ -791,6 +795,9 @@ public class AttributePage extends AbstractWizardPage {
      if(defn != null)
        attribDefinitionField.setText(defn);
 
+     storageType = (String)map.get(xPathRoot + "/storageType");
+
+       
      if(mScale == null || mScale.equals(""))
        return;
 
