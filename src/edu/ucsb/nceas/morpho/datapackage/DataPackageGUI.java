@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-01 18:45:13 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2001-11-01 18:50:04 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -735,11 +735,13 @@ public class DataPackageGUI extends javax.swing.JFrame
       {
         FileReader fr = new FileReader(xmlFile);
         int c = fr.read();
+//DFH        while(fr.ready() && c != -1)
         while(c != -1)
         {
           sb.append((char)c);
           c = fr.read();
         }
+//        sb.append((char)c);
         fr.close();
       }
       catch(Exception eeeee)

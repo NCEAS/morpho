@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-01 18:45:13 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-11-01 18:50:03 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -531,12 +531,13 @@ public class PackageUtil
     {
       FileReader fr = new FileReader(xmlFile);
       int c = fr.read();
-      while(c != -1)
+//DFH        while(fr.ready() && c != -1)
+        while(c != -1)
       {
-        sb.append((char)c);
+//        sb.append((char)c);
         c = fr.read();
       }
-//DFH      sb.append((char)c);
+      sb.append((char)c);
       fr.close();
       return sb.toString();
     }
