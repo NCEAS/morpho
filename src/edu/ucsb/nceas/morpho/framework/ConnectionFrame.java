@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.10 2000-10-05 15:36:41 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.11 2000-11-30 23:20:48 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -21,6 +21,8 @@ import com.symantec.itools.javax.swing.borders.LineBorder;
 import com.symantec.itools.javax.swing.icons.ImageIcon;
 public class ConnectionFrame extends javax.swing.JFrame
 {
+    ConfigXML config;
+    String MetaCatServletURL;
     ClientFramework container = null;
     javax.swing.ImageIcon still = null;
     javax.swing.ImageIcon flapping = null;
@@ -35,7 +37,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Connection");
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(317,425);
+		setSize(315,290);
 		/* Center the Frame */
 		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
 		Rectangle frameDim = getBounds();
@@ -43,73 +45,61 @@ public class ConnectionFrame extends javax.swing.JFrame
 		        (screenDim.height - frameDim.height) /2);
 		setVisible(false);
 		JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel1.setText("Connection Choices");
+		JLabel1.setText("Connection Dialog");
 		getContentPane().add(BorderLayout.NORTH,JLabel1);
 		JLabel1.setForeground(java.awt.Color.black);
 		JLabel1.setFont(new Font("Dialog", Font.BOLD|Font.ITALIC, 14));
-		JLabel1.setBounds(0,0,317,16);
+		JLabel1.setBounds(0,0,315,16);
 		JPanel2.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,JPanel2);
-		JPanel2.setBounds(0,16,317,374);
-		JButtonGroupPanel1.setLayout(new GridLayout(5,1,0,0));
+		JPanel2.setBounds(0,16,315,239);
+		JButtonGroupPanel1.setLayout(new GridLayout(3,1,0,0));
 		JPanel2.add(BorderLayout.NORTH,JButtonGroupPanel1);
-		JButtonGroupPanel1.setBounds(0,0,317,145);
-		AnonymousRadioButton.setSelected(true);
-		AnonymousRadioButton.setText("Public Connection (no password needed)");
-		AnonymousRadioButton.setActionCommand("Public Connection (no pasword needed");
-		JButtonGroupPanel1.add(AnonymousRadioButton);
-		AnonymousRadioButton.setBounds(0,0,317,29);
-		RegisteredUserRadioButton.setText("Registered User Connection");
-		RegisteredUserRadioButton.setActionCommand("Registered User Connection");
-		JButtonGroupPanel1.add(RegisteredUserRadioButton);
-		RegisteredUserRadioButton.setBounds(0,29,317,29);
+		JButtonGroupPanel1.setBounds(0,0,315,87);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 		JButtonGroupPanel1.add(JPanel3);
-		JPanel3.setBounds(0,58,317,29);
+		JPanel3.setBounds(0,0,315,29);
 		Name.setText("Name");
-		Name.setEnabled(false);
 		JPanel3.add(Name);
 		Name.setForeground(java.awt.Color.black);
 		Name.setFont(new Font("Dialog", Font.PLAIN, 12));
 		Name.setBounds(5,7,34,15);
-		NameTextField.setColumns(19);
-		NameTextField.setText("public");
-		NameTextField.setEnabled(false);
+		NameTextField.setColumns(23);
+		NameTextField.setText("Enter user name here");
 		JPanel3.add(NameTextField);
-		NameTextField.setBounds(44,5,209,19);
+		NameTextField.setBounds(44,5,253,19);
 		JPanel4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 		JButtonGroupPanel1.add(JPanel4);
-		JPanel4.setBounds(0,87,317,29);
+		JPanel4.setBounds(0,29,315,29);
 		Password.setText("Password");
-		Password.setEnabled(false);
 		JPanel4.add(Password);
 		Password.setForeground(java.awt.Color.black);
 		Password.setFont(new Font("Dialog", Font.PLAIN, 12));
 		Password.setBounds(5,7,56,15);
-		PWTextField.setColumns(19);
+		PWTextField.setColumns(21);
 		JPanel4.add(PWTextField);
-		PWTextField.setBounds(66,5,209,19);
+		PWTextField.setBounds(66,5,231,19);
 		ActivityLabel.setDoubleBuffered(true);
 		ActivityLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 		ActivityLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		JButtonGroupPanel1.add(ActivityLabel);
 		ActivityLabel.setForeground(java.awt.Color.black);
-		ActivityLabel.setBounds(0,116,317,29);
-		ConnectionResultsTextArea.setText("Connection Results");
+		ActivityLabel.setBounds(0,58,315,29);
+		ConnectionResultsTextArea.setText("Connection Messages will appear here");
 		JPanel2.add(BorderLayout.CENTER,ConnectionResultsTextArea);
-		ConnectionResultsTextArea.setBounds(0,145,317,229);
+		ConnectionResultsTextArea.setBounds(0,87,315,152);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,JPanel1);
-		JPanel1.setBounds(0,390,317,35);
+		JPanel1.setBounds(0,255,315,35);
 		connectButton.setText("Connect");
 		connectButton.setActionCommand("OK");
 		JPanel1.add(connectButton);
-		connectButton.setBounds(66,5,81,25);
+		connectButton.setBounds(65,5,81,25);
 		DisconnectButton.setText("Disconnect");
 		DisconnectButton.setActionCommand("Disconnect");
 		DisconnectButton.setEnabled(false);
 		JPanel1.add(DisconnectButton);
-		DisconnectButton.setBounds(152,5,99,25);
+		DisconnectButton.setBounds(151,5,99,25);
 		//}}
 
 		//{{INIT_MENUS
@@ -117,11 +107,13 @@ public class ConnectionFrame extends javax.swing.JFrame
 	
 		//{{REGISTER_LISTENERS
 		SymItem lSymItem = new SymItem();
-		RegisteredUserRadioButton.addItemListener(lSymItem);
 		SymAction lSymAction = new SymAction();
 		connectButton.addActionListener(lSymAction);
 		DisconnectButton.addActionListener(lSymAction);
 		//}}
+		config = new ConfigXML("config.xml");
+		MetaCatServletURL = config.get("MetaCatServletURL", 0);
+		
 //      Example of loading icon as resource - DFH 
      try {
 		still = new javax.swing.ImageIcon(getClass().getResource("Btfly.gif"));
@@ -186,8 +178,6 @@ public class ConnectionFrame extends javax.swing.JFrame
 	javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
 	com.symantec.itools.javax.swing.JButtonGroupPanel JButtonGroupPanel1 = new com.symantec.itools.javax.swing.JButtonGroupPanel();
-	javax.swing.JRadioButton AnonymousRadioButton = new javax.swing.JRadioButton();
-	javax.swing.JRadioButton RegisteredUserRadioButton = new javax.swing.JRadioButton();
 	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
 	javax.swing.JLabel Name = new javax.swing.JLabel();
 	javax.swing.JTextField NameTextField = new javax.swing.JTextField();
@@ -209,32 +199,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 	{
 		public void itemStateChanged(java.awt.event.ItemEvent event)
 		{
-			Object object = event.getSource();
-			if (object == RegisteredUserRadioButton)
-				RegisteredUserRadioButton_itemStateChanged(event);
 		}
-	}
-
-	void RegisteredUserRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
-	{
-		if(RegisteredUserRadioButton.isSelected()) {
-           PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-		   String username =(String)options.handleGetObject("username");
-		   String password =(String)options.handleGetObject("password");
-		   Name.setEnabled(true);
-		   Password.setEnabled(true);
-		   NameTextField.setEnabled(true);
-		   PWTextField.setEnabled(true);
-		   if (username!=null) {NameTextField.setText(username);}
-		   if (password!=null) {PWTextField.setText(password);}
-		}
-		else {
-		   Name.setEnabled(false);
-		   Password.setEnabled(false);
-		   NameTextField.setEnabled(false);
-		   PWTextField.setEnabled(false);
-		}
-			 
 	}
 
 	class SymAction implements java.awt.event.ActionListener
@@ -260,61 +225,11 @@ public class ConnectionFrame extends javax.swing.JFrame
 	   
 	 Thread worker = new Thread() {
 	    public void run() {
-	 if (AnonymousRadioButton.isSelected()) {
       Properties prop = new Properties();
-        prop.put("action","Login Client");
-
+        prop.put("action","login");
+        prop.put("qformat","xml");
       // Now try to write the document to the database
       try {
-        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
-        System.err.println("Trying: " + MetaCatServletURL);
-        URL url = new URL(MetaCatServletURL);
-        HttpMessage msg = new HttpMessage(url);
-            prop.put("username", "public");
-            prop.put("password", "none");
-        
-        InputStream returnStream = msg.sendPostMessage(prop);
-	    StringWriter sw = new StringWriter();
-	    int c;
-	    container.connected = true;
-	    while ((c = returnStream.read()) != -1) {
-           sw.write(c);
-        }
-        sw.flush();
-        sw.close();
-        returnStream.close();
-        final String res = sw.toString();
-        sw.close();
-        SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-        if (res.indexOf("<success>")>=0) {
-		dispose();
-        }
-        else {
-                    ConnectionResultsTextArea.setText(res);
-		            ActivityLabel.setIcon(still);
-		        }
-		}
-		        });
-		
-        
-        
-      } catch (Exception e) {
-		JOptionPane.showMessageDialog(null,"Error logging into server! ");
-		dispose();
-//        System.out.println("Error logging into system");
-//        e.getMessage();
-        }
-	    }
-	 else {
-      Properties prop = new Properties();
-        prop.put("action","Login Client");
-
-      // Now try to write the document to the database
-      try {
-        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);
@@ -339,7 +254,7 @@ public class ConnectionFrame extends javax.swing.JFrame
         sw.close();
         SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-        if (res.indexOf("<success>")>=0) {
+        if (res.indexOf("success")>=0) {
 		dispose();
         }
         else {
@@ -355,8 +270,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 //        System.out.println("Error logging into system");
 //        e.getMessage();
       }
-     }
-	
+     	
 		} // end of run
 	 };
 	 worker.start();
@@ -370,8 +284,6 @@ public void LogOut() {
 
       // Now try to write the document to the database
       try {
-        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);
