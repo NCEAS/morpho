@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-23 17:52:24 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-10-23 18:42:18 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -794,11 +794,32 @@ public class EntityGUI extends javax.swing.JFrame
     }
     else if(command.equals("View Data")) {
       String fn = dataPackage.getDataFileName(entityId);
+      File f = dataPackage.getDataFile(entityId);
       if(dataPackage.isDataFileText(entityId)) {
-        JOptionPane.showMessageDialog(null, 
-                               "Data File " +fn+ " IS apparently  a Text file!" , 
-                               "Alert", 
-                               JOptionPane.ERROR_MESSAGE);    
+        String dataString = "";
+        try{
+          if (f!=null) {
+            FileReader fis = new FileReader(f);
+            StringWriter sw = new StringWriter();
+            int c = fis.read();
+            while(c != -1)
+            { //copy the files to the source directory
+              sw.write(c);
+              c = fis.read();
+            }
+            sw.flush();
+            fis.close();
+            sw.close();
+            dataString = sw.toString();
+          }
+        }
+        catch (Exception e1) {
+          System.out.println("Error in EntityGUI:actionPerformed(): " + e1.getMessage());
+          e1.printStackTrace();
+        }
+        DataViewer dv = new DataViewer("DataFile: "+fn);
+        dv.DataTextArea.setText(dataString);
+        dv.show();
       }
       else{
         JOptionPane.showMessageDialog(null, 
