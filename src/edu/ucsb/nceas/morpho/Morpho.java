@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-14 01:27:07 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2002-12-16 21:40:16 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,6 +125,7 @@ public class Morpho
     //private Action[] containerToolbarActions = null;
     private Vector connectionRegistry = null;
     private static final List profileAddedListenerList = new ArrayList();
+    private static MorphoFrame initialFrame;
     private boolean pluginsLoaded = false;
     private String sessionCookie = null;
     private Itis itis;
@@ -229,7 +230,7 @@ public class Morpho
     public void setProfile(ConfigXML newProfile)
     {
         setProfileDontLogin(newProfile, false);
-        establishConnection();
+        if (!initialFrame.isShowing()) establishConnection();
         fireConnectionChangedEvent();
     }
 
@@ -1316,7 +1317,7 @@ public class Morpho
     {
       UIController controller = UIController.getInstance();
       
-      MorphoFrame initialFrame = controller.addWindow(INITIALFRAMENAME);
+      initialFrame = controller.addWindow(INITIALFRAMENAME);
      
       initialFrame.setMainContentPane(new InitialScreen(thisStaticInstance,
                                                              initialFrame));
