@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-06 20:19:41 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2001-06-07 15:25:42 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,6 +308,7 @@ public class LocalQuery
   
   /** Create a row vector that matches that needed for the ResultSet vector */
   private Vector createRSRow(String filename) {
+    String originalfn = filename;
     int iii = filename.indexOf(separator);
     filename = filename.substring(0,iii) + System.getProperty("file.separator")
                  + filename.substring(iii+1,filename.length());
@@ -326,7 +327,7 @@ public class LocalQuery
     String date = creationDate.toString();
     rss.addElement(date);                                 // create date
     rss.addElement(date);                                 // update date
-    rss.addElement(filename);                             // docid
+    rss.addElement(originalfn);                           // docid
     Document doc = (Document)dom_collection.get(fullfilename);
     String docname = doc.getNodeName();
     rss.addElement(docname);                              // docname
