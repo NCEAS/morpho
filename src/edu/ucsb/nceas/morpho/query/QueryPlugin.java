@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-29 05:08:41 $'
- * '$Revision: 1.97 $'
+ *     '$Date: 2002-10-01 00:21:03 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,16 +219,16 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openPreviousAction.setMenu("File", 0);
     openPreviousAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS, 
-                      true, GUIAction.EVENT_GLOBAL);
+                      true, GUIAction.EVENT_LOCAL);
     openPreviousAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS, 
-                      true, GUIAction.EVENT_GLOBAL);
+                      true, GUIAction.EVENT_LOCAL);
     openPreviousAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS, 
-                      false, GUIAction.EVENT_GLOBAL);
+                      false, GUIAction.EVENT_LOCAL);
     openPreviousAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS, 
-                      false, GUIAction.EVENT_GLOBAL);
+                      false, GUIAction.EVENT_LOCAL);
     openPreviousAction.setEnabled(false);
     controller.addGuiAction(openPreviousAction);
     
@@ -241,16 +241,16 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     synchronizeAction.setMenu("File", 0);
     synchronizeAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED, 
-                      true, GUIAction.EVENT_GLOBAL);
+                      true, GUIAction.EVENT_LOCAL);
     synchronizeAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED, 
-                      true, GUIAction.EVENT_GLOBAL);
+                      true, GUIAction.EVENT_LOCAL);
     synchronizeAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME_SYNCHRONIZED, 
-                      false, GUIAction.EVENT_GLOBAL);
+                      false, GUIAction.EVENT_LOCAL);
     synchronizeAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED, 
-                      false, GUIAction.EVENT_GLOBAL);
+                      false, GUIAction.EVENT_LOCAL);
     synchronizeAction.setEnabled(false);
     controller.addGuiAction(synchronizeAction);
     
@@ -265,7 +265,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                       true, GUIAction.EVENT_LOCAL);
     deleteDialogAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED, 
-                      true, GUIAction.EVENT_GLOBAL);
+                      true, GUIAction.EVENT_LOCAL);
     deleteDialogAction.setEnabled(false);
     deleteDialogAction.setMenu("File", 0);
     
@@ -282,7 +282,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                       true, GUIAction.EVENT_LOCAL);
     exportAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED, 
-                      true, GUIAction.EVENT_GLOBAL);
+                      true, GUIAction.EVENT_LOCAL);
     exportAction.setEnabled(false);
     controller.addGuiAction(exportAction);
     
@@ -297,7 +297,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                       true, GUIAction.EVENT_LOCAL);
     exportZipAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_SELECTED, 
-                      true, GUIAction.EVENT_GLOBAL);
+                      true, GUIAction.EVENT_LOCAL);
     exportZipAction.setEnabled(false);
     controller.addGuiAction(exportZipAction);
     
