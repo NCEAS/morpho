@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 22:36:13 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-12-19 01:04:38 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -375,16 +375,16 @@ public class UISettings
           
 
     public static final Icon NEW_PROFILE_ICON 
-            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no.gif");
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/profile.gif");
 
     public static final Icon NEW_PROFILE_ICON_ROLLOVER 
-            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no.gif");
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/profile_OVER.gif");
 
     public static final Icon LOGOUT_ICON 
-            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_yes.gif");
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no.gif");
 
     public static final Icon LOGOUT_ICON_ROLLOVER 
-            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_yes.gif");
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no_OVER.gif");
 
     
     // * * * * * * * * * *    T E X T   L A B E L S    * * * * * * * * * * * * *
