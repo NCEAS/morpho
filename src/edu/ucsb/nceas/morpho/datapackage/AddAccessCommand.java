@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-22 19:27:20 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-04-11 22:17:38 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,16 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import javax.xml.transform.TransformerException;
+
+import java.awt.event.ActionEvent;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -39,33 +46,19 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import java.awt.event.ActionEvent;
-
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 /**
  * Class to handle add access command
  */
-public class AddAccessCommand implements Command {
+public class AddAccessCommand
+    implements Command {
 
-  /* Flag if need to add coverage info*/
-  private boolean infoAddFlag = false;
+  //generic name for lookup in eml listings
+  private final String DATAPACKAGE_ACCESS_GENERIC_NAME = "access";
 
-  /* Referrence to  morphoframe */
-  private MorphoFrame morphoFrame = null;
+  //generic name for lookup in eml listings
+  private final String ACCESS_SUBTREE_NODENAME = "/access/";
 
-  private DataViewContainerPanel resultPane;
-  private AbstractUIPage accessPage;
-
-  public AddAccessCommand() {
-  }
-
+  public AddAccessCommand() {}
 
   /**
    * execute add command
@@ -74,78 +67,119 @@ public class AddAccessCommand implements Command {
    */
   public void execute(ActionEvent event) {
 
-    resultPane = null;
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-    if (morphoFrame != null) {
-      resultPane =  morphoFrame.getDataViewContainerPanel();
-    }
+    if (showAccessDialog()) {
 
-    // make sure resulPanel is not null
-    if (resultPane != null) {
-
-      showAccessDialog();
-      if (infoAddFlag) {
-
-        try {
-          insertNewAccess();
-        }
-        catch (Exception w) {
-          Log.debug(20, "Exception trying to modify coverage DOM");
-        }
+      try {
+        insertAccess();
+        UIController.showNewPackage(adp);
       }
-
+      catch (Exception w) {
+        Log.debug(15, "Exception trying to modify access DOM: " + w);
+        w.printStackTrace();
+        Log.debug(5, "Unable to add access details!");
+      }
     }
   }
 
-
-  private void showAccessDialog() {
+  private boolean showAccessDialog() {
 
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
-
     try {
       sc = ServiceController.getInstance();
       dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
           DataPackageWizardInterface.class);
+
     }
     catch (ServiceNotHandledException se) {
+
       Log.debug(6, se.getMessage());
+      se.printStackTrace();
+    }
+    if (dpwPlugin == null) {
+      return false;
     }
 
-    if (dpwPlugin == null) {
+    accessPage = dpwPlugin.getPage(DataPackageWizardInterface.ACCESS);
+
+    OrderedMap existingValuesMap = null;
+    accessRoot = adp.getSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+
+    if (accessRoot != null) {
+      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(accessRoot);
+    }
+    Log.debug(45,
+              "sending previous data to accessPage -\n\n" + existingValuesMap);
+
+    boolean pageCanHandleAllData
+        = accessPage.setPageData(existingValuesMap, ACCESS_SUBTREE_NODENAME);
+
+    ModalDialog dialog = null;
+    if (pageCanHandleAllData) {
+
+      dialog = new ModalDialog(accessPage,
+                               UIController.getInstance().
+                               getCurrentActiveWindow(),
+                               UISettings.POPUPDIALOG_WIDTH,
+                               UISettings.POPUPDIALOG_HEIGHT);
+    }
+    else {
+
+      UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+          DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+      return false;
+    }
+
+    return (dialog.USER_RESPONSE == ModalDialog.OK_OPTION);
+  }
+
+  private void insertAccess() {
+
+    OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
+
+    Log.debug(45, "\n insertAccess() Got access details from Access page -\n"
+              + map.toString());
+
+    if (map == null || map.isEmpty()) {
+      Log.debug(5, "Unable to get access details from input!");
       return;
     }
 
-    accessPage = dpwPlugin.getPage(
-        DataPackageWizardInterface.ACCESS);
-    ModalDialog wpd = new ModalDialog(accessPage,
-                                UIController.getInstance().getCurrentActiveWindow(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    Document doc = impl.createDocument("", "access", null);
 
-    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
-    wpd.setVisible(true);
+    accessRoot = doc.getDocumentElement();
 
-    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-      infoAddFlag = true;
+    try {
+      XMLUtilities.getXPathMapAsDOMTree(map, accessRoot);
+
+    }
+    catch (TransformerException w) {
+      Log.debug(5, "Unable to add access details to package!");
+      Log.debug(15, "TransformerException (" + w + ") calling "
+                + "XMLUtilities.getXPathMapAsDOMTree(map, accessRoot) with \n"
+                + "map = " + map
+                + " and accessRoot = " + accessRoot);
+      return;
+    }
+    //delete old access from datapackage
+    adp.deleteSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+
+    // add to the datapackage
+    Node check = adp.insertSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, accessRoot,
+                                   0);
+
+    if (check != null) {
+      Log.debug(45, "added new access details to package...");
     }
     else {
-      infoAddFlag = false;
+      Log.debug(5, "** ERROR: Unable to add new access details to package **");
     }
-
-    return;
   }
 
-  private Node covRoot;
-  private Set mapSet;
-  private Iterator mapSetIt;
-  private Object key;
-  private OrderedMap map, newMap;
-  AbstractDataPackage adp;
-
-  private void insertNewAccess() {
-    return;
-  }
-
+  private Node accessRoot;
+  private AbstractDataPackage adp;
+  private AbstractUIPage accessPage;
 }
