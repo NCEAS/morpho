@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-03 00:25:18 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2003-10-04 03:47:44 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -237,6 +237,9 @@ public class WizardSettings {
   public static final String SUMMARY_TEXT_NODATA
   = "You have chosen not to include or describe any data in your data "
   + "package at this time. Data may be added later";
+  
+  public static final String HEX_VALUE_TAB    = "#x09";
+  public static final String HEX_VALUE_SPACE  = "#x20";
   
   
   /**

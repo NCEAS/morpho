@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-03 18:36:49 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-10-04 03:47:44 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,7 +296,7 @@ public class CustomList extends JPanel {
         
             Log.debug(45, "(JComboBox)");
             DefaultCellEditor cellEd = new DefaultCellEditor((JComboBox)editor);
-//            cellEd.setClickCountToStart(1);
+            cellEd.setClickCountToStart(1);
             column.setCellEditor(cellEd);
           
           } else {
@@ -559,11 +559,6 @@ public class CustomList extends JPanel {
   
     int row = getSelectedRowIndex();
     
-System.err.println("\n\n*****>>>>>>>>>> CustomList.addRow(); rowList.toArray() = ");
-for (int i=0; i<+(rowList.toArray()).length; i++) {
-
-  System.err.println("\n\n*****>>>>>>>>>> "+i+"==> "+(rowList.toArray())[i]);
-}
     if (row < 0) {
     
       row = model.getRowCount();
@@ -576,8 +571,6 @@ for (int i=0; i<+(rowList.toArray()).length; i++) {
     fireEditingStopped();
     table.tableChanged(getTableModelEvent());
     Component comp = table.getComponentAt(row, 0);
-System.err.println("\n\n*****>>>>>>>>>> CustomList.addRow(); comp = "+comp
-+" at row; "+row);
     if (comp!=null) {
       table.editCellAt(row, 0, new EventObject(comp));
       comp.requestFocus();
@@ -779,8 +772,21 @@ class AddAction extends AbstractAction {
 
     Log.debug(45, "CustomList ADD action");
     
-    if (parentList.getCustomAddAction()==null) parentList.addRow(new Vector());
-    else parentList.getCustomAddAction().actionPerformed(null);
+    if (parentList.getCustomAddAction()==null) { 
+      
+      List newRowList = new ArrayList();
+      
+      for (int i=0; i < table.getColumnCount(); i++) {
+
+        TableCellEditor cellEditor 
+                          = table.getColumnModel().getColumn(i).getCellEditor();
+                          
+        if (cellEditor!=null) newRowList.add(cellEditor.getCellEditorValue());
+        else newRowList.add("");
+      }
+      parentList.addRow(newRowList);
+    
+    } else parentList.getCustomAddAction().actionPerformed(null);
   }
 }
 

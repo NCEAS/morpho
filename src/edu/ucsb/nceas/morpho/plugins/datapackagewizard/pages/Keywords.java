@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 23:26:45 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-10-04 03:47:44 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,9 +49,11 @@ import javax.swing.JPanel;
 import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 
+import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -304,16 +306,18 @@ public class Keywords extends AbstractWizardPage{
 
 class KeywordsDialog extends WizardPopupDialog {
 
+  private final String EMPTY_STRING = "";
   private JTextField thesaurusField;
   private JComboBox  kwTypePickList;
   private JLabel kwLabel;
   private CustomList kwList;
-  private String[] kwTypeArray = new String[]{  "",
-                                                "place",
-                                                "stratum", 
-                                                "taxonomic",
-                                                "temporal",
-                                                "theme" };
+  private final String[] kwTypeArray 
+                            = new String[]{ EMPTY_STRING,
+                                            "place",
+                                            "stratum", 
+                                            "taxonomic",
+                                            "temporal",
+                                            "theme" };
   
   public KeywordsDialog(JFrame parent) { 
   
@@ -377,7 +381,8 @@ class KeywordsDialog extends WizardPopupDialog {
    */
   public boolean onAdvanceAction() {
    
-    if (kwList.getRowCount() < 1) {
+    Map listNVP = getKWListAsNVP(EMPTY_STRING);
+    if (listNVP==null || listNVP.size() < 1) {
   
       WidgetFactory.hiliteComponent(kwLabel);
       return false;
@@ -401,7 +406,7 @@ class KeywordsDialog extends WizardPopupDialog {
     
     //thesaurus (first column) surrogate:
     String thesaurus   = thesaurusField.getText().trim();
-    if (thesaurus==null) thesaurus = "";
+    if (thesaurus==null) thesaurus = EMPTY_STRING;
     surrogate.add(thesaurus);
 
     
@@ -423,7 +428,7 @@ class KeywordsDialog extends WizardPopupDialog {
       if (nextRow.get(0)==null) continue;
       nextKW = ((String)(nextRow.get(0))).trim();
       
-      if (nextKW.equals("")) continue;
+      if (nextKW.equals(EMPTY_STRING)) continue;
       
       if (firstKW) firstKW = false;
       else surrogateBuff.append(", ");
@@ -459,7 +464,7 @@ class KeywordsDialog extends WizardPopupDialog {
     returnMap.putAll(getKWListAsNVP(xPathRoot));
     
     String thesaurus = thesaurusField.getText().trim();
-    if (thesaurus!=null && !thesaurus.equals("")) {
+    if (thesaurus!=null && !thesaurus.equals(EMPTY_STRING)) {
       returnMap.put(xPathRoot + "/keywordThesaurus", thesaurus);
     }
     
@@ -474,13 +479,18 @@ class KeywordsDialog extends WizardPopupDialog {
   
     listResultsMap.clear();
     
-    int index=0;
-    List rowLists = kwList.getListOfRowLists();
-    String nextKW = null;
-    String nextKWType = null;
+    int rowNumber       = -1;
+    int predicateIndex  = 0;
+    List rowLists       = kwList.getListOfRowLists();
+    String nextKWType   = null;
   
+    boolean[] rowsToDelete  = new boolean[rowLists.size()];
+
+    Arrays.fill(rowsToDelete, false);
+    
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
+      rowNumber++;
       // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
@@ -488,30 +498,45 @@ class KeywordsDialog extends WizardPopupDialog {
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
       
-      if (nextRow.get(0)==null) continue;
-      nextKW = ((String)(nextRow.get(0))).trim();
+      //if user doesn't enter a keyword, mark this row to be deleted...
+      if ( nextRow.get(0)==null 
+        || ((String)(nextRow.get(0))).trim().equals(EMPTY_STRING) ) {
       
-      if (nextKW.equals("")) continue;
+        rowsToDelete[rowNumber] = true;
+        continue;
+      }
       
       listResultsBuff.delete(0,listResultsBuff.length());
       listResultsBuff.append(xPathRoot);
       listResultsBuff.append("/keyword[");
-      listResultsBuff.append(++index);
+      listResultsBuff.append(++predicateIndex);
       listResultsBuff.append("]");
-      listResultsMap.put(listResultsBuff.toString(), nextKW);
+      listResultsMap.put(listResultsBuff.toString(), 
+                          ((String)(nextRow.get(0))).trim());
     
       if (nextRow.get(1)==null) continue;
       nextKWType = ((String)(nextRow.get(1))).trim();
     
-      if (nextKWType.equals("")) continue;
+      if (nextKWType.equals(EMPTY_STRING)) continue;
     
       listResultsBuff.delete(0,listResultsBuff.length());
       listResultsBuff.append(xPathRoot);
       listResultsBuff.append("/keyword[");
-      listResultsBuff.append(index);
+      listResultsBuff.append(predicateIndex);
       listResultsBuff.append("]/@keywordType");
       listResultsMap.put(listResultsBuff.toString(), nextKWType);
     }
+    
+    // remove rows to be deleted IN REVERSE ORDER - since each removal 
+    // reduces the number of rows
+    for (int i=rowsToDelete.length - 1; i > -1; i--) {
+
+      if (rowsToDelete[i]) {
+  
+        kwList.removeRow(i);
+      }      
+    }
+    
     return listResultsMap;
   }
   

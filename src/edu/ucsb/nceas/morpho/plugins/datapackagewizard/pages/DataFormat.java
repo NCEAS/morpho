@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-03 18:36:49 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2003-10-04 03:47:44 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import java.awt.BorderLayout;
@@ -529,9 +530,6 @@ public class DataFormat extends AbstractWizardPage{
    */
   public boolean onAdvanceAction() {
     
-System.err.println("\n\n&&&& calling onAdvanceAction()....");      
-    list.fireEditingStopped();
-System.err.println("\n\n&&&& done fireEditingStopped(); formatXPath = "+formatXPath);      
 
     if (formatXPath==null || currentPanel==null)  {
 
@@ -560,18 +558,14 @@ System.err.println("\n\n&&&& done fireEditingStopped(); formatXPath = "+formatXP
 
     } else if (formatXPath==COMPLEX_TEXT_XPATH) {
 
-System.err.println("\n\n&&&& formatXPath==COMPLEX_TEXT_XPATH");      
-      OrderedMap listNVP = getCmplxDelimListAsNVP();
+      list.fireEditingStopped();
       
-System.err.println("\n\n&&&& listNVP = "+listNVP);   
-  
-if (listNVP!=null) System.err.println("\n\n&&&& listNVP.size() = "+listNVP.size()); 
+      OrderedMap listNVP = getCmplxDelimListAsNVP();
 
       if (listNVP==null || listNVP.size()<1) {
         WidgetFactory.hiliteComponent(listLabel);
         return false;
       }
-System.err.println("\n\n&&&& calling listContainsOnlyPosNumericWidths()....");      
       if (!listContainsOnlyPosNumericWidths()) {
         WidgetFactory.hiliteComponent(listLabel);
         return false;
@@ -623,17 +617,12 @@ System.err.println("\n\n&&&& calling listContainsOnlyPosNumericWidths()....");
     
       boolean nextCol0IsNull = (nextRow.get(0)==null);
       boolean nextCol1IsNull = (nextRow.get(1)==null);
-
-System.err.println("\n\n&&&& nextCol0IsNull = "+nextCol0IsNull);      
-System.err.println("\n\n&&&& nextCol1IsNull = "+nextCol1IsNull);    
   
       if (nextCol0IsNull || nextCol1IsNull) continue;
 
       if (nextRow.get(0).equals(pickListVals[0])) {  // fixed width...
         nextWidthStr = (String)(nextRow.get(1));
         
-System.err.println("\n\n&&&& FIXED WIDTH FOUND>>>"+nextWidthStr);    
-  
         if (!(nextWidthStr.trim().equals(EMPTY_STRING))) {
       
           if (!WizardSettings.isFloat(nextWidthStr)) returnVal = false;
@@ -655,35 +644,34 @@ System.err.println("\n\n&&&& FIXED WIDTH FOUND>>>"+nextWidthStr);
   
     listResultsMap.clear();
     
-    int index=1;
-    StringBuffer buff = new StringBuffer();
-    List rowLists = list.getListOfRowLists();
-    String fixedDelimStr = null;
+    int rowNumber           = -1;
+    int predicateIndex      = 1;
+    StringBuffer buff       = new StringBuffer();
+    List rowLists           = list.getListOfRowLists();
+    String fixedDelimStr    = null;
+    boolean[] rowsToDelete  = new boolean[rowLists.size()];
+
+    Arrays.fill(rowsToDelete, false);
     
-System.err.println("\ngetCmplxDelimListAsNVP:: rowLists = "+rowLists);
-  
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
   
+      rowNumber++;
       // CHECK FOR AND ELIMINATE EMPTY ROWS...
       Object nextRowObj = it.next();
-      
-System.err.println("\ngetCmplxDelimListAsNVP:: nextRowObj = "+nextRowObj);
     
       if (nextRowObj==null) continue;
       
       List nextRow = (List)nextRowObj;
-      
-System.err.println("\ngetCmplxDelimListAsNVP:: nextRow = "+nextRow);
-System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.size() = "+nextRow.size());
     
       if (nextRow.size() < 1) continue;
       
-      
-System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.get(0) = "+nextRow.get(0));
-System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.get(1) = "+nextRow.get(1));
-
-      if (nextRow.get(0)==null || nextRow.get(1)==null) continue;
-      if (((String)(nextRow.get(1))).equals(EMPTY_STRING)) continue;
+      if ( nextRow.get(0)==null || nextRow.get(1)==null               
+        || !(nextRow.get(1) instanceof String)
+        || ((String)(nextRow.get(1))).equals(EMPTY_STRING) ) {
+      //note for line above - don't "trim" - could be a space or tab delimeter!
+        rowsToDelete[rowNumber] = true;
+        continue;
+      }      
       
       if (nextRow.get(0).equals(pickListVals[0])) {
       
@@ -693,16 +681,37 @@ System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.get(1) = "+nextRow.get(1)
       
         fixedDelimStr = "textDelimited/fieldDelimiter";
         
-      } else continue;
+      } else {
+      
+        rowsToDelete[rowNumber] = true;
+        continue;
+      }
+      
+      String nextVal = (String)(nextRow.get(1));
+      
+      // substitute hex values for tabs and spaces:
+      if (nextVal.equals("\\t")) nextVal = WizardSettings.HEX_VALUE_TAB;
+      if (nextVal.equals(" ")) nextVal  = WizardSettings.HEX_VALUE_SPACE;
       
       buff.delete(0,buff.length());
       buff.append(COMPLEX_TEXT_XPATH);
       buff.append(fixedDelimStr);
       buff.append("[");
-      buff.append(index++);
+      buff.append(predicateIndex++);
       buff.append("]");
-      listResultsMap.put(buff.toString(), nextRow.get(1));
+      listResultsMap.put(buff.toString(), nextVal);
     }
+    
+    // remove rows to be deleted IN REVERSE ORDER - since each removal 
+    // reduces the number of rows
+    for (int i=rowsToDelete.length - 1; i > -1; i--) {
+
+      if (rowsToDelete[i]) {
+  
+        list.removeRow(i);
+      }      
+    }
+
     return listResultsMap;
 
   }
@@ -823,7 +832,8 @@ System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.get(1) = "+nextRow.get(1)
 
           if (cmd.indexOf(delimiterCheckBoxesText[0])==0) {
         
-            delim_tab       = (stateChange==ItemEvent.SELECTED)? "#x09" : null;
+            delim_tab       = (stateChange==ItemEvent.SELECTED)? 
+                                          WizardSettings.HEX_VALUE_TAB : null;
         
           } else if (cmd.indexOf(delimiterCheckBoxesText[1])==0) {
       
@@ -831,7 +841,8 @@ System.err.println("\ngetCmplxDelimListAsNVP:: nextRow.get(1) = "+nextRow.get(1)
             
           } else if (cmd.indexOf(delimiterCheckBoxesText[2])==0) {
       
-            delim_space     = (stateChange==ItemEvent.SELECTED)? "#x20" : null;
+            delim_space     = (stateChange==ItemEvent.SELECTED)? 
+                                          WizardSettings.HEX_VALUE_SPACE : null;
             
           } else if (cmd.indexOf(delimiterCheckBoxesText[3])==0) {
 
