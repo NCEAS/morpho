@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-07 01:55:47 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-04-07 16:19:52 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -235,7 +235,13 @@ public class ExternalRefsPage extends AbstractUIPage
        Collections.sort(dataVector, new ReferenceComparator());
      }
       //new data model for table
-     DefaultTableModel referenceIdModel = new DefaultTableModel();
+     DefaultTableModel referenceIdModel = new DefaultTableModel()
+     {
+       public boolean isCellEditable(int row, int column)
+       {
+         return false;
+       }
+     };
      referenceIdModel.setDataVector(dataVector, refIDTableCloumnName);
      referenceIdTable.setModel(referenceIdModel);
      referenceIdTable.validate();
