@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-05 19:45:46 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-03-08 23:54:25 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,15 +246,20 @@ public class AttributePanel extends JPanel
 	}
 	
 	private void getChildComponents(Component[] comps, Vector vec) {
-	  for (int i=0;i<comps.length;i++) {
-	    Component[] innercomp = ((Container)comps[i]).getComponents();
-	    for (int j=0;j<innercomp.length;j++) {
-	      vec.addElement(innercomp[j]);
+    try{
+	    for (int i=0;i<comps.length;i++) {
+	      Component[] innercomp = ((Container)comps[i]).getComponents();
+        if (innercomp==null) return;
+	      for (int j=0;j<innercomp.length;j++) {
+	        vec.addElement(innercomp[j]);
+	      }
+	      if (innercomp.length>0) {
+	        getChildComponents(innercomp, vec);
+	      }
 	    }
-	    if (innercomp.length>0) {
-	      getChildComponents(innercomp, vec);
-	    }
-	  }
+    } catch (Exception w) {;}
+    // note: the try/catch here was added to get this code to woirk under Java 1.3
+    // (It works under 1.4 without thes blocks) Reason: who knows?????
 	}
   
 }
