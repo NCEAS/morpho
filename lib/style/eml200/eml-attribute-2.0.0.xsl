@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 20:04:28 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2003-12-11 03:45:50 $'
+  * '$Revision: 1.5 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -853,7 +853,6 @@
             </tr>
           </xsl:for-each>
         </xsl:when>
- <!-- **************************** -->
         <xsl:otherwise>
 	 <tr>
           <th  align="center"  class="{$borderStyle}"><xsl:value-of select="attributeName"/></th>
@@ -1064,7 +1063,7 @@
    <xsl:param name="attributeindex"/>
 
   <!-- First row for attribute name-->
-  <tr><th  class="{$borderStyle}">Column Name</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Column Name</td>
   <xsl:for-each select="attribute">
    <xsl:if test="position() = $attributeindex">
       <xsl:choose>
@@ -1084,7 +1083,7 @@
   </tr>
 
   <!-- Second row for attribute label-->
-  <tr><th  class="{$borderStyle}" >Column Label</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Column Label</td>
    <xsl:for-each select="attribute">
     <xsl:if test="position() = $attributeindex">
     <xsl:variable name="stripes">
@@ -1138,7 +1137,7 @@
   </tr>
 
   <!-- Third row for attribute defination-->
-  <tr><th  class="{$borderStyle}">Definition</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Definition</td>
     <xsl:for-each select="attribute">
      <xsl:if test="position() = $attributeindex">
       <xsl:variable name="stripes">
@@ -1168,7 +1167,7 @@
   </tr>
 
   <!-- The fourth row for attribute storage type-->
-   <tr><th  class="{$borderStyle}">Type of Value</th>
+   <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Type of Value</td>
      <xsl:for-each select="attribute">
       <xsl:if test="position() = $attributeindex">
       <xsl:variable name="stripes">
@@ -1222,7 +1221,7 @@
   </tr>
 
   <!-- The fifth row for meaturement type-->
-  <tr><th  class="{$borderStyle}">Measurement Type</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Measurement Type</td>
    <xsl:for-each select="attribute">
     <xsl:if test="position() = $attributeindex">
     <xsl:variable name="stripes">
@@ -1256,7 +1255,7 @@
   </tr>
 
   <!-- The sixth row for meaturement domain-->
-  <tr><th  class="{$borderStyle}">Measurement Domain</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Measurement Domain</td>
    <xsl:for-each select="attribute">
     <xsl:if test="position() = $attributeindex">
     <xsl:variable name="stripes">
@@ -1309,7 +1308,7 @@
 
 
   <!-- The seventh row for missing value code-->
-  <tr><th  class="{$borderStyle}">Missing Value Code</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Missing Value Code</td>
     <xsl:for-each select="attribute">
      <xsl:if test="position() = $attributeindex">
       <xsl:variable name="stripes">
@@ -1379,7 +1378,7 @@
 
 
   <!-- The eighth row for accuracy report-->
-  <tr><th  class="{$borderStyle}">Accuracy Report</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Accuracy Report</td>
      <xsl:for-each select="attribute">
      <xsl:if test="position() = $attributeindex">
      <xsl:variable name="stripes">
@@ -1431,7 +1430,7 @@
   </tr>
 
   <!-- The nineth row for quality accuracy accessment -->
-  <tr><th  class="{$borderStyle}">Accuracy Assessment</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Accuracy Assessment</td>
      <xsl:for-each select="attribute">
      <xsl:if test="position() = $attributeindex">
      <xsl:variable name="stripes">
@@ -1507,7 +1506,7 @@
   </tr>
 
    <!-- The tenth row for coverage-->
-  <tr><th  class="{$borderStyle}">Coverage</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Coverage</td>
    <xsl:for-each select="attribute">
     <xsl:if test="position() = $attributeindex">
     <xsl:variable name="index" select="position()"/>
@@ -1571,7 +1570,7 @@
 
 
    <!-- The eleventh row for method-->
-  <tr><th  class="{$borderStyle}">Method</th>
+  <tr><td width="{$firstColWidth}" class="{$firstColStyle}">Method</td>
    <xsl:for-each select="attribute">
     <xsl:if test="position() = $attributeindex">
     <xsl:variable name="index" select="position()"/>
@@ -1741,9 +1740,9 @@
       </xsl:when>
       <xsl:otherwise>
          <tr><td colspan="2" align="center" class="{$stripes}" >
-          <!-- <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/>&amp;displaymodule=attributedomain&amp;entitytype=<xsl:value-of select="$entitytype"/>&amp;entityindex=<xsl:value-of select="$entityindex"/>&amp;attributeindex=<xsl:value-of select="$attributeindex"/></xsl:attribute>
-         -->  <b>Domain Info</b>
-          <!-- </a> -->
+           <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/>&amp;displaymodule=attributedomain&amp;entitytype=<xsl:value-of select="$entitytype"/>&amp;entityindex=<xsl:value-of select="$entityindex"/>&amp;attributeindex=<xsl:value-of select="$attributeindex"/></xsl:attribute>
+           <b>Domain Info</b>
+           </a>
          </td></tr>
       </xsl:otherwise>
     </xsl:choose>

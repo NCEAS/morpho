@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 22:26:23 $'
-  * '$Revision: 1.6 $'
+  *     '$Date: 2003-12-11 03:45:51 $'
+  * '$Revision: 1.7 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@
     *   To show the links for the Entities in the dataset display module.
     */
 -->
-  <xsl:param name="withEntityLinks">1</xsl:param>
+  <xsl:param name="withEntityLinks">0</xsl:param>
 
 
 <!--
@@ -83,7 +83,7 @@
     *   To show the link for Additional Metadata in the dataset display module.
     */
 -->
-  <xsl:param name="withAdditionalMetadataLink">1</xsl:param>
+  <xsl:param name="withAdditionalMetadataLink">0</xsl:param>
 
 
 <!--
@@ -91,7 +91,7 @@
     *   To show the link for the Original XML in the dataset display module.
     */
 -->
-  <xsl:param name="withOriginalXMLLink">1</xsl:param>
+  <xsl:param name="withOriginalXMLLink">0</xsl:param>
 
 
 <!--
@@ -99,7 +99,7 @@
     *   To show the Attributes table in the entity display.
     */
 -->
-  <xsl:param name="withAttributes">1</xsl:param>
+  <xsl:param name="withAttributes">0</xsl:param>
 
 
 <!--
