@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-24 23:17:03 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-09-26 22:22:52 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,20 +119,7 @@ public class DataPackageFactory
         Log.debug(1,"exception");
       }
 */
-   Log.debug(1,"Title: "+dp.getTitle());
-   Log.debug(1,"Author: "+dp.getAuthor());
-   Log.debug(1,"AccessionNumber: "+dp.getAccessionNumber());
-   Log.debug(1,"Keyword: "+dp.getKeywords());
-   dp.getEntityArray();
-   Log.debug(1, "entity 1 name: "+dp.getEntityName(0));
-   Log.debug(1, "entity 2 name: "+dp.getEntityName(1));
-   Log.debug(1, "entity 1 numRecords: "+dp.getEntityNumRecords(0));
-   Log.debug(1, "entity 1 description: "+dp.getEntityDescription(0));
-   Log.debug(1, "entity 0;attribute0 name: "+dp.getAttributeName(0,0));
-   Log.debug(1, "entity 0;attribute 0 unit: "+dp.getAttributeUnit(0,0));
-   Log.debug(1, "entity 0;attribute 1 unit: "+dp.getAttributeUnit(0,1));
-   Log.debug(1, "entity 0;physical0 name: "+dp.getPhysicalName(0,0));
-   Log.debug(1, "entity 0;physical0 format: "+dp.getPhysicalFormat(0,0));
+   dp.showPackageSummary();
    
     return dp;    
   }

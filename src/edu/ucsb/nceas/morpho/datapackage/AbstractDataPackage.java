@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-25 14:55:03 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-26 22:22:52 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.*;
+import org.apache.xpath.NodeSet;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
@@ -332,7 +333,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       if (aNodes==null) return "aNodes is null !";
       if (aNodes.getLength()<1) return "";
       Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
-      temp = child.getNodeValue();
+      temp = child.getNodeValue().trim();
     }
     catch (Exception w) {
       Log.debug(4,"exception in getting attribute unit -- "+w.toString());
@@ -401,37 +402,50 @@ public abstract class AbstractDataPackage extends MetadataObject
       // first see if the format is text
       physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='physical']/isText")).getNodeValue();
-      boolean isText = XMLUtilities.isXPathEvalABoolean(physical, physXpath);
-//      if (isText) {
-      if (true) {
-            // !!!! apparently this is true even if node does NOT exist; investigate!
-Log.debug(1,"ZZZZZ:");
-        XObject xobj = XPathAPI.eval(physical, physXpath);
-    if (xobj==null) Log.debug(1,"null");
-        
-    if (xobj.getType()==XObject.CLASS_BOOLEAN) Log.debug(1,"Boolean");
-    if (xobj.getType()==XObject.CLASS_STRING) Log.debug(1,"String");
-    if (xobj.getType()==XObject.CLASS_NULL) Log.debug(1,"Null");
+//      XMLUtilities.xPathEvalTypeTest(physical, physXpath);
 
-        boolean val = xobj.bool();
-        if (val){
-          return "text";
-        } //else return "NOT Text";
-      }
-        // not text, try another xpath
-        physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+      XObject xobj = XPathAPI.eval(physical, physXpath);
+      if (xobj==null) Log.debug(1,"null");
+
+      boolean val = xobj.bool();
+      if (val){
+        return "text";
+      } 
+      // not text, try another xpath
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='physical']/format")).getNodeValue();
-        NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
-        if (aNodes==null) return "aNodes is null !";
-        Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
-        temp = child.getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting physical objectName description --- "+w.toString());
+      Log.debug(20,"exception in getting physical format description --- "+w.toString());
     }
     return temp;
-    
   }
+  
+  public void showPackageSummary() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("Title: "+getTitle()+"\n");
+    sb.append("AccessionNumber: "+getAccessionNumber()+"\n");
+    sb.append("Author: "+getAuthor()+"\n");
+    getEntityArray();
+    for (int i=0;i<entityArray.length;i++) {
+      sb.append("entity "+i+" name: "+getEntityName(i)+"\n");
+      sb.append("entity "+i+" numRecords: "+getEntityNumRecords(i)+"\n");
+      sb.append("entity "+i+" description: "+getEntityDescription(i)+"\n");
+      for (int j=0;j<getAttributeArray(i).length;j++) {
+        sb.append("entity "+i+" attribute "+j+"--- name: "+getAttributeName(i,j)+"\n");
+        sb.append("entity "+i+" attribute "+j+"--- unit: "+getAttributeUnit(i,j)+"\n");
+      }
+      for (int k=0;k<getPhysicalArray(i).length;k++) {
+        sb.append("entity "+i+" physical "+k+"--- name: "+getPhysicalName(i,k)+"\n");
+        sb.append("entity "+i+" physical "+k+"--- format: "+getPhysicalFormat(i,k)+"\n");
+      }
+    }
+    Log.debug(1,sb.toString());
+  }  
   
 }
 
