@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2003-10-03 00:25:18 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,8 @@ public class WizardSettings {
 
   private static Node[] unitsNodeArray = null;
   private static final String UNITS_XPATH    = "/stmml:unitList/stmml:unit";
+  public  static final short ENTITY_DATATABLE = 10;
+  private static final OrderedMap mimeTypesMap = new OrderedMap();
   private static List unitsReturnList     = new ArrayList();
   private static List unitsList      = new ArrayList();
   private static List unitsRemainderList  = new ArrayList();
@@ -492,13 +494,15 @@ public class WizardSettings {
   
   
   
-  public  static final short ENTITY_DATATABLE = 10;
-  private static final OrderedMap mimeTypesMap = new OrderedMap();
   /**
    *  given an entityType, returns an <code>OrderedMap<code> whose keys contain
    *  the human-readable display names for all the allowable MIME types (for the
    *  given entity type), and whose corresponding values are the actual MIME
    *  types themselves.
+   *
+   *  To add more MIME types, 
+   *  @see  http://www.iana.org/assignments/media-types/
+   *        or /etc/mime.types on linux
    *
    *  @param  entityType the constant representing the entity type whose
    *          allowable MIME types are sought. Currently, only possible values
@@ -517,11 +521,22 @@ public class WizardSettings {
       
       case ENTITY_DATATABLE:
         
-        mimeTypesMap.put("Plain Text",                "Text/plain");
-        mimeTypesMap.put("Formatted/Rich Text",       "Text/enriched");
-        mimeTypesMap.put("HTML text",                 "Text/html");
-        mimeTypesMap.put("Microsoft Excel",           "application/vnd.ms-excel");
+        mimeTypesMap.put("Microsoft Excel",         "application/vnd.ms-excel");
+        mimeTypesMap.put("XML text",                "application/xml");
+        mimeTypesMap.put("HTML text",               "Text/html");
+        mimeTypesMap.put("XHTML text",              "application/xhtml+xml");
+        mimeTypesMap.put("mathematica",             "application/mathematica");
         
+//  GRASS
+//  matlab
+//  maple
+//  sas
+//  splus
+//  R
+//  all of the ESRI binary formats
+//  text formats like ESRI's ArcInfo export format
+
+
         break;
         
       default:
@@ -530,7 +545,17 @@ public class WizardSettings {
     return mimeTypesMap;
   }
   
+   
+  
+  //
+  //  To add more MIME types, 
+  //  @see  http://www.iana.org/assignments/media-types/
+  //        or /etc/mime.types on linux
+  //
   //  SPARES - JUST IN CASE...
+  //
+  //  mimeTypesMap.put("Plain Text",                "Text/plain");
+  //  mimeTypesMap.put("Formatted/Rich Text",       "Text/enriched");
   //  mimeTypesMap.put("Microsoft Word",            "application/msword");
   //  mimeTypesMap.put("Tar Archive",               "application/x-tar");
   //  mimeTypesMap.put("Zip-Compressed Archive",    "Application/x-compressed");

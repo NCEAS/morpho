@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-10-03 00:25:18 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,17 +69,29 @@ public class DataLocation extends AbstractWizardPage {
   
   private final String title      = "Data File Information:";
   private final String subtitle   = "Location";
+  
+  private final String EMPTY_STRING = "";  
+  private final String FILE_LOCATOR_FIELD_FILENAME_LABEL = "File Name:";
+  private final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = "Name/Title:";
+  
   private final String INIT_FILE_LOCATOR_TEXT 
                                   = "   use button to select a file -->";
-  private final String FILE_LOCATOR_IMPORT_DESC 
+  private final String FILE_LOCATOR_IMPORT_DESC_INLINE 
         = WizardSettings.HTML_TABLE_LABEL_OPENING
         +"Use the \"locate\" button to locate the data file on your computer:"
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
         
-  private final String FILE_LOCATOR_BYHAND_DESC 
+  private final String FILE_LOCATOR_IMPORT_DESC_OFFLINE 
         = WizardSettings.HTML_TABLE_LABEL_OPENING
-        +"Enter the filename of your data file. "
-        +"You do not need to enter its full path:"
+        +"If the offline data is in a file on your computer, please locate it:"
+        +WizardSettings.HTML_TABLE_LABEL_CLOSING;
+        
+  private final String FILE_LOCATOR_BYHAND_DESC_OFFLINE 
+        = WizardSettings.HTML_TABLE_LABEL_OPENING
+        +"Enter an identifying name in the space below&nbsp;&nbsp;"
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +" (e.g. a title if your data is on hardcopy, or a filename for digital media)"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -88,13 +100,15 @@ public class DataLocation extends AbstractWizardPage {
   private String distribXPath;
   private final String OBJECTNAME_XPATH 
                   = "/eml:eml/dataset/dataTable/physical/objectName";
+  private final String MEDIUMNAME_XPATH 
+                  = "/eml:eml/dataset/dataTable/physical/distribution/offline/mediumName";
   private final String INLINE_XPATH  
                   = "/eml:eml/dataset/dataTable/physical/distribution/inline";
   private final String ONLINE_XPATH  
                   = "/eml:eml/dataset/dataTable/physical/distribution/online";
   private final String OFFLINE_XPATH 
                   = "/eml:eml/dataset/dataTable/physical/distribution/offline";
-  private final String NODATA_XPATH  = "";
+  private final String NODATA_XPATH  = EMPTY_STRING;
 
   private String inlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
   private String onlineNextPageID  = WizardPageLibrary.DATA_FORMAT;
@@ -116,7 +130,7 @@ public class DataLocation extends AbstractWizardPage {
     };
   
   private final String[] genHandButtonsText = new String[] {
-      "Generate the information automatically from a data file (ASCII files only)",
+      "Generate the information automatically from a data file on your computer (text files only)",
       "Enter the information by hand"
     };
 
@@ -219,8 +233,10 @@ public class DataLocation extends AbstractWizardPage {
   
     WidgetFactory.addTitledBorder(panel, buttonsText[0]);
   
-    fileLocatorWidgetInline = new FileLocatorWidget(FILE_LOCATOR_IMPORT_DESC, 
-                                                    INIT_FILE_LOCATOR_TEXT);
+    fileLocatorWidgetInline = new FileLocatorWidget(
+                                              FILE_LOCATOR_FIELD_FILENAME_LABEL,
+                                              FILE_LOCATOR_IMPORT_DESC_INLINE, 
+                                              INIT_FILE_LOCATOR_TEXT);
   
     panel.add(fileLocatorWidgetInline, BorderLayout.NORTH);
   
@@ -281,18 +297,70 @@ public class DataLocation extends AbstractWizardPage {
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
   private FileLocatorWidget fileLocatorWidgetOffline;
+  private JLabel            objNameLabel;
+  private JLabel            medNameLabel;
+  private JTextField        objNameField;
+  private JTextField        medNameField;
   
   private JPanel getOfflinePanel() {
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
     WidgetFactory.addTitledBorder(panel, buttonsText[2]);
   
+    panel.add(WidgetFactory.makeHTMLLabel(
+      "Offline data may be stored on various digital media such as tapes and "
+      +"disks, or printed media which can collectively be termed 'hardcopy'."
+      +"<br></br><br></br>How would you like to enter the information describing "
+      +"the format and structure of the data?", 4));
+    
     panel.add(WidgetFactory.makeDefaultSpacer());
     
-    panel.add(WidgetFactory.makeHTMLLabel(
-      "How would you like to enter the information describing "
-      +"the format and structure of the data?", 2));
+    final JPanel offlineSubPanel =  new JPanel(new BorderLayout());
+    
+    
+    ////////// IMPORT WIZ:
+    
+    fileLocatorWidgetOffline = new FileLocatorWidget(
+                                              FILE_LOCATOR_FIELD_FILENAME_LABEL,
+                                              FILE_LOCATOR_IMPORT_DESC_OFFLINE, 
+                                              INIT_FILE_LOCATOR_TEXT);
 
+                                          
+    ////////// BY HAND:
+    
+    JPanel objNamePanel = WidgetFactory.makePanel();
+    objNameLabel = WidgetFactory.makeLabel(
+                                        FILE_LOCATOR_FIELD_OBJNAME_LABEL, true);
+    objNameField = WidgetFactory.makeOneLineTextField();
+    objNamePanel.add(objNameLabel);
+    objNamePanel.add(objNameField);
+
+    JPanel medNamePanel = WidgetFactory.makePanel();
+    medNameLabel = WidgetFactory.makeLabel("Medium Type:", true);
+    medNameField = WidgetFactory.makeOneLineTextField();
+    medNamePanel.add(medNameLabel);
+    medNamePanel.add(medNameField);
+
+    final JPanel byHandPanelOffline = WidgetFactory.makeVerticalPanel(4);
+    
+    byHandPanelOffline.add(WidgetFactory.makeHTMLLabel(
+        "Briefly describe the type of medium on which this resource is distributed. "
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+        +"eg: Tape,&nbsp;&nbsp;3.5 inch Floppy Disk,&nbsp;&nbsp;hardcopy"
+        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
+        
+    byHandPanelOffline.add(medNamePanel);
+    
+    byHandPanelOffline.add(WidgetFactory.makeDefaultSpacer());
+    
+    byHandPanelOffline.add(WidgetFactory.makeHTMLLabel(
+                                          FILE_LOCATOR_BYHAND_DESC_OFFLINE, 1));
+                                          
+    byHandPanelOffline.add(objNamePanel);
+    /////////////
+ 
+    offlineSubPanel.add(fileLocatorWidgetOffline, BorderLayout.NORTH);
+        
     panel.add(
       WidgetFactory.makeRadioPanel(genHandButtonsText, 0, 
         new ActionListener() {
@@ -300,46 +368,25 @@ public class DataLocation extends AbstractWizardPage {
           public void actionPerformed(ActionEvent e) {
       
             if (e.getActionCommand().equals(genHandButtonsText[0])) {
-        
               setNextPageID(WizardPageLibrary.TEXT_IMPORT_WIZARD);
-              fileLocatorWidgetOffline.getTextArea().setText(INIT_FILE_LOCATOR_TEXT);
-              fileLocatorWidgetOffline.setDescription(FILE_LOCATOR_IMPORT_DESC);
-              fileLocatorWidgetOffline.getTextArea().setEnabled(false);
-              fileLocatorWidgetOffline.getTextArea().setEditable(false);
-              fileLocatorWidgetOffline.setImportFilePath(null);
+              offlineSubPanel.removeAll();
+              offlineSubPanel.add(fileLocatorWidgetOffline, BorderLayout.NORTH);
+              offlineSubPanel.validate();
+              offlineSubPanel.repaint();
         
             } else if (e.getActionCommand().equals(genHandButtonsText[1])) {
       
               setNextPageID(WizardPageLibrary.DATA_FORMAT);
-              fileLocatorWidgetOffline.getTextArea().setText("");
-              fileLocatorWidgetOffline.setDescription(FILE_LOCATOR_BYHAND_DESC);
-              fileLocatorWidgetOffline.getTextArea().setEnabled(true);
-              fileLocatorWidgetOffline.getTextArea().setEditable(true);
-              fileLocatorWidgetOffline.setImportFilePath(null);
+              offlineSubPanel.removeAll();
+              offlineSubPanel.add(byHandPanelOffline, BorderLayout.CENTER);
+              offlineSubPanel.validate();
+              offlineSubPanel.repaint();
             }
           }
         }));
 
-    ///////////////////////////////////////////
-
-    JPanel fileLocatorPanel =  new JPanel(new BorderLayout());
-  
-  
-    fileLocatorWidgetOffline = new FileLocatorWidget(FILE_LOCATOR_IMPORT_DESC, 
-                                                     INIT_FILE_LOCATOR_TEXT);
-  
-    fileLocatorPanel.add(fileLocatorWidgetOffline, BorderLayout.NORTH);
-    
-    
-
-
-
-    ///////////////////////////////////////////
-    
-    panel.add(fileLocatorPanel);
- 
+    panel.add(offlineSubPanel);
     panel.add(Box.createGlue());
-
   
     return panel;
   }
@@ -368,7 +415,8 @@ public class DataLocation extends AbstractWizardPage {
     WidgetFactory.unhiliteComponent(fileNameLabelOnline);
     WidgetFactory.unhiliteComponent(urlLabelOnline);
     WidgetFactory.unhiliteComponent(fileLocatorWidgetOffline.getLabel());
-    
+    WidgetFactory.unhiliteComponent(objNameLabel);
+    WidgetFactory.unhiliteComponent(medNameLabel);
   }
   
 
@@ -437,26 +485,39 @@ public class DataLocation extends AbstractWizardPage {
     } else if (distribXPath==OFFLINE_XPATH) {
 //  O F F L I N E  ///////////////////////////////////
     
-      //entered by hand:    
       if (offlineNextPageID.equals(WizardPageLibrary.DATA_FORMAT)) {
+      //entered by hand:    
       
-        String userText = fileLocatorWidgetOffline.getTextArea().getText();
-        if (userText!=null) userText = userText.trim();
-        if (userText.equals("")) userText = null;
-        fileLocatorWidgetOffline.setImportFilePath(userText);
-      }
-      
-      if (fileLocatorWidgetOffline.getImportFilePath()==null) {
+        if (medNameField.getText().trim().equals(EMPTY_STRING)) {
+        
+          WidgetFactory.hiliteComponent(medNameLabel);
+          return false;
+        }
+        WidgetFactory.unhiliteComponent(medNameLabel);
+        if (objNameField.getText().trim().equals(EMPTY_STRING)) {
+        
+          WidgetFactory.hiliteComponent(objNameLabel);
+          return false;
+        }
+        WidgetFactory.unhiliteComponent(objNameLabel);
+        
+        this.importFilePath = null;
+        
+      } else {
+      //imported by wiz:
+          
+        if (fileLocatorWidgetOffline.getImportFilePath()==null) {
     
-        WidgetFactory.hiliteComponent(fileLocatorWidgetOffline.getLabel());
-        fileLocatorWidgetOffline.getButton().requestFocus();
+          WidgetFactory.hiliteComponent(fileLocatorWidgetOffline.getLabel());
+          fileLocatorWidgetOffline.getButton().requestFocus();
 
-        return false;
+          return false;
+        }
+        WidgetFactory.unhiliteComponent(fileLocatorWidgetOffline.getLabel());
+        
+        this.importFilePath = fileLocatorWidgetOffline.getImportFilePath();
       }
-      WidgetFactory.unhiliteComponent(fileLocatorWidgetOffline.getLabel());
       WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_OFFLINE);
-      
-      this.importFilePath = fileLocatorWidgetOffline.getImportFilePath();
       
       nextPageID = offlineNextPageID;
 
@@ -504,13 +565,15 @@ public class DataLocation extends AbstractWizardPage {
 //  O F F L I N E  ///////////////////////////////////
     
       if (nextPageID==WizardPageLibrary.DATA_FORMAT) {
-        //entered by hand:    
-        returnMap.put(OBJECTNAME_XPATH, getImportFileNameOnly());
-        returnMap.put(distribXPath, ""); //all offline subelems are optional!
+        //entered by hand:
+        
+        returnMap.put(OBJECTNAME_XPATH, objNameField.getText().trim());
+        returnMap.put(MEDIUMNAME_XPATH, medNameField.getText().trim());
 
       } else {
         //entered by import wizard:
-        //nothing needs doing - import wizard gets these values
+        
+        // import wizard does all this - no values needed here.
       }
     }
     return returnMap;
@@ -566,50 +629,33 @@ public class DataLocation extends AbstractWizardPage {
   
   public String  getImportFilePath() { return this.importFilePath; }
   
-  /**
-   *  Returns only the filename of the data file that the user has elected to 
-   *  import, not it's full path. May be null if importFilePath not set
-   *
-   *  @return only the filename of the data file that the user has elected to 
-   *  import, not it's full path. May be null if importFilePath not set
-   */
-  
-  private String  getImportFileNameOnly() { 
-  
-    int trimIndex = getImportFilePath().lastIndexOf(File.separator);
-    
-    if (trimIndex < 0) return getImportFilePath();
-    
-    return getImportFilePath().substring(trimIndex);
-  }
-  
 }
 
 
 class FileLocatorWidget extends JPanel {
 
+  private final       String EMPTY_STRING = "";
   private JLabel     fileNameLabel;
   private JLabel     descLabel;
   private JTextField fileNameField;
   private JButton    fileNameButton;
   private String     importFilePath;
   
-  public FileLocatorWidget(String descText, String initialText) {
+  public FileLocatorWidget(String label, String descText, String initialText) {
   
     super();
     init();
-    if (initialText==null) initialText = "";
+    if (initialText==null) initialText = EMPTY_STRING;
     fileNameField.setText(initialText);
     setDescription(descText);
+    setLabelText(label);
   }
   
   private void init() {
   
     this.setLayout(new GridLayout(3,1));
     
-    this.add(WidgetFactory.makeDefaultSpacer());
-
-    descLabel = WidgetFactory.makeHTMLLabel("", 1);
+    descLabel = WidgetFactory.makeHTMLLabel(EMPTY_STRING, 1);
     this.add(descLabel);
      
     ////
@@ -617,7 +663,7 @@ class FileLocatorWidget extends JPanel {
     fileNamePanel.setLayout(new BorderLayout());
     fileNamePanel.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     
-    fileNameLabel = WidgetFactory.makeLabel("File Name:", true);
+    fileNameLabel = WidgetFactory.makeLabel(EMPTY_STRING, true);
 
     fileNameLabel.setBackground(Color.lightGray);
     fileNamePanel.add(fileNameLabel, BorderLayout.WEST);
@@ -659,8 +705,10 @@ class FileLocatorWidget extends JPanel {
     this.add(fileNamePanel);
   }
   
-  protected JLabel  getLabel()  { return this.fileNameLabel;  }
+  protected JLabel  getLabel()  { return this.fileNameLabel; }
   
+  protected void setLabelText(String text) { this.fileNameLabel.setText(text); }
+
   protected JButton getButton() { return this.fileNameButton; }
 
   protected JTextField getTextArea() { return this.fileNameField; }
@@ -669,7 +717,7 @@ class FileLocatorWidget extends JPanel {
 
   protected void setDescription(String desc) {
   
-    if (desc==null) desc = "";
+    if (desc==null) desc = EMPTY_STRING;
     descLabel.setText(desc);
   }
   

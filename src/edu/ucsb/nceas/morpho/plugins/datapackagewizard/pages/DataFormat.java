@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-10-03 00:25:18 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,9 +342,6 @@ public class DataFormat extends AbstractWizardPage{
     
     panel.add(WidgetFactory.makeDefaultSpacer());
   
-//    proprietaryField = WidgetFactory.makeOneLineTextField();
-//    proprietaryPanel.add(proprietaryField);
-
     final Map mimeMap = WizardSettings.getSupportedMIMETypesForEntity(
                                               WizardSettings.ENTITY_DATATABLE);    
       
@@ -392,9 +389,6 @@ public class DataFormat extends AbstractWizardPage{
     JPanel proprietaryPanel = new JPanel();
     proprietaryPanel.setLayout(new BoxLayout(proprietaryPanel, 
                                               BoxLayout.Y_AXIS));
-    
-//          = WidgetFactory.makeVerticalPanel(
-//                                (int)(1.5 * proprietaryButtonsText.length) + 4);
 
     proprietaryLabel = WidgetFactory.makeLabel("Format:", true);
     JPanel leftJustifyPanel = WidgetFactory.makePanel(1);
@@ -802,7 +796,7 @@ public class DataFormat extends AbstractWizardPage{
 
           if (cmd.indexOf(delimiterCheckBoxesText[0])==0) {
         
-            delim_tab       = (stateChange==ItemEvent.SELECTED)? "\t" : null;
+            delim_tab       = (stateChange==ItemEvent.SELECTED)? "#x09" : null;
         
           } else if (cmd.indexOf(delimiterCheckBoxesText[1])==0) {
       
@@ -810,7 +804,7 @@ public class DataFormat extends AbstractWizardPage{
             
           } else if (cmd.indexOf(delimiterCheckBoxesText[2])==0) {
       
-            delim_space     = (stateChange==ItemEvent.SELECTED)? " " : null;
+            delim_space     = (stateChange==ItemEvent.SELECTED)? "#x20" : null;
             
           } else if (cmd.indexOf(delimiterCheckBoxesText[3])==0) {
 
