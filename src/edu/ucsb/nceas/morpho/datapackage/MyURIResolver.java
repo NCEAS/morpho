@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-26 00:45:54 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-03-26 18:50:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import java.net.URL;
 import java.io.*;
+import edu.ucsb.nceas.morpho.util.Log;
 
 public class MyURIResolver implements URIResolver{   
 
@@ -76,20 +77,20 @@ public class MyURIResolver implements URIResolver{
   URL uDefault = null;
   try{  
     if ((base!=null)&&(isXMLXSL(href))) {
-     System.out.println("base: "+base+ " --href: "+href);
+     Log.debug(20, "base: "+base+ " --href: "+href);
      URL context = new URL(base); 
       baseDefault = base;
       u = new URL(context, href);
     } else if (isXMLXSL(href)) {
-      System.out.println("baseDefault: "+baseDefault+ " --href: "+href);
+      Log.debug(20, "baseDefault: "+baseDefault+ " --href: "+href);
       uDefault = new URL(baseDefault);
       u = new URL(uDefault, href); 
     } else {
-      System.out.println("dataDefault: "+dataDefault+ " --href: "+href); 
+      Log.debug(20, "dataDefault: "+dataDefault+ " --href: "+href); 
       uDefault = new URL(dataDefault);
       u = new URL(uDefault, href); 
     }
-    System.out.println("----URL:"+u.toString());
+    Log.debug(20, "----URL:"+u.toString());
     InputStream is = u.openStream(); 
     InputStreamReader isr = new InputStreamReader(is);
 
@@ -113,7 +114,7 @@ public class MyURIResolver implements URIResolver{
 
     }
     catch (Exception e) { 
-      System.out.println("-----Exception triggered in MyURIResolver-----");
+      Log.debug(20, "-----Exception triggered in MyURIResolver-----");
       return null;
     }
   }

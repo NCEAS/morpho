@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-26 00:45:54 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-03-26 18:50:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,12 +75,14 @@ import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.templates.OutputProperties;
 
+import edu.ucsb.nceas.morpho.util.Log;
 
 import javax.xml.parsers.*;
 
 public class EMLConvert
 { 
 
+  public static String outputfileName = "eml2out.xml";
   static String path = "";
   static String fname = "";
 
@@ -96,7 +98,7 @@ public class EMLConvert
   public static void main(String argv[]) 
             throws TransformerException, TransformerConfigurationException, Exception {
     if (argv.length<1) {
-      System.out.println("Must have an argument with name/path of dataset module");
+      Log.debug(20, "Must have an argument with name/path of dataset module");
       System.exit(0);
     }
     doTransform(argv[0]);
@@ -144,7 +146,7 @@ public class EMLConvert
       tHandler1.setResult(new SAXResult(tHandler2));
 
 //      StringWriter writer = new StringWriter();
-      File outfile = new File("eml2out.xml");
+      File outfile = new File(outputfileName);
       FileWriter writer = new FileWriter(outfile);
       Result result = new StreamResult(writer);
 
@@ -182,7 +184,7 @@ public class EMLConvert
     if (nf.exists()) {
       fname = nf.getName();
       path = nf.getAbsolutePath();
-   System.out.println("path: "+path+"  --fname: "+fname);
+      Log.debug(20, "path: "+path+"  --fname: "+fname);
     }
   }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-26 00:45:54 $'
- * '$Revision: 1.111 $'
+ *     '$Date: 2003-03-26 18:50:10 $'
+ * '$Revision: 1.112 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1519,13 +1519,14 @@ public class DataPackage implements XMLFactoryInterface
     //get a list of the files and save them to the new location. if the file
     //is a data file, save it with its original name.
    
-    String packagePath = path + "/" + id + ".package";
-    String sourcePath = packagePath + "/metadata";
-    String dataPath = packagePath + "/data";
-    File savedir = new File(packagePath);
+//    String packagePath = path + "/" + id + ".package";
+//    String sourcePath = packagePath + "/metadata";
+    String sourcePath = "metadata";
+//    String dataPath = packagePath + "/data";
+//    File savedir = new File(packagePath);
     File savedirSub = new File(sourcePath);
-    File savedirDataSub = new File(dataPath);
-    savedir.mkdirs(); //create the new directories
+//    File savedirDataSub = new File(dataPath);
+//    savedir.mkdirs(); //create the new directories
     savedirSub.mkdirs();
     Hashtable dataFileNameMap = getMapBetweenDataIdAndDataFileName();
     Vector files = getAllIdentifiers();
@@ -1542,10 +1543,10 @@ public class DataPackage implements XMLFactoryInterface
         // if it is data file user filename to replace docid
         if (dataFileNameMap.containsKey(docid))
         {
-          savedirDataSub.mkdirs();
-          String dataFile = (String)dataFileNameMap.get(docid);
-          dataFile =trimFullPathFromFileName(dataFile);
-          f = new File(dataPath + "/" + dataFile);
+//          savedirDataSub.mkdirs();
+//          String dataFile = (String)dataFileNameMap.get(docid);
+//          dataFile =trimFullPathFromFileName(dataFile);
+//          f = new File(dataPath + "/" + dataFile);
         }
         else
         {
@@ -1562,7 +1563,7 @@ public class DataPackage implements XMLFactoryInterface
           openfile = metacatDataStore.openFile(docid);
         }
         
-//        if (f!=null) {
+        if (f!=null) {
           fileV.addElement(openfile);
           FileInputStream fis = new FileInputStream(openfile);
           BufferedInputStream bfis = new BufferedInputStream(fis);
@@ -1577,7 +1578,7 @@ public class DataPackage implements XMLFactoryInterface
           bfos.flush();
           bfis.close();
           bfos.close();
-//        }
+        }
       }
       catch(Exception e)
       {
@@ -1586,12 +1587,21 @@ public class DataPackage implements XMLFactoryInterface
       }
     }//for 
     try{
-      EMLConvert.doTransform(id + ".package/metadata/"+id);
+      EMLConvert.outputfileName = path;
+      EMLConvert.doTransform("metadata/"+id);
     }
     catch (Exception ee) {
         System.out.println("Error in EMLConvert.export(): " + ee.getMessage());
         ee.printStackTrace();
-}
+    }
+    // now delete the temp files
+    String[] filelist = savedirSub.list();
+    for (int k=0;k<filelist.length;k++) {
+      File nf = new File(savedirSub, filelist[k]);
+      nf.delete();
+    }
+    savedirSub.delete();
+    
     JOptionPane.showMessageDialog(null,
                     "Conversion to EML2 Complete ! ");
     
