@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.28 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-06-21 16:46:47 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,7 +158,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
             getClass().getResource("local+network-metadata+data.gif"));
 
     this.framework = framework;
-    this.config = framework.getConfiguration();   
+    this.config = framework.getConfiguration();
     ConfigXML profile = framework.getProfile();
     returnFields = profile.get("returnfield");
   
@@ -235,7 +235,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     // Set up the headers
     int numberFixedHeaders = 1;
     headers = new String[numberFixedHeaders+cnt];  
-    headers[0] = "";  // This is for the icon
+    headers[0] = " ";  // This is for the icon
     for (int i=0;i<cnt;i++) {
       headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
     }
