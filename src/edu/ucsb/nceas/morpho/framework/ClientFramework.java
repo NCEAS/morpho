@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:30 $'
- * '$Revision: 1.89.2.2 $'
+ *     '$Date: 2002-05-08 21:50:02 $'
+ * '$Revision: 1.89.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,6 @@ public class ClientFramework extends javax.swing.JFrame
   private boolean pluginsLoaded = false;
   private String sessionCookie = null;
   private Itis itis;  
-  private ClassLoader classLoader = null;
   
   private boolean versionFlag = true;  //Java 1.3 or greater
 
@@ -125,7 +124,6 @@ public class ClientFramework extends javax.swing.JFrame
    */
   public ClientFramework(ConfigXML config)
   {
-    this.classLoader = Thread.currentThread().getContextClassLoader();
     this.config = config;
     this.profile = null;
     checkJavaVersion();
@@ -1739,16 +1737,6 @@ public class ClientFramework extends javax.swing.JFrame
     }
 
     return parser;
-  }
-
-  /**
-   * Get the class loader that loaded the application
-   *
-   * @returns the ClassLoader that loaded the application
-   */
-  public ClassLoader getClassLoader()
-  {
-      return this.classLoader;
   }
 
   /**

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:29 $'
- * '$Revision: 1.65.2.3 $'
+ *     '$Date: 2002-05-08 21:50:02 $'
+ * '$Revision: 1.65.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,8 +148,6 @@ public class PackageWizardShell extends javax.swing.JFrame
   private void initComponents()
   {
     config = framework.getConfiguration();
-    Vector saxparserV = config.get("saxparser");
-    String saxparser = (String)saxparserV.elementAt(0);
     Vector packageWizardConfigV = config.get("packageWizardConfig");
     String wizardFile = (String)packageWizardConfigV.elementAt(0);
     
@@ -166,7 +164,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           framework.debug(10, "Null input stream returned for resource.");
       }
       BufferedReader xml = new BufferedReader(new InputStreamReader(is));
-      pwsp = new PackageWizardShellParser(xml, saxparser);
+      pwsp = new PackageWizardShellParser(xml);
     }
     catch(Exception e)
     {

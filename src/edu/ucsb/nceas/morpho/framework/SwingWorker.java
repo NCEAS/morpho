@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:30 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-05-08 21:50:02 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ public abstract class SwingWorker {
      * Start a thread that will call the <code>construct</code> method
      * and then exit.
      */
-    public SwingWorker(ClassLoader cl) {
+    public SwingWorker() {
         final Runnable doFinished = new Runnable() {
            public void run() { finished(); }
         };
@@ -148,9 +148,6 @@ public abstract class SwingWorker {
         };
 
         Thread t = new Thread(doConstruct);
-        if (null != cl) {
-            t.setContextClassLoader(cl);
-        }
         threadVar = new ThreadVar(t);
     }
 
@@ -160,9 +157,6 @@ public abstract class SwingWorker {
     public void start() {
         Thread t = threadVar.get();
         if (t != null) {
-            ClassLoader classLoader = t.getContextClassLoader();
-            System.err.println("SwingWorker construct thread uses: " +
-                    classLoader);
             t.dumpStack();
             t.start();
         }

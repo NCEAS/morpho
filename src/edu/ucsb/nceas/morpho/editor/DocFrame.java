@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 21:30:55 $'
- * '$Revision: 1.95.2.5 $'
+ *     '$Date: 2002-05-08 21:50:02 $'
+ * '$Revision: 1.95.2.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -432,7 +432,7 @@ public class DocFrame extends javax.swing.JFrame
 	        final String fdoctext = doctext;
 	        final boolean fflag = flag;
 
-    final SwingWorker worker = new SwingWorker(cf.getClassLoader()) {
+    final SwingWorker worker = new SwingWorker() {
         public Object construct() {
 	        
           initDocInner(fcf, fdoctext, fflag);
