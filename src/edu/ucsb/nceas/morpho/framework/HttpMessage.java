@@ -7,7 +7,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: HttpMessage.java,v 1.5 2000-08-18 16:42:00 higgins Exp $'
+ *     Version: '$Id: HttpMessage.java,v 1.6 2000-10-26 19:04:49 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -69,6 +69,7 @@ public class HttpMessage {
             }
             System.out.println("Cookie = " + cookie);
             con.setRequestProperty("Cookie", cookie); 
+            con.setRequestProperty("User-Agent", "MORPHO");  // add 10/26/00 by DFH so Metacat can determine where request come from
         }
         //prepare for both input and output
         con.setDoInput(true);
