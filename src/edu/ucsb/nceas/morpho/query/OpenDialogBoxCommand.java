@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-25 22:55:06 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-08-27 17:17:42 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,10 @@ public class OpenDialogBoxCommand implements Command
                     UIController.getInstance().getCurrentActiveWindow();
     
     // Open a open dialog
-    doOpenDialog(frame);
+    if ( frame != null)
+    {
+      doOpenDialog(frame);
+    }
     
    
   }//execute
