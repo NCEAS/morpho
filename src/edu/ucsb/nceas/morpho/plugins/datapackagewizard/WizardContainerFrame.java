@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 20:29:00 $'
- * '$Revision: 1.63 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-20 16:58:28 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -593,8 +594,8 @@ public class WizardContainerFrame
       final String titleXPath = "/eml:eml/dataset/title[1]";
       Object titleObj = generalMap.get(titleXPath);
       if (titleObj != null) {
-        wizData.put(titleXPath,
-                    XMLUtilities.normalize(titleObj));
+        wizData.put(titleXPath, titleObj);
+//                    XMLUtilities.normalize(titleObj));  //avoid double normalization - DFH
       }
     }
 
@@ -614,8 +615,8 @@ public class WizardContainerFrame
       final String abstractXPath = "/eml:eml/dataset/abstract/para[1]";
       Object abstractObj = generalMap.get(abstractXPath);
       if (abstractObj != null) {
-        wizData.put(abstractXPath,
-                    XMLUtilities.normalize(abstractObj));
+        wizData.put(abstractXPath,abstractObj);
+//                    XMLUtilities.normalize(abstractObj)); //avoid double normalization - DFH
       }
     }
 
@@ -878,7 +879,7 @@ public class WizardContainerFrame
       if (nextKey == null || nextKey.trim().equals("")) continue;
 
       //now excape all characters that might cause a problem in XML:
-      resultsMap.put(nextKey, XMLUtilities.normalize(nextPgData.get(nextKey)));
+      resultsMap.put(nextKey, XMLUtil.normalize(nextPgData.get(nextKey)));
 
     } // end while
   }
