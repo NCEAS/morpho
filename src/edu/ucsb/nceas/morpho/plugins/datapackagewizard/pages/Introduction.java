@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-05 23:07:20 $'
- * '$Revision: 1.21 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-15 05:49:22 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,22 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import javax.swing.JLabel;
-import javax.swing.BoxLayout;
-
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.HelpMetadataIntroCommand;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.utilities.OrderedMap;
+
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 public class Introduction extends AbstractUIPage {
 
@@ -43,7 +52,7 @@ public class Introduction extends AbstractUIPage {
   public final String pageNumber = "1";
 
 //////////////////////////////////////////////////////////
-
+  private JComponent metadataIntroLink;
   public final String title      = "Welcome to the Data Package Wizard";
   public final String subtitle   = " ";
 
@@ -61,18 +70,23 @@ public class Introduction extends AbstractUIPage {
 
     this.add(WidgetFactory.makeDefaultSpacer());
 
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-    "<p>If you do not have a basic understanding of data documentation "
-    +"(metadata) and "
-    +"related concepts, you should start by reading the <a>Ecological Metadata "
-    +"Language (EML) Guide (see http://knb.ecoinformatics.org/software/eml) "
-    +"</a>. It provides background information on data documentation "
-    +"and contains documentation creation examples.</p><p>This wizard creates a"
-    +" <i>Data Package</i> that consists of the structured documentation that "
-    +"describes your data and the "
-    +"data itself. The wizard uses a subset of EML to describe your data. If "
+    JLabel desc1 = WidgetFactory.makeHTMLLabel(
+    "<p>This wizard creates a"
+    +" <i>Data Package</i>, consisting of the structured documentation that "
+    +"describes your data, and the "
+    +"data itself. <br></br></p>"
+
+    +"If you wish to improve your understanding of data documentation "
+    +"(metadata) and related concepts, you should start by reading the: ", 2);
+
+    JLabel desc2 = WidgetFactory.makeHTMLLabel(
+    "which provides background information and examples of data documentation. "
+
+    +"<p><br></br>The wizard uses a subset of EML to describe your data. If "
     +"additional documentation is needed to adequately document your data, use "
-    +"<i>Morpho's EML Editor</i>. Before beginning you should have your data "
+    +"<i>Morpho's EML Editor</i>.<br></br></p>"
+
+    +"<p>Before beginning you should have your data "
     +"(electronic or hardcopy format) available. You can provide the following "
     +"types of "
     +"information using this wizard: </p>"
@@ -87,17 +101,43 @@ public class Introduction extends AbstractUIPage {
     +"<p><b>Note:</b> Required information includes the title and personell "
     +"information for your dataset.  The rest of the information collected here "
     +"is optional, however it is highly recommended that you fill in as much as "
-    +"possible.</p>", 21);
+    +"possible.</p>", 16);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    this.add(desc);
+    this.add(desc1);
+    this.add(getMetadataIntroLink());
+    this.add(desc2);
 
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(Box.createVerticalGlue());
+
+    desc1.setAlignmentX(-1f);
+    desc2.setAlignmentX(-1f);
   }
 
+  private JComponent getMetadataIntroLink() {
+
+    if (metadataIntroLink==null) {
+
+      GUIAction newDataTableAction
+        = new GUIAction("Ecological Metadata Language (EML) Guide ",
+                        null,
+                        new Command() {
+
+        public void execute(ActionEvent ae) {
+
+            (new HelpMetadataIntroCommand()).execute(ae);
+
+        }
+      });
+
+      metadataIntroLink = new HyperlinkButton(newDataTableAction);
+      final Dimension DIM = new Dimension(400,15);
+      metadataIntroLink.setMinimumSize(DIM);
+      metadataIntroLink.setPreferredSize(DIM);
+      metadataIntroLink.setMaximumSize(DIM);
+    }
+    return metadataIntroLink;
+  }
 
 
   /**
