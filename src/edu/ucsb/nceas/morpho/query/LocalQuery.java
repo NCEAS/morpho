@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 17:57:28 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2001-05-30 18:59:52 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,13 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.helpers.DefaultHandler;
 import com.arbortext.catalog.*;
 import java.util.Vector;
 import java.util.Hashtable;
@@ -62,7 +56,7 @@ import edu.ucsb.nceas.morpho.framework.*;
  * 
  * @author higgins
  */
-public class LocalQuery extends DefaultHandler
+public class LocalQuery
 {
 
   /**
