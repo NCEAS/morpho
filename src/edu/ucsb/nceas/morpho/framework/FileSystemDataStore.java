@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-30 22:32:50 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-01 17:24:43 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,16 @@ public class FileSystemDataStore extends DataStore
     return file;
   }
   
+  public File saveFile(String name, Reader file, boolean publicAccess)
+  {
+    return saveFile(name, file, publicAccess, datadir);
+  }
+  
+  public File saveTempFile(String name, Reader file)
+  {
+    return saveFile(name, file, false, tempdir);
+  }
+  
   /**
    * Saves a file with the given name.  if the file does not exist it is created
    * The file is saved according to the name provided.   The file will
@@ -82,14 +92,15 @@ public class FileSystemDataStore extends DataStore
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  public File saveFile(String name, Reader file, boolean publicAccess)
+  public File saveFile(String name, Reader file, boolean publicAccess, 
+                       String rootDir)
   {
     try
     {
       String path = parseId(name);
       String dirs = path.substring(0, path.lastIndexOf("/"));
-      File savefile = new File(datadir + "/" + path); //the path to the file
-      File savedir = new File(datadir + "/" + dirs); //the dir part of the path
+      File savefile = new File(rootDir + "/" + path); //the path to the file
+      File savedir = new File(rootDir + "/" + dirs); //the dir part of the path
       if(!savefile.exists())
       {//if the file isn't there create it.
         try

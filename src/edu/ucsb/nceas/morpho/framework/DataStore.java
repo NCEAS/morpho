@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-14 22:05:53 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-01 17:24:43 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ public abstract class DataStore implements DataStoreInterface
   protected String datadir;
   protected String separator;
   protected String cachedir;
+  protected String tempdir;
   
   /**
    * create a new FileSystemDataStore for a ClientFramework
@@ -50,6 +51,7 @@ public abstract class DataStore implements DataStoreInterface
     config = framework.getConfiguration();
     Vector datadirV = config.get("local_xml_directory");
     datadir = (String)datadirV.elementAt(0);
+    tempdir = (String)config.get("tempDir", 0);
     Vector separatorV = config.get("separator");
     separator = (String)separatorV.elementAt(0);
     separator = separator.trim();

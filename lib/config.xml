@@ -58,9 +58,10 @@
 <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
 <username>jones</username>
 <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
+<tempDir>./tmp</tempDir>
 <accessionNumber>
   <scope>USERNAME</scope>
-  <lastId>0</lastId>
+  <lastId>326</lastId>
   <separator>.</separator>
 </accessionNumber>
 <customFrames>
