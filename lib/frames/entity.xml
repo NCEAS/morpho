@@ -6,6 +6,7 @@
       <textbox label="Name" field="entityName" size="10" required="yes"/>
       <textbox label="Description" field="entityDescription"  size="10" />
       <group label="Coverages" type="panel" size="290x300">
+      <!--<group repeatable="yes" field="abc" size="280x290">-->
         <group label="Temporal Coverage" field="temporalCov" repeatable="yes" size="50x170">
           <textbox size="10" label="dummy" field="dummy1"/>
           <textbox size="10" label="dummy" field="dummy2"/>
@@ -21,6 +22,7 @@
           <textbox size="10" label="dummy" field="dummy2"/>
           <textbox size="10" label="dummy" field="dummy3"/>
         </group>
+      <!--</group>-->
       </group>
       <group field="@orientation" size="50x40">
         <combobox label="Orientation" field="columnrow"  size="10" defaulttext="columnmajor">
@@ -30,7 +32,7 @@
       </group>
       
       <group field="@casesSensitive" size="50x40">
-        <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no" repeatable="yes">
+        <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no">
           <item name="No" value="no" />
           <item name="Yes" value="yes"/>
         </combobox>

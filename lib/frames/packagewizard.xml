@@ -1,0 +1,17 @@
+<packageWizard size="500x500">
+  <specs triplesIn="Resource">
+    <spec name="Resource" path="./lib/frames/resource.xml" idtag="/dataset/identifier" />
+    <spec name="Entity" path="./lib/frames/entity.xml" idtag="/table-entity/identifier" />
+  </specs>
+  <!--note that the triplesIn file always has to be displayed first, so that
+      it can be created first.  Maybe It should just be implicit, not explicity
+      declared here?-->
+  <frame name="Resource"/>
+  <!--get the resource metadata, assign an id to the resource file-->
+  <frame name="GETDATA"/>
+  <!--get the data file, assign an id to it-->
+  <frame name="Entity"/>
+  <!--get entity info, assign id to it, create triple in the TriplesIn file-->
+  <!--get other metadata, assign id to it, create triple in the TriplesIn file-->
+
+</packageWizard>

@@ -14,6 +14,7 @@
                   field       (#PCDATA)
                   size        (#PCDATA)
                   defaulttext (#PCDATA)
+                  editable    (yes | no) "yes"
                   repeatable  (yes | no) "no"
                   allowNull   (yes | no) "yes">
 

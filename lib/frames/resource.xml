@@ -1,66 +1,23 @@
 <?xml version="1.0"?>
-<wizard size="780x250" dtd="eml-resource.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
+<wizard size="500x500" dtd="eml-resource.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
   <group label="Base Information" field="dataset" type="panel">
     <group size="480x100">
-      <textbox label="Identifier" field="identifier" size="10" allowNull="false" defaulttext="knb.1"/>
-      <textbox label="Resource Identifier" field="resourceIdentifier" size="10" allowNull="false" defaulttext="knb.1"/>
-      <textbox label="Title" field="title" size="10" allowNull="false" defaulttext="Enter Title Here"/>
-      <textbox label="Alternate Title" field="alternateTitle" size="10" />
-      <combobox label="Dataset Representation Form" field="geoForm" size="10" defaulttext="dataset">
-        <item name="Atlas" value="atlas" />
-        <item name="Audio" value="audio" />
-        <item name="Diagram" value="diagram" />
-        <item name="Document" value="document" />
-        <item name="Glove" value="globe" />
-        <item name="Map" value="map" />
-        <item name="Model" value="model" />
-        <item name="Multimedia Presentation" value="multimediaPresenation" />
-        <item name="Profile" value="profile" />
-        <item name="Digital Raster Data" value="rasterDigitalData" />
-        <item name="Remote Sensing Image" value="remoteSensingImage" />
-        <item name="Section" value="section" />
-        <item name="Spreadsheet" value="spreadsheet" />
-        <item name="Digital Tabular Data" value="tabularDigitalData" />
-        <item name="Digital Vector Data" value="vectorDigitalData" />
-        <item name="Video" value="video" />
-        <item name="View" value="view" />
-      </combobox>
+      <textbox label="Identifier" field="identifier" size="10" allowNull="no" editable="no" defaulttext="knb.1" />
+      <textbox label="Short Name" field="shortName" size="10" />
+      <textbox label="Title" field="title" size="10" allowNull="no"/>
     </group>
     
-    <group label="Originator Information" type="panel">
-      <group label="Originator" repeatable="yes" size="480x850" field="originator">
-        <combobox label="Originators Role" field="roleCode" size="10" allowNull="false" repeatable="yes" defaulttext="originator">
-          <item name="Content Provider" value="contentProvider"/>
-          <item name="Custodian Steward" value="custodianSteward"/>
-          <item name="Owner" value="owner"/>
-          <item name="Distributor" value="distributor"/>
-          <item name="Metadata Provider" value="metadataProvider"/>
-          <item name="Originator" value="originator"/>
-          <item name="Point of Contact" value="pointOfContact"/>
-          <item name="PI" value="principalInvestigator"/>
-          <item name="Data Processor" value="processor"/>
-          <item name="Publisher" value="publisher"/>
-          <item name="Author" value="author"/>
-          <item name="Editor" value="editor"/>
-        </combobox>
-        <textbox label="Salutation" field="individualName/salutation" size="5" />
-        <textbox label="Given Name" field="individualName/givenName" size="10" />
-        <textbox label="Sur Name" field="individualName/surName" size="10" allowNull="false"/>
-        <textbox label="Sur Name" field="individualName/surName" size="10" allowNull="false"/>
-        <textbox label="User Id" field="individualName/userid" size="10" />
-        <textbox label="Organization" field="organizationName" size="10" repeatable="yes"/>
-        <textbox label="Position" field="positionName" size="10" />
-        <group label="Contact Information" field="contactInfo" size="480x450" repeatable="yes" type="pathgrouping">
-          <textbox label="Voice Phone" field="phone/voice" size="10" />
-          <textbox label="Fax" field="phone/facsimile" size="10" />
-          <textbox label="Address" field="address/deliveryPoint" size="10" />
-          <textbox label="City" field="address/city" size="10" />
-          <textbox label="State" field="address/administrativeArea" size="10" />
-          <textbox label="ZIP" field="address/postalCode" size="10" />
-          <textbox label="Email address" field="address/electronicMailAddress" size="10" />
-          <textbox label="Web Site" field="onlineResource/linkage/URL" size="10" allowNull="false" repeatable="yes" defaulttext="knb.ecoinformatics.org"/>
-          <textbox label="Contact Instructions" field="contactInstructions" size="30" />
+    <group label="Originator Information" type="panel" size="480x100">
+      <group label="Originator" repeatable="yes" size="470x200" field="originator">
+        <group label="Idenfication Information" repeatable="yes" allowNull="no" size="150x250"> 
+            <textbox label="Salutation" field="salutation" size="5" repeatable="yes"/>
+            <textbox label="Given Name" field="givenName" size="10" repeatable="yes"/>
+            <textbox label="Sur Name" field="surName" size="10" allowNull="no"/>
+          
+          <textbox label="Organization" field="organizationName" size="10" repeatable="yes"/>
+          <textbox label="Position" field="positionName" size="10" />
         </group>
+        
       </group>
     </group>
   </group>

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-25 19:09:21 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-05-25 22:29:05 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1155,7 +1155,7 @@ public class PackageWizard extends javax.swing.JFrame
         {
           String allowNull = (String)tempElement.attributes.get("allowNull");
           allowNull = allowNull.toUpperCase();
-          if(allowNull.equals("FALSE"))
+          if(allowNull.equals("NO"))
           {
             required = true;
           }
@@ -1165,6 +1165,17 @@ public class PackageWizard extends javax.swing.JFrame
         {
           label.setForeground(Color.red);
         }
+        
+        if(tempElement.attributes.containsKey("editable"))
+        {
+          String editable = (String)tempElement.attributes.get("editable");
+          if(editable.equals("no"))
+          {
+            textfield.setEnabled(false);
+            textfield.setBackground(new Color(230,230,230));
+          }
+        }
+        
         //set the user defined size of the text field
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
@@ -1273,7 +1284,7 @@ public class PackageWizard extends javax.swing.JFrame
         {
           String allowNull = (String)tempElement.attributes.get("allowNull");
           allowNull = allowNull.toUpperCase();
-          if(allowNull.equals("FALSE"))
+          if(allowNull.equals("NO"))
           {
             required = true;
           }
