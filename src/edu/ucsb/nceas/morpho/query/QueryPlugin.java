@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-17 21:32:43 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2001-05-18 23:17:59 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,7 +172,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     try {
 	// QueryDialog Create and show as non-modal
 	{
-	  QueryDialog QueryDialog1 = new QueryDialog();
+	  QueryDialog QueryDialog1 = new QueryDialog(framework);
 	  QueryDialog1.setModal(false);
 	  QueryDialog1.show();
 	}

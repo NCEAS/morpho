@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-17 20:03:42 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-18 23:17:59 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -216,7 +216,8 @@ public class LaunchFrame extends javax.swing.JFrame
 		try {
 			// QueryDialog Create and show as non-modal
 			{
-				QueryDialog QueryDialog1 = new QueryDialog(this,new ConfigXML("lib/config.xml"));
+				QueryDialog QueryDialog1 = new QueryDialog(this,new ClientFramework(
+				        new ConfigXML("lib/config.xml")));
 				QueryDialog1.setModal(false);
 				QueryDialog1.show();
 			}

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-09 16:44:56 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-18 23:17:59 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,6 +126,7 @@ public class Query extends DefaultHandler {
     try {
       while ((len = queryspec.read(characters, 0, 512)) != -1) {
         qtext.append(characters);
+        characters = new char[512];
       }
     } catch (IOException ioe) {
       framework.debug(4, "Error reading the query.");

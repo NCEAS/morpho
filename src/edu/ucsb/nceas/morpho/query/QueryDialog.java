@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-17 21:32:43 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-18 23:17:59 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,10 +65,11 @@ public class QueryDialog extends javax.swing.JDialog
   /** default search path for keyword   */
   String keywordSearchPath = "keyword";
    
-	public QueryDialog(Frame parent, ConfigXML config)
+	public QueryDialog(Frame parent, ClientFramework framework)
 	{
 		super(parent);
-    this.config = config; 
+    this.framework = framework;
+    this.config = framework.getConfiguration();   
     String temp = config.get("titleSearchPath",0);
     if (temp!=null) titleSearchPath = temp;
     temp = config.get("abstractSearchPath",0);
@@ -172,20 +173,20 @@ public class QueryDialog extends javax.swing.JDialog
 		//}}
 	}
 
-	public QueryDialog()
+	public QueryDialog(ClientFramework framework)
 	{
-		this((Frame)null, new ConfigXML("lib/config.xml"));
+		this((Frame)null, framework);
 	}
 
-	public QueryDialog(String sTitle)
+	public QueryDialog(String sTitle, ClientFramework framework)
 	{
-		this();
+		this(framework);
 		setTitle(sTitle);
 	}
 
 	static public void main(String args[])
 	{
-		(new QueryDialog()).setVisible(true);
+		(new QueryDialog(new ClientFramework(new ConfigXML("./lib/config.xml")))).setVisible(true);
 	}
 
 	public void addNotify()
@@ -367,6 +368,10 @@ public class QueryDialog extends javax.swing.JDialog
 	void ExecuteButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		String temp = buildTextPathQuery();
-		System.out.println(temp);	 
+		System.out.println(temp);
+		Query query = new Query(temp, framework);
+		ResultSet rs = query.execute();
+		ResultFrame rsf = new ResultFrame(framework, rs);
+		rsf.setVisible(true);
 	}
 }
