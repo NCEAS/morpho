@@ -4,6 +4,7 @@
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
+  <plugin>edu.ucsb.nceas.morpho.framework.ToolPlugin</plugin>
   <metacat_url>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</metacat_url>
   <profile_directory>./profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
@@ -183,5 +184,5 @@
       <idpath>/eml-protocol/identifier</idpath>
     </file>
   </newxmlfiletypes>
-  <current_profile>higgins</current_profile>
+  <current_profile></current_profile>
 </config>
