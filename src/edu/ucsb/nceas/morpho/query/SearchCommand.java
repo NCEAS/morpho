@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 23:08:03 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-12-24 00:29:11 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,26 +31,24 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import java.awt.event.ActionEvent;
-import javax.swing.JDialog;
 
 /**
  * Class to handle search command
  */
-public class SearchCommand implements Command 
+public class SearchCommand implements Command
 {
   /** A reference to the JDialogBox */
   private OpenDialogBox dialogBox = null;
-  
+
   /** A reference to the Morpho application */
   private Morpho morpho = null;
-  
- 
+
+
   /**
    * Constructor of SearcCommand
    * @param myDialogBox the dialogbox has a search button
@@ -60,12 +58,15 @@ public class SearchCommand implements Command
   {
     dialogBox = myDialogBox;
     this.morpho = morpho;
-   
+
   }//SearchCommand
-  
+
+
   /**
    * execute cancel command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
   {
     // Hide and destory the dialogBox
@@ -87,10 +88,10 @@ public class SearchCommand implements Command
       QueryDialog queryDialog = new QueryDialog(morphoFrame, morpho);
       queryDialog.setModal(true);
       queryDialog.show();
-      if (queryDialog.isSearchStarted()) 
+      if (queryDialog.isSearchStarted())
       {
         Query query = queryDialog.getQuery();
-        if (query != null) 
+        if (query != null)
         {
           MorphoFrame resultWindow = UIController.getInstance().addWindow(
                 query.getQueryTitle());
@@ -101,16 +102,20 @@ public class SearchCommand implements Command
     }//if
   }//execute
 
+
   /**
    * Run the search query
+   *
+   * @param resultWindow MorphoFrame
+   * @param query Query
    */
-  public static void doQuery(final MorphoFrame resultWindow, final Query query) 
+  public static void doQuery(final MorphoFrame resultWindow, final Query query)
   {
-  
-    final SwingWorker worker = new SwingWorker() 
+
+    final SwingWorker worker = new SwingWorker()
     {
         ResultSet results;
-        public Object construct() 
+        public Object construct()
         {
           resultWindow.setBusy(true);
           results = query.execute();
@@ -122,26 +127,26 @@ public class SearchCommand implements Command
           resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
           resultWindow.setMainContentPane(resultDisplayPanel);
           StateChangeMonitor.getInstance().notifyStateChange(
-                          new StateChangeEvent( 
-                                  resultDisplayPanel, 
+                          new StateChangeEvent(
+                                  resultDisplayPanel,
                                   StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
-          return null;  
+          return null;
         }
 
         //Runs on the event-dispatching thread.
-        public void finished() 
+        public void finished()
         {
           resultWindow.setMessage(results.getRowCount() + " data sets found");
           resultWindow.setBusy(false);
-         
+
         }
     };
     worker.start();  //required for SwingWorker 3
   }//doQuery
-  
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand
