@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:17 $'
- * '$Revision: 1.7 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-09 05:51:54 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,19 +29,28 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.util.Log;
-
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.border.EmptyBorder;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class Access extends AbstractWizardPage {
 
@@ -63,6 +72,10 @@ public class Access extends AbstractWizardPage {
       "NO"
   };
 
+  private final String[] colNames =  {"User", "Permissions"};
+  private final Object[] editors  =   null;
+  private CustomList  accessList;
+
   public Access() {
     init();
   }
@@ -73,10 +86,10 @@ public class Access extends AbstractWizardPage {
    */
   private void init() {
 
-    this.setLayout(new BorderLayout());
+    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    Box topBox = Box.createVerticalBox();
-    topBox.add(WidgetFactory.makeDefaultSpacer());
+    Box vBox = Box.createVerticalBox();
+    vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
         "<p><b>Allow public viewing access to your dataset?</b> Access to your "
@@ -84,7 +97,7 @@ public class Access extends AbstractWizardPage {
         +"read and write access is given to your username and read-only access is "
         +"given to the public. Do you want to give read access to public?</p>", 3);
 
-    topBox.add(desc);
+    vBox.add(desc);
 
     ActionListener listener = new ActionListener() {
 
@@ -100,12 +113,96 @@ public class Access extends AbstractWizardPage {
    };
 
     radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
-    topBox.add(radioPanel);
+    vBox.add(radioPanel);
+    vBox.add(WidgetFactory.makeDefaultSpacer());
+    vBox.add(WidgetFactory.makeDefaultSpacer());
 
-    this.add(topBox, BorderLayout.NORTH);
+    JLabel desc1 = WidgetFactory.makeHTMLLabel(
+    "<p><b>Specify access for other people related to the data package?</b> You "
+    +"can specify access for other members of your team or any other person "
+    +"related to the data package. Use the table below to add, edit and "
+    +"delete access rights to your datapackage.</p>", 3);
+    vBox.add(desc1);
 
+    accessList = WidgetFactory.makeList(colNames, editors, 4,
+                                   true, true, false, true, true, true );
+    accessList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
+                            WizardSettings.PADDING, 2*WizardSettings.PADDING));
+
+    vBox.add(accessList);
+    vBox.add(WidgetFactory.makeDefaultSpacer());
+
+    this.add(vBox);
+
+    initActions();
   }
 
+  /**
+   *  Custom actions to be initialized for list buttons
+   */
+  private void initActions() {
+
+    accessList.setCustomAddAction(
+
+      new AbstractAction() {
+
+        public void actionPerformed(ActionEvent e) {
+
+          Log.debug(45, "\nKeywords: CustomAddAction called");
+          showNewKeywordsDialog();
+        }
+      });
+
+    accessList.setCustomEditAction(
+
+      new AbstractAction() {
+
+        public void actionPerformed(ActionEvent e) {
+
+          Log.debug(45, "\nKeywords: CustomEditAction called");
+          showEditKeywordsDialog();
+        }
+      });
+  }
+
+  private void showNewKeywordsDialog() {
+
+    AccessPage accessPage = (AccessPage)WizardPageLibrary.getPage(DataPackageWizardInterface.ACCESS_PAGE);
+    WizardPopupDialog wpd = new WizardPopupDialog(accessPage, WizardContainerFrame.frame, false);
+    wpd.setVisible(true);
+
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+
+      List newRow = accessPage.getSurrogate();
+      newRow.add(accessPage);
+      accessList.addRow(newRow);
+    }
+  }
+
+
+  private void showEditKeywordsDialog() {
+
+    List selRowList = accessList.getSelectedRowList();
+
+    if (selRowList==null || selRowList.size() < 3) return;
+
+    Object dialogObj = selRowList.get(2);
+
+    if (dialogObj==null || !(dialogObj instanceof AccessPage)) return;
+    AccessPage editKeywordsPage = (AccessPage)dialogObj;
+
+    WizardPopupDialog wpd = new WizardPopupDialog(editKeywordsPage, WizardContainerFrame.frame, false);
+    wpd.resetBounds();
+    wpd.setVisible(true);
+
+
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+
+      List newRow = editKeywordsPage.getSurrogate();
+      newRow.add(editKeywordsPage);
+      accessList.replaceSelectedRow(newRow);
+    }
+  }
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -148,12 +245,46 @@ public class Access extends AbstractWizardPage {
 
     returnMap.clear();
 
+    int allowIndex = 1;
+    int denyIndex = 1;
+    Object  nextRowObj      = null;
+    List    nextRowList     = null;
+    Object  nextUserObject  = null;
+    OrderedMap  nextNVPMap  = null;
+    AccessPage nextAccessPage = null;
+
+
     if(publicReadAccess){
       returnMap.put(xPathRoot + "@authSystem", "knb");
       returnMap.put(xPathRoot + "@order", "denyFirst");
-      returnMap.put(xPathRoot + "allow[1]/principal", "public");
-      returnMap.put(xPathRoot + "allow[1]/permission", "read");
+      returnMap.put(xPathRoot + "allow[" + (allowIndex) + "]/principal", "public");
+      returnMap.put(xPathRoot + "allow[" + (allowIndex++) + "]/permission", "read");
     }
+
+    List rowLists = accessList.getListOfRowLists();
+
+    if (rowLists==null) return null;
+
+       for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+
+         nextRowObj = it.next();
+         if (nextRowObj==null) continue;
+
+         nextRowList = (List)nextRowObj;
+         //column 2 is user object - check it exists and isn't null:
+         if (nextRowList.size()<3)     continue;
+         nextUserObject = nextRowList.get(2);
+         if (nextUserObject==null) continue;
+
+         nextAccessPage = (AccessPage)nextUserObject;
+
+         if(nextAccessPage.accessIsAllow){
+           nextNVPMap = nextAccessPage.getPageData(xPathRoot + "allow[" + (allowIndex++) + "]");
+         } else {
+           nextNVPMap = nextAccessPage.getPageData(xPathRoot + "deny[" + (denyIndex++) + "]");
+         }
+         returnMap.putAll(nextNVPMap);
+       }
 
     return returnMap;
   }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-07 19:56:40 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-01-09 05:51:54 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -498,7 +498,7 @@ public class WizardContainerFrame extends JFrame {
 
 
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
-    Log.debug(45, wizData.toString());
+    Log.debug(10, wizData.toString());
 
     ////////////////////////////////////////////////////////////////////////////
     // this is the end of the page processing - wizData OrderedMap should now

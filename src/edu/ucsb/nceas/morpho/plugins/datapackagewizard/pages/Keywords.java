@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:18 $'
- * '$Revision: 1.21 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-09 05:51:54 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
  */
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
-
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
@@ -56,7 +55,7 @@ public class Keywords extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.KEYWORDS;
-  private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
+  private final String nextPageID = DataPackageWizardInterface.TEMPORAL;
   private final String title      = "Keywords";
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.18 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-09 05:51:54 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ public class WizardPageLibrary {
     if(pageID.equals(DataPackageWizardInterface.ATTRIBUTE_PAGE)) return new AttributePage();
     if(pageID.equals(DataPackageWizardInterface.KEYWORDS_PAGE)) return new KeywordsPage();
     if(pageID.equals(DataPackageWizardInterface.PARTY_PAGE)) return new PartyPage();
+    if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE)) return new AccessPage();
     if (containsPageID(pageID)) return (AbstractWizardPage)pages.get(pageID);
 
     return null;

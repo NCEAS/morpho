@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:18 $'
- * '$Revision: 1.3 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-09 05:51:54 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ import java.awt.BorderLayout;
 public class Temporal extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.TEMPORAL;
-  public final String nextPageID = null;
-  public final String pageNumber = "1";
+  public final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
+  public final String pageNumber = "x";
 //////////////////////////////////////////////////////////
 
   public final String title      = "Temporal Information";

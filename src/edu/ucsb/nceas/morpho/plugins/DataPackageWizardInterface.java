@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-09 23:31:53 $'
- * '$Revision: 1.7 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-09 05:51:54 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,9 +63,10 @@ public interface DataPackageWizardInterface {
   public static final String ATTRIBUTE_PAGE     = "ATTRIBUTE_PAGE";
   public static final String PARTY_PAGE         = "PARTY_PAGE";
   public static final String ACCESS             = "ACCESS";
+  public static final String ACCESS_PAGE        = "ACCESS_PAGE";
   public static final String SUMMARY            = "SUMMARY";
-  
-  
+
+
   /**
    *  method to start the Package wizard
    *
@@ -74,7 +75,7 @@ public interface DataPackageWizardInterface {
    */
   public void startPackageWizard(DataPackageWizardListener listener);
 
-  
+
   /**
    *  method to start the Entity wizard
    *
