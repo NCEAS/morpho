@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 02:09:16 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2002-12-18 02:21:51 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -796,16 +796,15 @@ public class Morpho
             {
                 JOptionPane.showMessageDialog(null,
                     "You are currently using version " + ver + " of the Java "
-                    +"Virtual Machine(JVM) on a Linux system\n"
+                    +"Virtual Machine(JVM) on a Linux system.\n\n"
                     +"Unfortunately, Morpho's initial \"Welcome\" screen may "
-                    +"not display correctly with this configuration. \n"
+                    +"not display correctly with this configuration. \n\n"
                     +"Please note that all other parts of Morpho will still "
-                    +"operate correctly, and you can access all of the welcome "
-                    +"screen functions (change profile, login, new/open/search "
-                    +"packages) from Morpho's menus.\n"
-                    +"If you wish to fix this problem, you can do so by "
-                    +"installing JVM version 1.4 or later (which is available "
-                    +"as part of the Morpho distribution)" );
+                    +"operate correctly, and you can access all the \n"
+                    +"welcome screen functions (change profile, login, "
+                    +"new/open/search packages) from Morpho's menus.\n\n"
+                    +"If possible, we recommend installing JVM version 1.4 or "
+                    +"later, which is available with the Morpho distribution");
             }
         }
     }
