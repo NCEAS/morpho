@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.70 2002-11-27 00:40:04 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.71 2002-12-12 18:27:04 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -17,7 +17,7 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.2.0"/>
+      <property name="release" value="1.3beta2"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
@@ -228,7 +228,11 @@
       <copy file="./lib//${name}-config.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xercesImpl.jar" todir="${morpho.lib}"/>
       <copy file="./lib/kunststoff.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/xml-apis.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/xml-apis.jar" todir="${morpho.lib}"/>  
+      <copy file="./lib/liveMap.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/jhall.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/morphohelp.jar" todir="${morpho.lib}"/>
+
 
       <delete file="./lib/morpho-${release}.zip"/>
       <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
