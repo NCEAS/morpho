@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-30 18:55:41 $'
- * '$Revision: 1.125 $'
+ *     '$Date: 2003-10-30 22:49:06 $'
+ * '$Revision: 1.126 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,6 @@ import org.w3c.dom.*;
 public class DocFrame extends javax.swing.JFrame
 {
 
-  public Node DOMNode = null;
   // various global variables
   public DefaultTreeModel treeModel;
   public DefaultMutableTreeNode rootNode;
@@ -208,6 +207,7 @@ public class DocFrame extends javax.swing.JFrame
   javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
   javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
   javax.swing.JComboBox choiceCombo = new javax.swing.JComboBox();
+  javax.swing.JCheckBox attrInTree = new javax.swing.JCheckBox();
   
   //Create the popup menu.
   javax.swing.JPopupMenu popup = new JPopupMenu();
@@ -235,6 +235,10 @@ public class DocFrame extends javax.swing.JFrame
     TreeChoicePanel.add(test);
     TreeChoicePanel.add(choiceCombo);
     choiceCombo.setVisible(true);
+    attrInTree.setSelected(xmlAttributesInTreeFlag);
+    attrInTree.setText("Attrs?");
+    attrInTree.addItemListener(new SymItemListener());
+    TreeChoicePanel.add(attrInTree);
     TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
     OutputScrollPanelContainer.add(BorderLayout.SOUTH, TreeControlPanel);
     TrimTreeButton.setText("Trim");
@@ -833,6 +837,11 @@ public class DocFrame extends javax.swing.JFrame
       setChoiceNodes(rootNode);
       setAllNodesAsSelected(rootNode);
       setSelectedNodes(rootNode);
+      
+      if (xmlAttributesInTreeFlag) {
+        addXMLAttributeNodes(rootNode);
+      }
+      
       treeModel.reload();
       tree.setModel(treeModel);
 
@@ -896,7 +905,11 @@ public class DocFrame extends javax.swing.JFrame
       setSelectedNodes(rootNode);
       setLeafNodes(rootNode);
     }
-    
+      
+      if (xmlAttributesInTreeFlag) {
+        addXMLAttributeNodes(rootNode);
+      }
+      
     treeModel.reload();
     tree.setModel(treeModel);
 
@@ -1070,8 +1083,6 @@ public class DocFrame extends javax.swing.JFrame
     catch (Exception e) {Log.debug(4,"Problem in creating DOM!"+e);}
     // then display it
     df.initDoc(null, domnode);
-    df.DOMNode = domnode;
-//    df.setTopOfTree(domnode, "//creator");
   }
 
   
@@ -2822,6 +2833,7 @@ public class DocFrame extends javax.swing.JFrame
     tree.setSelectionRow(0);
   }
 
+  
   /**
    * expands closed nodes in the displayed tree
    *
@@ -3101,7 +3113,7 @@ public class DocFrame extends javax.swing.JFrame
         ExpandTreeButton_actionPerformed(event);
       } else if (object == ContractTreeButton) {
         ContractTreeButton_actionPerformed(event);
-      }
+      } 
     }
   }
 
@@ -3152,6 +3164,25 @@ public class DocFrame extends javax.swing.JFrame
         }
         else {
           setTopOfTree(rootNode, sel);
+        }
+      }
+      else if (object == attrInTree) {
+        if (attrInTree.isSelected()) {
+          xmlAttributesInTreeFlag = true;
+          addXMLAttributeNodes(rootNode);
+          treeModel.setRoot(rootNode);
+          treeModel.reload();
+          tree.setModel(treeModel);
+          tree.expandRow(1);
+          tree.setSelectionRow(0);
+        } else {
+          xmlAttributesInTreeFlag = false;
+          removeAttributeNodes(rootNode);
+          treeModel.setRoot(rootNode);
+          treeModel.reload();
+          tree.setModel(treeModel);
+          tree.expandRow(1);
+          tree.setSelectionRow(0);
         }
       }
     }
@@ -3480,6 +3511,7 @@ public class DocFrame extends javax.swing.JFrame
             NodeInfo newni = new NodeInfo(keyName);
             newni.setXMLAttribute(true);
             newni.setCardinality("ONE");
+            newni.setIcon("equal.gif");
             DefaultMutableTreeNode newnode = new DefaultMutableTreeNode(); 
             newnode.setUserObject(newni);
             NodeInfo valni = new NodeInfo("#PCDATA");
@@ -3522,6 +3554,31 @@ public class DocFrame extends javax.swing.JFrame
       }
     }
    }
+   
+  /**
+   *  if xml attributes are displayed, remove them
+   */
+  void removeAttributeNodes(DefaultMutableTreeNode root) {
+    Vector attrNodes = new Vector();
+    if (root==null) {
+      Log.debug(0,"root  in 'saveAttribute' method is null!");
+    } else {
+      Enumeration enum = root.breadthFirstEnumeration();
+      while (enum.hasMoreElements()) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)enum.nextElement();
+        NodeInfo ni = (NodeInfo)node.getUserObject();
+        if (ni.isXMLAttribute()) {
+          attrNodes.addElement(node);
+        }
+      }
+      for (int i=0;i<attrNodes.size();i++) {
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)attrNodes.elementAt(i);
+        DefaultMutableTreeNode par = (DefaultMutableTreeNode)(nd.getParent());
+        par.remove(nd);
+
+      }
+    }
+  }
   
   /**
    *  build a DTD-based tree and return root
