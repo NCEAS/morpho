@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-04 22:55:10 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2003-12-05 23:25:25 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,6 +150,8 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+
 
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.*;
@@ -218,6 +220,18 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  specific to grammar
    */
   abstract public void load(String location, String identifier, Morpho morpho);
+  
+  /**
+   *   Copies the AbstractDataPackage with the indicated id from the local
+   *   file store to Metacat
+   */
+  abstract public AbstractDataPackage upload(String id) throws MetacatUploadException;
+  
+  /**
+   *   Copies the AbstractDataPackage with the indicated id from metacat
+   *   to the local file store
+   */
+  abstract public AbstractDataPackage download(String id);
   
   /**
    * used to signify that this package is located on a metacat server
@@ -1281,6 +1295,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     
     // for metadata file
     f = new File(sourcePath + "/" + id);
+
     File openfile = null;
     try{
       if(localloc) { //get the file locally and save it

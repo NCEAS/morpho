@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-01 22:57:25 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-12-05 23:25:25 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.utilities.*;
 
 
@@ -158,5 +159,18 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return temp;
   }
+  
+  public AbstractDataPackage upload(String id) throws MetacatUploadException {
+    load(AbstractDataPackage.LOCAL, id, Morpho.thisStaticInstance);
+    serialize(AbstractDataPackage.METACAT);
+    return this;
+  }
+  
+  public AbstractDataPackage download(String id) {
+    load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
+    serialize(AbstractDataPackage.LOCAL);
+    return this;
+  }
+  
 }
 

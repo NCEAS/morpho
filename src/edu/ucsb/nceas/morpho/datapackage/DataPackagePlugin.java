@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-04 22:55:10 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2003-12-05 23:25:25 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -690,9 +690,13 @@ public class DataPackagePlugin
   public String upload(String docid, boolean updateIds) 
               throws MetacatUploadException
   {
-    DataPackage dp = new DataPackage(DataPackageInterface.LOCAL, docid, null, morpho, true);
-    DataPackage newDp = dp.upload(updateIds);
-    return newDp.getID();
+//    DataPackage dp = new DataPackage(DataPackageInterface.LOCAL, docid, null, morpho, true);
+//    DataPackage newDp = dp.upload(updateIds);
+//    return newDp.getID();
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, false, true);
+                      // metacat flag is false; local is true
+    AbstractDataPackage newadp = adp.upload(docid);
+    return newadp.getPackageId();
   }
   
   /**
@@ -702,8 +706,11 @@ public class DataPackagePlugin
    */
   public void download(String docid)
   {
-    DataPackage dp = new DataPackage(DataPackageInterface.METACAT, docid, null, morpho, true);
-    dp.download();
+//    DataPackage dp = new DataPackage(DataPackageInterface.METACAT, docid, null, morpho, true);
+//    dp.download();
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, true, false);
+                      // metacat flag is true; local is false
+    AbstractDataPackage newadp = adp.download(docid);
   }
   
   /**
