@@ -1,0 +1,1 @@
+java -cp ./;xercesImpl.jar;xmlParserAPIs.jar;SchemaParser.jar SchemaInfoFrame
