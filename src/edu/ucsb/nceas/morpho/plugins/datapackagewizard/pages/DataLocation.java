@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.19 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-15 20:28:32 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -627,6 +627,21 @@ public class DataLocation extends AbstractWizardPage {
    *  import. May be null if not set
    */
   public String  getImportFilePath() { return this.importFilePath; }
+
+  /**
+   *  Returns the proposed location of the data in terms of eml-distribution:
+   *
+   *  @return the proposed location of the data - WizardSettings.INLINE,
+   *          WizardSettings.ONLINE, WizardSettings.OFFLINE or
+   *          WizardSettings.NODATA
+   */
+  public short  getDataLocation() { 
+  
+    if  (distribXPath==INLINE_XPATH)  return WizardSettings.INLINE;
+    if  (distribXPath==ONLINE_XPATH)  return WizardSettings.ONLINE;
+    if  (distribXPath==OFFLINE_XPATH) return WizardSettings.OFFLINE;
+    return WizardSettings.NODATA;
+  }
 
   /**
      *  Returns the serial number of the page

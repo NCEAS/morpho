@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-02-18 23:41:34 $'
- * '$Revision: 1.97 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-15 20:28:31 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.util.*;

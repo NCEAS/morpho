@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-13 05:43:59 $'
- * '$Revision: 1.77 $'
+ *     '$Date: 2003-12-15 20:28:31 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ import java.io.*;
 import java.util.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-15 20:28:32 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +42,7 @@ import java.awt.Container;
 import java.awt.Frame;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.TextImportWizardEml2;
-import edu.ucsb.nceas.morpho.framework.TextImportListener;
+import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -52,6 +51,8 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.TextImportWizardEml2;
+
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 
@@ -98,8 +99,9 @@ public class ImportWizard extends     AbstractWizardPage
       AbstractWizardPage locationPage
           = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
+      short dataLocation  = ((DataLocation)locationPage).getDataLocation();
 
-      importWizFrame = new TextImportWizardEml2(fileTextName, this);
+      importWizFrame = new TextImportWizardEml2(fileTextName, this, dataLocation);
 
       importWizFrame.setBounds(mainWizFrame.getX(),     mainWizFrame.getY(),
                                mainWizFrame.getWidth(), mainWizFrame.getHeight());

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.37 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-15 20:28:32 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,6 +231,13 @@ public class WizardSettings {
   +"   <dataset/> "
   +"</eml:eml>";
 
+  /*
+   * these values denote the location of the data:
+   */
+  public static final short INLINE  = 0;
+  public static final short ONLINE  = 10;
+  public static final short OFFLINE = 20;
+  public static final short NODATA  = 30;
 
   public static final String SUMMARY_TEXT_INLINE
   = "In addition to describing your data, you have chosen to include it "

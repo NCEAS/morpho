@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-10 18:24:31 $'
- * '$Revision: 1.90 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-15 20:28:31 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,6 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -274,7 +273,6 @@ public class DataViewer extends javax.swing.JPanel
 	JLabel DataIDLabel = new javax.swing.JLabel();
 	JButton CancelButton = new javax.swing.JButton();
 	JButton UpdateButton = new javax.swing.JButton();
-  ColumnMetadataEditPanel cmep;
     
   JPanel controlPanel;
   JButton controlOK;
@@ -500,15 +498,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       return table;
     }
-    
-    /**
-     * Method to get column meta data edit panel
-     */
-    public ColumnMetadataEditPanel getColumnMetadataEditPanel()
-    {
-      return cmep;
-    }
-    
+        
     /**
      * Method to get the attribute documentation
      */ 

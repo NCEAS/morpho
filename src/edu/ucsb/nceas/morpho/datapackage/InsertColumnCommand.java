@@ -5,9 +5,9 @@
 *    Authors: @tao@
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2003-11-25 18:03:10 $'
-* '$Revision: 1.8 $'
+*   '$Author: brooke $'
+*     '$Date: 2003-12-15 20:28:31 $'
+* '$Revision: 1.9 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ public class InsertColumnCommand implements Command
 	/* Flag if need to add a column*/
 	private boolean columnAddFlag = false;
 	/* Reference to ColumnMetadataEditPanel*/
-	ColumnMetadataEditPanel cmep = null;
+//	ColumnMetadataEditPanel cmep = null;
 	/* Control in column meta data edit panel*/
 	private JPanel controlPanel;
 	private JButton controlOK;
@@ -145,11 +145,10 @@ public class InsertColumnCommand implements Command
 	
 	
 	
-	private void insertEml2Column(JTable table, PersistentTableModel ptm, 
-	PersistentVector pv, Morpho morpho,
-	Document attributeDoc, Vector column_labels,
-	String field_delimiter, JPanel TablePanel)
-	{  
+	private void insertEml2Column(JTable table,           PersistentTableModel ptm, 
+	                              PersistentVector pv,    Morpho morpho,
+	                              Document attributeDoc,  Vector column_labels,
+	                              String field_delimiter, JPanel TablePanel) {  
 		
 		int sel = table.getSelectedColumn();
 		if (sel>-1) 
@@ -259,7 +258,65 @@ public class InsertColumnCommand implements Command
 	}
 	
 	
-	/* Method to insert a new column into table */
+	private void showAttributeDialog() {
+		int newCompWidth = 400;
+		int newCompHeight = 650;
+		MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
+		Point curLoc = mf.getLocationOnScreen();
+		Dimension dim = mf.getSize();
+		int newx = curLoc.x +dim.width/2;
+		int newy = curLoc.y+dim.height/2;
+		ServiceController sc;
+		DataPackageWizardPlugin dpwPlugin = null;
+		try {
+			sc = ServiceController.getInstance();
+			dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
+		} catch (ServiceNotHandledException se) {
+			Log.debug(6, se.getMessage());
+		}
+		if(dpwPlugin == null) 
+			return;
+		attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
+		WizardPopupDialog wpd = new WizardPopupDialog(attributePage, mf, false);
+		wpd.setVisible(true);
+		
+		if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
+			columnAddFlag = true;                                                   
+		} else {
+			columnAddFlag = false;
+		}
+		return;
+	}
+	
+	
+	private void setUpDelimiterEditor(JTable jtable, String delimiter,
+	JPanel pane) 
+	{
+		//Set up the editor for the integer and string cells.
+		int columns = jtable.getColumnCount();
+		final DelimiterField delimiterField = 
+		new DelimiterField(pane, delimiter, "", columns);
+		delimiterField.setHorizontalAlignment(DelimiterField.RIGHT);
+		
+		DefaultCellEditor delimiterEditor =
+		new DefaultCellEditor(delimiterField) 
+		{
+			//Override DefaultCellEditor's getCellEditorValue method
+			public Object getCellEditorValue() 
+			{
+				return new String(delimiterField.getValue());
+			}
+		};
+		TableColumnModel columnModel = jtable.getColumnModel();
+		for (int j = 0; j< columns; j++)
+		{
+			columnModel.getColumn(j).setCellEditor(delimiterEditor);
+			columnModel.getColumn(j).setPreferredWidth(85);
+		}
+		
+	}
+
+	/* Method to insert a new column into table 
 	private void insertColumn(JTable table, PersistentTableModel ptm, 
 	PersistentVector pv, Morpho morpho,
 	Document attributeDoc, Vector column_labels,
@@ -319,40 +376,6 @@ public class InsertColumnCommand implements Command
 		}//if
 	}//insetColumn
 	
-	
-	private void showAttributeDialog() {
-		int newCompWidth = 400;
-		int newCompHeight = 650;
-		MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
-		Point curLoc = mf.getLocationOnScreen();
-		Dimension dim = mf.getSize();
-		int newx = curLoc.x +dim.width/2;
-		int newy = curLoc.y+dim.height/2;
-		ServiceController sc;
-		DataPackageWizardPlugin dpwPlugin = null;
-		try {
-			sc = ServiceController.getInstance();
-			dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
-		} catch (ServiceNotHandledException se) {
-			Log.debug(6, se.getMessage());
-		}
-		if(dpwPlugin == null) 
-			return;
-		attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
-		WizardPopupDialog wpd = new WizardPopupDialog(attributePage, mf, false);
-		wpd.setVisible(true);
-		
-		if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
-			columnAddFlag = true;                                                   
-		} else {
-			columnAddFlag = false;
-		}
-		return;
-	}
-	
-	/*
-	* Method to show column meta data edit panel
-	*/
 	private void showColumnMetadataEditPanel() 
 	{
 		int newCompWidth = 400;
@@ -381,39 +404,6 @@ public class InsertColumnCommand implements Command
 		columnDialog.setVisible(true);
 	}
 	
-	/*
-	* Method to set a table's interger and string column editor
-	*/
-	private void setUpDelimiterEditor(JTable jtable, String delimiter,
-	JPanel pane) 
-	{
-		//Set up the editor for the integer and string cells.
-		int columns = jtable.getColumnCount();
-		final DelimiterField delimiterField = 
-		new DelimiterField(pane, delimiter, "", columns);
-		delimiterField.setHorizontalAlignment(DelimiterField.RIGHT);
-		
-		DefaultCellEditor delimiterEditor =
-		new DefaultCellEditor(delimiterField) 
-		{
-			//Override DefaultCellEditor's getCellEditorValue method
-			public Object getCellEditorValue() 
-			{
-				return new String(delimiterField.getValue());
-			}
-		};
-		TableColumnModel columnModel = jtable.getColumnModel();
-		for (int j = 0; j< columns; j++)
-		{
-			columnModel.getColumn(j).setCellEditor(delimiterEditor);
-			columnModel.getColumn(j).setPreferredWidth(85);
-		}
-		
-	}
-	
-	/*
-	* Private class to handle the button action in column meta data edit panel
-	*/
 	class ColAction implements java.awt.event.ActionListener
 	{
 		public void actionPerformed(java.awt.event.ActionEvent event)
@@ -429,9 +419,5 @@ public class InsertColumnCommand implements Command
 			}
 		}
 	}
-	/**
-	* could also have undo functionality; disabled for now
-	*/ 
-	// public void undo();
-	
+**/	
 }//class CancelCommand
