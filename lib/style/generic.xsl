@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-09-17 21:59:15 $'
-  * '$Revision: 1.3 $'
+  *     '$Date: 2002-09-18 18:20:19 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -44,11 +44,18 @@
         <center>
           <h1>Ecological Metadata Language</h1>
         </center>
-           <table width="90%" border="1" cellpadding="5" align="center">
-             <tr><td><b>Element Name</b></td><td><b>Value</b></td></tr> 
+        <table class="tabledefault" width="100%">
+             <tr><td class="{$subHeaderStyle}">Element Name</td><td class="{$subHeaderStyle}">Value</td></tr> 
                 <xsl:for-each select="./*">
-                    <tr><td><xsl:value-of select="local-name()"/></td>
-                        <td><xsl:value-of select="."/></td></tr>
+            <xsl:variable name="stripes">
+              <xsl:choose>
+                <xsl:when test="position() mod 2 = 1">rowodd</xsl:when>
+                <xsl:when test="position() mod 2 = 0">roweven</xsl:when>
+              </xsl:choose>
+            </xsl:variable>                    
+            <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
+                <xsl:value-of select="local-name()"/></td>
+                        <td class="{$stripes}"><xsl:value-of select="."/></td></tr>
                 </xsl:for-each>
           </table>
       </body>
