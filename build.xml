@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.69 2002-11-25 17:26:55 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.70 2002-11-27 00:40:04 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -88,7 +88,7 @@
       <property name="jnet"
                 value="${libdir}/jnet.jar" />
       <property name="help"
-	        value="${libdir}/holidays.jar" />
+	        value="${libdir}/morphohelp.jar" />
       <property name="httpclient"
                 value="${libdir}/httpclient.jar" />
       <property name="lmap"
