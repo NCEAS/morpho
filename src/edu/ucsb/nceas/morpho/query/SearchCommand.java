@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 18:34:45 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-15 23:46:43 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ public class SearchCommand implements Command
     if ( dialogBox != null)
     {
       dialogBox.setVisible(false);
+      dialogBox.dispose();
       dialogBox = null;
     }//if
     // QueryDialog Create and show as modal
