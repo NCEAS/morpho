@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.17 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-24 17:13:52 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ Log.debug(1, "CCCC");
 
   private OrderedMap returnMap = new OrderedMap();
   //
-  public OrderedMap getPageData() {
+  public OrderedMap getPageData(String xPath) {
     returnMap.clear();
     int index = 1;
     Object  nextRowObj      = null;
@@ -237,7 +237,6 @@ Log.debug(1, "CCCC");
     if (rowLists==null) return null;
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-
       nextRowObj = it.next();
       if (nextRowObj==null) continue;
       nextRowList = (List)nextRowObj;
@@ -248,7 +247,7 @@ Log.debug(1, "CCCC");
 
       nextGeographicPage = (GeographicPage)nextUserObject;
 
-      nextNVPMap = nextGeographicPage.getPageData(xPathRoot + (index++) + "]");
+      nextNVPMap = nextGeographicPage.getPageData(xPath + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
@@ -264,10 +263,8 @@ Log.debug(1, "CCCC");
    * @return data the Map object that contains all the key/value paired
    *   settings for this particular wizard page
    */
-  public OrderedMap getPageData(String rootXPath) {
-
-    throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+  public OrderedMap getPageData() {
+    return getPageData(xPathRoot);
   }
 
 
