@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:34 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2002-08-19 21:25:34 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.TextImportListener;
 import edu.ucsb.nceas.morpho.framework.TextImportWizard;
-import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+//import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -984,6 +984,9 @@ public class PackageWizardShell extends javax.swing.JFrame
       location = DataPackage.BOTH;
     }
     
+    /* No longer needed because the query isn't shown by default
+     * but we still may want to notify the query subsystem that a
+     * change has happened in case future refreshes are implemented
     // Update the query window to reflect the newly created package
     try {
       ServiceController services = ServiceController.getInstance();
@@ -993,6 +996,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     } catch (ServiceNotHandledException snhe) {
       Log.debug(6, snhe.getMessage());
     }
+    */
 
     // Show the package in a window
     DataPackageGUI gui = new DataPackageGUI(morpho, dp);
@@ -1085,9 +1089,9 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     JLabel headLabel = new JLabel();
     headLabel.setText("Package Wizard");
-    ImageIcon head = new ImageIcon(
-                         morpho.getClass().getResource("smallheader-bg.gif"));
-    headLabel.setIcon(head);
+    //MBJ ImageIcon head = new ImageIcon(
+                         //MBJ morpho.getClass().getResource("smallheader-bg.gif"));
+    //MBJ headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
     headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -1102,10 +1106,10 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     descriptionPanel.setBackground(Color.white);
     descriptionPanel.setPreferredSize(new Dimension(160, 450));
-    ImageIcon logoIcon = new ImageIcon(
-                             morpho.getClass().getResource("logo-icon.gif"));
+    //MBJ ImageIcon logoIcon = new ImageIcon(
+                             //MBJ morpho.getClass().getResource("logo-icon.gif"));
     JLabel imageLabel = new JLabel();
-    imageLabel.setIcon(logoIcon);
+    //MBJ imageLabel.setIcon(logoIcon);
     descriptionPanel.add(imageLabel);
     
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -1161,10 +1165,10 @@ public class PackageWizardShell extends javax.swing.JFrame
     descriptionLabel = new JLabel("<html><font color=000000>" + desc + "</font></html>");
     descriptionLabel.setForeground(Color.black);
     descriptionLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    ImageIcon logoIcon = new ImageIcon(
-                             morpho.getClass().getResource("logo-icon.gif"));
+    //MBJ ImageIcon logoIcon = new ImageIcon(
+                             //MBJ morpho.getClass().getResource("logo-icon.gif"));
     JLabel imageLabel = new JLabel();
-    imageLabel.setIcon(logoIcon);
+    //MBJ imageLabel.setIcon(logoIcon);
     descriptionLabel.setPreferredSize(new Dimension(150, 400));
     descriptionLabel.setForeground(Color.black);
     descriptionLabel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
