@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-23 22:23:17 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-01-31 19:29:24 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -307,7 +307,7 @@ public class XMLPanels extends Component
             nodeMap.put(jtf1,nd);  // for use in saving changes to text
             jtf1.addFocusListener(new dfhFocus());
      //       if (txt.equals("text")) { txt = " "; }
-            jtf1.setText(txt);
+            jtf1.setText(txt.trim());
             jtf1.setEnabled(!locked);
           }
         

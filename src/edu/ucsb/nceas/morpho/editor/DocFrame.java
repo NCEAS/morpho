@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-28 23:30:29 $'
- * '$Revision: 1.138 $'
+ *     '$Date: 2004-01-31 19:29:24 $'
+ * '$Revision: 1.139 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1153,6 +1153,7 @@ public class DocFrame extends javax.swing.JFrame
    */
   void setSelectedNodes(DefaultMutableTreeNode node)
   {
+		if (true) return;
     DefaultMutableTreeNode parentNode = null;
     DefaultMutableTreeNode tempNode = null;
     DefaultMutableTreeNode curNode = node.getFirstLeaf();
@@ -3469,7 +3470,7 @@ public class DocFrame extends javax.swing.JFrame
             flag = false;
             kidni.setSelected(true);
           } else {
-            kidni.setSelected(false);
+//            kidni.setSelected(false);
           }
         }
       }

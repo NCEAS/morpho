@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-07 17:50:16 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-01-31 19:29:24 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -264,7 +264,7 @@ public class NodeInfo implements Serializable
   }
   
   public String getPCValue() {
-    return PCDataValue; 
+    return PCDataValue.trim(); 
   }
   public String getCardinality() {
     return cardinality;    
