@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 23:44:35 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-12-04 20:29:09 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,6 +136,11 @@ public class TextImportWizard extends javax.swing.JFrame
    * attribute wizard
    */
   PackageWizard attributeWizard = null;
+
+  /**
+   * physical wizard
+   */
+  PackageWizard physicalWizard = null;
   
   private TextImportListener listener = null;
   
@@ -348,12 +353,11 @@ public class TextImportWizard extends javax.swing.JFrame
 		ColumnUnitTextField.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JPanel23.setLayout(new BoxLayout(JPanel23,BoxLayout.Y_AXIS));
 		JPanel22.add(JPanel23);
-		JScrollPane2.setOpaque(true);
 		JPanel23.add(JScrollPane2);
 		ColumnDefTextArea.setLineWrap(true);
 		ColumnDefTextArea.setWrapStyleWord(true);
 		JScrollPane2.getViewport().add(ColumnDefTextArea);
-		ColumnDefTextArea.setBounds(0,0,278,71);
+		ColumnDefTextArea.setBounds(0,0,-69,19);
 		JLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 		JLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		JLabel13.setText("Column Definition:");
@@ -544,6 +548,15 @@ public class TextImportWizard extends javax.swing.JFrame
 	public void setAttributeWizard(PackageWizard attribute) {
 	  this.attributeWizard = attribute;
 	}
+
+	/**
+	 * reference to a packagewizard
+	 * used to pass a fixed XML string to a PackageWizard
+	 */
+	public void setPhysicalWizard(PackageWizard physical) {
+	  this.physicalWizard = physical;
+	}
+	
 	
 	/**
 	 * The entry point for this application.
@@ -1205,6 +1218,23 @@ public void startImport(String file) {
 	  }
 	  return str;
 	}
+
+	private String getDelimiterStringAsText() {
+	  String str = "";
+	  if (TabCheckBox.isSelected()) str = str+"tab ";
+	  if (CommaCheckBox.isSelected()) str = str + "comma ";
+	  if (SpaceCheckBox.isSelected()) str = str + "space ";
+	  if (SemicolonCheckBox.isSelected()) str = str +"semicolon ";
+	  if (OtherCheckBox.isSelected()) {
+	    String temp = OtherTextField.getText();
+	    if (temp.length()>0) {
+	      temp = temp.substring(0,1);
+	      str = str + temp;
+	    }
+	  }
+	  return str;
+	}
+	
 	
 	private boolean inDelimiterList(String token, String delim) {
 	    boolean result = false;
@@ -1257,6 +1287,24 @@ public void startImport(String file) {
 
 	void FinishButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+	String info = checkForBlankInfo();
+	// info should be null if all fields are not blank
+	if (info!=null) {
+        int  choice = JOptionPane.showConfirmDialog(null, 
+                             "This package may be invalid because certain " + 
+                             "fields in columns \n"+info+"\n contain no information. \n " +
+                             "To correct this, please press Cancel or No\n" +
+                             "and then select each column in the table\n" +
+                             "and enter the appropriate information.\n\n"+
+                             "Are you sure you want to save now?", 
+                             "Invalid Document", 
+                             JOptionPane.YES_NO_CANCEL_OPTION,
+                             JOptionPane.WARNING_MESSAGE);
+      if((choice == JOptionPane.CANCEL_OPTION)||(choice == JOptionPane.NO_OPTION)) {
+        return;  
+      }
+	}
+	    
     if (entityWizard!=null) {
       //System.out.println("===============creating xml string: " + createXMLEntityString());
 	    entityWizard.setXMLString(createXMLEntityString());
@@ -1264,6 +1312,9 @@ public void startImport(String file) {
 	  if (attributeWizard!=null) {
 	    attributeWizard.setXMLString(createXMLAttributeString());
       //System.out.println("===============creating xml string: " + createXMLAttributeString());
+	  }
+	  if (physicalWizard!=null) {
+	    physicalWizard.setXMLString(createXMLPhysicalString());
 	  }
     
 	  for (int i=0;i<colTitles.size();i++) {
@@ -1969,7 +2020,7 @@ public void startImport(String file) {
 	public String createXMLPhysicalString() {
 	  long filesize = (new File(filename)).length();
 	  String filesizeString = (new Long(filesize)).toString();
-	  String numHeaderLinesString = (new Integer(startingLine - 1)).toString();
+	  String delimit = getDelimiterStringAsText();
 	  StringBuffer XMLBuffer = new StringBuffer();
 	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
 	  XMLBuffer.append("<!DOCTYPE eml-physical PUBLIC \"-//ecoinformatics.org//eml-physical-2.0.0beta4//EN\" \"eml-entity.dtd\">\n");
@@ -1977,9 +2028,9 @@ public void startImport(String file) {
 	  XMLBuffer.append("    <identifier> </identifier>\n");
       XMLBuffer.append("    <format> Text</format>\n");  // text import wizard only handles text 
       XMLBuffer.append("    <size>"+filesizeString+" bytes"+"</size>\n");  
-      XMLBuffer.append("    <numHeaderLines>"+numHeaderLinesString+"</numHeaderLines>\n");  
+      XMLBuffer.append("    <numHeaderLines>"+startingLine+"</numHeaderLines>\n");  
       XMLBuffer.append("    <recordDelimiter>"+"end of line"+"</recordDelimiter>\n"); 
-      XMLBuffer.append("    <fieldDelimiter>"+getDelimiterString()+"</fieldDelimiter>\n"); 
+      XMLBuffer.append("    <fieldDelimiter>"+delimit+"</fieldDelimiter>\n"); 
       XMLBuffer.append("</eml-physical>\n");
 	  return XMLBuffer.toString();
     }
@@ -2064,8 +2115,20 @@ public void startImport(String file) {
         return str.toString();
 
     } // normalize(String):String
-	
 
+	private String checkForBlankInfo() {
+	    String res = null;  // return null if all fields have data
+	    String temp = "";
+	    for (int i=0;i<colDataInfo.size();i++) {
+	        ColumnData cd = (ColumnData)colDataInfo.elementAt(i);
+	        if (!cd.hasInfo()) {
+	            temp = temp + "#" + (i+1) +" ";
+	        }
+	    }
+	    if (temp.length()>0) res = temp;
+	    return res;
+    }
+    
 /**
  *  class to store all the metadate about the data in a column of the table
  *
@@ -2087,6 +2150,16 @@ public void startImport(String file) {
 	    
 	    ColumnData(int colnum) {
 	        this.colNumber = colnum;    
+	    }
+	    
+	    boolean hasInfo() {
+	        boolean res = true;
+	        if (colTitle.length()==0) res=false;
+	        if (colName.length()==0) res=false;
+	        if (colDefinition.length()==0) res=false;
+	        if (colType.length()==0) res=false;
+	        if (colUnits.length()==0) res=false;
+	        return res;
 	    }
 	}
 	
