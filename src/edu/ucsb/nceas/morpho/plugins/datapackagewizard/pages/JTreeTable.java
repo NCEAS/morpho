@@ -97,6 +97,10 @@ public class JTreeTable extends JTable {
 	setIntercellSpacing(new Dimension(1, 1));
     }
 
+
+    public void expandIt(int row){
+      tree.expandRow(row);
+    }
     /* Workaround for BasicTableUI anomaly. Make sure the UI never tries to
      * paint the editor. The UI currently uses different techniques to
      * paint the renderers and editors and overriding setBounds() below

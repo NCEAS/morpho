@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-02 02:04:12 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-04-13 01:09:32 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,15 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 
 class AccessTreeNodeObject
     implements Comparable {
 
   private String DNinfo = null;
   private String name = null;
+  private String organization = null;
   private String email = null;
   private String description = null;
   private String EMPTY_STRING = "";
@@ -87,8 +88,16 @@ class AccessTreeNodeObject
     return email;
   }
 
+  public String getOrganization() {
+    return organization;
+  }
+
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public void setOrganization(String organization) {
+    this.organization = organization;
   }
 
   public String toString() {
@@ -96,9 +105,13 @@ class AccessTreeNodeObject
     String key = null;
 
     if (nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS) {
-      key = "o=";
-      value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
-      value = value.substring(0, value.indexOf(","));
+      if (organization == null) {
+        key = "o=";
+        value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
+        value = value.substring(0, value.indexOf(","));
+      } else {
+        value = organization;
+      }
     } else if (nodeType == WizardSettings.ACCESS_PAGE_GROUP) {
       key = "cn=";
       value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
@@ -118,7 +131,7 @@ class AccessTreeNodeObject
 
   public int compareTo(Object o) {
     String thisString = (this.toString()).toLowerCase();
-    String otherString = (((AccessTreeNodeObject)o).toString()).toLowerCase();
+    String otherString = ( ( (AccessTreeNodeObject) o).toString()).toLowerCase();
     return thisString.compareTo(otherString);
   }
 }

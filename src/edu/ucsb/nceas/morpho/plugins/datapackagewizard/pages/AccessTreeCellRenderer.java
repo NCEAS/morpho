@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-06 03:16:15 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-04-13 01:09:32 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ public class AccessTreeCellRenderer
         tree, value, sel,
         expanded, leaf, row,
         hasFocus);
+
     if ( ( (DefaultMutableTreeNode) (value)).getUserObject() == null) {
       return this;
     }

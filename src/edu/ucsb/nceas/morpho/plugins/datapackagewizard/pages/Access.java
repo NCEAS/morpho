@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-12 18:47:45 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-04-13 01:09:32 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -489,6 +489,23 @@ public class Access
       }
     }
 
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+    }
+
+    //if anything left in map, then it included stuff we can't handle...
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+
+      Log.debug(20, "Access.setPageData returning FALSE! Map still contains:"
+          + map);
+
+      return false;
+    }
+
     Iterator allowIt = accessAllowList.iterator();
     Iterator denyIt = accessDenyList.iterator();
     Object nextStepMapObj = null;
@@ -589,9 +606,11 @@ public class Access
         if (nextVal.compareTo("read") == 0) {
           hasRead = true;
 
-          JPanel innerPanel = ((JPanel)(radioPanel.getComponent(1)));
-          JRadioButton allowReadAccess = ((JRadioButton)(innerPanel.getComponent(0)));
-          JRadioButton denyReadAccess = ((JRadioButton)(innerPanel.getComponent(1)));
+          JPanel innerPanel = ( (JPanel) (radioPanel.getComponent(1)));
+          JRadioButton allowReadAccess = ( (JRadioButton) (innerPanel.
+              getComponent(0)));
+          JRadioButton denyReadAccess = ( (JRadioButton) (innerPanel.
+              getComponent(1)));
           if (nextXPath.indexOf("allow") > -1) {
             allowReadAccess.setSelected(true);
             denyReadAccess.setSelected(false);
@@ -605,27 +624,14 @@ public class Access
         }
 
       }
-      if(invalidSizeError && !hasRead && !hasPublic){
+      if (invalidSizeError && !hasRead && !hasPublic) {
         Log.debug(20,
             "Access.setPageData returning FALSE! Map contains invalid public access:"
             + publicMap);
       }
 
     }
-    //remove entries we have used from map:
-    Iterator dlIt = toDeleteList.iterator();
-    while (dlIt.hasNext()) {
-      map.remove(dlIt.next());
-    }
 
-    //if anything left in map, then it included stuff we can't handle...
-    boolean returnVal = map.isEmpty();
-
-    if (!returnVal) {
-
-      Log.debug(20, "Access.setPageData returning FALSE! Map still contains:"
-          + map);
-    }
     return (returnVal && accessAllowRetVal && accessDenyRetVal);
   }
 
