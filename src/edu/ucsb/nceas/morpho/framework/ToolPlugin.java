@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-23 22:05:11 $'
- * '$Revision: 1.2 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-30 18:58:23 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ public class ToolPlugin
       public void actionPerformed(ActionEvent e) 
       {
         framework.debug(20, "Action fired: New ToolPlugin");
-          (new TextImportWizard()).setVisible(true);
+          (new TextImportWizard(null, null)).setVisible(true);
       }
 
     };

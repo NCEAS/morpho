@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-30 17:24:54 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-10-30 18:58:23 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,7 +146,6 @@ public class TextImportWizard extends javax.swing.JFrame
   private TextImportListener listener = null;
   
   boolean finishFlag = false;
-   
   
 	public TextImportWizard(String dataFileName, TextImportListener listener)
 	{
@@ -438,18 +437,21 @@ public class TextImportWizard extends javax.swing.JFrame
 		DataTypeList.setListData(dataTypes);
     
     //assign the filename and get the wizard started.
-    filename = dataFileName;
-    TableNameTextField.setText(filename);
-    parsefile(filename);
-    createLinesTable();
-    resultsBuffer = new StringBuffer();
-    stepNumber = 1;
-    StepNumberLabel.setText("Step # "+stepNumber);
-    CardLayout cl = (CardLayout)ControlsPanel.getLayout();
-    cl.show(ControlsPanel, "card"+stepNumber);
-    BackButton.setEnabled(false);
-    FinishButton.setEnabled(false);
-    NextButton.setEnabled(true);
+    if(dataFileName != null)
+    {
+      filename = dataFileName;
+      TableNameTextField.setText(filename);
+      parsefile(filename);
+      createLinesTable();
+      resultsBuffer = new StringBuffer();
+      stepNumber = 1;
+      StepNumberLabel.setText("Step # "+stepNumber);
+      CardLayout cl = (CardLayout)ControlsPanel.getLayout();
+      cl.show(ControlsPanel, "card"+stepNumber);
+      BackButton.setEnabled(false);
+      FinishButton.setEnabled(false);
+      NextButton.setEnabled(true);
+    }
 	}
 
     /**
@@ -1185,7 +1187,10 @@ public void startImport(String file) {
     //"Message",JOptionPane.INFORMATION_MESSAGE, null);
     
 	  finishFlag = true;
-    listener.importComplete();
+    if(listener != null)
+    {
+      listener.importComplete();
+    }
     this.dispose();
 	}
  
@@ -1730,6 +1735,9 @@ public void startImport(String file) {
 	{
 		this.setVisible(false);
 		this.dispose();
-    listener.importCanceled();
+    if(listener != null)
+    {
+      listener.importCanceled();
+    }
 	}
 }
