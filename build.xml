@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.32 2001-10-23 21:59:48 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.33 2001-12-15 02:26:42 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -17,7 +17,7 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.0.0beta1"/>
+      <property name="release" value="1.0.0beta2"/>
 
       <filter token="release" value="${release}"/>
 
