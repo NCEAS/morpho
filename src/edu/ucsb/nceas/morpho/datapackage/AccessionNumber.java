@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-25 21:38:39 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-10-18 22:39:52 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,6 +135,15 @@ public class AccessionNumber
     return id.substring(0, revIndex) + "." + rev;
   }
   
+  public String incRevInTriples(File xmlfile, String oldid, String newid)
+  {
+    Vector oldids = new Vector();
+    oldids.addElement(oldid);
+    Vector newids = new Vector();
+    newids.addElement(newid);
+    return incRevInTriples(xmlfile, oldids, newids);
+  }
+  
   /**
    * searches an xml file for triples.  If it finds oldid it increments its
    * revision number with the newid provided.
@@ -143,7 +152,7 @@ public class AccessionNumber
    * @param newid the id that you want oldid to be replaced with
    * @return returns the newly created triples file with the updated triples
    */
-  public String incRevInTriples(File xmlfile, String oldid, String newid)
+  public String incRevInTriples(File xmlfile, Vector oldid, Vector newid)
   {
     DOMParser parser = new DOMParser();
     Document doc;
@@ -205,9 +214,19 @@ public class AccessionNumber
               continue;
             }
             //System.out.println("node found: " + nodeval + " oldid: " + oldid.trim());
-            if(nodeval.equals(oldid.trim()))
+            if(/*nodeval.equals(oldid.trim())*/oldid.contains(nodeval.trim()))
             {
-              childNode.getFirstChild().setNodeValue(newid);
+              String newidS = "";
+              for(int k=0; k<newid.size(); k++)
+              {
+                newidS = (String)newid.elementAt(k);
+                if(nodeval.trim().equals(oldid.elementAt(k)))
+                {
+                  break;
+                }
+              }
+              System.out.println("replacing: " + nodeval + " with " + newidS);
+              childNode.getFirstChild().setNodeValue(newidS);
               //System.out.println("substituting " + oldid + " for " + newid);
             }
           }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-09-24 16:41:23 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-10-18 22:39:52 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,29 +178,29 @@ public class EntityGUI extends javax.swing.JFrame
                                                           orientationPath, 
                                                           framework);
     
-    if(nameList.getLength() != 0)
+    if(nameList != null && nameList.getLength() != 0)
     { 
       String s = nameList.item(0).getFirstChild().getNodeValue();
       name = new JLabel(s);
     }
-    if(descList.getLength() != 0)
+    if(descList != null && descList.getLength() != 0)
     {
       String s = descList.item(0).getFirstChild().getNodeValue();
       description = new JLabel(s);
     }
-    if(numrecList.getLength() != 0)
+    if(numrecList != null && numrecList.getLength() != 0)
     {
       String s = numrecList.item(0).getFirstChild().getNodeValue();
       numrecords = new JLabel(s);
     }
-    if(caseSensList.getLength() != 0)
+    if(caseSensList != null && caseSensList.getLength() != 0)
     {
       NamedNodeMap nnm = caseSensList.item(0).getAttributes();
       Node n = nnm.getNamedItem("yesorno");
       String s = n.getFirstChild().getNodeValue();
       caseSensitive = new JLabel(s);
     }
-    if(orientationList.getLength() != 0)
+    if(orientationList != null && orientationList.getLength() != 0)
     {
       NamedNodeMap nnm = orientationList.item(0).getAttributes();
       Node n = nnm.getNamedItem("columnorrow");
@@ -494,8 +494,10 @@ public class EntityGUI extends javax.swing.JFrame
           {
             metacatpublic = true;
           }
-          mds.newFile(id, new StringReader(xmlString), metacatpublic);
-          mds.saveFile(packageId, new StringReader(packageFile), metacatpublic);
+          mds.newFile(id, new StringReader(xmlString), metacatpublic, 
+                      dataPackage);
+          mds.saveFile(packageId, new StringReader(packageFile), metacatpublic, 
+                       dataPackage);
         }
         catch(Exception e)
         {
@@ -508,8 +510,8 @@ public class EntityGUI extends javax.swing.JFrame
       { //save the files locally
         try
         {
-          fsds.newFile(id, new StringReader(xmlString), false);
-          fsds.saveFile(packageId, new StringReader(packageFile), false);
+          fsds.newFile(id, new StringReader(xmlString));
+          fsds.saveFile(packageId, new StringReader(packageFile));
         }
         catch(Exception e)
         {
@@ -570,7 +572,8 @@ public class EntityGUI extends javax.swing.JFrame
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          mds.saveFile(newid, new StringReader(newPackageFile), metacatpublic);
+          mds.saveFile(newid, new StringReader(newPackageFile), metacatpublic,
+                       dataPackage);
           newPackageId = newid;
         }
         else
@@ -578,7 +581,8 @@ public class EntityGUI extends javax.swing.JFrame
           String oldid = id;
           newid = a.incRev(id);
           //save the file that was edited
-          mds.saveFile(newid, new StringReader(xmlString), metacatpublic);
+          mds.saveFile(newid, new StringReader(xmlString), metacatpublic, 
+                       dataPackage);
           newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
                                                     oldid,
@@ -589,7 +593,7 @@ public class EntityGUI extends javax.swing.JFrame
                                              dataPackage.getID(), 
                                              newPackageId);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       metacatpublic);
+                       metacatpublic, dataPackage);
         }
       }
     }
@@ -611,14 +615,14 @@ public class EntityGUI extends javax.swing.JFrame
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          fsds.saveFile(newid, new StringReader(newPackageFile), false);
+          fsds.saveFile(newid, new StringReader(newPackageFile));
           newPackageId = newid;
         }
         else
         { //we edited a file in the package
           String oldid = id;
           newid = a.incRev(id);
-          fsds.saveFile(newid, new StringReader(xmlString), false);
+          fsds.saveFile(newid, new StringReader(xmlString));
           newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
                                                     oldid, 
@@ -628,7 +632,7 @@ public class EntityGUI extends javax.swing.JFrame
           newPackageFile = a.incRevInTriples(tempPackageFile, 
                                              dataPackage.getID(), 
                                              newPackageId);
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile), false); 
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
         }
       }
       

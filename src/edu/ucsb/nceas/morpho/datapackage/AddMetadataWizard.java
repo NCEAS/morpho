@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-09 20:44:27 $'
- * '$Revision: 1.4 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-18 22:39:52 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -825,13 +825,14 @@ public class AddMetadataWizard extends JFrame
       File newPackageMember;
       try
       { //save the new package member
-        if (addedFile!=null) {
-          newPackageMember = fsds.newFile(newid, new FileReader(addedFile), 
-                                        false);
+        if (addedFile!=null) 
+        {
+          newPackageMember = fsds.newFile(newid, new FileReader(addedFile));
         }
-        else if (addedMetadataFile!=null) {
-          newPackageMember = fsds.newFile(newid, new FileReader(addedMetadataFile), 
-                                        false);
+        else if (addedMetadataFile!=null) 
+        {
+          newPackageMember = fsds.newFile(newid, 
+                                          new FileReader(addedMetadataFile));
         }
       }
       catch(Exception e)
@@ -872,7 +873,8 @@ public class AddMetadataWizard extends JFrame
       
       try
       { //save the new package file
-        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), true);
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), true, 
+                     dataPackage);
       }
       catch(MetacatUploadException mue)
       {
@@ -886,6 +888,13 @@ public class AddMetadataWizard extends JFrame
         ClientFramework.debug(0, "Error saving package file to metacat(2): " + 
                               fnfe.getMessage());
         fnfe.printStackTrace();
+        return;
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat(3): " + 
+                              e.getMessage());
+        e.printStackTrace();
         return;
       }
     }
@@ -1004,13 +1013,11 @@ public class AddMetadataWizard extends JFrame
       { //save the new package member
         if(editingExistingFile)
         {
-          newPackageMember = fsds.saveFile(newid, new FileReader(newxmlFile), 
-                                           false);
+          newPackageMember = fsds.saveFile(newid, new FileReader(newxmlFile));
         }
         else
         {
-          newPackageMember = fsds.newFile(newid, new FileReader(newxmlFile), 
-                                          false);
+          newPackageMember = fsds.newFile(newid, new FileReader(newxmlFile));
         }
       }
       catch(Exception e)
@@ -1052,11 +1059,13 @@ public class AddMetadataWizard extends JFrame
         
         if(editingExistingFile)
         {
-          mds.saveFile(newid, new FileReader(newxmlFile), metacatpublic);
+          mds.saveFile(newid, new FileReader(newxmlFile), metacatpublic, 
+                       dataPackage);
         }
         else
         {
-          mds.newFile(newid, new FileReader(newxmlFile), metacatpublic);
+          mds.newFile(newid, new FileReader(newxmlFile), metacatpublic, 
+                      dataPackage);
         }
         
       }
@@ -1070,7 +1079,7 @@ public class AddMetadataWizard extends JFrame
       try
       {
         mds.saveFile(dataPackageId, new FileReader(newDPTempFile), 
-                     metacatpublic);
+                     metacatpublic, dataPackage);
       }
       catch(Exception e)
       {

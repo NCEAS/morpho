@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-12 23:00:31 $'
- * '$Revision: 1.21 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-18 22:39:53 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import java.io.*;
 import java.util.*;
+import edu.ucsb.nceas.morpho.datapackage.*;
 
 /**
  * implements and the DataStoreInterface for accessing files on the local
@@ -73,17 +74,23 @@ public class FileSystemDataStore extends DataStore
   
   public File saveFile(String name, Reader file)
   {
-    return saveFile(name, file, false, datadir);
+    return saveFile(name, file, false, datadir, null);
   }
   
   public File saveFile(String name, Reader file, boolean publicAccess)
   {
-    return saveFile(name, file, publicAccess, datadir);
+    return saveFile(name, file, publicAccess, datadir, null);
+  }
+  
+  public File saveFile(String name, Reader file, boolean publicAccess, 
+                       DataPackage dp)
+  {
+    return saveFile(name, file, publicAccess, datadir, dp);
   }
   
   public File saveTempFile(String name, Reader file)
   {
-    return saveFile(name, file, false, tempdir);
+    return saveFile(name, file, false, tempdir, null);
   }
   
   /**
@@ -100,7 +107,7 @@ public class FileSystemDataStore extends DataStore
    * the file johnson2343/13223.5
    */
   public File saveFile(String name, Reader file, boolean publicAccess, 
-                       String rootDir)
+                       String rootDir, DataPackage dp)
   {
     try
     {
@@ -174,9 +181,22 @@ public class FileSystemDataStore extends DataStore
    * @param publicAccess: flag for unauthenticated read access to the file.
    * true if anauthenticated users can read the file, false otherwise.
    */
-  public File newFile(String name, Reader file, boolean publicAccess)
+  public File newFile(String name, Reader file, boolean publicAccess,
+                      DataPackage dp)
   {
-    return saveFile(name, file, publicAccess);
+    return saveFile(name, file, publicAccess, datadir, dp);
+  }
+  
+   /**
+   * returns a File object in the local repository.
+   * @param name: the id of the file
+   * @param file: the stream to the file
+   * @param publicAccess: flag for unauthenticated read access to the file.
+   * true if anauthenticated users can read the file, false otherwise.
+   */
+  public File newFile(String name, Reader file)
+  {
+    return saveFile(name, file, false, datadir, null);
   }
   
   /**

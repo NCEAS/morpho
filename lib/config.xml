@@ -11,12 +11,15 @@
   <default_profile>./lib/default-profile.xml</default_profile>
   <local_dtd_directory>./lib/catalog</local_dtd_directory>
   <local_catalog_path>./lib/catalog/catalog</local_catalog_path>
-  <debug_level>9</debug_level>
+  <debug_level>20</debug_level>
   <log_file>false</log_file>
   <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
   <tempDir>./tmp</tempDir>
+  <accessFileType>
+    -//NCEAS//eml-access-2.0//EN
+  </accessFileType>
   <entityEditorPaths>
     <entityNamePath>//entityName</entityNamePath>
     <entityDescPath>//entityDescription</entityDescPath>

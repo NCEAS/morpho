@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-17 17:53:00 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2001-10-18 22:39:52 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -502,6 +502,71 @@ public class DataPackage
   }
   
   /**
+   * returns the access file's id from the package
+   * @return returns the accession number of the access file or null if there
+   * is no access file.
+   */
+  public String getAccessId() throws FileNotFoundException, Exception,
+                                     CacheAccessException
+  {
+    Vector fileids = this.getAllIdentifiers();
+    Vector accessFileType = config.get("accessFileType");
+    for(int i=0; i<fileids.size(); i++)
+    { //read each file to see if it's public id is in the access file id list
+      //in the config file.
+      File f;
+      try
+      {
+        if(location.equals(DataPackage.LOCAL) || 
+           location.equals(DataPackage.BOTH))
+        { //open the file locally
+          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          f = fsds.openFile((String)fileids.elementAt(i));
+        }
+        else
+        { // get the file from metacat
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          f = mds.openFile((String)fileids.elementAt(i));
+        }
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        throw new FileNotFoundException("file: " + (String)fileids.elementAt(i) +
+                                        " not found.");
+      }
+      catch(CacheAccessException cae)
+      {
+        throw cae;
+      }
+      
+      String catalogpath = config.get("local_catalog_path",0);
+      String publicid;
+      
+      try
+      {
+        Document doc = PackageUtil.getDoc(f, catalogpath);
+        DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+        publicid = dt.getPublicId();
+      }
+      catch(Exception e)
+      {
+        throw e;
+      }
+      
+      for(int j=0; j<accessFileType.size(); j++)
+      {
+        String accesstype = ((String)accessFileType.elementAt(j)).trim();
+        publicid = publicid.trim();
+        if(accesstype.equals(publicid))
+        { //this is the file we are looking for
+          return (String)fileids.elementAt(i);
+        }
+      }
+    }
+    return null;
+  }
+  
+  /**
    * returns a vector containing a distinct set of all of the file ids that make
    * up this package
    */
@@ -599,11 +664,11 @@ public class DataPackage
               File g = fsds.openFile(accnum);
               if(i == 1)
               {
-                mds.newFile(accnum, new FileReader(g), true);
+                mds.newFile(accnum, new FileReader(g), true, this);
               }
               else
               {
-                mds.saveFile(accnum, new FileReader(g), true);
+                mds.saveFile(accnum, new FileReader(g), true, this);
               }
             }
           }
@@ -699,17 +764,17 @@ public class DataPackage
               File g = mds.openFile(accnum);
               if(i == 1)
               {
-                fsds.newFile(accnum, new FileReader(g), true);
+                fsds.newFile(accnum, new FileReader(g));
               }
               else
               {
-                fsds.saveFile(accnum, new FileReader(g), true);
+                fsds.saveFile(accnum, new FileReader(g));
               }
             }
           }
           else
           { //its a data file
-            fsds.newFile(key, new FileReader(f), true);
+            fsds.newFile(key, new FileReader(f));
           }
         }
         catch(Exception e)
@@ -731,7 +796,7 @@ public class DataPackage
   {
     MetacatDataStore mds = new MetacatDataStore(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
-    Vector v = getAllIdentifiers();
+    Vector v = this.getAllIdentifiers();
     boolean metacatLoc = false;
     boolean localLoc = false;
     if(location.equals(DataPackage.METACAT) || 
@@ -747,9 +812,19 @@ public class DataPackage
     
     for(int i=0; i<v.size(); i++)
     { //loop through and delete all of the files in the package
+      
       if(localLoc)
       {
-        fsds.deleteFile((String)v.elementAt(i));
+        String delfile = (String)v.elementAt(i);
+        String rev = delfile.substring(delfile.lastIndexOf(".")+1, 
+                                       delfile.length());
+        int revi = (new Integer(rev)).intValue();
+        for(int j=1; j<=revi; j++)
+        { //we have to make sure that we delete all of the revisions or else
+          //the package will still be found in a query
+          String acc = delfile.substring(0, delfile.lastIndexOf("."));
+          fsds.deleteFile(acc + "." + j);
+        }
       }
       
       if(metacatLoc)

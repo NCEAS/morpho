@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-18 21:35:12 $'
- * '$Revision: 1.46 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-18 22:39:52 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -491,6 +491,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   { //write out all of the files to their proper homes with proper (non temp) ids
     //add the triples to the triples file
     //open the new package in the package editor if the check box is true
+    String aclid = "";
     Vector packageFiles = new Vector();
     //String triplesTag = "//triple";
     String triplesTag = config.get("triplesTag", 0);
@@ -531,7 +532,14 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     
     // Now create an AccessControl XML document for the dataset
+/*<<<<<<< PackageWizardShell.java
+    AccessionNumber aa = new AccessionNumber(framework);
+    String newid = aa.getNextId();
+    File aclFile = getACLFile(newid);
+    aclid = newid;
+=======*/
     File aclFile = getACLFile(aclID);
+
     
     Vector fvec = new Vector();
     fvec.addElement(aclID);
@@ -783,11 +791,18 @@ public class PackageWizardShell extends javax.swing.JFrame
         
         StringReader sr = new StringReader(docString);
         FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
-        localDataStore.saveFile(wfc.id, sr, false); //write out the file
+        localDataStore.saveFile(wfc.id, sr); //write out the file
       }
     }
-    String location = DataPackage.LOCAL;
     
+    String location = DataPackage.LOCAL;
+    WizardFrameContainer wfc = (WizardFrameContainer)
+                                frameWizards.elementAt(1);
+    String identifier = wfc.id;
+    Vector relations = triples.getCollection();
+    DataPackage dp = new DataPackage(location, identifier, 
+                                   relations, framework);
+                                   
     if(saveToMetacatCheckBox.isSelected())
     {
       //save the package to metacat here
@@ -822,7 +837,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           else
           { //this is an xml file
             //send it to metacat
-            mds.newFile(id, fr, publicAcc);
+            mds.newFile(id, fr, publicAcc, dp);
           }
           fr.close();
         }
@@ -845,12 +860,6 @@ public class PackageWizardShell extends javax.swing.JFrame
       location = DataPackage.BOTH;
     }
     
-    WizardFrameContainer wfc = (WizardFrameContainer)
-                                frameWizards.elementAt(1);
-    String identifier = wfc.id;
-    Vector relations = triples.getCollection();
-    DataPackage dp = new DataPackage(location, identifier, 
-                                   relations, framework);
     DataPackageGUI gui = new DataPackageGUI(framework, dp);
     gui.show();
         
@@ -1081,7 +1090,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     //System.out.println(aclString);
     StringReader aclReader = new StringReader(aclString);
     FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
-    File file = localDataStore.saveFile(id, aclReader, false);
+    File file = localDataStore.saveFile(id, aclReader);
     aclReader.close();
     return file;
   }
@@ -1140,7 +1149,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         else
         {
-          file = localDataStore.saveFile(id, xmlReader, false);
+          file = localDataStore.saveFile(id, xmlReader);
         }
         return this.file;
       }
@@ -1194,7 +1203,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           }
           else
           {
-            file = localDataStore.saveFile(id, fr, false);
+            file = localDataStore.saveFile(id, fr);
           }
           return this.file;
         }

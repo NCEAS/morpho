@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-08-29 22:03:47 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-10-18 22:39:53 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@ import java.util.*;
 
 import javax.swing.*;
 import java.awt.*;
+
+import edu.ucsb.nceas.morpho.datapackage.*;
 
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
@@ -175,10 +177,11 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param publicAccess: true if the file can be read by unauthenticated
    * users, false otherwise.
    */
-  public File saveFile(String name, Reader file, boolean publicAccess) 
+  public File saveFile(String name, Reader file, boolean publicAccess, 
+                       DataPackage dp) 
               throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, "update");
+    return saveFile(name, file, publicAccess, dp, "update");
   }
   
   /**
@@ -191,7 +194,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param action: the action (update or insert) to perform
    */
   private File saveFile(String name, Reader file, boolean publicAccess, 
-                       String action) 
+                        DataPackage dp, String action) 
                        throws MetacatUploadException
   { //-attempt to write file to metacat
     //-if successfull, write file to cache, return pointer to that file
@@ -199,10 +202,26 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     String access = "no";
     StringBuffer fileText = new StringBuffer();
     StringBuffer messageBuf = new StringBuffer();
+    String accessFileId = null;
+    try
+    {
+      accessFileId = dp.getAccessId();
+      System.out.println("===================accessFileId: " + accessFileId);
+    }
+    catch(Exception e)
+    {
+      throw new MetacatUploadException("Error finding an access control file " +
+                                       "in MetacatDataStore.saveFile()");
+    }
     
     if(publicAccess)
     {
       access = "yes";
+      if(accessFileId != null && !accessFileId.equals(""))
+      { //we need to open the access file and make sure it is giving 
+        //public read access to this package.
+        
+      }
     }
     
     try
@@ -240,7 +259,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       Properties prop = new Properties();
       prop.put("action", action);
-      prop.put("public", access);
+      prop.put("public", access);  //This is the old way of controlling access
       prop.put("doctext", filetext);
       prop.put("docid", name);
       ClientFramework.debug(11, "sending docid: " + name + " to metacat");
@@ -310,10 +329,11 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param publicAccess: flag for unauthenticated read access to the new file
    * true if unauthenticated users should have read access, false otherwise
    */
-  public File newFile(String name, Reader file, boolean publicAccess)
+  public File newFile(String name, Reader file, boolean publicAccess, 
+                      DataPackage dp)
          throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, "insert");
+    return saveFile(name, file, publicAccess, dp, "insert");
   }
   
   /**

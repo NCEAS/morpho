@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-09 20:44:27 $'
- * '$Revision: 1.56 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-18 22:39:52 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -865,7 +865,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           }
           
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       metacatpublic);
+                       metacatpublic, dataPackage);
         }
         catch(Exception eee)
         {
@@ -1019,25 +1019,33 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
         if(id.trim().equals(dataPackage.getID().trim()))
         { //edit the package file
+          Vector oldids = new Vector();
+          Vector newids = new Vector();
           String oldid = id;
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          String newPackageFile = a.incRevInTriples(f, oldid, newid);
+          oldids.addElement(oldid);
+          oldids.addElement(dataPackage.getID());
+          newids.addElement(newid);
+          newids.addElement(newPackageId);
+          String newPackageFile = a.incRevInTriples(f, oldids, newids);
           mds.saveFile(newid, new StringReader(newPackageFile), 
-                       metacatpublic);
+                       metacatpublic, dataPackage);
           newPackageId = newid;
         }
         else
         { //edit another file in the package
           String oldid = id;
           newid = a.incRev(id);
-          mds.saveFile(newid, new StringReader(xmlString), metacatpublic);
+          mds.saveFile(newid, new StringReader(xmlString), metacatpublic, 
+                       dataPackage);
           newPackageId = a.incRev(dataPackage.getID());
+          //increment the package files id in the triples
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
                                                     oldid,
-                                                    newid);
+                                                    newPackageId);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       metacatpublic);
+                       metacatpublic, dataPackage);
         }
       }
     }
@@ -1059,19 +1067,27 @@ public class DataPackageGUI extends javax.swing.JFrame
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          fsds.saveFile(newid, new StringReader(newPackageFile), false);
+          fsds.saveFile(newid, new StringReader(newPackageFile));
           newPackageId = newid;
         }
         else
         { //we edited a file in the package
+          Vector newids = new Vector();
+          Vector oldids = new Vector();
           String oldid = id;
           newid = a.incRev(id);
-          fsds.saveFile(newid, new StringReader(xmlString), false);
+          fsds.saveFile(newid, new StringReader(xmlString));
           newPackageId = a.incRev(dataPackage.getID());
+          oldids.addElement(oldid);
+          oldids.addElement(dataPackage.getID());
+          newids.addElement(newid);
+          newids.addElement(newPackageId);
+          //increment the package files id in the triples
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
-                                                    oldid, 
-                                                    newid);
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile), false); 
+                                                    oldids, 
+                                                    newids);
+          System.out.println("oldid: " + oldid + " newid: " + newid);          
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
         }
       }
       
