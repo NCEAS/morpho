@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: higgins $'
-  *     '$Date: 2003-12-03 23:27:09 $'
-  * '$Revision: 1.3 $'
+  *   '$Author: sgarg $'
+  *     '$Date: 2003-12-09 17:19:42 $'
+  * '$Revision: 1.4 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@
     */
 -->
 
-  <xsl:param name="qformat">@default-style@</xsl:param>
+  <xsl:param name="qformat">default</xsl:param>
 
 
 <!--
@@ -75,7 +75,7 @@
     *   To show the links for the Entities in the dataset display module.
     */
 -->
-  <xsl:param name="withEntityLinks">1</xsl:param>
+  <xsl:param name="withEntityLinks">0</xsl:param>
 
 
 <!--
@@ -83,7 +83,7 @@
     *   To show the link for Additional Metadata in the dataset display module.
     */
 -->
-  <xsl:param name="withAdditionalMetadataLink">1</xsl:param>
+  <xsl:param name="withAdditionalMetadataLink">0</xsl:param>
 
 
 <!--
@@ -91,7 +91,7 @@
     *   To show the link for the Original XML in the dataset display module.
     */
 -->
-  <xsl:param name="withOriginalXMLLink">1</xsl:param>
+  <xsl:param name="withOriginalXMLLink">0</xsl:param>
 
 
 <!--
@@ -99,7 +99,7 @@
     *   To show the Attributes table in the entity display.
     */
 -->
-  <xsl:param name="withAttributes">1</xsl:param>
+  <xsl:param name="withAttributes">0</xsl:param>
 
 
 <!--
@@ -114,7 +114,7 @@
     */
 -->
 
-    <xsl:param name="stylePath">@style-skins-path@</xsl:param>
+    <xsl:param name="stylePath">lib/style/eml200/</xsl:param>
 
 
 <!--
@@ -129,7 +129,7 @@
     */
 -->
 
-    <xsl:param name="styleCommonPath">@style-common-path@</xsl:param>
+    <xsl:param name="styleCommonPath">.</xsl:param>
 
 
 <!--the docid of xml which is processed-->

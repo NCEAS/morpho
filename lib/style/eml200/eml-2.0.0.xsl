@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: higgins $'
-  *     '$Date: 2003-12-03 23:27:09 $'
-  * '$Revision: 1.3 $'
+  *   '$Author: sgarg $'
+  *     '$Date: 2003-12-09 17:19:42 $'
+  * '$Revision: 1.4 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -75,14 +75,14 @@
       <body>
         
         <div id="{$mainTableAligmentStyle}">
-          <script language="JavaScript">insertTemplateOpening();</script>
+          <!--<script language="JavaScript">insertTemplateOpening();</script>-->
         
           <table xsl:use-attribute-sets="cellspacing" width="100%"
                                         class="{$mainContainerTableStyle}">
           <xsl:apply-templates select="*[local-name()='eml']"/>
           </table>
       
-          <script language="JavaScript">insertTemplateClosing();</script>
+          <!--<script language="JavaScript">insertTemplateClosing();</script>-->
         </div>
       </body>
     </html>
