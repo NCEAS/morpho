@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.52 2002-09-17 21:28:40 brooke Exp $'
+  *    File Info: '$Id: build.xml,v 1.53 2002-09-18 18:24:09 brooke Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -112,7 +112,7 @@
    </target>
 
    <!--
-   <target name="compile" depends="itis,prepare">
+   <target name="compile" depends="clean,itis,prepare">
    -->
    <target name="compile" depends="prepare">
 
@@ -129,6 +129,8 @@
    <target name="jar" depends="compile">
       <delete file="${build.dir}/${name}.jar" />
       <delete file="${build.dir}/${name}-config.jar" />
+      <delete file="${libdir}/${name}.jar" />
+      <delete file="${libdir}/${name}-config.jar" />
       <copy todir="${build.dest}/${package.home}/morpho/framework" filtering="no">
         <fileset dir="${srcdir}/${package.home}/morpho/framework/images">
         </fileset>
