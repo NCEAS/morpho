@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-07 16:29:14 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-19 17:21:36 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Font;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -93,6 +94,7 @@ public class ExternalRefsPage extends AbstractUIPage
   private static final int       BIGSIDEGAP = 16;
   private static final int     SMALLSIDEGAP = 8;
   private static final int        LABELTOOM = 10;
+  private static final Font       LABELFONT = new Font("Dialog", Font.BOLD, 10);
 
   ExternalRefsPage(ReferencesHandler referenceHandler)
   {
@@ -131,6 +133,7 @@ public class ExternalRefsPage extends AbstractUIPage
                                (TOPGAP, BIGSIDEGAP, BOTTOMGAP, SMALLSIDEGAP));
     packageListPanel.setLayout(new BorderLayout());
     JLabel selectPackageLabel = new JLabel(SELECTPACKAGE);
+    selectPackageLabel.setFont(LABELFONT);
     selectPackageLabel.setBorder(BorderFactory.createEmptyBorder
                                (0, 0, LABELTOOM, 0));
     packageListPanel.add(selectPackageLabel, BorderLayout.NORTH);
@@ -151,6 +154,7 @@ public class ExternalRefsPage extends AbstractUIPage
     JPanel refsPanel = new JPanel();
     String selectRefsString = "2) Select a previous entry from this data package";
     JLabel selectedRefsLabel = new JLabel(selectRefsString);
+    selectedRefsLabel.setFont(LABELFONT);
     selectedRefsLabel.setBorder(BorderFactory.createEmptyBorder
                                (0, 0, LABELTOOM, 0));
     refsPanel.setBorder(BorderFactory.createEmptyBorder(
