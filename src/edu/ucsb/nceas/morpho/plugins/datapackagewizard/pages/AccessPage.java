@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-08 03:29:22 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-04-09 22:20:19 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,13 +190,17 @@ public class AccessPage
 
     this.add(bottomPanel, BorderLayout.SOUTH);
 
-    if (Access.accessTreeNode == null) {
+    if (Access.accessTreeNode != null &&
+        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.
+        getMetacatURLString()) == 0) {
+
+      displayTree(Access.accessTreeNode);
+    } else {
       /**
        * accessTreePane is null... so we have to generate Access.accessTreeNode
        */
       generateAccessTree();
-    } else {
-      displayTree(Access.accessTreeNode);
+
     }
   }
 
@@ -219,6 +223,7 @@ public class AccessPage
    *
    *  @return
    */
+
   protected void generateAccessTree() {
     Document doc = null;
     if ( (doc = getDocumentFromFile()) == null) {
@@ -447,18 +452,21 @@ public class AccessPage
     }
     catch (Exception e) {
       Log.debug(10, "Unable to parse the reply from Metacat server.");
-      Log.debug(45, "Exception in AccessPage class in parseInputStream()."
+      Log.debug(10, "Exception in AccessPage class in parseInputStream()."
           + "Exception: " + e.getClass());
-      Log.debug(45, e.getMessage());
+      Log.debug(10, e.getMessage());
       //// File is not on harddisk and data is not avaiable from
       //// display a dn field to be entered by user...
-      if (Access.accessTreeNode == null) {
-        displayDNPanel();
-      } else {
+      if (Access.accessTreeNode != null &&
+          Access.accessTreeMetacatServerName.compareTo(Morpho.
+          thisStaticInstance.
+          getMetacatURLString()) == 0) {
         Log.debug(10,
             "Retrieving access information from Metacat server failed. "
             + "Displaying the old access information.");
         displayTree(Access.accessTreeNode);
+      } else {
+        displayDNPanel();
       }
     }
 
@@ -509,7 +517,7 @@ public class AccessPage
           userAccessType = "  Allow";
           accessIsAllow = true;
         } else if (e.getItem().toString().compareTo(accessTypeText[1]) == 0) {
-          userAccessType = "  Deny";
+          userAccessType = "  Deny ";
           accessIsAllow = false;
         }
       }
@@ -588,7 +596,7 @@ public class AccessPage
   }
 
   /**
-   * Checks if Access.accessTreeNode is present - if present, creates a
+   * Checks if treenode is present - if present, creates a
    * ScrollPane and sends back the scrollpane... otherwise sends back
    * null.
    */
@@ -635,6 +643,8 @@ public class AccessPage
 
     if (treeNode != null) {
       Access.accessTreeNode = treeNode;
+      Access.accessTreeMetacatServerName = Morpho.thisStaticInstance.
+          getMetacatURLString();
     } else {
       Log.debug(1, "Unable to retrieve access tree. "
           + "The old list will be displayed again");
@@ -796,10 +806,9 @@ public class AccessPage
     List surrogate = new ArrayList();
 
     // Get the value of the DN
-    if (accessTreePane != null) {
+    if (dnField == null) {
       if (treeTable != null) {
         int[] i = treeTable.getSelectedRows();
-        Log.debug(10, i.length + "");
         for (int j = 0; j < i.length; j++) {
           Object o = treeTable.getValueAt(i[j], 0);
           if (o instanceof AccessTreeNodeObject) {
@@ -889,7 +898,19 @@ public class AccessPage
 
     returnMap.clear();
 
-    returnMap.put(xPathRoot + "/principal", dnField.getText().trim());
+    if (dnField == null) {
+      int[] i = treeTable.getSelectedRows();
+      for (int j = 0; j < i.length; j++) {
+        Object o = treeTable.getValueAt(i[j], 0);
+        if (o instanceof AccessTreeNodeObject) {
+          AccessTreeNodeObject nodeOb = (AccessTreeNodeObject) o;
+          returnMap.put(xPathRoot + "/principal[" + (j + 1) + "]",
+              nodeOb.getDN());
+        }
+      }
+    } else {
+      returnMap.put(xPathRoot + "/principal", dnField.getText().trim());
+    }
 
     if (userAccess.compareTo("Read") == 0) {
       returnMap.put(xPathRoot + "/permission", "read");
@@ -1107,13 +1128,15 @@ class QueryMetacatThread
       Log.debug(10, "Error in retrieving User list from Metacat server.");
       Log.debug(45, w.getMessage());
 
-      if (Access.accessTreeNode == null) {
-        accessPage.displayDNPanel();
-      } else {
+      if (Access.accessTreeNode != null &&
+          Access.accessTreeMetacatServerName.compareTo(Morpho.
+          thisStaticInstance.getMetacatURLString()) == 0) {
         Log.debug(10,
             "Retrieving access information from Metacat server failed. "
             + "Using the old access tree.");
         accessPage.displayTree(Access.accessTreeNode);
+      } else {
+        accessPage.displayDNPanel();
       }
       //// File is not on harddisk and data is not avaiable from
       //// display a dn field to be entered by user...

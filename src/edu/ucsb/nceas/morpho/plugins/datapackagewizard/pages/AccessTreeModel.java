@@ -49,10 +49,6 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
  * are directory nodes, cache their children to avoid repeatedly querying
  * the real file system.
  *
- * @version %I% %G%
- *
- * @author Philip Milne
- * @author Scott Violet
  */
 
 public class AccessTreeModel

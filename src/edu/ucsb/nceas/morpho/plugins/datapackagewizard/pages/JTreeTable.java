@@ -48,6 +48,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeModel;
+import java.awt.Color;
+import javax.swing.ListSelectionModel;
 
 /**
  * This example shows how to create a simple JTreeTable component,
@@ -90,6 +92,7 @@ public class JTreeTable extends JTable {
 	setDefaultRenderer(TreeTableModel.class, tree);
 	setDefaultEditor(TreeTableModel.class, new TreeTableCellEditor());
 
+        this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
 	setShowGrid(false);
 	setIntercellSpacing(new Dimension(1, 1));
     }

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-07 23:29:24 $'
- * '$Revision: 1.29 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-04-09 22:20:19 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,11 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.AbstractAction;
@@ -41,7 +40,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -56,7 +54,6 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import java.util.ArrayList;
 
 public class Access
     extends AbstractUIPage {
@@ -93,6 +90,7 @@ public class Access
   private String ORDER_VALUE = "denyFirst";
 
   public static DefaultMutableTreeNode accessTreeNode = null;
+  public static String accessTreeMetacatServerName = null;
 
   public Access() {
     init();
@@ -324,6 +322,8 @@ public class Access
       return returnMap;
     }
 
+    Vector pagesProcessed = new Vector();
+
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       nextRowObj = it.next();
@@ -333,39 +333,25 @@ public class Access
 
       nextRowList = (List) nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 6) {
+      if (nextRowList.size() < 5) {
         continue;
       }
-      nextUserObject = nextRowList.get(5);
-      if (nextUserObject == null) {
+      nextUserObject = nextRowList.get(4);
+      if (nextUserObject == null || pagesProcessed.contains(nextUserObject)) {
         continue;
       }
+      pagesProcessed.add(nextUserObject);
 
       nextAccessPage = (AccessPage) nextUserObject;
-      String xpath = null;
       if (nextAccessPage.accessIsAllow) {
-        xpath = xPathRoot + "allow[" + (allowIndex++) + "]";
+        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "allow[" +
+            (allowIndex++) + "]");
       } else {
-        xpath = xPathRoot + "deny[" + (denyIndex++) + "]";
+        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "deny[" +
+            (denyIndex++) + "]");
       }
 
-      returnMap.put(xpath + "/principal", nextRowList.get(4).toString());
-
-      if (nextAccessPage.userAccess.compareTo("Read") == 0) {
-        returnMap.put(xpath + "/permission", "read");
-      }
-      else if (nextAccessPage.userAccess.compareTo("Read & Write") == 0) {
-        returnMap.put(xpath + "/permission[1]", "read");
-        returnMap.put(xpath + "/permission[2]", "write");
-      }
-      else if (nextAccessPage.userAccess.compareTo("Read, Write & Change Permissions") == 0) {
-        returnMap.put(xpath + "/permission[1]", "read");
-        returnMap.put(xpath + "/permission[2]", "write");
-        returnMap.put(xpath + "/permission[3]", "changePermission");
-      }
-      else if (nextAccessPage.userAccess.compareTo("All") == 0) {
-        returnMap.put(xPathRoot + "/permission", "all");
-      }
+      returnMap.putAll(nextNVPMap);
     }
 
     return returnMap;
