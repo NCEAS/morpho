@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:17:39 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2002-09-03 18:11:35 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,8 +48,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+//import org.apache.xalan.xpath.xml.FormatterToXML;
+//import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 22:34:46 $'
- * '$Revision: 1.13 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-03 18:11:36 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+import javax.xml.transform.TransformerException;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
@@ -667,7 +667,7 @@ public class ConfigXML
       NodeList docNodeList = XPathAPI.selectNodeList(doc, path);
       return docNodeList;
     }
-    catch(SAXException se)
+    catch(TransformerException se)
     {
       System.err.println(se.toString());
       return null;

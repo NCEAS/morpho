@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 22:34:46 $'
- * '$Revision: 1.12 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-03 18:11:35 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,14 +29,12 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.io.*;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+import javax.xml.transform.TransformerException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
@@ -46,7 +44,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-
+import org.apache.xpath.XPathAPI;
 import com.arbortext.catalog.*;
 
 /**
@@ -187,7 +185,7 @@ public class AccessionNumber
       //find where the triples go in the file
       tripleList = XPathAPI.selectNodeList(doc, triplePath);
     }
-    catch(SAXException se)
+    catch(TransformerException se)
     {
       System.err.println("incRevInTriples() : parse threw: " + 
                          se.toString());

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-30 20:27:05 $'
- * '$Revision: 1.71 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-03 18:11:35 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,6 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.TextImportListener;
 import edu.ucsb.nceas.morpho.framework.TextImportWizard;
-//import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
-import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -54,8 +52,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+import javax.xml.transform.TransformerException;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Document;
@@ -864,7 +862,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           //find where the triples go in the file
           docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
         }
-        catch(SAXException se)
+        catch(TransformerException se)
         {
           System.err.println("File: " + f.getPath() + " : parse threw (9): " + 
                              se.toString());
@@ -885,7 +883,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           //find where the triples go in the file
           newtriples = XPathAPI.selectNodeList(doc, triplesTag);
         }
-        catch(SAXException se)
+        catch(TransformerException se)
         {
           System.err.println("File: " + f.getPath() + " : parse threw (10): " + 
                              se.toString());

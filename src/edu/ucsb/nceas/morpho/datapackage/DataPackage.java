@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-30 16:14:50 $'
- * '$Revision: 1.68 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-03 18:11:35 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -63,6 +62,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
@@ -75,14 +75,15 @@ import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.apache.xalan.xslt.XSLTInputSource;
-import org.apache.xalan.xslt.XSLTResultTarget;
-import org.apache.xalan.xslt.XSLTProcessor;
-import org.apache.xalan.xslt.XSLTProcessorFactory;
+import org.apache.xpath.XPathAPI;
+//import org.apache.xalan.xslt.XSLTInputSource;
+//import org.apache.xalan.xslt.XSLTResultTarget;
+//import org.apache.xalan.xslt.XSLTProcessor;
+//import org.apache.xalan.xslt.XSLTProcessorFactory;
 
-import org.apache.xalan.xpath.xml.XMLParserLiaison;
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+//import org.apache.xalan.xpath.xml.XMLParserLiaison;
+//import org.apache.xalan.xpath.xml.FormatterToXML;
+//import org.apache.xalan.xpath.xml.TreeWalker;
 
 import com.arbortext.catalog.Catalog;
 import com.arbortext.catalog.CatalogEntityResolver;
@@ -330,7 +331,7 @@ public class DataPackage implements XMLFactoryInterface
         titleNodeList = XPathAPI.selectNodeList(doc, "//title");
       }
     }
-    catch(SAXException se)
+    catch(TransformerException se)
     {
       System.err.println("parseTripleFile : parse threw: " + se.toString());
     }
@@ -1292,7 +1293,8 @@ public class DataPackage implements XMLFactoryInterface
           htmldoc.append(getIdFromPath(((File)fileV.elementAt(i)).toString()));
           htmldoc.append("</h2>");
           //do the actual transform
-          XSLTProcessor processor = XSLTProcessorFactory.getProcessor();
+          // It need new api from matthew
+          /*XSLTProcessor processor = XSLTProcessorFactory.getProcessor();
           XMLParserLiaison pl = processor.getXMLProcessorLiaison();
           pl.setEntityResolver(cer);
           fis = new FileInputStream((File)fileV.elementAt(i));
@@ -1305,7 +1307,7 @@ public class DataPackage implements XMLFactoryInterface
           processor.process(xis,
                             new XSLTInputSource(sis),
                             new XSLTResultTarget(docstring));
-          htmldoc.append(docstring.toString());
+          htmldoc.append(docstring.toString());*/
           htmldoc.append("<br><br><hr><br><br>");
         }
         else

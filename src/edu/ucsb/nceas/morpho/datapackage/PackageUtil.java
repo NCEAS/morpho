@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:20:13 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2002-09-03 18:11:35 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+import javax.xml.transform.TransformerException;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Document;
@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.framework.XPathAPI;
+
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -156,7 +156,7 @@ public class PackageUtil
       NodeList docNodeList = XPathAPI.selectNodeList(doc, path);
       return docNodeList;
     }
-    catch(SAXException se)
+    catch(TransformerException se)
     {
       System.err.println("File: " + f.getPath() + " : parse threw (2): " + 
                          se.toString());
@@ -635,7 +635,7 @@ public class PackageUtil
       //find where the triples go in the file
       docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
     }
-    catch(SAXException se)
+    catch(TransformerException se)
     {
       System.err.println("File: " + packageFile.getPath() + " : parse threw (4): " + 
                          se.toString());
@@ -732,7 +732,7 @@ public class PackageUtil
       //find all the triples
       docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
     }
-    catch(SAXException se)
+    catch(TransformerException se)
     {
       System.err.println("File: " + packageFile.getPath() + " : parse threw (6): " + 
                          se.toString());
@@ -758,7 +758,7 @@ public class PackageUtil
             {
               countTriples = XPathAPI.selectNodeList(doc, triplesTag);
             }
-            catch(SAXException se2)
+            catch(TransformerException se2)
             {
               System.err.println("File: " + packageFile.getPath() + 
                                  " : parse threw (7): " + 

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-02 17:34:24 $'
- * '$Revision: 1.28 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-03 18:11:35 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ import java.util.Enumeration;
 import java.awt.event.*;
 
 
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+//import org.apache.xalan.xpath.xml.FormatterToXML;
+//import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Document;
