@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-26 23:48:18 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-28 22:30:14 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import javax.swing.JFrame;
 
 import junit.framework.TestCase;
 
-import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
+import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
@@ -58,14 +58,19 @@ public class MetaDisplayTestResources
 
     public static final JFrame                  frame;
     public static final XMLFactoryAdapter       factory;
-    public static final MetaDisplayInterface    metaDisplay;
+    public static final MetaDisplay             metaDisplay;
     
     static
     {
         frame = new JFrame("MetaDisplayTest");
         frame.setBounds(200,200,200,200);
         factory = new XMLFactoryAdapter();
-        metaDisplay = new MetaDisplayAdapter();
+        metaDisplay = new MetaDisplay();
+        try {
+            metaDisplay.setFactory(factory);
+        } catch (NullArgumentException nae) { 
+            System.err.println("Problem setting test MetaDisplay XMLFactory: "+nae);
+        }
     }    
 
     public static void clearJFrame() {
@@ -98,7 +103,7 @@ public class MetaDisplayTestResources
     }
 
 
-    public static MetaDisplayInterface getTestMetaDisplay()
+    public static MetaDisplay getTestMetaDisplay()
     {
         return metaDisplay;
     }        
@@ -149,26 +154,6 @@ class XMLFactoryAdapter implements XMLFactoryInterface
             throw new DocumentNotFoundException("document not found for id:"+id);
         }
     }
-}
-
-//bare-bones test implementation
-class MetaDisplayAdapter implements MetaDisplayInterface
-{
-    public Component getDisplayComponent(   String identifier,
-                                            XMLFactoryInterface factory,
-                                            ActionListener listener )
-                                            throws  NullArgumentException, 
-                                                    DocumentNotFoundException {
-        return null;
-    }
-    public void display(String identifier)  throws  DocumentNotFoundException {}
-    public void display(String identifier, Reader XMLDocument) 
-                                            throws  NullArgumentException, 
-                                                    DocumentNotFoundException {}
-    public void displayPrevious() throws DocumentNotFoundException {}
-    public void redisplay() throws DocumentNotFoundException {}
-    public void addActionListener(ActionListener    listener) {}
-    public void removeActionListener(ActionListener listener) {}
 }
 
 
