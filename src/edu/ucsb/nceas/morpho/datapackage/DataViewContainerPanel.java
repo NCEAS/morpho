@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-08 19:19:24 $'
- * '$Revision: 1.88 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-21 04:43:17 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -612,7 +612,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     return dv;
   }
-	
+
 	public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
@@ -675,7 +675,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           int selectedColIndex = -1;
           try {
             selectedColIndex = Integer.parseInt(selectedAttribs);
-						
+
           } catch (NumberFormatException nfe) {
             Log.debug(12,"Can't handle multiple column selections yet!!");
 					  return;
@@ -822,8 +822,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       else if (adp.getDistributionArray(index, 0)==null) {
         // case where there is no distribution data in the package
 //        Log.debug(1, "This entity has NO distribution information!");
-        JOptionPane.showMessageDialog(null, 
-                  "This entity has NO distribution information!", 
+        JOptionPane.showMessageDialog(null,
+                  "This entity has NO distribution information!",
                   "Information", JOptionPane.INFORMATION_MESSAGE );
       }
       dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
@@ -1005,7 +1005,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
  public AbstractDataPackage getAbstractDataPackage() {
     return adp;
   }
-  
+
  /**
   * get the last tab selected in the entities display
   */
@@ -1020,7 +1020,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    AbstractDataPackage adp = getAbstractDataPackage();
    return adp.getLocation();
  }
-  
+
   /*
    * A class to keep the information for every tabbed panel
    */

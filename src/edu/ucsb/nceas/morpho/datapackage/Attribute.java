@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-11-18 22:49:09 $'
- * '$Revision: 1.1 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-21 04:43:17 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,24 +47,24 @@ public  class Attribute
    *  root node of DOM tree representing attribute
    */
   private Node attrRoot = null;
-  
+
   /*
    *  the AbstractDataPackage which contains this Entity
    *  if null, it has not yet been inserted an AbstractDataPackage
    */
   private AbstractDataPackage adpContainer = null;
-  
+
   public Attribute() {
-    try{        
+    try{
         DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
         Document doc = impl.createDocument("", "attribute", null);
         attrRoot = doc.getDocumentElement();
     }
     catch (Exception e) {
       Log.debug(5, "Unable to create a DOM for this attribure");
-    }  
+    }
   }
-  
+
   public Attribute(OrderedMap om) {
     this();
     try {
@@ -83,11 +83,11 @@ public  class Attribute
     this(node);
     setContainer(adp);
   }
-    
+
   public void setContainer(AbstractDataPackage adp) {
     adpContainer = adp;
   }
-  
+
   public AbstractDataPackage getContainer() {
     return adpContainer;
   }

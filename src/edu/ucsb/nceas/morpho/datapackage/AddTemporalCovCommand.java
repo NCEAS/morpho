@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 22:00:56 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-01-21 04:43:17 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,24 +38,28 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
 
-import java.awt.Dimension;
+import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+
 import java.awt.event.ActionEvent;
-import java.awt.Point;
+
+import java.util.Set;
+import java.util.Iterator;
 
 /**
  * Class to handle add temporal coverage command
  */
-public class AddTemporalCovCommand
-    implements Command {
+public class AddTemporalCovCommand implements Command {
 
-  /* Flag if need to add a column*/
+  /* Flag if need to add coverage info*/
   private boolean infoAddFlag = false;
 
   /* Referrence to  morphoframe */
@@ -64,7 +68,6 @@ public class AddTemporalCovCommand
   private DataViewContainerPanel resultPane;
   private Temporal temporalPage;
   private DataViewer dataView;
-
 
   public AddTemporalCovCommand() {
   }
@@ -80,7 +83,7 @@ public class AddTemporalCovCommand
     if (morphoFrame != null) {
       resultPane = AddDocumentationCommand.
           getDataViewContainerPanelFromMorphoFrame(morphoFrame);
-    } //if
+    }
 
     // make sure resulPanel is not null
     if (resultPane != null) {
@@ -93,24 +96,24 @@ public class AddTemporalCovCommand
 
           try {
               insertNewTemporal();
-          } //try
-
+          }
           catch (Exception w) {
-            Log.debug(20, "Exception trying to modify attribute DOM");
-          } //catch
+            Log.debug(20, "Exception trying to modify coverage DOM");
+          }
         }
       }
 
-    } //if
-  } //execute
+    }
+  }
 
 
   private void showTemporalDialog() {
+
     MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
-    Point curLoc = mf.getLocationOnScreen();
-    Dimension dim = mf.getSize();
+
     ServiceController sc;
     DataPackageWizardPlugin dpwPlugin = null;
+
     try {
       sc = ServiceController.getInstance();
       dpwPlugin = (DataPackageWizardPlugin) sc.getServiceProvider(
@@ -119,13 +122,16 @@ public class AddTemporalCovCommand
     catch (ServiceNotHandledException se) {
       Log.debug(6, se.getMessage());
     }
+
     if (dpwPlugin == null) {
       return;
     }
+
     temporalPage = (Temporal) dpwPlugin.getPage(
         DataPackageWizardInterface.TEMPORAL);
     WizardPopupDialog wpd = new WizardPopupDialog(temporalPage, mf, false);
-    wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
+
+    wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.DIALOG_HEIGHT);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
@@ -138,15 +144,56 @@ public class AddTemporalCovCommand
     return;
   }
 
-  private void insertNewTemporal()
-  {
-          OrderedMap map = temporalPage.getPageData();
-          AbstractDataPackage adp = dataView.getAbstractDataPackage();
+  private Node covRoot;
+  private Set mapSet;
+  private Iterator mapSetIt;
+  private Object key;
+  private OrderedMap map, newMap;
+  AbstractDataPackage adp;
 
-          //int entityIndex = dataView.getEntityIndex();
-          //adp.insertAttribute(entityIndex, attrObject, index);
-          //adp.showPackageSummary();
-          return;
+  private void insertNewTemporal() {
+
+    covRoot = null;
+    map = temporalPage.getPageData("/temporalCoverage[");
+    adp = dataView.getAbstractDataPackage();
+
+    mapSet = map.keySet();
+    mapSetIt = mapSet.iterator();
+
+    while(mapSetIt.hasNext()){
+      key = mapSetIt.next();
+      newMap = new OrderedMap();
+
+      int i = key.toString().indexOf("[");
+      String keySt = key.toString().substring(0,i) + key.toString().substring(i+3);
+
+      newMap.put(keySt,map.get(key));
+
+      if(key.toString().indexOf("startDateTime") > 0){
+        key = mapSetIt.next();
+
+        i = key.toString().indexOf("[");
+        keySt = key.toString().substring(0,i) + key.toString().substring(i+3);
+
+        newMap.put(keySt,map.get(key));
+      }
+
+      try {
+        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+        Document doc = impl.createDocument("", "temporalCoverage", null);
+
+        covRoot = doc.getDocumentElement();
+        XMLUtilities.getXPathMapAsDOMTree(newMap, covRoot);
+
+        adp.insertCoverage(covRoot);
+      }
+      catch (Exception w) {
+        Log.debug(5, "Unable to add OrderMap elements to DOM");
+        w.printStackTrace();
+      }
+    }
+
+    return;
   }
 
-} //class CancelCommand
+}
