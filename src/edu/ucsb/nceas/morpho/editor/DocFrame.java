@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-01 17:53:06 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-01 23:11:20 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,9 +121,11 @@ public class DocFrame extends javax.swing.JFrame
 		DTDParse.setText("Parse DTD");
 		DTDParse.setActionCommand("Parse DTD");
 		ControlPanel.add(DTDParse);
+		DTDParse.setVisible(false);
 		TestButton.setText("Test");
 		TestButton.setActionCommand("Test");
 		ControlPanel.add(TestButton);
+		TestButton.setVisible(false);
 		SaveXML.setText("Save XML...");
 		SaveXML.setActionCommand("Save XML...");
 		ControlPanel.add(SaveXML);
@@ -528,7 +530,12 @@ void Dup_actionPerformed(java.awt.event.ActionEvent event) {
 }
 
 void Del_actionPerformed(java.awt.event.ActionEvent event) {
+  int selRow = -1;
   TreePath currentSelection = tree.getSelectionPath();
+  int[] selRows = tree.getSelectionRows();
+  if ((selRows!=null)&&(selRows.length>0)) {
+    selRow = selRows[0];
+  }
   if (currentSelection != null) {
     DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)(currentSelection.getLastPathComponent());
     NodeInfo ni = (NodeInfo)currentNode.getUserObject();
@@ -555,6 +562,9 @@ void Del_actionPerformed(java.awt.event.ActionEvent event) {
         || (ni.getCardinality().equalsIgnoreCase("ZERO to MANY")) ) {
           treeModel.removeNodeFromParent(currentNode);
         }
+      }
+      if (selRow>0) {
+        tree.setSelectionRow(selRow-1);
       }
       return;
     }
