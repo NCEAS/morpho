@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-11 00:46:49 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-01-08 19:30:35 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -414,6 +414,9 @@ public class PersistentVector
   }
     
   private String[] getColumnValues(String str) {
+    // add a space in case line text ends in a delimiter
+    // to insure that an empty string is saved
+    str = str + " ";
 	  String sDelim = getDelimiterString();
 	  String oldToken = "";
 	  String token = "";
