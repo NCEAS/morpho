@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 00:19:45 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-17 00:52:25 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,11 +54,12 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import com.toedter.calendar.JCalendar;
 
 /**
- * <p>Thisa is the actual temporal dialog page, where the user enters temporal
+ * <p>This is the actual temporal dialog page, where the user enters temporal
  * range limits</p>
  */
 public class TemporalPage extends AbstractWizardPage {
@@ -259,7 +260,7 @@ public class TemporalPage extends AbstractWizardPage {
 
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
-    panel.setBorder(new javax.swing.border.EmptyBorder(2*WizardSettings.PADDING,
+    panel.setBorder(new EmptyBorder(2*WizardSettings.PADDING,
         4*WizardSettings.PADDING,0,
         4*WizardSettings.PADDING));
 
@@ -323,9 +324,9 @@ public class TemporalPage extends AbstractWizardPage {
 
     WidgetFactory.setPrefMaxSizes(timeTextField,
                                   WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-    calendarPanel.add(Box.createGlue());
+    calendarPanel.add(Box.createVerticalStrut(5));
     calendarPanel.add(timeTextField);
-    calendarPanel.add(Box.createGlue());
+    calendarPanel.add(Box.createVerticalStrut(5));
 
     timeCalendar.addPropertyChangeListener(propertyListener);
     calendarPanel.add(timeCalendar);
