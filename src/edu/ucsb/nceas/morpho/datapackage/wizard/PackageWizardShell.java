@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-20 18:43:05 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-06-21 21:54:28 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -187,7 +187,9 @@ public class PackageWizardShell extends javax.swing.JFrame
       else if(frame.containsKey("InitialDescription"))
       {
         String initdesc = (String)descriptions.get("InitialDescription");
-        JLabel initdescLabel = new JLabel("<html>" + initdesc + "</html>");
+        JLabel initdescLabel = new JLabel("<html><font color=000000>" + initdesc + "</font></html>");
+        initdescLabel.setForeground(Color.black); 
+        initdescLabel.setFont(new Font("Dialog", Font.BOLD, 12));
         initdescLabel.setPreferredSize(new Dimension(400, 400));
         framePanel.add(initdescLabel);
         wfc.type="IGNORE";
@@ -959,7 +961,7 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   private void changeDescription(String desc)
   {
-    descriptionLabel = new JLabel("<html>" + desc + "</html>");
+    descriptionLabel = new JLabel("<html><font color=000000>" + desc + "</font></html>");
     descriptionLabel.setForeground(Color.black);
     descriptionLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     ImageIcon logoIcon = new ImageIcon(
@@ -967,6 +969,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     JLabel imageLabel = new JLabel();
     imageLabel.setIcon(logoIcon);
     descriptionLabel.setPreferredSize(new Dimension(150, 400));
+    descriptionLabel.setForeground(Color.black);
+    descriptionPanel.setBorder(BorderFactory.createLoweredBevelBorder());
     descriptionPanel.removeAll();
     descriptionPanel.add(imageLabel);
     descriptionPanel.add(descriptionLabel);

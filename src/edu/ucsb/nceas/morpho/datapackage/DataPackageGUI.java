@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-20 18:27:28 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-06-21 21:54:28 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     contentPane.setLayout(box);
     initComponents();
     pack();
-    setSize(500, 400);
+    setSize(500, 550);
   }
   
   /**
@@ -108,27 +108,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     basicInfoPanel = createBasicInfoPanel(dataPackage.getIdentifier(), 
                                                  title, 
                                                  altTitle, orig);
-    basicInfoPanel.setPreferredSize(new Dimension(160,300));
-    basicInfoPanel.setBackground(Color.white);
-    
-    JPanel headPanel = new JPanel();
-    JLabel headLabel = new JLabel();
-    headLabel.setText("Package Editor");
-    ImageIcon head = new ImageIcon(
-                         framework.getClass().getResource("smallheader-bg.gif"));
-    headLabel.setIcon(head);
-    headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-    headLabel.setHorizontalAlignment(SwingConstants.LEFT);
-    headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
-    headLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    headLabel.setForeground(Color.black);
-    headLabel.setFont(new Font("Dialog", Font.BOLD, 14));
-    headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-    headPanel.setLayout(new FlowLayout());
-    headPanel.add(headLabel);
-    headPanel.setPreferredSize(new Dimension(300, 50));
-    headPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-    
+                                                 
     Hashtable relfiles = dataPackage.getRelatedFiles();
 
     Vector otheritems = new Vector();
@@ -170,88 +150,165 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
       }
     }
+    
+    ImageIcon head = new ImageIcon(
+                         framework.getClass().getResource("smallheader-bg.gif"));
+    ImageIcon logoIcon = 
+              new ImageIcon(framework.getClass().getResource("logo-icon.gif"));
+    JLabel logoLabel = new JLabel();
+    JLabel headLabel = new JLabel("Package Editor");
+    logoLabel.setIcon(logoIcon);
+    headLabel.setIcon(head);
+    headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+    headLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
+    headLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    headLabel.setForeground(Color.black);
+    headLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+    headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+    JPanel toppanel = new JPanel();
+    toppanel.setLayout(new BoxLayout(toppanel, BoxLayout.X_AXIS));
+    toppanel.add(logoLabel);
+    toppanel.add(headLabel);
+    
     JPanel listPanel = createListPanel(entityitems, otheritems);
     JPanel layoutPanel = new JPanel();
-    layoutPanel.setLayout(new BorderLayout());
-    basicInfoPanel.setPreferredSize(new Dimension(450, 200));
+    layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
+    layoutPanel.setPreferredSize(new Dimension(450, 500));
+    layoutPanel.setMinimumSize(new Dimension(450, 500));
     
-    //layoutPanel.add(headPanel, BorderLayout.NORTH);
-    layoutPanel.add(listPanel, BorderLayout.CENTER);
-    layoutPanel.add(basicInfoPanel, BorderLayout.NORTH);
+    layoutPanel.add(toppanel);
+    //layoutPanel.add(Box.createRigidArea(new Dimension(0,10)));                         
+    layoutPanel.add(basicInfoPanel);
+    //layoutPanel.add(Box.createRigidArea(new Dimension(0,10)));
+    layoutPanel.add(listPanel);
+    
     contentPane.add(layoutPanel);
   }
   
   private JPanel createBasicInfoPanel(String identifier, String title, 
                                       String altTitle, Vector originator)
   {
+    JPanel textpanel = new JPanel();
+    textpanel.setBorder(BorderFactory.createLoweredBevelBorder());
+    textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
+    textpanel.setBackground(Color.white);
+    //textpanel.setPreferredSize(new Dimension(600, 300));
+    //textpanel.setMinimumSize(new Dimension(600, 300));
     editBaseInfoButton = new JButton("Edit Basic Information");
     editBaseInfoButton.addActionListener(this);
     JPanel panel = new JPanel();
     JLabel identifierL = new JLabel("Identifier: ");
     JLabel titleL = new JLabel("Title: ");
-    JLabel altTitleL = new JLabel("Alternate Title: ");
+    JLabel altTitleL = new JLabel("Short Title: ");
     JLabel originatorL = new JLabel("Data Originator: ");
-    String htmlBegin = "<html>";
-    String htmlEnd = "</html>";
+    String htmlBegin = "<html><p>";
+    String htmlEnd = "</p></html>";
     
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    //panel.setMinimumSize(new Dimension(600, 300));
+    //panel.setPreferredSize(new Dimension(600, 300));
     
-    ImageIcon logoIcon = new ImageIcon(
-                             framework.getClass().getResource("logo-icon.gif"));
-    JLabel imageLabel = new JLabel();
-    imageLabel.setIcon(logoIcon);
-    panel.add(imageLabel);
+    JPanel titleTempPanel = new JPanel();
+    titleTempPanel.setLayout(new BoxLayout(titleTempPanel, BoxLayout.X_AXIS));
+    titleTempPanel.setBackground(Color.white);
+    titleTempPanel.add(titleL);
+    JLabel titleLabel = new JLabel(title);
+    JTextArea titleArea = new JTextArea(title);
     
-    JPanel tempPanel = new JPanel();
-    tempPanel.setBackground(Color.white);
-    tempPanel.add(identifierL);
-    JLabel idLabel = new JLabel(identifier);
-    idLabel.setForeground(Color.black);
-    tempPanel.add(idLabel);
-    panel.add(tempPanel);
+    titleArea.setWrapStyleWord(true);
+    titleArea.setLineWrap(true);
+    titleArea.setRows(1);
+    titleArea.setColumns(60);
+    titleArea.setBorder(null);
+    titleArea.setEditable(false);
+    titleArea.setFont(new Font("Times", Font.PLAIN, 13));
+    JScrollPane jsp = new JScrollPane(titleArea);
+    jsp.setMinimumSize(new Dimension(250, 25));
+    jsp.setMaximumSize(new Dimension(600, 40));
+    jsp.setBorder(new EmptyBorder(0,0,0,0));
+    titleTempPanel.setPreferredSize(new Dimension(125,75));
+    titleTempPanel.setMinimumSize(new Dimension(125,75));
+    titleTempPanel.add(jsp);
+    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
+    textpanel.add(titleTempPanel);
+    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
     
-    tempPanel = new JPanel();
-    tempPanel.setBackground(Color.white);
-    tempPanel.add(titleL);
-    JTextArea titleLabel = new JTextArea(title);
-    titleLabel.setPreferredSize(new Dimension(50, 20));
-    titleLabel.setLineWrap(true);
-    titleLabel.setColumns(20);
-    titleLabel.setRows(2);
-    //titleLabel.setBorder(null);
-    titleLabel.setForeground(Color.black);
-    tempPanel.add(titleLabel);
+    JPanel idTempPanel = new JPanel();
+    idTempPanel.setLayout(new BoxLayout(idTempPanel, BoxLayout.X_AXIS));
+    idTempPanel.setBackground(Color.white);
+    idTempPanel.add(identifierL);
+    JTextArea idArea = new JTextArea(identifier);
+    idArea.setWrapStyleWord(true);
+    idArea.setRows(1);
+    idArea.setColumns(15);
+    idArea.setEditable(false);
+    idArea.setBorder(null);
+    idArea.setFont(new Font("Times", Font.PLAIN, 12));
+    idTempPanel.setPreferredSize(new Dimension(75, 25));
+    idTempPanel.setMinimumSize(new Dimension(75, 40));
+    JScrollPane jsp2 = new JScrollPane(idArea);
+    jsp2.setBorder(new EmptyBorder(0,0,0,0));
+    jsp2.setMaximumSize(new Dimension(500,25));
+    idTempPanel.add(jsp2);
+    textpanel.add(idTempPanel);
+    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
     
-    panel.add(tempPanel);
+    JPanel alttitleTempPanel = new JPanel();
+    alttitleTempPanel.setLayout(new BoxLayout(alttitleTempPanel, BoxLayout.X_AXIS));
+    alttitleTempPanel.setBackground(Color.white);
+    alttitleTempPanel.add(altTitleL);
+    JTextArea alttitleArea = new JTextArea(altTitle);
+    alttitleArea.setFont(new Font("Times", Font.PLAIN, 12));
+    alttitleArea.setWrapStyleWord(true);
+    alttitleArea.setLineWrap(true);
+    alttitleArea.setRows(1);
+    alttitleArea.setColumns(25);
+    alttitleArea.setBorder(null);
+    alttitleArea.setEditable(false);
+    JScrollPane jsp3 = new JScrollPane(alttitleArea);
+    jsp3.setBorder(new EmptyBorder(0,0,0,0));
+    jsp3.setMaximumSize(new Dimension(500,25));
+    alttitleTempPanel.add(jsp3);
+    textpanel.add(alttitleTempPanel);
+    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
     
-    tempPanel = new JPanel();
-    tempPanel.setBackground(Color.white);
-    tempPanel.add(altTitleL);
-    JTextArea altTitleLabel = new JTextArea(altTitle);
-    altTitleLabel.setLineWrap(true);
-    altTitleLabel.setBorder(null);
-    altTitleLabel.setForeground(Color.black);
-    tempPanel.add(altTitleLabel);
-    panel.add(tempPanel);
+    JPanel origTempPanel = new JPanel();
+    origTempPanel.setBackground(Color.white);
+    origTempPanel.setLayout(new BoxLayout(origTempPanel, BoxLayout.X_AXIS));
+    origTempPanel.add(originatorL);
     
-    tempPanel = new JPanel();
-    tempPanel.setBackground(Color.white);
-    tempPanel.add(originatorL);
-    JPanel tempPanel2 = new JPanel();
-    tempPanel2.setLayout(new BoxLayout(tempPanel2, BoxLayout.Y_AXIS));
+    String text = "";
     for(int i=0; i<originator.size(); i++)
     {
       String person = (String)originator.elementAt(i);
-      tempPanel2.setBackground(Color.white);
-      JLabel personLabel = new JLabel(person);
-      personLabel.setForeground(Color.black);
-      tempPanel2.add(personLabel);
+      if(i == originator.size()-1)
+      {
+        text += person;
+      }
+      else
+      {
+        text += person + ", ";
+      }
     }
-    tempPanel.add(tempPanel2);
+    JTextArea origArea = new JTextArea(text);
+    origArea.setFont(new Font("Times", Font.PLAIN, 12));
+    origArea.setLineWrap(true);
+    origArea.setRows(1);
+    origArea.setWrapStyleWord(true);
+    origArea.setColumns(25);
+    origArea.setBorder(null);
+    origArea.setEditable(false);
+    JScrollPane jsp4 = new JScrollPane(origArea);
+    jsp4.setBorder(new EmptyBorder(0,0,0,0));
+    jsp4.setMaximumSize(new Dimension(500, 25));
+    origTempPanel.add(jsp4);
     
-    panel.add(tempPanel);
-    panel.add(editBaseInfoButton);
+    textpanel.add(origTempPanel);
+    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
+    textpanel.add(editBaseInfoButton);
     
+    panel.add(textpanel);
     return panel;
   }
   
@@ -268,8 +325,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     JButton dataFileEdit = new JButton("Edit");
     dataFileEdit.addActionListener(this);
     JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, 
-                                                BoxLayout.X_AXIS));
+    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.add(dataFileAdd);
     buttonPanel.add(dataFileRemove);
     buttonPanel.add(dataFileEdit);
@@ -375,28 +431,21 @@ public class DataPackageGUI extends javax.swing.JFrame
       
       if(item == null)
       {
-        if(dataFileList.getSelectedIndex() == -1)
+        if(otherFileList.getSelectedIndex() == -1)
         {
-          if(otherFileList.getSelectedIndex() == -1)
-          {
-            if(entityFileList.getSelectedIndex() == -1)
-            { //nothing is selected, give an error and return
-              ClientFramework.debug(1, "You must select an item to edit.");
-              return;
-            }
-            else
-            { 
-              item = (String)entityFileList.getSelectedValue();
-            }
+          if(entityFileList.getSelectedIndex() == -1)
+          { //nothing is selected, give an error and return
+            ClientFramework.debug(1, "You must select an item to edit.");
+            return;
           }
           else
-          {
-            item = (String)otherFileList.getSelectedValue();
+          { 
+            item = (String)entityFileList.getSelectedValue();
           }
         }
         else
         {
-          item = (String)dataFileList.getSelectedValue();
+          item = (String)otherFileList.getSelectedValue();
         }
       }
       
@@ -463,32 +512,34 @@ public class DataPackageGUI extends javax.swing.JFrame
    */
   public void editingCompleted(String xmlString, String id, String location)
   {
-    System.out.println("editing complete: id: " + id + " location: " + location);
+    //System.out.println(xmlString);
+    framework.debug(11, "editing complete: id: " + id + " location: " + location);
     AccessionNumber a = new AccessionNumber(framework);
     boolean metacatpublic = false;
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     //System.out.println(xmlString);
+  
+    boolean metacatloc = false;
+    boolean localloc = false;
+    boolean bothloc = false;
+    String newid = "";
+    String newPackageId = "";
+    if(location.equals(DataPackage.BOTH))
+    {
+      metacatloc = true;
+      localloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+    
     try
     {
-      boolean metacatloc = false;
-      boolean localloc = false;
-      boolean bothloc = false;
-      String newid = "";
-      String newPackageId = "";
-      if(location.equals(DataPackage.BOTH))
-      {
-        metacatloc = true;
-        localloc = true;
-      }
-      else if(location.equals(DataPackage.METACAT))
-      {
-        metacatloc = true;
-      }
-      else if(location.equals(DataPackage.LOCAL))
-      {
-        localloc = true;
-      }
-      
       if(metacatloc)
       { //save it to metacat
         MetacatDataStore mds = new MetacatDataStore(framework);
@@ -524,7 +575,17 @@ public class DataPackageGUI extends javax.swing.JFrame
                        metacatpublic);
         }
       }
-      
+    }
+    catch(Exception e)
+    {
+      framework.debug(0, "Error saving file to metacat"+ id + " to " + location +
+                         "--message: " + e.getMessage());
+      framework.debug(11, "File: " + xmlString);
+      e.printStackTrace();
+    }
+    
+    try
+    { 
       if(localloc)
       { //save it locally
         if(id.trim().equals(dataPackage.getID().trim()))
@@ -551,14 +612,15 @@ public class DataPackageGUI extends javax.swing.JFrame
       
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                                  framework);
-      this.hide();
+      this.dispose();
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      newgui.show();
     }
     catch(Exception e)
     {
-      framework.debug(0, "Error saving file "+ id + " to " + location +
-                         " --message: " + e.getMessage());
-      
+      framework.debug(0, "Error saving file locally"+ id + " to " + location +
+                         "--message: " + e.getMessage());
+      framework.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
   }

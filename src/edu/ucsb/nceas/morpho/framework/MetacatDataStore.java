@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-20 18:27:29 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-06-21 21:54:29 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -210,6 +210,7 @@ public class MetacatDataStore extends DataStore
         fileText.append((char)c);
         c = file.read();
       }
+      
       //System.out.println(fileText.toString());
       
       Properties prop = new Properties();
@@ -335,7 +336,7 @@ public class MetacatDataStore extends DataStore
     }
     else if(message.indexOf("<port>") != -1)
     {//the operation worked
-      System.out.println("it worked.  connect and send the data file here");
+      
       String cookie = framework.getSessionCookie();
       int i1 = cookie.indexOf("JSESSIONID=");
       int i2 = cookie.indexOf(":", i1);
