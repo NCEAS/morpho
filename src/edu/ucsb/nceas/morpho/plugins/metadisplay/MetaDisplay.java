@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.22 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-26 02:45:48 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -229,6 +229,7 @@ public class MetaDisplay implements MetaDisplayInterface,
         //If new ID wasn't valid, we wouldn't have got this far, so we're OK...
         //add outgoing (i.e. older) ID to hisory:
         history.add(oldID);
+        updateBackButtonStatus();
     }
     
 
@@ -289,6 +290,7 @@ public class MetaDisplay implements MetaDisplayInterface,
         //display mew ID, and in the process, set it to be the current ID, but
         //DO NOT add it to the History!
         displayThisID(history.getPrevious()); 
+        updateBackButtonStatus();
     }
     
 
@@ -512,8 +514,7 @@ public class MetaDisplay implements MetaDisplayInterface,
 
 	    Reader resultReader = doTransform(xmlReader);
 	    String htmlDoc = getAsString(resultReader);
-        ui.setHTML(htmlDoc);
-        updateBackButtonStatus();
+      ui.setHTML(htmlDoc);
 	}
 
     //sends xml Reader to morpho.util.XMLTransformer to be styled
