@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-21 22:33:45 $'
- * '$Revision: 1.67 $'
+ *     '$Date: 2003-11-25 23:16:10 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1064,6 +1064,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         (StateChangeMonitor.getInstance()).notifyStateChange(event);
       }//for
     }//if
+  }
+  
+ /**
+  *  returns the AbstractDataPackage for this Panel
+  */
+ public AbstractDataPackage getAbstractDataPackage() {
+    return adp;
   }
   
   /*
