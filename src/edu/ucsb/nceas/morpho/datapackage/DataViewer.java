@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-25 01:02:17 $'
- * '$Revision: 1.75 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-25 22:07:36 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -244,11 +244,7 @@ public class DataViewer extends javax.swing.JPanel
   
   // Vector to store stateChange event
   private Vector storedStateChangeEventlist = new Vector();
-  
-  TableCutAction tcuta;
-  TableCopyAction tca;
-  TablePasteAction tpa;
-  
+    
   boolean missing_metadata_flag = false;
 
     // assorted gui components
@@ -405,7 +401,6 @@ public class DataViewer extends javax.swing.JPanel
     editColumnMetadata = new JMenuItem(editColumnMetadataAction);
     popup.add(editColumnMetadata);
   
-    //updateDataMenu();
 	}
 
     /*
@@ -1183,13 +1178,13 @@ public class DataViewer extends javax.swing.JPanel
 	  (table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     
-    table.registerKeyboardAction (new TableCopyAction(),
+    table.registerKeyboardAction (new GUIAction("Copy", null, new TableCopyCommand()),
                           KeyStroke.getKeyStroke("ctrl C"),
                           JComponent.WHEN_FOCUSED);
-    table.registerKeyboardAction (new TablePasteAction(),
+    table.registerKeyboardAction (new GUIAction("Paste", null, new TablePasteCommand()),
                           KeyStroke.getKeyStroke("ctrl V"),
                           JComponent.WHEN_FOCUSED);
-    table.registerKeyboardAction (new TableCutAction(),
+    table.registerKeyboardAction (new GUIAction("Cut", null, new TableCutCommand()),
                           KeyStroke.getKeyStroke("ctrl X"),
                           JComponent.WHEN_FOCUSED);
       
@@ -1293,68 +1288,6 @@ public class DataViewer extends javax.swing.JPanel
 	  dataString = resultString.toString();
 	}
   
-  /*
-   * This method assigns the same menuItems that are in the popup
-   * menu to appear in the menubar for the MorphoFrame where the
-   * DataViewer appears
-   */
-  private void updateDataMenu() {
-    MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
-    JMenuBar mb = mf.getJMenuBar();
-    if (mb==null) {
-      Log.debug(20, "MenuBar is null!");
-    }
-    else {
-      
-      JMenu menu = mb.getMenu(1);  // the "Edit" menu
-      menu.removeAll();
-
-      JMenuItem cutMenuItem = new JMenuItem("Cut");
-      tcuta = new TableCutAction(table);
-      tcuta.putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke("control C"));
-      tcuta.putValue(Action.SHORT_DESCRIPTION,
-                "Cut the selection and put it on the Clipboard");
-      tcuta.putValue(Action.SMALL_ICON,
-                new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Cut16.gif")));
-      cutMenuItem.setAction(tcuta);
-
-      JMenuItem copyMenuItem = new JMenuItem("Copy");
-      tca = new TableCopyAction(table);
-      tca.putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke("control C"));
-      tca.putValue(Action.SHORT_DESCRIPTION,
-                "Copy the selection and put it on the Clipboard");
-      tca.putValue(Action.SMALL_ICON,
-                new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Copy16.gif")));
-      copyMenuItem.setAction(tca);
-
-      JMenuItem pasteMenuItem = new JMenuItem("Paste");
-      tpa = new TablePasteAction(table);
-      tpa.putValue(Action.ACCELERATOR_KEY,
-                KeyStroke.getKeyStroke("control P"));tpa.putValue(Action.SHORT_DESCRIPTION,
-                "Paste from the Clipboard to the selection.");
-      tpa.putValue(Action.SMALL_ICON,
-                new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Paste16.gif")));
-      pasteMenuItem.setAction(tpa);
- 
-      JMenuItem prefMenuItem = new JMenuItem("Preferences...", new ImageIcon(getClass().
-                getResource("/toolbarButtonGraphics/general/Preferences16.gif")));
-      prefMenuItem.setEnabled(false);
-     
-      menu.add(cutMenuItem);
-      menu.add(copyMenuItem);
-      menu.add(pasteMenuItem);
-      menu.add(new JSeparator());
-      menu.add(prefMenuItem);
-
-    }    
-  }
-  
-
 
 
     /**
