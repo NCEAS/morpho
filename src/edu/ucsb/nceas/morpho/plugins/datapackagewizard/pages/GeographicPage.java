@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-08 23:06:56 $'
- * '$Revision: 1.15 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-14 18:03:43 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -276,15 +276,68 @@ public class GeographicPage extends AbstractUIPage {
       }
     });
 
+    JLabel sortHelpLabel = getLabel("Click to sort the list of locations.");
+    JButton sortButton = new JButton("Sort");
+    sortButton.setPreferredSize(new Dimension(60,24));
+    sortButton.setMaximumSize(new Dimension(60,24));
+    sortButton.setMargin(new Insets(0, 2, 1, 2));
+    sortButton.setEnabled(true);
+    sortButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    sortButton.setFocusPainted(false);
+    sortButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        //create the sorting stylesheet
+        StringBuffer sb = new StringBuffer();
+        sb.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"");
+        sb.append(" version=\"1.0\">\n");
+        sb.append("<xsl:template match=\"locationList\">\n");
+        sb.append("<locationList>\n");
+        sb.append("<xsl:for-each select=\"./location\">\n");
+        sb.append("<xsl:sort select=\"./name\" />\n");
+        sb.append("<location>\n");
+        sb.append("<xsl:apply-templates />\n");
+        sb.append("</location>\n");
+        sb.append("</xsl:for-each>\n");
+        sb.append("</locationList>\n");
+        sb.append("</xsl:template>\n");
+        sb.append("<xsl:template ");
+        sb.append("match=\"*|@*|comment()|processing-instruction()|text()\">\n");
+        sb.append("<xsl:copy>\n");
+        sb.append("<xsl:apply-templates ");
+        sb.append("select=\"*|@*|comment()|processing-instruction()|text()\"/>\n");
+        sb.append("</xsl:copy>\n");
+        sb.append("</xsl:template>");
+        sb.append("</xsl:stylesheet>\n");
+        //sort the list
+        try
+        {
+          locationsXML.sort(sb.toString());
+        }
+        catch(Exception e)
+        {
+          JOptionPane optionPane = new JOptionPane(
+            "Sorry, the list can't be sorted.",
+            JOptionPane.ERROR_MESSAGE,
+            JOptionPane.OK_OPTION);
+          Log.debug(1, "Error sorting regions: " + e.getMessage());
+        }
+        locationsXML.save();
+        Vector names = getLocationNames();
+        DefaultListModel model = (DefaultListModel)regionList.getModel();
+        //clear and repopulate the model
+        model.clear();
+        for (int i=0;i<names.size();i++)
+        {
+          model.addElement(names.elementAt(i));
+        }
+      }
+    });
+
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new GridLayout(4, 1));
-//    JPanel buttonSubpanel1 = new JPanel();
     JPanel buttonSubpanel2 = new JPanel();
     JPanel buttonSubpanel3 = new JPanel();
-
-//    buttonSubpanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
-//    buttonSubpanel1.add(selectButton);
-//    buttonSubpanel1.add(selectHelpLabel);
+    JPanel buttonSubpanel4 = new JPanel();
 
     buttonSubpanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
     buttonSubpanel2.add(addButton);
@@ -294,25 +347,18 @@ public class GeographicPage extends AbstractUIPage {
     buttonSubpanel3.add(deleteButton);
     buttonSubpanel3.add(deleteHelpLabel);
 
-//    buttonPanel.add(buttonSubpanel1);
+    buttonSubpanel4.setLayout(new FlowLayout(FlowLayout.LEFT));
+    buttonSubpanel4.add(sortButton);
+    buttonSubpanel4.add(sortHelpLabel);
+
     buttonPanel.add(buttonSubpanel2);
     buttonPanel.add(buttonSubpanel3);
-
-
-
+    buttonPanel.add(buttonSubpanel4);
 
     regionPanel.add(regionSelectionPanel);
     regionPanel.add(buttonPanel);
 
     vbox.add(regionPanel);
-
-//    vbox.add(WidgetFactory.makeDefaultSpacer());
-
-  ////////////////////////////////////////////////////////////////////////////
-
-//    vbox.add(WidgetFactory.makeDefaultSpacer());
-
-
   }
 
 
@@ -323,8 +369,9 @@ public class GeographicPage extends AbstractUIPage {
       String selection = (String)regionList.getSelectedValue();
       if (covDescField.hasFocus()) return;
       if ((covDescFieldChangedFlag)&&(covDescField.getText().length()>0) ) {
-         int res = JOptionPane.showConfirmDialog(covDescField, "Replace existing description",
-                    "Confirm:", JOptionPane.YES_NO_OPTION);
+         int res = JOptionPane.showConfirmDialog(covDescField,
+           "Replace existing description",
+           "Confirm:", JOptionPane.YES_NO_OPTION);
          if (res==JOptionPane.YES_OPTION) {
            setTextFlag = true;
          }
@@ -332,7 +379,7 @@ public class GeographicPage extends AbstractUIPage {
            setTextFlag = false;
          }
       }
- //     Log.debug(1,"Selection: "+selection);
+
       double n = (new Double(getNorth(selection))).doubleValue();
       double w = (new Double(getWest(selection))).doubleValue();
       double s = (new Double(getSouth(selection))).doubleValue();
@@ -361,22 +408,35 @@ public class GeographicPage extends AbstractUIPage {
     return null;
   }
 
+  /**
+   * getNorth
+   */
   private String getNorth(String locname) {
     String res = "";
     if (locationsXML!=null) {
-     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../north");
+     Vector vec = locationsXML.getValuesForPath(
+       "location/name[.='"+locname+"']/../north");
      res = (String)vec.firstElement();
     }
     return res;
   }
+
+  /**
+   * getWest
+   */
   private String getWest(String locname) {
     String res = "";
     if (locationsXML!=null) {
-     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../west");
+     Vector vec = locationsXML.getValuesForPath(
+       "location/name[.='"+locname+"']/../west");
      res = (String)vec.firstElement();
     }
     return res;
   }
+
+  /**
+   * getSouth
+   */
   private String getSouth(String locname) {
     String res = "";
     if (locationsXML!=null) {
@@ -385,6 +445,10 @@ public class GeographicPage extends AbstractUIPage {
     }
     return res;
   }
+
+  /**
+   * getEast
+   */
   private String getEast(String locname) {
     String res = "";
     if (locationsXML!=null) {
@@ -393,6 +457,10 @@ public class GeographicPage extends AbstractUIPage {
     }
     return res;
   }
+
+  /**
+   * getDescription
+   */
   private String getDescription(String locname) {
     String res = "";
     if (locationsXML!=null) {
@@ -679,15 +747,15 @@ public class GeographicPage extends AbstractUIPage {
   public List getSurrogate() {
 
     List surrogate = new ArrayList();
- 		String temp1 = covDescField.getText().trim();
+    String temp1 = covDescField.getText().trim();
     String temp2 = "West: "+(new Double(lmp.getWest())).toString() +
                   "; East: "+(new Double(lmp.getEast())).toString() +
                   "; North: "+(new Double(lmp.getNorth())).toString() +
                   "; South: "+(new Double(lmp.getSouth())).toString();
     surrogate.add(temp1);
 
-		surrogate.add(temp2);
-		
+    surrogate.add(temp2);
+
     return surrogate;
   }
 

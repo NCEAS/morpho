@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-15 14:26:34 $'
- * '$Revision: 1.17 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-14 18:03:43 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,17 @@ package edu.ucsb.nceas.morpho.framework;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
+
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.dom.DOMSource;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
@@ -53,11 +64,11 @@ import javax.swing.*;
  * an XML file. The concept is similar to that of a Properties
  * file except that using the XML format allows for a hierarchy
  * of properties and repeated properties.
- * 
+ *
  * All 'keys' are element names, while values are always stored
- * as XML text nodes. The XML file is parsed and stored in 
- * memory as a DOM object. 
- * 
+ * as XML text nodes. The XML file is parsed and stored in
+ * memory as a DOM object.
+ *
  * Note that nodes are specified by node tags rather than paths
  */
 public class ConfigXML
@@ -84,10 +95,10 @@ public class ConfigXML
   private PrintWriter out;
 
   private static final String configDirectory = ".morpho";
-  
+
   /**
    * String passed to the creator is the XML config file name
-   * 
+   *
    * @param filename name of XML file
    */
   public ConfigXML(String filename) throws FileNotFoundException
@@ -106,7 +117,7 @@ public class ConfigXML
       doc = parser.parse(in);
       fs.close();
     } catch(Exception e1) {
-      Log.debug(4, "Parsing " + filename + " threw: " + 
+      Log.debug(4, "Parsing " + filename + " threw: " +
                             e1.toString());
       e1.printStackTrace();
     }
@@ -115,7 +126,7 @@ public class ConfigXML
 
    /**
    * String passed to the creator is the XML config file name
-   * 
+   *
    * @param input stream containing the XML configuration data
    */
   public ConfigXML(InputStream configStream) throws FileNotFoundException
@@ -129,17 +140,46 @@ public class ConfigXML
       doc = parser.parse(in);
       configStream.close();
     } catch(Exception e1) {
-      Log.debug(4, "Parsing config file threw: " + 
+      Log.debug(4, "Parsing config file threw: " +
                             e1.toString());
       e1.printStackTrace();
     }
     root = doc.getDocumentElement();
   }
-  
+
   /**
-   * Gets the value(s) corresponding to a key string (i.e. the 
+   * Set up a DOM parser for reading an XML document
+   *
+   * @return a DOM parser object for parsing
+   */
+  private static DocumentBuilder createDomParser() throws Exception
+  {
+    DocumentBuilder parser = null;
+
+    try
+    {
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setNamespaceAware(true);
+      parser = factory.newDocumentBuilder();
+      if (parser == null)
+      {
+        throw new Exception("Could not create Document parser in " +
+                            "MonarchUtil.DocumentBuilder");
+      }
+    }
+    catch (ParserConfigurationException pce)
+    {
+      throw new Exception("Could not create Document parser in " +
+                            "MonarchUtil.DocumentBuilder: " + pce.getMessage());
+    }
+
+    return parser;
+  }
+
+  /**
+   * Gets the value(s) corresponding to a key string (i.e. the
    * value(s) for a named parameter.
-   * 
+   *
    * @param key 'key' is element name.
    * @return Returns a Vector of strings because may have repeated elements
    */
@@ -163,24 +203,24 @@ public class ConfigXML
     return result;
   }
 
-	/**
-	 *  Gets the document for this DOM
-	 */
-	public Document getDocument() {
-		return doc;
-	} 
-
-	/**
-	 *  Gets the root Node for this DOM
-	 */
-	public Node getRoot() {
-		return root;
-	} 
-	
   /**
-   * Gets the value(s) corresponding to a key string (i.e. the 
+   *  Gets the document for this DOM
+   */
+  public Document getDocument() {
+    return doc;
+  }
+
+  /**
+   *  Gets the root Node for this DOM
+   */
+  public Node getRoot() {
+    return root;
+  }
+
+  /**
+   * Gets the value(s) corresponding to a key string (i.e. the
    * value(s) for a named parameter.
-   * 
+   *
    * @param key 'key' is element name.
    * @param i zero based index of elements with the name stored in key
    * @return String value of the ith element with name in 'key'
@@ -208,7 +248,7 @@ public class ConfigXML
   /**
    * used to set a value corresponding to 'key'; value is changed
    * in DOM structure in memory
-   * 
+   *
    * @param key 'key' is element name.
    * @param i index in set of elements with 'key' name
    * @param value new value to be inserted in ith key
@@ -239,7 +279,7 @@ public class ConfigXML
    * Inserts another node before the first element with
    * the name contained in 'key', otherwise appends it
    * to the end of the config file (last element in root node)
-   * 
+   *
    * @param key element name which will be duplicated
    * @param value value for new element
    * @return boolean true if the operation succeeded
@@ -274,7 +314,7 @@ public class ConfigXML
 
   /**
    * Add a child node to the specified parent
-   * 
+   *
    * @param parentName name of parent element
    * @param i index of parent element
    * @param childName element name of new child
@@ -305,7 +345,7 @@ public class ConfigXML
 
   /**
    * deletes indicated node
-   * 
+   *
    * @param nodeName node tag
    * @param i node index
    */
@@ -331,7 +371,7 @@ public class ConfigXML
 
   /**
    * removes all children of the specified parent
-   * 
+   *
    * @param parentName Name of parent node
    * @param i index of parent node
    */
@@ -361,7 +401,7 @@ public class ConfigXML
 
   /**
    * Assume that there is some parent node which has a subset of
-   * child nodes that are repeated e.g. 
+   * child nodes that are repeated e.g.
    * <parent>
    *    <name>xxx</name>
    *    <value>qqq</value>
@@ -425,14 +465,14 @@ public class ConfigXML
    * This method wraps the 'print' method to send DOM back to the
    * XML document (file) that was used to create the DOM. i.e.
    * this method saves changes to disk
-   * 
+   *
    * @param nd node (usually the document root)
    */
   public void saveDOM(Node nd)
-  { 
+  {
     File outfile = new File(fileName);
    if (!outfile.canWrite()) {
-	JOptionPane.showMessageDialog(null, "Cannot Save configuration information to "+fileName+ " !", "alert",  JOptionPane.ERROR_MESSAGE);
+  JOptionPane.showMessageDialog(null, "Cannot Save configuration information to "+fileName+ " !", "alert",  JOptionPane.ERROR_MESSAGE);
     }
    else {
     try
@@ -443,8 +483,8 @@ public class ConfigXML
     {
     }
     out.println("<?xml version=\"1.0\"?>");
-    print(nd);
-    out.close(); 
+    print(nd, out);
+    out.close();
    }
   }
 
@@ -453,11 +493,11 @@ public class ConfigXML
    * set (by means of 'out') to write the in-memory DOM to the
    * same XML file that was originally read. Action thus saves
    * a new version of the XML doc
-   * 
+   *
    * @param node node usually set to the 'doc' node for complete XML file
    * re-write
    */
-  public void print(Node node)
+  public void print(Node node, PrintWriter out)
   {
 
     // is there anything to do?
@@ -474,7 +514,7 @@ public class ConfigXML
     {
 
       out.println("<?xml version=\"1.0\"?>");
-      print(((Document) node).getDocumentElement());
+      print(((Document) node).getDocumentElement(), out);
       out.flush();
       break;
     }
@@ -501,7 +541,7 @@ public class ConfigXML
         int len = children.getLength();
         for (int i = 0; i < len; i++)
         {
-          print(children.item(i));
+          print(children.item(i), out);
         }
       }
       break;
@@ -622,9 +662,9 @@ public class ConfigXML
     } catch (Exception e) {
       Log.debug(4, "Error in getValueForPath method");
     }
-    return val;    
+    return val;
   }
-  
+
     /**
    * gets the content of a tag in a given xml file with the given path
    * @param path the path to get the content from
@@ -642,13 +682,48 @@ public class ConfigXML
       return null;
     }
   }
-  
+
   /**
    * Determine the home directory in which configuration files should be located
-   * 
+   *
    * @returns String name of the path to the configuration directory
    */
   public static String getConfigDirectory() {
     return System.getProperty("user.home") + File.separator + configDirectory;
+  }
+
+  /**
+   * sorts records in the config.xml file based on the passed stylesheet
+   * @param xsltStylesheet the stylesheet to sort the config file
+   * @throws Exception
+   */
+  public void sort(String xsltStylesheet) throws Exception
+  {
+    StringWriter resultWriter = new StringWriter();
+    String result;
+
+    //create the transformer
+    TransformerFactory tFactory = TransformerFactory.newInstance();
+    Transformer transformer = tFactory.newTransformer(
+      new StreamSource(new StringReader(xsltStylesheet)));
+    transformer.transform(new DOMSource(root),
+      new StreamResult(resultWriter));
+    result = resultWriter.toString();
+    //write out the dom with the new order
+    DocumentBuilder parser = createDomParser();
+    InputSource in  = new InputSource(new StringReader(result));
+    doc = parser.parse(in);
+    //reassign root to the new order
+    root = doc.getDocumentElement();
+  }
+
+  /**
+   * returns the config file as a string
+   */
+  public String toString()
+  {
+    StringWriter sw = new StringWriter();
+    print(root, new PrintWriter(sw));
+    return sw.toString();
   }
 }
