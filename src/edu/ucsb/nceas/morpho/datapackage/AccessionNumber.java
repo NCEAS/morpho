@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-19 18:15:45 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-08-19 22:34:46 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -62,10 +61,6 @@ public class AccessionNumber
   {
     this.morpho = morpho;
     profile = morpho.getProfile();
-  }
-
-  public AccessionNumber(ClientFramework framework)
-  {
   }
 
   /**

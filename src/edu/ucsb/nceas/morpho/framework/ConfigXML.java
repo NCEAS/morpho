@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-08-19 22:34:46 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
  */
 
 package edu.ucsb.nceas.morpho.framework;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -90,7 +93,7 @@ public class ConfigXML
   {
     this.fileName = filename;
 
-    DocumentBuilder parser = ClientFramework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     File XMLConfigFile = new File(filename);
     InputSource in;
     FileInputStream fs;
@@ -102,7 +105,7 @@ public class ConfigXML
       doc = parser.parse(in);
       fs.close();
     } catch(Exception e1) {
-      ClientFramework.debug(4, "Parsing " + filename + " threw: " + 
+      Log.debug(4, "Parsing " + filename + " threw: " + 
                             e1.toString());
       e1.printStackTrace();
     }
@@ -116,7 +119,7 @@ public class ConfigXML
    */
   public ConfigXML(InputStream configStream) throws FileNotFoundException
   {
-    DocumentBuilder parser = ClientFramework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     in = new InputSource(configStream);
 
@@ -125,7 +128,7 @@ public class ConfigXML
       doc = parser.parse(in);
       configStream.close();
     } catch(Exception e1) {
-      ClientFramework.debug(4, "Parsing config file threw: " + 
+      Log.debug(4, "Parsing config file threw: " + 
                             e1.toString());
       e1.printStackTrace();
     }
@@ -269,7 +272,7 @@ public class ConfigXML
     {
       if (nl.getLength() <= i)
       {
-        ClientFramework.debug(7, "Error setting XMLConfig value: " +
+        Log.debug(7, "Error setting XMLConfig value: " +
                                  "index too large");
       }
       else
@@ -298,7 +301,7 @@ public class ConfigXML
     {
       if (nl.getLength() <= i)
       {
-        ClientFramework.debug(7, "Error setting XMLConfig value: " +
+        Log.debug(7, "Error setting XMLConfig value: " +
                                  "index too large");
       }
       else
@@ -324,7 +327,7 @@ public class ConfigXML
     {
       if (nl.getLength() <= i)
       {
-        ClientFramework.debug(7, "Error setting XMLConfig value: " +
+        Log.debug(7, "Error setting XMLConfig value: " +
                                  "index too large");
       }
       else
@@ -648,7 +651,7 @@ public class ConfigXML
         }
       }
     } catch (Exception e) {
-      ClientFramework.debug(4, "Error in getValueForPath method");
+      Log.debug(4, "Error in getValueForPath method");
     }
     return val;    
   }

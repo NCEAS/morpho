@@ -6,9 +6,9 @@
  *    Authors: Matt Jones
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:36 $'
- * '$Revision: 1.3 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 22:34:46 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.util.Log;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -189,7 +189,7 @@ public class BasicNode {
         attributes.put(attName, attValue);
  
       } else {
-        ClientFramework.debug(4, "Attribute name must not be null!");
+        Log.debug(4, "Attribute name must not be null!");
       }
     }
 

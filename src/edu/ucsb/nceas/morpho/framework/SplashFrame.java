@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-07-19 18:03:59 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-08-19 22:34:46 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
  */
 
 package edu.ucsb.nceas.morpho.framework;
+
+import edu.ucsb.nceas.morpho.Morpho;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -197,7 +199,7 @@ public class SplashFrame extends javax.swing.JFrame
     getContentPane().add(Box.createVerticalGlue());
 
     versionLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-    versionLabel.setText(ClientFramework.VERSION);
+    versionLabel.setText(Morpho.VERSION);
     versionLabel.setBackground(java.awt.Color.white);
     versionLabel.setForeground(java.awt.Color.black);
     versionLabel.setFont(new Font("Dialog", Font.BOLD, 12));

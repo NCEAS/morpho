@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-07-22 20:43:45 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-08-19 22:34:46 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
  */
 
 package edu.ucsb.nceas.morpho.framework;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.io.*;
 import java.net.*;
@@ -81,7 +84,7 @@ public class HttpMessage
   {
     // Open the connection
     con = servlet.openConnection();
-    ClientFramework.debug(20, "HTTP Handler class is: " + 
+    Log.debug(20, "HTTP Handler class is: " + 
             con.getClass().getName());
 
     // Write any cookies in the request
@@ -94,7 +97,7 @@ public class HttpMessage
     }
 
     // add so Metacat can determine where requests come from
-    con.setRequestProperty("User-Agent", "Morpho/" + ClientFramework.VERSION);
+    con.setRequestProperty("User-Agent", "Morpho/" + Morpho.VERSION);
 
     // prepare for both input and output
     con.setDoInput(true);
@@ -195,7 +198,7 @@ public class HttpMessage
    */
   private void sendNameValuePair(String name, String data) throws IOException
   {
-    ClientFramework.debug(15, "Name: " + name + " => " + data);
+    Log.debug(15, "Name: " + name + " => " + data);
     ((DataOutputStream)out).writeBytes(URLEncoder.encode(name));
     ((DataOutputStream)out).writeBytes("=");
     ((DataOutputStream)out).writeBytes(URLEncoder.encode(data));

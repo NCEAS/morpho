@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:59:45 $'
- * '$Revision: 1.1 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 22:34:46 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,8 @@ import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
-import edu.ucsb.nceas.morpho.framework.PluginInterface;
-import edu.ucsb.nceas.morpho.framework.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 
 
 /**

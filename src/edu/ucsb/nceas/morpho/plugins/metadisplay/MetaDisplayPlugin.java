@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:49:12 $'
- * '$Revision: 1.2 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 22:34:46 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,14 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
-
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
-import edu.ucsb.nceas.morpho.framework.PluginInterface;
-import edu.ucsb.nceas.morpho.framework.ServiceProvider;
-import edu.ucsb.nceas.morpho.framework.ServiceExistsException;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.util.Log;
 
 
 /**
@@ -49,21 +50,22 @@ public class MetaDisplayPlugin implements   PluginInterface,
     /**
      *  Required by PluginInterface; called automatically at runtime
      *
-     *  @param framework    a reference to the <code>ClientFramework</code>
+     *  @param morpho    a reference to the <code>Morpho</code>
      */
-    public void initialize(ClientFramework framework)
+    public void initialize(Morpho morpho)
     {
 
         try 
         {
-          framework.addService(MetaDisplayInterface.class, this);
-          framework.debug(20, "Service added: MetaDisplayFactoryInterface.");
+          ServiceController services = ServiceController.getInstance();
+          services.addService(MetaDisplayInterface.class, this);
+          Log.debug(20, "Service added: MetaDisplayFactoryInterface.");
         } 
         catch (ServiceExistsException see) 
         {
-          framework.debug(6, 
+          Log.debug(6, 
                     "Service registration failed: MetaDisplayFactoryInterface");
-          framework.debug(6, see.toString());
+          Log.debug(6, see.toString());
         }
     }
      
