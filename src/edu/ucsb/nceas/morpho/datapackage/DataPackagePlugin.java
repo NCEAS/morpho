@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:20:13 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2002-09-06 17:57:59 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -307,5 +307,19 @@ public class DataPackagePlugin
                                                       morpho, local);
     // Set open dialog show
     open.setVisible(true);
+  }
+  
+   /**
+   * returns the next local id from the config file
+   * returns null if configXML was unable to increment the id number
+   *
+   * @param morpho the morpho file
+   */
+  public String getNextId(Morpho morpho)
+  {
+    String identifier = null;
+    AccessionNumber accession = new AccessionNumber(morpho);
+    identifier = accession.getNextId();
+    return identifier;
   }
 }
