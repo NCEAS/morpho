@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-13 16:51:24 $'
- * '$Revision: 1.55 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-13 20:10:16 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -969,9 +969,6 @@ public class ClientFramework extends javax.swing.JFrame
       boolean success = config.insert("current_profile", username);
     }
     config.save();
-
-    // Notify plugins that the profile changed
-    // Not yet implemented
   } 
 
   /**
@@ -1123,8 +1120,6 @@ public class ClientFramework extends javax.swing.JFrame
         }
 
 
-        sf.dispose();
-
         // Load the current profile and log in
         String profileDir = config.get("profile_directory", 0);
         String currentProfile = config.get("current_profile", 0);
@@ -1167,6 +1162,7 @@ public class ClientFramework extends javax.swing.JFrame
         clf.loadPlugins();
 
         // make the ClientFramework visible.
+        sf.dispose();
         clf.pack();
         clf.setVisible(true);
 

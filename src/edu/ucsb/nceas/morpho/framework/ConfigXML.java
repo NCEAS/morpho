@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-06-13 20:10:16 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,15 +177,16 @@ public class ConfigXML
   {
     boolean result = false;
     NodeList nl = doc.getElementsByTagName(key);
-    if (nl.getLength() <= i)
-    {
+    if (nl.getLength() <= i) {
       result = false;
-    }
-    else
-    {
+    } else {
       Node cn = nl.item(i).getFirstChild(); // assumed to be a text node
-      if ((cn != null) && (cn.getNodeType() == Node.TEXT_NODE))
-      {
+      if (cn == null) {
+        // No text node, so append one with the value
+        Node newText = doc.createTextNode(value);
+        nl.item(i).appendChild(newText);
+      } else if (cn.getNodeType() == Node.TEXT_NODE) {
+        // found the text node, so change its value
         cn.setNodeValue(value);
       }
       result = true;

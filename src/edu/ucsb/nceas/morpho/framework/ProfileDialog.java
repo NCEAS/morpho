@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-06-13 20:10:16 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -403,20 +403,43 @@ public class ProfileDialog extends JDialog
       }
       String username = usernameField.getText();
       String profilePath = profileDirName + File.separator + username;
+      String profileName = profilePath + File.separator + username + ".xml";
       File profileDir = new File(profilePath);
       if (!profileDir.mkdir()) {
         // Error creating the directory
         currentScreen = 0;
         layoutScreen();
         String messageText = "A profile for user \"" + username +
-                             "\" already exists.  Please choose another " +
-                             "username.\n";
-        JOptionPane.showMessageDialog(this, messageText);      
+                             "\" already exists.  Would you like to use it?" +
+                             "\n\nUse existing profile?\n";
+        int result = JOptionPane.showConfirmDialog(this, messageText, 
+                                                   "Use existing profile?", 
+                                                   JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+          try {
+            ConfigXML profile = new ConfigXML(profileName);
+            // Log into metacat
+            framework.setPassword(passwordField.getText());
+            framework.setProfile(profile);
+            framework.logIn();
+  
+            // Get rid of the dialog
+            setVisible(false);
+            dispose();
+          } catch (FileNotFoundException fnf) {
+            messageText = "Sorry, I tried, but it looks like that profile\n" +
+                          "is corrupted.  You'll have to choose another " +
+                          "username.";
+            JOptionPane.showMessageDialog(this, messageText);      
+          }
+        } else {
+          messageText = "OK, then please choose another username.\n";
+          JOptionPane.showMessageDialog(this, messageText);      
+        }
       } else {
         try {
           // Copy default profile to the new directory
           String defaultProfile = config.get("default_profile", 0);
-          String profileName = profilePath + File.separator + username + ".xml";
           FileUtils.copy(defaultProfile, profileName);
 
           // Store the collected information in the profile
@@ -475,8 +498,8 @@ public class ProfileDialog extends JDialog
           // Create a metacat user
  
           // Log into metacat
-          framework.setProfile(profile);
           framework.setPassword(passwordField.getText());
+          framework.setProfile(profile);
           framework.logIn();
 
           // Get rid of the dialog
