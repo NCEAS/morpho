@@ -486,12 +486,12 @@ public class SchemaInfoFrame extends javax.swing.JFrame
                     String help = "";
                     String helps = ni.getHelp();
                     if (helps!=null) {
-                      int start = helps.indexOf("<doc:description")+18;
-                      int stop = helps.indexOf("</doc:description");
+                      int start = helps.indexOf("<doc:summary >")+14;
+                      int stop = helps.indexOf("</doc:summary");
                       help = helps.substring(start, stop);
                     }
                     
-                    start1.append(" "+"help=\""+trimMultipleSpaces(help)+"\"");
+                    start1.append(" "+"help=\""+help+"\"");
 
                 start1.append(">");
                 end = "</" + name + ">";
@@ -569,25 +569,8 @@ public class SchemaInfoFrame extends javax.swing.JFrame
         }
     }
 
-  // remove all sequences of more that one space
-  // also remove any newlines & convert " to '
-  private String trimMultipleSpaces(String inStr) {
-    String res = "";
-    res = inStr.trim();
-    while (res.indexOf("  ")>-1) {
-      int start = res.indexOf("  ");  
-      res = res.substring(0,start) + res.substring(start+1);
-    }
-    while (res.indexOf("\n")>-1) {
-      int start = res.indexOf("\n");  
-      res = res.substring(0,start) + res.substring(start+1);
-    }
-    while (res.indexOf("\"")>-1) {
-      int start = res.indexOf("\"");  
-      res = res.substring(0,start) + "'" + res.substring(start+1);
-    }
-    return res;
-  }
+
+
 
 	void SaveButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
