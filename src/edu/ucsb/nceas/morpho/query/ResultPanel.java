@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:35 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-11-06 21:21:19 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -728,12 +728,12 @@ public class ResultPanel extends JPanel
              new AbstractAction(query.getQueryTitle()) {
         public void actionPerformed(ActionEvent e) {
  //DFH - following lines disabled because donot work with Java 1.17
- //         Action queryAction = ((JMenuItem)e.getSource()).getAction();
- //         Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
- //         if (savedQuery != null) {
- //           ResultSet rs = savedQuery.execute();
- //           ResultFrame rsf = new ResultFrame(framework, rs);
- //         }
+          Action queryAction = ((JMenuItem)e.getSource()).getAction();
+          Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
+          if (savedQuery != null) {
+            ResultSet rs = savedQuery.execute();
+            ResultFrame rsf = new ResultFrame(framework, rs);
+          }
         }
       };
       savedSearchItemAction.putValue("SAVED_QUERY_OBJ", query);
