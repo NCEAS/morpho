@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 17:03:46 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-22 16:26:42 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ public class AccessionNumber
       }
     }
     
-    return PackageWizardShell.printDoctype(doc) + 
-           PackageWizardShell.print(doc.getDocumentElement());
+    return PackageUtil.printDoctype(doc) + 
+           PackageUtil.print(doc.getDocumentElement());
   }
 }
