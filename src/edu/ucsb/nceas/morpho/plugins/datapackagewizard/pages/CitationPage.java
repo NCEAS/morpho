@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-12 21:18:17 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-13 19:25:27 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,7 +231,9 @@ public class CitationPage extends AbstractUIPage {
        // 12 * WizardSettings.PADDING,
         //0, 8 * WizardSettings.PADDING));
     topMiddlePanel.add(pubDatePanel);
-    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+    JLabel datehelp = WidgetFactory.makeHTMLLabel("Use the YYYY-MM-DD format - (e.g. 1989-02-24)", 1);
+    topMiddlePanel.add(datehelp);
+    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
 
     ////////////////////////////////////////////
 
@@ -664,7 +666,8 @@ public class CitationPage extends AbstractUIPage {
     WidgetFactory.unhiliteComponent(authorLabel);
 		
 		String date = this.pubDateField.getText();
-		if(!date.trim().equals("") && !isDate(date)) {
+//		if(!date.trim().equals("") && !isDate(date)) {
+		if(!date.trim().equals("")) {
 			WidgetFactory.hiliteComponent(pubDateLabel);
       return false;
 		}
