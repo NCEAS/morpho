@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-08 18:44:12 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2004-01-07 19:37:26 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,13 +396,23 @@ public class LocalQuery
             }
         }
     }
+    // now consider eml2 case where there are no triples
+    String ent = getValueForPath("entityName", docid);
+    if (ent.length()>0) hasData = true;
+    
     if (hasData) {
         rss.addElement(localPackageDataIcon);
     } else {
         rss.addElement(localPackageIcon);
     }
 
-    for (int i=0;i<returnFields.size();i++) {
+//DFH    for (int i=0;i<returnFields.size();i++) {
+// in order to handle both datapackages with triples and those (e.g. eml2) without
+// a returnField which looks for 'entityName' fields has been included in the 
+// query. For some docs this returnField will not be present. Thus, only the first 3
+// of the return fields are added to the ResultSet table. [The 'entityName' returnField
+// MUST be listed AFTER title, surname, and keyword returnFields]  
+    for (int i=0;i<3;i++) {
       String fieldName = (String)returnFields.elementAt(i);  
       rss.addElement(getValueForPath(fieldName,docid));   
     }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:14:55 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2004-01-07 19:37:26 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -391,6 +391,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   private void createTableHeader()
   {
     int cnt = (returnFields==null)? 0 : returnFields.size();
+    // DFH - using the number of returnFields to setup the table creates problems
+    // (especialy with column percent size array in 'ResultPanel' class)
+    // And we may want to have returnFields that are not displayed (e.g. a field
+    // to indicated whether data is included with the package).
+    // Thus, for now, just fix the 'cnt' variable
+    cnt = 3;
     int numberFixedHeaders = 5;
     headers = new String[numberFixedHeaders+cnt];  
     headers[0] = " "; // This is for the first package icon column;
@@ -469,6 +475,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       int cnt = 0;
       if (returnFields != null) {
         cnt = returnFields.size();
+    // DFH - using the number of returnFields to setup the table creates problems
+    // (especialy with column percent size array in 'ResultPanel' class)
+    // And we may want to have returnFields that are not displayed (e.g. a field
+    // to indicated whether data is included with the package).
+    // Thus, for now, just fix the 'cnt' variable
+        cnt = 3;
       }
 
       Vector row = new Vector();
@@ -485,6 +497,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
               }
           }
       }
+      // hasData has now been set properly for those docs with triples
+      // still need to consider eml2.0 docs where there are no triples
+// in order to handle both datapackages with triples and those (e.g. eml2) without
+// a returnField which looks for 'entityName' fields has been included in the 
+// query. For some docs this returnField will not be present. Thus, only the first 3
+// of the return fields are added to the ResultSet table. [The 'entityName' returnField
+// MUST be listed AFTER title, surname, and keyword returnFields]  
+      if (params.containsKey("entityName")) hasData = true;
+      
       if (hasData) {
         row.addElement(packageDataIcon);
       } else {
