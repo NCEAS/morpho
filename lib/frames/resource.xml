@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard size="460x400" dtd="eml-dataset.dtd" 
+<wizard size="460x400" dtd="eml-dataset-2.0.dtd" 
         doctype="-//NCEAS//eml-dataset-2.0//EN">
   <group label="Base Information" field="dataset" type="panel">
     <group >

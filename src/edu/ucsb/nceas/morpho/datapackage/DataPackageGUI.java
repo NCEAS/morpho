@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-06 23:07:26 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2001-07-09 23:17:02 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,8 @@ public class DataPackageGUI extends javax.swing.JFrame
   private JButton editBaseInfoButton = new JButton();
   private Hashtable listValueHash = new Hashtable();
   private Hashtable fileAttributes = new Hashtable();
+  private static final String htmlBegin = "<html><font color=black>";
+  private static final String htmlEnd = "</font></html>";
   
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
@@ -139,10 +141,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     JPanel basicInfoPanel = new JPanel();
     //create the top panel with the package basic info
-    basicInfoPanel = createBasicInfoPanel(dataPackage.getIdentifier(), 
-                                                 title, 
-                                                 altTitle, orig);
-                                                 
+    basicInfoPanel = createBasicInfoPanel();
+    
     Hashtable relfiles = dataPackage.getRelatedFiles();
     Vector otheritems = new Vector();
     Vector dataitems = new Vector();
@@ -290,8 +290,19 @@ public class DataPackageGUI extends javax.swing.JFrame
     layoutPanel.setPreferredSize(new Dimension(450, 500));
     layoutPanel.setMinimumSize(new Dimension(450, 500));
     
+    basicInfoPanel.setPreferredSize(new Dimension(500, 250));
+    basicInfoPanel.setMaximumSize(new Dimension(500, 250));
+    basicInfoPanel.setMinimumSize(new Dimension(500, 250));
+    //basicInfoPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
+    
+    toppanel.setAlignmentX(0);
+    basicInfoPanel.setAlignmentX(0);
+    listPanel.setAlignmentX(0);
+    
     layoutPanel.add(toppanel);      
+    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
     layoutPanel.add(basicInfoPanel);
+    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
     layoutPanel.add(listPanel);
     contentPane.add(layoutPanel);
   }
@@ -299,126 +310,207 @@ public class DataPackageGUI extends javax.swing.JFrame
   /**
    * creates the basicinfopanel
    */
-  private JPanel createBasicInfoPanel(String identifier, String title, 
-                                      String altTitle, Vector originator)
+  private JPanel createBasicInfoPanel()
   {
+    String idPath = "/dataset/identifier";
+    String shortNamePath = "/dataset/shortName";
+    String titlePath = "/dataset/title";
+    String abstractPath = "/dataset/abstract";
+    String keywordPath = "/dataset/keywordSet/keyword";
+    String originatorPath = "/dataset/originator";
+    
+    //layout the big main panel
     JPanel textpanel = new JPanel();
     textpanel.setBorder(BorderFactory.createCompoundBorder(
                         BorderFactory.createLoweredBevelBorder(),
                         BorderFactory.createEmptyBorder(10, 10, 10, 10)));
     textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
     textpanel.setBackground(Color.white);
-    editBaseInfoButton = new JButton("Edit Basic Information");
+    //the button to edit the base info
+    editBaseInfoButton = new JButton("Edit");
     editBaseInfoButton.addActionListener(this);
-    JPanel panel = new JPanel();
-    JLabel identifierL = new JLabel("Identifier: ");
-    JLabel titleL = new JLabel("Title: ");
-    JLabel altTitleL = new JLabel("Short Title: ");
-    JLabel originatorL = new JLabel("Data Originator: ");
-    String htmlBegin = "<html><p><font color=black>";
-    String htmlEnd = "</font></p></html>";
+    editBaseInfoButton.setActionCommand("Edit Basic Information");
+    //the top label
+    JLabel headerLabel = new JLabel(htmlBegin + 
+                                    "<font size=5>Basic Package Information" +
+                                    "</font>" + htmlEnd);
+    JPanel headerPanel = new JPanel();
+    headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
+    headerPanel.add(headerLabel);
+    headerPanel.add(Box.createHorizontalGlue());
+    headerPanel.add(editBaseInfoButton);
+    headerPanel.setBackground(Color.white);
     
-    JPanel titleTempPanel = new JPanel();
-    titleTempPanel.setLayout(new BoxLayout(titleTempPanel, BoxLayout.X_AXIS));
-    titleTempPanel.setBackground(Color.white);
-    titleTempPanel.add(titleL);
-    JLabel titleLabel = new JLabel(title);
-    JTextArea titleArea = new JTextArea(title);
+    Document doc = dataPackage.getTripleFileDom();
     
-    titleArea.setWrapStyleWord(true);
-    titleArea.setLineWrap(true);
-    titleArea.setRows(1);
-    titleArea.setColumns(60);
-    titleArea.setBorder(null);
-    titleArea.setEditable(false);
-    titleArea.setFont(new Font("Times", Font.PLAIN, 13));
-    JScrollPane jsp = new JScrollPane(titleArea);
-    jsp.setMinimumSize(new Dimension(250, 25));
-    jsp.setMaximumSize(new Dimension(600, 40));
-    jsp.setBorder(new EmptyBorder(0,0,0,0));
-    titleTempPanel.setPreferredSize(new Dimension(125,75));
-    titleTempPanel.setMinimumSize(new Dimension(125,75));
-    titleTempPanel.add(jsp);
-    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
-    textpanel.add(titleTempPanel);
-    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
+    NodeList idNL;
+    NodeList shortNameNL;
+    NodeList titleNL;
+    NodeList abstractNL;
+    NodeList keywordNL;
+    NodeList originatorNL;
     
-    JPanel idTempPanel = new JPanel();
-    idTempPanel.setLayout(new BoxLayout(idTempPanel, BoxLayout.X_AXIS));
-    idTempPanel.setBackground(Color.white);
-    idTempPanel.add(identifierL);
-    JTextArea idArea = new JTextArea(identifier);
-    idArea.setWrapStyleWord(true);
-    idArea.setRows(1);
-    idArea.setColumns(15);
-    idArea.setEditable(false);
-    idArea.setBorder(null);
-    idArea.setFont(new Font("Times", Font.PLAIN, 12));
-    idTempPanel.setPreferredSize(new Dimension(75, 25));
-    idTempPanel.setMinimumSize(new Dimension(75, 40));
-    JScrollPane jsp2 = new JScrollPane(idArea);
-    jsp2.setBorder(new EmptyBorder(0,0,0,0));
-    jsp2.setMaximumSize(new Dimension(500,25));
-    idTempPanel.add(jsp2);
-    textpanel.add(idTempPanel);
-    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
-    
-    JPanel alttitleTempPanel = new JPanel();
-    alttitleTempPanel.setLayout(new BoxLayout(alttitleTempPanel, BoxLayout.X_AXIS));
-    alttitleTempPanel.setBackground(Color.white);
-    alttitleTempPanel.add(altTitleL);
-    JTextArea alttitleArea = new JTextArea(altTitle);
-    alttitleArea.setFont(new Font("Times", Font.PLAIN, 12));
-    alttitleArea.setWrapStyleWord(true);
-    alttitleArea.setLineWrap(true);
-    alttitleArea.setRows(1);
-    alttitleArea.setColumns(25);
-    alttitleArea.setBorder(null);
-    alttitleArea.setEditable(false);
-    JScrollPane jsp3 = new JScrollPane(alttitleArea);
-    jsp3.setBorder(new EmptyBorder(0,0,0,0));
-    jsp3.setMaximumSize(new Dimension(500,25));
-    alttitleTempPanel.add(jsp3);
-    textpanel.add(alttitleTempPanel);
-    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
-    
-    JPanel origTempPanel = new JPanel();
-    origTempPanel.setBackground(Color.white);
-    origTempPanel.setLayout(new BoxLayout(origTempPanel, BoxLayout.X_AXIS));
-    origTempPanel.add(originatorL);
-    
-    String text = "";
-    for(int i=0; i<originator.size(); i++)
+    try
     {
-      String person = (String)originator.elementAt(i);
-      if(i == originator.size()-1)
-      {
-        text += person;
-      }
-      else
-      {
-        text += person + ", ";
+    //get the node lists from the document to fill in the data
+      idNL = XPathAPI.selectNodeList(doc, idPath);
+      shortNameNL = XPathAPI.selectNodeList(doc, shortNamePath);
+      titleNL = XPathAPI.selectNodeList(doc, titlePath);
+      abstractNL = XPathAPI.selectNodeList(doc, abstractPath);
+      keywordNL = XPathAPI.selectNodeList(doc, keywordPath);
+      originatorNL = XPathAPI.selectNodeList(doc, originatorPath);
+    }
+    catch(Exception e)
+    {
+      ClientFramework.debug(0, "Error selecting nodes from package file.");
+      e.printStackTrace();
+      return null;
+    }
+    
+    //get the data from the nodes
+    String wholelabel = "<html><font color=black>";
+    String id = "";
+    String shortName = "";
+    String title = "";
+    String abstractS = "";
+    String keywords = ""; 
+    
+    if(idNL != null)
+    {
+      id = idNL.item(0).getFirstChild().getNodeValue();
+    }
+    if(shortNameNL != null)
+    {
+      shortName = shortNameNL.item(0).getFirstChild().getNodeValue();
+    }
+    if(titleNL != null)
+    {
+      title = titleNL.item(0).getFirstChild().getNodeValue();
+    }
+    if(abstractNL != null)
+    {
+      //abstractS = abstractNL.item(0).getFirstChild().getFirstChild().getNodeValue();
+    }
+    if(keywordNL != null)
+    {
+      for(int i=0; i<keywordNL.getLength(); i++)
+      { //get the keywords and concat them into one string
+        String keyword = keywordNL.item(i).getFirstChild().getNodeValue();
+        keywords += keyword;
+        if(i != keywordNL.getLength() - 1)
+        {
+          keywords += ", ";
+        }
       }
     }
-    JTextArea origArea = new JTextArea(text);
-    origArea.setFont(new Font("Times", Font.PLAIN, 12));
-    origArea.setLineWrap(true);
-    origArea.setRows(1);
-    origArea.setWrapStyleWord(true);
-    origArea.setColumns(25);
-    origArea.setBorder(null);
-    origArea.setEditable(false);
-    JScrollPane jsp4 = new JScrollPane(origArea);
-    jsp4.setBorder(new EmptyBorder(0,0,0,0));
-    jsp4.setMaximumSize(new Dimension(500, 25));
-    origTempPanel.add(jsp4);
     
-    textpanel.add(origTempPanel);
-    textpanel.add(Box.createRigidArea(new Dimension(0,5)));
-    textpanel.add(editBaseInfoButton);
+    wholelabel += id + "<br>" + title + "<br>" + shortName + "<br>" + keywords +
+                 "<br>" + abstractS + "<br>";
     
-    panel.add(textpanel);
-    return panel;
+    String originators = "<br>";
+    String name = "";
+    String orgname = "";
+    String address = "";
+    String phone = "";
+    String email = "";
+    String web = "";
+    String role = "";
+    
+    for(int i=0; i<originatorNL.getLength(); i++)
+    {
+      Node node = originatorNL.item(i);
+      NodeList origChildren = node.getChildNodes();
+      for(int k=0; k<origChildren.getLength(); k++)
+      {
+        Node n = origChildren.item(k);
+        String nodename = n.getNodeName().trim();
+        if(nodename.equals("individualName"))
+        {
+          NodeList children = n.getChildNodes();
+          String firstName = "";
+          String lastName = "";
+          for(int j=0; j<children.getLength(); j++)
+          {
+            if(children.item(j).getNodeName().trim().equals("givenName"))
+            {
+              firstName = children.item(j).getFirstChild().getNodeValue().trim();
+            }
+            else if(children.item(j).getNodeName().trim().equals("surName"))
+            {
+              lastName = children.item(j).getFirstChild().getNodeValue().trim();
+            }
+          }
+          name = firstName + " " + lastName;
+        }
+        else if(nodename.equals("organizationName"))
+        {
+          orgname = n.getFirstChild().getNodeValue().trim();
+        }
+        else if(nodename.equals("address"))
+        {
+          NodeList children = n.getChildNodes();
+          String dp = "";
+          String city = "";
+          String aa = "";
+          String pc = "";
+          for(int j=0; j<children.getLength(); j++)
+          {
+            Node cn = children.item(j); //child node
+            String cnn = cn.getNodeName().trim(); //child node name
+            if(cnn.equals("deliveryPoint"))
+            {
+              dp = cn.getFirstChild().getNodeValue().trim();
+            }
+            else if(cnn.equals("city"))
+            {
+              city = cn.getFirstChild().getNodeValue().trim();
+            }
+            else if(cnn.equals("administrativeArea"))
+            {
+              aa = cn.getFirstChild().getNodeValue().trim();
+            }
+            else if(cnn.equals("postalCode"))
+            {
+              pc = cn.getFirstChild().getNodeValue().trim();
+            }
+          }
+          address = dp + "<br>" + city + ", " + aa + "  " + pc;
+        }
+        else if(nodename.equals("phone"))
+        {
+          phone = n.getFirstChild().getNodeValue().trim();
+        }
+        else if(nodename.equals("electronicMailAddress"))
+        {
+          email = n.getFirstChild().getNodeValue().trim();
+        }
+        else if(nodename.equals("onlineLink"))
+        {
+          web = n.getFirstChild().getNodeValue().trim();
+        }
+        else if(nodename.equals("role"))
+        {
+          role = n.getFirstChild().getNodeValue().trim();
+        }
+      }
+      originators += "<br>" + name +  "<br>" + orgname + "<br>" + address + 
+                     "<br>" + phone + "<br>" + email +   "<br>" + web +
+                     "<br>" + role +  "<br>";
+    }
+    System.out.println(originators);
+    //originators += "</html>";
+    
+    wholelabel += originators + "</html>";
+    JLabel biglabel = new JLabel(wholelabel);
+    biglabel.setPreferredSize(new Dimension(300, 500));
+    biglabel.setMaximumSize(new Dimension(300, 500));
+    
+    headerPanel.setAlignmentX(0);
+    biglabel.setAlignmentX(0);
+    textpanel.add(headerPanel);
+    textpanel.add(biglabel);
+    
+    return textpanel;
   }
   
   /**

@@ -20,10 +20,10 @@
     </group>
     
     <group field="@caseSensitive" size="370x35">
-      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no"
+      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="yes"
                 tooltip="An identifier specifying wether this table is case sensitive or not">
-        <item name="No" value="no" />
         <item name="Yes" value="yes"/>
+        <item name="No" value="no" />
       </combobox>
     </group>
     <group size="370x30">

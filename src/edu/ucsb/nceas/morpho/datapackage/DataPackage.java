@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 18:04:31 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-07-09 23:17:02 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@ public class DataPackage
   private ClientFramework framework;
   private String location = null;
   private String id = null;
+  private Document tripleFileDom;
   
   /**
    * used to signify that this package is located on a metacat server
@@ -194,6 +195,14 @@ public class DataPackage
   }
   
   /**
+   * returns the dom representation of the triple file.
+   */
+  public Document getTripleFileDom()
+  {
+    return tripleFileDom;
+  }
+  
+  /**
    * parses the triples file and pulls out the basic information (title, 
    * altTitle, Originators)
    */
@@ -211,6 +220,7 @@ public class DataPackage
       ConfigXML config = framework.getConfiguration();
       String catalogPath = config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(tripleFile, catalogPath);
+      tripleFileDom = doc;
     }
     catch (Exception e)
     {

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-06 16:48:43 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2001-07-09 23:17:02 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1142,12 +1142,6 @@ public class PackageWizard extends javax.swing.JFrame
           defaultText = (String)tempElement.attributes.get("defaulttext");
         }
         
-        if(tempElement.attributes.containsKey("tooltip"))
-        {
-          String tooltip = (String)tempElement.attributes.get("tooltip");
-          textfield.setToolTipText(tooltip);
-        }
-        
         if(tempElement.attributes.containsKey("repeatable"))
         { //if the text box is repeatable, make the label into a button
           //and when the button is pressed, repeat the element.
@@ -1259,6 +1253,13 @@ public class PackageWizard extends javax.swing.JFrame
         parentPanel.children.addElement(textfield);
         //add the new textfield to the children of the parentPanel for later
         //navigation
+        
+        if(tempElement.attributes.containsKey("tooltip"))
+        {
+          String tooltip = (String)tempElement.attributes.get("tooltip");
+          textfield.setToolTipText(tooltip);
+          label.setToolTipText(tooltip);
+        }
         
         JPanel layoutpanel = new JPanel();
         BorderLayout bl = new BorderLayout();
@@ -1408,6 +1409,7 @@ public class PackageWizard extends javax.swing.JFrame
         {
           String tooltip = (String)tempElement.attributes.get("tooltip");
           combofield.setToolTipText(tooltip);
+          label.setToolTipText(tooltip);
         }
         
         //make this combobox a child of the parent frame
