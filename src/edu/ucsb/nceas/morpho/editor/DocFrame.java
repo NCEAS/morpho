@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-05 03:27:44 $'
- * '$Revision: 1.78 $'
+ *     '$Date: 2002-01-08 19:45:27 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,14 +435,14 @@ public class DocFrame extends javax.swing.JFrame
 	        // the treeUnion method will 'merge' the input document with
 	        // a template XML document created using the DTD parser from the DTD doc
 	        if (!templateFlag) {   // 
-	           long temp = System.currentTimeMillis();
-	           System.out.println("StarttreeUnion:"+((new Long(temp)).toString()));
+//	           long temp = System.currentTimeMillis();
+//	           System.out.println("StarttreeUnion:"+((new Long(temp)).toString()));
 	            treeUnion(rootNode,dtdtree.rootNode);
 //            treeUnion(frootNode, dtdtree.rootNode);
 //            helpTrees.put(rootname, frootNode); 
 //            treeUnion(rootNode, frootNode);
-	           temp = System.currentTimeMillis();
-	           System.out.println("FinishtreeUnion:"+((new Long(temp)).toString()));
+//	           temp = System.currentTimeMillis();
+//	           System.out.println("FinishtreeUnion:"+((new Long(temp)).toString()));
 	        
             // treeTrim will remove nodes in the input that are not in the DTD
             // remove the following line if this is not wanted
@@ -454,20 +454,20 @@ public class DocFrame extends javax.swing.JFrame
 	    }
     }// end of if (!helpTrees.containsKey())
     else {
-	           long temp = System.currentTimeMillis();
-	           System.out.println("StarttreeUnionCache:"+((new Long(temp)).toString()));
+//	           long temp = System.currentTimeMillis();
+//	           System.out.println("StarttreeUnionCache:"+((new Long(temp)).toString()));
             treeUnion(rootNode, frootNode);
-	           temp = System.currentTimeMillis();
-	           System.out.println("FinishtreeUnionCache:"+((new Long(temp)).toString()));
+//	           temp = System.currentTimeMillis();
+//	           System.out.println("FinishtreeUnionCache:"+((new Long(temp)).toString()));
 	        
             // treeTrim will remove nodes in the input that are not in the DTD
             // remove the following line if this is not wanted
            if (trimNodesNotInDTDflag) {
-	           temp = System.currentTimeMillis();
-	           System.out.println("StartTrimTree:"+((new Long(temp)).toString()));
+//	           temp = System.currentTimeMillis();
+//	           System.out.println("StartTrimTree:"+((new Long(temp)).toString()));
               treeTrim(rootNode,dtdtree.rootNode);
-	           temp = System.currentTimeMillis();
-	           System.out.println("FiinishTrimTree:"+((new Long(temp)).toString()));
+//	           temp = System.currentTimeMillis();
+//	           System.out.println("FiinishTrimTree:"+((new Long(temp)).toString()));
            }
       
     }
@@ -757,6 +757,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
          xp.setTreeModel(treeModel);
          xp.setContainer(this);
          xp.setTree(tree);
+         NestedPanelScrollPanel.getViewport().removeAll();
          NestedPanelScrollPanel.getViewport().add(xp.topPanel);
 //         xp.invalidate();
 //         NestedPanelScrollPanel.repaint();
@@ -1924,6 +1925,7 @@ class SymWindow extends java.awt.event.WindowAdapter {
     xp.setTreeModel(treeModel);
     xp.setContainer(this);
     xp.setTree(tree);
+    NestedPanelScrollPanel.getViewport().removeAll();
     NestedPanelScrollPanel.getViewport().add(xp.topPanel);
 //         xp.invalidate();
 //         NestedPanelScrollPanel.repaint();
