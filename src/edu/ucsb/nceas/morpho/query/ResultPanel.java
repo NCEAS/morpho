@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-20 21:12:51 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2002-08-21 00:31:42 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,10 +85,6 @@ public class ResultPanel extends JPanel
   private ResultPanelAndFrameMediator mediator = null;
   /** The table used to display the results */
   ToolTippedSortableJTable table = null;
-  /** Indicate whether the refresh button should appear */
-  private boolean hasRefreshButton = false;
-  /** Indicate whether the revise button should appear */
-  private boolean hasReviseButton = false;
   /** Button used to trigger a re-execution of the query */
   private JButton refreshButton;
   /** Button used to trigger a revision using QueryDialog */
@@ -101,8 +97,6 @@ public class ResultPanel extends JPanel
   private JLabel recordCountLabel;
   /** Morpho butterfly label */
   private JLabel bflyLabel;
-  /** A static hash listing all of the search menu query Actions by id */
-  private static Hashtable savedQueriesList;
   /**popup menu for right clicks*/
   private JPopupMenu popup;
   /**menu items for the popup menu*/
@@ -799,24 +793,7 @@ public class ResultPanel extends JPanel
    */
   public void saveQuery()
   {
-    // Serialize the query in the profiles directory
-    AccessionNumber a = new AccessionNumber(morpho);
-    Query query = results.getQuery();
-    String identifier = query.getIdentifier();
-    if (identifier == null) {
-      identifier = a.getNextId();
-      query.setIdentifier(identifier);
-    }
-
-    try {
-      Log.debug(10, "Saving query to disk...");
-      query.save();
-      Log.debug(10, "Adding query to menu...");
-      addQueryToMenu(query);
-
-    } catch (IOException ioe) {
-      Log.debug(6, "Failed to save query: I/O error.");
-    }
+   
   }
 
   /**
@@ -840,56 +817,7 @@ public class ResultPanel extends JPanel
     initTableColumnSize(table, results, (int)preferredSize.getWidth());
   }
 
-  /**
-   * Load the saved queries into the Search menu so that the user can launch
-   * any queries they saved from previosu sessions.
-   */
-  public void loadSavedQueries()
-  {
-    Log.debug(20, "Loading saved queries...");
-    // See if the query list is null, and initialize it if so
-    if (savedQueriesList == null) {
-      savedQueriesList = new Hashtable();
-    }
 
-    // Make sure the list is empty (because this may be called when the
-    // profile is being switched)
-    if (!savedQueriesList.isEmpty()) {
-      for (int i = savedQueriesList.size()+1; i > 1; i--) {
-        // Clear the search menu too 
-        UIController.getInstance().removeMenuItem("Search", i);
-      }
-      savedQueriesList = new Hashtable();
-    }
-
-    // Look in the profile queries directory and load any pathquery docs
-    ConfigXML config = morpho.getConfiguration();
-    ConfigXML profile = morpho.getProfile();
-    String queriesDirName = config.getConfigDirectory() + File.separator +
-                            config.get("profile_directory", 0) +
-                            File.separator +
-                            config.get("current_profile", 0) +
-                            File.separator +
-                            profile.get("queriesdir", 0); 
-    File queriesDir = new File(queriesDirName);
-    if (queriesDir.exists()) {
-//DFH      File[] queriesList = queriesDir.listFiles();
-      File[] queriesList = listFiles(queriesDir);
-      for (int n=0; n < queriesList.length; n++) {
-        File queryFile = queriesList[n];
-        if (queryFile.isFile()) {
-          try {
-            FileReader xml = new FileReader(queryFile);
-            Query newQuery = new Query(xml, morpho);
-            addQueryToMenu(newQuery);
-          } catch (FileNotFoundException fnf) {
-            Log.debug(9, "Poof. The query disappeared.");
-          }
-        }
-      }
-    }
-    Log.debug(20, "Finished loading saved queries.");
-  }
 
   /**
    * Add a new menu item to the Search menu for the query
@@ -898,61 +826,10 @@ public class ResultPanel extends JPanel
    */
   private void addQueryToMenu(final Query query)
   {
-    // See if the query list is null, and initialize it if so
-    if (savedQueriesList == null) {
-      savedQueriesList = new Hashtable();
-    }
-
-    // Add a menu item in the UIController to execute this query, but only
-    // if the menu item doesn't already exist, which is determined
-    // by seeing if the query identifier is in the static list of queries
-    if (! savedQueriesList.containsKey(query.getIdentifier())) {
-      Action[] menuActions = new Action[1];
-      Action savedSearchItemAction = 
-             new AbstractAction(query.getQueryTitle()) {
-        public void actionPerformed(ActionEvent e) {
- //DFH - following lines disabled because donot work with Java 1.17
-          Action queryAction = ((JMenuItem)e.getSource()).getAction();
-          Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
-          if (savedQuery != null) {
-            MorphoFrame resultWindow = UIController.getInstance().addWindow(
-                query.getQueryTitle());
-            resultWindow.setBusy(true);
-            resultWindow.setVisible(true);
-            ResultSet results = savedQuery.execute();
-            ResultPanel resultDisplayPanel = new ResultPanel(
-                results,12, null, resultWindow.getDefaultContentAreaSize());
-            resultDisplayPanel.setVisible(true);
-            resultWindow.setMainContentPane(resultDisplayPanel);
-            resultWindow.setMessage(results.getRowCount() + " data sets found");
-            resultWindow.setBusy(false);
-          }
-        }
-      };
-      savedSearchItemAction.putValue("SAVED_QUERY_OBJ", query);
-      savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                            "Execute saved search");
-      menuActions[0] = savedSearchItemAction;
-      UIController.getInstance().addMenu("Search", new Integer(3), menuActions);
-      savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
-    } else {
-      // The menu already exists, so update its title and query object
-      Action savedQueryAction = 
-             (Action)savedQueriesList.get(query.getIdentifier());
-      savedQueryAction.putValue(Action.NAME, query.getQueryTitle());
-      savedQueryAction.putValue("SAVED_QUERY_OBJ", query);
-    }
+ 
   }
   
-  private File[] listFiles(File dir) {
-    String[] fileStrings = dir.list();
-    int len = fileStrings.length;
-    File[] list = new File[len];
-    for (int i=0; i<len; i++) {
-        list[i] = new File(dir, fileStrings[i]);    
-    }
-    return list;
-  }
+
   
 
 
