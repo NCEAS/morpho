@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-02 21:39:02 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-03 01:51:58 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,15 +41,17 @@ import javax.swing.JTable;
 public class ResultPanel extends javax.swing.JPanel
 {
   private boolean DEBUG = true;
+  private ResultSet results = null;
 
-  public ResultPanel()
+  public ResultPanel(ResultSet results)
   {
     super();
     setLayout(new BorderLayout());
     setBackground(Color.white);
-    ResultSet resultSet = new ResultSet();
-    JTable table = new JTable(resultSet);
-    table.setRowHeight(resultSet.getRowHeight());
+
+    this.results = results;
+    JTable table = new JTable(results);
+    table.setRowHeight(results.getRowHeight());
 
     //Create the scroll pane and add the table to it. 
     JScrollPane scrollPane = new JScrollPane(table);
@@ -91,7 +93,7 @@ public class ResultPanel extends javax.swing.JPanel
     System.out.println("--------------------------");
   }
 */
-
+  /*
   public static void main(String[]args)
   {
     JFrame frame = new JFrame("SimpleTest");
@@ -103,10 +105,10 @@ public class ResultPanel extends javax.swing.JPanel
         System.exit(0);}
       }
     );
-    ResultPanel results = new ResultPanel();
-    frame.getContentPane().add(results);
+    ResultPanel resultsPanel = new ResultPanel(new ResultSet());
+    frame.getContentPane().add(resultsPanel);
     frame.pack();
     frame.setVisible(true);
   }
-
+  */
 }

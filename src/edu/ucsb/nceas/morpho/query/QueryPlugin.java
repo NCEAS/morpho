@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-02 21:39:02 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2001-05-03 01:51:58 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,9 @@ import edu.ucsb.nceas.morpho.framework.*;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.InputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -52,6 +55,9 @@ public class QueryPlugin implements PluginInterface
   private Action[] menuActions = null;
   private Action[] toolbarActions = null;
 
+  /** Query used to find data owned by the user */
+  private Query ownerQuery = null;
+
   /** Tabbed panel that contains the data owned by the user */
   private ResultPanel ownerPanel = null;
 
@@ -61,10 +67,6 @@ public class QueryPlugin implements PluginInterface
    */
   public QueryPlugin()
   {
-    // Create the tabbed pane for the owner queries
-    ownerPanel = new ResultPanel();
-    ownerPanel.setName("My Data");
-
     // Create the menus and toolbar actions
     initializeActions();
   }
@@ -79,6 +81,14 @@ public class QueryPlugin implements PluginInterface
     this.framework = cf;
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
+
+    // Create the tabbed pane for the owner queries
+    ownerQuery = new Query(getOwnerQuery(), framework);
+    ResultSet results = ownerQuery.execute();
+    ownerPanel = new ResultPanel(results);
+    ownerPanel.setName("My Data");
+
+    // Add the content pane, menus, and toolbars
     framework.setMainContentPane(ownerPanel);
     framework.addMenu("Search", new Integer(3), menuActions);
     framework.addToolbarActions(toolbarActions);
@@ -212,148 +222,24 @@ public class QueryPlugin implements PluginInterface
     framework.debug(9, "Current user: " + framework.getUserName());
     getOwnerDocs(framework.getUserName());
   }
-
-  public void getOwnerDocs(String name)
-  {
-    String searchtext = "<?xml version=\"1.0\"?>\n";
-      searchtext = searchtext + "<pathquery version=\"1.0\">\n";
-      searchtext = searchtext + "<owner>" + name + "</owner>\n";
-      searchtext = searchtext + "<querygroup operator=\"UNION\">\n";
-      searchtext = searchtext + "<queryterm casesensitive=\"true\" " +
-                                "searchmode=\"contains\">\n";
-      searchtext = searchtext + "<value>%</value>\n";
-      searchtext = searchtext + "</queryterm></querygroup></pathquery>";
-      squery_submitToDatabase_all(searchtext);
-  }
 */
-/*
-  void ShowMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+
+  /**
+   * Construct a query suitable for getting the owner documents
+   */
+  public String getOwnerQuery()
   {
-    int sel = table.getSelectedRow();
-    if (sel > -1)
-    {
-      String filename = (String) table.getModel().getValueAt(sel, 0);
-      File file = new File(filename);
-      DocFrame df = new DocFrame(file);
-        df.setVisible(true);
-        df.writeInfo();
-        // df.setDoctype("eml-dataset");
-    }
-  }
+    StringBuffer searchtext = new StringBuffer();
+    searchtext.append("<?xml version=\"1.0\"?>\n");
+    searchtext.append("<pathquery version=\"1.0\">\n");
+    searchtext.append("<owner>" + framework.getUserName() + "</owner>\n");
+    searchtext.append("<querygroup operator=\"UNION\">\n");
+    searchtext.append("<queryterm casesensitive=\"true\" ");
+    searchtext.append("searchmode=\"contains\">\n");
+    searchtext.append("<value>%</value>\n");
+    searchtext.append("</queryterm></querygroup></pathquery>");
 
-  void EditMenuItem_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    int selectedRow = table.getSelectedRow();
-    if (selectedRow > -1)
-    {
-      String filename = (String) table.getModel().getValueAt(selectedRow, 0);
-      File temp = new File(filename);
-      if (mde != null)
-      {
-        mde.openDocument(temp);
-        ownerPanel.setSelectedIndex(0);
-      }
-      else
-      {
-        framework.debug(1, "mde is null in RSFrame class");
-      }
-    }
-  }
-*/
-  public void squery_submitToDatabase(String queryXML)
-  {
-    Properties prop = new Properties();
-    prop.put("action", "squery");
-    prop.put("query", queryXML);
-    prop.put("qformat", "xml");
-    try
-    {
-      InputStream in = framework.getMetacatInputStream(prop, true);
-
-      ExternalQuery rq = new ExternalQuery(in);
-      RSFrame rs = new RSFrame("Results of Catalog Search");
-      //rs.setEditor(mde);
-      //rs.setTabbedPane(ownerPanel);
-      rs.setVisible(true);
-      rs.local = false;
-      JTable ttt = rq.getTable();
-      TableModel tm = ttt.getModel();
-      rs.JTable1.setModel(tm);
-      rs.JTable1.setColumnModel(ttt.getColumnModel());
-      rs.relations = rq.getRelations();
-      rs.pack();
-
-      in.close();
-    }
-    catch(Exception w)
-    {
-      framework.debug(1, "Error in submitting structured query");
-    }
-  }
-
-  // this method varies from squery_submitToDatabase only in setting 
-  // the ExternalQuery class to build a table that shows all return columns
-  public void squery_submitToDatabase_all(String queryXML)
-  {
-    Properties prop = new Properties();
-    prop.put("action", "squery");
-    prop.put("query", queryXML);
-
-    prop.put("returndoc", "-//NCEAS//resource//EN");
-
-    prop.put("qformat", "xml");
-    try
-    {
-      InputStream in = framework.getMetacatInputStream(prop, true);
-
-      ExternalQuery rq = new ExternalQuery(in, 0);  // the difference is here!
-      RSFrame rs = new RSFrame("Results of Catalog Search");
-      //rs.setEditor(mde);
-      //rs.setTabbedPane(ownerPanel);
-      rs.setVisible(true);
-      rs.local = false;
-      JTable ttt = rq.getTable();
-      TableModel tm = ttt.getModel();
-      rs.JTable1.setModel(tm);
-      rs.JTable1.setColumnModel(ttt.getColumnModel());
-      rs.relations = rq.getRelations();
-      rs.pack();
-
-      in.close();
-    }
-    catch(Exception w)
-    {
-      framework.debug(1, "Error in submitting structured query");
-    }
-  }
-
-  public void simplequery_submitToDatabase(String query)
-  {
-    Properties prop = new Properties();
-    prop.put("action", "query");
-    prop.put("anyfield", query);
-    prop.put("qformat", "xml");
-    try
-    {
-      InputStream in = framework.getMetacatInputStream(prop, true);
-      ExternalQuery rq = new ExternalQuery(in);
-      RSFrame rs = new RSFrame("Results of Catalog Search");
-      //rs.setEditor(mde);
-      //rs.setTabbedPane(ownerPanel);
-      rs.setVisible(true);
-      rs.local = false;
-      JTable ttt = rq.getTable();
-      TableModel tm = ttt.getModel();
-      rs.JTable1.setModel(tm);
-      rs.relations = rq.getRelations();
-      rs.pack();
-
-      in.close();
-    }
-    catch(Exception w)
-    {
-      framework.debug(1, "Error in submitting simple query");
-    }
+    return searchtext.toString();
   }
 
   /**
