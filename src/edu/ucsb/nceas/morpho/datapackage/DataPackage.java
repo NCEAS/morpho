@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-28 23:38:33 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2002-03-29 18:41:12 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -806,7 +806,10 @@ public class DataPackage
           File f = null;
           try {
             f = PackageUtil.openFile(fileId, framework);
-            fsds.newDataFile(newId, new FileInputStream(f)); //new local file
+            FileInputStream fis = new FileInputStream(f);
+            fsds.newDataFile(newId, fis); //new local file
+            fis.close();
+            
           }
           catch (Exception w) {
             framework.debug(0, "Problem writing new local data file");

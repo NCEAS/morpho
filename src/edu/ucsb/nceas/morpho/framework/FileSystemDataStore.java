@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-26 19:28:39 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2002-03-29 18:40:52 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -385,6 +385,7 @@ public class FileSystemDataStore extends DataStore
       }
       bos.flush();
       bos.close();
+      bfile.close();
       return savefile;
     }
     catch(Exception e)
