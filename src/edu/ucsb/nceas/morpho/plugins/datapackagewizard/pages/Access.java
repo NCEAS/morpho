@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-06 18:00:32 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2004-04-07 01:23:41 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,14 +230,31 @@ public class Access
     wpd.resetBounds();
     wpd.setVisible(true);
 
+    List delRow = new ArrayList();
+    List rowLists = accessList.getListOfRowLists();
+    Iterator it = rowLists.iterator();
+    int count = 0;
+    while(it.hasNext()){
+      List row = (List)it.next();
+      if(row.get(4) == dialogObj){
+        delRow.add(new Integer(count));
+      }
+      count++;
+    }
+
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+      int size = delRow.size();
+      for(int j=size; j>0; j--){
+        Integer i = (Integer) delRow.get(j-1);
+        accessList.removeRow(i.intValue());
+      }
 
       List newRows = editAccessPage.getSurrogate();
       Iterator itRow = newRows.iterator();
       while(itRow.hasNext()){
         List newRow = (ArrayList)itRow.next();
         newRow.add(editAccessPage);
-        accessList.replaceSelectedRow(newRow);
+        accessList.addRow(newRow);
       }
     }
   }
