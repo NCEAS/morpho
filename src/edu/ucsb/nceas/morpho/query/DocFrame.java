@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.11 2000-10-03 23:20:43 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.12 2000-10-04 15:39:29 higgins Exp $'
  */
 
 
@@ -266,12 +266,15 @@ public void writeInfo() {
     // System.out, using the XSLT instructions found in "foo.xsl".
 //    processor.process(new XSLTInputSource("file:///"+file.getCanonicalPath()),
     XSLTInputSource trans = null;
-    trans = new XSLTInputSource("XML.xsl");    // default
+    
+    String fileString = "XML.xsl";
     if (doctype!=null) {
         if (ht.get(doctype)!=null) {
-            trans = new XSLTInputSource((String)ht.get(doctype));
+            fileString = (String)ht.get(doctype);
         }
     }
+    FileReader fr = new FileReader(fileString);
+    trans = new XSLTInputSource(fr);    
         
     processor.process(new XSLTInputSource(sr),
                       trans,
