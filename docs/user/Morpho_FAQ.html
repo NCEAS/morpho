@@ -78,7 +78,9 @@
       <p><font size="+1"><strong><span style="font-weight: bold;">9.
                 <a href="#oldmorphoQ">What happens with network data packages created with older versions
         of Morpho?</a></span></strong></font></p>
-      <p><font size="+1"><strong>10. <a href="#profiledelete">How do I delete a profile?</a></strong><br>
+      <p><font size="+1"><strong>10. <a href="#profiledelete">How do I delete a profile?</a></strong></font></p>
+      <p><font size="+1"><strong>11. <a href="#extract">How can I add  automatically
+              extract data documentation from a data file?</a></strong><br>
         </font></p></td>
     </tr>
     <tr>
@@ -129,7 +131,7 @@
   package?</font></b><font size="+1"><b></b><br>
   <br>
   Complex, geospatially indexed images can be included and described in eml 2.0
-  using the "spatialRaster" or "spatialVector" entitiy
+  using the "spatialRaster" or "spatialVector" entity
   modules.&nbsp; However, Morpho currently has no features directly supporting
   these modules. Nevertheless, images that are stored in .gif or .jpeg formats
   (standards for web
@@ -256,13 +258,51 @@ it&nbsp; if you want to save the results.</font></p>
         <p>&nbsp;</p></td>
     </tr>
     <tr>
-      <td><p><font size="+1"><a name="profiledelete"></a><strong>10. How do I delete a profile?</strong></font></p>
+      <td><p><font size="+1"><a name="profiledelete"></a><strong>10. How do I
+              delete a profile?</strong></font></p>
+        <p>&nbsp;</p>
+        <p><font size="+1">There is no method for deleting an old profile that
+            you no longer need in Morpho itself. Instead, you delete the file
+            (saved on your computer) that corresponds with the profile you would
+            like to delete. These profile files are located in the profiles folder,
+      which can be found in the &quot;.morpho&quot; folder.</font></p>
+      <p>&nbsp;</p></td>
+    </tr>
+    <tr>
+      <td><p class="tablepanel"><font size="+1"><strong><a name="extract"></a>11.
+              How can I automatically extract data documentation from a data
+              file?</strong></font></p>
       <p>&nbsp;</p>
-      <p><font size="+1">There is no method for deleting an old profile that you no longer need
-      in Morpho itself. Instead, you delete the file (saved on your computer)
-        that corresponds with the profile you would like to delete. These profile
-      files are located in the profiles folder, which can be found in the &quot;.morpho&quot;
-      folder.</font></p>      </td>
+      <p class="tablepanel"><font size="+1">Begin by opening the data
+          package you would like to add data to, or by creating a new data
+          package
+          using the New Datapackage Wizard. Next, open the New Datatable
+          Wizard, which can be found under the &quot;Data&quot; menu
+          by
+          clicking
+          &quot;Create/Import
+      New Datatable&quot;, or can be accessed on the last screen of the New Datapackage
+      Wizard. Choose either &quot;Import&quot; or &quot;Describe&quot; under &quot;What do you want to
+      do?&quot;. You can then choose &quot;Automatic&quot; to have Morpho automatically extract
+      documentation from the data file. </font></p>
+      <p class="tablepanel">&nbsp;</p>
+      <p class="tablepanel"><font size="+1">Note that at this time, Morpho can
+            only extract documentation from a data file that is in text format.
+          For data files saved in other formats, you can often change that format
+          into text format. For example, if you have a data tables
+      created in Microsoft Access, you can click on each datatable in that database
+      and export it as a text file (under File -&gt; Export...). These text files
+          can then be added one at a time to Morpho, and the documentation extracted
+          automatically.
+          If
+          you
+          have data in an
+          Excel workbook, you can simply save each data sheet as a text file
+          using &quot;Save As&quot; and choosing a text format from the &quot;Save as type&quot;
+          menu. Chart objects
+      in Excel cannot be saved as text files. Also, documentation cannot be automatically
+      extracted from image files. For these and other types of data files, you
+      should manually enter their documentation in the New Datatable Wizard.</font></p></td>
     </tr>
   </tbody>
 </table>
