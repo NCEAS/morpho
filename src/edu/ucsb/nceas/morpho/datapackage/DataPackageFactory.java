@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-19 18:07:00 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2003-11-26 20:12:08 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ public class DataPackageFactory
       Log.debug(1,"Creating new eml2.0.0 package");
       dp = new EML200DataPackage();
       Log.debug(1,"loading new eml2.0.0 DOM");
+  /*   
       dp.load(location,"jscientist.7.1",null);
       try{
         Node textNode = XMLUtilities.getTextNodeWithXPath(dp.getMetadataPath(),"/xpathKeyMap/contextNode[@name='package']/title");
@@ -92,8 +93,10 @@ public class DataPackageFactory
       catch (Exception w) {
         Log.debug(1,"exception");
       }
+  */   
     }
-    else if (type.indexOf("eml-dataset-2.0.0beta6")>-1) {
+    else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
+              (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
       dp = new EML2Beta6DataPackage();
     }
     return dp;
@@ -145,11 +148,21 @@ public class DataPackageFactory
       Log.debug(40,"loading new eml2.0.0 DOM");
       dp.load(location,docid,morpho);
     }
-    else if (type.indexOf("eml-dataset-2.0.0beta6")>-1) {
+
+    else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
+              (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
       Log.debug(20,"Creating new eml2Beta6 package");
-      dp = new EML2Beta6DataPackage();
-      Log.debug(40,"loading new eml2Beta6 DOM");
-      dp.load(location,docid,morpho);
+      AbstractDataPackage adptemp = new EML2Beta6DataPackage();
+      adptemp.load(location,docid,morpho);
+      // adptemp is created using the EML2Beta6DataPackage class
+      // however, the load routine for this class currently converts the
+      // document to an EML200 doctype, so we really want to return an
+      // AbstractDataPackage of that type for later use when the doc is
+      // serialized
+      dp = getDataPackage(adptemp.metadataNode, "eml:eml");
+      dp.location = adptemp.location;
+      Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
+//      dp.load(location,docid,morpho);
     }
 
 
