@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-16 16:32:56 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2002-09-16 23:22:23 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,6 +281,7 @@ public class DataViewer extends javax.swing.JPanel
     
   DataViewer thisRef;
 
+
 	/*
    * No argument contstructor that builds basic gui
    */
@@ -385,6 +386,7 @@ public class DataViewer extends javax.swing.JPanel
         cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
         separator = profile.get("separator", 0);
         separator = separator.trim();
+        
     }
 
     /*
@@ -395,6 +397,7 @@ public class DataViewer extends javax.swing.JPanel
         this();
         this.dataID = dataID;
         this.dataString = dataString;
+        
     }
     
     /*
@@ -977,6 +980,14 @@ public class DataViewer extends javax.swing.JPanel
     
     table.setColumnSelectionAllowed(true);
     table.setRowSelectionAllowed(true);
+    DelimiterCellEditor editor = 
+                           new DelimiterCellEditor(field_delimiter, TablePanel);
+    // Set table cell editor for each column
+    TableColumnModel columnModel = table.getColumnModel();
+    for (int j = 0; j< table.getColumnCount(); j++)
+    {
+      columnModel.getColumn(j).setCellEditor(editor);
+    }
  //   table.setCellSelectionEnabled(true);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	  (table.getTableHeader()).setReorderingAllowed(false);
@@ -997,7 +1008,8 @@ public class DataViewer extends javax.swing.JPanel
     
     JTableHeader header = table.getTableHeader();
     header.addMouseListener(new HeaderMouseListener());
-  
+    
+   
 	}
 
 
@@ -1074,6 +1086,14 @@ public class DataViewer extends javax.swing.JPanel
             column_labels.insertElementAt(newHeader, sel);
             ptm.insertColumn(sel); 
             pv = ptm.getPersistentVector();
+            DelimiterCellEditor editor =
+                          new DelimiterCellEditor(field_delimiter, TablePanel);
+            // Set table cell editor for each column
+            TableColumnModel columnModel = table.getColumnModel();
+            for (int j = 0; j< table.getColumnCount(); j++)
+            {
+               columnModel.getColumn(j).setCellEditor(editor);
+            }
           
           }
         }
@@ -1102,6 +1122,15 @@ public class DataViewer extends javax.swing.JPanel
             column_labels.insertElementAt(newHeader, sel+1);
             ptm.insertColumn(sel+1); 
             pv = ptm.getPersistentVector();
+            
+            DelimiterCellEditor editor =
+                           new DelimiterCellEditor(field_delimiter, TablePanel);
+            // Set table cell editor for each column
+            TableColumnModel columnModel = table.getColumnModel();
+            for (int j = 0; j< table.getColumnCount(); j++)
+            {
+               columnModel.getColumn(j).setCellEditor(editor);
+            }
           }
         }        
       }
