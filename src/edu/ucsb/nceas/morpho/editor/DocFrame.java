@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-06 00:48:24 $'
- * '$Revision: 1.104 $'
+ *     '$Date: 2002-12-13 18:43:42 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2148,7 +2148,19 @@ public class DocFrame extends javax.swing.JFrame
           this.dispose();
         }
         else {
-          Log.debug(1,"Validation problemXXX: "+valresult);
+          Log.debug(20,"Validation problemXXX: "+valresult);
+          int opt1 = JOptionPane.showConfirmDialog(null,
+                 "Validation Problem!",
+                 valresult+"\n"+
+                 "Do you want to Continue Exiting the Editor?",
+                 JOptionPane.YES_NO_OPTION);
+          if (opt1== JOptionPane.YES_OPTION) {
+            controller.fireEditingCompleteEvent(this, xmlout);
+            // hide the Frame
+            this.setVisible(false);
+            // free the system resources
+            this.dispose();
+          }
         }
     }
 
