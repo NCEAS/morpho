@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.7 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-20 02:10:39 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
  */
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
-
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -60,48 +59,52 @@ import javax.swing.JButton;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-public class AccessPage extends AbstractUIPage {
+public class AccessPage
+    extends AbstractUIPage {
 
-  private final String pageID     = DataPackageWizardInterface.ACCESS_PAGE;
+  private final String pageID = DataPackageWizardInterface.ACCESS_PAGE;
   private final String nextPageID = "";
   private final String pageNumber = "";
-  private final String title      = "Access Page";
-  private final String subtitle   = "";
+  private final String title = "Access Page";
+  private final String subtitle = "";
   private final String EMPTY_STRING = "";
 
-
+  private JTree accessTree;
   private JPanel middlePanel;
   private JPanel topPanel;
   private JPanel selectionInfoPanel;
   private JPanel currentPanel;
   private JPanel leftPanel;
+  private JPanel dnPanel;
   private JTextField dnField;
+  private JButton refreshButton;
   private JLabel dnLabel;
-  private JLabel introLabel;
   private JLabel descLabel, accessDesc1, accessDesc2;
-  private String userAccessType   = new String("  Allow");
-  private String userAccess       = new String("  Read");
+  private String userAccessType = new String("  Allow");
+  private String userAccess = new String("  Read");
   private JComboBox typeComboBox;
   private JComboBox accessComboBox;
   private JScrollPane treeView;
+  private JTextField nameField;
+  private JTextField orgField;
 
   private final String[] accessTypeText = new String[] {
-    "  Allow",
-    "  Deny"
+      "  Allow",
+      "  Deny"
   };
 
   private final String[] accessText = new String[] {
-    "  Read",
-    "  Read & Write",
-    "  Read, Write & Change Permissions",
-    "  All"
+      "  Read",
+      "  Read & Write",
+      "  Read, Write & Change Permissions",
+      "  All"
   };
 
   public boolean accessIsAllow = true;
-  private final String xPathRoot  = "/eml:eml/dataset/access";
+  private final String xPathRoot = "/eml:eml/dataset/access";
 
   public AccessPage() {
-          init();
+    init();
   }
 
   /**
@@ -116,13 +119,13 @@ public class AccessPage extends AbstractUIPage {
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
     topPanel.add(WidgetFactory.makeDefaultSpacer());
     topPanel.setBorder(new javax.swing.border.EmptyBorder(0,
-        4*WizardSettings.PADDING,0,0));
+        4 * WizardSettings.PADDING, 0, 0));
     JLabel desc = WidgetFactory.makeHTMLLabel(
-                      "<font size=\"4\"><b>Define Access:</b></font>", 1);
+        "<font size=\"4\"><b>Define Access:</b></font>", 1);
     topPanel.add(desc);
     topPanel.add(WidgetFactory.makeHalfSpacer());
     JLabel introLabel = WidgetFactory.makeHTMLLabel(
-                      "<b>Select a user or group from the list below:</b>", 1);
+        "<b>Select a user or group from the list below:</b>", 1);
     topPanel.add(introLabel);
 
     this.add(topPanel, BorderLayout.NORTH);
@@ -131,64 +134,72 @@ public class AccessPage extends AbstractUIPage {
     leftPanel = new JPanel();
     leftPanel.setLayout(new BorderLayout());
 
-    if(treeView != null){
+    if (treeView != null) {
       leftPanel.add(treeView, BorderLayout.CENTER);
 
+      final AccessPage accessP = this;
       ActionListener actionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           Log.debug(45, "got action performed command from Referesh button");
-          Access.refreshTree();
 
-          treeView = createTree();
-          if(treeView != null){
+          if (treeView != null) {
             leftPanel.remove(treeView);
-            leftPanel.add(treeView, BorderLayout.CENTER);
             leftPanel.revalidate();
             leftPanel.repaint();
           }
+          refreshButton.setEnabled(false);
+          typeComboBox.setEnabled(false);
+          accessComboBox.setEnabled(false);
+
+          Access.refreshTree(accessP);
+
         }
       };
 
-      JButton refreshButton = WidgetFactory.makeJButton("Refresh",
-          actionListener);
+      refreshButton = WidgetFactory.makeJButton("Refresh",
+                                                actionListener);
       JPanel buttonPanel = new JPanel();
       buttonPanel.add(refreshButton);
       leftPanel.add(buttonPanel, BorderLayout.SOUTH);
-    } else {
+    }
+    else {
       leftPanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
-                                            +" from server", true,
-                                            new java.awt.Dimension(220,100)));
+                                            + " from server", true,
+                                            new java.awt.Dimension(220, 100)));
       introLabel.setText("  Enter a full distinguished name below");
     }
 
-    leftPanel.setBorder(new javax.swing.border.EmptyBorder(5*WizardSettings.PADDING,
-        4*WizardSettings.PADDING,4*WizardSettings.PADDING,4*WizardSettings.PADDING));
+    leftPanel.setBorder(new javax.swing.border.EmptyBorder(5 *
+        WizardSettings.PADDING,
+        4 * WizardSettings.PADDING, 4 * WizardSettings.PADDING,
+        4 * WizardSettings.PADDING));
     this.add(leftPanel, BorderLayout.WEST);
-
 
     middlePanel = new JPanel();
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
-    JPanel dnPanel = WidgetFactory.makePanel(1);
+    dnPanel = WidgetFactory.makePanel(1);
     dnLabel = WidgetFactory.makeLabel("Distinguished Name", false);
     dnPanel.add(dnLabel);
     dnField = WidgetFactory.makeOneLineTextField();
     dnField.setBackground(java.awt.Color.white);
     dnPanel.add(dnField);
-    dnPanel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.PADDING,0,
+    dnPanel.setBorder(new javax.swing.border.EmptyBorder(0,
+        WizardSettings.PADDING, 0,
         0));
+    middlePanel.add(dnPanel);
 
-    if(treeView == null){
-      middlePanel.add(dnPanel);
+    if (treeView != null) {
+      dnPanel.setVisible(false);
     }
 
     selectionInfoPanel = new JPanel();
     selectionInfoPanel.setLayout(new BorderLayout());
     currentPanel = WidgetFactory.makeVerticalPanel(2);
     selectionInfoPanel.add(currentPanel);
-    middlePanel.add( selectionInfoPanel);
+    middlePanel.add(selectionInfoPanel);
 
     ItemListener accessTypeListener = new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
@@ -197,7 +208,8 @@ public class AccessPage extends AbstractUIPage {
         if (e.getItem().toString().compareTo(accessTypeText[0]) == 0) {
           userAccessType = "Allow";
           accessIsAllow = true;
-        } else if (e.getItem().toString().compareTo(accessTypeText[1]) == 0) {
+        }
+        else if (e.getItem().toString().compareTo(accessTypeText[1]) == 0) {
           userAccessType = "Deny";
           accessIsAllow = false;
         }
@@ -212,7 +224,7 @@ public class AccessPage extends AbstractUIPage {
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
     typeComboBox = WidgetFactory.makePickList(accessTypeText, false,
-                                    0, accessTypeListener);
+                                              0, accessTypeListener);
 
     accessDesc1 = WidgetFactory.makeLabel("      this user", false);
     accessDesc2 = WidgetFactory.makeLabel("   access", false);
@@ -223,23 +235,27 @@ public class AccessPage extends AbstractUIPage {
 
         if (e.getItem().toString().compareTo(accessText[0]) == 0) {
           userAccess = "Read";
-        } else if (e.getItem().toString().compareTo(accessText[1]) == 0) {
+        }
+        else if (e.getItem().toString().compareTo(accessText[1]) == 0) {
           userAccess = "Read & Write";
-        } else if (e.getItem().toString().compareTo(accessText[2]) == 0) {
+        }
+        else if (e.getItem().toString().compareTo(accessText[2]) == 0) {
           userAccess = "Read, Write & Change Permissions";
-        } else if (e.getItem().toString().compareTo(accessText[3]) == 0) {
+        }
+        else if (e.getItem().toString().compareTo(accessText[3]) == 0) {
           userAccess = "All";
         }
       }
     };
 
     accessComboBox = WidgetFactory.makePickList(accessText, false, 0,
-        accessListener);
+                                                accessListener);
 
-    if(treeView!=null){
+    if (treeView != null) {
       typeComboBox.setEnabled(false);
       accessComboBox.setEnabled(false);
-    } else {
+    }
+    else {
       typeComboBox.setEnabled(true);
       accessComboBox.setEnabled(true);
     }
@@ -247,8 +263,9 @@ public class AccessPage extends AbstractUIPage {
     JPanel typePanel = new JPanel();
 
     typePanel.setLayout(new BoxLayout(typePanel, BoxLayout.X_AXIS));
-    typePanel.setBorder(new javax.swing.border.EmptyBorder(0,2*WizardSettings.PADDING,
-        0,0));
+    typePanel.setBorder(new javax.swing.border.EmptyBorder(0,
+        2 * WizardSettings.PADDING,
+        0, 0));
 
     typePanel.add(typeComboBox);
     typePanel.add(accessDesc1);
@@ -262,86 +279,115 @@ public class AccessPage extends AbstractUIPage {
 
     JLabel accessDefinitionLabel = WidgetFactory.makeHTMLLabel(
         "<b>&nbsp;Description of access levels:</b>"
-        +"<ul><li>Read: Able to view data package.</li>"
-        +"<li>Read & Write: Able to view and modify data package.</li>"
-        +"<li>Read, Write & Change Permissions: Able to view and modify "
-        +"datapackage, and modify access permissions.</li>"
-        +"<li>All: Able to do everything.</li></ul>", 4);
+        + "<ul><li>Read: Able to view data package.</li>"
+        + "<li>Read & Write: Able to view and modify data package.</li>"
+        + "<li>Read, Write & Change Permissions: Able to view and modify "
+        + "datapackage, and modify access permissions.</li>"
+        + "<li>All: Able to do everything.</li></ul>", 4);
 
     accessDefinitionPanel.add(accessDefinitionLabel, BorderLayout.CENTER);
     middlePanel.add(accessDefinitionPanel);
-    middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-        3*WizardSettings.PADDING,8*WizardSettings.PADDING));
+    middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,
+        4 * WizardSettings.PADDING,
+        3 * WizardSettings.PADDING, 8 * WizardSettings.PADDING));
 
     this.add(middlePanel, BorderLayout.CENTER);
   }
 
+  public void refreshTree() {
+    treeView = createTree();
+    refreshButton.setEnabled(true);
 
-  private JScrollPane createTree(){
-    if(Access.accessTreeNode != null){
-      final JTree accessTree = new JTree(Access.accessTreeNode);
+    if (treeView != null) {
+      if (dnField.getText().trim().compareTo("") != 0) {
+        typeComboBox.setEnabled(true);
+        accessComboBox.setEnabled(true);
+      }
+
+      leftPanel.add(treeView, BorderLayout.CENTER);
+      leftPanel.revalidate();
+      leftPanel.repaint();
+    }
+    else {
+      leftPanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
+                                            + " from server", true,
+                                            new java.awt.Dimension(220, 100)));
+      dnPanel.setVisible(true);
+      selectionInfoPanel.remove(currentPanel);
+
+      typeComboBox.setEnabled(true);
+      accessComboBox.setEnabled(true);
+    }
+  }
+
+  private JScrollPane createTree() {
+    if (Access.accessTreeNode != null) {
+      accessTree = new JTree(Access.accessTreeNode);
 
       accessTree.getSelectionModel().setSelectionMode(
-                                TreeSelectionModel.SINGLE_TREE_SELECTION);
+          TreeSelectionModel.SINGLE_TREE_SELECTION);
 
       accessTree.setCellRenderer(new AccessTreeCellRenderer());
 
-      accessTree.addTreeSelectionListener(new TreeSelectionListener(){
+      accessTree.addTreeSelectionListener(new TreeSelectionListener() {
         public void valueChanged(TreeSelectionEvent e) {
 
           DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                      accessTree.getLastSelectedPathComponent();
+              accessTree.getLastSelectedPathComponent();
 
-
-          if(node != null && node.getUserObject() instanceof AccessTreeNodeObject){
+          if (node != null &&
+              node.getUserObject() instanceof AccessTreeNodeObject) {
             selectionInfoPanel.remove(currentPanel);
 
-            if(((AccessTreeNodeObject) node.getUserObject()).nodeType ==
-               WizardSettings.ACCESS_PAGE_GROUP){
+            if ( ( (AccessTreeNodeObject) node.getUserObject()).nodeType ==
+                WizardSettings.ACCESS_PAGE_GROUP) {
 
               dnField.setText( ( (AccessTreeNodeObject) node.getUserObject()).
-                            getDN());
-              currentPanel = getGroupInfoPanel((AccessTreeNodeObject)
-                                       node.getUserObject());
+                              getDN());
+              currentPanel = getGroupInfoPanel( (AccessTreeNodeObject)
+                                               node.getUserObject());
 
               typeComboBox.setEnabled(true);
               accessComboBox.setEnabled(true);
 
               selectionInfoPanel.add(currentPanel, BorderLayout.CENTER);
-            } else if(((AccessTreeNodeObject) node.getUserObject()).nodeType ==
-                      WizardSettings.ACCESS_PAGE_USER){
+            }
+            else if ( ( (AccessTreeNodeObject) node.getUserObject()).nodeType ==
+                     WizardSettings.ACCESS_PAGE_USER) {
 
               dnField.setText( ( (AccessTreeNodeObject) node.getUserObject()).
-                            getDN());
-              currentPanel = getUserInfoPanel((AccessTreeNodeObject)
-                                       node.getUserObject());
+                              getDN());
+              currentPanel = getUserInfoPanel( (AccessTreeNodeObject)
+                                              node.getUserObject());
               typeComboBox.setEnabled(true);
               accessComboBox.setEnabled(true);
 
               selectionInfoPanel.add(currentPanel, BorderLayout.CENTER);
-             } else {
-               dnField.setText("");
-               typeComboBox.setEnabled(false);
-               accessComboBox.setEnabled(false);
-             }
+            }
+            else {
+              dnField.setText("");
+              typeComboBox.setEnabled(false);
+              accessComboBox.setEnabled(false);
+            }
 
             selectionInfoPanel.revalidate();
             selectionInfoPanel.repaint();
 
-          } else {
+          }
+          else {
             dnField.setText("");
           }
         }
       });
       JScrollPane treeView = new JScrollPane(accessTree);
-      treeView.setPreferredSize(new java.awt.Dimension(200,200));
+      treeView.setPreferredSize(new java.awt.Dimension(200, 200));
       return treeView;
     }
 
     return null;
   }
 
-  private JPanel getGroupInfoPanel(AccessTreeNodeObject nodeObject){
+  private JPanel getGroupInfoPanel(AccessTreeNodeObject nodeObject) {
 
     JPanel panel = WidgetFactory.makeVerticalPanel(2);
 
@@ -349,17 +395,16 @@ public class AccessPage extends AbstractUIPage {
 
     JPanel desc = WidgetFactory.makePanel(1);
     JLabel descLabel = WidgetFactory.makeHTMLLabel("<b>Group Information:</b>",
-                                                   1);
+        1);
     desc.add(descLabel);
     panel.add(desc);
     panel.add(WidgetFactory.makeHalfSpacer());
-
 
     JPanel username = WidgetFactory.makePanel(1);
     JLabel nameLabel = WidgetFactory.makeLabel(" Name:", false);
     username.add(nameLabel);
 
-    JTextField nameField = WidgetFactory.makeOneLineTextField();
+    nameField = WidgetFactory.makeOneLineTextField();
     nameField.setEditable(false);
     nameField.setBackground(java.awt.Color.white);
     nameField.setText(" " + nodeObject.toString());
@@ -372,14 +417,15 @@ public class AccessPage extends AbstractUIPage {
     JLabel orgLabel = WidgetFactory.makeLabel(" Organization:", false);
     organization.add(orgLabel);
 
-    JTextField orgField = WidgetFactory.makeOneLineTextField();
+    orgField = WidgetFactory.makeOneLineTextField();
     orgField.setEditable(false);
     orgField.setBackground(java.awt.Color.white);
     String value = nodeObject.getDN();
-    if(value != null && value.indexOf("o=")>0){
+    if (value != null && value.indexOf("o=") > 0) {
       value = value.substring(value.indexOf("o=") + 2);
       value = value.substring(0, value.indexOf(","));
-    } else {
+    }
+    else {
       value = "";
     }
     orgField.setText(" " + value);
@@ -395,29 +441,30 @@ public class AccessPage extends AbstractUIPage {
 
     JTextField descField = WidgetFactory.makeOneLineTextField();
     descField.setEditable(false);
-    if(nodeObject.getDescription() != null)
+    if (nodeObject.getDescription() != null) {
       descField.setText(" " + nodeObject.getDescription());
+    }
     descField.setBackground(java.awt.Color.white);
     groupDesc.add(descField);
 
     panel.add(groupDesc);
     panel.add(WidgetFactory.makeHalfSpacer());
 
-    panel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.PADDING,
-        0,WizardSettings.PADDING));
+    panel.setBorder(new javax.swing.border.EmptyBorder(0,
+        WizardSettings.PADDING,
+        0, WizardSettings.PADDING));
 
     return panel;
   }
 
-
-  private JPanel getUserInfoPanel(AccessTreeNodeObject nodeObject){
+  private JPanel getUserInfoPanel(AccessTreeNodeObject nodeObject) {
     JPanel panel = WidgetFactory.makeVerticalPanel(2);
 
     panel.add(WidgetFactory.makeDefaultSpacer());
 
     JPanel desc = WidgetFactory.makePanel(1);
     JLabel descLabel = WidgetFactory.makeHTMLLabel("<b>User Information:</b>",
-                                                   1);
+        1);
     desc.add(descLabel);
     panel.add(desc);
     panel.add(WidgetFactory.makeHalfSpacer());
@@ -426,7 +473,7 @@ public class AccessPage extends AbstractUIPage {
     JLabel nameLabel = WidgetFactory.makeLabel(" Name:", false);
     username.add(nameLabel);
 
-    JTextField nameField = WidgetFactory.makeOneLineTextField();
+    nameField = WidgetFactory.makeOneLineTextField();
     nameField.setEditable(false);
     nameField.setBackground(java.awt.Color.white);
     nameField.setText(" " + nodeObject.toString());
@@ -439,14 +486,15 @@ public class AccessPage extends AbstractUIPage {
     JLabel orgLabel = WidgetFactory.makeLabel(" Organization:", false);
     organization.add(orgLabel);
 
-    JTextField orgField = WidgetFactory.makeOneLineTextField();
+    orgField = WidgetFactory.makeOneLineTextField();
     orgField.setEditable(false);
     orgField.setBackground(java.awt.Color.white);
     String value = nodeObject.getDN();
-    if(value != null && value.indexOf("o=")>0){
+    if (value != null && value.indexOf("o=") > 0) {
       value = value.substring(value.indexOf("o=") + 2);
       value = value.substring(0, value.indexOf(","));
-    } else {
+    }
+    else {
       value = "";
     }
     orgField.setText(" " + value);
@@ -461,20 +509,22 @@ public class AccessPage extends AbstractUIPage {
 
     JTextField emailField = WidgetFactory.makeOneLineTextField();
     emailField.setEditable(false);
-    if(nodeObject.getEmail() != null)
+    if (nodeObject.getEmail() != null) {
       emailField.setText(" " + nodeObject.getEmail());
+    }
     emailField.setBackground(java.awt.Color.white);
     email.add(emailField);
 
     panel.add(email);
     panel.add(WidgetFactory.makeHalfSpacer());
 
-    panel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.PADDING,
-        0,WizardSettings.PADDING));
+    panel.setBorder(new javax.swing.border.EmptyBorder(0,
+        WizardSettings.PADDING,
+        0, WizardSettings.PADDING));
     return panel;
- }
+  }
 
-   /**
+  /**
    *  The action to be executed when the "OK" button is pressed. If no onAdvance
    *  processing is required, implementation must return boolean true.
    *
@@ -482,34 +532,36 @@ public class AccessPage extends AbstractUIPage {
    *          if not (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    if(dnField.getText().trim().equals(EMPTY_STRING)){
+    if (dnField.getText().trim().equals(EMPTY_STRING)) {
       WidgetFactory.hiliteComponent(dnLabel);
       return false;
     }
     return true;
   }
 
-
   /**
    *  @return a List contaiing 2 String elements - one for each column of the
    *  2-col list in which this surrogate is displayed
    *
    */
-  private final StringBuffer surrogateBuff = new StringBuffer();
-  //
+
   public List getSurrogate() {
 
     List surrogate = new ArrayList();
 
     // Get the value of the DN
-    surrogate.add(" " + dnField.getText().trim());
+    if (treeView != null) {
+      surrogate.add(" " + nameField.getText().trim() + ", " +
+                    orgField.getText().trim());
+    } else {
+      surrogate.add(" " + dnField.getText().trim());
+    }
 
     // Get access given to the user
-    surrogate.add(" " + userAccessType + "   " + userAccess);
+    surrogate.add(" " + userAccessType + "   " + userAccess.trim());
 
     return surrogate;
   }
-
 
   /**
    *  gets the Map object that contains all the key/value paired
@@ -525,9 +577,10 @@ public class AccessPage extends AbstractUIPage {
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap returnMap = new OrderedMap();
+
   //
   public OrderedMap getPageData() {
-      return getPageData(xPathRoot);
+    return getPageData(xPathRoot);
   }
 
   public OrderedMap getPageData(String xPathRoot) {
@@ -536,8 +589,21 @@ public class AccessPage extends AbstractUIPage {
 
     returnMap.put(xPathRoot + "/principal", dnField.getText().trim());
 
-    returnMap.put(xPathRoot + "/permission", userAccess.toLowerCase());
-
+    if (userAccess.compareTo("Read") == 0) {
+      returnMap.put(xPathRoot + "/permission", "read");
+    }
+    else if (userAccess.compareTo("Read & Write") == 0) {
+      returnMap.put(xPathRoot + "/permission[1]", "read");
+      returnMap.put(xPathRoot + "/permission[2]", "write");
+    }
+    else if (userAccess.compareTo("Read, Write & Change Permissions") == 0) {
+      returnMap.put(xPathRoot + "/permission[1]", "read");
+      returnMap.put(xPathRoot + "/permission[2]", "write");
+      returnMap.put(xPathRoot + "/permission[3]", "changePermission");
+    }
+    else if (userAccess.compareTo("All") == 0) {
+      returnMap.put(xPathRoot + "/permission", "all");
+    }
     return returnMap;
   }
 
@@ -562,21 +628,27 @@ public class AccessPage extends AbstractUIPage {
    *
    *  @return   the unique ID String for this wizard page
    */
-  public String getPageID() { return this.pageID;}
+  public String getPageID() {
+    return this.pageID;
+  }
 
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
-  public String getTitle() { return title; }
+  public String getTitle() {
+    return title;
+  }
 
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
-  public String getSubtitle() { return subtitle; }
+  public String getSubtitle() {
+    return subtitle;
+  }
 
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
@@ -585,14 +657,18 @@ public class AccessPage extends AbstractUIPage {
    *  @return the String ID of the page that the user will see next, or null if
    *  this is te last page
    */
-  public String getNextPageID() { return this.nextPageID; }
+  public String getNextPageID() {
+    return this.nextPageID;
+  }
 
   /**
-     *  Returns the serial number of the page
-     *
-     *  @return the serial number of the page
-     */
-  public String getPageNumber() { return pageNumber; }
+   *  Returns the serial number of the page
+   *
+   *  @return the serial number of the page
+   */
+  public String getPageNumber() {
+    return pageNumber;
+  }
 
   public void setPageData(OrderedMap data, String _xPathRoot) {}
 }

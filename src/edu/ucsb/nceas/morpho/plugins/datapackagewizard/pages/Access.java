@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.21 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-20 02:10:39 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ public class Access
    */
   private void initActions() {
 
-    final ContactMetacat contactMetacat = new ContactMetacat(this);
+    final Access access = this;
 
     accessList.setCustomAddAction(
 
@@ -176,7 +176,7 @@ public class Access
 
         Log.debug(45, "\nAccess: CustomAddAction called");
         if (accessTreeNode == null) {
-          accessList.disable();
+          accessList.setEnabled(false);
           Component parent = SwingUtilities.getRoot( (Component) accessList);
           if (parent != null && parent.isShowing()) {
             parent.setCursor(
@@ -184,6 +184,7 @@ public class Access
                 Cursor.WAIT_CURSOR));
           }
           try {
+            ContactMetacat contactMetacat = new ContactMetacat(access);
             contactMetacat.setMethodCall(contactMetacat.ADD);
             contactMetacat.start();
           }
@@ -209,6 +210,7 @@ public class Access
                 Cursor.WAIT_CURSOR));
           }
           try {
+            ContactMetacat contactMetacat = new ContactMetacat(access);
             contactMetacat.setMethodCall(contactMetacat.EDIT);
             contactMetacat.start();
           }
@@ -216,7 +218,8 @@ public class Access
             Log.debug(10, "Could not connect to Metacat server...");
             Log.debug(45, e1.toString());
           }
-        } else {
+        }
+        else {
           Log.debug(45, "\nAccess: CustomEditAction called");
           showEditAccessDialog();
         }
@@ -224,9 +227,15 @@ public class Access
     });
   }
 
+  protected void showRefreshTree(AccessPage aPage) {
+    accessTreeNode = createTree();
+    aPage.refreshTree();
+  }
+
   protected void showNewAccessDialog() {
 
     if (accessTreeNode == null) {
+      accessList.setEnabled(true);
       Component parent = SwingUtilities.getRoot( (Component) accessList);
       if (parent != null) {
         parent.setCursor(
@@ -255,11 +264,13 @@ public class Access
   protected void showEditAccessDialog() {
 
     if (accessTreeNode == null) {
+      accessList.setEnabled(true);
+
       Component parent = SwingUtilities.getRoot( (Component) accessList);
       if (parent != null) {
         parent.setCursor(
-      Cursor.getPredefinedCursor(
-      Cursor.DEFAULT_CURSOR));
+            Cursor.getPredefinedCursor(
+            Cursor.DEFAULT_CURSOR));
       }
       accessTreeNode = createTree();
     }
@@ -426,10 +437,13 @@ public class Access
     return top;
   }
 
-  public static DefaultMutableTreeNode refreshTree() {
+  public static void refreshTree(AccessPage accessPage) {
     Access access = new Access();
-    accessTreeNode = access.createTree();
-    return accessTreeNode;
+
+    ContactMetacat contactMetacat = new ContactMetacat(access, accessPage);
+    contactMetacat.setMethodCall(contactMetacat.REFRESH);
+    contactMetacat.start();
+
   }
 
   /**
@@ -489,8 +503,8 @@ public class Access
 
     List rowLists = accessList.getListOfRowLists();
 
-    if (rowLists == null) {
-      return null;
+    if (rowLists != null && rowLists.isEmpty()) {
+      return returnMap;
     }
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
@@ -597,15 +611,22 @@ class ContactMetacat
 
   Runnable runnable;
   Access access;
+  AccessPage accessPage;
   InputStream queryResult;
   public int ADD = 1;
   public int EDIT = 2;
+  public int REFRESH = 4;
 
   int methodCallID;
 
+  public ContactMetacat(Access access) {
+    this.access = access;
+    this.accessPage = null;
+  }
 
-  public ContactMetacat(Access access1) {
-    this.access = access1;
+  public ContactMetacat(Access access, AccessPage accessPage) {
+    this.access = access;
+    this.accessPage = accessPage;
   }
 
   public void run() {
@@ -614,13 +635,20 @@ class ContactMetacat
 
     Morpho morpho = Morpho.thisStaticInstance;
     try {
-      queryResult = morpho.getMetacatInputStream(prop);
+      queryResult = null;
+//      if (morpho.isConnected()) {
+        queryResult = morpho.getMetacatInputStream(prop);
+  //    }
       access.setQueryResult(queryResult);
 
-      if(methodCallID == ADD){
+      if (methodCallID == ADD) {
         access.showNewAccessDialog();
-      } else if(methodCallID == EDIT){
+      }
+      else if (methodCallID == EDIT) {
         access.showEditAccessDialog();
+      }
+      else if (methodCallID == REFRESH) {
+        access.showRefreshTree(accessPage);
       }
     }
     catch (Exception w) {
@@ -637,5 +665,4 @@ class ContactMetacat
   public void setMethodCall(int methodCallID) {
     this.methodCallID = methodCallID;
   }
-
 }
