@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-16 23:55:30 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2003-12-17 00:05:34 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -819,6 +819,13 @@ public class Morpho
      */
     public static void main(String args[])
     {
+      
+    JOptionPane.showMessageDialog(null,
+                    "Warning!!! This version of Morpho is 'ALPHA' code.\n" +
+                    "\n" +
+                    "This means that it is very fragile and known to\n" +
+                    "contain errors. Please do not expect flawless operation.\n");
+
         try {
           SplashFrame sf = new SplashFrame(true);
           sf.setVisible(true);            
