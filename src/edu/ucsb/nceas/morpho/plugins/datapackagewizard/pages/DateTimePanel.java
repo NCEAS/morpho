@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.20 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-31 21:38:47 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -434,18 +434,18 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
         min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
       if (min != null) {
         row.add(min);
-        Boolean excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds["
+        String excl = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
                                         + index + "]/minimum/@exclusive");
         if (excl != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
                                     + index + "]/minimum/@exclusive");
 
-        if (index == 1 && excl == null)
-          excl = (Boolean)map.get(xPathRoot +
-                                  "/dateTimeDomain/bounds/minimum/@exclusive");
+        if (index == 1 && excl == null) {
+					excl = (String)map.get(xPathRoot+ "/dateTimeDomain/bounds/minimum/@exclusive");
+					if(excl!=null)map.remove(xPathRoot+"/dateTimeDomain/bounds/minimum/@exclusive");
+				}
         if (excl != null) {
 
-          map.remove(xPathRoot + "/dateTimeDomain/bounds/minimum/@exclusive");
-          if (excl.booleanValue() == true)row.add("<");
+          if (excl.equalsIgnoreCase("true")) row.add("<");
           else row.add("<=");
         }
 
@@ -463,22 +463,24 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
         max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
       if (max != null) {
 
-        Boolean excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds["
+        String excl = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
+                                        + index + "]/maximum/@exclusive");
+				if(excl != null) map.remove(xPathRoot + "/dateTimeDomain/bounds["
                                         + index + "]/maximum/@exclusive");
         if (index == 1 && excl == null) {
-          excl = (Boolean)map.get(xPathRoot +
+          excl = (String)map.get(xPathRoot +
                                   "/dateTimeDomain/bounds/maximum/@exclusive");
-        }
+					if(excl != null) map.remove(xPathRoot + "/dateTimeDomain/bounds/maximum/@exclusive");
+				}
 
         if (excl != null) {
-
-          map.remove(xPathRoot + "/dateTimeDomain/bounds/maximum/@exclusive");
-
-          if (excl.booleanValue() == true)row.add("<");
+          if (excl.equalsIgnoreCase("true"))row.add("<");
           else row.add("<=");
         }
         row.add(max);
+				
       } else {
+				
         row.add("<");
         row.add("");
       }
