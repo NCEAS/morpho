@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-19 22:30:24 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-07-13 22:38:29 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -330,6 +330,10 @@ public class ConnectionFrame extends javax.swing.JDialog
    */
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
   {
+    container.setProfile(NameTextField.getText());
+    
+    ConfigXML profile = container.getProfile();
+    profile.set("searchmetacat", 0, "false");
     dispose();
   }
 }
