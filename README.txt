@@ -59,9 +59,9 @@ STARTING MORPHO
 Once Morpho has been installed, it can be launched using a shortcut, as
 follows:
 
-    Windows:   Select the "MorphoBeta_2" shortcut found under the windows
+    Windows:   Select the "Morpho-1.0.0" shortcut found under the windows
                "Start menu".
-    Macintosh: Double click on the MorphoBeta_2 icon.
+    Macintosh: Double click on the Morpho-1.0.0 icon.
     Linux:     Run the "morpho" shell script from the instalation directory
 
 If this is the first time you have launched Morpho, you will see a "New
