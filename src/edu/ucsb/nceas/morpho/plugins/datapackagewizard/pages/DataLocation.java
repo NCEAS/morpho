@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 22:27:13 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-04 23:19:44 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,8 +55,8 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 public class DataLocation extends AbstractWizardPage{
 
-  private final String pageID     = WizardPageLibrary.INTRODUCTION;
-  private String nextPageID       = WizardPageLibrary.GENERAL;
+  private final String pageID     = WizardPageLibrary.DATA_LOCATION;
+  private String nextPageID       = WizardPageLibrary.TEXT_IMPORT_WIZARD;
   private String nextPageGenerateID = WizardPageLibrary.TEXT_IMPORT_WIZARD;
   private String nextPageByHandID   = WizardPageLibrary.DATA_FORMAT;
   
@@ -65,6 +65,20 @@ public class DataLocation extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+  private String distribXPath;
+  private final String OBJECTNAME_XPATH 
+                  = "/eml:eml/dataset/datatable/physical/objectName/";
+  private final String INLINE_XPATH  
+                  = "/eml:eml/dataset/datatable/physical/distribution/inline/";
+  private final String ONLINE_XPATH  
+                  = "/eml:eml/dataset/datatable/physical/distribution/online/";
+  private final String OFFLINE_XPATH 
+                  = "/eml:eml/dataset/datatable/physical/distribution/offline/";
+  private final String NODATA_XPATH  = "";
+
+  private String fileNameInline = "FILENAME FROM IMPORT WIZARD GOES HERE";
+  private String dataInline     = "INLINE DATA FROM IMPORT WIZARD GOES HERE";
+  
   private JPanel inlinePanel;
   private JPanel onlinePanel;
   private JPanel offlinePanel;
@@ -116,29 +130,36 @@ public class DataLocation extends AbstractWizardPage{
       public void actionPerformed(ActionEvent e) {
         
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+
+        //undo any hilites:
+        onLoadAction();
         
         if (e.getActionCommand().equals(buttonsText[0])) {
           
-          if (currentPanel!=null) instance.remove(currentPanel);
+          instance.remove(currentPanel);
           currentPanel = inlinePanel;
+          distribXPath = INLINE_XPATH;
           instance.add(inlinePanel, BorderLayout.CENTER);
           
         } else if (e.getActionCommand().equals(buttonsText[1])) {
         
-          if (currentPanel!=null) instance.remove(currentPanel);
+          instance.remove(currentPanel);
           currentPanel = onlinePanel;
+          distribXPath = ONLINE_XPATH;
           instance.add(onlinePanel, BorderLayout.CENTER);
           
         } else if (e.getActionCommand().equals(buttonsText[2])) {
         
-          if (currentPanel!=null) instance.remove(currentPanel);
+          instance.remove(currentPanel);
           currentPanel = offlinePanel;
+          distribXPath = OFFLINE_XPATH;
           instance.add(offlinePanel, BorderLayout.CENTER);
           
         } else if (e.getActionCommand().equals(buttonsText[3])) {
         
-          if (currentPanel!=null) instance.remove(currentPanel);
+          instance.remove(currentPanel);
           currentPanel = noDataPanel;
+          distribXPath = NODATA_XPATH;
           instance.add(noDataPanel, BorderLayout.CENTER);
           
         }
@@ -161,8 +182,7 @@ public class DataLocation extends AbstractWizardPage{
     offlinePanel = getOfflinePanel();
     noDataPanel  = getNoDataPanel();
 
-    currentPanel = null;
-
+    currentPanel = noDataPanel;
   }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -171,19 +191,16 @@ public class DataLocation extends AbstractWizardPage{
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
     
-    panel.setBackground(java.awt.Color.red);
-    panel.setOpaque(true);
-    
     return panel;
   }
   
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private JLabel      fileNameLabel;
-  private JTextField  fileNameField;
-  private JLabel      urlLabel;
-  private JTextField  urlField;
+  private JLabel      fileNameLabelOnline;
+  private JTextField  fileNameFieldOnline;
+  private JLabel      urlLabelOnline;
+  private JTextField  urlFieldOnline;
   
   private JPanel getOnlinePanel() {
     
@@ -196,12 +213,12 @@ public class DataLocation extends AbstractWizardPage{
     ////
     JPanel fileNamePanel = WidgetFactory.makePanel(1);
     
-    fileNameLabel = WidgetFactory.makeLabel("File Name:", true);
+    fileNameLabelOnline = WidgetFactory.makeLabel("File Name:", true);
 
-    fileNamePanel.add(fileNameLabel);
+    fileNamePanel.add(fileNameLabelOnline);
     
-    fileNameField = WidgetFactory.makeOneLineTextField();
-    fileNamePanel.add(fileNameField);
+    fileNameFieldOnline = WidgetFactory.makeOneLineTextField();
+    fileNamePanel.add(fileNameFieldOnline);
     
     panel.add(fileNamePanel);
     
@@ -210,12 +227,12 @@ public class DataLocation extends AbstractWizardPage{
     ////
     JPanel urlPanel = WidgetFactory.makePanel(1);
     
-    urlLabel = WidgetFactory.makeLabel("URL:", true);
+    urlLabelOnline = WidgetFactory.makeLabel("URL:", true);
 
-    urlPanel.add(urlLabel);
+    urlPanel.add(urlLabelOnline);
     
-    urlField = WidgetFactory.makeOneLineTextField();
-    urlPanel.add(urlField);
+    urlFieldOnline = WidgetFactory.makeOneLineTextField();
+    urlPanel.add(urlFieldOnline);
     
     panel.add(urlPanel);
     
@@ -237,12 +254,40 @@ public class DataLocation extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
+  private JLabel      fileNameLabelOffline;
+  private JTextField  fileNameFieldOffline; 
+  
   private JPanel getOfflinePanel() {
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
     
-    panel.setBackground(java.awt.Color.blue);
-    panel.setOpaque(true);
+    WidgetFactory.addTitledBorder(panel, buttonsText[2]);
+    
+    panel.add(WidgetFactory.makeDefaultSpacer());
+  
+    ////
+    JPanel fileNamePanel = WidgetFactory.makePanel(1);
+    
+    fileNameLabelOffline = WidgetFactory.makeLabel("File Name:", true);
+
+    fileNamePanel.add(fileNameLabelOffline);
+    
+    fileNameFieldOffline = WidgetFactory.makeOneLineTextField();
+    fileNamePanel.add(fileNameFieldOffline);
+    
+    panel.add(fileNamePanel);
+        
+    panel.add(WidgetFactory.makeDefaultSpacer());
+    
+    panel.add(WidgetFactory.makeHTMLLabel(
+      "How would you like to enter the information describing "
+      +"the format and structure of the data?", 1));
+  
+    panel.add(getGeneratedOrByHandRadioPanel());
+    
+    panel.add(WidgetFactory.makeDefaultSpacer());
+    
+    panel.add(Box.createGlue());
   
     return panel;
   }
@@ -270,6 +315,10 @@ public class DataLocation extends AbstractWizardPage{
 
 //    titleField.requestFocus();
     WidgetFactory.unhiliteComponent(radioLabel);
+    WidgetFactory.unhiliteComponent(fileNameLabelOnline);
+    WidgetFactory.unhiliteComponent(urlLabelOnline);
+    WidgetFactory.unhiliteComponent(fileNameLabelOffline);
+    
   }
   
   
@@ -292,17 +341,48 @@ public class DataLocation extends AbstractWizardPage{
    */
   public boolean onAdvanceAction() {
     
-    if (currentPanel==null)  {
+    if (distribXPath==null || currentPanel==null)  {
       
       WidgetFactory.hiliteComponent(radioLabel);
       return false;
+      
+    } else if (distribXPath==INLINE_XPATH) {
+//  I N L I N E  /////////////////////////////////////
+
+
+    } else if (distribXPath==ONLINE_XPATH) {
+//  O N L I N E  /////////////////////////////////////
+    
+      if (fileNameFieldOnline.getText().trim().equals("")) {
+      
+        WidgetFactory.hiliteComponent(fileNameLabelOnline);
+        fileNameFieldOnline.requestFocus();
+        return false;
+      }
+    
+      if (urlFieldOnline.getText().trim().equals("")) {
+      
+        WidgetFactory.hiliteComponent(urlLabelOnline);
+        urlFieldOnline.requestFocus();
+        return false;
+      }
+      
+    } else if (distribXPath==OFFLINE_XPATH) {
+//  O F F L I N E  ///////////////////////////////////
+    
+    
+      if (fileNameFieldOffline.getText().trim().equals("")) {
+      
+        WidgetFactory.hiliteComponent(fileNameLabelOffline);
+        fileNameFieldOffline.requestFocus();
+        return false;
+      }
+    
+    } else if (distribXPath==NODATA_XPATH) {
+//  N O   D A T A  ///////////////////////////////////
+    
+    
     }
-//    if (titleField.getText().trim().equals("")) {
-//      
-//      WidgetFactory.hiliteComponent(titleLabel);
-//      titleField.requestFocus();
-//      return false;
-//    }
     return true;
   }
   
@@ -319,6 +399,33 @@ public class DataLocation extends AbstractWizardPage{
   public OrderedMap getPageData() {
     
     returnMap.clear();
+    
+    if (distribXPath==null || distribXPath==NODATA_XPATH) {
+    
+      // if no data, return empty Map:
+      return returnMap;
+    
+    } else if (distribXPath==INLINE_XPATH)  {
+//  I N L I N E  /////////////////////////////////////
+  
+  
+    returnMap.put(OBJECTNAME_XPATH, fileNameInline);
+    returnMap.put(distribXPath, dataInline);
+    
+    } else if (distribXPath==ONLINE_XPATH)  {
+//  O N L I N E  /////////////////////////////////////
+    
+      returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
+      returnMap.put(distribXPath, urlFieldOnline.getText().trim());
+      
+    } else if (distribXPath==OFFLINE_XPATH)  {
+//  O F F L I N E  ///////////////////////////////////
+    
+      returnMap.put(OBJECTNAME_XPATH, fileNameFieldOffline.getText().trim());
+    }
+    
+    
+    
     
 //    returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
 //    

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 17:33:44 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-08-04 23:19:44 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -322,6 +322,330 @@ public class WizardContainerFrame extends JFrame {
     }
     Log.debug(45,wizData.toString());
   }
+  
+/*******************************************************************************
+********************************************************************************
+********************************************************************************
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+
+function finish() {
+
+  var nvpArray = new Array();
+
+  //dataset.general ////////////////////////////////////////////////////////////
+  var generalPage = document.getElementsByAttribute("pageid",
+                                            "dataset.general")[0];
+  var generalArray = lib.getNVPArrayForSubElementsWithTagName(generalPage,
+                                                             "textbox", false);
+  // pattern match textbox ID's for titles, and add them to the array.  The
+  // abstract from this page will be added to the array after creator, etc.
+  for ( var i=0; i < generalArray.length; i++ ) {
+    lib.debug("generalArray["+i+"] = "+generalArray[i]+"\n");
+    var titleIDString = /\eml:eml\/dataset\/title/;
+    if ( generalArray[i].match(titleIDString) ) {
+      nvpArray = nvpArray.concat(generalArray[i]);
+    }
+  }
+
+  // dataset.party.creator ////////////////////////////////////////////////////
+
+  lib.debug("building creator NVP array *************************\n");
+  // Get a reference to the list object
+  var creatorListXBL =
+      document.getElementById("dataset.party.creator.creator_list");
+  if (!creatorListXBL) {
+    lib.debug("finish(): creatorListXBL is NULL!!! - returning false");
+    return false;
+  }
+
+  // get an array of rows from the list object
+  var creatorListRowsArray = creatorListXBL.getRowObjectsAsArray();
+
+  // iterate through each card in the deck based on the card's ID
+  // and append to the NVP array
+  if (creatorListRowsArray) {
+    lib.debug("creatorListRowsArray=" +creatorListRowsArray+ "\n");
+    var nextID;
+    var nextCard;
+    var nextNVPArray;
+
+    for (var setCount = 0; setCount < creatorListRowsArray.length; setCount++) {
+      nextID = creatorListRowsArray[setCount].getAttribute("value");
+      nextCard = document.getElementById(nextID);
+      nextNVPArray =
+      nextCard.get_as_NVP_array("/eml:eml/dataset/creator["+(setCount+1)+"]/");
+
+      nvpArray = nvpArray.concat(nextNVPArray);
+    }
+  }
+
+
+  // dataset.party.associatedparty ////////////////////////////////////////////
+
+  var associatedpartyListXBL =
+      document.getElementById("dataset.party.associatedparty.associatedparty_list");
+  if (!associatedpartyListXBL) {
+    lib.debug("finish(): associatedpartyListXBL is NULL!!! - returning false");
+    return false;
+  }
+
+  // get an array of rows from the list object
+  var associatedpartyListRowsArray = associatedpartyListXBL.getRowObjectsAsArray();
+
+  // iterate through each card in the deck based on the card's ID
+  // and append to the NVP array
+  if (associatedpartyListRowsArray) {
+    lib.debug("associatedpartyListRowsArray=" +associatedpartyListRowsArray+ "\n");
+    var nextID;
+    var nextCard;
+    var nextNVPArray;
+
+    for (var setCount = 0; setCount < associatedpartyListRowsArray.length; setCount++) {
+      nextID = associatedpartyListRowsArray[setCount].getAttribute("value");
+      nextCard = document.getElementById(nextID);
+      nextNVPArray =
+      nextCard.get_as_NVP_array("/eml:eml/dataset/associatedParty["+(setCount+1)+"]/");
+      nvpArray = nvpArray.concat(nextNVPArray);
+    }
+  }
+
+  // abstract //////////////////////////////////////////////////////////////////
+  // pattern match textbox ID's for abstract, and add them to the array.
+  for ( var i=0; i < generalArray.length; i++ ) {
+    lib.debug("generalArray["+i+"] = "+generalArray[i]+"\n");
+    var abstractIDString = /\eml:eml\/dataset\/abstract/;
+    if ( generalArray[i].match(abstractIDString) ) {
+      nvpArray = nvpArray.concat(generalArray[i]);
+    }
+  }
+  // keywords //////////////////////////////////////////////////////////////////
+  var keywordsetListXBL
+              = document.getElementById('dataset.keywords.keywordset_list');
+  if (!keywordsetListXBL) {
+    lib.debug("finish(): keywordsetListXBL is NULL!!! - returning false");
+    return false;
+  }
+  var kwlistRowsArray = keywordsetListXBL.getRowObjectsAsArray();
+
+  if (kwlistRowsArray) {
+    var nextID;
+    var nextCard;
+    var nextNVPArray;
+
+    for (var setCount = 0; setCount < kwlistRowsArray.length; setCount++) {
+      nextID = kwlistRowsArray[setCount].getAttribute("value");
+      nextCard = document.getElementById(nextID);
+      nextNVPArray = nextCard.get_as_NVP_array(
+                              "/eml:eml/dataset/keywordSet["+(setCount+1)+"]/",
+                              "keywordThesaurus", "keyword");
+      nvpArray = nvpArray.concat(nextNVPArray);
+    }
+  }
+
+  //dataset.rights /////////////////////////////////////////////////////////////
+  var rightsPage = document.getElementsByAttribute("pageid",
+                                            "dataset.rights")[0];
+  var rightsArray = lib.getNVPArrayForSubElementsWithTagName(rightsPage,
+                                                             "textbox", false);
+  nvpArray = nvpArray.concat(rightsArray);
+
+  // dataset.party.contact ////////////////////////////////////////////////////
+  var contactListXBL =
+      document.getElementById("dataset.party.contact.contact_list");
+  if (!contactListXBL) {
+    lib.debug("finish(): contactListXBL is NULL!!! - returning false");
+    return false;
+  }
+
+  // get an array of rows from the list object
+  var contactListRowsArray = contactListXBL.getRowObjectsAsArray();
+
+  // iterate through each card in the deck based on the card's ID
+  // and append to the NVP array
+  if (contactListRowsArray) {
+    lib.debug("contactListRowsArray=" +contactListRowsArray+ "\n");
+    var nextID;
+    var nextCard;
+    var nextNVPArray;
+
+    for (var setCount = 0; setCount < contactListRowsArray.length; setCount++) {
+      nextID = contactListRowsArray[setCount].getAttribute("value");
+      nextCard = document.getElementById(nextID);
+      nextNVPArray =
+      nextCard.get_as_NVP_array("/eml:eml/dataset/contact["+(setCount+1)+"]/");
+      lib.debug("nextNVPArray = "+nextNVPArray+"******************\n");
+
+      nvpArray = nvpArray.concat(nextNVPArray);
+    }
+  }
+
+  // dataset.entity ////////////////////////////////////////////////////////////
+  // NOTE - even though there are no /eml:eml?.. fields in XUL document, ///////
+  // hidden textfields get written to these pages by javascript...       ///////
+  var entityPage = document.getElementsByAttribute("pageid",
+                                            "dataset.entity")[0];
+  var entityArray = lib.getNVPArrayForSubElementsWithTagName(entityPage,
+                                                             "textbox", false);
+  nvpArray = nvpArray.concat(entityArray);
+
+
+  // dataset.physical //////////////////////////////////////////////////////////
+  // NOTE - even though there are no /eml:eml?.. fields in XUL document, ///////
+  // hidden textfields get written to these pages by javascript...       ///////
+  var physicalPage = document.getElementsByAttribute("pageid",
+                                            "dataset.physical")[0];
+  var physicalArray = lib.getNVPArrayForSubElementsWithTagName(physicalPage,
+                                                             "textbox", false);
+  nvpArray = nvpArray.concat(physicalArray);
+
+  // dataset.physical.distribution /////////////////////////////////////////////
+  var distribPage = document.getElementsByAttribute("pageid",
+                                            "dataset.physical.distribution")[0];
+  var distribArray = lib.getNVPArrayForSubElementsWithTagName(distribPage,
+                                                             "textbox", false);
+  nvpArray = nvpArray.concat(distribArray);
+
+
+  // Attributes:
+  var attributeListXBL
+              = document.getElementById('dataset.dataTable.attributeList');
+
+  if (!attributeListXBL) {
+    lib.debug("finish(): attributeListXBL is NULL!!! - returning false");
+    return false;
+  }
+
+  lib.debug("finish(): attributeListXBL is "+attributeListXBL);
+
+  var attribListRowsArray = attributeListXBL.getRowObjectsAsArray();
+
+  lib.debug("finish(): attribListRowsArray is "+attribListRowsArray);
+  lib.debug("finish(): attribListRowsArray.length is "+attribListRowsArray.length);
+
+  lib.debug("finish(): DOING test: if (attribListRowsArray)...");
+  if (attribListRowsArray) {
+    lib.debug("finish(): DONE test: if (attribListRowsArray)... TRUE");
+
+    var nextID;
+    var nextCard;
+    var nextNVPArray = new Array();
+    var nextNVPArrayIdx = 0;
+
+    lib.debug("finish(): DOING LOOP FOR attribListRowsArray");
+
+    for (var setCount = 0; setCount < attribListRowsArray.length; setCount++) {
+
+      nextID = attribListRowsArray[setCount].getAttribute("value");
+      nextCard = document.getElementById(nextID);
+      var nextXPathRoot
+        = "/eml:eml/dataset/dataTable[1]/attributeList/attribute["
+                                                          +(setCount+1) + "]/";
+
+      var attribName
+        = nextCard.getElementsByAttribute(
+                "id", "dataset.popup.attributes.attributeName")[0].value;
+
+      nextNVPArray[nextNVPArrayIdx++]
+                = nextXPathRoot + "attributeName=" + attribName;
+
+      lib.debug("nextCard attribName NVP = "+nextNVPArray[nextNVPArrayIdx-1]);
+
+
+      var attribDef
+        = nextCard.getElementsByAttribute(
+                "id", "dataset.popup.attributes.attributeDefinition")[0].value;
+
+      nextNVPArray[nextNVPArrayIdx++]
+                = nextXPathRoot + "attributeDefinition="+attribDef;
+
+      lib.debug("nextCard attribDef NVP = "+nextNVPArray[nextNVPArrayIdx-1]);
+
+      var attribMScale
+        = nextCard.getElementsByAttribute(
+                "id", "attribute.measurementScale.radiogroup")[0].value;
+
+      var meaScaleRoot = nextXPathRoot + "measurementScale/"+attribMScale;
+
+      switch (attribMScale) {
+
+        case "nominal":
+        case "ordinal":
+          lib.debug("attribMScale is "+attribMScale);
+          var measScale_hiddentextfields = nextCard.getElementsByAttribute(
+                  "name","dataset.measurementScale.nominal_ordinal.hiddenfield");
+          if (measScale_hiddentextfields) {
+            var nextHF;
+            for (var tfIndex = 0;
+                      tfIndex < measScale_hiddentextfields.length; tfIndex++) {
+
+              nextHF = measScale_hiddentextfields[tfIndex];
+
+              nextNVPArray[nextNVPArrayIdx++] = meaScaleRoot
+                                              + nextHF.getAttribute("id")
+                                              + "="
+                                              + nextHF.getAttribute("value");
+              lib.debug("added NVP = "+nextNVPArray[nextNVPArrayIdx-1]);
+            }
+          }
+          break;
+
+        case "interval":
+          lib.debug("attribMScale is INTERVAL");
+          // NOT YET IMPLEMENTED * * *
+          break;
+
+        case "ratio":
+          lib.debug("attribMScale is RATIO");
+          // NOT YET IMPLEMENTED * * *
+          break;
+
+        case "dateTime":
+          lib.debug("attribMScale is DATETIME");
+          // NOT YET IMPLEMENTED * * *
+          break;
+      }
+
+      nvpArray = nvpArray.concat(nextNVPArray);
+    }
+  }
+
+  ////////////
+
+
+  // ignore any NVPs that have an XPATH not beginning with "/eml:eml/":
+  var nextIdx = 0;
+  var trimmedNVPArray = new Array();
+
+  for (var index = 0; index < nvpArray.length; index++) {
+
+    if (nvpArray[index].indexOf("/eml:eml/") > -1) {
+      trimmedNVPArray[nextIdx++] = nvpArray[index];
+    }
+  }
+
+
+  ////////////
+
+
+  lib.add_NVP_array_to_XML_DOM(trimmedNVPArray);
+
+  lib.getCommandProxy().doPost("finalize",null);
+  return true;
+}
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+********************************************************************************
+********************************************************************************
+*******************************************************************************/  
+  
+  
+  
+  
   
   
   /** 

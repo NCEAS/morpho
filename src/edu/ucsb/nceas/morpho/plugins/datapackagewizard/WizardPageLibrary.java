@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 22:28:15 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-08-04 23:19:44 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ public class WizardPageLibrary {
     pages.put(PARTY_INTRO,    new PartyIntro());
     pages.put(USAGE_RIGHTS,   new UsageRights());
     pages.put(DATA_LOCATION,  new DataLocation());
-//    pages.put(DATA_FORMAT,  new DataFormat());
+    pages.put(DATA_FORMAT,    new DataFormat());
 //    pages.put(TEXT_IMPORT_WIZARD,  new TextImportWizard());
 //    pages.put(PAGE10_ID,  new WizPage10());
 //    pages.put(PAGE11_ID,  new WizPage11());

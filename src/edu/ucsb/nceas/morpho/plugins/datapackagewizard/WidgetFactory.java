@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
   
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.Box;
@@ -205,6 +207,34 @@ public class WidgetFactory {
     setPrefMaxSizes(radioPanel, getDimForNumberOfLines(5*totalButtons/4));
     return radioPanel;
   }
+  
+  
+  
+  
+  public static JPanel makeCheckBoxPanel(String[] boxesText, 
+                                  int selectedIndex, ItemListener listener) {
+
+    JPanel cbPanel = new JPanel(new GridLayout(0, 1));
+    
+    int totalBoxes = boxesText.length;
+    
+    JCheckBox[] boxes = new JCheckBox[totalBoxes];
+    
+    for (int i=0; i<totalBoxes; i++) {
+    
+      boxes[i] = new JCheckBox(boxesText[i]);
+      boxes[i].setFont(WizardSettings.WIZARD_CONTENT_FONT);
+      boxes[i].setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+      boxes[i].setActionCommand(boxesText[i]);
+      if (i==selectedIndex) boxes[i].setSelected(true);
+      boxes[i].addItemListener(listener);
+      cbPanel.add(boxes[i]);
+    }
+    setPrefMaxSizes(cbPanel, getDimForNumberOfLines(5*totalBoxes/4));
+    return cbPanel;
+  }
+  
+  
 
   // ***************************************************************************
 
