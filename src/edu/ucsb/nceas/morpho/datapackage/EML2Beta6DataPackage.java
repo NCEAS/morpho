@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-16 21:57:23 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-04-30 00:02:01 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -191,7 +191,11 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
         }
         else if(metacatloc)
         { //get the file from metacat
-          openfile = metacatDataStore.openFile(docid);
+          if (dataFileNameMap.containsKey(docid)) {
+           openfile = metacatDataStore.openDataFile(docid);
+          } else {
+            openfile = metacatDataStore.openFile(docid);
+          }
         }
 
         if (f!=null) {

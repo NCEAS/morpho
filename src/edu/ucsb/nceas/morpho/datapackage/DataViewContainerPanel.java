@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-17 20:45:43 $'
- * '$Revision: 1.103 $'
+ *     '$Date: 2004-04-30 00:02:01 $'
+ * '$Revision: 1.104 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -826,7 +826,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                     // now try metacat
                     try{
                       MetacatDataStore mds = new MetacatDataStore(morpho);
-                      displayFile = mds.openFile(urlinfo);
+                      displayFile = mds.openDataFile(urlinfo);
                     }
                     catch (Exception q3) {
                       // give up!
