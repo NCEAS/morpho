@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.59 2002-10-29 20:52:24 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.60 2002-10-29 22:56:48 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -57,6 +57,8 @@
       <property name="morpho.src" value="${morpho.dir}/src"/>
       <property name="morpho.docs" value="${morpho.dir}/docs"/>
       <property name="morpho.docs.dev" value="${morpho.docs}/dev"/>
+      <property name="morpho.docs.user" value="${morpho.docs}/user"/>
+      <property name="morpho.docs.licenses" value="${morpho.docs}/licenses"/>
       <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
 
       <property name="xml4j" 
@@ -190,10 +192,7 @@
       <delete dir="${morpho.dir}" />
       <mkdir dir="${morpho.dir}"/>
       <mkdir dir="${morpho.lib}"/>
-      <mkdir dir="${morpho.lib.catalog}"/>
-      <mkdir dir="${morpho.lib.frames}"/>
       <mkdir dir="${morpho.lib.sampledata}"/>
-      <mkdir dir="${morpho.lib.style}"/>
       <mkdir dir="${morpho.docs}"/>
       <mkdir dir="${morpho.docs.dev}"/>
       <mkdir dir="${morpho.docs.dev.api}"/>
@@ -201,43 +200,29 @@
       <copy file="./morpho" todir="${morpho.dir}"/>
       <copy file="./morpho.bat" todir="${morpho.dir}"/>
       <copy file="./README.txt" todir="${morpho.dir}"/>
-      <copy todir="${morpho.lib.catalog}">
-        <fileset dir="./lib/catalog"/>
-      </copy>
-      <copy todir="${morpho.lib.frames}">
-        <fileset dir="./lib/frames"/>
-      </copy>
       <copy todir="${morpho.lib.sampledata}">
         <fileset dir="./lib/sampledata"/>
-      </copy>
-      <copy todir="${morpho.lib.style}">
-        <fileset dir="./lib/style"/>
       </copy>
       <copy todir="${morpho.docs}">
         <fileset dir="${build.docs}">
           <exclude name="**/api"/>
         </fileset>
       </copy>
-      <copy todir="${morpho.docs.dev}">
-        <fileset dir="./docs/dev"/>
-      </copy>
       <copy todir="${morpho.docs.dev.api}">
         <fileset dir="${build.docs}/api"/>
       </copy>
-      <copy file="./lib/config.xml" todir="${morpho.lib}"/>
-      <copy file="./lib/dataset.xml" todir="${morpho.lib}"/>
-      <copy file="./lib/eml-variable.xml" todir="${morpho.lib}"/>
-      <copy file="./lib/table-entity.xml" todir="${morpho.lib}"/>
-      <copy file="./lib/default-profile.xml" todir="${morpho.lib}"/>
       <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
       <copy file="./lib/shippedIcons.jar" todir="${morpho.lib}"/>
       <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/xerces.jar" todir="${morpho.lib}"/> 
       <copy file="./lib/httpclient.jar" todir="${morpho.lib}"/> 
       <copy file="./lib/jsse.jar" todir="${morpho.lib}"/> 
       <copy file="./lib/jcert.jar" todir="${morpho.lib}"/> 
-      <copy file="./lib/jnet.jar" todir="${morpho.lib}"/> 
+      <copy file="./lib/jnet.jar" todir="${morpho.lib}"/>  
+      <copy file="./lib//${name}-config.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/xercesImpl.jar" todir="${morpho.lib}"/>  
+      <copy file="./lib/kunststoff.jar" todir="${morpho.lib}"/>  
+      <copy file="./lib/xml-apis.jar" todir="${morpho.lib}"/>  
        
       <delete file="./lib/morpho-${release}.zip"/>
       <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
@@ -276,13 +261,21 @@
    </target>
 
    <target name="docs" depends="init">
-     <mkdir dir="${build.docs}"/>
-     <copy todir="${build.docs}" filtering="no">
+     <mkdir dir="${build.docs}"/> 
+     <mkdir dir="${build.docs}/user"/>
+     <mkdir dir="${build.docs}/licenses"/>
+     <copy file="./docs/README.txt" todir="${build.docs}"/>
+     <copy todir="${build.docs}/licenses" filtering="no">
+       <fileset dir="./docs/licenses">
+          <exclude name="**/*.html"/>
+       </fileset>
+     </copy>
+     <copy todir="${build.docs}/user" filtering="no">
        <fileset dir="./docs/user">
           <exclude name="**/*.html"/>
        </fileset>
      </copy>
-     <copy todir="${build.docs}" filtering="yes">
+     <copy todir="${build.docs}/user" filtering="yes">
        <fileset dir="./docs/user">
          <include name="*.html"/>
        </fileset>
