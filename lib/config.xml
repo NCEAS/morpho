@@ -109,7 +109,7 @@
     <file>
       <name>Software</name>
       <label>Software Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-software-2.0.1beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-software-2.0.0beta5//EN</xmlfiletype>
       <rootnode>software</rootnode>
       <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
       <displaypath>//shortName</displaypath>
@@ -187,5 +187,8 @@
       <idpath>/eml-protocol/identifier</idpath>
     </file>
   </newxmlfiletypes>
+  <uid_tag>uid</uid_tag>
+  <org_tag>o</org_tag>
+  <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
   <current_profile></current_profile>
 </config>
