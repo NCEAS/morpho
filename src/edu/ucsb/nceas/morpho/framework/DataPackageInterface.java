@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-06 21:20:50 $'
- * '$Revision: 1.20 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-03-26 21:48:55 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ public interface DataPackageInterface
    * to delete the package from metacat and the local disk.  the user could just
    * want to delete it in one of those places.
    */
-  public void delete(String docid, String location);
+  public void delete(String docid, String location) throws Exception;
 
 
   /**
