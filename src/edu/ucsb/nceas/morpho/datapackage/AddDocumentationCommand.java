@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-17 20:45:04 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-18 17:46:16 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,14 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import org.w3c.dom.Node;
+
+import  edu.ucsb.nceas.morpho.framework.EditorInterface;
+import  edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+
+import  edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import  edu.ucsb.nceas.morpho.plugins.ServiceController;
+
+import org.w3c.dom.Document;
 
 /**
  * Class to handle add documentation command
@@ -75,11 +83,25 @@ public class AddDocumentationCommand implements Command
     {
        Morpho morpho = resultPane.getFramework();
        AbstractDataPackage adp = resultPane.getAbstractDataPackage();
-       DocFrame df = new DocFrame();
-       df.setVisible(true);
+       
+       EditorInterface editor = null;
+       try
+       {
+         ServiceController services = ServiceController.getInstance();
+         ServiceProvider provider = 
+                          services.getServiceProvider(EditorInterface.class);
+         editor = (EditorInterface)provider;
+       }
+       catch(Exception ee)
+       {
+         Log.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
+         ee.printStackTrace();
+         return;
+       }
+       Document thisdoc = (adp.getMetadataNode()).getOwnerDocument();
        String id = adp.getPackageId();
        String loc = adp.getLocation();
-       df.initDoc(null, adp.getMetadataNode(), id, loc);
+       editor.openEditor(thisdoc, id, loc, resultPane);
     }//if
   
   }//execute
