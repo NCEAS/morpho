@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-07 23:27:42 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-14 22:10:59 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -237,7 +237,7 @@ private void DTDItems(DTDItem item, Vector vec) {
   }
   else if (item instanceof DTDPCData) {
     NodeInfo ni = new NodeInfo("#PCDATA");
-    ni.setPCValue("text");
+    ni.setPCValue(" ");
     ni.setCardinality(getCardinality(item));
     vec.addElement(ni);
   }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-14 17:15:49 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2001-06-14 22:10:59 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -856,6 +856,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	  String name;
 	  String end;
 	  boolean notempty = true;
+	  boolean emptyNodeParent = false;
 	  NodeInfo ni = (NodeInfo)node.getUserObject();
 	  name = ni.name;
 	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
@@ -882,8 +883,11 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      // remove nodes with empty PCDATA
 	      String pcdata = ni1.getPCValue();
 	      if (pcdata.trim().length()<1) {
-	        notempty = false;
-	        start1 = new StringBuffer();
+	        String card = ni.getCardinality();
+	        if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
+	          notempty = false;
+	          start1 = new StringBuffer();
+	        }
 	      }
 	      start.append(start1.toString());
 	      start1 = new StringBuffer();
@@ -897,6 +901,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      start.append(start1.toString());  
 	      start1 = new StringBuffer();
 	      tempStack.pop();
+	      emptyNodeParent = true;
 	      write_loop(nd, indent+2);
 	    }
 	    else {
@@ -915,7 +920,12 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	        }
 	      }
 	      else {
-	        start.append("\n"+indentString+(String)(tempStack.pop()));
+	        if (!emptyNodeParent) {
+	          start.append("\n"+indentString+(String)(tempStack.pop()));
+	        }
+	        else {
+	          emptyNodeParent = false;  
+	        }
 	      }
 	      textnode = false;
 	    }
@@ -992,6 +1002,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                     while (en2.hasMoreElements()) {
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
                         newnode = deepNodeCopy(tNode);
+                        trimSpecialAttributes(newnode);
                         ind.insert(newnode,index);
                     }
             
@@ -1135,6 +1146,21 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         return ret;
     }
 
+    /** trim 'help' and 'editor' attributes in a node */
+    private void trimSpecialAttributes(DefaultMutableTreeNode nd) {
+        NodeInfo ni = (NodeInfo)nd.getUserObject();
+        Hashtable ht = ni.attr;
+        String editor = (String)ht.get("editor");
+        if (editor!=null) {
+            ni.setEditor(editor);
+            ht.remove("editor");
+        }
+        String help = (String)ht.get("help");
+        if (help!=null) {
+            ni.setHelp(help);
+            ht.remove("help");
+        }
+    }
 
     String pathToString(DefaultMutableTreeNode node) {
         StringBuffer sb = new StringBuffer();
