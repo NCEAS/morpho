@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-18 18:22:38 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-02-23 21:27:40 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,10 @@ public class GeographicPanel extends JPanel
     jp.setMaximumSize(new Dimension(800,600));
     final AbstractWizardPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
     jp.add(awp);
-     
+    
+    NodeInfo ni = (NodeInfo)node.getUserObject();
+    ni.setSelected(true);
+    
     DocFrame df = DocFrame.currentDocFrameInstance;
     final Node domNode = df.writeToDOM(node);
     // domNode is now the DOM tree equivalent of the original JTree subtree in node

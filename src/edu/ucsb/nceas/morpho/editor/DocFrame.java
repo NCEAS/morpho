@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-21 00:04:07 $'
- * '$Revision: 1.155 $'
+ *     '$Date: 2004-02-23 21:27:40 $'
+ * '$Revision: 1.156 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1533,7 +1533,8 @@ public class DocFrame extends javax.swing.JFrame
       if (nodeCopy != null) {
         String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
         if (savenodename.startsWith("attribute-")) savenodename = "attribute-";
-        if (nodename.startsWith(savenodename)) {
+        if ((nodename.startsWith(savenodename)) ||
+            (((NodeInfo)node.getUserObject()).isChoice()) ){
           DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
           int indx = parent.getIndex(node);
           parent.insert(localcopy, indx + 1);
@@ -1674,7 +1675,8 @@ public class DocFrame extends javax.swing.JFrame
           NodeInfo ni1 = (NodeInfo)cn.getUserObject();
           String name = ni1.getName();
           if (name.startsWith("attribute-")) name = "attribute";          
-          if (name.equals(curNodeName)) {
+          if ((name.equals(curNodeName))||
+             (ni1.isChoice()))  {
             cnt++;
           }
         }
@@ -1795,7 +1797,8 @@ public class DocFrame extends javax.swing.JFrame
       DOMOut = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
     }
     catch (Exception e) {
-      Log.debug(4, "Problem writing DOM from XML string!");
+//      Log.debug(4, "xml: "+xml);
+      Log.debug(4, "Problem writing DOM from XML string!"+ "\n"+e.toString());
     }
     return DOMOut;
   }
@@ -3440,7 +3443,9 @@ Log.debug(20, xmlout);
           }
 
           CardmenuItem.setText("Number: " + ni.getCardinality());
-          if (ni.getCardinality().equalsIgnoreCase("ONE")) {
+          if ((ni.getCardinality().equalsIgnoreCase("ONE")) &&
+            (!ni.isChoice())
+                                                         ){
 
             DupmenuItem.setEnabled(false);
             DeletemenuItem.setEnabled(false);
