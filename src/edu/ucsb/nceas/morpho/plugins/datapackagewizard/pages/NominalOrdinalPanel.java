@@ -1,14 +1,14 @@
 /**  '$RCSfile: NominalOrdinalPanel.java,v $'
 *    Purpose: A class that handles xml messages passed by the
-*             package wizard
+*       package wizard
 *  Copyright: 2000 Regents of the University of California and the
-*             National Center for Ecological Analysis and Synthesis
+*       National Center for Ecological Analysis and Synthesis
 *    Authors: Chad Berkley
 *    Release: @release@
 *
 *   '$Author: cjones $'
-*     '$Date: 2004-06-23 21:21:04 $'
-* '$Revision: 1.32 $'
+*     '$Date: 2004-06-24 00:08:37 $'
+* '$Revision: 1.33 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -87,8 +87,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   private CustomList enumDefinitionList;
   private CustomList importedDefinitionList;
 
-  private JLabel			codeLocationLabel;
-  private JComboBox		codeLocationPickList;
+  private JLabel      codeLocationLabel;
+  private JComboBox    codeLocationPickList;
   private final String[] codeLocationPicklistVals
   = { "Codes are defined here",
   "Codes are imported from another table"     };
@@ -172,26 +172,26 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     ItemListener listener = new ItemListener() {
 
       public void itemStateChanged(ItemEvent e) {
-
+      
         String value = e.getItem().toString();
         Log.debug(45, "PickList state changed: " +value);
-
+      
         if (value.equals(textEnumPicklistVals[0])) { //enumerated
-
+        
           Log.debug(45,
           nomOrdDisplayNames+"/enumeratedDomain selected");
           setTextEnumSubPanel(ENUMERATED_DOMAIN);
           helpTextLabel.setText(ENUM_HELP);
-
+        
         } else if (value.equals(textEnumPicklistVals[1])) { //text
-
+        
           Log.debug(45,
           nomOrdDisplayNames+"/textDomain selected");
           setTextEnumSubPanel(TEXT_DOMAIN);
           helpTextLabel.setText(TEXT_HELP);
-
+        
         }
-
+      
       }
     };
 
@@ -355,9 +355,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
         String value = e.getItem().toString();
         Log.debug(45, "CodeLocationPickList state changed: " +value);
-
+        
         if (value.equals(codeLocationPicklistVals[0])) { //user-defined
-
+        
           if(codeLocationValue == CODES_IMPORTED) {
             tablePanel.setVisible(false);
             enumPanel.remove(importedDefinitionList);
@@ -365,9 +365,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
             enumPanel.invalidate();
           }
           codeLocationValue = CODES_DEFINED_HERE;
-
+        
         } else if (value.equals(codeLocationPicklistVals[1])) { //imported
-
+        
           if(codeLocationValue == CODES_DEFINED_HERE) {
             tablePanel.setVisible(true);
             enumPanel.remove(enumDefinitionList);
@@ -376,7 +376,6 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
           }
           codeLocationValue = CODES_IMPORTED;
         }
-
       }
     };
     codeLocationPickList = WidgetFactory.makePickList(codeLocationPicklistVals, false, 0, listener);
@@ -526,8 +525,6 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     return adp;
   }
 
-
-
   private JLabel getLabel(String text) {
 
     if (text==null) text=EMPTY_STRING;
@@ -539,8 +536,6 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     return label;
   }
-
-
 
 
   /**
@@ -558,7 +553,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   *  labels to draw attention to them
   *
   *  @return   boolean true if user data validated OK. false if intervention
-  *            required
+  *      required
   */
   public boolean validateUserInput() {
 
@@ -569,25 +564,25 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
       String loc = (String)codeLocationPickList.getSelectedItem();
       if ( loc.equals(codeLocationPicklistVals[1]) ) {
-        if(tableNameTextField.getText().equals(SELECT_TABLE)) {
-          WidgetFactory.hiliteComponent(tableNameLabel);
-          return false;
-        }
+  if(tableNameTextField.getText().equals(SELECT_TABLE)) {
+    WidgetFactory.hiliteComponent(tableNameLabel);
+    return false;
+  }
       } else {
-        if (!isEnumListDataValid()) {
-          WidgetFactory.hiliteComponent(enumDefinitionLabel);
-          return false;
-        }
+  if (!isEnumListDataValid()) {
+    WidgetFactory.hiliteComponent(enumDefinitionLabel);
+    return false;
+  }
       }
     } else {    ////////////////////////////TEXT
 
       WidgetFactory.unhiliteComponent(textDefinitionLabel);
       if (textDefinitionField.getText().trim().equals(EMPTY_STRING)) {
 
-        WidgetFactory.hiliteComponent(textDefinitionLabel);
-        textDefinitionField.requestFocus();
+  WidgetFactory.hiliteComponent(textDefinitionLabel);
+  textDefinitionField.requestFocus();
 
-        return false;
+  return false;
       }
 
       // CHECK FOR AND ELIMINATE EMPTY ROWS...
@@ -606,22 +601,22 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   *  gets the Map object that contains all the key/value paired
   *
   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be
-  *            appended when making name/value pairs.  For example, in the
-  *            following xpath:
+  *      appended when making name/value pairs.  For example, in the
+  *      following xpath:
   *
-  *            /eml:eml/dataset/dataTable/attributeList/attribute[2]
-  *            /measurementScale/nominal/nonNumericDomain/textDomain/definition
+  *      /eml:eml/dataset/dataTable/attributeList/attribute[2]
+  *      /measurementScale/nominal/nonNumericDomain/textDomain/definition
   *
-  *            the root would be:
+  *      the root would be:
   *
-  *              /eml:eml/dataset/dataTable/attributeList
-  *                                /attribute[2]/measurementScale
+  *        /eml:eml/dataset/dataTable/attributeList
+  *        /attribute[2]/measurementScale
   *
-  *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN
-  *            SQUARE BRACKETS []
+  *      NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN
+  *      SQUARE BRACKETS []
   *
   *  @return   data the Map object that contains all the
-  *            key/value paired settings for this particular wizard page
+  *      key/value paired settings for this particular wizard page
   */
   private OrderedMap   returnMap  = new OrderedMap();
   private StringBuffer nomOrdBuff = new StringBuffer();
@@ -646,15 +641,13 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
       if(codeLocationValue == CODES_DEFINED_HERE){
         getEnumListData(xPathRoot + "enumeratedDomain[1]", returnMap);
-      }
-      else {
-	if(codeImportPanel == null)
+      } else {
+        if(codeImportPanel == null)
         codeImportPanel = new CodeDefnPanel();
         OrderedMap importMap = codeImportPanel.getPanelData(xPathRoot +
         "enumeratedDomain[1]/entityCodeList");
         returnMap.putAll(importMap);
       }
-
 
       if (enumDefinitionFreeTextCheckBox.isSelected()) {
 
@@ -663,8 +656,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         returnMap.put(xPathRoot + "textDomain[1]/pattern[1]", ".*");
       }
 
-
-    } else {                              //TEXT
+    } else {            //TEXT
 
       returnMap.put(  xPathRoot + "textDomain[1]/definition",
       textDefinitionField.getText().trim());
@@ -677,7 +669,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
         Object nextRowObj = it.next();
         if (nextRowObj==null) continue;
-
+        
         List nextRow = (List)nextRowObj;
         if (nextRow.size() < 1) continue;
         nextStr = (String) nextRow.get(0);
@@ -686,7 +678,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         nomOrdBuff.append("textDomain[1]/pattern[");
         nomOrdBuff.append(index++);
         nomOrdBuff.append("]");
-
+        
         returnMap.put(nomOrdBuff.toString(), nextStr);
       }
 
@@ -744,7 +736,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     if(codeLocationValue == CODES_DEFINED_HERE)
       return false;
-		if(codeImportPanel == null) return true;
+    if(codeImportPanel == null) return true;
     if(codeImportPanel.getTableName() == null) return true;
     return false;
   }
@@ -777,7 +769,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
       if (nextRow.size() < 1) continue;
 
       if (nextRow.get(0)==null || nextRow.get(1)==null
-        || ((String)(nextRow.get(0))).trim().equals(EMPTY_STRING)
+  || ((String)(nextRow.get(0))).trim().equals(EMPTY_STRING)
       || ((String)(nextRow.get(1))).trim().equals(EMPTY_STRING)) return false;
 
     }
@@ -792,7 +784,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   *  @param  xPathRoot - this is the relative xPath of the current attribute
   *
   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map
-  *		    are absolute xPath and not the relative xPaths
+  *        are absolute xPath and not the relative xPaths
   *
   **/
 
@@ -826,10 +818,10 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     if(defn == null) {
       defn = (String)map.get(xPathRoot + "/textDomain/definition");
-			if(defn != null) map.remove(xPathRoot + "/textDomain/definition");
+      if(defn != null) map.remove(xPathRoot + "/textDomain/definition");
     } else {
-			map.remove(xPathRoot + "/textDomain[1]/definition");
-		}
+      map.remove(xPathRoot + "/textDomain[1]/definition");
+    }
     // set the checkbox if there are no pattern constraints on the text
     if(defn!=null) {
 
@@ -871,7 +863,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         codeLocationValue = CODES_DEFINED_HERE;
         codeLocationPickList.setSelectedItem(codeLocationPicklistVals[0]);
         domainPickList.setSelectedItem(this.textEnumPicklistVals[0]);
-
+        
         return;
       }
     }
@@ -966,11 +958,10 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   }
 
 
-
   /** This function is to retrieve the Pattern definitions from the CustomList
   *
   *   @return - the List of Rows of Pattern. Each row is a 1 element list
-  *		consisting of the Pattern
+  *    consisting of the Pattern
   */
 
   public List getTextList() {
@@ -997,23 +988,23 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     public void actionPerformed(ActionEvent ae) {
 
       if(codeImportPanel == null)
-        codeImportPanel = new CodeDefnPanel();
+  codeImportPanel = new CodeDefnPanel();
       if(importDialog == null) {
-        ActionListener okAction = new ActionListener() {
-          public void actionPerformed(ActionEvent ae) {
-            okAction();
-          }
-        };
-        ActionListener cancelAction = new ActionListener() {
-          public void actionPerformed(ActionEvent ae) {
-            cancelAction();
-          }
-        };
-        Point loc = attributePage.getLocationOnScreen();
-        int xc = (int)(loc.getX() + attributePage.getWidth()/2 - DIALOG_SIZE.width/2);
-        int yc = (int)(loc.getY() + attributePage.getHeight()/2 - DIALOG_SIZE.height/2);
-        importDialog = WidgetFactory.makeContainerDialogNoParent(codeImportPanel, okAction, cancelAction);
-        importDialog.setBounds(xc, yc, DIALOG_SIZE.width, DIALOG_SIZE.height);
+  ActionListener okAction = new ActionListener() {
+    public void actionPerformed(ActionEvent ae) {
+      okAction();
+    }
+  };
+  ActionListener cancelAction = new ActionListener() {
+    public void actionPerformed(ActionEvent ae) {
+      cancelAction();
+    }
+  };
+  Point loc = attributePage.getLocationOnScreen();
+  int xc = (int)(loc.getX() + attributePage.getWidth()/2 - DIALOG_SIZE.width/2);
+  int yc = (int)(loc.getY() + attributePage.getHeight()/2 - DIALOG_SIZE.height/2);
+  importDialog = WidgetFactory.makeContainerDialogNoParent(codeImportPanel, okAction, cancelAction);
+  importDialog.setBounds(xc, yc, DIALOG_SIZE.width, DIALOG_SIZE.height);
       }
 
       importDialog.setVisible(true);
@@ -1025,18 +1016,16 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
       if(codeImportPanel.validateUserInput())
         importDialog.setVisible(false);
       else
-        return;
+      return;
       String tableName = codeImportPanel.getTableName();
       if(tableName == null) {
         tableNameTextField.setText(TO_BE_IMPORTED);
         importedDefinitionList.removeAllRows();
-      }
-      else {
-        tableNameTextField.setText(tableName);
-        fillCustomList();
+      } else {
+       tableNameTextField.setText(tableName);
+       fillCustomList();
       }
       return;
-
     }
 
     private void cancelAction() {
@@ -1053,14 +1042,14 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
       List importedCodes = codeImportPanel.getColumnData();
       if(importedCodes == null)
-        return;
+      return;
       Iterator it = importedCodes.iterator();
 
       importedDefinitionList.removeAllRows();
       while(it.hasNext()) {
 
-        List row = (List)it.next();
-        importedDefinitionList.addRow(row);
+      List row = (List)it.next();
+      importedDefinitionList.addRow(row);
       }
 
       importedDefinitionList.fireEditingStopped();
@@ -1095,5 +1084,3 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
   }
 }
-
-
