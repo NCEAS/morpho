@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-12 00:39:25 $'
- * '$Revision: 1.4 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,8 +48,8 @@ public class UsageRights extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
-  private final String nextPageID = DataPackageWizardInterface.SUMMARY;
-  private final String pageNumber = "12";
+  private final String nextPageID = DataPackageWizardInterface.ACCESS;
+  private final String pageNumber = "9";
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Usage Rights";
 
@@ -74,26 +74,27 @@ public class UsageRights extends AbstractWizardPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "Each Data Package may have intellectual rights associated with the "
-      +"dataset.  You may declare that the data package is in now in "
-      +"the public domain, or that there are certain ethical restrictions in "
-      +"using the data.", 2);
+      "<b>Enter a paragraph that describes the intended usage rights of the "
+      +"data package.</b> Each Data Package may have intellectual rights "
+      +"associated with the dataset.  You may declare that the data package is "
+      +"in now in the public domain, or that there are certain ethical "
+      +"restrictions in using the data.", 2);
     vbox.add(desc);
 
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    //vbox.add(WidgetFactory.makeDefaultSpacer());
 
-    JLabel titleDesc = WidgetFactory.makeHTMLLabel(
-        "Enter a paragraph that describes the intended usage rights of the "
-        +"data package.", 2);
-    vbox.add(titleDesc);
+    //JLabel titleDesc = WidgetFactory.makeHTMLLabel(
+    //    "", 2);
+    //vbox.add(titleDesc);
+    //vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JPanel usagePanel = WidgetFactory.makePanel();
 
     JLabel usageLabel = WidgetFactory.makeLabel("Usage Rights:", false);
     usagePanel.add(usageLabel);
 
-    usageField = WidgetFactory.makeTextArea("", 15, true);
+    usageField = WidgetFactory.makeTextArea("", 10, true);
 
     JScrollPane jscrl = new JScrollPane(usageField);
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-12 00:39:25 $'
- * '$Revision: 1.8 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public class Summary extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String nextPageID = null;
-  public final String pageNumber = "15";
+  public final String pageNumber = "11";
   public final String title      = "Data Package Wizard";
   public final String subtitle   = "Summary";
   private JLabel desc2;
@@ -62,28 +62,28 @@ public class Summary extends AbstractWizardPage {
    */
   private void init() {
 
+    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
+
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
     "<p>This wizard has now collected all the information that is required to "
-    +"create your data package.</p><br></br>", 2);
-
+    +"create your data package.</p>", 2);
+    this.add(desc1);
 
     desc2 = WidgetFactory.makeHTMLLabel(
-    "<p><b>"+WizardSettings.getSummaryText()+"</b></p><br></br>", 3);
+        "<br></br><p><b>"+WizardSettings.getSummaryText()+"</b></p><br></br>", 3);
 
+    if(desc2!=null && WizardSettings.getSummaryText()!=null)
+      this.add(desc2);
 
     JLabel desc3 = WidgetFactory.makeHTMLLabel(
     "<p>You can press the \""+WizardSettings.FINISH_BUTTON_TEXT+"\" button to "
     +"create your new data, or you can use the \""
     +WizardSettings.PREV_BUTTON_TEXT+"\" button to return to previous pages "
     +"and change your settings.</p>", 2);
-
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(desc1);
-    if (desc2!=null) this.add(desc2);
     this.add(desc3);
   }
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import java.util.Map;
 
 import javax.swing.JLabel;
 
-import java.awt.BorderLayout;
+import javax.swing.BoxLayout;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -47,7 +47,7 @@ public class PartyIntro extends AbstractWizardPage{
   public final String nextPageID = DataPackageWizardInterface.PARTY_CREATOR;
   public final String title      = "General Data Package Information:";
   public final String subtitle   = "People and Organizations";
-  public final String pageNumber = "5";
+  public final String pageNumber = "4";
 
   public PartyIntro() {
 
@@ -60,21 +60,23 @@ public class PartyIntro extends AbstractWizardPage{
    */
   private void init() {
 
+    this.add(WidgetFactory.makeDefaultSpacer());
+
     JLabel desc = WidgetFactory.makeHTMLLabel(
     "<p>Identify the people and organizations responsible for the data. "
-    +"You will need to provide the following types of information:</p><br></br><br></br>"
+    +"In the next few screens, you will need to provide the following "
+    +"types of information:</p><br></br>"
     +"<li><b>Owner:</b> The person or organization who are credited for creating "
-    +"the data. This may be a person, position name or organiztion name.<br></br></li>"
+    +"the data. This may be a person, organization name or position name.<br></br></li>"
     +"<li><b>Contact:</b> The primary contact is a person or organization to contact "
     +"with questions about the use or interpretation of a data package.<br></br></li>"
     +"<li><b>Other associated people or organizations:</b> These are people or "
     +"organizations that are in some way responsible for the data. They may have "
     +"assisted in collecting or maintaining the data or they may be the "
-    +"'orginator' of a data package and/or a 'metadata provider'.<br></br></li>", 10);
+    +"'orginator' of a data package and/or a 'metadata provider'.<br></br></li>", 13);
 
-
-    this.setLayout(new BorderLayout());
-    this.add(desc, BorderLayout.CENTER);
+    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.add(desc);
   }
 
 

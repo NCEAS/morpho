@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-12-12 03:05:35 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -525,7 +525,7 @@ public class DataLocation extends AbstractWizardPage {
 //  N O   D A T A  ///////////////////////////////////
 
       WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_NODATA);
-      nextPageID = DataPackageWizardInterface.ACCESS;
+      nextPageID = DataPackageWizardInterface.SUMMARY;
     }
     return true;
   }

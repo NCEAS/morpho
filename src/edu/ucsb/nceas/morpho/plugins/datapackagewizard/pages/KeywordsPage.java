@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
+import javax.swing.border.EmptyBorder;
 
 import java.util.Map;
 import java.util.List;
@@ -55,6 +56,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ArrayList;
 
+import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -74,6 +76,12 @@ public class KeywordsPage extends AbstractWizardPage {
   private JLabel kwLabel;
   private CustomList kwList;
   private JPanel middlePanel;
+
+  private final String[] buttonsText = new String[] {
+    "These keywords are not chosen from a predefined list:",
+    "These keywords are chosen from a predefined list:"
+  };
+
   /* Commenting out code for removing KeywordType from the screen...
    * private final String[] kwTypeArray
    *                         = new String[]{ EMPTY_STRING,
@@ -99,6 +107,8 @@ public class KeywordsPage extends AbstractWizardPage {
     this.setLayout( new BorderLayout());
     this.add(middlePanel, BorderLayout.CENTER);
 
+    middlePanel.setBorder(new EmptyBorder(0,10,0,10));
+
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>Define Keyword Set:</b></font>", 1);
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
@@ -106,16 +116,6 @@ public class KeywordsPage extends AbstractWizardPage {
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     middlePanel.add(desc);
-
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-
-    ////
-    JPanel thesaurusPanel = WidgetFactory.makePanel(1);
-    thesaurusPanel.add(WidgetFactory.makeLabel("Thesaurus name:", false));
-    thesaurusField = WidgetFactory.makeOneLineTextField();
-    thesaurusPanel.add(thesaurusField);
-    middlePanel.add(thesaurusPanel);
 
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
@@ -142,6 +142,36 @@ public class KeywordsPage extends AbstractWizardPage {
 
     kwPanel.add(kwList);
     middlePanel.add(kwPanel);
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+
+    ////
+
+    ActionListener listener = new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+
+        onLoadAction();
+
+        if (e.getActionCommand().equals(buttonsText[0])) {
+          thesaurusField.disable();
+        } else if (e.getActionCommand().equals(buttonsText[1])) {
+          thesaurusField.enable();
+        }
+      }
+    };
+
+    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 1, listener);
+    middlePanel.add(radioPanel);
+
+    JPanel thesaurusPanel = WidgetFactory.makePanel(1);
+    thesaurusPanel.add(WidgetFactory.makeLabel("Thesaurus name:", false));
+    thesaurusField = WidgetFactory.makeOneLineTextField();
+    thesaurusField.disable();
+    thesaurusPanel.add(thesaurusField);
+    middlePanel.add(thesaurusPanel);
+
   }
 
 
@@ -178,12 +208,6 @@ public class KeywordsPage extends AbstractWizardPage {
     List surrogate = new ArrayList();
 
     //thesaurus (first column) surrogate:
-    String thesaurus   = thesaurusField.getText().trim();
-    if (thesaurus==null) thesaurus = EMPTY_STRING;
-    surrogate.add(thesaurus);
-
-
-    //keywords (second column) surrogate:
     surrogateBuff.delete(0, surrogateBuff.length());
     List rowLists = kwList.getListOfRowLists();
     boolean firstKW = true;
@@ -210,6 +234,12 @@ public class KeywordsPage extends AbstractWizardPage {
     }
 
     surrogate.add(surrogateBuff.toString());
+
+
+    //keywords (second column) surrogate:
+    String thesaurus   = thesaurusField.getText().trim();
+    if (thesaurus==null) thesaurus = EMPTY_STRING;
+    surrogate.add(thesaurus);
 
     return surrogate;
   }

@@ -1,15 +1,15 @@
 /**
  *  '$RCSfile: DataPackageWizardPlugin.java,v $'
- *    Purpose: A class that handles xml messages passed by the 
+ *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-11 06:41:05 $'
- * '$Revision: 1.16 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-12 03:05:35 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ import org.w3c.dom.Node;
  *  Main controller class for creating and starting a Data Package Wizard Plugin
  */
 
-public class DataPackageWizardPlugin implements PluginInterface, 
+public class DataPackageWizardPlugin implements PluginInterface,
                                                 ServiceProvider,
                                                 DataPackageWizardInterface {
 
@@ -65,7 +65,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  Constructor
    */
   public DataPackageWizardPlugin() {
-  
+
     dpWiz = new WizardContainerFrame();
     dpWiz.setVisible(false);
   }
@@ -77,31 +77,30 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param morpho    a reference to the <code>Morpho</code>
    */
   public void initialize(Morpho morpho) {
-  
+
     try {
       ServiceController services = ServiceController.getInstance();
       services.addService(DataPackageWizardInterface.class, this);
       Log.debug(20, "Service added: DataPackageWizardInterface.");
-    
+
     } catch (ServiceExistsException see) {
       Log.debug(6, "Service registration failed: DataPackageWizardInterface");
       Log.debug(6, see.toString());
     }
   }
-  
+
 
   /**
    *  Required by DataPackageWizardInterface:
    *  method to start the Package wizard
    *
-   *  @param listener the <code>DataPackageWizardListener</code> to be called 
+   *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Package Wizard has finished
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
-
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, listener);
   }
-  
+
 
   /**
    *  Required by DataPackageWizardInterface:
@@ -111,7 +110,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *                  back when the Entity Wizard has finished
    */
   public void startEntityWizard(DataPackageWizardListener listener) {
-  
+
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, listener);
   }
 
@@ -120,15 +119,15 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
     dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
-                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD, 
+                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
                   WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
     dpWiz.setCurrentPage(pageID);
     dpWiz.setVisible(true);
   }
 
 
-  
-  /** 
+
+  /**
    *  returns the WizardPage with the corresponding pageID provided
    *
    *  @param pageID the String pageID for the WizardPage to be returned
@@ -136,24 +135,24 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @return  the corresponding WizardPage with this ID
    */
   public AbstractWizardPage getPage(String pageID) {
-  
+
     return WizardPageLibrary.getPage(pageID);
   }
-  
+
   // for testing/development
   public static void main(String[] args) {
-  
+
   // TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
   //      Morpho.createMorphoInstance();
     Morpho.main(null);
-    ///////////////////////    
-    
+    ///////////////////////
+
     Log.setDebugLevel(55);
     DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
     //plugin.initialize(Morpho.thisStaticInstance);
     plugin.startPackageWizard(
       new DataPackageWizardListener() {
-      
+
         public void wizardComplete(Node newDOM) {
         Log.debug(1,"Wizard complete - Will now create an AbstractDataPackage..");
           AbstractDataPackage dp = DataPackageFactory.getDataPackage(newDOM);
@@ -163,14 +162,14 @@ public class DataPackageWizardPlugin implements PluginInterface,
           DocFrame df = new DocFrame();
           df.setVisible(true);
           df.initDoc(null, domnode);
-        
+
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
 //          System.exit(0);
         }
 
         public void wizardCanceled() {
-      
+
           Log.debug(45, "\n\n********** Wizard canceled!");
           System.exit(0);
         }

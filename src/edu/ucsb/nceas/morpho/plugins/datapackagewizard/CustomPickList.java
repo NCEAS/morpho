@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-12-12 03:05:35 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ import javax.swing.JButton;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ListSelectionModel;
 import javax.swing.ListModel;
+import javax.swing.border.EmptyBorder;
 
 public class CustomPickList extends JPanel {
 
@@ -86,6 +87,9 @@ public class CustomPickList extends JPanel {
       String row  = name + ", " + role;
       partiesPickList.addItem(row);
     }
+//    partiesPickList.setBorder(new EmptyBorder(0,WizardSettings.COMPONENT_PADDING,
+  //                                      0, 10 * WizardSettings.COMPONENT_PADDING));
+
     this.add(partiesPickList, BorderLayout.CENTER);
 
     addAction = new AddListAction(this);

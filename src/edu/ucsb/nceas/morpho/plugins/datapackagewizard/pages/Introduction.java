@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 public class Introduction extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.INTRODUCTION;
-  public final String nextPageID = DataPackageWizardInterface.PROJECT_INTRO;
+  public final String nextPageID = DataPackageWizardInterface.GENERAL;
   public final String pageNumber = "1";
 
 //////////////////////////////////////////////////////////
@@ -101,7 +101,6 @@ public class Introduction extends AbstractWizardPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
   }
 
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-12-12 03:05:35 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,8 @@ import java.awt.event.ActionEvent;
 public class Geographic extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
-  public final String nextPageID = DataPackageWizardInterface.TAXONOMIC;
-  public final String pageNumber = "9";
+  public final String nextPageID = null;
+  public final String pageNumber = "1";
 //////////////////////////////////////////////////////////
 
   public final String title      = "Geographic Information";

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,9 +69,9 @@ public class Keywords extends AbstractWizardPage{
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Keyword Sets";
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";
-  private final String pageNumber  = "4";
+  private final String pageNumber  = "3";
 
-  private final String[] colNames =  {"Thesaurus", "Keywords"};
+  private final String[] colNames =  {"Keywords", "Thesaurus"};
   private final Object[] editors  =   null; //makes non-directly-editable
 
   private CustomList  keywordsList;
@@ -103,8 +103,6 @@ public class Keywords extends AbstractWizardPage{
     vbox.add(desc1);
 
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     keywordsList = WidgetFactory.makeList(colNames, editors, 4,

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-12-12 03:05:35 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class Entity extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.ENTITY;
-  private final String nextPageID = DataPackageWizardInterface.ACCESS;
+  private final String nextPageID = DataPackageWizardInterface.SUMMARY;
   private final String pageNumber = "";
   private final String title      = "Data Information:";
   private final String subtitle   = "Table (Entity)";

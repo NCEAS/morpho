@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:19 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2003-12-12 03:05:35 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ListSelectionModel;
 import javax.swing.ListModel;
+import javax.swing.border.EmptyBorder;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -230,6 +231,7 @@ public class CustomList extends JPanel {
                             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.setHorizontalScrollBarPolicy(
                             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
     scrollPane.getViewport().setBackground(java.awt.Color.white);
     scrollPane.getViewport().addChangeListener(new ChangeListener() {
 
@@ -239,6 +241,10 @@ public class CustomList extends JPanel {
       }
     });
     this.add(scrollPane, BorderLayout.CENTER);
+
+    this.setBorder(new EmptyBorder(0,WizardSettings.COMPONENT_PADDING,
+                                       2*WizardSettings.COMPONENT_PADDING,
+                                       WizardSettings.COMPONENT_PADDING));
 
     addAction = new AddAction(table, this);
 //    addAction.addRowNoCustomAction();
@@ -379,6 +385,10 @@ public class CustomList extends JPanel {
   private void initButtons() {
 
     Box buttonBox = Box.createVerticalBox();
+
+    buttonBox.setBorder(new EmptyBorder(0,WizardSettings.COMPONENT_PADDING,
+                                        WizardSettings.COMPONENT_PADDING,
+                                        WizardSettings.COMPONENT_PADDING));
 
     if (showAddButton) {
 

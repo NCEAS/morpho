@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-12-12 03:05:35 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public class Access extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.ACCESS;
   public final String nextPageID = DataPackageWizardInterface.SUMMARY;
-  public final String pageNumber = "14";
+  public final String pageNumber = "10";
 
   //////////////////////////////////////////////////////////
 
@@ -69,9 +69,8 @@ public class Access extends AbstractWizardPage {
   private JLabel radioLabel;
 
   private final String[] buttonsText = new String[] {
-      "READ",
-      "ALL",
-      "NONE"
+      "YES",
+      "NO"
   };
 
   public Access() {
@@ -91,14 +90,14 @@ public class Access extends AbstractWizardPage {
     topBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<p>Access to your data can be controlled using this screen. By default, "
+        "<p><b>Allow public viewing access to your dataset?</b> Access to your "
+        +"data can be controlled using this screen. By default, "
         +"read and write access is given to your username and read-only access is "
-        +"given to the public. This can be changed using this screen.</p><br></br>"
-        +"<br></br><b>Select the public access.</b>", 5);
+        +"given to the public. This can be changed using this screen.</p>", 3);
 
     topBox.add(desc);
 
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, null);
+    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, null);
     topBox.add(radioPanel);
 
     this.add(topBox, BorderLayout.NORTH);

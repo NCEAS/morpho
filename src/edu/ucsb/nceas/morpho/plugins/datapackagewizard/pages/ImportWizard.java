@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-12 00:39:25 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public class ImportWizard extends     AbstractWizardPage
                           implements  TextImportListener {
 
   public final String pageID     = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
-  public final String nextPageID = DataPackageWizardInterface.ACCESS;
+  public final String nextPageID = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "";
 
   public final String title      = "Data Package Wizard";
@@ -74,10 +74,10 @@ public class ImportWizard extends     AbstractWizardPage
 
   private JFrame importWizFrame;
 
-  public ImportWizard(WizardContainerFrame mainWizFrame) { 
-  
+  public ImportWizard(WizardContainerFrame mainWizFrame) {
+
     this.mainWizFrame = mainWizFrame;
-    init(); 
+    init();
   }
 
   /**
@@ -90,18 +90,18 @@ public class ImportWizard extends     AbstractWizardPage
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-    
+
     // if import hasn't completed OK (i.e. first visit, or returning after
     // a "cancel"), start up the import wizard.
     if (!importCompletedOK) {
 
-      AbstractWizardPage locationPage 
+      AbstractWizardPage locationPage
           = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
 
       importWizFrame = new TextImportWizardEml2(fileTextName, this);
 
-      importWizFrame.setBounds(mainWizFrame.getX(),     mainWizFrame.getY(), 
+      importWizFrame.setBounds(mainWizFrame.getX(),     mainWizFrame.getY(),
                                mainWizFrame.getWidth(), mainWizFrame.getHeight());
       importWizFrame.setVisible(true);
       mainWizFrame.setVisible(false);
@@ -135,14 +135,14 @@ public class ImportWizard extends     AbstractWizardPage
     mainWizFrame.previousAction();
     importCompletedOK = false;
   }
-  
+
   private void cleanUp() {
 
-    mainWizFrame.setBounds(importWizFrame.getX(),     importWizFrame.getY(), 
+    mainWizFrame.setBounds(importWizFrame.getX(),     importWizFrame.getY(),
                         importWizFrame.getWidth(), importWizFrame.getHeight());
-                        
+
     mainWizFrame.setVisible(true);
-    
+
     if (importWizFrame!=null) {
       importWizFrame.setVisible(false);
       importWizFrame.dispose();
@@ -154,7 +154,7 @@ public class ImportWizard extends     AbstractWizardPage
    *  The action to be executed when the "Prev" button is pressed. May be empty
    */
   public void onRewindAction() {
-  
+
     //never used
   }
 
@@ -166,10 +166,10 @@ public class ImportWizard extends     AbstractWizardPage
    *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() { 
-  
+  public boolean onAdvanceAction() {
+
     //never used
-    return true; 
+    return true;
   }
 
   /**

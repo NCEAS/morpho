@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-12 03:05:36 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,6 @@ public class PartyMainPage extends AbstractWizardPage{
   private JLabel      minRequiredLabel;
   private CustomList  partiesList;
   private boolean     oneOrMoreRequired;
-  private CustomPickList partiesPickList;
 
   public PartyMainPage(short role) {
 
@@ -91,7 +90,7 @@ public class PartyMainPage extends AbstractWizardPage{
         oneOrMoreRequired = true;
         pageID     = DataPackageWizardInterface.PARTY_CREATOR;
         nextPageID = DataPackageWizardInterface.PARTY_CONTACT;
-        pageNumber = "6";
+        pageNumber = "5";
         subtitle = "Owners";
         xPathRoot = "/eml:eml/dataset/creator[";
         description =
@@ -107,7 +106,7 @@ public class PartyMainPage extends AbstractWizardPage{
         oneOrMoreRequired = true;
         pageID     = DataPackageWizardInterface.PARTY_CONTACT;
         nextPageID = DataPackageWizardInterface.PARTY_ASSOCIATED;
-        pageNumber = "7";
+        pageNumber = "6";
         subtitle = "Contacts";
         xPathRoot = "/eml:eml/dataset/contact[";
         description =
@@ -122,8 +121,8 @@ public class PartyMainPage extends AbstractWizardPage{
 
         oneOrMoreRequired = false;
         pageID     = DataPackageWizardInterface.PARTY_ASSOCIATED;
-        nextPageID = DataPackageWizardInterface.GEOGRAPHIC;
-        pageNumber = "8";
+        nextPageID = DataPackageWizardInterface.PROJECT;
+        pageNumber = "7";
         subtitle = "Associated Parties";
         xPathRoot = "/eml:eml/dataset/associatedParty[";
         description =
@@ -161,14 +160,14 @@ public class PartyMainPage extends AbstractWizardPage{
 
     this.setLayout(new BorderLayout());
 
-    JLabel desc = WidgetFactory.makeHTMLLabel(description, 3);
+    JLabel desc = WidgetFactory.makeHTMLLabel(description, 4);
     this.add(desc, BorderLayout.NORTH);
 
     JPanel vPanel = WidgetFactory.makeVerticalPanel(6);
 
     if (oneOrMoreRequired) {
       minRequiredLabel = WidgetFactory.makeLabel(
-                                "One or more "+subtitle+" must be defined:", true,
+                                " One or more "+subtitle+" must be defined:", true,
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
       vPanel.add(minRequiredLabel);
     }
@@ -179,12 +178,6 @@ public class PartyMainPage extends AbstractWizardPage{
     vPanel.add(WidgetFactory.makeDefaultSpacer());
 
     vPanel.add(partiesList);
-
-    partiesPickList = new CustomPickList();
-
-    vPanel.add(WidgetFactory.makeDefaultSpacer());
-
-    vPanel.add(partiesPickList);
 
     vPanel.add(WidgetFactory.makeDefaultSpacer());
 
@@ -221,7 +214,7 @@ public class PartyMainPage extends AbstractWizardPage{
         }
       });
 
-    partiesPickList.setCustomAddAction(
+/*    partiesPickList.setCustomAddAction(
 
       new AbstractAction() {
 
@@ -231,6 +224,7 @@ public class PartyMainPage extends AbstractWizardPage{
            showAddPartyDialog();
          }
        });
+ */
   }
 
 
@@ -244,7 +238,7 @@ public class PartyMainPage extends AbstractWizardPage{
       List newRow = partyPage.getSurrogate();
       newRow.add(partyPage);
       partiesList.addRow(newRow);
-      partiesPickList.addRow(newRow);
+      //partiesPickList.addRow(newRow);
     }
 
     if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
@@ -274,9 +268,9 @@ public class PartyMainPage extends AbstractWizardPage{
   }
 
 
-  private void showAddPartyDialog() {
+/*  private void showAddPartyDialog() {
 
-    List selRowList = partiesPickList.getSelectedRowList();
+    //List selRowList = partiesPickList.getSelectedRowList();
 
     if (selRowList==null || selRowList.size() < 4) return;
 
@@ -293,19 +287,18 @@ public class PartyMainPage extends AbstractWizardPage{
       List newRow = editPartyPage.getSurrogate();
       newRow.add(editPartyPage);
       partiesList.addRow(newRow);
-      partiesPickList.addRow(newRow);
+      //partiesPickList.addRow(newRow);
     }
 
     if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
-  }
+  } */
 
 
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
-    partiesPickList.getList();
+   // partiesPickList.getList();
   }
 
 
