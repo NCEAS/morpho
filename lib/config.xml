@@ -7,6 +7,7 @@
   <plugin>edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplayPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin</plugin>
+  <plugin>edu.ucsb.nceas.morpho.plugins.printer.PrinterPlugin</plugin>
   <metacat_url>http://metacat.nceas.ucsb.edu/knb/servlet/metacat</metacat_url>
   <profile_directory>profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
