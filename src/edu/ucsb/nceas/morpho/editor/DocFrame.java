@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-13 15:45:13 $'
- * '$Revision: 1.94 $'
+ *     '$Date: 2002-04-02 17:57:14 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ public class DocFrame extends javax.swing.JFrame
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(643,452);
-//		setVisible(false);
+		setVisible(false);
 		OutputScrollPanelContainer.setLayout(new BorderLayout(0,0));
 		getContentPane().add(OutputScrollPanelContainer);
 		OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
@@ -428,7 +428,32 @@ public class DocFrame extends javax.swing.JFrame
 	}
 	
 	public void initDoc(ClientFramework cf, String doctext, boolean flag) {
-	  final ClientFramework fcf = cf;
+          final ClientFramework fcf = cf;
+	        final String fdoctext = doctext;
+	        final boolean fflag = flag;
+
+    final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+	        
+          initDocInner(fcf, fdoctext, fflag);
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+	        tree.expandRow(1);
+	        tree.expandRow(2);
+          tree.setSelectionRow(0);
+	        setTitle("Morpho Editor:"+id);
+	        headLabel.setText("Morpho Editor");
+	        logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+	  
+	  
+/*	  
+    final ClientFramework fcf = cf;
 	  final String fdoctext = doctext;
 	  final boolean fflag = flag;
 
@@ -442,6 +467,7 @@ public class DocFrame extends javax.swing.JFrame
 	                initDocInner(fcf, fdoctext, fflag);    
 			    }
 			  });
+*/			  
 	}
 	
 	public void initDocInner(ClientFramework cf, String doctext, boolean flag) {
@@ -551,12 +577,14 @@ public class DocFrame extends javax.swing.JFrame
     DefaultTreeModel dftm = new DefaultTreeModel(dtdtree.rootNode);
     tree.setModel(dftm);
 	}
+	/*
 	tree.expandRow(1);
 	tree.expandRow(2);
     tree.setSelectionRow(0);
 	setTitle("Morpho Editor:"+id);
 	headLabel.setText("Morpho Editor");
-	logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));    
+	logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));
+	*/
 	}
 	
 	/** this version of the constructor is needed so that each DocFrame can 'remember' the
