@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-14 20:59:18 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-04-15 18:18:00 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
 
@@ -47,7 +46,7 @@ public class HelpMetadataIntroCommand implements Command {
     MorphoFrame frame
         = UIController.getInstance().addWindow("Introduction to Metadata");
 
-    HTMLBrowser viewer = new HTMLBrowser(frame);
+    HTMLBrowser viewer = new HTMLBrowser(frame, false);
 
     viewer.loadNewPage(INITIAL_URL);
 

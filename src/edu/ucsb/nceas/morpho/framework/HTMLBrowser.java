@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-15 17:07:55 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-04-15 18:18:00 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -48,11 +49,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
-import java.awt.event.ActionListener;
 
 
 /**
@@ -77,10 +78,6 @@ public class HTMLBrowser {
 
   private Stack pageList;
 
-
-  // Used by addNotify
-  private boolean frameSizeAdjusted = false;
-
   private MorphoFrame frame;
   private JToolBar toolBar;
 
@@ -94,26 +91,27 @@ public class HTMLBrowser {
 
   /**
    * Creates a new instance of JFrame1 with the given title.
-   *
-   * @see #JFrame1()
    */
   public HTMLBrowser() {
-    this(UIController.getInstance().addWindow("Browser"));
+    this(UIController.getInstance().addWindow("Browser"), true);
   }
 
 
   /**
    * Creates a new instance of JFrame1 with the given title.
    * @param sTitle the title for the new frame.
-   * @see #JFrame1()
    */
   public HTMLBrowser(String sTitle) {
-    this(UIController.getInstance().addWindow(sTitle));
+    this(UIController.getInstance().addWindow(sTitle), true);
     frame.setTitle(sTitle);
   }
 
-
-  public HTMLBrowser(MorphoFrame frame) {
+  /**
+   *
+   * @param frame MorphoFrame
+   * @param showLocationBar boolean show or hide the url textfield and go button
+   */
+  public HTMLBrowser(MorphoFrame frame, boolean showLocationBar) {
 
     this.frame = frame;
 
@@ -135,7 +133,7 @@ public class HTMLBrowser {
     toolBar = frame.getJToolBar();
     toolBar.removeAll();
 
-    backAction = new GUIAction("< Back", null, new Command() {
+    backAction = new GUIAction("  < Back  ", null, new Command() {
 
       public void execute(ActionEvent e) {
 
@@ -150,7 +148,7 @@ public class HTMLBrowser {
       }
     });
 
-    loadAction = new GUIAction("Go", null, new Command() {
+    loadAction = new GUIAction("  Go  ", null, new Command() {
 
        public void execute(ActionEvent e) {
 
@@ -177,28 +175,31 @@ public class HTMLBrowser {
 
     toolBar.add(backAction);
 
-    toolBar.addSeparator();
+    if (showLocationBar) {
 
-    toolBar.add(urlTextField);
+      toolBar.addSeparator();
 
-    toolBar.addSeparator();
+      toolBar.add(urlTextField);
 
-    toolBar.add(loadAction);
+      toolBar.addSeparator();
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+      toolBar.add(loadAction);
 
-    urlTextField.setText("");
+      ////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////
 
-    setTextFieldDims();
+      urlTextField.setText("");
 
-    urlTextField.addActionListener(new ActionListener() {
+      setTextFieldDims();
 
-      public void actionPerformed(ActionEvent e) {
-        loadAction.actionPerformed(e);
-      }
-    });
+      urlTextField.addActionListener(new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          loadAction.actionPerformed(e);
+        }
+      });
+    }
     pageList = new Stack();
 
     // Listener for hypertext events
@@ -224,6 +225,7 @@ public class HTMLBrowser {
 
             loadNewPage(evt.getURL());
           }
+
         } else if (evt.getEventType() == HyperlinkEvent.EventType.ENTERED) {
 
           HTMLPane.setCursor(handCursor);
@@ -232,18 +234,21 @@ public class HTMLBrowser {
 
           HTMLPane.setCursor(defaultCursor);
         }
+
       }
     });
     enableActions();
     frame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
                   (int)UISettings.DEFAULT_WINDOW_HEIGHT);
 
-    frame.addComponentListener(
-        new ComponentAdapter() {
-      public void componentResized(ComponentEvent e) {
-        setTextFieldDims();
-      }
-    });
+    if (showLocationBar) {
+      frame.addComponentListener(
+          new ComponentAdapter() {
+        public void componentResized(ComponentEvent e) {
+          setTextFieldDims();
+        }
+      });
+    }
   }
 
 
@@ -275,33 +280,62 @@ public class HTMLBrowser {
   }
 
 
+
+
+
+
   /**
    *
    * @param page Object can be a URL object or a String url
    */
-  public void loadNewPage(Object page) {
+  public void loadNewPage(final Object page) {
 
-    HTMLPane.setCursor(waitCursor);
-    URL url = null;
-    try {
+    final MorphoFrame finalFrame = frame;
 
-      if (page instanceof URL) {
-        url = (URL)page;
-      } else {
-        url = new URL((String)page);
+    final SwingWorker worker = new SwingWorker() {
+
+      public Object construct() {
+
+        finalFrame.setBusy(true);
+        finalFrame.setEnabled(false);
+
+        HTMLPane.setCursor(waitCursor);
+        URL url = null;
+        try {
+
+          if (page instanceof URL) {
+            url = (URL)page;
+          } else {
+            url = new URL((String)page);
+          }
+          if (url == null)throw new java.lang.IllegalArgumentException(
+              "URL IS NULL!");
+
+          pageList.push(url);
+          HTMLPane.setPage(url);
+          urlTextField.setText(url.toString());
+
+        } catch (Exception e) {
+          e.printStackTrace();
+          Log.debug(1, "Cannot open page: " + url);
+        } finally {
+          HTMLPane.setCursor(defaultCursor);
+          enableActions();
+          finished();
+        }
+
+        return null;
       }
-      if (url==null) throw new java.lang.IllegalArgumentException("URL IS NULL!");
-      pageList.push(url);
-      HTMLPane.setPage(url);
-      urlTextField.setText(url.toString());
 
-    } catch (Exception e) {
-      e.printStackTrace();
-      Log.debug(1, "Cannot open page: "+url);
-    } finally {
-      HTMLPane.setCursor(defaultCursor);
-      enableActions();
-    }
+      //Runs on the event-dispatching thread.
+      public void finished() {
+        finalFrame.setBusy(false);
+        finalFrame.setEnabled(true);
+        UIController.getInstance().setCurrentActiveWindow(finalFrame);
+        finalFrame.toFront();
+      }
+    };
+    worker.start();
   }
 
 
@@ -322,15 +356,12 @@ public class HTMLBrowser {
    */
   static public void main(String args[]) {
     try {
-      // Add the following code if you want the Look and Feel
-      // to be set to the Look and Feel of the native system.
-      /*
-               try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-               }
-               catch (Exception e) {
-               }
-       */
+
+      try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
 
       //Create a new instance of our application's frame, and make it visible.
       (new HTMLBrowser()).setVisible(true);
