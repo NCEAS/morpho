@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-21 15:44:33 $'
- * '$Revision: 1.123 $'
+ *     '$Date: 2003-10-29 23:27:47 $'
+ * '$Revision: 1.124 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ import org.w3c.dom.*;
 public class DocFrame extends javax.swing.JFrame
 {
 
+  public Node DOMNode = null;
   // various global variables
   public DefaultTreeModel treeModel;
   public DefaultMutableTreeNode rootNode;
@@ -184,6 +185,7 @@ public class DocFrame extends javax.swing.JFrame
 
   javax.swing.JPanel OutputScrollPanelContainer = new javax.swing.JPanel();
   javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
+  javax.swing.JPanel TreeChoicePanel = new javax.swing.JPanel();
   javax.swing.JPanel TreeControlPanel = new javax.swing.JPanel();
   javax.swing.JButton TrimTreeButton = new javax.swing.JButton();
   javax.swing.JButton UntrimTreeButton = new javax.swing.JButton();
@@ -205,6 +207,7 @@ public class DocFrame extends javax.swing.JFrame
   javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
   javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
   javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
+  javax.swing.JComboBox choiceCombo = new javax.swing.JComboBox();
   
   //Create the popup menu.
   javax.swing.JPopupMenu popup = new JPopupMenu();
@@ -223,6 +226,13 @@ public class DocFrame extends javax.swing.JFrame
     OutputScrollPanelContainer.setLayout(new BorderLayout(0, 0));
     getContentPane().add(OutputScrollPanelContainer);
     OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
+    OutputScrollPanelContainer.add(BorderLayout.NORTH, TreeChoicePanel);
+    JLabel test = new JLabel("Choice: ");
+    String[] choices = {"eml", "dataset", "creator", "contact", "keywordSet"};
+    choiceCombo = new JComboBox(choices);
+    choiceCombo.addItemListener(new SymItemListener());
+    TreeChoicePanel.add(test);
+    TreeChoicePanel.add(choiceCombo);
     TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
     OutputScrollPanelContainer.add(BorderLayout.SOUTH, TreeControlPanel);
     TrimTreeButton.setText("Trim");
@@ -825,7 +835,7 @@ public class DocFrame extends javax.swing.JFrame
       tree.setModel(treeModel);
 
       tree.expandRow(1);
-      tree.expandRow(2);
+//      tree.expandRow(2);
       tree.setSelectionRow(0);
       return;
     }
@@ -889,7 +899,7 @@ public class DocFrame extends javax.swing.JFrame
     tree.setModel(treeModel);
 
     tree.expandRow(1);
-    tree.expandRow(2);
+//    tree.expandRow(2);
     tree.setSelectionRow(0);
   }
   
@@ -910,6 +920,12 @@ public class DocFrame extends javax.swing.JFrame
     if (nd!=null) {
       DefaultMutableTreeNode tn = (DefaultMutableTreeNode)model.getInvNode(nd);
       treeModel.setRoot(tn);
+      treeModel.reload();
+      tree.setModel(treeModel);
+
+      tree.expandRow(1);
+      tree.setSelectionRow(0);
+
     }
   }
   
@@ -1024,6 +1040,8 @@ public class DocFrame extends javax.swing.JFrame
     catch (Exception e) {Log.debug(4,"Problem in creating DOM!"+e);}
     // then display it
     df.initDoc(null, domnode);
+    df.DOMNode = domnode;
+//    df.setTopOfTree(domnode, "//creator");
   }
 
   
@@ -3079,6 +3097,36 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
+  /**
+   * handles valueChanged events for the comboBox
+   *
+   * @author   higgins
+   */
+  class SymItemListener implements java.awt.event.ItemListener
+  {
+    /**
+     * handles valueChanged events
+     *
+     */
+    public void itemStateChanged(java.awt.event.ItemEvent event)
+    {
+      Object object = event.getSource();
+      if (object == choiceCombo) {
+        String sel = (String)choiceCombo.getSelectedItem();
+        if (sel.equals("eml")) {
+          treeModel.setRoot(rootNode);
+          treeModel.reload();
+          tree.setModel(treeModel);
+          tree.expandRow(1);
+          tree.setSelectionRow(0);
+        }
+        else {
+          setTopOfTree(DOMNode, "//"+sel);
+        }
+      }
+    }
+  }
+  
 
   /**
    * handles tree popup actions
