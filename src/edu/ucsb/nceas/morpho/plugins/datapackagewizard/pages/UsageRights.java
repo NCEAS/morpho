@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.16 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-07 00:41:35 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,10 +80,9 @@ public class UsageRights extends AbstractUIPage{
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
       "<b>Enter a paragraph that describes the intended usage rights of the "
-      +"data package.</b> Each Data Package may have intellectual rights "
-      +"associated with the dataset.  You may declare that the data package is "
-      +"in now in the public domain, or that there are certain ethical "
-      +"restrictions in using the data.", 3);
+      +"data package.</b> Specifically, include any restrictions (scientific,"
+      +" technical, ethical) to sharing your data within the"
+      +" public scientific domain. ", 3);
     vbox.add(desc);
 
     vbox.add(WidgetFactory.makeDefaultSpacer());
