@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-12 20:06:59 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2001-06-12 23:35:31 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,9 +63,9 @@ public class DocFrame extends javax.swing.JFrame
     public static int counter = 0;
   
     /** A reference to the container framework */
-  private ClientFramework framework = null;
+    private ClientFramework framework = null;
 
-  /** The configuration options object reference from the framework */
+    /** The configuration options object reference from the framework */
     ConfigXML config;
   
     EditorPlugin controller = null;
@@ -104,7 +104,6 @@ public class DocFrame extends javax.swing.JFrame
     //* nodeCopy is the 'local clipboard' for node storage
     DefaultMutableTreeNode nodeCopy = null;
     
-//    javax.swing.JMenuItem CMmenuItem;
     javax.swing.JMenuItem menuItem;
     javax.swing.JMenuItem CardmenuItem;
     javax.swing.JMenuItem DeletemenuItem;
@@ -115,9 +114,9 @@ public class DocFrame extends javax.swing.JFrame
     javax.swing.JMenuItem PastemenuItem;
     
     
- /**
-  * This constructor builds the contents of the DocFrame Display
-  */
+    /**
+    * This constructor builds the contents of the DocFrame Display
+    */
   
 	public DocFrame()
 	{
@@ -154,42 +153,38 @@ public class DocFrame extends javax.swing.JFrame
 		ControlPanel.add(CancelButtons);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
-		//$$ saveFileDialog.move(0,306);
 		//}}
 		JSplitPane DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
 		       , OutputScrollPanel, NestedPanelScrollPanel);
 		     
 		DocControlPanel.setOneTouchExpandable(true);
-    DocControlPanel.setDividerLocation(250); 
-    getContentPane().add(BorderLayout.CENTER, DocControlPanel);
+        DocControlPanel.setDividerLocation(250); 
+        getContentPane().add(BorderLayout.CENTER, DocControlPanel);
 
 		//{{INIT_MENUS
 		//}}
-//    CMmenuItem = new JMenuItem("Content Model = ");
-//    popup.add(CMmenuItem);
-    CardmenuItem = new JMenuItem("One Element Allowed");
+        CardmenuItem = new JMenuItem("One Element Allowed");
  
-    popup.add(CardmenuItem);
-    popup.add(new JSeparator());
-    DupmenuItem = new JMenuItem("Duplicate");
-    popup.add(DupmenuItem);
-    DeletemenuItem = new JMenuItem("Delete");
-    popup.add(DeletemenuItem);
-    popup.add(new JSeparator());
-    AttrmenuItem = new JMenuItem("Edit Attributes");
-    popup.add(AttrmenuItem);
-    popup.add(new JSeparator());
-    CopymenuItem = new JMenuItem("Copy Node & Children");
-    popup.add(CopymenuItem);
-    ReplacemenuItem = new JMenuItem("Replace Selected Node from Clipboard");
-    ReplacemenuItem.setEnabled(false);
-    popup.add(ReplacemenuItem);
-    PastemenuItem = new JMenuItem("Paste as Sibling to Selected Node"); 
-	  popup.add(PastemenuItem);
+        popup.add(CardmenuItem);
+        popup.add(new JSeparator());
+        DupmenuItem = new JMenuItem("Duplicate");
+        popup.add(DupmenuItem);
+        DeletemenuItem = new JMenuItem("Delete");
+        popup.add(DeletemenuItem);
+        popup.add(new JSeparator());
+        AttrmenuItem = new JMenuItem("Edit Attributes");
+        popup.add(AttrmenuItem);
+        popup.add(new JSeparator());
+        CopymenuItem = new JMenuItem("Copy Node & Children");
+        popup.add(CopymenuItem);
+        ReplacemenuItem = new JMenuItem("Replace Selected Node from Clipboard");
+        ReplacemenuItem.setEnabled(false);
+        popup.add(ReplacemenuItem);
+        PastemenuItem = new JMenuItem("Paste as Sibling to Selected Node"); 
+	    popup.add(PastemenuItem);
 	  
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
-		SymChange lSymChange = new SymChange();
 		reload.addActionListener(lSymAction);
 		DTDParse.addActionListener(lSymAction);
 		SaveXML.addActionListener(lSymAction);
@@ -204,29 +199,27 @@ public class DocFrame extends javax.swing.JFrame
 		CopymenuItem.addActionListener(lSymAction);
 		ReplacemenuItem.addActionListener(lSymAction);
 		PastemenuItem.addActionListener(lSymAction);
-    //Create the popup menu.
-    javax.swing.JPopupMenu popup = new JPopupMenu();
+         //Create the popup menu.
+        javax.swing.JPopupMenu popup = new JPopupMenu();
 		
 		rootNode = newNode("Configuration");
 		treeModel = new DefaultTreeModel(rootNode);
 
-    tree = new JTree(treeModel);
+        tree = new JTree(treeModel);
 		OutputScrollPanel.getViewport().add(tree);
-    tree.setCellRenderer(new XMLTreeCellRenderer());
+        tree.setCellRenderer(new XMLTreeCellRenderer());
 		
 		tree.setShowsRootHandles(true);
-    tree.setEditable(false);
-    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    tree.setShowsRootHandles(true);
-    tree.putClientProperty("JTree.lineStyle", "Angled");
+        tree.setEditable(false);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.setShowsRootHandles(true);
+        tree.putClientProperty("JTree.lineStyle", "Angled");
 		
 		SymTreeSelection lSymTreeSelection = new SymTreeSelection();
 		tree.addTreeSelectionListener(lSymTreeSelection);
 	
 		MouseListener popupListener = new PopupListener();
-    tree.addMouseListener(popupListener);
-    
-    
+        tree.addMouseListener(popupListener);
 	}
 
 	/**
@@ -239,10 +232,10 @@ public class DocFrame extends javax.swing.JFrame
 		setTitle(sTitle);
 	}
 
-  /** 
-   *  Constructor which adds a title and passes the xml to
-   *  display as a string; puts XML into tree
-   */
+    /** 
+    *  Constructor which adds a title and passes the xml to
+    *  display as a string; puts XML into tree
+    */
    
 	public DocFrame(String sTitle, String doctext)
 	{
@@ -250,61 +243,58 @@ public class DocFrame extends javax.swing.JFrame
 		setTitle(sTitle);
 		XMLTextString = doctext;
 		putXMLintoTree(treeModel, XMLTextString);
-    tree.setSelectionRow(0);
+        tree.setSelectionRow(0);
 
 		// now want to possibly merge the input document with a formatting document
 		// and set the 'editor' and 'help' fields for each node
 		// use the root node name as a key
 		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-    String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
-    rootname = rootname+".xml";
+        String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+        rootname = rootname+".xml";
 		file = new File("./lib", rootname);
 		DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
 		DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
 		String fXMLString = "";
 		boolean formatflag = true;
-    try{
-      FileReader in = new FileReader(file);
-      StringWriter out = new StringWriter();
-      int c;
-      while ((c = in.read()) != -1) {
-          out.write(c);
-      }
-      in.close();
-      out.close();
-      fXMLString = out.toString();
-    }
-	  catch(Exception e){formatflag = false;}	
+        try{
+            FileReader in = new FileReader(file);
+            StringWriter out = new StringWriter();
+            int c;
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+            in.close();
+            out.close();
+            fXMLString = out.toString();
+        }
+	    catch(Exception e){formatflag = false;}	
 		
 		if (formatflag) {
-		  putXMLintoTree(ftreeModel,fXMLString);
-		  frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
-		  treeUnion(rootNode,frootNode);
+		    putXMLintoTree(ftreeModel,fXMLString);
+		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+		    treeUnion(rootNode,frootNode);
 		}
     
     
-    if (dtdfile!=null) {
-		  dtdtree = new DTDTree(dtdfile);
-		  dtdtree.setRootElementName(rootnodeName);
-		  dtdtree.parseDTD();
+        if (dtdfile!=null) {
+		    dtdtree = new DTDTree(dtdfile);
+		    dtdtree.setRootElementName(rootnodeName);
+		    dtdtree.parseDTD();
 		
-	    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 
-        // treeTrim will remove nodes in the input that are not in the DTD
-	    
-	    // the treeUnion method will 'merge' the input document with
-	    // a template XML document created using the DTD parser from the DTD doc
-		  treeUnion(rootNode,dtdtree.rootNode);
-        // treeTrim will remove nodes in the input that are not in the DTD
-        // remove the following line if this is not wanted
-          treeTrim(rootNode,dtdtree.rootNode);
+	        // the treeUnion method will 'merge' the input document with
+	        // a template XML document created using the DTD parser from the DTD doc
+		    treeUnion(rootNode,dtdtree.rootNode);
+            // treeTrim will remove nodes in the input that are not in the DTD
+            // remove the following line if this is not wanted
+            treeTrim(rootNode,dtdtree.rootNode);
 		}
 		
 		
 		treeModel.reload();
 		tree.setModel(treeModel);
-    tree.setSelectionRow(0);
-    
+        tree.setSelectionRow(0);
 	}
 	
 	public DocFrame(File file)
@@ -380,27 +370,9 @@ public class DocFrame extends javax.swing.JFrame
 	//{{DECLARE_MENUS
 	//}}
 	//Create the popup menu.
-  javax.swing.JPopupMenu popup = new JPopupMenu();
+    javax.swing.JPopupMenu popup = new JPopupMenu();
 
 	
-public void writeInfo() {
-  try{
-    FileReader in = new FileReader(file);
-    StringWriter out = new StringWriter();
-    int c;
-    while ((c = in.read()) != -1) {
-        out.write(c);
-    }
-    in.close();
-    out.close();
-    XMLTextString = out.toString();
-		putXMLintoTree(treeModel,XMLTextString);
-    tree.setSelectionRow(0);
-    }
-	catch (Exception e) {;}
-    
-}
-
 class SymAction implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
@@ -431,63 +403,63 @@ class SymAction implements java.awt.event.ActionListener {
 }
 
 		
-void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
-  if (xmlText!=null) {
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    ConfigXML config = new ConfigXML("lib/config.xml");
-    String local_dtd_directory =config.get("local_dtd_directory",0);     
+    void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
+        if (xmlText!=null) {
+        CatalogEntityResolver cer = new CatalogEntityResolver();
+        ConfigXML config = new ConfigXML("lib/config.xml");
+        String local_dtd_directory =config.get("local_dtd_directory",0);     
             
-    String xmlcatalogfile = local_dtd_directory+"/catalog"; 
-    try {
-      myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
-      myCatalog.parseCatalog(xmlcatalogfile);
-      cer.setCatalog(myCatalog);
-    }
-    catch (Exception e) {System.out.println("Problem creating Catalog!");}
-    try {
-      StringReader sr = new StringReader(xmlText);
-      String parserName = "org.apache.xerces.parsers.SAXParser";
-      XMLReader parser = null;
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-      XMLDisplayHandler mh = new XMLDisplayHandler(tm);
-      parser.setContentHandler(mh);
-      parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
-      
-	    parser.setEntityResolver(cer);
-	    InputSource is = new InputSource(sr);
-
-      parser.parse(is);
-      DefaultMutableTreeNode rt = (DefaultMutableTreeNode)tm.getRoot();
-      if (mh.getPublicId()!=null) {
-        doctype = mh.getPublicId();
-        publicIDString = doctype;
-      }
-      else if (mh.getSystemId()!=null) {
-        doctype = mh.getSystemId(); 
-      }
-      else {
-        doctype = ((NodeInfo)rt.getUserObject()).toString();
-      }
-      rootnodeName = mh.getDocname();
-      System.out.println("doctype = " + doctype);
-      String temp = myCatalog.resolvePublic(doctype,null);
-      if (temp!=null) {
-        if (temp.startsWith("file:")) {
-          temp = temp.substring(5,temp.length());
+        String xmlcatalogfile = local_dtd_directory+"/catalog"; 
+        try {
+            myCatalog = new Catalog();
+            myCatalog.loadSystemCatalogs();
+            myCatalog.parseCatalog(xmlcatalogfile);
+            cer.setCatalog(myCatalog);
         }
-        System.out.println("cat out: "+temp);
-        dtdfile = temp;
-        systemIDString = temp;
-      }
-      } 
-      catch (Exception e) { 
-        System.err.println(e.toString());
-      }
-    }
-}
+        catch (Exception e) {System.out.println("Problem creating Catalog!");}
+        try {
+            StringReader sr = new StringReader(xmlText);
+            String parserName = "org.apache.xerces.parsers.SAXParser";
+            XMLReader parser = null;
+            // Get an instance of the parser
+            parser = XMLReaderFactory.createXMLReader(parserName);
+            XMLDisplayHandler mh = new XMLDisplayHandler(tm);
+            parser.setContentHandler(mh);
+            parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
+      
+	        parser.setEntityResolver(cer);
+	        InputSource is = new InputSource(sr);
 
+            parser.parse(is);
+            DefaultMutableTreeNode rt = (DefaultMutableTreeNode)tm.getRoot();
+            if (mh.getPublicId()!=null) {
+                doctype = mh.getPublicId();
+                publicIDString = doctype;
+            }
+            else if (mh.getSystemId()!=null) {
+                doctype = mh.getSystemId(); 
+            }
+            else {
+                doctype = ((NodeInfo)rt.getUserObject()).toString();
+            }
+            rootnodeName = mh.getDocname();
+            System.out.println("doctype = " + doctype);
+            String temp = myCatalog.resolvePublic(doctype,null);
+            if (temp!=null) {
+                if (temp.startsWith("file:")) {
+                     temp = temp.substring(5,temp.length());
+                }
+            System.out.println("cat out: "+temp);
+            dtdfile = temp;
+            systemIDString = temp;
+            }
+        } 
+        catch (Exception e) { 
+            System.err.println(e.toString());
+        }
+        }
+    }
+    
 	public DefaultMutableTreeNode newNode (Object name) {
 	    NodeInfo ni = new NodeInfo(name.toString());
 	    DefaultMutableTreeNode node = new DefaultMutableTreeNode(ni);
@@ -498,7 +470,7 @@ void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
 	 treeValueFlag = flg; 
 	}
 	
-	class SymTreeSelection implements javax.swing.event.TreeSelectionListener
+class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	{
 		public  void valueChanged(javax.swing.event.TreeSelectionEvent event)
 		{
@@ -546,12 +518,6 @@ void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
 		
 	}  
 
-	class SymChange implements javax.swing.event.ChangeListener
-	{
-		public void stateChanged(javax.swing.event.ChangeEvent event)
-		{
-		}
-	}
 	
 	class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
@@ -602,13 +568,6 @@ void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
           if (ni.getCardinality().equalsIgnoreCase("OPTIONAL")) {
             DupmenuItem.setEnabled(false);
           }
-//          temp = (String)ni.attr.get("deleteNode");
-//          if ((temp!=null)&&(temp.equalsIgnoreCase("false"))){
-//            DeletemenuItem.setEnabled(false);   
-//          }
-//          else {
-//            DeletemenuItem.setEnabled(true); 
-//          }
         }
         popup.show(e.getComponent(), e.getX(), e.getY());
       }
@@ -617,221 +576,217 @@ void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
   }	
 	
 	
-public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
-  DefaultMutableTreeNode newnode = null; 
-  try{
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    ObjectOutputStream s = new ObjectOutputStream(out);
-    s.writeObject(node);
-    s.flush();
+    public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
+        DefaultMutableTreeNode newnode = null; 
+        try{
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream s = new ObjectOutputStream(out);
+            s.writeObject(node);
+            s.flush();
         
-    // now read it
-    ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-    ObjectInputStream os = new ObjectInputStream(in);
-    newnode = (DefaultMutableTreeNode)os.readObject();
-    }
-    catch (Exception e) {
-      System.out.println("Exception in creating copy of node!");
-    }
-  return newnode;
-}
-
-void Copy_actionPerformed(java.awt.event.ActionEvent event) {
-  TreePath tp = tree.getSelectionPath();
-	if (tp!=null) {
-	  Object ob = tp.getLastPathComponent();
-	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
-    nodeCopy = deepNodeCopy(node); 
-  }
-}
-
-void Paste_actionPerformed(java.awt.event.ActionEvent event) {
-  TreePath tp = tree.getSelectionPath();
-	if (tp!=null) {
-	  Object ob = tp.getLastPathComponent();
-	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
-	  DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
-	  // simple node comparison
-	  String nodename = ((NodeInfo)node.getUserObject()).getName();
-	  if (nodeCopy!=null) {
-	    String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
-	    if (nodename.equals(savenodename)) {
-	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent(); 
-	      int indx = parent.getIndex(node);
-	      parent.insert(localcopy, indx+1);
-	      tree.expandPath(tp);
-	      treeModel.reload(parent);
-	      tree.setSelectionPath(tp);
-	    }
-	  }
-  }
-}
-
-void Replace_actionPerformed(java.awt.event.ActionEvent event) {
-  TreePath tp = tree.getSelectionPath();
-	if (tp!=null) {
-	  Object ob = tp.getLastPathComponent();
-	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
-	  DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
-	  // simple node comparison
-	  String nodename = ((NodeInfo)node.getUserObject()).getName();
-	  if (nodeCopy!=null) {
-	    String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
-	    if (nodename.equals(savenodename)) {
-	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent(); 
-	      int indx = parent.getIndex(node);
-	      parent.insert(localcopy, indx+1);
-	      parent.remove(indx);
-	      tree.expandPath(tp);
-	      treeModel.reload(parent);
-	      tree.setSelectionPath(tp);
-	    }
-	  }
-  }
-}
-	
-	
-void Attr_actionPerformed(java.awt.event.ActionEvent event) {
-  TreePath tp = tree.getSelectionPath();
-	if (tp!=null) {
-	  Object ob = tp.getLastPathComponent();
-	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
-//	  Hashtable attr = ((NodeInfo)node.getUserObject()).attr;
-	  String title = "Attributes of "+ ((NodeInfo)node.getUserObject()).getName();
-    AttributeEditDialog aed = new AttributeEditDialog(this,title,node);
-    aed.show();
-  }
-}
-	
-void Dup_actionPerformed(java.awt.event.ActionEvent event) {
-  TreePath tp = tree.getSelectionPath();
-	if (tp!=null) {
-	  Object ob = tp.getLastPathComponent();
-	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
-	  DefaultMutableTreeNode par = (DefaultMutableTreeNode)node.getParent();
-	  int iii = par.getIndex(node);
-	  DefaultMutableTreeNode newnode = deepNodeCopy(node);
-	  if (((NodeInfo)newnode.getUserObject()).getCardinality().equalsIgnoreCase("SELECTED")) {
-	     ((NodeInfo)newnode.getUserObject()).setCardinality("NOT SELECTED");
-	  }
-	  tree.expandPath(tp);
-	  par.insert(newnode,iii+1);
-	  treeModel.reload(par);
-	  tree.setSelectionPath(tp);
-	}
-}
-
-void Del_actionPerformed(java.awt.event.ActionEvent event) {
-  int selRow = -1;
-  TreePath currentSelection = tree.getSelectionPath();
-  int[] selRows = tree.getSelectionRows();
-  if ((selRows!=null)&&(selRows.length>0)) {
-    selRow = selRows[0];
-  }
-  if (currentSelection != null) {
-    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)(currentSelection.getLastPathComponent());
-    NodeInfo ni = (NodeInfo)currentNode.getUserObject();
-    String curNodeName = ni.getName();
-    int cnt = 0;
-    MutableTreeNode parent = (MutableTreeNode)(currentNode.getParent());
-    if (parent != null) {
-      Enumeration eee = parent.children();
-      while (eee.hasMoreElements()) {
-        DefaultMutableTreeNode cn = (DefaultMutableTreeNode)eee.nextElement();
-        NodeInfo ni1 = (NodeInfo)cn.getUserObject();
-        String name = ni1.getName();
-        if (name.equals(curNodeName)) {
-          cnt++;
+            // now read it
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+            ObjectInputStream os = new ObjectInputStream(in);
+            newnode = (DefaultMutableTreeNode)os.readObject();
         }
-      }
-    }
-    if ((parent != null)) {
-      if (cnt>1) {
-        treeModel.removeNodeFromParent(currentNode);
-      }
-      else {
-        if ((ni.getCardinality().equalsIgnoreCase("OPTIONAL")) 
-        || (ni.getCardinality().equalsIgnoreCase("ZERO to MANY")) ) {
-          treeModel.removeNodeFromParent(currentNode);
+        catch (Exception e) {
+            System.out.println("Exception in creating copy of node!");
         }
-      }
-      if (selRow>0) {
-        tree.setSelectionRow(selRow-1);
-      }
-      return;
+        return newnode;
     }
-  } 
 
-  // Either there was no selection, or the root was selected.
-  Toolkit.getDefaultToolkit().beep();
-}	
+    void Copy_actionPerformed(java.awt.event.ActionEvent event) {
+    TreePath tp = tree.getSelectionPath();
+	if (tp!=null) {
+	    Object ob = tp.getLastPathComponent();
+	    DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+        nodeCopy = deepNodeCopy(node); 
+    }
+    }
+
+    void Paste_actionPerformed(java.awt.event.ActionEvent event) {
+        TreePath tp = tree.getSelectionPath();
+	    if (tp!=null) {
+	        Object ob = tp.getLastPathComponent();
+	        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+	        DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
+	        // simple node comparison
+	        String nodename = ((NodeInfo)node.getUserObject()).getName();
+	        if (nodeCopy!=null) {
+	            String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
+	            if (nodename.equals(savenodename)) {
+	                DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent(); 
+	                int indx = parent.getIndex(node);
+	                parent.insert(localcopy, indx+1);
+	                tree.expandPath(tp);
+	                treeModel.reload(parent);
+	                tree.setSelectionPath(tp);
+	            }
+	        }
+        }
+    }
+
+    void Replace_actionPerformed(java.awt.event.ActionEvent event) {
+        TreePath tp = tree.getSelectionPath();
+	    if (tp!=null) {
+	        Object ob = tp.getLastPathComponent();
+	        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+	        DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
+	        // simple node comparison
+	        String nodename = ((NodeInfo)node.getUserObject()).getName();
+	        if (nodeCopy!=null) {
+	            String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
+	            if (nodename.equals(savenodename)) {
+	                DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent(); 
+	                int indx = parent.getIndex(node);
+	                parent.insert(localcopy, indx+1);
+	                parent.remove(indx);
+	                tree.expandPath(tp);
+	                treeModel.reload(parent);
+	                tree.setSelectionPath(tp);
+	            }
+	        }
+        }
+    }
+	
+	
+    void Attr_actionPerformed(java.awt.event.ActionEvent event) {
+        TreePath tp = tree.getSelectionPath();
+	        if (tp!=null) {
+	            Object ob = tp.getLastPathComponent();
+	            DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+	            String title = "Attributes of "+ ((NodeInfo)node.getUserObject()).getName();
+                AttributeEditDialog aed = new AttributeEditDialog(this,title,node);
+                aed.show();
+            }
+    }
+	
+    void Dup_actionPerformed(java.awt.event.ActionEvent event) {
+        TreePath tp = tree.getSelectionPath();
+	    if (tp!=null) {
+	        Object ob = tp.getLastPathComponent();
+	        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+	        DefaultMutableTreeNode par = (DefaultMutableTreeNode)node.getParent();
+	        int iii = par.getIndex(node);
+	        DefaultMutableTreeNode newnode = deepNodeCopy(node);
+	        if (((NodeInfo)newnode.getUserObject()).getCardinality().equalsIgnoreCase("SELECTED")) {
+	            ((NodeInfo)newnode.getUserObject()).setCardinality("NOT SELECTED");
+	        }
+	        tree.expandPath(tp);
+	        par.insert(newnode,iii+1);
+	        treeModel.reload(par);
+	        tree.setSelectionPath(tp);
+	    }
+    }
+
+    void Del_actionPerformed(java.awt.event.ActionEvent event) {
+        int selRow = -1;
+        TreePath currentSelection = tree.getSelectionPath();
+        int[] selRows = tree.getSelectionRows();
+        if ((selRows!=null)&&(selRows.length>0)) {
+            selRow = selRows[0];
+        }
+        if (currentSelection != null) {
+            DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode)(currentSelection.getLastPathComponent());
+            NodeInfo ni = (NodeInfo)currentNode.getUserObject();
+            String curNodeName = ni.getName();
+            int cnt = 0;
+            MutableTreeNode parent = (MutableTreeNode)(currentNode.getParent());
+            if (parent != null) {
+                Enumeration eee = parent.children();
+                while (eee.hasMoreElements()) {
+                    DefaultMutableTreeNode cn = (DefaultMutableTreeNode)eee.nextElement();
+                    NodeInfo ni1 = (NodeInfo)cn.getUserObject();
+                    String name = ni1.getName();
+                    if (name.equals(curNodeName)) {
+                         cnt++;
+                    }
+                }
+            }
+            if ((parent != null)) {
+                if (cnt>1) {
+                    treeModel.removeNodeFromParent(currentNode);
+                }
+                else {
+                    if ((ni.getCardinality().equalsIgnoreCase("OPTIONAL")) 
+                       || (ni.getCardinality().equalsIgnoreCase("ZERO to MANY")) ) {
+                        treeModel.removeNodeFromParent(currentNode);
+                       }
+                }
+                if (selRow>0) {
+                    tree.setSelectionRow(selRow-1);
+                }
+            return;
+            }
+        } 
+
+        // Either there was no selection, or the root was selected.
+        Toolkit.getDefaultToolkit().beep();
+    }	
 	
 
-void reload_actionPerformed(java.awt.event.ActionEvent event)
-	{
+    void reload_actionPerformed(java.awt.event.ActionEvent event) {
 		treeModel.reload();
 		tree.setModel(treeModel);
-		
 	}
 	
 
-	void DTDParse_actionPerformed(java.awt.event.ActionEvent event)
-	{
+	void DTDParse_actionPerformed(java.awt.event.ActionEvent event) {
 //		dtdtree = new DTDTree(dtdfile);
 //		dtdtree.parseDTD();
 		tree.setModel(dtdtree.treeModel);
 	}
 
-/*
- * write the tree starting at the indicated node to a file 'fn'
- */
+    /*
+    * write the tree starting at the indicated node to a file 'fn'
+    */
 	void writeXML (DefaultMutableTreeNode node, String fn) {
-	  File outputFile = new File(fn);
-	  try {
-	    FileWriter out = new FileWriter(outputFile);
-      tempStack = new Stack();
-	    start = new StringBuffer();
-	    write_loop(node, 0);
-	    String str1 = start.toString();
+	    File outputFile = new File(fn);
+	    try {
+	        FileWriter out = new FileWriter(outputFile);
+            tempStack = new Stack();
+	        start = new StringBuffer();
+	        write_loop(node, 0);
+	        String str1 = start.toString();
 	    
-	    String doctype = "";
-	    if (publicIDString!=null) {
-	      String rootNodeName = ((NodeInfo)node.getUserObject()).getName();
-	      String temp = "";
-	      if (publicIDString!=null) temp = "\""+publicIDString+"\"";
-	      String temp1 = "";
-	      if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
-	      doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
+	        String doctype = "";
+	        if (publicIDString!=null) {
+	            String rootNodeName = ((NodeInfo)node.getUserObject()).getName();
+	            String temp = "";
+	            if (publicIDString!=null) temp = "\""+publicIDString+"\"";
+	            String temp1 = "";
+	            if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
+	            doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
+	        }
+	        str1 = "<?xml version=\"1.0\"?>\n"+doctype+str1;
+	    
+	        out.write(str1);
+	        out.close();
 	    }
-	    str1 = "<?xml version=\"1.0\"?>\n"+doctype+str1;
-	    
-	    out.write(str1);
-	    out.close();
-	  }
-	  catch (Exception e) {}
+	    catch (Exception e) {}
 	}
 
-/*
- * write the tree starting at the indicated node to a file 'fn'
- */
+    /*
+    * write the tree starting at the indicated node to a file 'fn'
+    */
 	String writeXMLString (DefaultMutableTreeNode node) {
-      tempStack = new Stack();
+        tempStack = new Stack();
 	    start = new StringBuffer();
 	    write_loop(node, 0);
 	    String str1 = start.toString();
 	    
 	    String doctype = "";
 	    if (publicIDString!=null) {
-	      String rootNodeName = ((NodeInfo)node.getUserObject()).getName();
-	      String temp = "";
-	      if (publicIDString!=null) temp = "\""+publicIDString+"\"";
-	      String temp1 = "";
-	      if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
-	      doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
+	        String rootNodeName = ((NodeInfo)node.getUserObject()).getName();
+	        String temp = "";
+	        if (publicIDString!=null) temp = "\""+publicIDString+"\"";
+	        String temp1 = "";
+	        if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
+	        doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
 	    }
 	    str1 = "<?xml version=\"1.0\"?>\n"+doctype+str1;
 	    
-  return str1;
+    return str1;
 	}
 	
 	
@@ -860,13 +815,9 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	        start1.append(" "+str+"=\""+val+"\"");
 	      }
 	      start1.append(">");
-//	      if (ni.getPCValue()!=null) {   // text node info
-//	        start.append(normalize(ni.getPCValue()));
-//	      }
 	      end = "</"+name+">";
 	      tempStack.push(end);
 	    }
-	  //}
 	  Enumeration enum = node.children();
 	  while (enum.hasMoreElements()) {  // process child nodes 
 	    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
@@ -908,267 +859,259 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	
 	
 /* -----------------------------------------------
-	 * code for combining the content of two DefaultMutableTreeNode trees
-	 * inputTree is modified based on content of template tree
-	 * template may be based on DTD and thus provides info like cardinality
-	 * It is assumed that nodes use NodeInfo user objects
-	 */
+* code for combining the content of two DefaultMutableTreeNode trees
+* inputTree is modified based on content of template tree
+* template may be based on DTD and thus provides info like cardinality
+* It is assumed that nodes use NodeInfo user objects
+*/
 	 
-/*
- * modify input tree by adding info in template
- * input and template are root nodes of trees
- * input tree will be modified using template
- */
-void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
-  DefaultMutableTreeNode tNode;
-  DefaultMutableTreeNode nd2;
-  DefaultMutableTreeNode pqw;
-  DefaultMutableTreeNode qw = null;
-  // first check to see if root nodes have same names
-  if (!compareNodes(input, template)) {
-    System.out.println( "Root nodes do not match!!!");
-  }
-  else {
-    // root nodes match, so start comparing children
-    Vector nextLevelInputNodes;
-    Vector nextLevelTemplateNodes;
-    Vector currentLevelInputNodes = new Vector();
-    currentLevelInputNodes.addElement(input);
-    Vector currentLevelTemplateNodes = new Vector();
-    currentLevelTemplateNodes.addElement(template);
-    for (int j=0;j<numlevels;j++) {
-      nextLevelInputNodes = new Vector();
-      for (Enumeration enum = currentLevelInputNodes.elements();enum.hasMoreElements();) {
-        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
-        for (Enumeration qq = nd.children();qq.hasMoreElements();) {
-          DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
-          nextLevelInputNodes.addElement(nd1);
+    /*
+     * modify input tree by adding info in template
+     * input and template are root nodes of trees
+     * input tree will be modified using template
+     */
+    void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+        DefaultMutableTreeNode tNode;
+        DefaultMutableTreeNode nd2;
+        DefaultMutableTreeNode pqw;
+        DefaultMutableTreeNode qw = null;
+        // first check to see if root nodes have same names
+        if (!compareNodes(input, template)) {
+        System.out.println( "Root nodes do not match!!!");
         }
-      }
-      nextLevelTemplateNodes = new Vector();
-      for (Enumeration enum1 = currentLevelTemplateNodes.elements();enum1.hasMoreElements();) {
-        DefaultMutableTreeNode ndt = (DefaultMutableTreeNode)enum1.nextElement();
-        for (Enumeration qq1 = ndt.children();qq1.hasMoreElements();) {
-          DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
-          nextLevelTemplateNodes.addElement(ndt1);
-        }
-      }
-      // now have a list of all elements in input and template trees at the level being processed
-      // loop over all the template nodes at the 'next' level
-      Enumeration enum = nextLevelTemplateNodes.elements();
-      while (enum.hasMoreElements()) {
-        tNode = (DefaultMutableTreeNode)enum.nextElement();
-        Vector hits = getMatches(tNode, nextLevelInputNodes);
-        // merge hits with template node
-        Enumeration en1 = hits.elements();
-        while (en1.hasMoreElements()) {
-          DefaultMutableTreeNode tempnode = (DefaultMutableTreeNode)en1.nextElement();
-          mergeNodes(tempnode, tNode);  
-        }
-        // Here we need to add nodes that are 'missing'
-        // go to parent of tnode; find matching nodes in input at same level; add children
-        DefaultMutableTreeNode newnode = null;
-        if (hits.size()==0) {
-            DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
-            int index = ptNode.getIndex(tNode);
-            Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
-            Enumeration en2 = parent_hits.elements();
-            while (en2.hasMoreElements()) {
-              DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
-              newnode = deepNodeCopy(tNode);
- //             newnode = (DefaultMutableTreeNode)tNode.clone();
-              ind.insert(newnode,index);
-//              nextLevelInputNodes.addElement(newnode);
-            }
-            
-          if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
-            // in this case, one of the 'children' of the CHOICE node probably exists
-            // in the Info nodes for this level
-            int indx1 = -1;
-            Enumeration q = tNode.children();
-            while (q.hasMoreElements()) {
-              DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)q.nextElement();
-              Enumeration ww = newnode.children();
-              while (ww.hasMoreElements()) {
-                qw = (DefaultMutableTreeNode)ww.nextElement();
-                if (simpleCompareNodes(nd1,qw)) {
-                  indx1 = newnode.getIndex(qw);
-                  newnode.remove(qw);
+        else {
+            // root nodes match, so start comparing children
+            Vector nextLevelInputNodes;
+            Vector nextLevelTemplateNodes;
+            Vector currentLevelInputNodes = new Vector();
+            currentLevelInputNodes.addElement(input);
+            Vector currentLevelTemplateNodes = new Vector();
+            currentLevelTemplateNodes.addElement(template);
+            for (int j=0;j<numlevels;j++) {
+                nextLevelInputNodes = new Vector();
+                for (Enumeration enum = currentLevelInputNodes.elements();enum.hasMoreElements();) {
+                    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+                    for (Enumeration qq = nd.children();qq.hasMoreElements();) {
+                        DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
+                        nextLevelInputNodes.addElement(nd1);
+                    }
                 }
-              }
-              Vector choice_hits = simpleGetMatches(nd1, nextLevelInputNodes);
-              Enumeration qq = choice_hits.elements();
-              while (qq.hasMoreElements()) {
-                nd2 = (DefaultMutableTreeNode)qq.nextElement();
-                newnode.insert(nd2, indx1);
-              }
+            nextLevelTemplateNodes = new Vector();
+            for (Enumeration enum1 = currentLevelTemplateNodes.elements();enum1.hasMoreElements();) {
+                DefaultMutableTreeNode ndt = (DefaultMutableTreeNode)enum1.nextElement();
+                for (Enumeration qq1 = ndt.children();qq1.hasMoreElements();) {
+                    DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
+                    nextLevelTemplateNodes.addElement(ndt1);
+                }
             }
-          }
+            // now have a list of all elements in input and template trees at the level being processed
+            // loop over all the template nodes at the 'next' level
+            Enumeration enum = nextLevelTemplateNodes.elements();
+            while (enum.hasMoreElements()) {
+                tNode = (DefaultMutableTreeNode)enum.nextElement();
+                Vector hits = getMatches(tNode, nextLevelInputNodes);
+                // merge hits with template node
+                Enumeration en1 = hits.elements();
+                while (en1.hasMoreElements()) {
+                    DefaultMutableTreeNode tempnode = (DefaultMutableTreeNode)en1.nextElement();
+                    mergeNodes(tempnode, tNode);  
+                }
+                // Here we need to add nodes that are 'missing'
+                // go to parent of tnode; find matching nodes in input at same level; add children
+                DefaultMutableTreeNode newnode = null;
+                if (hits.size()==0) {
+                    DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
+                    int index = ptNode.getIndex(tNode);
+                    Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
+                    Enumeration en2 = parent_hits.elements();
+                    while (en2.hasMoreElements()) {
+                        DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
+                        newnode = deepNodeCopy(tNode);
+                        ind.insert(newnode,index);
+                    }
             
-        }
-     // recalculate nextLevelInput  
-      nextLevelInputNodes = new Vector();
-      for (Enumeration enumrecalc = currentLevelInputNodes.elements();enumrecalc.hasMoreElements();) {
-        DefaultMutableTreeNode ndrecalc = (DefaultMutableTreeNode)enumrecalc.nextElement();
-        for (Enumeration qqrecalc = ndrecalc.children();qqrecalc.hasMoreElements();) {
-          DefaultMutableTreeNode nd1recalc = (DefaultMutableTreeNode)qqrecalc.nextElement();
-          nextLevelInputNodes.addElement(nd1recalc);
-        }
-      }
+                    if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
+                    // in this case, one of the 'children' of the CHOICE node probably exists
+                    // in the Info nodes for this level
+                        int indx1 = -1;
+                        Enumeration q = tNode.children();
+                        while (q.hasMoreElements()) {
+                            DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)q.nextElement();
+                            Enumeration ww = newnode.children();
+                            while (ww.hasMoreElements()) {
+                            qw = (DefaultMutableTreeNode)ww.nextElement();
+                            if (simpleCompareNodes(nd1,qw)) {
+                                indx1 = newnode.getIndex(qw);
+                                newnode.remove(qw);
+                            }
+                            }
+                            Vector choice_hits = simpleGetMatches(nd1, nextLevelInputNodes);
+                            Enumeration qq = choice_hits.elements();
+                            while (qq.hasMoreElements()) {
+                                nd2 = (DefaultMutableTreeNode)qq.nextElement();
+                                newnode.insert(nd2, indx1);
+                            }
+                        }
+                    }
+            
+                }
+                // recalculate nextLevelInput  
+                nextLevelInputNodes = new Vector();
+                for (Enumeration enumrecalc = currentLevelInputNodes.elements();enumrecalc.hasMoreElements();) {
+                    DefaultMutableTreeNode ndrecalc = (DefaultMutableTreeNode)enumrecalc.nextElement();
+                    for (Enumeration qqrecalc = ndrecalc.children();qqrecalc.hasMoreElements();) {
+                        DefaultMutableTreeNode nd1recalc = (DefaultMutableTreeNode)qqrecalc.nextElement();
+                        nextLevelInputNodes.addElement(nd1recalc);
+                    }
+                }
 
-      }
-      currentLevelInputNodes = nextLevelInputNodes;
-      currentLevelTemplateNodes = nextLevelTemplateNodes;
-    }  // end levels loop
+            }
+            currentLevelInputNodes = nextLevelInputNodes;
+            currentLevelTemplateNodes = nextLevelTemplateNodes;
+        }  // end levels loop
   } //end else
 }
 
-/** treeTrim is designed to remove any nodes in the input that do not match the 
-  * the nodes in the template tree; i.e. the goal is to remove undesirable nodes
-  * from the input tree
-  */
-void treeTrim(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
-  DefaultMutableTreeNode inNode;
-  DefaultMutableTreeNode parNode;
-  // first check to see if root nodes have same names
-  if (!compareNodes(input, template)) {
-    System.out.println( "Root nodes do not match!!!");
-  }
-  else {
-    // root nodes match, so start comparing children
-    Vector nextLevelInputNodes;
-    Vector nextLevelTemplateNodes;
-    Vector currentLevelInputNodes = new Vector();
-    currentLevelInputNodes.addElement(input);
-    Vector currentLevelTemplateNodes = new Vector();
-    currentLevelTemplateNodes.addElement(template);
-    for (int j=0;j<numlevels;j++) {
-      nextLevelInputNodes = new Vector();
-      for (Enumeration enum = currentLevelInputNodes.elements();enum.hasMoreElements();) {
-        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
-        for (Enumeration qq = nd.children();qq.hasMoreElements();) {
-          DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
-          nextLevelInputNodes.addElement(nd1);
+    /** treeTrim is designed to remove any nodes in the input that do not match the 
+     * the nodes in the template tree; i.e. the goal is to remove undesirable nodes
+     * from the input tree
+     */
+    void treeTrim(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+        DefaultMutableTreeNode inNode;
+        DefaultMutableTreeNode parNode;
+        // first check to see if root nodes have same names
+        if (!compareNodes(input, template)) {
+            System.out.println( "Root nodes do not match!!!");
         }
-      }
-      nextLevelTemplateNodes = new Vector();
-      for (Enumeration enum1 = currentLevelTemplateNodes.elements();enum1.hasMoreElements();) {
-        DefaultMutableTreeNode ndt = (DefaultMutableTreeNode)enum1.nextElement();
-        for (Enumeration qq1 = ndt.children();qq1.hasMoreElements();) {
-          DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
-          nextLevelTemplateNodes.addElement(ndt1);
-        }
-      }
-      // now have a list of all elements in input and template trees at the level being processed
-      // loop over all the input nodes at the 'next' level
-      Enumeration enum = nextLevelInputNodes.elements();
-      while (enum.hasMoreElements()) {
-        inNode = (DefaultMutableTreeNode)enum.nextElement();
-        Vector hits = getMatches(inNode, nextLevelTemplateNodes);
-        // if there are no 'hits' then the node should be removed
-        if (hits.size()<1) {
-            parNode = (DefaultMutableTreeNode)inNode.getParent();
-            parNode.remove(inNode);
-        }
-      }
-      currentLevelInputNodes = nextLevelInputNodes;
-      currentLevelTemplateNodes = nextLevelTemplateNodes;
+        else {
+            // root nodes match, so start comparing children
+            Vector nextLevelInputNodes;
+            Vector nextLevelTemplateNodes;
+            Vector currentLevelInputNodes = new Vector();
+            currentLevelInputNodes.addElement(input);
+            Vector currentLevelTemplateNodes = new Vector();
+            currentLevelTemplateNodes.addElement(template);
+            for (int j=0;j<numlevels;j++) {
+                nextLevelInputNodes = new Vector();
+                for (Enumeration enum = currentLevelInputNodes.elements();enum.hasMoreElements();) {
+                DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+                for (Enumeration qq = nd.children();qq.hasMoreElements();) {
+                    DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
+                    nextLevelInputNodes.addElement(nd1);
+                }
+                }
+            nextLevelTemplateNodes = new Vector();
+            for (Enumeration enum1 = currentLevelTemplateNodes.elements();enum1.hasMoreElements();) {
+                DefaultMutableTreeNode ndt = (DefaultMutableTreeNode)enum1.nextElement();
+                for (Enumeration qq1 = ndt.children();qq1.hasMoreElements();) {
+                    DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
+                    nextLevelTemplateNodes.addElement(ndt1);
+                }
+            }
+            // now have a list of all elements in input and template trees at the level being processed
+            // loop over all the input nodes at the 'next' level
+            Enumeration enum = nextLevelInputNodes.elements();
+            while (enum.hasMoreElements()) {
+                inNode = (DefaultMutableTreeNode)enum.nextElement();
+                Vector hits = getMatches(inNode, nextLevelTemplateNodes);
+                 // if there are no 'hits' then the node should be removed
+                if (hits.size()<1) {
+                    parNode = (DefaultMutableTreeNode)inNode.getParent();
+                    parNode.remove(inNode);
+                }
+            }
+            currentLevelInputNodes = nextLevelInputNodes;
+            currentLevelTemplateNodes = nextLevelTemplateNodes;
       
-    } // end of levels loop
-  }
-}
-
-/*
- * return a Vector containing all the nodes in a Vector that match 'match'
- */
-Vector getMatches(DefaultMutableTreeNode match, Vector vec) {
-  Vector matches = new Vector();
-  Enumeration enum = vec.elements();
-  while (enum.hasMoreElements()) {
-    DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
-    if ( compareNodes(tn,match)) {
-      matches.addElement(tn);  
+        } // end of levels loop
+        }
     }
-  }
-  return matches;
-}
 
-Vector simpleGetMatches(DefaultMutableTreeNode match, Vector vec) {
-  Vector matches = new Vector();
-  Enumeration enum = vec.elements();
-  while (enum.hasMoreElements()) {
-    DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
-    if ( simpleCompareNodes(tn,match)) {
-      matches.addElement(tn);  
+    /*
+     * return a Vector containing all the nodes in a Vector that match 'match'
+     */
+    Vector getMatches(DefaultMutableTreeNode match, Vector vec) {
+        Vector matches = new Vector();
+        Enumeration enum = vec.elements();
+        while (enum.hasMoreElements()) {
+            DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
+            if ( compareNodes(tn,match)) {
+                matches.addElement(tn);  
+            }
+        }
+        return matches;
     }
-  }
-  return matches;
-}
 
+    Vector simpleGetMatches(DefaultMutableTreeNode match, Vector vec) {
+        Vector matches = new Vector();
+        Enumeration enum = vec.elements();
+        while (enum.hasMoreElements()) {
+            DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
+            if ( simpleCompareNodes(tn,match)) {
+                matches.addElement(tn);  
+            }
+        }
+        return matches;
+    }
 	 
-boolean compareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
-  boolean ret = false;
-  String node1Str = pathToString(node1);
-  String node2Str = pathToString(node2);
-  if (node1Str.equals(node2Str)) ret = true;
-//  NodeInfo node1ni = (NodeInfo)node1.getUserObject();
-//  NodeInfo node2ni =  (NodeInfo)node2.getUserObject();
-//  if (node1ni.getName().equals(node2ni.getName())) ret = true;
-  return ret;
-}
+    boolean compareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
+        boolean ret = false;
+        String node1Str = pathToString(node1);
+        String node2Str = pathToString(node2);
+        if (node1Str.equals(node2Str)) ret = true;
+        return ret;
+    }
 
-boolean simpleCompareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
-  boolean ret = false;
-  NodeInfo node1ni = (NodeInfo)node1.getUserObject();
-  NodeInfo node2ni =  (NodeInfo)node2.getUserObject();
-  if (node1ni.getName().equals(node2ni.getName())) ret = true;
-  return ret;
-}
+    boolean simpleCompareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
+        boolean ret = false;
+        NodeInfo node1ni = (NodeInfo)node1.getUserObject();
+        NodeInfo node2ni =  (NodeInfo)node2.getUserObject();
+        if (node1ni.getName().equals(node2ni.getName())) ret = true;
+        return ret;
+    }
 
 
-String pathToString(DefaultMutableTreeNode node) {
-  StringBuffer sb = new StringBuffer();
-  TreeNode[] tset = node.getPath();
-  for (int i=0;i<tset.length;i++) {
-    String temp = ((NodeInfo)((DefaultMutableTreeNode)tset[i]).getUserObject()).getName();
-    sb.append(temp+"/");
-  }
-  return sb.toString();
-}
+    String pathToString(DefaultMutableTreeNode node) {
+        StringBuffer sb = new StringBuffer();
+        TreeNode[] tset = node.getPath();
+        for (int i=0;i<tset.length;i++) {
+            String temp = ((NodeInfo)((DefaultMutableTreeNode)tset[i]).getUserObject()).getName();
+            sb.append(temp+"/");
+        }
+        return sb.toString();
+    }
 
-void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
-  if (compareNodes(input,template)) {
-    NodeInfo inputni = (NodeInfo)input.getUserObject();
-    NodeInfo templateni = (NodeInfo)template.getUserObject();
-    inputni.setCardinality(templateni.getCardinality());
+    void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+        if (compareNodes(input,template)) {
+            NodeInfo inputni = (NodeInfo)input.getUserObject();
+            NodeInfo templateni = (NodeInfo)template.getUserObject();
+            inputni.setCardinality(templateni.getCardinality());
     
-    // special case - template has editor and help info
-    String editor = (String)(templateni.attr).get("editor");
-    if (editor!=null) {
-      inputni.setEditor(editor); 
+            // special case - template has editor and help info
+            String editor = (String)(templateni.attr).get("editor");
+            if (editor!=null) {
+                inputni.setEditor(editor); 
+            }
+            String help = (String)(templateni.attr).get("help");
+            if (help!=null) {
+                inputni.setHelp(help); 
+            }
+        }
     }
-    String help = (String)(templateni.attr).get("help");
-    if (help!=null) {
-      inputni.setHelp(help); 
-    }
-
-  }
-}
 	
 
 	void SaveXML_actionPerformed(java.awt.event.ActionEvent event)
 	{
-			saveFileDialog.setVisible(true);
-			String file = saveFileDialog.getFile();
-			if (file!=null) {
-			  file = saveFileDialog.getDirectory()+file;
-	      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+	    saveFileDialog.setVisible(true);
+	    String file = saveFileDialog.getFile();
+	    if (file!=null) {
+		    file = saveFileDialog.getDirectory()+file;
+	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 		    writeXML(rootNode,file);
-		  }
-			 
+		}
 	}
 	
-   /** Normalizes the given string. */
+    /** Normalizes the given string. */
     private String normalize(String s) {
         StringBuffer str = new StringBuffer();
 
@@ -1215,15 +1158,14 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
     } // normalize(String):String
 	
 
-	class SymWindow extends java.awt.event.WindowAdapter
-	{
-		public void windowClosing(java.awt.event.WindowEvent event)
-		{
-			Object object = event.getSource();
-			if (object == DocFrame.this)
-				DocFrame_windowClosing(event);
+class SymWindow extends java.awt.event.WindowAdapter {
+    
+    public void windowClosing(java.awt.event.WindowEvent event) {
+	    Object object = event.getSource();
+		if (object == DocFrame.this)
+		    DocFrame_windowClosing(event);
 		}
-  }
+}
 
 	
 	public void setController(EditorPlugin con) {
@@ -1236,20 +1178,20 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 	{
 		this.hide();
 		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-	  String xmlout = writeXMLString(rootNode);
+	    String xmlout = writeXMLString(rootNode);
 		controller.fireEditingCompleteEvent(this, xmlout);
 	}
 
 	void DocFrame_windowClosing(java.awt.event.WindowEvent event)
 	{
     // Show a confirmation dialog
-    int reply = JOptionPane.showConfirmDialog(this,
+        int reply = JOptionPane.showConfirmDialog(this,
 						"Do you really want to exit without saving changes?",
 						"Editor - Exit",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
       // If the confirmation was affirmative, handle exiting.
-    if (reply == JOptionPane.YES_OPTION) {
+        if (reply == JOptionPane.YES_OPTION) {
 			  if (framework!=null) {
 			    framework.removeWindow(this);  
 			  }
