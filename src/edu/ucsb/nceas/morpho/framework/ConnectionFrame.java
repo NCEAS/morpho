@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.4 2000-08-25 23:34:09 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.5 2000-09-13 23:40:04 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -51,8 +51,8 @@ public class ConnectionFrame extends javax.swing.JFrame
 		JPanel2.add(BorderLayout.NORTH,JButtonGroupPanel1);
 		JButtonGroupPanel1.setBounds(0,0,317,161);
 		AnonymousRadioButton.setSelected(true);
-		AnonymousRadioButton.setText("Anonymous Connection (no password needed)");
-		AnonymousRadioButton.setActionCommand("Anonymous Connection (no pasword needed");
+		AnonymousRadioButton.setText("Public Connection (no password needed)");
+		AnonymousRadioButton.setActionCommand("Public Connection (no pasword needed");
 		JButtonGroupPanel1.add(AnonymousRadioButton);
 		AnonymousRadioButton.setBounds(0,0,317,29);
 		RegisteredUserRadioButton.setText("Registered User Connection");
@@ -69,7 +69,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 		Name.setFont(new Font("Dialog", Font.PLAIN, 12));
 		Name.setBounds(5,7,34,15);
 		NameTextField.setColumns(19);
-		NameTextField.setText("anonymous");
+		NameTextField.setText("public");
 		NameTextField.setEnabled(false);
 		JPanel3.add(NameTextField);
 		NameTextField.setBounds(44,5,209,19);
@@ -216,7 +216,40 @@ public class ConnectionFrame extends javax.swing.JFrame
 	void connectButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	 if (AnonymousRadioButton.isSelected()) {
-	        dispose();
+      Properties prop = new Properties();
+        prop.put("action","Login Client");
+
+      // Now try to write the document to the database
+      try {
+        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+            prop.put("username", "public");
+            prop.put("password", "none");
+        
+        InputStream returnStream = msg.sendPostMessage(prop);
+	    StringWriter sw = new StringWriter();
+	    int c;
+	    while ((c = returnStream.read()) != -1) {
+           sw.write(c);
+        }
+        sw.flush();
+        sw.close();
+        returnStream.close();
+        String res = sw.toString();
+        sw.close();
+        if (res.indexOf("<success>")>=0) {
+		dispose();
+        }
+        else {
+        ConnectionResultsTextArea.setText(res); 
+        }
+      } catch (Exception e) {
+        System.out.println("Error logging into system");
+        e.getMessage();
+        }
 	    }
 	 else {
       Properties prop = new Properties();
@@ -242,6 +275,8 @@ public class ConnectionFrame extends javax.swing.JFrame
 	    while ((c = returnStream.read()) != -1) {
            sw.write(c);
         }
+        sw.flush();
+        sw.close();
         returnStream.close();
         String res = sw.toString();
         sw.close();

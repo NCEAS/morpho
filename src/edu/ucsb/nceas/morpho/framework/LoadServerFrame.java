@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LoadServerFrame.java,v 1.2 2000-09-11 23:58:20 higgins Exp $'
+ *     Version: '$Id: LoadServerFrame.java,v 1.3 2000-09-13 23:40:04 higgins Exp $'
  */
 
 /*
@@ -24,7 +24,7 @@ import javax.swing.*;
 public class LoadServerFrame extends javax.swing.JFrame
 {
     ClientFramework container = null;
-    String userName = "anonymous";
+    String userName = "public";
     String passWord = "none";
     
 	public LoadServerFrame()
@@ -229,7 +229,7 @@ public class LoadServerFrame extends javax.swing.JFrame
 		    }
 		    catch (Exception e) {}
 		}
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + container.MetaCatServletURL);
 //            System.out.println("User = " + userName);
@@ -257,7 +257,7 @@ public class LoadServerFrame extends javax.swing.JFrame
 		    
             ResultTextArea.setText(txt1);
             this.toFront();
-        LogOut();
+ //       LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -327,7 +327,7 @@ public void LogOut() {
 	{
 		String id = idTextField.getText();
 		if (!id.equals("")) {
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + container.MetaCatServletURL);
 		    URL url = new URL(container.MetaCatServletURL);
@@ -353,7 +353,7 @@ public void LogOut() {
 		    
             ResultTextArea.setText(txt1);
             this.toFront();
-        LogOut();
+//        LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -369,7 +369,7 @@ public void LogOut() {
 	{
 		String id = idTextField.getText();
 		if (!id.equals("")) {
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + container.MetaCatServletURL);
 		    URL url = new URL(container.MetaCatServletURL);
@@ -395,7 +395,7 @@ public void LogOut() {
 		    
             ResultTextArea.setText(txt1);
             this.toFront();
-        LogOut();
+ //       LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -408,7 +408,7 @@ public void LogOut() {
 
 	void DocTypes_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + container.MetaCatServletURL);
 		    URL url = new URL(container.MetaCatServletURL);
@@ -432,7 +432,7 @@ public void LogOut() {
 		    
             ResultTextArea.setText(txt1);
             this.toFront();
-        LogOut();
+//        LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -442,7 +442,7 @@ public void LogOut() {
 
 	void DG_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + container.MetaCatServletURL);
 		    URL url = new URL(container.MetaCatServletURL);
@@ -466,7 +466,7 @@ public void LogOut() {
 		    
             ResultTextArea.setText(txt1);
             this.toFront();
-        LogOut();
+//        LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();

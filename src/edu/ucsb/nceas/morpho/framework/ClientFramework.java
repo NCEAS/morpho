@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.12 2000-09-11 23:58:20 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.13 2000-09-13 23:40:04 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -36,9 +36,9 @@ import com.symantec.itools.javax.swing.borders.LineBorder;
  */
 public class ClientFramework extends javax.swing.JFrame
 {
-    String userName = "anonymous";
+    String userName = "public";
     String passWord = "none";
-    
+    static boolean log_file = false; // redirects standard out and err streams
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
     PropertyResourceBundle options = null;
@@ -147,7 +147,7 @@ public class ClientFramework extends javax.swing.JFrame
 		JToolBar1.add(JToolBarSeparator3);
 		JToolBarSeparator3.setBounds(316,9,10,5);
 		ExpertCheckBox.setText("ExpertMode");
-		ExpertCheckBox.setToolTipText("Shows additional 'Search' functions when selected");
+		ExpertCheckBox.setToolTipText("Shows additional \'Search\' functions when selected");
 		JToolBar1.add(ExpertCheckBox);
 		ExpertCheckBox.setBackground(new java.awt.Color(204,204,204));
 		ExpertCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
@@ -249,6 +249,9 @@ public class ClientFramework extends javax.swing.JFrame
 		PreviewXML.setActionCommand("Preview XML");
 		fileMenu.add(PreviewXML);
 		fileMenu.add(JSeparator1);
+		ConnectMenuItem.setText("Connect...");
+		fileMenu.add(ConnectMenuItem);
+		fileMenu.add(JSeparator3);
 		exitItem.setText("Exit");
 		exitItem.setActionCommand("Exit");
 		exitItem.setMnemonic((int)'X');
@@ -328,6 +331,7 @@ public class ClientFramework extends javax.swing.JFrame
 		LocalSearchCheckBox.addItemListener(lSymItem);
 		CatalogSearchCheckBox.addItemListener(lSymItem);
 		ExpertCheckBox.addItemListener(lSymItem);
+		ConnectMenuItem.addActionListener(lSymAction);
 		//}}
 		// Get the configuration file information
     try {
@@ -377,6 +381,14 @@ public class ClientFramework extends javax.swing.JFrame
 			sf.dispose();
 			ConnectionFrame cf = new ConnectionFrame(clf);
 			cf.setVisible(true);
+			if (log_file) {
+            FileOutputStream err = new FileOutputStream("stderr.log");
+            // Constructor PrintStream(OutputStream) has been deprecated.
+            PrintStream errPrintStream = new PrintStream(err);
+            System.setErr(errPrintStream);
+            System.setOut(errPrintStream);
+            }
+ 
 		} 
 		catch (Throwable t) {
 			t.printStackTrace();
@@ -453,6 +465,8 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JMenuItem SaveToDatabase = new javax.swing.JMenuItem();
 	javax.swing.JMenuItem PreviewXML = new javax.swing.JMenuItem();
 	javax.swing.JSeparator JSeparator1 = new javax.swing.JSeparator();
+	javax.swing.JMenuItem ConnectMenuItem = new javax.swing.JMenuItem();
+	javax.swing.JSeparator JSeparator3 = new javax.swing.JSeparator();
 	javax.swing.JMenuItem exitItem = new javax.swing.JMenuItem();
 	javax.swing.JMenu editMenu = new javax.swing.JMenu();
 	javax.swing.JMenuItem cutItem = new javax.swing.JMenuItem();
@@ -487,6 +501,7 @@ public class ClientFramework extends javax.swing.JFrame
 			// If the confirmation was affirmative, handle exiting.
 			if (reply == JOptionPane.YES_OPTION)
 			{
+			    LogOut();
 		    	this.setVisible(false);    // hide the Frame
 		    	this.dispose();            // free the system resources
 		    	System.exit(0);            // close the application
@@ -554,6 +569,8 @@ public class ClientFramework extends javax.swing.JFrame
 				PreviewXML_actionPerformed(event);
 			else if (object == OptionsMenuItem)
 				OptionsMenuItem_actionPerformed(event);
+			else if (object == ConnectMenuItem)
+				ConnectMenuItem_actionPerformed(event);
 			
 			
 		}
@@ -632,10 +649,10 @@ public class ClientFramework extends javax.swing.JFrame
 	}
 
 	void saveserverButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-     //       LoadServerFrame lsf = new LoadServerFrame(this);
-    //        lsf.setVisible(true);
-            SubmitDialog sd = new SubmitDialog(this);
-            sd.setVisible(true);
+            LoadServerFrame lsf = new LoadServerFrame(this);
+            lsf.setVisible(true);
+    //        SubmitDialog sd = new SubmitDialog(this);
+    //        sd.setVisible(true);
     }
     
 	void saveserverButton_actionPerformed_Interaction1xx(java.awt.event.ActionEvent event) {
@@ -657,7 +674,7 @@ public class ClientFramework extends javax.swing.JFrame
 		    }
 		    catch (Exception e) {}
 		}
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + MetaCatServletURL);
 //            System.out.println("User = " + userName);
@@ -687,7 +704,7 @@ public class ClientFramework extends javax.swing.JFrame
             LoadServerFrame lsf = new LoadServerFrame();
             lsf.ResultTextArea.setText(txt1);
             lsf.setVisible(true);
-        LogOut();
+//        LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -745,7 +762,7 @@ public class ClientFramework extends javax.swing.JFrame
 	void ToolBarSearchText_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		if (ToolBarSearchText.getText()!="") {
-		    JTabbedPane1.setSelectedIndex(1);
+//		    JTabbedPane1.setSelectedIndex(1);
 		    queryBean1.searchFor(ToolBarSearchText.getText());
 		}
 	}
@@ -764,9 +781,9 @@ public class ClientFramework extends javax.swing.JFrame
 
 	void SaveToDatabase_actionPerformed(java.awt.event.ActionEvent event)
 	{
-	    LogIn();
+//	    LogIn();
 		mdeBean1.saveDocumentToDatabase();
-		LogOut();
+//		LogOut();
 			 
 	}
 
@@ -926,5 +943,11 @@ public void LogOut() {
 	void ExpertCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
 	{
 	    queryBean1.setExpertMode(ExpertCheckBox.isSelected());
+	}
+
+	void ConnectMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+			ConnectionFrame cf = new ConnectionFrame(this);
+			cf.setVisible(true);
 	}
 }
