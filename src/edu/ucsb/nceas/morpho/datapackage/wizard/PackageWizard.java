@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-12 23:01:13 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2001-10-15 16:49:41 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,11 @@ public class PackageWizard extends javax.swing.JFrame
   private String globalDoctype;
   private String globalRoot;
   
+  /**
+   * xmlString is a string which represents the XML doc created by this
+   * wizard. It can be set by an external class to override the XML
+   * created by this class
+   */
   private String xmlString = null;
   
   /**
@@ -191,6 +196,7 @@ public class PackageWizard extends javax.swing.JFrame
   
   /**
    * gets the xml produced from the wizard
+   * If xmlString is NOT null, then the value of xmlString is returned
    */
   public String getXML()
   {

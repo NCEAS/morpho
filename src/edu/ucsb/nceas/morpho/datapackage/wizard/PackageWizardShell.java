@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-12 23:01:12 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2001-10-15 16:49:41 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -410,6 +410,9 @@ public class PackageWizardShell extends javax.swing.JFrame
         wizardFrame.add(nextContainer.panel);
       }
       else {
+        // if an XML string in the PackageWizard for this frame is not null, then
+        // it has been set by anothe class (probably the TextImportWizard)
+        // Then just show that information has already been set.
         JPanel continuePanel = new JPanel();
         continuePanel.setLayout(new BoxLayout(continuePanel,BoxLayout.Y_AXIS));
         String messageStr = "This information has been automatically created from a data table.";
@@ -872,6 +875,10 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     else if(command.equals("Get Information from Text-Based Table..."))
     {
+      // this code is very specific to the current configuration of the Package Wizard
+      // it should be generalized at some point
+      // e.g. the two ints defined below depend on the entity and attribute wizards following
+      // the current frame immediatel
       int entitynum = frameWizardIndex + 1;
       int attributenum = frameWizardIndex + 2;
       WizardFrameContainer wfc1 = (WizardFrameContainer)frameWizards.elementAt(entitynum);
@@ -881,6 +888,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       
       
       TextImportWizard tiw = new TextImportWizard();
+      //the TextImport wizard has reference to PackageWizards so it can save the
+      // XML text it generates
       tiw.setEntityWizard(pw1);
       tiw.setAttributeWizard(pw2);
       tiw.setVisible(true);
