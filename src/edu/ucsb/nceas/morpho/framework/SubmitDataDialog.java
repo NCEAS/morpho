@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.2 2000-12-22 20:49:35 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.3 2000-12-27 20:24:01 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -54,11 +54,11 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		//{{INIT_CONTROLS
 		setTitle("Data Storage on Server");
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(568,308);
+		setSize(568,418);
 		setVisible(false);
-		GetFilePanel.setLayout(new GridLayout(4,1,0,0));
+		GetFilePanel.setLayout(new GridLayout(7,1,0,0));
 		getContentPane().add(BorderLayout.NORTH,GetFilePanel);
-		GetFilePanel.setBounds(0,0,568,140);
+		GetFilePanel.setBounds(0,0,568,245);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		GetFilePanel.add(JPanel3);
 		JPanel3.setBounds(0,0,568,35);
@@ -79,6 +79,7 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		SelectFile.setBounds(379,5,101,25);
 		VirtualFileCheckBox.setToolTipText("If set, only a reference to the data file is inserted.");
 		VirtualFileCheckBox.setText("Virtual");
+		VirtualFileCheckBox.setActionCommand("Virtual");
 		JPanel3.add(VirtualFileCheckBox);
 		VirtualFileCheckBox.setBounds(485,6,62,23);
 		JPanel4.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
@@ -108,9 +109,42 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		PackageNameTextField.setText("packageExample");
 		JPanel6.add(PackageNameTextField);
 		PackageNameTextField.setBounds(164,5,330,19);
+		JPanel7.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		GetFilePanel.add(JPanel7);
+		JPanel7.setBounds(0,140,568,35);
+		JLabel5.setText("Originator ---  Given Name:");
+		JPanel7.add(JLabel5);
+		JLabel5.setBounds(26,7,148,15);
+		GivenNameTextField.setColumns(12);
+		JPanel7.add(GivenNameTextField);
+		GivenNameTextField.setBounds(179,5,132,19);
+		JLabel8.setText("Surname:");
+		JPanel7.add(JLabel8);
+		JLabel8.setBounds(316,7,55,15);
+		SurNameTextField.setColumns(15);
+		JPanel7.add(SurNameTextField);
+		SurNameTextField.setBounds(376,5,165,19);
+		JPanel8.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		GetFilePanel.add(JPanel8);
+		JPanel8.setBounds(0,175,568,35);
+		JLabel6.setText("Document Title");
+		JPanel8.add(JLabel6);
+		JLabel6.setBounds(74,7,85,15);
+		DocTitleTextField.setColumns(30);
+		JPanel8.add(DocTitleTextField);
+		DocTitleTextField.setBounds(164,5,330,19);
+		JPanel9.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		GetFilePanel.add(JPanel9);
+		JPanel9.setBounds(0,210,568,35);
+		JLabel7.setText("Keywords");
+		JPanel9.add(JLabel7);
+		JLabel7.setBounds(88,7,57,15);
+		KeywordsTextField.setColumns(30);
+		JPanel9.add(KeywordsTextField);
+		KeywordsTextField.setBounds(150,5,330,19);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,JPanel1);
-		JPanel1.setBounds(0,273,568,35);
+		JPanel1.setBounds(0,383,568,35);
 		SubmitDataButton.setText("Submit");
 		SubmitDataButton.setActionCommand("Submit");
 		JPanel1.add(SubmitDataButton);
@@ -122,15 +156,18 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		JPanel2.setAlignmentY(0.466667F);
 		JPanel2.setLayout(new BoxLayout(JPanel2,BoxLayout.X_AXIS));
 		getContentPane().add(BorderLayout.CENTER,JPanel2);
-		JPanel2.setBounds(0,140,568,133);
+		JPanel2.setBounds(0,245,568,138);
 		SubmitDataTextArea.setEditable(false);
 		SubmitDataTextArea.setWrapStyleWord(true);
-		SubmitDataTextArea.setText("Select File to be sent to server for centralized storage using \"Select File...\" button and then submit using the \"Submit\" button");
 		SubmitDataTextArea.setLineWrap(true);
 		JPanel2.add(SubmitDataTextArea);
-		SubmitDataTextArea.setBounds(0,0,568,133);
+		SubmitDataTextArea.setBounds(0,0,568,138);
 		//}}
-	
+	    String text = "Select File to be sent to server for centralized storage using \"Select File...\" button and then submit using the \"Submit\" button.";
+	    text = text + " Note that several metadata files will be automatically created to describe the file being submitted. ";
+	    text = text + "These metadata files contain little data and should be edited to add additional information.";
+		SubmitDataTextArea.setText(text);
+	    
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
 		SelectFile.addActionListener(lSymAction);
@@ -206,6 +243,17 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	javax.swing.JPanel JPanel6 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
 	javax.swing.JTextField PackageNameTextField = new javax.swing.JTextField();
+	javax.swing.JPanel JPanel7 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel5 = new javax.swing.JLabel();
+	javax.swing.JTextField GivenNameTextField = new javax.swing.JTextField();
+	javax.swing.JLabel JLabel8 = new javax.swing.JLabel();
+	javax.swing.JTextField SurNameTextField = new javax.swing.JTextField();
+	javax.swing.JPanel JPanel8 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
+	javax.swing.JTextField DocTitleTextField = new javax.swing.JTextField();
+	javax.swing.JPanel JPanel9 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel7 = new javax.swing.JLabel();
+	javax.swing.JTextField KeywordsTextField = new javax.swing.JTextField();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JButton SubmitDataButton = new javax.swing.JButton();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
@@ -266,7 +314,21 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		if (!ResourceMetadataTextField.getText().equals("")) {
 		   resourcemetadatafile = ResourceMetadataTextField.getText();} 
 		ReplaceFile(resourcemetadatafile, "datasetid", dataURL);
-		ReplaceFile(resourcemetadatafile, "title", shortFileName);
+		if (DocTitleTextField.getText().equals("")) {
+		    ReplaceFile(resourcemetadatafile, "title", shortFileName);
+		}
+		else {
+		    ReplaceFile(resourcemetadatafile, "title", DocTitleTextField.getText());
+		}
+		if (!GivenNameTextField.getText().equals("")) {
+		    ReplaceFile(resourcemetadatafile, "givenName", GivenNameTextField.getText());
+		}
+		if (!SurNameTextField.getText().equals("")) {
+		    ReplaceFile(resourcemetadatafile, "surName", SurNameTextField.getText());
+		}
+		if (!KeywordsTextField.getText().equals("")) {
+		    ReplaceFile(resourcemetadatafile, "keyword", KeywordsTextField.getText());
+		}
 		String resourceID = insertIntoMetacat(resourcemetadatafile);
 	//	System.out.println("ID of resource_template file is :"+resourceID);
 	    String filemetadatafile = "./file_template.xml";
@@ -388,7 +450,7 @@ public static void replaceXMLText(InputStream is, OutputStream os, String tagnam
     try {
         String line = in.readLine();
         while (line!=null) {
-            if (line.indexOf(tagname)>=0) {   // tag name found!
+            if ((line.indexOf(tagname+">")>=0)||(line.indexOf(tagname+" ")>=0)) {   // tag name found!
                 int iii = line.indexOf(tagname)+tagname.length();
                 int jjj = line.indexOf(">",iii); // end of start tag
                 while (jjj<0) {   // end of start tag not on this line
@@ -441,7 +503,7 @@ public String getXMLID(InputStream is, String tagname) {
     try {
         String line = in.readLine();
         while (line!=null) {
-            if (line.indexOf(tagname)>=0) {   // tag name found!
+            if ((line.indexOf(tagname+">")>=0)||(line.indexOf(tagname+" ")>=0)) {   // tag name found!
                 int iii = line.indexOf(tagname)+tagname.length();
                 int jjj = line.indexOf(">",iii); // end of start tag
                 while (jjj<0) {   // end of start tag not on this line
