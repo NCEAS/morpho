@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-01 19:52:21 $'
- * '$Revision: 1.114 $'
+ *     '$Date: 2003-07-28 21:12:36 $'
+ * '$Revision: 1.114.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1588,7 +1588,13 @@ public class DataPackage implements XMLFactoryInterface
     }//for 
     try{
       EMLConvert.outputfileName = path;
-      EMLConvert.doTransform("metadata/"+id, morpho.getMetacatURLString());
+      // when the package is on metacat, one wants to use a url pointing to the
+      // current metacat. When the package is just local, pass a file url
+      String murl = morpho.getMetacatURLString();
+      if (!metacatloc) {
+        murl = "file://"+id;
+      }
+      EMLConvert.doTransform("metadata/"+id, murl);
     }
     catch (Exception ee) {
         System.out.println("Error in EMLConvert: " + ee.getMessage());
