@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-29 22:36:05 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2002-01-16 19:09:45 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -722,10 +722,15 @@ public class DataPackage
         catch(Exception e)
         {
           String message = e.getMessage();
+          System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>message: " + message);
           String accNumMess1 = "Accession number";
           String accNumMess2 = "is already in use.";
-          if(message.indexOf(accNumMess1) != -1 && 
-             message.indexOf(accNumMess2) != -1)
+          String accNumMess3 = "unique constraint";
+          String accNumMess4 = "violated";
+          if((message.indexOf(accNumMess1) != -1 && 
+             message.indexOf(accNumMess2) != -1) || 
+             (message.indexOf(accNumMess3) != -1 &&
+             message.indexOf(accNumMess4) != -1))
           {
             if(updateIds)
             {
