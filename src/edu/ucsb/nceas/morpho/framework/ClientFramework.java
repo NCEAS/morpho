@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.13 2000-09-13 23:40:04 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.14 2000-09-15 20:59:33 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -649,19 +649,20 @@ public class ClientFramework extends javax.swing.JFrame
 	}
 
 	void saveserverButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-            LoadServerFrame lsf = new LoadServerFrame(this);
-            lsf.setVisible(true);
-    //        SubmitDialog sd = new SubmitDialog(this);
-    //        sd.setVisible(true);
+   //         LoadServerFrame lsf = new LoadServerFrame(this);
+   //         lsf.setVisible(true);
+            SubmitDialog sd = new SubmitDialog(this);
+            sd.setVisible(true);
     }
     
-	void saveserverButton_actionPerformed_Interaction1xx(java.awt.event.ActionEvent event) {
+/*	void saveserverButton_actionPerformed_Interaction1xx(java.awt.event.ActionEvent event) {
 		StringBuffer txt = new StringBuffer();
 		try {
 			// saveFileDialog Show the FileDialog
 			openFileDialog.setVisible(true);
 		} catch (Exception e) {}
 		String file = openFileDialog.getFile();
+		file = container.openFileDialog.getDirectory() + file;
 		if (file!=null) {
 		    int x;
 		try {
@@ -709,10 +710,8 @@ public class ClientFramework extends javax.swing.JFrame
 		catch (Exception e) {
 		    e.printStackTrace();
 		}
-			 
-		
-		
 	}
+*/
 
 	void saveButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
@@ -781,10 +780,8 @@ public class ClientFramework extends javax.swing.JFrame
 
 	void SaveToDatabase_actionPerformed(java.awt.event.ActionEvent event)
 	{
-//	    LogIn();
-		mdeBean1.saveDocumentToDatabase();
-//		LogOut();
-			 
+        SubmitDialog sd = new SubmitDialog(this);
+        sd.setVisible(true);
 	}
 
 	void PreviewXML_actionPerformed(java.awt.event.ActionEvent event)
