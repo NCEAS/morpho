@@ -1,1 +1,16 @@
-java -cp .:lib/xerces.jar:lib/xalan.jar:lib/xml4j.jar:lib/sym.jar:lib/dtdparser111.jar:lib/dmanclient.jar edu.ucsb.nceas.dtclient.ClientFramework
+#!/bin/sh
+#
+# Shell script for launching morpho from unix systems
+#
+# '$RCSfile: morpho,v $'
+# '$Author: jones $'
+# '$Date: 2001-04-25 23:20:00 $'
+# '$Revision: 1.2 $'
+
+XMLP=./lib/xerces.jar
+XALAN=./lib/xalan.jar
+XML4J=./lib/xml4j.jar
+SYM=./lib/sym.jar
+DMC=./lib/dmanclient.jar
+CPATH=.:$XMLP:$XALAN:$XML4J:$SYM:$DMC
+java -cp $CPATH edu.ucsb.nceas.dtclient.ClientFramework
