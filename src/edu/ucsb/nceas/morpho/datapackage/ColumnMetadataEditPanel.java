@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-23 00:19:14 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-11-27 01:04:57 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,7 +96,10 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
   JTextField textPatternTextField;
   JTextField textSourceTextField;
   JTable table;
+  JScrollPane enumScrollPane;
   
+  
+  SymFocus aSymFocus;
 /**
  * A persistent vector which stores the data in the table
  */
@@ -275,7 +278,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     textPatternTextField.addActionListener(lSymAction);
     textSourceTextField.addActionListener(lSymAction);
     
-    SymFocus aSymFocus = new SymFocus();
+    aSymFocus = new SymFocus();
 		nameTextField.addFocusListener(aSymFocus);
 		labelTextField.addFocusListener(aSymFocus);
     unitTextField.addFocusListener(aSymFocus);
@@ -286,7 +289,8 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     textDefinitionTextField.addFocusListener(aSymFocus);
     textPatternTextField.addFocusListener(aSymFocus);
     textSourceTextField.addFocusListener(aSymFocus);
-
+    definitionTextArea.addFocusListener(aSymFocus);
+    typeComboBox.addFocusListener(aSymFocus);
   }
   
   	class SymAction implements java.awt.event.ActionListener
@@ -299,12 +303,14 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 				  colData.colName = getColumnName();
 			  else if (object == labelTextField)
 				  colData.colTitle = getColumnName();
+        else if (object == definitionTextArea)
+          colData.colDefinition = getColumnDefinition();
 			  else if (object == unitTextField)
           colData.colUnits = getUnit();
 			  else if (object == missingValueTextField)
-          colData.colUnits = getMissingValue();
+          colData.colMissingValue = getMissingValue();
 			  else if (object == precisionTextField)
-          colData.colUnits = getPrecision();
+          colData.colPrecision = getPrecision();
 			  else if (object == minimumTextField)
           colData.colMin = (new Double(getMinimum())).doubleValue();
 			  else if (object == maximumTextField)
@@ -329,6 +335,8 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 				  colData.colName = getColumnName();
 			  else if (object == labelTextField)
 				  colData.colTitle = getColumnName();
+        else if (object == definitionTextArea)
+          colData.colDefinition = getColumnDefinition();
 			  else if (object == unitTextField)
           colData.colUnits = getUnit();
 			  else if (object == missingValueTextField)
@@ -345,6 +353,12 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
           colData.colTextPattern = getTextPattern();
 			  else if (object == textSourceTextField)
           colData.colTextSource = getTextSource();
+			  else if (object == table) {
+          enumTableToColData();
+        }
+        else if (object == typeComboBox) {
+          colData.colType = getDataType();  
+        }
       }
     }
   }
@@ -386,17 +400,23 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
   {
     public void actionPerformed(ActionEvent e) {
       Object object = e.getSource();
+      colData.enumChoice = false;
+      colData.numChoice =false;
+      colData.textChoice = false;
 			if (object == enumButton) {
+        colData.enumChoice = true; 
         textPanel.setVisible(false);
         numPanel.setVisible(false);
         enumPanel.setVisible(true);
       }
       else if(object == textButton) {
+        colData.textChoice = true; 
         textPanel.setVisible(true);
         numPanel.setVisible(false);
         enumPanel.setVisible(false);
       }
       else if(object == numButton){
+        colData.numChoice = true; 
         textPanel.setVisible(false);
         numPanel.setVisible(true);
         enumPanel.setVisible(false);
@@ -416,13 +436,13 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     buttonPanel.setMaximumSize(new Dimension(3000, 40));
     buttonPanel.setPreferredSize(new Dimension(3000, 40));
     buttonPanel.setMinimumSize(new Dimension(3000, 40));
-    enumButton = new JRadioButton("Enumeration", true);
+    enumButton = new JRadioButton("Enumeration", false);
     enumButton.setToolTipText("<html>This element describes any<br>"+
                               "code associated with the<br>"+
                               "attribute.</html>");
     enumButton.setActionCommand("Enumeration");
     buttonPanel.add(enumButton);
-    textButton = new JRadioButton("Text", false);
+    textButton = new JRadioButton("Text", true);
     textButton.setActionCommand("Text");
     textButton.setToolTipText("<html>This element describes a free<br>"+
                               "text domain for the attribute.<br>"+
@@ -462,30 +482,9 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     enumPanel.setMaximumSize(new Dimension(3000,100));
     enumPanel.setMinimumSize(new Dimension(3000,100));
     enumPanel.setPreferredSize(new Dimension(3000,100));
-    JScrollPane enumScrollPane = new JScrollPane();
+    enumScrollPane = new JScrollPane();
     enumPanel.add(BorderLayout.CENTER,enumScrollPane);
-    table = new JTable();
-    pv = new PersistentVector();
-    for (int j=0;j<100;j++) {
-      String[] vals = {"", "", ""};
-      pv.addElement(vals);
-    }
-    Vector colLabels = new Vector();
-    colLabels.addElement("Code");
-    colLabels.addElement("Definition");
-    colLabels.addElement("Source");
-    PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
-    table.setModel(ptm);
-    TableColumn column = null;
-    for (int k = 0; k < 3; k++) {
-      column = table.getColumnModel().getColumn(k);
-      if (k == 0) {
-        column.setPreferredWidth(50); 
-      } else {
-        column.setPreferredWidth(150);
-      }
-    }
-    enumScrollPane.getViewport().add(table);
+    buildEnumTable();
     attrPanel.add(enumPanel);
     
     // create numeric domain panel
@@ -605,6 +604,35 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     return attrPanel;
   }
   
+  private void buildEnumTable() {
+    table = new JTable();
+    table.addFocusListener(aSymFocus);
+
+    if (pv == null) {
+      pv = new PersistentVector();
+    }
+    for (int j=0;j<100;j++) {
+      String[] vals = {"", "", ""};
+      pv.addElement(vals);
+    }
+    Vector colLabels = new Vector();
+    colLabels.addElement("Code");
+    colLabels.addElement("Definition");
+    colLabels.addElement("Source");
+    PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
+    table.setModel(ptm);
+    TableColumn column = null;
+    for (int k = 0; k < 3; k++) {
+      column = table.getColumnModel().getColumn(k);
+      if (k == 0) {
+        column.setPreferredWidth(50); 
+      } else {
+        column.setPreferredWidth(150);
+      }
+    }
+    enumScrollPane.getViewport().removeAll();
+    enumScrollPane.getViewport().add(table);
+  }
   
   public String output() {
     return createAttributeStringBuffer().toString();  
@@ -684,6 +712,10 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
  private Vector getSchemaDatatypeList() {
     Vector res = new Vector();
     res.addElement("string");
+    res.addElement("integer");
+    res.addElement("float");
+    res.addElement("decimal");
+    res.addElement("double");
     res.addElement("duration");
     res.addElement("dateTime");
     res.addElement("time");
@@ -696,9 +728,6 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     res.addElement("boolean");
     res.addElement("base64Binary");
     res.addElement("hexBinary");
-    res.addElement("float");
-    res.addElement("decimal");
-    res.addElement("double");
     res.addElement("anyURI");
     res.addElement("QName");
     res.addElement("NOTATION");   
@@ -995,10 +1024,132 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 
   public void setColumnData(ColumnData cd) {
     colData = cd;
+    colDataToFields();
   }
   public ColumnData getColumnData() {
+    FieldsToColData();
     return colData;
   }
+  
+  
+  // fill in fields based on colData object
+  private void colDataToFields() {
+    setColumnName(colData.colName);
+    setColumnLabel(colData.colTitle);
+    setColumnDefinition(colData.colDefinition);
+    setUnit(colData.colUnits);
+    setDataType(colData.colType);
+    setMissingValue(colData.colMissingValue);
+    setPrecision(colData.colPrecision);
+    setMinimum((new Double(colData.colMin)).toString());
+    setMaximum((new Double(colData.colMax)).toString());
+    setTextDefinition(colData.colTextDefinition);
+    setTextPattern(colData.colTextPattern);
+    if (colData.numChoice) {
+      pv = null;
+      buildEnumTable();
+      numButton.setSelected(true);
+      textPanel.setVisible(false);
+      numPanel.setVisible(true);
+      enumPanel.setVisible(false);
+    }
+    else if (colData.textChoice) {
+      pv = null;
+      buildEnumTable();
+      textButton.setSelected(true);
+      textPanel.setVisible(true);
+      numPanel.setVisible(false);
+      enumPanel.setVisible(false);
+    }
+    else if (colData.enumChoice) {
+      colDataToEnumTable();
+      enumButton.setSelected(true);
+      textPanel.setVisible(false);
+      numPanel.setVisible(false);
+      enumPanel.setVisible(true);
+    }
+  }
+  
+  private void colDataToEnumTable() {
+   if (colData.enumCodeVector!=null) {
+    Vector vec0 = colData.enumCodeVector;
+    Vector vec1 = colData.enumDefinitionVector;
+    Vector vec2 = colData.enumSourceVector;
+    table = new JTable();
+    pv = new PersistentVector();
+    for (int j=0;j<100;j++) {
+      if (j<vec0.size()) {
+        String[] vals = {(String)vec0.elementAt(j), (String)vec1.elementAt(j), (String)vec2.elementAt(j)};
+        pv.addElement(vals);
+      }
+      else{
+        String[] vals1 = {"", "", ""};
+        pv.addElement(vals1);
+      }
+    }
+    Vector colLabels = new Vector();
+    colLabels.addElement("Code");
+    colLabels.addElement("Definition");
+    colLabels.addElement("Source");
+    PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
+    table.setModel(ptm);
+    TableColumn column = null;
+    for (int k = 0; k < 3; k++) {
+      column = table.getColumnModel().getColumn(k);
+      if (k == 0) {
+        column.setPreferredWidth(50); 
+      } else {
+        column.setPreferredWidth(150);
+      }
+    } 
+   }
+    enumScrollPane.getViewport().removeAll();
+    enumScrollPane.getViewport().add(table);     
+  }
+ 
+ private void enumTableToColData() {
+   colData.enumCodeVector = new Vector();    
+   colData.enumDefinitionVector = new Vector();    
+   colData.enumSourceVector = new Vector(); 
+   for (int j=0;j<pv.size();j++) {
+      String[] rec = (String[])pv.elementAt(j);
+      if (rec[0].length()>0) {
+        colData.enumCodeVector.addElement(rec[0]);
+        colData.enumDefinitionVector.addElement(rec[1]);
+        colData.enumSourceVector.addElement(rec[2]);
+      }
+    }   
+ }
+ 
+   // fill in colData object based on fields
+   private void FieldsToColData() {
+    colData.colName = getColumnName();
+    colData.colTitle = getColumnLabel();
+    colData.colDefinition = getColumnDefinition();
+    colData.colUnits = getUnit();
+    colData.colType = getDataType();
+    colData.colMissingValue = getMissingValue();
+    colData.colPrecision = getPrecision();
+    colData.colMin = (new Double(getMinimum())).doubleValue();
+    colData.colMax = (new Double(getMaximum())).doubleValue();
+    colData.colTextDefinition = getTextDefinition();
+    colData.colTextPattern = getTextPattern();
+    if (numButton.isSelected()) {
+      colData.numChoice = true;
+      colData.textChoice = false;
+      colData.enumChoice = false;
+    }
+    if (textButton.isSelected()) {
+      colData.numChoice = false;
+      colData.textChoice = true;
+      colData.enumChoice = false;
+    }
+     if (enumButton.isSelected()) {
+      colData.numChoice = false;
+      colData.textChoice = false;
+      colData.enumChoice = true;
+    }
+   }
   
   //-----------------------------------------
   String fileName = "outtest";
