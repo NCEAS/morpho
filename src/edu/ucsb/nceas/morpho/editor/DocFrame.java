@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-18 21:18:36 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2001-06-19 17:09:32 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -942,6 +942,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
      * input tree will be modified using template
      */
     void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+        Stack tempStack;
         DefaultMutableTreeNode tNode;
         DefaultMutableTreeNode nd2;
         DefaultMutableTreeNode pqw;
@@ -990,6 +991,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                 // Here we need to add nodes that are 'missing'
                 // go to parent of tnode; find matching nodes in input at same level; add children
                 DefaultMutableTreeNode newnode = null;
+                tempStack = new Stack();
                 if (hits.size()==0) {
                     DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
                     int index = ptNode.getIndex(tNode);
@@ -999,6 +1001,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
                         newnode = deepNodeCopy(tNode);
                         trimSpecialAttributes(newnode);
+                        if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
+                            tempStack.push(newnode);
+                        }
                         int index1 = findDuplicateIndex(nextLevelInputNodes,index);
                         ind.insert(newnode,index1);
                     }
@@ -1006,27 +1011,38 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                     if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
                     // in this case, one of the 'children' of the CHOICE node probably exists
                     // in the Info nodes for this level
-                        int indx1 = -1;
-                        Enumeration q = tNode.children();
-                        while (q.hasMoreElements()) {
-                            DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)q.nextElement();
-                            Enumeration ww = newnode.children();
-                            while (ww.hasMoreElements()) {
-                            qw = (DefaultMutableTreeNode)ww.nextElement();
-                            if (simpleCompareNodes(nd1,qw)) {
-                                indx1 = newnode.getIndex(qw);
-                                newnode.remove(qw);
-                            }
-                            }
-                            Vector choice_hits = simpleGetMatches(nd1, nextLevelInputNodes);
-                            Enumeration qq = choice_hits.elements();
-                            while (qq.hasMoreElements()) {
-                                nd2 = (DefaultMutableTreeNode)qq.nextElement();
-                                newnode.insert(nd2, indx1);
+                        while (!tempStack.empty()) {
+                            int indx1 = -1;
+                            DefaultMutableTreeNode nwnode = (DefaultMutableTreeNode)tempStack.pop();
+                            Enumeration q = tNode.children();
+                            while (q.hasMoreElements()) {
+                                DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)q.nextElement();
+                                Enumeration ww = nwnode.children();
+                                while (ww.hasMoreElements()) {
+                                    qw = (DefaultMutableTreeNode)ww.nextElement();
+                                    if (simpleCompareNodes(nd1,qw)) {
+                                        indx1 = nwnode.getIndex(qw);
+                                        nwnode.remove(qw);
+                                        
+                                        Vector choice_hits = simpleGetMatches(nd1, nextLevelInputNodes);
+                                        // choice_hits now contains a list of nodes to be moved
+                                        // under the CHOICE node; only those with the same parent
+                                        // should be moved to a single CHOICE
+                                        choice_hits = sameParent(choice_hits);
+                                        
+                                        if (choice_hits.size()>0){
+                                          Enumeration qq = choice_hits.elements();
+                                          while (qq.hasMoreElements()) {
+                                            nd2 = (DefaultMutableTreeNode)qq.nextElement();
+                                            nwnode.insert(nd2, indx1);
+                                            nextLevelInputNodes.remove(nd2);
+                                          }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-            
                 }
                 // recalculate nextLevelInput  
                 nextLevelInputNodes = new Vector();
@@ -1043,6 +1059,27 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             currentLevelTemplateNodes = nextLevelTemplateNodes;
         }  // end levels loop
   } //end else
+}
+
+/** given a vector to nodes with the same name, return those with the same parent
+  * (first set)
+  */
+private Vector sameParent(Vector list) {
+  Vector ret = new Vector();
+  ret.addElement(list.elementAt(0));
+  if (list.size()==1) {
+    return ret;
+  }
+  DefaultMutableTreeNode node0 = (DefaultMutableTreeNode)list.elementAt(0);
+  DefaultMutableTreeNode pnode = (DefaultMutableTreeNode)node0.getParent();
+  for (int i=1;i<list.size();i++) {
+     DefaultMutableTreeNode nd = (DefaultMutableTreeNode)list.elementAt(i);
+     DefaultMutableTreeNode pnd = (DefaultMutableTreeNode)nd.getParent();
+     if (pnd.equals(pnode)) {
+        ret.addElement(nd); 
+     }
+  }
+  return ret;
 }
 
 /** input tree can have duplicate node, while DTDParser tree only has single copy
