@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-05 20:43:03 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2002-03-19 19:10:29 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1338,11 +1338,14 @@ public class DataPackage
    { 
      boolean text = true; 
      int res; 
+     int cnt = 0;
+     int maxcnt = 2000; // only check this many bytes to avoid performance problems
      try 
      { 
        FileInputStream in = new FileInputStream(file); 
-       while ((res = in.read())>-1) 
+       while (((res = in.read())>-1) &&(cnt<maxcnt))
        { 
+         cnt++;
          if (res==0) text = false; 
        } 
      } 
