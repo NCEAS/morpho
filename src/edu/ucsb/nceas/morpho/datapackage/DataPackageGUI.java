@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-18 16:06:46 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-21 22:05:14 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,11 @@ public class DataPackageGUI extends javax.swing.JFrame
   private ClientFramework framework;
   private ConfigXML config;
   Container contentPane;
+  private DataPackage dataPackage;
   
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
+    this.dataPackage = dp;
     this.framework = framework;
     this.config = framework.getConfiguration();
     contentPane = getContentPane();
@@ -89,8 +91,30 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     String framefile = (String)frames.get(mainFrame);
     
-    final PackageWizard pw = new PackageWizard(framework, mainPanel, 
-                                         framefile);
+    final PackageWizard pw;
+    FileReader freader = null;
+    try
+    {
+      //create the package wizard frame and open the datapackage's main file
+      //if it exists.
+      freader = new FileReader(dataPackage.getTripleFile());
+      
+      //pw.openFile(new FileReader(dataPackage.getTripleFile()));
+    }
+    catch(FileNotFoundException fnfe)
+    {
+      framework.debug(1, "the file requested could not be found");
+      
+    }
+    
+    if(freader != null)
+    {
+      pw = new PackageWizard(framework, mainPanel, framefile, freader);
+    }
+    else
+    {
+      pw = new PackageWizard(framework, mainPanel, framefile);
+    }
     
     JButton saveButton = new JButton("save");
     saveButton.addActionListener(
@@ -104,7 +128,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     );
     JPanel listPanel = createListPanel();
     
-    //contentPane.add(saveButton);
+    contentPane.add(saveButton);
     contentPane.add(mainPanel);
     contentPane.add(listPanel);
   }

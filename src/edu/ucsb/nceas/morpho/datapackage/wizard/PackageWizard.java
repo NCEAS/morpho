@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-18 17:06:38 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-21 22:05:14 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,8 @@ public class PackageWizard extends javax.swing.JFrame
   private static PackageWizardParser pwp;
   JTabbedPane mainTabbedPane;
   JPanelWrapper docPanel;
+  private String saxparser;
+  private ClientFramework framework;
   
   /**
    * constructor which initializes the window based on the paramater values
@@ -73,10 +75,11 @@ public class PackageWizard extends javax.swing.JFrame
   {
     try
     {
+      this.framework = framework;
       //get configuration information
       ConfigXML config = framework.getConfiguration();
       Vector saxparserV = config.get("saxparser");
-      String saxparser = (String)saxparserV.elementAt(0);
+      saxparser = (String)saxparserV.elementAt(0);
       
       //get the config file and parse it
       File mainFile = new File(framefile);
@@ -99,6 +102,153 @@ public class PackageWizard extends javax.swing.JFrame
     {
       framework.debug(9, "error initializing custom frame");
       e.printStackTrace();
+    }
+  }
+  
+  /**
+   * constructor which creates a package wizard frame in the given contentPane
+   * using the given framefile (xml configuration file).  This constructor
+   * allows you to pass an xml file with content.  the wizard will attempt
+   * to match the content in the file with the paths in the wizard file. 
+   * if a match is made, the content in the wizard is automatically filled in.
+   * @param framework: the framework in which this wizard is created
+   * @param contentPane: the Container in which this wizard is created
+   * @param framefile: the configuration file used to create this wizard
+   * @param xmlfile: the file to open in the wizard
+   */
+  public PackageWizard(ClientFramework framework, Container contentPane, 
+                       String framefile, Reader xmlfile)
+  {
+    try
+    {
+      this.framework = framework;
+      //get configuration information
+      ConfigXML config = framework.getConfiguration();
+      Vector saxparserV = config.get("saxparser");
+      saxparser = (String)saxparserV.elementAt(0);
+      
+      //get the config file and parse it
+      File mainFile = new File(framefile);
+      FileReader xml = new FileReader(mainFile);
+      pwp = new PackageWizardParser(xml, saxparser);
+      doc = pwp.getDoc();
+      Hashtable wizardAtts = doc.attributes;
+      String size = (String)wizardAtts.get("size");
+      
+      //create the initial tabbed pane
+      mainTabbedPane = new JTabbedPane();
+      mainTabbedPane.setPreferredSize(parseSize(size));
+      contentPane.add(mainTabbedPane);
+      docPanel = new JPanelWrapper();
+      docPanel.element = doc;
+      //create the content of the initial frame
+      openFile(doc, xmlfile);
+      createPanel(doc, contentPane, docPanel);
+    }
+    catch(Exception e)
+    {
+      framework.debug(9, "error initializing custom frame");
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * This method opens an xml file, parses it and attempts to match it's 
+   * paths to the config file that was provided to this PackageWizard object.
+   * when a matching path is found, the defaulttext attribute in the config
+   * file is set to match the content in the xmlfile at the same path.
+   */
+  private void openFile(XMLElement doc, Reader xmlfile)
+  {
+    //basic alrogithm:
+    //-parse all paths from xmlfile
+    //-create hashtable of paths -> content
+    //-look at all paths created from config file, compare the 
+    // hashtable keys with the paths from the config file.  
+    //-if a match is found, take the content of the xmlfile hash and
+    // add it as a defaulttext attribute to the config file path.
+    if(xmlfile == null)
+    {
+      framework.debug(1, "no xml file to open");
+      return;
+    }
+    
+    PackageWizardOpenFileParser parser = 
+                         new PackageWizardOpenFileParser(xmlfile, saxparser);
+    Hashtable contenthash = parser.getHash();
+    Vector contentpaths = parser.getPaths();
+    
+    printHashtable(contenthash);
+    printVector(contentpaths);
+    addContent(doc, "", contenthash, contentpaths);
+    
+  }
+  
+  private void printVector(Vector v)
+  {
+    for(int i=0; i<v.size(); i++)
+    {
+      System.out.println("|" + v.elementAt(i).toString() + "|");
+    }
+  }
+  
+  private void printHashtable(Hashtable h)
+  {
+    Enumeration keys = h.keys();
+    while(keys.hasMoreElements())
+    {
+      String key = (String)keys.nextElement();
+      System.out.print(key + "| : |" );
+      System.out.print(h.get(key) + "|");
+      System.out.println();
+    }
+  }
+  
+  /**
+   * This method, given a document map (a list of all of the paths in the 
+   * document) and a hashtable keying these paths against their textual content,
+   * attempts to find the path in XMLElement e and add content to it's 
+   * defaulttext attribute.
+   */
+  private void addContent(XMLElement e, String currentPath, Hashtable content, 
+                          Vector pathlist)
+  {
+    for(int i=0; i<e.content.size(); i++)
+    {
+      final XMLElement tempElement = (XMLElement)e.content.elementAt(i);
+      final int tempi = i;
+      
+      if(tempElement.name.equals("group"))
+      {
+        //if group has a field associated with it, then append path
+        if(tempElement.attributes.containsKey("field"))
+        {
+          String field = (String)tempElement.attributes.get("field");
+          currentPath += "/" + field;
+          System.out.println("path: " + currentPath);
+          //System.out.println("in group: " + currentPath);
+        }
+        
+      }
+      else if(tempElement.name.equals("textbox") ||
+              tempElement.name.equals("combobox"))
+      { 
+        String currentNode = (String)tempElement.attributes.get(new String("field"));
+        String path = currentPath + "/" + currentNode;
+        System.out.println("path: " + path);
+        //-check the path, if it is in the hashtable add the defaulttext
+        // attribute to the attributes hash.
+        
+        if(content.containsKey(path))
+        {
+          //System.out.println("content changed to: " + content.get(path));
+          //System.out.println("e.attributes: ");
+          tempElement.attributes.put("defaulttext", content.get(path));
+          //printHashtable(e.attributes);
+        }
+      }
+      
+      addContent(tempElement, currentPath, content, pathlist);
     }
   }
   
@@ -981,17 +1131,6 @@ public class PackageWizard extends javax.swing.JFrame
         createPanel(tempElement, contentPane, parentPanel);
       }
     }
-  }
-  
-  /**
-   * This method opens an xml file, parses it and attempts to match it's 
-   * paths to the config file that was provided to this PackageWizard object.
-   * when a matching path is found, the defaulttext attribute in the config
-   * file is set to match the content in the xmlfile at the same path.
-   */
-  public void openFile(Reader xmlfile)
-  {
-    
   }
   
   /**

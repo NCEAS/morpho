@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-17 23:30:28 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-05-21 22:05:14 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,8 @@ import java.io.*;
 
 public class DataPackage 
 {
-  TripleCollection triples = new TripleCollection();
+  private TripleCollection triples = new TripleCollection();
+  private File tripleFile = null;
   
   /**
    * create a nonnull, yet contentless dataPackage object
@@ -69,17 +70,17 @@ public class DataPackage
       MetacatDataStore mds = new MetacatDataStore(framework);
       try
       {
-        File tripleFile = mds.openFile(identifier);
+        tripleFile = mds.openFile(identifier);
         FileReader tripleFileReader = new FileReader(tripleFile);
         TripleCollection triples = new TripleCollection(tripleFileReader);
       }
       catch(FileNotFoundException fnfe)
       {
-        
+        fnfe.printStackTrace();
       }
       catch(CacheAccessException cae)
       {
-        
+        cae.printStackTrace();
       }
     }
     else if(location.equals("local"))
@@ -105,6 +106,11 @@ public class DataPackage
         e.printStackTrace();
       }
     }
+  }
+  
+  public File getTripleFile()
+  {
+    return tripleFile;
   }
   
   public static void main(String[] args)
