@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-06 05:44:56 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-08-30 03:02:31 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,13 +67,13 @@ public class DataLocation extends AbstractWizardPage{
 
   private String distribXPath;
   private final String OBJECTNAME_XPATH 
-                  = "/eml:eml/dataset/datatable/physical/objectName/";
+                  = "/eml:eml/dataset/datatable/physical/objectName";
   private final String INLINE_XPATH  
-                  = "/eml:eml/dataset/datatable/physical/distribution/inline/";
+                  = "/eml:eml/dataset/datatable/physical/distribution/inline";
   private final String ONLINE_XPATH  
-                  = "/eml:eml/dataset/datatable/physical/distribution/online/";
+                  = "/eml:eml/dataset/datatable/physical/distribution/online";
   private final String OFFLINE_XPATH 
-                  = "/eml:eml/dataset/datatable/physical/distribution/offline/";
+                  = "/eml:eml/dataset/datatable/physical/distribution/offline";
   private final String NODATA_XPATH  = "";
 
   private String fileNameInline = "FILENAME FROM IMPORT WIZARD GOES HERE";
@@ -418,7 +418,7 @@ public class DataLocation extends AbstractWizardPage{
 //  O N L I N E  /////////////////////////////////////
     
       returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
-      returnMap.put(distribXPath, urlFieldOnline.getText().trim());
+      returnMap.put(distribXPath + "/url", urlFieldOnline.getText().trim());
       
     } else if (distribXPath==OFFLINE_XPATH)  {
 //  O F F L I N E  ///////////////////////////////////

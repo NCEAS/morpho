@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-28 22:36:46 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-08-30 03:02:31 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -274,6 +274,20 @@ public class DataFormat extends AbstractWizardPage{
     
     WidgetFactory.addTitledBorder(panel, buttonsText[1]);
     
+    ////
+    panel.add(WidgetFactory.makeHTMLLabel("Data Attributes are arranged in:", 1));
+
+    JPanel orientationPanel = WidgetFactory.makePanel(2);
+
+    JLabel spacerLabel = WidgetFactory.makeLabel("", false);
+    
+    orientationPanel.add(spacerLabel);
+    
+    orientationPanel.add(getOrientationRadioPanel());
+    
+    panel.add(orientationPanel);
+
+    ////
     panel.add(WidgetFactory.makeDefaultSpacer());
   
     panel.add(WidgetFactory.makeHTMLLabel(
@@ -451,20 +465,30 @@ public class DataFormat extends AbstractWizardPage{
   
     listResultsMap.clear();
     
+    int index=0;
+    StringBuffer buff = new StringBuffer();
     List rowLists = list.getListOfRowLists();
     String fixedDelimStr = null;
   
     for (Iterator it = rowLists.iterator(); it.hasNext();) {
   
-      List nextRow = (List)(it.next());
+      // CHECK FOR AND ELIMINATE EMPTY ROWS...
+      Object nextRowObj = it.next();
+      if (nextRowObj==null) continue;
       
- /////////////////////////
- // NEED TO CHECK FOR AND ELIMINATE EMPTY ROWS!!
- ///////////////     
+      List nextRow = (List)nextRowObj;
+      if (nextRow.size() < 1) continue;
+      
       if (nextRow.get(0).equals(pickListVals[0])) fixedDelimStr = "textFixed/fieldWidth";
       else fixedDelimStr = "textDelimited/fieldDelimiter";
       
-      listResultsMap.put(COMPLEX_TEXT_XPATH + fixedDelimStr, nextRow.get(1));
+      buff.delete(0,buff.length());
+      buff.append(COMPLEX_TEXT_XPATH);
+      buff.append(fixedDelimStr);
+      buff.append("[");
+      buff.append(index++);
+      buff.append("]");
+      listResultsMap.put(buff.toString(), nextRow.get(1));
     }
     return listResultsMap;
 
@@ -550,6 +574,8 @@ public class DataFormat extends AbstractWizardPage{
     
     } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
     
+      returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationComplex);
+      
       returnMap = getListAsNVP();
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
@@ -620,8 +646,6 @@ public class DataFormat extends AbstractWizardPage{
   
   
   private JPanel getOrientationRadioPanel() {
-  
-    final String finalXPath = formatXPath;
     
     return WidgetFactory.makeRadioPanel(orientButtonsText, 0,
       new ActionListener() {
@@ -632,29 +656,23 @@ public class DataFormat extends AbstractWizardPage{
       
           if (e.getActionCommand().equals(orientButtonsText[0])) {
         
-            if (finalXPath==SIMPLE_TEXT_XPATH)  setOrientationSimple(COLUMN_MAJOR);
-            if (finalXPath==COMPLEX_TEXT_XPATH) setOrientationComplex(COLUMN_MAJOR);
-        
+            setOrientation(COLUMN_MAJOR);
+            
           } else if (e.getActionCommand().equals(orientButtonsText[1])) {
       
-            if (finalXPath==SIMPLE_TEXT_XPATH)  setOrientationSimple(ROW_MAJOR);
-            if (finalXPath==COMPLEX_TEXT_XPATH) setOrientationComplex(ROW_MAJOR);
+            setOrientation(ROW_MAJOR);
           }
         }
       });
   }
   
   
-  private void setOrientationSimple(String orient) {
+  private void setOrientation(String orient) {
   
-    orientationSimple = orient;
+    if (formatXPath==SIMPLE_TEXT_XPATH)  orientationSimple  = orient;
+    if (formatXPath==COMPLEX_TEXT_XPATH) orientationComplex = orient;
   }
 
-  
-  private void setOrientationComplex(String orient) {
-  
-    orientationComplex = orient;
-  }
 
   
   /**

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-28 22:36:46 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-08-30 03:02:31 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,7 @@ public class CustomList extends JPanel {
   private static  TableModelEvent tableModelEvent;
   
 
+  
   public CustomList(String[] colNames, Object[] columnEditors, int displayRows, 
                     boolean showAddButton, 
                     boolean showEditButton,       boolean showDeleteButton, 
@@ -131,10 +132,6 @@ public class CustomList extends JPanel {
     }
     
     Vector rowsData = new Vector();
-//    Vector row0Data = new Vector(2);
-//    row0Data.add("");
-//    row0Data.add("");
-//    rowsData.add(row0Data);
     
     table = new CustomJTable(rowsData, colNamesVec);
          
@@ -334,7 +331,7 @@ public class CustomList extends JPanel {
     // MOVE DOWN available only if a row selected *and* it's not last row:
     if (showMoveDownButton) moveDownButton.setEnabled(selectionExists 
                                         && selRow < (table.getRowCount() - 1));
-  }
+  }  
   
   
   /**
@@ -352,7 +349,12 @@ public class CustomList extends JPanel {
    */
   public List getListOfRowLists() {
   
-    return ((List)( (DefaultTableModel)( table.getModel()) ).getDataVector() );
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
+    table.tableChanged(CustomList.getTableModelEvent());
+    DefaultTableModel model = (DefaultTableModel)( table.getModel() );
+    return (List)(model.getDataVector());
   }
 }
   
@@ -527,8 +529,6 @@ class CustomJTable extends JTable  {
       
       columnsEditableFlags = new boolean[colNamesVec.size()];
       Arrays.fill(columnsEditableFlags, true);
-      
-//      this.setRowHeight((int)(editableStringRenderer.getPreferredSize().height));
     }
     
     //override super
