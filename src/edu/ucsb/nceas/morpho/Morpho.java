@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 19:07:49 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2003-05-01 17:04:14 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -873,55 +873,29 @@ public class Morpho
             // set to the Look and Feel of the native system.
             setLookAndFeel(config.get("lookAndFeel", 0));
 
-            // Check expiration date
-            Date expiration = new Date(102, 5, 1);
-            Date warning = new Date(102, 4, 15);
-            Date now = new Date();
-            //     if (now.after(expiration))  // removed for release version
-            if (false) {
-                Log.debug(1, "This version of Morpho has expired! " +
-                        "See http://knb.ecoinformatics.org/ " +
-                        "for a newer version.");
-                JOptionPane.showMessageDialog(null,
-                        "This version of Morpho has expired!\n" +
-                        "See http://knb.ecoinformatics.org/ " +
-                        "for a newer version.");
-                System.exit(1);
-            } else {
-                //       if (now.after(warning))
-                if (false) {
-                    Log.debug(1, "This version of Morpho will expire on " +
-                            "April 1, 2002. See http://knb.ecoinformatics.org/ "
-                            + "for a newer version.");
-                    JOptionPane.showMessageDialog(null,
-                            "This version of Morpho will expire on " +
-                            "April 1, 2002.\n" +
-                            "See http://knb.ecoinformatics.org/ " +
-                            "for a newer version.");
-                }
 
-                // Load the current profile and log in
-                morpho.loadProfile(morpho);
+            // Load the current profile and log in
+            morpho.loadProfile(morpho);
 
-                // Set up the Service Controller
-                ServiceController services = ServiceController.getInstance();
+            // Set up the Service Controller
+            ServiceController services = ServiceController.getInstance();
 
-                // Set up the User Interface controller (UIController)
-                UIController controller = UIController.initialize(morpho);
+            // Set up the User Interface controller (UIController)
+            UIController controller = UIController.initialize(morpho);
 
-                // Add the default menus and toolbars
-                morpho.initializeActions();
+            // Add the default menus and toolbars
+             morpho.initializeActions();
 
-                // Load all of the plugins, their menus, and toolbars
-                morpho.loadPlugins();
+            // Load all of the plugins, their menus, and toolbars
+            morpho.loadPlugins();
 
 
-                //Create a frame with a welcome screen until a plugin takes over
-                makeWelcomeWindow();
+            //Create a frame with a welcome screen until a plugin takes over
+             makeWelcomeWindow();
                 
-                //get rid of the splash window
-                sf.dispose();
-            }
+            //get rid of the splash window
+            sf.dispose();
+            
         } catch (Throwable t) {
             t.printStackTrace();
             //Ensure the application exits with an error condition.
@@ -1159,36 +1133,6 @@ public class Morpho
         prefsItemAction.setMenu("File", 0);
         controller.addGuiAction(prefsItemAction);
         
-//        switchItemAction.setEnabledOnStateChange("DISABLE", false, 
-//                                                        GUIAction.EVENT_LOCAL);
-//        switchItemAction.setEnabledOnStateChange("ENABLE",  true, 
-//                                                        GUIAction.EVENT_LOCAL);
-
-//        Command enableCommand = new Command() {
-//            public void execute(ActionEvent e) {
-//                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-//                monitor.notifyStateChange(new StateChangeEvent(this, "ENABLE"));
-//            }
-//        };
-//        GUIAction enableItemAction =
-//            new GUIAction("Enable", null, enableCommand);
-//        enableItemAction.setToolTipText("Enable");
-//        enableItemAction.putValue("menuPosition", new Integer(3));
-//        enableItemAction.setMenu("File", 0);
-//        controller.addGuiAction(enableItemAction);
-//
-//        Command disableCommand = new Command() {
-//            public void execute(ActionEvent e) {
-//                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-//                monitor.notifyStateChange(new StateChangeEvent(this, "DISABLE"));
-//            }
-//        };
-//        GUIAction disableItemAction =
-//            new GUIAction("Disable", null, disableCommand);
-//        disableItemAction.setToolTipText("Disable");
-//        disableItemAction.putValue("menuPosition", new Integer(4));
-//        disableItemAction.setMenu("File", 0);
-//        controller.addGuiAction(disableItemAction);
 
         Command exitCommand = new Command() {
             public void execute(ActionEvent event) {
@@ -1862,6 +1806,7 @@ public class Morpho
                 currentProfile + File.separator + 
                 currentProfile + ".xml";
             ConfigXML profile = new ConfigXML(profileName);
+            profile.set("searchmetacat",0,"false");
             setProfileDontLogin(profile);
         }
     }
