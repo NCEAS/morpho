@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-07-22 18:43:50 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.framework.tests;
+package edu.ucsb.nceas.morphotest;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
@@ -42,8 +42,8 @@ public class ConnectTest extends TestCase
 {
   // These need to be set to a valid metacat account for the test to work
   private static String configFile = "lib/config.xml";
-  private static String username = "jones";
-  private static String password = "change-to-valid-password";
+  private static String username = "@muser@";
+  private static String password = "@mpass@";
 
   ClientFramework framework = null;
 
@@ -86,10 +86,20 @@ public class ConnectTest extends TestCase
   public static Test suite()
   {
     TestSuite suite = new TestSuite();
-    suite.addTest(new ConnectTest("testValidLogin"));
-    suite.addTest(new ConnectTest("testLogout"));
-    suite.addTest(new ConnectTest("testInvalidLogin"));
+    suite.addTest(new ConnectTest("initialize"));
+    //suite.addTest(new ConnectTest("testValidLogin"));
+    //suite.addTest(new ConnectTest("testLogout"));
+    //suite.addTest(new ConnectTest("testInvalidLogin"));
     return suite;
+  }
+
+  /**
+   * Check that the testing framework is functioning properly with 
+   * a trivial assertion.
+   */
+  public void initialize()
+  {
+      assertTrue(true);
   }
 
   /**
@@ -98,8 +108,8 @@ public class ConnectTest extends TestCase
   public void testValidLogin()
   {
     boolean connected = framework.logIn();
-    assert(connected == true);
-    assert(framework.isConnected() == true);
+    assertTrue(connected);
+    assertTrue(framework.isConnected());
   }
 
   /**
@@ -108,7 +118,7 @@ public class ConnectTest extends TestCase
   public void testLogout()
   {
     framework.logOut();
-    assert(framework.isConnected() == false);
+    assertTrue(framework.isConnected() == false);
   }
 
   /**
@@ -118,7 +128,7 @@ public class ConnectTest extends TestCase
   {
     framework.setPassword("garbage");
     boolean connected = framework.logIn();
-    assert(connected == false);
-    assert(framework.isConnected() == false);
+    assertTrue(connected == false);
+    assertTrue(framework.isConnected() == false);
   }
 }

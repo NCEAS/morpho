@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.45 2002-07-02 20:41:41 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.46 2002-07-22 18:43:48 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -20,8 +20,12 @@
       <property name="release" value="1.1.1"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
+      <property name="muser" value="jones"/>
+      <property name="mpass" value="your-pw-goes-here"/>
 
       <filter token="release" value="${release}"/>
+      <filter token="muser" value="${muser}"/>
+      <filter token="mpass" value="${mpass}"/>
 
       <filter token="server" value="http://knb.ecoinformatics.org"/>
       <filter token="docrooturl" value="/"/>
@@ -31,6 +35,7 @@
       <property name="libdir" value="./lib" />
       <property name="jwsdir" 
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
+      <property name="testdir" value="./tests" />
 
       <property name="build.dir" value="./build"/>
       <property name="build.src" value="${build.dir}/src"/>
@@ -68,8 +73,6 @@
                 value="${libdir}/dtdparser111.jar" />
       <property name="morpho" 
                 value="${libdir}/${name}.jar" />
-      <property name="junit" 
-                value="${libdir}/junit.jar" />
       <property name="jlf" 
                 value="${libdir}/jlfgr-1_0.jar" />
       <property name="itisjar"
@@ -87,7 +90,7 @@
       <property name="morpho-config"
                 value="${libdir}/morpho-config.jar" />
       <property name="cpath" 
-                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itisjar}:${httpclient}:${morpho-config}"/>
+                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${jlf}:${itisjar}:${httpclient}:${morpho-config}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -143,7 +146,8 @@
         <fileset dir="${libdir}" excludes="*.jar,HTTPClient/**,*.zip,*.gz"/>
       </copy>
       -->
-      <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" />
+      <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"
+           includes="${package.home}/${name}/** com/**" />
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${libdir}"
            excludes="*.jar,HTTPClient/**,*.zip,*.gz"/>
    </target>
@@ -318,40 +322,37 @@
    
    <!-- use the ant "junit" task to run JUnit tests. -->
    <target name="test" depends="install">
-     <!-- this currently does not work for CLientFramework
-          because of a problem with Class.getResource() calls
-          in ClientFramework.  Looks like its probably a ClassLoader
-          issue, but I'm not sure.  You can instead use the "junit"
-          target that I manually configured below -->
-     <junit printsummary="yes" haltonfailure="no" fork="no"
-            haltonerror="yes">
-       <classpath>
-         <pathelement path="${cpath}:${morpho}:${junit}" />
-       </classpath>
-       
-       <formatter type="plain" />
-       
-       <test name="edu.ucsb.nceas.morpho.framework.tests.ConnectTest"/>
-       <!--
-       <batchtest fork="yes" todir="${reports.tests}">
-         <fileset dir="${src.tests}">
-           <include name="**/*Test*.java" />
-           <exclude name="**/AllTests.java" />
-         </fileset>
-       </batchtest>
-       -->
-     </junit>
-   </target>
+      <!-- copy and compile the tests into a jar file -->
+      <mkdir dir="${build.tests}"/>
+      <copy todir="${build.tests}" filtering="yes">
+        <fileset dir="${testdir}">
+          <exclude name="**/CVS*"/>
+          <exclude name="**/.#*"/>
+        </fileset>
+      </copy>
+      <javac srcdir="${build.tests}"
+             destdir="${build.dest}"
+             classpath="${cpath}"
+             debug="on"/>
 
-   <!-- Manually run JUnit by calling the TestRunner program.
-        Obviously, this requires Junit to be available on the
-        classpath -->
-   <target name="junit" depends="install">
-     <java classname="junit.textui.TestRunner"
-           classpath="${cpath}:${morpho}:${junit}"
-           fork="yes">
-       <arg line="edu.ucsb.nceas.morpho.framework.tests.ConnectTest"/>
-     </java>
+      <jar jarfile="${build.dir}/${name}-test.jar" basedir="${build.dest}"
+           includes="${package.home}/${name}test/**" />
+
+      <!-- use the ant "junit" task to run JUnit tests. -->
+      <junit printsummary="yes" haltonfailure="no" fork="no"
+             haltonerror="no">
+        <classpath>
+          <pathelement path="${cpath}:${build.dir}/${name}-test.jar" />
+        </classpath>
+
+        <formatter type="plain" />
+
+        <batchtest fork="yes" todir="${build.dir}">
+          <fileset dir="${build.tests}">
+            <include name="**/*.java" />
+          </fileset>
+        </batchtest>
+     </junit>
    </target>
 
    <!-- build the itis library for querying ITIS -->
