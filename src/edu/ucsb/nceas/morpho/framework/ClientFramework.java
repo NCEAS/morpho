@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-23 23:38:18 $'
- * '$Revision: 1.31.2.11 $'
+ *     '$Date: 2001-04-24 02:29:26 $'
+ * '$Revision: 1.31.2.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,8 +50,8 @@ public class ClientFramework extends javax.swing.JFrame
   /** Constant to indicate a spearator should precede an action */
   public static String SEPARATOR_PRECEDING = "TRUE";
 
-  String userName = "public";
-  String passWord = "none";
+  private String userName = "public";
+  private String passWord = "none";
   private static boolean debug = true;
   static int debug_level = 0;
   // redirects standard out and err streams
@@ -59,7 +59,7 @@ public class ClientFramework extends javax.swing.JFrame
   String xmlcatalogfile = null;
   String MetaCatServletURL = null;
   ConfigXML config;
-  boolean connected = false;
+  private boolean connected = false;
   edu.ucsb.nceas.querybean.LocalQuery lq = null;
   Hashtable menuList = null;
   Action[] fileMenuActions = null;
@@ -508,8 +508,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     Action connectItemAction = new AbstractAction("Connect...") {
       public void actionPerformed(ActionEvent e) {
-        ConnectionFrame cf = new ConnectionFrame();
-        cf.setVisible(true);
+        establishConnection();
       }
     };
     connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Log In");
@@ -651,7 +650,7 @@ public class ClientFramework extends javax.swing.JFrame
   //{{DECLARE_MENUS
   //}}
 
-  void exitApplication()
+  private void exitApplication()
   {
     try
     {
@@ -677,7 +676,7 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
-  void testLogService()
+  private void testLogService()
   {
     ServiceRequest req = new ServiceRequest((PluginInterface)this,
                                             "LogService");
@@ -687,6 +686,12 @@ public class ClientFramework extends javax.swing.JFrame
     } catch (ServiceNotHandledException snhe) {
       debug(1, snhe.toString());
     }
+  }
+
+  private void establishConnection()
+  {
+    ConnectionFrame cf = new ConnectionFrame(this);
+    cf.setVisible(true);
   }
 
   class SymWindow extends java.awt.event.WindowAdapter
@@ -747,20 +752,59 @@ public class ClientFramework extends javax.swing.JFrame
   /**
    * Log into metacat
    */
-  public void LogIn()
+  public String LogIn()
   {
+    String res = null;
+
     Properties prop = new Properties();
-    prop.put("action", "Login Client");
+    prop.put("action", "login");
+    prop.put("qformat", "xml");
 
     // Now contact metacat
-      try
+    try
     {
       String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-        debug(9, "Trying: " + MetaCatServletURL);
+      debug(9, "Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
       HttpMessage msg = new HttpMessage(url);
-        prop.put("username", userName);
-        prop.put("password", passWord);
+      prop.put("username", userName);
+      prop.put("password", passWord);
+      InputStream returnStream = msg.sendPostMessage(prop);
+      StringWriter sw = new StringWriter();
+      int c;
+      while ((c = returnStream.read()) != -1)
+      {
+	sw.write(c);
+      }
+      returnStream.close();
+      res = sw.toString();
+      sw.close();
+      debug(5, res);
+      connected = true;
+    }
+    catch(Exception e)
+    {
+      debug(1, "Error logging into system");
+    }
+    return res;
+  }
+
+  /**
+   * Log out of metacat
+   */
+  public void LogOut()
+  {
+    Properties prop = new Properties();
+    prop.put("action", "logout");
+    prop.put("qformat", "xml");
+
+    // Now try to write the document to the database
+    try
+    {
+      String MetaCatServletURL = config.get("MetaCatServletURL", 0);
+      debug(9, "Trying: " + MetaCatServletURL);
+      URL url = new URL(MetaCatServletURL);
+      HttpMessage msg = new HttpMessage(url);
       InputStream returnStream = msg.sendPostMessage(prop);
       StringWriter sw = new StringWriter();
       int c;
@@ -772,45 +816,55 @@ public class ClientFramework extends javax.swing.JFrame
       String res = sw.toString();
       sw.close();
       debug(5, res);
-
-    }
-    catch(Exception e)
-    {
-      debug(1, "Error logging into system");
-    }
-  }
-
-  /**
-   * Log out of metacat
-   */
-  public void LogOut()
-  {
-    Properties prop = new Properties();
-    prop.put("action", "Logout");
-
-    // Now try to write the document to the database
-    try
-    {
-      String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-        debug(9, "Trying: " + MetaCatServletURL);
-      URL url = new URL(MetaCatServletURL);
-      HttpMessage msg = new HttpMessage(url);
-      InputStream returnStream = msg.sendPostMessage(prop);
-      StringWriter sw = new StringWriter();
-      int c;
-      while ((c = returnStream.read()) != -1)
-      {
-	sw.write(c);
-      }
-      returnStream.close();
-      String res = sw.toString();
-      sw.close();
+      connected = false;
+      JOptionPane.showMessageDialog(this, "Connection closed.");
     }
     catch(Exception e)
     {
       debug(1, "Error logging out of system");
+      debug(1, e.toString());
     }
   }
+
+  /**
+   * Set the username associated with this framework
+   *
+   * @param the new username for the framework
+   */
+  public void setUserName(String uname)
+  {
+    this.userName = uname;
+  } 
+
+  /**
+   * Get the username associated with this framework
+   *
+   * @returns String the username
+   */
+  public String getUserName()
+  {
+    return userName;
+  } 
+
+  /**
+   * Set the password associated with this framework
+   *
+   * @param the new password for the framework
+   */
+  public void setPassword(String pword)
+  {
+    this.passWord = pword;
+  } 
+
+  /**
+   * Determines if the framework has a valid login
+   *
+   * @returns boolean true if connected, false otherwise
+   */
+  public boolean isConnected()
+  {
+    return connected;
+  } 
 
   /**
    * Print debugging messages based on severity level, where severity level 1
