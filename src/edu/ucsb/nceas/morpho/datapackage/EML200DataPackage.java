@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-30 22:12:14 $'
- * '$Revision: 1.32 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-30 22:30:56 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,12 +62,12 @@ import org.w3c.dom.DOMImplementation;
  */
 public  class EML200DataPackage extends AbstractDataPackage
 {
-	
-	
+
+
   // serialize to the indicated location
-  public void serialize(String location) 
-	      throws MetacatUploadException
-	{
+  public void serialize(String location)
+        throws MetacatUploadException
+  {
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     StringReader sr = new StringReader(temp);
@@ -86,11 +86,11 @@ public  class EML200DataPackage extends AbstractDataPackage
         if (lastperiod>-1) {
           temp1 = temp1.substring(lastperiod+1, temp1.length());
           temp2 = temp2.substring(0, lastperiod);
-//Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);           
+//Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
         }
         boolean existsFlag = mds.exists(temp2+".1");
-        boolean updateFlag = !(temp1.equals("1")); 
-//Log.debug(1, "exists: "+existsFlag);           
+        boolean updateFlag = !(temp1.equals("1"));
+//Log.debug(1, "exists: "+existsFlag);
         try{
           if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
               (this.getLocation().equals(AbstractDataPackage.BOTH)) ||
@@ -118,11 +118,11 @@ public  class EML200DataPackage extends AbstractDataPackage
         } catch (MetacatUploadException mue) {
             Log.debug(5,"MetacatUpload Exeption in EML200DataPackage!\n"
                        +mue.getMessage());
-					  throw mue;						 
+            throw mue;
         } catch(Exception e) {
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
         }
-      }  
+      }
   }
 
   /*
@@ -247,41 +247,41 @@ public  class EML200DataPackage extends AbstractDataPackage
     return temp;
   }
 
-  public AbstractDataPackage upload(String id, boolean updatePackageId) 
-	                                              throws MetacatUploadException {
+  public AbstractDataPackage upload(String id, boolean updatePackageId)
+                                                throws MetacatUploadException {
     Morpho morpho = Morpho.thisStaticInstance;
     load(AbstractDataPackage.LOCAL, id, morpho);
-		String nextid = id;
-		if (updatePackageId) {
+    String nextid = id;
+    if (updatePackageId) {
       AccessionNumber an = new AccessionNumber(morpho);
-			nextid = an.getNextId();
-			this.setAccessionNumber(nextid);
-			    // serialize locally with the new id
-			serialize(AbstractDataPackage.LOCAL);
-    }  																							
+      nextid = an.getNextId();
+      this.setAccessionNumber(nextid);
+          // serialize locally with the new id
+      serialize(AbstractDataPackage.LOCAL);
+    }
 
-		try {
+    try {
       serialize(AbstractDataPackage.METACAT);
       this.setLocation(AbstractDataPackage.METACAT);
       serializeData();
-		} 
-		catch (MetacatUploadException mcue) {
+    }
+    catch (MetacatUploadException mcue) {
       throw mcue;
-		}
-		catch (Exception w) {
-			Log.debug(5, "error in uploading!");
-		}
+    }
+    catch (Exception w) {
+      Log.debug(5, "error in uploading!");
+    }
     return this;
   }
 
   public AbstractDataPackage download(String id) {
     Morpho morpho = Morpho.thisStaticInstance;
     //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
-		try {
+    try {
       serialize(AbstractDataPackage.LOCAL);
-		} catch (Exception w) {
-        Log.debug(5,"Exception serializing local package in 'download'");			
-		}
+    } catch (Exception w) {
+        Log.debug(5,"Exception serializing local package in 'download'");
+    }
     // now download the associated data files
     Vector idlist = getAssociatedDataFiles();
     Enumeration e = idlist.elements();
@@ -300,35 +300,35 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return this;
   }
-	
-	/**
-	 *  This method follows the pointer stored in 'references' node to return the
-	 *  DOM node referred to by 'references'
-	 */
-	public Node getReferencedNode(Node node) {
-		Node referencedNode = node;
-		// does the node have a child named 'references'?
-		// if so, resolve
-		try {
-		  String refpath = "references";
-		  NodeList refs = XMLUtilities.getNodeListWithXPath(node, refpath);
-			while ((refs!=null)&&(refs.getLength()>0)) {
-				// get id
-			  String id = (XMLUtilities.getTextNodeWithXPath(node, "references")).getNodeValue();
-			  // get node under rootNode with the id
-				Node rootNode = node.getOwnerDocument().getDocumentElement();
-			  NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+id+"']");
-				// there should be a single node with the id
-        referencedNode = refs2.item(0);								 
-			  // check for another reference!
-			  refs = XMLUtilities.getNodeListWithXPath(referencedNode, refpath);
-				     // if refs is non-zero in length, we repeat
-			} // end while
-		} catch (Exception w) {
-			Log.debug(25, "Exception trying to follow references!");
-		}
-		return referencedNode;
-	}
+
+  /**
+   *  This method follows the pointer stored in 'references' node to return the
+   *  DOM node referred to by 'references'
+   */
+  public Node getReferencedNode(Node node) {
+    Node referencedNode = node;
+    // does the node have a child named 'references'?
+    // if so, resolve
+    try {
+      String refpath = "references";
+      NodeList refs = XMLUtilities.getNodeListWithXPath(node, refpath);
+      while ((refs!=null)&&(refs.getLength()>0)) {
+        // get id
+        String id = (XMLUtilities.getTextNodeWithXPath(node, "references")).getNodeValue();
+        // get node under rootNode with the id
+        Node rootNode = node.getOwnerDocument().getDocumentElement();
+        NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+id+"']");
+        // there should be a single node with the id
+        referencedNode = refs2.item(0);
+        // check for another reference!
+        refs = XMLUtilities.getNodeListWithXPath(referencedNode, refpath);
+             // if refs is non-zero in length, we repeat
+      } // end while
+    } catch (Exception w) {
+      Log.debug(25, "Exception trying to follow references!");
+    }
+    return referencedNode;
+  }
 
 
 
@@ -344,11 +344,11 @@ public  class EML200DataPackage extends AbstractDataPackage
     Node refdNodeClone = null;
     try{
       Node rootNode = getMetadataNode();
-		  NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+refID+"']");
-		  // there should be a single node with the id (otherwise doc is eml invalid)
+      NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+refID+"']");
+      // there should be a single node with the id (otherwise doc is eml invalid)
       Node referencedNode = (refs2.item(0));
       // 'referencedNode' is the first order reference
-      // next line calls to see if further references occur								 
+      // next line calls to see if further references occur
       refdNode = getReferencedNode(referencedNode);
       Node deepClone = refdNode.cloneNode(true);
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -356,14 +356,14 @@ public  class EML200DataPackage extends AbstractDataPackage
       Node importedClone = doc.importNode(deepClone, true);
       Node tempRoot = doc.getDocumentElement();
       doc.replaceChild(importedClone, tempRoot);
-      return deepClone;
+      return importedClone;
 
     } catch (Exception w) {
-			Log.debug(25, "Exception trying to follow references (in getSubtreeAtReference)!");
-		}
+      Log.debug(25, "Exception trying to follow references (in getSubtreeAtReference)!");
+    }
     return null;
 
   }
-	
+
 }
 
