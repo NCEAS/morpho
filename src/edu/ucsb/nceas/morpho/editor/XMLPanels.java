@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-24 19:08:09 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2004-02-26 23:11:02 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,7 +163,6 @@ public class XMLPanels extends Component
     // check to see if there is a special editor for this node
       NodeInfo inf = (NodeInfo)(node.getUserObject());
       DefaultMutableTreeNode refsNode = getRefsNode(node);
-//      if (inf.getName().equals("references")) {
       if (refsNode!=null) {
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)refsNode.getRoot();
         DefaultMutableTreeNode kid = (DefaultMutableTreeNode)refsNode.getFirstChild();
@@ -383,9 +382,10 @@ class dfhAction implements java.awt.event.ActionListener
 			  int dist = pixelsFromTop((JComponent)object);
 			  topPanel.scrollRectToVisible(new Rectangle(0,dist,50,50));
 			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+			  DefaultMutableTreeNode prevnd = (DefaultMutableTreeNode)nd.getPreviousNode();
 			  if (container!=null) {
 				  container.setTreeValueFlag(false);
-				  TreePath tp = new TreePath(nd.getPath());
+				  TreePath tp = new TreePath(prevnd.getPath());
 				  tree.setSelectionPath(tp);
 				    tree.scrollPathToVisible(tp);
 				}
