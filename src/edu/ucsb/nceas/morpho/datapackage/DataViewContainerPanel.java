@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-06 18:06:00 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-09-06 20:18:53 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.plugins.metadisplay.*;
 
 import edu.ucsb.nceas.morpho.framework.*;
 /**
@@ -170,8 +171,23 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
   // simply add Component to the packagePanel container, which has a Border
   // layout. leave the 'NORTH' region empty, since the
   // refpanel is added there later
-    packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
-    packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
+  
+// -----------------------Test of MetaDisplay-------------------------
+    MetaDisplay md = new MetaDisplay();
+    Component mdcomponent = null;
+    try{
+      mdcomponent = md.getDisplayComponent(dp.getID(), dp, null);
+    }
+    catch (Exception m) {
+      Log.debug(20, "Unable to get metadisplay component"); 
+    }
+    packagePanel.add(BorderLayout.CENTER, mdcomponent);
+// ------------------==End Test of MetaDisplay-------------------------
+    
+// the  following 2 lines add the Morpho 1.1.2 metadata displays when uncommented 
+//    packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
+//    packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
+  // ------------------------------------
     
   // refpanel is created in this class and added to the top of the 
   // panel in the next statement  
@@ -224,11 +240,24 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       
       // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
       // add Component to 'currentEntityMetadataPanel' which has a borderlayout
-      currentEntityMetadataPanel.add(BorderLayout.CENTER, entityInfoPanel);                                     
-      currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
-      currentEntityMetadataPanel.setMaximumSize(new Dimension(200,4000));
+      
+      // -----------------------Test of MetaDisplay-------------------------
+      MetaDisplay md = new MetaDisplay();
+      Component mdcomponent = null;
+      try{
+        mdcomponent = md.getDisplayComponent(id, dp, null);
+      }
+      catch (Exception m) {
+        Log.debug(20, "Unable to get metadisplay component"); 
+      }
+      currentEntityMetadataPanel.add(BorderLayout.CENTER, mdcomponent);
+// ------------------==End Test of MetaDisplay-------------------------
 
-      currentEntityPanel.setDividerLocation(700);
+//      currentEntityMetadataPanel.add(BorderLayout.CENTER, entityInfoPanel);                                     
+//      currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
+//      currentEntityMetadataPanel.setMaximumSize(new Dimension(200,4000));
+
+      currentEntityPanel.setDividerLocation(675);
       this.entityFile[i] = entityEdit.entityFile;
     
       // create the data display panel (usually a table) using DataViewer class
