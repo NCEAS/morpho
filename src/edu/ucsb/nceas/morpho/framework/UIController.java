@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-23 23:43:44 $'
- * '$Revision: 1.9 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-29 21:34:13 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,6 @@ public class UIController
             title = windowName;
         }
         Log.debug(30, "Adding window: " + title);
-        //MorphoFrame window = new MorphoFrame();
         MorphoFrame window = MorphoFrame.getInstance();
         window.setTitle(title);
 
@@ -125,7 +124,9 @@ public class UIController
 
         updateStatusBar(window.getStatusBar());
 
-        if (getCurrentActiveWindow()==null) setCurrentActiveWindow(window);
+        if (getCurrentActiveWindow()==null) {
+            setCurrentActiveWindow(window);
+        }
         return window;
     }
     
@@ -151,7 +152,9 @@ public class UIController
       
       registerWindow(window);
 
-      if (getCurrentActiveWindow()==null) setCurrentActiveWindow(window);
+      if (getCurrentActiveWindow()==null) {
+          setCurrentActiveWindow(window);
+      }
      
     }//updateWindow
       
@@ -189,7 +192,9 @@ public class UIController
         }
         
         // If the window is the currentActiveWindow, change it
-        if (getCurrentActiveWindow()==window) setCurrentActiveWindow(null);
+        if (getCurrentActiveWindow()==window) {
+            setCurrentActiveWindow(null);
+        }
 
         // Remove the window from the windowList
         try {
@@ -290,7 +295,7 @@ public class UIController
         }
     }
     
-        /**
+    /**
      * This method is called by plugins to remove all menu items from
      * a menu 
      *
@@ -307,8 +312,7 @@ public class UIController
         }
     }
 
-
-    /**
+   /**
     * This method is called by plugins to register a toolbar Action. 
     *
     * @param toolbarActions an array of Actions to be added to the toolbar
