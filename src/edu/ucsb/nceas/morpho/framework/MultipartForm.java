@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-07-19 18:03:59 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-06-26 15:41:17 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -410,6 +410,7 @@ public class MultipartForm
                     if (cnt!=-1) {
                         out.write(buf, 0, cnt);
                         out.flush();
+                        fs.close();    // added by DFH after e-mail from MJones
 		        pos += cnt;
                     }
                 }
