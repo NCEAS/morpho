@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-05 21:50:19 $'
- * '$Revision: 1.62 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-16 16:34:42 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1288,15 +1288,15 @@ public class ClientFramework extends javax.swing.JFrame
       // Create a new instance of our application's frame
       ClientFramework clf = new ClientFramework(config);
 
-      Date expiration = new Date(101, 7, 1);
-      Date warning = new Date(101, 6, 15);
+      Date expiration = new Date(101, 11, 1);
+      Date warning = new Date(101, 10, 15);
       Date now = new Date();
       if (now.after(expiration))
       {
-        clf.debug(1, "This Alpha version of Morpho has expired! " +
+        clf.debug(1, "This version of Morpho has expired! " +
            "See http://knb.ecoinformatics.org/ for a newer version.");
            JOptionPane.showMessageDialog(null,
-           "This beta version of Morpho has expired!\n" +
+           "This version of Morpho has expired!\n" +
            "See http://knb.ecoinformatics.org/ for a newer version.");
            System.exit(1);
       }
@@ -1304,11 +1304,11 @@ public class ClientFramework extends javax.swing.JFrame
       {
         if (now.after(warning))
         {
-          clf.debug(1, "This Alpha version of Morpho will expire on " +
+          clf.debug(1, "This version of Morpho will expire on " +
             "Aug 1, 2001. See http://knb.ecoinformatics.org/ for a " +
             "newer version.");
           JOptionPane.showMessageDialog(null,
-            "This Alpha version of Morpho will expire on Aug 1, 2001.\n" +
+            "This version of Morpho will expire on Aug 1, 2001.\n" +
             "See http://knb.ecoinformatics.org/ for a newer version.");
         }
 
@@ -1331,9 +1331,12 @@ public class ClientFramework extends javax.swing.JFrame
                         File.separator + currentProfile + ".xml";
           ConfigXML profile = new ConfigXML(profileName);
           clf.setProfile(profile);
-          clf.establishConnection();          
+ //         clf.establishConnection();  
+ //DFH moved outside 'else' so that user will see it the first time and get used
+ // to connection dialog appearing
         }
-
+        clf.establishConnection();
+        
         // Set up logging as appropriate
         String log_file_setting = config.get("log_file", 0);
         if (log_file_setting != null) {
