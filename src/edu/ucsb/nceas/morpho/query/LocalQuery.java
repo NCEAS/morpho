@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-10-23 22:48:21 $'
- * '$Revision: 1.59 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-11-19 23:50:09 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -547,6 +547,14 @@ public class LocalQuery
           xpath = xpath+"[translate(text(),"
             +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\")=\""
             +value+"\"]";
+        } else if (searchMode.equals("less-than")) {
+          xpath = xpath+"[number(text()) < "+value+"]";
+        } else if (searchMode.equals("greater-than")) {
+          xpath = xpath+"[number(text()) > "+value+"]";
+        } else if (searchMode.equals("greater-than-equals")) {
+          xpath = xpath+"[number(text()) >= "+value+"]";
+        } else if (searchMode.equals("less-than-equals")) {
+          xpath = xpath+"[number(text()) <= "+value+"]";
         } 
       } else {
         if (searchMode.equals("starts-with")) {
@@ -558,6 +566,14 @@ public class LocalQuery
           xpath = xpath+"[contains(text(),\""+value+"\")]";
         } else if (searchMode.equals("equals")) {
           xpath = xpath+"[text()=\""+value+"\"]";
+        } else if (searchMode.equals("less-than")) {
+          xpath = xpath+"[number(text()) < "+value+"]";
+        } else if (searchMode.equals("greater-than")) {
+          xpath = xpath+"[number(text()) > "+value+"]";
+        } else if (searchMode.equals("greater-than-equals")) {
+          xpath = xpath+"[number(text()) >= "+value+"]";
+        } else if (searchMode.equals("less-than-equals")) {
+          xpath = xpath+"[number(text()) <= "+value+"]";
         } 
       }
     }

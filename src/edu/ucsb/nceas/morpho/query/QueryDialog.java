@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-18 23:43:10 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-11-19 23:50:09 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -641,6 +641,13 @@ public class QueryDialog extends JDialog
       rootQG.addChild(taxonGroup);
     }
 
+    // Add a child query group for the spatial search
+    if (buildSpatial) {
+      QueryGroup spatialGroup = buildSpatialQueryGroup();
+      rootQG.addChild(spatialGroup);
+    }
+
+    System.out.println(newQuery.toXml());
     return newQuery;
   }
 
@@ -707,6 +714,53 @@ public class QueryDialog extends JDialog
     return subjectGroup;
   }
 
+  /**
+   * method to construct a QueryGroup for the spatial panel of the dialog
+   * based on a lat/long bounding box
+   */
+   private QueryGroup buildSpatialQueryGroup() {
+    String path = "//*";
+    String op = "INTERSECT";
+    String value = "*";
+    String mode = "greater-than";
+    caseSensitive = false;
+
+    QueryGroup boundingBoxGroup = new QueryGroup(op);
+    // now add query groups
+    // currently, the test just gets the NorthWest corner of the
+    // metadata (geographicCov/bounding) and sees if that point
+    // is inside the bounding box drawn on the screen.
+    // This limitation is partially due to the fact that obfs data
+    // has incorrect metadata values for SouthEast boundaries
+    
+    value = (new Double(liveMap.getTop()).toString());
+    mode = "less-than";
+    path = "northbc";
+    QueryTerm maxLat = new QueryTerm(caseSensitive, mode, value, path);
+    boundingBoxGroup.addChild(maxLat);
+
+    value = (new Double(liveMap.getBottom()).toString());
+    mode = "greater-than";
+    path = "northbc";
+    QueryTerm minLat = new QueryTerm(caseSensitive, mode, value, path);
+    boundingBoxGroup.addChild(minLat);
+
+    value = (new Double(liveMap.getRight()).toString());
+    mode = "less-than";
+    path = "westbc";
+    QueryTerm maxLong = new QueryTerm(caseSensitive, mode, value, path);
+    boundingBoxGroup.addChild(maxLong);
+
+    value = (new Double(liveMap.getLeft()).toString());
+    mode = "greater-than";
+    path = "westbc";
+    QueryTerm minLong = new QueryTerm(caseSensitive, mode, value, path);
+    boundingBoxGroup.addChild(minLong);
+
+   
+     return boundingBoxGroup;
+   }
+  
   /** 
    * method to constuct a QueryGroup for the taxon panel of the dialog
    */
@@ -803,7 +857,7 @@ public class QueryDialog extends JDialog
                        "query tabs before clicking the Search button.";
       JOptionPane.showMessageDialog(this, message);
     } 
-    else if(tabIndex == 2) {
+    else if(tabIndex == 20) {
       String message = "This is a test of the spatial query input tool. \n" +
                        "Actual spatial queries are not yet implemented.\n" +
                        "Maximum Latitude:" + (new Double(liveMap.getTop()).toString())+ "\n" +
@@ -812,6 +866,7 @@ public class QueryDialog extends JDialog
                        "Minimum Longitude:" + (new Double(liveMap.getLeft()).toString())
                         ;
       JOptionPane.showMessageDialog(this, message);
+      buildQuery();
     }
     else {
       String metacatflag = "true";
