@@ -2,7 +2,7 @@
 <xpathKeyMap schemaGrammar="eml2.0.0">
 <!-- element name is key, element value is Xpath for this grammar -->
   <contextNode name="package"> 
-    <entities>/eml:eml/dataTable|/eml:eml/spatialRaster|/eml:eml/spatialVector|/eml:eml/otherEntity|</entities> 
+    <entities>/eml:eml/dataset/dataTable</entities> 
     <title>/eml:eml/dataset/title</title>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
