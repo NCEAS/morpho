@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-09 23:27:36 $'
- * '$Revision: 1.22 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-08-15 22:03:01 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,12 +289,34 @@ public class UIController
             setCurrentActiveWindow(null);
         }
 
+        int cnt = 0;
+        // need to remove all reference to window from actionCloneWindowAssociation
+        GUIAction currentAction1 = null;
+        Enumeration keys1 = actionCloneWindowAssociation.keys();
+        Vector matches = new Vector();
+        while (keys1.hasMoreElements()) {
+          currentAction1 = (GUIAction)keys1.nextElement();
+          MorphoFrame sWindow = (MorphoFrame)windowList.get(currentAction1);
+          if (sWindow == window) {
+            matches.addElement(currentAction1);
+         Log.debug(10,"found matching window!"+cnt++);
+          }
+        }
+        Enumeration en = matches.elements();
+        while (en.hasMoreElements()) {
+          actionCloneWindowAssociation.remove((GUIAction)en.nextElement());
+        Log.debug(10,"removed window"+cnt++);
+        }
+
         // Remove the window from the windowList
         try {
             windowList.remove(currentAction);
+          Log.debug(10,"removed from window list");
+            System.gc();
         } catch(NullPointerException npe2) {
             Log.debug(20, "Window already removed from registry.");
         }
+        
 
     }
     

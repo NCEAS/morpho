@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-07 17:50:16 $'
- * '$Revision: 1.112 $'
+ *     '$Date: 2003-08-15 22:03:16 $'
+ * '$Revision: 1.113 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2333,6 +2333,11 @@ public class DocFrame extends javax.swing.JFrame
       this.setVisible(false);
       // free the system resources
       this.dispose();
+      tree = null;
+      treeModel = null;
+      OutputScrollPanelContainer = null;
+      NestedPanelScrollPanel = null;
+      System.gc();
       }
       else {
       writeOutputFile(xmlout); 
@@ -2352,6 +2357,7 @@ public class DocFrame extends javax.swing.JFrame
           this.setVisible(false);
           // free the system resources
           this.dispose();
+          System.gc();
         }
         else {
           writeOutputFile(xmlout);      
@@ -2413,7 +2419,14 @@ public class DocFrame extends javax.swing.JFrame
   // hide the Frame
   this.dispose();
   // free the system resources
-  System.exit(0);
+      tree = null;
+      treeModel = null;
+      OutputScrollPanelContainer = null;
+      NestedPanelScrollPanel = null;
+      System.gc();
+  if (controller==null) {
+    System.exit(0);
+  }
   }
 
   /**
@@ -2503,6 +2516,12 @@ public class DocFrame extends javax.swing.JFrame
       // hide the Frame
       this.dispose();
       // free the system resources
+      tree = null;
+      treeModel = null;
+      OutputScrollPanelContainer = null;
+      NestedPanelScrollPanel = null;
+      System.gc();
+
     }
     else{
       this.setVisible(false);
