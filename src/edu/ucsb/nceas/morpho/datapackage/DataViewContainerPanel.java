@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-07 23:25:15 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2003-10-13 20:31:55 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * The DataPackage that contains the data
    */
   DataPackage dp;
+
+  /**
+   * The AbstractDataPackage that contains the data
+   */
+  AbstractDataPackage adp;
   
   /**
    * toppanel is added to packageMetadataPanel by init
@@ -345,6 +350,115 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   }
  
+  /*
+   * this constructor uses an 'AbstractDataPackage' object
+   * to build the interior object in the Panel
+   */
+  public DataViewContainerPanel(AbstractDataPackage adp)
+  {
+    this();
+    this.adp = adp;
+    JPanel packagePanel = new JPanel();
+    packagePanel.setLayout(new BorderLayout(5,5));
+
+// the following code builds the datapackage summary at the top of
+// the DataViewContainerPanel
+    JLabel authorRefLabel = new JLabel((adp.getAuthor()).trim()+":    ");
+    authorRefLabel.setFont(UISettings.TITLE_CITATION_FONT);
+    JLabel titleRefLabel = new JLabel(adp.getTitle());
+    titleRefLabel.setFont(UISettings.TITLE_CITATION_FONT_BOLD);
+    JLabel accessionRefLabel = new JLabel("Accession Number: "+adp.getAccessionNumber()+ " ");
+    accessionRefLabel.setFont(UISettings.TITLE_CITATION_FONT_BOLD);
+    JLabel keywordsRefLabel = new JLabel("Keywords: "+adp.getKeywords());
+    keywordsRefLabel.setFont(UISettings.TITLE_CITATION_FONT);
+    moreLabel = new JLabel("<html><a href=\".\"><b>more</b></a></html>");
+    moreLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    moreLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    moreLabel.addMouseListener(this);
+    moreLabel.setToolTipText("Show more/less of package documentation");
+
+    JPanel refPanelTop = new JPanel();
+    refPanelTop.setPreferredSize(UISettings.TITLE_CITATION_DIMS);
+    refPanelTop.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+    refPanelTop.setLayout(new BorderLayout(0,0));
+    refPanelTop.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    JPanel refPanel = new JPanel();
+    refPanel.setLayout(new GridLayout(3,1));
+    refPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    JPanel refPanelLine1 = new JPanel();
+    refPanelLine1.setLayout(new BorderLayout(0,0));
+    refPanelLine1.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    refPanelLine1.add(BorderLayout.WEST, authorRefLabel);
+    refPanelLine1.add(BorderLayout.CENTER, titleRefLabel);
+    JPanel refPanelLine2 = new JPanel();
+    refPanelLine2.setLayout(new BorderLayout(0,0));
+    refPanelLine2.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    refPanelLine2.add(BorderLayout.WEST, accessionRefLabel);
+    refPanelLine2.add(BorderLayout.CENTER, keywordsRefLabel);
+    refPanel.add(refPanelLine1);
+    refPanel.add(refPanelLine2);
+    refPanel.add(moreLabel);
+    refPanelTop.add(BorderLayout.CENTER, refPanel);
+    
+ //   refPanel.add(BorderLayout.CENTER, refLabel);
+ //   refLabel.setFont(UISettings.TITLE_CITATION_FONT);
+
+    // location panel contains 2 labels whose icons indicate wether the
+    // displayed package is local/network or both
+    JPanel locationPanel = new JPanel();
+  //  locationPanel.setBackground(UISettings.CUSTOM_GRAY);
+    Border margin0 = BorderFactory.createEmptyBorder(0, 2,0,2); //top,lft,bot,rgt
+    locationPanel.setPreferredSize(UISettings.TITLE_LOCATION_DIMS);
+    locationPanel.setBorder(margin0);
+    locationPanel.setBackground(UISettings.CUSTOM_GRAY);
+    locationPanel.setOpaque(true);
+    ImageIcon localIcon 
+      = new ImageIcon(getClass().getResource("local-package-small.png"));
+    ImageIcon metacatIcon 
+      = new ImageIcon(getClass().getResource("network-package-small.png"));
+    ImageIcon blankIcon 
+      = new ImageIcon(getClass().getResource("blank.gif"));
+    JLabel localLabel = new JLabel("local");
+    localLabel.setBackground(UISettings.CUSTOM_GRAY);
+    localLabel.setOpaque(true);
+    localLabel.setFont(UISettings.TITLE_LOCATION_FONT);
+    localLabel.setIcon(localIcon);
+    localLabel.setToolTipText("Package is stored locally");
+    JLabel netLabel = new JLabel("net");
+    netLabel.setBackground(UISettings.CUSTOM_GRAY);
+    netLabel.setFont(UISettings.TITLE_LOCATION_FONT);
+    netLabel.setOpaque(true);
+    netLabel.setIcon(metacatIcon);
+    netLabel.setToolTipText("Package is stored on the network");
+//DFH    String location = dp.getLocation();
+    String location = DataPackageInterface.LOCAL;
+    if (location.equals(DataPackageInterface.METACAT)) {
+      localLabel.setText("");
+      localLabel.setIcon(blankIcon);
+    }
+    else if (location.equals(DataPackageInterface.LOCAL)) {
+      netLabel.setText("");
+      netLabel.setIcon(blankIcon);
+    }
+    else {   // both
+      
+    }
+    locationPanel.add(BorderLayout.NORTH,localLabel);
+    locationPanel.add(BorderLayout.SOUTH, netLabel);
+    
+    refPanelTop.add(BorderLayout.EAST, locationPanel);
+// refpanel is created in this class and added to the top of the 
+// panel in the next statement  
+    packagePanel.add(BorderLayout.NORTH,refPanelTop);
+//    this.morpho = dpgui.morpho;
+    this.toppanel = packagePanel;
+//    this.entityItems = dpgui.getEntityitems();
+//    this.listValueHash = dpgui.listValueHash;
+    this.setVisible(true);
+  // trying to get the height here always gives zero
+//  vertSplit.setDividerLocation(refPanel.getHeight());
+
+  }
 
 
   /*
@@ -381,7 +495,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                           StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
       }
       moreLabel.setVisible(false);
-      initDPMetaView(false);
+//      initDPMetaView(false);
       return;
     }
     entityFile = new File[entityItems.size()];
