@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 18:15:45 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-20 21:04:08 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,6 +168,14 @@ public class MorphoFrame extends JFrame
         } else {
             Log.debug(5, "Component was null so I could not set it!");
         }
+    }
+    
+    /**
+     * Get the contentComponent of MorphoFrame
+     */
+    public Component getContentComponent()
+    {
+      return contentComponent;
     }
 
     /**
