@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-29 23:23:42 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-07-02 17:04:09 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -506,6 +506,10 @@ public class EntityGUI extends javax.swing.JFrame
       framework.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
+  }
+  
+  public void editingCanceled(String xmlString, String id, String location)
+  { //do nothing
   }
   
   /**

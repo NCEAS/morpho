@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-09 17:35:03 $'
- * '$Revision: 1.8 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-02 17:04:09 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -402,6 +402,10 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 public void editingCompleted(String xmlString, String id, String location) {
   JTextArea1.setText(xmlString);
 //  JOptionPane.showMessageDialog(null, "Editing Completed!!!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+}
+
+public void editingCanceled(String xmlString, String id, String location)
+{ //do nothing
 }
 
 // --------------------------

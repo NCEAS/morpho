@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-29 23:23:42 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2001-07-02 17:04:09 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -732,6 +732,10 @@ public class DataPackageGUI extends javax.swing.JFrame
       framework.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
+  }
+  
+  public void editingCanceled(String xmlString, String id, String location)
+  { //do nothing
   }
   
   /**
