@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 23:51:35 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-09-27 00:59:15 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.Stack;
 import java.util.Iterator;
+import java.util.Set;
 
 import java.io.StringReader;
 
@@ -490,6 +491,10 @@ public class WizardContainerFrame extends JFrame {
     listener.wizardComplete(rootNode);
   }
   
+  
+  private final String ID_ATTR_XPATH  = "/@id";
+  private final StringBuffer tempBuff = new StringBuffer();
+  private final OrderedMap idMap      = new OrderedMap();
   /**
    *  adds unique IDs to the elements identified by the *absolute* XPath strings  
    *  in the elementsThatNeedIDsArray 
@@ -498,10 +503,76 @@ public class WizardContainerFrame extends JFrame {
    */
   private void addIDs(String[] elementsNeedingIDsArray, OrderedMap resultsMap) {
   
+    idMap.clear();
+    Set keyset = resultsMap.keySet();
+    //
     for (int i=0; i<elementsNeedingIDsArray.length; i++) {
     
+      String nextXPath = elementsNeedingIDsArray[i];
       //elementsNeedingIDsArray[i];
+      //check if resultsMap keys contain the exact xpath with no predicate
+      if (keyset.contains(nextXPath)) {
+      
+        //if so, add @id to this xpath and append to idMap...
+        idMap.put(nextXPath + ID_ATTR_XPATH, WizardSettings.getUniqueID());
+      }
+      
+
+      tempBuff.delete(0,tempBuff.length());
+      tempBuff.append(nextXPath);
+      tempBuff.append("/");
+
+      //check if resultsMap keys contain the substring xpath with no predicate
+      if (mapKeysContainSubstring(keyset, tempBuff.toString())) {
+      
+        //if so, add @id to this xpath and append to results...
+        idMap.put(nextXPath + ID_ATTR_XPATH, WizardSettings.getUniqueID());
+      }
+      
+      nextXPath += "[";
+      
+      int idx = 1;
+      
+      tempBuff.delete(0,tempBuff.length());
+      tempBuff.append(nextXPath);
+      tempBuff.append(idx++);
+      tempBuff.append("]");
+      
+      //loop while resultsMap keys contain the substring (xpath[+i+])
+      while (mapKeysContainSubstring(keyset, tempBuff.toString())) {
+      
+        //add @id to xpath[+i+] and append to results
+        tempBuff.append(ID_ATTR_XPATH);
+        idMap.put(tempBuff.toString(), WizardSettings.getUniqueID());
+        
+        tempBuff.delete(0,tempBuff.length());
+        tempBuff.append(nextXPath);
+        tempBuff.append(idx++);
+        tempBuff.append("]");
+      }
     }
+    resultsMap.putAll(idMap);
+  }
+  
+  private boolean mapKeysContainSubstring(Set keyset, String xpath) {
+  
+    if (keyset==null || xpath==null || xpath.trim().equals("")) return false;
+
+    Iterator  it = keyset.iterator();
+
+    if (it==null) return false;
+
+    String nextKey = null;
+
+    while (it.hasNext()) {
+
+      nextKey = (String)it.next();
+
+      if (nextKey==null) continue;
+      if (nextKey.indexOf(xpath)<0) continue;
+      else return true;
+    }
+    return false;
   }
 
   /**

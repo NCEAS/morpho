@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 23:51:35 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-09-27 01:00:43 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -452,8 +452,6 @@ class AttributeDialog extends WizardPopupDialog {
     if (attribName!=null && !attribName.equals("")) {
       returnMap.put(xPathRoot + "/attributeName", attribName);
     }
-//
-//    returnMap.put(xPathRoot + "/@id", WizardSettings.getUniqueID());
 
     String attribDef = attribDefinitionField.getText().trim();
     if (attribDef!=null && !attribDef.equals("")) {
