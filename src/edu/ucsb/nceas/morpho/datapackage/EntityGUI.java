@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-25 17:59:58 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-07-25 22:22:51 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -431,8 +431,8 @@ public class EntityGUI extends javax.swing.JFrame
       TripleCollection tc = new TripleCollection();
       tc.addTriple(t);
       String packageFile = PackageUtil.addTriplesToTriplesFile(tc, 
-                                                   dataPackage, 
-                                                   framework);
+                                                               dataPackage, 
+                                                               framework);
       String packageId = a.incRev(dataPackage.getID());
       File f = fsds.saveTempFile("tmp.0", new StringReader(packageFile));
       packageFile = a.incRevInTriples(f, dataPackage.getID(), packageId);
@@ -520,11 +520,12 @@ public class EntityGUI extends javax.swing.JFrame
       localloc = true;
     }
     
+    MetacatDataStore mds = new MetacatDataStore(framework);
+    
     try
     {
       if(metacatloc)
       { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(framework);
         int choice = JOptionPane.showConfirmDialog(null, 
                                "Do you wish to make this file publicly readable "+ 
                                "(Searchable) on Metacat?", 
@@ -548,11 +549,17 @@ public class EntityGUI extends javax.swing.JFrame
         { //edit another file in the package
           String oldid = id;
           newid = a.incRev(id);
+          //save the file that was edited
           mds.saveFile(newid, new StringReader(xmlString), metacatpublic);
           newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
                                                     oldid,
                                                     newid);
+          File tempPackageFile = fsds.saveTempFile("tmp.0.1", 
+                                             new StringReader(newPackageFile));
+          newPackageFile = a.incRevInTriples(tempPackageFile, 
+                                             dataPackage.getID(), 
+                                             newPackageId);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
                        metacatpublic);
         }
@@ -588,6 +595,11 @@ public class EntityGUI extends javax.swing.JFrame
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
                                                     oldid, 
                                                     newid);
+          File tempPackageFile = fsds.saveTempFile("tmp.0.1", 
+                                             new StringReader(newPackageFile));
+          newPackageFile = a.incRevInTriples(tempPackageFile, 
+                                             dataPackage.getID(), 
+                                             newPackageId);
           fsds.saveFile(newPackageId, new StringReader(newPackageFile), false); 
         }
       }
