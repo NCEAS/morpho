@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-30 16:16:48 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-12-03 23:44:35 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,6 +140,8 @@ public class TextImportWizard extends javax.swing.JFrame
   private TextImportListener listener = null;
   
   boolean finishFlag = false;
+  
+  String delimiter = "";
   
 	public TextImportWizard(String dataFileName, TextImportListener listener)
 	{
@@ -1959,6 +1961,28 @@ public void startImport(String file) {
 	  return XMLBuffer.toString();
 	}
 
+	/**
+	 * Hardcoded routine to create an XML eml-physical metadata string based on
+	 * data
+	 * ---BAD PRACTICE--- should use config to get info
+	 */
+	public String createXMLPhysicalString() {
+	  long filesize = (new File(filename)).length();
+	  String filesizeString = (new Long(filesize)).toString();
+	  String numHeaderLinesString = (new Integer(startingLine - 1)).toString();
+	  StringBuffer XMLBuffer = new StringBuffer();
+	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
+	  XMLBuffer.append("<!DOCTYPE eml-physical PUBLIC \"-//ecoinformatics.org//eml-physical-2.0.0beta4//EN\" \"eml-entity.dtd\">\n");
+	  XMLBuffer.append("<eml-physical>\n");
+	  XMLBuffer.append("    <identifier> </identifier>\n");
+      XMLBuffer.append("    <format> Text</format>\n");  // text import wizard only handles text 
+      XMLBuffer.append("    <size>"+filesizeString+" bytes"+"</size>\n");  
+      XMLBuffer.append("    <numHeaderLines>"+numHeaderLinesString+"</numHeaderLines>\n");  
+      XMLBuffer.append("    <recordDelimiter>"+"end of line"+"</recordDelimiter>\n"); 
+      XMLBuffer.append("    <fieldDelimiter>"+getDelimiterString()+"</fieldDelimiter>\n"); 
+      XMLBuffer.append("</eml-physical>\n");
+	  return XMLBuffer.toString();
+    }
 
 
 	void saveEmlAttribute_actionPerformed(java.awt.event.ActionEvent event)
