@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-20 21:29:08 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-20 21:42:07 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,27 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
@@ -42,31 +63,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-
-import org.w3c.dom.Node;
-import javax.swing.border.EmptyBorder;
 
 public class CitationPage extends AbstractUIPage {
 
@@ -88,19 +84,6 @@ public class CitationPage extends AbstractUIPage {
   private final String[] authorListNames = {"Party", "Role", "Address"};
   private final Object[] editors = null; //makes non-directly-editable
 
-  private JLabel salutationLabel;
-  private JTextField salutationField;
-  private JLabel firstNameLabel;
-  private JTextField firstNameField;
-  private JLabel lastNameLabel;
-  private JTextField lastNameField;
-  private JLabel organizationLabel;
-  private JTextField organizationField;
-  private JLabel positionNameLabel;
-  private JTextField positionNameField;
-  private JPanel warningPanel;
-  private JLabel warningLabel;
-
   private JLabel pubDateLabel;
   private JTextField pubDateField;
 
@@ -119,7 +102,6 @@ public class CitationPage extends AbstractUIPage {
   private String xPathRoot = "";
 
   private final String[] typeElemNames = new String[3];
-  private final String[] typeDisplayNames = new String[3];
 
   // these must correspond to indices of measScaleElemNames array
 
@@ -161,7 +143,7 @@ public class CitationPage extends AbstractUIPage {
     this.setLayout( new BorderLayout());
     this.add(middlePanel,BorderLayout.CENTER);
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-    middlePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, 3 * PADDING));
+    middlePanel.setBorder(BorderFactory.createEmptyBorder(0, 2 * PADDING, PADDING, 3 * PADDING));
     topMiddlePanel.setLayout(new BoxLayout(topMiddlePanel, BoxLayout.Y_AXIS));
     topMiddlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>Define the Citation Details:</b></font>", 1));
@@ -204,8 +186,8 @@ public class CitationPage extends AbstractUIPage {
     });
 
     authorPanel.add(authorList);
-    authorPanel.setMaximumSize(new Dimension(2000, 150));
-    authorPanel.setPreferredSize(new Dimension(2000, 150));
+    authorPanel.setMaximumSize(new Dimension(2000, 165));
+    authorPanel.setPreferredSize(new Dimension(2000, 165));
     topMiddlePanel.add(authorPanel);
 //    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
 
