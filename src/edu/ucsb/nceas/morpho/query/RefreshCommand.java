@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:33:25 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-09-06 23:19:24 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SortableJTable;
 import java.awt.Component;
 import javax.swing.JDialog;
 
@@ -86,6 +87,16 @@ public class RefreshCommand implements Command
     }//if
     
     resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+    SortableJTable table = resultPane.getJTable();
+    boolean sorted = false;
+    int index = -1;
+    String order = null;
+    if ( table != null)
+    {
+      sorted = table.getSorted();
+      index = table.getIndexOfSortedColumn();
+      order = table.getOrderOfSortedColumn();
+    }
     
     // make sure resulPanel is not null
     if ( resultPane != null)
@@ -95,11 +106,52 @@ public class RefreshCommand implements Command
       myQuery = resultPane.getResultSet().getQuery();
       if (myQuery != null)
       {
-        doQuery(myQuery);
+        doQuery(myQuery, sorted, index, order);
       }//if
     }//if
   
   }//execute
+  
+ 
+  /**
+   * Run the search query again 
+   */
+  private void doQuery(final Query query, final boolean sort, final int index, 
+                                        final String order) 
+  {
+  
+    final SwingWorker worker = new SwingWorker() 
+    {
+        ResultSet results;
+        ResultPanel resultDisplayPanel = null;
+        public Object construct() 
+        {
+          morphoFrame.setBusy(true);
+          results = query.execute();
+          
+          // The size of resultpanel for morpho frame
+          resultDisplayPanel = new ResultPanel(
+              null, results, 12, null, morphoFrame.getDefaultContentAreaSize());
+          // if the table alread sort the new resul panel should be sorted too
+          if (sort)
+          {
+            resultDisplayPanel.sortTable(index, order);
+          }
+          resultDisplayPanel.setVisible(true); 
+          morphoFrame.setMainContentPane(resultDisplayPanel);
+          morphoFrame.setMessage(results.getRowCount() + " data sets found");
+          
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() 
+        {
+          morphoFrame.setBusy(false);
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+  }//doQuery
   
   /**
    * Gave a morphoFrame, get resultpanel from it. If morphFrame doesn't contain
@@ -131,40 +183,6 @@ public class RefreshCommand implements Command
     }
       
   }//getResulPanelFromMorphFrame
-  
-  /**
-   * Run the search query again 
-   */
-  private void doQuery(final Query query) 
-  {
-  
-    final SwingWorker worker = new SwingWorker() 
-    {
-        ResultSet results;
-        ResultPanel resultDisplayPanel = null;
-        public Object construct() 
-        {
-          morphoFrame.setBusy(true);
-          results = query.execute();
-          
-          // The size of resultpanel for morpho frame
-          resultDisplayPanel = new ResultPanel(
-              null, results, 12, null, morphoFrame.getDefaultContentAreaSize());
-          resultDisplayPanel.setVisible(true); 
-          morphoFrame.setMainContentPane(resultDisplayPanel);
-          morphoFrame.setMessage(results.getRowCount() + " data sets found");
-          
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() 
-        {
-          morphoFrame.setBusy(false);
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-  }//doQuery
   
   /**
    * could also have undo functionality; disabled for now
