@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-08-15 22:03:01 $'
- * '$Revision: 1.23 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-01-08 22:48:54 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -167,12 +167,9 @@ public class UIController
           }
         }
         
-        if (getCurrentActiveWindow()==null) {
-            setCurrentActiveWindow(window);
-        }
-
+        setCurrentActiveWindow(window);
         setWindowLocation(window);
-
+				window.toFront();
         count++;
         return window;
     }
