@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-06 22:46:22 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-07 23:27:42 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,9 @@ public class DTDTree
 
     int levels = 9;
     DTDItem oldItem;
+    
+    String rootElementName = null;
+    DTDElement rootElement = null;
  
   public DTDTree() {
     this.DTDFileName = "";
@@ -65,6 +68,10 @@ public class DTDTree
 		//}}
 	}
   
+  public void setRootElementName(String name) {
+    this.rootElementName = name; 
+  }
+    
 	public void parseDTD() {
 		try {
 			FileReader reader = new FileReader(DTDFileName);
@@ -74,10 +81,22 @@ public class DTDTree
       Enumeration e = dtd.elements.elements();
       while (e.hasMoreElements()) {
         DTDElement elem = (DTDElement) e.nextElement();
+        
+        if (rootElementName!=null) {
+          if (elem.name.equals(rootElementName)) {
+            rootElement = elem; 
+          }
+        }
         elementnames.add(elem.name);
 			}
-			String root = (dtd.rootElement).name;
-		  DTDElement elem = dtd.rootElement;
+			DTDElement elem;
+			if (dtd.rootElement!=null) {
+			  String root = (dtd.rootElement).name;
+		    elem = dtd.rootElement;
+		  }
+		  else {
+		    elem = rootElement;
+		  }
       NodeInfo rootNodeInfo = new NodeInfo(elem.name);
       DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode(rootNodeInfo);
       rootNode = rootTreeNode;

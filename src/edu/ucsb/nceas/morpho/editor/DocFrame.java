@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-07 22:18:18 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-06-07 23:27:42 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ public class DocFrame extends javax.swing.JFrame
      */
     String doctype = null;
     
+    String rootnodeName = null;
     String publicIDString = null;
     String systemIDString = null;
     
@@ -99,12 +100,17 @@ public class DocFrame extends javax.swing.JFrame
     
     boolean treeValueFlag = true;
     
+    //* nodeCopy is the 'local clipboard' for node storage
+    DefaultMutableTreeNode nodeCopy = null;
+    
 //    javax.swing.JMenuItem CMmenuItem;
     javax.swing.JMenuItem menuItem;
     javax.swing.JMenuItem CardmenuItem;
     javax.swing.JMenuItem DeletemenuItem;
     javax.swing.JMenuItem DupmenuItem;
     javax.swing.JMenuItem AttrmenuItem;
+    javax.swing.JMenuItem CopymenuItem;
+    javax.swing.JMenuItem ReplacemenuItem;
     
     
  /**
@@ -133,7 +139,6 @@ public class DocFrame extends javax.swing.JFrame
 		DTDParse.setText("Parse DTD");
 		DTDParse.setActionCommand("Parse DTD");
 		ControlPanel.add(DTDParse);
-		DTDParse.setVisible(false);
 		TestButton.setText("Test");
 		TestButton.setActionCommand("Test");
 		ControlPanel.add(TestButton);
@@ -161,6 +166,12 @@ public class DocFrame extends javax.swing.JFrame
 //    popup.add(CMmenuItem);
     CardmenuItem = new JMenuItem("One Element Allowed");
  
+    CopymenuItem = new JMenuItem("Copy Node & Children");
+    popup.add(CopymenuItem);
+    ReplacemenuItem = new JMenuItem("Replace Selected Node from Clipboard");
+    //ReplacemenuItem.setEnabled(false);
+    popup.add(ReplacemenuItem);
+    popup.add(new JSeparator());
     popup.add(CardmenuItem);
     popup.add(new JSeparator());
     DupmenuItem = new JMenuItem("Duplicate");
@@ -185,6 +196,8 @@ public class DocFrame extends javax.swing.JFrame
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
 		AttrmenuItem.addActionListener(lSymAction);
+		CopymenuItem.addActionListener(lSymAction);
+		ReplacemenuItem.addActionListener(lSymAction);
     //Create the popup menu.
     javax.swing.JPopupMenu popup = new JPopupMenu();
 		
@@ -235,6 +248,7 @@ public class DocFrame extends javax.swing.JFrame
     
     if (dtdfile!=null) {
 		  dtdtree = new DTDTree(dtdfile);
+		  dtdtree.setRootElementName(rootnodeName);
 		  dtdtree.parseDTD();
 		
 	    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
@@ -350,6 +364,10 @@ class SymAction implements java.awt.event.ActionListener {
 				Dup_actionPerformed(event);
 			else if (object == AttrmenuItem)
 				Attr_actionPerformed(event);
+			else if (object == CopymenuItem)
+				Copy_actionPerformed(event);
+			else if (object == ReplacemenuItem)
+				Replace_actionPerformed(event);
 			else if (object == reload)
 				reload_actionPerformed(event);
 			else if (object == DTDParse)
@@ -404,6 +422,7 @@ void putXMLintoTree() {
       else {
         doctype = ((NodeInfo)rt.getUserObject()).toString();
       }
+      rootnodeName = mh.getDocname();
       System.out.println("doctype = " + doctype);
       String temp = myCatalog.resolvePublic(doctype,null);
       if (temp!=null) {
@@ -556,6 +575,38 @@ public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
     }
   return newnode;
 }
+
+void Copy_actionPerformed(java.awt.event.ActionEvent event) {
+  TreePath tp = tree.getSelectionPath();
+	if (tp!=null) {
+	  Object ob = tp.getLastPathComponent();
+	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+    nodeCopy = deepNodeCopy(node); 
+  }
+}
+void Replace_actionPerformed(java.awt.event.ActionEvent event) {
+  TreePath tp = tree.getSelectionPath();
+	if (tp!=null) {
+	  Object ob = tp.getLastPathComponent();
+	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+	  DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
+	  // simple node comparison
+	  String nodename = ((NodeInfo)node.getUserObject()).getName();
+	  if (nodeCopy!=null) {
+	    String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
+	    if (nodename.equals(savenodename)) {
+	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent(); 
+	      int indx = parent.getIndex(node);
+	      parent.insert(localcopy, indx+1);
+	      parent.remove(indx);
+	      tree.expandPath(tp);
+	      treeModel.reload(parent);
+	      tree.setSelectionPath(tp);
+	    }
+	  }
+  }
+}
+	
 	
 void Attr_actionPerformed(java.awt.event.ActionEvent event) {
   TreePath tp = tree.getSelectionPath();

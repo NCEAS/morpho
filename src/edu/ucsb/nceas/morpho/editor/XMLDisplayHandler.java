@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-31 22:43:00 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-07 23:27:42 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 	private Stack stack;
 	private DefaultTreeModel treeModel;
 	private int nodeCount;
+	String docname;
 	String publicId;
 	String systemId;
 
@@ -59,6 +60,10 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 	
 	public String getPublicId() {
 	  return publicId;  
+	}
+
+	public String getDocname() {
+	  return docname;  
 	}
 	
 	public String getSystemId() {
@@ -127,6 +132,7 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
    /** SAX Handler that receives notification of DOCTYPE. Sets the DTD */
    public void startDTD(String name, String publicId, String systemId) 
                throws SAXException {
+      this.docname = name;          
       this.publicId = publicId;
       this.systemId = systemId;
    }
