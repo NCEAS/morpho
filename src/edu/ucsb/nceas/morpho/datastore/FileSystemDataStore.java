@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-21 22:34:39 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-11-25 23:13:46 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ public class FileSystemDataStore extends DataStore
           ee.printStackTrace();
         }
       }
-      
+/* comment out the section to insert id - DFH      
       //save a temp file so that the id can be put in the file.
       BufferedReader bfile = new BufferedReader(file);
       StringWriter sw = new StringWriter();
@@ -189,6 +189,8 @@ public class FileSystemDataStore extends DataStore
       //now that the id has been put in the file, we can save it.
       StringReader sr = new StringReader(fileWithId);
       BufferedReader bsr = new BufferedReader(sr);
+ */     
+      BufferedReader bsr = new BufferedReader(file);
 //      while(!sr.ready())
 //      {
 //        int x = 1;
