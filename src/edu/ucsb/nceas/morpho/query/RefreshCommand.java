@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 00:11:13 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-27 23:46:42 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,6 @@ public class RefreshCommand implements Command
       myQuery = resultPane.getResultSet().getQuery();
       if (myQuery != null)
       {
-        morphoFrame.setBusy(true);
         doQuery(myQuery);
       }//if
     }//if
@@ -138,6 +137,7 @@ public class RefreshCommand implements Command
         ResultSet results;
         public Object construct() 
         {
+          morphoFrame.setBusy(true);
           results = query.execute();
         
           return null;  
