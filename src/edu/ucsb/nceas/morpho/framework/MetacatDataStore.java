@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-23 21:15:01 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-08-29 22:03:47 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * documents only do not use this method to upload binary data files.
    * @param name: the docid
    * @param file: the file to save
-   * @param publicAccess: true if the file can be read by unauthenticated
+   * @param publicAccess: true if the file can be read by unauthenssh ticated
    * users, false otherwise.
    * @param action: the action (update or insert) to perform
    */
@@ -219,7 +219,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
-      File tempfile = new File(tempdir + "/tmp/metacat.noid");
+      File tempfile = new File(tempdir + "/metacat.noid");
       tempfile.createNewFile();
       FileWriter fw = new FileWriter(tempfile);
       int c = file.read();
