@@ -326,7 +326,7 @@ public class Editor extends JPanel
             while (e.hasMoreElements())
             {
                 DTDElement elem = (DTDElement) e.nextElement();
-                elementnames.add(elem.name);
+                elementnames.addElement(elem.name);
 			}
 			String root = (dtd.rootElement).name;
 		    DTDElement elem = dtd.rootElement;
