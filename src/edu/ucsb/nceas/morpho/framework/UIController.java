@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-22 22:58:04 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-23 00:07:33 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,20 +118,9 @@ public class UIController
         //MorphoFrame window = new MorphoFrame();
         MorphoFrame window = MorphoFrame.getInstance();
         window.setTitle(title);
-        Action windowAction = new AbstractAction(title) {
-            public void actionPerformed(ActionEvent e) {
-                JMenuItem source = (JMenuItem)e.getSource();
-                Action firedAction = source.getAction();
-                MorphoFrame window1 = (MorphoFrame)windowList.get(firedAction);
-                window1.toFront();
-            }
-        };
-        windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
-        windowList.put(windowAction, window);
-        Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
-        windowMenuActions.addElement(windowAction);
 
-        updateWindowMenus();
+        registerWindow(window);
+
         window.addToolbarActions(toolbarList);
 
         updateStatusBar(window.getStatusBar());
@@ -144,46 +133,27 @@ public class UIController
      * This method is called by plugins to update window that is an
      * instance of MorphoFrame.  
      *
-     * @param frame the window will be given new name
-     * @param newFrameName the new name will give to window
+     * @param window the window will be given new name
+     * @param title the new name will give to window
      */
-    public void updateWindow(MorphoFrame frame,String newFrameName)
+    public void updateWindow(MorphoFrame window, String title)
     { 
       // Get title from old frame
-      String oldTitle = frame.getTitle();
-      System.out.println("oldTitle: "+oldTitle);
-      String title = oldTitle;
-      if (newFrameName != null) {
-          title = newFrameName;
+      String oldTitle = window.getTitle();
+      if ((title == null) || (title.equals(oldTitle))) {
+          return;
       }
+      
       // Remove the frame from window list
-      removeWindow(frame);
+      removeWindow(window);
       // Set frame new title
-      frame.setTitle(title);
-      // Create a new action for frame
-      Action windowAction = new AbstractAction(title) {
-            public void actionPerformed(ActionEvent e) {
-                JMenuItem source = (JMenuItem)e.getSource();
-                Action firedAction = source.getAction();
-                MorphoFrame window1 = (MorphoFrame)windowList.get(firedAction);
-                window1.toFront();
-            }
-        };
-      windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
-      windowList.put(windowAction, frame);
-      Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
-      windowMenuActions.addElement(windowAction);
+      window.setTitle(title);
+      
+      registerWindow(window);
 
-      updateWindowMenus();
-      frame.addToolbarActions(toolbarList);
-
-      updateStatusBar(frame.getStatusBar());
-
-      if (getCurrentActiveWindow()==null) setCurrentActiveWindow(frame);
-    
+      if (getCurrentActiveWindow()==null) setCurrentActiveWindow(window);
      
-    }//updateWindowName
-
+    }//updateWindow
       
     /**
      * This method is called to de-register a Window that
@@ -361,19 +331,6 @@ public class UIController
     }
 
     /**
-     * Updates a single StatusBar to reflect the current network state
-     *
-     * @param statusBar the status bar to be updated
-     */
-    private void updateStatusBar(StatusBar statusBar)
-    {
-        statusBar.setConnectStatus(morpho.getNetworkStatus());
-        statusBar.setLoginStatus(morpho.isConnected() && 
-                morpho.getNetworkStatus());
-        statusBar.setSSLStatus(morpho.getSslStatus());
-    }
-
-    /**
      * set currently active window
      *
      *  @param window the currently active MorphoFrame window
@@ -391,6 +348,31 @@ public class UIController
     public MorphoFrame getCurrentActiveWindow()
     {
         return currentActiveWindow;
+    }
+
+    /**
+     * Register a window by creating an action and adding it to the
+     * list of windows for the application. All existing windows are
+     * updated with new menus that reflect the menu change.
+     *
+     * @param window the window which should be added
+     */
+    private void registerWindow(MorphoFrame window)
+    {
+        String title = window.getTitle();
+        Action windowAction = new AbstractAction(title) {
+            public void actionPerformed(ActionEvent e) {
+                JMenuItem source = (JMenuItem)e.getSource();
+                Action firedAction = source.getAction();
+                MorphoFrame window1 = (MorphoFrame)windowList.get(firedAction);
+                window1.toFront();
+            }
+        };
+        windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
+        windowList.put(windowAction, window);
+        Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
+        windowMenuActions.addElement(windowAction);
+        updateWindowMenus();
     }
 
     /**
@@ -423,6 +405,19 @@ public class UIController
             Log.debug(50, "Updated toolbar for window: " + 
                     currentWindow.getTitle());
         }
+    }
+
+    /**
+     * Updates a single StatusBar to reflect the current network state
+     *
+     * @param statusBar the status bar to be updated
+     */
+    private void updateStatusBar(StatusBar statusBar)
+    {
+        statusBar.setConnectStatus(morpho.getNetworkStatus());
+        statusBar.setLoginStatus(morpho.isConnected() && 
+                morpho.getNetworkStatus());
+        statusBar.setSSLStatus(morpho.getSslStatus());
     }
 
     /**
