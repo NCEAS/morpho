@@ -9,8 +9,17 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.3 2000-08-11 22:23:37 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.4 2000-11-20 17:44:38 higgins Exp $'
  */
+
+/*
+*   Current MetaCat result set returns a <document> element for each 'hit'
+*   in query. That <document> element has 6 fixed children: <docid>, <docname>,
+*   <doctype>, <createdate>, and <updatadate>
+*   Other child elements are determined by query and are returned as <param>
+*   elements with a "name" attribute and a value in the text.
+*/
+
 
 package edu.ucsb.nceas.querybean;
 
@@ -30,6 +39,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.util.Stack;
+import java.util.Hashtable;
 
 public class ExternalQuery implements ContentHandler
 {
@@ -42,6 +52,8 @@ public class ExternalQuery implements ContentHandler
     String docname;
     String doctype;
     String doctitle;
+    String paramName;
+    Hashtable params;
     
 public ExternalQuery(InputStream is) {
     this.is = is;
@@ -70,12 +82,17 @@ public JTable getTable() {
     public void startElement (String uri, String localName,
                               String qName, Attributes atts)
            throws SAXException {
+      if (localName.equalsIgnoreCase("param")) {
+        paramName = atts.getValue("name");
+      }
       elementStack.push(localName);
       if (localName.equals("document")) {
             docid = "";
             docname = "";
             doctype = "";
             doctitle = "";
+            paramName = "";
+            params = new Hashtable();
       }
     }
   
@@ -103,6 +120,9 @@ public JTable getTable() {
       }
       if (currentTag.equals("doctitle")) {
           doctitle = inputString;
+      }
+      if (currentTag.equals("param")) {
+          params.put(paramName, inputString);  
       }
       
     }

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.8 2000-09-29 22:52:57 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.9 2000-11-20 17:44:38 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -808,7 +808,7 @@ return "NONE";
 		}
 	}
 
-	 void tree_valueChanged(javax.swing.event.TreeSelectionEvent event)
+	void tree_valueChanged(javax.swing.event.TreeSelectionEvent event)
 	{
 	    tp = event.getNewLeadSelectionPath();
 	    if (tp!=null) {

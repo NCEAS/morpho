@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: pathqueryXML.java,v 1.4 2000-08-10 23:32:03 higgins Exp $'
+ *     Version: '$Id: pathqueryXML.java,v 1.5 2000-11-20 17:44:38 higgins Exp $'
  */
 
 
@@ -20,6 +20,9 @@ package edu.ucsb.nceas.querybean;
 
 
 import java.util.Stack;
+import java.util.Vector;
+import java.util.Enumeration;
+import edu.ucsb.nceas.dtclient.*;
 
 public class pathqueryXML
 {
@@ -38,7 +41,18 @@ public class pathqueryXML
     
     boolean caseflag = true;
     
+    Vector searchDocTypes;
+    Vector returnDocTypes;
+    Vector returnFields;
+    
 public pathqueryXML() {
+    ConfigXML config = new ConfigXML("config.xml");
+    searchDocTypes = config.get("doctype");
+    returnDocTypes = config.get("returndoc");
+    returnFields = config.get("returnfield");
+    
+
+    
     meta_file_id = (new Long(System.currentTimeMillis())).toString();
     build_header();
     build_end();
@@ -144,6 +158,18 @@ private void build_header() {
     qHeader = new StringBuffer(Intro);
     qHeader.append("<meta_file_id>"+meta_file_id+"</meta_file_id>\n");
     qHeader.append("<querytitle>"+querytitle+"</querytitle>\n");
+    
+    for (Enumeration e = searchDocTypes.elements() ; e.hasMoreElements() ;) {
+         qHeader.append("<doctype>"+e.nextElement()+"</doctype>\n"); 
+     }
+    for (Enumeration e = returnDocTypes.elements() ; e.hasMoreElements() ;) {
+         qHeader.append("<returndoc>"+e.nextElement()+"</returndoc>\n"); 
+     }
+    for (Enumeration e = returnFields.elements() ; e.hasMoreElements() ;) {
+         qHeader.append("<returnfield>"+e.nextElement()+"</returnfield>\n"); 
+     }
+    
+    
 }
 
 private void build_end() {

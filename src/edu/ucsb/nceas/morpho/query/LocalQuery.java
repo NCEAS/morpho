@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.9 2000-10-02 15:16:39 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.10 2000-11-20 17:44:38 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -27,8 +27,12 @@ import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
 import java.util.Vector;
 import java.util.PropertyResourceBundle;
+import java.util.Hashtable;
+
 public class LocalQuery extends Thread 
 {
+    
+    static Hashtable dom_collection;
     String local_xml_directory;
     String local_dtd_directory;
     String xmlcatalogfile; 
@@ -43,6 +47,8 @@ public class LocalQuery extends Thread
     String Haltname;
     boolean stopFlag = false;
     boolean AndResultFlag;
+    
+    static {dom_collection = new Hashtable();}
     
 public LocalQuery() {
     this(null);
@@ -170,6 +176,7 @@ public JTable getRSTable() {
     
 void queryAll()
 	{
+	    Node root;
         long starttime, curtime, fm;
         if (Halt!=null) {
             Haltname = Halt.getText();
@@ -208,6 +215,10 @@ void queryAll()
             if (currentfile.isFile())
             
             {
+              if (dom_collection.containsKey(filename)){
+                root = ((Document)dom_collection.get(filename)).getDocumentElement();
+              }
+              else {
                 InputSource in;
                 try
                 {
@@ -231,7 +242,11 @@ void queryAll()
                     }
 
       // Get the documentElement from the parser, which is what the selectNodeList method expects
-                Node root = parser.getDocument().getDocumentElement();
+                Document current_doc = parser.getDocument();
+//                Node root = parser.getDocument().getDocumentElement();
+                root = parser.getDocument().getDocumentElement();
+                dom_collection.put(filename,current_doc);
+              }     
                 String rootname = root.getNodeName();
                 NodeList nl = null;
                 try

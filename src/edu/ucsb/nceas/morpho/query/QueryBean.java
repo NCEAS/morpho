@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.24 2000-10-04 18:43:22 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.25 2000-11-20 17:44:39 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -131,6 +131,9 @@ public class QueryBean extends AbstractQueryBean
 		Bfly.setIconTextGap(0);
 		QueryControls.add(Bfly);
 		Bfly.setBounds(0,25,0,0);
+		config.setText("config");
+		QueryControls.add(config);
+		config.setBounds(0,0,35,40);
 		{
 			String[] tempString = new String[8];
 			tempString[0] = "eml-access";
@@ -326,7 +329,7 @@ public class QueryBean extends AbstractQueryBean
 		JPanel23.add(JLabel11);
 		JLabel11.setForeground(java.awt.Color.black);
 		JLabel11.setFont(new Font("Dialog", Font.BOLD, 12));
-		JLabel11.setBounds(-285,5,101,15);
+		JLabel11.setBounds(-302,5,135,15);
 		JPanel24.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel22.add(BorderLayout.WEST, JPanel24);
 		JPanel24.setBounds(0,0,233,46);
@@ -529,7 +532,7 @@ public class QueryBean extends AbstractQueryBean
 		JPanel31.add(JLabel24);
 		JLabel24.setForeground(java.awt.Color.black);
 		JLabel24.setFont(new Font("Dialog", Font.BOLD, 12));
-		JLabel24.setBounds(-283,5,101,15);
+		JLabel24.setBounds(-300,5,135,15);
 		JPanel32.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel30.add(BorderLayout.WEST, JPanel32);
 		JPanel32.setBounds(0,0,233,46);
@@ -584,7 +587,7 @@ public class QueryBean extends AbstractQueryBean
 		JPanel35.add(JLabel25);
 		JLabel25.setForeground(java.awt.Color.black);
 		JLabel25.setFont(new Font("Dialog", Font.BOLD, 12));
-		JLabel25.setBounds(-283,5,101,15);
+		JLabel25.setBounds(-300,5,135,15);
 		JPanel36.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel34.add(BorderLayout.WEST, JPanel36);
 		JPanel36.setBounds(0,0,233,46);
@@ -621,23 +624,23 @@ public class QueryBean extends AbstractQueryBean
 		JPanel11.add(BorderLayout.CENTER,UnderConstruction);
 		UnderConstruction.setForeground(java.awt.Color.red);
 		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
-		UnderConstruction.setBounds(0,0,-5,-114);
+		UnderConstruction.setBounds(0,15,-5,-129);
 		JLabel2.setText("Eventually, taxonomic based based queries will appear on this tab");
 		JPanel11.add(BorderLayout.NORTH,JLabel2);
-		JLabel2.setBounds(0,0,20,40);
+		JLabel2.setBounds(0,0,-5,15);
 		JPanel12.setLayout(new BorderLayout(0,0));
 		QueryChoiceTabs.add(JPanel12);
 		JPanel12.setBounds(2,111,-5,-114);
 		JPanel12.setVisible(false);
 		JLabel3.setText("Eventually, tools for searching by spatial location (e.g. maps) will appear here.");
 		JPanel12.add(BorderLayout.NORTH,JLabel3);
-		JLabel3.setBounds(0,0,20,40);
+		JLabel3.setBounds(0,0,-5,15);
 		UnderConstruction1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		UnderConstruction1.setText("Under Construction!!!");
 		JPanel12.add(BorderLayout.CENTER,UnderConstruction1);
 		UnderConstruction1.setForeground(java.awt.Color.red);
 		UnderConstruction1.setFont(new Font("Dialog", Font.BOLD, 20));
-		UnderConstruction1.setBounds(0,0,-5,-114);
+		UnderConstruction1.setBounds(0,15,-5,-129);
 		QueryChoiceTabs.setSelectedComponent(SubjectPanel);
 		QueryChoiceTabs.setSelectedIndex(0);
 		QueryChoiceTabs.setTitleAt(0,"Subject");
@@ -671,6 +674,7 @@ public class QueryBean extends AbstractQueryBean
 		SymPropertyChange lSymPropertyChange = new SymPropertyChange();
 		SearchButton.addPropertyChangeListener(lSymPropertyChange);
 		SearchButton1.addPropertyChangeListener(lSymPropertyChange);
+		config.addActionListener(lSymAction);
 		//}}
 
 		popupListener = new PopupListener();
@@ -730,6 +734,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JPanel QueryControls = new javax.swing.JPanel();
 	javax.swing.JButton SearchButton = new javax.swing.JButton();
 	javax.swing.JLabel Bfly = new javax.swing.JLabel();
+	javax.swing.JButton config = new javax.swing.JButton();
 	javax.swing.JPanel QueryChoicesPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel ChoicesPanel2 = new javax.swing.JPanel();
 	javax.swing.JPanel TextChoices11 = new javax.swing.JPanel();
@@ -867,6 +872,7 @@ public class QueryBean extends AbstractQueryBean
     public void setUserName(String name) {
         userName = name;
     }
+    
     public void setPassWord(String ps) {
         passWord = ps;
     }
@@ -890,8 +896,6 @@ public class QueryBean extends AbstractQueryBean
 				OrButton2_itemStateChanged(event);
 			if (object == DetachCheckBox1)
 				DetachCheckBox1_itemStateChanged(event);
-			
-			
 		}
 	}
 
@@ -951,6 +955,8 @@ public class QueryBean extends AbstractQueryBean
 				EditMenuItem_actionPerformed(event);
 			if (object == SearchButton1)
 				SearchButton1_actionPerformed(event);
+			else if (object == config)
+				config_actionPerformed(event);
 			
 		}
 	}
@@ -1598,5 +1604,25 @@ public void LogOut() {
 	     Bfly1.setIcon(BflyMove);
 		}	 
 			 
+	}
+
+	void config_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		// to do: code goes here.
+			 
+		config_actionPerformed_Interaction1(event);
+	}
+
+	void config_actionPerformed_Interaction1(java.awt.event.ActionEvent event)
+	{
+		try {
+			// QueryConfigDialog Create and show as modal
+			{
+				QueryConfigDialog QueryConfigDialog1 = new QueryConfigDialog();
+				QueryConfigDialog1.setModal(true);
+				QueryConfigDialog1.show();
+			}
+		} catch (java.lang.Exception e) {
+		}
 	}
 }
