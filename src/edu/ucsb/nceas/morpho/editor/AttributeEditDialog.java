@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-29 17:33:17 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-01-07 05:19:13 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,24 +132,6 @@ public class AttributeEditDialog extends javax.swing.JDialog //implements TableM
 		(new AttributeEditDialog()).setVisible(true);
 	}
 
-	public void addNotify()
-	{
-		// Record the size of the window prior to calling parents addNotify.
-		Dimension size = getSize();
-
-		super.addNotify();
-
-		if (frameSizeAdjusted)
-			return;
-		frameSizeAdjusted = true;
-
-		// Adjust size of frame according to the insets
-		Insets insets = getInsets();
-		setSize(insets.left + insets.right + size.width, insets.top + insets.bottom + size.height);
-	}
-
-	// Used by addNotify
-	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
 	javax.swing.JScrollPane AttributeScrollPane = new javax.swing.JScrollPane();
@@ -188,7 +170,7 @@ public class AttributeEditDialog extends javax.swing.JDialog //implements TableM
 	{
 		try {
 			// AttributeEditDialog Hide the AttributeEditDialog
-			this.setVisible(false);
+			this.dispose();
 		} catch (java.lang.Exception e) {
 		}
 	}
@@ -197,21 +179,22 @@ public class AttributeEditDialog extends javax.swing.JDialog //implements TableM
 	{
 	  TableCellEditor tce = table.getCellEditor();
 	  if (tce!=null) {
-	    tce.stopCellEditing();  
+	    boolean stop = tce.stopCellEditing();  
+ //     System.out.println("stopEditing = "+stop);
 	  }
     int cnt = dtm.getRowCount();
     Hashtable newattr = new Hashtable();
     for (int i=0;i<cnt;i++) {
         String name = (String)dtm.getValueAt(i, 0);
         String value = (String)dtm.getValueAt(i, 1);
-        if ((name.length()>0)&&(value.length()>0)) {
+        if ((name.length()>0)) {
           newattr.put(name, value);  
         }
     }
     NodeInfo ni = (NodeInfo)node.getUserObject();
     ni.attr = newattr;
 		try {
-			this.setVisible(false);
+			this.dispose();
 		} catch (java.lang.Exception e) {
 		}
 	}
