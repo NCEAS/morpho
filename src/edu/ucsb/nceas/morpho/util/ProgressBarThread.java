@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-11 22:19:48 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-04-13 01:10:28 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,9 +89,15 @@ public class ProgressBarThread
    */
   public void run() {
     // create the JDialog
-    dialog = new JDialog( (java.awt.Dialog) parentDialog, //owner
-        "Generating Access Tree", // title
-        true); // modal
+    if(parentDialog != null) {
+      dialog = new JDialog( (java.awt.Dialog) parentDialog, //owner
+          "Generating Access Tree", // title
+          true); // modal
+    } else {
+      dialog = new JDialog((java.awt.Frame)null, //owner
+               "Generating Access Tree", // title
+               true); // modal
+    }
 
     // create the ProgressBar
     progressBar.setPreferredSize(new Dimension(400, 30));
