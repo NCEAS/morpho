@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-17 17:48:44 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-12-17 22:28:51 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,19 +84,6 @@ public class DataLocation extends AbstractWizardPage {
         +"Use the \"locate\" button to locate the data file on your computer:"
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
 
-  private final String FILE_LOCATOR_IMPORT_DESC_OFFLINE
-        = WizardSettings.HTML_TABLE_LABEL_OPENING
-        +"If the offline data is in a file on your computer, please locate it:"
-        +WizardSettings.HTML_TABLE_LABEL_CLOSING;
-
-  private final String NAME_BYHAND_DESC_OFFLINE
-        = WizardSettings.HTML_TABLE_LABEL_OPENING
-        +"Enter an identifying name in the space below&nbsp;&nbsp;"
-        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-        +" (e.g. a title if your data is on hardcopy, or a filename for digital media)"
-        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-        +WizardSettings.HTML_TABLE_LABEL_CLOSING;
-
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String OBJECTNAME_XPATH
@@ -112,28 +99,39 @@ public class DataLocation extends AbstractWizardPage {
 
   private final String FILECHOOSER_PANEL_TITLE = "File Location:";
   
-  private final String firstChoiceTitle    
+  private final String Q1_TITLE    
                         = "Where is your data?";
-  private final String[] firstChoiceLabels = new String[] {
+  private final String[] Q1_LABELS = new String[] {
     "CREATE  - create a new, empty data table and its metadata description.",
     "IMPORT   - import a data file into the package, and create its metadata description",
     "DESCRIBE - include only a metadata description of a web-accessible, archived or inaccessible data file"
   };
 
-  private final String importAutoManButtonsTitle    
+  private final String Q2_TITLE_IMPORT    
                         = "How do you want to enter the metadata description?";
-  private final String[] importAutoManButtonsLabels = new String[] {
+  private final String[] Q2_LABELS_IMPORT = new String[] {
     "AUTOMATIC - Import data file and extract metadata description for review",
     "MANUAL       - Import data file but enter metadata description manually"
   };
 
-  private final String describeAutoManButtonsTitle    
+  private final String Q2_TITLE_DESCRIBE    
                         = "How do you want to enter the metadata description?";
-  private final String[] describeAutoManButtonsLabels = new String[] {
+  private final String[] Q2_LABELS_DESCRIBE = new String[] {
     "AUTOMATIC - create metadata description by inspecting data file (but omit data file from package)",
     "MANUAL       - Enter metadata description manually"
   };
+  
+  private final String Q3_TITLE    
+                        = "Data Location?";
+  private final String[] Q3_LABELS = new String[] {
+    "Not available",
+    "Online URL",
+    "Archived"
+  };
 
+  private final Dimension Q3_RADIOPANEL_DIMS = new Dimension(100, 300);
+  
+  
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public DataLocation() { 
@@ -161,10 +159,8 @@ public class DataLocation extends AbstractWizardPage {
 
     this.setLayout(new BorderLayout());
 
-    ActionListener importQ2Listener = null;
-    ActionListener describeQ2Listener = null;
-
-    secondChoiceContainer = getBlankPanel(4);
+    ActionListener q2Listener_import = null;
+    ActionListener q2Listener_describe = null;
 
     Box topBox = Box.createVerticalBox();
 
@@ -187,11 +183,11 @@ public class DataLocation extends AbstractWizardPage {
     final JPanel instance = this;
 
     ////////////////////////////////////////////////////////
-    // "IMPORT - AUTO/MAN" RADIO PANEL
+    // QUESTION 2 - "IMPORT - AUTO/MAN" RADIO PANEL
     // COULD BE "ONLINE" OR "INLINE"
     ////////////////////////////////////////////////////////
     
-    importQ2Listener = new ActionListener() {
+    q2Listener_import = new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
 
@@ -200,16 +196,16 @@ public class DataLocation extends AbstractWizardPage {
         onLoadAction();
         
         //both options require a filechooser...
-        setThirdChoice(filechooserPanel);
+        setQ3(filechooserPanel);
         fileChooserWidget.getTextArea().requestFocus();
 
-        if (e.getActionCommand().equals(importAutoManButtonsLabels[0])) {
+        if (e.getActionCommand().equals(Q2_LABELS_IMPORT[0])) {
 
           // IMPORT AUTOMATIC
           Log.debug(45, "IMPORT - AUTOMATIC");
           setLastEvent(IMPORT_AUTO);
 
-        } else if (e.getActionCommand().equals(importAutoManButtonsLabels[1])) {
+        } else if (e.getActionCommand().equals(Q2_LABELS_IMPORT[1])) {
 
           // IMPORT MANUAL
           Log.debug(45, "IMPORT - MANUAL");
@@ -222,11 +218,11 @@ public class DataLocation extends AbstractWizardPage {
 
 
     ////////////////////////////////////////////////////////
-    // "DESCRIBE - AUTO/MAN" RADIO PANEL
-    // "OFFLINE"
+    // QUESTION 2 - "DESCRIBE - AUTO/MAN" RADIO PANEL
+    // (NO DISTRIBUTION, "ONLINE" OR "OFFLINE")
     ////////////////////////////////////////////////////////
     
-    describeQ2Listener = new ActionListener() {
+    q2Listener_describe = new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
 
@@ -235,19 +231,19 @@ public class DataLocation extends AbstractWizardPage {
         onLoadAction();
         
 
-        if (e.getActionCommand().equals(describeAutoManButtonsLabels[0])) {
+        if (e.getActionCommand().equals(Q2_LABELS_DESCRIBE[0])) {
 
           // DESCRIBE AUTOMATIC
           Log.debug(45, "DESCRIBE - AUTOMATIC");
-          setThirdChoice(filechooserPanel);
+          setQ3(filechooserPanel);
           fileChooserWidget.getTextArea().requestFocus();
           setLastEvent(DESCRIBE_AUTO);
 
-        } else if (e.getActionCommand().equals(describeAutoManButtonsLabels[1])) {
+        } else if (e.getActionCommand().equals(Q2_LABELS_DESCRIBE[1])) {
 
           // DESCRIBE MANUAL
           Log.debug(45, "DESCRIBE - MANUAL");
-          setThirdChoice(offlinePanel);
+          setQ3(q3Widget);
           objNameField.requestFocus();
           setLastEvent(DESCRIBE_MAN);
         } 
@@ -256,17 +252,17 @@ public class DataLocation extends AbstractWizardPage {
       }
     };
 
-    final JPanel importAutoManRadioPanel 
-                                  = getRadioPanel(importAutoManButtonsTitle, 
-                                                  importAutoManButtonsLabels, 
-                                                  importQ2Listener, -1, true);
-    final JPanel describeAutoManRadioPanel 
-                                  = getRadioPanel(describeAutoManButtonsTitle, 
-                                                  describeAutoManButtonsLabels, 
-                                                  describeQ2Listener, -1, true);
+    final JPanel q2RadioPanel_import
+                                  = getRadioPanel(Q2_TITLE_IMPORT, 
+                                                  Q2_LABELS_IMPORT, 
+                                                  q2Listener_import, -1, true);
+    final JPanel q2RadioPanel_describe 
+                                  = getRadioPanel(Q2_TITLE_DESCRIBE, 
+                                                  Q2_LABELS_DESCRIBE, 
+                                                  q2Listener_describe, -1, true);
 
     ////////////////////////////////////////////////////////
-    // "CREATE/IMPORT/DESCRIBE" RADIO PANEL
+    // QUESTION 1 - "CREATE/IMPORT/DESCRIBE" RADIO PANEL
     ////////////////////////////////////////////////////////
 
     ActionListener q1Listener = new ActionListener() {
@@ -278,29 +274,29 @@ public class DataLocation extends AbstractWizardPage {
         //undo any hilites:
         onLoadAction();
 
-        if (e.getActionCommand().equals(firstChoiceLabels[0])) { 
+        if (e.getActionCommand().equals(Q1_LABELS[0])) { 
 
           // CREATE DATA
 
-          setSecondChoice(blankPanel);
-          setThirdChoice(blankPanel);
+          setQ2(blankPanel);
+          setQ3(blankPanel);
           setLastEvent(CREATE);
           
-        } else if (e.getActionCommand().equals(firstChoiceLabels[1])) { 
+        } else if (e.getActionCommand().equals(Q1_LABELS[1])) { 
 
           // IMPORT DATA
 
-          setSecondChoice(importAutoManRadioPanel);
-          setThirdChoice(blankPanel);
+          setQ2(q2RadioPanel_import);
+          setQ3(blankPanel);
           setLastEvent(IMPORT);
 
-        } else if (e.getActionCommand().equals(firstChoiceLabels[2])) { 
+        } else if (e.getActionCommand().equals(Q1_LABELS[2])) { 
 
           // DESCRIBE DATA
 
 //          distribXPath = OFFLINE_XPATH;
-          setSecondChoice(describeAutoManRadioPanel);
-          setThirdChoice(blankPanel);
+          setQ2(q2RadioPanel_describe);
+          setQ3(blankPanel);
           setLastEvent(DESCRIBE);
         } 
         instance.validate();
@@ -308,21 +304,27 @@ public class DataLocation extends AbstractWizardPage {
       }
     };
 
-    topBox.add(getRadioPanel( firstChoiceTitle, 
-                              firstChoiceLabels, q1Listener, 0, true));
+    topBox.add(getRadioPanel( Q1_TITLE, 
+                              Q1_LABELS, q1Listener, 0, true));
 
     topBox.add(WidgetFactory.makeDefaultSpacer());
     
+    secondChoiceContainer = WidgetFactory.makeVerticalPanel(4);
+    
+    thirdChoiceContainer  = WidgetFactory.makeVerticalPanel(6);
+    
     topBox.add(secondChoiceContainer);
-    
-//    topBox.add(WidgetFactory.makeDefaultSpacer());
-    
+
     this.add(topBox, BorderLayout.NORTH);
+
+    q3Widget = new ThirdChoiceWidget();
+    
+    this.add(thirdChoiceContainer, BorderLayout.CENTER);
 
     filechooserPanel  = getFilechooserPanel();
     onlinePanel  = getOnlinePanel();
     offlinePanel = getOfflinePanel();
-    blankPanel  = getBlankPanel(7);
+    blankPanel  = WidgetFactory.makeVerticalPanel(7);
 
     currentSecondChoicePanel = blankPanel;
     currentThirdChoicePanel  = blankPanel;
@@ -332,19 +334,31 @@ public class DataLocation extends AbstractWizardPage {
   
   private short getLastEvent() { return lastEvent; }
   
-  private void setSecondChoice(JPanel newPanel) {
+  private void setQ2(JPanel newPanel) {
   
     secondChoiceContainer.remove(currentSecondChoicePanel);
     currentSecondChoicePanel = newPanel;
     secondChoiceContainer.add(currentSecondChoicePanel);
   }
   
-  private void setThirdChoice(JPanel newPanel) {
+  private void setQ3(JPanel newPanel) {
   
-    this.remove(currentThirdChoicePanel);
+    thirdChoiceContainer.remove(currentThirdChoicePanel);
     currentThirdChoicePanel = newPanel;
-    this.add(currentThirdChoicePanel, BorderLayout.CENTER);
+    thirdChoiceContainer.add(currentThirdChoicePanel);
   }
+  
+//  private void showQ3(boolean show) {
+//  
+//    thirdChoiceContainer.removeAll();
+//    if (show) {
+//      thirdChoiceContainer.add(q3RadioPanel, BorderLayout.WEST);
+//      thirdChoiceContainer.add(currentThirdChoicePanel, BorderLayout.CENTER);
+//    } else {
+//      thirdChoiceContainer.add(blankPanel, BorderLayout.WEST);
+//      thirdChoiceContainer.add(blankPanel, BorderLayout.CENTER);
+//    }
+//  }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -376,7 +390,7 @@ public class DataLocation extends AbstractWizardPage {
 
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
 
-    WidgetFactory.addTitledBorder(panel, "Describe Online Data");
+    WidgetFactory.addTitledBorder(panel, Q3_LABELS[1]);
 
     panel.add(WidgetFactory.makeDefaultSpacer());
 
@@ -427,13 +441,11 @@ public class DataLocation extends AbstractWizardPage {
   private JPanel getOfflinePanel() {
 
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    WidgetFactory.addTitledBorder(panel, "Describe your data");
+    WidgetFactory.addTitledBorder(panel, Q3_LABELS[2]);
 
     panel.add(WidgetFactory.makeHTMLLabel(
-      "Data may be stored on various digital media such as tapes and disks, "
-      +"or printed media which can collectively be termed 'hardcopy'.", 2));
-
-//    panel.add(WidgetFactory.makeDefaultSpacer());
+      "Archived data may be stored on digital media (tapes, disks), "
+      +"or printed media (hardcopy).", 1));
 
     JPanel objNamePanel = WidgetFactory.makePanel();
     objNameLabel = WidgetFactory.makeLabel(
@@ -447,36 +459,29 @@ public class DataLocation extends AbstractWizardPage {
     medNameField = WidgetFactory.makeOneLineTextField();
     medNamePanel.add(medNameLabel);
     medNamePanel.add(medNameField);
-    
-//    panel.add(WidgetFactory.makeDefaultSpacer());
+
+    panel.add(WidgetFactory.makeHalfSpacer());
 
     panel.add(WidgetFactory.makeHTMLLabel(
-        "Briefly describe the type of medium on which this resource is distributed. "
-        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-        +"eg: Tape,&nbsp;&nbsp;3.5 inch Floppy Disk,&nbsp;&nbsp;hardcopy"
-        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
+                    "Type of medium on which data is distributed. "
+                    +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+                    +"eg: Tape,&nbsp;3.5 inch Floppy Disk,&nbsp;hardcopy"
+                    +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
 
 
     panel.add(medNamePanel);
 
-    panel.add(WidgetFactory.makeDefaultSpacer());
+    panel.add(WidgetFactory.makeHalfSpacer());
 
-    panel.add(WidgetFactory.makeHTMLLabel(NAME_BYHAND_DESC_OFFLINE, 1));
+    panel.add(WidgetFactory.makeHTMLLabel(
+                    "Enter an identifying name in the space below&nbsp;"
+                    +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+                    +" eg a title for hardcopy, or a filename for digital media"
+                    +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
 
     panel.add(objNamePanel);
 
     panel.add(Box.createGlue());
-
-    return panel;
-  }
-
-
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-
-  private JPanel getBlankPanel(int numRows) {
-
-    JPanel panel = WidgetFactory.makeVerticalPanel(numRows);
 
     return panel;
   }
@@ -852,10 +857,11 @@ public class DataLocation extends AbstractWizardPage {
   private JPanel onlinePanel;
   private JPanel offlinePanel;
   private JPanel blankPanel;
-  private JPanel firstChoicePanel;
   private JPanel secondChoiceContainer;
   private JPanel currentSecondChoicePanel;
+  private JPanel thirdChoiceContainer;
   private JPanel currentThirdChoicePanel;
+  private JPanel q3Widget;
   private String importFileURL;
   private String distribXPath;
   private String INLINE_OR_ONLINE_XPATH;
@@ -876,6 +882,101 @@ public class DataLocation extends AbstractWizardPage {
   
   private final String EMPTY_STRING         = ""; 
   private final String NODATA_XPATH  = EMPTY_STRING;
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+  class ThirdChoiceWidget extends JPanel {
+    
+    private JPanel q3RadioPanel;
+    private JPanel blankChoicePanel;
+    private JPanel currentChoicePanel;
+    
+//    public ThirdChoiceWidget(String Q3_TITLE, String[] Q3_LABELS, short[] Q3_EVENTS) {
+    public ThirdChoiceWidget() {
+  
+      init();
+    }
+  
+    private void init() {
+  
+      this.setLayout(new BorderLayout());
+
+      blankChoicePanel = WidgetFactory.makePanel(5);
+      
+      final JPanel instance = this;
+    
+      ////////////////////////////////////////////////////////
+      // QUESTION 3 - "NOT AVAILABLE/ONLINE/ARCHIVED" RADIO
+      // PANEL (NO DISTRIBUTION, "ONLINE" OR "OFFLINE")
+      ////////////////////////////////////////////////////////
+    
+      ActionListener q3Listener = new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+
+          Log.debug(45, "QUESTION 3 - NOT AVAILABLE/ONLINE/ARCHIVED: "+e.getActionCommand());
+
+          if (e.getActionCommand().equals(Q3_LABELS[0])) {
+
+            // NOT AVAILABLE
+            Log.debug(45, "NOT AVAILABLE");
+            setChoicePanel(blankChoicePanel);
+            setLastEvent(DESCRIBE_MAN_NODATA);
+
+          } else if (e.getActionCommand().equals(Q3_LABELS[1])) {
+
+            // ONLINE
+            Log.debug(45, "ONLINE");
+            setChoicePanel(onlinePanel);
+            fileNameFieldOnline.requestFocus();
+            setLastEvent(DESCRIBE_MAN_ONLINE);
+          
+          } else if (e.getActionCommand().equals(Q3_LABELS[2])) {
+
+            // ARCHIVED
+            Log.debug(45, "ARCHIVED");
+            setChoicePanel(offlinePanel);
+            objNameField.requestFocus();
+            setLastEvent(DESCRIBE_MAN_OFFLINE);
+          } 
+          instance.validate();
+          instance.repaint();
+        }
+      };
+
+      JPanel q3RadioPanel = new JPanel();
+  
+      q3RadioPanel.setLayout(new BoxLayout(q3RadioPanel, BoxLayout.Y_AXIS));
+
+      q3RadioPanel.setPreferredSize(Q3_RADIOPANEL_DIMS);
+      q3RadioPanel.setMaximumSize(Q3_RADIOPANEL_DIMS);
+
+      q3RadioPanel.add(WidgetFactory.makeLabel(Q3_TITLE, true));
+      q3RadioPanel.add(WidgetFactory.makeRadioPanel(Q3_LABELS, 0, q3Listener));
+      q3RadioPanel.add(Box.createGlue());
+      
+      currentChoicePanel = blankChoicePanel;
+      
+      this.add(q3RadioPanel, BorderLayout.WEST);
+      this.add(currentChoicePanel, BorderLayout.CENTER);
+    }
+
+  
+    private void setChoicePanel(JPanel panel) {
+  
+      this.remove(1);
+      currentChoicePanel = panel;
+      this.add(currentChoicePanel, BorderLayout.CENTER);
+    }
+  }
+  
 }
   
 
