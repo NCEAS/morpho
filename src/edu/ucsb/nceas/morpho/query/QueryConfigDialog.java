@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 23:03:51 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-01 17:22:50 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -800,14 +800,14 @@ private String getCardinality(DTDItem item) {
 		saveJListItems(SearchList,"doctypes_searched","doctype");
 		saveJListItems(ReturnList,"doctypes_returned","returndoc");
 		saveJListItems(ReturnFieldList,"fields_returned","returnfield");
-		config.saveDOM(config.doc);
+		config.save();
 		this.dispose();	 
 	}
 
 	void DefaultButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
         getDefaultListValues();
-		config.saveDOM(config.doc);
+		config.save();
         
     }
 
