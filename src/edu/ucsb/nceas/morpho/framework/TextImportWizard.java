@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-09-24 19:14:37 $'
- * '$Revision: 1.57 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-10-02 17:59:57 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -581,6 +581,7 @@ public class TextImportWizard extends javax.swing.JFrame
 
 	void TextImportWizard_windowClosing_Interaction1(java.awt.event.WindowEvent event) {
 		try {
+      CancelButton_actionPerformed(null);
 			this.exitApplication();
 		} catch (Exception e) {
 		}
