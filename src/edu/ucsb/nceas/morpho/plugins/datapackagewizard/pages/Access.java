@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-09 00:42:21 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,38 +29,34 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
-import javax.swing.AbstractAction;
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import javax.xml.parsers.DocumentBuilder;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -195,7 +191,7 @@ public class Access extends AbstractWizardPage {
     }
 
     AccessPage accessPage = (AccessPage)WizardPageLibrary.getPage(DataPackageWizardInterface.ACCESS_PAGE);
-    WizardPopupDialog wpd = new WizardPopupDialog(accessPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(accessPage, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
@@ -222,7 +218,7 @@ public class Access extends AbstractWizardPage {
     if (dialogObj==null || !(dialogObj instanceof AccessPage)) return;
     AccessPage editAccessPage = (AccessPage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editAccessPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editAccessPage, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 

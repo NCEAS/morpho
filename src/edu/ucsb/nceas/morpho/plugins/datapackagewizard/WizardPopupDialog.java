@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:49:06 $'
- * '$Revision: 1.4 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,9 @@
  */
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
+
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -52,24 +55,19 @@ public class WizardPopupDialog extends JDialog {
 
   protected AbstractWizardPage wizardPage;
 
-  public WizardPopupDialog(AbstractWizardPage page, JFrame parent) {
+  public WizardPopupDialog(AbstractWizardPage page) {
 
-    super(parent, true);
-    this.parent = parent;
-    this.wizardPage = page;
-    init();
-    this.setVisible(true);
+    this(page, true);
   }
 
-  public WizardPopupDialog(AbstractWizardPage page, JFrame parent, boolean showNow) {
+  public WizardPopupDialog(AbstractWizardPage page, boolean showNow) {
 
-    super(parent, true);
-    this.parent = parent;
+    super(getDialogParent(), true);
+    this.parent = getDialogParent();
     this.wizardPage = page;
     init();
     this.setVisible(showNow);
     validate();
-
   }
 
   private void init() {
@@ -93,12 +91,11 @@ public class WizardPopupDialog extends JDialog {
    *  @return boolean true if dialog should close and return to wizard, false
    *          if not (e.g. if a required field hasn't been filled in)
    */
-   public boolean onAdvanceAction() {
+  public boolean onAdvanceAction() {
 
-	if(wizardPage == null)
-		return false;
-	return wizardPage.onAdvanceAction();
-   }
+    if (wizardPage == null) return false;
+    return wizardPage.onAdvanceAction();
+  }
 
 
 
@@ -107,15 +104,15 @@ public class WizardPopupDialog extends JDialog {
    */
   public void resetBounds() {
 
-		int xcoord, ycoord;
-		if(parent == null) {
-			xcoord = ycoord = 50;
-		} else {
-			xcoord = ( parent.getX() + parent.getWidth()/2 )
+    int xcoord, ycoord;
+    if(parent == null) {
+      xcoord = ycoord = 50;
+    } else {
+      xcoord = ( parent.getX() + parent.getWidth()/2 )
                                               - WizardSettings.DIALOG_WIDTH/2;
-			ycoord = ( parent.getY() + parent.getHeight()/2 )
+      ycoord = ( parent.getY() + parent.getHeight()/2 )
                                               - WizardSettings.DIALOG_HEIGHT/2;
-		}
+    }
 
     this.setBounds(xcoord, ycoord,  WizardSettings.DIALOG_WIDTH,
                                     WizardSettings.DIALOG_HEIGHT);
@@ -139,7 +136,7 @@ public class WizardPopupDialog extends JDialog {
     middlePanel = new JPanel();
     middlePanel.setLayout(new BorderLayout());
     if(wizardPage != null) {
-	    middlePanel.add(wizardPage,BorderLayout.CENTER);
+      middlePanel.add(wizardPage,BorderLayout.CENTER);
 
     }
 
@@ -210,6 +207,31 @@ public class WizardPopupDialog extends JDialog {
   }
 
 
+  private static JFrame getDialogParent() {
+
+    if (WizardContainerFrame.frame.isShowing()) {
+
+      dialogParent = WizardContainerFrame.frame;
+
+    } else {
+
+      dialogParent = UIController.getInstance().getCurrentActiveWindow();
+    }
+
+    if (dialogParent == null
+        || dialogParent.getX() < 0 || dialogParent.getY() < 0) {
+
+      if (dummyFrame == null) {
+        dummyFrame = new JFrame();
+        dummyFrame.setBounds(UISettings.CLIENT_SCREEN_WIDTH / 2,
+                             UISettings.CLIENT_SCREEN_HEIGHT / 2, 1, 1);
+        dummyFrame.setVisible(false);
+      }
+      dialogParent = dummyFrame;
+    }
+    return dialogParent;
+  }
+
   // * * *  P R I V A T E   V A R I A B L E S  * * * * * * * * * * * * * * * * *
 
 
@@ -219,4 +241,7 @@ public class WizardPopupDialog extends JDialog {
   protected JPanel middlePanel;
   private JPanel bottomPanel;
   private JButton okButton;
+  private static JFrame dummyFrame;
+  private static JFrame dialogParent;
+
 }

@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:54:42 $'
- * '$Revision: 1.46 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:11:33 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,43 +28,40 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.BorderFactory;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import java.util.Vector;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener ;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Vector;
-import java.util.Stack;
-import java.util.Iterator;
-import java.util.Set;
-
-import java.io.StringReader;
-
-import org.w3c.dom.Node;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.InputMap;
-import javax.swing.ActionMap;
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import org.w3c.dom.Node;
 
 /**
  *  provides a top-level container for AbstractWizardPage objects. The top (title) panel
@@ -131,7 +128,7 @@ public class WizardContainerFrame extends JFrame {
       return;
     }
 
-		AbstractWizardPage pageForID = WizardPageLibrary.getPage(pageID);
+    AbstractWizardPage pageForID = WizardPageLibrary.getPage(pageID);
 
     if (pageForID == null) {
       Log.debug(15,"setCurrentPage: page library does NOT contain ID: "+pageID);
@@ -170,8 +167,8 @@ public class WizardContainerFrame extends JFrame {
     middlePanel.repaint();
     updateButtonsStatus();
 
-		// update buttons before onLoad so that we cld change button status in onLoad using
-		// the setButtonsStatus()
+    // update buttons before onLoad so that we cld change button status in onLoad using
+    // the setButtonsStatus()
     getCurrentPage().onLoadAction();
 
   }
@@ -417,12 +414,12 @@ public class WizardContainerFrame extends JFrame {
     return firstPageID;
   }
 
-	public String getPreviousPageID() {
-		if(pageStack.isEmpty()) return "";
-		AbstractWizardPage page = (AbstractWizardPage) pageStack.peek();
-		if(page == null) return "";
-		return page.getPageID();
-	}
+  public String getPreviousPageID() {
+    if(pageStack.isEmpty()) return "";
+    AbstractWizardPage page = (AbstractWizardPage) pageStack.peek();
+    if(page == null) return "";
+    return page.getPageID();
+  }
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
    *  is pressed. It's up to the content to know whether it's the last page or
@@ -462,13 +459,13 @@ public class WizardContainerFrame extends JFrame {
 
     this.setVisible(false);
 
-		Node rootNode = null;
-		if(!domPresentToReturn)
-			rootNode = collectDataFromPages();
-		else
-			rootNode = domToReturn;
+    Node rootNode = null;
+    if(!domPresentToReturn)
+      rootNode = collectDataFromPages();
+    else
+      rootNode = domToReturn;
 
-		listener.wizardComplete(rootNode);
+    listener.wizardComplete(rootNode);
 
     // now clean up
     doCleanUp();
@@ -476,212 +473,212 @@ public class WizardContainerFrame extends JFrame {
 
 
 
-	public Node collectDataFromPages() {
+  public Node collectDataFromPages() {
 
-		//results Map:
-		OrderedMap wizData = new OrderedMap();
+    //results Map:
+    OrderedMap wizData = new OrderedMap();
 
-		//NOTE: the order of pages on the stack is *not* the same as the order
-		//of writing data to the DOM. We therefore convert the Stack to a Vector and
-		//access the pages non-sequentially in a feat of hard-coded madness:
-		//
-		List pagesList = (Vector)pageStack;
+    //NOTE: the order of pages on the stack is *not* the same as the order
+    //of writing data to the DOM. We therefore convert the Stack to a Vector and
+    //access the pages non-sequentially in a feat of hard-coded madness:
+    //
+    List pagesList = (Vector)pageStack;
 
-		int GENERAL
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GENERAL));
-		int KEYWORDS
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.KEYWORDS));
-		int PARTY_CREATOR
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_CREATOR));
-		int PARTY_CONTACT
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_CONTACT));
-		int PARTY_ASSOCIATED
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_ASSOCIATED));
-		int PROJECT
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
+    int GENERAL
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GENERAL));
+    int KEYWORDS
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.KEYWORDS));
+    int PARTY_CREATOR
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_CREATOR));
+    int PARTY_CONTACT
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_CONTACT));
+    int PARTY_ASSOCIATED
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_ASSOCIATED));
+    int PROJECT
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
                 int METHODS
                 = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.METHODS));
-		int USAGE_RIGHTS
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.USAGE_RIGHTS));
-		int GEOGRAPHIC
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GEOGRAPHIC));
-		int TEMPORAL
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEMPORAL));
-		int ACCESS
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ACCESS));
-		int DATA_LOCATION
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_LOCATION));
-		int TEXT_IMPORT_WIZARD
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEXT_IMPORT_WIZARD));
-		int DATA_FORMAT
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_FORMAT));
-		int ENTITY
-		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ENTITY));
+    int USAGE_RIGHTS
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.USAGE_RIGHTS));
+    int GEOGRAPHIC
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GEOGRAPHIC));
+    int TEMPORAL
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEMPORAL));
+    int ACCESS
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ACCESS));
+    int DATA_LOCATION
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_LOCATION));
+    int TEXT_IMPORT_WIZARD
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEXT_IMPORT_WIZARD));
+    int DATA_FORMAT
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_FORMAT));
+    int ENTITY
+    = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ENTITY));
 
-		//TITLE:
-		OrderedMap generalMap = null;
-		if (GENERAL>=0)             {
+    //TITLE:
+    OrderedMap generalMap = null;
+    if (GENERAL>=0)             {
 
-			generalMap = ((WizardPage)(pagesList.get(GENERAL))).getPageData();
-			final String titleXPath = "/eml:eml/dataset/title[1]";
-			Object titleObj = generalMap.get(titleXPath);
-			if (titleObj!=null) wizData.put(titleXPath,
-				XMLUtilities.normalize(titleObj));
-		}
+      generalMap = ((WizardPage)(pagesList.get(GENERAL))).getPageData();
+      final String titleXPath = "/eml:eml/dataset/title[1]";
+      Object titleObj = generalMap.get(titleXPath);
+      if (titleObj!=null) wizData.put(titleXPath,
+        XMLUtilities.normalize(titleObj));
+    }
 
-		//CREATOR:
-		if (PARTY_CREATOR>=0)       {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
-		}
+    //CREATOR:
+    if (PARTY_CREATOR>=0)       {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
+    }
 
-		//ASSOCIATED PARTY:
-		if (PARTY_ASSOCIATED>=0)    {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
-		}
+    //ASSOCIATED PARTY:
+    if (PARTY_ASSOCIATED>=0)    {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
+    }
 
-		//ABSTRACT:
-		if (generalMap!=null)       {
+    //ABSTRACT:
+    if (generalMap!=null)       {
 
-			final String abstractXPath = "/eml:eml/dataset/abstract/section/para[1]";
-			Object abstractObj = generalMap.get(abstractXPath);
-			if (abstractObj!=null) wizData.put( abstractXPath,
-				XMLUtilities.normalize(abstractObj));
-		}
+      final String abstractXPath = "/eml:eml/dataset/abstract/section/para[1]";
+      Object abstractObj = generalMap.get(abstractXPath);
+      if (abstractObj!=null) wizData.put( abstractXPath,
+        XMLUtilities.normalize(abstractObj));
+    }
 
-		//KEYWORDS:
-		if (KEYWORDS>=0)            {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
-		}
+    //KEYWORDS:
+    if (KEYWORDS>=0)            {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
+    }
 
-		//INTELLECTUAL RIGHTS:
-		if (USAGE_RIGHTS>=0)        {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
-		}
+    //INTELLECTUAL RIGHTS:
+    if (USAGE_RIGHTS>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
+    }
 
-		//GEOGRAPHIC:
-		if (GEOGRAPHIC>=0)        {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(GEOGRAPHIC)),wizData);
-		}
+    //GEOGRAPHIC:
+    if (GEOGRAPHIC>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(GEOGRAPHIC)),wizData);
+    }
 
-		//TEMPORAL:
-		if (TEMPORAL>=0)        {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(TEMPORAL)),wizData);
-		}
+    //TEMPORAL:
+    if (TEMPORAL>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(TEMPORAL)),wizData);
+    }
 
-		//CONTACT:
-		if (PARTY_CONTACT>=0)       {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CONTACT)),wizData);
-		}
+    //CONTACT:
+    if (PARTY_CONTACT>=0)       {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CONTACT)),wizData);
+    }
 
-		//PROJECT:
-		if (PROJECT>=0)        {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(PROJECT)),wizData);
-		}
+    //PROJECT:
+    if (PROJECT>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PROJECT)),wizData);
+    }
 
                 //METHODS:
                 if (METHODS>=0)        {
                         addPageDataToResultsMap((WizardPage)(pagesList.get(METHODS)),wizData);
                 }
 
-		//ACCESS:
-		if (ACCESS>=0)        {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(ACCESS)),wizData);
-		}
+    //ACCESS:
+    if (ACCESS>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(ACCESS)),wizData);
+    }
 
-		if (TEXT_IMPORT_WIZARD>=0)  {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(TEXT_IMPORT_WIZARD)),wizData);
-		}
+    if (TEXT_IMPORT_WIZARD>=0)  {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(TEXT_IMPORT_WIZARD)),wizData);
+    }
 
-		if (ENTITY>=0)              {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(ENTITY)),wizData);
-		}
+    if (ENTITY>=0)              {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(ENTITY)),wizData);
+    }
 
-		if (DATA_FORMAT>=0)         {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_FORMAT)),wizData);
-		}
+    if (DATA_FORMAT>=0)         {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_FORMAT)),wizData);
+    }
 
-		if (DATA_LOCATION>=0)       {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
-		}
-		// now add unique ID's to all dataTables and attributes
-		addIDs(
-		new String[]  {
-			"/eml:eml/dataset/dataTable",
-			"/eml:eml/dataset/dataTable/attributeList/attribute"
-		}, wizData);
-
-
-		Log.debug(45, "\n\n********** Wizard finished: NVPs:");
-		Log.debug(45, wizData.toString());
-
-		////////////////////////////////////////////////////////////////////////////
-		// this is the end of the page processing - wizData OrderedMap should now
-		// contain all values in correct order
-		////////////////////////////////////////////////////////////////////////////
-
-		////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////
+    if (DATA_LOCATION>=0)       {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
+    }
+    // now add unique ID's to all dataTables and attributes
+    addIDs(
+    new String[]  {
+      "/eml:eml/dataset/dataTable",
+      "/eml:eml/dataset/dataTable/attributeList/attribute"
+    }, wizData);
 
 
-		////////////////////////////////////////////////////////////////////////////
-		// next, create a DOM from the OrderedMap...
-		////////////////////////////////////////////////////////////////////////////
+    Log.debug(45, "\n\n********** Wizard finished: NVPs:");
+    Log.debug(45, wizData.toString());
 
-		Node rootNode = null;
+    ////////////////////////////////////////////////////////////////////////////
+    // this is the end of the page processing - wizData OrderedMap should now
+    // contain all values in correct order
+    ////////////////////////////////////////////////////////////////////////////
 
-		//create a new empty DOM document to be populated by the wizard values:
-		try {
-			rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
-			new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.debug(5, "unexpected error trying to create new XML document "
-			+"at start of wizard\n");
-			cancelAction();
-			return null;
-		}
-
-		//now populate it...
-		try {
-
-			XMLUtilities.getXPathMapAsDOMTree(wizData, rootNode);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			Log.debug(5, "unexpected error trying to create new XML document "
-			+"after wizard finished\n");
-			cancelAction();
-
-			return null;
-		}
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
 
-		Log.debug(49, "\n\n********** Wizard finished: DOM:");
-		Log.debug(49, XMLUtilities.getDOMTreeAsString(rootNode));
-		return rootNode;
-	}
+    ////////////////////////////////////////////////////////////////////////////
+    // next, create a DOM from the OrderedMap...
+    ////////////////////////////////////////////////////////////////////////////
+
+    Node rootNode = null;
+
+    //create a new empty DOM document to be populated by the wizard values:
+    try {
+      rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
+      new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
+    } catch (Exception e) {
+      e.printStackTrace();
+      Log.debug(5, "unexpected error trying to create new XML document "
+      +"at start of wizard\n");
+      cancelAction();
+      return null;
+    }
+
+    //now populate it...
+    try {
+
+      XMLUtilities.getXPathMapAsDOMTree(wizData, rootNode);
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+      Log.debug(5, "unexpected error trying to create new XML document "
+      +"after wizard finished\n");
+      cancelAction();
+
+      return null;
+    }
 
 
-	private final String ID_ATTR_XPATH  = "/@id";
-	private final StringBuffer tempBuff = new StringBuffer();
-	private final OrderedMap idMap      = new OrderedMap();
+    Log.debug(49, "\n\n********** Wizard finished: DOM:");
+    Log.debug(49, XMLUtilities.getDOMTreeAsString(rootNode));
+    return rootNode;
+  }
 
-	/**
-	* adds unique IDs to the elements identified by the *absolute* XPath strings
-	* in the elementsThatNeedIDsArray NOTE - if the xpath points to more than one
-	* element, then a unique ID will be assigned to each element
-	*
-	* @param elementsNeedingIDsArray String[]
-	* @param resultsMap OrderedMap
-	*/
-	private void addIDs(String[] elementsNeedingIDsArray, OrderedMap resultsMap) {
 
-		idMap.clear();
-		Set keyset = resultsMap.keySet();
-		//
-		for (int i=0; i<elementsNeedingIDsArray.length; i++) {
+  private final String ID_ATTR_XPATH  = "/@id";
+  private final StringBuffer tempBuff = new StringBuffer();
+  private final OrderedMap idMap      = new OrderedMap();
+
+  /**
+  * adds unique IDs to the elements identified by the *absolute* XPath strings
+  * in the elementsThatNeedIDsArray NOTE - if the xpath points to more than one
+  * element, then a unique ID will be assigned to each element
+  *
+  * @param elementsNeedingIDsArray String[]
+  * @param resultsMap OrderedMap
+  */
+  private void addIDs(String[] elementsNeedingIDsArray, OrderedMap resultsMap) {
+
+    idMap.clear();
+    Set keyset = resultsMap.keySet();
+    //
+    for (int i=0; i<elementsNeedingIDsArray.length; i++) {
 
       String nextXPath = elementsNeedingIDsArray[i];
       //elementsNeedingIDsArray[i];
@@ -751,11 +748,11 @@ public class WizardContainerFrame extends JFrame {
   }
 
 
-	public void setDOMToReturn(Node dom) {
+  public void setDOMToReturn(Node dom) {
 
-		this.domToReturn = dom;
-		this.domPresentToReturn = true;
-	}
+    this.domToReturn = dom;
+    this.domPresentToReturn = true;
+  }
 
   /**
    * given a WizardPage object (nextPage), calls its getPageData() method to get
@@ -811,20 +808,20 @@ public class WizardContainerFrame extends JFrame {
 
     setCurrentPage(previousPage);
   }
-	
-	/**  
-		Function to clear the current page stack
-	*/
-	public void reInitializePageStack() {
-		
-		
-		if(pageStack == null) {
-			pageStack = new Stack();
-			return;
-		}
-		pageStack.removeAllElements();
-		return;
-	}
+
+  /**
+    Function to clear the current page stack
+  */
+  public void reInitializePageStack() {
+
+
+    if(pageStack == null) {
+      pageStack = new Stack();
+      return;
+    }
+    pageStack.removeAllElements();
+    return;
+  }
 
 
   /**
@@ -844,10 +841,10 @@ public class WizardContainerFrame extends JFrame {
     //clear out pageStack
     pageStack.clear();
 
-		this.toBeImported = null;
-		this.toBeImportedCount = 0;
-		this.lastImportedAttributes = null;
-		this.lastImportedEntityName = null;
+    this.toBeImported = null;
+    this.toBeImportedCount = 0;
+    this.lastImportedAttributes = null;
+    this.lastImportedEntityName = null;
 
     //clear all page objects (re-init??)
     pageLib.reInitialize();
@@ -890,116 +887,116 @@ public class WizardContainerFrame extends JFrame {
     return button;
   }
 
-	public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap omap, String xPath, boolean newTable) {
+  public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap omap, String xPath, boolean newTable) {
 
-		List t = new ArrayList();
-		t.add(entityName);
-		t.add(attributeName);
-		t.add(scale);
-		t.add(omap);
-		t.add(xPath);
-		t.add(new Boolean(newTable));
-		if(toBeImported == null) {
-			toBeImported = new ArrayList();
-			toBeImportedCount = 0;
-		}
-		toBeImported.add(t);
-		toBeImportedCount++;
-		Log.debug(10,"Adding Attr to Import - (" + entityName + ", " + attributeName + ") ; count = " + toBeImportedCount);
-	}
+    List t = new ArrayList();
+    t.add(entityName);
+    t.add(attributeName);
+    t.add(scale);
+    t.add(omap);
+    t.add(xPath);
+    t.add(new Boolean(newTable));
+    if(toBeImported == null) {
+      toBeImported = new ArrayList();
+      toBeImportedCount = 0;
+    }
+    toBeImported.add(t);
+    toBeImportedCount++;
+    Log.debug(10,"Adding Attr to Import - (" + entityName + ", " + attributeName + ") ; count = " + toBeImportedCount);
+  }
 
-	public String getCurrentImportEntityName() {
+  public String getCurrentImportEntityName() {
 
-		if(toBeImportedCount == 0)
-			return null;
-		List t = (List)toBeImported.get(0);
-		if(t == null) return null;
-		return (String)t.get(0);
-	}
+    if(toBeImportedCount == 0)
+      return null;
+    List t = (List)toBeImported.get(0);
+    if(t == null) return null;
+    return (String)t.get(0);
+  }
 
-	public String getCurrentImportAttributeName() {
+  public String getCurrentImportAttributeName() {
 
-		if(toBeImportedCount == 0)
-			return null;
-		List t = (List)toBeImported.get(0);
-		if(t == null) return null;
-		return (String)t.get(1);
-	}
+    if(toBeImportedCount == 0)
+      return null;
+    List t = (List)toBeImported.get(0);
+    if(t == null) return null;
+    return (String)t.get(1);
+  }
 
-	public String getCurrentImportScale() {
-		if(toBeImportedCount == 0)
-			return null;
-		List t = (List)toBeImported.get(0);
-		if(t == null) return null;
-		return (String)t.get(2);
-	}
+  public String getCurrentImportScale() {
+    if(toBeImportedCount == 0)
+      return null;
+    List t = (List)toBeImported.get(0);
+    if(t == null) return null;
+    return (String)t.get(2);
+  }
 
-	public OrderedMap getCurrentImportMap() {
-		if(toBeImportedCount == 0)
-			return null;
-		List t = (List)toBeImported.get(0);
-		if(t == null) return null;
-		return (OrderedMap)t.get(3);
-	}
+  public OrderedMap getCurrentImportMap() {
+    if(toBeImportedCount == 0)
+      return null;
+    List t = (List)toBeImported.get(0);
+    if(t == null) return null;
+    return (OrderedMap)t.get(3);
+  }
 
-	public OrderedMap getSecondImportMap() {
-		if(toBeImportedCount < 2)
-			return null;
-		List t = (List)toBeImported.get(1);
-		if(t == null) return null;
-		return (OrderedMap)t.get(3);
-	}
+  public OrderedMap getSecondImportMap() {
+    if(toBeImportedCount < 2)
+      return null;
+    List t = (List)toBeImported.get(1);
+    if(t == null) return null;
+    return (OrderedMap)t.get(3);
+  }
 
-	public String getCurrentImportXPath() {
-		if(toBeImportedCount == 0)
-			return null;
-		List t = (List)toBeImported.get(0);
-		if(t == null) return null;
-		return (String)t.get(4);
-	}
+  public String getCurrentImportXPath() {
+    if(toBeImportedCount == 0)
+      return null;
+    List t = (List)toBeImported.get(0);
+    if(t == null) return null;
+    return (String)t.get(4);
+  }
 
-	public boolean isCurrentImportNewTable() {
-		if(toBeImportedCount == 0)
-			return false;
-		List t = (List)toBeImported.get(0);
-		if(t == null) return false;
-		return ((Boolean)t.get(5)).booleanValue();
-	}
+  public boolean isCurrentImportNewTable() {
+    if(toBeImportedCount == 0)
+      return false;
+    List t = (List)toBeImported.get(0);
+    if(t == null) return false;
+    return ((Boolean)t.get(5)).booleanValue();
+  }
 
-	public int getAttributeImportCount() {
-		return toBeImportedCount;
-	}
+  public int getAttributeImportCount() {
+    return toBeImportedCount;
+  }
 
-	public void removeAttributeForImport() {
-		if(toBeImportedCount == 0)
-			return;
-		toBeImported.remove(0);
-		toBeImportedCount--;
-	}
+  public void removeAttributeForImport() {
+    if(toBeImportedCount == 0)
+      return;
+    toBeImported.remove(0);
+    toBeImportedCount--;
+  }
 
-	public void setLastImportedEntity(String name) {
-		lastImportedEntityName = name;
-	}
-	
-	public void setLastImportedDataSet(Vector data) {
-		lastImportedDataSet = data;
-	}
-	
-	public void setLastImportedAttributes(List attr) {
-		lastImportedAttributes = attr;
-	}
+  public void setLastImportedEntity(String name) {
+    lastImportedEntityName = name;
+  }
 
-	public String getLastImportedEntity() {
-		return lastImportedEntityName;
-	}
+  public void setLastImportedDataSet(Vector data) {
+    lastImportedDataSet = data;
+  }
 
-	public List getLastImportedAttributes() {
-		return lastImportedAttributes;
-	}
-	
-	public Vector getLastImportedDataSet() {
-		return lastImportedDataSet;
-	}
+  public void setLastImportedAttributes(List attr) {
+    lastImportedAttributes = attr;
+  }
+
+  public String getLastImportedEntity() {
+    return lastImportedEntityName;
+  }
+
+  public List getLastImportedAttributes() {
+    return lastImportedAttributes;
+  }
+
+  public Vector getLastImportedDataSet() {
+    return lastImportedDataSet;
+  }
 
   // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1019,12 +1016,12 @@ public class WizardContainerFrame extends JFrame {
   private WizardPageLibrary pageLib;
   private boolean showPageCount;
 
-	private List toBeImported = null;
-	private int toBeImportedCount = 0;
+  private List toBeImported = null;
+  private int toBeImportedCount = 0;
 
-	private List lastImportedAttributes;
-	private String lastImportedEntityName;
-	private Vector lastImportedDataSet;
-	
+  private List lastImportedAttributes;
+  private String lastImportedEntityName;
+  private Vector lastImportedDataSet;
+
   private String firstPageID;
 }

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 21:59:31 $'
- * '$Revision: 1.24 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -137,7 +136,7 @@ public class Keywords extends AbstractWizardPage{
   private void showNewKeywordsDialog() {
 
     KeywordsPage keywordsPage = (KeywordsPage)WizardPageLibrary.getPage(DataPackageWizardInterface.KEYWORDS_PAGE);
-    WizardPopupDialog wpd = new WizardPopupDialog(keywordsPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(keywordsPage, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
@@ -160,7 +159,7 @@ public class Keywords extends AbstractWizardPage{
     if (dialogObj==null || !(dialogObj instanceof KeywordsPage)) return;
     KeywordsPage editKeywordsPage = (KeywordsPage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editKeywordsPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editKeywordsPage, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 

@@ -5,9 +5,9 @@
  *    Authors: Perumal Sambasivam
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-16 19:20:51 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,19 +26,17 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
 
@@ -61,13 +59,16 @@ public class AddTaxonomicCovCommand implements Command {
   public AddTaxonomicCovCommand() {
   }
 
+
   /**
    * execute add command
+   *
+   * @param event ActionEvent
    */
   public void execute(ActionEvent event) {
-		
+
     showTaxonomicDialog();
-    
+
   }
 
 
@@ -93,19 +94,19 @@ public class AddTaxonomicCovCommand implements Command {
 
     taxonomicPage = (Taxonomic) dpwPlugin.getPage(
         DataPackageWizardInterface.TAXONOMIC);
-    WizardPopupDialog wpd = new WizardPopupDialog(taxonomicPage, mf, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(taxonomicPage, false);
 
     wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.DIALOG_HEIGHT);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
-      
+
     }
     else {
-      
+
     }
 
     return;
   }
-	
+
 }

@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:37:44 $'
- * '$Revision: 1.11 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -135,7 +134,7 @@ public class Geographic extends AbstractWizardPage{
   private void showNewGeographicDialog() {
 
     GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
-    WizardPopupDialog wpd = new WizardPopupDialog(geographicPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(geographicPage, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
@@ -158,7 +157,7 @@ public class Geographic extends AbstractWizardPage{
 Log.debug(1, "CCCC");
     GeographicPage editGeographicPage = (GeographicPage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editGeographicPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editGeographicPage, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-11 06:19:58 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-03-16 20:11:33 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,49 +26,50 @@
 
 package edu.ucsb.nceas.morpho.util;
 
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
-import javax.swing.Icon;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.MenuComponent;
 import java.awt.event.ActionEvent;
-import java.util.Enumeration;
-import java.util.Hashtable;
+
+import javax.swing.AbstractAction;
+import javax.swing.Icon;
+import javax.swing.KeyStroke;
 
 /**
  *  Class       GUIAction
  *  This class extends javax.swing.AbstractAction in order to provide basic
- *  "Action" functionality for the GUI.  Instances of this class are passed 
- *  as arguments to Swing component constructors, in order to facilitate 
- *  encapsulation and sharing of functionality (eg multiple ways of accessing 
+ *  "Action" functionality for the GUI.  Instances of this class are passed
+ *  as arguments to Swing component constructors, in order to facilitate
+ *  encapsulation and sharing of functionality (eg multiple ways of accessing
  *  the same command, such as from a drop-down menu and from a toolbar button).
- *  The Swing component generally adds this object to itself as 
+ *  The Swing component generally adds this object to itself as
  *  an ActionListener automatically.
  */
 public class GUIAction extends AbstractAction implements StateChangeListener
 {
     /**
-     *  Public constant to denote that a GUIAction should consume events 
+     *  Public constant to denote that a GUIAction should consume events
      *  originating only within the same frame as the GUIAction itself
      */
      public static final int EVENT_LOCAL = 100;
-     
+
     /**
-     *  Public constant to denote that a GUIAction should consume events 
+     *  Public constant to denote that a GUIAction should consume events
      *  originating from any frame, not just its own
      */
      public static final int EVENT_GLOBAL = 200;
-     
-     
+
+
      private static final String ROLLOVER_SMALL_ICON = "rolloverSmallIcon";
      private static final String ROLLOVER_TEXT_LABEL = "rolloverTextLabel";
-     
-     
-    /** 
+
+
+    /**
      *  Constructor
      *
      *  @param name the display name of this action, as used in menus
@@ -89,11 +90,13 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         commandList = new MappingsTable();
     }
 
-    /**
-     * Make a clone of the GUIAction instance.
-     *
-     */
-    public GUIAction cloneAction()
+
+  /**
+   * Make a clone of the GUIAction instance.
+   *
+   * @return GUIAction
+   */
+  public GUIAction cloneAction()
     {
         GUIAction clone = null;
         try {
@@ -102,7 +105,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             Log.debug(1, "Fatal error: cloning operation not supported.");
         }
 
-        // Establish that this is a clone by including a reference to the 
+        // Establish that this is a clone by including a reference to the
         // original GUIAction from which this clone was made
         clone.setOriginalAction(this);
 
@@ -123,9 +126,9 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         while (enabledKeys.hasMoreElements()) {
             String key = (String)enabledKeys.nextElement();
             String changedState = new String(key);
-            boolean enabled 
+            boolean enabled
                       = ((Boolean)enabledList.getNewState(key)).booleanValue();
-            clone.setEnabledOnStateChange(changedState, enabled, 
+            clone.setEnabledOnStateChange(changedState, enabled,
                                                 enabledList.getRespondsTo(key));
         }
         // Clone the command list
@@ -134,24 +137,25 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             String key = (String)commandKeys.nextElement();
             String changedState = new String(key);
             Command command = (Command)commandList.getNewState(key);
-            clone.setCommandOnStateChange(changedState, command, 
+            clone.setCommandOnStateChange(changedState, command,
                                                 commandList.getRespondsTo(key));
         }
 
         return clone;
     }
 
-   /** 
-    *  sets the text for the display label
-    *
-    * @param icon the icon to be used by default
-    */
-   public void setTextLabel(String name)
+
+  /**
+   * sets the text for the display label
+   *
+   * @param name the icon to be used by default
+   */
+  public void setTextLabel(String name)
    {
        super.putValue(AbstractAction.NAME, name);
    }
 
-    /** 
+    /**
      *  gets the text for the display label
      *
      *  @return String representing the name of the action
@@ -159,8 +163,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public String getTextLabel(){
         return (String)super.getValue(AbstractAction.NAME);
     }
-    
-    /** 
+
+    /**
      *  gets the default Icon for this action object
      *
      *  @return Icon the default icon for this action object
@@ -168,7 +172,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public Icon getDefaultIcon(){
         return defaultIcon;
     }
-    
+
     /**
      * Set the default icon.
      *
@@ -179,7 +183,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         this.defaultIcon = icon;
     }
 
-    /** 
+    /**
      *  gets the text for the tooltip
      *
      *  @return String representing the tooltip text
@@ -187,7 +191,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public String getToolTipText(){
         return (String)super.getValue(AbstractAction.SHORT_DESCRIPTION);
     }
-    
+
     /**
      * sets the text to be displayed as a mouse-over tooltip
      *
@@ -196,9 +200,9 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setToolTipText(String toolTipText) {
         super.putValue(AbstractAction.SHORT_DESCRIPTION, toolTipText);
     }
-    
-    
-    /** 
+
+
+    /**
      *  sets the *rollover* small Icon to be displayed on toolbar buttons
      *
      *  @param rolloverSmallIcon the Icon to be displayed on menus etc
@@ -206,9 +210,9 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setRolloverSmallIcon(Icon rolloverSmallIcon) {
         super.putValue(ROLLOVER_SMALL_ICON, rolloverSmallIcon);
     }
-    
-    
-    /** 
+
+
+    /**
      *  gets the *rollover* small Icon to be displayed on toolbar buttons
      *
      *  @return rolloverSmallIcon the rollover Icon to be displayed on menus etc
@@ -216,10 +220,10 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public Icon getRolloverSmallIcon() {
         return (Icon)super.getValue(ROLLOVER_SMALL_ICON);
     }
-    
-    
-    /** 
-     *  sets the *rollover* text label to be displayed on toolbar buttons 
+
+
+    /**
+     *  sets the *rollover* text label to be displayed on toolbar buttons
      *  (mainly used for HTML text, where only the color or font face changes)
      *
      *  @param rolloverTextLabel the label to be displayed on rollover
@@ -227,10 +231,10 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setRolloverTextLabel(String rolloverTextLabel) {
         super.putValue(ROLLOVER_TEXT_LABEL, rolloverTextLabel);
     }
-    
-    
-    /** 
-     *  gets the *rollover* text label to be displayed on toolbar buttons 
+
+
+    /**
+     *  gets the *rollover* text label to be displayed on toolbar buttons
      *  (mainly used for HTML text, where only the color or font face changes)
      *
      *  @return rolloverTextLabel the label to be displayed on rollover
@@ -238,9 +242,9 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public String getRolloverTextLabel() {
         return (String)super.getValue(ROLLOVER_TEXT_LABEL);
     }
-    
-   
-    /** 
+
+
+    /**
      *  sets the small Icon to be displayed on toolbar buttons & menus. *NOTE*
      *  that this icon is typiucally set by passing it to the *constructor*
      *
@@ -249,9 +253,9 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setSmallIcon(Icon smallIcon) {
         super.putValue(AbstractAction.SMALL_ICON, smallIcon);
     }
-    
-    
-    /** 
+
+
+    /**
      *  Get the small Icon to be displayed on menus
      *
      *  @return the Icon to be displayed on menus etc
@@ -259,7 +263,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public Icon getSmallIcon() {
         return (Icon)super.getValue(AbstractAction.SMALL_ICON);
     }
-    
+
     /**
      * set a accelerator key for this action
      * @param keyString  the accelerator key string
@@ -272,28 +276,34 @@ public class GUIAction extends AbstractAction implements StateChangeListener
                        KeyStroke.getKeyStroke(keyString));
       }
     }
-    
-    /**
-     * Method to get accelerator key
-     */
-    public KeyStroke getAcceleratorKey()
+
+
+  /**
+   * Method to get accelerator key
+   *
+   * @return KeyStroke
+   */
+  public KeyStroke getAcceleratorKey()
     {
       return (KeyStroke)super.getValue(AbstractAction.ACCELERATOR_KEY);
     }
-    
-    /**
-     * Method to set accelerator key
-     * @Param key the accelerator key
-     */
-    public void setAcceleratorKey(KeyStroke key)
+
+
+  /**
+   * Method to set accelerator key
+   *
+   * @Param key the accelerator key
+   * @param key KeyStroke
+   */
+  public void setAcceleratorKey(KeyStroke key)
     {
       if (key != null)
       {
         super.putValue(AbstractAction.ACCELERATOR_KEY, key);
       }
     }//
-     
-    /** 
+
+    /**
      *  sets the action pull right submenu
      *
      *  @param flag true of false the action is sub menu
@@ -304,23 +314,23 @@ public class GUIAction extends AbstractAction implements StateChangeListener
           super.putValue(UIController.PULL_RIGHT_MENU, UIController.YES);
         }
     }
-    
-    /** 
+
+    /**
      *  sets the action path for sub menu or sub menuitem.
      *  Note: sub menu and sub menuitem for this sub menu has same path
      *  for example In file menu, it has a submenu delete and delete has
      *  3 menuitems - delete local, delete network and delete both.
-     *  The path for delete submenu is "file/delete", the path for the 3 
+     *  The path for delete submenu is "file/delete", the path for the 3
      *  menuitems is "file/delete" too.
      *
      *  @param path the su
      */
     public void setSubMenuPath(String path) {
           super.putValue(UIController.MENU_PATH, path);
-     
+
     }
-   
-    /** 
+
+    /**
      *  Sets the menu and its position for this action
      *
      *  @param menuName the name of the menu in which to embed this action
@@ -330,8 +340,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         this.menuName = menuName;
         this.menuPosition = position;
     }
-    
-    /** 
+
+    /**
      *  Get the menu name for this action
      *
      * @return the name of the menu for this action
@@ -339,8 +349,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public String getMenuName() {
         return menuName;
     }
-    
-    /** 
+
+    /**
      *  Get the menu position for this action
      *
      * @return the position of the menu for this action
@@ -348,8 +358,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public int getMenuPosition() {
         return menuPosition;
     }
-    
-    /** 
+
+    /**
      *  sets the menu item position for this action
      *
      *  @param position the position of memu item
@@ -357,18 +367,20 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setMenuItemPosition(int position) {
         super.putValue("menuPosition", new Integer(position));
     }
-    
-    /** 
-     *  Get the menu item position for this action
-     *
-     */
-    public int getMenuItemPosition() {
+
+
+  /**
+   * Get the menu item position for this action
+   *
+   * @return int
+   */
+  public int getMenuItemPosition() {
         Integer position = (Integer) super.getValue("menuPosition");
         int menuPos = (position != null) ? position.intValue() : -1;
         return menuPos;
     }
-    
-    /** 
+
+    /**
      *  sets the separator for this action
      *
      *  @param position the position separator of memu item, follow or precding
@@ -376,17 +388,19 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void setSeparatorPosition(String position) {
       super.putValue(DEFAULT, position);
     }
-    
-    /** 
-     *  Get the separator position for this action
-     *
-     */
-    public String getSeparatorPosition() {
+
+
+  /**
+   * Get the separator position for this action
+   *
+   * @return String
+   */
+  public String getSeparatorPosition() {
         String position = (String) super.getValue(DEFAULT);
         return position;
     }
-    
-  
+
+
     /**
      * actionPerformed() method required by ActionListener interface
      *
@@ -395,45 +409,46 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void actionPerformed(ActionEvent actionEvent) {
         command.execute(actionEvent);
     }
-    
-    /**
-     * Get the command in this action object
-     */
-    public Command getCommand()
+
+
+  /**
+   * Get the command in this action object
+   *
+   * @return Command
+   */
+  public Command getCommand()
     {
       return command;
     }//getCommand
 
-    /**
-     * Set the command in this action object
-     */
-    public void setCommand(Command cmd)
+
+  /**
+   * Set the command in this action object
+   *
+   * @param cmd Command
+   */
+  public void setCommand(Command cmd)
     {
       this.command = cmd;
     }//setCommand
 
-    /**
-     * Set the state of this action to the enabled value if a state change
-     * matching changedState occurs.
-     *
-     * @param changedState    the name of the state change
-     * @param enabled         boolean value indicating whether the action should 
-     *                        be enabled
-     * @param localEventsOnly boolean value indicating whether the change should 
-     *                        occur in response only to events originating 
-     *                        within the same frame as this GUIAction's 
-     *                        container
-     * @param respondTo       int value indicating whether the change should 
-     *                        occur in response only to events originating 
-     *                        within the same frame as this GUIAction's 
-     *                        container (GUIAction.EVENT_LOCAL) or in response 
-     *                        to all events, irrespective of their source 
-     *                        (GUIAction.EVENT_GLOBAL).
-     */
-    public void setEnabledOnStateChange(String changedState, 
+
+  /**
+   * Set the state of this action to the enabled value if a state change
+   * matching changedState occurs.
+   *
+   * @param changedState the name of the state change
+   * @param enabled boolean value indicating whether the action should be
+   *   enabled
+   * @param respondTo int value indicating whether the change should occur in
+   *   response only to events originating within the same frame as this
+   *   GUIAction's container (GUIAction.EVENT_LOCAL) or in response to all
+   *   events, irrespective of their source (GUIAction.EVENT_GLOBAL).
+   */
+  public void setEnabledOnStateChange(String changedState,
                                                 boolean enabled, int respondTo)
     {
-        
+
         enabledList.put(
                   changedState, new Boolean(enabled), respondTo);
         StateChangeMonitor.getInstance().addStateChangeListener(changedState,
@@ -446,11 +461,11 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      *
      * @param changedState the name of the state change
      * @param command Command that should be set upon a state change
-     * @param respondTo       int value indicating whether the change should 
-     *                        occur in response only to events originating 
-     *                        within the same frame as this GUIAction's 
-     *                        container (GUIAction.EVENT_LOCAL) or in response 
-     *                        to all events, irrespective of their source 
+     * @param respondTo       int value indicating whether the change should
+     *                        occur in response only to events originating
+     *                        within the same frame as this GUIAction's
+     *                        container (GUIAction.EVENT_LOCAL) or in response
+     *                        to all events, irrespective of their source
      *                        (GUIAction.EVENT_GLOBAL).
      */
     public void setCommandOnStateChange(String changedState,
@@ -463,7 +478,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
 
     /**
      * Handle a state change.  This results in a change to the enabled state
-     * of the action, or a change in the command, depending on which 
+     * of the action, or a change in the command, depending on which
      * state changes have been registered for this action previously.
      *
      * @param event the StateChangeEvent that has occurred
@@ -471,10 +486,10 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     public void handleStateChange(StateChangeEvent event)
     {
         String changedState = event.getChangedState();
-        
+
         if (enabledList.containsKey(changedState)) {
             if ( enabledList.getRespondsTo(changedState)==EVENT_LOCAL
-                && !isLocalEvent(event)) {    
+                && !isLocalEvent(event)) {
                 Log.debug(50,"GUIAction.handleStateChange: event in enabledList"
                                     +" but not of this frame");
             } else {
@@ -483,8 +498,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
                                     .getNewState(changedState)).booleanValue();
                 setEnabled(enabled);
             }
-        } 
-        
+        }
+
         if (commandList.containsKey(changedState)) {
             if (commandList.getRespondsTo(changedState)==EVENT_LOCAL
                 && !isLocalEvent(event)) {
@@ -492,7 +507,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
                                     +" but not of this frame");
             } else {
                 // Check and handle the command state changes
-                Command newCommand 
+                Command newCommand
                               = (Command)commandList.getNewState(changedState);
                 setCommand(newCommand);
             }
@@ -543,14 +558,14 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         this.originalAction = action;
     }
 
-    public static MorphoFrame getMorphoFrameAncestor(Component c) 
+    public static MorphoFrame getMorphoFrameAncestor(Component c)
     {
-        Object parent = null;                      
+        Object parent = null;
         if (c instanceof MorphoFrame) {
             return (MorphoFrame)c;
-            
+
         } else {
-        
+
             parent = c.getParent();
             if ((parent==null) || (parent instanceof MorphoFrame)) {
                 return (MorphoFrame)parent;
@@ -558,9 +573,9 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         }
         return getMorphoFrameAncestor((Component)parent);
     }
-    
+
     //returns true if event originated in same MorphoFrame as this GUIAction
-    private boolean isLocalEvent(StateChangeEvent event) 
+    private boolean isLocalEvent(StateChangeEvent event)
     {
         Object source = event.getSource();
         if (source==null) {
@@ -568,16 +583,16 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             return false;
         }
         MorphoFrame eventAncestor = null;
-        
+
         if (source instanceof Component) {
             eventAncestor = getMorphoFrameAncestor((Component)source);
-            
+
         } else if (source instanceof MenuComponent) {
             eventAncestor = getMorphoFrameAncestor(
                         (Component)( ( (MenuComponent)source ).getParent()) );
         } else {
           return false;
-        }          
+        }
         MorphoFrame thisAncestor
                         = UIController.getMorphoFrameContainingGUIAction(this);
         Log.debug(52,"\n# # GUIAction.isLocalEvent: "+
@@ -588,7 +603,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         Log.debug(52,"\n# # result = "+( eventAncestor==thisAncestor ));
         return ( eventAncestor==thisAncestor );
     }
-    
+
 // * * *  V A R I A B L E S  * * *
 
     private Command command;
@@ -596,44 +611,44 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     private String menuName;
     private int menuPosition;
     private int toolbarPosition;
-    private MappingsTable enabledList; 
-    private MappingsTable commandList; 
+    private MappingsTable enabledList;
+    private MappingsTable commandList;
     private GUIAction originalAction;
-    
+
 // * * *  I N N E R  C L A S S  * * *
-    
-    class MappingsTable 
+
+    class MappingsTable
     {
         private final int MAX_COLUMNS = 2;
         private Hashtable table;
 
-        
+
         public Object getNewState(String key) { return getColumn(key,1); }
-        
-        public int getRespondsTo(String key) { 
-        
+
+        public int getRespondsTo(String key) {
+
             return ((Integer)getColumn(key,2)).intValue();
         }
 
         public void put(String key, Object newState, int respondsTo)
         {
             if (!table.containsKey(key))  {
-            
-                table.put(  key, 
+
+                table.put(  key,
                             new Object[] { newState, new Integer(respondsTo) });
             }
         }
 
-        // * * * * * * COULD PULL THESE OUT INTO A UTIL CLASS: * * * * * * * * 
+        // * * * * * * COULD PULL THESE OUT INTO A UTIL CLASS: * * * * * * * *
 
         MappingsTable() { table = new Hashtable(); }
-        
+
         public Enumeration keys() { return table.keys(); }
-        
+
         public boolean containsKey(Object key) { return table.containsKey(key);}
-        
+
         //colNum is one-based - imagine a table where col. zero is the key
-        private Object getColumn(Object key, int colNum) 
+        private Object getColumn(Object key, int colNum)
         {
             if (!table.containsKey(key))  {
                 Log.debug(50, "MappingsTable: invalid key" + key);
@@ -644,8 +659,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
                 return null;
             }
             return ( (Object[])table.get(key) )[colNum-1];
-        }                     
-          
+        }
+
         public void put(Object key, Object[] params)
         {
             if (params.length > MAX_COLUMNS) {
@@ -659,8 +674,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
                     newArray[i] = params[i];
                 }
                 params = newArray;
-            } 
+            }
             table.put(key, params);
         }
-    }    
+    }
 }

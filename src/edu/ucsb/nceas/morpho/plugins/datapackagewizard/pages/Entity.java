@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:53:08 $'
- * '$Revision: 1.18 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,15 +75,15 @@ public class Entity extends AbstractWizardPage{
   private CustomList  attributeList;
   private JLabel      attributesLabel;
 
-	private WizardContainerFrame mainWizFrame;
-	
+  private WizardContainerFrame mainWizFrame;
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Entity(WizardContainerFrame frame) {
-		
-		this.mainWizFrame = frame;
-		init(); 
-	}
+
+    this.mainWizFrame = frame;
+    init();
+  }
 
 
 
@@ -195,10 +195,10 @@ public class Entity extends AbstractWizardPage{
   private void showNewAttributeDialog() {
 
     AttributePage attributePage = new AttributePage();
-    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, WizardContainerFrame.frame, false);
-		wpd.setBounds(wpd.getX(), WizardContainerFrame.frame.getY(),
-					WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
-		wpd.setVisible(true);
+    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, false);
+    wpd.setBounds(wpd.getX(), WizardContainerFrame.frame.getY(),
+          WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
+    wpd.setVisible(true);
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
 
       List newRow = attributePage.getSurrogate();
@@ -220,9 +220,9 @@ public class Entity extends AbstractWizardPage{
     if (dialogObj==null || !(dialogObj instanceof AttributePage)) return;
     AttributePage editAttributePage = (AttributePage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editAttributePage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editAttributePage, false);
     wpd.setBounds(wpd.getX(), WizardContainerFrame.frame.getY(),
-					WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
+          WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
@@ -279,12 +279,12 @@ public class Entity extends AbstractWizardPage{
       WidgetFactory.hiliteComponent(attributesLabel);
       return false;
     }
-		
-		boolean importNeeded = false;
-		AttributePage nextAttributePage = null;
+
+    boolean importNeeded = false;
+    AttributePage nextAttributePage = null;
     List rowLists = attributeList.getListOfRowLists();
-		if (rowLists==null) return true;
-		int index = 1;
+    if (rowLists==null) return true;
+    int index = 1;
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       Object nextRowObj = it.next();
@@ -297,23 +297,23 @@ public class Entity extends AbstractWizardPage{
       if (nextUserObject==null) continue;
 
       nextAttributePage = (AttributePage)nextUserObject;
-			if(nextAttributePage.isImportNeeded()) {
-				
-				OrderedMap map = nextAttributePage.getPageData(xPathRoot + "/attributeList/attribute["+index + "]");
-				String mScale = (String) nextRowList.get(2);
-				String entityName = entityNameField.getText().trim();
-				String colName = (String) nextRowList.get(0);
-				mainWizFrame.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
-				importNeeded = true;
-			}
-			index++;
-		}
-		
-		if(importNeeded) {
-			
-			this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
-		}
-		
+      if(nextAttributePage.isImportNeeded()) {
+
+        OrderedMap map = nextAttributePage.getPageData(xPathRoot + "/attributeList/attribute["+index + "]");
+        String mScale = (String) nextRowList.get(2);
+        String entityName = entityNameField.getText().trim();
+        String colName = (String) nextRowList.get(0);
+        mainWizFrame.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
+        importNeeded = true;
+      }
+      index++;
+    }
+
+    if(importNeeded) {
+
+      this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
+    }
+
     return true;
   }
 

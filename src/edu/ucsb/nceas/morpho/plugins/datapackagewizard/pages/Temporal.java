@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:51:15 $'
- * '$Revision: 1.11 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -64,6 +63,7 @@ public class Temporal extends AbstractWizardPage{
 
   private final String[] colNames =  {"Time Coverages"};
   private final Object[] editors  =   null; //makes non-directly-editable
+
 
   private CustomList  timespanList;
 
@@ -140,7 +140,7 @@ public class Temporal extends AbstractWizardPage{
   private void showNewTemporalDialog() {
 
     TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
-    WizardPopupDialog wpd = new WizardPopupDialog(temporalPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(temporalPage, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
@@ -167,7 +167,7 @@ public class Temporal extends AbstractWizardPage{
     if (dialogObj==null || !(dialogObj instanceof TemporalPage)) return;
     TemporalPage editTemporalPage = (TemporalPage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editTemporalPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editTemporalPage, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
@@ -179,6 +179,7 @@ public class Temporal extends AbstractWizardPage{
       timespanList.replaceSelectedRow(newRow);
     }
   }
+
 
 
   /**
@@ -214,12 +215,13 @@ public class Temporal extends AbstractWizardPage{
   private OrderedMap returnMap = new OrderedMap();
 
   /**
-   *  gets the Map object that contains all the temporal/value paired
-   *  settings for this particular wizard page
+   * gets the Map object that contains all the temporal/value paired settings
+   * for this particular wizard page
    *
-   *  @ param xPath String that is appended to all keys in the map returned
-   *  @return   data the Map object that contains all the
-   *            temporal/value paired settings for this particular wizard page
+   * @ param xPath String that is appended to all keys in the map returned
+   * @return data the Map object that contains all the temporal/value paired
+   *   settings for this particular wizard page
+   * @param xPath String
    */
   public OrderedMap getPageData(String xPath) {
 

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-02-24 17:38:09 $'
- * '$Revision: 1.14 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -240,7 +239,7 @@ public class Project extends AbstractWizardPage {
      private void showNewPartyDialog() {
        PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
        partyPage.setRole(PartyPage.PERSONNEL);
-       WizardPopupDialog wpd = new WizardPopupDialog(partyPage, WizardContainerFrame.frame);
+       WizardPopupDialog wpd = new WizardPopupDialog(partyPage);
 
        if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
          List newRow = partyPage.getSurrogate();
@@ -265,7 +264,7 @@ public class Project extends AbstractWizardPage {
        if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
        PartyPage editPartyPage = (PartyPage)dialogObj;
 
-       WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
+       WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, false);
        wpd.resetBounds();
        wpd.setVisible(true);
 

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-02-24 17:38:10 $'
- * '$Revision: 1.7 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:11:33 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,22 +36,21 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Calendar;
-import java.awt.Color;
-import java.text.DateFormat;
-
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.Dimension;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-import javax.swing.JComponent;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -237,11 +236,14 @@ public class TemporalPage extends AbstractWizardPage {
 
 
   /**
-   *  Function returns a JPanel for selecting date
+   * Function returns a JPanel for selecting date
    *
-   *  @return JPanel to select a date.
+   * @return JPanel to select a date.
+   * @param panelHeading String
+   * @param buttonText String
+   * @param timeTextField JTextField
+   * @param timeCalendar JCalendar
    */
-
   public JPanel getDateTimePanel(String panelHeading, String buttonText,
                                  JTextField timeTextField, JCalendar timeCalendar) {
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-03 01:42:04 $'
- * '$Revision: 1.14 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -76,9 +75,9 @@ public class PartyMainPage extends AbstractWizardPage{
     initRole();
     init();
 
-	// A empty row is added to responsiblePartyList if none exists.
-	// This is done so that the dropdown list on PartyPage has
-	// no entry as the first option
+  // A empty row is added to responsiblePartyList if none exists.
+  // This is done so that the dropdown list on PartyPage has
+  // no entry as the first option
     if(WidgetFactory.responsiblePartyList.size() == 0){
       List newRow = new ArrayList();
       newRow.add("");
@@ -91,12 +90,9 @@ public class PartyMainPage extends AbstractWizardPage{
 
 
   /**
-   *  Initiates various parameters of PartyMainPage based on value
-   *  of variable role.
-   *
-   *  @return void
+   * Initiates various parameters of PartyMainPage based on value of variable
+   * role.
    */
-
   private void initRole() {
 
     switch (role) {
@@ -241,7 +237,7 @@ public class PartyMainPage extends AbstractWizardPage{
 
     PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
     partyPage.setRole(role);
-    WizardPopupDialog wpd = new WizardPopupDialog(partyPage, WizardContainerFrame.frame);
+    WizardPopupDialog wpd = new WizardPopupDialog(partyPage);
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
 
       List newRow = partyPage.getSurrogate();
@@ -273,7 +269,7 @@ public class PartyMainPage extends AbstractWizardPage{
     if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
     PartyPage editPartyPage = (PartyPage)dialogObj;
     editPartyPage.setEditValue();
-    WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
@@ -376,9 +372,14 @@ public class PartyMainPage extends AbstractWizardPage{
     return returnMap;
   }
 
+
   /**
-   *  Checks if the list contains a PartyPage similar to the PartyPage
-   *  passed in the parameters.
+   * Checks if the list contains a PartyPage similar to the PartyPage passed in
+   * the parameters.
+   *
+   * @param rowLists List
+   * @param page PartyPage
+   * @return boolean
    */
   private boolean listContains(List rowLists, PartyPage page){
     if (rowLists==null) return false;

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-11 22:31:09 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-16 20:09:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -48,10 +47,10 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 public class Methods extends AbstractWizardPage{
 
@@ -199,7 +198,7 @@ public class Methods extends AbstractWizardPage{
   private void showNewMethodsDialog() {
 
     MethodsPage methodsPage = (MethodsPage)WizardPageLibrary.getPage(DataPackageWizardInterface.METHODS_PAGE);
-    WizardPopupDialog wpd = new WizardPopupDialog(methodsPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(methodsPage, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
@@ -222,7 +221,7 @@ public class Methods extends AbstractWizardPage{
     if (dialogObj==null || !(dialogObj instanceof MethodsPage)) return;
     MethodsPage editMethodsPage = (MethodsPage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editMethodsPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editMethodsPage, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
@@ -289,11 +288,11 @@ public class Methods extends AbstractWizardPage{
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
     MethodsPage nextMethodsPage = null;
-    
-    
+
+
 
     String title = titleField.getText().trim();
-    
+
     if (title!=null) {
       if (title.length()<1) return null;
       returnMap.put(xPathRoot + "/methodStep/description/section/title", title);
