@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.10 2000-08-25 23:34:50 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.11 2000-08-31 23:08:13 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -310,7 +310,8 @@ public class ClientFramework extends javax.swing.JFrame
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
 		JTabbedPane1_stateChanged(null);
-
+    queryBean1.setEditor(mdeBean1);
+	queryBean1.setTabbedPane(JTabbedPane1);	
 	}
 
     /**
