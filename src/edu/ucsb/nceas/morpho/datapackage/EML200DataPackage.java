@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-17 23:43:52 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-19 04:16:58 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,12 +119,26 @@ public  class EML200DataPackage extends AbstractDataPackage
     String surNameXpath = "/eml:eml/dataset/creator/individualName/surName";
     String givenNameXpath = "/eml:eml/dataset/creator/individualName/givenName";
     String salutationXpath = "/eml:eml/dataset/creator/individualName/salutation";
+
+    NodeList authorNodes = null;
+    try{
+      authorNodes = XMLUtilities.getNodeListWithXPath(metadataNode, surNameXpath);
+    }
+    catch (Exception w) {
+      Log.debug(4, "Problem with getting Nodelist");
+    }
+    int numAuthors = authorNodes.getLength();
     
-    String surName = getXPathValue(surNameXpath);
-    String givenName = getXPathValue(givenNameXpath);
-    String salutation = getXPathValue(salutationXpath);
-    
-    temp = salutation + " " + givenName + " " + surName;
+    String surName = "";
+    String givenName = "";
+    String salutation = "";
+    for (int i=1;i<numAuthors+1;i++) {
+      surName = getXPathValue("("+surNameXpath +")["+i+"]");
+      givenName = getXPathValue("("+givenNameXpath +")["+i+"]");
+      salutation = getXPathValue("("+salutationXpath+")["+i+"]");
+      if (temp.length()>0) temp = temp + ", ";
+      temp = temp + salutation + " " + givenName + " " + surName;
+    }
     return temp;
   }
 }
