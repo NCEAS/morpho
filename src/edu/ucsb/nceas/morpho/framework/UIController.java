@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-15 07:45:43 $'
- * '$Revision: 1.1.2.4 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-15 19:45:36 $'
+ * '$Revision: 1.1.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -277,6 +278,18 @@ public class UIController
             currentWindow.setMenuBar(newMenuBar);
             Log.debug(50, "Updated menu for window: " + 
                     currentWindow.getTitle());
+        }
+    }
+
+    
+    /**
+     * refresh all visible the windows that are in the windowList.
+     */
+    public void refreshWindows()
+    {
+        Enumeration windows = windowList.elements();
+        while (windows.hasMoreElements()) {
+            ((Container)windows.nextElement()).validate();
         }
     }
 
