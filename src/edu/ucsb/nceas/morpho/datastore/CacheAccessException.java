@@ -5,8 +5,8 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-05-14 22:05:53 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-06 21:10:39 $'
  * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,13 +24,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.framework;
+package edu.ucsb.nceas.morpho.datastore;
 
 /**
- * This exception is thrown when a service request is made of an object
- * and that object can not properly handle the request, either because
- * it is not designed to handle it, or there was an error in trying to
- * handle it.
+ * This exception is thrown when their is a problem accessing the cache
  */
 public class CacheAccessException extends Exception
 {

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-29 18:40:52 $'
- * '$Revision: 1.29 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-06 21:10:39 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.framework;
+package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.*;
 import java.util.*;
 import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 /**
  * implements and the DataStoreInterface for accessing files on the local

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-06-21 22:07:54 $'
- * '$Revision: 1.17 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-06 21:10:39 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
  */
 
 package edu.ucsb.nceas.morpho.datapackage;
+
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 
 import java.awt.*;
 import javax.swing.*;

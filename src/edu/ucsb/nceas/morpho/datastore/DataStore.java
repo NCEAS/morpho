@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2002-08-06 21:10:39 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.framework;
+package edu.ucsb.nceas.morpho.datastore;
 
 import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
 
 import java.io.*;
 import java.util.*;
