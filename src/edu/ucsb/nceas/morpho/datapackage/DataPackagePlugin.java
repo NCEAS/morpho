@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 17:28:53 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-09-24 22:51:37 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,8 @@ public class DataPackagePlugin
   private void initializeActions() 
   {
     dataMenuActions = new Action[9];
+    GUIAction addDocumentation = new 
+                                  GUIAction("Add Documentation...", null, null);
     GUIAction createNewDatatable = new GUIAction("Create New Datatable...", null, null);
     GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column", null, null);
     GUIAction insertRowAfter = new GUIAction("insert Row After Selected Row", null, null);
@@ -151,15 +153,16 @@ public class DataPackagePlugin
     deleteColumn.setEnabled(false);
     editColumnMetadata.setEnabled(false);
     
-    dataMenuActions[0] = createNewDatatable;
-    dataMenuActions[1] = sortBySelectedColumn;
-    dataMenuActions[2] = insertRowAfter;
-    dataMenuActions[3] = insertRowBefore;
-    dataMenuActions[4] = deleteRow;
-    dataMenuActions[5] = insertColumnBefore;
-    dataMenuActions[6] = insertColumnAfter;
-    dataMenuActions[7] = deleteColumn;
-    dataMenuActions[8] = editColumnMetadata;
+    dataMenuActions[0] = addDocumentation;
+    dataMenuActions[1] = createNewDatatable;
+    dataMenuActions[2] = sortBySelectedColumn;
+    dataMenuActions[3] = insertRowAfter;
+    dataMenuActions[4] = insertRowBefore;
+    dataMenuActions[5] = deleteRow;
+    dataMenuActions[6] = insertColumnBefore;
+    dataMenuActions[7] = insertColumnAfter;
+    dataMenuActions[8] = deleteColumn;
+    dataMenuActions[9] = editColumnMetadata;
     // Set up the menus for the application
     menuActions = new Action[1];
     Action newItemAction = new AbstractAction("New Data Package") 
