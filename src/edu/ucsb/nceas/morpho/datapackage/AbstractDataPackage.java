@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-24 23:17:03 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-25 14:55:03 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -330,7 +330,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='attribute']/unit")).getNodeValue();
       NodeList aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
       if (aNodes==null) return "aNodes is null !";
-      if (aNodes.item(0)==null) return "";
+      if (aNodes.getLength()<1) return "";
       Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
       temp = child.getNodeValue();
     }
@@ -402,9 +402,17 @@ public abstract class AbstractDataPackage extends MetadataObject
       physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='physical']/isText")).getNodeValue();
       boolean isText = XMLUtilities.isXPathEvalABoolean(physical, physXpath);
-      if (isText) {
+//      if (isText) {
+      if (true) {
             // !!!! apparently this is true even if node does NOT exist; investigate!
+Log.debug(1,"ZZZZZ:");
         XObject xobj = XPathAPI.eval(physical, physXpath);
+    if (xobj==null) Log.debug(1,"null");
+        
+    if (xobj.getType()==XObject.CLASS_BOOLEAN) Log.debug(1,"Boolean");
+    if (xobj.getType()==XObject.CLASS_STRING) Log.debug(1,"String");
+    if (xobj.getType()==XObject.CLASS_NULL) Log.debug(1,"Null");
+
         boolean val = xobj.bool();
         if (val){
           return "text";
@@ -419,7 +427,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting physical objectName description"+w.toString());
+      Log.debug(4,"exception in getting physical objectName description --- "+w.toString());
     }
     return temp;
     
