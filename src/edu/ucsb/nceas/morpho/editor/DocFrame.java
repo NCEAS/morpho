@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-16 21:49:51 $'
- * '$Revision: 1.129 $'
+ *     '$Date: 2003-12-17 20:43:32 $'
+ * '$Revision: 1.130 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -834,8 +834,10 @@ public class DocFrame extends javax.swing.JFrame
    *  this class initializes the editor from a DOM representation
    *  of an XML document rather than a string.
    */
-  public void initDoc(Morpho morpho, Node docnode)
+  public void initDoc(Morpho morpho, Node docnode, String id, String loc)
   {
+    this.id = id;
+    this.location = loc;
     this.docnode = docnode;
     DefaultMutableTreeNode frootNode = null;
     setName("Morpho Editor");
@@ -938,10 +940,10 @@ public class DocFrame extends javax.swing.JFrame
    *  rather than a string. Document is simply used to get the
    *  root node
    */
-  public void initDoc(Morpho morpho, Document doc) 
+  public void initDoc(Morpho morpho, Document doc, String id, String loc) 
   {
     Node docnode = doc.getDocumentElement() ;
-    initDoc(morpho, docnode);
+    initDoc(morpho, docnode, id, loc);
   }
   
   /**
@@ -1108,7 +1110,7 @@ public class DocFrame extends javax.swing.JFrame
     }
     catch (Exception e) {Log.debug(4,"Problem in creating DOM!"+e);}
     // then display it
-    df.initDoc(null, domnode);
+    df.initDoc(null, domnode, null, null);
   }
 
   
@@ -1690,8 +1692,9 @@ public class DocFrame extends javax.swing.JFrame
         // needed for eml2 docs
         if (name.equals("eml")) {
           start1.append("\n" + indentString + "<" + "eml:eml ");;
-          start1.append("\n" + indentString + "xmlns:stmml=\"http://www.xml-cml.org/schema/stmml\"");
-          start1.append("\n" + indentString + "xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\"");
+// following namespace info already added - DFH          
+//          start1.append("\n" + indentString + "xmlns:stmml=\"http://www.xml-cml.org/schema/stmml\"");
+//          start1.append("\n" + indentString + "xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\"");
         } else {
           start1.append("\n" + indentString + "<" + name);
         }
@@ -2563,10 +2566,13 @@ public class DocFrame extends javax.swing.JFrame
     }
   */  
     String valresult = xmlvalidate(xmlout);
+Log.debug(1,"Valresult: "+valresult);
     if (valresult.indexOf("<valid />")>-1) {
       if (controller!=null) {
-      controller.fireEditingCompleteEvent(this, xmlout);
+Log.debug(1, "Ready to call editing complete!");
+        controller.fireEditingCompleteEvent(this, xmlout);
       // hide the Frame
+Log.debug(1, "Ready to hide frame!");
       this.setVisible(false);
       // free the system resources
       this.dispose();
@@ -2581,7 +2587,7 @@ public class DocFrame extends javax.swing.JFrame
       }
     }
     else {
-      Log.debug(0,"Validation problem: "+valresult);
+      Log.debug(20,"Validation problem: "+valresult);
       int opt1 = JOptionPane.showConfirmDialog(null,
          valresult+"\n"+
          "Do you want to Continue Exiting the Editor?",
@@ -2744,7 +2750,7 @@ public class DocFrame extends javax.swing.JFrame
    */
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
   { 
-    initDoc(morpho, docnode);
+    initDoc(morpho, docnode, id, location);
   }
   
   /**
