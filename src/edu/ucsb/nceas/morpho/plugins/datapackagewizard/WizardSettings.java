@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 23:51:35 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2003-09-30 18:50:06 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.IOUtil;
 import edu.ucsb.nceas.utilities.StringUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -438,6 +439,54 @@ public class WizardSettings {
     if (returnArray.length > 1) Arrays.sort(returnArray);
     return returnArray;
   }
+  
+  
+  
+  public  static final short ENTITY_DATATABLE = 10;
+  private static final OrderedMap mimeTypesMap = new OrderedMap();
+  /**
+   *  given an entityType, returns an <code>OrderedMap<code> whose keys contain 
+   *  the human-readable display names for all the allowable MIME types (for the 
+   *  given entity type), and whose corresponding values are the actual MIME 
+   *  types themselves.
+   *
+   *  @param  entityType the constant representing the entity type whose 
+   *          allowable MIME types are sought. Currently, only possible values 
+   *          are:
+   *          WizardSettings.ENTITY_DATATABLE
+   *
+   *  @return Map whose keys contain the human-readable display names for all 
+   *          the allowable MIME types (for the given entity type), and whose 
+   *          corresponding values are the actual MIME types themselves. 
+   */
+  public static OrderedMap getSupportedMIMETypesForEntity(short entityType) { 
+  
+    mimeTypesMap.clear();
+    
+    switch (entityType) {
+    
+      case ENTITY_DATATABLE:
+      
+        mimeTypesMap.put("Plain Text",                "Text/plain");
+        mimeTypesMap.put("Formatted/Rich Text",       "Text/enriched");
+        mimeTypesMap.put("HTML text",                 "Text/html");
+        mimeTypesMap.put("Microsoft Excel",           "application/vnd.ms-excel");
+        
+        break;
+        
+      default:
+        //leave map empty
+    }
+        return mimeTypesMap;
+  }    
+  
+//  SPARES - JUST IN CASE...
+//  mimeTypesMap.put("Microsoft Word",            "application/msword");
+//  mimeTypesMap.put("Tar Archive",               "application/x-tar");
+//  mimeTypesMap.put("Zip-Compressed Archive",    "Application/x-compressed");
+//  mimeTypesMap.put("Macintosh Stuffit Archive", "application/x-stuffit");
+//  mimeTypesMap.put("Adobe PDF File",            "Application/pdf");
+//  mimeTypesMap.put("PostScript File",           "Application/postscript");
   
   //////////////////////////////////////////////////////////////////////////////
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 22:09:01 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-09-30 18:50:06 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,9 @@ public class DataFormat extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
+  private final String OTHER_LABEL = "other";
+  private final String EMPTY_STRING = "";
+  
   private final String COLUMN_MAJOR = "column";
   private final String ROW_MAJOR    = "row";
   
@@ -113,7 +116,7 @@ public class DataFormat extends AbstractWizardPage{
     "comma",
     "space",
     "semicolon",
-    "other"
+    OTHER_LABEL
   };
 
   private String[] pickListVals = new String[] { 
@@ -183,7 +186,6 @@ public class DataFormat extends AbstractWizardPage{
           currentPanel = proprietaryPanel;
           formatXPath = PROPRIETARY_XPATH;
           instance.add(proprietaryPanel, BorderLayout.CENTER);
-          proprietaryField.requestFocus();
           
         } else if (e.getActionCommand().equals(buttonsText[3])) {
         
@@ -234,7 +236,7 @@ public class DataFormat extends AbstractWizardPage{
 
     JPanel orientationPanel = WidgetFactory.makePanel(2);
 
-    JLabel spacerLabel = WidgetFactory.makeLabel("", false);
+    JLabel spacerLabel = WidgetFactory.makeLabel(EMPTY_STRING, false);
     
     orientationPanel.add(spacerLabel);
     
@@ -281,7 +283,7 @@ public class DataFormat extends AbstractWizardPage{
 
     JPanel orientationPanel = WidgetFactory.makePanel(2);
 
-    JLabel spacerLabel = WidgetFactory.makeLabel("", false);
+    JLabel spacerLabel = WidgetFactory.makeLabel(EMPTY_STRING, false);
     
     orientationPanel.add(spacerLabel);
     
@@ -328,7 +330,8 @@ public class DataFormat extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
   private JLabel      proprietaryLabel;
-  private JTextField  proprietaryField; 
+  private String      proprietaryText; 
+  private JTextField  otherProprietaryTextField;
   
   private JPanel getProprietaryPanel() {
     
@@ -338,25 +341,109 @@ public class DataFormat extends AbstractWizardPage{
     
     panel.add(WidgetFactory.makeDefaultSpacer());
   
+//    proprietaryField = WidgetFactory.makeOneLineTextField();
+//    proprietaryPanel.add(proprietaryField);
+
+    final Map mimeMap = WizardSettings.getSupportedMIMETypesForEntity(
+                                              WizardSettings.ENTITY_DATATABLE);    
+      
+    // proprietaryButtonsText array is one elem larger than mime map, because 
+    // we need to add an entry for "other"...
+    final String [] proprietaryButtonsText = new String[mimeMap.size() + 1];
+    
+    int i = 0;
+    
+    for (Iterator it = mimeMap.keySet().iterator(); it.hasNext(); ) {
+    
+      Object nextObj = it.next();
+      if (nextObj==null) continue;
+      proprietaryButtonsText[i++] = ((String)nextObj).trim();
+    }
+
+    otherProprietaryTextField = WidgetFactory.makeOneLineTextField();
+    
+    ActionListener listener = new ActionListener() {
+      
+      public void actionPerformed(ActionEvent e) {
+        
+        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+
+        //undo any hilites:
+        onLoadAction();
+        if (e.getActionCommand().equals(OTHER_LABEL)) {
+        
+          setProprietaryText(OTHER_LABEL, mimeMap);
+          
+        } else {
+          
+          setProprietaryText(e.getActionCommand(), mimeMap);
+        }
+      }};
+    
+    proprietaryButtonsText[i] = OTHER_LABEL;
+
     ////
-    JPanel proprietaryPanel = WidgetFactory.makePanel(1);
+    JPanel proprietaryPanel 
+          = WidgetFactory.makeVerticalPanel(
+                                (int)(1.5 * proprietaryButtonsText.length) + 1);
     
     proprietaryLabel = WidgetFactory.makeLabel("Format:", true);
+    JPanel leftJustifyPanel = WidgetFactory.makePanel(1);
+    leftJustifyPanel.add(proprietaryLabel);
+    leftJustifyPanel.add(Box.createGlue());
+    proprietaryPanel.add(leftJustifyPanel);
+      
+    final int INITIAL_SELECTION = 0;
+    
+    JPanel radioPanel = WidgetFactory.makeRadioPanel( proprietaryButtonsText, 
+                                                      INITIAL_SELECTION, 
+                                                      listener);
+    proprietaryText = proprietaryButtonsText[INITIAL_SELECTION];
+    
+    proprietaryPanel.add(radioPanel);
+    
+    JPanel otherJustifyPanel = WidgetFactory.makePanel(1);
+    otherJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
+    otherJustifyPanel.add(otherProprietaryTextField);
+    proprietaryPanel.add(otherJustifyPanel);
+    
+  
+    
+////////////////////////////////////////////////////////////////////////////////
 
-    proprietaryPanel.add(proprietaryLabel);
-    
-    proprietaryField = WidgetFactory.makeOneLineTextField();
-    proprietaryPanel.add(proprietaryField);
-    
     panel.add(proprietaryPanel);
         
     panel.add(WidgetFactory.makeDefaultSpacer());
     panel.add(Box.createGlue());
- 
+
     return panel;
   }
+
+
+  //
+  //  sets the value of the proprietaryString variable - based on a the passed 
+  //  String param which is the selected radiobutton label. mimeMap is the Map 
+  //  containing the radiobutton labels as keys and the MIME types as values
+  //
+  private void setProprietaryText(String labelString, Map mimeMap) {
   
-  
+    if (labelString==null) return;
+    
+    //if it's "other", set text to empty string: 
+    if (labelString.equals(OTHER_LABEL)) {
+    
+      otherProprietaryTextField.setEnabled(true);
+      otherProprietaryTextField.requestFocus();
+      proprietaryText = EMPTY_STRING;
+      
+    } else {
+      
+      otherProprietaryTextField.setEnabled(false);
+      proprietaryText = ((String)(mimeMap.get(labelString.trim()))).trim();
+    }
+  }
+
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     
   
@@ -376,6 +463,7 @@ public class DataFormat extends AbstractWizardPage{
     WidgetFactory.unhiliteComponent(radioButtonGrpLabel);
     WidgetFactory.unhiliteComponent(proprietaryLabel);
     WidgetFactory.unhiliteComponent(listLabel);
+    WidgetFactory.unhiliteComponent(otherProprietaryTextField);
   }
   
   
@@ -414,7 +502,7 @@ public class DataFormat extends AbstractWizardPage{
       if (delim_other==true) {
       
         String otherTxt = otherDelimTextFieldSimple.getText();
-        if (otherTxt==null || otherTxt.equals("")) {
+        if (otherTxt==null || otherTxt.equals(EMPTY_STRING)) {
       
           WidgetFactory.hiliteComponent(otherDelimTextFieldSimple);
           otherDelimTextFieldSimple.requestFocus();
@@ -440,17 +528,21 @@ public class DataFormat extends AbstractWizardPage{
 
     } else if (formatXPath==PROPRIETARY_XPATH) {
 
-        if (proprietaryField.getText().trim().equals("")) {
-
-          WidgetFactory.hiliteComponent(proprietaryLabel);
-          proprietaryField.requestFocus();
-          
-          return false;
-        }
+        if (proprietaryText==null || proprietaryText.equals(EMPTY_STRING)) {
         
+          //gets here only if user has selected "OTHER" - so need to get entered 
+          //value
+          proprietaryText = otherProprietaryTextField.getText().trim();
+          
+          //if actual values is still empty string, user hasn't entered anything
+          if (proprietaryText.equals(EMPTY_STRING)) {
+          
+            WidgetFactory.hiliteComponent(otherProprietaryTextField);
+            return false;
+          }
+        }
   
-  
-//    } else if (formatXPath==RASTER_XPATH) {
+//  } else if (formatXPath==RASTER_XPATH) {
 
     }
     return true;
@@ -486,7 +578,7 @@ public class DataFormat extends AbstractWizardPage{
       // if col 0 is not null and is not delimited, MUST be fixed width...
       
       nextWidthStr = (String)(nextRow.get(1));
-      if (!(nextWidthStr.trim().equals(""))) {
+      if (!(nextWidthStr.trim().equals(EMPTY_STRING))) {
       
         if (!WizardSettings.isFloat(nextWidthStr)) returnVal = false;
         else {
@@ -521,7 +613,7 @@ public class DataFormat extends AbstractWizardPage{
       if (nextRow.size() < 1) continue;
       
       if (nextRow.get(0)==null || nextRow.get(1)==null) continue;
-      if (((String)(nextRow.get(1))).equals("")) continue;
+      if (((String)(nextRow.get(1))).equals(EMPTY_STRING)) continue;
       
       if (nextRow.get(0).equals(pickListVals[0])) {
       
@@ -631,7 +723,7 @@ public class DataFormat extends AbstractWizardPage{
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
 
-      returnMap.put(PROPRIETARY_XPATH, proprietaryField.getText().trim());
+      returnMap.put(PROPRIETARY_XPATH, proprietaryText);
     
 //    } else if (formatXPath==RASTER_XPATH) {
 
