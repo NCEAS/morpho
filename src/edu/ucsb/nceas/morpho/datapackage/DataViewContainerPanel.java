@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-09 15:11:07 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-09 23:36:00 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import com.symantec.itools.javax.swing.JToolBarSeparator;
-import com.symantec.itools.javax.swing.icons.ImageIcon;
 import java.io.*;
 import java.util.*;
 
