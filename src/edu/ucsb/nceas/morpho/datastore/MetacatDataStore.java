@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 22:57:26 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-02-26 23:08:14 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,11 +116,29 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         Morpho.connectionBusy = true;
 
         BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
-        int x = 1;
         int c = bmetacatInputStream.read();
         while(c != -1)
         {
-          bfos.write(c);
+          if (c>127) {
+            bfos.write('&');
+            bfos.write('#');
+            int h = c/100;
+            int t = (c-h*100)/10;
+            int o = c-h*100-t*10;
+            bfos.write(Character.forDigit(h,10));
+            bfos.write(Character.forDigit(t,10));
+            bfos.write(Character.forDigit(o,10));
+            bfos.write(';');   
+            Log.debug(40, "char > 127!");
+          }
+          else if (c<32) {
+            if ((c==9)||(c==10)||(c==13)) {
+              bfos.write(c);
+            }
+          }
+          else {
+            bfos.write(c);
+          }
           c = bmetacatInputStream.read();
         }
         bfos.flush();
