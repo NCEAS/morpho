@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-12 00:24:02 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-12-12 15:58:12 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1571,10 +1571,10 @@ public void startImport(String file) {
           if (val<minInt) minInt = val;
           intSum = intSum+val;
           intAverage = ((double)(intSum))/integerCount;
-	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
-          cd.colAverage = intAverage;
-          cd.colMin = minInt;
-          cd.colMax = maxInt;
+//	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
+//          cd.colAverage = intAverage;
+//          cd.colMin = minInt;
+//          cd.colMax = maxInt;
         }
         else if (isDouble(str)) {
           doubleCount++;
@@ -1589,10 +1589,10 @@ public void startImport(String file) {
           if (val<minDouble) minDouble = val;
           doubleSum = doubleSum+val;
           doubleAverage = ((doubleSum))/doubleCount;
-	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
-          cd.colAverage = doubleAverage;
-          cd.colMin = minDouble;
-          cd.colMax = maxDouble;
+//	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
+//          cd.colAverage = doubleAverage;
+//          cd.colMin = minDouble;
+//          cd.colMax = maxDouble;
         }
         if (isDate(str)) {
           dateCount++;
@@ -1601,11 +1601,19 @@ public void startImport(String file) {
     }
     if (integerCount>doubleCount) {
       if ((integerCount>0)&&((100*(integerCount+emptyCount)/vec.size()))>90) {
+	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
+          cd.colAverage = intAverage;
+          cd.colMin = minInt;
+          cd.colMax = maxInt;
         return "Integers";  
       }
     }
     if (doubleCount>integerCount) {
       if ((doubleCount>0)&&((100*(doubleCount+emptyCount)/vec.size()))>90) {
+	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
+          cd.colAverage = doubleAverage;
+          cd.colMin = minDouble;
+          cd.colMax = maxDouble;
         return "Floating Point";  
       }
     }
