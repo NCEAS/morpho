@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-28 19:09:08 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-07-28 22:15:41 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,6 @@ public class WizPage02 extends AbstractWizardPage{
 
 
   public WizPage02() {
-
-    this.setBackground(java.awt.Color.blue);
   }
   
   /** 

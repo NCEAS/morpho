@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-28 19:08:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-07-28 22:15:41 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -62,16 +63,18 @@ public class WizardContainerFrame extends JFrame {
   private final Dimension TOP_PANEL_DIMS = new Dimension(100,60);
   private final int PADDING = 5;
   
-  private final Font  TITLE_FONT          = new Font("Dialog", Font.BOLD,  12);
+  private final Font  TITLE_FONT          = new Font("Sans-Serif", Font.BOLD,  12);
   private final Color TITLE_TEXT_COLOR    = new Color(255,255,255);
-  private final Font  SUBTITLE_FONT       = new Font("Dialog", Font.PLAIN, 11);
+  private final Font  SUBTITLE_FONT       = new Font("Sans-Serif", Font.PLAIN, 11);
   private final Color SUBTITLE_TEXT_COLOR = new Color(255,255,255);
 
-  private final Font  BUTTON_FONT         = new Font("Sans-Serif",Font.BOLD,11);
-  private final Color BUTTON_TEXT_COLOR   = new Color(33,33,33);
+  private final Font  BUTTON_FONT         = new Font("Sans-Serif",Font.BOLD,12);
+  private final Color BUTTON_TEXT_COLOR   = new Color(51, 51, 51);
 
-  public final  Font  WIZARD_CONTENT_FONT = new Font("Sans-Serif",Font.BOLD,10);
-  public final  Color WIZARD_CONTENT_TEXT_COLOR  = new Color(33,33,33);
+  public static final  Font  WIZARD_CONTENT_FONT = new Font("Sans-Serif",Font.PLAIN,11);
+  public static final  Color WIZARD_CONTENT_TEXT_COLOR  = new Color(51, 51, 51);
+
+  private final  Color WIZARD_CONTENT_BG_COLOR    = new Color(221, 221, 221);
 
   private final String FINISH_BUTTON_TEXT  = "Finish";
   private final String NEXT_BUTTON_TEXT    = "Next >";
@@ -114,8 +117,8 @@ public class WizardContainerFrame extends JFrame {
     
     setCurrentPage(pageForID);
   }
-  
-  
+
+
   /** 
    *  sets the wizard content for the center pane
    *
@@ -127,23 +130,23 @@ public class WizardContainerFrame extends JFrame {
       Log.debug(45,"setCurrentPage called with NULL WizardPage");
       return;
     }
-    Log.debug(45,"setCurrentPage called with non-null WizardPage");
-    
+    Log.debug(45,"setCurrentPage called with WizardPage ID = "
+                                                +newPage.getPageID());
     //make new page current page
     this.currentPage = newPage;
 
     setpageTitle(newPage.getTitle());
     setpageSubtitle(getCurrentPage().getSubtitle());
-    Log.debug(45,"setting middlePanel; BEFORE = "+middlePanel);
-    middlePanel = (JPanel)getCurrentPage();
-    Log.debug(45,"setting middlePanel; AFTER  = "+middlePanel);
+
+    middlePanel.removeAll();
+    
+    middlePanel.add(getCurrentPage(), BorderLayout.CENTER);
+    getCurrentPage().setOpaque(false);
     getCurrentPage().onLoadAction();
-    middlePanel.invalidate();
-    middlePanel.validate();
-    contentPane.validate();
+    middlePanel.paintComponents(middlePanel.getGraphics());
     updateButtonsStatus();
   }
-  
+
   /** 
    *  gets the wizard content from the center pane
    *
@@ -160,32 +163,25 @@ public class WizardContainerFrame extends JFrame {
     
     if (getCurrentPage()==null) {
     
-      Log.debug(45,"updateButtonsStatus - getCurrentPage()==null - disabling both...");
-    
       prevButton.setEnabled(false);
       nextFinishButton.setEnabled(false);
       return;
       
     } else {
     
-      Log.debug(45,"updateButtonsStatus - getCurrentPage() NOT null - enabling both...");
       prevButton.setEnabled(true);
       nextFinishButton.setEnabled(true);
-      
     }
     
     // prev button enable/disable:
     if (pageStack.isEmpty() || pageStack.peek()==null) {
-      Log.debug(45,"updateButtonsStatus - pageStack.peek()==null - disabling prevButton...");
       prevButton.setEnabled(false);
     }
     
     // next/finish button label:
     if (getCurrentPage().getNextPageID()==null) {
-      Log.debug(45,"updateButtonsStatus - getCurrentPage().getNextPageID()==null - setting FINISH_BUTTON_TEXT...");
       nextFinishButton.setText(FINISH_BUTTON_TEXT);
     } else {
-      Log.debug(45,"updateButtonsStatus - getCurrentPage().getNextPageID() NOT null - setting NEXT_BUTTON_TEXT...");
       nextFinishButton.setText(NEXT_BUTTON_TEXT);
     }
   }
@@ -236,7 +232,8 @@ public class WizardContainerFrame extends JFrame {
   private void initMiddlePanel() {
   
     middlePanel = new JPanel();
-//    middlePanel.setLayout(new BorderLayout());
+    middlePanel.setLayout(new BorderLayout());
+    middlePanel.setBackground(WIZARD_CONTENT_BG_COLOR);
 //    middlePanel.setOpaque(false);
 //    middlePanel.setBorder(new EmptyBorder(PADDING,3*PADDING,PADDING,3*PADDING));
     contentPane.add(middlePanel, BorderLayout.CENTER);
@@ -316,6 +313,8 @@ public class WizardContainerFrame extends JFrame {
       Log.debug(15,"previousAction - popped a NULL page from stack");
       return;
     }
+    Log.debug(45,"previousAction - popped page with ID: "
+                                      +previousPage.getPageID()+" from stack");
     
     getCurrentPage().onRewindAction();
     
