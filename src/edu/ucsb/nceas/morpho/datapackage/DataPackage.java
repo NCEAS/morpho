@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-30 20:46:13 $'
- * '$Revision: 1.90 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-31 23:47:26 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1277,6 +1277,7 @@ public class DataPackage implements XMLFactoryInterface
         {
           savedirDataSub.mkdirs();
           String dataFile = (String)dataFileNameMap.get(docid);
+          dataFile =trimFullPathFromFileName(dataFile);
           f = new File(dataPath + "/" + dataFile);
         }
         else
@@ -1367,7 +1368,8 @@ public class DataPackage implements XMLFactoryInterface
 
           htmldoc[i].append("<a href=\"");
           String dataFileName = null;
-          dataFileName = (String)dataFileNameMap.get(docid); 
+          dataFileName = (String)dataFileNameMap.get(docid);
+          dataFileName = trimFullPathFromFileName(dataFileName);
           htmldoc[i].append("./data/").append(dataFileName).append("\">");
           htmldoc[i].append("Data File: ");
           htmldoc[i].append(dataFileName).append("</a><br>");
@@ -1403,7 +1405,41 @@ public class DataPackage implements XMLFactoryInterface
     exportStyleSheet(packagePath);    
     
   }
-
+  
+  /*
+   * A method to trim the full path of data file name.(old version of morpho
+   * will have full path in the name)
+   * We assume the full path name either only has "/" or "\"
+   */
+  private String trimFullPathFromFileName(String fileName)
+  {
+    String onlyFileName = fileName;// assing fileName to onlyFileName;
+    String slash = "/";
+    String backSlash = "\\";
+    if (fileName == null || fileName.equals(""))
+    {
+      return fileName;
+    }
+    int size               = fileName.length();
+    int lastBackSlashIndex = fileName.lastIndexOf(backSlash);
+    int lastSlashIndex     = fileName.lastIndexOf(slash);
+    // If have a backslash, we think it has a full path, only get part
+    // from the last back slash
+    if (lastBackSlashIndex != -1)
+    {
+      onlyFileName = fileName.substring(lastBackSlashIndex+1, size);
+      return onlyFileName;
+    }
+    // If have a slash, we think it has a full path, only get part
+    // from the last slash
+    if (lastSlashIndex != -1)
+    {
+      onlyFileName = fileName.substring(lastSlashIndex+1, size);
+      return onlyFileName;
+    }
+    // If already no path, just return fileName
+    return onlyFileName;
+  }
   //save the StringBuffer to the File path specified
   private void saveToFile(StringBuffer buff, File outputFile) throws IOException
   {
@@ -1455,6 +1491,7 @@ public class DataPackage implements XMLFactoryInterface
         int lparenindex = relationship.indexOf("(");
         dataFileName = relationship.substring(lparenindex + 1, 
                                                      relationship.length() - 1);
+        dataFileName = trimFullPathFromFileName(dataFileName);
         if (dataFileName != null)
         {
           // check file name if conflic
