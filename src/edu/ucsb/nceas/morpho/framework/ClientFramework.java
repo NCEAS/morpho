@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-23 23:10:40 $'
- * '$Revision: 1.31.2.10 $'
+ *     '$Date: 2001-04-23 23:38:18 $'
+ * '$Revision: 1.31.2.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,6 +350,22 @@ public class ClientFramework extends javax.swing.JFrame
     } else {
       throw (new ServiceNotHandledException("Service does not exist: " +
                                             serviceName));
+    }
+  }
+
+  /**
+   * This method is called by plugins to determine if a  particular 
+   * named service has been registered and is available.
+   *
+   * @param request the service request and associated data
+   * @returns boolean true if the service exists, false otherwise
+   */
+  public boolean checkForService(String serviceName)
+  {
+    if (servicesRegistry.containsKey(serviceName)) {
+      return true;
+    } else {
+      return false;
     }
   }
 
