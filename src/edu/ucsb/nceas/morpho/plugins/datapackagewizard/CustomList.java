@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-19 01:44:01 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-01-06 19:39:21 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,7 +226,8 @@ public class CustomList extends JPanel {
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
-
+		table.setFocusable(false);
+		
     // The last column is never displayed, but is used to hold a pointer to any
     // Object the user wants to associate with the row
 
@@ -526,7 +527,7 @@ public class CustomList extends JPanel {
 
     // ADD always available:
     //if (showAddButton) addButton.setEnabled(true);
-
+		
     // EDIT available only if a row selected:
     if (showEditButton) editButton.setEnabled(selectionExists);
 
@@ -693,7 +694,7 @@ public class CustomList extends JPanel {
   public void addRow(List rowList) {
 
     int row = getSelectedRowIndex();
-
+		
     if (row < 0) {
 
       row = model.getRowCount();
