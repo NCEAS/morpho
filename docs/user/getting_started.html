@@ -4,115 +4,146 @@
 <head>
   <title>The Knowledge Network for Biocomplexity</title>
   <link rel="stylesheet" type="text/css" href="default.css">
+  <link href="default2.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-
 <table class="tabledefault">
-<tr><td rowspan="2"><img src="./images/KNBLogo.gif"></td>
-<td colspan="7">
-<div class="title">Morpho</div>
-<div class="subtitle">User Guide</div>
-</td>
-</tr>
-<tr>
-  <td><a href="http://knb.ecoinformatics.org" class="toollink">KNB Home&nbsp;</a></td>
-  <td><a href="http://knb.ecoinformatics.org/data.html" class="toollink">Data&nbsp;</a></td>
-  <td><a href="http://knb.ecoinformatics.org/people.html" class="toollink">People&nbsp;</a></td>
-  <td><a href="http://knb.ecoinformatics.org/informatics" class="toollink">Informatics&nbsp;</a></td>
-  <td><a href="http://knb.ecoinformatics.org/biodiversity" class="toollink">Biocomplexity&nbsp;</a></td>
-  <td><a href="http://knb.ecoinformatics.org/education" class="toollink">Education&nbsp;</a></td>
-  <td><a href="http://knb.ecoinformatics.org/software" class="toollink">Software&nbsp;</a></td>
-</tr>
+  <tr>
+    <td width="14%" height="91"><div align="center" class="title"><img src="./images/KNBLogo.gif" width="107" height="76"></div>
+    </td>
+    <td width="86%">
+      <div class="title">
+        <div align="left">Morpho User Guide</div>
+      </div>
+    </td>
+  </tr>
 </table>
-<hr>
 <p>&nbsp;</p>
-
-<!-- put text after this -->
+<table width="100%" border="0" cellpadding="4" cellspacing="0"
+       class="tablepanel">
+  <!-- 
+  <tr>
+   <td colspan=2 width="100%">
+    <img src="./images/knb.gif" width=350 height=200>
+   </td>
+  </tr>
+ -->
+  <tr> 
+    <td width="50%" height="53" align=center valign=middle> <p><a href="index.html" class="sitelink">Help
+          Index</a></td>
+    <td align=center valign=middle width="50%"> <a href="introduction.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous><span class="sitelink">Introduction</span></a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; <a href="main_welcome_screen.html" class="sitelink"> The
+        Main Welcome Screen<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="tablepanel">
-    <tr class="tablehead"> 
-        <td colspan="2"><b>Getting Started</b></td>
-    </tr>
-    <tr> 
-        <td colspan="2"> <div class="helpsub">
-                <p>&nbsp;</p>
-                <p>Register for the KNB</p>
-            </div>
-            <p>The first thing you should do after installing Morpho (but before *running* 
-                Morpho) is register yourself for the KNB. Go to <a href="http://ldap.ecoinformatics.org/cgi-bin/ldapweb.cgi">knb.ecoinformatics.org</a> 
-                and fill out the following form. Be sure to remember your username 
-                and password!</p>
-            <div align="center"><br>
-                <img src="./images/knb_register.gif" width="490" height="510" bottom=0> 
-                <br>
-            </div>
-            <div class="helpsub"><br>
-                Create a Morpho Profile</div>
-            <p> The first time you execute Morpho, you will be asked to create a new 
-                profile. This profile allows you to use Morpho locally on your PC 
-                and, once registered for the KNB network (see preceding paragraph), 
-                will allow you to create, edit and search for datasets on the KNB.<br>
-                <br>
-                If you are upgrading Morpho from a previous version, you will also 
-                be prompted to create a new profile. If you want to continue using 
-                your old profile (so that your data continues to be visible), simply 
-                enter a new profile with the same name as the old one, and you will 
-                be prompted if you would like to use the existing profile. For example, 
-                if your old profile is named "jdoe", then enter "jdoe" as the name 
-                of the new profile, and when you finish the profile wizard, Morpho 
-                will ask if you want to keep your existing profile -- click "Yes". 
-                <br>
-                <br>
-                Enter your profile name, name, and password as follows:<br>
-                <font color="#ff0000" size=+3><b>!</b></font> 
-                Notice the white, left hand part of the screens. Directions and definitions 
-                will be located here. Your profile name does not have to be the same 
-                as your Metacat username.<br>
-            </p>
-            <div align="center"> 
-                <p><img src="./images/new_profile.gif" width="550" height="420" align="BOTTOM" border="0"><br>
-            </div>
-            <p>Click "Next" to move on to the New Profile Account Information screen. 
-                Here you should enter the Metacat username and the organization name 
-                which you registered on the knb.ecoinformatics.org site. </p>
-            <p>&nbsp; </p>
-            <div align="center"><img src="./images/new_profile_account.gif" width="550" height="420" align="BOTTOM" border="0"><br>
-            </div>
-            <p>Click "Next" to move to the New Profile Identifier screen. This identifier 
-                will become the prefix of your stored metadata file names. For example, 
-                jdoe.xml.</p>
-            <p>&nbsp;</p>
-            <div align="center"><img src="./images/new_profile_identifier.gif" width="550" height="427" align="BOTTOM" border="0"><br>
-            </div>
-            <p>Click "Finished" to move on to the network Login screen, where you 
-                should enter your Metacat password.</p>
-            <p>&nbsp;</p>
-            <div align="center"><img src="./images/metacat_login.gif" width="334" height="284" align="BOTTOM" border="0"> 
-                <br>
-            </div>
-            <p><font color="yellow"> <font color="#ff0000" size=+3><b>!</b></font></font> 
-                By entering your password and clicking the 'Login' button you will 
-                be able to create, edit, search and manage data both locally (on your 
-                computer) and on the KNB network. </p>
-            <p>By selecting 'Skip Login' you will be able to do all the previous operations 
-                locally, and may search for datasets on the KNB network. However, 
-                you will not be allowed to create or edit datasets on the KNB network. 
-            </p>
-            <p>&nbsp;</p>
-            <p>The next screen you will see after logging in is <a href ="main_morpho_screen.html">The 
-                Main Screen</a></p>
-            <br> <br> </td>
-    </tr>
-    <tr> 
-        <td width="88" align=center valign=top> <p align="left"><a href="index.html" class="sitelink">Help 
-                Home</a><br>
-            <p align="left">&nbsp; </td>
-        <td align=center valign=top width="259"> <div align="right"><a href="introduction.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Previous</a> 
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="main_morpho_screen.html" class="sitelink">Main 
-                Screen<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a> 
-            </div></td>
-    </tr>
+  <tr class="tablehead"> 
+    <td width="50%" height="27" valign="middle"><b>Getting Started</b></td>
+  </tr>
+  <tr> 
+    <td><p>&nbsp;</p>      <div class="helpsub">
+      <p>Download Morpho</p>
+        </div>
+      <p>The first thing you should do is install the Morpho software. Go to
+        (WHERE?) and (DO WHAT?). You will have the option of downloading Java
+        (WHICH?)
+        along with Morpho if you do not already have it.</p>
+      <p>&nbsp;</p>
+      <p class="helpsub"> Register for the KNB network</p>
+      <p>After installing Morpho (but before using Morpho), register yourself 
+        on the KNB website. Go to <a href="http://ldap.ecoinformatics.org/cgi-bin/ldapweb.cgi">knb.ecoinformatics.org</a> 
+        and fill out the following form. Write down your name and password somewhere 
+        secure.</p>
+      <div align="center"><br>
+        <img src="./images/knb_register.gif" width="490" height="510" bottom=0> 
+        <br>
+      </div>
+      <div class="helpsub"><br>
+        Open Morpho and Create a Morpho Profile</div>
+      <p> Open Morpho by clicking (DOUBLE-CLICKING?) on its icon.</p>
+      <p>&nbsp;</p>
+      <p>The first time you execute Morpho, you will be asked to create a new 
+        profile. This profile allows you to use Morpho locally on your personal 
+        computer and, once registered for the KNB network (see preceding &quot;Register 
+        for the KNB&quot; section), will allow you to create, access, edit and 
+        search for datasets on the KNB network.<br>
+        <br>
+        If you are upgrading Morpho from a previous version, you will still be 
+        prompted to create a new profile. If you want to continue using your old 
+        profile(s) (so that your data continues to be visible), simply enter a 
+        new profile with the same name as the old one, and you will be prompted 
+        if you would like to use the existing profile. For example, if your old 
+        profile is named "jdoe", then enter "jdoe" as the name of the new profile, 
+        and when you finish the profile wizard, Morpho will ask if you want to 
+        keep your existing profile -- click "Yes". <br>
+      </p>
+      <p> Enter your profile name, your first and last names, and a password under 
+        &quot;Basic Information&quot; in the New Profile screen, pictured below. 
+        Your profile name does not have to be the same as your Metacat (KNB) network 
+        username.</p>
+      <p>&nbsp;</p>
+      <div align="center"> 
+        <p><img src="./images/new_profile.gif" width="550" height="420" align="BOTTOM" border="0"><br>
+      </div>
+      <p><font color="#ff0000" size="+2"><b>!</b></font> Notice the white, left hand part 
+        of the screen. Directions and definitions will be located here on screens 
+        throughout Morpho. </p>
+      <p>&nbsp;</p>
+      <p>Click "Next" to
+        move on to the Metacat Account Information screen. Here you should enter
+        the Metacat username and the organization
+        name which
+        you registered on the knb.ecoinformatics.org site. </p>
+      <p>&nbsp; </p>
+      <div align="center"><img src="./images/new_profile_account.gif" width="550" height="420" align="BOTTOM" border="0"><br>
+      </div>
+      <p>Click "Next" to move to the Miscellaneous Information screen. The identifier 
+        prefix that you enter will become the prefix of your stored metadata file 
+        names. For example, jdoe.xml.</p>
+      <p>&nbsp;</p>
+      <div align="center"><img src="./images/new_profile_identifier.gif" width="550" height="427" align="BOTTOM" border="0"><br>
+      </div>
+      <p>Click "Finished" to move on to the network Login screen, where you should 
+        enter your Metacat password. (DOES IT STILL GO TO THIS SCREEN?)</p>
+      <p>&nbsp;</p>
+      <div align="center"><img src="./images/metacat_login.gif" width="334" height="284" align="BOTTOM" border="0"> 
+        <br>
+      </div>
+      <p><font color="yellow"> <font color="#ff0000" size="+2"><b>!</b></font></font> By
+         entering your password and clicking the &quot;Login&quot; button you
+        will be able to create, edit, search, access and manage data that is
+        stored
+        both locally (on your computer) and on the KNB network. By selecting &quot;Skip
+        Login&quot; you
+        will be able to do all the previous operations locally, and may search
+        for datasets on the KNB network. However,
+        you will not be allowed to create or edit datasets on the KNB network
+      if you are not logged in. </p>
+      <p>&nbsp;</p>
+      <p>The next screen you will see after logging in is <a href ="main_welcome_screen.html">The
+           Main Welcome Screen.</a></p>
+      <br> </td>
+  </tr>
 </table>
 
+<p>&nbsp;</p>
+<table width="100%" border="0" cellpadding="4" cellspacing="0"
+       class="tablepanel">
+  <!-- 
+  <tr>
+   <td colspan=2 width="100%">
+    <img src="./images/knb.gif" width=350 height=200>
+   </td>
+  </tr>
+ -->
+  <tr> 
+    <td width="50%" height="53" align=center valign=middle> <p><a href="index.html" class="sitelink">Help 
+        Home</a> </td>
+    <td align=center valign=middle width="50%"> <a href="introduction.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Introduction</a>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; <a href="main_welcome_screen.html" class="sitelink">The
+        Main Welcome Screen<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
 </body>
 </html>
