@@ -6,7 +6,7 @@
       <textbox label="Name" field="entityName" size="10" required="yes"/>
       <textbox label="Description" field="entityDescription"  size="10" />
       <group field="@orientation" size="50x40">
-        <combobox label="Orientation" field="columnrow"  size="10" defaulttext="columnmajor">
+        <combobox label="Orientation" field="columnorrow"  size="10" defaulttext="columnmajor">
           <item name="Column Major" value="columnmajor"/>
           <item name="Row Major" value="rowmajor"/>
         </combobox>

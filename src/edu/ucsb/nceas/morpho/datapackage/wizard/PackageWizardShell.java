@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-06-14 15:20:47 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -646,22 +646,24 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         catch(FileNotFoundException fnfe)
         {
-          framework.debug(0, "Your package is hosed.  A file was not found.");
-          return;
+          ClientFramework.debug(0, "The upload to metacat failed (1): " + 
+                                fnfe.getMessage()); 
+          //framework.debug(0, "Your package is hosed.  A file was not found.");
         }
         catch(MetacatUploadException mue)
         {
-          framework.debug(0, "Metacat is broken. You can't upload your " +
-                             "package now.");
-          return;
+          //framework.debug(0, "Metacat is broken. You can't upload your " +
+          //                   "package now.");
+          ClientFramework.debug(0, "The upload to metacat failed (2): " + 
+                                mue.getMessage());
         }
         catch(IOException ioe)
         {
-          framework.debug(0, "IO Error in packagewizardshell");
-          return;
+          //framework.debug(0, "IO Error in packagewizardshell");
+          ClientFramework.debug(0, "The upload to metacat failed (3): " + 
+                                ioe.getMessage());
         }
       }
-      
     }
     
     if(openCheckBox.isSelected())

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:28 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-14 15:20:46 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,8 +124,8 @@ public class MetacatDataStore extends DataStore
           c = reader.read();
         }
         String responseStr = response.toString();
-        ClientFramework.debug(11, "responseStr: " + 
-                              responseStr/*.substring(22,29)*/);
+        //ClientFramework.debug(11, "responseStr: " + 
+        //                      responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
           writer.close();
@@ -160,7 +160,6 @@ public class MetacatDataStore extends DataStore
         e.printStackTrace();
         return null;
       }
-      
     }
   }
   
@@ -221,7 +220,7 @@ public class MetacatDataStore extends DataStore
       ClientFramework.debug(11, "sending docid: " + name + " to metacat");
       ClientFramework.debug(11, "action: " + action);
       ClientFramework.debug(11, "public access: " + access);
-      ClientFramework.debug(11, "file: " + fileText.toString());
+      //ClientFramework.debug(11, "file: " + fileText.toString());
       
       InputStream metacatInput = null;
       metacatInput = framework.getMetacatInputStream(prop, true);
@@ -271,10 +270,10 @@ public class MetacatDataStore extends DataStore
     {
       //metacatInputReader.close();
       //metacatInput.close();
-      ClientFramework.debug(4, "Error in MetacatDataStore.saveFile(): " + 
-                          e.getMessage());
-      e.printStackTrace();
-      return null;
+      //ClientFramework.debug(4, "Error in MetacatDataStore.saveFile(): " + 
+      //                    e.getMessage());
+      //e.printStackTrace();
+      throw new MetacatUploadException(e.getMessage());
     }
   }
   
