@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-14 00:08:56 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-02-17 03:22:54 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,27 +78,43 @@ public class AttributePanel extends JPanel
     jp.setMaximumSize(new Dimension(800,600));
     final AbstractWizardPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
     jp.add(awp);
+     
+    DocFrame df = DocFrame.currentDocFrameInstance;
+    final Node domNode = df.writeToDOM(node);
+    
+    final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
+    
+    ((AttributePage)awp).setXPathRoot("/attribute");
+    awp.setPageData(om);
+ 
     JPanel controlsPanel = new JPanel();
     JButton saveButton = new JButton("Save");
     saveButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();  //Xerces specific
-        final Document doc = impl.createDocument(null, "attribute", null);
-        Node rootnode = doc.getDocumentElement();
+        final Document doc = domNode.getOwnerDocument();
         try{
-          XMLUtilities.getXPathMapAsDOMTree(awp.getPageData(), rootnode);
-          Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(rootnode));
+//          Log.debug(1, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+          XMLUtilities.getXPathMapAsDOMTree(awp.getPageData(), domNode);
+//          Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
           JTree domtree = new DOMTree(doc);
-Log.debug(1, "AAAAA");
           DefaultMutableTreeNode root = (DefaultMutableTreeNode)domtree.getModel().getRoot();
-Log.debug(1, "root "+root);
           DefaultMutableTreeNode parent = (DefaultMutableTreeNode)fnode.getParent();
-Log.debug(1, "parent "+parent);
           int index = parent.getIndex(fnode);
-Log.debug(1, "index "+index);
           parent.remove(index);
-Log.debug(1, "remove done");
           parent.insert(root, index);
+          DocFrame df1 = DocFrame.currentDocFrameInstance;
+					DefaultMutableTreeNode fn = df1.findTemplateNodeByName("attribute");
+					if (fn!=null) {
+					  df1.treeUnion(root, fn);
+					}
+					df1.addXMLAttributeNodes(root);
+					df1.setAttributeNames(root);
+					NodeInfo nir = (NodeInfo)(root.getUserObject());
+					nir.setChoice(true);
+					nir.setCheckboxFlag(true);
+					nir.setSelected(true);
+					(df1.treeModel).reload();
         } catch (Exception e) {
           Log.debug(5, "Problem in AttributePanel");
         }
@@ -107,25 +123,15 @@ Log.debug(1, "remove done");
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Log.debug(1, "Cancel Button clicked!");
+				awp.setPageData(om);
       }
     });
     controlsPanel.add(saveButton);
     controlsPanel.add(cancelButton);
     jp.add(controlsPanel);
     
-    DocFrame df = DocFrame.lastDocFrameInstance;
-    Node domNode = df.writeToDOM(node);
-    
-    OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
-    
-    ((AttributePage)awp).setXPathRoot("/attribute");
-    awp.setPageData(om);
-    
     jp.setVisible(true);
     
-    OrderedMap omout = awp.getPageData();
-//    Log.debug(1,"map: "+omout);
   }
 
 }
