@@ -2,16 +2,16 @@
 <html>
 <head>
   <title>The Knowledge Network for Biocomplexity</title>
-  <link href="default.css" type="text/css" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="default2.css">
+  <link rel="stylesheet" type="text/css" href="default.css">
+  <link href="default2.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <table class="tabledefault">
   <tbody>
     <tr>
-      <td height="91" width="14%">
-      <div class="title" align="center"><img height="76" width="107"
- src="./images/KNBLogo.gif"></div>
+      <td width="14%" height="91">
+      <div align="center" class="title"><img src="./images/KNBLogo.gif"
+ width="107" height="76"></div>
       </td>
       <td width="86%">
       <div class="title">
@@ -22,8 +22,8 @@
   </tbody>
 </table>
 <p>&nbsp;</p>
-<table class="tablepanel" cellspacing="0" cellpadding="4" border="0"
- width="100%">
+<table width="100%" border="0" cellpadding="4" cellspacing="0"
+ class="tablepanel">
 <!-- 
   <tr>
    <td colspan=2 width="100%">
@@ -33,28 +33,28 @@
  -->
   <tbody>
     <tr>
-      <td valign="middle" align="center" height="53" width="41%">
-      <p><a class="sitelink" href="index.html">Help Index</a></p>
+      <td width="41%" height="53" align="center" valign="middle">
+      <p><a href="index.html" class="sitelink">Help Index</a></p>
       </td>
-      <td width="59%" valign="middle" align="center"> <a
- class="sitelink" href="saving_to_network_synchronizing.htm"><img
- alt="Previous" border="0" hspace="5" vspace="0"
- src="./images/previous.gif">Uploading and Downloading Data
-Packages&nbsp;</a>&nbsp;&nbsp; &nbsp; &nbsp; <a class="sitelink"
- href="Editing_a_data_package.htm"> </a></td>
+      <td align="center" valign="middle" width="59%"> <a
+ href="saving_to_network_synchronizing.htm" class="sitelink"><img
+ src="./images/previous.gif" vspace="0" hspace="5" border="0"
+ alt="Previous">Uploading and Downloading Data
+Packages&nbsp;</a>&nbsp;&nbsp; &nbsp; &nbsp; <a
+ href="Editing_a_data_package.htm" class="sitelink"> </a></td>
     </tr>
   </tbody>
 </table>
 <p>&nbsp;</p>
 <!-- put text after this -->
-<table class="tablepanel" width="100%" cellspacing="0" cellpadding="4"
- border="0">
+<table border="0" cellpadding="4" cellspacing="0" width="100%"
+ class="tablepanel">
   <tbody>
     <tr class="tablehead">
       <td><b>Frequently Asked Questions </b></td>
     </tr>
     <tr>
-      <td width="50%" rowspan="2">
+      <td rowspan="2" width="50%">
       <p><br>
       <b>1. How do I get help?<br>
       <br>
@@ -94,22 +94,27 @@ versions without fear of lossing any locally stored data packages.<br>
       <br>
       <b><a name="image"></a>3. How can I add an image to my data
 package?</b><br>
-      <br>
-Images that are stored in .gif or .jpeg formats (standards for web
-pages) can be added to data packages. To add such an image, either
-create a new package using the "New Datapackage..." menu item (under
-the "File" menu) or add an image to an existing package using the
-"Create New Datatable..." command under the "Data" menu. On the wizard
-screen that asks for a data file to be included in the package, select
-the image file that you wish to include and then click the button that
-says "Manually enter data file descriptions.". Then click the "Next"
-button. You will then need to fill out at least the minimal information
-indicated on several of the next screens. After filling out several
-screens you will come to a screen labeled "Data Physical Information"
-where the one required field is named "Format". You should then type
-"image", ".gif", ".jpeg", or ".jpg" in the Format text box. This tells
+      </p>
+      <p><br>
+Complex, geospatially indexed images can be included and described in
+eml 2.0 using the "spatialRaster" or "spatialVector" entitiy
+modules.&nbsp; However, Morpho currently has no features directly
+supporting these modules. Nevertheless, images that are stored in .gif
+or .jpeg formats (standards for web
+pages) can be added to data packages as "dataTable" elements (even
+though they are not really 'dataTables'). To add such an image to an
+existing package using the
+"Create/Import New Datatable..." command under the "Data" menu. Choose
+the "Import" and then "Manual" radio buttons Then select
+the image file that you wish to include. Then click the "Next"
+button.&nbsp; Select the "Non-text or proprietary formatted file" radio
+button and then select "other".&nbsp; You should then type
+"image", ".gif", ".jpeg", or ".jpg" in the text box below the "other"
+button. This tells
 Morpho to display the data as an image when the package is viewed
-later. Then continue through the Wizard as with any other data file.<br>
+later. Then continue through the Wizard as with any other data file.
+You will need to fill out at least the minimal information
+indicated on several of the next screens.<br>
       <br>
       <b><a name="lookandfeel"></a>4. Can I customize Morpho in any way?<br>
       </b><br>
@@ -196,8 +201,8 @@ Excel when the existing data is comma-delimited.).</p>
   </tbody>
 </table>
 <p>&nbsp;</p>
-<table class="tablepanel" cellspacing="0" cellpadding="4" border="0"
- width="100%">
+<table width="100%" border="0" cellpadding="4" cellspacing="0"
+ class="tablepanel">
 <!-- 
   <tr>
    <td colspan=2 width="100%">
@@ -207,14 +212,14 @@ Excel when the existing data is comma-delimited.).</p>
  -->
   <tbody>
     <tr>
-      <td valign="middle" align="center" height="53" width="41%">
-      <p><a class="sitelink" href="index.html">Help Index</a></p>
+      <td width="41%" height="53" align="center" valign="middle">
+      <p><a href="index.html" class="sitelink">Help Index</a></p>
       </td>
-      <td width="59%" valign="middle" align="center"> <a
- class="sitelink" href="saving_to_network_synchronizing.htm"><img
- alt="Previous" border="0" hspace="5" vspace="0"
- src="./images/previous.gif">Placing a Data Package on a Network&nbsp;</a>&nbsp;&nbsp;
-&nbsp; &nbsp; <a class="sitelink" href="Editing_a_data_package.htm"> </a></td>
+      <td align="center" valign="middle" width="59%"> <a
+ href="saving_to_network_synchronizing.htm" class="sitelink"><img
+ src="./images/previous.gif" vspace="0" hspace="5" border="0"
+ alt="Previous">Placing a Data Package on a Network&nbsp;</a>&nbsp;&nbsp;
+&nbsp; &nbsp; <a href="Editing_a_data_package.htm" class="sitelink"> </a></td>
     </tr>
   </tbody>
 </table>
