@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-13 00:47:21 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2003-10-07 22:22:59 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -476,6 +476,7 @@ public class LocalQuery
   private String getDocTypeFromDOM(Document doc){
     String ret = null;
     DocumentType ddd = doc.getDoctype();
+    if (ddd==null) return ret;
     ret = ddd.getPublicId();
     if (ret==null) {
       ret = ddd.getSystemId();
