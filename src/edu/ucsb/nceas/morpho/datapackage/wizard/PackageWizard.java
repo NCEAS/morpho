@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-12 22:01:51 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2001-10-12 23:01:13 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,6 +180,13 @@ public class PackageWizard extends javax.swing.JFrame
    */
    public void setXMLString(String xml) {
       this.xmlString = xml;
+   }
+  
+  /**
+   * get the xmlString
+   */
+   public String getXMLString() {
+    return xmlString;
    }
   
   /**

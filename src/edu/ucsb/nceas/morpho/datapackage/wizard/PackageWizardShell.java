@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-12 22:01:50 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2001-10-12 23:01:12 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -403,7 +403,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       if (frameWizardIndex>1) {
         PackageWizard nextPW = nextContainer.wizard;
         if (nextPW!=null) {
-          test = nextPW.getXML();   
+          test = nextPW.getXMLString();   
         }
       }
       if (test==null) {
