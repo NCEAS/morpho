@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-12-08 07:13:35 $'
- * '$Revision: 1.49 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-12-20 18:05:04 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -692,7 +692,7 @@ public class LocalQuery
         }
 
         // Add the triple to the tripleList for this package
-        tripleList.add(triple);
+        tripleList.addElement(triple);
 
         // add the packageDocid itself
         if (dataPackage_collection.containsKey(packageDocid)) {    
