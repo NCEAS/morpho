@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-24 00:13:04 $'
- * '$Revision: 1.26 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-11-18 23:43:10 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,6 +122,9 @@ public class QueryDialog extends JDialog
 
   /** Determine whether the spatial screen is used */
   boolean buildSpatial = false;
+  
+  /** panel for lat/long selection */
+  LiveMapPanel liveMap = null;
 
   //{{DECLARE_CONTROLS
   private JTabbedPane queryTabs = new JTabbedPane();
@@ -350,6 +353,8 @@ public class QueryDialog extends JDialog
     // Configure the spatial search panel
     spatialPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     spatialPanel.setVisible(false);
+    liveMap = new LiveMapPanel();
+    spatialPanel.add(liveMap);
     queryTabs.add(spatialPanel);
 
     // Configure the query options panel
@@ -420,6 +425,14 @@ public class QueryDialog extends JDialog
     catalogSearchCheckBox.addItemListener(checkboxHandler);
     localSearchCheckBox.addItemListener(checkboxHandler);
     this.addKeyListener(keyPressListener);
+ 
+    SymChange lSymChange = new SymChange();
+		queryTabs.addChangeListener(lSymChange);
+
+    liveMap.setVisible(false);
+    liveMap.invalidate();
+    spatialPanel.validate();
+    
     //}}
   }
 
@@ -789,7 +802,18 @@ public class QueryDialog extends JDialog
       String message = "Please select one of the Subject, Taxonomic, or Spatial \n" +
                        "query tabs before clicking the Search button.";
       JOptionPane.showMessageDialog(this, message);
-    } else {
+    } 
+    else if(tabIndex == 2) {
+      String message = "This is a test of the spatial query input tool. \n" +
+                       "Actual spatial queries are not yet implemented.\n" +
+                       "Maximum Latitude:" + (new Double(liveMap.getTop()).toString())+ "\n" +
+                       "Minimum Latitude:" + (new Double(liveMap.getBottom()).toString())+ "\n" +
+                       "Maximum Longitude:" + (new Double(liveMap.getRight()).toString())+ "\n" +
+                       "Minimum Longitude:" + (new Double(liveMap.getLeft()).toString())
+                        ;
+      JOptionPane.showMessageDialog(this, message);
+    }
+    else {
       String metacatflag = "true";
       String localflag = "true";
       if (!catalogSearchCheckBox.isSelected()) {
@@ -1165,4 +1189,28 @@ public class QueryDialog extends JDialog
     taxonChoicesPanel.invalidate();
     taxonPanel.validate();
   }
+  
+  class SymChange implements javax.swing.event.ChangeListener
+	{
+		public void stateChanged(javax.swing.event.ChangeEvent event)
+		{
+			Object object = event.getSource();
+			if (object == queryTabs) {
+				int sel = queryTabs.getSelectedIndex();
+        System.out.println("Selected index is: "+sel);
+        if (sel==2) {
+          liveMap.setVisible(true); 
+          spatialPanel.setVisible(true);
+          liveMap.invalidate();
+          spatialPanel.validate();
+        }
+        else {
+          liveMap.setVisible(false);            
+          liveMap.invalidate();
+          spatialPanel.validate();
+        }
+		  }
+	  }
+  }
+
 }

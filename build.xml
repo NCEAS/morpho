@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.66 2002-11-01 22:50:17 berkley Exp $'
+  *    File Info: '$Id: build.xml,v 1.67 2002-11-18 23:44:59 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -87,12 +87,14 @@
                 value="${libdir}/jnet.jar" />
       <property name="httpclient"
                 value="${libdir}/httpclient.jar" />
+      <property name="lmap"
+                value="${libdir}/liveMap.jar" />
       <property name="kunststoff"
                 value="${libdir}/kunststoff.jar" />
       <property name="morpho-config"
                 value="${libdir}/morpho-config.jar" />
       <property name="cpath"
-                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${jlf}:${itisjar}:${httpclient}:${morpho-config}"/>
+                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -159,7 +161,7 @@
       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"
            includes="${package.home}/${name}/** com/**" />
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${libdir}"
-           excludes="*.jar,HTTPClient/**,*.zip,*.gz"/>
+           excludes="*.jar,HTTPClient/**,LiveMap/**,*.zip,*.gz"/>
    </target>
 
    <target name="install" depends="jar">
