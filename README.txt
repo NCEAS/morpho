@@ -1,4 +1,4 @@
-Morpho: XML Metadata Client
+Morpho: XML Metadata Client 
 ---------------------------
 
 Version: 1.1.1 - May 9, 2002
