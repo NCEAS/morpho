@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-01 18:50:04 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2001-11-20 23:51:05 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ public class DataPackageGUI extends javax.swing.JFrame
         for(int i=0; i<v.size(); i++)
         {
           String eleid = (String)v.elementAt(i);
-          //String s = "Entity File (" + eleid + ")";
+          String ss = "Entity File (" + eleid + ")";
           File xmlfile;
           try
           {
@@ -199,11 +199,16 @@ public class DataPackageGUI extends javax.swing.JFrame
           
           NodeList nl = PackageUtil.getPathContent(xmlfile, entityNamePath, 
                                                    framework);
-          Node n = nl.item(0);
-          String s = n.getFirstChild().getNodeValue().trim();
-          spacecount += " ";
-          entityitems.addElement(s + spacecount);
-          listValueHash.put(s + spacecount, eleid);
+ //DFH         Node n = nl.item(0);
+          Node n = null;
+          for (int ii=0;ii<nl.getLength();ii++) {
+            n = nl.item(ii);
+            String s = n.getFirstChild().getNodeValue().trim();
+            //System.out.println("node = "+s);
+            spacecount += " ";
+            entityitems.addElement(s + spacecount);
+            listValueHash.put(s + spacecount, eleid);
+          }
         }
       }
       else if(!key.equals(resourcetype) && !key.equals(attributetype))

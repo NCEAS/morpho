@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-16 18:41:59 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-11-20 23:51:05 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,9 @@ public class AddMetadataWizard extends JFrame
   String existingFileId;
   boolean finishflag = false;
   
+  String dataFileID = "";
+  String entityFileID = "";
+    
   JLabel helpLabel = new JLabel();
   JPanel screenPanel = null;
   JButton previousButton = null;
@@ -425,7 +428,10 @@ public class AddMetadataWizard extends JFrame
       }
       else if (existingFile.isSelected())
       { //display an open file dialog
-        String helpText = "<html>Select a DATA FILE to add to your data package." +
+        this.hide();
+        PackageWizardShell pws = new PackageWizardShell(framework, 2, this);
+ 
+ /*       String helpText = "<html>Select a DATA FILE to add to your data package." +
                           "</html>";
         helpLabel.setText(helpText);
         JLabel initLabel = new JLabel("<html><p><font color=black>Choose a " +
@@ -441,6 +447,7 @@ public class AddMetadataWizard extends JFrame
         layoutpanel.add(browseButton);
         screenPanel.add(layoutpanel);
         screenPanel.setLayout(new GridLayout(0,1));
+ */
       }
       else if (existingMetadata.isSelected()) {
  //display an open file dialog
@@ -764,7 +771,7 @@ public class AddMetadataWizard extends JFrame
   
   private void handleAddDataFile(boolean locLocal, boolean locMetacat, 
                                  String newid)
-  { //add a data file here 
+  { //add a data file here
     String relationship = "isRelatedTo";
     AccessionNumber a = new AccessionNumber(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
@@ -900,11 +907,201 @@ public class AddMetadataWizard extends JFrame
         return;
       }
     }
+    refreshPackage(dataPackageId); 
     
+  }
+ 
+  private void handleAddedFiles(boolean locLocal, boolean locMetacat, Vector files)  {
+    String docString = "";
+    Triple t;
+    TripleCollection triples = new TripleCollection();
+    FileSystemDataStore fsds = null;
+    AccessionNumber a = new AccessionNumber(framework);
+    String newid = a.getNextId();
+    
+    String dataPackageId = "";                                
+    for (int i=0;i<files.size();i++) {
+    
+    Vector filedata = (Vector)files.elementAt(i);
+    String type = (String)filedata.elementAt(2);
+    File currentFile = (File)filedata.elementAt(1);
+    String currentFileName = currentFile.getAbsolutePath();
+    
+    
+    //add a data file here
+    String relationship = "isRelatedTo";
+    fsds = new FileSystemDataStore(framework);
+    //relate the new data file to the package itself
+    if (type.equals("GETDATA")) {
+      relationship = currentFileName;
+      if(relationship.indexOf("/") != -1 || 
+        relationship.indexOf("\\") != -1)
+      { //strip out the path info
+        int slashindex = relationship.lastIndexOf("/") + 1;
+        if(slashindex == -1)
+        {
+          slashindex = relationship.lastIndexOf("\\") + 1;
+        }
+      
+        relationship = relationship.substring(slashindex, 
+                                            relationship.length());
+        relationship = "isDataFileFor(" + relationship + ")";
+      }
+    }
+    else if (type.equals("WIZARD")) {
+      relationship = "isRelatedTo";  
+    }
+    // assume here the 'hack' that the first file is a datafile which is related to 
+    // the package;
+    // the second is an entity file which is related to the data file;
+    // remaining files should be related to entity file
+    if (i==0) {
+      t = new Triple(newid, relationship, dataPackage.getID());
+      dataFileID = newid;
+    }
+    else if (i==1) {
+      newid = a.getNextId();
+      t = new Triple(newid, relationship, dataFileID);
+      entityFileID = newid;
+      
+    }
+    else {
+      newid = a.getNextId();
+      t = new Triple(newid, relationship, entityFileID);      
+    }
+      
+    triples.addTriple(t);
+    
+    if(locLocal)
+    {
+      File newPackageMember;
+      try
+      { //save the new package member
+          newPackageMember = fsds.newFile(newid, new FileReader(currentFile));
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        e.printStackTrace();
+        e.printStackTrace();
+        return;
+      }
+    }
+    
+    if(locMetacat)
+    { //send the file to metacat
+      ClientFramework.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      try
+      { //send the new data file to the server
+        if (type.equals("GETDATA")) {
+         	mds.newDataFile(newid, currentFile);
+        }
+        else if(type.equals("WIZARD")) {
+	 	      FileReader fr = new FileReader(currentFile);
+          mds.newFile(newid, fr, dataPackage);
+        }
+      }
+      catch(Exception mue)
+      {
+        ClientFramework.debug(0, "Error saving data file to metacat: " + 
+                              mue.getMessage());
+        mue.printStackTrace();
+        return;
+      }
+    }
+    
+    
+  } // end of loop over files vector
+    File packageFile = dataPackage.getTriplesFile();
+    //add the triple to the triple file
+    docString = PackageUtil.addTriplesToTriplesFile(triples, 
+                                                           dataPackage, 
+                                                           framework);
+                                                           
+    //write out the files
+    File newDPTempFile;
+    //get a new id for the package file
+    dataPackageId = a.incRev(dataPackage.getID());
+    System.out.println("datapackageid: " + dataPackage.getID() + " newid: " + dataPackageId);
+    try
+    { //this handles the package file
+      //save a temp file with the new id
+      newDPTempFile = fsds.saveTempFile(dataPackageId,
+                                        new StringReader(docString));
+      //inc the revision of the new Package file in the triples
+      docString = a.incRevInTriples(newDPTempFile, dataPackage.getID(), 
+                                    dataPackageId);
+      //save new temp file that has the right id and the id inced in the triples
+      newDPTempFile = fsds.saveTempFile(dataPackageId, 
+                                        new StringReader(docString));
+    }
+    catch(Exception e)
+    {
+      ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+      e.printStackTrace();
+      return;
+    }
+    
+    if(locLocal)
+    {
+      try
+      { //save the new package file
+        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile));
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+    }
+    
+    if(locMetacat)
+    { //send the package file to metacat
+      ClientFramework.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      
+      try
+      { //save the new package file
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), 
+                     dataPackage);
+      }
+      catch(MetacatUploadException mue)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat: " + 
+                              mue.getMessage());
+        mue.printStackTrace();
+        return;
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat(2): " + 
+                              fnfe.getMessage());
+        fnfe.printStackTrace();
+        return;
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat(3): " + 
+                              e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+    }
+    
+    refreshPackage(dataPackageId); 
+    
+  }
+  
+  
+  
+  private void refreshPackage(String dataPackageId) {
     //refresh the package wizard view
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
                                              framework);
+    this.dataPackage = newpackage;                                         
     DataPackageGUI dpg = new DataPackageGUI(framework, newpackage);
     dpg.show();
     dpg.setName("Package Editor:" + newpackage.getID());
@@ -918,6 +1115,7 @@ public class AddMetadataWizard extends JFrame
     } catch (ServiceNotHandledException snhe) {
       framework.debug(6, snhe.getMessage());
     }
+    
   }
   
   /**
@@ -1220,6 +1418,56 @@ public class AddMetadataWizard extends JFrame
     currentScreen--;
     layoutScreen();
     this.show();
+  }
+  /**
+   * handler for return from the PackageWizardShell class when
+   * a new data file and associated metadata have been created
+   *  The files vector is actually a vector of vectors with each 
+   *  intenal vector having a id, a file, and a type
+   */
+  public void addingNewDataWizardCompleted(Vector files) {
+    handleNewDataFromWizard(files);
+ //   currentScreen--;
+ //   layoutScreen();
+ //   this.show();  
+  }
+  
+  public void addingNewDatAWizardCanceled() {
+    currentScreen--;
+    layoutScreen();
+    this.show();  
+  }
+  
+  /* files is a Vector of vectors; the internal vector has three elements,
+     a name (string), the file(File), and a type string
+     the type string has a value of 'WIZARD' for metadata and 'GETDATA'
+     for data files
+  */
+  private void handleNewDataFromWizard(Vector files)
+  {    
+    finishflag = true;
+    String newid = "";
+    String location = dataPackage.getLocation();
+    boolean locMetacat = false;
+    boolean locLocal = false;
+    String docString;
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    File packageFile = dataPackage.getTriplesFile();
+    
+    if(location.equals(DataPackage.LOCAL) || 
+       location.equals(DataPackage.BOTH))
+    {
+      locLocal = true;
+    }
+    
+    if(location.equals(DataPackage.METACAT) || 
+       location.equals(DataPackage.BOTH))
+    {
+      locMetacat = true;
+    }
+    handleAddedFiles(locLocal, locMetacat, files);
+    
+
   }
   
   public void windowClosed(WindowEvent event)
