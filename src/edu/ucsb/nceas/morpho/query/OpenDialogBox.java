@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-23 18:14:27 $'
- * '$Revision: 1.9 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-23 20:51:28 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,27 +114,16 @@ public class OpenDialogBox extends JDialog
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
-    getContentPane().setBackground(Color.white);
+//    getContentPane().setBackground(Color.white);
     
     // Create top padding
-    JPanel topMarginPanel = new JPanel();
-    topMarginPanel.setLayout(new BoxLayout(topMarginPanel,BoxLayout.Y_AXIS));
-    getContentPane().add(BorderLayout.NORTH, topMarginPanel);
-    topMarginPanel.add(Box.createVerticalStrut(8));
+    getContentPane().add(BorderLayout.NORTH, Box.createVerticalStrut(8));
+    getContentPane().add(BorderLayout.EAST, Box.createHorizontalStrut(8));
+    getContentPane().add(BorderLayout.WEST, Box.createHorizontalStrut(8));
     
-    
-    // Create result panel
-    JPanel resultPanel = new JPanel();
-    resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.X_AXIS));
-    getContentPane().add(BorderLayout.CENTER, resultPanel);
-    // Add left padding
-    resultPanel.add(Box.createHorizontalStrut(8));
-    // Get owner resultset and onwer panel
     createOwnerPanel();
-    // Add owner panel to the resulPanel
-    resultPanel.add(ownerPanel);
-    // Add rightPadding
-    resultPanel.add(Box.createHorizontalStrut(8));
+    ownerPanel.setBackground(Color.white);
+    getContentPane().add(BorderLayout.CENTER, ownerPanel);
     
     // Create a margin panel
     JPanel marginPanel = new JPanel();
