@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-13 19:31:26 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-04-15 01:49:27 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -358,6 +358,23 @@ public class AccessPage
 
     try {
       if (!fileExists) {
+        // creating accesslist.xml....
+        try {
+          String xmlSource =
+              "<?xml version=\"1.0\"?>\n<accesslist></accesslist>\n";
+          byte buf[] = xmlSource.getBytes();
+          OutputStream f1 = new FileOutputStream(accessListFilePath);
+          f1.write(buf);
+          f1.close();
+        }
+        catch (Exception e1) {
+          Log.debug(10, "Unable to create accesslist.xml in /lib/");
+          Log.debug(45,
+              "Exception in AccessPage class in getDocumentfromFile(). "
+              + "Exception:" + e1.getClass());
+          Log.debug(45, e1.getMessage());
+        }
+
         accessXML = new ConfigXML("./lib/accesslist.xml");
       }
 
@@ -515,7 +532,7 @@ public class AccessPage
     panel.add(dnLabel);
     dnField = WidgetFactory.makeOneLineTextField();
     dnField.setBackground(java.awt.Color.white);
-    if(userDN != null){
+    if (userDN != null) {
       dnField.setText(userDN);
     }
     panel.add(dnField);
@@ -677,7 +694,7 @@ public class AccessPage
       accessTreePane = new JScrollPane(treeTable);
       accessTreePane.setPreferredSize(new java.awt.Dimension(500, 500));
 
-      if (userDN !=null) {
+      if (userDN != null) {
 
         int rowCount = treeTable.getRowCount();
         for (int count = rowCount; count > 0; count--) {
@@ -867,7 +884,9 @@ public class AccessPage
                 String value = nodeObject.getDN();
                 if (value != null && value.indexOf("o=") > -1) {
                   value = value.substring(value.indexOf("o=") + 2);
-                  value = value.substring(0, value.indexOf(","));
+                  if (value.indexOf(",") > -1) {
+                    value = value.substring(0, value.indexOf(","));
+                  }
                 } else {
                   value = EMPTY_STRING;
                 }
@@ -921,7 +940,7 @@ public class AccessPage
               nodeOb.nodeType == WizardSettings.ACCESS_PAGE_USER) {
             warnLabel.setText(EMPTY_STRING);
 
-            if(userDN != null){
+            if (userDN != null) {
               alreadyGeneratedfromDocumentationMenu = true;
               userDN = nodeOb.getDN();
             }
@@ -937,7 +956,7 @@ public class AccessPage
     } else {
       if (dnField.getText().trim().compareTo(EMPTY_STRING) != 0) {
         warnLabel.setText(EMPTY_STRING);
-        if(userDN != null){
+        if (userDN != null) {
           alreadyGeneratedfromDocumentationMenu = true;
           userDN = dnField.getText().trim();
         }
@@ -1108,7 +1127,7 @@ public class AccessPage
 
   public void onLoadAction() {
     if (userDN != null && !alreadyGeneratedfromDocumentationMenu) {
-    // only do this if
+      // only do this if
       if (Access.accessTreeNode == null ||
           Access.accessTreeMetacatServerName.compareTo(Morpho.
           thisStaticInstance.
@@ -1201,7 +1220,6 @@ public class AccessPage
     String nextXPath = null;
     Object nextValObj = null;
     String nextVal = null;
-
 
     while (keyIt.hasNext()) {
 
@@ -1433,7 +1451,7 @@ class QueryMetacatThread
     try {
       queryResult = null;
       //if (morpho.isConnected()) {
-      if (morpho.getNetworkStatus()){
+      if (morpho.getNetworkStatus()) {
         queryResult = morpho.getMetacatInputStream(prop);
       }
       if (!accessPage.isQueryMetacatCancelled()) {
