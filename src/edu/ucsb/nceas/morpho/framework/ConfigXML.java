@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-15 13:42:32 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-01-15 14:26:34 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -554,7 +554,7 @@ public class ConfigXML
     {
       out.print("</");
       out.print(node.getNodeName());
-      out.print('>');
+      out.print(">\n");
     }
 
     out.flush();
