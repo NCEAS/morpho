@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-16 23:44:59 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-09-17 20:54:35 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -577,7 +577,7 @@ public class MetaDisplay implements MetaDisplayInterface,
     private String getFullStylePath() 
     {
         pathBuff.delete(0,pathBuff.length());
-        pathBuff.append("jar:file:/");
+        pathBuff.append("jar:file:");
         File current = new File(""); 
         String root = current.getAbsolutePath();
         pathBuff.append(root);
