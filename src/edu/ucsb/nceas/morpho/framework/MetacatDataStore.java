@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-06-12 20:40:15 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2002-07-05 22:59:32 $'
+ * '$Revision: 1.35.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   public File openFile(String name) throws FileNotFoundException, 
                                            CacheAccessException
   {
+    if ((name==null) || (name.length()==0)) return null;
     String path = parseId(name);
     String dirs = path.substring(0, path.lastIndexOf("/"));
     StringBuffer response = new StringBuffer();
