@@ -1,4 +1,4 @@
-<TemporalCoverage>
+<temporalCov>
   <sngdate
   help="The sngdate field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
 
@@ -120,5 +120,5 @@
 
     </endgeol>
   </rngdates>
-</TemporalCoverage>
+</temporalCov>
 
