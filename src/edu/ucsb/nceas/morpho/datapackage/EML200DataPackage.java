@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-06 22:21:54 $'
- * '$Revision: 1.36 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-06 23:14:38 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -373,11 +373,24 @@ public  class EML200DataPackage extends AbstractDataPackage
    * passed refID. Returns an empty List if none found. Should never return null;
    */
   public List getSubtreesThatReference(String refID) {
-
     List returnList = new ArrayList();
-
-    //magic happens here
-
+    try {
+      String refpath = "references";
+      NodeList refs = XMLUtilities.getNodeListWithXPath(metadataNode, refpath);
+      while ((refs!=null)&&(refs.getLength()>0)) {
+        for (int i=0;i<refs.getLength();i++) {
+          Node nd = refs.item(i);
+          String val = (nd.getFirstChild()).getNodeValue();
+          val = val.trim();
+          if (val.equals(refID.trim())) {
+            returnList.add(nd.getParentNode());
+          }
+        }
+      }
+    }
+    catch (Exception w) {
+      Log.debug(2, "Problem in 'getSubtreesThatReference.");
+    }
     return returnList;
   }
 
