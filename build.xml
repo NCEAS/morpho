@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.91 2004-04-08 23:03:27 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.92 2004-04-09 00:19:11 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -26,8 +26,6 @@
       <property name="eml-module" value="eml" />
       <property name="eml-tag" value="RELEASE_EML_2_0_0" />
       <property name="eml.doc.dir" value="docs/eml-2.0.0" />
-      <property name="java.help.dir" value="/home/tao/download/jh1.1.3/javahelp/bin" />
-      <property name="java.help.doc.dir" value="/home/tao/download/jh1.1.3/javahelp/bin/morphohelp" />
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
@@ -54,7 +52,9 @@
       <property name="build.data" value="${build.dir}/data"/>
       <property name="build.javadocs" value="${build.dir}/docs/api"/>
       <property name="build.xsl" value="${build.dir}/xsl"/>
-
+      <!-- don't modify this value-->
+      <property name="java.help.doc.dir" value="${build.docs}/morphohelp" /> 
+      
       <property name="dist.dir" value="./dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
       <property name="morpho.lib" value="${morpho.dir}/lib"/>
@@ -109,6 +109,8 @@
                 value="${libdir}/morpho-config.jar" />
       <property name="utilities"
                 value="${libdir}/utilities.jar" />
+      <property name="index"
+                value="${libdir}/jhindexer.jar"/>
       <property name="cpath"
                 value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
@@ -182,9 +184,9 @@
 
 
    <target name="helpjar" depends="emldoc">
-     <echo>Please download JavaHelp before running help target!</echo>
-     <echo>${java.help.dir}</echo>
-     <copy todir="${java.help.doc.dir}" filtering="no">
+     <mkdir dir="${java.help.doc.dir}" />
+      <!-- copy morpho docs--> 
+      <copy todir="${java.help.doc.dir}" filtering="no">
         <fileset dir="${docuserdir}">
           <include name="**/*.html" />
           <include name="**/*.jpg" />
@@ -192,19 +194,30 @@
           <include name="*.css" />
         </fileset>
       </copy>
-      <copy todir="${java.help.dir}" filtering="no">
+      <copy todir="${build.docs}" filtering="no">   
         <fileset dir="${docuserdir}">
           <include name="*.xml" />
           <include name="*.jhm" />
           <include name="*.hs" />
         </fileset>
       </copy>
+      <!-- copy eml docs-->
+     <copy todir="${java.help.doc.dir}/eml" filtering="no">
+        <fileset dir="${build.docs}/${eml-module}/${eml.doc.dir}">
+          <include name="**/*.html" />
+          <include name="**/*.png" />
+          <include name="**/*.css" />
+        </fileset>
+     </copy>
       <!-- Creating search database -->
-      <exec dir="${java.help.dir}" executable="${java.help.dir}/jhindexer" >
+      <!--<exec dir="${java.help.dir}" executable="${java.help.dir}/jhindexer" >
         <arg line="morphohelp" />
-      </exec>
+      </exec>-->
+      <java jar="${index}" fork="true">
+        <arg value="${java.help.doc.dir}"/>
+      </java>
       <delete file="${libdir}/${helpjar}" />
-      <jar destfile="${libdir}/${helpjar}" basedir="${java.help.dir}" includes="*.xml, *.jhm, *.hs, morphohelp/**/*, JavaHelpSearch/**/*">
+      <jar destfile="${libdir}/${helpjar}" basedir="${build.docs}" includes="*.xml, *.jhm, *.hs, morphohelp/**/*, JavaHelpSearch/**/*">
       </jar>
 
    </target>
@@ -262,7 +275,7 @@
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
    </target>
 
-   <target name="install" depends="jar">
+   <target name="install" depends="jar, helpjar">
       <copy file="${build.dir}/${name}.jar" todir="${libdir}" />
       <copy file="${build.dir}/${name}-config.jar" todir="${libdir}" />
       <echo message="Install complete. Use the morpho script to run it." />
