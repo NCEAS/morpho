@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-26 22:22:52 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-09-29 23:41:39 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -314,6 +314,53 @@ public abstract class AbstractDataPackage extends MetadataObject
   
   public String getAttributeDataType(int entityIndex, int attributeIndex) {
     String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] attributes = getAttributeArray(entityIndex);
+    if ((attributes==null)||(attributes.length<1)) return "no attributes!";
+    Node attribute = attributes[attributeIndex];
+    String attrXpath = "";
+    try {
+      // first see if there is a datatype node
+      attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='attribute']/dataType")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
+      if (aNodes.getLength()>0) {
+        Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+        temp = child.getNodeValue();
+        return temp;
+      }
+      
+      // see if datatype is text
+      attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='attribute']/isText")).getNodeValue();
+      XObject xobj = XPathAPI.eval(attribute, attrXpath);
+      boolean val = xobj.bool();
+      if (val){
+        return "text";
+      } 
+      // not text, try another xpath; check if Date
+      attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='attribute']/isDate")).getNodeValue();
+//      XMLUtilities.xPathEvalTypeTest(attribute, attrXpath);
+      xobj = XPathAPI.eval(attribute, attrXpath);
+      val = xobj.bool();
+      if (val) {
+        return "date";
+      }
+      // not text or date, must be a number
+      attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='attribute']/numberType")).getNodeValue();
+      
+      aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(20,"exception in getting attribute dataType"+w.toString());
+    }
     return temp;
   }
 
@@ -336,7 +383,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue().trim();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting attribute unit -- "+w.toString());
+      Log.debug(20,"exception in getting attribute unit -- "+w.toString());
     }
     return temp;
   }
@@ -425,6 +472,79 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
+    public String getPhysicalFieldDelimiter(int entityIndex, int physicalIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return "no physicals!";
+    if (physicalIndex>(physicals.length-1)) return "physical index too large!";
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/fieldDelimiter")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(20,"exception in getting physical field delimiter"+w.toString());
+    }
+    return temp;
+  }
+  
+    public String getPhysicalNumberHeaderLines(int entityIndex, int physicalIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return "no physicals!";
+    if (physicalIndex>(physicals.length-1)) return "physical index too large!";
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/numberHeaderLines")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(20,"exception in getting physical number HeaderLines"+w.toString());
+    }
+    return temp;
+  }
+
+  public Node[] getDistributionArray(int entityIndex, int physicalIndex) {
+    Node[] physNodes = getPhysicalArray(entityIndex);
+    if (physNodes==null) return null;
+    if(physicalIndex>(physNodes.length-1)){
+      Log.debug(1, "physical index > number of physical objects");
+      return null;
+    }
+    String distributionXpath = "";
+    try{
+      distributionXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/distribution")).getNodeValue();
+      NodeList distributionlNodes = XMLUtilities.getNodeListWithXPath(physNodes[physicalIndex],distributionXpath);
+      if (distributionlNodes==null) {
+        Log.debug(1,"distributionList is null!");
+        return null;
+      }
+      return XMLUtilities.getNodeListAsNodeArray(distributionlNodes);      
+    }
+    catch (Exception w) {
+      Log.debug(20,"exception in getting distributionArray");
+    }
+    return null;
+  }
+  
+  
   public void showPackageSummary() {
     StringBuffer sb = new StringBuffer();
     sb.append("Title: "+getTitle()+"\n");
@@ -432,16 +552,20 @@ public abstract class AbstractDataPackage extends MetadataObject
     sb.append("Author: "+getAuthor()+"\n");
     getEntityArray();
     for (int i=0;i<entityArray.length;i++) {
-      sb.append("entity "+i+" name: "+getEntityName(i)+"\n");
-      sb.append("entity "+i+" numRecords: "+getEntityNumRecords(i)+"\n");
-      sb.append("entity "+i+" description: "+getEntityDescription(i)+"\n");
+      sb.append("   entity "+i+" name: "+getEntityName(i)+"\n");
+      sb.append("   entity "+i+" numRecords: "+getEntityNumRecords(i)+"\n");
+      sb.append("   entity "+i+" description: "+getEntityDescription(i)+"\n");
       for (int j=0;j<getAttributeArray(i).length;j++) {
-        sb.append("entity "+i+" attribute "+j+"--- name: "+getAttributeName(i,j)+"\n");
-        sb.append("entity "+i+" attribute "+j+"--- unit: "+getAttributeUnit(i,j)+"\n");
+        sb.append("      entity "+i+" attribute "+j+"--- name: "+getAttributeName(i,j)+"\n");
+        sb.append("      entity "+i+" attribute "+j+"--- unit: "+getAttributeUnit(i,j)+"\n");
+        sb.append("      entity "+i+" attribute "+j+"--- dataType: "+getAttributeDataType(i,j)+"\n");
+        
       }
       for (int k=0;k<getPhysicalArray(i).length;k++) {
-        sb.append("entity "+i+" physical "+k+"--- name: "+getPhysicalName(i,k)+"\n");
-        sb.append("entity "+i+" physical "+k+"--- format: "+getPhysicalFormat(i,k)+"\n");
+        sb.append("   entity "+i+" physical "+k+"--- name: "+getPhysicalName(i,k)+"\n");
+        sb.append("   entity "+i+" physical "+k+"--- format: "+getPhysicalFormat(i,k)+"\n");
+        sb.append("   entity "+i+" physical "+k+"--- fieldDelimiter: "+getPhysicalFieldDelimiter(i,k)+"\n");
+        sb.append("   entity "+i+" physical "+k+"--- numHeaderLines: "+getPhysicalNumberHeaderLines(i,k)+"\n");
       }
     }
     Log.debug(1,sb.toString());
