@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-08 16:43:34 $'
- * '$Revision: 1.110.2.1 $'
+ *     '$Date: 2003-08-11 18:44:54 $'
+ * '$Revision: 1.110.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,7 +178,6 @@ public class DocFrame extends javax.swing.JFrame
   javax.swing.JMenuItem ReplacemenuItem;
   javax.swing.JMenuItem PastemenuItem;
   javax.swing.JMenuItem AddtextItem;
-  javax.swing.JMenuItem NewWindowItem;
 
   javax.swing.JPanel OutputScrollPanelContainer = new javax.swing.JPanel();
   javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
@@ -195,8 +194,6 @@ public class DocFrame extends javax.swing.JFrame
   javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
   javax.swing.JPanel ButtonPanel = new javax.swing.JPanel();
   javax.swing.JButton CancelButton = new javax.swing.JButton();
-  javax.swing.JButton OpenButton = new javax.swing.JButton();
-  javax.swing.JButton NewButton = new javax.swing.JButton();
   javax.swing.JButton EditingExit = new javax.swing.JButton();
   javax.swing.JPanel NotesPanel = new javax.swing.JPanel();
   javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
@@ -252,12 +249,6 @@ public class DocFrame extends javax.swing.JFrame
     getContentPane().add(BorderLayout.SOUTH, ControlPanel);
     ButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     ControlPanel.add(BorderLayout.EAST, ButtonPanel);
-    NewButton.setText("New EML2");
-    NewButton.setActionCommand("Open");
-    ButtonPanel.add(NewButton);
-    OpenButton.setText("Open");
-    OpenButton.setActionCommand("Open");
-    ButtonPanel.add(OpenButton);
     CancelButton.setText("Cancel");
     CancelButton.setActionCommand("Cancel");
     ButtonPanel.add(CancelButton);
@@ -365,9 +356,6 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(ReplacemenuItem);
     PastemenuItem = new JMenuItem("Paste as Sibling to Selected Node");
     popup.add(PastemenuItem);
-    NewWindowItem = new JMenuItem("Open New Editor");
-    popup.add(new JSeparator());
-    popup.add(NewWindowItem);
     
     //  REGISTER_LISTENERS
     SymAction lSymAction = new SymAction();
@@ -375,8 +363,6 @@ public class DocFrame extends javax.swing.JFrame
     this.addWindowListener(aSymWindow);
     EditingExit.addActionListener(lSymAction);
     CancelButton.addActionListener(lSymAction);
-    OpenButton.addActionListener(lSymAction);
-    NewButton.addActionListener(lSymAction);
     TrimTreeButton.addActionListener(lSymAction);
     UntrimTreeButton.addActionListener(lSymAction);
     ExpandTreeButton.addActionListener(lSymAction);
@@ -391,7 +377,6 @@ public class DocFrame extends javax.swing.JFrame
     ReplacemenuItem.addActionListener(lSymAction);
     PastemenuItem.addActionListener(lSymAction);
     AddtextItem.addActionListener(lSymAction);
-    NewWindowItem.addActionListener(lSymAction);
     //Create the popup menu.
     javax.swing.JPopupMenu popup = new JPopupMenu();
 
@@ -1200,12 +1185,7 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
-  
-  void NewWindow_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    (new DocFrame()).setVisible(true);    
-  }
-  
+   
   
   /**
    * popup menu action to replace a selected node
@@ -1881,12 +1861,12 @@ public class DocFrame extends javax.swing.JFrame
       currentLevelInputNodes.addElement(instance);
       Vector currentLevelTemplateNodes = new Vector();
       currentLevelTemplateNodes.addElement(template);
-      // Note: Vectors are built which contain both the current and next level
+     // Note: Vectors are built which contain both the current and next level
       // tree nodes. These vectors are built because the tree itself is being
       // manipulated and we want a list that is not changing!
       
       // loop over all the levels of the instance (assumed small compared to template)
-      for (int j = 0; j < instance.getDepth(); j++) {
+      for (int j = 0; j <= instance.getDepth(); j++) {
         nextLevelInputNodes = new Vector();
         for (Enumeration enum = currentLevelInputNodes.elements(); 
           enum.hasMoreElements(); ) {
@@ -2196,11 +2176,11 @@ public class DocFrame extends javax.swing.JFrame
       start = numiterations - pathLength;
      }
      for (int i = start; i < numiterations; i++) {
-      String temp = ((NodeInfo)((DefaultMutableTreeNode)tset[i]).
+       String temp = ((NodeInfo)((DefaultMutableTreeNode)tset[i]).
        getUserObject()).getName();
-      sb.append(temp + "/");
+       sb.append(temp + "/");
      }
-  return sb.toString();
+    return sb.toString();
   }
 
   /**
@@ -2412,77 +2392,12 @@ public class DocFrame extends javax.swing.JFrame
   // hide the Frame
   this.dispose();
   // free the system resources
-  System.exit(0);
+  if (controller==null) {
+    System.exit(0);
+  }
   }
 
-  /**
-   * Actions to be carried out when OpenButton is clicked
-   * This should let the user select a file which the editor
-   * will try to open for editing
-   *
-   * @param event  Event that triggers the button click
-   */
-  void OpenButton_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    //Create a file chooser
-    final JFileChooser fc = new JFileChooser();
-    String userdir = System.getProperty("user.dir");
-    fc.setCurrentDirectory(new File(userdir));
-    fc.setSelectedFile(new File("*.xml"));
-    //In response to a button click:
-    int returnVal = fc.showOpenDialog(this);
-    if (returnVal == JFileChooser.APPROVE_OPTION) {
-      openfile = fc.getSelectedFile();
-      id = openfile.getName();
-      //this is where file is opened
-      StringWriter sw = null;
-      try{
-        FileReader r = new FileReader(openfile);
-        sw = new StringWriter();
-        int c;
-        while ((c = r.read())!=-1)
-          sw.write(c);
-          r.close();
-          sw.close();
-        }
-      catch (Exception e) {}
-      logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
-      headLabel.setText("Working...");
-        
-      initDoc(null, sw.toString());
-    } else {
-      // user cancelled the open file command
-    }
-  }
 
-  /**
-   * Actions to be carried out when NewButton is clicked
-   * This should open a 'new' eml2 doc based on the template
-   *
-   * @param event  Event that triggers the button click
-   */
-  void NewButton_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    templateFlag = true; // set to avoid merging new doc with itself!
-    logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
-    headLabel.setText("Working...");
-    openfile = new File("./lib/eml.xml");
-    //this is where file is opened
-    StringWriter sw = null;
-    try{
-      FileReader r = new FileReader(openfile);
-      sw = new StringWriter();
-      int c;
-      while ((c = r.read())!=-1)
-        sw.write(c);
-      
-      r.close();
-      sw.close();
-    }
-    catch (Exception e) {}
-    
-    initDoc(null, sw.toString());
-  }
   
   /**
    * method carried out when 'Cancel' button is clicked
@@ -2861,18 +2776,12 @@ public class DocFrame extends javax.swing.JFrame
         Paste_actionPerformed(event);
       } else if (object == AddtextItem) {
         Addtext_actionPerformed(event);
-      } else if (object == NewWindowItem) {
-        NewWindow_actionPerformed(event);
       }
 
       if (object == EditingExit) {
         EditingExit_actionPerformed(event);
       } else if (object == CancelButton) {
         CancelButton_actionPerformed(event);
-      } else if (object == OpenButton) {
-        OpenButton_actionPerformed(event);
-      } else if (object == NewButton) {
-        NewButton_actionPerformed(event);
       } else if (object == TrimTreeButton) {
         TrimTreeButton_actionPerformed(event);
       } else if (object == UntrimTreeButton) {
@@ -3291,7 +3200,9 @@ public class DocFrame extends javax.swing.JFrame
    * used to validate the xml string from the editor before leaving
    */
   public String xmlvalidate(String xml) {
-    return "<valid />";
+    DBValidate dbval = new DBValidate("org.apache.xerces.parsers.SAXParser", morpho);
+    dbval.validateString(xml);
+    return dbval.returnErrors();
   }
 
 }
