@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-09 18:40:10 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-08-15 23:24:39 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ public class DTDTree
     
     // levels is how many levels deep the depth first parse is carried out
     // needs to be specified to provide stopping criteria for recursive DTDs
-    int levels = 12;
+    int levels = 13;
     
  
   public DTDTree() {
@@ -139,6 +139,14 @@ public DefaultMutableTreeNode buildTree(DefaultMutableTreeNode root) {
     vect = zzzz;
     zzzz = new Vector();
   }
+  // clean up any leaf nodes
+  DefaultMutableTreeNode leaf = root.getFirstLeaf();
+  while (leaf != null) {
+    NodeInfo ni = (NodeInfo)leaf.getUserObject();
+    ni.setItem(null);
+    leaf = leaf.getNextLeaf();
+  }
+  
   return root;
 }
 
