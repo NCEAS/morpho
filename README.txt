@@ -14,10 +14,8 @@ Contributors:
     Chris Jones (cjones@lifesci.ucsb.edu)
     Mark Schildhauer (schild@nceas.ucsb.edu)
     Eric Fegraus (fegraus@nceas.ucsb.edu)
-
-Other Credits:
-Icons used in this software were originally designed by other parties, and have be modified for Morpho.  They include incons from the IconFactory's World of Aqua series (http://www.iconfactory.com), and icons from Everaldo Coelho's Conectiva Crystal Series (http://www.everaldo.com).  Please see the ICONREADME.txt for more information about the IconFactory icons.  
-
+    Matthew Brooke (brooke@nceas.ucsb.edu)
+    Jing Tao (tao@nceas.ucsb.edu)
 
 This is Morpho, a data management application for managing ecological data.  Morpho allows researchers to describe their data using a comprehensive and flexible metadata specification, and to share their data publicly or to specific collaborators over the Knowledge Netwrok for Biocomplexity system. Although Morpho can be used without an account on the KNB, it is free and simple to obtain one: just register at
 
@@ -109,6 +107,13 @@ Most of Morpho works with the older versions of Java. (Exceptions include some k
 
 Also, on the Macintosh, pressing the <Control> key down while clicking is the equivalent of a click of the right mouse button under Windows. Thus "<Control>+ Click" should be used to bring up popup menus when running Morpho on a  Macintosh.
 
+Other Credits:
+--------------
+Icons used in this software were originally designed by other parties, and
+have be modified for Morpho.  They include incons from the IconFactory's World
+of Aqua series (http://www.iconfactory.com), and icons from Everaldo Coelho's
+Conectiva Crystal Series (http://www.everaldo.com).  Please see the 
+licenses/ICONREADME.txt for more information about the IconFactory icons.  
 
 
 Legalese
