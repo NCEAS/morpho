@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-28 17:56:26 $'
- * '$Revision: 1.25 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-01-24 21:06:51 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,16 @@ public class FileSystemDataStore extends DataStore
   {
     return saveFile(name, file, tempdir, null);
   }
+
+  public File saveDataFile(String name, Reader file)
+  {
+    return saveDataFile(name, file, datadir, null);
+  }
+  
+  public File saveTempDataFile(String name, Reader file)
+  {
+    return saveDataFile(name, file, tempdir, null);
+  }
   
   /**
    * Saves a file with the given name.  if the file does not exist it is created
@@ -121,20 +131,22 @@ public class FileSystemDataStore extends DataStore
       }
       
       //save a temp file so that the id can be put in the file.
+      BufferedReader bfile = new BufferedReader(file);
       StringWriter sw = new StringWriter();
+      BufferedWriter bsw = new BufferedWriter(sw);
       File tempfile = new File(tempdir + "/local.noid");
       FileWriter fw = new FileWriter(tempfile);
-      int c = file.read();
+      BufferedWriter bfw = new BufferedWriter(fw);
+      int c = bfile.read();
       while(c != -1)
       {
-        fw.write(c); //write out everything in the reader
-        sw.write(c);
-        c = file.read();
+        bfw.write(c); //write out everything in the reader
+        bsw.write(c);
+        c = bfile.read();
       }
-      fw.flush();
-      fw.close();
+      bfw.flush();
+      bfw.close();
       String fileWithId = insertIdInFile(tempfile, name); //put the id in
-      
       if(fileWithId == null)
       {
         fileWithId = sw.toString();
@@ -142,19 +154,20 @@ public class FileSystemDataStore extends DataStore
       
       //now that the id has been put in the file, we can save it.
       StringReader sr = new StringReader(fileWithId);
-      while(!sr.ready())
-      {
-        int x = 1;
-      }
-      FileWriter writer = new FileWriter(savefile);
-      int d = sr.read();
+      BufferedReader bsr = new BufferedReader(sr);
+//      while(!sr.ready())
+//      {
+//        int x = 1;
+//      }
+      BufferedWriter bwriter = new BufferedWriter(new FileWriter(savefile));
+      int d = bsr.read();
       while(d != -1)
       {
-        writer.write(d); //write out everything in the reader
-        d = sr.read();
+        bwriter.write(d); //write out everything in the reader
+        d = bsr.read();
       }
-      writer.flush();
-      writer.close();
+      bwriter.flush();
+      bwriter.close();
       return savefile;
     }
     catch(Exception e)
@@ -238,4 +251,80 @@ public class FileSystemDataStore extends DataStore
     }
     ClientFramework.debug(20, "done");
   }
+  
+ /**
+  *  A variant of saveFile designed for use with Data Files.
+  *  This avoids the writing of files to Strings that is in saveFile
+  *  and allows for very large data files. (i.e. no file is put entirely
+  *  in memory)
+  */
+  public File saveDataFile(String name, Reader file, String rootDir, DataPackage dp)
+  {
+    try
+    {
+      String path = parseId(name);
+      String dirs = path.substring(0, path.lastIndexOf("/"));
+      File savefile = new File(rootDir + "/" + path); //the path to the file
+      File savedir = new File(rootDir + "/" + dirs); //the dir part of the path
+      if(!savefile.exists())
+      {//if the file isn't there create it.
+        try
+        {
+          savedir.mkdirs(); //create any directories
+        }
+        catch(Exception ee)
+        {
+          ee.printStackTrace();
+        }
+      }
+      
+      //save a temp file so that the id can be put in the file.
+      BufferedReader bfile = new BufferedReader(file);
+/* 
+      StringWriter sw = new StringWriter();
+      BufferedWriter bsw = new BufferedWriter(sw);
+      File tempfile = new File(tempdir + "/local.noid");
+      FileWriter fw = new FileWriter(tempfile);
+      BufferedWriter bfw = new BufferedWriter(fw);
+      int c = bfile.read();
+      while(c != -1)
+      {
+        bfw.write(c); //write out everything in the reader
+        bsw.write(c);
+        c = bfile.read();
+      }
+      bfw.flush();
+      bfw.close();
+      String fileWithId = insertIdInFile(tempfile, name); //put the id in
+      if(fileWithId == null)
+      {
+        fileWithId = sw.toString();
+      }
+      
+      //now that the id has been put in the file, we can save it.
+      StringReader sr = new StringReader(fileWithId);
+      BufferedReader bsr = new BufferedReader(sr);
+*/      
+//      while(!sr.ready())
+//      {
+//        int x = 1;
+//      }
+      BufferedWriter bwriter = new BufferedWriter(new FileWriter(savefile));
+      int d = bfile.read();
+      while(d != -1)
+      {
+        bwriter.write(d); //write out everything in the reader
+        d = bfile.read();
+      }
+      bwriter.flush();
+      bwriter.close();
+      return savefile;
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+      return null;
+    }
+  }
+  
 }

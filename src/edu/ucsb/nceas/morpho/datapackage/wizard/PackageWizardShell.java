@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-04 20:27:20 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2002-01-24 21:06:51 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -924,6 +924,8 @@ public class PackageWizardShell extends javax.swing.JFrame
           }
           if((!type.equals("WIZARD")) && (!type.equals("ACL")))
           { //this is a data file.  send it to metacat
+        System.out.println("FileName = "+f.toString());
+          
             mds.newDataFile(id, f);
           }
           else
@@ -1304,11 +1306,11 @@ public class PackageWizardShell extends javax.swing.JFrame
           
           if(temp)
           {
-            file = localDataStore.saveTempFile(id, fr);
+            file = localDataStore.saveTempDataFile(id, fr);
           }
           else
           {
-            file = localDataStore.saveFile(id, fr);
+            file = localDataStore.saveDataFile(id, fr);
           }
           return this.file;
         }
