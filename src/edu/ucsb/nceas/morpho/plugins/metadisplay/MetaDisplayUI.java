@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-30 16:16:30 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-09-06 22:30:29 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ public class MetaDisplayUI extends JPanel
         centerPanel.add(header);
         centerPanel.add(htmlPanel);
         
-        this.setMinimumSize(OVERALL_DIMS);
+    //    this.setMinimumSize(OVERALL_DIMS);
         this.setPreferredSize(OVERALL_DIMS);
     }
 
