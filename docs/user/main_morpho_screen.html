@@ -35,73 +35,124 @@
 <p><!-- put text after this -->
 <table BORDER=0 CELLSPACING=0 CELLPADDING=4 WIDTH="100%" class="tablepanel" >
 <tr class="tablehead">
-<td><b>The Main Morpho Screen</b></td>
+<td colspan="2"><b>The Main Morpho Screen</b></td>
 </tr>
 
 <tr>
-<td ROWSPAN="2" WIDTH="50%">After the Connection Dialog is closed (either
-by Connecting or clicking the Cancel button) the main Morpho window will
-appear. This window should resemble the one shown below. This screen is
-labeled "My Data (higgins)" where 'higgins' will be replaced by the current
-user name. The window displays all the data packages 'owned' by the current
-user. When Morpho is used for the first time there will be a single entry
-in the table, as indicated below. This is a example of a fictitious data
-package created to help the new user. After the user has created his/her
-own datapackages, they will all appear on this screen when Morpho is started
-up.&nbsp;
-<p><img SRC="./images/clientframework1.gif" BORDER=0 height=606 width=791 align=BOTTOM>
-<p>Morpho Primary Window - Initial Screen Before any Data Packages Have
-Been Created
-<br>&nbsp;
-<p>After the user has created several data packages, this 'My Data' screen
-will have a number of rows in the table as shown below.
-<p><img SRC="./images/ClientFramework_eco.gif" BORDER=0 height=556 width=783 align=BOTTOM>
-<p>Morpho Primary Window - Screen After Several DataPackages Have Been
-Created&nbsp;<br><br>
-<p>Each row in the table represents a "Data Package". This data package
-consists of a collection of data and various descriptions of that data
-(i.e. metadata). You can get more details about the data package by 'double
-clicking' on the row of interest. Also, clicking the right mouse button
-while over a row will bring up a popup menu that allows the user to operate
-on the selected data package.</td>
-</tr>
+<td colspan="2" WIDTH="100%">
+<br><P>The first time you login the main morpho screen looks like the image below. 
+<br></P>
+<p><img SRC="./images/morpho_main.gif" BORDER=0 height=439 width=601 align=BOTTOM><br><br>
+
+The main morpho screen is divided up into two functional sections:
+<ul>
+<li>Menu (File, Edit, Search, Window, Help) and a toolbar containing icons.</li>
+<br>
+<img src="./images/search_icon.gif" width="24" hieght="24">  The search icon begins the data package search process.<br>
+<img src="./images/new_package_icon.gif" width="24" hieght="24">  The new data pacakge icon begins the process required to create your own data package.<br><br>
+<li>Data package - "My Data" display area. There is a fictitious data package created to help the new user.  As new packages are created and downloaded they will be shownn here.</li>
+</ul></p>
+
+<a name="package"></a>
+<div class="helpsub">Data Packages</div>
+<p>Morpho uses the term "Data Packages" to describe a set of metadata and /or data and is represented by a row in the "My Data" area.  This data package is either stored locally and /or on a metacat server.  The datapackage icons and their definitions are illustrated in the table below.
+<table celpadding=0 cellspacing=0 border=1 width=500>
+ <tr>
+  <td>
+    <p><b>Data Package Icon </b></p>
+  </td>
+  <td>
+   <p><b>Package Definition</b></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+    <p><img src="./images/local-metadata.gif" width=56 hieght=53></p>
+  </td>
+  <td>
+   <p>Package consists of metadata and is stored locally on your PC. Box represents a data package and the folder represents a directory on your PC.</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+    <p><img src="./images/local-metadata+data.gif" width=56 hieght=53></p>
+  </td>
+  <td>
+   <p>Package consists of metadata and data (blue sheet). Stored locally.</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+    <p><img src="./images/network-metadata.gif" width=56 hieght=53></p>
+  </td>
+  <td>
+   <p>Package consists of metadata and is <i>only</i> stored on a metacat (the networked graphic). This package icon appears when a search query returns a successful result from a metacat server.</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+    <p><img src="./images/network-metadata+data.gif" width=56 hieght=53></p>
+  </td>
+  <td>
+   <p>Package consists of metadata and data. Stored <i>only</i> on a metacat. Displayed from a sucessful search.</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+    <p><img src="./images/local+network-metadata.gif" width=56 hieght=53></p>
+  </td>
+  <td>
+   <p>Package contains metadata and is located <i>both</i> locally and on a metacat.</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+    <p><img src="./images/local+network-metadata+data.gif" width=56 hieght=53></p>
+  </td>
+  <td>
+   <p>Package contains metadata and data and is located <i>both</i> locally and on metacat.</p>
+  </td>
+ </tr>
 </table>
-<table BORDER=0 CELLSPACING=0 CELLPADDING=4 WIDTH="100%" class="tablepanel" >
-<tr class="tablehead">
-<td><b>Controlling Packages</b></td>
-</tr>
-<tr>
-<td ROWSPAN="2" WIDTH="50%">
-<p>
-You can control your data packages by right clicking on them.  When you right
-click on a package, a menu is shown that gives you options to move your package
-from your local machine to a Metacat server (or visa versa), to delete your package
-or to open your package.
+<br><p>Data packages, while created locally, can be uploaded to a metacat server to become a shared metacat data package.  Data packages are uploaded by right clicking a data package row.</p>
+
+<p><img SRC="./images/morpho_uploading.gif" height=441 width=599<br><br><br>
+<font color="yellow"> <font size=+3><b>!</b></font></font> Notice the other options:
+<ul>
+<li>Open the package to view the metadata (and data if present).</li>
+<li>Refesh the screen.</li>
+<li>Delete the local copy.</li>   
+<li>Export the metadata/data to a local directory.</li>
+<li>Export to a ZIP file.</li>
+</ul></p>
+
+<br>&nbsp;
+<a name="search"></a>
+<div class="helpsub">Search Interface</div>
+<br>
+<p><img src="./images/search_icon.gif" width="24" hieght="24">  Click the search icon  or use the search menu to begin the data package search process.<br>
+<p><img src="./images/search_menu.gif" width="219" hieght="56"><br>
+<br>
+<img SRC="./images/search_interface.gif" height=587 width=603<br><br><br>
+
+<p> The search interface allows you to name the query "Query Title" and save it  for later use.  The "catalog" and "local" checkboxes imply your search will occur both locally and on a metacat server.  The tabs (Subject, Taxonomic, Spatial, Options) provide more detailed searh crieria.  After entering your search criteria your results are displayed below. </p> 
+
+<p><img SRC="./images/download.gif" height=400 width=593<br><br><br>
+Similarly to uploading a data package, you can download a data package, to your local PC from metacat by right-clicking and selecting "Download from Metacat". Notice you also have the option to delete data packages.  You are only allowed to delete files when you created them or have special permissions.  See more on <i>permissions</i></p> 
+
 </p>
-<img src="uploadtometacat.jpg">
-<p>If a file is located only on your local machine (denoted by the file folder
-icon on the left side) you can upload it to your Metacat server by right clicking
-and choosing 'Upload to Metacat' from the menu.</p>
-<img src="downloadfrommetacat.jpg">
-<p>If a package is located only on your Metacat server (denoted by the butterfly
-icon on the left side) you can download it to your
-local machine by right clicking on the package and choosing 'Download from Metacat'
-from the menu. Note that if both the folder icon and the butterfly icon are present,
-you cannot upload or download the package because it is already in both locations.
-</p>
-<p>The other options you can use from this menu include:
-  <ul>
-    <li>Delete Metacat Copy: Deletes the package from the Metacat server only.</li>
-    <li>Delete Local Copy: Deletes the package from your local computer only.</li>
-    <li>Delete Both Copies: Deletes the package completely from both the Metacat
-    server and from your local computer</li>
-    <li>Open: performs the same action as double clicking, opening the package 
-    in the <a href="package.html#packageeditor">Package Editor</a></li>
-    <li>Refresh: refreshes the results screen</li>
-  </ul>
-</p>
-</td>
-</tr>
+  </td>
+ </tr>
+ <tr>
+   <td align=center valign=top width="50%">
+   <P><a href="index.html" class="sitelink">Help Home</a><br><P>&nbsp;
+   </td>
+   <td align=center valign=top width="50%">
+    <a href="getting_started.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=10 border=0 alt=Previous>Previous</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="packagesteps.html" class="sitelink">Create a Data Package<img src="./images/next.gif" vspace=0 hspace=10 border=0 alt=Next></a>
+   </td>
+  </tr>
 </table>
 </body>
 </html>
