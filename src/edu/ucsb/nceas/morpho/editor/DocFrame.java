@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-10 21:29:35 $'
- * '$Revision: 1.81 $'
+ *     '$Date: 2002-01-12 22:40:06 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1410,7 +1410,11 @@ void expandTreeToLevel(JTree jt, int level) {
                     while (en2.hasMoreElements()) {
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
 //                        newnode = deepNodeCopy(tNode);
-                        newnode = (DefaultMutableTreeNode)tNode.clone();
+//                        newnode = (DefaultMutableTreeNode)tNode.clone();
+                        NodeInfo tNodeNI = (NodeInfo)tNode.getUserObject();
+                        newnode = new DefaultMutableTreeNode();
+                        newnode.setUserObject(tNodeNI.cloneNodeInfo());
+
                         trimSpecialAttributes(newnode);
                         int index1 = findDuplicateIndex(nextLevelInputNodes,index);
                         if (index1>=ind.getChildCount()) {
