@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.32 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-19 01:44:01 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,13 @@ public class CustomList extends JPanel {
   private boolean showMoveUpButton;
   private boolean showMoveDownButton;
 
-  protected static  AddAction     addAction;
+  protected AddAction     	addAction;
+	protected DeleteAction    deleteAction;
+	protected EditAction     	editAction;
+	protected DuplicateAction duplicateAction;
+	protected MoveUpAction   	moveUpAction;
+	protected MoveDownAction  moveDownAction;
+	
   private static  TableModelEvent tableModelEvent;
   private DefaultTableModel model;
   private Dimension   buttonDims;
@@ -125,6 +131,7 @@ public class CustomList extends JPanel {
   private Action customDeleteAction;
 
 	private double[] columnWidthPercentages;
+	private Box buttonBox;
   ////////////
 
   /**
@@ -248,11 +255,17 @@ public class CustomList extends JPanel {
     });
     this.add(scrollPane, BorderLayout.CENTER);
 
-    this.setBorder(new EmptyBorder(0, 0,													//WizardSettings.PADDING,
+    this.setBorder(new EmptyBorder(0, 0,												//WizardSettings.PADDING,
                                        2*WizardSettings.PADDING, 0));
                                        //WizardSettings.PADDING));
 
-    addAction = new AddAction(table, this);
+    addAction 			= new AddAction(table, this);
+		deleteAction		= new DeleteAction(table, this);
+		editAction 			= new EditAction(table, this);
+		duplicateAction = new DuplicateAction(table, this);
+		moveUpAction 		= new MoveUpAction(table, this);
+		moveDownAction	= new MoveDownAction(table, this);
+		
 //    addAction.addRowNoCustomAction();
 
 //    if (table.getComponentAt(0, 0)!=null) {
@@ -398,6 +411,14 @@ public class CustomList extends JPanel {
 		this.columnWidthPercentages = columnWidths;
 	}
 
+	public void setBorderForButtonPanel(int top, int left, int bottom, int right) {
+	
+		buttonBox.setBorder(new EmptyBorder(top, left, bottom, right));
+		this.remove(buttonBox);
+		this.add(buttonBox, BorderLayout.EAST);
+		this.validate();
+		this.repaint();
+	}
   private int getHeaderWidth(int colNumber, TableColumn column) {
 
     TableCellRenderer headerRenderer = column.getHeaderRenderer();
@@ -422,7 +443,9 @@ public class CustomList extends JPanel {
 
   private void initButtons() {
 
-    Box buttonBox = Box.createVerticalBox();
+    buttonBox = Box.createVerticalBox();
+		
+		boolean buttonPresent = false;
 
     buttonBox.setBorder(new EmptyBorder(0,2*WizardSettings.PADDING,
                                         WizardSettings.PADDING,
@@ -432,38 +455,47 @@ public class CustomList extends JPanel {
       addButton      = new JButton(addAction);
       addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(addButton);
-    }
+			buttonPresent = true;
+    }								
 
     if (showEditButton) {
-      editButton     = new JButton(new EditAction(table, this));
+      editButton     = new JButton(editAction);
       editButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(editButton);
+			buttonPresent = true;
     }
 
     if (showDuplicateButton) {
-      duplicateButton = new JButton(new DuplicateAction(table, this));
+      duplicateButton = new JButton(duplicateAction);
       duplicateButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(duplicateButton);
+			buttonPresent = true;
     }
 
     if (showDeleteButton) {
-      deleteButton   = new JButton(new DeleteAction(table, this));
+      deleteButton   = new JButton(deleteAction);
       deleteButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(deleteButton);
+			buttonPresent = true;
     }
 
     if (showMoveUpButton) {
-      moveUpButton   = new JButton(new MoveUpAction(table, this));
+      moveUpButton   = new JButton(moveUpAction);
       moveUpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveUpButton);
+			buttonPresent = true;
     }
 
     if (showMoveDownButton) {
-      moveDownButton = new JButton(new MoveDownAction(table, this));
+      moveDownButton = new JButton(moveDownAction);
       moveDownButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveDownButton);
+			buttonPresent = true;
     }
-
+		
+		if(!buttonPresent)
+			return;
+		
     setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS);
     resizeButtons();
 
@@ -527,8 +559,59 @@ public class CustomList extends JPanel {
       table.editingStopped(new ChangeEvent(table.getEditorComponent()));
     }
   }
+	/**
+	*		Method to fire the Add action of the CustomList. A row is added to the customlist as 
+	*		a result.This is useful when the customlist needs to be controlled from outside.
+	*		
+	*/
+	public void fireAddAction() {
+		addAction.actionPerformed(null);
+	}
 
-
+	/**
+	*		Method to fire the Edit action of the CustomList. The selected row is edited as 
+	*		a result.This is useful when the customlist needs to be controlled from outside.
+	*		
+	*/
+	public void fireEditAction() {
+		editAction.actionPerformed(null);
+	}
+	
+	/**
+	*		Method to fire the Delete action of the CustomList. The selected row is deleted as 
+	*		a result.This is useful when the customlist needs to be controlled from outside.
+	*		
+	*/
+	public void fireDeleteAction() {
+		deleteAction.actionPerformed(null);
+	}
+	
+	/**
+	*		Method to fire the Duplicate action of the CustomList. The selected row is duplicated 	*		as a result.This is useful when the customlist needs to be controlled from outside.
+	*		
+	*/
+	public void fireDuplicateAction() {
+		duplicateAction.actionPerformed(null);
+	}
+	
+	/**
+	*		Method to fire the Move-Up action of the CustomList. The selected row is moved one row 
+	*		up as a result.This is useful when the customlist needs to be controlled from outside.
+	*		
+	*/
+	public void fireMoveUpAction() {
+		moveUpAction.actionPerformed(null);
+	}
+	
+	/**
+	*		Method to fire the Move-Down action of the CustomList. The selected row is moved one row 
+	*		down as a result.This is useful when the customlist needs to be controlled from outside.
+	*		
+	*/
+	public void fireMoveDownAction() {
+		moveDownAction.actionPerformed(null);
+	}
+	
   /**
    *  returns the index of the currently-selected row, or -1 if none selected
    *
@@ -1012,8 +1095,8 @@ class AddAction extends AbstractAction {
     Log.debug(45, "CustomList ADD action");
 
     if (parentList.getCustomAddAction()==null) {
-
-      List newRowList = new ArrayList();
+			
+			List newRowList = new ArrayList();
 
       for (int i=0; i < table.getColumnCount(); i++) {
 

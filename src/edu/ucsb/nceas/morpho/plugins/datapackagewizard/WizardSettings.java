@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.39 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-19 01:44:01 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,8 @@ public class WizardSettings {
 
   public static final  Dimension WIZARD_REDUCED_CONTENT_LABEL_DIMS
   = new Dimension(80,20);
-  // x-dimension is ignored:
+  
+	// x-dimension is ignored:
   public static final  Dimension WIZARD_CONTENT_TEXTFIELD_DIMS
   = new Dimension(2000,20);
 
@@ -205,7 +206,7 @@ public class WizardSettings {
   = new Dimension(100,30);
 
   public static final  Dimension LIST_BUTTON_DIMS_SMALL
-  = new Dimension(70,25);
+  = new Dimension(60,25);
 
   public    static final String FINISH_BUTTON_TEXT  = "Finish";
 

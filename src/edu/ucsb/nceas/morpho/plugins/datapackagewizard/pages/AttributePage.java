@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-17 03:06:33 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-19 01:44:01 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import java.awt.BorderLayout;
 
 import java.util.List;
@@ -65,6 +68,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Insets;
+import java.awt.Font;
+import javax.swing.border.EmptyBorder;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -81,7 +88,7 @@ public class AttributePage extends AbstractWizardPage {
   private final String title      = "Attribute Page";
   private final String subtitle   = "";
 
-  public static final int BORDERED_PANEL_TOT_ROWS = 9;
+  public static final int BORDERED_PANEL_TOT_ROWS = 7;
   public static final int DOMAIN_NUM_ROWS = 8;
 
   private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
@@ -107,6 +114,7 @@ public class AttributePage extends AbstractWizardPage {
   private JPanel dateTimePanel;
 
   private JPanel middlePanel;
+	private JPanel topMiddlePanel;
 
   private String measurementScale;
 
@@ -130,8 +138,8 @@ public class AttributePage extends AbstractWizardPage {
     +"so that a data user could interpret the attribute accurately.<br></br>"
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
     +"&nbsp;&nbsp;e.g:&nbsp;&nbsp;&nbsp;"
-    +"\"spden\" is the number of individuals of all macro <br></br>"
-		+"&nbsp;&nbsp;invertebrate species found in the plot"
+    +"\"spden\" is the number of individuals of all macro "
+		+"invertebrate species found in the plot"
 		+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_OPENING;
 		
@@ -191,26 +199,8 @@ public class AttributePage extends AbstractWizardPage {
   public static final int MEASUREMENTSCALE_RATIO    = 3;
   public static final int MEASUREMENTSCALE_DATETIME = 4;
 
-
-    //
-  /*public AttributePage(JFrame parent) {
-
-    super(parent);
-
-    initNames();
-    init();
-    this.setVisible(true);
-  }
-
-  public AttributePage(JFrame parent, boolean showNow) {
-
-    super(parent);
-
-    initNames();
-    init();
-    this.setVisible(showNow);
-  }*/
-
+	private final Dimension HELP_DIALOG_SIZE = new Dimension(400, 500);
+    
   public AttributePage() {
 
     initNames();
@@ -240,17 +230,21 @@ public class AttributePage extends AbstractWizardPage {
   private void init() {
 
     middlePanel = new JPanel();
+		topMiddlePanel = new JPanel();
+		
     this.setLayout( new BorderLayout());
     this.add(middlePanel,BorderLayout.CENTER);
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 
-    middlePanel.add(WidgetFactory.makeHTMLLabel(
+		topMiddlePanel.setLayout(new BoxLayout(topMiddlePanel, BoxLayout.Y_AXIS));
+    topMiddlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>Define Attribute or Column:</b></font>", 1));
 
-    //middlePanel.add(WidgetFactory.makeDefaultSpacer());
-		middlePanel.add(Box.createGlue());
+    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+		
 
-    ////
+    /////////////////////////////////////////////
+		
 		JPanel namePanel = new JPanel();
 		namePanel.setLayout(new GridLayout(1,2));
 		
@@ -263,9 +257,11 @@ public class AttributePage extends AbstractWizardPage {
 		namePanel.add(attribNamePanel);
 		namePanel.add(attribNameHelpLabel);
 		
-    middlePanel.add(namePanel);
-		//middlePanel.add(WidgetFactory.makeDefaultSpacer());
-		middlePanel.add(Box.createGlue());
+    topMiddlePanel.add(namePanel);
+		topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+		
+		
+		/////////////////////////////////////////////
 		
 		JPanel labelPanel = new JPanel();
 		labelPanel.setLayout(new GridLayout(1,2));
@@ -280,39 +276,13 @@ public class AttributePage extends AbstractWizardPage {
 		labelPanel.add(attribLabelPanel);
 		labelPanel.add(attribLabelHelpLabel);
 		
-    middlePanel.add(labelPanel);
-		//middlePanel.add(WidgetFactory.makeDefaultSpacer());
-		middlePanel.add(Box.createGlue());
+    topMiddlePanel.add(labelPanel);
+		topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+		
 
     ////////////////////////////////////////////////////////////////////////////
 
-    // this embedding and use of html on a label instead of calling
-    // WidgetFactory.makeHTMLLabel() is required because the Java HTML rendering
-    // on JLabels seems to be buggy - using WidgetFactory.makeHTMLLabel() yields
-    // labels that resize themselves depending which radiobutton is chosen :-(
-    /*Dimension infoDim = new Dimension(WizardSettings.DIALOG_WIDTH,30);
-    JPanel infoPanel  = new JPanel();
-    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
-
-    JLabel infoLabel = WidgetFactory.makeLabel(
-
-    WizardSettings.HTML_NO_TABLE_OPENING
-    +"Define the contents of the attribute (or column) precisely, "
-    +"so that a data user could interpret the attribute accurately.<br></br>"
-    +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"&nbsp;&nbsp;[Example(s):&nbsp;&nbsp;&nbsp;"
-    +"\"spden\" is the number of individuals of all macro invertebrate species "
-    +"found in the plot]"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-    +WizardSettings.HTML_NO_TABLE_OPENING, false, infoDim);
-
-    infoLabel.setAlignmentX(1.0f);
-
-    infoPanel.add(infoLabel);
-    infoPanel.add(Box.createGlue());
-    //middlePanel.add(infoPanel);
-		//middlePanel.add(Box.createGlue());*/
-		
-		JPanel defnPanel = new JPanel();
+    JPanel defnPanel = new JPanel();
 		defnPanel.setLayout(new GridLayout(1,2));
     JPanel attribDefinitionPanel = WidgetFactory.makePanel(2);
 
@@ -329,10 +299,9 @@ public class AttributePage extends AbstractWizardPage {
 		defnPanel.add(attribDefinitionPanel);
 		defnPanel.add(attribDefnHelpLabel);
 		
-    middlePanel.add(defnPanel);
-
-    //middlePanel.add(WidgetFactory.makeDefaultSpacer());
-		middlePanel.add(Box.createGlue());
+    topMiddlePanel.add(defnPanel);
+    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+		
 
     ////
     ActionListener listener = new ActionListener() {
@@ -378,21 +347,60 @@ public class AttributePage extends AbstractWizardPage {
     measScaleLabel = WidgetFactory.makeLabel(
                                 //"Select and define a Measurement Scale:"
 																"Category:", true,
-                                WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-
-    middlePanel.add(measScaleLabel);
+                                WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+																
+		JButton helpButton = new JButton("Help");
+		helpButton.setPreferredSize(new Dimension(35,17));
+		helpButton.setMaximumSize(new Dimension(35,15));
+		helpButton.setMargin(new Insets(0, 2, 1, 2));
+		helpButton.setEnabled(true);
+		helpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		helpButton.setFocusPainted(false);
+		helpButton.setToolTipText("More Information about the Catgories");
+		helpButton.addActionListener( new ActionListener() {
+			private JDialog helpDialog = null;
+			public void actionPerformed(ActionEvent ae) {
+				
+				if(helpDialog == null) {
+					helpDialog = new CategoryHelpDialog();
+				}
+				if(!helpDialog.isVisible())
+					helpDialog.setBounds( (int)AttributePage.this.getX()+100,
+								(int)AttributePage.this.getY() + 50,
+								HELP_DIALOG_SIZE.width, HELP_DIALOG_SIZE.height);
+				helpDialog.setVisible(true);
+				helpDialog.toFront();
+			}
+		});
+		
+		JPanel categoryGrid = new JPanel(new GridLayout(1,2, 0, 0));
+		JPanel categoryPanel = new JPanel();
+		categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.X_AXIS));
+		categoryPanel.add(measScaleLabel);
+		categoryPanel.add(helpButton);
+		
+		categoryGrid.add(categoryPanel);
+		categoryGrid.add(new JLabel(""));
+	 															
+    topMiddlePanel.add(categoryGrid);
 
     radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
 
-    middlePanel.add(radioPanel);
-
-    currentPanel  = getEmptyPanel();
-
-    middlePanel.add(currentPanel);
+    topMiddlePanel.add(radioPanel);
 		
-		//middlePanel.add(Box.createVerticalGlue());
+		middlePanel.add(topMiddlePanel);
+		
+		
+    currentPanel  = getEmptyPanel();
+		
+		middlePanel.add(currentPanel);
+		
 		middlePanel.add(Box.createGlue());
-
+		
+		
+		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
+		topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
+		
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
     ordinalPanel  = getNomOrdPanel(MEASUREMENTSCALE_ORDINAL);
     intervalPanel = getIntervalRatioPanel(MEASUREMENTSCALE_INTERVAL);
@@ -411,14 +419,19 @@ public class AttributePage extends AbstractWizardPage {
 
   private void setMeasurementScaleUI(JPanel panel) {
 
+		topMiddlePanel.setMinimumSize(new Dimension(0,0));
     middlePanel.remove(currentPanel);
     currentPanel = panel;
     middlePanel.add(currentPanel);
-		//middlePanel.add(Box.createGlue());
+		
     ((WizardPageSubPanelAPI)currentPanel).onLoadAction();
+		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
+		topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
     currentPanel.validate();
     currentPanel.repaint();
-    middlePanel.validate();
+		topMiddlePanel.validate();
+		topMiddlePanel.repaint();
+		middlePanel.validate();
     middlePanel.repaint();
   }
 
@@ -597,8 +610,7 @@ public class AttributePage extends AbstractWizardPage {
     if (attribName==null) attribName = "";
     surrogate.add(attribName);
 
-
-    //attribDefinition (second column) surrogate:
+		//attribDefinition (second column) surrogate:
     String attribDefinition   = attribDefinitionField.getText().trim();
     if (attribDefinition==null) attribDefinition = "";
     surrogate.add(attribDefinition);
@@ -648,12 +660,17 @@ public class AttributePage extends AbstractWizardPage {
       returnMap.put(xPathRoot + "/attributeName", attribName);
     }
 
+		String attribLabel = attribLabelField.getText().trim();
+		if(attribLabel != null && !attribLabel.equals("")) {
+			returnMap.put(xPathRoot + "/attributeLabel", attribDef);
+		}
+		
     String attribDef = attribDefinitionField.getText().trim();
     if (attribDef!=null && !attribDef.equals("")) {
       returnMap.put(xPathRoot + "/attributeDefinition", attribDef);
     }
 
-    if (measurementScale!=null && !measurementScale.equals("")) {
+		if (measurementScale!=null && !measurementScale.equals("")) {
 
       returnMap.putAll(
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
@@ -713,65 +730,70 @@ public class AttributePage extends AbstractWizardPage {
    *
    */
 
-  public void setPageData(OrderedMap map) {
-
-	String mScale = findMeasurementScale(map);
-	String xPathRoot = AttributeSettings.Attribute_xPath;
-	String name = (String)map.get(xPathRoot + "/attributeName");
-	if(name != null)
-		attribNameField.setText(name);
-	String defn = (String)map.get(xPathRoot + "/attributeDefinition");
-	if(defn != null)
-		attribDefinitionField.setText(defn);
-
-	if(mScale == null || mScale.equals(""))
-		return;
-
-	measurementScale = mScale;
-
-	int componentNum = -1;
-	if(measurementScale.equalsIgnoreCase("nominal")) {
-		  setMeasurementScaleUI(nominalPanel);
-		  setMeasurementScale(measScaleElemNames[0]);
-		  componentNum = 0;
-	}
-	else if(measurementScale.equalsIgnoreCase("ordinal")) {
-		  setMeasurementScaleUI(ordinalPanel);
-		  setMeasurementScale(measScaleElemNames[1]);
-		  componentNum = 1;
-	}
-	if(measurementScale.equalsIgnoreCase("interval")) {
-		  setMeasurementScaleUI(intervalPanel);
-		  setMeasurementScale(measScaleElemNames[2]);
-		  componentNum = 2;
-	}
-	if(measurementScale.equalsIgnoreCase("ratio")) {
-		setMeasurementScaleUI(ratioPanel);
-		setMeasurementScale(measScaleElemNames[3]);
-		componentNum = 3;
-	}
-	if(measurementScale.equalsIgnoreCase("datetime")) {
-		setMeasurementScaleUI(dateTimePanel);
-		setMeasurementScale(measScaleElemNames[4]);
-		componentNum = 4;;
-	}
-
-	//selects the appropriate radio button
-
-	if(componentNum != -1) {
-		JRadioButton jrb = (JRadioButton)(radioPanel.getComponent(componentNum));
-		jrb.setSelected(true);
-	}
-	((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
-	((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
-	((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
-	((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
-	((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
-	ordinalPanel.invalidate();
-	refreshUI();
-	return;
-  }
-
+	 public void setPageData(OrderedMap map) {
+		 
+		 String mScale = findMeasurementScale(map);
+		 String xPathRoot = AttributeSettings.Attribute_xPath;
+		 String name = (String)map.get(xPathRoot + "/attributeName");
+		 if(name != null)
+			 attribNameField.setText(name);
+		 
+		 String label = (String)map.get(xPathRoot + "/attributeLabel");
+		 if(label != null)
+			 attribLabelField.setText(label);
+		 
+		 String defn = (String)map.get(xPathRoot + "/attributeDefinition");
+		 if(defn != null)
+			 attribDefinitionField.setText(defn);
+		 
+		 if(mScale == null || mScale.equals(""))
+			 return;
+		 
+		 measurementScale = mScale;
+		 
+		 int componentNum = -1;
+		 if(measurementScale.equalsIgnoreCase("nominal")) {
+			 setMeasurementScaleUI(nominalPanel);
+			 setMeasurementScale(measScaleElemNames[0]);
+			 componentNum = 0;
+		 }
+		 else if(measurementScale.equalsIgnoreCase("ordinal")) {
+			 setMeasurementScaleUI(ordinalPanel);
+			 setMeasurementScale(measScaleElemNames[1]);
+			 componentNum = 1;
+		 }
+		 if(measurementScale.equalsIgnoreCase("interval")) {
+			 setMeasurementScaleUI(intervalPanel);
+			 setMeasurementScale(measScaleElemNames[2]);
+			 componentNum = 2;
+		 }
+		 if(measurementScale.equalsIgnoreCase("ratio")) {
+			 setMeasurementScaleUI(ratioPanel);
+			 setMeasurementScale(measScaleElemNames[3]);
+			 componentNum = 3;
+		 }
+		 if(measurementScale.equalsIgnoreCase("datetime")) {
+			 setMeasurementScaleUI(dateTimePanel);
+			 setMeasurementScale(measScaleElemNames[4]);
+			 componentNum = 4;;
+		 }
+		 
+		 //selects the appropriate radio button
+		 
+		 if(componentNum != -1) {
+			 JRadioButton jrb = (JRadioButton)(radioPanel.getComponent(componentNum));
+			 jrb.setSelected(true);
+		 }
+		 ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
+		 ((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
+		 ((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
+		 ((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
+		 ((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
+		 ordinalPanel.invalidate();
+		 refreshUI();
+		 return;
+	 }
+	 
   /**
    *  gets the HTML representation of the attribute values
    *  The HTML text references the entity.css file
@@ -1075,7 +1097,67 @@ public class AttributePage extends AbstractWizardPage {
    }
 
 
-
+	 class CategoryHelpDialog extends JDialog {
+			
+			private final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
+			
+			private final Font  TITLE_FONT	= new Font("Sans-Serif", Font.BOLD,  13);
+			
+			private final Color TITLE_TEXT_COLOR	= new Color(255,255,255);
+			
+			private final Dimension TOP_PANEL_DIMS = new Dimension(100,40);
+			
+			private String helpText = "<html> <body>"
+			+ "<p>The concept of a measurement scale as defined by Stevens is useful for classifying data despite the weaknesses of the approach that have been pointed out by several practitioners. In particular, the classification allows us to determine some of the mathematical operations that are appropriate for a given set of data, and allows us to determine which types of metadata are needed for a given set of data.  For example, categorical data never have a \"unit\" of measurement. </p>"
+			+ "<p> Here is a brief overview of the measurement scales we have employed in EML. They are based on Steven's original typology, with the addition of \"Date-Time\"	for purely pragmatic reasons (we need to distinguish date time values in order to collect certain essential metadata about date and time representation).</p>"
+			+ "<p><b>NOMINAL</b><br></br>	&nbsp;&nbsp;&nbsp;&nbsp;The nominal scale places values into named categories. The different values within a set are unordered.  Some examples of nominal scales include gender (Male/Female) and marital status (single/married/divorced).  Text fields should be classified as nominal.</p>"
+			+ "<p><b>ORDINAL</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The ordinal scale places values in a set order. All ordinal values are also nominal. Ordinal data show a particular value's position relative to other values, such as \"low, medium, high, etc.\" The ordinal scale doesn't indicate the distance between each item.</p>"
+			+ "<p><b>INTERVAL</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The interval scale uses equal-sized units of measurement on a scale between values. It therefore allows the comparison of the differences between two values on the scale. With interval data, the allowable values start from an arbitrary point (not a meaningful zero), and so there is no concept of 'zero' of the measured quantity. Consequently, ratios of interval values are not meaningful. For example, one can not infer that someone with a value of 80 on an ecology test knows twice as much ecology as someone who scores 40 on the test, or that an object at 40 degrees C has twice the kinetic energy as an object at 20 degrees C. All interval values are also ordered and therefore are ordinal scale values as well.</p>"
+			+ "<p><b>RATIO</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The ratio scale is an interval scale with a meaningful zero point. The ratio scale begins at a true zero point that represents an absolute lack of the quality being measured.  Thus, ratios of values are meaningful. For example, an object that is at elevation of 100 meters above sea level is twice as high as an object that is at an elevation of 50 meters above sea level (where sea level is the zero point).  Also, an object at 300 degrees Kelvin has three times the kinetic energy of an object at 100 degrees Kelvin (where absolute zero (no motion) defines the zero point of the Kelvin scale).  Interval values can often be converted to ratio values in order to make ratio comparisons legitimate. For example, an object at 40 degrees C is 313.15 degrees Kelvin, an object at 20 degrees C is 293.15 degrees Kelvin, and so the first object has approximately 1.07 times more kinetic energy (note the wrong answer you would have gotten had you taken the ratio of the values in Celsius).</p>"
+			+ "<p><b>DATE-TIME</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;Date and time values in the Gregorian calendar are very strange to use in calculations in that they have properties of both interval and ratio scales.  They also have some properties that do not conform to the interval scale because of the adjustments that are made to time to account for the variations in the period of the Earth around the sun. While the Gregorian calendar has a meaningful zero point, it would be difficult to say that a value taken on midnight January 1, 1000 is twice as old as a value taken on midnight January 1 2000 because the scale has many irregularities in length in practice. However, over short intervals the scale has equidistant points based on the SI second, and so can be considered interval for most some purposes, especially with respect to measuring the timing of short-term ecological events.  Date and time values can be represented using several distinct notations, and so we have distinct metadata needs in terms of specifying the format of the value representation.  Because of these pragmatic issues, we separated Date-time into its own measurement scale.  Examples of date-time values are '2003-05-05', '1999/10/10', and '2001-10-10T14:23:20.3'.</p>"
+			+ "</body> </html>";
+			
+			
+			CategoryHelpDialog() {
+				super();
+				init();
+			}
+			
+			void init() {
+				
+				setTitle("Help");
+				setModal(true);
+				
+				Container contentPane = this.getContentPane();
+				contentPane.setLayout(new BorderLayout());
+				
+				JLabel titleLabel = new JLabel("Help on Choosing a Measurement Scale (Category)");
+				titleLabel.setFont(TITLE_FONT);
+				titleLabel.setForeground(TITLE_TEXT_COLOR);
+				titleLabel.setBorder(new EmptyBorder(WizardSettings.PADDING,0,WizardSettings.PADDING,0));
+				
+				JPanel topPanel = new JPanel();
+				topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+				topPanel.setPreferredSize(TOP_PANEL_DIMS);
+				topPanel.setBorder(new EmptyBorder(0,2*WizardSettings.PADDING,0,2*WizardSettings.PADDING));
+				topPanel.setBackground(TOP_PANEL_BG_COLOR);
+				topPanel.setOpaque(true);
+				topPanel.add(titleLabel);
+				
+				contentPane.add(topPanel, BorderLayout.NORTH);
+				
+				
+				JEditorPane editor = new JEditorPane();
+				editor.setEditable(false);
+				editor.setContentType("text/html");
+				editor.setText(helpText);
+				
+				contentPane.add(new JScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+						JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+				
+				
+			}
+	 }
 
 
 

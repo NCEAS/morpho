@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-12 22:04:36 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-12-19 01:44:02 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
 
-import java.io.*;
+
 
 
 /**
@@ -146,7 +146,7 @@ public class PrinterPlugin implements       PrinterInterface,
 			if(pos < 0) return html;
 			
 			while(pos>=0) {
-				System.out.println(prev + " - " + pos); 
+				 
 				res += html.substring(prev, pos);
 				html = html.substring(pos);
 				int next = html.indexOf("-->");
@@ -195,14 +195,6 @@ public class PrinterPlugin implements       PrinterInterface,
 			
 			displayString = appendTrailingSpace(displayString);
 			
-			System.out.println(displayString);
-			try {
-			PrintWriter pw = new PrintWriter(new FileWriter("C:/test.html"));
-			pw.println(displayString);
-			pw.close();
-			} catch(Exception e) {
-				
-			}
 			new PrintFrame(displayString, ctype);
 			
 		}

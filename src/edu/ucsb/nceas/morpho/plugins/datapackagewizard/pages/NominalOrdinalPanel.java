@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-12-17 03:06:33 $'
-* '$Revision: 1.13 $'
+*     '$Date: 2003-12-19 01:44:01 $'
+* '$Revision: 1.14 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		
 		Dimension dims = new Dimension(width, height);
 		
-		this.setPreferredSize(dims);
+		//this.setPreferredSize(dims);
 		//this.setMaximumSize(dims);
 		
 		final String TEXT_HELP 
@@ -174,14 +174,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		};
 		
 		
-		domainPickList = new JComboBox(textEnumPicklistVals);
+		domainPickList = WidgetFactory.makePickList(textEnumPicklistVals, false, 0, listener);
 		
-		domainPickList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		domainPickList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
-		domainPickList.addItemListener(listener);
-		domainPickList.setEditable(false);
-		domainPickList.setSelectedIndex(0);
-		 
 		// using preferredSize just to ensure that the picklist displays correctly with the
 		// arrow button shown properly, when the size of the attribute page is reduced(as in 
 		// TextImportWizard). Without this, the picklist wouldnt appear fully. This doesnt 
@@ -199,13 +193,11 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		measScalePanel.setLayout(new GridLayout(1,2,3,0));
 		measScalePanel.add(pickListPanel);
 		
-		/*JPanel helpTextPanel = WidgetFactory.makePanel();
-		helpTextPanel.add(WidgetFactory.makeDefaultSpacer());
-		helpTextPanel.add(helpTextLabel);*/
-		
 		measScalePanel.add(helpTextLabel);
 		
 		this.add(measScalePanel);
+		
+		this.add(Box.createGlue());
 		
 		textSubPanel    = getTextSubPanel();
 		enumSubPanel    = getEnumSubPanel();
@@ -583,12 +575,6 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 			resultsMap.put( buff.toString() + "definition", 
 			((String)srcObj).trim());
 			
-			/*srcObj = nextRow.get(2);
-			if (srcObj==null) continue;
-			srcStr = ((String)srcObj).trim();
-			if (!srcStr.equals(EMPTY_STRING)) resultsMap.put( buff.toString() + "source",
-				srcStr);
-			*/
 		}
 	}
 	
@@ -676,14 +662,12 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		while(true) {
 			List row = new ArrayList();
 			String code = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/code");
-			Log.debug(15,"Peru: in setEnumListData, for path="+xPathRoot+"/codeDefinition[" +index+ "]/code - got=" + code);
+			
 			if(code == null)
 				break;
 			row.add(code);
 			String defn = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/definition");
 			row.add(defn);
-			String src = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/source");
-			row.add(src);
 			enumDefinitionList.addRow(row);
 			index++;
 		}

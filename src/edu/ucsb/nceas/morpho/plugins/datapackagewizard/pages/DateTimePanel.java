@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-17 03:06:33 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-12-19 01:44:01 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,28 +181,19 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
     ////////////////////////
     
-    JPanel boundsPanel = new JPanel();
-    boundsPanel.setLayout(new BoxLayout(boundsPanel, BoxLayout.X_AXIS));
+    JPanel boundsPanel = WidgetFactory.makePanel(3);//new JPanel();
+    //boundsPanel.setLayout(new BoxLayout(boundsPanel, BoxLayout.X_AXIS));
     
     boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
     
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
     boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		boundsList.setBorderForButtonPanel(0, WizardSettings.PADDING, 0, 0);
 		boundsPanel.add(boundsList);
     
     /////////////////
-
-    
-    //boundsHelpPanel.add(boundsPanel);
-    /*boundsHelpPanel.add(WidgetFactory.makeLabel(
-        WizardSettings.HTML_NO_TABLE_OPENING
-        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-        +"Check 'excl?' box if bound does not include the value itself"
-        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,22)) );*/
-    
-    
+		
     JPanel boundsGrid = new JPanel(new GridLayout(1,2));
     boundsGrid.add(boundsPanel);
     boundsGrid.add(WidgetFactory.makeLabel(
@@ -214,7 +205,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING+"<br></br>"
     +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,35)));
     
-//    this.add(WidgetFactory.makeHalfSpacer());
+
     this.add(boundsGrid);
   
     ////////////////////////

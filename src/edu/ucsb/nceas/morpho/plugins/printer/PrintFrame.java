@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-12-12 20:24:05 $'
-* '$Revision: 1.1 $'
+*     '$Date: 2003-12-19 01:44:02 $'
+* '$Revision: 1.2 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -348,11 +348,7 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 				throw new IndexOutOfBoundsException();
 			}
 			mFormat = PrinterJob.getPrinterJob().defaultPage();
-			try{
-				System.out.println(mFormat.getImageableHeight());
-			}catch(Exception e) {
-				Log.debug(6, "Exception in  getPrintable - " + e);
-			}
+			
 			
 			double originX = (pageIndex % mNumPagesX) * mFormat.getImageableWidth();
 			double originY = (pageIndex / mNumPagesX) * mFormat.getImageableHeight();
