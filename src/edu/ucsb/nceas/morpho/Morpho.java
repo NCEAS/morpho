@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-12 18:40:20 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2003-03-31 18:32:36 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.framework.*;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoPrefsDialog;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.HTMLBrowser;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
@@ -43,6 +44,7 @@ import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.framework.SplashFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -1143,6 +1145,19 @@ public class Morpho
         switchItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         switchItemAction.setMenu("File", 0);
         controller.addGuiAction(switchItemAction);
+
+        Command prefsCommand = new Command() {
+            public void execute(ActionEvent e) {
+                setPreferences();
+            }
+        };
+        GUIAction prefsItemAction =
+            new GUIAction("Set preferences...", null, prefsCommand);
+        prefsItemAction.setToolTipText("Set Preferences...");
+        prefsItemAction.setMenuItemPosition(8);
+        prefsItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
+        prefsItemAction.setMenu("File", 0);
+        controller.addGuiAction(prefsItemAction);
         
 //        switchItemAction.setEnabledOnStateChange("DISABLE", false, 
 //                                                        GUIAction.EVENT_LOCAL);
@@ -1293,6 +1308,15 @@ public class Morpho
                 Log.debug(9, "New profile is: " + newProfile);
             }
         }
+    }
+
+    private void setPreferences()
+    {
+      MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
+		  MorphoPrefsDialog MorphoPrefsDialog1 = new MorphoPrefsDialog(mf, this);
+	    MorphoPrefsDialog1.setModal(true);
+			MorphoPrefsDialog1.setVisible(true);
+      
     }
     
     public String[] getProfilesList() 
@@ -1446,6 +1470,13 @@ public class Morpho
         userName = (temp_uname != null) ? temp_uname : "public";
     }
 
+        /** Set metacat URL string */
+    public void setMetacatURLString(String mURL)
+    {
+        metacatURL = mURL;
+    }
+
+    
     /**
      * Takes a hashtable where the key is an Integer and returns a 
      * Vector of hashtable values sorted by key values.
@@ -1592,7 +1623,7 @@ public class Morpho
      *
      * @param lnf  The new LookAndFeel value
      */
-    private static void setLookAndFeel(String lnf)
+    public static void setLookAndFeel(String lnf)
     {
         try {
             if (lnf != null) {
@@ -1753,7 +1784,7 @@ public class Morpho
      *
      * @param config  the configuration object for the application
      */
-    private static void initializeLogging(ConfigXML config)
+    public static void initializeLogging(ConfigXML config)
     {
         Log log = Log.getLog();
         debug_level = (new Integer(config.get("debug_level", 0))).intValue();
