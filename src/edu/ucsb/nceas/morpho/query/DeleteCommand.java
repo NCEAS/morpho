@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 16:48:24 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-27 23:40:36 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +77,7 @@ public class DeleteCommand implements Command
   
   /** flag to indicate a deletion can be execute, it depends package location */
   boolean execute = false;
-  
-    
+ 
   /**
    * Constructor of DeleteCommand
    * @param dialog a delete command will be happened at this dialog 
@@ -87,57 +86,13 @@ public class DeleteCommand implements Command
   public DeleteCommand(OpenDialogBox box, String myState)
   {
     dialog = box;
-    // Get morphoframe and resultPanel depends on this command apply to
-    if (dialog == null)
-    {
-      // If the command would not applyto a dialog, moreFrame will be set to be
-      // current active morphoFrame
-      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
-    }
-    else
+    state = myState;
+    if (dialog != null)
     {
       // This command will apply to a dialog
       morphoFrame = dialog.getParentFrame();
       resultPane = dialog.getResultPanel();
     }
-    
-    if (resultPane != null)
-    {
-      selectDocId = resultPane.getSelectedId();
-      boolean inNetwork = resultPane.getMetacatLocation();
-      boolean inLocal = resultPane.getLocalLocation();
-      // Decide delete state
-      if (myState.equals(DataPackageInterface.LOCAL))
-      {
-        // Delete local copy
-        state = myState;
-        message = LOCALWARNING;
-        // If has local copy, can execute delete local
-        execute = inLocal;
-      }
-      else if (myState.equals(DataPackageInterface.METACAT))
-      {
-        // Delete network copy
-        state = myState;
-        message = NETWORKWARNING;
-        // If has network copy can delete network copy
-        execute = inNetwork;
-      } 
-      else if (myState.equals(DataPackageInterface.BOTH))
-      { 
-        // Delete both
-        state = myState;
-        message = BOTHWARNING;
-        // if has both copy can delete both.
-        execute = inLocal && inNetwork;
-      }
-      else
-      {
-        Log.debug(20, "Unkown deletion command!");
-      }
-    }//if
-   
   }//LocalToNetworkCommand
   
  
@@ -146,12 +101,52 @@ public class DeleteCommand implements Command
    */    
   public void execute()
   {
+    if (dialog == null)
+    {
+      // If the command would not applyto a dialog, moreFrame will be set to be
+      // current active morphoFrame
+      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
+    }
+    
+    if (resultPane != null)
+    {
+      selectDocId = resultPane.getSelectedId();
+      boolean inNetwork = resultPane.getMetacatLocation();
+      boolean inLocal = resultPane.getLocalLocation();
+      
+      if (state.equals(DataPackageInterface.LOCAL))
+      {
+        // Delete local copy
+        message = LOCALWARNING;
+        // If has local copy, can execute delete local
+        execute = inLocal;
+      }
+      else if (state.equals(DataPackageInterface.METACAT))
+      {
+        // Delete network copy
+        message = NETWORKWARNING;
+        // If has network copy can delete network copy
+        execute = inNetwork;
+      } 
+      else if (state.equals(DataPackageInterface.BOTH))
+      { 
+       // Delete both
+       message = BOTHWARNING;
+       // if has both copy can delete both.
+       execute = inLocal && inNetwork;
+      }
+      else
+      {
+        Log.debug(20, "Unkown deletion command!");
+      }
+      
       // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals("") && execute)
       {
         doDelete(selectDocId, morphoFrame, dialog);
       }
-   
+    }//if
     
   }//execute
 
