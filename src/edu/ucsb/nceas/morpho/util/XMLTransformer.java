@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-26 08:07:39 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2002-10-30 20:46:13 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,69 @@ import com.arbortext.catalog.CatalogEntityResolver;
  */
 public class XMLTransformer
 {
+
+//  * * * * * * * S T A T I C    V A R I A B L E S * * * * * * *
+
+    /** 
+     *  XSL Transformer properties KEYS for setting properties used during 
+     *  transforms (i.e. KEY part of KEY/VALUE pairs)
+     */
+  
+    /**
+     *  SELECTED_ATTRIBS_XSLPROP used to identify selected attribute(s) when   
+     *   clicking on col headers (NOTE - identified by column index (0..n) - not 
+     *   by attribute ID:
+     */
+    public static final String SELECTED_ATTRIBS_XSLPROP = "selected_attribute";
+
+    /**
+     *  used to hold a list of all module ID(s) to be suppressed in DataPackage 
+     *  metaview.  
+     */
+    public static final String SUPPRESS_TRIPLES_SUBJECTS_XSLPROP 
+                                                = "suppress_subjects_identifier";
+
+    /**
+     *  used to hold a list of all module ID(s) to be suppressed in DataPackage 
+     *  metaview.  
+     */
+    public static final String SUPPRESS_TRIPLES_OBJECTS_XSLPROP 
+                                                = "suppress_objects_identifier";
+                                                
+    /**
+     *  used to hold default css stylesheet name 
+     */
+    public static final String PACKAGE_INDEX_NAME_XSLPROP 
+                                                = "package_index_name";
+                                                
+    /**
+     *  used to hold default css stylesheet name 
+     */
+    public static final String PACKAGE_ID_XSLPROP = "package_id";
+                                                
+    /**
+     *  used to hold default css stylesheet name 
+     */
+    public static final String DEFAULT_CSS_XSLPROP = "qformat";
+
+    /**
+     *  used to hold entity/attribute css stylesheet name 
+     */
+    public static final String ENTITY_CSS_XSLPROP = "entitystyle";
+                                                
+    /**
+     *  used to hold path to css stylesheets 
+     */
+    public static final String CSS_PATH_XSLPROP = "stylePath";
+    
+    /**
+     *  used to hold path extension for href links in triples. 
+     *  Value SHOULD INCLUDE "." - i.e. typically set to ".html" for export 
+     *  files, and set to empty string for links inside Morpho UI
+     */
+    public static final String HREF_PATH_EXTENSION_XSLPROP 
+                                                = "href_path_extension";
+  
 
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 

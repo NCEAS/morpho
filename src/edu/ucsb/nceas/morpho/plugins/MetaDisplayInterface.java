@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 01:27:28 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-10-30 20:46:13 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -222,9 +222,23 @@ public interface MetaDisplayInterface
      *  method to add a key/value transformer property pair to the properties 
      *  that will be passed onto the XSL Transformation Engine, and will then be 
      *  made available to the actual XSL stylesheets as <xsl:param> values 
+     *
+     *  @param key  
+     *
+     *  @param value  
      */
     public void useTransformerProperty(String key, String value);
     
+	  /**
+	   *  method to get the transformer property value corresponding to the passed 
+     *  key 
+	   *
+	   *  @param key  
+	   *
+	   *  @return value  <code>String</code> value associated with the passed key
+	   */
+	  public String getTransformerProperty(String key);
+
 	  /**
 	   *  Get the <code>String</code> identifier associated with the 
      *  currently-displayed metadata

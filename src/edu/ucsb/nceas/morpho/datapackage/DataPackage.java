@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-29 22:10:14 $'
- * '$Revision: 1.89 $'
+ *     '$Date: 2002-10-30 20:46:13 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1324,14 +1324,18 @@ public class DataPackage implements XMLFactoryInterface
             XMLTransformer transformer = XMLTransformer.getInstance();
             // add some property for style sheet
             transformer.removeAllTransformerProperties();
-            transformer.
-                  addTransformerProperty("href_path_extension", HTMLEXTENSION);
-            transformer.addTransformerProperty("package_id", id);
-            transformer.
-                  addTransformerProperty("package_index_name",  METADATAHTML);
-            transformer.addTransformerProperty("qformat", EXPORTSYLE);
-            transformer.addTransformerProperty("entitystyle", EXPORTSYLE);
-            transformer.addTransformerProperty("stylePath", ".");
+            transformer.addTransformerProperty(
+                    XMLTransformer.HREF_PATH_EXTENSION_XSLPROP, HTMLEXTENSION);
+            transformer.addTransformerProperty(
+                    XMLTransformer.PACKAGE_ID_XSLPROP,          id);
+            transformer.addTransformerProperty(
+                    XMLTransformer.PACKAGE_INDEX_NAME_XSLPROP,  METADATAHTML);
+            transformer.addTransformerProperty(
+                    XMLTransformer.DEFAULT_CSS_XSLPROP,         EXPORTSYLE);
+            transformer.addTransformerProperty(
+                    XMLTransformer.ENTITY_CSS_XSLPROP,          EXPORTSYLE);
+            transformer.addTransformerProperty(
+                    XMLTransformer.CSS_PATH_XSLPROP,            ".");
             try {
               result = transformer.transform(xmlInputReader);
             } catch (IOException e) {

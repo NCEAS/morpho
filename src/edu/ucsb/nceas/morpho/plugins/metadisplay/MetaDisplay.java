@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 04:53:21 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2002-10-30 20:46:13 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -515,7 +515,8 @@ public class MetaDisplay implements MetaDisplayInterface,
 	  //is called by displayPrevious() )
 	  private void displayThisID(String ID) throws DocumentNotFoundException
 	  {
-        transformer.addTransformerProperty("stylePath", getFullStylePath());
+        transformer.addTransformerProperty( XMLTransformer.CSS_PATH_XSLPROP, 
+                                            getFullStylePath());
 
 	      Reader xmlReader = null;
 	      try  {
@@ -623,6 +624,10 @@ public class MetaDisplay implements MetaDisplayInterface,
      *  method to add a key/value transformer property pair to the properties 
      *  that will be passed onto the XSL Transformation Engine, and will then be 
      *  made available to the actual XSL stylesheets as <xsl:param> values 
+     *
+     *  @param key  
+     *
+     *  @param value  
      */
     public void useTransformerProperty(String key, String value)
     {
@@ -630,7 +635,21 @@ public class MetaDisplay implements MetaDisplayInterface,
         transformer.addTransformerProperty(key, value);
     }
 
+    /**
+     *  method to get the transformer property value corresponding to the passed 
+     *  key 
+     *
+     *  @param key  
+     *
+     *  @return value  <code>String</code> value associated with the passed key
+     */
+    public String getTransformerProperty(String key)
+    {
+        if (key==null) return "";      
+        return currentTransformProps.getProperty(key);
+    }
 
+   
     //returns string representation of full path to style directory in 
     //Morpho-Config.jar.  All names are in config.xml file
     //NOTE - checks config & install directory only once, then re-uses 
