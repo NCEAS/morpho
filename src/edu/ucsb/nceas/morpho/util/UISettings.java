@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-11 06:20:44 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-12-12 00:38:12 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,6 +117,20 @@ public class UISettings
      */
     public static final int INIT_SCRN_LEFT_PANELS_PADDING  = 15;
     
+
+    /**
+     *  size of the "Change Profile" and "Password" labels on the left side of 
+     *  the initial screen
+     */
+    public static final Dimension INIT_SCRN_LEFT_PANELS_LABELDIMS  
+                                                    = new Dimension(130, 20);
+
+    /**
+     *  size of the "Change Profile" and "Password" picklists (JComboBoxes) on 
+     *  the left side of the initial screen
+     */
+    public static final Dimension INIT_SCRN_LEFT_PANELS_PICKLISTDIMS  
+                                                    = new Dimension(140, 20);
     
     /**
      *  Width in pixels for each of 3 panels on the left side of initial screen
@@ -154,14 +168,6 @@ public class UISettings
                                           = new Font("Dialog", Font.PLAIN, 9);
 
     /**
-     *  html style for font on title bars on the 3 panels to the left of the 
-     *  initial screen
-     */
-    public static final String INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML 
-        = "<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                                        +" size=\"1\" color=\"#ffffff\">&nbsp;";
-
-    /**
      *  html opening tags for font on hyperlink urls
      */
     public static final String HYPERLINK_FONT_HTML_OPENTAGS
@@ -189,16 +195,66 @@ public class UISettings
     public static final String HYPERLINK_FONT_OVER_HTML_CLOSETAGS 
                                                     = "</a></font></p></html>";
 
+    
+    /**
+     *  opening html tags for highlighted text in title bars on panel to the 
+     *  left of the initial screen
+     */
+    public static final String INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN 
+                    = "<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                        +" size=\"1\" color=\"#d2ffad\"><b>";
+                        
+    /**
+     *  opening html tags for highlighted text in title bars on panel to the 
+     *  left of the initial screen
+     */
+    public static final String INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE 
+                    = "</b></font>";
+                                            
+    /**
+     *  opening html tags for light-value text in panels to the 
+     *  left of the initial screen
+     */
+    public static final String INIT_SCR_PANEL_LITE_FONT_OPEN 
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                        +" size=\"1\" color=\"#666666\">";
+                        
+    /**
+     *  opening html tags for highlighted text in title bars on panel to the 
+     *  left of the initial screen
+     */
+    public static final String INIT_SCR_PANEL_LITE_FONT_CLOSE 
+                    = "</font></p></html>";
 
 
+    /**
+     *  Color for text on title bars of sub-windows in datapackage view 
+     *  (i.e. the "spreadsheet" panel and the two MetaData Viewer panels)
+     */
     public static final Color TITLE_TEXT_COLOR        = Color.white;
+    
+    /**
+     *  Settings for MetaData Viewer panels 
+     */
     public static final Color BACKBUTTON_TEXT_COLOR   = new Color(0, 198, 255);
-    public static final Color CLOSEBUTTON_TEXT_COLOR  = BACKBUTTON_TEXT_COLOR;
-    public static final Color EDITBUTTON_TEXT_COLOR   = new Color(0, 255, 0);
-    public static final Color ALERT_TEXT_COLOR        = Color.red;
-    
-    
 
+    /**
+     *  Settings for MetaData Viewer panels 
+     */
+    public static final Color CLOSEBUTTON_TEXT_COLOR  = BACKBUTTON_TEXT_COLOR;
+
+    /**
+     *  Settings for MetaData Viewer panels 
+     */
+    public static final Color EDITBUTTON_TEXT_COLOR   = new Color(0, 255, 0);
+
+    /**
+     *  General alert text (eg shown in data view if data file not readable)
+     */
+    public static final Color ALERT_TEXT_COLOR        = Color.red;
+
+    
     // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
     
     public static final Color TITLEBAR_COLOR       = Color.gray;
@@ -235,9 +291,12 @@ public class UISettings
 
     // * * * * * *  D E F A U L T   I M A G E S   &   I C O N S  * * * * * * * *
     
+    //IMAGES/////////////////
     public static final Image FRAME_AND_TASKBAR_ICON 
             = getAsImage("/edu/ucsb/nceas/morpho/framework/Btfly16x16.gif");
 
+            
+    //ICONS//////////////////
     public static final Icon NEW_DATAPACKAGE_ICON 
             = getAsImageIcon("/toolbarButtonGraphics/general/New16.gif");
 
@@ -261,9 +320,15 @@ public class UISettings
           
     public static final Icon SAVE_ICON 
             = getAsImageIcon("/toolbarButtonGraphics/general/Save16.gif");
-                  
+          
 
-    
+    public static final Icon NEW_PROFILE_ICON 
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no.gif");
+
+    public static final Icon NEW_PROFILE_ICON_ROLLOVER 
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no.gif");
+
+
     /////////////////////////////////////////////
     
     private static Object cpLocator = null;
@@ -286,15 +351,77 @@ public class UISettings
     // * * * * * * * * * *    T E X T   L A B E L S    * * * * * * * * * * * * *
     
     
+    
+    /**
+     *  html tags and text for title bar on the "Profile" panel to the left of  
+     *  the initial screen
+     */
+    public static final String INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                        +" size=\"1\" color=\"#ffffff\">&nbsp;"
+                        +"Current profile:"
+                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                        +"</font>";
+    
+    /**
+     *  html tags and text for title bar on the "Login" panel to the left of  
+     *  the initial screen
+     */
+    public static final String INIT_SCRN_PANELS_LOGIN_TITLE_TEXT_OPEN
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                        +" size=\"1\" color=\"#ffffff\">&nbsp;"
+                        +"Network Status:"
+                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                        +"&nbsp;&nbsp;&nbsp;</font>";
+    
+    /**
+     *  html tags and text for title bar on the "Data" panel to the left of  
+     *  the initial screen
+     */
+    public static final String INIT_SCRN_PANELS_DATA_TITLE_TEXT_OPEN 
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                        +" size=\"1\" color=\"#ffffff\">&nbsp;"
+                        +"Work with your data...</font>";
+                        
+    /**
+     *  common to the above 3: closing html tags and text for title bar on the 
+     *  panel to the left of the initial screen
+     */
+    public static final String INIT_SCRN_PANELS_TITLE_CLOSE 
+                    = "</p></html>";
+
     public static final String NEW_DATAPACKAGE_LINK_TEXT 
-                                    = "Create a <b>new</b> data package...";
+                    = "Create a <b>new</b> data package...";
 
     public static final String OPEN_DATAPACKAGE_LINK_TEXT 
-                                    = "Open an <b>existing</b> data package...";
+                    = "Open an <b>existing</b> data package...";
     
     public static final String SEARCH_LINK_TEXT 
-                                    = "<b>Search</b> for an existing data package...";
+                    = "<b>Search</b> for an existing data package...";
     
+    public static final String NEW_PROFILE_LINK_TEXT 
+                                    = "Create a new profile...";
+                                
+    public static final String CHANGE_PROFILE_LABEL_TEXT 
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                        +" size=\"1\" color=\"#000000\">&nbsp;"
+                        +"<b>Change profile:</b></font></p></html>";
+
+                                    
+    public static final String PASSWORD_LABEL_TEXT 
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                        +" size=\"1\" color=\"#000000\">&nbsp;"
+                        +"Password:</font></p></html>";
+
+
+
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
