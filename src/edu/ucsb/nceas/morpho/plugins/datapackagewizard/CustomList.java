@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-08 00:33:30 $'
- * '$Revision: 1.36 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-01-08 22:52:33 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1439,4 +1439,9 @@ class CustomJTable extends JTable  {
       return columnsEditableFlags[col];
     }
 
+		// to prevent the table from being a part of the focus cycle. 
+		public boolean isFocusTraversable() {
+			
+			return false;
+		}
 }

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:17 $'
- * '$Revision: 1.44 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-01-08 22:52:33 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -179,11 +179,16 @@ public class WizardSettings {
   public static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS
   = new Dimension(2000,20);
 
+	private static final String FONT_STYLE = "style=\"font-size: 9px;\"";
+	
   public static final String HTML_FONT_OPENING
-          = "<font size=\"3\" face=\"Sans-Serif\">";
+          = "<font " + FONT_STYLE + " face=\"Sans-Serif\">";
 
   public static final String HTML_EXAMPLE_FONT_OPENING
-                                                  = "<font color=\"#666666\">";
+                                                  = "<font " + FONT_STYLE +
+																									" color=\"#666666\">";
+																									
+	 
 
   public static final String HTML_EXAMPLE_FONT_CLOSING = "</font>";
 

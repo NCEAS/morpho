@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:17 $'
- * '$Revision: 1.10 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-01-08 22:52:33 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -806,7 +807,10 @@ public class AttributePage extends AbstractWizardPage {
 				 newMap.put(key, val);
 				 continue;
 			 }
-			 String newKey = key.replaceAll("\\[1\\]","");
+			 StringTokenizer st = new StringTokenizer(key, "\\[1\\]");
+			 String newKey = "";
+			 while(st.hasMoreTokens())
+				 newKey += st.nextToken();
 			 newMap.put(newKey, val);
 		 }
 		 return newMap;

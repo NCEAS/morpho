@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:18 $'
- * '$Revision: 1.24 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-01-08 22:52:33 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -542,23 +542,25 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   }
 
   /**
-   *  sets the Data in the IntervalRatio Panel. This is called by the setData() function
-   *  of AttributePage.
+   *  sets the Data in the IntervalRatio Panel. This is called by the setData() 
+	 *  function of AttributePage.
 
    *  @param  xPathRoot - this is the relative xPath of the current attribute
    *
-   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map
-   *		    are absolute xPath and not the relative xPaths
+   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in 
+	 *							this map are absolute xPath and not the relative xPaths
    *
    **/
 
   public void setPanelData( String xPathRoot, OrderedMap map) {
 
 	String unit = (String)map.get( xPathRoot + "/unit/standardUnit");
+	
 	if(unit != null && !unit.equals(""))
 		unitsPickList.setSelectedUnit(unit);
 
-    	String precision = (String)map.get(  xPathRoot + "/precision");
+	
+  String precision = (String)map.get(  xPathRoot + "/precision");
 	if(precision != null)
 		precisionField.setText(precision);
 
@@ -716,6 +718,7 @@ class UnitsPickList extends JPanel {
 
   public void setSelectedUnit(String unit) {
 	  unitsList.setSelectedItem(unit);
+		unitsList.setEnabled(true);
 	  return;
   }
 
@@ -756,14 +759,12 @@ class UnitsPickList extends JPanel {
 	int length = listItemsArray.length;
 	if(length < unitTypeIndex ) return;
 
-	ItemListener[] itemListeners = unitTypesList.getItemListeners();
-	for(int i =0; i<itemListeners.length; i++)
-		unitTypesList.removeItemListener(itemListeners[i]);
 	unitTypesList.setSelectedIndex(unitTypeIndex);
 	unitsList.setModel( listItemsArray[unitTypeIndex].getComboBoxModel());
-        unitsList.setEnabled(true);
-	for(int i =0; i<itemListeners.length; i++)
-		unitTypesList.addItemListener(itemListeners[i]);
+  unitsList.setEnabled(true);
+	unitsList.setSelectedIndex(unitIndex);
+	unitsList.setPopupVisible(false);
+	
 	return;
   }
 
