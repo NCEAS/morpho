@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-07 16:58:36 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-06-18 18:57:06 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,7 +135,11 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
      // this technique allows the text to be concatenated into a single text node
 		// Set Text of Node on top of Stack
     	text = text + new String (ch, start, length);
-    	text = text.trim();
+      // make sure that empty text nodes are not created
+      if (text.length()>1) {
+    	  text = text.trim();
+        if (text.equals("")) text = " ";
+      }
     	text = text.replace('\n', ' ');
     }
 
