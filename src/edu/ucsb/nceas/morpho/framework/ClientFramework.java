@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-30 17:20:08 $'
- * '$Revision: 1.83 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-12-04 04:31:19 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,8 @@ public class ClientFramework extends javax.swing.JFrame
   private boolean pluginsLoaded = false;
   private String sessionCookie = null;
   private Itis itis;  
+  
+  private boolean versionFlag = true;  //Java 1.3 or greater
 
   // Used by addNotify
   boolean frameSizeAdjusted = false;
@@ -115,7 +117,7 @@ public class ClientFramework extends javax.swing.JFrame
   {
     this.config = config;
     this.profile = null;
-
+    checkJavaVersion();
     // Create the list of menus for use by the framework and plugins
     menuList = new Hashtable();
 //DFH    menuOrder = new TreeMap();
@@ -1398,6 +1400,7 @@ public class ClientFramework extends javax.swing.JFrame
       SplashFrame sf = new SplashFrame(true);
       sf.setVisible(true);
 
+
       Date expiration = new Date(102, 3, 1);
       Date warning = new Date(102, 2, 15);
       Date now = new Date();
@@ -1575,6 +1578,30 @@ public class ClientFramework extends javax.swing.JFrame
         }
     }
  return sorted;   
+ }
+
+ public void checkJavaVersion() {
+      String ver = System.getProperty("java.version");
+      int pos1 = ver.indexOf(".");
+      int pos2 = ver.indexOf(".",pos1+1);
+      String ver0 = ver.substring(0,pos1);
+      String ver1 = ver.substring(pos1+1,pos2);
+      int iver0 = (new Integer(ver0)).intValue();
+      int iver1 = (new Integer(ver1)).intValue();
+      if ((iver0==1)&&(iver1<3)) {
+        versionFlag = false;
+        JOptionPane.showMessageDialog(null,
+           "Version "+ver+" of the Java Virtual Machine(JVM) is currently in use.\n" +
+           "Although most of Morpho will operate using early versions of the JVM,\n"+
+           "Version 1.3 or greater is required for all functions to work properly!");  
+      }  
+ }
+ 
+ /**
+  * returns true if the JVM version is 1.3 or greater
+  */
+ public boolean getJavaVersionFlag() {
+    return this.versionFlag;   
  }
   
 }
