@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-02 15:12:31 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2002-10-14 21:47:37 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1113,9 +1113,10 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     JLabel headLabel = new JLabel();
     headLabel.setText("Package Wizard");
-    //MBJ ImageIcon head = new ImageIcon(
-                         //MBJ morpho.getClass().getResource("smallheader-bg.gif"));
-    //MBJ headLabel.setIcon(head);
+    ImageIcon head = new ImageIcon(
+                         getClass().
+                         getResource("/edu/ucsb/nceas/morpho/editor/smallheader-bg.gif"));
+    headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
     headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);

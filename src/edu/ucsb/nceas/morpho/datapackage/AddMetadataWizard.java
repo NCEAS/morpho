@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.31 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-14 21:44:38 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,9 +224,10 @@ public class AddMetadataWizard extends JFrame
 
     JLabel headLabel = new JLabel();
     headLabel.setText("Add New\\Existing Descriptions or Data");
-    //MBJ ImageIcon head = new ImageIcon(
-                         //MBJ cl.getResource("../framework/smallheader-bg.gif"));
-    //MBJ headLabel.setIcon(head);
+    ImageIcon head = new ImageIcon(
+                         getClass().
+                         getResource("/edu/ucsb/nceas/morpho/editor/smallheader-bg.gif"));
+    headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
     headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);

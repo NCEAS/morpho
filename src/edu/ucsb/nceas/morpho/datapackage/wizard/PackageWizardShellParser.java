@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:34 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-14 21:47:37 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,8 +175,7 @@ public class PackageWizardShellParser extends DefaultHandler
       descname = (String)atts.getValue(0);
       startflag = true;
       desc = "";
-      System.out.println("TEST-DFH");
-    }
+     }
   }
   
   public void characters(char[] ch, int start, int length)
