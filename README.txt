@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.2beta3
+Version: 1.2beta4
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -76,8 +76,15 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 Version History
 -------------------------------
 
-Version 1.2 represent a substantial change in the visual interface from previous versions. A 'datacentric' view of datapackages is shown. This view includes a tabular display of a data table along with descriptive information about the data. The data and descriptions are contained in resizable panels. The user can thus enlarge parts of the window of special interest as desired. Menus have also been redesigned and, in some cases, renamed. Rather than presenting a default list of 'owner documents', the default window is empty and the user needs to use the "Open" menu or toolbar button to get a list of user owned documents as is customary in most applications. 
+***
+Version 1.2
 
+Version 1.2 represent a substantial change in the visual interface from previous versions. A 'datacentric' view of datapackages is shown. This view includes a tabular display of a data table along with descriptive information about the data. The data and descriptions are contained in resizable panels. The user can thus enlarge parts of the window of special interest as desired. Menus have also been redesigned and, in some cases, renamed. Rather than presenting a default list of 'owner documents', the default window is empty and the user needs to use the "Open" menu or toolbar button to get a list of user owned documents as is customary in most applications.
+
+If you have used a previous version of Morpho, then you may have local datapackages stored in a 'profiles' directory inside the main Morpho directory. The location where the 'profiles' directory is created and accessed in Version 1.2 has been changed from the Morpho install directory to a subdirectory within the users 'home' directory. [On Windows 2000 or XP machines, the home directory is named after the user name (e.g. 'higgins') and is located inside the 'Documents and Settings' folder, usually under C:\] A directory named '.morpho' is created inside the user's home directory and the new profiles directory is created there when Morpho is first executed. To access previouly created datapackages, copy those packages from your existing profiles directory to the profiles directory inside the <home>/.morpho directory.
+
+
+***
 Version 1.1.1 corrects several minor problems in Version 1.1.0 and adds the capability to open previous versions of packages. Previously only the most recent version could be opened. The user can open previous versions using a new menu item in the popup menu that appears when one 'right-clicks' on a row in the table displaying the user's data or the results of a query.
 
 Version 1.1.0 has a substantial number of changes from previous versions of Morpho, although most of these changes are internal and do not appear in the visual interface. In general, stability has been increased and the ability to handle large metadata and data files enhanced by reduction of unneccessary in-memory data/metadata storage. Also, many time-consuming tasks have been moved to independent threads so that Morpho is responsive to the user while these tasks are being carried out. (A 'flapping butterfly' icon is used to indicate that these background tasks are underway.)
