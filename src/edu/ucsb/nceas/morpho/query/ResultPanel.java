@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-19 22:13:26 $'
- * '$Revision: 1.18 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-27 22:09:55 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.datapackage.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -36,7 +35,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.*;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -54,6 +53,8 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 
 /**
  * Display a ResultSet in a table view in a panel that can be
@@ -83,7 +84,19 @@ public class ResultPanel extends JPanel
   private JLabel recordCountLabel;
   /** A static hash listing all of the search menu query Actions by id */
   private static Hashtable savedQueriesList;
-
+  /**popup menu for right clicks*/
+  private JPopupMenu popup;
+  /**menu items for the popup menu*/
+  private JMenuItem openMenu = new JMenuItem("Open");
+  private JMenuItem uploadMenu = new JMenuItem("Upload to Metacat");
+  private JMenuItem downloadMenu = new JMenuItem("Download from Metacat");
+  private JMenuItem deleteLocalMenu = new JMenuItem("Delete Local Copy");
+  private JMenuItem deleteMetacatMenu = new JMenuItem("Delete Metacat Copy");
+  private JMenuItem deleteAllMenu = new JMenuItem("Delete Both Copies");
+  private JMenuItem refreshMenu = new JMenuItem("Refresh");
+  /**a string to keep track of the selected row's id*/
+  private String selectedId = "";
+  
   /**
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
@@ -200,12 +213,38 @@ public class ResultPanel extends JPanel
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
     
+      //Build the popup menu for the right click functionality
+      popup = new JPopupMenu();
+      popup.add(openMenu);
+      popup.add(new JSeparator());
+      popup.add(refreshMenu);
+      popup.add(new JSeparator());
+      popup.add(uploadMenu);
+      popup.add(downloadMenu);
+      popup.add(new JSeparator());
+      popup.add(deleteLocalMenu);
+      popup.add(deleteMetacatMenu);
+      popup.add(deleteAllMenu);
+      
+      MenuAction menuhandler = new MenuAction();
+      openMenu.addActionListener(menuhandler);
+      uploadMenu.addActionListener(menuhandler);
+      downloadMenu.addActionListener(menuhandler);
+      deleteLocalMenu.addActionListener(menuhandler);
+      deleteMetacatMenu.addActionListener(menuhandler);
+      deleteAllMenu.addActionListener(menuhandler);
+      refreshMenu.addActionListener(menuhandler);
+      
+      MouseListener popupListener = new PopupListener();
+      table.addMouseListener(popupListener);
+      
       // Listen for mouse events to see if the user double-clicks
       table.addMouseListener(new MouseAdapter()
       {
         public void mouseClicked(MouseEvent e)
         {
-          if (2 == e.getClickCount()) {
+          if (2 == e.getClickCount()) 
+          {
             openResultRecord(table);
           }
         }
@@ -256,6 +295,7 @@ public class ResultPanel extends JPanel
     int[] selectedRows = table.getSelectedRows();
 
     for (int i = 0; i < selectedRows.length; i++) {
+      System.out.println("row: " + selectedRows[i]);
       results.openResultRecord(selectedRows[i]);
     }
   }
@@ -277,6 +317,121 @@ public class ResultPanel extends JPanel
       }
     }
   }
+  
+  /**
+   * Event handler for the right click popup menu
+   */
+  class MenuAction implements java.awt.event.ActionListener 
+  {
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{
+			Object object = event.getSource();
+      String docid = selectedId;
+      DataPackageInterface dataPackage;
+      try 
+      {
+        ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+        dataPackage = (DataPackageInterface)provider;
+      } 
+      catch (ServiceNotHandledException snhe) 
+      {
+        framework.debug(6, snhe.getMessage());
+        return;
+      }
+			if (object == openMenu)
+      { //open the current selection in the package editor
+        ClientFramework.debug(20, "Opening package.");
+        openResultRecord(table);
+      }
+			else if (object == uploadMenu)
+      { //upload the current selection to metacat
+        ClientFramework.debug(20, "Uploading package.");
+        dataPackage.upload(docid);
+      }
+			else if (object == downloadMenu)
+      { //download the current selection to the local disk
+        ClientFramework.debug(20, "Downloading package.");
+        dataPackage.download(docid);
+      }
+			else if (object == deleteLocalMenu)
+		  { //delete the local package
+        ClientFramework.debug(20, "Deleteing the local package.");
+        dataPackage.delete(docid, DataPackage.LOCAL);
+      }
+			else if (object == deleteMetacatMenu)
+			{ //delete the object on metacat
+        ClientFramework.debug(20, "Deleteing the metacat package.");
+        dataPackage.delete(docid, DataPackage.METACAT);
+      }
+			else if (object == deleteAllMenu)
+			{ //delete both of the objects
+        ClientFramework.debug(20, "Deleting both copies of the package.");
+        dataPackage.delete(docid, DataPackage.BOTH);
+      }
+      
+      refreshQuery();
+		}
+  }
+  
+  class PopupListener extends MouseAdapter {
+    // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
+    // on the PC; use the trigger flag to record a trigger, but do not show popup until the
+    // mouse released event (DFH)
+    boolean trigger = false;
+    boolean metacatLoc = false;
+    boolean localLoc = false;
+    public void mousePressed(MouseEvent e) 
+    {
+      //select the clicked row first
+      table.clearSelection();
+      int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
+      table.setRowSelectionInterval(selrow, selrow);
+      Vector resultV = results.getResultsVector();
+      Vector rowV = (Vector)resultV.elementAt(selrow);
+      /*//System.out.println("resultsV: " + resultV.toString());
+      for(int i=0; i<resultV.size(); i++)
+      {
+        Vector v = (Vector)resultV.elementAt(i);
+        //System.out.println(i + "\n--------------------------");
+        for(int j=0; j<v.size(); j++)
+        {
+          //System.out.print(j + ": " + v.elementAt(j).toString() + " ");
+        }
+        //System.out.println();
+      }
+      System.out.println("\nrow: " + selrow + " rowV: " + rowV.toString());*/
+      String id = (String)rowV.elementAt(6);
+      localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
+      metacatLoc = ((Boolean)rowV.elementAt(10)).booleanValue();
+      selectedId = id;
+
+      if (e.isPopupTrigger()) 
+      {
+        trigger = true;
+      }  
+    }
+
+    public void mouseReleased(MouseEvent e) 
+    {
+      maybeShowPopup(e);
+    }
+
+    private void maybeShowPopup(MouseEvent e) 
+    {
+      if(e.isPopupTrigger() || trigger) 
+      {
+        uploadMenu.setEnabled(localLoc && !metacatLoc);
+        downloadMenu.setEnabled(metacatLoc && !localLoc);
+        deleteLocalMenu.setEnabled(localLoc);
+        deleteMetacatMenu.setEnabled(metacatLoc);
+        deleteAllMenu.setEnabled(metacatLoc && localLoc);
+        
+	      trigger = false;
+        popup.show(e.getComponent(), e.getX(), e.getY());
+      }
+    }
+  }	
 
   /**
    * Revise the query by loading it into the QueryDialog GUI

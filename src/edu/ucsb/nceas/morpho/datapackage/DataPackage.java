@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-25 21:38:39 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2001-07-27 22:09:55 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -617,6 +617,143 @@ public class DataPackage
                           e.getMessage());
           e.printStackTrace();
         }
+      }
+    }
+  }
+  
+  /**
+   * Downloads a metacat package to the local disk
+   */
+  public void download()
+  {
+    ClientFramework.debug(20, "Downloading package.");
+    
+    if(!location.equals(DataPackage.BOTH) && 
+      !location.equals(DataPackage.LOCAL))
+    { //if it is not already on the local disk, get it and put it there.
+      Vector ids = this.getAllIdentifiers();
+      Hashtable files = new Hashtable();
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      for(int i=0; i<ids.size(); i++)
+      { //get a file pointer to each of the files in the package
+        String id = (String)ids.elementAt(i);
+        try
+        {
+          files.put(id, mds.openFile(id));
+        }
+        catch(FileNotFoundException fnfe)
+        {
+          framework.debug(0, "There is an error in this package, a file is " + 
+                          "missing.  Missing file: " + id);
+        }
+        catch(CacheAccessException cae)
+        {
+          framework.debug(0, "The cache is locked.  Unlock it to continue.");
+        }
+      }
+      
+      Enumeration keys = files.keys();
+      while(keys.hasMoreElements())
+      { //get each file from metacat.  it's type needs to be checked to see
+        //if it is metadata or data
+        String key = (String)keys.nextElement();
+        //get the file
+        File f = (File)files.get(key);
+        String beginFile = "";
+        //check its type
+        try
+        {
+          FileInputStream fis = new FileInputStream(f);
+          for(int i=0; i<10; i++)
+          { //read 10 bytes of the file
+            //if they contain the text '<?xml' assume that it is a metadata file
+            //this is a bad assumption but it works for now...
+            beginFile += (char)fis.read();
+          }
+        }
+        catch(Exception e)
+        {
+          framework.debug(0, "Error reading file in package.");
+        }
+        
+        try
+        {
+          framework.debug(20, "Downloading " + key);
+          AccessionNumber a = new AccessionNumber(framework);
+          Vector idVec = a.getParts(key);
+          String scope = (String)idVec.elementAt(0);
+          String id = (String)idVec.elementAt(1);
+          String rev = (String)idVec.elementAt(2);
+          String sep = (String)idVec.elementAt(3);
+          Integer revI = new Integer(rev);
+          int revi = revI.intValue();
+          
+          if(beginFile.indexOf("<?xml") != -1)
+          { //its an xml file
+            for(int i=1; i<=revi; i++)
+            { //we have to get all of the old versions from metacat first so that
+              //the lineage is intact
+              String accnum = scope + sep + id + sep + i;
+              File g = mds.openFile(accnum);
+              if(i == 1)
+              {
+                fsds.newFile(accnum, new FileReader(g), true);
+              }
+              else
+              {
+                fsds.saveFile(accnum, new FileReader(g), true);
+              }
+            }
+          }
+          else
+          { //its a data file
+            fsds.newFile(key, new FileReader(f), true);
+          }
+        }
+        catch(Exception e)
+        {
+          framework.debug(0, "Error downloading " + key + " from metacat: " + 
+                          e.getMessage());
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+  
+  /**
+   * Deletes the package from the specified location
+   * @param locattion the location of the package that you want to delete
+   * use either DataPackage.BOTH, DataPackage.METACAT or DataPackage.LOCAL 
+   */
+  public void delete(String location)
+  {
+    MetacatDataStore mds = new MetacatDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    Vector v = getAllIdentifiers();
+    boolean metacatLoc = false;
+    boolean localLoc = false;
+    if(location.equals(DataPackage.METACAT) || 
+       location.equals(DataPackage.BOTH))
+    {
+      metacatLoc = true;
+    }
+    if(location.equals(DataPackage.LOCAL) ||
+       location.equals(DataPackage.BOTH))
+    {
+      localLoc = true;
+    }
+    
+    for(int i=0; i<v.size(); i++)
+    { //loop through and delete all of the files in the package
+      if(localLoc)
+      {
+        fsds.deleteFile((String)v.elementAt(i));
+      }
+      
+      if(metacatLoc)
+      {
+        mds.deleteFile((String)v.elementAt(i));
       }
     }
   }

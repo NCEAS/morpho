@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:05 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-07-27 22:09:55 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,5 +169,37 @@ public class DataPackagePlugin
     gui.setName("Package Editor: " + dp.getID());
     framework.addWindow(gui);
     gui.show();
+  }
+  
+  /**
+   * Uploads the package to metacat.  The location is assumed to be 
+   * DataPackage.LOCAL
+   * @param docid the id of the package to upload
+   */
+  public void upload(String docid)
+  {
+    DataPackage dp = new DataPackage(DataPackage.LOCAL, docid, null, framework);
+    dp.upload();
+  }
+  
+  /**
+   * Downloads the package from metacat.  The location is assumed to be
+   * DataPackage.METACAT 
+   * @param docid the id of the package to download
+   */
+  public void download(String docid)
+  {
+    DataPackage dp = new DataPackage(DataPackage.METACAT, docid, null, framework);
+    dp.download();
+  }
+  
+  /**
+   * Deletes the package.
+   * @param docid the id of the package to download
+   */
+  public void delete(String docid, String location)
+  {
+    DataPackage dp = new DataPackage(location, docid, null, framework);
+    dp.delete(location);
   }
 }

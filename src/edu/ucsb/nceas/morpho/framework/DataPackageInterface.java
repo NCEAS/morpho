@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-09 20:29:10 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-07-27 22:09:55 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,4 +48,27 @@ public interface DataPackageInterface
    */
   public void openDataPackage(String location, String identifier, 
                               Vector relations);
+  /**
+   * This method is called to upload a datapackage that is currently stored
+   * locally to metacat
+   * @param docid the id of the package to upload
+   */
+  public void upload(String docid);
+  
+  /**
+   * This method is called to download a datapackage from metacat to the local
+   * disk.
+   * @param docid the docid of the package to download
+   */
+  public void download(String docid);
+  
+  /**
+   * This method is called to delete a datapackage from metacat or the local
+   * disk.
+   * @param docid the id of the package to delete
+   * @param location the location to delete it from.  we do not necessarilly want
+   * to delete the package from metacat and the local disk.  the user could just
+   * want to delete it in one of those places.
+   */
+  public void delete(String docid, String location);
 }

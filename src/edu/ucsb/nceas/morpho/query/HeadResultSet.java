@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-15 09:02:33 $'
- * '$Revision: 1.1 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-27 22:09:55 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,13 @@ public class HeadResultSet extends ResultSet
   public int getRowCount()
   {
     return headResultsVector.size();
+  }
+  
+  /**
+   *  get the resultsVector
+   */
+  public Vector getResultsVector() {
+    return headResultsVector;
   }
 
   /**
