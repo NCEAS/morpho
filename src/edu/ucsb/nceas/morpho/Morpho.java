@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-08 22:19:32 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-10 01:47:49 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1188,11 +1188,6 @@ public class Morpho
         sf.dispose();
         
         MorphoFrame tempFrame = new MorphoFrame(config);
-        JPanel content = new JPanel();
-        //content.setSize(300,500);
-        JTextArea ta = new JTextArea("This is a test",50,200);
-        content.add(ta);
-        tempFrame.setMainContentPane(content);
         tempFrame.setVisible(true);
 
         Log.debug(1, "Finished main, what to do now? Exit?");

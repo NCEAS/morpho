@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-08 22:19:33 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-10 01:47:49 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,107 +29,149 @@ package edu.ucsb.nceas.morpho.framework;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import java.io.*;
-import java.util.*;
-import java.net.URL;
-import java.lang.reflect.*;
 import java.lang.ClassCastException;
+import java.lang.reflect.*;
 import java.net.*;
+import java.net.URL;
+import java.util.*;
+import javax.swing.*;
 
 /**
- * The MorphoFrame is a Window in the Morpho application containing the 
- * standard menus and toolbars.  Overall state of the application is
- * synchronized across MorphoFrames so that when the UI changes do a 
- * user action it is propogated to all frames as appropriate.  Each plugin
- * can create a MorphoFrame by asking the UIController for a new
- * instance.
+ * The MorphoFrame is a Window in the Morpho application containing the standard
+ * menus and toolbars. Overall state of the application is synchronized across
+ * MorphoFrames so that when the UI changes do a user action it is propogated to
+ * all frames as appropriate. Each plugin can create a MorphoFrame by asking the
+ * UIController for a new instance.
+ *
+ * @author   jones
  */
-public class MorphoFrame extends JFrame 
+public class MorphoFrame extends JFrame
 {
-  JPanel toolbarPanel    = new JPanel();
-  JToolBar morphoToolbar = new JToolBar();
-  JMenuBar morphoMenuBar = new JMenuBar();
+    private JPanel toolbarPanel;
+    private JToolBar morphoToolbar;
+    private JMenuBar morphoMenuBar;
+    private StatusBar statusBar;
+    private ProgressIndicator indicator;
 
-  private StatusBar statusBar;
-  
-  /**
-   * Creates a new instance of MorphoFrame
-   */
-  public MorphoFrame(ConfigXML config)
-  {
-		setJMenuBar(morphoMenuBar);
-		setTitle("Morpho - Data Management for Ecologists");
-		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
-		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(0,0);
-		setVisible(false);
-		toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
-		getContentPane().add(BorderLayout.NORTH, toolbarPanel);
-		morphoToolbar.setAlignmentY(0.222222F);
-		toolbarPanel.add(morphoToolbar);
-
-    // get StatusBar instance, initialize and add to interface:
-    statusBar = StatusBar.getInstance();
-	getContentPane().add(BorderLayout.SOUTH, statusBar);
-  
-    // Register listeners
-    SymWindow aSymWindow = new SymWindow();
-    this.addWindowListener(aSymWindow);
-
-    pack();
-  }
-
-  /**
-   * Set the content pane of the main Morpho window to display the
-   * component indicated.  Note that this will replace the current content
-   * pane, and so only one plugin should call this routine.
-   *
-   * @param comp the component to display
-   */
-  public void setMainContentPane(Component comp) 
-  {
-    // Create a panel to display the plugin if requested
-    if (comp != null) {
-      getContentPane().add(BorderLayout.CENTER, comp);
-      comp.invalidate();
-      invalidate();
-    } else {
-      Log.debug(5, "Component was null so I could not set it!");
-    }
-  }
-
-  /**
-   * close the window when requested
-   */
-  private void close()
-  {
-        this.setVisible(false);        // hide the Frame
-        this.dispose();                // free the system resources
-  }
-
-  /** Listen for window closing events */
-  class SymWindow extends java.awt.event.WindowAdapter
-  {
-    public void windowClosing(java.awt.event.WindowEvent event)
+    /**
+     * Creates a new instance of MorphoFrame
+     *
+     * @param config  Description of Parameter
+     */
+    public MorphoFrame(ConfigXML config)
     {
-      Object object = event.getSource();
-      if (object == MorphoFrame.this)
-          MorphoFrame_windowClosing(event);
+        setVisible(false);
+        setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
+
+        JLayeredPane layeredPane = getLayeredPane();
+        Container contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout(0, 0));
+        setTitle("Morpho - Data Management for Ecologists");
+
+        // Set up the menu bar
+        morphoMenuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        morphoMenuBar.add(fileMenu);
+        setJMenuBar(morphoMenuBar);
+
+        // Set up the progress indicator
+        ImageIcon bfly = null;
+        ImageIcon flapping = null;
+        try {
+            bfly = new javax.swing.ImageIcon(
+                    getClass().getResource("Btfly.gif"));
+            flapping = new javax.swing.ImageIcon(
+                    getClass().getResource("Btfly4.gif"));
+        } catch (Exception w) {
+            Log.debug(9, "Error in loading images");
+        }
+        indicator = new ProgressIndicator(bfly, flapping);
+        layeredPane.add(indicator, JLayeredPane.DEFAULT_LAYER);
+
+        // Set up the toolbar
+        toolbarPanel = new JPanel();
+        morphoToolbar = new JToolBar();
+        toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        //getContentPane().add(BorderLayout.NORTH, toolbarPanel);
+        morphoToolbar.setAlignmentY(0.222222F);
+        toolbarPanel.add(morphoToolbar);
+
+        // Put in a default content area
+        Box content = Box.createHorizontalBox();
+        Component hstrut = Box.createHorizontalStrut(600);
+        Component vstrut = Box.createVerticalStrut(800);
+        content.add(hstrut);
+        content.add(vstrut);
+        content.setBackground(java.awt.Color.red);
+        setMainContentPane(content);
+
+        // Set up and add a StatusBar
+        statusBar = StatusBar.getInstance();
+        getContentPane().add(BorderLayout.SOUTH, statusBar);
+
+        // Register listeners
+        this.addWindowListener(
+            new WindowAdapter() {
+                public void windowClosing(WindowEvent event)
+                {
+                    Object object = event.getSource();
+                    if (object == MorphoFrame.this) {
+                        close();
+                    }
+                }
+            });
+        this.addComponentListener(
+            new ComponentAdapter() { 
+                public void componentResized (ComponentEvent e) 
+                {
+                    updateProgressIndicatorLocation();
+                } 
+            }); 
+
+        // Size the window properly
+        pack();
     }
-  }
 
-  /** process window closing events */
-  private void MorphoFrame_windowClosing(java.awt.event.WindowEvent event)
-  {
-    // to do: code goes here.
-    MorphoFrame_windowClosing_Interaction1(event);
-  }
+    /**
+     * Set the content pane of the main Morpho window to display the component
+     * indicated. Note that this will replace the current content pane, and so
+     * only one plugin should call this routine.
+     *
+     * @param comp  the component to display
+     */
+    public void setMainContentPane(Component comp)
+    {
+        // Create a panel to display the plugin if requested
+        if (comp != null) {
+            getContentPane().add(BorderLayout.CENTER, comp);
+            comp.invalidate();
+            invalidate();
+        } else {
+            Log.debug(5, "Component was null so I could not set it!");
+        }
+    }
 
-  /** process window closing events */
-  private void MorphoFrame_windowClosing_Interaction1(java.awt.
-                                                  event.WindowEvent event)
-  {
-      this.close();
-  }
+    /** 
+     * Properly locate the progress indicator
+     * when the window size changes
+     */
+    private void updateProgressIndicatorLocation()
+    {
+        Log.debug(20, "Resized Window"); 
+        Dimension indicatorSize = indicator.getSize();
+        Dimension cpSize = getContentPane().getSize();
+        indicator.setLocation(
+                (int) (cpSize.getWidth() - indicatorSize.getWidth()), 0);
+    }
+
+    /** 
+     * close the window when requested 
+     */
+    private void close()
+    {
+        this.setVisible(false);
+        this.dispose();
+    }
 }
+
