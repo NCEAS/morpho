@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-24 21:58:42 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-10-25 01:02:17 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -449,126 +449,127 @@ public class MetaDisplay implements MetaDisplayInterface,
     }
     
 	
-	/**
-	 *  Get the current XML factory, used to resolve IDs into XML documents 
-	 *
-	 *  @return factory     an instance of a class that implements 
-	 *                      <code>XMLFactoryInterface</code> to enable this obj
-	 *                      to obtain the actual XML document to display, given 
-	 *                      the <code>identifier</code> parameter
-	 *
-	 */
-	public XMLFactoryInterface getFactory()
-	{
-		return this.factory;
-	}
+	  /**
+	   *  Get the current XML factory, used to resolve IDs into XML documents 
+	   *
+	   *  @return factory     an instance of a class that implements 
+	   *                      <code>XMLFactoryInterface</code> to enable this obj
+	   *                      to obtain the actual XML document to display, given 
+	   *                      the <code>identifier</code> parameter
+	   *
+	   */
+	  public XMLFactoryInterface getFactory()
+	  {
+		  return this.factory;
+	  }
 
     
-	/**
-	 *  Set the current XML factory, used to resolve IDs into XML documents 
-	 *
-	 *  @param factory      an instance of a class that implements 
-	 *                      <code>XMLFactoryInterface</code> to enable this obj
-	 *                      to obtain the actual XML document to display, given 
-	 *                      the <code>identifier</code> parameter
-	 *
-	 *  @throws NullArgumentException if factory not provided.
-	 */
-	public void setFactory(XMLFactoryInterface factory)
-                                                    throws NullArgumentException
-	{
-        if (factory!=null)  {
-		    this.factory = factory;
-        } else  {
-            NullArgumentException iae
-                    = new NullArgumentException("XML Factory may not be null");
-            iae.fillInStackTrace();
-            throw iae;
-        }
-	}
+	  /**
+	   *  Set the current XML factory, used to resolve IDs into XML documents 
+	   *
+	   *  @param factory      an instance of a class that implements 
+	   *                      <code>XMLFactoryInterface</code> to enable this obj
+	   *                      to obtain the actual XML document to display, given 
+	   *                      the <code>identifier</code> parameter
+	   *
+	   *  @throws NullArgumentException if factory not provided.
+	   */
+	  public void setFactory(XMLFactoryInterface factory)
+                                                      throws NullArgumentException
+	  {
+          if (factory!=null)  {
+		      this.factory = factory;
+          } else  {
+              NullArgumentException iae
+                      = new NullArgumentException("XML Factory may not be null");
+              iae.fillInStackTrace();
+              throw iae;
+          }
+	  }
 
-	protected String getIdentifier()
-	{
-		return this.identifier;
-	}
+	  protected String getIdentifier()
+	  {
+		  return this.identifier;
+	  }
 
 
-	protected History getHistory()
-	{
-		return this.history;
-	}
+	  protected History getHistory()
+	  {
+		  return this.history;
+	  }
 
 	
-	//displays the passed ID, but DOES NOT add the previous one to the history -
-	//that must be done separately, since it's not always required (eg when this 
-	//is called by displayPrevious() )
-	private void displayThisID(String ID) throws DocumentNotFoundException
-	{
-      // first reset XSL parameters in case they've been reset by an "export":
-      transformer.removeAllTransformerProperties();
-      transformer.addTransformerProperty("stylePath", getFullStylePath());
+	  //displays the passed ID, but DOES NOT add the previous one to the history -
+	  //that must be done separately, since it's not always required (eg when this 
+	  //is called by displayPrevious() )
+	  private void displayThisID(String ID) throws DocumentNotFoundException
+	  {
+        transformer.addTransformerProperty("stylePath", getFullStylePath());
 
-	    Reader xmlReader = null;
-	    try  {
-	        setIdentifier(ID);
-	    } catch (NullArgumentException nae) {
-	        Log.debug(12, "NullArgumentException setting identifier: "
-	                                        +ID+"; "+nae.getMessage());
-	        DocumentNotFoundException dnfe 
-	            =  new DocumentNotFoundException("Nested NullArgumentException:"
-	                                                        +nae.getMessage());
-	        dnfe.fillInStackTrace();
-	        throw dnfe;
-	    }
-	    try  {
-	        xmlReader = factory.openAsReader(ID);
-	    } catch (DocumentNotFoundException dnfe) {
+	      Reader xmlReader = null;
+	      try  {
+	          setIdentifier(ID);
+	      } catch (NullArgumentException nae) {
+	          Log.debug(12, "NullArgumentException setting identifier: "
+	                                          +ID+"; "+nae.getMessage());
+	          DocumentNotFoundException dnfe 
+	              =  new DocumentNotFoundException("Nested NullArgumentException:"
+	                                                          +nae.getMessage());
+	          transformer.removeAllTransformerProperties();
+	          dnfe.fillInStackTrace();
+	          throw dnfe;
+	      }
+	      try  {
+	          xmlReader = factory.openAsReader(ID);
+	      } catch (DocumentNotFoundException dnfe) {
 	        
-	        Log.debug(12, "DocumentNotFoundException getting Reader for ID: "
-	                                        +ID+"; "+dnfe.getMessage());
-	        dnfe.fillInStackTrace();
-	        throw dnfe;
-	    }
-	    Reader resultReader = doTransform(xmlReader);
-      String htmlDoc = getAsString(resultReader);
-	    fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
-      ui.setHTML(htmlDoc);
-	}
+	          Log.debug(12, "DocumentNotFoundException getting Reader for ID: "
+	                                          +ID+"; "+dnfe.getMessage());
+	          transformer.removeAllTransformerProperties();
+	          dnfe.fillInStackTrace();
+	          throw dnfe;
+	      }
+	      Reader resultReader = doTransform(xmlReader);
+        String htmlDoc = getAsString(resultReader);
+	      fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
+        ui.setHTML(htmlDoc);
+        transformer.removeAllTransformerProperties();
+	  }
 
-    //sends xml Reader to morpho.util.XMLTransformer to be styled
-	private Reader doTransform(Reader xml) throws DocumentNotFoundException
-	{
-	    Reader result = null;
-	    try {
-	        result = transformer.transform(xml);
-	    } catch (IOException ioe) {
-	        String errMsg   = "MetaDisplay.doTransform(): \n"
-	                        + "throwing DocumentNotFoundException. \n"
-	                        + "Nested IOException is:\n"+ioe.getMessage()
-	                        + "\nXML document received was:\n"+getAsString(xml);
-	        Log.debug(12, errMsg);
-	        DocumentNotFoundException d = new DocumentNotFoundException(errMsg);
-	        d.fillInStackTrace();
-	        throw d;
-	    }
-	    Log.debug(50, "doTransform returning Reader: " + result
-                                                +" for ID: " + this.identifier);
-	    return result;
-	}    
+      //sends xml Reader to morpho.util.XMLTransformer to be styled
+	  private Reader doTransform(Reader xml) throws DocumentNotFoundException
+	  {
+	      Reader result = null;
+	      try {
+	          result = transformer.transform(xml);
+	      } catch (IOException ioe) {
+	          String errMsg   = "MetaDisplay.doTransform(): \n"
+	                          + "throwing DocumentNotFoundException. \n"
+	                          + "Nested IOException is:\n"+ioe.getMessage()
+	                          + "\nXML document received was:\n"+getAsString(xml);
+	          Log.debug(12, errMsg);
+	          DocumentNotFoundException d = new DocumentNotFoundException(errMsg);
+	          d.fillInStackTrace();
+	          throw d;
+	      }
+	      Log.debug(50, "doTransform returning Reader: " + result
+                                                  +" for ID: " + this.identifier);
+	      return result;
+	  }    
 
     
-    //sets ID
-	private void setIdentifier(String identifier) throws NullArgumentException
-	{
-        if (identifier != null && !identifier.trim().equals("")) {
-		    this.identifier = identifier;
-		} else  {
-		    NullArgumentException nae 
-		        = new NullArgumentException("identifier must have a value");
-		    nae.fillInStackTrace();
-		    throw nae;
-		}
-	}
+      //sets ID
+	  private void setIdentifier(String identifier) throws NullArgumentException
+	  {
+          if (identifier != null && !identifier.trim().equals("")) {
+		      this.identifier = identifier;
+		  } else  {
+		      NullArgumentException nae 
+		          = new NullArgumentException("identifier must have a value");
+		      nae.fillInStackTrace();
+		      throw nae;
+		  }
+	  }
     
     //reset ID to it's original value before exception occurred:
     private void setIDBackTo(String oldID) 
@@ -590,6 +591,18 @@ public class MetaDisplay implements MetaDisplayInterface,
         }
     }
     
+    /**
+     *  method to add a key/value transformer property pair to the properties 
+     *  that will be passed onto the XSL Transformation Engine, and will then be 
+     *  made available to the actual XSL stylesheets as <xsl:param> values 
+     */
+    public void useTransformerProperty(String key, String value)
+    {
+        Log.debug(50,"MetaDisplay.useTransformerProperty("+key+", "+value+")");
+        transformer.addTransformerProperty(key, value);
+    }
+
+
     //returns string representation of full path to style directory in 
     //Morpho-Config.jar.  All names are in config.xml file
     //NOTE - checks config & install directory only once, then re-uses 

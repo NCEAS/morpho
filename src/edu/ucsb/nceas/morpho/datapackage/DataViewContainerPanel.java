@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-09 18:23:30 $'
- * '$Revision: 1.34 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-25 01:02:17 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                         StoreStateChangeEvent,
                         EditingCompleteListener
 {
+
+  private static final String XSL_SEL_ATTRIB_PARAM = "selected_attribute";
   /**
    * The DataPackage that contains the data
    */
@@ -475,11 +477,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   public void handleStateChange(StateChangeEvent event)
   {
     // Handle select data table column
-    if ((event.getChangedState()).
-                          equals(StateChangeEvent.SELECT_DATATABLE_COLUMN))
+    if ((event.getChangedState()).equals(StateChangeEvent.SELECT_DATATABLE_COLUMN))
     {
       // Get attribute file id and show it the metacat panel
-      showDataViewAndAttributePanel();
+      if (event.getSource() instanceof JTable) {
+        showDataViewAndAttributePanel(
+                            ( (JTable)event.getSource() ).getSelectedColumn());
+      } else {
+        showDataViewAndAttributePanel(0);
+      }
     }
   }
   
@@ -587,7 +593,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   }
   
   /*  Method to create a attribute panel to replace entity */
-  private void showDataViewAndAttributePanel() 
+  private void showDataViewAndAttributePanel(int selectedColIndex) 
   {
     TabbedContainer container = 
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
@@ -598,13 +604,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     String identifier = dp.getAttributeFileId(id);
     try
     {
+      //send identifier and index, separated by a space.  
+      meta.useTransformerProperty(XSL_SEL_ATTRIB_PARAM,
+                                  String.valueOf(selectedColIndex));
       meta.display(identifier);
+                        
+    } catch (DocumentNotFoundException m) {
+      Log.debug(5, "Unable to display Attribute:\n"+m.getMessage());
     }
-    catch (DocumentNotFoundException m)
-    {
-      Log.debug(5, "Unable to display Attribute:\n"+m.getMessage()); 
-    }
-    
   }
   
   public void stateChanged(javax.swing.event.ChangeEvent event) {

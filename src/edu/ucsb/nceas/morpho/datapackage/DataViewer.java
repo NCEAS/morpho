@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-24 23:14:02 $'
- * '$Revision: 1.74 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-25 01:02:17 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1905,9 +1905,6 @@ public class DataViewer extends javax.swing.JPanel
               StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
         StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
         stateMonitor.notifyStateChange(stateEvent);
-        
-        //javax.swing.JOptionPane.showMessageDialog
-                            //(null, "Header Clicked - Column# "+modelIndex);
       }  
     }
     

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 00:26:49 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-10-25 01:02:17 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,5 +218,11 @@ public interface MetaDisplayInterface
      */
     public void displayPrevious() throws DocumentNotFoundException;
     
+    /**
+     *  method to add a key/value transformer property pair to the properties 
+     *  that will be passed onto the XSL Transformation Engine, and will then be 
+     *  made available to the actual XSL stylesheets as <xsl:param> values 
+     */
+    public void useTransformerProperty(String key, String value);
 }
 

@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-09-28 03:29:14 $'
-  * '$Revision: 1.3 $'
+  *     '$Date: 2002-10-25 01:02:17 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -42,8 +42,7 @@
       </head>
       <body>
         <center>
-          <h1>Attribute structure description</h1>
-          <h3>Ecological Metadata Language</h3>
+          <h3>Attribute structure description</h3>
         </center>
 
         <table class="tabledefault" width="80%"><!-- width needed for NN4 - doesn't recognize width in css -->
@@ -62,38 +61,42 @@
             <td class="{$firstColStyle}" >Attrib Domain</td>
         </tr>
         <xsl:for-each select="eml-attribute/attribute">
-          <tr valign="top">
-            <xsl:variable name="stripes">
-              <xsl:choose>
-                <xsl:when test="position() mod 2 = 1">rowodd</xsl:when>
-                <xsl:when test="position() mod 2 = 0">roweven</xsl:when>
-              </xsl:choose>
-            </xsl:variable>
-              <td width="{$firstColWidth}" class="{$firstColStyle}"><xsl:value-of select="attributeName"/></td>
-              <td class="{$stripes}"><xsl:value-of select="attributeLabel"/>&#160;</td>
-              <td class="{$stripes}"><xsl:value-of select="attributeDefinition"/></td>
-              <td class="{$stripes}"><xsl:value-of select="unit"/>&#160;</td>
-              <td class="{$stripes}"><xsl:value-of select="dataType"/>&#160;</td>
-              <td class="{$stripes}">
-                <xsl:for-each select="missingValueCode">
-                    <xsl:value-of select="."/>&#160;<br />
-                </xsl:for-each>
-                </td>
-              <td class="{$stripes}"><xsl:value-of select="precision"/>&#160;</td>
+          <xsl:choose>
+            <xsl:when test="position() = ($selected_attribute+1)">
+              <tr valign="top">
+                <xsl:variable name="stripes">
+                  <xsl:choose>
+                    <xsl:when test="position() mod 2 = 1">rowodd</xsl:when>
+                    <xsl:when test="position() mod 2 = 0">roweven</xsl:when>
+                  </xsl:choose>
+                </xsl:variable>
+                  <td width="{$firstColWidth}" class="{$firstColStyle}"><xsl:value-of select="attributeName"/></td>
+                  <td class="{$stripes}"><xsl:value-of select="attributeLabel"/>&#160;</td>
+                  <td class="{$stripes}"><xsl:value-of select="attributeDefinition"/></td>
+                  <td class="{$stripes}"><xsl:value-of select="unit"/>&#160;</td>
+                  <td class="{$stripes}"><xsl:value-of select="dataType"/>&#160;</td>
+                  <td class="{$stripes}">
+                    <xsl:for-each select="missingValueCode">
+                        <xsl:value-of select="."/>&#160;<br />
+                    </xsl:for-each>
+                    </td>
+                  <td class="{$stripes}"><xsl:value-of select="precision"/>&#160;</td>
 
-              <td class="{$stripes}">
-              <table width="100%">
-                  <xsl:for-each select="attributeDomain/enumeratedDomain">
-                    <xsl:apply-templates select="."/>
-                  </xsl:for-each>
-                  <xsl:for-each select="attributeDomain/textDomain">
-                    <xsl:apply-templates select="."/>
-                  </xsl:for-each>
-                  <xsl:for-each select="attributeDomain/numericDomain">
-                    <xsl:apply-templates select="."/>
-                  </xsl:for-each>
-              </table></td>
-          </tr>
+                  <td class="{$stripes}">
+                  <table width="100%">
+                      <xsl:for-each select="attributeDomain/enumeratedDomain">
+                        <xsl:apply-templates select="."/>
+                      </xsl:for-each>
+                      <xsl:for-each select="attributeDomain/textDomain">
+                        <xsl:apply-templates select="."/>
+                      </xsl:for-each>
+                      <xsl:for-each select="attributeDomain/numericDomain">
+                        <xsl:apply-templates select="."/>
+                      </xsl:for-each>
+                  </table></td>
+              </tr>
+            </xsl:when>
+          </xsl:choose>
         </xsl:for-each>
         </table>
         </td>

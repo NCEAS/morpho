@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-24 18:45:12 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2002-10-25 01:02:17 $'
+  * '$Revision: 1.5 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -126,6 +126,17 @@
 <!--    what name will be given to the DataSet file on disk?(see note above) -->
   <xsl:param name="package_index_name"></xsl:param>
   
+<!-- 
+    /**
+    *   This is the parameter which tells the Attribute stylesheet which 
+    *   attribute(s) to display, suppressing the remainder. The default value is 
+    *   to display them all.  The type is a string representation of an integer
+    */ 
+-->
+  
+  <xsl:param name="selected_attribute">999</xsl:param>
+
+
 <!-- 
     /**
     *   Most of the html pages are currently laid out as a 2-column table, with 
