@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-19 22:00:18 $'
- * '$Revision: 1.20 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-19 22:30:24 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,6 @@ import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
-import com.symantec.itools.javax.swing.JButtonGroupPanel;
-import com.symantec.itools.javax.swing.borders.LineBorder;
-import com.symantec.itools.javax.swing.icons.ImageIcon;
 
 /**
  * A graphical window for obtaining login information from the
@@ -206,8 +203,7 @@ public class ConnectionFrame extends javax.swing.JDialog
   //{{DECLARE_CONTROLS
   javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
   javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
-  com.symantec.itools.javax.swing.JButtonGroupPanel JButtonGroupPanel1 = 
-                 new com.symantec.itools.javax.swing.JButtonGroupPanel();
+  javax.swing.JPanel JButtonGroupPanel1 = new javax.swing.JPanel();
   javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
   javax.swing.JLabel Name = new javax.swing.JLabel();
   javax.swing.JTextField NameTextField = new javax.swing.JTextField();
