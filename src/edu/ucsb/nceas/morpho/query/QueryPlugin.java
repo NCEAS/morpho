@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.26 2000-11-20 23:27:08 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.27 2000-11-28 00:20:34 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -65,7 +65,7 @@ public class QueryBean extends AbstractQueryBean
     String userName = "public";
     String passWord = "none";
     boolean searchlocal = true;
-    boolean searchnetwork = true;
+    boolean searchnetwork = false;
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
     PropertyResourceBundle options;

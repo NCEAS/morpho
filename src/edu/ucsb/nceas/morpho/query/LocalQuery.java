@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.13 2000-11-22 23:12:58 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.14 2000-11-28 00:20:34 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -371,7 +371,7 @@ void queryAll()
                 if (stopFlag) break;
                     // Use the simple XPath API to select a node.
                     nl = XPathAPI.selectNodeList(root, xpathExpression);
-                    String[] rss = new String[4];
+     /*               String[] rss = new String[4];
                     for (int ii=0;ii<nl.getLength();ii++) {
                         if (stopFlag) break;
                         rss[0] = filename;
@@ -383,7 +383,11 @@ void queryAll()
                         }
                         else { rss[3]="";}
                     dtm.addRow(rss);
-                    }
+      */
+                  if (nl.getLength()>0) {
+                    addRowsToTable(filename);
+                  }
+                    
                 }
                 else {   // multiple expressions are handled here
                     if (stopFlag) break;
@@ -392,7 +396,7 @@ void queryAll()
                             if (xpathExpressions[k].length()>0) {
                                 xpathExpression = xpathExpressions[k];
                             nl = XPathAPI.selectNodeList(root, xpathExpression);
-                            String[] rss = new String[4];
+            /*                String[] rss = new String[4];
                             for (int ii=0;ii<nl.getLength();ii++) {
                                 if (stopFlag) break;
                                 rss[0] = filename;
@@ -404,7 +408,11 @@ void queryAll()
                                 }
                                 else { rss[3]="";}
                                 dtm.addRow(rss);
-                            }
+             */                   
+                  if (nl.getLength()>0) {
+                    addRowsToTable(filename);
+                  }
+                            
                             }
                         }
                     } // end !Andflag
@@ -425,7 +433,7 @@ void queryAll()
             if (AndResultFlag) {   
                 for (int kkk=0;kkk<xpathExpressions.length;kkk++) {
                     nl = nls[kkk];
-                    if (nl!=null) {
+     /*               if (nl!=null) {
                     String[] rss = new String[4];
                     for (int ii=0;ii<nl.getLength();ii++) {
                         if (stopFlag) break;
@@ -440,6 +448,11 @@ void queryAll()
                             dtm.addRow(rss);
                     }
                     }
+       */
+       
+                  if (nl.getLength()>0) {
+                    addRowsToTable(filename);
+                  }
                 }
                 
             }
@@ -486,7 +499,7 @@ void queryAll()
   private void addRowsToTable(String hitfilename) {
     Vector temp = getResultSetDocs(hitfilename);
     for (Enumeration e = temp.elements();e.hasMoreElements();) {
-        String fn = e.nextElement();
+        String fn = (String)e.nextElement();
         String[] row = createRSRow(fn);
         dtm.addRow(row);
     }   
@@ -496,9 +509,10 @@ void queryAll()
   private Vector getResultSetDocs(String filename) {
     Vector result = new Vector();
     String currentDoctype = getDoctypeFor(filename);
+    if (!dt2bReturned.contains("any")) {
     //first see if the current doc type is in return list
     if (dt2bReturned.contains(currentDoctype)) {
-        result.addElement(currentDoctype);   
+        result.addElement(filename);   
     }
     // now check if objects of relationship are of types to be returned
     Vector objs = getRelationshipObjects(filename);
@@ -516,12 +530,18 @@ void queryAll()
             }
         }
     }
+    }
+    else { // no dt2bReturned types
+        result.addElement(filename);   
+    }
   return result;  
   }
 
 	private String getDoctypeFor(String filename) {
 	    String ret = "";
-	    
+	    if (doctype_collection.containsKey(filename)) {
+	        ret = (String)doctype_collection.get(filename);   
+	    }
 	return ret;
 	}
 	
@@ -547,7 +567,7 @@ void queryAll()
 	    rss[3] =  getValueForPath("title",filename);  // title
 	   
 	    for (int i=0;i<returnFields.size();i++) {
-	        rss[3+i] = getValueForPath((String)returnFields.elementAt(i),filename);   
+	        rss[4+i] = getValueForPath((String)returnFields.elementAt(i),filename);   
 	    }
 	return rss;
 	}
@@ -560,11 +580,13 @@ void queryAll()
             Node doc = ((Document)dom_collection.get(filename)).getDocumentElement();
             NodeList nl = null;
             nl = XPathAPI.selectNodeList(doc, pathstring);
-            Node cn = nl.item(0).getFirstChild();  // assume 1st child is text node
-               if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                    val = cn.getNodeValue().trim();
-                  }
-               else { val="";}
+            if ((nl!=null)&&(nl.getLength()>0)) {
+                Node cn = nl.item(0).getFirstChild();  // assume 1st child is text node
+                    if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
+                        val = cn.getNodeValue().trim();
+                    }
+                else { val="";}
+            }
         }
         }
         catch (Exception e){System.out.println("Error in getValueForPath method");}
@@ -602,12 +624,20 @@ void queryAll()
             }
         }
    }
-  
+ 
+   private void addToRS(String filename) {
+        Vector rsdocs = getResultSetDocs(filename);
+        for (Enumeration e=rsdocs.elements();e.hasMoreElements();) {
+            String name = (String)e.nextElement();
+            String[] rowdata = createRSRow(name);
+            dtm.addRow(rowdata);   
+        }
+   }
    
 // use to get the last element in a path string
    private String getLastPathElement(String str) {
         String last = "";
-        int ind = str.lastIndexOf("/");
+        int ind = str.lastIndexOf("\\");
         if (ind==-1) {
            last = str;     
         }
