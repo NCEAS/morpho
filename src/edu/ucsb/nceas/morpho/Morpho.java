@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-04 18:12:58 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-09-04 22:12:07 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -434,6 +434,14 @@ public class Morpho
      */
     public static ConfigXML getConfiguration()
     {
+        if (config==null)  {
+            try {
+                initializeConfiguration();    
+            } catch (FileNotFoundException fnfe) {
+                Log.debug(5, "Configuration file not found!");
+                fnfe.printStackTrace();
+            }
+        }
         return config;
     }
 
@@ -731,51 +739,8 @@ public class Morpho
             //SplashFrame sf = new SplashFrame(true);
            // sf.setVisible(true);
 
-            // Make sure the config directory exists
-            File configurationFile = null;
-            File configDir = null;
-            configDir = new File(ConfigXML.getConfigDirectory());
-            if (!configDir.exists()) {
-                if (!configDir.mkdir()) {
-                    Log.debug(1, "Failed to create config directory");
-                    System.exit(0);
-                }
-            }
-
-            // Make sure the config file has been copied to the proper directory
-            try {
-                configurationFile = new File(configDir, configFile);
-                if (configurationFile.createNewFile() || 
-                    configurationFile.length() == 0) {
-                    FileOutputStream out =
-                        new FileOutputStream(configurationFile);
-                    ClassLoader cl = 
-                        Thread.currentThread().getContextClassLoader();
-                    InputStream configInput = 
-                        cl.getResourceAsStream(configFile);
-                    if (configInput == null) {
-                        Log.debug(1, 
-                            "Could not find default configuration file.");
-                        System.exit(0);
-                    }
-                    byte buf[] = new byte[4096];
-                    int len = 0;
-                    while ((len = configInput.read(buf, 0, 4096)) != -1) {
-                        out.write(buf, 0, len);
-                    }
-                    configInput.close();
-                    out.close();
-                }
-            } catch (IOException ioe) {
-                Log.debug(1, "Error copying config: " + ioe.getMessage());
-                Log.debug(1, ioe.getClass().getName());
-                ioe.printStackTrace(System.err);
-                System.exit(0);
-            }
-
-            // Open the configuration file
-            ConfigXML config = new ConfigXML(
-                    configurationFile.getAbsolutePath());
+            //initialize the config
+            initializeConfiguration();
 
             // Set up logging, possibly to a file as appropriate
             initializeLogging(config);
@@ -1599,7 +1564,55 @@ public class Morpho
         }
         return s;
     }
+    
+    /**
+     * Set up the config properties during startup
+     *
+     * @param ******************
+     */
+    private static void initializeConfiguration() throws FileNotFoundException {
 
+        // Make sure the config directory exists
+        File configurationFile  = null;
+        File configDir = new File(ConfigXML.getConfigDirectory());
+        if (!configDir.exists()) {
+            if (!configDir.mkdir()) {
+                Log.debug(1, "Failed to create config directory");
+                System.exit(0);
+            }
+        }
+
+        // Make sure the config file has been copied to the proper directory
+        try {
+            configurationFile = new File(configDir, configFile);
+            if (configurationFile.createNewFile() 
+                    || configurationFile.length() == 0) {
+                FileOutputStream out = new FileOutputStream(configurationFile);
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                InputStream configInput =  cl.getResourceAsStream(configFile);
+                if (configInput == null) {
+                    Log.debug(1, "Could not find default configuration file.");
+                    System.exit(0);
+                }
+                byte buf[] = new byte[4096];
+                int len = 0;
+                while ((len = configInput.read(buf, 0, 4096)) != -1) {
+                    out.write(buf, 0, len);
+                }
+                configInput.close();
+                out.close();
+            }
+        } catch (IOException ioe) {
+            Log.debug(1, "Error copying config: " + ioe.getMessage());
+            Log.debug(1, ioe.getClass().getName());
+            ioe.printStackTrace(System.err);
+            System.exit(0);
+        }
+        // Open the configuration file
+        config = new ConfigXML(configurationFile.getAbsolutePath());
+    }
+    
+    
     /**
      * Set up the logging system during startup
      *
