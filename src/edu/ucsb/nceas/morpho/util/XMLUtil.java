@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-20 16:59:21 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-04-27 19:00:45 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,16 @@
 
 package edu.ucsb.nceas.morpho.util;
 
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+import java.io.*;
 
 public class XMLUtil                                         
 {
@@ -100,4 +110,179 @@ public class XMLUtil
         return temp;
 
     } // normalize(String):String
+    
+
+
+    public static String getDOMTreeAsString(Node node) {
+      if (node==null) return null;
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      PrintWriter printWriter = new PrintWriter(baos);
+
+      try {
+        print(node, printWriter);
+      } catch (Exception e) {
+        String msg = "getDOMTreeAsString() - unexpected Exception: "+e+"\n";
+        printWriter.println(msg);
+        e.printStackTrace(printWriter);
+      } finally {
+        try {
+          printWriter.flush();
+          baos.flush();
+          baos.close();
+          printWriter.close();
+        } catch (IOException ioe) {}
+      }
+      return baos.toString();
+  }
+
+    
+  /**
+   * This method can 'print' any DOM subtree. Specifically it is
+   * set (by means of 'out') to write the in-memory DOM to the
+   * same XML file that was originally read. Action thus saves
+   * a new version of the XML doc
+   *
+   * @param node node usually set to the 'doc' node for complete XML file
+   * re-write
+   */
+  public static void print(Node node, PrintWriter out)
+  {
+
+    // is there anything to do?
+    if (node == null)
+    {
+      return;
+    }
+
+    int type = node.getNodeType();
+    switch (type)
+    {
+      // print document
+    case Node.DOCUMENT_NODE:
+    {
+
+      out.println("<?xml version=\"1.0\"?>");
+      print(((Document) node).getDocumentElement(), out);
+      out.flush();
+      break;
+    }
+
+      // print element with attributes
+    case Node.ELEMENT_NODE:
+    {
+      out.print('<');
+      out.print(node.getNodeName());
+      Attr attrs[] = sortAttributes(node.getAttributes());
+      for (int i = 0; i < attrs.length; i++)
+      {
+        Attr attr = attrs[i];
+        out.print(' ');
+        out.print(attr.getNodeName());
+        out.print("=\"");
+        out.print(XMLUtil.normalize(attr.getNodeValue()));
+        out.print('"');
+      }
+      out.print('>');
+      NodeList children = node.getChildNodes();
+      if (children != null)
+      {
+        int len = children.getLength();
+        for (int i = 0; i < len; i++)
+        {
+          print(children.item(i), out);
+        }
+      }
+      break;
+    }
+
+      // handle entity reference nodes
+    case Node.ENTITY_REFERENCE_NODE:
+    {
+      out.print('&');
+      out.print(node.getNodeName());
+      out.print(';');
+
+      break;
+    }
+
+      // print cdata sections
+    case Node.CDATA_SECTION_NODE:
+    {
+      out.print("<![CDATA[");
+      out.print(node.getNodeValue());
+      out.print("]]>");
+
+      break;
+    }
+
+      // print text
+    case Node.TEXT_NODE:
+    {
+      out.print(XMLUtil.normalize(node.getNodeValue()));
+      break;
+    }
+
+      // print processing instruction
+    case Node.PROCESSING_INSTRUCTION_NODE:
+    {
+      out.print("<?");
+      out.print(node.getNodeName());
+      String data = node.getNodeValue();
+      if (data != null && data.length() > 0)
+      {
+        out.print(' ');
+        out.print(data);
+      }
+      out.print("?>");
+      break;
+    }
+    }
+
+    if (type == Node.ELEMENT_NODE)
+    {
+      out.print("</");
+      out.print(node.getNodeName());
+      out.print(">\n");
+    }
+
+    out.flush();
+
+  } // print(Node)
+
+
+  /** Returns a sorted list of attributes. */
+  protected static Attr[] sortAttributes(NamedNodeMap attrs)
+  {
+
+    int len = (attrs != null) ? attrs.getLength() : 0;
+    Attr array[] = new Attr[len];
+    for (int i = 0; i < len; i++)
+    {
+      array[i] = (Attr) attrs.item(i);
+    }
+    for (int i = 0; i < len - 1; i++)
+    {
+      String name = array[i].getNodeName();
+      int index = i;
+      for (int j = i + 1; j < len; j++)
+      {
+        String curName = array[j].getNodeName();
+        if (curName.compareTo(name) < 0)
+        {
+          name = curName;
+          index = j;
+        }
+      }
+      if (index != i)
+      {
+        Attr temp = array[i];
+        array[i] = array[index];
+        array[index] = temp;
+      }
+    }
+
+    return (array);
+
+  } // sortAttributes(NamedNodeMap):Attr[]
+    
 }
