@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-12-20 20:46:23 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-12-20 22:50:52 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,11 +57,12 @@ public class HelpCommand implements Command
   private int helpHeight= 520;
   private Dimension size = new Dimension(helpWidth, helpHeight);
   // Location of help window
-  private Point location = new Point
-                    ((new Double(UISettings.CLIENT_SCREEN_WIDTH/2)).intValue(),
-                    (new Double(UISettings.CLIENT_SCREEN_HEIGHT/2)).intValue());                   
-                                           
-                                         
+  private int helpCenterX = caculateCenterX(0, UISettings.CLIENT_SCREEN_WIDTH, 
+                                            helpWidth );
+  private int helpCenterY = caculateCenterY(0, UISettings.CLIENT_SCREEN_HEIGHT,
+                                            helpHeight);
+  private Point location = new Point(helpCenterX, helpCenterY);
+                       
   /**
    * Constructor of HelpCommand
    */
@@ -108,13 +109,11 @@ public class HelpCommand implements Command
         int parentHeight = parent.getHeight();
         double parentX = parent.getLocation().getX();
         double parentY = parent.getLocation().getY();
-        double centerX = parentX + 0.5 * parentWidth;
-        double centerY = parentY + 0.5 * parentHeight;
-        int helpX = (new Double(centerX - 0.5 * helpWidth)).intValue();
-        int helpY = (new Double(centerY - 0.5 * helpHeight)).intValue();
-        location.setLocation(helpX, helpY);
+        helpCenterX = caculateCenterX(parentX, parentWidth, helpWidth);
+        helpCenterY = caculateCenterY(parentY, parentHeight, helpHeight);
+        location.setLocation(helpCenterX, helpCenterY);
         mainHB.setLocation(location); 
-      }//if
+      }//if 
       helpListener.actionPerformed(event);
     }//if
     else
@@ -122,7 +121,27 @@ public class HelpCommand implements Command
       Log.debug(5, errorMessage);
     }
   }//execute
-
+  
+  /* Method to child frame X value if the child frame is in the center of
+     parent frame */
+  public static int caculateCenterX(double parentX, int parentWidth, 
+                                     int childWidth)
+  {
+    double parentCenterX = parentX + 0.5 * parentWidth;
+    int childCenterX =(new Double(parentCenterX - 0.5 * childWidth)).intValue();
+    return childCenterX;
+  }
+  
+  /* Method to child frame Y value if the child frame is in the center of
+     parent frame */
+  public static int caculateCenterY(double parentY, int parentHeight, 
+                                     int childHeight)
+  {
+    double parentCenterY = parentY + 0.5 * parentHeight;
+    int childCenterY=(new Double(parentCenterY - 0.5 * childHeight)).intValue();
+    return childCenterY;
+  }
+  
   /**
    * could also have undo functionality; disabled for now
    */ 
