@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.33 2001-12-15 02:26:42 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.34 2002-01-05 01:24:21 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -80,6 +80,7 @@
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${build.src}"/>
       <mkdir dir="${build.dest}"/>
+      <mkdir dir="${build.javadocs}"/>
 
        <!--
       <copy todir="${build.src}" filtering="no">
