@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,10 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -52,7 +55,7 @@ import java.io.*;
 public class TripleCollection
 {
   private Vector triples = new Vector();
-  private ClientFramework framework = null;
+  private Morpho morpho = null;
   /**
    * Default Constructor
    */
@@ -64,20 +67,20 @@ public class TripleCollection
   /**
    * parses an xml document and pulls any triples out of it.
    */
-   public TripleCollection(File triplesFile, ClientFramework framework)
+   public TripleCollection(File triplesFile, Morpho morpho)
    {
-       this.framework = framework;
+       this.morpho = morpho;
      Document doc;
      try
      {
-       ConfigXML config = framework.getConfiguration();
+       ConfigXML config = morpho.getConfiguration();
        String catalogPath = //config.getConfigDirectory() + File.separator +
                                         config.get("local_catalog_path", 0);
        doc = PackageUtil.getDoc(triplesFile, catalogPath);
      }
      catch(Exception e)
      {
-       framework.debug(0, "error parsing " + triplesFile.getPath() + " : " +
+       Log.debug(0, "error parsing " + triplesFile.getPath() + " : " +
                          e.getMessage());
        e.printStackTrace();
        return;
@@ -91,7 +94,7 @@ public class TripleCollection
      }
      catch(Exception e)
      {
-       ClientFramework.debug(0, "Error parsing triples in " + 
+       Log.debug(0, "Error parsing triples in " + 
                                 "TripleCollection.TripleCollection: " +
                                 e.getMessage());
        e.printStackTrace();
@@ -302,7 +305,7 @@ public class TripleCollection
   
   public NodeList getNodeList()
   {
-    DocumentBuilder parser = framework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     in = new InputSource(new StringReader(toXML("triples")));
     Document doc = null;

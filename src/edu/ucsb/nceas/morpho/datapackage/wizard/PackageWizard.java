@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2002-08-19 21:10:34 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.util.Log;
 import javax.swing.*;
 import javax.swing.border.*; 
 import java.io.*;
@@ -51,7 +51,6 @@ public class PackageWizard extends javax.swing.JFrame
   JTabbedPane mainTabbedPane;
   JPanel mainFrame = new JPanel();
   JPanelWrapper docPanel;
-  private ClientFramework framework;
   private String globalDtd;
   private String globalDoctype;
   private String globalRoot;
@@ -81,23 +80,19 @@ public class PackageWizard extends javax.swing.JFrame
   /**
    * constructor which creates a package wizard frame in the given contentPane
    * using the given framefile (xml configuration file).
-   * @param framework: the framework in which this wizard is created
    * @param contentPane: the Container in which this wizard is created
    * @param framefile: the configuration file used to create this wizard
    */
-  public PackageWizard(ClientFramework framework, Container contentPane, 
-                       String framefile)
+  public PackageWizard(Container contentPane, String framefile)
   {
     try
     {
-      this.framework = framework;
-      
       //File mainFile = new File(framefile);
       //FileReader xml = new FileReader(mainFile);
       ClassLoader cl = this.getClass().getClassLoader();
       InputStream is = cl.getResourceAsStream(framefile);
       if (is == null) {
-          framework.debug(10, "Null input stream returned " + 
+          Log.debug(10, "Null input stream returned " + 
                               "for frame resource (1).");
       }
       BufferedReader xml = new BufferedReader(new InputStreamReader(is));
@@ -124,7 +119,7 @@ public class PackageWizard extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      framework.debug(11, "error initializing custom frame");
+      Log.debug(11, "error initializing custom frame");
       e.printStackTrace();
     }
   }
@@ -1305,13 +1300,13 @@ public class PackageWizard extends javax.swing.JFrame
                       }
                       catch(ClassCastException cce)
                       {
-                        ClientFramework.debug(11, 
+                        Log.debug(11, 
                                        "Exception in packagewizard." +
                                        "createpanel()(1): This is OK.");
                       }
                       catch(ArrayIndexOutOfBoundsException aioobe)
                       {
-                        ClientFramework.debug(11, 
+                        Log.debug(11, 
                                        "Exception in packagewizard." + 
                                        "createpanel()(2): This is OK.");
                       }
@@ -1364,13 +1359,13 @@ public class PackageWizard extends javax.swing.JFrame
                       }
                       catch(ClassCastException cce) 
                       {
-                        ClientFramework.debug(11, 
+                        Log.debug(11, 
                                        "Exception in packagewizard." +
                                        "createpanel()(1,2): This is OK.");
                       }
                       catch(ArrayIndexOutOfBoundsException aioobe)
                       {
-                        ClientFramework.debug(11, 
+                        Log.debug(11, 
                                        "Exception in packagewizard." + 
                                        "createpanel()(2,2): This is OK.");
                       }
@@ -1588,13 +1583,13 @@ public class PackageWizard extends javax.swing.JFrame
                     }
                     catch(ClassCastException cce)
                     {
-                      ClientFramework.debug(11, 
+                      Log.debug(11, 
                                      "Exception in packagewizard." +
                                      "createpanel()(3): This is OK.");
                     }
                     catch(ArrayIndexOutOfBoundsException aioobe)
                     {
-                      ClientFramework.debug(11, 
+                      Log.debug(11, 
                                      "Exception in packagewizard." +
                                      "createpanel()(4): This is OK.");
                     }

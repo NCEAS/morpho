@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-19 21:10:34 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,13 @@
 
 package edu.ucsb.nceas.morpho.datastore;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import java.io.*;
 import java.util.*;
-import edu.ucsb.nceas.morpho.datapackage.*;
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 /**
  * implements and the DataStoreInterface for accessing files on the local
@@ -40,11 +42,11 @@ public class FileSystemDataStore extends DataStore
                                  implements DataStoreInterface
 {
   /**
-   * create a new FileSystemDataStore for a ClientFramework
+   * create a new FileSystemDataStore for a Morpho
    */
-  public FileSystemDataStore(ClientFramework cf)
+  public FileSystemDataStore(Morpho morpho)
   {
-    super(cf);
+    super(morpho);
   }
   
   /**
@@ -248,8 +250,8 @@ public class FileSystemDataStore extends DataStore
     {
       try
       {
-        ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
-        FileSystemDataStore fsds = new FileSystemDataStore(cf);
+        Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         File newfile = fsds.openFile(filename);
         fsds.saveFile(filename2, new FileReader(newfile));
       }
@@ -262,8 +264,8 @@ public class FileSystemDataStore extends DataStore
     {
       try
       {
-        ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
-        FileSystemDataStore fsds = new FileSystemDataStore(cf);
+        Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         File newfile = new File(filename);
         fsds.saveFile(filename2, new FileReader(newfile));
       }
@@ -272,7 +274,7 @@ public class FileSystemDataStore extends DataStore
         e.printStackTrace();
       }
     }
-    ClientFramework.debug(20, "done");
+    Log.debug(20, "done");
   }
   
  /**

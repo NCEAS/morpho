@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-19 21:10:34 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,23 +33,24 @@ import javax.swing.*;
 import java.awt.*;
 
 import edu.ucsb.nceas.morpho.datapackage.*;
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
  */
 public class MetacatDataStore extends DataStore implements DataStoreInterface
 {
-  private ClientFramework framework;
+  private Morpho morpho;
   
   /**
-   * Constructor to create this object in conjunction with a ceartain framework.
+   * Constructor to create this object in conjunction with a ceartain morpho.
    */
-  public MetacatDataStore(ClientFramework cf)
+  public MetacatDataStore(Morpho morpho)
   {
-    super(cf);
-    framework = cf;
+    super(morpho);
+    morpho = morpho;
   }
   
   /**
@@ -75,7 +76,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     
     if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
-      framework.debug(11, "MetacatDataStore: getting cached file");
+      Log.debug(11, "MetacatDataStore: getting cached file");
       return localfile;
     }
     else
@@ -91,7 +92,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       //-throw exception if file is an error and delete file
       //-return the file pointer if the file is not an error
       
-      framework.debug(11,"MetacatDataStore: getting file from Metacat");
+      Log.debug(11,"MetacatDataStore: getting file from Metacat");
       Properties props = new Properties();
       props.put("action", "read");
       props.put("docid", name);
@@ -112,7 +113,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         fos = new FileOutputStream(localfile);
 //        BufferedWriter bwriter = new BufferedWriter(writer);
         BufferedOutputStream bfos = new BufferedOutputStream(fos);
-        InputStream metacatInput = framework.getMetacatInputStream(props);
+        InputStream metacatInput = morpho.getMetacatInputStream(props);
 //        InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
 //        BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
         BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
@@ -149,7 +150,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
           c = breader.read();
         }
         String responseStr = response.toString();
-        //ClientFramework.debug(11, "==========================responseStr: " + 
+        //Log.debug(11, "==========================responseStr: " + 
         //                      responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
@@ -265,7 +266,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         filetext = sw.toString();
       }
       
-      ClientFramework.debug(30, "filelength is:"+filetext.length());
+      Log.debug(30, "filelength is:"+filetext.length());
       if (filetext.length()==0) return null;
       
       Properties prop = new Properties();
@@ -273,13 +274,13 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       prop.put("public", access);  //This is the old way of controlling access
       prop.put("doctext", filetext);
       prop.put("docid", name);
-      ClientFramework.debug(11, "sending docid: " + name + " to metacat");
-      ClientFramework.debug(11, "action: " + action);
-      ClientFramework.debug(11, "public access: " + access);
-      //ClientFramework.debug(11, "file: " + fileText.toString());
+      Log.debug(11, "sending docid: " + name + " to metacat");
+      Log.debug(11, "action: " + action);
+      Log.debug(11, "public access: " + access);
+      //Log.debug(11, "file: " + fileText.toString());
       
       InputStream metacatInput = null;
-      metacatInput = framework.getMetacatInputStream(prop, true);
+      metacatInput = morpho.getMetacatInputStream(prop, true);
       InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
       BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
       
@@ -291,7 +292,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       }
       
       String message = messageBuf.toString();
-      ClientFramework.debug(11, "message from server: " + message);
+      Log.debug(11, "message from server: " + message);
       
       if(message.indexOf("<error>") != -1)
       {//there was an error
@@ -320,14 +321,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       else
       {//something weird happened.
         throw new Exception("unexpected error in edu.ucsb.nceas.morpho." +
-                            "framework.MetacatDataStore.saveFile(): " + message);
+                            ".datastore.MetacatDataStore.saveFile(): " + message);
       } 
     }
     catch(Exception e)
     {
       //metacatInputReader.close();
       //metacatInput.close();
-      //ClientFramework.debug(4, "Error in MetacatDataStore.saveFile(): " + 
+      //Log.debug(4, "Error in MetacatDataStore.saveFile(): " + 
       //                    e.getMessage());
       //e.printStackTrace();
       throw new MetacatUploadException(e.getMessage());
@@ -380,7 +381,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       if (file.length()>0) {
         System.out.println("id:"+id+"  filelength:"+file.length());
         InputStream metacatInput = null;;
-        metacatInput = framework.sendDataFile(id, file);
+        metacatInput = morpho.sendDataFile(id, file);
 
         InputStreamReader returnStream = 
                new InputStreamReader(metacatInput);
@@ -398,7 +399,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         if (response.indexOf("<error>") != -1) {
           throw new MetacatUploadException(response);
         } else {
-          ClientFramework.debug(20, response);
+          Log.debug(20, response);
         }
       }
     } catch (Exception e) {
@@ -417,10 +418,10 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     Properties prop = new Properties();
     prop.put("action", "delete");
     prop.put("docid", name);
-    ClientFramework.debug(11, "deleting docid: " + name + " from metacat");
+    Log.debug(11, "deleting docid: " + name + " from metacat");
     
     InputStream metacatInput = null;
-    metacatInput = framework.getMetacatInputStream(prop, true);
+    metacatInput = morpho.getMetacatInputStream(prop, true);
     InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
     BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
     try
@@ -434,13 +435,13 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     }
     catch(IOException ioe)
     {
-      ClientFramework.debug(0, "Error deleting file from metacat: " + 
+      Log.debug(0, "Error deleting file from metacat: " + 
                             ioe.getMessage());
       return false;
     }
     
     String message = messageBuf.toString();
-    ClientFramework.debug(11, "message from server: " + message);
+    Log.debug(11, "message from server: " + message);
     
     if(message.indexOf("<error>") != -1)
     { //there was an error
@@ -479,33 +480,33 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     String password = args[1];
     try
     {
-      ClientFramework.debug(20, "Initializing mds test...");
+      Log.debug(20, "Initializing mds test...");
       ConfigXML config = new ConfigXML("./lib/config.xml");
-      ClientFramework cf = new ClientFramework(config);
+      Morpho morpho = new Morpho(config);
       String profileDir = config.get("profile_directory", 0);
       String profileName = profileDir + File.separator + username + 
                            File.separator + username + ".xml";
       ConfigXML profile = new ConfigXML(profileName);
-      cf.setProfile(profile);
-      cf.setPassword(password);
-      cf.logIn();
-      MetacatDataStore mds = new MetacatDataStore(cf);
+      morpho.setProfile(profile);
+      morpho.setPassword(password);
+      morpho.logIn();
+      MetacatDataStore mds = new MetacatDataStore(morpho);
     
       // Test metadata (xml) upload
-      ClientFramework.debug(20, "Testing metadata upload...");
+      Log.debug(20, "Testing metadata upload...");
       String id = args[2];
       File f = new File(args[3]);
       FileReader fr = new FileReader(f);
       //File metacatfile = mds.newFile(id, fr, true);
       //File metacatfile = mds.saveFile(id, fr, true);
-      //ClientFramework.debug(20, "XML file uploaded!");
+      //Log.debug(20, "XML file uploaded!");
 
       // Test data file upload too
-      ClientFramework.debug(20, "Testing data upload...");
+      Log.debug(20, "Testing data upload...");
       id = args[4];
       f = new File(args[5]);
       mds.newDataFile(id, f);
-      ClientFramework.debug(20, "Data file uploaded!");
+      Log.debug(20, "Data file uploaded!");
     }
     catch(Exception e)
     {

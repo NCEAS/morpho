@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,17 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.*;
 import java.io.*;
@@ -41,7 +46,7 @@ public class NewDataFile extends javax.swing.JDialog
 {
     private DataPackage dataPackage = null;
     ConfigXML config;
-    ClientFramework framework = null;
+    Morpho morpho = null;
     File addedFile = null;
     String entityId;
     Frame parent;
@@ -117,11 +122,11 @@ public class NewDataFile extends javax.swing.JDialog
 		setTitle(sTitle);
 	}
 	
-	public NewDataFile(Frame parent, DataPackage dp, ClientFramework framework, String entityId) {
+	public NewDataFile(Frame parent, DataPackage dp, Morpho morpho, String entityId) {
 	    this(parent);
 	    this.dataPackage = dp;
-	    this.framework = framework;
-	    this.config = framework.getConfiguration();
+	    this.morpho = morpho;
+	    this.config = morpho.getConfiguration();
 	    this.entityId = entityId;
 	}
 
@@ -215,13 +220,13 @@ public class NewDataFile extends javax.swing.JDialog
 	            return;
 	        }
 	    }
-        AccessionNumber a = new AccessionNumber(framework);
+        AccessionNumber a = new AccessionNumber(morpho);
         String newid = "";
         String location = dataPackage.getLocation();
         boolean locMetacat = false;
         boolean locLocal = false;
         String docString;
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         File packageFile = dataPackage.getTriplesFile();
     
         if(location.equals(DataPackage.LOCAL) || 
@@ -251,22 +256,23 @@ public class NewDataFile extends javax.swing.JDialog
         (eu.getDataPackageGui()).dispose();
 		
       DataPackage newPackage = new DataPackage(location, dataPackageId, null,
-                                               framework);
+                                               morpho);
       
-      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
 
       // Refresh the query results after the update
       try {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-               framework.getServiceProvider(QueryRefreshInterface.class);
+               services.getServiceProvider(QueryRefreshInterface.class);
         ((QueryRefreshInterface)provider).refresh();
       } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
       }
 
       EntityGUI newEntitygui;
       newEntitygui = new EntityGUI(newPackage, entityId, location, newgui, 
-                                   framework);
+                                   morpho);
       newgui.show();
       newEntitygui.show();
 	
@@ -278,8 +284,8 @@ public class NewDataFile extends javax.swing.JDialog
   { //add a data file here
     String dataPackageId = null;
     String relationship = "isRelatedTo";
-    AccessionNumber a = new AccessionNumber(framework);
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    AccessionNumber a = new AccessionNumber(morpho);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     //relate the new data file to the package itself
     if (addedFile!=null) {
       relationship = FileNameTextField.getText();
@@ -309,7 +315,7 @@ public class NewDataFile extends javax.swing.JDialog
     //add the triple to the triple file
     String docString = PackageUtil.addTriplesToTriplesFile(triples, 
                                                            dataPackage, 
-                                                           framework);
+                                                           morpho);
     //write out the files
     File newDPTempFile;
     //get a new id for the package file
@@ -329,7 +335,7 @@ public class NewDataFile extends javax.swing.JDialog
     }
     catch(Exception e)
     {
-      ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+      Log.debug(0, "Error saving file: " + e.getMessage());
       e.printStackTrace();
       return dataPackageId;
     }
@@ -346,7 +352,7 @@ public class NewDataFile extends javax.swing.JDialog
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        Log.debug(0, "Error saving file: " + e.getMessage());
         e.printStackTrace();
         e.printStackTrace();
         return dataPackageId;
@@ -358,7 +364,7 @@ public class NewDataFile extends javax.swing.JDialog
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        Log.debug(0, "Error saving file: " + e.getMessage());
         e.printStackTrace();
         return dataPackageId;
       }
@@ -366,15 +372,15 @@ public class NewDataFile extends javax.swing.JDialog
     
     if(locMetacat)
     { //send the package file and the data file to metacat
-      ClientFramework.debug(20, "Sending file(s) to metacat.");
-      MetacatDataStore mds = new MetacatDataStore(framework);
+      Log.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(morpho);
       try
       { //send the new data file to the server
         mds.newDataFile(newid, addedFile);
       }
       catch(Exception mue)
       {
-        ClientFramework.debug(0, "Error saving data file to metacat: " + 
+        Log.debug(0, "Error saving data file to metacat: " + 
                               mue.getMessage());
         mue.printStackTrace();
         return dataPackageId;
@@ -387,21 +393,21 @@ public class NewDataFile extends javax.swing.JDialog
       }
       catch(MetacatUploadException mue)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat: " + 
+        Log.debug(0, "Error saving package file to metacat: " + 
                               mue.getMessage());
         mue.printStackTrace();
         return dataPackageId;
       }
       catch(FileNotFoundException fnfe)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat(2): " + 
+        Log.debug(0, "Error saving package file to metacat(2): " + 
                               fnfe.getMessage());
         fnfe.printStackTrace();
         return dataPackageId;
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat(3): " + 
+        Log.debug(0, "Error saving package file to metacat(3): " + 
                               e.getMessage());
         e.printStackTrace();
         return dataPackageId;

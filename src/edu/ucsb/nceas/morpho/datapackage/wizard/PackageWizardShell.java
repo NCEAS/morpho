@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.67 $'
+ *     '$Date: 2002-08-19 21:10:34 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +28,21 @@
 
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.TextImportListener;
+import edu.ucsb.nceas.morpho.framework.TextImportWizard;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import javax.swing.*;
 import javax.swing.border.*; 
 import java.io.*;
@@ -67,7 +77,7 @@ import com.arbortext.catalog.*;
 public class PackageWizardShell extends javax.swing.JFrame
                                 implements ActionListener, TextImportListener
 {
-  private ClientFramework framework;
+  private Morpho morpho;
   private int frameWizardIndex = 0;
   private int tempIdCounter = 0;
   private Vector frames;
@@ -120,9 +130,9 @@ public class PackageWizardShell extends javax.swing.JFrame
     setSize(660, 550);
   }
   
-  public PackageWizardShell(ClientFramework cf)
+  public PackageWizardShell(Morpho morpho)
   {
-    framework = cf;
+    this.morpho = morpho;
     setTitle("Data Package Wizard");
     initComponents();
     pack();
@@ -136,8 +146,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     frameWizardIndex = startingFrame;
   }
 
-  public PackageWizardShell(ClientFramework cf, int startingFrame, AddMetadataWizard amdw) {
-    framework = cf;
+  public PackageWizardShell(Morpho morpho, int startingFrame, AddMetadataWizard amdw) {
+    this.morpho = morpho;
     setTitle("Data Package Wizard");
     this.startingFrame = startingFrame;
     frameWizardIndex = startingFrame;
@@ -150,7 +160,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   
   private void initComponents()
   {
-    config = framework.getConfiguration();
+    config = morpho.getConfiguration();
     Vector packageWizardConfigV = config.get("packageWizardConfig");
     String wizardFile = (String)packageWizardConfigV.elementAt(0);
     
@@ -164,14 +174,14 @@ public class PackageWizardShell extends javax.swing.JFrame
       ClassLoader cl = this.getClass().getClassLoader();
       InputStream is = cl.getResourceAsStream(wizardFile);
       if (is == null) {
-          framework.debug(10, "Null input stream returned for resource.");
+          Log.debug(10, "Null input stream returned for resource.");
       }
       BufferedReader xml = new BufferedReader(new InputStreamReader(is));
       pwsp = new PackageWizardShellParser(xml);
     }
     catch(Exception e)
     {
-      framework.debug(1, "error reading or parsing file in " + 
+      Log.debug(1, "error reading or parsing file in " + 
                       "PackageWizardShell.initComponents().");
       e.printStackTrace();
     }
@@ -280,13 +290,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         
         // get a new Accession number here so that that ACL accession number is smallest of package
         // since it must be inserted into Metacat before other package members
-        AccessionNumber aa = new AccessionNumber(framework);
+        AccessionNumber aa = new AccessionNumber(morpho);
         aclID = aa.getNextId();
         
       }
       else
       { //this builds a packagewizard frame
-        PackageWizard pw = new PackageWizard(framework, framePanel, 
+        PackageWizard pw = new PackageWizard(framePanel, 
                                              (String)frame.get("path"));
         wfc.wizard = pw;
         wfc.type = "WIZARD";
@@ -341,7 +351,7 @@ public class PackageWizardShell extends javax.swing.JFrame
 //DFH          wfc.attributes = new Hashtable(activeContainer.attributes);
           wfc.attributes = (Hashtable)(activeContainer.attributes).clone();
           activeContainer.attributes.remove("repeatable");
-          PackageWizard pw = new PackageWizard(framework, framePanel, 
+          PackageWizard pw = new PackageWizard(framePanel, 
                                             (String)wfc.attributes.get("path"));
           wfc.wizard = pw;
           wfc.type = new String(activeContainer.type);
@@ -411,7 +421,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           {
             String namePath = (String)wfcont.attributes.get("displayNamePath");
             NodeList namelist = PackageUtil.getPathContent(wfcont.file, 
-                                                           namePath, framework);
+                                                           namePath, morpho);
             for(int j=0; j<namelist.getLength(); j++)
             {
               Node itemnode = namelist.item(j);
@@ -737,7 +747,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(wfc.attributes.containsKey("relatedTo"))
       {
         String relation = (String)wfc.attributes.get("relatedTo");
-        ClientFramework.debug(30,"relation = "+relation);
+        Log.debug(30,"relation = "+relation);
         Vector v = (Vector)tripleNames.get(relation);
         for(int j=0; j<v.size(); j++)
         {
@@ -799,7 +809,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           return;
         }
         
-        DocumentBuilder parser = framework.createDomParser();
+        DocumentBuilder parser = morpho.createDomParser();
         InputSource in;
         FileInputStream fs;
         
@@ -808,7 +818,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           Catalog myCatalog = new Catalog();
           myCatalog.loadSystemCatalogs();
-          ConfigXML config = framework.getConfiguration();
+          ConfigXML config = morpho.getConfiguration();
           String catalogPath = config.get("local_catalog_path", 0);
           ClassLoader cl = Thread.currentThread().getContextClassLoader();
           URL catalogURL = cl.getResource(catalogPath);
@@ -819,7 +829,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         } 
         catch (Exception e) 
         {
-          ClientFramework.debug(11, "Problem creating Catalog in " +
+          Log.debug(11, "Problem creating Catalog in " +
                        "packagewizardshell.handleFinishAction!" + e.toString());
         }
         
@@ -894,7 +904,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         docString += PackageUtil.print(doc.getDocumentElement());
         
         StringReader sr = new StringReader(docString);
-        FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
+        FileSystemDataStore localDataStore = new FileSystemDataStore(morpho);
         localDataStore.saveFile(wfc.id, sr); //write out the file
       }
     }
@@ -913,14 +923,14 @@ public class PackageWizardShell extends javax.swing.JFrame
     String identifier = wfc.id;
     Vector relations = triples.getCollection();
     DataPackage dp = new DataPackage(location, identifier, 
-                                   relations, framework);
+                                   relations, morpho);
                                    
     if(saveToMetacatCheckBox.isSelected())
     {
       //save the package to metacat here
-      framework.debug(15, "saving the package to metacat");
+      Log.debug(15, "saving the package to metacat");
       
-      MetacatDataStore mds = new MetacatDataStore(framework);
+      MetacatDataStore mds = new MetacatDataStore(morpho);
 //      for(int i=packageFiles.size()-1; i>=0; i--)
       for(int i=0;i<packageFiles.size(); i++)
       {
@@ -957,17 +967,17 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         catch(FileNotFoundException fnfe)
         {
-          ClientFramework.debug(0, "The upload to metacat failed (1): " + 
+          Log.debug(0, "The upload to metacat failed (1): " + 
                                 fnfe.getMessage()); 
         }
         catch(MetacatUploadException mue)
         {
-          ClientFramework.debug(0, "The upload to metacat failed (2): " + 
+          Log.debug(0, "The upload to metacat failed (2): " + 
                                 mue.getMessage());
         }
         catch(IOException ioe)
         {
-          ClientFramework.debug(0, "The upload to metacat failed (3): " + 
+          Log.debug(0, "The upload to metacat failed (3): " + 
                                 ioe.getMessage());
         }
       }
@@ -976,16 +986,16 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     // Update the query window to reflect the newly created package
     try {
+      ServiceController services = ServiceController.getInstance();
       ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
-      //QueryRefreshInterface qinterface = (QueryRefreshInterface)provider;
+                      services.getServiceProvider(QueryRefreshInterface.class);
       ((QueryRefreshInterface)provider).refresh();
     } catch (ServiceNotHandledException snhe) {
-      framework.debug(6, snhe.getMessage());
+      Log.debug(6, snhe.getMessage());
     }
 
     // Show the package in a window
-    DataPackageGUI gui = new DataPackageGUI(framework, dp);
+    DataPackageGUI gui = new DataPackageGUI(morpho, dp);
     gui.show();
         
     //make the package wizard go away
@@ -1001,9 +1011,9 @@ public class PackageWizardShell extends javax.swing.JFrame
     String paramString = e.paramString();
     Hashtable contentReps = new Hashtable();
     JFileChooser filechooser = new JFileChooser();
-    FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
+    FileSystemDataStore localDataStore = new FileSystemDataStore(morpho);
     
-    framework.debug(11, "action fired: |" + command + "|");
+    Log.debug(11, "action fired: |" + command + "|");
     
     if(command.equals("Previous"))
     { 
@@ -1076,7 +1086,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     JLabel headLabel = new JLabel();
     headLabel.setText("Package Wizard");
     ImageIcon head = new ImageIcon(
-                         framework.getClass().getResource("smallheader-bg.gif"));
+                         morpho.getClass().getResource("smallheader-bg.gif"));
     headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -1093,7 +1103,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     descriptionPanel.setBackground(Color.white);
     descriptionPanel.setPreferredSize(new Dimension(160, 450));
     ImageIcon logoIcon = new ImageIcon(
-                             framework.getClass().getResource("logo-icon.gif"));
+                             morpho.getClass().getResource("logo-icon.gif"));
     JLabel imageLabel = new JLabel();
     imageLabel.setIcon(logoIcon);
     descriptionPanel.add(imageLabel);
@@ -1152,7 +1162,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     descriptionLabel.setForeground(Color.black);
     descriptionLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     ImageIcon logoIcon = new ImageIcon(
-                             framework.getClass().getResource("logo-icon.gif"));
+                             morpho.getClass().getResource("logo-icon.gif"));
     JLabel imageLabel = new JLabel();
     imageLabel.setIcon(logoIcon);
     descriptionLabel.setPreferredSize(new Dimension(150, 400));
@@ -1182,8 +1192,8 @@ public class PackageWizardShell extends javax.swing.JFrame
   {
     try {
       ConfigXML cxml = new ConfigXML("./lib/config.xml");
-      ClientFramework cf = new ClientFramework(cxml);
-      PackageWizardShell pws = new PackageWizardShell(cf);
+      Morpho morpho = new Morpho(cxml);
+      PackageWizardShell pws = new PackageWizardShell(morpho);
       pws.show();
     } catch (FileNotFoundException fnf) {
       System.err.println("Failed to find the configuration file.");
@@ -1205,7 +1215,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     //is added to metacat!!
     sb.append("<identifier>" + id + "</identifier>\n");
     sb.append("<allow>\n");
-    sb.append("<principal>" + framework.getUserName() + "</principal>\n");
+    sb.append("<principal>" + morpho.getUserName() + "</principal>\n");
     sb.append("<permission>all</permission>\n");
     sb.append("</allow>\n");
     if (publicAccessCheckBox.isSelected()) {
@@ -1217,7 +1227,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     sb.append("</acl>");
     String aclString = sb.toString();
     StringReader aclReader = new StringReader(aclString);
-    FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
+    FileSystemDataStore localDataStore = new FileSystemDataStore(morpho);
     File file = localDataStore.saveFile(id, aclReader);
     aclReader.close();
     return file;
@@ -1239,7 +1249,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     protected JTextField textfield = null;
     protected Hashtable attributes = null;
     protected String originalDataFilePath = null;
-    private FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
+    private FileSystemDataStore localDataStore = 
+        new FileSystemDataStore(morpho);
     
     WizardFrameContainer(JPanel panel)
     {
@@ -1252,7 +1263,7 @@ public class PackageWizardShell extends javax.swing.JFrame
      */
     protected File getFile(boolean temp)
     {
-      AccessionNumber a = new AccessionNumber(framework);
+      AccessionNumber a = new AccessionNumber(morpho);
       if(type.equals("WIZARD"))
       {
         if(temp && id == null)
@@ -1421,7 +1432,7 @@ public class PackageWizardShell extends javax.swing.JFrame
             wfcont.getFile(true);
           }
           NodeList namelist = PackageUtil.getPathContent(wfcont.file, 
-                                                         namePath, framework);
+                                                         namePath, morpho);
           
           for(int j=0; j<namelist.getLength(); j++)
           {

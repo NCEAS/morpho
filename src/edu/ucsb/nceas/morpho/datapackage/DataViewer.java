@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,16 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.*;
 import javax.swing.*;
@@ -51,11 +59,9 @@ import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 
-import edu.ucsb.nceas.morpho.framework.*;
-
 public class DataViewer extends javax.swing.JFrame
 {
-    ClientFramework framework;
+    Morpho morpho;
     ConfigXML config;
     String datadir;
     String separator;
@@ -207,12 +213,12 @@ public class DataViewer extends javax.swing.JFrame
 		
 	}
 
-    public DataViewer(ClientFramework framework, String sTitle)
+    public DataViewer(Morpho morpho, String sTitle)
     {
         this();
-        this.framework = framework;
-        config = framework.getConfiguration();
-        ConfigXML profile = framework.getProfile();
+        this.morpho = morpho;
+        config = morpho.getConfiguration();
+        ConfigXML profile = morpho.getProfile();
         String profileDirName = config.getConfigDirectory() + 
                                 File.separator +
                                 config.get("profile_directory", 0) + 
@@ -233,12 +239,12 @@ public class DataViewer extends javax.swing.JFrame
         this.dataString = dataString;
     }
     
-    public DataViewer(ClientFramework framework, String sTitle, File dataFile)
+    public DataViewer(Morpho morpho, String sTitle, File dataFile)
     {
         this();
-		    this.framework = framework;
-        config = framework.getConfiguration();
-        ConfigXML profile = framework.getProfile();
+		    this.morpho = morpho;
+        config = morpho.getConfiguration();
+        ConfigXML profile = morpho.getProfile();
         String profileDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) + 
                             File.separator +
@@ -256,7 +262,7 @@ public class DataViewer extends javax.swing.JFrame
     public void init() {
       boolean missing_metadata_flag = false;
       if (physicalFile==null) {
-          framework.debug(9, "Physical information about the data is missing!");
+          Log.debug(9, "Physical information about the data is missing!");
           missing_metadata_flag = true;
       } else {
           // get format, recordDelimiter, field delimiter
@@ -266,19 +272,19 @@ public class DataViewer extends javax.swing.JFrame
         formatPath.addElement("eml-physical/format");
         NodeList formatList = PackageUtil.getPathContent(physicalFile, 
                                                      formatPath, 
-                                                     framework);  
+                                                     morpho);  
         if(formatList != null && formatList.getLength() != 0)
         {
           String s = formatList.item(0).getFirstChild().getNodeValue();
           this.format = s;
-          framework.debug(30, "format: "+format);
+          Log.debug(30, "format: "+format);
         }
         
         Vector fieldDelimiterPath = new Vector();
         fieldDelimiterPath.addElement("eml-physical/fieldDelimiter");
         NodeList fieldDelimiterList = PackageUtil.getPathContent(physicalFile, 
                                                      fieldDelimiterPath, 
-                                                     framework);  
+                                                     morpho);  
         if(fieldDelimiterList != null && fieldDelimiterList.getLength() != 0)
         {
           String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
@@ -289,7 +295,7 @@ public class DataViewer extends javax.swing.JFrame
         numHeaderLinesPath.addElement("eml-physical/numHeaderLines");
         NodeList numHeaderLinesList = PackageUtil.getPathContent(physicalFile, 
                                                      numHeaderLinesPath, 
-                                                     framework); 
+                                                     morpho); 
         if(numHeaderLinesList != null && numHeaderLinesList.getLength() != 0) 
         {
           String s = numHeaderLinesList.item(0).getFirstChild().getNodeValue();
@@ -298,7 +304,7 @@ public class DataViewer extends javax.swing.JFrame
                                                      
       }
       if (entityFile==null) {
-          framework.debug(9, "Entity information about the data is missing!");
+          Log.debug(9, "Entity information about the data is missing!");
           missing_metadata_flag = true;
       } else {
           // get number of records, etc
@@ -306,7 +312,7 @@ public class DataViewer extends javax.swing.JFrame
         numRecordsPath.addElement("table-entity/numberOfRecords");
         NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
                                                      numRecordsPath, 
-                                                     framework);  
+                                                     morpho);  
         if(numRecordsList != null && numRecordsList.getLength() != 0)
         {
           String s = numRecordsList.item(0).getFirstChild().getNodeValue();
@@ -320,7 +326,7 @@ public class DataViewer extends javax.swing.JFrame
           
       }
       if (attributeFile==null) {
-          framework.debug(9, "Attribute information about the data is missing!");
+          Log.debug(9, "Attribute information about the data is missing!");
           missing_metadata_flag = true;
       } else {
           // get attribute labels and build column headers
@@ -328,7 +334,7 @@ public class DataViewer extends javax.swing.JFrame
         attributeLabelsPath.addElement("eml-attribute/attribute/attributeLabel");
         NodeList attributeLabelsList = PackageUtil.getPathContent(attributeFile, 
                                                      attributeLabelsPath, 
-                                                     framework);  
+                                                     morpho);  
         if(attributeLabelsList != null && attributeLabelsList.getLength() != 0)
         {
           column_labels = new Vector(); 
@@ -344,7 +350,7 @@ public class DataViewer extends javax.swing.JFrame
         // try displaying as text since don't know what else to do 
         
         // add text display here!!!
-        framework.debug(30, "attempting to display as text");
+        Log.debug(30, "attempting to display as text");
         buildTextDisplay();
       }
       else { 
@@ -397,7 +403,7 @@ public class DataViewer extends javax.swing.JFrame
         if (image_flag) {
           // try to display image here
           String filename = dataFile.getPath();
-          framework.debug(30, "trying to display image! "+filename);
+          Log.debug(30, "trying to display image! "+filename);
           ImageIcon icon = new ImageIcon(filename);
           JLabel imagelabel = new JLabel(icon);
           DataScrollPanel.getViewport().removeAll();
@@ -416,7 +422,7 @@ public class DataViewer extends javax.swing.JFrame
           }
         }
         else {
-          framework.debug(9, "Unable to display data!");
+          Log.debug(9, "Unable to display data!");
         }
       }
       
@@ -762,16 +768,16 @@ public class DataViewer extends javax.swing.JFrame
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
 	  if(nlines>=nlines_max) {
-	    framework.debug(9,"Sorry, this data file is too large to be updated from within Morpho!");
+	    Log.debug(9,"Sorry, this data file is too large to be updated from within Morpho!");
 	    return;
 	  }
 	  if (dp!=null) {
 	      // convert table info to string
 	      vecToString();
 	    
-        framework.debug(20, "beginning of data file update");
-        AccessionNumber a = new AccessionNumber(framework);
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        Log.debug(20, "beginning of data file update");
+        AccessionNumber a = new AccessionNumber(morpho);
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         //System.out.println(xmlString);
   
         boolean metacatloc = false;
@@ -816,12 +822,12 @@ public class DataViewer extends javax.swing.JFrame
           fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
         }
         catch (Exception e) {
-            framework.debug(20, "error in local update of data file");    
+            Log.debug(20, "error in local update of data file");    
         }
       }
       if(metacatloc)
       { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(framework);
+        MetacatDataStore mds = new MetacatDataStore(morpho);
         String oldid = dataID;
         newid = a.incRev(dataID);
         Vector parts = a.getParts(newid);
@@ -864,23 +870,24 @@ public class DataViewer extends javax.swing.JFrame
           mds.saveFile(newPackageId, new StringReader(newPackageFile), dp); 
         }
         catch (Exception e) {
-            framework.debug(20, "error in metacat update of data file"+e.getMessage());    
+            Log.debug(20, "error in metacat update of data file"+e.getMessage());    
         }
       }
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 framework);
+                                                 morpho);
       this.dispose();
       if (parent!=null) parent.dispose();
       if (grandParent!=null) grandParent.dispose();
-      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
 
       // Refresh the query results after the update
       try {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-               framework.getServiceProvider(QueryRefreshInterface.class);
+               services.getServiceProvider(QueryRefreshInterface.class);
         ((QueryRefreshInterface)provider).refresh();
       } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
       }
       newgui.show();
         

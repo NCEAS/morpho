@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-16 00:30:23 $'
- * '$Revision: 1.83 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,22 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import java.util.*;
 import java.io.*;
 import javax.swing.*;
@@ -62,7 +72,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                                        EditingCompleteListener,
                                        WindowListener
 {
-  private ClientFramework framework;
+  private Morpho morpho;
   private ConfigXML config;
   Container contentPane;
   private DataPackage dataPackage;
@@ -81,13 +91,13 @@ public class DataPackageGUI extends javax.swing.JFrame
   String wholelabel;
   JEditorPane biglabel;
   
-  public DataPackageGUI(ClientFramework framework, DataPackage dp)
+  public DataPackageGUI(Morpho morpho, DataPackage dp)
   {
     this.location = dp.getLocation();
     this.id = dp.getID();
     this.dataPackage = dp;
-    this.framework = framework;
-    this.config = framework.getConfiguration();
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();
     this.addWindowListener(this);
     
     contentPane = getContentPane();
@@ -112,7 +122,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   private void initComponents()
   {
     //get the xml file attributes from the config file
-    fileAttributes = PackageUtil.getConfigFileTypeAttributes(framework, 
+    fileAttributes = PackageUtil.getConfigFileTypeAttributes(morpho, 
                                                              "xmlfiletype");
     
 //    contentPane.setLayout(new FlowLayout());
@@ -186,23 +196,23 @@ public class DataPackageGUI extends javax.swing.JFrame
           {
             if(dataPackage.getLocation().equals(DataPackage.METACAT))
             {
-              MetacatDataStore mds = new MetacatDataStore(framework);
+              MetacatDataStore mds = new MetacatDataStore(morpho);
               xmlfile = mds.openFile(eleid);
             }
             else
             {
-              FileSystemDataStore fsds = new FileSystemDataStore(framework);
+              FileSystemDataStore fsds = new FileSystemDataStore(morpho);
               xmlfile = fsds.openFile(eleid);
             }
           }
           catch(FileNotFoundException fnfe)
           {
-            framework.debug(0, "The file specified was not found.");
+            Log.debug(0, "The file specified was not found.");
             return;
           }
           catch(CacheAccessException cae)
           {
-            framework.debug(0, "You do not have proper permissions to write" +
+            Log.debug(0, "You do not have proper permissions to write" +
                                " to the cache.");
             return;
           }
@@ -210,7 +220,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           String entityNamePath = config.get("entityNamePath", 0);
           
           NodeList nl = PackageUtil.getPathContent(xmlfile, entityNamePath, 
-                                                   framework);
+                                                   morpho);
  //DFH         Node n = nl.item(0);
           Node n = null;
           for (int ii=0;ii<nl.getLength();ii++) {
@@ -254,17 +264,17 @@ public class DataPackageGUI extends javax.swing.JFrame
             File f;
             try
             {
-              f = PackageUtil.openFile(eleid, framework);
+              f = PackageUtil.openFile(eleid, morpho);
             }
             catch(Exception e)
             {
-              ClientFramework.debug(0, "File from package not found: " + 
+              Log.debug(0, "File from package not found: " + 
                                     e.getMessage());
               e.printStackTrace();
               return;
             }
             if (displayName.length()>0) {
-              NodeList nl = PackageUtil.getPathContent(f, displayName, framework);
+              NodeList nl = PackageUtil.getPathContent(f, displayName, morpho);
               for(int j=0; j<nl.getLength(); j++)
               {
                 Node n = nl.item(j);
@@ -290,14 +300,15 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     
     //create the banner panel
-    ImageIcon head = new ImageIcon(
-                         framework.getClass().getResource("smallheader-bg.gif"));
-    ImageIcon logoIcon = 
-              new ImageIcon(framework.getClass().getResource("logo-icon.gif"));
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    //MBJ ImageIcon head = new ImageIcon(
+                         //MBJ cl.getResource("../framework/smallheader-bg.gif"));
+    //MBJ ImageIcon logoIcon = 
+              //MBJ new ImageIcon(cl.getResource("../framework/logo-icon.gif"));
     JLabel logoLabel = new JLabel();
     JLabel headLabel = new JLabel("Package Editor");
-    logoLabel.setIcon(logoIcon);
-    headLabel.setIcon(head);
+    //MBJ logoLabel.setIcon(logoIcon);
+    //MBJ headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
     headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -403,7 +414,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      ClientFramework.debug(0, "Error selecting nodes from package file.");
+      Log.debug(0, "Error selecting nodes from package file.");
       e.printStackTrace();
       return null;
     }
@@ -704,7 +715,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   public void actionPerformed(ActionEvent e) 
   {
     String command = e.getActionCommand();
-    framework.debug(11, "action fired: " + command);
+    Log.debug(11, "action fired: " + command);
     EditorInterface editor;
     String item = null;
     
@@ -720,13 +731,14 @@ public class DataPackageGUI extends javax.swing.JFrame
     { //edit the currently select package member
       try
       {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                        framework.getServiceProvider(EditorInterface.class);
+                        services.getServiceProvider(EditorInterface.class);
         editor = (EditorInterface)provider;
       }
       catch(Exception ee)
       {
-        framework.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
+        Log.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
         ee.printStackTrace();
         return;
       }
@@ -737,7 +749,7 @@ public class DataPackageGUI extends javax.swing.JFrame
         {
           if(entityFileList.getSelectedIndex() == -1)
           { //nothing is selected, give an error and return
-            ClientFramework.debug(1, "You must select an item to edit.");
+            Log.debug(1, "You must select an item to edit.");
             return;
           }
           else
@@ -765,14 +777,14 @@ public class DataPackageGUI extends javax.swing.JFrame
             sb.append(buff, 0, numCharsRead);
         }
       } catch (DocumentNotFoundException dnfe) {
-        framework.debug(0, "Error finding file : "+id+" "+dnfe.getMessage());
+        Log.debug(0, "Error finding file : "+id+" "+dnfe.getMessage());
         return;
       } catch (IOException ioe) {
-        framework.debug(0, "Error reading file : "+id+" "+ioe.getMessage());
+        Log.debug(0, "Error reading file : "+id+" "+ioe.getMessage());
       } finally {
         try { reader.close();
         } catch (IOException ce) {  
-          framework.debug(12, "Error closing Reader : "+id+" "+ce.getMessage());
+          Log.debug(12, "Error closing Reader : "+id+" "+ce.getMessage());
         }
       }
       editor.openEditor(sb.toString(), id, location, this);
@@ -780,11 +792,11 @@ public class DataPackageGUI extends javax.swing.JFrame
     } else if(command.equals("Add")) {
     
       AddMetadataWizard npmw 
-                        = new AddMetadataWizard(framework, false, dataPackage);
+                        = new AddMetadataWizard(morpho, false, dataPackage);
       this.dispose();                                                          
       npmw.show();
       npmw.setName("New Description Wizard:" + dataPackage.getID());
-      framework.addWindow(npmw);
+      //MBJ framework.addWindow(npmw);
     }
     else if(command.equals("Remove"))
     {
@@ -805,7 +817,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       {
         if(entityFileList.getSelectedIndex() == -1)
         { //nothing is selected, give an error and return
-          ClientFramework.debug(1, "You must select an item to edit.");
+          Log.debug(1, "You must select an item to edit.");
           return;
         }
         else
@@ -835,13 +847,13 @@ public class DataPackageGUI extends javax.swing.JFrame
         locLocal = true;
       }
       
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      AccessionNumber a = new AccessionNumber(framework);
+      FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+      AccessionNumber a = new AccessionNumber(morpho);
       
       //remove the file id from the triples in the package file.
       String newPackageFile = PackageUtil.deleteTriplesInTriplesFile(id, 
-                                                                    dataPackage, 
-                                                                    framework);
+                                                                    dataPackage,
+                                                                    morpho);
       File tempPackageFile = fsds.saveTempFile("tmp.0", 
                                              new StringReader(newPackageFile));
       String newPackageId = a.incRev(dataPackage.getID());
@@ -858,13 +870,13 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
         catch(Exception ee)
         {
-          ClientFramework.debug(0, "Error saving package file and/or deleting" +
+          Log.debug(0, "Error saving package file and/or deleting" +
                                 " requested file: " + ee.getMessage());
         }
         
         if(!deleted)
         {
-          ClientFramework.debug(0, "Error deleting requested file.");
+          Log.debug(0, "Error deleting requested file.");
         }
       }
       
@@ -873,20 +885,20 @@ public class DataPackageGUI extends javax.swing.JFrame
         boolean deleted = false;
         try
         {
-          MetacatDataStore mds = new MetacatDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(morpho);
           deleted = mds.deleteFile(id);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
                        dataPackage);
         }
         catch(Exception eee)
         {
-          ClientFramework.debug(0, "Error saving package file and/or deleting" +
+          Log.debug(0, "Error saving package file and/or deleting" +
                           " requested file from Metacat: " + eee.getMessage()); 
         }
         
         if(!deleted)
         {
-          ClientFramework.debug(0, "Error deleting requested file from " +
+          Log.debug(0, "Error deleting requested file from " +
                                 "Metacat.");
         }
       }
@@ -894,15 +906,16 @@ public class DataPackageGUI extends javax.swing.JFrame
       //refresh the PE
       this.dispose();
       DataPackage newpack = new DataPackage(location, newPackageId, null, 
-                                            framework);
-      DataPackageGUI dpg = new DataPackageGUI(framework, newpack);
+                                            morpho);
+      DataPackageGUI dpg = new DataPackageGUI(morpho, newpack);
       // Refresh the query results after the edit is completed
       try {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
+                      services.getServiceProvider(QueryRefreshInterface.class);
         ((QueryRefreshInterface)provider).refresh();
       } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
       }
 
       dpg.show();
@@ -914,7 +927,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       {
         if(entityFileList.getSelectedIndex() == -1)
         { //nothing is selected, give an error and return
-          ClientFramework.debug(1, "You must select an item to edit.");
+          Log.debug(1, "You must select an item to edit.");
           return;
         }
         else
@@ -929,9 +942,9 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
       
       String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
-      ClientFramework.debug(20, "Edititing entity: " + id);
+      Log.debug(20, "Edititing entity: " + id);
       EntityGUI entityEdit = new EntityGUI(dataPackage, id, location, this, 
-                                           framework);
+                                           morpho);
       entityEdit.show();
     }
   }
@@ -978,10 +991,10 @@ public class DataPackageGUI extends javax.swing.JFrame
   public void editingCompleted(String xmlString, String id, String location)
   {
     //System.out.println(xmlString);
-    framework.debug(11, "editing complete: id: " + id + " location: " + location);
-    AccessionNumber a = new AccessionNumber(framework);
+    Log.debug(11, "editing complete: id: " + id + " location: " + location);
+    AccessionNumber a = new AccessionNumber(morpho);
     boolean metacatpublic = false;
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     //System.out.println(xmlString);
   
     boolean metacatloc = false;
@@ -1039,9 +1052,9 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      framework.debug(0, "Error saving file locally"+ id + " to " + location +
+      Log.debug(0, "Error saving file locally"+ id + " to " + location +
                          "--message: " + e.getMessage());
-      framework.debug(11, "File: " + xmlString);
+      Log.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
     
@@ -1049,7 +1062,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     {
       if(metacatloc)
       { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(framework);
+        MetacatDataStore mds = new MetacatDataStore(morpho);
         
         if(id.trim().equals(dataPackage.getID().trim()))
         { //edit the package file
@@ -1090,7 +1103,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           names.addElement(newPackageId);
           readers.addElement(new StringReader(newPackageFile));
           String res = mds.saveFilesTransaction(names, readers, dataPackage);
-          framework.debug(20,"Transaction result is: "+res);
+          Log.debug(20,"Transaction result is: "+res);
         }
       }
     }
@@ -1099,44 +1112,46 @@ public class DataPackageGUI extends javax.swing.JFrame
       String message = e.getMessage();
       if(message.indexOf("Next revision number must be") != -1)
       {
-        framework.debug(0,"The file you are attempting to update " +
+        Log.debug(0,"The file you are attempting to update " +
                                  "has been changed by another user.  " +
                                  "Please refresh your query screen, " + 
                                  "open the package again and " +
                                  "re-enter your changes.");
         try 
         {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
+                      services.getServiceProvider(QueryRefreshInterface.class);
         ((QueryRefreshInterface)provider).refresh();
         } 
         catch (ServiceNotHandledException snhe) 
         {
-          framework.debug(6, snhe.getMessage());
+          Log.debug(6, snhe.getMessage());
         }
         this.dispose();
         return;
       }
-      framework.debug(0, "Error saving file to metacat "+ id + " to " + location +
+      Log.debug(0, "Error saving file to metacat "+ id + " to " + location +
                          "--message: " + e.getMessage());
-      //framework.debug(11, "File: " + xmlString);
+      //Log.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
     
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 framework);
+                                                 morpho);
 
       // Refresh the query results after the edit is completed
       try {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
+                      services.getServiceProvider(QueryRefreshInterface.class);
         ((QueryRefreshInterface)provider).refresh();
       } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
       }
     
       this.dispose();
-      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
       newgui.show();
     
   }
@@ -1147,12 +1162,12 @@ public class DataPackageGUI extends javax.swing.JFrame
   
   public void windowClosed(WindowEvent event)
   {
-    framework.removeWindow(this);
+    //MBJ framework.removeWindow(this);
   }
   
   public void windowClosing(WindowEvent event)
   {
-    framework.removeWindow(this);
+    //MBJ framework.removeWindow(this);
   }
   public void windowActivated(WindowEvent event)
   {

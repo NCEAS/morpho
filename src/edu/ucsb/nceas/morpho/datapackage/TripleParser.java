@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,8 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.sql.*;
 import java.util.Stack;
@@ -79,7 +80,7 @@ public class TripleParser extends DefaultHandler
   
   private void doInit(Reader xml, CatalogEntityResolver cer)
   {
-    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+    XMLReader parser = Morpho.createSaxParser((ContentHandler)this, 
             (ErrorHandler)this);
     if (parser == null) 
     {

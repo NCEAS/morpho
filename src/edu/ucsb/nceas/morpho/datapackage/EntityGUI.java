@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,20 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import java.util.*;
 import java.io.*;
 import javax.swing.*;
@@ -68,7 +77,7 @@ public class EntityGUI extends javax.swing.JFrame
   private Vector attributeNamePath;
   private Vector attributeNameNode;
   
-  private ClientFramework framework;
+  private Morpho morpho;
   private ConfigXML config;
   private Container contentPane;
   private DataPackage dataPackage;
@@ -95,13 +104,13 @@ public class EntityGUI extends javax.swing.JFrame
    * @param id the id of the entity file that we want to edit.
    * @param location the location of this data package
    * @param parent the DataPackageGUI parent of this window.
-   * @param cf the clientframework from which this morpho instantiation was
+   * @param morpho the Morpho app from which this morpho instantiation was
    *        created.
    */
   public EntityGUI(DataPackage dp, String id, String location, 
-                   DataPackageGUI parent, ClientFramework cf)
+                   DataPackageGUI parent, Morpho morpho)
   {
-    config = cf.getConfiguration();
+    config = morpho.getConfiguration();
     
     namePath = config.get("entityNamePath");
     descPath = config.get("entityDescPath");
@@ -113,7 +122,7 @@ public class EntityGUI extends javax.swing.JFrame
     
     this.parent = parent;
     this.location = location;
-    this.framework = cf;
+    this.morpho = morpho;
     this.dataPackage = dp;
     this.entityId = id;
     contentPane = getContentPane();
@@ -142,44 +151,44 @@ public class EntityGUI extends javax.swing.JFrame
       if(location.equals(DataPackage.LOCAL) || 
          location.equals(DataPackage.BOTH))
       {
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         xmlFile = fsds.openFile(entityId);
       }
       else
       {
-        MetacatDataStore mds = new MetacatDataStore(framework);
+        MetacatDataStore mds = new MetacatDataStore(morpho);
         xmlFile = mds.openFile(entityId);
       }
       entityFile = xmlFile;
     }
     catch(FileNotFoundException fnfe)
     {
-      framework.debug(0, "Error reading file : " + entityId + " " + 
+      Log.debug(0, "Error reading file : " + entityId + " " + 
                          fnfe.getMessage() + "---File NOT found.");
       return;
     }
     catch(CacheAccessException cae)
     {
-      framework.debug(0, "Error reading file : " + entityId + " " + 
+      Log.debug(0, "Error reading file : " + entityId + " " + 
                          cae.getMessage() + "---Cache could not be accessed");
       return;
     }
     
     NodeList nameList = PackageUtil.getPathContent(xmlFile, 
                                                    namePath, 
-                                                   framework);
+                                                   morpho);
     NodeList descList = PackageUtil.getPathContent(xmlFile, 
                                                    descPath, 
-                                                   framework);
+                                                   morpho);
     NodeList numrecList = PackageUtil.getPathContent(xmlFile, 
                                                      numrecPath, 
-                                                     framework);
+                                                     morpho);
     NodeList caseSensList = PackageUtil.getPathContent(xmlFile, 
                                                        caseSensPath, 
-                                                       framework);
+                                                       morpho);
     NodeList orientationList = PackageUtil.getPathContent(xmlFile, 
                                                           orientationPath, 
-                                                          framework);
+                                                          morpho);
     
     if(nameList != null && nameList.getLength() != 0)
     { 
@@ -241,18 +250,18 @@ public class EntityGUI extends javax.swing.JFrame
         if(location.equals(DataPackage.LOCAL) || 
            location.equals(DataPackage.BOTH))
         {
-          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          FileSystemDataStore fsds = new FileSystemDataStore(morpho);
           f = fsds.openFile(id);
         }
         else
         {
-          MetacatDataStore mds = new MetacatDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(morpho);
           f = mds.openFile(id);
         }
       }
       catch(Exception e)
       {
-        framework.debug(0, "The attribute file referenced in the package does" +
+        Log.debug(0, "The attribute file referenced in the package does" +
                            " not exist: EntityGUI.initComponents().: " +
                            e.getMessage());
         return;
@@ -274,7 +283,7 @@ public class EntityGUI extends javax.swing.JFrame
         System.out.println("Error: " + e.getMessage());
       }*/
       
-      NodeList nl = PackageUtil.getPathContent(f, attributeNamePath, framework);
+      NodeList nl = PackageUtil.getPathContent(f, attributeNamePath, morpho);
      
       if(nl != null)
       {
@@ -420,14 +429,15 @@ public class EntityGUI extends javax.swing.JFrame
   
   private JPanel createHeadPanel()
   {
-    ImageIcon head = new ImageIcon(
-                         framework.getClass().getResource("smallheader-bg.gif"));
-    ImageIcon logoIcon = 
-              new ImageIcon(framework.getClass().getResource("logo-icon.gif"));
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    //MBJ ImageIcon head = new ImageIcon(
+                         //MBJ cl.getResource("../framework/smallheader-bg.gif"));
+    //MBJ ImageIcon logoIcon = 
+              //MBJ new ImageIcon(cl.getResource("../framework/logo-icon.gif"));
     JLabel logoLabel = new JLabel();
     JLabel headLabel = new JLabel("Table Description");
-    logoLabel.setIcon(logoIcon);
-    headLabel.setIcon(head);
+    //MBJ logoLabel.setIcon(logoIcon);
+    //MBJ headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
     headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -452,14 +462,14 @@ public class EntityGUI extends javax.swing.JFrame
    */
   public void editingCompleted(String xmlString, String id, String location)
   {
-    ClientFramework.debug(11, "Editing complete: id: " + id + " location: " + 
+    Log.debug(11, "Editing complete: id: " + id + " location: " + 
                               location);
-    AccessionNumber a = new AccessionNumber(framework);
+    AccessionNumber a = new AccessionNumber(morpho);
     boolean newfile = false;
     boolean metacatloc = false;
     boolean localloc = false;
     boolean bothloc = false;
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     
     if(id == null)
     { //this is a new file so we need to assign it an id and put a triple
@@ -472,7 +482,7 @@ public class EntityGUI extends javax.swing.JFrame
       tc.addTriple(t);
       String packageFile = PackageUtil.addTriplesToTriplesFile(tc, 
                                                                dataPackage, 
-                                                               framework);
+                                                               morpho);
       String packageId = a.incRev(dataPackage.getID());
       File f = fsds.saveTempFile("tmp.0", new StringReader(packageFile));
       packageFile = a.incRevInTriples(f, dataPackage.getID(), packageId);
@@ -495,14 +505,14 @@ public class EntityGUI extends javax.swing.JFrame
       { //save the files to metacat
         try
         {
-          MetacatDataStore mds = new MetacatDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(morpho);
           
           mds.newFile(id, new StringReader(xmlString), dataPackage);
           mds.saveFile(packageId, new StringReader(packageFile), dataPackage);
         }
         catch(Exception e)
         {
-          framework.debug(0, "Error saving to metacat: " + e.getMessage());
+          Log.debug(0, "Error saving to metacat: " + e.getMessage());
           e.printStackTrace();
         }
       }
@@ -516,30 +526,31 @@ public class EntityGUI extends javax.swing.JFrame
         }
         catch(Exception e)
         {
-          framework.debug(0, "Error saving package locally: " + e.getMessage());
+          Log.debug(0, "Error saving package locally: " + e.getMessage());
           e.printStackTrace();
         }
       }
       
       DataPackage newPackage = new DataPackage(location, packageId, null,
-                                               framework);
+                                               morpho);
       this.dispose();
       parent.dispose();
       
-      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
 
       // Refresh the query results after the update
       try {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-               framework.getServiceProvider(QueryRefreshInterface.class);
+               services.getServiceProvider(QueryRefreshInterface.class);
         ((QueryRefreshInterface)provider).refresh();
       } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
       }
 
       EntityGUI newEntitygui;
       newEntitygui = new EntityGUI(newPackage, entityId, location, newgui, 
-                                   framework);
+                                   morpho);
       newgui.show();
       newEntitygui.show();
       return;
@@ -561,7 +572,7 @@ public class EntityGUI extends javax.swing.JFrame
       localloc = true;
     }
     
-    MetacatDataStore mds = new MetacatDataStore(framework);
+    MetacatDataStore mds = new MetacatDataStore(morpho);
     
     try
     {
@@ -598,9 +609,9 @@ public class EntityGUI extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      framework.debug(0, "Error saving file to metacat"+ id + " to " + location +
+      Log.debug(0, "Error saving file to metacat"+ id + " to " + location +
                          "--message: " + e.getMessage());
-      framework.debug(11, "File: " + xmlString);
+      Log.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
     
@@ -636,32 +647,33 @@ public class EntityGUI extends javax.swing.JFrame
       }
       
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 framework);
+                                                 morpho);
       this.dispose();
       parent.dispose();
       
-      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
       EntityGUI newEntitygui;
       DataPackage newDataPackage = new DataPackage(location, 
                                            a.incRev(dataPackage.getID()),
-                                           null, framework);
+                                           null, morpho);
       if(editAttribute)
       {
-        newEntitygui = new EntityGUI(newDataPackage, entityId, location, newgui, 
-                                     framework);
+        newEntitygui = new EntityGUI(newDataPackage, entityId, location, newgui,
+                                     morpho);
       }
       else
       {
         newEntitygui = new EntityGUI(newDataPackage, a.incRev(entityId), 
-                                     location, newgui, framework);
+                                     location, newgui, morpho);
       }
       // Refresh the query results after the update
       try {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-               framework.getServiceProvider(QueryRefreshInterface.class);
+               services.getServiceProvider(QueryRefreshInterface.class);
         ((QueryRefreshInterface)provider).refresh();
       } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
+        Log.debug(6, snhe.getMessage());
       }
 
       newgui.show();
@@ -669,9 +681,9 @@ public class EntityGUI extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      framework.debug(0, "Error saving file locally"+ id + " to " + location +
+      Log.debug(0, "Error saving file locally"+ id + " to " + location +
                          "--message: " + e.getMessage());
-      framework.debug(11, "File: " + xmlString);
+      Log.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
   }
@@ -686,7 +698,7 @@ public class EntityGUI extends javax.swing.JFrame
   public void actionPerformed(ActionEvent e) 
   {
     String command = e.getActionCommand();
-    framework.debug(20, "Action fired: " + command);
+    Log.debug(20, "Action fired: " + command);
   
     //-------------------------------------
     if(command.equals("Edit Table Description"))
@@ -695,13 +707,14 @@ public class EntityGUI extends javax.swing.JFrame
       EditorInterface editor;
       try
       {
+        ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
-                        framework.getServiceProvider(EditorInterface.class);
+                        services.getServiceProvider(EditorInterface.class);
         editor = (EditorInterface)provider;
       }
       catch(Exception ee)
       {
-        framework.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
+        Log.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
         ee.printStackTrace();
         return;
       }
@@ -712,24 +725,24 @@ public class EntityGUI extends javax.swing.JFrame
         if(location.equals(DataPackage.LOCAL) || 
            location.equals(DataPackage.BOTH))
         {
-          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          FileSystemDataStore fsds = new FileSystemDataStore(morpho);
           xmlFile = fsds.openFile(entityId);
         }
         else
         {
-          MetacatDataStore mds = new MetacatDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(morpho);
           xmlFile = mds.openFile(entityId);
         }
       }
       catch(FileNotFoundException fnfe)
       {
-        framework.debug(0, "Error reading file : " + entityId + " " + 
+        Log.debug(0, "Error reading file : " + entityId + " " + 
                            fnfe.getMessage() + "---File NOT found.");
         return;
       }
       catch(CacheAccessException cae)
       {
-        framework.debug(0, "Error reading file : " + entityId + " " + 
+        Log.debug(0, "Error reading file : " + entityId + " " + 
                            cae.getMessage() + "---Cache could not be accessed");
         return;
       }
@@ -750,7 +763,7 @@ public class EntityGUI extends javax.swing.JFrame
       }
       catch(Exception eeeee)
       {
-        framework.debug(0, "Error reading file : " + entityId + " " + 
+        Log.debug(0, "Error reading file : " + entityId + " " + 
                            eeeee.getMessage());
         return;
       }
@@ -766,14 +779,14 @@ public class EntityGUI extends javax.swing.JFrame
       String id = (String)attributeHash.get(selectedItem);
       if(id == null)
       {
-        /*ClientFramework.debug(0, "You must select an attribute to edit." +
+        /*Log.debug(0, "You must select an attribute to edit." +
                               " If there are no attributes in the list, " +
                               "you must first add a field description " +
                               "using the 'add' button in the Package " +
                               "Editor.");
         return;*/
         //create a new variable file
-        Hashtable fileatts = PackageUtil.getConfigFileTypeAttributes(framework, 
+        Hashtable fileatts = PackageUtil.getConfigFileTypeAttributes(morpho, 
                                                                 "xmlfiletype");
         String attributedoctype = config.get("attributedoctype", 0);
         Hashtable attributeAtts = (Hashtable)fileatts.get(attributedoctype);
@@ -782,29 +795,29 @@ public class EntityGUI extends javax.swing.JFrame
         dummydoc += "<!DOCTYPE " + root + " PUBLIC \"" + attributedoctype + 
                     "\" \"" + root + ".dtd\">\n";
         dummydoc += "<" + root + ">" + "</" + root + ">";
-        EditorInterface editor = PackageUtil.getEditor(framework);
+        EditorInterface editor = PackageUtil.getEditor(morpho);
         editor.openEditor(dummydoc, null, null, this);
         return;
       }
       
       try
       {
-        f = PackageUtil.openFile(id, location, framework);
+        f = PackageUtil.openFile(id, location, morpho);
       }
       catch(FileNotFoundException fnfe)
       {
-        framework.debug(0, "The attribute file was not found in EntityGUI." + 
+        Log.debug(0, "The attribute file was not found in EntityGUI." + 
                            "actionPerformed(): " + fnfe.getMessage());
         return;
       }
       catch(CacheAccessException cae)
       {
-        framework.debug(0, "Cannot access the cache in EntityGUI." + 
+        Log.debug(0, "Cannot access the cache in EntityGUI." + 
                            "actionPerformed(): " + cae.getMessage());
         return;
       }
       String s = PackageUtil.getStringFromFile(f);
-      EditorInterface editor = PackageUtil.getEditor(framework);
+      EditorInterface editor = PackageUtil.getEditor(morpho);
       editor.openEditor(s, id, location, (String)attributeNameNode.elementAt(0), 
                         selectedItem, this);
     }
@@ -821,7 +834,7 @@ public class EntityGUI extends javax.swing.JFrame
  //     if(dataPackage.isDataFileText(entityId)) {
       if (true) {
         String dataString = "";
-        DataViewer dv = new DataViewer(framework, "DataFile: "+fn, f);
+        DataViewer dv = new DataViewer(morpho, "DataFile: "+fn, f);
         dv.setDataID(dataPackage.getDataFileID(entityId));
         dv.setPhysicalFile(fphysical);
         dv.setAttributeFile(fattribute);
@@ -851,7 +864,7 @@ public class EntityGUI extends javax.swing.JFrame
     
     else if (command.equals("Associate Data")) {
        // a new data file to be associated with this existing metadata is to be entered here 
-      (new NewDataFile(this, dataPackage, framework, entityId)).setVisible(true); 
+      (new NewDataFile(this, dataPackage, morpho, entityId)).setVisible(true); 
     }
   }
   

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,18 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
 import java.util.Hashtable;
@@ -46,7 +55,7 @@ public class DataPackagePlugin
        implements PluginInterface, ServiceProvider, DataPackageInterface
 {
   /** A reference to the container framework */
-  private ClientFramework framework = null;
+  private Morpho morpho = null;
 
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
@@ -65,34 +74,36 @@ public class DataPackagePlugin
   }
 
   /** 
-   * The plugin must store a reference to the ClientFramework 
+   * The plugin must store a reference to the Morpho application 
    * in order to be able to call the services available through 
    * the framework.  This is also the time to register menus
    * and toolbars with the framework.
    */
-  public void initialize(ClientFramework cf)
+  public void initialize(Morpho morpho)
   {
-    this.framework = cf;
-    this.config = framework.getConfiguration();
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();
     loadConfigurationParameters();
 
     // Add menus, and toolbars
-    framework.addMenu("File", new Integer(1), menuActions);
-    framework.addToolbarActions(toolbarActions);
+    UIController controller = UIController.getInstance();
+    controller.addMenu("File", new Integer(1), menuActions);
+    controller.addToolbarActions(toolbarActions);
 
     // Register Services
     try 
     {
-      framework.addService(DataPackageInterface.class, this);
-      framework.debug(20, "Service added: DataPackageInterface.");
+      ServiceController services = ServiceController.getInstance();
+      services.addService(DataPackageInterface.class, this);
+      Log.debug(20, "Service added: DataPackageInterface.");
     } 
     catch (ServiceExistsException see) 
     {
-      framework.debug(6, "Service registration failed: DataPackageInterface.");
-      framework.debug(6, see.toString());
+      Log.debug(6, "Service registration failed: DataPackageInterface.");
+      Log.debug(6, see.toString());
     }
 
-    cf.debug(20, "Init DataPackage Plugin"); 
+    Log.debug(20, "Init DataPackage Plugin"); 
   }
 
   /**
@@ -106,20 +117,20 @@ public class DataPackagePlugin
     {
       public void actionPerformed(ActionEvent e) 
       {
-        framework.debug(20, "Action fired: New Data Package");
-        final PackageWizardShell pws = new PackageWizardShell(framework);
+        Log.debug(20, "Action fired: New Data Package");
+        final PackageWizardShell pws = new PackageWizardShell(morpho);
         pws.setName("Package Wizard");
-        framework.addWindow(pws);
+        //MBJ framework.addWindow(pws);
         pws.addWindowListener(new WindowAdapter()
         {
           public void windowClosed(WindowEvent e)
           {
-            framework.removeWindow(pws);
+            //MBJ framework.removeWindow(pws);
           }
           
           public void windowClosing(WindowEvent e)
           {
-            framework.removeWindow(pws);
+            //MBJ framework.removeWindow(pws);
           }
         });
         pws.show();
@@ -148,27 +159,27 @@ public class DataPackagePlugin
   public void openDataPackage(String location, String identifier, 
                               Vector relations)
   {
-    framework.debug(11, "DataPackage: Got service request to open: " + 
+    Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
     DataPackage dp = new DataPackage(location, identifier, 
-                                     relations, framework);
-    //framework.debug(11, "location: " + location + " identifier: " + identifier +
+                                     relations, morpho);
+    //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
-    final DataPackageGUI gui = new DataPackageGUI(framework, dp);
+    final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
     gui.addWindowListener(new WindowAdapter()
     {
       public void windowClosed(WindowEvent e)
       {
-        framework.removeWindow(gui);
+        //MBJ framework.removeWindow(gui);
       }
       
       public void windowClosing(WindowEvent e)
       {
-        framework.removeWindow(gui);
+        //MBJ framework.removeWindow(gui);
       }
     });
     gui.setName("Package Editor: " + dp.getID());
-    framework.addWindow(gui);
+    //MBJ framework.addWindow(gui);
     gui.show();
   }
   
@@ -180,7 +191,7 @@ public class DataPackagePlugin
   public void upload(String docid, boolean updateIds) 
               throws MetacatUploadException
   {
-    DataPackage dp = new DataPackage(DataPackage.LOCAL, docid, null, framework);
+    DataPackage dp = new DataPackage(DataPackage.LOCAL, docid, null, morpho);
     dp.upload(updateIds);
   }
   
@@ -191,7 +202,7 @@ public class DataPackagePlugin
    */
   public void download(String docid)
   {
-    DataPackage dp = new DataPackage(DataPackage.METACAT, docid, null, framework);
+    DataPackage dp = new DataPackage(DataPackage.METACAT, docid, null, morpho);
     dp.download();
   }
   
@@ -201,7 +212,7 @@ public class DataPackagePlugin
    */
   public void delete(String docid, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, framework);
+    DataPackage dp = new DataPackage(location, docid, null, morpho);
     dp.delete(location);
   }
   
@@ -214,7 +225,7 @@ public class DataPackagePlugin
    */
   public void export(String docid, String path, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, framework);
+    DataPackage dp = new DataPackage(location, docid, null, morpho);
     dp.export(path);
   }
   
@@ -227,7 +238,7 @@ public class DataPackagePlugin
    */
   public void exportToZip(String docid, String path, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, framework);
+    DataPackage dp = new DataPackage(location, docid, null, morpho);
     try
     {
       dp.exportToZip(path);

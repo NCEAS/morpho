@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-08-19 21:10:34 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,9 @@
  */
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import java.sql.*;
 import java.util.Stack;
 import java.util.Vector;
@@ -76,7 +78,7 @@ public class PackageWizardParser extends DefaultHandler
   
   public PackageWizardParser(Reader xml)
   {
-    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+    XMLReader parser = Morpho.createSaxParser((ContentHandler)this, 
             (ErrorHandler)this);
     if (parser == null) 
     {

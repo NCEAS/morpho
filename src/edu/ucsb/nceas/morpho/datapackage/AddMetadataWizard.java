@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,19 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.net.*;
 import java.io.*;
@@ -62,7 +70,7 @@ public class AddMetadataWizard extends JFrame
                                           WindowListener
 {
   ConfigXML config;
-  ClientFramework framework = null;
+  Morpho morpho = null;
   /** the total number of screens to be processed */
   int numScreens;
   /** the screen currently displaying (indexed from 0 to numScreens-1) */
@@ -105,21 +113,21 @@ public class AddMetadataWizard extends JFrame
   /**
    * Construct a dialog and set the framework
    *
-   * @param cont the container framework that created this ProfileDialog
+   * @param morpho the container framework that created this dialog
    */
-  public AddMetadataWizard(ClientFramework cont) {
-    this(cont, true, null);
+  public AddMetadataWizard(Morpho morpho) {
+    this(morpho, true, null);
   }
 
   /**
    * Construct the dialog
    */
-  public AddMetadataWizard(ClientFramework cont, boolean modal,
-                                  DataPackage dataPackage)
+  public AddMetadataWizard(Morpho morpho, boolean modal,
+                           DataPackage dataPackage)
   {
     //super((Frame)cont, modal);
-    framework = cont;
-    config = framework.getConfiguration();
+    this.morpho = morpho;
+    config = morpho.getConfiguration();
     this.dataPackage = dataPackage;
     this.addWindowListener(this);
     
@@ -142,7 +150,7 @@ public class AddMetadataWizard extends JFrame
     group1.add(existingMetadata);
     
     //parse the config file and create the new file buttons
-    newXMLFileAtts = PackageUtil.getConfigFileTypeAttributes(framework, "label");
+    newXMLFileAtts = PackageUtil.getConfigFileTypeAttributes(morpho, "label");
     
     Enumeration keys = newXMLFileAtts.keys();
     ButtonGroup newRadioButtons = new ButtonGroup();
@@ -169,6 +177,8 @@ public class AddMetadataWizard extends JFrame
       radioButtons.addElement(b);
     }
     
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
     JPanel helpPanel = new JPanel();
     helpPanel.setLayout(new BoxLayout(helpPanel, BoxLayout.Y_AXIS));
     helpPanel.setBackground(Color.white);
@@ -176,10 +186,10 @@ public class AddMetadataWizard extends JFrame
     helpPanel.setPreferredSize(new Dimension(150,400));
     helpPanel.setBorder(BorderFactory.createLoweredBevelBorder());
     helpPanel.add(Box.createRigidArea(new Dimension(8,8)));
-    ImageIcon logoIcon = 
-              new ImageIcon(framework.getClass().getResource("logo-icon.gif"));
+    //MBJ ImageIcon logoIcon = 
+              //MBJ new ImageIcon(cl.getResource("../framework/logo-icon.gif"));
     JLabel imageLabel = new JLabel();
-    imageLabel.setIcon(logoIcon);
+    //MBJ imageLabel.setIcon(logoIcon);
     helpPanel.add(imageLabel);
     helpLabel.setText(
               "<html>This is a whole bunch of help text.</html>");
@@ -198,9 +208,9 @@ public class AddMetadataWizard extends JFrame
 
     JLabel headLabel = new JLabel();
     headLabel.setText("Add New\\Existing Descriptions or Data");
-    ImageIcon head = new ImageIcon(
-                         framework.getClass().getResource("smallheader-bg.gif"));
-    headLabel.setIcon(head);
+    //MBJ ImageIcon head = new ImageIcon(
+                         //MBJ cl.getResource("../framework/smallheader-bg.gif"));
+    //MBJ headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
     headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -228,13 +238,13 @@ public class AddMetadataWizard extends JFrame
     cancelButton.setEnabled(true);
     buttonPanel.add(cancelButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
-    previousButton = new JButton("Previous", new ImageIcon( framework.getClass().
-          getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
+    previousButton = new JButton("Previous", new ImageIcon(
+        cl.getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
     previousButton.setHorizontalTextPosition(SwingConstants.RIGHT);
     buttonPanel.add(previousButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
-    forwardIcon = new ImageIcon( framework.getClass().
-          getResource("/toolbarButtonGraphics/navigation/Forward16.gif"));
+    forwardIcon = new ImageIcon(
+        cl.getResource("/toolbarButtonGraphics/navigation/Forward16.gif"));
     nextButton = new JButton("Next", forwardIcon);
     nextButton.setHorizontalTextPosition(SwingConstants.LEFT);
     nextButton.setEnabled(true);
@@ -432,7 +442,7 @@ public class AddMetadataWizard extends JFrame
       else if (existingFile.isSelected())
       { //display an open file dialog
         this.hide();
-        PackageWizardShell pws = new PackageWizardShell(framework, 2, this);
+        PackageWizardShell pws = new PackageWizardShell(morpho, 2, this);
  
  /*       String helpText = "<html>Select a DATA FILE to add to your data package." +
                           "</html>";
@@ -510,7 +520,7 @@ public class AddMetadataWizard extends JFrame
                   StringBuffer sb = new StringBuffer();
                   try
                   {
-                    File dummyfile = PackageUtil.openFile(id, framework);
+                    File dummyfile = PackageUtil.openFile(id, morpho);
                     FileReader fr = new FileReader(dummyfile);
                     int c = fr.read();
                     while(c != -1)
@@ -522,7 +532,7 @@ public class AddMetadataWizard extends JFrame
                   }
                   catch(Exception e)
                   {
-                    ClientFramework.debug(0, "Error reading existing file in " +
+                    Log.debug(0, "Error reading existing file in " +
                                           "package: " + e.getMessage());
                     e.printStackTrace();
                   }
@@ -536,7 +546,7 @@ public class AddMetadataWizard extends JFrame
             }
           }
         }
-        EditorInterface editor = PackageUtil.getEditor(framework);
+        EditorInterface editor = PackageUtil.getEditor(morpho);
         if (eeFlag) {
             editor.openEditor(dummydoc, null, null, this);
         }
@@ -570,7 +580,7 @@ public class AddMetadataWizard extends JFrame
         }
         catch(Exception e)
         {
-          ClientFramework.debug(0, "Error reading selected file.: " +
+          Log.debug(0, "Error reading selected file.: " +
                                 e.getMessage());
           e.printStackTrace();
           return;
@@ -579,7 +589,7 @@ public class AddMetadataWizard extends JFrame
         if(fileString.indexOf("<?xml") != -1)
         { //this is an xml file
           //System.out.println("xml file: " + fileString);
-          //ClientFramework.debug(0, "This doesn't work yet");
+          //Log.debug(0, "This doesn't work yet");
         }
         else
         { //this is a data file
@@ -615,15 +625,15 @@ public class AddMetadataWizard extends JFrame
               try
               {
                 f = PackageUtil.openFile((String)relatedFileIds.elementAt(i), 
-                                         framework);
+                                         morpho);
               }
               catch (Exception e)
               {
-                ClientFramework.debug(0, "Error in AddMetadataWizard." +
+                Log.debug(0, "Error in AddMetadataWizard." +
                                       "editingComplete(): " + e.getMessage());
                 return;
               }
-              NodeList nl = PackageUtil.getPathContent(f, displayPath, framework);
+              NodeList nl = PackageUtil.getPathContent(f, displayPath, morpho);
              
               for(int j=0; j<nl.getLength(); j++)
               {
@@ -710,7 +720,7 @@ public class AddMetadataWizard extends JFrame
         {
           if(relatedFileList.getSelectedValue() == null)
           {
-            ClientFramework.debug(0, "You must choose an item to related this " +
+            Log.debug(0, "You must choose an item to related this " +
                                      "file to.");
             previousButtonHandler(new ActionEvent(this, 0, ""));
             return;
@@ -783,8 +793,8 @@ public class AddMetadataWizard extends JFrame
                                  String newid)
   { //add a data file here
     String relationship = "isRelatedTo";
-    AccessionNumber a = new AccessionNumber(framework);
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    AccessionNumber a = new AccessionNumber(morpho);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     //relate the new data file to the package itself
     if (addedFile!=null) {
       relationship = fileTextField.getText();
@@ -816,7 +826,7 @@ public class AddMetadataWizard extends JFrame
     //add the triple to the triple file
     String docString = PackageUtil.addTriplesToTriplesFile(triples, 
                                                            dataPackage, 
-                                                           framework);
+                                                           morpho);
     //write out the files
     File newDPTempFile;
     //get a new id for the package file
@@ -836,7 +846,7 @@ public class AddMetadataWizard extends JFrame
     }
     catch(Exception e)
     {
-      ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+      Log.debug(0, "Error saving file: " + e.getMessage());
       e.printStackTrace();
       return;
     }
@@ -858,7 +868,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        Log.debug(0, "Error saving file: " + e.getMessage());
         e.printStackTrace();
         e.printStackTrace();
         return;
@@ -870,7 +880,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        Log.debug(0, "Error saving file: " + e.getMessage());
         e.printStackTrace();
         return;
       }
@@ -878,8 +888,8 @@ public class AddMetadataWizard extends JFrame
     
     if(locMetacat)
     { //send the package file and the data file to metacat
-      ClientFramework.debug(20, "Sending file(s) to metacat.");
-      MetacatDataStore mds = new MetacatDataStore(framework);
+      Log.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(morpho);
       try
       { //send the new data file to the server
 //DFHDFH        mds.newDataFile(newid, addedFile);
@@ -888,7 +898,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception mue)
       {
-        ClientFramework.debug(0, "Error saving data file to metacat: " + 
+        Log.debug(0, "Error saving data file to metacat: " + 
                               mue.getMessage());
         mue.printStackTrace();
         return;
@@ -901,21 +911,21 @@ public class AddMetadataWizard extends JFrame
       }
       catch(MetacatUploadException mue)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat: " + 
+        Log.debug(0, "Error saving package file to metacat: " + 
                               mue.getMessage());
         mue.printStackTrace();
         return;
       }
       catch(FileNotFoundException fnfe)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat(2): " + 
+        Log.debug(0, "Error saving package file to metacat(2): " + 
                               fnfe.getMessage());
         fnfe.printStackTrace();
         return;
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat(3): " + 
+        Log.debug(0, "Error saving package file to metacat(3): " + 
                               e.getMessage());
         e.printStackTrace();
         return;
@@ -933,7 +943,7 @@ public class AddMetadataWizard extends JFrame
     Triple ta = null;
     TripleCollection triples = new TripleCollection();
     FileSystemDataStore fsds = null;
-    AccessionNumber a = new AccessionNumber(framework);
+    AccessionNumber a = new AccessionNumber(morpho);
     String newid = a.getNextId();
     
     String dataPackageId = "";                                
@@ -952,7 +962,7 @@ public class AddMetadataWizard extends JFrame
     
     //add a data file here
     String relationship = "isRelatedTo";
-    fsds = new FileSystemDataStore(framework);
+    fsds = new FileSystemDataStore(morpho);
     //relate the new data file to the package itself
     if ((type.equals("GETDATA"))&&(hasData)) {
       relationship = currentFileName;
@@ -1038,7 +1048,7 @@ public class AddMetadataWizard extends JFrame
         }
         catch(Exception e)
         {
-            ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+            Log.debug(0, "Error saving file: " + e.getMessage());
             e.printStackTrace();
             e.printStackTrace();
             return;
@@ -1047,8 +1057,8 @@ public class AddMetadataWizard extends JFrame
     
     if(locMetacat)
     { //send the file to metacat
-      ClientFramework.debug(20, "Sending file(s) to metacat.");
-      MetacatDataStore mds = new MetacatDataStore(framework);
+      Log.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(morpho);
       try
       { //send the new data file to the server
         if (type.equals("GETDATA")) {
@@ -1061,7 +1071,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception mue)
       {
-        ClientFramework.debug(0, "Error saving data file to metacat: " + 
+        Log.debug(0, "Error saving data file to metacat: " + 
                               mue.getMessage());
         mue.printStackTrace();
         return;
@@ -1073,7 +1083,7 @@ public class AddMetadataWizard extends JFrame
     //add the triple to the triple file
     docString = PackageUtil.addTriplesToTriplesFile(triples, 
                                                            dataPackage, 
-                                                           framework);
+                                                           morpho);
                                                            
     //write out the files
     File newDPTempFile;
@@ -1094,7 +1104,7 @@ public class AddMetadataWizard extends JFrame
     }
     catch(Exception e)
     {
-      ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+      Log.debug(0, "Error saving file: " + e.getMessage());
       e.printStackTrace();
       return;
     }
@@ -1107,7 +1117,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        Log.debug(0, "Error saving file: " + e.getMessage());
         e.printStackTrace();
         return;
       }
@@ -1115,8 +1125,8 @@ public class AddMetadataWizard extends JFrame
     
     if(locMetacat)
     { //send the package file to metacat
-      ClientFramework.debug(20, "Sending file(s) to metacat.");
-      MetacatDataStore mds = new MetacatDataStore(framework);
+      Log.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(morpho);
       
       try
       { //save the new package file
@@ -1125,21 +1135,21 @@ public class AddMetadataWizard extends JFrame
       }
       catch(MetacatUploadException mue)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat: " + 
+        Log.debug(0, "Error saving package file to metacat: " + 
                               mue.getMessage());
         mue.printStackTrace();
         return;
       }
       catch(FileNotFoundException fnfe)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat(2): " + 
+        Log.debug(0, "Error saving package file to metacat(2): " + 
                               fnfe.getMessage());
         fnfe.printStackTrace();
         return;
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving package file to metacat(3): " + 
+        Log.debug(0, "Error saving package file to metacat(3): " + 
                               e.getMessage());
         e.printStackTrace();
         return;
@@ -1156,20 +1166,21 @@ public class AddMetadataWizard extends JFrame
     //refresh the package wizard view
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
-                                             framework);
+                                             morpho);
     this.dataPackage = newpackage;                                         
-    DataPackageGUI dpg = new DataPackageGUI(framework, newpackage);
+    DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
     dpg.show();
     dpg.setName("Package Editor:" + newpackage.getID());
-    framework.addWindow(dpg);
-    framework.removeWindow(this);
+    //MBJ framework.addWindow(dpg);
+    //MBJ framework.removeWindow(this);
     try {
+      ServiceController services = ServiceController.getInstance();
       ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
+                      services.getServiceProvider(QueryRefreshInterface.class);
       //QueryRefreshInterface qinterface = (QueryRefreshInterface)provider;
       ((QueryRefreshInterface)provider).refresh();
     } catch (ServiceNotHandledException snhe) {
-      framework.debug(6, snhe.getMessage());
+      Log.debug(6, snhe.getMessage());
     }
     
   }
@@ -1180,13 +1191,13 @@ public class AddMetadataWizard extends JFrame
   private void handleFinishAction()
   {
     finishflag = true;
-    AccessionNumber a = new AccessionNumber(framework);
+    AccessionNumber a = new AccessionNumber(morpho);
     String newid = "";
     String location = dataPackage.getLocation();
     boolean locMetacat = false;
     boolean locLocal = false;
     String docString;
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     File packageFile = dataPackage.getTriplesFile();
     
     if(location.equals(DataPackage.LOCAL) || 
@@ -1233,7 +1244,7 @@ public class AddMetadataWizard extends JFrame
       triples.addTriple(ta);
       //add the triple to the triple file
       docString = PackageUtil.addTriplesToTriplesFile(triples, dataPackage, 
-                                                      framework);
+                                                      morpho);
     }
     
     //System.out.println(docString);
@@ -1254,7 +1265,7 @@ public class AddMetadataWizard extends JFrame
     }
     catch(Exception e)
     {
-      ClientFramework.debug(0, "Error saving file(5): " + e.getMessage());
+      Log.debug(0, "Error saving file(5): " + e.getMessage());
       e.printStackTrace();
       return;
     }
@@ -1290,7 +1301,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file(4): " + e.getMessage());
+        Log.debug(0, "Error saving file(4): " + e.getMessage());
         e.printStackTrace();
         e.printStackTrace();
         return;
@@ -1302,7 +1313,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file(3): " + e.getMessage());
+        Log.debug(0, "Error saving file(3): " + e.getMessage());
         e.printStackTrace();
         return;
       }
@@ -1310,7 +1321,7 @@ public class AddMetadataWizard extends JFrame
     
     if(locMetacat)
     { //save the real files to metacat.
-      MetacatDataStore mds = new MetacatDataStore(framework);
+      MetacatDataStore mds = new MetacatDataStore(morpho);
       try
       {
         if(editingExistingFile)
@@ -1325,7 +1336,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file(1): " + e.getMessage());
+        Log.debug(0, "Error saving file(1): " + e.getMessage());
         e.printStackTrace();
         return;
       }
@@ -1336,7 +1347,7 @@ public class AddMetadataWizard extends JFrame
       }
       catch(Exception e)
       {
-        ClientFramework.debug(0, "Error saving file(2): " + e.getMessage());
+        Log.debug(0, "Error saving file(2): " + e.getMessage());
         e.printStackTrace();
         return;
       }
@@ -1345,19 +1356,19 @@ public class AddMetadataWizard extends JFrame
     //refresh the package editor that this wizard came from.
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
-                                             framework);
-    DataPackageGUI dpg = new DataPackageGUI(framework, newpackage);
+                                             morpho);
+    DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
     dpg.show();
     dpg.setName("Package Editor:" + newpackage.getID());
-    framework.addWindow(dpg);
-    framework.removeWindow(this);
+    //MBJ framework.addWindow(dpg);
+    //MBJ framework.removeWindow(this);
     try {
+      ServiceController services = ServiceController.getInstance();
       ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
-      //QueryRefreshInterface qinterface = (QueryRefreshInterface)provider;
+                      services.getServiceProvider(QueryRefreshInterface.class);
       ((QueryRefreshInterface)provider).refresh();
     } catch (ServiceNotHandledException snhe) {
-      framework.debug(6, snhe.getMessage());
+      Log.debug(6, snhe.getMessage());
     }
   }
 
@@ -1436,15 +1447,15 @@ public class AddMetadataWizard extends JFrame
         try
         {
           f = PackageUtil.openFile((String)relatedFileIds.elementAt(i), 
-                                   framework);
+                                   morpho);
         }
         catch (Exception e)
         {
-          ClientFramework.debug(0, "Error in AddMetadataWizard." +
+          Log.debug(0, "Error in AddMetadataWizard." +
                                 "editingComplete(): " + e.getMessage());
           return;
         }
-        NodeList nl = PackageUtil.getPathContent(f, displayPath, framework);
+        NodeList nl = PackageUtil.getPathContent(f, displayPath, morpho);
        
         for(int j=0; j<nl.getLength(); j++)
         {
@@ -1467,7 +1478,7 @@ public class AddMetadataWizard extends JFrame
       relatedtoId = dataPackage.getID();
     }
     
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     //get a pointer to the file we just created.
     newxmlFile = fsds.saveTempFile(id, new StringReader(xmlString));
     nextButtonHandler(new ActionEvent(this, 0, ""));
@@ -1512,7 +1523,7 @@ public class AddMetadataWizard extends JFrame
     boolean locMetacat = false;
     boolean locLocal = false;
     String docString;
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     File packageFile = dataPackage.getTriplesFile();
     
     if(location.equals(DataPackage.LOCAL) || 
@@ -1535,12 +1546,12 @@ public class AddMetadataWizard extends JFrame
   {
     if(!finishflag)
     {
-      DataPackageGUI dpg = new DataPackageGUI(framework, dataPackage);
+      DataPackageGUI dpg = new DataPackageGUI(morpho, dataPackage);
       dpg.show();
       dpg.setName("Package Editor:" + dataPackage.getID());
-      framework.addWindow(dpg);
+      //MBJ framework.addWindow(dpg);
     }
-    framework.removeWindow(this); 
+    //MBJ framework.removeWindow(this); 
   }
   public void windowClosing(WindowEvent event)
   {}

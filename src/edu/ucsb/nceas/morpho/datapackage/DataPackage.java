@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-16 00:29:19 $'
- * '$Revision: 1.64 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,16 +26,15 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
-
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -92,7 +91,7 @@ import com.arbortext.catalog.CatalogEntityResolver;
 public class DataPackage 
 {
   private ConfigXML         config;
-  private ClientFramework   framework;
+  private Morpho            morpho;
   private TripleCollection  triples;
   private File              tripleFile;
   private File              dataPkgFile;
@@ -124,26 +123,26 @@ public class DataPackage
    * @param identifier: the id of the data package.  usually the id of the
    * file that contains the triples.
    * @param relations: a vector of all relations in this package.
-   * @param framework: reference to the main ClientFramework.
+   * @param morpho: reference to the main Morpho application.
    */
   public DataPackage(String location, String identifier, Vector relations, 
-                     ClientFramework framework)
+                     Morpho morpho)
   {
     //-open file named identifier
     //-read the triples out of it, create a triplesCollection
     //-start caching the files referenced in the triplesCollection
     //-respond to any request from the user to open a specific file
-    this.framework  = framework;
+    this.morpho  = morpho;
     this.location   = location;
     this.id         = identifier;
-    this.config     = framework.getConfiguration();
+    this.config     = morpho.getConfiguration();
     
-    framework.debug(11, "Creating new DataPackage Object");
-    framework.debug(11, "id: " + this.id);
-    framework.debug(11, "location: " + location);
+    Log.debug(11, "Creating new DataPackage Object");
+    Log.debug(11, "id: " + this.id);
+    Log.debug(11, "location: " + location);
     
-    fileSysDataStore  = new FileSystemDataStore(framework);
-    metacatDataStore  = new MetacatDataStore(framework);
+    fileSysDataStore  = new FileSystemDataStore(morpho);
+    metacatDataStore  = new MetacatDataStore(morpho);
     
     //read the file containing the triples - usually the datapackage file:
     try {
@@ -166,33 +165,33 @@ public class DataPackage
     File returnFile = null;
     if(location.equals(METACAT)) {
       try {
-        framework.debug(11, "opening metacat file");
+        Log.debug(11, "opening metacat file");
         dataPkgFile = metacatDataStore.openFile(ID);
-        framework.debug(11, "metacat file opened");
+        Log.debug(11, "metacat file opened");
       
       } catch(FileNotFoundException fnfe) {
 
-        framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+        Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
                                 +"metacat file not found: "+fnfe.getMessage());
         fnfe.printStackTrace();
         throw fnfe.fillInStackTrace();
 
       } catch(CacheAccessException cae) {
     
-        framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+        Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
                                 +"metacat cache problem: "+cae.getMessage());
         cae.printStackTrace();
         throw cae.fillInStackTrace();
       }
     } else {  //not metacat
       try {
-        framework.debug(11, "opening local file");
+        Log.debug(11, "opening local file");
         dataPkgFile = fileSysDataStore.openFile(ID);
-        framework.debug(11, "local file opened");
+        Log.debug(11, "local file opened");
       
       } catch(FileNotFoundException fnfe) {
     
-        framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+        Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
                                 +"local file not found: "+fnfe.getMessage());
         fnfe.printStackTrace();
         throw fnfe.fillInStackTrace();
@@ -203,7 +202,7 @@ public class DataPackage
    
   //initialize the global "triples" variable to hold the collection of triples
   private void initTriplesCollection()  {
-    triples = new TripleCollection(tripleFile, framework);
+    triples = new TripleCollection(tripleFile, morpho);
   }
   
   
@@ -290,7 +289,7 @@ public class DataPackage
    */
   private void parseTripleFile()
   {
-    DocumentBuilder parser = framework.createDomParser();
+    DocumentBuilder parser = morpho.createDomParser();
     Document doc;
     InputSource in;
     FileInputStream fs;
@@ -299,14 +298,14 @@ public class DataPackage
     //get the DOM rep of the document without triples
     try
     {
-//      ConfigXML config = framework.getConfiguration();
+//      ConfigXML config = morpho.getConfiguration();
       String catalogPath = config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(tripleFile, catalogPath);
       tripleFileDom = doc;
     }
     catch (Exception e)
     {
-      framework.debug(0, "error parsing " + tripleFile.getPath() + " : " +
+      Log.debug(0, "error parsing " + tripleFile.getPath() + " : " +
                          e.getMessage());
       e.printStackTrace();
       return;
@@ -384,7 +383,7 @@ public class DataPackage
   {
     Vector tripleVec = triples.getCollection();
     Hashtable filesHash = new Hashtable();
-//    ConfigXML config = framework.getConfiguration();
+//    ConfigXML config = morpho.getConfiguration();
     String catalogPath = config.get("local_catalog_path", 0);
     
     for(int i=0; i<tripleVec.size(); i++)
@@ -414,13 +413,13 @@ public class DataPackage
         }
         catch(FileNotFoundException fnfe2)
         {
-          framework.debug(0, "File " + subject + " not found locally or " +
+          Log.debug(0, "File " + subject + " not found locally or " +
                              "on metacat.");
           return null;
         }
         catch(CacheAccessException cae)
         {
-          framework.debug(0, "The cache could not be accessed in "
+          Log.debug(0, "The cache could not be accessed in "
                                               + "DataPackage.getRelatedFiles.");
           return null;
         }
@@ -466,7 +465,7 @@ public class DataPackage
       }
       catch(Exception e)
       {
-        framework.debug(0, "error in DataPackage.getRelatedFiles(): "
+        Log.debug(0, "error in DataPackage.getRelatedFiles(): "
                                                               + e.getMessage());
       }
       
@@ -485,13 +484,13 @@ public class DataPackage
         }
         catch(FileNotFoundException fnfe2)
         {
-          framework.debug(0, "File " + subject + " not found locally or " +
+          Log.debug(0, "File " + subject + " not found locally or " +
                              "on metacat.");
           return null;
         }
         catch(CacheAccessException cae)
         {
-          framework.debug(0, "The cache could not be accessed in "
+          Log.debug(0, "The cache could not be accessed in "
                                               + "DataPackage.getRelatedFiles.");
           return null;
         }
@@ -538,7 +537,7 @@ public class DataPackage
       }
       catch(Exception e)
       {
-        framework.debug(0, "error in DataPackage.getRelatedFiles(): " + 
+        Log.debug(0, "error in DataPackage.getRelatedFiles(): " + 
                            e.getMessage());
       }
     }
@@ -709,7 +708,7 @@ public class DataPackage
    */
   public DataPackage upload(boolean updateIds) throws MetacatUploadException
   {
-    ClientFramework.debug(20, "Uploading package.");
+    Log.debug(20, "Uploading package.");
     
     if(!location.equals(DataPackage.BOTH) && 
       !location.equals(DataPackage.METACAT))
@@ -725,7 +724,7 @@ public class DataPackage
         }
         catch(FileNotFoundException fnfe)
         {
-          framework.debug(0, "There is an error in this package, a file is " + 
+          Log.debug(0, "There is an error in this package, a file is " + 
                           "missing.  Missing file: " + id);
         }
       }
@@ -740,8 +739,8 @@ public class DataPackage
 
         try
         {
-          framework.debug(20, "Uploading " + key);
-          AccessionNumber a = new AccessionNumber(framework);
+          Log.debug(20, "Uploading " + key);
+          AccessionNumber a = new AccessionNumber(morpho);
           Vector idVec = a.getParts(key);
           String scope = (String)idVec.elementAt(0);
           String id = (String)idVec.elementAt(1);
@@ -796,7 +795,7 @@ public class DataPackage
           }
           else
           {
-            //framework.debug(0, "Error uploading " + key + " to metacat: " + 
+            //Log.debug(0, "Error uploading " + key + " to metacat: " + 
             //                e.getMessage());
             //e.printStackTrace();
             throw new MetacatUploadException(e.getMessage());
@@ -818,7 +817,7 @@ public class DataPackage
     Vector fileIds = getAllIdentifiers();
     Hashtable updatedIds = new Hashtable();
     Hashtable updatedFiles = new Hashtable();
-    AccessionNumber accNum = new AccessionNumber(framework);
+    AccessionNumber accNum = new AccessionNumber(morpho);
     String newId = "";
     for(int i=0; i<fileIds.size(); i++)
     {
@@ -833,7 +832,7 @@ public class DataPackage
         if (!isDataFile(fileId)) {  // not a datafile; string use OK
           try
           {
-            File f = PackageUtil.openFile(fileId, framework);
+            File f = PackageUtil.openFile(fileId, morpho);
             FileInputStream fis = new FileInputStream(f);
             int c = fis.read();
             while(c != -1)
@@ -844,7 +843,7 @@ public class DataPackage
           }
           catch(Exception e)
           {
-            framework.debug(0, "Error reading file " + fileId + " in package." +
+            Log.debug(0, "Error reading file " + fileId + " in package." +
                           "DataPackage.incrementPackageIds()");
           }
           String fileString = sb.toString();
@@ -858,7 +857,7 @@ public class DataPackage
           }
           catch(MetacatUploadException mue)
           {
-            framework.debug(0, "Error uploading file " + fileId + " to metacat" +
+            Log.debug(0, "Error uploading file " + fileId + " to metacat" +
                         " in DataPackage.incrementPackageIds(): " +
                         mue.getMessage());
           }
@@ -869,14 +868,14 @@ public class DataPackage
           //save the file
           File f = null;
           try {
-            f = PackageUtil.openFile(fileId, framework);
+            f = PackageUtil.openFile(fileId, morpho);
             FileInputStream fis = new FileInputStream(f);
             fileSysDataStore.newDataFile(newId, fis); //new local file
             fis.close();
             
           }
           catch (Exception w) {
-            framework.debug(0, "Problem writing new local data file");
+            Log.debug(0, "Problem writing new local data file");
           }
           
           try
@@ -885,7 +884,7 @@ public class DataPackage
           }
           catch(MetacatUploadException mue)
           {
-            framework.debug(0, "Error uploading file " + newId + " to metacat" +
+            Log.debug(0, "Error uploading file " + newId + " to metacat" +
                         " in DataPackage.incrementPackageIds(): " +
                         mue.getMessage());
           }
@@ -908,12 +907,12 @@ public class DataPackage
     }
     catch(FileNotFoundException fnfe)
     {
-      framework.debug(0, "Error finding package file in DataPackage." +
+      Log.debug(0, "Error finding package file in DataPackage." +
                       "incrementPackageIds(): " + fnfe.getMessage());
     }
     catch(IOException ioe)
     {
-      framework.debug(0, "Error reading package file in DataPackage." +
+      Log.debug(0, "Error reading package file in DataPackage." +
                       "incrementPackageIds(): " + ioe.getMessage());
     }
     
@@ -940,13 +939,13 @@ public class DataPackage
     }
     catch(MetacatUploadException mue)
     {
-      framework.debug(0, "Error uploading file " + newPackageId + " to metacat" +
+      Log.debug(0, "Error uploading file " + newPackageId + " to metacat" +
                         " in DataPackage.incrementPackageIds(): " +
                         mue.getMessage());
     }
     //create a new package
     DataPackage dp = new DataPackage(this.location, newPackageId, null, 
-                                     framework);
+                                     morpho);
     this.delete(this.location);
     return dp;
   }
@@ -975,7 +974,7 @@ public class DataPackage
    */
   public void download()
   {
-    ClientFramework.debug(20, "Downloading package.");
+    Log.debug(20, "Downloading package.");
     
     if(!location.equals(DataPackage.BOTH) && 
       !location.equals(DataPackage.LOCAL))
@@ -991,12 +990,12 @@ public class DataPackage
         }
         catch(FileNotFoundException fnfe)
         {
-          framework.debug(0, "There is an error in this package, a file is " + 
+          Log.debug(0, "There is an error in this package, a file is " + 
                           "missing.  Missing file: " + id);
         }
         catch(CacheAccessException cae)
         {
-          framework.debug(0, "The cache is locked.  Unlock it to continue.");
+          Log.debug(0, "The cache is locked.  Unlock it to continue.");
         }
       }
       
@@ -1022,13 +1021,13 @@ public class DataPackage
         }
         catch(Exception e)
         {
-          framework.debug(0, "Error reading file in package.");
+          Log.debug(0, "Error reading file in package.");
         }
         
         try
         {
-          framework.debug(20, "Downloading " + key);
-          AccessionNumber a = new AccessionNumber(framework);
+          Log.debug(20, "Downloading " + key);
+          AccessionNumber a = new AccessionNumber(morpho);
           Vector idVec = a.getParts(key);
           String scope = (String)idVec.elementAt(0);
           String id = (String)idVec.elementAt(1);
@@ -1061,7 +1060,7 @@ public class DataPackage
         }
         catch(Exception e)
         {
-          framework.debug(0, "Error downloading " + key + " from metacat: " + 
+          Log.debug(0, "Error downloading " + key + " from metacat: " + 
                           e.getMessage());
           e.printStackTrace();
         }
@@ -1189,10 +1188,10 @@ public class DataPackage
    */
   public void export(String path)
   {
-    ClientFramework.debug(20, "exporting...");
-    ClientFramework.debug(20, "path: " + path);
-    ClientFramework.debug(20, "id: " + id);
-    ClientFramework.debug(20, "location: " + location);
+    Log.debug(20, "exporting...");
+    Log.debug(20, "path: " + path);
+    Log.debug(20, "id: " + id);
+    Log.debug(20, "location: " + location);
     Vector fileV = new Vector(); //vector of all files in the package
     boolean localloc = false;
     boolean metacatloc = false;
@@ -1253,7 +1252,7 @@ public class DataPackage
       
       //create a html file from all of the metadata
       StringBuffer htmldoc = new StringBuffer();
-//      ConfigXML config = framework.getConfiguration();
+//      ConfigXML config = morpho.getConfiguration();
       htmldoc.append("<html><head></head><body>");
       for(int i=0; i<fileV.size(); i++)
       {
@@ -1283,7 +1282,7 @@ public class DataPackage
           } 
           catch (Exception e) 
           {
-            ClientFramework.debug(9, "Problem creating Catalog in " +
+            Log.debug(9, "Problem creating Catalog in " +
                          "DataPackage.export" + 
                          e.toString());
           }
@@ -1723,7 +1722,7 @@ public class DataPackage
 
   
   private File getFileType(String id, String typeString) {
-//    ConfigXML config = framework.getConfiguration();
+//    ConfigXML config = morpho.getConfiguration();
     String catalogPath = //config.getConfigDirectory() + File.separator +
                                      config.get("local_catalog_path", 0);
     File subfile;
@@ -1742,13 +1741,13 @@ public class DataPackage
         }
         catch(FileNotFoundException fnfe2)
         {
-          framework.debug(0, "File " + id + " not found locally or " +
+          Log.debug(0, "File " + id + " not found locally or " +
                              "on metacat.");
           return null;
         }
         catch(CacheAccessException cae)
         {
-          framework.debug(0, "The cache could not be accessed in " +
+          Log.debug(0, "The cache could not be accessed in " +
                              "DataPackage.getRelatedFiles.");
           return null;
         }

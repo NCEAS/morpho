@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-08-19 21:10:33 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,11 +38,18 @@ import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.io.*;
 import java.net.URL;
@@ -65,12 +72,12 @@ public class PackageUtil
    * it returns null
    */
   public static NodeList getPathContent(File f, Vector paths, 
-                                        ClientFramework framework)
+                                        Morpho morpho)
   {
     for(int i=0; i<paths.size(); i++)
     {
       String s = (String)paths.elementAt(i);
-      NodeList nl = getPathContent(f, s, framework);
+      NodeList nl = getPathContent(f, s, morpho);
       if(nl != null && nl.getLength() != 0)
       {
         return nl;
@@ -83,17 +90,17 @@ public class PackageUtil
    * gets the content of a tag in a given xml file with the given path
    * @param f the file to parse
    * @param path the path to get the content from
-   * @param framework a framework object that has a valid config file
+   * @param morpho a morpho object that has a valid config file
    */
   public static NodeList getPathContent(File f, String path, 
-                                        ClientFramework framework)
+                                        Morpho morpho)
   {
     if(f == null)
     {
       return null;
     }
    
-    DocumentBuilder parser = framework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     FileInputStream fs;
     
@@ -102,7 +109,7 @@ public class PackageUtil
     {
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
-      ConfigXML config = framework.getConfiguration();
+      ConfigXML config = morpho.getConfiguration();
       String catalogPath = // config.getConfigDirectory() + File.separator +
                                        config.get("local_catalog_path", 0);
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -113,7 +120,7 @@ public class PackageUtil
     } 
     catch (Exception e) 
     {
-      ClientFramework.debug(11, "Problem creating Catalog in " +
+      Log.debug(11, "Problem creating Catalog in " +
                    "packagewizardshell.handleFinishAction!" + e.toString());
     }
     
@@ -166,7 +173,7 @@ public class PackageUtil
                                                                SAXException, 
                                                                Exception
   {
-    DocumentBuilder parser = ClientFramework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     Document doc;
     InputSource in;
     FileInputStream fs;
@@ -175,7 +182,7 @@ public class PackageUtil
     {
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
-      //ConfigXML config = framework.getConfiguration();
+      //ConfigXML config = morpho.getConfiguration();
       //String catalogPath = config.getConfigDirectory() + File.separator +
                                         //config.get("local_catalog_path", 0);
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -187,7 +194,7 @@ public class PackageUtil
     } 
     catch (Exception e) 
     {
-      ClientFramework.debug(11, "Problem creating Catalog in " +
+      Log.debug(11, "Problem creating Catalog in " +
                    "packagewizardshell.handleFinishAction!" + e.toString());
       throw new Exception(e.getMessage());
     }
@@ -429,13 +436,13 @@ public class PackageUtil
   /**
    * opens a file on metacat or local.  It defaults to local if it is on both.
    * @param name the name of the file
-   * @param framework the framework object that is currently running.
+   * @param morpho the morpho object that is currently running.
    */
-  public static File openFile(String name, ClientFramework framework) 
+  public static File openFile(String name, Morpho morpho) 
                                                   throws FileNotFoundException,
                                                          CacheAccessException
   {
-    return openFile(name, null, framework);
+    return openFile(name, null, morpho);
   }
   
   /**
@@ -444,10 +451,10 @@ public class PackageUtil
    * @param name the file to open
    * @param location the location of the file.  set to null if the location is 
    * unknown
-   * @param framework the framework object that is currently running.
+   * @param morpho the morpho object that is currently running.
    */
   public static File openFile(String name, String location, 
-                              ClientFramework framework) throws 
+                              Morpho morpho) throws 
                                                          FileNotFoundException,
                                                          CacheAccessException
   {
@@ -456,7 +463,7 @@ public class PackageUtil
     {
       try
       {
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         f = fsds.openFile(name);
         return f;
       }
@@ -464,7 +471,7 @@ public class PackageUtil
       {
         try
         {
-          MetacatDataStore mds = new MetacatDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(morpho);
           f = mds.openFile(name);
           return f;
         }
@@ -485,13 +492,13 @@ public class PackageUtil
         if(location.equals(DataPackage.LOCAL) || 
            location.equals(DataPackage.BOTH))
         {
-          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          FileSystemDataStore fsds = new FileSystemDataStore(morpho);
           f = fsds.openFile(name);
           return f;
         }
         else
         {
-          MetacatDataStore mds = new MetacatDataStore(framework);
+          MetacatDataStore mds = new MetacatDataStore(morpho);
           f = mds.openFile(name);
           return f;
         }
@@ -510,19 +517,20 @@ public class PackageUtil
   /**
    * gets the editor context and returns it
    */
-  public static EditorInterface getEditor(ClientFramework framework)
+  public static EditorInterface getEditor(Morpho morpho)
   {
     try
     {
+      ServiceController services = ServiceController.getInstance();
       EditorInterface editor;
       ServiceProvider provider = 
-                      framework.getServiceProvider(EditorInterface.class);
+                      services.getServiceProvider(EditorInterface.class);
       editor = (EditorInterface)provider;
       return editor;
     }
     catch(ServiceNotHandledException snhe)
     {
-      framework.debug(0, "Could not capture the editor in PackageUtil." +
+      Log.debug(0, "Could not capture the editor in PackageUtil." +
                          "getEditor(): " + snhe.getMessage());
       return null;
     }
@@ -548,7 +556,7 @@ public class PackageUtil
     }
     catch(Exception e)
     {
-      ClientFramework.debug(0, "Error reading file in PackageUtil." +
+      Log.debug(0, "Error reading file in PackageUtil." +
                                "getStringFromFile(): " + e.getMessage());
       return null;
     }
@@ -560,16 +568,16 @@ public class PackageUtil
    * ones after the existing ones.  
    * @param triples the collection of triples to add
    * @param dataPackage the package that you want to add the triples to
-   * @param framework the framework object that is currently running.
+   * @param morpho the morpho object that is currently running.
    */
   public static String addTriplesToTriplesFile(TripleCollection triples,
                                                DataPackage dataPackage, 
-                                               ClientFramework framework)
+                                               Morpho morpho)
   {
-    String triplesTag = framework.getConfiguration().get("triplesTag", 0);
+    String triplesTag = morpho.getConfiguration().get("triplesTag", 0);
     File packageFile = dataPackage.getTriplesFile();
     Document doc = null;
-    DocumentBuilder parser = framework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     FileInputStream fs;
     
@@ -578,7 +586,7 @@ public class PackageUtil
     {
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
-      ConfigXML config = framework.getConfiguration();
+      ConfigXML config = morpho.getConfiguration();
       String catalogPath = //config.getConfigDirectory() + File.separator +
                                        config.get("local_catalog_path", 0);
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -590,7 +598,7 @@ public class PackageUtil
     } 
     catch (Exception e) 
     {
-      ClientFramework.debug(9, "Problem creating Catalog in " +
+      Log.debug(9, "Problem creating Catalog in " +
                    "PackageUtil.updateTriplesFile" + 
                    e.toString());
     }
@@ -659,16 +667,16 @@ public class PackageUtil
    * @param searchstring the string to search for in the triples.  when this
    * string is found the entire triple to which it belongs is deleted.
    * @param dataPackage the package that you want to delete the triples from
-   * @param framework the framework object that is currently running.
+   * @param morpho the morpho object that is currently running.
    */
   public static String deleteTriplesInTriplesFile(String searchstring,
                                                   DataPackage dataPackage, 
-                                                  ClientFramework framework)
+                                                  Morpho morpho)
   {
-    String triplesTag = framework.getConfiguration().get("triplesTag", 0);
+    String triplesTag = morpho.getConfiguration().get("triplesTag", 0);
     File packageFile = dataPackage.getTriplesFile();
     Document doc = null;
-    DocumentBuilder parser = framework.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     FileInputStream fs;
     
@@ -677,7 +685,7 @@ public class PackageUtil
     {
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
-      ConfigXML config = framework.getConfiguration();
+      ConfigXML config = morpho.getConfiguration();
       String catalogPath = //config.getConfigDirectory() + File.separator +
                                        config.get("local_catalog_path", 0);
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -689,7 +697,7 @@ public class PackageUtil
     } 
     catch (Exception e) 
     {
-      ClientFramework.debug(9, "Problem creating Catalog in " +
+      Log.debug(9, "Problem creating Catalog in " +
                    "PackageUtil.updateTriplesFile" + 
                    e.toString());
     }
@@ -787,17 +795,17 @@ public class PackageUtil
   /**
    * gets the file types from the config file and hashes them by a specified
    * attribute
-   * @param framework the client framework that is currently active
+   * @param morpho the client morpho that is currently active
    * @param hashby a key from the attributes to hash the table by.  note
    * that this must be one of the required fields or else the hashtable 
    * will try to hash values to null
    */
-  public static Hashtable getConfigFileTypeAttributes(ClientFramework framework,
+  public static Hashtable getConfigFileTypeAttributes(Morpho morpho,
                                                       String hashby)
   {
     Hashtable returnhash = new Hashtable();
     NodeList filetypes = 
-          framework.getConfiguration().getPathContent("//newxmlfiletypes/file");
+          morpho.getConfiguration().getPathContent("//newxmlfiletypes/file");
     for(int i=0; i<filetypes.getLength(); i++)
     {
       Node n = filetypes.item(i);

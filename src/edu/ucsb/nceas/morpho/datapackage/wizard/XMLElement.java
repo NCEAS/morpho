@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-05-03 16:16:55 $'
- * '$Revision: 1.2 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 21:10:34 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
  */
 
 package edu.ucsb.nceas.morpho.datapackage.wizard;
+
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.io.*;
 import java.util.*;

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-19 21:10:34 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,11 @@
 
 package edu.ucsb.nceas.morpho.datastore;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.*;
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.XPathAPI;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.io.*;
 import java.util.*;
@@ -54,7 +55,7 @@ import com.arbortext.catalog.*;
  */
 public abstract class DataStore implements DataStoreInterface
 {
-  private ClientFramework framework;
+  private Morpho morpho;
   private ConfigXML config;
   protected String datadir;
   protected String separator;
@@ -62,13 +63,13 @@ public abstract class DataStore implements DataStoreInterface
   protected String tempdir;
   
   /**
-   * create a new FileSystemDataStore for a ClientFramework
+   * create a new FileSystemDataStore for a Morpho
    */
-  public DataStore(ClientFramework cf)
+  public DataStore(Morpho morpho)
   {
-    this.framework = cf;
-    config = framework.getConfiguration();
-    ConfigXML profile = framework.getProfile();
+    this.morpho = morpho;
+    config = morpho.getConfiguration();
+    ConfigXML profile = morpho.getProfile();
     String profileDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) + 
                             File.separator +
@@ -82,7 +83,7 @@ public abstract class DataStore implements DataStoreInterface
   
   public void debug(int code, String message)
   {
-    framework.debug(code, message);
+    Log.debug(code, message);
   }
   
   /** 
@@ -136,7 +137,7 @@ public abstract class DataStore implements DataStoreInterface
     }
     DocumentType dt = doc.getDoctype();
     String doctype = dt.getPublicId();
-    Hashtable docatts = PackageUtil.getConfigFileTypeAttributes(framework, 
+    Hashtable docatts = PackageUtil.getConfigFileTypeAttributes(morpho, 
                                                                 "xmlfiletype");
     Hashtable h = (Hashtable)docatts.get(doctype);
     
