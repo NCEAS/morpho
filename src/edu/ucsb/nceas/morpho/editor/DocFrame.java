@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-27 23:26:08 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2001-12-28 18:30:39 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1383,8 +1383,8 @@ void expandTreeToLevel(JTree jt, int level) {
                     }
                 }
                 if (!insTest) {
-//                Vector hits = getMatches(tNode, nextLevelInputNodes);
-                Vector hits = simpleGetMatches(tNode, nextLevelInputNodes);
+                Vector hits = getMatches(tNode, nextLevelInputNodes);
+//                Vector hits = simpleGetMatches(tNode, nextLevelInputNodes);
                 // merge hits with template node
                 tempVector = (Vector)currentLevelInputNodes.clone();
                 Enumeration en1 = hits.elements();
@@ -1404,8 +1404,8 @@ void expandTreeToLevel(JTree jt, int level) {
  //               if (hits.size()==0) {
                     DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
                     int index = ptNode.getIndex(tNode);
-//                    Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
-                    Vector parent_hits = simpleGetMatches(ptNode, currentLevelInputNodes);
+                    Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
+//                    Vector parent_hits = simpleGetMatches(ptNode, currentLevelInputNodes);
                     Enumeration en2 = parent_hits.elements();
                     while (en2.hasMoreElements()) {
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
@@ -1693,15 +1693,19 @@ private Vector sameParent(Vector list) {
     }
 
     String pathToString(DefaultMutableTreeNode node) {
+        int start = 0;
         StringBuffer sb = new StringBuffer();
         TreeNode[] tset = node.getPath();
-        for (int i=0;i<tset.length;i++) {
+        int numiterations = tset.length;
+          // following line arbitrarily limits the path length to '3' to speed up code
+        if (numiterations>3) start = numiterations - 3;  
+        for (int i=start;i<numiterations;i++) {
             String temp = ((NodeInfo)((DefaultMutableTreeNode)tset[i]).getUserObject()).getName();
             sb.append(temp+"/");
         }
         return sb.toString();
     }
-
+    
     void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
         if (compareNodes(input,template)) {
             NodeInfo inputni = (NodeInfo)input.getUserObject();
