@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-26 19:32:54 $'
- * '$Revision: 1.96 $'
+ *     '$Date: 2003-02-18 23:41:34 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,13 +64,13 @@ import org.xml.sax.InputSource;
 
 /**
  * Class that implements a GUI to edit a data package
+ * 
+ * Changed class so that it no longer creates GUI components
+ * Now used only to get information from DataPackage for display
+ * DFH - Feb 2003
  */
-public class DataPackageGUI extends javax.swing.JFrame 
-                            implements ActionListener, 
-                                       EditingCompleteListener,
-                                       WindowListener
+public class DataPackageGUI 
 {
-  public JPanel basicInfoPanel;
   public String authorRefLabel = "";
   public String titleRefLabel = "";
   public String accessionRefLabel = "";
@@ -79,21 +79,14 @@ public class DataPackageGUI extends javax.swing.JFrame
   private ConfigXML config;
   Container contentPane;
   private DataPackage dataPackage;
-  private JList otherFileList;
-  private JList entityFileList;
-  private JList dataFileList;
   private String location = null;
   private String id = null;
-  private JButton editBaseInfoButton = new JButton();
   Hashtable listValueHash = new Hashtable();
   private Hashtable fileAttributes = new Hashtable();
   private static final String htmlBegin = "<html><font color=black>";
   private static final String htmlEnd = "</font></html>";
   
-  JScrollPane tpscroll;
   String wholelabel;
-  JEditorPane biglabel;
-  JPanel listPanel;
   
   Vector otheritems;
   Vector dataitems;
@@ -107,22 +100,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     this.dataPackage = dp;
     this.morpho = morpho;
     this.config = morpho.getConfiguration();
-    this.addWindowListener(this);
     
-    contentPane = getContentPane();
-    setTitle("Data Package Editor");
-//    BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
-    contentPane.setLayout(new BorderLayout());
     initComponents();
-    pack();
-    setSize(500, 550);
-    /* Center the Frame */
-    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-    Rectangle frameDim = getBounds();
-    setLocation((screenDim.width - frameDim.width) / 2 ,
-                (screenDim.height - frameDim.height) / 2);
-    
-    biglabel.setCaretPosition(0);
   }
   
   /**
@@ -143,9 +122,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     Vector entityDoctypeList = config.get("entitydoctype");
     Vector resourceDoctypeList = config.get("resourcedoctype");
     Vector attributeDoctypeList = config.get("attributedoctype");
-    //String entitytype = config.get("entitydoctype", 0);
-    //String resourcetype = config.get("resourcedoctype", 0);
-    //String attributetype = config.get("attributedoctype", 0);
     
     if(docAtts.containsKey("originator"))
     {
@@ -170,9 +146,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
     }
     
-    basicInfoPanel = new JPanel();
-    //create the top panel with the package basic info
-    basicInfoPanel = createBasicInfoPanel();
+    createBasicInfoPanel();
     
     Hashtable relfiles = dataPackage.getRelatedFiles();
     otheritems = new Vector();
@@ -230,7 +204,6 @@ public class DataPackageGUI extends javax.swing.JFrame
           
           NodeList nl = PackageUtil.getPathContent(xmlfile, entityNamePath, 
                                                    morpho);
- //DFH         Node n = nl.item(0);
           Node n = null;
           for (int ii=0;ii<nl.getLength();ii++) {
             n = nl.item(ii);
@@ -297,61 +270,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
     }
     
-    //if you don't add these spaces, the sizes of the list boxes get all
-    //messed up.
-    if(otheritems.size()==0)
-    {
-      otheritems.addElement(" ");
-    }
-    if(entityitems.size()==0)
-    {
-      entityitems.addElement(" ");
-    }
     
-    //create the banner panel
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    //MBJ ImageIcon head = new ImageIcon(
-                         //MBJ cl.getResource("../framework/smallheader-bg.gif"));
-    //MBJ ImageIcon logoIcon = 
-              //MBJ new ImageIcon(cl.getResource("../framework/logo-icon.gif"));
-    JLabel logoLabel = new JLabel();
-    JLabel headLabel = new JLabel("Package Editor");
-    //MBJ logoLabel.setIcon(logoIcon);
-    //MBJ headLabel.setIcon(head);
-    headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-    headLabel.setHorizontalAlignment(SwingConstants.LEFT);
-    headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
-    headLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    headLabel.setForeground(Color.black);
-    headLabel.setFont(new Font("Dialog", Font.BOLD, 14));
-    headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-    JPanel toppanel = new JPanel();
-    toppanel.setLayout(new BoxLayout(toppanel, BoxLayout.X_AXIS));
-    toppanel.add(logoLabel);
-    toppanel.add(headLabel);
-    
-    listPanel = createListPanel(entityitems, otheritems);
-    JPanel layoutPanel = new JPanel();
-    layoutPanel.setLayout(new GridLayout(2,1,8,8));
-//    layoutPanel.setPreferredSize(new Dimension(450, 500));
-//    layoutPanel.setMinimumSize(new Dimension(450, 500));
-/*    
-    basicInfoPanel.setPreferredSize(new Dimension(500, 250));
-    basicInfoPanel.setMaximumSize(new Dimension(500, 250));
-    basicInfoPanel.setMinimumSize(new Dimension(500, 250));
-*/    //basicInfoPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
-    
-    toppanel.setAlignmentX(0);
-    basicInfoPanel.setAlignmentX(0);
-    listPanel.setAlignmentX(0);
-    
-    contentPane.add(BorderLayout.NORTH, toppanel);
-//    layoutPanel.add(toppanel);      
-//    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
-    layoutPanel.add(basicInfoPanel);
-//    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
-    layoutPanel.add(listPanel);
-    contentPane.add(BorderLayout.CENTER,layoutPanel);
   }
   
   /**
@@ -390,7 +309,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   /**
    * creates the basicinfopanel
    */
-  public JPanel createBasicInfoPanel()
+  public void createBasicInfoPanel()
   {
     String authorList = "";
     
@@ -401,37 +320,15 @@ public class DataPackageGUI extends javax.swing.JFrame
     String keywordPath = config.get("datasetKeywordPath", 0);
     String originatorPath = config.get("datasetOriginatorPath", 0);
     
-    //layout the big main panel
-    JPanel textpanel = new JPanel();
-   // textpanel.setBorder(BorderFactory.createCompoundBorder(
-   //                     BorderFactory.createLoweredBevelBorder(),
-   //                     BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-//    textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
-    textpanel.setLayout(new BorderLayout());
-    textpanel.setBackground(Color.white);
-    //the button to edit the base info
-    editBaseInfoButton = new JButton("Edit");
-    editBaseInfoButton.addActionListener(this);
-    editBaseInfoButton.setActionCommand("Edit Basic Information");
-    //the top label
-    JLabel headerLabel = new JLabel(htmlBegin + 
-                                    "<font size=4>Basic Package Information" +
-                                    "</font>" + htmlEnd);
-    JPanel headerPanel = new JPanel();
-    headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
-    headerPanel.add(headerLabel);
-    headerPanel.add(Box.createHorizontalGlue());
-    headerPanel.add(editBaseInfoButton);
-  //  headerPanel.setBackground(Color.white);
     
     Document doc = dataPackage.getTripleFileDom();
     
-    NodeList idNL;
-    NodeList shortNameNL;
-    NodeList titleNL;
-    NodeList abstractNL;
-    NodeList keywordNL;
-    NodeList originatorNL;
+    NodeList idNL = null;
+    NodeList shortNameNL = null;
+    NodeList titleNL = null;
+    NodeList abstractNL = null;
+    NodeList keywordNL = null;
+    NodeList originatorNL = null;
     
     try
     {
@@ -447,7 +344,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     {
       Log.debug(0, "Error selecting nodes from package file.");
       e.printStackTrace();
-      return null;
     }
     
     //get the data from the nodes
@@ -559,438 +455,15 @@ public class DataPackageGUI extends javax.swing.JFrame
           }
           name = firstName + " " + lastName;
         }
-        else if(nodename.equals("organizationName"))
-        {
-          orgname = getTextValue(n);
-//          orgname = n.getFirstChild().getNodeValue().trim();
-        }
-        else if(nodename.equals("address"))
-        {
-          NodeList children = n.getChildNodes();
-          String dp = "";
-          String city = "";
-          String aa = "";
-          String pc = "";
-          for(int j=0; j<children.getLength(); j++)
-          {
-            Node cn = children.item(j); //child node
-            String cnn = cn.getNodeName().trim(); //child node name
-            if(cnn.equals("deliveryPoint"))
-            {
-              dp = getTextValue(cn);
- //             dp = cn.getFirstChild().getNodeValue().trim();
-            }
-            else if(cnn.equals("city"))
-            {
-              city = getTextValue(cn);
-//              city = cn.getFirstChild().getNodeValue().trim();
-            }
-            else if(cnn.equals("administrativeArea"))
-            {
-              aa = getTextValue(cn);
-//              aa = cn.getFirstChild().getNodeValue().trim();
-            }
-            else if(cnn.equals("postalCode"))
-            {
-              pc = getTextValue(cn);
-//              pc = cn.getFirstChild().getNodeValue().trim();
-            }
-          }
-          
-          if(!city.equals(""))
-          {
-            address = htmlize(dp) + city + ", " + aa + "  " + pc;
-          }
-          else
-          {
-            address = htmlize(dp) + aa + " " + pc;
-          }
-        }
-        else if(nodename.equals("phone"))
-        {
-          phone = getTextValue(n);
- //         phone = n.getFirstChild().getNodeValue().trim();
-        }
-        else if(nodename.equals("electronicMailAddress"))
-        {
-          email = getTextValue(n);
-//          email = n.getFirstChild().getNodeValue().trim();
-        }
-        else if(nodename.equals("onlineLink"))
-        {
-          web = getTextValue(n);
-//          web = n.getFirstChild().getNodeValue().trim();
-        }
-        else if(nodename.equals("role"))
-        {
-          role = getTextValue(n);
-//          role = n.getFirstChild().getNodeValue().trim();
-        }
       }
-      originators += htmlize(name) + htmlize(orgname) + htmlize(address) + 
-                     htmlize(phone) + htmlize(email) + htmlize(web) +
-                     htmlize(role) + "<br>";
                      
       authorList = authorList + name + ", ";          
     }
     authorRefLabel = authorList;
     
- //   System.out.println("Ref Label: "+referenceLabel);
-    
-    wholelabel += originators + "</html>";
-//    JLabel biglabel = new JLabel(wholelabel);
-    biglabel = new JEditorPane("text/html",wholelabel);
-    biglabel.setEditable(false);
-//    biglabel.setContentType("text/html");
-//    biglabel.setText(wholelabel);
-//    biglabel.setMaximumSize(new Dimension(350,1000));
- /*   JPanel biglabelPanel = new JPanel();
-    biglabelPanel.setLayout(new BoxLayout(biglabelPanel, BoxLayout.Y_AXIS));
-    biglabelPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
-    biglabel.setAlignmentX(0);
-    biglabelPanel.add(biglabel);
-    biglabelPanel.setBackground(Color.white);
-*/    
-    headerPanel.setAlignmentX(0);
-    textpanel.add(BorderLayout.NORTH,headerPanel);
-//    biglabelPanel.setAlignmentX(0);
-    tpscroll = new JScrollPane(biglabel);
-//    tpscroll.getViewport().add(biglabel);
-    textpanel.add(BorderLayout.CENTER,tpscroll);
-    return textpanel;
   }
   
-  /**
-   * creates the list panel with the list boxes
-   */
-  private JPanel createListPanel(Vector entityfiles, 
-                                 Vector otherfiles)
-  { 
-    JPanel listPanel = new JPanel();
-    JPanel outerPanel = new JPanel();
-    
-    JButton dataFileAdd = new JButton("Add");
-    dataFileAdd.addActionListener(this);
-    JButton dataFileRemove = new JButton("Remove");
-    dataFileRemove.addActionListener(this);
-    JButton dataFileEdit = new JButton("Edit");
-    dataFileEdit.addActionListener(this);
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    buttonPanel.add(dataFileAdd);
-    buttonPanel.add(dataFileRemove);
-    buttonPanel.add(dataFileEdit);
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    
-    //////////////entity files////////////////////////
-    
-    entityFileList = new JList(entityfiles);
- //   entityFileList.setPreferredSize(new Dimension(60, 70));
- //   entityFileList.setMaximumSize(new Dimension(60, 70));
-    entityFileList.addListSelectionListener(new EntitySelectionHandler());
-    entityFileList.addMouseListener(new MouseAdapter()
-    {
-      public void mouseClicked(MouseEvent e)
-      {
-        if(e.getClickCount() == 2) 
-        {
-          actionPerformed(new ActionEvent(this, 0, "EditEntity"));
-        }
-      }
-    });
-//    entityFileList.setVisibleRowCount(10);
-    JScrollPane entityFileScrollPane = new JScrollPane(entityFileList);
-    JPanel entityFileButtonList = new JPanel();
-    entityFileButtonList.setLayout(new BoxLayout(entityFileButtonList,
-                                                 BoxLayout.Y_AXIS));
-    entityFileButtonList.add(new JLabel("Table Descriptions"));
-    entityFileButtonList.add(entityFileScrollPane);
-    
-//    listPanel.add(entityFileButtonList);
-    
-    ////////////////other files//////////////////////
-    
-    otherFileList = new JList(otherfiles);
-//    otherFileList.setPreferredSize(new Dimension(60, 70));
-//    otherFileList.setMaximumSize(new Dimension(60, 70));
-    otherFileList.addListSelectionListener(new OtherSelectionHandler());
-    otherFileList.addMouseListener(new MouseAdapter()
-    {
-      public void mouseClicked(MouseEvent e)
-      {
-        if(e.getClickCount() == 2) 
-        {
-          actionPerformed(new ActionEvent(this, 0, "Edit"));
-        }
-      }
-    });
-//    otherFileList.setVisibleRowCount(10);
-    JScrollPane otherFileScrollPane = new JScrollPane(otherFileList);
-    JPanel otherFileButtonList = new JPanel();
-    otherFileButtonList.setLayout(new BoxLayout(otherFileButtonList,
-                                               BoxLayout.Y_AXIS));
-    otherFileButtonList.add(new JLabel("Other Information"));
-    otherFileButtonList.add(otherFileScrollPane);
-    
-    //listPanel.setBorder(BorderFactory.createCompoundBorder(
-    //                    BorderFactory.createTitledBorder(
-    //                    /*"Package Members"*/""),
-    //                   BorderFactory.createEmptyBorder(4, 4, 4, 4)));
-    listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.X_AXIS));
-    //listPanel.setPreferredSize(new Dimension(300, 100));
-    
-    
-    outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
-    listPanel.add(otherFileButtonList);
-    //outerPanel.setPreferredSize(new Dimension(500, 100));
-    outerPanel.add(listPanel);
-    outerPanel.add(buttonPanel);
-    
-    return outerPanel; 
-  }
   
-  /**
-   * Handles actions from all components in the Container  
-   */
-  public void actionPerformed(ActionEvent e) 
-  {
-    String command = e.getActionCommand();
-    Log.debug(11, "action fired: " + command);
-    EditorInterface editor;
-    String item = null;
-    
-    if(command.equals("Edit Basic Information"))
-    { //this is the button that edits the basic info.
-      //just set the item to the appropriate id and the let the edit
-      //if statement take care of it.
-      item = "Base Info (" + dataPackage.getID() + ")";
-      command = "Edit";
-    }
-    
-    if(command.equals("Edit"))
-    { //edit the currently select package member
-      try
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                        services.getServiceProvider(EditorInterface.class);
-        editor = (EditorInterface)provider;
-      }
-      catch(Exception ee)
-      {
-        Log.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
-        ee.printStackTrace();
-        return;
-      }
-      
-      if(item == null)
-      {
-        if(otherFileList.getSelectedIndex() == -1)
-        {
-          if(entityFileList.getSelectedIndex() == -1)
-          { //nothing is selected, give an error and return
-            Log.debug(1, "You must select an item to edit.");
-            return;
-          }
-          else
-          { 
-            actionPerformed(new ActionEvent(this, 0, "EditEntity"));
-            return;
-          }
-        }
-        else
-        {
-          item = (String)otherFileList.getSelectedValue();
-        }
-      }
-      
-      String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
-
-      StringBuffer sb = new StringBuffer();
-      Reader reader = null;
-      try {
-        reader = dataPackage.openAsReader(id);
-        char[] buff = new char[4096];
-        int numCharsRead;
-      
-        while ((numCharsRead = reader.read( buff, 0, buff.length ))!=-1) {
-            sb.append(buff, 0, numCharsRead);
-        }
-      } catch (DocumentNotFoundException dnfe) {
-        Log.debug(0, "Error finding file : "+id+" "+dnfe.getMessage());
-        return;
-      } catch (IOException ioe) {
-        Log.debug(0, "Error reading file : "+id+" "+ioe.getMessage());
-      } finally {
-        try { reader.close();
-        } catch (IOException ce) {  
-          Log.debug(12, "Error closing Reader : "+id+" "+ce.getMessage());
-        }
-      }
-      editor.openEditor(sb.toString(), id, location, this);
-      
-    } else if(command.equals("Add")) {
-    
-      //AddMetadataWizard npmw 
-                        //= new AddMetadataWizard(morpho, false, dataPackage);
-      this.dispose();                                                          
-      //npmw.show();
-      //npmw.setName("New Description Wizard:" + dataPackage.getID());
-    
-    }
-    else if(command.equals("Remove"))
-    {
-      int sure = JOptionPane.showConfirmDialog(null, 
-                                 "If you remove this package member it will " +
-                                 "no longer be available in this package. " +
-                                 "Are you sure you want to do this?", 
-                                 "Package Editor", 
-                                 JOptionPane.YES_NO_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-      if(sure == JOptionPane.NO_OPTION || sure == JOptionPane.CANCEL_OPTION)
-      { //let the user opt out of this if it was an accident.
-        return;
-      }
-      
-      item = "";
-      if(otherFileList.getSelectedIndex() == -1)
-      {
-        if(entityFileList.getSelectedIndex() == -1)
-        { //nothing is selected, give an error and return
-          Log.debug(1, "You must select an item to edit.");
-          return;
-        }
-        else
-        { 
-          item = (String)entityFileList.getSelectedValue();
-          item = item + "(" + (String)listValueHash.get(item) + ")";
-        }
-      }
-      else
-      {
-        item = (String)otherFileList.getSelectedValue();
-      }
-      //get the id of the file that is to be removed.
-      String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
-      
-      //remove the file.
-      boolean locMetacat = false;
-      boolean locLocal = false;
-      if(location.equals(DataPackageInterface.METACAT) || 
-         location.equals(DataPackageInterface.BOTH))
-      {
-        locMetacat = true;
-      }
-      if(location.equals(DataPackageInterface.LOCAL) ||
-         location.equals(DataPackageInterface.BOTH))
-      {
-        locLocal = true;
-      }
-      
-      FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-      AccessionNumber a = new AccessionNumber(morpho);
-      
-      //remove the file id from the triples in the package file.
-      String newPackageFile = PackageUtil.deleteTriplesInTriplesFile(id, 
-                                                                    dataPackage,
-                                                                    morpho);
-      File tempPackageFile = fsds.saveTempFile("tmp.0", 
-                                             new StringReader(newPackageFile));
-      String newPackageId = a.incRev(dataPackage.getID());
-      newPackageFile = a.incRevInTriples(tempPackageFile, dataPackage.getID(), 
-                                         newPackageId);
-      //delete the files.
-      if(locLocal)
-      { //delete locally
-        boolean deleted = false;
-        try
-        {
-          deleted = fsds.deleteFile(id);
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile));
-        }
-        catch(Exception ee)
-        {
-          Log.debug(0, "Error saving package file and/or deleting" +
-                                " requested file: " + ee.getMessage());
-        }
-        
-        if(!deleted)
-        {
-          Log.debug(0, "Error deleting requested file.");
-        }
-      }
-      
-      if(locMetacat)
-      { //delete on metacat
-        boolean deleted = false;
-        try
-        {
-          MetacatDataStore mds = new MetacatDataStore(morpho);
-          deleted = mds.deleteFile(id);
-          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       dataPackage);
-        }
-        catch(Exception eee)
-        {
-          Log.debug(0, "Error saving package file and/or deleting" +
-                          " requested file from Metacat: " + eee.getMessage()); 
-        }
-        
-        if(!deleted)
-        {
-          Log.debug(0, "Error deleting requested file from " +
-                                "Metacat.");
-        }
-      }
-      
-      //refresh the PE
-      this.dispose();
-      DataPackage newpack = new DataPackage(location, newPackageId, null, 
-                                            morpho, true);
-      DataPackageGUI dpg = new DataPackageGUI(morpho, newpack);
-
-      /* Not needed because owner query no longer exists to be refreshed
-      // Refresh the query results after the edit is completed
-      try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                      services.getServiceProvider(QueryRefreshInterface.class);
-        ((QueryRefreshInterface)provider).refresh();
-      } catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
-      }
-      */
-
-      dpg.show();
-    }
-    else if(command.equals("EditEntity"))
-    {
-      item = "";
-      if(otherFileList.getSelectedIndex() == -1)
-      {
-        if(entityFileList.getSelectedIndex() == -1)
-        { //nothing is selected, give an error and return
-          Log.debug(1, "You must select an item to edit.");
-          return;
-        }
-        else
-        { 
-          item = (String)entityFileList.getSelectedValue();
-          item = item + "(" + (String)listValueHash.get(item) + ")";
-        }
-      }
-      else
-      {
-        item = (String)otherFileList.getSelectedValue();
-      }
-      
-      String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
-      Log.debug(20, "Edititing entity: " + id);
-      EntityGUI entityEdit = new EntityGUI(dataPackage, id, location, this, 
-                                           morpho);
-      entityEdit.show();
-    }
-  }
   
   /**
    * puts correct html tags on the string provided.  if the string is null
@@ -1024,233 +497,9 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
   }
   
-  /**
-   * this is called whenever the editor exits.  the file returned is saved
-   * back to its  original location.
-   * @param xmlString the xml in string format
-   * @param id the id of the file
-   * @param location the location of the file
-   */
-  public void editingCompleted(String xmlString, String id, String location)
-  {
-    //System.out.println(xmlString);
-    Log.debug(11, "editing complete: id: " + id + " location: " + location);
-    AccessionNumber a = new AccessionNumber(morpho);
-    boolean metacatpublic = false;
-    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-    //System.out.println(xmlString);
-  
-    boolean metacatloc = false;
-    boolean localloc = false;
-    boolean bothloc = false;
-    String newid = "";
-    String newPackageId = "";
-    if(location.equals(DataPackageInterface.BOTH))
-    {
-      metacatloc = true;
-      localloc = true;
-    }
-    else if(location.equals(DataPackageInterface.METACAT))
-    {
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.LOCAL))
-    {
-      localloc = true;
-    }
-  
-    try
-    { 
-      if(localloc)
-      { //save the file locally
-        if(id.trim().equals(dataPackage.getID().trim()))
-        { //we just edited the package file itself
-          String oldid = id;
-          newid = a.incRev(id);
-          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          fsds.saveFile(newid, new StringReader(newPackageFile));
-          newPackageId = newid;
-        }
-        else
-        { //we edited a file in the package
-          Vector newids = new Vector();
-          Vector oldids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
-          fsds.saveFile(newid, new StringReader(xmlString));
-          newPackageId = a.incRev(dataPackage.getID());
-          oldids.addElement(oldid);
-          oldids.addElement(dataPackage.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
-                                                    oldids, 
-                                                    newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);          
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      Log.debug(0, "Error saving file locally"+ id + " to " + location +
-                         "--message: " + e.getMessage());
-      Log.debug(11, "File: " + xmlString);
-      e.printStackTrace();
-    }
     
-    try
-    {
-      if(metacatloc)
-      { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(morpho);
-        
-        if(id.trim().equals(dataPackage.getID().trim()))
-        { //edit the package file
-          Vector oldids = new Vector();
-          Vector newids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
-          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          oldids.addElement(oldid);
-          newids.addElement(newid);
-          String newPackageFile = a.incRevInTriples(f, oldids, newids);
-          mds.saveFile(newid, new StringReader(newPackageFile), 
-                       dataPackage);
-          newPackageId = newid;
-        }
-        else
-        { //edit another file in the package
-          Vector oldids = new Vector();
-          Vector newids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
- //         mds.saveFile(newid, new StringReader(xmlString), dataPackage);
-          Vector names = new Vector();
-          Vector readers = new Vector();
-          names.addElement(newid);
-          readers.addElement(new StringReader(xmlString));
-          newPackageId = a.incRev(dataPackage.getID());
-          //increment the package files id in the triples
-          oldids.addElement(oldid);
-          oldids.addElement(dataPackage.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
-                                                    oldids,
-                                                    newids);
-//          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-//                       dataPackage);
-          names.addElement(newPackageId);
-          readers.addElement(new StringReader(newPackageFile));
-          String res = mds.saveFilesTransaction(names, readers, dataPackage);
-          Log.debug(20,"Transaction result is: "+res);
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      String message = e.getMessage();
-      if(message.indexOf("Next revision number must be") != -1)
-      {
-        Log.debug(0,"The file you are attempting to update " +
-                                 "has been changed by another user.  " +
-                                 "Please refresh your query screen, " + 
-                                 "open the package again and " +
-                                 "re-enter your changes.");
-      /* Not needed because owner query no longer exists
-        try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                      services.getServiceProvider(QueryRefreshInterface.class);
-        ((QueryRefreshInterface)provider).refresh();
-        } 
-        catch (ServiceNotHandledException snhe) 
-        {
-          Log.debug(6, snhe.getMessage());
-        }
-      */
-        this.dispose();
-        return;
-      }
-      Log.debug(0, "Error saving file to metacat "+ id + " to " + location +
-                         "--message: " + e.getMessage());
-      //Log.debug(11, "File: " + xmlString);
-      e.printStackTrace();
-    }
-    
-      DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 morpho, true);
-
-      /* Not needed because owner query no longer exists
-      // Refresh the query results after the edit is completed
-      try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                      services.getServiceProvider(QueryRefreshInterface.class);
-        ((QueryRefreshInterface)provider).refresh();
-      } catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
-      }
-      */
-    
-      this.dispose();
-      DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
-      newgui.show();
-    
-  }
   
-  public void editingCanceled(String xmlString, String id, String location)
-  { //do nothing
-  }
   
-  public void windowClosed(WindowEvent event)
-  {
-    //MBJ framework.removeWindow(this);
-  }
-  
-  public void windowClosing(WindowEvent event)
-  {
-    //MBJ framework.removeWindow(this);
-  }
-  public void windowActivated(WindowEvent event)
-  {
-    }
-  public void windowDeactivated(WindowEvent event)
-  {}
-  public void windowIconified(WindowEvent event)
-  {}
-  public void windowDeiconified(WindowEvent event)
-  {}
-  public void windowOpened(WindowEvent event)
-  {
-    }
-  
-  /**
-   * makes sure that there is only one file selected in the list boxes at
-   * any given time
-   */
-  private class EntitySelectionHandler implements ListSelectionListener
-  {
-    public void valueChanged(ListSelectionEvent e)
-    {
-      otherFileList.clearSelection();
-    }
-  }
-  
-  /**
-   * makes sure that there is only one file selected in the list boxes at
-   * any given time
-   */
-  private class OtherSelectionHandler implements ListSelectionListener
-  {
-    public void valueChanged(ListSelectionEvent e)
-    {
-      entityFileList.clearSelection();
-    }
-  }
   
   
   private String getTextValue(Node nd) {
