@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-16 23:22:23 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2002-09-17 20:30:14 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -980,15 +980,6 @@ public class DataViewer extends javax.swing.JPanel
     
     table.setColumnSelectionAllowed(true);
     table.setRowSelectionAllowed(true);
-    DelimiterCellEditor editor = 
-                           new DelimiterCellEditor(field_delimiter, TablePanel);
-    // Set table cell editor for each column
-    TableColumnModel columnModel = table.getColumnModel();
-    for (int j = 0; j< table.getColumnCount(); j++)
-    {
-      columnModel.getColumn(j).setCellEditor(editor);
-    }
- //   table.setCellSelectionEnabled(true);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	  (table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -1009,10 +1000,38 @@ public class DataViewer extends javax.swing.JPanel
     JTableHeader header = table.getTableHeader();
     header.addMouseListener(new HeaderMouseListener());
     
-   
+    setUpDelimiterEditor(table, field_delimiter, TablePanel);
+ 
 	}
+  
+  /*
+   * Method to set a table's interger and string column editor
+   */
+   private void setUpDelimiterEditor(JTable jtable, String delimiter,
+                                                         JPanel pane) 
+   {
+      //Set up the editor for the integer and string cells.
+      int columns = jtable.getColumnCount();
+      final DelimiterField delimiterField = 
+                              new DelimiterField(pane, delimiter, "", columns);
+      delimiterField.setHorizontalAlignment(DelimiterField.RIGHT);
 
-
+      DefaultCellEditor delimiterEditor =
+            new DefaultCellEditor(delimiterField) 
+            {
+                //Override DefaultCellEditor's getCellEditorValue method
+                public Object getCellEditorValue() 
+                {
+                    return new String(delimiterField.getValue());
+                }
+            };
+       TableColumnModel columnModel = jtable.getColumnModel();
+       for (int j = 0; j< columns; j++)
+       {
+          columnModel.getColumn(j).setCellEditor(delimiterEditor);
+       }
+     
+    }
   /**
    * Event handler for the right click popup menu
    */
@@ -1086,14 +1105,8 @@ public class DataViewer extends javax.swing.JPanel
             column_labels.insertElementAt(newHeader, sel);
             ptm.insertColumn(sel); 
             pv = ptm.getPersistentVector();
-            DelimiterCellEditor editor =
-                          new DelimiterCellEditor(field_delimiter, TablePanel);
-            // Set table cell editor for each column
-            TableColumnModel columnModel = table.getColumnModel();
-            for (int j = 0; j< table.getColumnCount(); j++)
-            {
-               columnModel.getColumn(j).setCellEditor(editor);
-            }
+            setUpDelimiterEditor(table, field_delimiter, TablePanel);
+          
           
           }
         }
@@ -1122,15 +1135,8 @@ public class DataViewer extends javax.swing.JPanel
             column_labels.insertElementAt(newHeader, sel+1);
             ptm.insertColumn(sel+1); 
             pv = ptm.getPersistentVector();
-            
-            DelimiterCellEditor editor =
-                           new DelimiterCellEditor(field_delimiter, TablePanel);
-            // Set table cell editor for each column
-            TableColumnModel columnModel = table.getColumnModel();
-            for (int j = 0; j< table.getColumnCount(); j++)
-            {
-               columnModel.getColumn(j).setCellEditor(editor);
-            }
+            setUpDelimiterEditor(table, field_delimiter, TablePanel);
+          
           }
         }        
       }
