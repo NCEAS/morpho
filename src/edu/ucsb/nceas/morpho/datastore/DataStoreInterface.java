@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 19:27:43 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-01-27 21:31:32 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public interface DataStoreInterface
    * with the id name does not exist in the datastore.  Throws IOException
    * if a there is a communications problem with the datastore.
    */
-  public File openFile(String name) throws MetacatDownloadException, 
+  public File openFile(String name) throws FileNotFoundException, 
                                            CacheAccessException;
   
   /**

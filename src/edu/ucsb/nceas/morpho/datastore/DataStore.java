@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 19:27:43 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-01-27 21:31:32 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ public abstract class DataStore implements DataStoreInterface
            PackageUtil.print(doc.getDocumentElement());
   }
   
-  abstract public File openFile(String name) throws MetacatDownloadException, 
+  abstract public File openFile(String name) throws FileNotFoundException, 
                                                     CacheAccessException;
   abstract public File saveFile(String name, Reader file)
            throws Exception;
