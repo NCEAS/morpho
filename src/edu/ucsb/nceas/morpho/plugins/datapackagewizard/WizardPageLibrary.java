@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-04 23:19:44 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-03 00:45:40 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,10 @@ public class WizardPageLibrary {
     pages.put(KEYWORDS,       new Keywords());
 //    pages.put(KEYWORDS_DIALOG,  new KeywordsDialog());
     pages.put(PARTY_INTRO,    new PartyIntro());
+    pages.put(PARTY_CREATOR,    new PartyCreator());
+//    pages.put(PARTY_CONTACT,    new PartyContact());
+//    pages.put(PARTY_ASSOCIATED,    new PartyAssociated());
+    
     pages.put(USAGE_RIGHTS,   new UsageRights());
     pages.put(DATA_LOCATION,  new DataLocation());
     pages.put(DATA_FORMAT,    new DataFormat());
@@ -109,6 +113,9 @@ public class WizardPageLibrary {
   public static final String KEYWORDS         = "KEYWORDS";
   public static final String KEYWORDS_DIALOG  = "KEYWORDS_DIALOG";
   public static final String PARTY_INTRO      = "PARTY_INTRO";
+  public static final String PARTY_CREATOR    = "PARTY_CREATOR";
+  public static final String PARTY_CONTACT    = "PARTY_CONTACT";
+  public static final String PARTY_ASSOCIATED = "PARTY_ASSOCIATED";
   public static final String USAGE_RIGHTS     = "USAGE_RIGHTS";
   public static final String DATA_LOCATION    = "DATA_LOCATION";
   public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";

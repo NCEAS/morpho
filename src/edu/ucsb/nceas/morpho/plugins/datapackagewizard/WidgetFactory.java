@@ -275,12 +275,14 @@ public class WidgetFactory {
                                     int displayRows, 
                                     boolean showAddButton, 
                                     boolean showEditButton,       
+                                    boolean showDuplicateButton,       
                                     boolean showDeleteButton, 
                                     boolean showMoveUpButton,     
                                     boolean showMoveDownButton) {
 
     return new CustomList(colNames, colTemplates, displayRows, showAddButton,       
-        showEditButton, showDeleteButton, showMoveUpButton, showMoveDownButton);
+        showEditButton, showDuplicateButton, showDeleteButton, showMoveUpButton, 
+                                                            showMoveDownButton);
   }
   
 

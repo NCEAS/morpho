@@ -1,5 +1,5 @@
 /**
- *  '$RCSfile: PartyIntro.java,v $'
+ *  '$RCSfile: PartyCreator.java,v $'
  *    Purpose: A class that handles xml messages passed by the 
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
@@ -9,7 +9,7 @@
  *
  *   '$Author: brooke $'
  *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.3 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,26 +30,40 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
-import java.util.Map;
+//import java.util.Map;
 
 import javax.swing.JLabel;
+import javax.swing.Action;
+import javax.swing.JFrame;
+import javax.swing.AbstractAction;
+
+import java.awt.event.ActionEvent;
 
 import java.awt.BorderLayout;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-public class PartyIntro extends AbstractWizardPage{
+public class PartyCreator extends AbstractWizardPage{
 
-  public final String pageID     = WizardPageLibrary.PARTY_INTRO;
-  public final String nextPageID = WizardPageLibrary.PARTY_CREATOR;
-  public final String title      = "General Dataset Information:";
-  public final String subtitle   = "Responsible Parties";
+  public final String pageID     = WizardPageLibrary.PARTY_CREATOR;
+  public final String nextPageID = WizardPageLibrary.USAGE_RIGHTS;
+  public final String title      = "Dataset Associated Parties:";
+  public final String subtitle   = "Creators";
   
+  private final String[] colNames =  {"Party", "Role", "Address"};
+  private final Object[] editors  =   null; //makes non-editable
 
-  public PartyIntro() {
+  private CustomList creatorList;
+  private PartyDialog partyDialog;
+  
+  public PartyCreator() {
     
     init();
   }
@@ -60,36 +74,45 @@ public class PartyIntro extends AbstractWizardPage{
    */
   private void init() {
     
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-    "<p>A data package may have a number of parties involved, which "
-    +"generally include roles such as 'creator' and other 'associated parties' "
-    +"('principal investigator','author', etc.). </p><br></br>"
-    +"<p>Each party may be an individual person, an organization, or potentially "
-    +"a named position within an organization.  Types of parties involved "
-    +"often range from authors and analysts to technicians and funding "
-    +"organizations. </p><br></br>"
-    +"<p>The following parties must be described when creating a data package: "
-    +"</p><br></br><ul>"
-    +"<li>Creator: The full name of the person, organization, or position who "
-    +"created the resource. The list of creators for a resource represent the "
-    +"people and organizations who should be cited for the resource. "
-    +"<br></br>Example: "
-    +"For a book, the creators are its authors. <br></br></li>"
-    +"<li>Contact:  contains contact information for this dataset. This is the "
-    +"person or institution to contact with questions about the use or "
-    +"interpretation of a data set. <br></br></li>"
-    +"<li>Associated Party: provides the full name of other people, organizations, "
-    +"or positions who should be associated with the resource. These parties "
-    +"might play various roles in the creation or maintenance of the resource, "
-    +"and these roles should be indicated in the \"role\" element. "
-    +"<br></br>Example: "
-    +"The technician who collected the data.<br></br></li>", 10);
-    
-    
     this.setLayout(new BorderLayout());
-    this.add(desc, BorderLayout.CENTER);
+  
+    JLabel desc = WidgetFactory.makeHTMLLabel(
+      "<p>CREATOR: The full name of the person, organization or position who "
+      +"created the resource.  The list of creators for a resource represent "
+      +"the people and organizations who should be cited for the resource"
+      +"<br></br></p>", 3);
+    this.add(desc, BorderLayout.NORTH);
+    
+    creatorList = WidgetFactory.makeList(colNames, editors, 4,
+                                    true, true, true, true, true, true );
+    this.add(creatorList);
+    initActions();
   }
 
+  
+  /** 
+   *  Custom actions to be initialized for list buttons
+   */
+  private void initActions() {
+  
+    creatorList.setCustomAddAction( 
+      
+      new AbstractAction() {
+    
+        public void actionPerformed(ActionEvent e) {
+      
+          Log.debug(45, "\nPartyCreator: CustomAddAction called");
+          showPartyDialog();
+        }
+      });
+  }
+  
+  private void showPartyDialog() {
+    
+    partyDialog 
+            = new PartyDialog(WizardContainerFrame.frame, PartyDialog.CREATOR);
+  }
+  
   
   /** 
    *  The action to be executed when the page is displayed. May be empty

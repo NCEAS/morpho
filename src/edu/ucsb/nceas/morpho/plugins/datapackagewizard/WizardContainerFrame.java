@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-04 23:19:44 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-03 00:45:40 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,13 +61,15 @@ import java.util.Iterator;
 public class WizardContainerFrame extends JFrame {
 
   
+  public static JFrame frame;
+
   /**
    * Constructor
    */
   public WizardContainerFrame() {
   
     super();
-
+    frame = this;
     pageStack   = new Stack();
     pageLib = new WizardPageLibrary();
     init();

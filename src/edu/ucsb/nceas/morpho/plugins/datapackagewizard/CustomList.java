@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-30 03:02:31 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-03 00:45:40 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
+import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import javax.swing.Box;
@@ -79,6 +80,7 @@ public class CustomList extends JPanel {
 
   private JButton addButton;
   private JButton editButton;
+  private JButton duplicateButton;
   private JButton deleteButton;
   private JButton moveUpButton;
   private JButton moveDownButton;
@@ -86,25 +88,33 @@ public class CustomList extends JPanel {
 
   private boolean showAddButton;
   private boolean showEditButton;
+  private boolean showDuplicateButton;
   private boolean showDeleteButton;
   private boolean showMoveUpButton;
   private boolean showMoveDownButton;
   
-  protected static  AddAction       addAction;
+  protected static  AddAction     addAction;
   private static  TableModelEvent tableModelEvent;
   
-
+  // these Actions are optional, but are defined by the caller to provide 
+  // custom functionality for the list buttons
+  private Action customAddAction;
+  private Action customEditAction;
+  private Action customDuplicateAction;
+  private Action customDeleteAction;
+  ////////////
   
   public CustomList(String[] colNames, Object[] columnEditors, int displayRows, 
-                    boolean showAddButton, 
-                    boolean showEditButton,       boolean showDeleteButton, 
+                    boolean showAddButton,        boolean showEditButton, 
+                    boolean showDuplicateButton,  boolean showDeleteButton, 
                     boolean showMoveUpButton,     boolean showMoveDownButton) { 
   
-    this.showAddButton      = showAddButton;
-    this.showEditButton     = showEditButton;
-    this.showDeleteButton   = showDeleteButton;
-    this.showMoveUpButton   = showMoveUpButton;
-    this.showMoveDownButton = showMoveDownButton;
+    this.showAddButton        = showAddButton;
+    this.showEditButton       = showEditButton;
+    this.showDuplicateButton  = showDuplicateButton;
+    this.showDeleteButton     = showDeleteButton;
+    this.showMoveUpButton     = showMoveUpButton;
+    this.showMoveDownButton   = showMoveDownButton;
     
     init(colNames, displayRows, columnEditors); 
   }
@@ -153,13 +163,13 @@ public class CustomList extends JPanel {
 
     tableModelEvent = new TableModelEvent(table.getModel());
       
-    addAction = new AddAction(table);
-    addAction.actionPerformed(null);
+    addAction = new AddAction(table, this);
+//    addAction.addRowNoDialog();
 
-    if (table.getComponentAt(0, 0)!=null) {
-      table.editCellAt(0, 0, new EventObject(table.getComponentAt(0, 0)));
-    }
-    table.setRowSelectionInterval(0, 0);
+//    if (table.getComponentAt(0, 0)!=null) {
+//      table.editCellAt(0, 0, new EventObject(table.getComponentAt(0, 0)));
+//    }
+//    table.setRowSelectionInterval(0, 0);
       
     table.getSelectionModel().addListSelectionListener(
       new ListSelectionListener() {
@@ -174,43 +184,54 @@ public class CustomList extends JPanel {
         }
       });
       
-    for (int i=0; i<columnEditors.length; i++) {
+    if (columnEditors==null)  {
     
-      Object editor = columnEditors[i];
-      TableColumn column = table.getColumnModel().getColumn(i);
+      Log.debug(45,"NULL Column Editor Array; making ALL columns non-editable");
+      for (int colIdx=0; colIdx<table.getColumnModel().getColumnCount(); colIdx++) {
+        table.makeColumnNotEditable(colIdx);
+      } 
       
-      // if editor null, make non-editable:
-      if (editor==null) {
+    } else {
       
-        Log.debug(45, "\nNULL Column Editor; making column "+i+" non-editable");
-        table.makeColumnNotEditable(i);
+      for (int i=0; i<columnEditors.length; i++) {
+    
+        Object editor = columnEditors[i];
+        TableColumn column = table.getColumnModel().getColumn(i);
+      
+        // if editor null, make non-editable:
+        if (editor==null) {
+      
+          Log.debug(45, "\nNULL Column Editor; making column "+i+" non-editable");
+          table.makeColumnNotEditable(i);
         
-      } else {
-        
-        Log.debug(45, "\nsetting Column "+i+" Editor = "+editor);
-        if (editor instanceof JTextField) {
-        
-          Log.debug(45, "(JTextField)");
-          column.setCellEditor(new DefaultCellEditor((JTextField)editor));
-          
-        } else if (editor instanceof JCheckBox) {
-        
-          Log.debug(45, "(JCheckBox)");
-          column.setCellEditor(new DefaultCellEditor((JCheckBox)editor));
-
-        } else if (editor instanceof JComboBox) {
-        
-          Log.debug(45, "(JComboBox)");
-          column.setCellEditor(new DefaultCellEditor((JComboBox)editor));
-          
         } else {
-          
-          Log.debug(45, "(NOT RECOGNIZED)");
-          //do nothing for now. do we need other editor types??
-        }
         
+          Log.debug(45, "\nsetting Column "+i+" Editor = "+editor);
+          if (editor instanceof JTextField) {
+        
+            Log.debug(45, "(JTextField)");
+            column.setCellEditor(new DefaultCellEditor((JTextField)editor));
+          
+          } else if (editor instanceof JCheckBox) {
+        
+            Log.debug(45, "(JCheckBox)");
+            column.setCellEditor(new DefaultCellEditor((JCheckBox)editor));
+
+          } else if (editor instanceof JComboBox) {
+        
+            Log.debug(45, "(JComboBox)");
+            column.setCellEditor(new DefaultCellEditor((JComboBox)editor));
+          
+          } else {
+          
+            Log.debug(45, "(NOT RECOGNIZED - SETTING NON-EDITABLE)");
+            //make non-editable for now; do we need other editor types??
+            table.makeColumnNotEditable(i);
+          }
+        }
       }
     }
+    
     
   }
   
@@ -272,15 +293,25 @@ public class CustomList extends JPanel {
     
     if (showEditButton) {
       
-      editButton     = new JButton(new EditAction(table));
+      editButton     = new JButton(new EditAction(table, this));
       WidgetFactory.setPrefMaxSizes(editButton, WizardSettings.LIST_BUTTON_DIMS);
       editButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(editButton);
     }
     
+    if (showDuplicateButton) {
+      
+      duplicateButton = new JButton(new DuplicateAction(table, this));
+      WidgetFactory.setPrefMaxSizes(duplicateButton, WizardSettings.LIST_BUTTON_DIMS);
+      duplicateButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+      buttonBox.add(duplicateButton);
+    }
+    
+    
+    
     if (showDeleteButton) {
       
-      deleteButton   = new JButton(new DeleteAction(table));
+      deleteButton   = new JButton(new DeleteAction(table, this));
       WidgetFactory.setPrefMaxSizes(deleteButton, WizardSettings.LIST_BUTTON_DIMS);
       deleteButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(deleteButton);
@@ -356,6 +387,118 @@ public class CustomList extends JPanel {
     DefaultTableModel model = (DefaultTableModel)( table.getModel() );
     return (List)(model.getDataVector());
   }
+  
+  
+  /**
+   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @param the <code>javax.swing.Action</code> to be executed
+   */
+  public void setCustomAddAction(Action a) {
+  
+    this.customAddAction = a;
+  }
+  
+  /**
+   *  Gets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @return the <code>javax.swing.Action</code> to be executed
+   */
+  public Action getCustomAddAction() {
+  
+    return this.customAddAction;
+  }
+  
+
+  /**
+   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @param the <code>javax.swing.Action</code> to be executed
+   */
+  public void setCustomEditAction(Action a) {
+  
+    this.customEditAction = a;
+  }
+  
+  
+  /**
+   *  Gets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @return the <code>javax.swing.Action</code> to be executed
+   */
+  public Action getCustomEditAction() {
+  
+    return this.customEditAction;
+  }
+  
+
+  /**
+   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @param the <code>javax.swing.Action</code> to be executed
+   */
+  public void setCustomDuplicateAction(Action a) {
+  
+    this.customDuplicateAction = a;
+  }
+  
+  
+  /**
+   *  Gets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @return the <code>javax.swing.Action</code> to be executed
+   */
+  public Action getCustomDuplicateAction() {
+  
+    return this.customDuplicateAction;
+  }
+  
+
+  /**
+   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @param the <code>javax.swing.Action</code> to be executed
+   */
+  public void setCustomDeleteAction(Action a) {
+  
+    this.customDeleteAction = a;
+  }
+  
+  
+  /**
+   *  Gets the <code>javax.swing.Action</code> to be executed on pressing the 
+   *  appropriate list button. NOTE that the button's 'private' Action (defined 
+   *  elsewhere in this class) will be executed first, and then the custom 
+   *  action will be executed
+   *
+   *  @return the <code>javax.swing.Action</code> to be executed
+   */
+  public Action getCustomDeleteAction() {
+  
+    return this.customDeleteAction;
+  }
+  
 }
   
   
@@ -365,23 +508,41 @@ public class CustomList extends JPanel {
 class AddAction extends AbstractAction {
 
   private CustomJTable table;
+  private CustomList parentList;
   private DefaultTableModel model;
   
-  public AddAction(CustomJTable table) { 
+  public AddAction(CustomJTable table, CustomList parentList) { 
     
     super("Add"); 
     this.table = table;
+    this.parentList = parentList;
     model = (DefaultTableModel)(table.getModel());
   }
+  
   
   public void actionPerformed(ActionEvent e) {
 
     Log.debug(45, "CustomList ADD action");
+    
+    addRowNoDialog();
+    
+    //execute the user's custom action:
+    if (parentList.getCustomAddAction()!=null) {
+      parentList.getCustomAddAction().actionPerformed(null);
+    }
+  }
+  
+  
+  protected void addRowNoDialog() {
+  
     int row = table.getSelectedRow();
     if (row < 0) {
+    
       row = model.getRowCount();
       model.addRow(new Vector());
+      
     } else {
+    
       model.insertRow(++row, (Vector)null);
     }
     if (table.getEditorComponent()!=null) {
@@ -401,10 +562,12 @@ class AddAction extends AbstractAction {
 class EditAction extends AbstractAction {
 
   private CustomJTable table;
+  private CustomList parentList;
   
-  public EditAction(CustomJTable table) { 
+  public EditAction(CustomJTable table, CustomList parentList) { 
     
     super("Edit"); 
+    this.parentList = parentList;
     this.table = table;
   }
   
@@ -418,19 +581,63 @@ class EditAction extends AbstractAction {
     }
     // get object here - only a String surrogate is shown by the cell renderer, 
     // but the entire object is actually in the table model!
+  
+    //execute the user's custom action:
+    if (parentList.getCustomEditAction()!=null) {
+      parentList.getCustomEditAction().actionPerformed(null);
+    }
   }
 }
+
+
+
+
+class DuplicateAction extends AbstractAction {
+
+  private CustomJTable table;
+  private CustomList parentList;
+  
+  public DuplicateAction(CustomJTable table, CustomList parentList) { 
+    
+    super("Duplicate"); 
+    this.table = table;
+    this.parentList = parentList;
+  }
+  
+  public void actionPerformed(ActionEvent e) {
+  
+    Log.debug(45, "CustomList DUPLICATE action");  
+    int row = table.getSelectedRow();
+    if (row < 0) return;
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
+    // get object here - only a String surrogate is shown by the cell renderer, 
+    // but the entire object is actually in the table model!
+
+  
+    //execute the user's custom action:
+    if (parentList.getCustomDuplicateAction()!=null) {
+      parentList.getCustomDuplicateAction().actionPerformed(null);
+    }
+  }
+}
+
+
+
 
 class DeleteAction extends AbstractAction {
 
   private CustomJTable table;
+  private CustomList parentList;
   private DefaultTableModel model;
   private AddAction addAction;
   
-  public DeleteAction(CustomJTable table) { 
+  public DeleteAction(CustomJTable table, CustomList parentList) { 
     
     super("Delete"); 
     this.table = table;
+    this.parentList = parentList;
     model = (DefaultTableModel)(table.getModel());
   }
   
@@ -443,16 +650,22 @@ class DeleteAction extends AbstractAction {
       table.editingStopped(new ChangeEvent(table.getEditorComponent()));
     }
     model.removeRow(row);
-    if (table.getRowCount() < 1) addFirstRowBack();
+//    if (table.getRowCount() < 1) addFirstRowBack();
     table.tableChanged(CustomList.getTableModelEvent());
     table.clearSelection();
+
+  
+    //execute the user's custom action:
+    if (parentList.getCustomDeleteAction()!=null) {
+      parentList.getCustomDeleteAction().actionPerformed(null);
+    }
   }
   
-  private void addFirstRowBack() {
-  
-    if (addAction==null) addAction = new AddAction(table);
-    CustomList.addAction.actionPerformed(null);
-  }
+//  private void addFirstRowBack() {
+//  
+//    if (addAction==null) addAction = new AddAction(table, parentList);
+//    CustomList.addAction.addRowNoDialog();
+//  }
 }
 
 class MoveUpAction extends AbstractAction {

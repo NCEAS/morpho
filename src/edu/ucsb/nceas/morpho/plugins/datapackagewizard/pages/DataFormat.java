@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-30 03:02:31 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-03 00:45:40 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ public class DataFormat extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  
+  private JLabel listLabel;
   
   private JPanel getComplexTextPanel() {
     
@@ -290,9 +290,11 @@ public class DataFormat extends AbstractWizardPage{
     ////
     panel.add(WidgetFactory.makeDefaultSpacer());
   
-    panel.add(WidgetFactory.makeHTMLLabel(
-              "Define the delimited fields and/or fixed width fields "
-              +"that describe how the data is structured:", 1));
+    listLabel = WidgetFactory.makeHTMLLabel(
+                        "Define the delimited fields and/or fixed width fields "
+                        +"that describe how the data is structured:", 1);
+    
+    panel.add(listLabel);
   
  
     JComboBox pickList = WidgetFactory.makePickList(pickListVals, false, 1, 
@@ -315,7 +317,7 @@ public class DataFormat extends AbstractWizardPage{
     
                                     
     list = WidgetFactory.makeList(colNames, colTemplates, 4,
-                                  true, false, true, true, true);
+                                  true, false, false, true, true, true);
     
     panel.add(list);
   
@@ -384,9 +386,8 @@ public class DataFormat extends AbstractWizardPage{
   public void onLoadAction() {
 
     WidgetFactory.unhiliteComponent(desc2);
-//    WidgetFactory.unhiliteComponent(fileNameLabelOnline);
     WidgetFactory.unhiliteComponent(proprietaryLabel);
-//    WidgetFactory.unhiliteComponent(urlLabelOnline);
+    WidgetFactory.unhiliteComponent(listLabel);
 
     
   }
@@ -438,7 +439,12 @@ public class DataFormat extends AbstractWizardPage{
     } else if (formatXPath==COMPLEX_TEXT_XPATH) {
     
 
-      //NEED TO CALL getListAsNVP() and check for empty map - if so - prompt
+      OrderedMap listNVP = getListAsNVP();
+      
+      if (listNVP==null || listNVP.size()<1) {
+        WidgetFactory.hiliteComponent(listLabel);
+        return false;
+      }
 
     } else if (formatXPath==PROPRIETARY_XPATH) {
 
@@ -478,6 +484,8 @@ public class DataFormat extends AbstractWizardPage{
       
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
+      
+      if (nextRow.get(0)==null) continue;
       
       if (nextRow.get(0).equals(pickListVals[0])) fixedDelimStr = "textFixed/fieldWidth";
       else fixedDelimStr = "textDelimited/fieldDelimiter";
