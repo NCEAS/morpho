@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-18 21:34:07 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-02-27 00:12:48 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.editor;
 import java.util.Enumeration;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import javax.swing.BoxLayout;
@@ -38,10 +39,14 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JTree;
+import javax.swing.tree.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
+
 
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 
@@ -73,7 +78,14 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 public class PartyPanel extends JPanel
 {
 
+  SymFocus aSymFocus = new SymFocus();
+  AbstractWizardPage awp2;
+  DefaultMutableTreeNode node;
+  Node domNode;
+  String nname;
+  
   public PartyPanel(DefaultMutableTreeNode node) {
+    this.node = node;
     final DefaultMutableTreeNode fnode = node;
     JPanel jp = this;
     jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
@@ -84,15 +96,17 @@ public class PartyPanel extends JPanel
     ((PartyPage)awp).listPanel.setVisible(false);
     ((PartyPage)awp).setMaximumSize(new Dimension(800,400));
     jp.add(awp);
+    awp2 = awp;
+    setFocusLostForAllSubcomponents(awp); 
 
     DocFrame df = DocFrame.currentDocFrameInstance;
-    final Node domNode = df.writeToDOM(node);
+    domNode = df.writeToDOM(node);
     // domNode is now the DOM tree equivalent of the original JTree subtree in node
     // The parts of this DOM tree that are NOT handled by the attribute panel need to be preserved
     // so that when data from the panel is merged back, information is not lost.
     final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
     NodeInfo ni = (NodeInfo)node.getUserObject();
-     final String nname = ni.getName();
+    nname = ni.getName();
     ((PartyPage)awp).setXPathRoot("/"+nname);
     awp.setPageData(om);
 
@@ -136,10 +150,105 @@ public class PartyPanel extends JPanel
     });
     controlsPanel.add(saveButton);
     controlsPanel.add(cancelButton);
-    jp.add(controlsPanel);
+//    jp.add(controlsPanel);
     
     
     jp.setVisible(true);
+  }
+
+  void saveAction() {
+    Document doc = domNode.getOwnerDocument();
+    try{
+//        Log.debug(1, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+          // data from the panel is merged back into the DOM tree here
+          stripChildren(domNode);
+          XMLUtilities.getXPathMapAsDOMTree(awp2.getPageData(), domNode);
+//        Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+          JTree domtree = new DOMTree(doc);
+          DefaultMutableTreeNode root = (DefaultMutableTreeNode)domtree.getModel().getRoot();
+          DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
+          int index = parent.getIndex(node);
+          parent.remove(index);
+          parent.insert(root, index);
+          DocFrame df1 = DocFrame.currentDocFrameInstance;
+					DefaultMutableTreeNode fn = df1.findTemplateNodeByName(nname);
+          node = root;
+					if (fn!=null) {
+					  df1.treeUnion(root, fn);
+					}
+					df1.addXMLAttributeNodes(root);
+					df1.setAttributeNames(root);
+					NodeInfo nir = (NodeInfo)(root.getUserObject());
+					nir.setChoice(false);
+					nir.setCheckboxFlag(false);
+					(df1.treeModel).reload();
+    } catch (Exception e) {
+          Log.debug(5, "Problem in PartyPanel");
+    }
+  }
+  
+	class SymFocus extends java.awt.event.FocusAdapter
+	{
+		public void focusLost(java.awt.event.FocusEvent event)
+		{
+			Object object = event.getSource();
+      if (object instanceof JRadioButton) {
+        Log.debug(10, "RadioButton");
+        setFocusLostForAllSubcomponents(awp2);
+      }
+			saveAction();
+		}
+    
+		public void focusGained(java.awt.event.FocusEvent event) {
+      DocFrame df = DocFrame.currentDocFrameInstance;
+      df.setTreeValueFlag(false);
+			TreePath tp = new TreePath(node.getPath());
+			df.tree.setSelectionPath(tp);
+			df.tree.scrollPathToVisible(tp);
+    }
+	}
+
+	public void setFocusLostForAllSubcomponents(Container panel) {
+	    Vector ret = getAllComponents(panel);
+//		System.out.println("Total number of components: "+ret.size());
+		for (int i=0; i<ret.size();i++) {
+		  Component temp = (Component)(ret.elementAt(i));
+      temp.removeFocusListener(aSymFocus);
+		  temp.addFocusListener(aSymFocus);   
+		}
+	}
+	
+	public Vector getAllComponents(Container panel) {
+	  Vector ret = new Vector();  
+	  Component[] cont = panel.getComponents();
+	  // this is the loop over the top level container;
+	  // containers within this container may hold additional components
+	  for (int i=0;i<cont.length;i++) {
+	    ret.addElement(cont[i]);
+	  }
+	  getChildComponents(cont, ret);
+	  return ret;
+	}
+	
+	private void getChildComponents(Component[] comps, Vector vec) {
+	  for (int i=0;i<comps.length;i++) {
+	    Component[] innercomp = ((Container)comps[i]).getComponents();
+	    for (int j=0;j<innercomp.length;j++) {
+	      vec.addElement(innercomp[j]);
+	    }
+	    if (innercomp.length>0) {
+	      getChildComponents(innercomp, vec);
+	    }
+	  }
+	}
+
+  
+  private void stripChildren(Node nd) {
+    Node kid = nd.getFirstChild();
+    while(kid!=null) {
+      nd.removeChild(kid);
+      kid = nd.getFirstChild();
+    }
   }
 
 }
