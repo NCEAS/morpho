@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-09 18:40:10 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-08-24 23:41:55 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,8 @@ public class NodeInfo implements Serializable
  public NodeInfo(String name) {
     attr = new Hashtable();
     this.name = name;
-    this.iconName = null;
+    this.iconName  = "green.gif";
+    setIcon("green.gif");
  }
  
   public String toString() {
@@ -95,7 +96,17 @@ public class NodeInfo implements Serializable
  //     return ((String)attr.get("Value"));
       return PCDataValue;
     }
-    else {return name;}
+    else {
+      if (name.startsWith("(CHOICE)")) {
+        return "(CHOICE)";
+      }
+      else if (name.startsWith("(SEQUENCE)")) {
+        return "(SEQUENCE)";
+      }
+      else {
+        return name;
+      }
+    }
   }
   
   public void setCardinality(String card) {

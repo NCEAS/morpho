@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-11 16:40:56 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-08-24 23:41:55 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@ public class XMLPanels extends Component
 //        topPanel.setMaximumSize(new Dimension(300,30));
         NodeInfo info = (NodeInfo)(doc.getUserObject());
         topPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createTitledBorder(info.name),
+            BorderFactory.createTitledBorder(info.toString()),
             BorderFactory.createEmptyBorder(4, 4, 4, 4)
             ));
 		    topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));    
@@ -191,7 +191,7 @@ public class XMLPanels extends Component
           if (!((info.name).equals("#PCDATA"))) {
             JPanel new_panel = new JPanel();
             new_panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createTitledBorder(info.name),
+            BorderFactory.createTitledBorder(info.toString()),
             BorderFactory.createEmptyBorder(4, 4, 4, 4)
             ));
 		      new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));

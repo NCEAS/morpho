@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-15 23:24:39 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-08-24 23:41:55 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ public class DTDTree
     String rootElementName = null;
     DTDElement rootElement = null;
 
+    int cntr = 0;
 
 // the Sequence_Flag determines whether or not the parsing marks 'sequences' of content
 // such sequences need to be noted when the content is something like
@@ -64,7 +65,7 @@ public class DTDTree
     
     // levels is how many levels deep the depth first parse is carried out
     // needs to be specified to provide stopping criteria for recursive DTDs
-    int levels = 13;
+    int levels = 14;
     
  
   public DTDTree() {
@@ -110,6 +111,7 @@ public class DTDTree
 		    elem = rootElement;
 		  }
       NodeInfo rootNodeInfo = new NodeInfo(elem.name);
+      rootNodeInfo.setCardinality("ONE");
       DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode(rootNodeInfo);
       rootNode = rootTreeNode;
 	    buildTree(rootTreeNode);
@@ -166,7 +168,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
   else if(name.equalsIgnoreCase("#PCDATA")) {
     
   }
-  else if(name.equalsIgnoreCase("(SEQUENCE)")) {
+  else if(name.startsWith("(SEQUENCE)")) {
     Vector vec2 = new Vector();
     DTDSequence item = null;
     if (ni.getItem()!=null) {
@@ -185,7 +187,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
     }
   }
   
-  else if(name.equalsIgnoreCase("(CHOICE)")) {
+  else if(name.startsWith("(CHOICE)")) {
  //   Sequence_Flag = true;
     Vector vec2 = new Vector();
     DTDChoice item = null;
@@ -262,7 +264,8 @@ private void DTDItems(DTDItem item, Vector vec) {
   else if (item instanceof DTDChoice) {
     DTDItem[] items = ((DTDChoice) item).getItems();
     if (items.length>1) {
-      NodeInfo ni = new NodeInfo("(CHOICE)");
+      cntr++;
+      NodeInfo ni = new NodeInfo("(CHOICE)"+cntr);
       ni.setItem(item);
       ni.setCardinality(getCardinality(item));
       vec.addElement(ni);
@@ -277,7 +280,8 @@ private void DTDItems(DTDItem item, Vector vec) {
   }
   else if (item instanceof DTDSequence) {
     if (Sequence_Flag) {
-            NodeInfo ni = new NodeInfo("(SEQUENCE)");
+            cntr++;
+            NodeInfo ni = new NodeInfo("(SEQUENCE)"+cntr);
             ni.setItem(item);
             ni.setCardinality(getCardinality(item));
             vec.addElement(ni);

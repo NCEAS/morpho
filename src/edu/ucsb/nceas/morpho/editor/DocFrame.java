@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-09 18:40:10 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2001-08-24 23:41:55 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,22 @@ import edu.ucsb.nceas.morpho.framework.*;
  */
 public class DocFrame extends javax.swing.JFrame
 {
-    /** counter for name */
+     /**
+     *  number of level of expansion of the initial JTree
+     */
+    int exp_level = 5;
+  
+    /**
+     *  container for a copy of the full tree used when empty nodes are 'trimmed'
+     */
+    DefaultMutableTreeNode fullTree = null;
+    
+    /**
+     *  flag to indicate whether noInfoNodes should be trimmed when a tree is saved
+     */
+    boolean trimFlag = false;    
+
+   /** counter for name */
     public static int counter = 0;
   
     /** A reference to the container framework */
@@ -101,7 +116,7 @@ public class DocFrame extends javax.swing.JFrame
     
     Catalog myCatalog;
     String dtdfile;
-    int numlevels = 9;
+    int numlevels = 15;
     
     JSplitPane DocControlPanel;
     
@@ -150,9 +165,30 @@ public class DocFrame extends javax.swing.JFrame
 	//	setTitle("Morpho - Editor");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(630,452);
+		setSize(643,452);
 		setVisible(false);
-		getContentPane().add(OutputScrollPanel);
+		OutputScrollPanelContainer.setLayout(new BorderLayout(0,0));
+		OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
+		TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT,1,1));
+		OutputScrollPanelContainer.add(BorderLayout.SOUTH, TreeControlPanel);
+		TreeControlPanel.add(TrimTreeButton);
+		TrimTreeButton.setText("Trim");
+		TrimTreeButton.setToolTipText("Remove all optional nodes that contain no text.");
+		TrimTreeButton.setActionCommand("Trim");
+		TreeControlPanel.add(UntrimTreeButton);
+		UntrimTreeButton.setEnabled(false);
+		UntrimTreeButton.setText("Undo");
+		UntrimTreeButton.setToolTipText("Restore optional nodes without text.");
+		UntrimTreeButton.setActionCommand("Undo");
+		TreeControlPanel.add(ExpandTreeButton);
+		ExpandTreeButton.setText("+");
+		ExpandTreeButton.setToolTipText("Expand Tree levels displayed");
+		ExpandTreeButton.setActionCommand("+");
+		TreeControlPanel.add(ContractTreeButton);
+		ContractTreeButton.setText("-");
+		ContractTreeButton.setToolTipText("Contract Tree levels displayed");
+		ContractTreeButton.setActionCommand("-");
+		getContentPane().add(OutputScrollPanelContainer);
 		getContentPane().add(BorderLayout.CENTER, NestedPanelScrollPanel);
 		TopPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.NORTH,TopPanel);
@@ -222,10 +258,10 @@ public class DocFrame extends javax.swing.JFrame
     headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
 		
 		DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
-		       , OutputScrollPanel, NestedPanelScrollPanel);
+		       , OutputScrollPanelContainer, NestedPanelScrollPanel);
 		     
 		DocControlPanel.setOneTouchExpandable(true);
-        DocControlPanel.setDividerLocation(200); 
+        DocControlPanel.setDividerLocation(225); 
         getContentPane().add(BorderLayout.CENTER, DocControlPanel);
 
 		//{{INIT_MENUS
@@ -260,6 +296,10 @@ public class DocFrame extends javax.swing.JFrame
 		this.addWindowListener(aSymWindow);
 		EditingExit.addActionListener(lSymAction);
 		CancelButton.addActionListener(lSymAction);
+		TrimTreeButton.addActionListener(lSymAction);
+		UntrimTreeButton.addActionListener(lSymAction);
+		ExpandTreeButton.addActionListener(lSymAction);
+		ContractTreeButton.addActionListener(lSymAction);
 		SymComponent aSymComponent = new SymComponent();
 		this.addComponentListener(aSymComponent);
 		//}}
@@ -577,7 +617,13 @@ public class DocFrame extends javax.swing.JFrame
 	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
+	javax.swing.JPanel OutputScrollPanelContainer = new javax.swing.JPanel();
 	javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
+	javax.swing.JPanel TreeControlPanel = new javax.swing.JPanel();
+	javax.swing.JButton TrimTreeButton = new javax.swing.JButton();
+	javax.swing.JButton UntrimTreeButton = new javax.swing.JButton();
+	javax.swing.JButton ExpandTreeButton = new javax.swing.JButton();
+	javax.swing.JButton ContractTreeButton = new javax.swing.JButton();
 	javax.swing.JScrollPane NestedPanelScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel TopPanel = new javax.swing.JPanel();
 	javax.swing.JPanel TopLabelPanel = new javax.swing.JPanel();
@@ -623,6 +669,14 @@ class SymAction implements java.awt.event.ActionListener {
 				EditingExit_actionPerformed(event);
 			else if (object == CancelButton)
 				CancelButton_actionPerformed(event);
+			else if (object == TrimTreeButton)
+				TrimTreeButton_actionPerformed(event);
+			else if (object == UntrimTreeButton)
+				UntrimTreeButton_actionPerformed(event);
+			else if (object == ExpandTreeButton)
+				ExpandTreeButton_actionPerformed(event);
+			else if (object == ContractTreeButton)
+				ContractTreeButton_actionPerformed(event);
 		}
 }
 
@@ -722,9 +776,13 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
                 DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
                 NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
-                ni1.setCardinality("NOT SELECTED");
+                if (ni1.getName().equals(ni.getName())) {
+                  ni1.setCardinality("SELECTED");
+                }
+                else {
+                  ni1.setCardinality("NOT SELECTED");
+                }
             }
-            ni.setCardinality("SELECTED");
             tree.invalidate();
             OutputScrollPanel.repaint();
          }
@@ -817,6 +875,10 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	
 	
     public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
+      if (node==null) {
+        System.out.println("Attempt to clone a null node!");
+        return null;
+      }      
         DefaultMutableTreeNode newnode = null; 
         try{
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -1018,6 +1080,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	String writeXMLString (DefaultMutableTreeNode node) {
         tempStack = new Stack();
 	    start = new StringBuffer();
+	    if (trimFlag) {
+	      trimNoInfoNodes(node);
+	    }
 	    write_loop(node, 0);
 	    String str1 = start.toString();
 	    
@@ -1045,12 +1110,13 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	  StringBuffer start1 = new StringBuffer();
 	  String name;
 	  String end;
+//	  boolean emptyFlag = true;
 	  boolean emptyNodeParent = false;
 	  NodeInfo ni = (NodeInfo)node.getUserObject();
 	  name = ni.name;
 	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
 	    // completely ignore NOT SELECTED nodes AND their children
-	    if ((!name.equals("(CHOICE)"))&&(!name.equals("(SEQUENCE)"))&&(!name.equals("Empty"))) {
+	    if ((!name.startsWith("(CHOICE)"))&&(!name.startsWith("(SEQUENCE)"))&&(!name.equals("Empty"))) {
 	      // ignore (CHOICE) nodes but process their children
 	      start1.append("\n"+indentString+"<"+name);  
 	    
@@ -1065,12 +1131,14 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      tempStack.push(end);
 	    }
 	  Enumeration enum = node.children();
-/*	  if (!enum.hasMoreElements()) {
+	  
+// if enum has no elements, then node is a leaf node	  
+	  if (!enum.hasMoreElements()) {
 	      start.append(start1.toString());
 	      start1 = new StringBuffer();
-	      textnode = true;
+//	      textnode = true;
 	  }
-*/
+
 	  while (enum.hasMoreElements()) {  // process child nodes 
 	    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
 	    NodeInfo ni1 = (NodeInfo)nd.getUserObject();
@@ -1108,7 +1176,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      write_loop(nd, indent+2);
 	    }
 	  }
-	    if ((!name.equals("(CHOICE)"))&&(!name.equals("(SEQUENCE)"))&&(!name.equals("Empty"))) {
+	    if ((!name.startsWith("(CHOICE)"))&&(!name.startsWith("(SEQUENCE)"))&&(!name.equals("Empty"))) {
 	      if (textnode) {
           if (!tempStack.isEmpty()) {
 	            start.append((String)(tempStack.pop()));
@@ -1129,6 +1197,77 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	  }
 	}
 	
+
+/* trim tree branches where there is no information in the leaf text node and there is
+ * a parent node that is optional
+ */
+ void trimNoInfoNodes(DefaultMutableTreeNode node) {
+    DefaultMutableTreeNode parentNode = null;
+    DefaultMutableTreeNode tempNode = null;
+    DefaultMutableTreeNode curNode = node.getFirstLeaf();
+    Vector leafs = new Vector();
+    leafs.addElement(curNode);
+    while (curNode!=null) {
+      curNode = curNode.getNextLeaf();
+      if (curNode!=null) {
+        leafs.addElement(curNode);
+      }
+    }
+    Enumeration enum = leafs.elements();
+    while (enum.hasMoreElements()) {
+      curNode = (DefaultMutableTreeNode)enum.nextElement();
+      NodeInfo ni = (NodeInfo)curNode.getUserObject();
+      if (ni.name.equals("#PCDATA")) {         // is a text node
+        String pcdata = ni.getPCValue();
+        if (pcdata.trim().length()<1) {        // has no text data
+          parentNode = (DefaultMutableTreeNode)curNode.getParent();
+          while (parentNode!=null) {
+            NodeInfo pni = (NodeInfo)parentNode.getUserObject();
+            String card = pni.getCardinality();
+            tempNode = parentNode;
+            parentNode = (DefaultMutableTreeNode)parentNode.getParent();
+            if (parentNode!=null) {
+	            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
+	              NodeInfo nip = (NodeInfo)parentNode.getUserObject();
+	              if ((!(nip.getName().startsWith("(CHOICE)")))&&(!(nip.getName().startsWith("(CHOICE)")))) {
+	                parentNode.remove(tempNode);
+	              }
+	            }
+	          }
+	        }
+        }
+      }
+    }
+ }
+	
+
+void expandTreeToLevel(JTree jt, int level) {
+    boolean endFlag = false;
+    DefaultMutableTreeNode childNode;
+    TreeModel tm = jt.getModel();
+    DefaultMutableTreeNode root = (DefaultMutableTreeNode)tm.getRoot();
+    Enumeration enum = root.breadthFirstEnumeration();
+    DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
+    while ((!endFlag)&&(curNode.getLevel()<level)) {
+      try {
+        childNode = (DefaultMutableTreeNode)curNode.getFirstChild();  
+        NodeInfo ni = (NodeInfo)childNode.getUserObject();
+        if (!(ni.getName().equals("#PCDATA"))) {
+          TreeNode[] tn = curNode.getPath();
+          TreePath tp = new TreePath(tn);
+          tree.expandPath(tp);
+        }
+      }
+      catch (Exception w) {
+        endFlag = true;
+      }
+      if (!endFlag) {
+        curNode = (DefaultMutableTreeNode)enum.nextElement();
+      }
+    }
+}
+
+
 	
 /* -----------------------------------------------
 * code for combining the content of two DefaultMutableTreeNode trees
@@ -1202,7 +1341,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                 // go to parent of tnode; find matching nodes in input at same level; add children
                 DefaultMutableTreeNode newnode = null;
                 tempStack = new Stack();
-          //      if (hits.size()==0) {
+ //               if (hits.size()==0) {
                     DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
                     int index = ptNode.getIndex(tNode);
                     Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
@@ -1211,21 +1350,25 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
                         newnode = deepNodeCopy(tNode);
                         trimSpecialAttributes(newnode);
-                        if ((((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) ||
-                          (((NodeInfo)tNode.getUserObject()).getName().equals("(SEQUENCE)"))) {
+                        if ((((NodeInfo)tNode.getUserObject()).getName().startsWith("(CHOICE)")) ||
+                          (((NodeInfo)tNode.getUserObject()).getName().startsWith("(SEQUENCE)"))) {
                             tempStack.push(newnode);
                         }
                         int index1 = findDuplicateIndex(nextLevelInputNodes,index);
                         if (index1>=ind.getChildCount()) {
-                            ind.add(newnode);    
+                          if (newnode!=null) {
+                            ind.add(newnode);
+                          }
                         }
                         else {
+                          if (newnode!=null) {
                             ind.insert(newnode,index1);
+                          }
                         }
                     }
             
-                    if ((((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) ||
-                          (((NodeInfo)tNode.getUserObject()).getName().equals("(SEQUENCE)"))) {                    
+                    if ((((NodeInfo)tNode.getUserObject()).getName().startsWith("(CHOICE)")) ||
+                          (((NodeInfo)tNode.getUserObject()).getName().startsWith("(SEQUENCE)"))) {                    
                             // in this case, one of the 'children' of the CHOICE node probably exists
                             // in the Info nodes for this level
                         reverseStack(tempStack);
@@ -1271,12 +1414,12 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                                             nd2 = (DefaultMutableTreeNode)qq.nextElement();
                                             
                                             
-                                            if ((indx1>=nwnode.getChildCount())||(indx1==-1)) {
+                                     //       if ((indx1>=nwnode.getChildCount())||(indx1==-1)) {
                                                 nwnode.add(nd2);    
-                                            }
-                                            else {
-                                                nwnode.insert(nd2,indx1);
-                                            }
+                                     //       }
+                                     //       else {
+                                     //           nwnode.insert(nd2,indx1);
+                                     //       }
                                       //      nwnode.insert(nd2, indx1);
                                             nextLevelInputNodes.remove(nd2);
                                           }
@@ -1289,7 +1432,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                     
                     
                     
-     //           } // end if hits.size==0
+//                } // end if hits.size==0
                 // put removed elements back
                 currentLevelInputNodes = tempVector;
                 // recalculate nextLevelInput  
@@ -1319,19 +1462,22 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
   * 'vec' is a vector of child nodes; node is parent
   */
   private void getRealChildren(DefaultMutableTreeNode node, Vector vec) {
-    Enumeration enum = node.children();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode child = (DefaultMutableTreeNode)enum.nextElement();
-      vec.addElement(child);  
+    if ((node!=null)&&(node.children()!=null)) {
+      Enumeration enum = node.children();
+      while (enum.hasMoreElements()) {
+        DefaultMutableTreeNode child = (DefaultMutableTreeNode)enum.nextElement();
+        vec.addElement(child);  
       
-      if (((NodeInfo)child.getUserObject()).getName().equals("(SEQUENCE)")) {
-        getRealChildren(child,vec);  
-      }
-      else if (((NodeInfo)child.getUserObject()).getName().equals("(CHOICE)")) {
-        getRealChildren(child,vec);  
+        if (((NodeInfo)child.getUserObject()).getName().startsWith("(SEQUENCE)")) {
+          getRealChildren(child,vec);  
+        }
+        else if (((NodeInfo)child.getUserObject()).getName().startsWith("(CHOICE)")) {
+          getRealChildren(child,vec);  
+        }
       }
     }
   }
+
 
 /** reverse the order of items in a stack
  */
@@ -1397,6 +1543,7 @@ private Vector sameParent(Vector list) {
      * from the input tree
      */
     void treeTrim(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+ //       if (true) return;
         DefaultMutableTreeNode inNode;
         DefaultMutableTreeNode parNode;
         // first check to see if root nodes have same names
@@ -1492,6 +1639,7 @@ private Vector sameParent(Vector list) {
 
     /** trim 'help' and 'editor' attributes in a node */
     private void trimSpecialAttributes(DefaultMutableTreeNode nd) {
+      if (nd!=null) {
         NodeInfo ni = (NodeInfo)nd.getUserObject();
         Hashtable ht = ni.attr;
         String editor = (String)ht.get("editor");
@@ -1517,6 +1665,7 @@ private Vector sameParent(Vector list) {
           DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)childnodes.nextElement();
           trimSpecialAttributes(nd1);
         }
+      }
     }
 
     String pathToString(DefaultMutableTreeNode node) {
@@ -1672,8 +1821,52 @@ class SymWindow extends java.awt.event.WindowAdapter {
 		    this.dispose();            // free the system resources
 	}
 
+	void TrimTreeButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		treeModel = (DefaultTreeModel)tree.getModel();
+		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+		if (fullTree==null) {
+	    fullTree = deepNodeCopy(rootNode);
+	  }
+		trimNoInfoNodes(rootNode);
+		UntrimTreeButton.setEnabled(true);
+		treeModel.reload();
+		tree.expandRow(1);
+    tree.setSelectionRow(0);
+	}
+	
+	void UntrimTreeButton_actionPerformed(java.awt.event.ActionEvent event) {
+	  treeModel = new DefaultTreeModel(fullTree);
+	  tree.setModel(treeModel);
+	  ((DefaultTreeModel)tree.getModel()).reload();
+		tree.expandRow(1);
+    tree.setSelectionRow(0);
+	}
+
+	void ContractTreeButton_actionPerformed(java.awt.event.ActionEvent event) {
+	  exp_level--;
+	  if (exp_level<0) exp_level=0;
+	  ((DefaultTreeModel)tree.getModel()).reload();
+		expandTreeToLevel(tree,exp_level);
+     tree.setSelectionRow(0);
+	}
+	void ExpandTreeButton_actionPerformed(java.awt.event.ActionEvent event) {
+	  exp_level++;
+	  ((DefaultTreeModel)tree.getModel()).reload();
+		expandTreeToLevel(tree,exp_level);
+    tree.setSelectionRow(0); 
+	}
+	
 	class SymComponent extends java.awt.event.ComponentAdapter
 	{
+		public void componentMoved(java.awt.event.ComponentEvent event)
+		{
+			Object object = event.getSource();
+			if (object == DocFrame.this) {
+			  
+			}
+		}
+
 		public void componentResized(java.awt.event.ComponentEvent event)
 		{
 			Object object = event.getSource();
@@ -1681,6 +1874,8 @@ class SymWindow extends java.awt.event.WindowAdapter {
 				DocFrame_componentResized(event);
 		}
 	}
+
+
 
 	void DocFrame_componentResized(java.awt.event.ComponentEvent event)
 	{
