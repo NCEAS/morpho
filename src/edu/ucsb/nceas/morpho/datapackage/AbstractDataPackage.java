@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-17 17:40:36 $'
- * '$Revision: 1.64 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 18:07:25 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,14 +255,14 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   abstract public AbstractDataPackage download(String id);
 
-	
-	/**
-	 *  This method follows the pointer stored in 'references' node to return the
-	 *  DOM node referred to by 'references' 
-	 *  This is really specific to eml2; thus just declared as abstract here
-	 *  and implemented in the EML200DataPackage class.
-	 */
-	abstract Node getReferencedNode(Node node);
+
+  /**
+   *  This method follows the pointer stored in 'references' node to return the
+   *  DOM node referred to by 'references'
+   *  This is really specific to eml2; thus just declared as abstract here
+   *  and implemented in the EML200DataPackage class.
+   */
+  abstract Node getReferencedNode(Node node);
 
   /**
    * used to signify that this package is located on a metacat server
@@ -447,6 +447,61 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
+  /**
+   * returns root Node of subtree identified by genericName String and int
+   * index; returns null if not found
+   *
+   * @param genericName String
+   * @param index int
+   * @return  root Node of subtree, or null if not found
+   */
+  public Node getSubtree(String genericName, int index) {
+
+    throw new UnsupportedOperationException(
+      "AbstractDataPackage.getSubtree(String genericName, int index) not yet implemented!");
+  }
+
+
+
+  /**
+   * inserts subtree rooted at Node, at location identified by genericName
+   * String and int index. Returns root Node of inserted subtree, or null if
+   * target location not found, so caller can determine whether insertion was
+   * successful
+   *
+   * @param genericName String
+   * @param Node subtree root Node
+   * @param index int
+   * @return root Node of inserted subtree, or null if target location not
+   * found, so caller can determine whether insertion was successful
+   */
+  public Node insertSubtree(String genericName, Node subtreeRootNode, int index) {
+
+    throw new UnsupportedOperationException(
+      "AbstractDataPackage.insertSubtree(String genericName, Node subtreeRootNode, int index) not yet implemented!");
+  }
+
+
+
+  /**
+   * deletes subtree at location identified by genericName and index; returns
+   * root Node of deleted subtree, or null if not found, so caller can determine
+   * whether call was successful
+   *
+   * @param genericName String
+   * @param index int
+   * @return root Node of deleted subtree, or null if subtree not found, so
+   * caller can determine whether insertion was successful
+   */
+  public Node deleteSubtree(String genericName, int index) {
+
+    throw new UnsupportedOperationException(
+      "AbstractDataPackage.deleteSubtree(String genericName, int index) not yet implemented!");
+  }
+
+
+
   /**
    * checks to see if the package has a coverage element at the package level
    * returns a Node if it finds one; otherwise, null
@@ -471,7 +526,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return null;
   }
-  
+
   /**
    *  insert a coverage subtree (geographic, temporal, or taxonomic)
    *  under the package level coverage node
@@ -482,7 +537,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     Document thisDom = getMetadataNode().getOwnerDocument();
     Node newCovSubtree = thisDom.importNode(covSubtree, true); // 'true' imports children
 //    Node newCovSubtree = null;
-    
+
     Node covNode = getCoverageNode();
     if (covNode == null) {  // no current coverage node
       try{
@@ -510,14 +565,14 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
       catch (Exception w) {
-        Log.debug(1, "Error in 'insertCoverage method in AbstractDataPackage");      
+        Log.debug(1, "Error in 'insertCoverage method in AbstractDataPackage");
       }
     } else {  // node exists
       covNode.appendChild(newCovSubtree);
     }
   }
-   
-  
+
+
   /*
    *  This method finds all the entities in the package and builds an array of
    *  'entity' nodes in the package dom. One could create an 'Entity' class descending from
@@ -546,7 +601,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         for (int j=0;j<entityArrayNodes.length;j++) {
           entityArrayNodes[j] = getReferencedNode(entityArrayNodes[j]);
         }
-            
+
         entityArray = new Entity[entityArrayNodes.length];
         for (int i = 0; i < entityArrayNodes.length; i++) {
           entityArray[i] = new Entity(entityArrayNodes[i], this);
@@ -571,8 +626,8 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEntityName(int entNum) {
     String temp = "";
-		if(entNum < 0)
-				return "No such entity!";
+    if(entNum < 0)
+        return "No such entity!";
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       return "No such entity!";
     }
@@ -595,46 +650,46 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
 
-	/**
+  /**
    * This method retrieves entity index information, given the name of the entity
    * in the entityNode array
    *
    * @param entName String - name of the Entity whose index in the entity array is
-	 *													required
+   *													required
    * @return int	the index of the entity in the entity array. If that entity is not
-	 *							found, -1 is returned
+   *							found, -1 is returned
    */
   public int getEntityIndex(String entName) {
     String temp = "";
-		if ( (entityArray == null)) {
+    if ( (entityArray == null)) {
       return -1;
     }
-		
-		for(int i = 0; i < entityArray.length; i++) 
-		{
-			Node entity = (entityArray[i]).getNode();
-			String entityNameXpath = "";
-			try {
-				entityNameXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
-				"/xpathKeyMap/contextNode[@name='entity']/name")).getNodeValue();
-				NodeList enameNodes = XPathAPI.selectNodeList(entity, entityNameXpath);
-				if (enameNodes == null) {
-					continue;
-				}
-				Node child = enameNodes.item(0).getFirstChild();
-				temp = child.getNodeValue();
-			}
-			catch (Exception w) {
-				Log.debug(50, "exception in getting entity name" + w.toString());
-				continue;
-			}
-			if(temp.equals(entName))
-				return i;
-		}
-		
+
+    for(int i = 0; i < entityArray.length; i++)
+    {
+      Node entity = (entityArray[i]).getNode();
+      String entityNameXpath = "";
+      try {
+        entityNameXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+        "/xpathKeyMap/contextNode[@name='entity']/name")).getNodeValue();
+        NodeList enameNodes = XPathAPI.selectNodeList(entity, entityNameXpath);
+        if (enameNodes == null) {
+          continue;
+        }
+        Node child = enameNodes.item(0).getFirstChild();
+        temp = child.getNodeValue();
+      }
+      catch (Exception w) {
+        Log.debug(50, "exception in getting entity name" + w.toString());
+        continue;
+      }
+      if(temp.equals(entName))
+        return i;
+    }
+
     return -1;
   }
-	
+
   /**
    * This method retrieves the number of records in thr entity, given the index
    * of the entity in the entityNode array
@@ -665,37 +720,37 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
-	
-	/**
+
+  /**
    * This method gets the count of the entities present in the package
    *
    * @return int the number of entities in the package
    */
-	public int getEntityCount() {
-		if(entityArray == null) return 0;
-		return entityArray.length;
-	}
+  public int getEntityCount() {
+    if(entityArray == null) return 0;
+    return entityArray.length;
+  }
 
-	/**
+  /**
    * This method gets the count of the attributes present in a particular entity
    *
-	 * @param  entityIndex the index of the entity whose attribute count is desired
+   * @param  entityIndex the index of the entity whose attribute count is desired
    * @return int the number of attributes in that entity
    */
-	public int getAttributeCountForAnEntity(int entityIndex) {
-		
-		if(entityIndex < 0)
-				return 0;
-		
+  public int getAttributeCountForAnEntity(int entityIndex) {
+
+    if(entityIndex < 0)
+        return 0;
+
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return 0;
     }
     Node[] attributes = getAttributeArray(entityIndex);
     if (attributes == null)
-			return 0;
-		return attributes.length;
-	}
-	
+      return 0;
+    return attributes.length;
+  }
+
   /**
    * This method sets the number of records in the entity, given the index of
    * the entity in the entityNode array
@@ -736,9 +791,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEntityDescription(int entNum) {
     String temp = "";
-		if(entNum < 0)
-				return "No such entity!";
-		
+    if(entNum < 0)
+        return "No such entity!";
+
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       return "No such entity!";
     }
@@ -761,10 +816,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
-	
-	
-	
-	/**
+
+
+
+  /**
    * This method retrieves the entity ID, given the index of the entity
    * in the entityNode array
    *
@@ -773,69 +828,69 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEntityID(int entNum) {
     String id = "";
-		if(entNum < 0)
-				return "";
+    if(entNum < 0)
+        return "";
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       return "";
     }
     Node entity = (entityArray[entNum]).getNode();
-		NamedNodeMap nnm = entity.getAttributes();
-		if(nnm !=null) {
-			Node idNode = nnm.getNamedItem("id");
-			if(idNode != null)
-				id = idNode.getNodeValue();
-			else {
-				Log.debug(45, "No ID Attributes for the given entity " +
-								getEntityName(entNum));
-			}
-		}else {
-			Log.debug(45, "No Attributes for the given entity : "+getEntityName(entNum));
-		}
-		
+    NamedNodeMap nnm = entity.getAttributes();
+    if(nnm !=null) {
+      Node idNode = nnm.getNamedItem("id");
+      if(idNode != null)
+        id = idNode.getNodeValue();
+      else {
+        Log.debug(45, "No ID Attributes for the given entity " +
+                getEntityName(entNum));
+      }
+    }else {
+      Log.debug(45, "No Attributes for the given entity : "+getEntityName(entNum));
+    }
+
     return id;
   }
-	
-	/**
+
+  /**
    * This method sets the entity ID, given the index of the entity
    * in the entityNode array and the ID. Caller must ensure that the ID is
    * unique. No check for uniqueness is made here.
-	 *
-	 * Though the DataPackage Wizard automatically assigns an ID to all entities,
-	 * it is possible that some old data sets may not have the ID assigned to
-	 * them. For such cases, this method provides a way to set an ID
-	 *
+   *
+   * Though the DataPackage Wizard automatically assigns an ID to all entities,
+   * it is possible that some old data sets may not have the ID assigned to
+   * them. For such cases, this method provides a way to set an ID
+   *
    * @param entNum the entity Index of the entity whose ID is required
-	 * @param ID the unique ID for this entity
+   * @param ID the unique ID for this entity
    *
    */
-	 
+
   public void setEntityID(int entNum, String ID) {
-    
-		if(entNum < 0)
-			return;
+
+    if(entNum < 0)
+      return;
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       return;
     }
     Node entity = (entityArray[entNum]).getNode();
-		NamedNodeMap nnm = entity.getAttributes();
-		if(nnm !=null) {
-			Node idNode = nnm.getNamedItem("id");
-			if(idNode != null) {
-				idNode.setNodeValue(ID);
-				return;
-			}
-			else {
-				Log.debug(45, "No ID Attributes for the given entity " +
-								getEntityName(entNum) + " - Adding the ID Attribute");
-			}
-		}else {
-			Log.debug(45, "No Attributes for the given entity : "+getEntityName(entNum) + " - Adding ID Attribute");
-		}
-		((Element)entity).setAttribute("id", ID);
-		
+    NamedNodeMap nnm = entity.getAttributes();
+    if(nnm !=null) {
+      Node idNode = nnm.getNamedItem("id");
+      if(idNode != null) {
+        idNode.setNodeValue(ID);
+        return;
+      }
+      else {
+        Log.debug(45, "No ID Attributes for the given entity " +
+                getEntityName(entNum) + " - Adding the ID Attribute");
+      }
+    }else {
+      Log.debug(45, "No Attributes for the given entity : "+getEntityName(entNum) + " - Adding ID Attribute");
+    }
+    ((Element)entity).setAttribute("id", ID);
+
   }
-	
-	
+
+
   /**
    * This method deletes the indexed entity from the DOM
    *
@@ -935,11 +990,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  than stored as a class member.
    */
   public Node[] getAttributeArray(int entityIndex) {
-    
-		if(entityIndex < 0)
-				return null;
-		
-		if (entityIndex > (entityArray.length - 1)) {
+
+    if(entityIndex < 0)
+        return null;
+
+    if (entityIndex > (entityArray.length - 1)) {
       Log.debug(15, "entity index > number of entities");
       return null;
     }
@@ -955,7 +1010,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
       Node[] attr = XMLUtilities.getNodeListAsNodeArray(attributeNodes);
       for (int i=0;i<attr.length;i++) {
-				attr[i] = getReferencedNode(attr[i]);
+        attr[i] = getReferencedNode(attr[i]);
       }
       return attr;
     }
@@ -1052,11 +1107,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getAttributeName(int entityIndex, int attributeIndex) {
     String temp = "";
-		if(entityIndex < 0)
-				return "No such entity!";
-		if(attributeIndex < 0)
-				return "no attributes!";
-			
+    if(entityIndex < 0)
+        return "No such entity!";
+    if(attributeIndex < 0)
+        return "no attributes!";
+
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return "No such entity!";
     }
@@ -1082,65 +1137,65 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
-	/**
+  /**
    *  This method retreives the attribute index given an Attribute Name and the
-   * 	index of the entity that the attribute is present in. 
-	 * 	@param entityIndex  the index of the entity thats contains the given attribute
-	 *	@param attributeName the name of the attribute whose index is required
-	 *	@return int the index of the attribute in the given array. Returns -1 if the
-	 *					attribute is not found in the entity.
+   * 	index of the entity that the attribute is present in.
+   * 	@param entityIndex  the index of the entity thats contains the given attribute
+   *	@param attributeName the name of the attribute whose index is required
+   *	@return int the index of the attribute in the given array. Returns -1 if the
+   *					attribute is not found in the entity.
    *
    */
-	 
+
   public int getAttributeIndex(int entityIndex, String attributeName) {
-		
+
     String temp = "";
-		if(entityIndex < 0)
-				return -1;
-		
-		if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+    if(entityIndex < 0)
+        return -1;
+
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return -1;
     }
     Node[] attributes = getAttributeArray(entityIndex);
     if ( (attributes == null) || (attributes.length < 1)) {
       return -1;
     }
-		for(int i = 0; i < attributes.length; i++) {
-			
-			Node attribute = attributes[i];
-			String attrXpath = "";
-			try {
-				attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
-				"/xpathKeyMap/contextNode[@name='attribute']/name")).getNodeValue();
-				NodeList aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
-				if (aNodes == null) {
-					continue;
-				}
-				Node child = aNodes.item(0).getFirstChild(); // get first ?; (only 1?)
-				temp = child.getNodeValue();
-			}
-			catch (Exception w) {
-				Log.debug(50, "exception in getting entity description" + w.toString());
-				continue;
-			}
-			if(temp.equals(attributeName))
-				return i;
-		}
+    for(int i = 0; i < attributes.length; i++) {
+
+      Node attribute = attributes[i];
+      String attrXpath = "";
+      try {
+        attrXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+        "/xpathKeyMap/contextNode[@name='attribute']/name")).getNodeValue();
+        NodeList aNodes = XPathAPI.selectNodeList(attribute, attrXpath);
+        if (aNodes == null) {
+          continue;
+        }
+        Node child = aNodes.item(0).getFirstChild(); // get first ?; (only 1?)
+        temp = child.getNodeValue();
+      }
+      catch (Exception w) {
+        Log.debug(50, "exception in getting entity description" + w.toString());
+        continue;
+      }
+      if(temp.equals(attributeName))
+        return i;
+    }
     return -1;
   }
-	
-	/*
+
+  /*
    *  This method retreives the attribute ID at attributeIndex for
    *  the given entityIndex. i.e. getAttributeID(0,1) would return
    *  the first attribute ID for the zeroth entity (indices are ) based)
    */
   public String getAttributeID(int entityIndex, int attributeIndex) {
     String id = "";
-		if(entityIndex < 0)
-				return "";
-		if(attributeIndex < 0)
-				return "";
-			
+    if(entityIndex < 0)
+        return "";
+    if(attributeIndex < 0)
+        return "";
+
     if ( (entityArray == null) || (entityArray.length < (entityIndex + 1))  ) {
       return "";
     }
@@ -1150,22 +1205,22 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     Node attribute = attributes[attributeIndex];
     NamedNodeMap nnm = attribute.getAttributes();
-		if(nnm !=null) {
-			Node idNode = nnm.getNamedItem("id");
-			if(idNode != null)
-				id = idNode.getNodeValue();
-			else {
-				Log.debug(45, "No ID Attributes for the given column " +
-								getAttributeName(entityIndex, attributeIndex));
-					
-			}
-		}else {
-			Log.debug(45, "No attributes for the given column : " +
-						getAttributeName(entityIndex, attributeIndex));
-		}
-		return id;
-	}
-		
+    if(nnm !=null) {
+      Node idNode = nnm.getNamedItem("id");
+      if(idNode != null)
+        id = idNode.getNodeValue();
+      else {
+        Log.debug(45, "No ID Attributes for the given column " +
+                getAttributeName(entityIndex, attributeIndex));
+
+      }
+    }else {
+      Log.debug(45, "No attributes for the given column : " +
+            getAttributeName(entityIndex, attributeIndex));
+    }
+    return id;
+  }
+
   /*
    *  This method retreives the attribute datatype at attributeIndex for
    *  the given entityIndex. i.e. getAttributeDataType(0,1) would return
@@ -1173,11 +1228,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getAttributeDataType(int entityIndex, int attributeIndex) {
     String temp = "";
-		if(entityIndex < 0)
-				return "No such entity!";
-		if(attributeIndex < 0)
-				return "no attributes!";
-		
+    if(entityIndex < 0)
+        return "No such entity!";
+    if(attributeIndex < 0)
+        return "no attributes!";
+
     if ( (entityArray == null) || (entityArray.length < (entityIndex + 1))) {
       return "No such entity!";
     }
@@ -1240,10 +1295,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getAttributeUnit(int entityIndex, int attributeIndex) {
     String temp = "";
-		if(entityIndex < 0)
-				return "No such entity!";
-		if(attributeIndex < 0)
-				return "no attributes!";
+    if(entityIndex < 0)
+        return "No such entity!";
+    if(attributeIndex < 0)
+        return "no attributes!";
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return "No such entity!";
     }
@@ -1574,10 +1629,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getEncodingMethod(int entityIndex, int physicalIndex) {
     String temp = "";
-		if(entityIndex < 0)
-				return "No such entity!";
-		if(physicalIndex < 0)
-				return "no such physical!";
+    if(entityIndex < 0)
+        return "No such entity!";
+    if(physicalIndex < 0)
+        return "no such physical!";
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       return "No such entity!";
     }
@@ -1877,7 +1932,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         // some other problem has occured
         Log.debug(5, "Some problem with saving local data files has occurred!");
         qq.printStackTrace();
-      }//end catch     
+      }//end catch
     }
   }
 
@@ -1904,18 +1959,18 @@ public abstract class AbstractDataPackage extends MetadataObject
       try {
         dataFile = fds.openTempFile(temp);
         InputStream dfis = new FileInputStream(dataFile);
-				try{
+        try{
           mds.newDataFile(urlinfo, dataFile);
             // the temp file has been saved; thus delete
           dataFile.delete();
-				} catch (MetacatUploadException mue) {
+        } catch (MetacatUploadException mue) {
           // if we reach here, most likely there has been a problem saving the datafile
           // on metacat because the id is already in use
           // so, get a new id
           AccessionNumber an = new AccessionNumber(morpho);
           String newid = an.getNextId();
           // now try saving with the new id
-          try{ 
+          try{
             mds.newDataFile(newid, dataFile);
             dataFile.delete();
             // newDataFile must have worked; thus update the package
@@ -1927,13 +1982,13 @@ public abstract class AbstractDataPackage extends MetadataObject
               serialize(AbstractDataPackage.LOCAL);
             }
           } catch (MetacatUploadException mue1) {
-				    Log.debug(5, "Problem saving data to metacat\n"+
-							             mue1.getMessage());
-						throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
-							            +mue1.getMessage());						 
-				  }
-        } 
-      } 
+            Log.debug(5, "Problem saving data to metacat\n"+
+                           mue1.getMessage());
+            throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
+                          +mue1.getMessage());
+          }
+        }
+      }
       catch (Exception qq) {
         // some other problem has occured
         Log.debug(5, "Some problem with saving data files has occurred!");
@@ -1946,8 +2001,8 @@ public abstract class AbstractDataPackage extends MetadataObject
         ww.printStackTrace();
     }
   }
-  
-  
+
+
   private void handleBoth(String urlinfo, int entityIndex) {
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
@@ -1956,7 +2011,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     handleLocal(urlinfo);
     handleMetacat(urlinfo, entityIndex);
   }
-  
+
   private String getUrlInfo(int entityIndex) {
     String urlinfo = getDistributionUrl(entityIndex, 0, 0);
     // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
@@ -2273,7 +2328,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
   }
 
-  
+
   /**
    * copies all the data files in a package to a directory indicated
    * by 'path'. Files are given the original file name, if available
@@ -2376,8 +2431,8 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
   }
 
-  
-  
+
+
   //save the StringBuffer to the File path specified
   private void saveToFile(StringBuffer buff, File outputFile) throws
       IOException {
