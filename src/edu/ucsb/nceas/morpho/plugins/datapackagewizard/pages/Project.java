@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 16:26:27 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-01-23 19:27:49 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,8 +180,8 @@ public class Project extends AbstractWizardPage {
     panel.add(WidgetFactory.makeHalfSpacer());
     ////
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the Personnel information</b> The full name of the person or "
-      +"organization responsible for the project, such as agency name, grant "
+      "<b>Enter the Personnel information</b> The full name of the person(s) or "
+      +"organization(s) responsible for the project, such as agency name, grant "
       +"and contact numbers.", 2);
     panel.add(desc);
     JPanel vPanel = WidgetFactory.makeVerticalPanel(9);

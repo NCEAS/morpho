@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:37:44 $'
- * '$Revision: 1.10 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-23 19:27:49 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class Access extends AbstractWizardPage {
         "<p><b>Allow public viewing access to your dataset?</b> Access to your "
         +"data can be controlled using this screen. By default, "
         +"read and write access is given to your username and read-only access is "
-        +"given to the public. Do you want to give read access to public?</p>", 3);
+        +"given to the public. Do you want to give read access to the public?</p>", 3);
 
     vBox.add(desc);
 
