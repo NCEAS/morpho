@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-01 00:38:45 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-04-02 21:57:25 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -272,7 +272,7 @@ public class Temporal extends AbstractUIPage{
       nextNVPMap = nextTemporalPage.getPageData(xPath + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
-
+		System.out.println("TemporalPage returning - " + returnMap.toString());
     // clear the list so that next time old variables dont show up again.
     timespanList.removeAllRows();
     return returnMap;
@@ -335,6 +335,8 @@ public class Temporal extends AbstractUIPage{
   public boolean setPageData(OrderedMap data, String xPathRoot) { 
     boolean res = true;
     TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
+		data.remove("/temporalCoverage/@scope");
+		data.remove("/temporalCoverage/@id");
     boolean flag = temporalPage.setPageData(data, "/temporalCoverage");
     if(!flag) res = false;
     List newRow = temporalPage.getSurrogate();
