@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 22:29:18 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -242,7 +242,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     Log.debug(45, "\n addPageDataToDOM() Got details from page -\n" + map);
 
     if (map == null || map.isEmpty()) {
-      Log.debug(5, "Unable to get details from input!");
+      Log.debug(15, "ERROR - Unable to get details from input!");
       return false;
     }
     String rootNodeName = rootXPath;

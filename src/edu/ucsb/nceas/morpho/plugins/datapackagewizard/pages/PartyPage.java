@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 07:31:20 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -679,9 +679,10 @@ public class PartyPage extends AbstractUIPage {
    * @param editable boolean
    */
   public void setEditable(boolean editable) {
-    if (rolePickList != null) {
-      rolePickList.setEditable(editable);
-    }
+
+    //if (rolePickList != null) {
+    //  rolePickList.setEditable(editable);
+    //}
     salutationField.setEditable(editable);
     firstNameField.setEditable(editable);
     lastNameField.setEditable(editable);
@@ -1111,14 +1112,16 @@ public class PartyPage extends AbstractUIPage {
         returnMap.put(rootXPath + "/positionName[1]", nextText);
       }
 
+      int dpPredct = 1;
       nextText = address1Field.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(rootXPath + "/address/deliveryPoint[1]", nextText);
+        returnMap.put(rootXPath + "/address/deliveryPoint["+dpPredct+"]", nextText);
+        dpPredct++;
       }
 
       nextText = address2Field.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(rootXPath + "/address/deliveryPoint[2]", nextText);
+        returnMap.put(rootXPath + "/address/deliveryPoint["+dpPredct+"]", nextText);
       }
 
       nextText = cityField.getText().trim();
@@ -1141,16 +1144,18 @@ public class PartyPage extends AbstractUIPage {
         returnMap.put(rootXPath + "/address/country[1]", nextText);
       }
 
+      int phnPredct = 1;
       nextText = phoneField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(rootXPath + "/phone[1]", nextText);
-        returnMap.put(rootXPath + "/phone[1]/@phonetype", "voice");
+        returnMap.put(rootXPath + "/phone["+phnPredct+"]", nextText);
+        returnMap.put(rootXPath + "/phone["+phnPredct+"]/@phonetype", "voice");
+        phnPredct++;
       }
 
       nextText = faxField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(rootXPath + "/phone[2]", nextText);
-        returnMap.put(rootXPath + "/phone[2]/@phonetype", "fax");
+        returnMap.put(rootXPath + "/phone["+phnPredct+"]", nextText);
+        returnMap.put(rootXPath + "/phone["+phnPredct+"]/@phonetype", "fax");
       }
 
       nextText = emailField.getText().trim();
@@ -1490,172 +1495,5 @@ public class PartyPage extends AbstractUIPage {
     urlField.setText(EMPTY_STRING);
   }
 }
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//
-//
 
-//
-//  /**
-//   *  gets the role string for this wizard page
-//   *
-//   *  @return   the role for this wizard page
-//   */
-//  public String getRole() {
-//    String roleString = null;
-//    switch (role) {
-//      case CREATOR:
-//        roleString = "Owner";
-//        break;
-//      case CONTACT:
-//        roleString = "Contact";
-//        break;
-//      case ASSOCIATED:
-//        roleString = getCurrentPickListRole();
-//        break;
-//      case PERSONNEL:
-//        roleString = getCurrentPickListRole();
-//        break;
-//    }
-//    return roleString;
-//  }
-//
-//
-//  /**
-//   *  gets the salutationField for this wizard page
-//   *
-//   *  @return   the salutationField String for this wizard page
-//   */
-//  protected String getsalutationFieldText() {
-//    return this.salutationField.getText();
-//  }
-//
-//  /**
-//   *  gets the firstNameField for this wizard page
-//   *
-//   *  @return   the firstNameField String for this wizard page
-//   */
-//  protected String getfirstNameFieldText() {
-//    return this.firstNameField.getText();
-//  }
-//
-//  /**
-//   *  gets the lastNameField for this wizard page
-//   *
-//   *  @return   the lastNameField String for this wizard page
-//   */
-//  protected String getlastNameFieldText() {
-//    return this.lastNameField.getText();
-//  }
-//
-//  /**
-//   *  gets the urlField for this wizard page
-//   *
-//   *  @return  the urlField String for this wizard page
-//   */
-//  protected String geturlFieldText() {
-//    return this.urlField.getText();
-//  }
-//
-//  /**
-//   *  gets the positionNameField for this wizard page
-//   *
-//   *  @return   the positionNameField String for this wizard page
-//   */
-//  protected String getpositionNameFieldText() {
-//    return this.positionNameField.getText();
-//  }
-//
-//  /**
-//   *  gets the cityField for this wizard page
-//   *
-//   *  @return   the cityField String for this wizard page
-//   */
-//  protected String getcityFieldText() {
-//    return this.cityField.getText();
-//  }
-//
-//  /**
-//   *  gets the faxField for this wizard page
-//   *
-//   *  @return   the faxField String for this wizard page
-//   */
-//  protected String getfaxFieldText() {
-//    return this.faxField.getText();
-//  }
-//
-//  /**
-//   *  gets the zipField for this wizard page
-//   *
-//   *  @return   the zipField String for this wizard page
-//   */
-//  protected String getzipFieldText() {
-//    return this.zipField.getText();
-//  }
-//
-//  /**
-//   *  gets the stateField for this wizard page
-//   *
-//   *  @return   the stateField String for this wizard page
-//   */
-//  protected String getstateFieldText() {
-//    return this.stateField.getText();
-//  }
-//
-//  /**
-//   *  gets the emailField for this wizard page
-//   *
-//   *  @return   the emailField String for this wizard page
-//   */
-//  protected String getemailFieldText() {
-//    return this.emailField.getText();
-//  }
-//
-//  /**
-//   *  gets the organizationFieldText() for this wizard page
-//   *
-//   *  @return   the organizationField String for this wizard page
-//   */
-//  protected String getorganizationFieldText() {
-//    return this.organizationField.getText();
-//  }
-//
-//  /**
-//   *  gets the countryField for this wizard page
-//   *
-//   *  @return   the countryField String for this wizard page
-//   */
-//  protected String getcountryFieldText() {
-//    return this.countryField.getText();
-//  }
-//
-//  /**
-//   *  gets the phoneField for this wizard page
-//   *
-//   *  @return   the phoneField String for this wizard page
-//   */
-//  protected String getphoneFieldText() {
-//    return this.phoneField.getText();
-//  }
-//
-//  /**
-//   *  gets the address1Field for this wizard page
-//   *
-//   *  @return   the address1Field String for this wizard page
-//   */
-//  protected String getaddress1FieldText() {
-//    return this.address1Field.getText();
-//  }
-//
-//  /**
-//   *  gets the address2Field for this wizard page
-//   *
-//   *  @return   the address2Field String for this wizard page
-//   */
-//  protected String getaddress2FieldText() {
-//    return this.address2Field.getText();
-//  }
 

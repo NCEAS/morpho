@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 18:47:42 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,8 @@ public class WizardContainerFrame
       }
     });
     toBeImportedCount = 0;
-    tempDataPackage = DataPackageFactory.getDataPackage(getNewEmptyDataPackageDOM());
+    tempDataPackage = DataPackageFactory.getDataPackage(
+      getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML200_DOCUMENT_TEXT));
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
   }
 
@@ -697,7 +698,7 @@ public class WizardContainerFrame
     ////////////////////////////////////////////////////////////////////////////
 
     //create a new empty DOM document to be populated by the wizard values:
-    Node rootNode = getNewEmptyDataPackageDOM();
+    Node rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML200_DOCUMENT_TEXT);
 
     //now populate it...
     try {
@@ -722,13 +723,13 @@ public class WizardContainerFrame
 
 
   //create a new empty DOM document to be populated by the wizard values:
-  private Node getNewEmptyDataPackageDOM() {
+  private Node getNewEmptyDataPackageDOM(String DocText) {
 
     Node rootNode = null;
 
     try {
       rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
-          new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
+          new StringReader(DocText));
     } catch (Exception e) {
       e.printStackTrace();
       Log.debug(5, "unexpected error trying to create new XML document");

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 22:29:18 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -305,10 +305,9 @@ public class PartyMainPage
 
       //replace party in datapackage...
       DataPackageWizardPlugin.addPageDataToDOM(
-          UIController.getInstance().getCurrentAbstractDataPackage(), editPartyPage,
-          "/" + DATAPACKAGE_PARTY_GENERIC_NAME + "[" + (predicate) + "]",
+          UIController.getInstance().getCurrentAbstractDataPackage(),
+          editPartyPage, "/" + DATAPACKAGE_PARTY_GENERIC_NAME,
           DATAPACKAGE_PARTY_GENERIC_NAME, predicate);
-
     }
   }
 

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 01:09:57 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,10 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
@@ -57,11 +59,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-import org.w3c.dom.Node;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 
 public class Project extends AbstractUIPage {
 
@@ -77,20 +74,29 @@ public class Project extends AbstractUIPage {
   private JPanel noDataPanel;
   private JPanel currentPanel;
 
-  private final String DATAPACKAGE_PROJECT_GENERIC_NAME = "project";
-
   private final String PROJECT_ROOT        = "project/";
   private final String XPATH_ROOT          = "/eml:eml/dataset[1]/" + PROJECT_ROOT;
 
   private final String TITLE_REL_XPATH     = "title[1]";
   private final String FUNDING_REL_XPATH   = "funding[1]/para[1]";
   private final String PERSONNEL_REL_XPATH = "personnel[";
+  private final String DATAPACKAGE_PERSONNEL_GENERIC_NAME = "personnel";
 
   private String xPathRoot = PROJECT_ROOT;
 
   private final String[] buttonsText = new String[] {
       "This project is part of a larger, umbrella research project"
   };
+
+  private JLabel      titleLabel;
+  private JTextField  titleField;
+  private JLabel      fundingLabel;
+  private JTextField  fundingField;
+  private JLabel minRequiredLabel;
+  private CustomList  partiesList;
+  private final String[] colNames =  {"Party", "Role", "Address"};
+  private final Object[] editors  =   null; //makes non-directly-editable
+
 
 
   public Project() {
@@ -122,9 +128,9 @@ public class Project extends AbstractUIPage {
 
 
     final JPanel instance = this;
-    ItemListener ilistener = new ItemListener(){
+    ItemListener checkBoxListener = new ItemListener(){
       public void itemStateChanged(ItemEvent e) {
-        Log.debug(45, "got radiobutton command: "+e.getStateChange());
+        Log.debug(45, "got checkBox command: "+e.getStateChange());
         onLoadAction();
         if (e.getStateChange() == ItemEvent.DESELECTED) {
           instance.remove(currentPanel);
@@ -140,7 +146,8 @@ public class Project extends AbstractUIPage {
       }
     };
 
-    checkBoxPanel = WidgetFactory.makeCheckBoxPanel(buttonsText, -1, ilistener);
+    checkBoxPanel
+        = WidgetFactory.makeCheckBoxPanel(buttonsText, -1, checkBoxListener);
     checkBoxPanel.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
                                           WizardSettings.PADDING,
                                           2 * WizardSettings.PADDING));
@@ -153,17 +160,7 @@ public class Project extends AbstractUIPage {
     currentPanel = noDataPanel;
   }
 
-  /**
-   *
-   */
-  private JLabel      titleLabel;
-  private JTextField  titleField;
-  private JLabel      fundingLabel;
-  private JTextField  fundingField;
-  private JLabel minRequiredLabel;
-  private CustomList  partiesList;
-  private final String[] colNames =  {"Party", "Role", "Address"};
-  private final Object[] editors  =   null; //makes non-directly-editable
+
 
   private JPanel getDataPanel() {
     JPanel panel = WidgetFactory.makeVerticalPanel(6);
@@ -258,22 +255,28 @@ public class Project extends AbstractUIPage {
      */
      private void showNewPartyDialog() {
 
-       PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PERSONNEL);
+       int predicate = 2 + partiesList.getSelectedRowIndex();
+       if (predicate < 1) predicate = 1 + partiesList.getRowCount();
+
+       PartyPage partyPage
+           = (PartyPage)WizardPageLibrary.getPage(
+             DataPackageWizardInterface.PARTY_PERSONNEL);
+
        ModalDialog wpd = new ModalDialog(partyPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT);
+                                         WizardContainerFrame.getDialogParent(),
+                                         UISettings.POPUPDIALOG_WIDTH,
+                                         UISettings.POPUPDIALOG_HEIGHT);
 
        if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
          List newRow = partyPage.getSurrogate();
          newRow.add(partyPage);
          partiesList.addRow(newRow);
 
-         //add entire project subtree to datapackage, which will include new
-         //parties
+         //add new party to datapackage...
          DataPackageWizardPlugin.addPageDataToDOM(
-             UIController.getInstance().getCurrentAbstractDataPackage(),
-             this, xPathRoot, DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+             UIController.getInstance().getCurrentAbstractDataPackage(), partyPage,
+             "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+             DATAPACKAGE_PERSONNEL_GENERIC_NAME, predicate);
        }
        WidgetFactory.unhiliteComponent(minRequiredLabel);
      }
@@ -284,6 +287,10 @@ public class Project extends AbstractUIPage {
       *
       */
      private void showEditPartyDialog() {
+
+       int predicate = 2 + partiesList.getSelectedRowIndex();
+       if (predicate < 1) predicate = 1 + partiesList.getRowCount();
+
        List selRowList = partiesList.getSelectedRowList();
        if (selRowList==null || selRowList.size() < 4) return;
 
@@ -303,12 +310,11 @@ public class Project extends AbstractUIPage {
          newRow.add(editPartyPage);
          partiesList.replaceSelectedRow(newRow);
 
-
-         //add entire project subtree to datapackage, which will include new
-         //parties
+         //replace party in datapackage...
          DataPackageWizardPlugin.addPageDataToDOM(
              UIController.getInstance().getCurrentAbstractDataPackage(),
-             this, xPathRoot, DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+            editPartyPage, "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+             DATAPACKAGE_PERSONNEL_GENERIC_NAME, predicate);
        }
      }
 
@@ -481,13 +487,13 @@ public class Project extends AbstractUIPage {
 
     JCheckBox checkBox = ((JCheckBox)(checkBoxPanel.getComponent(0)));
 
-    if (map==null || map.isEmpty()) {
+    checkBox.setSelected(true);
 
-      checkBox.setSelected(false);
+    if (map==null || map.isEmpty()) {
       this.resetBlankData();
       return true;
     }
-    checkBox.setSelected(true);
+
 
     List toDeleteList = new ArrayList();
     Iterator keyIt = map.keySet().iterator();
@@ -629,14 +635,3 @@ public class Project extends AbstractUIPage {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-

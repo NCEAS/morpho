@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 01:09:56 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,17 +28,18 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import javax.xml.transform.TransformerException;
 
 import java.awt.event.ActionEvent;
 
@@ -68,36 +69,6 @@ public class AddResearchProjectCommand implements Command {
    */
   public void execute(ActionEvent event) {
 
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
-
-    if (backupSubtreeAndShowProjectDialog()) {
-
-      try {
-        insertProject();
-        UIController.showNewPackage(adp);
-      } catch (Exception w) {
-        Log.debug(15, "Exception trying to modify project DOM: "+w);
-        w.printStackTrace();
-        Log.debug(5, "Unable to add project details!");
-      }
-    }
-  }
-
-
-  private boolean backupSubtreeAndShowProjectDialog() {
-
-    //backup subtree so it can be restored if user hits cancel:
-    projectRoot = adp.getSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
-
-    OrderedMap existingValuesMap = null;
-    if (projectRoot!=null) {
-      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(projectRoot);
-    }
-
-
-
-
-    //show project dialog:
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
     try {
@@ -107,14 +78,124 @@ public class AddResearchProjectCommand implements Command {
 
     } catch (ServiceNotHandledException se) {
 
-        Log.debug(6, se.getMessage());
+        Log.debug(6, "unable to start project editor!");
         se.printStackTrace();
+        return;
     }
-    if (dpwPlugin == null) return false;
+    if (dpwPlugin == null) return;
 
     projectPage = dpwPlugin.getPage(DataPackageWizardInterface.PROJECT);
 
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
+    if (backupSubtreeAndShowProjectDialog()) {
+
+      final MorphoFrame frame
+          = UIController.getInstance().getCurrentActiveWindow();
+
+      final SwingWorker worker = new SwingWorker() {
+
+        public Object construct() {
+
+          if (frame!=null) {
+            frame.setBusy(true);
+            frame.setEnabled(false);
+          }
+          try {
+            //replace project in datapackage...
+            DataPackageWizardPlugin.addPageDataToDOM(
+                UIController.getInstance().getCurrentAbstractDataPackage(),
+                projectPage, PROJECT_SUBTREE_NODENAME,
+                DATAPACKAGE_PROJECT_GENERIC_NAME, 1);
+
+            //update package display in main frame...
+            UIController.showNewPackage(adp);
+
+          } catch (Exception w) {
+            Log.debug(15, "Exception trying to modify project DOM: "+w);
+            w.printStackTrace();
+            Log.debug(5, "Unable to add project details!");
+          }
+          return null;
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished()
+        {
+          if (frame!=null) {
+            frame.setBusy(false);
+            frame.setEnabled(true);
+          }
+        }
+      };
+      worker.start();
+
+      //gets here if user has pressed "OK" on dialog... ////////////////////////
+
+    } else {
+      //gets here if user has pressed "cancel" on dialog... ////////////////////
+
+      //Restore project subtree to state it was in when we started...
+      if (existingProjectRoot==null) {
+
+        adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+
+      } else {
+
+        adp.replaceSubtree(
+            DATAPACKAGE_PROJECT_GENERIC_NAME, existingProjectRoot, 0);
+      }
+    }
+  }
+
+
+  private boolean backupSubtreeAndShowProjectDialog() {
+
+    //backup subtree so it can be restored if user hits cancel:
+    existingProjectRoot = adp.getSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+
+    OrderedMap existingValuesMap = null;
+
+    if (existingProjectRoot==null) {
+
+      //there wasn't a project subtree in the datapackage, so add one
+      //(required for writing references) - if user hits cancel, we'll
+      //delete it again
+
+      Log.debug(45, "No project subtree in the datapackage, so adding one...");
+
+      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+      Document doc = impl.createDocument(
+          "", DATAPACKAGE_PROJECT_GENERIC_NAME, null);
+
+      Node blankProjectRoot = doc.getDocumentElement();
+      Node titleNode = doc.createElement("title");
+      blankProjectRoot.appendChild(titleNode);
+
+      Log.debug(45, "\n\nblankProjectRoot: "+XMLUtilities.getDOMTreeAsString(blankProjectRoot));
+
+      Node check = adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME,
+                                     blankProjectRoot, 0);
+
+      Log.debug(45, "\n\nadp: "+adp);
+
+      if (check == null) {
+        Log.debug(45, "** ERROR: AddResearchProjectCommand, "
+                  +"trying to add blankProjectRoot");
+        Log.debug(5, "** ERROR: Unable to open project editor");
+        return false;
+      }
+
+    } else {
+
+      //there was already a project subtree in the datapackage, so read it...
+
+      Log.debug(45, "No project subtree in the datapackage, so adding one...");
+
+      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(existingProjectRoot);
+    }
+
+    //show project dialog:
 
     Log.debug(45, "sending previous data to projectPage -\n\n" + existingValuesMap);
 
@@ -140,50 +221,7 @@ public class AddResearchProjectCommand implements Command {
   }
 
 
-  private void insertProject() {
-
-    OrderedMap map = projectPage.getPageData(PROJECT_SUBTREE_NODENAME);
-
-    Log.debug(45, "\n insertProject() Got project details from Project page -\n"
-              + map.toString());
-
-    if (map==null || map.isEmpty()) {
-      Log.debug(5, "Unable to get project details from input!");
-      return;
-    }
-
-    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-    Document doc = impl.createDocument("", "project", null);
-
-    projectRoot = doc.getDocumentElement();
-
-
-    try {
-      XMLUtilities.getXPathMapAsDOMTree(map, projectRoot);
-
-    } catch (TransformerException w) {
-      Log.debug(5, "Unable to add project details to package!");
-      Log.debug(15, "TransformerException (" + w + ") calling "
-                +"XMLUtilities.getXPathMapAsDOMTree(map, projectRoot) with \n"
-                +"map = " + map
-                +" and projectRoot = " + projectRoot);
-      w.printStackTrace();
-      return;
-    }
-    //delete old project from datapackage
-    adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
-
-    // add to the datapackage
-    Node check = adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, projectRoot, 0);
-
-    if (check != null) {
-      Log.debug(45, "added new project details to package...");
-    } else {
-      Log.debug(5, "** ERROR: Unable to add new project details to package **");
-    }
-  }
-
-  private Node projectRoot;
+  private Node existingProjectRoot;
   private AbstractDataPackage adp;
   private AbstractUIPage projectPage;
 }

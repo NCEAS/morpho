@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 22:29:18 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -257,6 +257,20 @@ public class WizardSettings {
   +"   <creator> </creator>"
   +"   </dataset> "
   +"</eml:eml>";
+
+  protected static final String TEMP_REFS_EML200_DOCUMENT_TEXT =
+  "<eml:eml "
+  +"   packageId=\"\" system=\"knb\" "
+  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" "
+  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
+  +"   <dataset> "
+  +"   <title> </title> "
+  +"   <creator> </creator>"
+  +"   <project><title> </title></project>"
+  +"   </dataset> "
+  +"</eml:eml>";
+
 
   /*
    * these values denote the location of the data:

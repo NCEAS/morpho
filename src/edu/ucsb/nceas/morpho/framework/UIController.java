@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 01:09:56 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-04-03 06:35:09 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -577,14 +577,15 @@ public class UIController
      */
     public AbstractDataPackage getCurrentAbstractDataPackage() {
 
-      if (isWizardRunning()) Log.debug(45,
-                                       "\n\n***********************************"
-                                       +"getCurrentAbstractDataPackage() -"
-                                       + " isWizardRunning() == true. pkg = \n"
-                                       + this.wizardTempDataPackage);
-      // *temporary* AbstractDataPackage that is used to store wizard data
-      // (for references use) while the wizard is running.
-      if (isWizardRunning()) return this.wizardTempDataPackage;
+      if (isWizardRunning()) {
+        // *temporary* AbstractDataPackage that is used to store wizard data
+        // (for references use) while the wizard is running.
+        Log.debug(45, "\n\n***********************************"
+                  + "getCurrentAbstractDataPackage() -"
+                  + " isWizardRunning() == true. pkg = \n"
+                  + this.wizardTempDataPackage);
+        return this.wizardTempDataPackage;
+      }
 
       MorphoFrame morphoFrame = this.getCurrentActiveWindow();
 
