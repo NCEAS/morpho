@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-21 04:37:12 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-21 20:18:05 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public class Temporal extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.TEMPORAL;
-  private final String nextPageID = "";
+  private final String nextPageID = DataPackageWizardInterface.ACCESS;
   private final String title      = "Temporal Coverage";
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage[";
