@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.40 2001-02-09 23:27:44 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.41 2001-02-12 22:18:27 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1505,6 +1505,8 @@ public void searchFor(String searchText) {
 	  Properties prop = new Properties();
         prop.put("action","squery");
         prop.put("query",queryXML);
+        
+        prop.put("returndoc","-//NCEAS//resource//EN");
         
         String respType = "xml";
 		prop.put("qformat",respType);

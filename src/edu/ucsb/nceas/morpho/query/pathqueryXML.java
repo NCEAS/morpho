@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: pathqueryXML.java,v 1.6 2000-11-28 00:20:34 higgins Exp $'
+ *     Version: '$Id: pathqueryXML.java,v 1.7 2001-02-12 22:18:27 higgins Exp $'
  */
 
 
@@ -164,7 +164,7 @@ private void build_header() {
      }
     if (!returnDocTypes.contains("any")) { 
     for (Enumeration e = returnDocTypes.elements() ; e.hasMoreElements() ;) {
-         qHeader.append("<returndoc>"+e.nextElement()+"</returndoc>\n"); 
+         qHeader.append("<returndoctype>"+e.nextElement()+"</returndoctype>\n"); 
      }
     }
     for (Enumeration e = returnFields.elements() ; e.hasMoreElements() ;) {
