@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-04 21:59:49 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2002-12-13 22:34:04 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ public class DTDTree
     
     // levels is how many levels deep the depth first parse is carried out
     // needs to be specified to provide stopping criteria for recursive DTDs
-    int levels = 10;
+    int levels = 12;
     
  
   public DTDTree() {
