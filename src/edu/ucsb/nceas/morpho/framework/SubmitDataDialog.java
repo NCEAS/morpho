@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.4 2000-12-27 22:14:00 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.5 2001-01-12 00:47:05 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -306,8 +306,19 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	    else {
 	  String dataURL = FileNameTextField.getText();      
 	  if (!VirtualFileCheckBox.isSelected()) {     
-	    // need to change 'hardwired' SendFile parameters
-	    dataURL = SendFile(FileNameTextField.getText(),"dev.nceas.ucsb.edu",4444);
+	    String cookie = HttpMessage.getCookie();
+        int index = cookie.indexOf("JSESSIONID=");
+        index = cookie.indexOf("=", index);
+        int index2 = cookie.length();
+        //get just the session id information from the cookie
+        cookie = cookie.substring(index+1, index2);
+	    
+	    dataURL = SendFile(FileNameTextField.getText(),"dev.nceas.ucsb.edu",getPort(),cookie);
+	    int pos = dataURL.indexOf("<docid>");
+	    if (pos>0) {
+	        int posend = dataURL.indexOf("</docid>", pos+7);
+	        dataURL = dataURL.substring(pos+7, posend);    
+	    }
 	  }
 		// now insert the dataURL into the resourcetemplate file
 		String resourcemetadatafile = "./resource_template.xml";
@@ -338,9 +349,10 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		String fileID = insertIntoMetacat(filemetadatafile);
 	//	System.out.println("ID of file_template file is :"+fileID);
 		String pack = buildPackage(resourceID, "ismetadatafor", dataURL, fileID, "ismetadatafor", dataURL);
+		System.out.println(pack);
 		String packID = insertStringIntoMetacat(pack);
 	//	System.out.println("ID of packagefile is :"+packID);
-		String ids = dataURL+"\nfileID = "+fileID+"\nresourceID = "+resourceID+"\npackage ID "+packID;
+		String ids = dataURL+"\nfileID = "+fileID+"\nresourceID = "+resourceID+"\npackage ID ="+packID;
 		SubmitDataTextArea.setText(ids);
 		
 		}
@@ -349,7 +361,7 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	String buildPackage(String subj1, String rel1, String obj1, String subj2, String rel2, String obj2) {
 	    StringBuffer pack = new StringBuffer();
 	    pack.append("<?xml version=\"1.0\"?>\n");
-	    pack.append("<!DOCTYPE package PUBLIC \"-//NCEAS//package1.0//EN\" \"http://dev.nceas.ucsb.edu/berkley/dtd/package.dtd\">\n");
+	    pack.append("<!DOCTYPE package PUBLIC \"-//NCEAS//package//EN\" \"http://dev.nceas.ucsb.edu/berkley/dtd/package.dtd\">\n");
         pack.append("<package>\n");
         String packagename = "packageExample";
         if (!PackageNameTextField.getText().equals("")) {
@@ -378,64 +390,141 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	 * 
 	 * @param filename file name to be sent
 	 * @param host host name where server is running
-	 * @param port port number used by server (4444 by default)
+	 * @param port port number used by server 
 	 */
 	
-	String SendFile(String filename, String host, int port) {
-		String res = "return";
-        try {
-            echoSocket = new Socket(host, port);
-            out = echoSocket.getOutputStream();
-            in = echoSocket.getInputStream();
-        } catch (UnknownHostException e) {
-                      System.err.println("Don't know about host: "+host);
-                      System.exit(1);
-         } catch (IOException e) {
-                      System.err.println("Couldn't get I/O for "
-                                         + "the connection to: "+host);
-                      System.exit(1);
-         }
-	    
-	    
-	  try{  
-        File file = new File(filename);
-        DataOutputStream dsout = new DataOutputStream(out);
-        FileInputStream fs = new FileInputStream(file);
-        // first convert the filename to a byte array
-        String fn = file.getName();
-        byte[] str = fn.getBytes();
-        // now write the string bytes followed by a '0'
-        for (int i=0;i<str.length;i++) {
-            dsout.write(str[i]);    
-        }
-        dsout.write(0);  // marks end of name info
-        
-        // now read response from server
-        InputStreamReader isr = new InputStreamReader(in);
-        BufferedReader rin = new BufferedReader(isr);
-        res = rin.readLine();
-	String res1 = res.substring(0,4);  // should be 'http'
-        if (res1.equalsIgnoreCase("http")) {
-            // now send the file data
-            byte[] buf = new byte[1024];
-            int cnt = 0;
-            int i = 0;
-            while (cnt!=-1) {
-                cnt = fs.read(buf);
-                System.out.println("i = "+i+" Bytes read = "+cnt);
-                if (cnt!=-1) {
-                    dsout.write(buf, 0, cnt);
-                }
-                i++;
-        }
-        }
-            fs.close();
-            dsout.flush();
-            dsout.close();
-	  }
-	  catch (Exception w) {}
+  public String SendFile(String filename, String host, int port, 
+                                String cookie) 
+  {
+    Socket echoSocket = null;
+    OutputStream out = null;
+    InputStream in = null;
+    DataOutputStream dsout = null;
+    InputStreamReader isr = null;
+    
+		String retmsg = "";
+    
+    System.out.println("host: " + host + " port: " + port + " filename: " +
+                       filename + " cookie: " + cookie);
+    try 
+    {
+      echoSocket = getSocket(host, port);
+      while(echoSocket == null) 
+      {//loop until the port is there
+        echoSocket = getSocket(host, port);
+      }
+      //echoSocket = new Socket(host, port);
+      out = echoSocket.getOutputStream(); //out to the server
+      in = echoSocket.getInputStream();   //in from server
+      isr = new InputStreamReader(in);
+    } 
+    catch (UnknownHostException e) 
+    {
+      System.err.println("Don't know about host: " + host);
+      System.out.println("error: " + e.getMessage());
+      e.printStackTrace(System.out);
+      System.exit(1);
+    } 
+    catch (IOException e) 
+    {
+      System.err.println("Couldn't get I/O for "
+                         + "the connection to: "+host);
+      System.out.println("error: " + e.getMessage());
+      e.printStackTrace(System.out);
+      System.exit(1);
+    }
+	  
+    try
+    {  
+      File file = new File(filename);
+      dsout = new DataOutputStream(out);
+      FileInputStream fs = new FileInputStream(file);
+      // first convert the filename to a byte array
+      String fn = file.getName();
+      byte[] fname = fn.getBytes();
+      // now write the string bytes followed by a '0'
+      for (int i=0;i<fname.length;i++) 
+      {
+        dsout.write(fname[i]);    
+      }
+      dsout.write(0);  // marks end of name info
+      
+      //write the session id to the stream
+      byte[] cook = cookie.getBytes();
+      for(int i=0; i<cook.length; i++)
+      {
+        dsout.write(cook[i]);
+      }
+      dsout.write(0);
+      
+      //write the length of the file followed by a 0
+      long flength = file.length();
+      System.out.println("file sized (B): " + flength);
+      String sflength = String.valueOf(flength);
+      
+      byte[] fl = sflength.getBytes();
+      for(int i=0; i<fl.length; i++)
+      {
+        dsout.write(fl[i]);
+      }
+      dsout.write(0);
+      
+      //dsout.write((int)flength);
+      //dsout.write(0);
+      dsout.flush();
+      
+      // now read response from server
+      //InputStreamReader isr = new InputStreamReader(in);
+      BufferedReader rin = new BufferedReader(isr);
 
-	return res;
+      // now send the file data
+      byte[] buf = new byte[1024];
+      int cnt = 0;
+      int i = 0;
+      while (cnt!=-1) 
+      {
+        cnt = fs.read(buf);
+        System.out.println("i = "+ i +" Bytes read = " + cnt);
+        if (cnt!=-1) 
+        {
+          dsout.write(buf, 0, cnt);
+        }
+        i++;
+      }
+      fs.close();
+      dsout.flush();
+      //dsout.close();
+	  }
+	  catch (Exception w) 
+    {
+      System.out.println("error in DataStreamTest: " + w.getMessage());
+    }
+   
+    try
+    {
+      while(!isr.ready()) 
+      {
+        //System.out.println("not ready");
+      }
+      int msg = isr.read();
+      retmsg += (char)msg;
+      System.out.print("Message from server: ");
+      while(msg != -1)
+      {
+        System.out.print((char)msg);
+        System.out.flush();
+        msg = isr.read();
+        retmsg += (char)msg;
+      }
+      System.out.println();
+      dsout.flush();
+      dsout.close();
+    }
+    catch(Exception e)
+    {
+      System.out.println("error: " + e.getMessage());
+    }
+	  return retmsg;
 	}
 	
 	
@@ -574,7 +663,63 @@ public String insertStringIntoMetacat(String xmlstring) {
   return res;
     
 }
-	
+
+ /**
+   * attempts to connect a socket, returns null if it is not successful
+   * returns the connected socket if it is successful.
+   */
+  public Socket getSocket(String host, int port)
+  {
+    Socket s = null;
+    try
+    {
+      s = new Socket(host, port);
+      //we could create a socket on this port so the port is not available
+      //System.out.println("socket connnected");
+      return s;
+    }
+    catch(UnknownHostException u)
+    {
+    }
+    catch(IOException i)
+    {
+      //an ioexception is thrown if the port is not in use
+      //System.out.println("socket not connected");
+      return s;
+    }
+    return s;
+  }
+
+private int getPort() {
+    int port = 0;
+    try{
+      URL url = new URL(container.MetaCatServletURL);
+      HttpMessage msg2 = new HttpMessage(url);
+	  Properties prop = new Properties();
+	  prop.put("action","getdataport");
+      
+      InputStream in = msg2.sendPostMessage(prop);
+      InputStreamReader isr = new InputStreamReader(in);
+      char c;
+      int i = isr.read();
+      String temp2 = null;
+      while(i != -1)
+      { //get the server response to the getdataport request
+        c = (char)i;
+        temp2 += c;
+        i = isr.read();
+      }
+      int temp3 = temp2.indexOf("<", 32);
+      temp2 = temp2.substring(32, temp3); //parse out the port
+      //the port number taken from the xml encoding
+      temp2 = temp2.trim();
+      port = (new Integer(temp2)).intValue();
+    }
+    catch (Exception e) {
+        
+    }
+      return port;
+}
 	
 public String insertIntoMetacat(String filename) {
         String res = "error";
