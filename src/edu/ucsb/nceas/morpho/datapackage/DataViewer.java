@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-22 20:55:08 $'
- * '$Revision: 1.96 $'
+ *     '$Date: 2004-01-08 19:19:24 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,6 +102,8 @@ public class DataViewer extends javax.swing.JPanel
   private GUIAction addDocumentationAction = null;
   private JMenuItem createNewDatatable = null;
   private GUIAction createNewDatatableAction = null;
+  private JMenuItem deleteDatatable = null;
+  private GUIAction deleteDatatableAction = null;
   private JMenuItem sortBySelectedColumn = null;
   private GUIAction sortAction = null;
   private JMenuItem insertRowAfter = null;
@@ -371,10 +373,14 @@ public class DataViewer extends javax.swing.JPanel
                                           new AddDocumentationCommand());
     addDocumentation = new JMenuItem(addDocumentationAction);
     popup.add(addDocumentation);
-    createNewDatatableAction = new GUIAction("Create New Datatable...", null,
+    createNewDatatableAction = new GUIAction("Create/Import New Datatable...", null,
                                                 new ImportDataCommand());
     createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
+    deleteDatatableAction = new GUIAction("Delete Current Datatable", null,
+                                                new DeleteTableCommand());  
+    deleteDatatable = new JMenuItem(deleteDatatableAction);
+    popup.add(deleteDatatable);
     popup.add(new JSeparator());
     
     sortAction = new GUIAction("Sort by Selected Column", null, 

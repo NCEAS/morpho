@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-07 19:56:40 $'
- * '$Revision: 1.69 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-08 19:19:24 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -240,13 +240,12 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addDocumentation);
 
-    i = i+1;
-    GUIAction createNewDatatable = new GUIAction("Create New Datatable...", null,
+        i = i+1;
+    GUIAction createNewDatatable = new GUIAction("Create/Import New Datatable...", null,
                                                       new ImportDataCommand());
     createNewDatatable.setToolTipText("Add a new table");
     createNewDatatable.setMenuItemPosition(i);
     createNewDatatable.setMenu("Data", DATAMENUPOSITION);
-    createNewDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     createNewDatatable.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
@@ -255,6 +254,29 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(createNewDatatable);
 
+    
+    i = i+1;
+    GUIAction deleteDatatable = new GUIAction("Delete Current Datatable", null,
+                                                      new DeleteTableCommand());  
+    deleteDatatable.setToolTipText("Remove the currently displayed table");
+    deleteDatatable.setMenuItemPosition(i);
+    deleteDatatable.setMenu("Data", DATAMENUPOSITION);
+    deleteDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    deleteDatatable.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    deleteDatatable.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    deleteDatatable.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    deleteDatatable.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                   false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(deleteDatatable);
+
+    
     i= i+2; // separator will take a position so add 2
     GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column",
                                            null, new SortDataTableCommand());
@@ -420,6 +442,7 @@ public class DataPackagePlugin
 
     addDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
+    deleteDatatable.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
     insertRowBefore.setEnabled(false);

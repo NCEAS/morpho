@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-01-06 21:53:29 $'
- * '$Revision: 1.87 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-08 19:19:24 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1005,6 +1005,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
  public AbstractDataPackage getAbstractDataPackage() {
     return adp;
   }
+  
+ /**
+  * get the last tab selected in the entities display
+  */
+ public int getLastTabSelected() {
+   return lastTabSelected;
+ }
 
  /**
   * get location of the AbstractDataPackage associated with this object

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.48 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-08 19:19:24 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -613,6 +613,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     Node entity = (entityArray[entNum]).getNode();
     Node parent = entity.getParentNode();
     parent.removeChild(entity);
+    entityArray = null;
   }
 
 
