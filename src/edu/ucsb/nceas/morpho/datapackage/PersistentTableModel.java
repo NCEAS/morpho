@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-02 17:34:24 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-04 18:20:43 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
             else {
                 ocell = "";
             }
-            return ocell;
+            return (" "+ocell);
     }
 
 	/**
