@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-02 20:33:32 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,15 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
@@ -66,9 +70,13 @@ public class OpenSynchronizeDialogCommand implements Command
    */    
   public void execute(ActionEvent event)
   {
-    ResultPanel resultPane = null;
-    MorphoFrame frame = null;
+    ResultPanel resultPane     = null;
+    MorphoFrame frame          = null;
     boolean parentIsOpenDialog = false;
+    String selectDocId         = null;
+    boolean inNetwork          = false;
+    boolean inLocal            = false;
+    String frameType           = null;
     if (openDialog != null)
     {
       // This is for parent is a open dialog
@@ -89,14 +97,39 @@ public class OpenSynchronizeDialogCommand implements Command
     // make sure the resultPane is not null
     if ( resultPane != null)
     {
-      String selectDocId = resultPane.getSelectedId();
-      boolean inNetwork = resultPane.getMetacatLocation();
-      boolean inLocal = resultPane.getLocalLocation();
-      
-      // Make sure selected a id, and there no package in metacat
-      if ( selectDocId != null && !selectDocId.equals("") && 
-                                                      !(inLocal && inNetwork))
+      selectDocId = resultPane.getSelectedId();
+      inNetwork = resultPane.getMetacatLocation();
+      inLocal = resultPane.getLocalLocation();
+      frameType = MorphoFrame.SEARCHRESULTFRAME;
+    
+    }//if
+    else
+    {
+      // To try data package frame
+      DataPackageInterface dataPackage = null;
+      try 
       {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
+                   services.getServiceProvider(DataPackageInterface.class);
+        dataPackage = (DataPackageInterface)provider;
+      } 
+      catch (ServiceNotHandledException snhe) 
+      {
+        Log.debug(6, snhe.getMessage());
+        return;
+      }
+       //Try if it is datapackage frame
+      selectDocId = dataPackage.getDocIdFromMorphoFrame(frame);
+      inNetwork   = dataPackage.isDataPackageInNetwork(frame);
+      inLocal     = dataPackage.isDataPackageInLocal(frame);
+      frameType   = MorphoFrame.DATAPACKAGEFRAME;      
+    }//else
+    
+    // Make sure selected a id, and there no package in metacat
+    if ( selectDocId != null && !selectDocId.equals("") && 
+                                                      !(inLocal && inNetwork))
+    {
         // Show synchronize dialog
         SynchronizeDialog synchronizeDialog = null;
         if (parentIsOpenDialog)
@@ -107,12 +140,11 @@ public class OpenSynchronizeDialogCommand implements Command
         else 
         {
           synchronizeDialog = new SynchronizeDialog
-                                      (frame, selectDocId, inLocal, inNetwork);
+                            (frame, frameType, selectDocId, inLocal, inNetwork);
         }
         synchronizeDialog.setModal(true);
         synchronizeDialog.setVisible(true);
-      }//if
-    }//if
+     }//if
     
       
     
