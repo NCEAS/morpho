@@ -41,7 +41,10 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Vector;
+
+import java.io.File;
 
 import java.awt.BorderLayout;
 
@@ -60,7 +63,7 @@ public class CodeDefinition extends AbstractUIPage {
   public final String pageID = DataPackageWizardInterface.CODE_DEFINITION;
   public String nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
   public final String pageNumber = "";
-
+  
   public final String title      = "Code Defintions Import Page";
   public final String subtitle   = "Define the columns for the codes and definitions";
 
@@ -131,11 +134,11 @@ public class CodeDefinition extends AbstractUIPage {
    */
   public void onLoadAction() {
 		
-		adp = getADP();
-		if(adp == null) {
-			Log.debug(10, "Error! Unable to obtain the ADP in CodeDefinition page!");
-			return;
-		}
+     adp = getADP();
+     if(adp == null) {
+	Log.debug(10, "Error! Unable to obtain the ADP in CodeDefinition page!");
+	return;
+     }
 		
     String attr = adp.getCurrentImportAttributeName();
     String entity = adp.getCurrentImportEntityName();
@@ -154,7 +157,7 @@ public class CodeDefinition extends AbstractUIPage {
     adp.setLastImportedDataSet(null);
 
     String prevPageID = mainWizFrame.getPreviousPageID();
-    if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD)) {
+    if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
 
         Node newDOM = mainWizFrame.collectDataFromPages();
 
@@ -180,6 +183,56 @@ public class CodeDefinition extends AbstractUIPage {
         adp.addEntity(entityNode);
 
         adp.setLocation("");  // we've changed it and not yet saved
+
+	if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
+
+	    //data not yet read from the file. This happens when user does a MANUAL import
+	    // read data from the file. If its a non-text file, put "**nontext**" in first row of the columns
+	    // At the end of this, rowData is a valid vector of row data.
+
+
+	    int entityIdx = adp.getEntityCount() - 1;
+	    boolean text_file = false;
+	    String format = adp.getPhysicalFormat(entityIdx, 0);
+	    if(format.indexOf("Text") > -1 || format.indexOf("text") > -1 || format.indexOf("Asci") > -1 || format.indexOf("asci") > -1) {
+		text_file = true;
+	    }
+	    
+	    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+	    DataViewContainerPanel resultPane = null;
+	    Morpho morpho = null;
+	    if(morphoFrame != null) {
+		resultPane = morphoFrame.getDataViewContainerPanel();
+	    }
+	    if(resultPane != null) {
+		morpho = resultPane.getFramework();
+	    }
+
+	    File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIdx);
+	    if(entityFile == null) return;
+	    Vector colsToExtract = new Vector();
+	    for(int ci = 0; ci < attrs.size(); ci++) colsToExtract.add(new Integer(ci));
+	    int numHeaderLines = 0;
+	    String field_delimiter = adp.getPhysicalFieldDelimiter(entityIdx, 0);
+	    String delimiter = getDelimiterString(field_delimiter);
+	    boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIdx, 0);
+	    List data = null;
+	    if(text_file) {
+		data = CodeDefnPanel.getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
+	    } else {
+		// not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
+		data = new ArrayList();
+		List row1 = new ArrayList();
+		for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
+		data.add(row1);
+	    }
+	    rowData = new Vector();
+	    TaxonImportPanel.addColumnsToRowData(rowData, data);
+	    importPanel.setTable(tableName, attrs, rowData);
+	    importPanel.invalidate();
+
+	} 
+
     }
 
 
@@ -305,5 +358,22 @@ public class CodeDefinition extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+
+
+  private String getDelimiterString(String field_delimiter) {
+    String str = "";
+    String temp = field_delimiter.trim();
+    if (temp.startsWith("#x")) {
+      temp = temp.substring(2);
+      if (temp.equals("0A")) str = "\n";
+      if (temp.equals("09")) str = "\t";
+      if (temp.equals("20")) str = " ";
+    }
+    else {
+      str = temp;
+    }
+    return str;
+  }
+
 }

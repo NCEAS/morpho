@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 14:16:47 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2004-06-02 22:41:30 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,7 +247,7 @@ public class WizardSettings {
 
   public static final int ACCESS_PAGE_USER          = 3;
 
-
+  public static final int MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT = 25;
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "

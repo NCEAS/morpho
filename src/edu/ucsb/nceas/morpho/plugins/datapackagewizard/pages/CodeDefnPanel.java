@@ -118,8 +118,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   private static final int IMPORT_LATER = 1;
   private static final int IMPORT_DONE  = 2;
   private static final String ID_XPATH = "attribute/@id";
-  private static final int MAX_IMPORTED_ROWS_DISPLAYED = 10;
-  private static final String TRUNCATE_STRING = "--other codes not displayed--";
+
+    // max number of rows to be displayed in the Code definition panel;
+    // to display all rows, set it to -1
+  private static final String TRUNCATE_STRING = "--truncated--";
 
   private int entityIdx = -1;
   private String currentEntityID = "";
@@ -229,8 +231,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     }
 
     Morpho morpho = null;
-		if(resultPane != null)
-			morpho = resultPane.getFramework();
+    if(resultPane != null)
+	morpho = resultPane.getFramework();
 
     entityNames = getEntityNames();
     tableNames = new Vector();
@@ -243,13 +245,18 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     for(int i =0; i < entityNames.length; i++) {
 
       int idx = adp.getEntityIndex(entityNames[i]);
+      boolean text_file = false;
+
       attrNames = getAttributeNames(idx);
 
       File entityFile = getEntityFile(morpho, adp, idx);
       if(entityFile == null) {
         continue;
       }
-
+      String format = adp.getPhysicalFormat(idx, 0);
+      if(format.indexOf("Text") > -1 || format.indexOf("text") > -1 || format.indexOf("Asci") > -1 || format.indexOf("asci") > -1) {
+	  text_file = true;
+      }
       Vector colsToExtract = new Vector();
       for(int j = 0; j < attrNames.length; j++) {
         colsToExtract.add(new Integer(j));
@@ -264,17 +271,27 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
       String field_delimiter = adp.getPhysicalFieldDelimiter(idx, 0);
       String delimiter = getDelimiterString(field_delimiter);
-			boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(idx, 0);
-			List data = getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, -1);
-
-      if(data != null && data.size() < 1)
-        continue;
-      else {
-        for(int k = 0; k < attrNames.length; k++) {
-          tableNames.add(entityNames[i]);
-          colNames.add(attrNames[k]);
-        }
+      boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(idx, 0);
+      List data = null;
+      if(text_file) {
+	  data = getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
+      } else {
+	  // not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
+	  data = new ArrayList();
+	  List row1 = new ArrayList();
+	  for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
+	  data.add(row1);
       }
+
+      //      if(data != null && data.size() < 1)
+      //  continue;
+      //else {
+      
+      for(int k = 0; k < attrNames.length; k++) {
+         tableNames.add(entityNames[i]);
+         colNames.add(attrNames[k]);
+      }
+      
       TaxonImportPanel.addColumnsToRowData(rowData, data);
 
     }
@@ -293,7 +310,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   private void getADP() {
 
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null) {
       resultPane = morphoFrame.getDataViewContainerPanel();
     }
@@ -958,8 +975,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
         if(maxLinesNeeded != -1 && result.size() >= maxLinesNeeded) {
           int space = TRUNCATE_STRING.indexOf(" ");
-          row.add(TRUNCATE_STRING.substring(0, space));
-          row.add(TRUNCATE_STRING.substring(space + 1));
+	  for(int ci = 0; ci < colIndices.size(); ci++)
+	      row.add(TRUNCATE_STRING);
           result.add(row);
           break;
         }

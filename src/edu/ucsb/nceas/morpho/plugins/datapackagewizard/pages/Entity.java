@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 14:16:47 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-06-02 22:41:30 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 import java.awt.event.ActionEvent;
 
@@ -290,15 +291,22 @@ public class Entity extends AbstractUIPage{
       return false;
     }
 
+    List colNames = new ArrayList();
+
     boolean importNeeded = false;
     AttributePage nextAttributePage = null;
     List rowLists = attributeList.getListOfRowLists();
     if (rowLists==null) return true;
     int index = 1;
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		if(adp == null) {
-			Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
-		}
+    int attrsToBeImported = 0;
+
+    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    if(adp == null) {
+	Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
+    } else {
+	attrsToBeImported = adp.getAttributeImportCount();
+    }
+    String entityName = entityNameField.getText().trim();
     for (Iterator it = rowLists.iterator(); adp != null && it.hasNext(); ) {
 
       Object nextRowObj = it.next();
@@ -310,22 +318,35 @@ public class Entity extends AbstractUIPage{
       Object nextUserObject = nextRowList.get(3);
       if (nextUserObject==null) continue;
 
+      String colName = (String) nextRowList.get(0);
       nextAttributePage = (AttributePage)nextUserObject;
       if(nextAttributePage.isImportNeeded()) {
 
         OrderedMap map = nextAttributePage.getPageData(xPathRoot + "/attributeList/attribute["+index + "]");
         String mScale = (String) nextRowList.get(2);
-        String entityName = entityNameField.getText().trim();
-        String colName = (String) nextRowList.get(0);
         adp.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
         importNeeded = true;
       }
+      colNames.add(colName);
       index++;
     }
+    if(adp != null) {
+	adp.setLastImportedEntity(entityName);
+	adp.setLastImportedAttributes(colNames);
+	adp.setLastImportedDataSet(null);
+	/*	if(vec != null) adp.setLastImportedDataSet(vec);
+	else {
+	    adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
+	    }*/
+    } 
 
-    if(importNeeded) {
 
-      this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
+    if(attrsToBeImported > 0) {
+	this.nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
+
+    } else if(importNeeded) {
+	this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
+
     }
 
     return true;

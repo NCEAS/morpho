@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 14:16:47 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-06-02 22:41:30 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,8 +193,7 @@ public class CodeImportSummary extends AbstractUIPage {
 				
 				arr = adp.getEntityArray();
 				if(arr == null) {
-					Log.debug(1, "Cant get entities");
-					return;
+				    arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];	
 				}
 				adp.setOriginalEntityArray(arr);
 			}
