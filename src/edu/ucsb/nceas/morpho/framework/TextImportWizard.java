@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-10 17:51:13 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2003-01-08 23:54:14 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -874,9 +874,12 @@ public void startImport(String file) {
                                                      ||(cd.colType.equals("double"))) {
                         String dmin = Double.toString(cd.colMin);
                         String dmax = Double.toString(cd.colMax);
-                        long raver = (Math.round(cd.colAverage*100.0));
-                        String daver = Long.toString(raver);
-                        daver = daver.substring(0,daver.length()-2)+"."+daver.substring(daver.length()-2);
+                        String daver = "";
+                        if (cd.colAverage>0.1) {
+                          long raver = (Math.round(cd.colAverage*100.0));
+                          daver = Long.toString(raver);
+                          daver = daver.substring(0,daver.length()-2)+"."+daver.substring(daver.length()-2);
+                        }
                         str = str + "Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver+"<br>";
                       } 
                       else if ((cd.colType.equals("integer"))) {
@@ -1776,7 +1779,10 @@ public void startImport(String file) {
 	  XMLBuffer.append("    <entityDescription> "+normalize(TableDescriptionTextField.getText())+"</entityDescription>\n");
 	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"></orientation>\n");
 	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"></caseSensitive>\n");
-	  String numRecords = (new Integer(nlines_actual - startingLine)).toString();
+    int temp = 0;
+    if (labelsInStartingLine) temp = 1;
+    int numrecs = nlines_actual - startingLine +1 + temp;
+	  String numRecords = (new Integer(numrecs)).toString();
 	  XMLBuffer.append("    <numberOfRecords> "+normalize(numRecords)+"</numberOfRecords>\n");
 	  XMLBuffer.append("</table-entity>\n");
 	  return XMLBuffer.toString();
