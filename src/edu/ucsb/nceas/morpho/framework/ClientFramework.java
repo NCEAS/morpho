@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.21 2000-09-30 03:22:24 jones Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.22 2000-10-02 22:58:36 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -354,7 +354,8 @@ public class ClientFramework extends javax.swing.JFrame
 		// Get the configuration file information
     try {
       options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      xmlcatalogfile = (String)options.handleGetObject("xmlcatalogfile");
+      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+      xmlcatalogfile = local_dtd_directory+"/catalog"; 
       MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
@@ -389,50 +390,50 @@ public class ClientFramework extends javax.swing.JFrame
       JTabbedPane1.setTitleAt(3,"Demo Editor");
 
       // Get the list of menus from the plugin components
-      String menus[] = plugin.registerMenus();
+//      String menus[] = plugin.registerMenus();
   
       // Loop through the menus and create them
-      for (int i=0; i < menus.length; i++) {
-        String currentMenuName = menus[i];
+//     for (int i=0; i < menus.length; i++) {
+//        String currentMenuName = menus[i];
   
-        JMenu currentMenu = null;
+//        JMenu currentMenu = null;
         // Check if the menu exists already here
-        if (menuList.containsKey(currentMenuName)) {
-          currentMenu = (JMenu)menuList.get(currentMenuName);
-        } else {
-          currentMenu = new JMenu(); 
-          currentMenu.setText(currentMenuName);
-          currentMenu.setActionCommand(currentMenuName);
+//        if (menuList.containsKey(currentMenuName)) {
+//          currentMenu = (JMenu)menuList.get(currentMenuName);
+//        } else {
+//          currentMenu = new JMenu(); 
+//          currentMenu.setText(currentMenuName);
+//          currentMenu.setActionCommand(currentMenuName);
           //currentMenu.setMnemonic((int)'H');
-          JMenuBar1.add(currentMenu);
-          menuList.put(currentMenuName, currentMenu);
-        }
+//          JMenuBar1.add(currentMenu);
+//          menuList.put(currentMenuName, currentMenu);
+//        }
   
         // Get the menu items (Actions) and add them to the menus
-        Action menuActions[] = 
-          plugin.registerMenuActions(currentMenuName);
-        for (int j=0; j < menuActions.length; j++) {
-          Action currentAction = menuActions[j];
-          if (currentMenuName.equals("File")) {
+ //       Action menuActions[] = 
+ //         plugin.registerMenuActions(currentMenuName);
+ //       for (int j=0; j < menuActions.length; j++) {
+ //         Action currentAction = menuActions[j];
+//          if (currentMenuName.equals("File")) {
             // Insert File menu items above the "Exit" item and separator
-            int pos = currentMenu.getMenuComponentCount() - 2;
-            if (pos < 0) {
-              pos = 0;
-            }
-            currentMenu.insert(currentAction, pos);
-          } else {
+//            int pos = currentMenu.getMenuComponentCount() - 2;
+//            if (pos < 0) {
+//              pos = 0;
+//            }
+//            currentMenu.insert(currentAction, pos);
+//          } else {
             // Append everything else at the bottom of the menu
-            currentMenu.add(currentAction);
-          }
-        }
-      }
+//            currentMenu.add(currentAction);
+//          }
+//        }
+//      }
 
       // Get the toolbar Actions and add them to the toolbar
-      Action toolbarActions[] = plugin.registerToolbarActions();
-      for (int j=0; j < toolbarActions.length; j++) {
-        Action currentAction = toolbarActions[j];
-        JToolBar1.add(currentAction);
-      }
+//      Action toolbarActions[] = plugin.registerToolbarActions();
+//      for (int j=0; j < toolbarActions.length; j++) {
+//        Action currentAction = toolbarActions[j];
+//        JToolBar1.add(currentAction);
+//      }
 
     } catch (ClassCastException cce) {
       System.err.println("Error loading plugin: wrong class!");
@@ -467,7 +468,7 @@ public class ClientFramework extends javax.swing.JFrame
 		    catch (Exception e) { 
 		    }
 		    */
-            SplashFrame sf = new SplashFrame();
+            SplashFrame sf = new SplashFrame(true);
             sf.setVisible(true);
 			//Create a new instance of our application's frame, and make it visible.
 			ClientFramework clf = new ClientFramework();
