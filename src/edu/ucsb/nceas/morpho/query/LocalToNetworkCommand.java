@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-28 18:17:24 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-31 00:29:15 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public class LocalToNetworkCommand implements Command
 {
     
   /** A reference to the dialog */
-   private OpenDialogBox dialog = null;
+   private JDialog dialog = null;
    
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
@@ -59,7 +59,7 @@ public class LocalToNetworkCommand implements Command
    * Constructor of LocalToNetworkCommand in dialog
    * @param dialog a upload command will be happened at this dialog 
    */
-  public LocalToNetworkCommand(OpenDialogBox box)
+  public LocalToNetworkCommand(JDialog box)
   {
     dialog = box;
    
@@ -71,19 +71,12 @@ public class LocalToNetworkCommand implements Command
    */    
   public void execute()
   {
-    if (dialog != null)
-    {
-      // This command will apply to a dialog
-      morphoFrame = dialog.getParentFrame();
-      resultPane = dialog.getResultPanel();
-    }
-    else
-    {
-      // If the command would not applyto a dialog, moreFrame will be set to be
-      // current active morphoFrame
-      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
-    }
+    
+    // If the command would not applyto a dialog, moreFrame will be set to be
+    // current active morphoFrame
+    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
+   
     // make sure the resultPane is not null
     if ( resultPane != null)
     {
@@ -94,7 +87,13 @@ public class LocalToNetworkCommand implements Command
       // Make sure selected a id, and there no package in metacat
       if ( selectDocId != null && !selectDocId.equals("") && !inNetwork)
       {
-        doUpload(selectDocId, morphoFrame, dialog);
+        if (dialog != null)
+        {
+          dialog.setVisible(false);
+          dialog.dispose();
+          dialog = null;
+        }
+        doUpload(selectDocId, morphoFrame);
       }
     }//if
     
@@ -104,8 +103,7 @@ public class LocalToNetworkCommand implements Command
    * Using SwingWorket class to open a package
    *
    */
- private void doUpload(final String docid, final MorphoFrame frame, 
-                                                      final OpenDialogBox box) 
+ private void doUpload(final String docid, final MorphoFrame frame) 
  {
   final SwingWorker worker = new SwingWorker() 
   {
@@ -113,7 +111,7 @@ public class LocalToNetworkCommand implements Command
           frame.setBusy(true);
           DataPackageInterface dataPackage;
           // Create a refresh command 
-          RefreshCommand refresh = new RefreshCommand(box);
+          RefreshCommand refresh = new RefreshCommand(null);
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -147,7 +145,7 @@ public class LocalToNetworkCommand implements Command
                "for this package will be changed.  Are you sure you want to \n"+
                "proceed with the upload?";
               int choice = JOptionPane.YES_OPTION;
-              choice = JOptionPane.showConfirmDialog(box, message, 
+              choice = JOptionPane.showConfirmDialog(frame, message, 
                                  "Morpho", 
                                  JOptionPane.YES_NO_CANCEL_OPTION,
                                  JOptionPane.WARNING_MESSAGE);
