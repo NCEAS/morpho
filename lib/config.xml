@@ -17,6 +17,7 @@
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
   <tempDir>./tmp</tempDir>
+  <genericStylesheet>lib/style/generic.xsl</genericStylesheet>
   <accessFileType>
     -//ecoinformatics.org//eml-access-2.0.0beta4//EN
   </accessFileType>
@@ -191,5 +192,5 @@
   <uid_tag>uid</uid_tag>
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
-  <current_profile></current_profile>
+  <current_profile>berkley</current_profile>
 </config>

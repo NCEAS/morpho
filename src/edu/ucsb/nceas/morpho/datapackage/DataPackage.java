@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-26 23:16:22 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2001-11-27 16:47:06 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -248,11 +248,8 @@ public class DataPackage
     NodeList titleNodeList = null;
     NodeList altTitleNodeList = null;
     String originatorPath = config.get("originatorPath", 0);
-    //System.out.println("originatorPath: " + originatorPath);
     String titlePath = config.get("titlePath", 0);
-    //System.out.println("titlePath: " + titlePath);
     String altTitlePath = config.get("altTitlePath", 0);
-    //System.out.println("alttitlePath: " + altTitlePath);
     try
     {
       //find where the triples go in the file
@@ -892,7 +889,6 @@ public class DataPackage
         if(!entryFile.isDirectory())
         {
           ze.setSize(entryFile.length());
-          System.out.println("============file length: " + entryFile.length());
           zos.putNextEntry(ze);
           FileInputStream fis = new FileInputStream(entryFile);
           int c = fis.read();
@@ -914,7 +910,6 @@ public class DataPackage
         
         ZipEntry ze = new ZipEntry(packdir + "/" + f.getName());
         ze.setSize(f.length());
-        System.out.println("============file length: " + f.length());
         zos.putNextEntry(ze);
         FileInputStream fis = new FileInputStream(f);
         int c = fis.read();
@@ -1034,6 +1029,7 @@ public class DataPackage
       
       //create a html file from all of the metadata
       StringBuffer htmldoc = new StringBuffer();
+      ConfigXML config = framework.getConfiguration();
       htmldoc.append("<html><head></head><body>");
       for(int i=0; i<fileV.size(); i++)
       {
@@ -1053,7 +1049,6 @@ public class DataPackage
           {
             Catalog myCatalog = new Catalog();
             myCatalog.loadSystemCatalogs();
-            ConfigXML config = framework.getConfiguration();
             String catalogPath = config.get("local_catalog_path", 0);
             myCatalog.parseCatalog(catalogPath);
             cer.setCatalog(myCatalog);
@@ -1075,11 +1070,10 @@ public class DataPackage
           fis = new FileInputStream((File)fileV.elementAt(i));
           XSLTInputSource xis = new XSLTInputSource(fis);
           StringWriter docstring = new StringWriter();
+          String stylesheet = config.get("genericStylesheet", 0);
           processor.process(xis,
-                            new XSLTInputSource("lib/style/generic.xsl"),
+                            new XSLTInputSource(stylesheet),
                             new XSLTResultTarget(docstring));
-
-          //System.out.println("docstring: " + docwriter.toString());
           htmldoc.append(docstring.toString());
           htmldoc.append("<br><br><hr><br><br>");
         }
@@ -1112,7 +1106,6 @@ public class DataPackage
         }
       }
       htmldoc.append("</body></html>");
-      //System.out.println(htmldoc.toString());
       File htmlfile = new File(packagePath + "/metadata.html");
       FileOutputStream fos = new FileOutputStream(htmlfile);
       StringReader sr = new StringReader(htmldoc.toString());
@@ -1156,60 +1149,24 @@ public class DataPackage
     return scope + "." + num;
   }
   
-  /**
-   * method to do a depth first traversal of a dom tree and return an html rep
-   * of the tree in a table.
-   */
-  private String dft(Node n, String html, int depth)
-  {
-    short nodetype = n.getNodeType();
-    System.out.println("nodetype: " + nodetype);
-    try
-    {
-    if(n.getFirstChild().getNodeValue() != null)
-    {
-      
-      String retstr = "<tr><td>";
-      for(int i=0; i<depth; i++)
-      {
-        retstr += "&nbsp;";
-      }
-      retstr += n.getNodeName() + "</td><td>";
-      retstr += n.getFirstChild().getNodeValue();
-      retstr += "</td></tr>";
-      html += retstr;
-    }
-    }
-    catch(Exception e){}
-    
-    Node firstchild = n.getFirstChild();
-    if(firstchild == null)
-    {
-      System.out.println("returning null");
-      return html;
-    }
-    else
-    {
-      System.out.println("recursing");
-      return dft(firstchild, html, depth++);
-    }
-  }
-  
  /** 
   * Checks a file to see if it is a text file by looking for bytes containing '0'
   */
-   private boolean isTextFile(File file) { 
+   private boolean isTextFile(File file) 
+   { 
      boolean text = true; 
      int res; 
-     try { 
-         FileInputStream in = new FileInputStream(file); 
-         while ((res = in.read())>-1) { 
-             if (res==0) text = false; 
-         } 
+     try 
+     { 
+       FileInputStream in = new FileInputStream(file); 
+       while ((res = in.read())>-1) 
+       { 
+         if (res==0) text = false; 
+       } 
      } 
      catch (Exception e) {} 
      return text; 
- } 
+   } 
   
   /*
    * find out if there are datafiles associated with the given entity ID

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-21 16:08:15 $'
- * '$Revision: 1.59 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-27 16:47:06 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -362,14 +362,14 @@ public class PackageWizardShell extends javax.swing.JFrame
         return;
       }
     
-    if (startingFrame>0) {
-       Vector filesVec = handleFinishAddData();
-       this.hide();
-       this.dispose();
-       addMetaWiz.addingNewDataWizardCompleted(filesVec);
-       return;
-    }
-    //-------------
+      if (startingFrame>0) 
+      {
+        Vector filesVec = handleFinishAddData();
+        this.hide();
+        this.dispose();
+        addMetaWiz.addingNewDataWizardCompleted(filesVec);
+        return;
+      }
       
       wizardFrame.removeAll();
       wizardFrame.invalidate();
@@ -450,11 +450,10 @@ public class PackageWizardShell extends javax.swing.JFrame
       
       String prevFrameType = ((WizardFrameContainer)
                              frameWizards.elementAt(frameWizardIndex)).type;
-      if(prevFrameType.equals("GETDATA") && 
-        importDataRButton.isSelected()   
-     //   && !fileTextField.getText().equals("")
-      )
-      {
+                             
+      if(prevFrameType.equals("GETDATA") && importDataRButton.isSelected())
+      { //this is what happens when the user wants to use the text import 
+        //wizard
         int entitynum = frameWizardIndex + 1;
         int attributenum = frameWizardIndex + 2;
         WizardFrameContainer wfc1 = (WizardFrameContainer)frameWizards.elementAt(entitynum);
