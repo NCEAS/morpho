@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-01 18:28:00 $'
- * '$Revision: 1.113 $'
+ *     '$Date: 2003-04-01 19:52:21 $'
+ * '$Revision: 1.114 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1588,7 +1588,7 @@ public class DataPackage implements XMLFactoryInterface
     }//for 
     try{
       EMLConvert.outputfileName = path;
-      EMLConvert.doTransform("metadata/"+id);
+      EMLConvert.doTransform("metadata/"+id, morpho.getMetacatURLString());
     }
     catch (Exception ee) {
         System.out.println("Error in EMLConvert: " + ee.getMessage());

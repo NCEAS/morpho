@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-01 00:29:55 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2003-04-01 19:52:51 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1474,6 +1474,11 @@ public class Morpho
     public void setMetacatURLString(String mURL)
     {
         metacatURL = mURL;
+    }
+        /** Get metacat URL string */
+    public String getMetacatURLString()
+    {
+        return metacatURL;
     }
 
     

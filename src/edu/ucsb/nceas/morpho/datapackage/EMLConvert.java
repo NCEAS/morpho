@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-01 18:28:00 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-04-01 19:52:21 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,10 +101,10 @@ public class EMLConvert
       Log.debug(20, "Must have an argument with name/path of dataset module");
       System.exit(0);
     }
-    doTransform(argv[0]);
+    doTransform(argv[0], "");
   }
     
-  public static void doTransform(String datasetID) 
+  public static void doTransform(String datasetID, String metacatURL) 
                  throws TransformerException, TransformerConfigurationException, Exception{  
   // Instantiate  a TransformerFactory.
   	TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -131,6 +131,8 @@ public class EMLConvert
       TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2)); 
       
       Transformer tr = tHandler1.getTransformer(); 
+      Transformer tr1 = tHandler2.getTransformer();
+      
       getPathInfo(datasetID);
       if (path.length()>0) {
          if (!path.startsWith("file://")) {
@@ -139,7 +141,8 @@ public class EMLConvert
          MyURIResolver.setDataDefault(path);
       }
       tr.setParameter("packageName", fname); 
-
+      tr1.setParameter("metacatURL", metacatURL);
+      
       Transformer lastTransformer = tHandler2.getTransformer();
       lastTransformer.setOutputProperty(OutputProperties.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
 
