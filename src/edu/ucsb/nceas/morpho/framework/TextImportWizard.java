@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-12 22:02:28 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-10-15 16:49:09 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,6 +142,8 @@ public class TextImportWizard extends javax.swing.JFrame
    * attribute wizard
    */
   PackageWizard attributeWizard = null;
+  
+  boolean finishFlag = false;
    
   
 	public TextImportWizard()
@@ -444,9 +446,19 @@ public class TextImportWizard extends javax.swing.JFrame
 		setTitle(sTitle);
 	}
 	
+	
+	/**
+	 * reference to a packagewizard
+	 * used to pass a fixed XML string to a PackageWizard
+	 */
 	public void setEntityWizard(PackageWizard entity) {
 	  this.entityWizard = entity;
 	}
+
+	/**
+	 * reference to a packagewizard
+	 * used to pass a fixed XML string to a PackageWizard
+	 */
 	public void setAttributeWizard(PackageWizard attribute) {
 	  this.attributeWizard = attribute;
 	}
@@ -589,10 +601,12 @@ public class TextImportWizard extends javax.swing.JFrame
 
 	void exitApplication()
 	{
-	  if (entityWizard!=null) {
+	  // passes string version of XML docs created by TextImportWizard
+	  // to a package wizard
+	  if ((entityWizard!=null)&&(finishFlag)) {
 	    entityWizard.setXMLString(createXMLEntityString());
 	  }
-	  if (attributeWizard!=null) {
+	  if ((attributeWizard!=null)&&(finishFlag)) {
 	    attributeWizard.setXMLString(createXMLAttributeString());
 	  }
 	  this.setVisible(false);
@@ -1139,8 +1153,17 @@ public void startImport(String file) {
 	  
 	  save_eml_table_entity.setEnabled(true);
 	  save_eml_attribute.setEnabled(true);
-    JOptionPane.showMessageDialog(this, "Click on 'Show Results' button to see results, including XML files. Also, see File Menu to Save Files",
+	  String tempS = "Click on 'Show Results' button to see results, including XML files.";
+	  if (entityWizard!=null) {
+	    tempS = tempS + " Information will automatically be added to the Data Package under construction.";
+	  }
+	  else {
+	    tempS = tempS + " Also, see File Menu to Save Files.";
+	  }
+    JOptionPane.showMessageDialog(this, tempS,
     "Message",JOptionPane.INFORMATION_MESSAGE, null);
+    
+	  finishFlag = true;
 	}
  
   void PasteDataButton_actionPerformed(java.awt.event.ActionEvent event)
@@ -1598,6 +1621,7 @@ public void startImport(String file) {
 	/**
 	 * Hardcoded routine to create an XML Attribute metadata string based on
 	 * data
+	 * ---BAD PRACTICE--- should use config to get info
 	 */
 	public String createXMLAttributeString() {
 	  StringBuffer XMLBuffer = new StringBuffer();
@@ -1621,6 +1645,7 @@ public void startImport(String file) {
 	/**
 	 * Hardcoded routine to create an XML Table Entity metadata string based on
 	 * data
+	 * ---BAD PRACTICE--- should use config to get info
 	 */
 	public String createXMLEntityString() {
 	  StringBuffer XMLBuffer = new StringBuffer();
