@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-14 00:17:28 $'
- * '$Revision: 1.1.2.4 $'
+ *     '$Date: 2002-08-14 21:45:57 $'
+ * '$Revision: 1.1.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,12 +69,8 @@ public class MorphoFrame extends JFrame
         setTitle("Morpho - Data Management for Ecologists");
 
         // Set up the menu bar
-        morphoMenuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenuItem newItem = new JMenuItem("New");
-        fileMenu.add(newItem);
-        morphoMenuBar.add(fileMenu);
-        setJMenuBar(morphoMenuBar);
+        //morphoMenuBar = new JMenuBar();
+        //setMenuBar(morphoMenuBar);
 
         // Set up the progress indicator
         ImageIcon bfly = null;
@@ -92,8 +88,8 @@ public class MorphoFrame extends JFrame
 
         // Set up the toolbar
         int indicatorHeight = (int)indicator.getSize().getHeight();
-        int menuHeight = (int)morphoMenuBar.getSize().getHeight();
-        menuHeight = 24;
+        //int menuHeight = (int)morphoMenuBar.getSize().getHeight();
+        int menuHeight = 24;
         int toolbarHeight = indicatorHeight - menuHeight;
         Log.debug(10, "(indicator, menu, tool) = (" + indicatorHeight + "," + 
                 menuHeight + "," + toolbarHeight + ")");
@@ -184,6 +180,26 @@ public class MorphoFrame extends JFrame
         } else {
             Log.debug(5, "Component was null so I could not set it!");
         }
+    }
+
+    /**
+     * Set the menu bar when it needs to be changed.  This is mainly called by
+     * the UIController when it is managing the menus.
+     */
+    public void setMenuBar(JMenuBar newMenuBar)
+    {
+        this.setJMenuBar(newMenuBar);
+    }
+
+    /**
+     * Set the ProgressIndicator to either the busy or notBusy state.
+     *
+     * @param isBusy boolean value indidcating whether the indicator should
+     *               be marked as busy
+     */
+    public void setBusy(boolean isBusy)
+    {
+        indicator.setBusy(isBusy);
     }
 
     /** 

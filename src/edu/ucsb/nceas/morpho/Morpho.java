@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-14 00:17:28 $'
- * '$Revision: 1.1.2.4 $'
+ *     '$Date: 2002-08-14 21:45:57 $'
+ * '$Revision: 1.1.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,7 +350,7 @@ public class Morpho
   /**
    * Exit the application, asking the user if they are sure
    */
-  private void exitApplication()
+  public void exitApplication()
   {
     try
     {
@@ -1106,7 +1106,7 @@ public class Morpho
       ConfigXML config = new ConfigXML(configurationFile.getAbsolutePath());
       
       // Create a new instance of our application
-      Morpho clf = new Morpho(config);
+      Morpho morpho = new Morpho(config);
 
       // Set the version number
       VERSION = config.get("version", 0);
@@ -1146,20 +1146,20 @@ public class Morpho
                                      config.get("profile_directory", 0);
         String currentProfile = config.get("current_profile", 0);
         if (currentProfile == null) {
-          ProfileDialog dialog = new ProfileDialog(clf);
+          ProfileDialog dialog = new ProfileDialog(morpho);
           dialog.setVisible(true);
           // Make sure they actually created a profile
-          if (clf.getProfile() == null) {
+          if (morpho.getProfile() == null) {
             JOptionPane.showMessageDialog(null,
             "You must create a profile in order to configure Morpho  \n" +
             "correctly.  Please restart Morpho and try again.");
-            clf.exitApplication();
+            morpho.exitApplication();
           }
         } else {
           String profileName = profileDir + File.separator + currentProfile + 
                         File.separator + currentProfile + ".xml";
           ConfigXML profile = new ConfigXML(profileName);
-          clf.setProfile(profile);
+          morpho.setProfile(profile);
         }
                 
         // Set up logging as appropriate
@@ -1185,20 +1185,31 @@ public class Morpho
         // not implemented yet
 
         // Set up the User Interface controller (UIController)
-        UIController controller = UIController.getInstance();
+        UIController controller = UIController.getInstance(morpho);
+
+        // Add the default menus
+        controller.addMenu("File", new Integer(0));
+        controller.addMenu("Edit", new Integer(1));
+        controller.addMenu("Search", new Integer(2));
+        controller.addMenu("Data", new Integer(3));
+        controller.addMenu("View", new Integer(4));
+        controller.addMenu("Window", new Integer(5));
+        controller.addMenu("Help", new Integer(6));
 
         // Load all of the plugins, their menus, and toolbars
-        clf.loadPlugins();
+        morpho.loadPlugins();
 
         // make the Morpho visible.
         sf.dispose();
         
-        //MorphoFrame tempFrame = new MorphoFrame();
+        // Create a blank frame as a placeholder until a plugin takes over
         MorphoFrame tempFrame = controller.addWindow("Test window");
         tempFrame.setVisible(true);
-
-        Log.debug(1, "Finished main, what to do now? Exit?");
-        System.exit(0);
+        MorphoFrame tempFrame2 = controller.addWindow("Test 2 window");
+        tempFrame2.setVisible(true);
+        MorphoFrame tempFrame3 = controller.addWindow("Test 3 window");
+        tempFrame3.setVisible(true);
+        
       }
     } catch(Throwable t) {
       t.printStackTrace();
