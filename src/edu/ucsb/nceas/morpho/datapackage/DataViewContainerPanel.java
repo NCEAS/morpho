@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-23 20:49:27 $'
- * '$Revision: 1.85 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-30 00:13:53 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1001,6 +1001,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     return adp;
   }
 
+ /**
+  * get location of the AbstractDataPackage associated with this object
+  */
+ public String getPackageLocation() {
+   AbstractDataPackage adp = getAbstractDataPackage();
+   return adp.getLocation();
+ }
+  
   /*
    * A class to keep the information for every tabbed panel
    */

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-15 22:03:01 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-12-30 00:13:25 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,9 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
+
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 
 /**
  * The MorphoFrame is a Window in the Morpho application containing the standard
@@ -453,6 +456,22 @@ public class MorphoFrame extends JFrame
      */
     private void close()
     {
+      
+      Object contentsPanel = getContentComponent();
+      if (contentsPanel instanceof DataViewContainerPanel) {
+         String loc = ((DataViewContainerPanel)contentsPanel).getPackageLocation();
+         if (loc.equals("")) {
+           int res = JOptionPane.showConfirmDialog(null, 
+                 "Would you like to save the current package?",
+                 "Save ?", JOptionPane.YES_NO_OPTION);
+           if (res==JOptionPane.YES_OPTION) {
+             //save here
+             Log.debug(1, "Save here!");
+           } else {
+             // just close
+           }
+         }
+      }
         this.setVisible(false);
         UIController controller = UIController.getInstance();
         controller.removeWindow(this);
