@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-13 21:18:13 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2001-06-14 17:15:49 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -889,6 +889,15 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      start1 = new StringBuffer();
 	      start.append(normalize(ni1.getPCValue()));
 	      textnode = true;
+	    }
+	    else if (ni1.name.equals("Empty")) {
+	      // remove the '>' at the end and replace with '/>'
+	      start1.setCharAt(start1.length()-1, '/');
+	      start1.append(">");
+	      start.append(start1.toString());  
+	      start1 = new StringBuffer();
+	      tempStack.pop();
+	      write_loop(nd, indent+2);
 	    }
 	    else {
 	      start.append(start1.toString());  
