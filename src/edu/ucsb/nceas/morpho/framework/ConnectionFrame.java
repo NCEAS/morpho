@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.3 2000-08-11 18:02:44 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.4 2000-08-25 23:34:09 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -82,10 +82,9 @@ public class ConnectionFrame extends javax.swing.JFrame
 		Password.setForeground(java.awt.Color.black);
 		Password.setFont(new Font("Dialog", Font.PLAIN, 12));
 		Password.setBounds(5,7,56,15);
-		PWTextField.setColumns(17);
-		PWTextField.setEnabled(false);
+		PWTextField.setColumns(19);
 		JPanel4.add(PWTextField);
-		PWTextField.setBounds(66,5,187,19);
+		PWTextField.setBounds(66,5,209,19);
 		ConnectionResultsTextArea.setText("Connection Results");
 		JPanel2.add(BorderLayout.CENTER,ConnectionResultsTextArea);
 		ConnectionResultsTextArea.setBounds(0,161,317,122);
@@ -95,11 +94,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 		connectButton.setText("Connect");
 		connectButton.setActionCommand("OK");
 		JPanel1.add(connectButton);
-		connectButton.setBounds(73,5,81,25);
-		continueButton.setText("Continue");
-		continueButton.setActionCommand("Continue");
-		JPanel1.add(continueButton);
-		continueButton.setBounds(159,5,85,25);
+		connectButton.setBounds(118,5,81,25);
 		//}}
 
 		//{{INIT_MENUS
@@ -110,7 +105,6 @@ public class ConnectionFrame extends javax.swing.JFrame
 		RegisteredUserRadioButton.addItemListener(lSymItem);
 		SymAction lSymAction = new SymAction();
 		connectButton.addActionListener(lSymAction);
-		continueButton.addActionListener(lSymAction);
 		//}}
 	}
 
@@ -171,11 +165,10 @@ public class ConnectionFrame extends javax.swing.JFrame
 	javax.swing.JTextField NameTextField = new javax.swing.JTextField();
 	javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
 	javax.swing.JLabel Password = new javax.swing.JLabel();
-	javax.swing.JTextField PWTextField = new javax.swing.JTextField();
+	javax.swing.JPasswordField PWTextField = new javax.swing.JPasswordField();
 	javax.swing.JTextArea ConnectionResultsTextArea = new javax.swing.JTextArea();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JButton connectButton = new javax.swing.JButton();
-	javax.swing.JButton continueButton = new javax.swing.JButton();
 	//}}
 
 	//{{DECLARE_MENUS
@@ -216,8 +209,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 			Object object = event.getSource();
 			if (object == connectButton)
 				connectButton_actionPerformed(event);
-			else if (object == continueButton)
-				continueButton_actionPerformed(event);
+			
 		}
 	}
 
@@ -253,20 +245,16 @@ public class ConnectionFrame extends javax.swing.JFrame
         returnStream.close();
         String res = sw.toString();
         sw.close();
-        ConnectionResultsTextArea.setText(res);   
+        if (res.indexOf("<success>")>=0) {
+		dispose();
+        }
+        else {
+        ConnectionResultsTextArea.setText(res); 
+        }
       } catch (Exception e) {
         System.out.println("Error logging into system");
       }
      }
-			 
-	}
-	
-	
-	
-
-	void continueButton_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		dispose();
 			 
 	}
 }
