@@ -1,0 +1,23 @@
+<dtdlist>
+  <dtd name="eml-file"
+       label="File Descriptors"
+       repeatable="yes" 
+       configfile="eml-file-config.xml"
+       relatedto="DATAOBJECT"/>
+  <dtd name="eml-entity"
+       label="Entity Descriptors"
+       repeatable="yes" 
+       configfile="eml-entity.config.xml"
+       relatedto="DATAOBJECT"/>
+  <dtd name="eml-resource"
+       label="Resource Descriptors"
+       repeatable="no" 
+       configfile="eml-resource-config.xml" 
+       containstriples="true"
+       relatedto="DATAOBJECT"/>
+  <dtd name="eml-access"
+       label="Access Descriptors"
+       repeatable="yes"
+       configfile="eml-access-config.xml"
+       relatedto="DATAOBJECT, eml-file, eml-entity, eml-resource"/>
+</dtdlist>

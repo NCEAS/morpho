@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-03 16:16:55 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-09 16:47:01 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,6 +166,8 @@ public class PackageWizard extends javax.swing.JFrame
    * the panel to complete the xml document.  This method parses those
    * paths and writes out tags and content for the xml document(s).
    * @param paths: a vector of the paths and the content from createDocument.
+   * @param content: a hashtable of the content of each node with the path to 
+   * the node as the key
    */
   private StringBuffer createDocumentContent(Vector paths, Hashtable content)
   {
