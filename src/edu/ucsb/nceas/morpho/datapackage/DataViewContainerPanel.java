@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-29 01:30:13 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-10-01 00:23:55 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,11 +45,13 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
@@ -66,7 +68,7 @@ import edu.ucsb.nceas.morpho.framework.*;
  * customize the display
  */
 public class DataViewContainerPanel extends javax.swing.JPanel 
-                                implements ChangeListener, StateChangeListener
+             implements ChangeListener, StateChangeListener, StoreStateChangeEvent
 {
   /**
    * The DataPackage that contains the data
@@ -131,6 +133,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   private ActionListener mdHideListener;
   
   private static final int METADATA_PANEL_DEFAULT_WIDTH = 675;
+  
+  // Store the event
+  private Vector storedStateChangeEventlist = new Vector();
   /*
    * no parameter constuctor for DataViewContainerPanel.
    * Some basic gui setup
@@ -297,10 +302,18 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       Log.debug(20, "EntityItems vector is null");
       vertSplit.removeAll();
       vertSplit.add(packageMetadataPanel);
-      StateChangeMonitor.getInstance().notifyStateChange(
-                      new StateChangeEvent( 
-                          vertSplit, 
+      if (GUIAction.getMorphoFrameAncestor(this) == null)
+      {
+        //Store the event
+        storingStateChangeEvent(new StateChangeEvent(this, 
                           StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
+      }
+      else
+      {
+        StateChangeMonitor.getInstance().notifyStateChange(
+                      new StateChangeEvent(this, 
+                          StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
+      }
       return;
     }
     entityFile = new File[entityItems.size()];
@@ -385,9 +398,18 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
       stateMonitor.addStateChangeListener
                                 (StateChangeEvent.SELECT_DATATABLE_COLUMN,this);
-                                
-      stateMonitor.notifyStateChange( new StateChangeEvent( vertSplit, 
+      if (GUIAction.getMorphoFrameAncestor(this) == null)
+      {
+        //Store the event
+        storingStateChangeEvent(new StateChangeEvent( this, 
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
+        
+      }//
+      else
+      {                         
+        stateMonitor.notifyStateChange( new StateChangeEvent( this, 
+                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
+      }//else
     }
   }
 
@@ -509,7 +531,27 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     currentDataPanel.setLayout(new BorderLayout(0,0));
     currentDataPanel.add(BorderLayout.CENTER,tablePanel);
     currentDataPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    
+    if (GUIAction.getMorphoFrameAncestor(this) == null)
+    {
+      //Store the event create from its kid - DataViewer
+      Vector eventList = dv.getStoredStateChangeEvent();
+      if (eventList != null)
+      {
+        for (int i= 0; i<eventList.size(); i++)
+        {
+          StateChangeEvent eventInKid = 
+                                  (StateChangeEvent) eventList.elementAt(i);
+          storingStateChangeEvent(eventInKid);
+        }//for
+      }//if
+        
+    }//if
+    else
+    {
+      //frame already has, borading the event
+      dv.broadcastStoredStateChangeEvent();
+    }
+   
   }
   
   private JSplitPane createEntityPanel() {
@@ -572,6 +614,45 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     return metaDisplayFactory.getInstance();
   }
 
+  /**
+   * Method implements form StoreStateChangeEvent
+   * This method will be called to store a event
+   *
+   * @param event  the state change event need to be stored
+   */
+  public void storingStateChangeEvent(StateChangeEvent event)
+  {
+    if (storedStateChangeEventlist != null)
+    {
+      storedStateChangeEventlist.add(event);
+    }
+  }
+  
+    
+  /**
+   * Get the  stored state change event.
+   */
+  public Vector getStoredStateChangeEvent()
+  {
+    return storedStateChangeEventlist;
+  }
+  
+  /**
+   * Broadcast the stored StateChangeEvent
+   */
+  public void broadcastStoredStateChangeEvent()
+  {
+    if (storedStateChangeEventlist != null)
+    {
+      for ( int i = 0; i< storedStateChangeEventlist.size(); i++)
+      {
+        StateChangeEvent event = 
+                (StateChangeEvent) storedStateChangeEventlist.elementAt(i);
+        (StateChangeMonitor.getInstance()).notifyStateChange(event);
+      }//for
+    }//if
+  }
+  
   /*
    * A class to keep the information for every tabbed panel
    */
