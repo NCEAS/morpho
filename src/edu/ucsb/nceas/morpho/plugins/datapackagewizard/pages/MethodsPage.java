@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.6 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-25 01:31:30 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@ public class MethodsPage
   private JLabel titleLabel;
   private JLabel descLabel;
   private JTextArea descField;
+  private JLabel instLabel;
+  private JTextArea instField;
   private JTextField titleField;
   private final String xPathRoot =
       "/eml:eml/dataset/methods/methodStep/description/section";
@@ -107,7 +109,6 @@ public class MethodsPage
     middlePanel.add(titlePanel);
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel descTitle = WidgetFactory.makeHTMLLabel(
         "<b>Enter description</b> ", 1);
@@ -118,13 +119,32 @@ public class MethodsPage
     descLabel = WidgetFactory.makeLabel("Description:", true);
     descPanel.add(descLabel);
 
-    descField = WidgetFactory.makeTextArea("", 14, true);
+    descField = WidgetFactory.makeTextArea("", 7, true);
     JScrollPane jSampleScrl = new JScrollPane(descField);
     descPanel.add(jSampleScrl);
 
     descPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0, 0,
         WizardSettings.PADDING));
     middlePanel.add(descPanel);
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+
+    JLabel instrumentationTitle = WidgetFactory.makeHTMLLabel(
+        "<b>Enter Instrumentation Details</b> ", 1);
+    middlePanel.add(instrumentationTitle);
+    middlePanel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel instPanel = WidgetFactory.makePanel(25);
+    instLabel = WidgetFactory.makeLabel("Instrumentation:", false);
+    instPanel.add(instLabel);
+
+    instField = WidgetFactory.makeTextArea("", 7, true);
+    JScrollPane jInstruPane = new JScrollPane(instField);
+    instPanel.add(jInstruPane);
+
+    instPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0, 0,
+        WizardSettings.PADDING));
+    middlePanel.add(instPanel);
 
     middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,
         4 * WizardSettings.PADDING,
@@ -174,6 +194,13 @@ public class MethodsPage
     }
     surrogate.add(desc);
 
+    String inst = instField.getText().trim();
+
+    if (inst == null) {
+      inst = EMPTY_STRING;
+    }
+    surrogate.add(inst);
+
     return surrogate;
   }
 
@@ -204,17 +231,28 @@ public class MethodsPage
     String title = titleField.getText().trim();
 
     if (title!=null && !title.equals(EMPTY_STRING)) {
-      returnMap.put(xPathRoot + "/title", title);
+      returnMap.put(xPathRoot + "/description/section/title", title);
     }
 
     String desc = descField.getText().trim();
     if (desc != null && !desc.equals(EMPTY_STRING)) {
 
-      StringTokenizer st = new StringTokenizer(desc, "\n\n");
+      StringTokenizer st = new StringTokenizer(desc, "\n");
       int count = 0;
       while(st.hasMoreTokens()){
         count++;
-        returnMap.put(xPathRoot + "/para[" + count + "]", st.nextToken());
+        returnMap.put(xPathRoot + "/description/section/para[" + count + "]", st.nextToken());
+      }
+    }
+
+    String inst = instField.getText().trim();
+    if (inst != null && !inst.equals(EMPTY_STRING)) {
+
+      StringTokenizer st = new StringTokenizer(inst, "\n");
+      int count = 0;
+      while(st.hasMoreTokens()){
+        count++;
+        returnMap.put(xPathRoot + "/instrumentation[" + count + "]", st.nextToken());
       }
     }
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.10 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-25 01:31:30 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public class Methods
   private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700, 20);
 
   private final String[] colNames = {
-      "Method step title", "Method step description"};
+      "Method Step Title", "Method Step Description", "Instrumentation"};
   private final Object[] editors = null; //makes non-directly-editable
 
   private CustomList methodsList;
@@ -218,11 +218,11 @@ public class Methods
 
     List selRowList = methodsList.getSelectedRowList();
 
-    if (selRowList == null || selRowList.size() < 3) {
+    if (selRowList == null || selRowList.size() < 4) {
       return;
     }
 
-    Object dialogObj = selRowList.get(2);
+    Object dialogObj = selRowList.get(3);
 
     if (dialogObj == null || ! (dialogObj instanceof MethodsPage)) {
       return;
@@ -345,10 +345,10 @@ public class Methods
 
       nextRowList = (List) nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 3) {
+      if (nextRowList.size() < 4) {
         continue;
       }
-      nextUserObject = nextRowList.get(2);
+      nextUserObject = nextRowList.get(3);
       if (nextUserObject == null) {
         continue;
       }
@@ -356,7 +356,7 @@ public class Methods
       nextMethodsPage = (MethodsPage) nextUserObject;
 
       nextNVPMap = nextMethodsPage.getPageData(
-          "/eml:eml/dataset/methods/methodStep/description/section[" + (index++) +
+          "/eml:eml/dataset/methods/methodStep[" + (index++) +
           "]");
       returnMap.putAll(nextNVPMap);
     }
