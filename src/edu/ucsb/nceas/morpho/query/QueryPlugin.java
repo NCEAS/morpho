@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-26 01:18:42 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2001-04-26 15:55:43 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,9 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
   /** A reference to the container framework */
   ClientFramework framework = null;
 
+  /** The configuration options object reference from the framework */
+  ConfigXML config = null;
+
   /** Store our menus and toolbars */
   Action[] menuActions = null;
   Action[] toolbarActions = null;
@@ -88,7 +91,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
   boolean searchnetwork = true;
   String xmlcatalogfile = null;
   String MetaCatServletURL = null;
-//    PropertyResourceBundle options;
   ImageIcon BflyStill;
   ImageIcon BflyMove;
 
@@ -153,10 +155,10 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     Bfly.setIconTextGap(0);
     QueryControls.add(Bfly);
     Bfly.setBounds(0, 25, 0, 0);
-    config.setText("Config");
-    config1.setText("Config");
-    QueryControls.add(config);
-    config1.setBounds(0, 0, 35, 40);
+    qconfig.setText("Config");
+    qconfig1.setText("Config");
+    QueryControls.add(qconfig);
+    qconfig1.setBounds(0, 0, 35, 40);
     {
       String[]tempString = new String[8];
       tempString[0] = "eml-access";
@@ -287,7 +289,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     TextLabel11.setFont(new Font("Dialog", Font.PLAIN, 12));
     TextLabel11.setBounds(5, 5, 41, 15);
     TextValue11.setColumns(20);
-    TextValue11.setText("NCEAS");
+    TextValue11.setText("intertidal");
     TextChoices11.add(TextValue11);
     TextValue11.setBounds(5, 25, 220, 19);
     TitleCheckBox.setSelected(true);
@@ -403,8 +405,8 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     Bfly1.setIconTextGap(0);
     QueryControls1.add(Bfly1);
     Bfly1.setBounds(0, 25, 0, 0);
-    QueryControls1.add(config1);
-    config1.setBounds(0, 0, 35, 40);
+    QueryControls1.add(qconfig1);
+    qconfig1.setBounds(0, 0, 35, 40);
     QueryChoicesPanel11.setLayout(new BorderLayout(0, 0));
     RefineQueryPanel1.add(BorderLayout.CENTER, QueryChoicesPanel11);
     QueryChoicesPanel11.setBounds(0, 0, -84, 242);
@@ -429,7 +431,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     TextMatch1.setFont(new Font("Dialog", Font.PLAIN, 12));
     TextMatch1.setBounds(49, 5, 115, 24);
     TextValue1.setColumns(30);
-    TextValue1.setText("NCEAS");
+    TextValue1.setText("intertidal");
     TextChoices1.add(TextValue1);
     TextValue1.setBounds(169, 7, 330, 19);
     TextChoices2.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -650,18 +652,16 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     UnderConstruction.setForeground(java.awt.Color.red);
     UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
     UnderConstruction.setBounds(0, 15, -5, -129);
-    JLabel2.
-      setText
-      ("Eventually, taxonomic based based queries will appear on this tab");
+    JLabel2.setText("Eventually, taxonomic based based " +
+                    "queries will appear on this tab");
     JPanel11.add(BorderLayout.NORTH, JLabel2);
     JLabel2.setBounds(0, 0, -5, 15);
     JPanel12.setLayout(new BorderLayout(0, 0));
     QueryChoiceTabs.add(JPanel12);
     JPanel12.setBounds(2, 111, -5, -114);
     JPanel12.setVisible(false);
-    JLabel3.
-      setText
-      ("Eventually, tools for searching by spatial location (e.g. maps) will appear here.");
+    JLabel3.setText("Eventually, tools for searching by spatial " +
+                    "location (e.g. maps) will appear here.");
     JPanel12.add(BorderLayout.NORTH, JLabel3);
     JLabel3.setBounds(0, 0, -5, 15);
     UnderConstruction1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -703,17 +703,16 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     SymPropertyChange lSymPropertyChange = new SymPropertyChange();
     SearchButton.addPropertyChangeListener(lSymPropertyChange);
     SearchButton1.addPropertyChangeListener(lSymPropertyChange);
-    config.addActionListener(lSymAction);
-    config1.addActionListener(lSymAction);
+    qconfig.addActionListener(lSymAction);
+    qconfig1.addActionListener(lSymAction);
     //}}
 
 
     QueryChoiceTabs.add(Extra);
     Extra.setVisible(false);
     TestSearch = new JButton("Show My Documents");
-    TestSearch.
-      setToolTipText
-      ("This button will search the catalog and display all documents belonging to the user");
+    TestSearch.setToolTipText("This button will search the catalog and " +
+                              "display all documents belonging to the user");
     TestSearch.setActionCommand("SpecialSearch");
     TestSearch.addActionListener(lSymAction);
     Extra.add(TestSearch);
@@ -747,38 +746,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     //       setExpertMode(false);
     invalidate();
     setVisible(true);
-    try
-    {
-      ConfigXML config = new ConfigXML("lib/config.xml");
-      String local_dtd_directory = config.get("local_dtd_directory", 0);
-      MetaCatServletURL = config.get("MetaCatServletURL", 0);
-//      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-//      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
-      xmlcatalogfile = local_dtd_directory + "/catalog";
-//      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
-/*      String searchlocalstring = (String)options.handleGetObject("searchlocal");
-      if (searchlocalstring.equalsIgnoreCase("true")) {
-        searchlocal = true;
-      }
-      if (searchlocalstring.equalsIgnoreCase("false")) {
-        searchlocal = false; 
-      }
-      String searchnetworkstring = (String)options.handleGetObject("searchnetwork");
-      if (searchnetworkstring.equalsIgnoreCase("true")) {
-        searchnetwork = true; 
-      }
-      if (searchnetworkstring.equalsIgnoreCase("false")) {
-        searchnetwork = false; 
-      }
- */
-    }
-    catch(Exception e)
-    {
-      System.out.println("Could not locate properties file!");
-    }
-
   }
-
 
   DataGuideBean dataGuideBean1 = new DataGuideBean(this);
   //{{DECLARE_CONTROLS
@@ -790,8 +758,8 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
   javax.swing.JPanel QueryControls = new javax.swing.JPanel();
   javax.swing.JButton SearchButton = new javax.swing.JButton();
   javax.swing.JLabel Bfly = new javax.swing.JLabel();
-  javax.swing.JButton config = new javax.swing.JButton();
-  javax.swing.JButton config1 = new javax.swing.JButton();
+  javax.swing.JButton qconfig = new javax.swing.JButton();
+  javax.swing.JButton qconfig1 = new javax.swing.JButton();
   javax.swing.JPanel QueryChoicesPanel1 = new javax.swing.JPanel();
   javax.swing.JPanel ChoicesPanel2 = new javax.swing.JPanel();
   javax.swing.JPanel TextChoices11 = new javax.swing.JPanel();
@@ -926,6 +894,8 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
   public void setFramework(ClientFramework cf)
   {
     this.framework = cf;
+    this.config = framework.getConfiguration();
+    loadConfigurationParameters();
   }
 
   /**
@@ -1024,7 +994,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     toolbarActions = new Action[1];
     toolbarActions[0] = searchItemAction;
   }
-
+/*
   public static void main(String argv[])
   {
     class DriverFrame extends javax.swing.JFrame
@@ -1047,7 +1017,7 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     }
     new DriverFrame().show();
   }
-
+*/
 
   public void setUserName(String name)
   {
@@ -1161,10 +1131,10 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
         EditMenuItem_actionPerformed(event);
       else if (object == SearchButton1)
         SearchButton1_actionPerformed(event);
-      else if (object == config)
-        config_actionPerformed(event);
-      else if (object == config1)
-        config_actionPerformed(event);
+      else if (object == qconfig)
+        qconfig_actionPerformed(event);
+      else if (object == qconfig1)
+        qconfig_actionPerformed(event);
       else if (object == TestSearch)
       {
         TestSearch_actionPerformed(event);
@@ -1393,11 +1363,8 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     if (searchnetwork)
     {
       String temp = create_XMLQuery();
-      //LogIn();
       squery_submitToDatabase(temp);
     }
-
-    //LogOut();
   }
 
   void SearchButton_actionPerformed(java.awt.event.ActionEvent event)
@@ -1507,11 +1474,8 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     if (searchnetwork)
     {
       String temp = create_XMLQuery();
-      //          LogIn();
       squery_submitToDatabase(temp);
     }
-
-    //  LogOut();
   }
 
 
@@ -1761,22 +1725,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     }
   }
 
-  public void getConfigData()
-  {
-    // Get the configuration file information
-    try
-    {
-      ConfigXML config = new ConfigXML("lib/config.xml");
-      String local_dtd_directory = config.get("local_dtd_directory", 0);
-      xmlcatalogfile = local_dtd_directory + "/catalog";
-      MetaCatServletURL = config.get("MetaCatServletURL", 0);
-    }
-    catch(Exception e)
-    {
-      System.out.println("Could not locate properties file!");
-    }
-  }
-
   public void squery_submitToDatabase(String queryXML)
   {
     Properties prop = new Properties();
@@ -1819,14 +1767,14 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
   public void squery_submitToDatabase_all(String queryXML)
   {
     Properties prop = new Properties();
-      prop.put("action", "squery");
-      prop.put("query", queryXML);
+    prop.put("action", "squery");
+    prop.put("query", queryXML);
 
-      prop.put("returndoc", "-//NCEAS//resource//EN");
+    prop.put("returndoc", "-//NCEAS//resource//EN");
 
     String respType = "xml";
-      prop.put("qformat", respType);
-      try
+    prop.put("qformat", respType);
+    try
     {
       System.err.println("Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
@@ -1886,71 +1834,6 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     catch(Exception w)
     {
       System.out.println("Error in submitting simple query");
-    }
-  }
-
-
-  public void LogIn()
-  {
-    Properties prop = new Properties();
-      prop.put("action", "Login Client");
-
-    // Now try to write the document to the database
-    try
-    {
-      ConfigXML config = new ConfigXML("lib/config.xml");
-      String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-      System.err.println("Trying: " + MetaCatServletURL);
-      URL url = new URL(MetaCatServletURL);
-      HttpMessage msg = new HttpMessage(url);
-      prop.put("username", userName);
-      prop.put("password", passWord);
-      InputStream returnStream = msg.sendPostMessage(prop);
-      StringWriter sw = new StringWriter();
-      int c;
-      while ((c = returnStream.read()) != -1)
-      {
-        sw.write(c);
-      }
-      returnStream.close();
-      String res = sw.toString();
-      sw.close();
-      System.out.println(res);
-    }
-    catch(Exception e)
-    {
-      System.out.println("Error logging into system");
-    }
-  }
-
-  public void LogOut()
-  {
-    Properties prop = new Properties();
-    prop.put("action", "Logout");
-
-    // Now try to write the document to the database
-    try
-    {
-      ConfigXML config = new ConfigXML("lib/config.xml");
-      String MetaCatServletURL = config.get("MetaCatServletURL", 0);	// DFH
-      System.err.println("Trying: " + MetaCatServletURL);
-      URL url = new URL(MetaCatServletURL);
-      HttpMessage msg = new HttpMessage(url);
-      InputStream returnStream = msg.sendPostMessage(prop);
-      StringWriter sw = new StringWriter();
-      int c;
-      while ((c = returnStream.read()) != -1)
-      {
-        sw.write(c);
-      }
-      returnStream.close();
-      String res = sw.toString();
-      sw.close();
-      //       System.out.println(res);
-    }
-    catch(Exception e)
-    {
-      System.out.println("Error logging out of system");
     }
   }
 
@@ -2038,14 +1921,14 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
 
   }
 
-  void config_actionPerformed(java.awt.event.ActionEvent event)
+  void qconfig_actionPerformed(java.awt.event.ActionEvent event)
   {
     // to do: code goes here.
 
-    config_actionPerformed_Interaction1(event);
+    qconfig_actionPerformed_Interaction1(event);
   }
 
-  void config_actionPerformed_Interaction1(java.awt.event.ActionEvent event)
+  void qconfig_actionPerformed_Interaction1(java.awt.event.ActionEvent event)
   {
     try
     {
@@ -2057,5 +1940,11 @@ public class QueryBean extends AbstractQueryBean implements PluginInterface
     catch(java.lang.Exception e)
     {
     }
+  }
+  
+  private void loadConfigurationParameters()
+  {
+    MetaCatServletURL = config.get("MetaCatServletURL", 0);
+    framework.debug(9, "Metacat URL is: " + MetaCatServletURL);
   }
 }
