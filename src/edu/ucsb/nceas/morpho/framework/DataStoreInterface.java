@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-10 21:16:20 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-11 21:51:05 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,6 @@ import java.util.*;
 public interface DataStoreInterface
 {
   public File openFile(String name) throws FileNotFoundException;
-  public void saveFile(String name, Reader file);
+  public File saveFile(String name, Reader file);
   public File newFile(String name);
 }

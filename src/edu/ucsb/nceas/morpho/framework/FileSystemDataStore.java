@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-10 21:43:26 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-11 21:51:05 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,25 +33,15 @@ import java.util.*;
  * implements and the DataStoreInterface for accessing files on the local
  * file system.
  */
-public class FileSystemDataStore implements DataStoreInterface
+public class FileSystemDataStore extends DataStore
+                                 implements DataStoreInterface
 {
-  private ClientFramework framework;
-  ConfigXML config;
-  String datadir;
-  String separator;
-  
   /**
    * create a new FileSystemDataStore for a ClientFramework
    */
   public FileSystemDataStore(ClientFramework cf)
   {
-    this.framework = cf;
-    config = framework.getConfiguration();
-    Vector datadirV = config.get("local_xml_directory");
-    datadir = (String)datadirV.elementAt(0);
-    Vector separatorV = config.get("separator");
-    separator = (String)separatorV.elementAt(0);
-    separator = separator.trim();
+    super(cf);
   }
   
   /**
@@ -68,7 +58,7 @@ public class FileSystemDataStore implements DataStoreInterface
    */
   public File openFile(String name) throws FileNotFoundException
   {
-    framework.debug(9, "opening files from: " + datadir);
+    debug(9, "opening files from: " + datadir);
     String path = parseId(name);
     path = datadir + "/" + path;
     File file = new File(path);
@@ -92,7 +82,7 @@ public class FileSystemDataStore implements DataStoreInterface
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  public void saveFile(String name, Reader file)
+  public File saveFile(String name, Reader file)
   {
     try
     {
@@ -117,32 +107,22 @@ public class FileSystemDataStore implements DataStoreInterface
       while(file.ready())
       {
         writer.write(file.read()); //write out everything in the reader
+        System.out.print("writing ");
       }
       writer.flush();
       writer.close();
+      return savefile;
     }
     catch(Exception e)
     {
       e.printStackTrace();
+      return null;
     }
   }
   
   public File newFile(String name)
   {
     return new File(datadir + "/" + parseId(name));
-  }
-  
-  /** 
-   * Parses a dotted notation id into a file path.  johnson2343.13223 becomes
-   * johnson2343/13223.  Revision numbers are left on the end so
-   * johnson2343.13223.2 becomes johnson2343/13223.2
-   */
-  private String parseId(String id) 
-  {
-    String path = new String();
-    path = id.substring(0, id.indexOf("."));
-    path += "/" + id.substring(id.indexOf(separator) + 1, id.length());
-    return path;
   }
   
   public static void main(String[] args)
