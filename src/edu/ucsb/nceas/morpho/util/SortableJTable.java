@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-06 01:30:46 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-06 22:11:33 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ package edu.ucsb.nceas.morpho.util;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.Point;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
@@ -125,41 +126,34 @@ public class SortableJTable extends JTable implements MouseListener
    */
   public void mouseClicked(MouseEvent event) 
   {
-    // Get columnModel
-    TableColumnModel columnModel = getColumnModel();
+    // a sort table command
+    SortTableCommand sortCommand = null;
     // Get the index in the table (dispaly)
-    int index = columnModel.getColumnIndexAtX(event.getX());
-    // Get modelIndex in table model
-    int modelIndex = columnModel.getColumn(index).getModelIndex();
-    // Get table model
-    ColumnSortableTableModel model = (ColumnSortableTableModel)getModel();
-    
+    int index = this.columnAtPoint(new Point(event.getX(), event.getY()));
+    // Order
+    String order = null;
     // If not sorted
     if (!sorted)
     {
       // The first time is ascending sort
-      orderOfSortedColumn = ASCENDING;
+      order = ASCENDING;
     }
     else
     {
-      // toggle order, if this column sorted
+      // If this column already sorted, change order.
       if (indexOfSortedColumn == index && 
                               orderOfSortedColumn.equals(ASCENDING))
       {
-        orderOfSortedColumn = DECENDING;
+        order= DECENDING;
       }
       else
       {
-        orderOfSortedColumn = ASCENDING;
+        order = ASCENDING;
       }
     }//else
-    // set index of sorted column
-    indexOfSortedColumn = index;
-    // set sorted true
-    sorted = true;
-    // Sort table
-    model.sortTableByColumn(modelIndex, orderOfSortedColumn);
-    validate();
+    //create instance of SortTableCommand
+    sortCommand = new SortTableCommand(this, index, order);
+    sortCommand.execute();
   }
   public void mouseReleased(MouseEvent event){}
   public void mousePressed(MouseEvent event) {}
