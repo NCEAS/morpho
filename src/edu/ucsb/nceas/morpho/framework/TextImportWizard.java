@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-26 22:14:35 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-03-19 19:09:03 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1600,9 +1600,12 @@ public void startImport(String file) {
    private boolean isTextFile(String filename) { 
      boolean text = true; 
      int res; 
+     int cnt = 0;
+     int maxcnt = 2000; // only check this many bytes to avoid performance problems
      try { 
          FileInputStream in = new FileInputStream(filename); 
-         while ((res = in.read())>-1) { 
+         while (((res = in.read())>-1) &&(cnt<maxcnt)) { 
+             cnt++;
              if (res==0) text = false; 
          } 
      } 
