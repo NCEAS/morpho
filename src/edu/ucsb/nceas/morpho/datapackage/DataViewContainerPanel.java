@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-06 22:29:03 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-09-09 22:39:30 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -272,7 +272,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // entity metadata
       String id = (String)listValueHash.get(item);
       String location = dp.getLocation();
-      EntityGUI entityEdit = new EntityGUI(dp, id, location, null, morpho);
+      EntityGUI entityEdit;
+      if (id!=null) {
+        entityEdit = new EntityGUI(dp, id, location, null, morpho);
+      }
+      else { break;}
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
       
