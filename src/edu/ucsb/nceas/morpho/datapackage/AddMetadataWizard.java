@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-24 06:29:31 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-24 18:51:38 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,9 +91,9 @@ public class AddMetadataWizard extends JFrame
 
   ImageIcon forwardIcon = null;
   
-  JRadioButton existingMetadata = new JRadioButton("Existing Description");
-  JRadioButton createNew = new JRadioButton("New Description");
-  JRadioButton existingFile = new JRadioButton("Existing Data File");
+  JRadioButton existingMetadata = new JRadioButton("Import Existing Description From File");
+  JRadioButton createNew = new JRadioButton("Create New Description");
+  JRadioButton existingFile = new JRadioButton("Import Data");
   JTextField fileTextField = new JTextField();
   JList relatedFileList;
   
