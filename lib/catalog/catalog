@@ -73,3 +73,9 @@ PUBLIC "eml-access-2.0" "eml-access-2.0.dtd"
 PUBLIC "-//NCEAS//eml-access-2.0//EN" "eml-access-2.0.dtd"
 SYSTEM "urn:nceas:test-eml-access-2.0" "eml-access-2.0.dtd"
 SYSTEM "eml-access-2.0.dtd" "eml-access-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-software-2.0" "eml-software-2.0.dtd"
+PUBLIC "-//NCEAS//eml-software-2.0//EN" "eml-software-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-software-2.0" "eml-software-2.0.dtd"
+SYSTEM "eml-software-2.0.dtd" "eml-software-2.0.dtd"

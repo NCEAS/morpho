@@ -68,6 +68,15 @@
       <editexisting>yes</editexisting>
     </file>
     <file>
+      <name>Software</name>
+      <label>Software Description</label>
+      <xmlfiletype>-//NCEAS//eml-software-2.0//EN</xmlfiletype>
+      <rootnode>software</rootnode>
+      <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
+      <displaypath>//title</displaypath>
+      <editexisting>no</editexisting>
+    </file>
+    <file>
       <name>DATAFILE</name>
       <label>DATAFILE</label>
       <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
