@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-21 23:17:43 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2004-04-21 23:20:16 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1843,7 +1843,6 @@ class CustomJTable extends JTable{
 						boolean res = iv.verify(jtf);
 						if(!res) { 
 							//jtf.requestFocus();
-							currentCol);
 							this.editCellAt(currentRow, currentCol);
 							//super.changeSelection(currentRow, currentCol, false, false);
 							return;
