@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 04:24:32 $'
- * '$Revision: 1.46 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 04:28:34 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -455,6 +455,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     catch (Exception w) {
       Log.debug(50, "exception in getting entityArray");
+      w.printStackTrace();
       return null;
     }
     return entityArray;
