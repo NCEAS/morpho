@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-27 22:25:23 $'
- * '$Revision: 1.13 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-18 21:13:12 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -54,9 +55,9 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 public class PartyPage extends AbstractWizardPage {
 
-  private final String pageID     = DataPackageWizardInterface.ATTRIBUTE_PAGE;
+  private final String pageID     = DataPackageWizardInterface.PARTY_CREATOR;
   private final String nextPageID = "";
-  private final String title      = "Attribute Page";
+  private final String title      = "Party Page";
   private final String subtitle   = "";
   private final String pageNumber = "";
 
@@ -69,7 +70,7 @@ public class PartyPage extends AbstractWizardPage {
   private static final Dimension PARTY_HALF_LABEL_DIMS = new Dimension(350,20);
   private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700,20);
 
-  private final String xPathRoot = "/eml:eml/dataset/creator[1]";
+  private String xPathRoot = "/eml:eml/dataset/creator[1]";
 
   private short      role;
   private String     roleString;
@@ -100,7 +101,10 @@ public class PartyPage extends AbstractWizardPage {
   private JPanel     rolePanel;
   private JPanel     middlePanel;
   private JPanel     radioPanel;
-
+  
+  public JLabel desc;
+  public JPanel listPanel;
+  
   public  PartyPage  referedPage;
 
   private final String[] roleArray
@@ -127,6 +131,7 @@ public class PartyPage extends AbstractWizardPage {
   private boolean    editReference;
 
   public PartyPage() {
+    init();
   }
 
   public void setRole(short role) {
@@ -175,7 +180,7 @@ public class PartyPage extends AbstractWizardPage {
    */
   private void init() {
 
-    JLabel desc = WidgetFactory.makeHTMLLabel("<font size=\"4\"><b>&nbsp;&nbsp;"
+    desc = WidgetFactory.makeHTMLLabel("<font size=\"4\"><b>&nbsp;&nbsp;"
                                               +roleString+" Details</b></font>", 1);
     middlePanel = new JPanel();
     this.setLayout( new BorderLayout());
@@ -399,7 +404,7 @@ public class PartyPage extends AbstractWizardPage {
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
-    JPanel listPanel = WidgetFactory.makePanel(1);
+    listPanel = WidgetFactory.makePanel(1);
     JLabel listLabel = WidgetFactory.makeLabel("You can pick one from one of the earlier "
                                            +"entries that you have made.", false);
     setPrefMinMaxSizes(listLabel, PARTY_HALF_LABEL_DIMS);
@@ -1137,5 +1142,100 @@ public class PartyPage extends AbstractWizardPage {
     return returnMap;
   }
 
-  public void setPageData(OrderedMap data) {}
+  public void setXPathRoot(String xpath) {
+    xPathRoot = xpath;
+  }
+  
+  public void setPageData(OrderedMap map) {
+    OrderedMap map2 = map;
+    map = stripIndexOneFromMapKeys(map);
+
+    String name = (String)map.get(xPathRoot + "/individualName/salutation");
+    if (name!=null) {
+      salutationField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/individualName/givenName");
+    if (name!=null) {
+      firstNameField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/individualName/surName");
+    if (name!=null) {
+      lastNameField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/organizationName");
+    if (name!=null) {
+      organizationField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/positionName");
+    if (name!=null) {
+      positionNameField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/address/deliveryPoint");
+    if (name!=null) {
+      address1Field.setText(name);
+    }
+    name = (String)map2.get(xPathRoot + "/address[1]/deliveryPoint[2]");
+    if (name!=null) {
+      address2Field.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/address/city");
+    if (name!=null) {
+      cityField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/address/administrativeArea");
+    if (name!=null) {
+      stateField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/address/postalCode");
+    if (name!=null) {
+      zipField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/address/country");
+    if (name!=null) {
+      countryField.setText(name);
+    }
+    name = (String)map2.get(xPathRoot + "/phone[1]");
+    String type = (String)map2.get(xPathRoot + "/phone[1]/@phonetype");
+    if ((name!=null)&&(type.equals("voice"))) {
+      phoneField.setText(name);
+    }
+    name = (String)map2.get(xPathRoot + "/phone[2]");
+    type = (String)map2.get(xPathRoot + "/phone[2]/@phonetype");
+    if ((name!=null)&&(type.equals("fax"))) {
+      faxField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/electronicMailAddress");
+    if (name!=null) {
+      emailField.setText(name);
+    }
+    name = (String)map.get(xPathRoot + "/onlineUrl");
+    if (name!=null) {
+      urlField.setText(name);
+    }
+
+  }
+  
+  private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
+
+		 OrderedMap newMap = new OrderedMap();
+		 Iterator it = map.keySet().iterator();
+		 while(it.hasNext()) {
+			 String key = (String) it.next();
+			 String val = (String)map.get(key);
+			 int pos;
+			 if((pos = key.indexOf("[1]")) < 0) {
+				 newMap.put(key, val);
+				 continue;
+			 }
+			 String newKey = "";
+			 for(;pos != -1; pos = key.indexOf("[1]")){
+				 newKey += key.substring(0,pos);
+				 key = key.substring(pos + 3);
+			 }
+			 newKey += key;
+			 newMap.put(newKey, val);
+		 }
+		 return newMap;
+	 }
+
 }
