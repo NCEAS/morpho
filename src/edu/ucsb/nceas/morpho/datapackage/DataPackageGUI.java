@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 16:00:14 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2001-07-10 17:02:19 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -307,27 +307,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     contentPane.add(layoutPanel);
   }
   
-  private static String htmlize(String s)
-  {
-    return htmlize(s, null);
-  }
-  
-  private static String htmlize(String s, String label)
-  {
-    if(s.trim().equals(""))
-    {
-      return "";
-    }
-    else if(label != null)
-    {
-      return "<u>" + label + "</u>: " + s + "<br>";
-    }
-    else
-    {
-      return s + "<br>";
-    }
-  }
-  
   /**
    * creates the basicinfopanel
    */
@@ -410,7 +389,23 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     if(abstractNL != null)
     {
-      //abstractS = abstractNL.item(0).getFirstChild().getFirstChild().getNodeValue();
+      NodeList children = abstractNL.item(0).getChildNodes();
+      for(int i=0; i<children.getLength(); i++)
+      {
+        Node n = children.item(i);
+        if(n.getNodeName().equals("paragraph"))
+        {
+          String nodeval = n.getFirstChild().getNodeValue();
+          if(nodeval.trim().equals(""))
+          {
+            abstractS += "";
+          }
+          else
+          {
+            abstractS += "<p>" + n.getFirstChild().getNodeValue() + "</p>";
+          }
+        }
+      }
     }
     if(keywordNL != null)
     {
@@ -430,7 +425,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                   htmlize(keywords, "Keywords") + 
                   htmlize(abstractS, "Abstract");
     
-    String originators = "<br><u>Originators</u><br>";
+    String originators = "<br><b>Originator(s)</b><br>";
     String name = "";
     String orgname = "";
     String address = "";
@@ -531,10 +526,11 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     wholelabel += originators + "</html>";
     JLabel biglabel = new JLabel(wholelabel);
-    //biglabel.setPreferredSize(new Dimension(500, 500));
-    //biglabel.setMaximumSize(new Dimension(500, 500));
+    biglabel.setPreferredSize(new Dimension(375,1000));
     JPanel biglabelPanel = new JPanel();
-    //System.out.println(biglabel.getText());
+    biglabelPanel.setLayout(new BoxLayout(biglabelPanel, BoxLayout.Y_AXIS));
+    biglabelPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
+    biglabel.setAlignmentX(0);
     biglabelPanel.add(biglabel);
     biglabelPanel.setBackground(Color.white);
     
@@ -883,6 +879,38 @@ public class DataPackageGUI extends javax.swing.JFrame
       EntityGUI entityEdit = new EntityGUI(dataPackage, id, location, this, 
                                            framework);
       entityEdit.show();
+    }
+  }
+  
+  /**
+   * puts correct html tags on the string provided.  if the string is null
+   * or empty it returns an empty string
+   * @param s the string to htmlize
+   */
+  private static String htmlize(String s)
+  {
+    return htmlize(s, null);
+  }
+  
+  /**
+   * puts correct html tags on the string provided.  if the string is null
+   * or empty it returns an empty string
+   * @param s the string to htmlize
+   * @param label the label to add to the string
+   */
+  private static String htmlize(String s, String label)
+  {
+    if(s == null || s.trim().equals(""))
+    {
+      return "";
+    }
+    else if(label != null)
+    {
+      return "<b>" + label + "</b>: " + s + "<br>";
+    }
+    else
+    {
+      return s + "<br>";
     }
   }
   
