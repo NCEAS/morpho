@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-04 21:26:44 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-06-05 19:01:38 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     frames = pwsp.getFrames();
     triplesFile = pwsp.getMainFrame();
-    System.out.println("frames: " + frames);
+    
     for(int i=0; i<frames.size(); i++)
     {
       Hashtable frame = (Hashtable)frames.elementAt(i);
@@ -161,7 +161,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
       else
       {
-        PackageWizard pw = new PackageWizard(framework, framePanel, (String)frame.get("path"));
+        PackageWizard pw = new PackageWizard(framework, framePanel, 
+                                             (String)frame.get("path"));
         wfc.wizard = pw;
         wfc.type = "WIZARD";
       }
@@ -180,6 +181,61 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   private void handleNextAction()
   { //go forward a frame
+    //System.out.println("atts: " + activeContainer.attributes.toString());
+    if(activeContainer.attributes.containsKey("repeatable"))
+    {
+      String repeatable = (String)activeContainer.attributes.get("repeatable");
+      if(repeatable.equals("yes"))
+      { //ask the user if he wished to add another file of the type which
+        //he just created
+        File f = activeContainer.getFile(true);
+        if(f == null)
+        { //the user pressed the no button when prompted if he wanted to create
+          //an invalid document OR the user did not enter a data file that was
+          //valid
+          return;
+        }
+        
+        int choice = JOptionPane.YES_OPTION;
+        choice = JOptionPane.showConfirmDialog(null, 
+                               "Do you wish to add more " +
+                               (String)activeContainer.attributes.get("name") +
+                               " metadata?", 
+                               "Package Wizard", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        { //add the new frame to the wizard
+          
+          JPanel framePanel = new JPanel();
+          WizardFrameContainer wfc = new WizardFrameContainer(framePanel);
+          wfc.description = new String(activeContainer.description);
+          wfc.attributes = new Hashtable(activeContainer.attributes);
+          activeContainer.attributes.remove("repeatable");
+          PackageWizard pw = new PackageWizard(framework, framePanel, 
+                                            (String)wfc.attributes.get("path"));
+          wfc.wizard = pw;
+          wfc.type = new String(activeContainer.type);
+          
+          wizardFrame.removeAll();
+          frameWizardIndex++;
+          frameWizards.add(frameWizardIndex, wfc);
+          wizardFrame.add(wfc.panel);
+          //show();
+          wizardFrame.validate();
+          wizardFrame.repaint();
+          activeContainer = wfc;
+          return;
+        }
+        else if(choice == JOptionPane.CANCEL_OPTION)
+        { //stay where we are
+          return;
+        }
+      }
+    }
+    
+    
+    
     if(frameWizardIndex == frameWizards.size()-1)
     { //we are at the end of the frames...
       
@@ -194,6 +250,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
       
       wizardFrame.removeAll();
+      wizardFrame.invalidate();
       frameWizardIndex++;
       changeDescription("Click 'Save to Metacat' if you would like to save " +
                         "your new package to a Metacat server.  Check the " +
@@ -238,6 +295,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       donePanel.add(Box.createRigidArea(new Dimension(0,20)));
       donePanel.add(openCheckBox);
       wizardFrame.add(donePanel);
+      wizardFrame.validate();
       next.setText("Finish");
     }
     else
@@ -253,6 +311,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
       
       wizardFrame.removeAll();
+      wizardFrame.invalidate();
       frameWizardIndex++;
       WizardFrameContainer nextContainer = (WizardFrameContainer)
                                          frameWizards.elementAt(frameWizardIndex);
@@ -266,7 +325,9 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
     }
     
-    show();
+    wizardFrame.validate();
+    wizardFrame.repaint();
+    //show();
   }
   
   /**
@@ -283,6 +344,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     
     wizardFrame.removeAll();
+    wizardFrame.invalidate();
     frameWizardIndex--;
     WizardFrameContainer nextContainer = (WizardFrameContainer)
                                        frameWizards.elementAt(frameWizardIndex);
@@ -299,8 +361,9 @@ public class PackageWizardShell extends javax.swing.JFrame
     {
       next.setText("Next >>");
     }
-    
-    show();
+    wizardFrame.validate();
+    wizardFrame.repaint();
+    //show();
   }
   
   /**
@@ -313,23 +376,14 @@ public class PackageWizardShell extends javax.swing.JFrame
     Vector packageFiles = new Vector();
     String triplesTag = "/triples";
     for(int i=0; i<frameWizards.size(); i++)
-    { //create the triplesCollection
-      //put in the name of the module as a place holder.  it will be exchanged
-      //for the id in the next for loop
+    { //find the triplesTag
       WizardFrameContainer wfc = (WizardFrameContainer)frameWizards.elementAt(i);
-      if(wfc.attributes.containsKey("relatedTo"))
-      {
-        String relation = (String) wfc.attributes.get("relatedTo");
-        String name = (String) wfc.attributes.get("name");
-        triples.addTriple(new Triple(name, "isRelatedTo", relation));
-      }
+      
       if(wfc.attributes.containsKey("triplestag"))
       {
         triplesTag = (String)wfc.attributes.get("triplestag");
       }
     }
-    
-    Vector triplesV = triples.getCollection();
     
     for(int i=0; i<frameWizards.size(); i++)
     { //save all of the files to their new home
@@ -349,37 +403,59 @@ public class PackageWizardShell extends javax.swing.JFrame
       
       String name = (String)wfc.attributes.get("name");
       String id = (String)wfc.id;
+    }
+    
+    Hashtable tripleNames = new Hashtable();
+    for(int i=0; i<frameWizards.size(); i++)
+    { //create a hashtable of file names to ids for use in triple creation
+      WizardFrameContainer wfc = (WizardFrameContainer)
+                                  frameWizards.elementAt(i);
+      String id = wfc.id;
+      String name = (String)wfc.attributes.get("name");
+      if(name == null)
+      {
+        name = "DATAFILE";
+      }
+      Vector v;
+      if(tripleNames.containsKey(name))
+      {
+        v = (Vector)tripleNames.remove(name);
+      }
+      else
+      {
+        v = new Vector();
+      }
       
-      for(int j=0; j<triplesV.size(); j++)
-      { //replace the names of the modules with the ids of the instantiations
-        Triple t = (Triple)triplesV.elementAt(j);
-        String sub = t.getSubject();
-        String obj = t.getObject();
-        if(sub.equals(name))
-        { 
-          t.setSubject(id);
-        }
-        else if(obj.equals(name))
+      v.addElement(id);
+      tripleNames.put(name, v);
+    }
+    
+    TripleCollection tc = new TripleCollection();
+    for(int i=0; i<frameWizards.size(); i++)
+    {//put ids in the triples
+      WizardFrameContainer wfc = (WizardFrameContainer)
+                                 frameWizards.elementAt(i);
+      String id = wfc.id;
+      String name = (String)wfc.attributes.get("name");
+      if(name == null)
+      {
+        name = "DATAFILE";
+      }
+      if(wfc.attributes.containsKey("relatedTo"))
+      {
+        String relation = (String)wfc.attributes.get("relatedTo");
+        Vector v = (Vector)tripleNames.get(relation);
+        for(int j=0; j<v.size(); j++)
         {
-          t.setObject(id);
-        }
-        else if(sub.equals("DATAFILE"))
-        { //the keyword 'DATAFILE' is how the user can tell the wizard to 
-          //associate metadata with the data file itself.
-          if(!wfc.type.equals("WIZARD"))
-          {
-            t.setSubject(id);
-          }
-        }
-        else if(obj.equals("DATAFILE"))
-        {
-          if(!wfc.type.equals("WIZARD"))
-          {
-            t.setObject(id);
-          }
+          String rel = (String)v.elementAt(j);
+          Triple t = new Triple(id, "isRelatedTo", rel);
+          System.out.println("triple: " + t.toString());
+          tc.addTriple(t);
         }
       }
     }
+    
+    triples = tc;
     
     for(int i=0; i<frameWizards.size(); i++)
     {//find the triples file and add the triples to it
@@ -625,7 +701,7 @@ public class PackageWizardShell extends javax.swing.JFrame
    * This method can 'print' any DOM subtree. Specifically it is
    * set (by means of 'out') to write the in-memory DOM to the
    * same XML file that was originally read. Action thus saves
-   * a new version of the XML doc
+   * a new version of the XML doc.  Adapted from configXML.java.
    * 
    * @param node node usually set to the 'doc' node for complete XML file
    * re-write
@@ -734,7 +810,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     return sb.toString();
   }
   
-  /** Returns a sorted list of attributes. */
+  /** Returns a sorted list of attributes. Taken from configXML.java*/
   protected Attr[] sortAttributes(NamedNodeMap attrs)
   {
 
@@ -769,7 +845,7 @@ public class PackageWizardShell extends javax.swing.JFrame
 
   } // sortAttributes(NamedNodeMap):Attr[]
 
-  /** Normalizes the given string. */
+  /** Normalizes the given string. Taken from configXML.java*/
   protected String normalize(String s)
   {
     StringBuffer str = new StringBuffer();
@@ -813,8 +889,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
 
     return (str.toString());
-
-  } // normalize(String):String
+  } 
   
   /**
    * Test method

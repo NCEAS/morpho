@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-01 21:27:16 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-06-05 19:01:38 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -970,7 +970,7 @@ public class PackageWizard extends javax.swing.JFrame
           }
           else
           {
-            parentPanel.add(new JScrollPane(tempPanel));
+            parentPanel.add(/*new JScrollPane(*/tempPanel);
             //add the panel in a scroll pane in case it's too big.
           }
         }

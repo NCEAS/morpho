@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-30 22:32:50 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-05 19:01:38 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,6 +163,12 @@ public class PackageWizardShellParser extends DefaultHandler
       String description = atts.getValue(1);
       Hashtable g = (Hashtable)frameObjects.remove(name);
       g.put("description", description);
+      
+      if(atts.getLength() == 3)
+      {
+        String repeatable = atts.getValue(2);
+        g.put("repeatable", repeatable);
+      }
       frameObjects.put(name, g);
       frames.addElement(frameObjects.get(name));
     }

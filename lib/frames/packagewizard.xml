@@ -14,7 +14,9 @@
           relatedTo="Entity"/>
   </specs>
   
-  <frame name="Entity" description="Data entered here should describe the enties in your dataset." />
+  <frame name="Entity"
+         description="Data entered here should describe the enties in your dataset." 
+         repeatable="yes"/>
   <frame name="Attribute" description="Enter metadata about the attributes in your entity."/>
   
 </packageWizard>
