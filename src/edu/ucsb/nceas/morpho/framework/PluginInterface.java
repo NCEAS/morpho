@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 17:12:34 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-04-27 23:03:50 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.dtclient;
+package edu.ucsb.nceas.morpho.framework;
 
 import javax.swing.Action;
 import java.awt.Container;

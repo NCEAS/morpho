@@ -6,10 +6,10 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SetUserDialog.java,v 1.1 2000-09-15 20:59:33 higgins Exp $'
+ *     Version: '$Id: SetUserDialog.java,v 1.2 2001-04-27 23:03:50 jones Exp $'
  */
 
-package edu.ucsb.nceas.dtclient;
+package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.*;
 import javax.swing.*;

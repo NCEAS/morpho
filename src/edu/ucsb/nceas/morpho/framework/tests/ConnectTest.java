@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-26 17:14:22 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-04-27 23:03:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.dtclient.tests;
+package edu.ucsb.nceas.morpho.framework.tests;
 
-import edu.ucsb.nceas.dtclient.*;
+import edu.ucsb.nceas.morpho.framework.*;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

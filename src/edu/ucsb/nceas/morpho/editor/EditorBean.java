@@ -1,4 +1,30 @@
-package edu.ucsb.nceas.editor;
+/**
+ *  '$RCSfile: EditorBean.java,v $'
+ *  Copyright: 2000 Regents of the University of California and the
+ *              National Center for Ecological Analysis and Synthesis
+ *    Authors: @authors@
+ *    Release: @release@
+ *
+ *   '$Author: jones $'
+ *     '$Date: 2001-04-27 23:03:49 $'
+ * '$Revision: 1.6 $'
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package edu.ucsb.nceas.morpho.editor;
 
 import java.awt.*;
 import javax.swing.*;
@@ -6,11 +32,11 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Hashtable;
 
-import edu.ucsb.nceas.dtclient.PluginInterface;
-import edu.ucsb.nceas.dtclient.ClientFramework;
-import edu.ucsb.nceas.dtclient.ServiceRequest;
-import edu.ucsb.nceas.dtclient.ServiceResponse;
-import edu.ucsb.nceas.dtclient.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.framework.PluginInterface;
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.framework.ServiceRequest;
+import edu.ucsb.nceas.morpho.framework.ServiceResponse;
+import edu.ucsb.nceas.morpho.framework.ServiceNotHandledException;
 
 public class EditorBean extends Container implements PluginInterface
 {

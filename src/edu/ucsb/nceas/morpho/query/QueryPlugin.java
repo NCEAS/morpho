@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 17:12:34 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2001-04-27 23:03:51 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package edu.ucsb.nceas.querybean;
+
+package edu.ucsb.nceas.morpho.query;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -48,7 +49,7 @@ import com.symantec.itools.javax.swing.models.StringComboBoxModel;
 import com.symantec.itools.javax.swing.models.StringTreeModel;
 import com.symantec.itools.javax.swing.borders.EtchedBorder;
 
-import edu.ucsb.nceas.dtclient.*;
+import edu.ucsb.nceas.morpho.framework.*;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
@@ -1550,7 +1551,7 @@ public class QueryBean extends Container implements PluginInterface
       {
         out = pqx.get_XML();
         StringReader sr = new StringReader(pqx.get_XML());
-        File pathFile = new File("pathFile.xml");
+        File pathFile = new File("lib/pathFile.xml");
         FileWriter fw = new FileWriter(pathFile);
         int c;
         while ((c = sr.read()) != -1)

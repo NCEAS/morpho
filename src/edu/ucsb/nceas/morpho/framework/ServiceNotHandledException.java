@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-25 22:23:00 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-04-27 23:03:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.dtclient;
+package edu.ucsb.nceas.morpho.framework;
 
 /**
  * This exception is thrown when a service request is made of an object

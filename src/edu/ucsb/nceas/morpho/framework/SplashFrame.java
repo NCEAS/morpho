@@ -1,7 +1,7 @@
 /*
 		A basic implementation of the JFrame class.
 */
-package edu.ucsb.nceas.dtclient;
+package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.*;
 import javax.swing.*;

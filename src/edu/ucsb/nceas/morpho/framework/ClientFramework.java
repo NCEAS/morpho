@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 17:12:34 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2001-04-27 23:03:49 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.dtclient;
+package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -63,7 +63,7 @@ public class ClientFramework extends javax.swing.JFrame
   String MetaCatServletURL = null;
   ConfigXML config;
   private boolean connected = false;
-  edu.ucsb.nceas.querybean.LocalQuery lq = null;
+  edu.ucsb.nceas.morpho.query.LocalQuery lq = null;
   Hashtable menuList = null;
   TreeMap menuOrder = null;
   Action[] fileMenuActions = null;

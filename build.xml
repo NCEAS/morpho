@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.11 2001-04-25 22:22:58 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.12 2001-04-27 23:03:43 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -82,12 +82,12 @@
         <fileset dir="${srcdir}/${package.home}/metaedit/images">
         </fileset>
       </copy>
-      <copy todir="${build.dest}/${package.home}/dtclient" filtering="no">
-        <fileset dir="${srcdir}/${package.home}/dtclient/images">
+      <copy todir="${build.dest}/${package.home}/morpho/framework" filtering="no">
+        <fileset dir="${srcdir}/${package.home}/morpho/framework/images">
         </fileset>
       </copy>
-      <copy todir="${build.dest}/${package.home}/querybean" filtering="no">
-        <fileset dir="${srcdir}/${package.home}/querybean/images">
+      <copy todir="${build.dest}/${package.home}/morpho/query" filtering="no">
+        <fileset dir="${srcdir}/${package.home}/morpho/query/images">
         </fileset>
       </copy>
       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" />
@@ -117,7 +117,7 @@
    </target>
 
    <target name="morpho" depends="install">
-     <java classname="edu.ucsb.nceas.dtclient.ClientFramework"
+     <java classname="edu.ucsb.nceas.morpho.framework.ClientFramework"
            classpath="${cpath}:${morpho}"
            fork="yes" />
    </target>
@@ -137,7 +137,7 @@
        
        <formatter type="plain" />
        
-       <test name="edu.ucsb.nceas.dtclient.tests.ConnectTest"/>
+       <test name="edu.ucsb.nceas.morpho.framework.tests.ConnectTest"/>
        <!--
        <batchtest fork="yes" todir="${reports.tests}">
          <fileset dir="${src.tests}">
@@ -156,7 +156,7 @@
      <java classname="junit.textui.TestRunner"
            classpath="${cpath}:${morpho}:${junit}"
            fork="yes">
-       <arg line="edu.ucsb.nceas.dtclient.tests.ConnectTest"/>
+       <arg line="edu.ucsb.nceas.morpho.framework.tests.ConnectTest"/>
      </java>
    </target>
 

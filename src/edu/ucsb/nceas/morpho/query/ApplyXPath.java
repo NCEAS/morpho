@@ -1,14 +1,15 @@
 /**
- *        Name: ApplyXPath.java
- *     Purpose: A Class for creating a Query JavaBean for use Desktop Client
- *    source code essentially unchanged from Apache version
- *   Copyright: 2000 Regents of the University of California and the
+ *  '$RCSfile: ApplyXPath.java,v $'
+ *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
- *     Authors: Dan Higgins
+ *    Authors: @authors@
+ *    Release: @release@
  *
- *     Version: '$Id: ApplyXPath.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-04-27 23:03:50 $'
+ * '$Revision: 1.3 $'
+ *
  */
-
 
 /*
  * The Apache Software License, Version 1.1
@@ -69,7 +70,7 @@
 // This file uses 4 space indents, no tabs.
 
 
-package edu.ucsb.nceas.querybean;
+package edu.ucsb.nceas.morpho.query;
 
 
 import java.io.FileInputStream;

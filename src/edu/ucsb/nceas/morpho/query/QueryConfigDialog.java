@@ -1,17 +1,30 @@
 /**
- *        Name: QueryConfigDialog.java
- *     Purpose: A Class for interactively changing Query Parameters
- *   Copyright: 2000 Regents of the University of California and the
+ *  '$RCSfile: QueryConfigDialog.java,v $'
+ *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
- *     Authors: Dan Higgins
+ *    Authors: @authors@
+ *    Release: @release@
  *
- *     Version: '$Id: QueryConfigDialog.java,v 1.5 2001-04-26 00:10:06 jones Exp $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-04-27 23:03:51 $'
+ * '$Revision: 1.6 $'
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-/*
-		A basic implementation of the JDialog class.
-*/
 
-package edu.ucsb.nceas.querybean;
+package edu.ucsb.nceas.morpho.query;
 
 import java.awt.*;
 import javax.swing.*;
@@ -19,7 +32,7 @@ import javax.swing.JTree;
 import javax.swing.tree.*;
 import javax.swing.event.*;
 import com.symantec.itools.javax.swing.models.StringListModel;
-import edu.ucsb.nceas.dtclient.*;
+import edu.ucsb.nceas.morpho.framework.*;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -28,6 +41,9 @@ import org.xml.sax.helpers.*;
 
 import com.wutka.dtd.*;
 
+/*
+		A basic implementation of the JDialog class.
+*/
 public class QueryConfigDialog extends javax.swing.JDialog
 {
     ConfigXML config;
