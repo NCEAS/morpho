@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-19 19:24:32 $'
- * '$Revision: 1.95 $'
+ *     '$Date: 2003-12-22 20:55:08 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -753,7 +753,7 @@ public class DataViewer extends javax.swing.JPanel
         else if (text_flag) {
           // try building a table
           if ((column_labels!=null)&&(column_labels.size()>0)) {
-            if ((field_delimiter.trim().length()>0)) {
+            if ((field_delimiter.trim().length()>0)&&((dataFile.length()>0))) {
               buildTable();
               /*StateChangeMonitor.getInstance().notifyStateChange(
                    new StateChangeEvent( 
@@ -769,7 +769,7 @@ public class DataViewer extends javax.swing.JPanel
               //MouseListener popupListener = new PopupListener();
               //table.addMouseListener(popupListener);
             }
-            else if (dataFile==null) {
+            else if ((dataFile==null)||((dataFile.length()<1))) {
               numHeaderLines = "0";
               field_delimiter = ",";
               buildTable();
@@ -1106,7 +1106,7 @@ public class DataViewer extends javax.swing.JPanel
     pv = new PersistentVector();
     pv.setFieldDelimiter(field_delimiter);
     pv.setFirstRow(num_header_lines);
-    if (dataFile==null) {
+    if ((dataFile==null)||(dataFile.length()<1)) {
       Log.debug(20, "Null Data File");
       field_delimiter = ",";
       String[] row = new String[column_labels.size()];

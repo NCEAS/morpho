@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-19 19:24:32 $'
- * '$Revision: 1.83 $'
+ *     '$Date: 2003-12-22 20:55:08 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -816,7 +816,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       }
       else if (adp.getDistributionArray(index, 0)==null) {
         // case where there is no distribution data in the package
-        Log.debug(1, "This entity has NO distribution information!");
+//        Log.debug(1, "This entity has NO distribution information!");
+        JOptionPane.showMessageDialog(null, 
+                  "This entity has NO distribution information!", 
+                  "Information", JOptionPane.INFORMATION_MESSAGE );
       }
       dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
       dv.setAbstractDataPackage(adp);
@@ -827,7 +830,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dv.init();
       lastPV = dv.getPV();
       JPanel tablePanel = null;
-      if (dv.getShowDataView())
+      if ((dv.getShowDataView())&&(displayFile!=null))
       {
         tablePanel = dv.DataViewerPanel;
       }
@@ -836,10 +839,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         tablePanel = new JPanel();
         tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
         String text = null;
-        if (dataId.equals("") || dataId == null)
+        if ((dataId == null) || (dataId.equals("")))
         {
           text = "Either there is no data file, or format of data "+
-               "file was not recongnized!";
+               "file was not recognized!";
         }
         else
         {
