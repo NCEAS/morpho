@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.9 2001-01-31 23:37:47 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.9.2.1 2001-04-25 01:14:39 jones Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -279,8 +279,8 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	public SubmitDataDialog(ClientFramework cf) {
 		this((Frame)null);
 	    container = cf;
-	    userName = cf.userName;
-	    passWord = cf.passWord;
+	    userName = cf.getUserName();
+	    //MBJOUTDATED//passWord = cf.getPassword();
 	    this.setModal(false);
 	    
 	}
@@ -417,7 +417,7 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	    else {
 	        access = "no";   
 	    }
-	    if (container.userName.equals("public")) {
+	    if (container.getUserName().equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to insert data into the system catalog!");
 	    }
 	    else if (FileNameTextField.getText().startsWith("FileName of data to be sent to server"))
@@ -972,8 +972,8 @@ public String insertIntoMetacat(String filename) {
 		}
 		if (selection==2) {            //metacat (catalog) document
 		    FileMetadataTextField.setText("");
-		    if (!container.userName.equals("public")) {
-		        container.queryBean1.getOwnerDocs(container.userName);
+		    if (!container.getUserName().equals("public")) {
+		        //MBJOUTDATED//container.queryBean1.getOwnerDocs(container.getUserName());
 		    }
 		    else{
 		        JOptionPane.showMessageDialog(this,"Must be connected as named user!");    
@@ -1006,8 +1006,8 @@ public String insertIntoMetacat(String filename) {
 		}
 		if (selection==2) {            //metacat (catalog) document
 		    ResourceMetadataTextField.setText("");
-		    if (!container.userName.equals("public")) {
-		        container.queryBean1.getOwnerDocs(container.userName);
+		    if (!container.getUserName().equals("public")) {
+		        //MBJOUTDATED//container.queryBean1.getOwnerDocs(container.getUserName());
 		    }
 		    else{
 		        JOptionPane.showMessageDialog(this,"Must be connected as named user!");    
@@ -1042,8 +1042,8 @@ public String insertIntoMetacat(String filename) {
 		}
 		if (selection==2) {            //metacat (catalog) document
 		    PackageNameTextField.setText("");
-		    if (!container.userName.equals("public")) {
-		        container.queryBean1.getOwnerDocs(container.userName);
+		    if (!container.getUserName().equals("public")) {
+		        //MBJOUTDATED//container.queryBean1.getOwnerDocs(container.getUserName());
 		    }
 		    else{
 		        JOptionPane.showMessageDialog(this,"Must be connected as named user!");    
