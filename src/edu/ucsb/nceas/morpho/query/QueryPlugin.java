@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2002-08-15 00:18:23 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -64,8 +65,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   public QueryPlugin()
   {
-    // Create the menus and toolbar actions, will register later
-    initializeActions();
+      
   }
 
   /** 
@@ -79,7 +79,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     this.framework = cf;
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
-
+    // Create the menus and toolbar actions, will register later
+    initializeActions(); 
     // Add the menus and toolbars
     framework.addMenu("Search", new Integer(3), menuActions);
     framework.addToolbarActions(toolbarActions);
@@ -108,18 +109,21 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   private void initializeActions() {
     // Set up the menus for the application
     menuActions = new Action[1];
-    Action searchItemAction = new AbstractAction("Search...") {
-      public void actionPerformed(ActionEvent e) {
-        handleSearchAction();
-      }
-    };
-    searchItemAction.putValue(Action.SMALL_ICON, 
+  
+    GUIAction searchItemAction = new GUIAction("Search...", null,
+              new SearchCommand(null, framework));
+    searchItemAction.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Search16.gif")));
+    searchItemAction.setToolTipText("Search for data");
+    searchItemAction.setMenuItemPosition(0);
+    searchItemAction.setSeparatorPosition(ClientFramework.SEPARATOR_FOLLOWING);
+    /*searchItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
     searchItemAction.putValue("menuPosition", new Integer(0));
     searchItemAction.putValue(Action.DEFAULT, 
-                             ClientFramework.SEPARATOR_FOLLOWING);
+                             ClientFramework.SEPARATOR_FOLLOWING);*/
     menuActions[0] = searchItemAction;
 
     // Set up the toolbar for the application
@@ -169,30 +173,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   {
   }
 
-  /**
-   * Handle the search action by opening the QueryDialog
-   */
-  private void handleSearchAction()
-  {
-    
-    // QueryDialog Create and show as modal
-    QueryDialog queryDialog1 = new QueryDialog(framework);
-    queryDialog1.setModal(true);
-    queryDialog1.show();
-    if (queryDialog1.isSearchStarted()) {
-      Query query = queryDialog1.getQuery();
-      if (query != null) {
-//        ResultSet rs = query.execute();
-        ResultSet rs = null;
-        ResultFrame rsf = new ResultFrame(framework, rs);
-        rsf.addWorking();
-        doQuery(rsf, query);
-//        rs = query.execute();
-//        rsf.addResultPanel(rs);
-      }
-    }
-  }
-
+ 
   /**
    * Implement the ConnectionListener interface so we know when to 
    * refresh queries.
