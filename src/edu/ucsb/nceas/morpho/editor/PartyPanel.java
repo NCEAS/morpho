@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-21 04:41:15 $'
- * '$Revision: 1.6 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-23 22:07:16 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -333,7 +333,7 @@ class dfhAction implements java.awt.event.ActionListener
       Object object = event.getSource();
       if (object instanceof JTextArea) {
         NodeInfo info = (NodeInfo)(nd1.getUserObject());
-        info.setPCValue(((JTextArea)object).getText());
+        info.setPCValue(((JTextArea)object).getText().trim());
       }
     }
 }
@@ -343,59 +343,59 @@ class dfhFocus extends java.awt.event.FocusAdapter {
     {
       Object object = event.getSource();
       if (object == salutationField) {
-        String val = salutationField.getText();
+        String val = salutationField.getText().trim();
         setValue(nd, "salutation", val);
       }
        else if (object == firstNameField) {
-        String val = firstNameField.getText();
+        String val = firstNameField.getText().trim();
         setValue(nd, "givenName", val);
       }
       else if (object == lastNameField) {
-        String val = lastNameField.getText();
+        String val = lastNameField.getText().trim().trim();
         setValue(nd, "surName", val);
       }
       else if (object == organizationField) {
-        String val = organizationField.getText();
+        String val = organizationField.getText().trim();
         setValue(nd, "organizationName", val);
       }
       else if (object == positionNameField) {
-        String val = positionNameField.getText();
+        String val = positionNameField.getText().trim();
         setValue(nd, "positionName", val);
       }
       else if (object == address1Field) {
-        String val = address1Field.getText();
+        String val = address1Field.getText().trim();
         setValue(nd, "deliveryPoint", val);
       }
       else if (object == cityField) {
-        String val = cityField.getText();
+        String val = cityField.getText().trim();
         setValue(nd, "city", val);
       }
       else if (object == stateField) {
-        String val = stateField.getText();
+        String val = stateField.getText().trim();
         setValue(nd, "administrativeArea", val);
       }
       else if (object == zipField) {
-        String val = zipField.getText();
+        String val = zipField.getText().trim();
         setValue(nd, "postalCode", val);
       }
       else if (object == countryField) {
-        String val = countryField.getText();
+        String val = countryField.getText().trim();
         setValue(nd, "country", val);
       }
       else if (object == phoneField) {
-        String val = phoneField.getText();
+        String val = phoneField.getText().trim();
         setValue(nd, "phone", val);
       }
       else if (object == faxField) {
-        String val = faxField.getText();
+        String val = faxField.getText().trim();
         setValue(nd, "phone", val);	      //NEED to handle attribute to determine voice or fax
       }
       else if (object == emailField) {
-        String val = emailField.getText();
+        String val = emailField.getText().trim();
         setValue(nd, "electronicMailAddress", val);
       }
       else if (object == urlField) {
-        String val = urlField.getText();
+        String val = urlField.getText().trim();
         setValue(nd, "onlineUrl", val);
       }
     }
