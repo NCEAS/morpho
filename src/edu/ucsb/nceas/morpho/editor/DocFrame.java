@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-07 16:55:19 $'
- * '$Revision: 1.119 $'
+ *     '$Date: 2003-10-07 17:01:32 $'
+ * '$Revision: 1.120 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1562,7 +1562,13 @@ public class DocFrame extends javax.swing.JFrame
   Node writeToDOM(DefaultMutableTreeNode node) {
     String xml = writeXMLString(node);
     StringReader sr = new StringReader(xml);
-    Node DOMout = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
+    Node DOMOut = null;
+    try{
+      DOMOut = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
+    }
+    catch (Exception e) {
+      Log.debug(4, "Problem writing DOM from XML string!");
+    }
     return DOMOut;
   }
   /**
