@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.3 2000-08-18 20:22:13 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
-
+import java.util.Vector;
 
 public class LocalQuery extends Thread 
 {
@@ -168,20 +168,25 @@ void queryAll()
         
         
 	    File xmldir = new File("./xmlfiles/");
-	    String[] files = xmldir.list();
+	    Vector filevector = new Vector();
+	    getFiles(xmldir, filevector);
 	    
-	    for (int i=0;i<files.length;i++)
+//	    String[] files = xmldir.list();
+	    
+	    for (int i=0;i<filevector.size();i++)
         {
-            String filename = files[i];
-            File currentfile = new File(xmldir, filename);
+//            String filename = files[i];
+//            File currentfile = new File(xmldir, filename);
+            File currentfile = (File)filevector.elementAt(i);
+            String filename = currentfile.getPath();
             if (stopFlag) break;
-            if ((filename != null) && (filename.length() > 0) &&(currentfile.isFile()))
+            if (currentfile.isFile())
             
             {
                 InputSource in;
                 try
                 {
-                    in = new InputSource(new FileInputStream("./xmlfiles/"+files[i]));
+                    in = new InputSource(new FileInputStream(filename));
                 }
                 catch (FileNotFoundException fnf)
                 {
@@ -319,4 +324,24 @@ void queryAll()
     
 	//{{DECLARE_CONTROLS
 	//}}
+	
+	
+   // given a directory, return a vector of files it contains
+   // including subdirectories
+   private void getFiles(File directoryFile, Vector vec) {
+	    String[] files = directoryFile.list();
+	    
+	    for (int i=0;i<files.length;i++)
+        {
+            String filename = files[i];
+            File currentfile = new File(directoryFile, filename);
+            if (currentfile.isDirectory()) {
+                getFiles(currentfile,vec);  // recursive call to subdirecctories
+            }
+            if (currentfile.isFile()) {
+                vec.addElement(currentfile);   
+            }
+        }
+   }
+   
 }

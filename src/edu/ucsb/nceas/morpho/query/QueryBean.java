@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.8 2000-08-11 22:23:37 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.9 2000-08-18 20:22:13 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -55,7 +55,7 @@ public class QueryBean extends AbstractQueryBean
 {
     String userName = "anonymous";
     String passWord = "none";
-    
+    boolean localonly = false;
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
     PropertyResourceBundle options;
@@ -68,13 +68,15 @@ public class QueryBean extends AbstractQueryBean
 	{
 	    setLayout(new BorderLayout(0,0));
 		//{{INIT_CONTROLS
+		setLayout(new BorderLayout(0,0));
+		setSize(0,0);
 //		setLayout(null);
 //		setSize(729,492);
 		TopQueryPanel.setLayout(new BorderLayout(0,0));
 		TopQueryPanel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		TopQueryPanel.setBounds(0,0,0,0);
 //		TopQueryPanel.setBounds(0,0,729,492);
-		add(TopQueryPanel);
+		add(BorderLayout.CENTER,TopQueryPanel);
 		TopQueryPanel.add(BorderLayout.CENTER, QueryChoiceTabs);
 		QueryChoiceTabs.setFont(new Font("Dialog", Font.PLAIN, 12));
 		QueryChoiceTabs.setBounds(0,0,0,0);
@@ -108,6 +110,10 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton.setActionCommand("Search");
 		QueryControls.add(SearchButton);
 		SearchButton.setBounds(0,0,75,25);
+		LocalCheckBox.setText("Local Only?");
+		QueryControls.add(LocalCheckBox);
+		LocalCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+		LocalCheckBox.setBounds(0,0,21,40);
 		{
 			String[] tempString = new String[8];
 			tempString[0] = "eml-access";
@@ -349,6 +355,10 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton1.setActionCommand("Search");
 		QueryControls1.add(SearchButton1);
 		SearchButton1.setBounds(0,0,75,25);
+		LocalCheckBox1.setText("Local Only?");
+		QueryControls1.add(LocalCheckBox1);
+		LocalCheckBox1.setFont(new Font("Dialog", Font.PLAIN, 12));
+		LocalCheckBox1.setBounds(0,0,21,40);
 		QueryChoicesPanel11.setLayout(new BorderLayout(0,0));
 		RefineQueryPanel1.add(BorderLayout.CENTER, QueryChoicesPanel11);
 		QueryChoicesPanel11.setBounds(96,0,545,257);
@@ -547,6 +557,10 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton2.setActionCommand("Search");
 		QueryControls2.add(SearchButton2);
 		SearchButton2.setBounds(0,0,75,25);
+		LocalCheckBox2.setText("Local Only?");
+		QueryControls2.add(LocalCheckBox2);
+		LocalCheckBox2.setFont(new Font("Dialog", Font.PLAIN, 12));
+		LocalCheckBox2.setBounds(0,0,21,40);
 		DocTypePanel.setLayout(new BorderLayout(0,0));
 		RefineQueryPanel2.add(BorderLayout.WEST, DocTypePanel);
 		DocTypePanel.setBounds(0,0,96,257);
@@ -793,6 +807,9 @@ public class QueryBean extends AbstractQueryBean
 		OrButton2.addItemListener(lSymItem);
 		SearchButton1.addActionListener(lSymAction);
 		SearchButton2.addActionListener(lSymAction);
+		LocalCheckBox.addItemListener(lSymItem);
+		LocalCheckBox1.addItemListener(lSymItem);
+		LocalCheckBox2.addItemListener(lSymItem);
 		//}}
 		invalidate();
 		setVisible(true);
@@ -813,6 +830,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JPanel RefineQueryPanel = new javax.swing.JPanel();
 	javax.swing.JPanel QueryControls = new javax.swing.JPanel();
 	javax.swing.JButton SearchButton = new javax.swing.JButton();
+	javax.swing.JCheckBox LocalCheckBox = new javax.swing.JCheckBox();
 	javax.swing.JPanel QueryChoicesPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel ChoicesPanel2 = new javax.swing.JPanel();
 	javax.swing.JPanel TextChoices11 = new javax.swing.JPanel();
@@ -845,6 +863,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JPanel RefineQueryPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel QueryControls1 = new javax.swing.JPanel();
 	javax.swing.JButton SearchButton1 = new javax.swing.JButton();
+	javax.swing.JCheckBox LocalCheckBox1 = new javax.swing.JCheckBox();
 	javax.swing.JPanel QueryChoicesPanel11 = new javax.swing.JPanel();
 	javax.swing.JScrollPane ChoicesScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JPanel JPanel7 = new javax.swing.JPanel();
@@ -893,6 +912,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JPanel RefineQueryPanel2 = new javax.swing.JPanel();
 	javax.swing.JPanel QueryControls2 = new javax.swing.JPanel();
 	javax.swing.JButton SearchButton2 = new javax.swing.JButton();
+	javax.swing.JCheckBox LocalCheckBox2 = new javax.swing.JCheckBox();
 	javax.swing.JPanel DocTypePanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DocTypeNameScrollPane = new javax.swing.JScrollPane();
 	javax.swing.JList DocTypeList = new javax.swing.JList();
@@ -1008,6 +1028,12 @@ public class QueryBean extends AbstractQueryBean
 				AndButton2_itemStateChanged(event);
 			else if (object == OrButton2)
 				OrButton2_itemStateChanged(event);
+			else if (object == LocalCheckBox)
+				LocalCheckBox_itemStateChanged(event);
+			else if (object == LocalCheckBox1)
+				LocalCheckBox1_itemStateChanged(event);
+			else if (object == LocalCheckBox2)
+				LocalCheckBox2_itemStateChanged(event);
 		}
 	}
 
@@ -1123,7 +1149,6 @@ public class QueryBean extends AbstractQueryBean
 
 	void SearchButton1_actionPerformed(java.awt.event.ActionEvent event)
 	{
-   //      simplequery_submitToDatabase("%NCEAS%");
 	    if (SearchButton1.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -1142,7 +1167,7 @@ public class QueryBean extends AbstractQueryBean
 	    String mode, match;
 	    if (OrRadioButton.isSelected()) op = "or";
 	    
-		if ((TextChoices11.isVisible())&&(TextValue11.getText().length()>0)) {
+		if ((TextChoices1.isVisible())&&(TextValue1.getText().length()>0)) {
 		    mode = TextMatch1.getSelectedItem().toString();
 		    match = TextValue11.getText();
 		    paths[0] = getPath(mode,match);
@@ -1232,9 +1257,11 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
-	    String temp = create_XMLQuery();
-	    LogIn();
-	    squery_submitToDatabase(temp);   
+		if(!localonly) {
+	        String temp = create_XMLQuery();
+	        LogIn();
+	        squery_submitToDatabase(temp);
+	    }
 		
 //	LogOut();
     }
@@ -1327,9 +1354,11 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
-	    String temp = create_XMLQuery();
-	    LogIn();
-	    squery_submitToDatabase(temp);   
+		if(!localonly) {
+	        String temp = create_XMLQuery();
+	        LogIn();
+	        squery_submitToDatabase(temp);
+	    }
 		
 //	LogOut();
 	}
@@ -1445,6 +1474,9 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
+		if(!localonly) {
+	    }	
+		
 	}
 	
 	
@@ -1605,9 +1637,9 @@ private String getPath(String type, String match){
 public void searchFor(String searchText) {
     QueryChoiceTabs.setSelectedIndex(0);
  //   TextMatch1.setSelectedIndex(0);
-    TextValue11.setText(searchText);
+    TextValue1.setText(searchText);
     simplequery_submitToDatabase(searchText);
-//    SearchButton_actionPerformed(null);
+    SearchButton1_actionPerformed(null);
 }
 	
 	void DetachCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
@@ -1677,11 +1709,10 @@ public void searchFor(String searchText) {
 	public void simplequery_submitToDatabase(String query) {
 	  Properties prop = new Properties();
         prop.put("action","query");
-        prop.put("query",query);
+        prop.put("anyfield",query);
         String respType = "xml";
 		prop.put("qformat",respType);
       try {
- //       MetaCatServletURL = "http://24.237.20.124/servlets/MetaCatServlet";
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);
@@ -1759,4 +1790,19 @@ public void LogOut() {
 }
 
 
+
+	void LocalCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+		localonly = LocalCheckBox.isSelected();
+	}
+
+	void LocalCheckBox1_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+		localonly = LocalCheckBox1.isSelected();
+	}
+
+	void LocalCheckBox2_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+		localonly = LocalCheckBox2.isSelected();
+	}
 }
