@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 20:04:28 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2004-03-23 18:12:54 $'
+  * '$Revision: 1.5 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
   <xsl:output method="html" encoding="iso-8859-1"
               doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
               doctype-system="http://www.w3.org/TR/html4/loose.dtd"
-              indent="yes" />  
+              indent="yes" />
   <xsl:template name="access">
     <xsl:param name="accessfirstColStyle"/>
     <xsl:param name="accesssubHeaderStyle"/>
@@ -82,14 +82,12 @@
                 <xsl:with-param name="accessfirstColStyle" select="$accessfirstColStyle"/>
             </xsl:call-template>
         </xsl:if>
-        <xsl:if test="normalize-space(acl/@order)='denyFirst' and (allow)">
+        <xsl:if test="normalize-space(./@order)='denyFirst' and (allow)">
             <xsl:call-template name="allow_deny">
                 <xsl:with-param name="permission" select="'allow'"/>
                 <xsl:with-param name="accessfirstColStyle" select="$accessfirstColStyle"/>
             </xsl:call-template>
         </xsl:if>
-
-
   </xsl:template>
 
 
