@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-12 16:47:19 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2003-09-12 18:27:56 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1336,18 +1336,28 @@ public void startImport(String file) {
     return res;
   }
   
-  //DateFormat dateFormat = DateFormat.getDateInstance();  //see isDate() method
   boolean isDate(String s) {
+    DateFormat dateFormat;
+    Date dt;
+    dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
     boolean res = true;
     try {
-      long III = Date.parse(s);   //--- DEPRECATED
-      //Date III = dateFormat.parse(s);     //--- This should replace the above 
-                                            //(deprecated) method call, but it 
-                                            //DOESN'T WORK in the same way - 
-                                            //ie results are different!
+      dt = dateFormat.parse(s);
     }
     catch (Exception w) {
-      res = false;
+      try{
+        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        dt = dateFormat.parse(s);
+      }
+      catch (Exception w1) {
+        try{
+          dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+          dt = dateFormat.parse(s);
+        }
+        catch (Exception w2) {
+          res = false;        
+        }
+      }
     }
     return res;
   }
