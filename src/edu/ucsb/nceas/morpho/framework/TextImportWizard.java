@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-21 23:06:30 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-11-27 00:16:50 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,34 +117,11 @@ public class TextImportWizard extends javax.swing.JFrame
 	Vector colTitles;
 
 	/**
-	 * vector containing column Name strings
+	 * vector containing ColumnData objects
 	 */
-	Vector colNames;
+	Vector colDataInfo;
 
-	/**
-	 * vector containing column Definition strings
-	 */
-	Vector colDefinitions;
-	
-	/**
-	 * vector containing column types (in strings)
-	 */
-	// contains column types
-	Vector colTypes;
-	
-	
-	/**
-	 * vector containing number of unique elements in each column
-	 * value is stored as an Integer
-	 */
-	 Vector numUniqueItems;
-	 
-	/**
-	 * vector containing units for each column
-	 * (default is an empty string; requires user input)
-	 */
-	Vector units;
-	
+	 	
 	/**
 	 * vector of vectors with table data
 	 */
@@ -200,7 +177,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		PasteDataButton.setDefaultCapable(false);
 		PasteDataButton.setToolTipText("Click Here to Enter Data from Clipboard");
 		JToolBar1.add(PasteDataButton);
-		ShowResultsButton.setText("Show Results");
+		ShowResultsButton.setText("Show Results of Data Scan");
 		ShowResultsButton.setActionCommand("Show Results");
 		ShowResultsButton.setDefaultCapable(false);
 		JToolBar1.add(ShowResultsButton);
@@ -370,10 +347,10 @@ public class TextImportWizard extends javax.swing.JFrame
 		JPanel23.setLayout(new BoxLayout(JPanel23,BoxLayout.Y_AXIS));
 		JPanel22.add(JPanel23);
 		JPanel23.add(JScrollPane2);
-		JTextArea1.setLineWrap(true);
-		JTextArea1.setWrapStyleWord(true);
-		JScrollPane2.getViewport().add(JTextArea1);
-		JTextArea1.setBounds(0,0,-69,19);
+		ColumnDefTextArea.setLineWrap(true);
+		ColumnDefTextArea.setWrapStyleWord(true);
+		JScrollPane2.getViewport().add(ColumnDefTextArea);
+		ColumnDefTextArea.setBounds(0,0,-69,19);
 		JLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 		JLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		JLabel13.setText("Column Definition:");
@@ -396,11 +373,31 @@ public class TextImportWizard extends javax.swing.JFrame
 		DataTypeList.setBounds(0,0,256,64);
 		JPanel24.setLayout(new BorderLayout(0,0));
 		JPanel20.add(JPanel24);
+		JPanel26.setLayout(new BorderLayout(0,0));
+		JPanel24.add(BorderLayout.CENTER,JPanel26);
+		JPanel26.add(BorderLayout.CENTER,UniqueItemsScroll);
+		JPanel27.setLayout(new GridLayout(2,1,0,0));
+		JPanel26.add(BorderLayout.WEST,JPanel27);
+		JLabel14.setText("Unique Item List");
+		JPanel27.add(JLabel14);
+		JLabel14.setForeground(java.awt.Color.black);
+		JLabel14.setFont(new Font("Dialog", Font.PLAIN, 12));
+		EnumCheckBox.setText("Use in Metadata");
+		EnumCheckBox.setActionCommand("Use in Metadata");
+		JPanel27.add(EnumCheckBox);
+		EnumCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JPanel25.setLayout(new GridLayout(2,1,0,0));
+		JPanel24.add(BorderLayout.SOUTH,JPanel25);
 		NumUniqueLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		NumUniqueLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JPanel24.add(BorderLayout.SOUTH,NumUniqueLabel);
+		JPanel25.add(NumUniqueLabel);
 		NumUniqueLabel.setForeground(java.awt.Color.black);
 		NumUniqueLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		MinMaxLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+		MinMaxLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		JPanel25.add(MinMaxLabel);
+		MinMaxLabel.setForeground(java.awt.Color.black);
+		MinMaxLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		DataPanel.setLayout(new BorderLayout(0,0));
 		JPanel1.add(DataPanel);
 		DataPanel.add(BorderLayout.CENTER,DataScrollPanel);
@@ -486,6 +483,12 @@ public class TextImportWizard extends javax.swing.JFrame
 		ColumnUnitTextField.addActionListener(lSymAction);
 		save_eml_attribute.addActionListener(lSymAction);
 		CancelButton.addActionListener(lSymAction);
+		ColumnLabelTextField.addActionListener(lSymAction);
+		ColumnDefTextArea.addFocusListener(aSymFocus);
+		ColumnNameTextField.addFocusListener(aSymFocus);
+		ColumnLabelTextField.addFocusListener(aSymFocus);
+		ColumnUnitTextField.addFocusListener(aSymFocus);
+		EnumCheckBox.addItemListener(lSymItem);
 		//}}
 		
 		resultsBuffer = new StringBuffer();
@@ -658,7 +661,7 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JTextField ColumnUnitTextField = new javax.swing.JTextField();
 	javax.swing.JPanel JPanel23 = new javax.swing.JPanel();
 	javax.swing.JScrollPane JScrollPane2 = new javax.swing.JScrollPane();
-	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
+	javax.swing.JTextArea ColumnDefTextArea = new javax.swing.JTextArea();
 	javax.swing.JLabel JLabel13 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel20 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel16 = new javax.swing.JPanel();
@@ -666,7 +669,14 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JList DataTypeList = new javax.swing.JList();
 	javax.swing.JPanel JPanel24 = new javax.swing.JPanel();
+	javax.swing.JPanel JPanel26 = new javax.swing.JPanel();
+	javax.swing.JScrollPane UniqueItemsScroll = new javax.swing.JScrollPane();
+	javax.swing.JPanel JPanel27 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel14 = new javax.swing.JLabel();
+	javax.swing.JCheckBox EnumCheckBox = new javax.swing.JCheckBox();
+	javax.swing.JPanel JPanel25 = new javax.swing.JPanel();
 	javax.swing.JLabel NumUniqueLabel = new javax.swing.JLabel();
+	javax.swing.JLabel MinMaxLabel = new javax.swing.JLabel();
 	javax.swing.JPanel DataPanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel ButtonsPanel = new javax.swing.JPanel();
@@ -771,6 +781,8 @@ public class TextImportWizard extends javax.swing.JFrame
 				saveEmlAttribute_actionPerformed(event);
 			else if (object == CancelButton)
 				CancelButton_actionPerformed(event);
+			else if (object == ColumnLabelTextField)
+				ColumnLabelTextField_actionPerformed(event);
 		}
 	}
 
@@ -1042,10 +1054,6 @@ public void startImport(String file) {
 	      }
 	      start--;  // include first line
 	    }
-	    units = new Vector();
-	    for (int m=0;m<colTitles.size();m++) {
-	      units.addElement("");
-	    }
 	    vec = new Vector();
 	    Vector vec1 = new Vector();
 	    int numcols = colTitles.size();
@@ -1064,13 +1072,16 @@ public void startImport(String file) {
 	    }
 	  
 	    buildTable(colTitles, vec);
-	    colTypes = new Vector();
-	    numUniqueItems = new Vector();
+	    colDataInfo = new Vector();   // vector of ColumnData objects
 	    for (int k=0;k<numcols;k++) {
-	      colTypes.addElement(guessColFormat(k)); 
+	      ColumnData cd = new ColumnData(k);
+	      colDataInfo.addElement(cd);
+	      cd.colType = guessColFormat(k);
+	      cd.colTitle = (String)colTitles.elementAt(k);
+	      cd.colName = (String)colTitles.elementAt(k);
 	      Vector lst = getUniqueColValues(k);
-	      Integer sz = new Integer(lst.size());
-	      numUniqueItems.addElement(sz);
+	      cd.colUniqueItemsList = lst;
+	      cd.colNumUniqueItems = lst.size();
 	    }
     }
 	}
@@ -1101,27 +1112,35 @@ public void startImport(String file) {
                   } else {
                       selectedCol = lsm.getMinSelectionIndex();
                       //selectedCol is selected
-                      Integer numUnique = (Integer)numUniqueItems.elementAt(selectedCol);
-                      String str = "There are "+numUnique.toString()+" unique item(s) in this column";
+                      ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+                      EnumCheckBox.setSelected(cd.useEnumerationList);
+                      int numUnique =  cd.colNumUniqueItems;
+                      String str = "There are "+numUnique+" unique item(s) in this column";
                       NumUniqueLabel.setText(str);
-                      ColumnUnitTextField.setText((String)units.elementAt(selectedCol));
-                      ColumnNameTextField.setText(table.getColumnName(selectedCol));
-                      String colType = (String)colTypes.elementAt(selectedCol);
-                      if (colType.equals("text")) {
-                        DataTypeList.setSelectedIndex(0); 
+                      if (cd.colType.equals("Floating Point")) {
+                        String dmin = Double.toString(cd.colMin);
+                        String dmax = Double.toString(cd.colMax);
+                        String daver = Double.toString(cd.colAverage);
+                        MinMaxLabel.setText("Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver);   
+                      } 
+                      else if ((cd.colType.equals("Integers"))) {
+                        String min = Integer.toString((int)cd.colMin);
+                        String max = Integer.toString((int)cd.colMax);
+                        String aver = Double.toString(cd.colAverage);
+                        MinMaxLabel.setText("Min:"+ min +"  Max:" + max + "  Aver:" +aver);   
                       }
-                      else if (colType.equals("integer")) {
-                        DataTypeList.setSelectedIndex(1); 
+                      else {
+                        MinMaxLabel.setText("");
                       }
-                      else if (colType.equals("double")) {
-                        DataTypeList.setSelectedIndex(2); 
-                      }
-                      else if (colType.equals("date")) {
-                        DataTypeList.setSelectedIndex(3); 
-                      }
-                      else if (colType.equals("skip")) {
-                        DataTypeList.setSelectedIndex(4); 
-                      }
+                      JList uniq = new JList(cd.colUniqueItemsList);
+                      UniqueItemsScroll.getViewport().removeAll();
+                      UniqueItemsScroll.getViewport().add(uniq);
+                      ColumnUnitTextField.setText(cd.colUnits);
+                      ColumnNameTextField.setText(cd.colName);
+                      ColumnLabelTextField.setText(cd.colTitle);
+                      String colType = cd.colType;
+                      DataTypeList.setSelectedValue(colType, true);
+                      ColumnDefTextArea.setText(cd.colDefinition);
                      
                   }
               }
@@ -1265,14 +1284,14 @@ public void startImport(String file) {
     //JOptionPane.showMessageDialog(this, tempS,
     //"Message",JOptionPane.INFORMATION_MESSAGE, null);
     //----------
-		try {
+/*		try {
 			// ResultsFrame Create and show the ResultsFrame
 			TextImportResultsFrame rf = new TextImportResultsFrame();
 			rf.ResultsTextArea.setText(resultsBuffer.toString());
 			rf.setVisible(true);
 		} catch (java.lang.Exception e) {
 		}
-    //----------
+*/    //----------
 	  finishFlag = true;
     if(listener != null)
     {
@@ -1466,10 +1485,19 @@ public void startImport(String file) {
    * @param colNum column number
    */
   String guessColFormat(int colNum) {
+    int minInt = 0;
+    int maxInt = 0;
+    int intSum = 0;
+    double intAverage = 0.0;
+    double doubleAverage = 0.0;
+    double minDouble = 0;
+    double maxDouble = 0;
+    double doubleSum = 0.0;
     int integerCount = 0;
     int doubleCount = 0;
     int dateCount = 0;
     int emptyCount = 0;
+    boolean firsttime = true;
     for (int i=0;i<vec.size();i++) {
       Vector v = (Vector)vec.elementAt(i);
       String str = (String)v.elementAt(colNum);
@@ -1479,9 +1507,38 @@ public void startImport(String file) {
       else {
         if (isInteger(str)) {
           integerCount++;
+          int val = Integer.parseInt(str);
+          if (firsttime) {
+            maxInt = val;
+            minInt = val;
+            firsttime = false;
+          }
+          if (val>maxInt) maxInt = val;
+          if (val<minInt) minInt = val;
+          intSum = intSum+val;
+          intAverage = ((double)(intSum))/integerCount;
+	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
+          cd.colAverage = intAverage;
+          cd.colMin = minInt;
+          cd.colMax = maxInt;
         }
         else if (isDouble(str)) {
           doubleCount++;
+          Double dval = new Double(str);
+          double val = dval.doubleValue();
+          if (firsttime) {
+            maxDouble = val;
+            minDouble = val;
+            firsttime = false;
+          }
+          if (val>maxDouble) maxDouble = val;
+          if (val<minDouble) minDouble = val;
+          doubleSum = doubleSum+val;
+          doubleAverage = ((doubleSum))/doubleCount;
+	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
+          cd.colAverage = doubleAverage;
+          cd.colMin = minDouble;
+          cd.colMax = maxDouble;
         }
         if (isDate(str)) {
           dateCount++;
@@ -1490,18 +1547,18 @@ public void startImport(String file) {
     }
     if (integerCount>doubleCount) {
       if ((integerCount>0)&&((100*(integerCount+emptyCount)/vec.size()))>90) {
-        return "integer";  
+        return "Integers";  
       }
     }
     if (doubleCount>integerCount) {
       if ((doubleCount>0)&&((100*(doubleCount+emptyCount)/vec.size()))>90) {
-        return "double";  
+        return "Floating Point";  
       }
     }
     if ((dateCount>0)&&((100*(dateCount+emptyCount)/vec.size()))>90) {
-      return "date";  
+      return "Date";  
     }
-    return "text";
+    return "Text";
   }
  
  /**
@@ -1519,6 +1576,8 @@ public void startImport(String file) {
         }
       }
     }
+    ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
+    cd.colUniqueItemsList = res;
     return res;
   }
   
@@ -1530,8 +1589,9 @@ public void startImport(String file) {
   * @param colNum column number
   */
  void checkColumnInfo(int colNum) {
-  if (colTypes.size()>0) {
-      String type = (String)colTypes.elementAt(colNum);
+  ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);   
+  if ((cd.colType.length())>0) {
+      String type = cd.colType;
       if (type.equals("text")) {
       }
       else if (type.equals("integer")) {
@@ -1606,7 +1666,11 @@ public void startImport(String file) {
 
 	void ShowResultsButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event)
 	{
-		try {
+	  for (int i=0;i<colTitles.size();i++) {
+	    checkColumnInfo(i);
+	  }
+	    
+	  try {
 			// ResultsFrame Create and show the ResultsFrame
 			TextImportResultsFrame rf = new TextImportResultsFrame();
 			rf.ResultsTextArea.setText(resultsBuffer.toString());
@@ -1622,9 +1686,76 @@ public void startImport(String file) {
         colTitles.removeElementAt(selectedCol);
         colTitles.insertElementAt(ColumnNameTextField.getText(), selectedCol);
         buildTable(colTitles, vec);
+        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+        cd.colName = ColumnNameTextField.getText();
       }
     }
 	}
+
+	void ColumnLabelTextField_actionPerformed(java.awt.event.ActionEvent event)
+	{
+    if (selectedCol>-1) {
+        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+        cd.colTitle = ColumnNameTextField.getText();
+      }
+	}
+
+	void ColumnUnitTextField_actionPerformed(java.awt.event.ActionEvent event)
+	{
+        if (selectedCol>-1) {
+            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
+            cd.colUnits = ColumnUnitTextField.getText();
+        }
+	}
+
+
+	void ColumnDefTextArea_focusLost(java.awt.event.FocusEvent event)
+	{
+    if (selectedCol>-1) {
+        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+        cd.colDefinition = ColumnDefTextArea.getText();
+      }
+	}
+
+
+	void ColumnNameTextField_focusLost(java.awt.event.FocusEvent event)
+	{
+    if (selectedCol>-1) {
+      if (colTitles.size()>0) {
+        colTitles.removeElementAt(selectedCol);
+        colTitles.insertElementAt(ColumnNameTextField.getText(), selectedCol);
+        buildTable(colTitles, vec);
+        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+        cd.colName = ColumnNameTextField.getText();
+      }
+    }
+	}
+
+	void ColumnLabelTextField_focusLost(java.awt.event.FocusEvent event)
+	{
+    if (selectedCol>-1) {
+        ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+        cd.colTitle = ColumnNameTextField.getText();
+      }
+			 
+	}
+
+	void ColumnUnitTextField_focusLost(java.awt.event.FocusEvent event)
+	{
+        if (selectedCol>-1) {
+            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
+            cd.colUnits = ColumnUnitTextField.getText();
+        }
+	}
+
+	void EnumCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+		if (selectedCol>-1) {
+            ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
+		    cd.useEnumerationList = EnumCheckBox.isSelected();    
+		}
+	}
+
 
 	class SymListSelection implements javax.swing.event.ListSelectionListener
 	{
@@ -1639,15 +1770,11 @@ public void startImport(String file) {
 	void DataTypeList_valueChanged(javax.swing.event.ListSelectionEvent event)
 	{
     if (selectedCol>-1) {
-      colTypes.removeElementAt(selectedCol);
+      ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);  
       int indx = DataTypeList.getSelectedIndex();
-      String str = "";
-      if (indx==0) str = "text";
-      else if (indx==1) str = "integer";
-      else if (indx==2) str = "double";
-      else if (indx==3) str = "date";
-      else str = "skip";
-      colTypes.insertElementAt(str, selectedCol);
+      if (indx>-1) {
+        cd.colType = (String)DataTypeList.getSelectedValue();
+      }
     }
 	}
 
@@ -1671,6 +1798,14 @@ public void startImport(String file) {
 			Object object = event.getSource();
 			if (object == StartingLineTextField)
 				StartingLineTextField_focusLost(event);
+			else if (object == ColumnDefTextArea)
+				ColumnDefTextArea_focusLost(event);
+			else if (object == ColumnNameTextField)
+				ColumnNameTextField_focusLost(event);
+			else if (object == ColumnLabelTextField)
+				ColumnLabelTextField_focusLost(event);
+			else if (object == ColumnUnitTextField)
+				ColumnUnitTextField_focusLost(event);
 		}
 	}
 
@@ -1705,6 +1840,8 @@ public void startImport(String file) {
 				SemicolonCheckBox_itemStateChanged(event);
 			else if (object == OtherCheckBox)
 				OtherCheckBox_itemStateChanged(event);
+			else if (object == EnumCheckBox)
+				EnumCheckBox_itemStateChanged(event);
 		}
 	}
 
@@ -1763,17 +1900,34 @@ public void startImport(String file) {
 	  XMLBuffer.append("<eml-attribute>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
 	  for (int i=0;i<colTitles.size();i++) {
+	    ColumnData cd = (ColumnData)colDataInfo.elementAt(i);
 	    XMLBuffer.append("    <attribute>\n");
-	    XMLBuffer.append("        <attributeName> "+normalize(colTitles.elementAt(i))+"</attributeName>\n");
-	    XMLBuffer.append("        <attributeLabel> "+normalize(colTitles.elementAt(i))+"</attributeLabel>\n");
-	    XMLBuffer.append("        <attributeDefinition>"+normalize(colTitles.elementAt(i))+"</attributeDefinition>\n");
-	    XMLBuffer.append("        <unit> "+normalize(units.elementAt(i))+"</unit>\n");
-	    XMLBuffer.append("        <dataType> "+normalize(colTypes.elementAt(i))+"</dataType>\n");
+	    XMLBuffer.append("        <attributeName> "+normalize(cd.colName)+"</attributeName>\n");
+	    XMLBuffer.append("        <attributeLabel> "+normalize(cd.colTitle)+"</attributeLabel>\n");
+	    XMLBuffer.append("        <attributeDefinition>"+normalize(cd.colDefinition)+"</attributeDefinition>\n");
+	    XMLBuffer.append("        <unit> "+normalize(cd.colUnits)+"</unit>\n");
+	    XMLBuffer.append("        <dataType> "+normalize(cd.colType)+"</dataType>\n");
 	    XMLBuffer.append("        <attributeDomain>\n");
-	    XMLBuffer.append("             <rangeDomain>\n");
-	    XMLBuffer.append("                <minimum> </minimum>\n");
-	    XMLBuffer.append("                <maximum> </maximum>\n");
-	    XMLBuffer.append("             </rangeDomain>\n");
+	    if (cd.colType.equals("Integers")||(cd.colType.equals("Floating Point"))) {
+	        XMLBuffer.append("             <rangeDomain>\n");
+	        XMLBuffer.append("                <minimum>"+cd.colMin +"</minimum>\n");
+	        XMLBuffer.append("                <maximum>"+cd.colMin +"</maximum>\n");
+	        XMLBuffer.append("             </rangeDomain>\n");
+	    }
+	    else if(cd.useEnumerationList) {
+	        XMLBuffer.append("             <enumeratedDomain>\n");
+	        for (int k=0;k<cd.colUniqueItemsList.size();k++) {
+	            XMLBuffer.append("                <code>"+(String)cd.colUniqueItemsList.elementAt(k)+"</code>\n");
+	            XMLBuffer.append("                <definition> </definition>\n");
+	        }
+	        XMLBuffer.append("             </enumeratedDomain>\n");
+	    }
+	    else {
+	        XMLBuffer.append("             <enumeratedDomain>\n");
+	        XMLBuffer.append("                <code> </code>\n");
+	        XMLBuffer.append("                <definition> </definition>\n");
+	        XMLBuffer.append("             </enumeratedDomain>\n");
+	    }
 	    XMLBuffer.append("        </attributeDomain>\n");
 	    XMLBuffer.append("        <missingValueCode> </missingValueCode>\n");
 	    XMLBuffer.append("        <precision> </precision>\n");
@@ -1805,15 +1959,6 @@ public void startImport(String file) {
 	}
 
 
-	void ColumnUnitTextField_actionPerformed(java.awt.event.ActionEvent event)
-	{
-    if (selectedCol>-1) {
-      if (units.size()>0) {
-        units.removeElementAt(selectedCol);
-        units.insertElementAt(ColumnUnitTextField.getText(), selectedCol);
-      }
-    }
-	}
 
 	void saveEmlAttribute_actionPerformed(java.awt.event.ActionEvent event)
 	{
@@ -1895,5 +2040,31 @@ public void startImport(String file) {
 
     } // normalize(String):String
 	
+
+/**
+ *  class to store all the metadate about the data in a column of the table
+ *
+ */
+	private class ColumnData
+	{
+	    int colNumber;
+	    String colTitle = "";
+	    String colName = "";
+	    String colDefinition = "";
+	    String colType = "";
+	    String colUnits = "";
+	    int colNumUniqueItems;
+	    double colMin = 0.0;
+	    double colMax = 0.0;
+	    double colAverage = 0.0;
+	    Vector colUniqueItemsList;
+	    boolean useEnumerationList = false;
+	    
+	    ColumnData(int colnum) {
+	        this.colNumber = colnum;    
+	    }
+	}
 	
+
+
 }
