@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-28 01:04:36 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-08-28 22:33:56 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ public class MetaDisplay implements MetaDisplayInterface
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-    private final   MetaDisplayUI           display;
+    private final   MetaDisplayUI           ui;
     private final   XMLTransformer          transformer;
     private final   History                 history;
     private final   Vector                  listenerList;
@@ -74,7 +74,7 @@ public class MetaDisplay implements MetaDisplayInterface
     public MetaDisplay()
     {
         listenerList    = new Vector();
-        display         = new MetaDisplayUI(this);
+        ui              = new MetaDisplayUI(this);
         transformer     = new XMLTransformer();
         history         = new History();
     }
@@ -111,30 +111,32 @@ public class MetaDisplay implements MetaDisplayInterface
                                                     DocumentNotFoundException
     {
         Log.debug(50, "getDisplayComponent() called; id = "+identifier);
-        //set ID and add to history
-        try  {
-            setIdentifier(identifier);
-        } catch (NullArgumentException nae) {
-            Log.debug(12, "NullArgumentException setting identifier: "
-                                            +identifier+"; "+nae.getMessage());
-            DocumentNotFoundException dnfe 
-                =  new DocumentNotFoundException("Nested NullArgumentException:"
-                                                                          +nae);
-            dnfe.fillInStackTrace();
-            throw dnfe;
-        }
-        
         //set XML factory
         setFactory(factory);
         
         //add ActionListener to list
         addActionListener(listener);
         
-        Reader reader = factory.openAsReader(getIdentifier());
+        display(identifier);
+//
+//        try  {
+//            setIdentifier(identifier);
+//        } catch (NullArgumentException nae) {
+//            Log.debug(12, "NullArgumentException setting identifier: "
+//                                            +identifier+"; "+nae.getMessage());
+//            DocumentNotFoundException dnfe 
+//                =  new DocumentNotFoundException("Nested NullArgumentException:"
+//                                                                          +nae);
+//            dnfe.fillInStackTrace();
+//            throw dnfe;
+//        }
+        
+//        Reader reader = factory.openAsReader(getIdentifier());
+//
+//        ui.setHTML(getAsString(reader));
+//        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
 
-        display.setHTML(getAsString(reader));
-        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
-        return display;
+        return ui;
     }
 
     //
@@ -173,7 +175,40 @@ public class MetaDisplay implements MetaDisplayInterface
     public void display(String identifier) throws DocumentNotFoundException
     {
         Log.debug(50, "display(String identifier) called; id = "+identifier);
-        //set ID and add to history
+//        try  {
+//            setIdentifier(identifier);
+//        } catch (NullArgumentException nae) {
+//            Log.debug(12, "NullArgumentException setting identifier: "
+//                                            +identifier+"; "+nae.getMessage());
+//            DocumentNotFoundException dnfe 
+//                =  new DocumentNotFoundException("Nested NullArgumentException:"
+//                                                                          +nae);
+//            dnfe.fillInStackTrace();
+//            throw dnfe;
+//        }
+//        Reader reader = factory.openAsReader(getIdentifier());
+//        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
+//        display.setHTML(getAsString(reader));
+
+        //keep a temp backup of current (outgoing) ID:
+        String oldID = this.identifier; //the global one, not the local one
+        
+        //display mew ID, and in the process, set it to be the current ID:
+        displayThisID(identifier);  //the local one
+        
+        //If new ID wasn't valid, we wouldn't have got this far, so we're OK...
+        //add outgoing (i.e. older) ID to hisory:
+        history.add(oldID);
+    }
+    
+    //displays the passed ID, but DOES NOT add the previous one to the history -
+    //that must be done separately, since it's not always required (eg when this 
+    //is called by displayPrevious() )
+    private void displayThisID(String identifier) 
+                                                throws DocumentNotFoundException
+    {
+        Reader reader = null;
+        String oldID = this.identifier; //the global one, not the local one
         try  {
             setIdentifier(identifier);
         } catch (NullArgumentException nae) {
@@ -181,15 +216,27 @@ public class MetaDisplay implements MetaDisplayInterface
                                             +identifier+"; "+nae.getMessage());
             DocumentNotFoundException dnfe 
                 =  new DocumentNotFoundException("Nested NullArgumentException:"
-                                                                          +nae);
+                                                            +nae.getMessage());
             dnfe.fillInStackTrace();
             throw dnfe;
         }
-        Reader reader = factory.openAsReader(getIdentifier());
+        try  {
+            reader = factory.openAsReader(identifier);
+        } catch (DocumentNotFoundException dnfe) {
+        
+            //reset ID to it's original value before exception occurred:
+            setIDBackTo(oldID);
+            
+            Log.debug(12, "DocumentNotFoundException getting Reader for ID: "
+                                            +identifier+"; "+dnfe.getMessage());
+            dnfe.fillInStackTrace();
+            throw dnfe;
+        }
         fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
-        display.setHTML(getAsString(reader));
+        ui.setHTML(getAsString(reader));
     }
-  
+
+
     /**
      *  method to display metadata in an existing instance of a visual component 
      *  (metadata is provided as a Reader (the "XMLDocument" parameter), and a 
@@ -213,17 +260,24 @@ public class MetaDisplay implements MetaDisplayInterface
         Log.debug(50, 
                   "display(String identifier, Reader XMLDocument) called; id = "
                                                                   +identifier);
-        //set ID and add to history
+        //keep a temp backup of current (outgoing) ID:
+        String oldID = this.identifier; //the global one, not the local one
+        
+        //set ID
         setIdentifier(identifier);
         
         if (XMLDocument==null) {
             Log.debug(12,"MetaDisplay.display() received NULL XML Factory - "
                                                   +"displaying blank document");
-            display.setHTML(getAsString(XMLDocument));
+            ui.setHTML(getAsString(XMLDocument));
         } else {
-            display.setHTML(getAsString(XMLDocument));
+            ui.setHTML(getAsString(XMLDocument));
         }
         fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
+        
+        //If new ID wasn't valid, we wouldn't have got this far, so we're OK...
+        //add ID to hisory:
+        history.add(oldID);
     }
                                           
     /**
@@ -237,7 +291,9 @@ public class MetaDisplay implements MetaDisplayInterface
      */
     public void displayPrevious() throws DocumentNotFoundException 
     {
-        display(history.getPrevious());
+        //display mew ID, and in the process, set it to be the current ID, but
+        //DO NOT add it to the History!
+        displayThisID(history.getPrevious()); 
     }
     
 
@@ -337,32 +393,28 @@ public class MetaDisplay implements MetaDisplayInterface
 	 *
 	 *  @throws NullArgumentException if factory not provided.
 	 */
-	public void setFactory(XMLFactoryInterface factory) 
+	public void setFactory(XMLFactoryInterface factory)
                                                     throws NullArgumentException
 	{
         if (factory!=null)  {
 		    this.factory = factory;
         } else  {
-            NullArgumentException iae 
+            NullArgumentException iae
                     = new NullArgumentException("XML Factory may not be null");
             iae.fillInStackTrace();
-            throw iae;            
+            throw iae;
         }
 	}
 
-	
 	protected String getIdentifier()
 	{
 		return this.identifier;
 	}
 
-    //sets ID and adds it to history
+    //sets ID
 	private void setIdentifier(String identifier) throws NullArgumentException
 	{
         if (identifier != null && !identifier.trim().equals("")) {
-            //add current (i.e. older) ID to hisory:
-		    history.add(this.identifier);
-		    //...and make the new ID the current one:
 		    this.identifier = identifier;
 		} else  {
 		    NullArgumentException nae 
@@ -371,6 +423,16 @@ public class MetaDisplay implements MetaDisplayInterface
 		    throw nae;
 		}
 	}
+    
+    //reset ID to it's original value before exception occurred:
+    private void setIDBackTo(String oldID) {
+        try {
+            setIdentifier(oldID);
+        } catch (NullArgumentException nae) {
+            Log.debug(12, "NullArgumentException setIDBackTo("+oldID+"); "
+                                                            +nae.getMessage());
+        }
+    }
 }
 
 
