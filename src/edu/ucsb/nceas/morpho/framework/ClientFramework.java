@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.24 2000-10-04 18:44:37 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.25 2000-10-10 18:20:43 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -37,6 +37,28 @@ import com.symantec.itools.javax.swing.borders.LineBorder;
  */
 public class ClientFramework extends javax.swing.JFrame
 {
+  // following static block will reset the mdehome config variable to the
+  // current working dir if it is currently set to 'settocwd'
+  // to be used when first installed
+    
+    static{
+	  try{
+		Properties mdeprops = new Properties();
+        FileInputStream in = new FileInputStream("mde.cfg");
+        mdeprops.load(in);
+        in.close();
+        String mdehome = (String)mdeprops.get("mdehome");
+	    if (mdehome.equals("settocwd")) {
+	        String cwd = (String)System.getProperty("user.dir");
+	        mdeprops.put("mdehome",cwd);
+            FileOutputStream out = new FileOutputStream("mde.cfg");
+            mdeprops.store(out, "--set mdehome=settocwd to set to current directory--");
+            out.close();
+        }
+      }
+      catch (Exception e){}
+        
+    }
     String userName = "public";
     String passWord = "none";
     static boolean log_file = false; // redirects standard out and err streams
@@ -50,11 +72,13 @@ public class ClientFramework extends javax.swing.JFrame
     // String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};
     JTable table;
 
+
     public ClientFramework()
     {
       // Create the list of menus for use by the framework and plugins
       menuList = new Hashtable();
-
+//		setmdehome();
+        
 	    try{
 //      Example of loading icon as resource - DFH 
 		ImageIcon xxx = new ImageIcon(getClass().getResource("new.gif"));
@@ -375,6 +399,7 @@ public class ClientFramework extends javax.swing.JFrame
 		JTabbedPane1_stateChanged(null);
     queryBean1.setEditor(mdeBean1);
 	queryBean1.setTabbedPane(JTabbedPane1);	
+	
 	}
 
   /**
@@ -991,4 +1016,7 @@ public void LogOut() {
 	{
 		mdeBean1.newDocument();
 	}
+	
+	
+	
 }
