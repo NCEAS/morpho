@@ -2,12 +2,12 @@
  *  '$RCSfile: ImageRenderer.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
- *    Authors: @authors@
+ *    Authors: @tao@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-09 01:10:11 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-09 23:41:25 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,15 +34,17 @@ import java.awt.Insets;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- * Renders the contents of a table cell as a JTextArea to allow for multiple
- * lines that wrap within the cell.
+ * Renders the contents of a table image cell as a JLable with icon 
  */
 public class ImageRenderer extends DefaultTableCellRenderer
 {
  
+  public static final String LOCALTOOLTIP = "Stored on my computer";
+  public static final String METACATTOOLTIP = "Stored on network";
   /**
    * Create the renderer with appropriate formatting options set
    */
@@ -52,34 +54,38 @@ public class ImageRenderer extends DefaultTableCellRenderer
   }
 
   /**
-   * Return self as rendering components, delegating the display 
-   * mainly to the superclass JTextArea
+   * return a JLable as compent
    */
   public Component getTableCellRendererComponent( JTable table, Object value, 
                       boolean isSelected, boolean hasFocus, int row, int column) 
  {
-
+   // Use a JLable as return value from super class
    JLabel comp 
     = (JLabel)super.getTableCellRendererComponent( table, value, 
                                             isSelected, hasFocus, row, column);
-   if (!(value instanceof Icon)) {
-    System.out.println("##########value instanceof "+value);
+   // Make sure it is a icon cell
+   if (!(value instanceof Icon)) 
+   {
+    
     return comp;
-   }
+   }//if
+   // Set the icon to the label
    comp.setIcon((Icon)value);
+   // Set text is empty
    comp.setText("");
+   // Set icon in the center
+   comp.setHorizontalAlignment(SwingConstants.CENTER);
    if (value.equals(ResultSet.localIcon))
    {
-        System.out.println("local");
-        comp.setToolTipText("Stored on my computer");
-   }
+     // Add tooltip for localIcon
+     comp.setToolTipText(LOCALTOOLTIP);
+   }//if
    else if (value.equals(ResultSet.metacatIcon))
    {
-        System.out.println("net");
-        comp.setToolTipText("Stored on network");
-    }
+     // Add tooltip for metacat icon
+     comp.setToolTipText(METACATTOOLTIP);
+   }//else
    
-    
     return comp;
   }
 
