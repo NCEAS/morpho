@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-25 22:04:35 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-01-26 21:51:20 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     StringReader sr = new StringReader(temp);
+    StringReader sr1 = new StringReader(temp);
       if((location.equals(AbstractDataPackage.LOCAL))||
                  (location.equals(AbstractDataPackage.BOTH))) {
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
@@ -71,22 +72,34 @@ public  class EML200DataPackage extends AbstractDataPackage
                  (location.equals(AbstractDataPackage.BOTH))) {
         MetacatDataStore mds = new MetacatDataStore(morpho);
         String temp1 = getAccessionNumber();
+        String temp2 = temp1;
         int lastperiod = temp1.lastIndexOf(".");
         if (lastperiod>-1) {
           temp1 = temp1.substring(lastperiod+1, temp1.length());
+          temp2 = temp2.substring(0, lastperiod);
+//Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);           
         }
+        boolean existsFlag = mds.exists(temp2+".1");
         boolean updateFlag = !(temp1.equals("1")); 
+//Log.debug(1, "exists: "+existsFlag);           
         try{
           if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
               (this.getLocation().equals(AbstractDataPackage.BOTH)) ||
-              updateFlag
+              (existsFlag && updateFlag)
               )
           {
             mds.saveFile(getAccessionNumber(),sr);
-          } // originally came from metacat; thus update
+          } // exists on metacat; thus update
           else
           {
-            mds.newFile(getAccessionNumber(),sr);
+            if (!existsFlag) {
+              // .1 version does not currently exist on metacat; try to create it
+              mds.newFile(temp2+".1",sr1);
+            }
+            // the basic package now exists,
+            if (updateFlag) {
+              mds.saveFile(getAccessionNumber(),sr);
+            }
           }// not currently on metacat
         } catch (MetacatUploadException mue) {
             Log.debug(5,"MetacatUpload Exeption in EML200DataPackage!\n"

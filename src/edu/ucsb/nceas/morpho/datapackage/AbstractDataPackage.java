@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-25 22:04:35 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2004-01-26 21:51:20 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1614,17 +1614,38 @@ public abstract class AbstractDataPackage extends MetadataObject
               // the temp file has been saved; thus delete
               dataFile.delete();
 						} catch (MetacatUploadException mue) {
-							Log.debug(5, "Problem saving data to metacat\n"+
-							             mue.getMessage());
-							throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
-							            +mue.getMessage());						 
-						}
+              // if we reach here, most likely there has been a problem saving the datafile
+              // on metacat because the id is already in use
+              // so, get a new id
+              AccessionNumber an = new AccessionNumber(morpho);
+              String newid = an.getNextId();
+              // now try saving with the new id
+              try{ 
+                mds.newDataFile(newid, dataFile);
+                dataFile.delete();
+                // newDataFile must have worked; thus update the package
+                setDistributionUrl(i, 0, 0, newid);
+                String newPackageId = an.getNextId();
+                setAccessionNumber(newPackageId);
+                serialize(AbstractDataPackage.METACAT);
+                if(location.equals(BOTH)) {  // save new package locally
+                  serialize(AbstractDataPackage.LOCAL);
+                }
+              } catch (MetacatUploadException mue1) {
+							  Log.debug(5, "Problem saving data to metacat\n"+
+							             mue1.getMessage());
+							  throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
+							            +mue1.getMessage());						 
+						  }
+            }
           }
-        }
-        catch (Exception ex) {
-          Log.debug(5, "Some problem while writing data files has occurred!");
-          ex.printStackTrace();
-        }
+        } 
+        catch (Exception qq) {
+          // some other problem has occured
+          Log.debug(5, "Some problem with saving data files has occurred!");
+          qq.printStackTrace();
+      }
+
       }
       catch (Exception q) {
         // some other problem has occured
