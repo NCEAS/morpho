@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-01 00:21:20 $'
- * '$Revision: 1.81 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-01 17:30:48 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -743,6 +743,7 @@ public class ClientFramework extends javax.swing.JFrame
    */
   private void switchProfile()
   {
+    logOut();
     String currentProfile = config.get("current_profile", 0);
     String profileDirName = config.get("profile_directory", 0);
     File profileDir = new File(profileDirName);
