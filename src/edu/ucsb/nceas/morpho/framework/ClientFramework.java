@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.90 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-05-15 15:39:45 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1500,7 +1500,8 @@ public class ClientFramework extends javax.swing.JFrame
       }
       else
       {
-        if (now.after(warning))
+ //       if (now.after(warning))
+        if (false)
         {
           clf.debug(1, "This version of Morpho will expire on " +
             "April 1, 2002. See http://knb.ecoinformatics.org/ for a " +
