@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-15 01:49:27 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-04-15 13:29:49 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,7 +184,8 @@ public class AccessPage
         + "<li>Read & Write: Able to view and modify data package.</li>"
         + "<li>Read, Write & Change Permissions: Able to view and modify "
         + "datapackage, and modify access permissions.</li>"
-        + "<li>All: Able to do everything.</li></ul>", 5);
+        + "<li>All: Able to do everything (this is the same as Read, Write "
+        + "& Change Permissions)</li></ul>", 5);
 
     warnLabel = WidgetFactory.makeLabel(EMPTY_STRING, true);
 
