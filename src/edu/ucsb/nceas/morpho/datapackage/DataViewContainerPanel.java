@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-04 20:47:26 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2003-11-05 23:42:55 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -802,6 +802,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * large memory usage
    */
   private void setDataViewer(int index) {
+    File displayFile = null;
     TabbedContainer comp = 
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
     JSplitPane entireDataPanel = comp.getSplitPane();
@@ -827,11 +828,38 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dv.setEntityFileId(id);
       dv.setDataPackage(this.dp);
     } else {  // new eml2.0.0
+      if (adp==null) {
+        Log.debug(1, "Both dp amd adp are null! No data package");
+        return;
+      }
+      String inline = adp.getDistributionInlineData(index, 0,0);
+         // assume the first set of physical and distribution data
+      if (inline.length()>0) {  // there is inline data
+        
+      } else {
+        String urlinfo = adp.getDistributionUrl(index, 0,0);
+        int indx2 = urlinfo.indexOf("//");
+        if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
+        if (urlinfo.length()==0) return;
+        // if we reach here, urlinfo should be the id in a string
+        try{ 
+          String loc = adp.location;
+          if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
+            FileSystemDataStore fds = new FileSystemDataStore(morpho);
+            displayFile = fds.openFile(urlinfo);            
+          }
+          else {
+            MetacatDataStore mds = new MetacatDataStore(morpho);
+            displayFile = mds.openFile(urlinfo);            
+          }
+        }
+        catch (Exception q) {Log.debug(5,"Exception opening file!");}
+      }
       dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
       dv.setAbstractDataPackage(adp);
       dv.setEntityIndex(index);
-      File testFile = new File("C:/Documents and Settings/higgins/.morpho/profiles/higgins/data/jscientist/3.1");
-      dv.setDataFile(testFile);
+//      File testFile = new File("C:/Documents and Settings/higgins/.morpho/profiles/higgins/data/jscientist/3.1");
+      dv.setDataFile(displayFile);
     }
     dv.init();
 //    dv.getEntityInfo();  // this is already done in init

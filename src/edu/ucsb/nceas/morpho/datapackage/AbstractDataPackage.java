@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-04 20:47:26 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-11-05 23:42:55 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -617,6 +617,69 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
   /**
+   *  This method returns the encoding method for the indexed entity and
+   *  physical object. An empty string is returned when there is no
+   *  encoding information 
+   *  It is assumed that the encoding given here describes the inline data
+   *  when data is stored inline (DFH)
+   */
+  public String getEncodingMethod(int entityIndex, int physicalIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return "no physicals!";
+    if (physicalIndex>(physicals.length-1)) return "physical index too large!";
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/encodingMethod")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(50,"exception in getting physical encodingMethod"+w.toString());
+    }
+    return temp;
+  }
+
+  /**
+   *  This method returns the compression method for the indexed entity and
+   *  physical object. An empty string is returned when there is no
+   *  encoding information 
+   *  It is assumed that the compression given here describes the inline data
+   *  when data is stored inline (DFH)
+   */
+  public String getCompressionMethod(int entityIndex, int physicalIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return "no physicals!";
+    if (physicalIndex>(physicals.length-1)) return "physical index too large!";
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/compressionMethod")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(50,"exception in getting physical compressionMethod"+w.toString());
+    }
+    return temp;
+  }
+  
+  
+  /**
    *  This method creates an array of 'distribution' nodes, following
    *  the eml2 model of a subtree with information about the distribution
    *  of the actual data being characterized by the metadata.
@@ -729,6 +792,8 @@ public abstract class AbstractDataPackage extends MetadataObject
           sb.append("   entity "+i+" physical "+k+"--- format: "+getPhysicalFormat(i,k)+"\n");
           sb.append("   entity "+i+" physical "+k+"--- fieldDelimiter: "+getPhysicalFieldDelimiter(i,k)+"\n");
           sb.append("   entity "+i+" physical "+k+"--- numHeaderLines: "+getPhysicalNumberHeaderLines(i,k)+"\n");
+          sb.append("   entity "+i+" physical "+k+"------ compression: "+getCompressionMethod(i,k)+"\n");
+          sb.append("   entity "+i+" physical "+k+"------ encoding: "+getEncodingMethod(i,k)+"\n");
           sb.append("      entity "+i+" physical "+k+"------ inline: "+getDistributionInlineData(i,k,0)+"\n");
           sb.append("      entity "+i+" physical "+k+"------ url: "+getDistributionUrl(i,k,0)+"\n");
         }
