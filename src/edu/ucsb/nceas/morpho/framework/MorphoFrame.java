@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-03 21:38:05 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-03-16 19:06:58 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -480,6 +480,7 @@ public class MorphoFrame extends JFrame
       Object contentsPanel = getContentComponent();
       if (contentsPanel instanceof DataViewContainerPanel) {
          DataViewContainerPanel dvcp = (DataViewContainerPanel)contentsPanel;
+         dvcp.saveDataChanges();
          String loc = dvcp.getPackageLocation();
          if (loc.equals("")) {
            int res = JOptionPane.showConfirmDialog(null, 
