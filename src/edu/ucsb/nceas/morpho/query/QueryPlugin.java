@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 00:21:28 $'
- * '$Revision: 1.83 $'
+ *     '$Date: 2002-08-23 17:16:27 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -66,7 +67,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   /** Tabbed panel that displays the data owned by the user */
   private ResultPanel ownerPanel = null;
   
-  
+  /** The number of actions in search menu, exclude saved queries */
+  public static final int NUMBEROFACTIONINSEARCH = 4;
 
   /**
    * Construct the query plugin.  Initialize our one tab for the 
@@ -120,7 +122,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   private void initializeActions() {
     // Set up the search menus for the application
-    menuActions = new Action[4];
+    menuActions = new Action[NUMBEROFACTIONINSEARCH];
    
     // Action for search
     GUIAction searchItemAction = new GUIAction("Search...", null,
@@ -239,7 +241,16 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   
   }
   
+  /**
+   * This method implements from QueryRefreshInterface. It will be called when
+   * user change the profile and will update the save queries in search menu
+   * 
+   * @param newMorpho new Morpho object after switch profile
+   */
+  public void updateSavedQueryMenuItems(Morpho newMorpho)
+  {
+    SaveQueryCommand.loadSavedQueries(newMorpho);
+  }//updateSaveQuery
+   
 
-  
-  
 }
