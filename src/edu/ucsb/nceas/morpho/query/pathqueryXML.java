@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: pathqueryXML.java,v 1.1 2000-07-12 19:47:45 higgins Exp $'
+ *     Version: '$Id: pathqueryXML.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
  */
 
 
@@ -23,7 +23,7 @@ import java.util.Stack;
 
 public class pathqueryXML
 {
-    String Intro = "<?xml version=\"1.0\">\n<pathquery version=\"1.0\">\n";
+    String Intro = "<?xml version=\"1.0\"?>\n<pathquery version=\"1.0\">\n";
     String querytitle="query_title";
     String meta_file_id="meta_file_id";
     
@@ -96,8 +96,8 @@ public void add_returndoctype(String val) {
 }
 
 public void add_queryterm(String value, String path) {
-    String query = "  <queryterm>\n";
-    query = query + "   <value casesensitive=\"true\" searchmode=\"contains\">"+value+"</value>\n";
+    String query = "  <queryterm casesensitive=\"true\" searchmode=\"contains\">\n";
+    query = query + "   <value>"+value+"</value>\n";
     query = query + "   <pathexpr>"+path+"</pathexpr>\n";
     query = query + "  </queryterm>\n";
     gStart.append(query);
@@ -105,8 +105,8 @@ public void add_queryterm(String value, String path) {
 public void add_queryterm(String value, String path, String mode, boolean casesensitive) {
     String cs = "true";
     if (!casesensitive) cs = "false"; 
-    String query = "  <queryterm>\n";
-    query = query + "   <value casesensitive=\""+cs+"\" searchmode=\""+mode+"\">"+value+"</value>\n";
+    String query = "  <queryterm casesensitive=\""+cs+"\" searchmode=\""+mode+"\">\n";
+    query = query + "   <value>"+value+"</value>\n";
     query = query + "   <pathexpr>"+path+"</pathexpr>\n";
     query = query + "  </queryterm>\n";
     gStart.append(query);

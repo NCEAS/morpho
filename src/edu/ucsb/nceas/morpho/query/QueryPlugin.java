@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.1 2000-07-12 19:47:44 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -23,17 +23,23 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.*;
+import javax.swing.table.*;
+
 import com.symantec.itools.javax.swing.JButtonGroupPanel;
 import com.symantec.itools.javax.swing.models.StringListModel;
 import com.symantec.itools.javax.swing.models.StringComboBoxModel;
 import com.symantec.itools.javax.swing.models.StringTreeModel;
 import com.symantec.itools.javax.swing.borders.EtchedBorder;
 
+import edu.ucsb.nceas.dtclient.*;
+
+
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.io.*;
 import java.net.URL;
+import java.util.*;
 
 import com.arbortext.catalog.*;
 
@@ -46,6 +52,10 @@ import org.apache.xalan.xpath.xml.*;
 
 public class QueryBean extends java.awt.Container
 {
+    String 	xmlcatalogfile = null;
+    String MetaCatServletURL = null;
+    PropertyResourceBundle options;
+    
 	LocalQuery lq = null;
 	String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};
     JTable table;
@@ -54,11 +64,11 @@ public class QueryBean extends java.awt.Container
 	{
 	    setLayout(new BorderLayout(0,0));
 		//{{INIT_CONTROLS
-		setSize(729,492);
+//		setSize(729,492);
 		TopQueryPanel.setLayout(new BorderLayout(0,0));
-		add(BorderLayout.CENTER,TopQueryPanel);
 		TopQueryPanel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		TopQueryPanel.setBounds(0,0,729,492);
+//		TopQueryPanel.setBounds(0,0,729,492);
+		add(TopQueryPanel);
 		TopQueryPanel.add(BorderLayout.CENTER, QueryChoiceTabs);
 		QueryChoiceTabs.setFont(new Font("Dialog", Font.PLAIN, 12));
 		QueryChoiceTabs.setBounds(0,0,0,0);
@@ -442,11 +452,11 @@ public class QueryBean extends java.awt.Container
 		JPanel25.setLayout(new GridLayout(2,1,0,0));
 		JPanel22.add(BorderLayout.EAST, JPanel25);
 		JPanel25.setBounds(493,0,227,46);
-		JCheckBox3.setText("Detach (New Window)");
-		JCheckBox3.setActionCommand("Detach (New Window)");
-		JPanel25.add(JCheckBox3);
-		JCheckBox3.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JCheckBox3.setBounds(0,0,227,23);
+		DetachCheckBox.setText("Detach (New Window)");
+		DetachCheckBox.setActionCommand("Detach (New Window)");
+		JPanel25.add(DetachCheckBox);
+		DetachCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+		DetachCheckBox.setBounds(0,0,227,23);
 		JCheckBox4.setText("Refine Search (Using these Results)");
 		JCheckBox4.setActionCommand("Refine Search (Using these Results)");
 		JPanel25.add(JCheckBox4);
@@ -497,9 +507,17 @@ public class QueryBean extends java.awt.Container
 		SubjectButton.addItemListener(lSymItem);
 		SelectDocTypeButton.addItemListener(lSymItem);
 		AllCheckBox.addItemListener(lSymItem);
+		DetachCheckBox.addItemListener(lSymItem);
 		//}}
 		invalidate();
 		setVisible(true);
+    try {
+      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+      xmlcatalogfile = (String)options.handleGetObject("xmlcatalogfile");
+      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+    }
+    catch (Exception e) {System.out.println("Could not locate properties file!");}
+		
 	}
 
 	//{{DECLARE_CONTROLS
@@ -564,7 +582,7 @@ public class QueryBean extends java.awt.Container
 	javax.swing.JScrollPane JScrollPane3 = new javax.swing.JScrollPane();
 	javax.swing.JTextArea QueryStringTextArea = new javax.swing.JTextArea();
 	javax.swing.JPanel JPanel25 = new javax.swing.JPanel();
-	javax.swing.JCheckBox JCheckBox3 = new javax.swing.JCheckBox();
+	javax.swing.JCheckBox DetachCheckBox = new javax.swing.JCheckBox();
 	javax.swing.JCheckBox JCheckBox4 = new javax.swing.JCheckBox();
 	javax.swing.JScrollPane RSScrollPane = new javax.swing.JScrollPane();
 	javax.swing.JPanel DocTypeQueryPanel = new javax.swing.JPanel();
@@ -627,6 +645,8 @@ public class QueryBean extends java.awt.Container
 				SelectDocTypeButton_itemStateChanged(event);
 			else if (object == AllCheckBox)
 				AllCheckBox_itemStateChanged(event);
+			else if (object == DetachCheckBox)
+				DetachCheckBox_itemStateChanged(event);
 		}
 	}
 
@@ -693,7 +713,9 @@ public class QueryBean extends java.awt.Container
 
 	void SearchButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-	    create_XMLQuery();
+   //      simplequery_submitToDatabase("%NCEAS%");
+	    String temp = create_XMLQuery();
+//	    squery_submitToDatabase(temp);   
 	    if (SearchButton.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -833,7 +855,8 @@ public class QueryBean extends java.awt.Container
 	}
 	
 	
-	void create_XMLQuery() {
+	String create_XMLQuery() {
+	    String out = "";
 	 	if(TextValue1.getText().length()>0) {
 	    String op = "INTERSECT";
 	    if (OrRadioButton.isSelected()) op = "UNION";
@@ -922,6 +945,7 @@ public class QueryBean extends java.awt.Container
 //		}
 	//	System.out.println(pqx.get_XML());
 		try{
+		    out = pqx.get_XML();
 		    StringReader sr = new StringReader(pqx.get_XML());
 		    File pathFile = new File("pathFile.xml");
 		    FileWriter fw = new FileWriter(pathFile);
@@ -933,8 +957,9 @@ public class QueryBean extends java.awt.Container
             fw.close();
         }
         catch (Exception z) {}
-		
-      }   
+      }  
+        System.out.println(out);
+		return out;
 	}
 	
 	
@@ -984,6 +1009,7 @@ private String getPath(String type, String match){
 		    RefineQueryPanel.validate();
 		}
 	}
+
 	
 
 	void SubjectButton_itemStateChanged(java.awt.event.ItemEvent event)
@@ -1068,8 +1094,115 @@ public void searchFor(String searchText) {
     AllText.setSelected(true);
     TextMatch1.setSelectedIndex(0);
     TextValue1.setText(searchText);
+    simplequery_submitToDatabase(searchText);
     SearchButton_actionPerformed(null);
 }
+	
+	void DetachCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+        if(DetachCheckBox.isSelected()) {
+            RSFrame rs = new RSFrame("Results of Search");
+            rs.setVisible(true);
+            if (table!=null) {
+                TableModel tm = table.getModel();
+                rs.JTable1.setModel(tm);
+                rs.pack();
+            }
+        DetachCheckBox.setSelected(false);
+        }
+    }
+	
+    public void getConfigData() {
+		// Get the configuration file information
+    try {
+      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+      xmlcatalogfile = (String)options.handleGetObject("xmlcatalogfile");
+      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+    }
+    catch (Exception e) {System.out.println("Could not locate properties file!");}
+	}
+	
+	public void squery_submitToDatabase(String queryXML) {
+	  Properties prop = new Properties();
+        prop.put("action","squery");
+//        prop.put("query",queryXML);
+   try {
+        FileReader fr = new FileReader("test.xml");
+        StringBuffer txta = new StringBuffer();
+		    int x1;
+		    try {
+		    while((x1=fr.read())!=-1) {
+		        txta.append((char)x1);
+		    }
+		    }
+		    catch (Exception e) {}
+		    String txt1a = txta.toString();
+        
+        prop.put("query",txt1a);
+   }
+   catch (Exception qqqq) {}
+        
+        String respType = "xml";
+		prop.put("qformat",respType);
+      try {
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+        InputStream in = msg.sendPostMessage(prop);
+
+        StringBuffer txt = new StringBuffer();
+		    int x;
+		    try {
+		    while((x=in.read())!=-1) {
+		        txt.append((char)x);
+		    }
+		    }
+		    catch (Exception e) {}
+		    String txt1 = txt.toString();
+		    System.out.println(txt1);
+
+        
+ /*       ExternalQuery rq = new ExternalQuery(in);
+        RSFrame rs = new RSFrame("Results of Search");
+            rs.setVisible(true);
+            rs.local=false;
+                JTable ttt = rq.getTable();
+                TableModel tm = ttt.getModel();
+                rs.JTable1.setModel(tm);
+                rs.pack();
+ */
+		    in.close();
+
+	  }
+      catch (Exception w) {System.out.println("Error in submitting structured query");}
+	}
+
+	public void simplequery_submitToDatabase(String query) {
+	  Properties prop = new Properties();
+        prop.put("action","query");
+        prop.put("query",query);
+        String respType = "xml";
+		prop.put("qformat",respType);
+      try {
+ //       MetaCatServletURL = "http://24.237.20.124/servlets/MetaCatServlet";
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+        InputStream in = msg.sendPostMessage(prop);
+        ExternalQuery rq = new ExternalQuery(in);
+        RSFrame rs = new RSFrame("Results of Search");
+            rs.setVisible(true);
+            rs.local=false;
+                JTable ttt = rq.getTable();
+                TableModel tm = ttt.getModel();
+                rs.JTable1.setModel(tm);
+                rs.pack();
+ 
+		    in.close();
+
+	  }
+      catch (Exception w) {System.out.println("Error in submitting simple query");}
+	}
 	
 	
 	

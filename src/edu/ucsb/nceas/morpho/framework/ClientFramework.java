@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.1 2000-07-11 20:54:08 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -28,16 +28,22 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.io.*;
+import java.util.*;
+import java.net.URL;
 
-// import edu.ucsb.nceas.querybean.*;
+import edu.ucsb.nceas.querybean.*;
+import edu.ucsb.nceas.metaedit.mdeBean;
 /**
  * A basic JFC 1.1 based application.
  */
 public class ClientFramework extends javax.swing.JFrame
 {
-    
-//	LocalQuery lq = null;
-	String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};
+    String 	xmlcatalogfile = null;
+    String MetaCatServletURL = null;
+    PropertyResourceBundle options = null;
+
+	LocalQuery lq = null;
+//	String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};
     JTable table;
 	public ClientFramework()
 	{
@@ -68,6 +74,11 @@ public class ClientFramework extends javax.swing.JFrame
 		}
 		catch (java.net.MalformedURLException error) { }
 		//$$ saveIcon.move(96,312);
+		try {
+			saveserverIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/saveserver.gif"));
+		}
+		catch (java.net.MalformedURLException error) { }
+		//$$ saveserverIcon.move(0,0);
 		try {
 			cutIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/cut.gif"));
 		}
@@ -131,6 +142,12 @@ public class ClientFramework extends javax.swing.JFrame
 		saveButton.setMnemonic((int)'S');
 		JToolBar1.add(saveButton);
 		saveButton.setBounds(118,11,51,27);
+		
+		saveserverButton.setDefaultCapable(false);
+		saveserverButton.setToolTipText("Save to Remote Server");
+		JToolBar1.add(saveserverButton);
+		saveserverButton.setBounds(0,0,0,0);
+		
 		JToolBar1.add(JToolBarSeparator1);
 		JToolBarSeparator1.setBounds(169,9,10,5);
 		cutButton.setDefaultCapable(false);
@@ -173,82 +190,26 @@ public class ClientFramework extends javax.swing.JFrame
 		JPanel1.setBounds(0,40,698,440);
 		JPanel1.add(BorderLayout.CENTER, JTabbedPane1);
 		JTabbedPane1.setBounds(0,0,698,440);
-		IntroPanel.setLayout(new BorderLayout(0,0));
-		JTabbedPane1.add(IntroPanel);
-		IntroPanel.setBounds(2,27,693,410);
-		IntroPanel.setVisible(false);
-		JLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		IntroPanel.add(BorderLayout.WEST, JLabel1);
-		JLabel1.setBounds(0,0,105,410);
-		JLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-		IntroPanel.add(BorderLayout.EAST,JLabel2);
-		JLabel2.setBounds(602,0,91,410);
-		JPanel3.setLayout(new BorderLayout(0,0));
-		IntroPanel.add(BorderLayout.CENTER,JPanel3);
-		JPanel3.setBounds(105,0,497,410);
-		JPanel5.setLayout(new GridLayout(4,1,0,0));
-		JPanel3.add(BorderLayout.NORTH,JPanel5);
-		JPanel5.setBounds(0,0,497,168);
-		JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-		JLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel3.setText("KDI");
-		JPanel5.add(JLabel3);
-		JLabel3.setForeground(java.awt.Color.red);
-		JLabel3.setFont(new Font("Dialog", Font.PLAIN, 36));
-		JLabel3.setBounds(0,0,497,42);
-		JLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel6.setText("Desktop Client");
-		JPanel5.add(JLabel6);
-		JLabel6.setForeground(java.awt.Color.black);
-		JLabel6.setFont(new Font("Dialog", Font.BOLD, 14));
-		JLabel6.setBounds(0,42,497,42);
-		JLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel7.setText("Created for NSF by NCEAS");
-		JPanel5.add(JLabel7);
-		JLabel7.setForeground(java.awt.Color.black);
-		JLabel7.setBounds(0,84,497,42);
-		JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel8.setText("Version 0.5 - June 2000");
-		JPanel5.add(JLabel8);
-		JLabel8.setForeground(java.awt.Color.black);
-		JLabel8.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel8.setBounds(0,126,497,42);
-		JPanel4.setLayout(new GridBagLayout());
-		JPanel3.add(BorderLayout.SOUTH,JPanel4);
-		JPanel4.setBounds(0,293,497,117);
-		JLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel4.setText("Click on \'Connect\' button to connect to Server");
-		JPanel4.add(JLabel4,new com.symantec.itools.awt.GridBagConstraintsD(0,0,2,1,0.0,0.0,java.awt.GridBagConstraints.CENTER,java.awt.GridBagConstraints.NONE,new Insets(12,102,0,0),0,0));
-		JLabel4.setForeground(java.awt.Color.black);
-		JLabel4.setBounds(102,12,258,15);
-		JButton1.setText("Connect to Server");
-		JPanel4.add(JButton1,new com.symantec.itools.awt.GridBagConstraintsD(0,1,1,1,0.0,0.0,java.awt.GridBagConstraints.CENTER,java.awt.GridBagConstraints.NONE,new Insets(15,150,0,0),0,0));
-		JButton1.setBounds(150,42,137,25);
-		JLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel5.setText("or Click on any of the tabs at the top to use local computer only");
-		JPanel4.add(JLabel5,new com.symantec.itools.awt.GridBagConstraintsD(0,2,3,1,1.0,0.0,java.awt.GridBagConstraints.CENTER,java.awt.GridBagConstraints.HORIZONTAL,new Insets(11,42,24,58),0,0));
-		JLabel5.setForeground(java.awt.Color.black);
-		JLabel5.setBounds(42,78,397,15);
-		EditorPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		EditorPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(EditorPanel);
 		EditorPanel.setBounds(2,27,693,410);
 		EditorPanel.setVisible(false);
+		EditorPanel.add(BorderLayout.CENTER,mdeBean1);
+		mdeBean1.setBounds(0,0,750,450);
 		QueryPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(QueryPanel);
 		QueryPanel.setBounds(2,27,693,410);
 		QueryPanel.setVisible(false);
-	//	QueryPanel.add(BorderLayout.CENTER,queryBean1);
-	//	queryBean1.setBounds(0,0,693,410);
+		QueryPanel.add(BorderLayout.CENTER,queryBean1);
+		queryBean1.setBounds(0,0,697,243);
 		DataViewerPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JTabbedPane1.add(DataViewerPanel);
 		DataViewerPanel.setBounds(2,27,693,410);
 		DataViewerPanel.setVisible(false);
-		JTabbedPane1.setSelectedComponent(IntroPanel);
-		JTabbedPane1.setSelectedIndex(0);
-		JTabbedPane1.setTitleAt(0,"Introduction");
-		JTabbedPane1.setTitleAt(1,"MetaData Editor");
-		JTabbedPane1.setTitleAt(2,"MetaData Query");
-		JTabbedPane1.setTitleAt(3,"Data Viewer");
+		JTabbedPane1.setSelectedIndex(1);
+		JTabbedPane1.setTitleAt(0,"MetaData Editor");
+		JTabbedPane1.setTitleAt(1,"MetaData Query");
+		JTabbedPane1.setTitleAt(2,"Data Viewer");
 		//$$ lineBorder1.move(240,481);
 		//$$ stringListModel1.move(72,406);
 		//$$ stringComboBoxModel1.move(48,481);
@@ -277,6 +238,12 @@ public class ClientFramework extends javax.swing.JFrame
 		saveAsItem.setActionCommand("Save As...");
 		saveAsItem.setMnemonic((int)'A');
 		fileMenu.add(saveAsItem);
+		SaveToDatabase.setText("Save To Database...");
+		SaveToDatabase.setActionCommand("Save To Database...");
+		fileMenu.add(SaveToDatabase);
+		PreviewXML.setText("Preview XML");
+		PreviewXML.setActionCommand("Preview XML");
+		fileMenu.add(PreviewXML);
 		fileMenu.add(JSeparator1);
 		exitItem.setText("Exit");
 		exitItem.setActionCommand("Exit");
@@ -301,6 +268,21 @@ public class ClientFramework extends javax.swing.JFrame
 		pasteItem.setActionCommand("Paste");
 		pasteItem.setMnemonic((int)'P');
 		editMenu.add(pasteItem);
+		editMenu.add(JSeparator2);
+		OptionsMenuItem.setText("Options...");
+		OptionsMenuItem.setActionCommand("Options...");
+		editMenu.add(OptionsMenuItem);
+		WindowsMenu.setText("Windows");
+		WindowsMenu.setActionCommand("Windows");
+		JMenuBar1.add(WindowsMenu);
+		ElementChoiceMenuItem.setSelected(true);
+		ElementChoiceMenuItem.setText("Element Choice");
+		ElementChoiceMenuItem.setActionCommand("Element Choice");
+		WindowsMenu.add(ElementChoiceMenuItem);
+		ElementTextMenuitem.setSelected(true);
+		ElementTextMenuitem.setText("Element Text");
+		ElementTextMenuitem.setActionCommand("Element Text");
+		WindowsMenu.add(ElementTextMenuitem);
 		helpMenu.setText("Help");
 		helpMenu.setActionCommand("Help");
 		helpMenu.setMnemonic((int)'H');
@@ -317,11 +299,10 @@ public class ClientFramework extends javax.swing.JFrame
 		openButton.setIcon(openIcon);
 		cutItem.setIcon(cutIcon);
 		saveButton.setIcon(saveIcon);
-		JLabel1.setIcon(NCEASIcon);
+		saveserverButton.setIcon(saveserverIcon);
 		pasteItem.setIcon(pasteIcon);
 		copyButton.setIcon(copyIcon);
 		saveItem.setIcon(saveIcon);
-		JLabel2.setIcon(NSFIcon);
 		queryButton.setIcon(findIcon);
 		copyItem.setIcon(copyIcon);
 		aboutButton.setIcon(aboutIcon);
@@ -343,11 +324,26 @@ public class ClientFramework extends javax.swing.JFrame
 		aboutItem.addActionListener(lSymAction);
 		openButton.addActionListener(lSymAction);
 		saveButton.addActionListener(lSymAction);
+		saveserverButton.addActionListener(lSymAction);
 		aboutButton.addActionListener(lSymAction);
 		SymItem lSymItem = new SymItem();
 		queryButton.addActionListener(lSymAction);
 		ToolBarSearchText.addActionListener(lSymAction);
+		newItem.addActionListener(lSymAction);
+		saveAsItem.addActionListener(lSymAction);
+		SaveToDatabase.addActionListener(lSymAction);
+		PreviewXML.addActionListener(lSymAction);
+		OptionsMenuItem.addActionListener(lSymAction);
 		//}}
+		
+		// Get the configuration file information
+    try {
+      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+      xmlcatalogfile = (String)options.handleGetObject("xmlcatalogfile");
+      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+    }
+    catch (Exception e) {System.out.println("Could not locate properties file!");}
+
 	}
 
     /**
@@ -378,9 +374,11 @@ public class ClientFramework extends javax.swing.JFrame
 		    catch (Exception e) { 
 		    }
 		    */
-
+            SplashFrame sf = new SplashFrame();
+            sf.setVisible(true);
 			//Create a new instance of our application's frame, and make it visible.
 			(new ClientFramework()).setVisible(true);
+			sf.dispose();
 		} 
 		catch (Throwable t) {
 			t.printStackTrace();
@@ -423,6 +421,7 @@ public class ClientFramework extends javax.swing.JFrame
 	com.symantec.itools.javax.swing.icons.ImageIcon newIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
 	com.symantec.itools.javax.swing.icons.ImageIcon openIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
 	com.symantec.itools.javax.swing.icons.ImageIcon saveIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
+	com.symantec.itools.javax.swing.icons.ImageIcon saveserverIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
 	com.symantec.itools.javax.swing.icons.ImageIcon cutIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
 	com.symantec.itools.javax.swing.icons.ImageIcon copyIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
 	com.symantec.itools.javax.swing.icons.ImageIcon pasteIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
@@ -437,6 +436,7 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JButton newButton = new javax.swing.JButton();
 	javax.swing.JButton openButton = new javax.swing.JButton();
 	javax.swing.JButton saveButton = new javax.swing.JButton();
+	javax.swing.JButton saveserverButton = new javax.swing.JButton();
 	com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator1 = new com.symantec.itools.javax.swing.JToolBarSeparator();
 	javax.swing.JButton cutButton = new javax.swing.JButton();
 	javax.swing.JButton copyButton = new javax.swing.JButton();
@@ -448,22 +448,10 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JButton queryButton = new javax.swing.JButton();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
-	javax.swing.JPanel IntroPanel = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
-	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
-	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel5 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
-	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
-	javax.swing.JLabel JLabel7 = new javax.swing.JLabel();
-	javax.swing.JLabel JLabel8 = new javax.swing.JLabel();
-	javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
-	javax.swing.JButton JButton1 = new javax.swing.JButton();
-	javax.swing.JLabel JLabel5 = new javax.swing.JLabel();
 	javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
+	edu.ucsb.nceas.metaedit.mdeBean mdeBean1 = new edu.ucsb.nceas.metaedit.mdeBean();
 	javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
-//	QueryBean queryBean1 = new QueryBean();
+	edu.ucsb.nceas.querybean.QueryBean queryBean1 = new edu.ucsb.nceas.querybean.QueryBean();
 	javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
 	com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 = new com.symantec.itools.javax.swing.borders.LineBorder();
 	javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
@@ -472,12 +460,19 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JMenuItem openItem = new javax.swing.JMenuItem();
 	javax.swing.JMenuItem saveItem = new javax.swing.JMenuItem();
 	javax.swing.JMenuItem saveAsItem = new javax.swing.JMenuItem();
+	javax.swing.JMenuItem SaveToDatabase = new javax.swing.JMenuItem();
+	javax.swing.JMenuItem PreviewXML = new javax.swing.JMenuItem();
 	javax.swing.JSeparator JSeparator1 = new javax.swing.JSeparator();
 	javax.swing.JMenuItem exitItem = new javax.swing.JMenuItem();
 	javax.swing.JMenu editMenu = new javax.swing.JMenu();
 	javax.swing.JMenuItem cutItem = new javax.swing.JMenuItem();
 	javax.swing.JMenuItem copyItem = new javax.swing.JMenuItem();
 	javax.swing.JMenuItem pasteItem = new javax.swing.JMenuItem();
+	javax.swing.JSeparator JSeparator2 = new javax.swing.JSeparator();
+	javax.swing.JMenuItem OptionsMenuItem = new javax.swing.JMenuItem();
+	javax.swing.JMenu WindowsMenu = new javax.swing.JMenu();
+	javax.swing.JCheckBoxMenuItem ElementChoiceMenuItem = new javax.swing.JCheckBoxMenuItem();
+	javax.swing.JCheckBoxMenuItem ElementTextMenuitem = new javax.swing.JCheckBoxMenuItem();
 	javax.swing.JMenu helpMenu = new javax.swing.JMenu();
 	javax.swing.JMenuItem aboutItem = new javax.swing.JMenuItem();
 	//}}
@@ -548,12 +543,24 @@ public class ClientFramework extends javax.swing.JFrame
 				openButton_actionPerformed(event);
 			else if (object == saveButton)
 				saveButton_actionPerformed(event);
+			else if (object == saveserverButton)
+				saveserverButton_actionPerformed(event);
 			else if (object == aboutButton)
 				aboutButton_actionPerformed(event);
 			if (object == queryButton)
 				queryButton_actionPerformed(event);
 			else if (object == ToolBarSearchText)
 				ToolBarSearchText_actionPerformed(event);
+			else if (object == newItem)
+				newItem_actionPerformed(event);
+			else if (object == saveAsItem)
+				saveAsItem_actionPerformed(event);
+			else if (object == SaveToDatabase)
+				SaveToDatabase_actionPerformed(event);
+			else if (object == PreviewXML)
+				PreviewXML_actionPerformed(event);
+			else if (object == OptionsMenuItem)
+				OptionsMenuItem_actionPerformed(event);
 			
 			
 		}
@@ -561,9 +568,8 @@ public class ClientFramework extends javax.swing.JFrame
 
 	void openItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		// to do: code goes here.
-			 
-		openItem_actionPerformed_Interaction1(event);
+		//openItem_actionPerformed_Interaction1(event);
+		mdeBean1.openDocument();
 	}
 
 	void openItem_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
@@ -577,8 +583,8 @@ public class ClientFramework extends javax.swing.JFrame
 	void saveItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		// to do: code goes here.
-			 
-		saveItem_actionPerformed_Interaction1(event);
+		//saveItem_actionPerformed_Interaction1(event);
+		mdeBean1.saveDocument();
 	}
 
 	void saveItem_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
@@ -605,21 +611,9 @@ public class ClientFramework extends javax.swing.JFrame
 
 	void aboutItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		// to do: code goes here.
-			 
-		aboutItem_actionPerformed_Interaction1(event);
-	}
-
-	void aboutItem_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// JAboutDialog Create with owner and show as modal
-			{
-				JAboutDialog JAboutDialog1 = new JAboutDialog(this);
-				JAboutDialog1.setModal(true);
-				JAboutDialog1.show();
-			}
-		} catch (Exception e) {
-		}
+				SplashFrame sf = new SplashFrame();
+				sf.setVisible(true);
+		
 	}
 
 	void openButton_actionPerformed(java.awt.event.ActionEvent event)
@@ -635,6 +629,66 @@ public class ClientFramework extends javax.swing.JFrame
 			openFileDialog.setVisible(true);
 		} catch (Exception e) {
 		}
+	}
+
+	void saveserverButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		// to do: code goes here.
+			 
+		saveserverButton_actionPerformed_Interaction1(event);
+	}
+
+	void saveserverButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
+		StringBuffer txt = new StringBuffer();
+		try {
+			// saveFileDialog Show the FileDialog
+			openFileDialog.setVisible(true);
+		} catch (Exception e) {}
+		String file = openFileDialog.getFile();
+		if (file!=null) {
+		    int x;
+		try {
+		    file = openFileDialog.getDirectory() + file;
+		    FileReader fr = new FileReader(file);
+		    while((x=fr.read())!=-1) {
+		        txt.append((char)x);
+		    }
+		    fr.close();
+		    }
+		    catch (Exception e) {}
+		}
+		
+	    try {
+            System.err.println("Trying: " + MetaCatServletURL);
+		    URL url = new URL(MetaCatServletURL);
+		    HttpMessage msg = new HttpMessage(url);
+		    Properties prop = new Properties();
+		    prop.put("action","insert");
+		    prop.put("doctext",txt.toString());
+//		    prop.put("doctext","ahsfkhf");
+		    
+		    
+		    InputStream in = msg.sendPostMessage(prop);
+		    
+//		    OutputTextArea.setText(msg.contype+"\n");
+		    txt = new StringBuffer();
+		    int x;
+		    try {
+		    while((x=in.read())!=-1) {
+		        txt.append((char)x);
+		    }
+		    }
+		    catch (Exception e) {}
+		    String txt1 = txt.toString();
+		    System.out.println(txt1);
+//   What do I need to do to acknowlede that XML text was sent??? Does servlet respond?
+		}
+		catch (Exception e) {
+		    e.printStackTrace();
+		}
+			 
+		
+		
 	}
 
 	void saveButton_actionPerformed(java.awt.event.ActionEvent event)
@@ -654,21 +708,9 @@ public class ClientFramework extends javax.swing.JFrame
 
 	void aboutButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		// to do: code goes here.
-			 
-		aboutButton_actionPerformed_Interaction1(event);
-	}
-
-	void aboutButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// JAboutDialog Create with owner and show as modal
-			{
-				JAboutDialog JAboutDialog1 = new JAboutDialog(this);
-				JAboutDialog1.setModal(true);
-				JAboutDialog1.show();
-			}
-		} catch (Exception e) {
-		}
+				SplashFrame sf = new SplashFrame();
+				sf.setVisible(true);
+		
 	}
 
 	class SymItem implements java.awt.event.ItemListener
@@ -683,18 +725,44 @@ public class ClientFramework extends javax.swing.JFrame
 	void queryButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		if (ToolBarSearchText.getText()!="") {
-		    JTabbedPane1.setSelectedIndex(2);
-	//	    queryBean1.searchFor(ToolBarSearchText.getText());
+		    JTabbedPane1.setSelectedIndex(1);
+		    queryBean1.searchFor(ToolBarSearchText.getText());
 		}
 	}
 	
-	
-
 	void ToolBarSearchText_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		if (ToolBarSearchText.getText()!="") {
-		    JTabbedPane1.setSelectedIndex(2);
-	//	    queryBean1.searchFor(ToolBarSearchText.getText());
+		    JTabbedPane1.setSelectedIndex(1);
+		    queryBean1.searchFor(ToolBarSearchText.getText());
 		}
+	}
+
+	void newItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		mdeBean1.newDocument();
+			 
+	}
+
+	void saveAsItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		mdeBean1.saveDocumentAs();
+			 
+	}
+
+	void SaveToDatabase_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		mdeBean1.saveDocumentToDatabase();
+			 
+	}
+
+	void PreviewXML_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		mdeBean1.previewXMLFile();
+	}
+
+	void OptionsMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		mdeBean1.showOptions();;
 	}
 }

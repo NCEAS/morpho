@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.1 2000-07-12 19:47:44 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -173,93 +173,94 @@ void queryAll()
 	    for (int i=0;i<files.length;i++)
         {
             String filename = files[i];
+            File currentfile = new File(xmldir, filename);
             if (stopFlag) break;
-        if ((filename != null) && (filename.length() > 0))
+            if ((filename != null) && (filename.length() > 0) &&(currentfile.isFile()))
             
-        {
-        InputSource in;
-        try
-        {
-            in = new InputSource(new FileInputStream("./xmlfiles/"+files[i]));
-        }
-        catch (FileNotFoundException fnf)
-        {
-            System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
-            fnf.printStackTrace();
-            return;
-        }
-      try
-      {
-        parser.parse(in);
-      }
-      catch(Exception e1)
-      {
-        System.err.println("Parsing " + filename + " threw: " + e1.toString());
-        e1.printStackTrace();
-        return;
-      }
+            {
+                InputSource in;
+                try
+                {
+                    in = new InputSource(new FileInputStream("./xmlfiles/"+files[i]));
+                }
+                catch (FileNotFoundException fnf)
+                {
+                    System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
+                    fnf.printStackTrace();
+                    return;
+                }
+                try
+                    {
+                    parser.parse(in);
+                    }
+                catch(Exception e1)
+                    {
+                        System.err.println("Parsing " + filename + " threw: " + e1.toString());
+                        e1.printStackTrace();
+                        continue;
+                    }
 
       // Get the documentElement from the parser, which is what the selectNodeList method expects
-      Node root = parser.getDocument().getDocumentElement();
-      String rootname = root.getNodeName();
-      NodeList nl = null;
-      try
-      {
-        if (xpathExpressions == null) {   // a single xpath expression
-          if (stopFlag) break;
-            // Use the simple XPath API to select a node.
-            nl = XPathAPI.selectNodeList(root, xpathExpression);
-            String[] rss = new String[4];
-            for (int ii=0;ii<nl.getLength();ii++) {
-              if (stopFlag) break;
-                rss[0] = filename;
-                rss[1] = rootname;
-                rss[2] = nl.item(ii).getNodeName();
-                Node cn = nl.item(ii).getFirstChild();  // assume 1st child is text node
-                if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                    rss[3] = cn.getNodeValue().trim();
-                }
-                else { rss[3]="";}
-                dtm.addRow(rss);
-            }
-        }
-        else {   // multiple expressions are handled here
-          if (stopFlag) break;
-          if (!Andflag) {
-            for (int k=0;k<xpathExpressions.length;k++) {
-                if (xpathExpressions[k].length()>0) {
-                    xpathExpression = xpathExpressions[k];
+                Node root = parser.getDocument().getDocumentElement();
+                String rootname = root.getNodeName();
+                NodeList nl = null;
+                try
+                {
+                if (xpathExpressions == null) {   // a single xpath expression
+                if (stopFlag) break;
+                    // Use the simple XPath API to select a node.
                     nl = XPathAPI.selectNodeList(root, xpathExpression);
-                        String[] rss = new String[4];
-                        for (int ii=0;ii<nl.getLength();ii++) {
+                    String[] rss = new String[4];
+                    for (int ii=0;ii<nl.getLength();ii++) {
                         if (stopFlag) break;
-                            rss[0] = filename;
-                            rss[1] = rootname;
-                            rss[2] = nl.item(ii).getNodeName();
-                            Node cn = nl.item(ii).getFirstChild();  // assume 1st child is text node
-                            if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-                                rss[3] = cn.getNodeValue().trim();
+                        rss[0] = filename;
+                        rss[1] = rootname;
+                        rss[2] = nl.item(ii).getNodeName();
+                        Node cn = nl.item(ii).getFirstChild();  // assume 1st child is text node
+                        if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
+                            rss[3] = cn.getNodeValue().trim();
+                        }
+                        else { rss[3]="";}
+                    dtm.addRow(rss);
+                    }
+                }
+                else {   // multiple expressions are handled here
+                    if (stopFlag) break;
+                    if (!Andflag) {
+                        for (int k=0;k<xpathExpressions.length;k++) {
+                            if (xpathExpressions[k].length()>0) {
+                                xpathExpression = xpathExpressions[k];
+                            nl = XPathAPI.selectNodeList(root, xpathExpression);
+                            String[] rss = new String[4];
+                            for (int ii=0;ii<nl.getLength();ii++) {
+                                if (stopFlag) break;
+                                rss[0] = filename;
+                                rss[1] = rootname;
+                                rss[2] = nl.item(ii).getNodeName();
+                                Node cn = nl.item(ii).getFirstChild();  // assume 1st child is text node
+                                if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
+                                    rss[3] = cn.getNodeValue().trim();
+                                }
+                                else { rss[3]="";}
+                                dtm.addRow(rss);
                             }
-                            else { rss[3]="";}
-                            dtm.addRow(rss);
-                    }
-                }
-            }
-          } // end !Andflag
-          if (Andflag) {   //handle "AND" here
-            boolean AndResultFlag = true;
-            NodeList[] nls = new NodeList[xpathExpressions.length];
-            for (int k=0;k<xpathExpressions.length;k++) {
-                if (xpathExpressions[k].length()>0) {
-                    xpathExpression = xpathExpressions[k];
-                    nl = XPathAPI.selectNodeList(root, xpathExpression);
-                    if (nl.getLength()==0) {  // one of search conditions failed
-                        AndResultFlag = false;
-                        break;
-                    }
-                    nls[k] = nl;
-                }
-            } // end xpathExpressions loop
+                            }
+                        }
+                    } // end !Andflag
+                    if (Andflag) {   //handle "AND" here
+                        boolean AndResultFlag = true;
+                        NodeList[] nls = new NodeList[xpathExpressions.length];
+                        for (int k=0;k<xpathExpressions.length;k++) {
+                            if (xpathExpressions[k].length()>0) {
+                                xpathExpression = xpathExpressions[k];
+                                nl = XPathAPI.selectNodeList(root, xpathExpression);
+                                if (nl.getLength()==0) {  // one of search conditions failed
+                                    AndResultFlag = false;
+                                    break;
+                                }
+                            nls[k] = nl;
+                            }
+                        } // end xpathExpressions loop
             if (AndResultFlag) {   
                 for (int kkk=0;kkk<xpathExpressions.length;kkk++) {
                     nl = nls[kkk];

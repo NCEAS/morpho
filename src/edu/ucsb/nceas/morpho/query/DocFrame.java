@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.1 2000-07-12 19:47:44 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
  */
 
 
@@ -78,6 +78,13 @@ public class DocFrame extends javax.swing.JFrame
 	{
 		this();
 		setTitle(sTitle);
+	}
+
+	public DocFrame(String sTitle, String doctext)
+	{
+		this();
+		setTitle(sTitle);
+		XMLText.setText(doctext);
 	}
 	
 	public DocFrame(File file)

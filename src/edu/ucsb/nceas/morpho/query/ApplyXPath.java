@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ApplyXPath.java,v 1.1 2000-07-12 19:47:44 higgins Exp $'
+ *     Version: '$Id: ApplyXPath.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
  */
 
 
