@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-20 02:10:39 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-03-22 23:34:05 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ public class AccessPage
   private JLabel dnLabel;
   private JLabel descLabel, accessDesc1, accessDesc2;
   private String userAccessType = new String("  Allow");
-  private String userAccess = new String("  Read");
+  private String userAccess = new String("Read");
   private JComboBox typeComboBox;
   private JComboBox accessComboBox;
   private JScrollPane treeView;
@@ -206,11 +206,11 @@ public class AccessPage
         Log.debug(45, "got itemStateChanged command in access type list");
 
         if (e.getItem().toString().compareTo(accessTypeText[0]) == 0) {
-          userAccessType = "Allow";
+          userAccessType = "  Allow";
           accessIsAllow = true;
         }
         else if (e.getItem().toString().compareTo(accessTypeText[1]) == 0) {
-          userAccessType = "Deny";
+          userAccessType = "  Deny";
           accessIsAllow = false;
         }
       }
