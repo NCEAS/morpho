@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-27 21:00:20 $'
- * '$Revision: 1.20 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-21 18:32:41 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,7 +205,20 @@ public class UIController
      */
     public void removeWindow(MorphoFrame window)
     {
-        Log.debug(50, "Removing window.");
+        removeWindowWithoutCheckingEmpty(window);
+        // Exit application if no windows remain
+        if (windowList.isEmpty()) {
+            morpho.exitApplication();
+        }
+    }
+    
+    /*
+     * A method to remove a winodw and the method without checking window list
+     * if it is empty
+     */
+    private void removeWindowWithoutCheckingEmpty(MorphoFrame window)
+    {
+      Log.debug(50, "Removing window.");
 
         // Look up the Action for this window
         GUIAction currentAction = null;
@@ -236,10 +249,23 @@ public class UIController
             Log.debug(20, "Window already removed from registry.");
         }
 
-        // Exit application if no windows remain
-        if (windowList.isEmpty()) {
-            morpho.exitApplication();
-        }
+    }
+    
+    /**
+     * Method to remove all windows in window list
+     */
+    public void removeAllWindows()
+    {
+      Enumeration frameList = windowList.elements();
+      while (frameList.hasMoreElements())
+      {
+        MorphoFrame frame = (MorphoFrame)frameList.nextElement();
+        removeWindowWithoutCheckingEmpty(frame);
+        frame.dispose();
+        frame = null;
+      }
+      // set count 0
+      count = 0;
     }
 /*
     public void addGuiAction(GUIAction action)
