@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-21 23:18:52 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-03-25 20:19:23 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -275,6 +275,7 @@ public class DataViewer extends javax.swing.JFrame
         {
           String s = formatList.item(0).getFirstChild().getNodeValue();
           this.format = s;
+          framework.debug(30, "format: "+format);
         }
         
         Vector fieldDelimiterPath = new Vector();
@@ -302,7 +303,12 @@ public class DataViewer extends javax.swing.JFrame
         if(numRecordsList != null && numRecordsList.getLength() != 0)
         {
           String s = numRecordsList.item(0).getFirstChild().getNodeValue();
-          num_records = (new Integer(s.trim())).intValue();
+          if ((s!=null)&&(s.length()>0))  {
+            try {
+              num_records = (new Integer(s.trim())).intValue();
+            }
+            catch(Exception w) {}
+          }
         }
           
       }
@@ -372,6 +378,13 @@ public class DataViewer extends javax.swing.JFrame
         
         if (image_flag) {
           // try to display image here
+          String filename = dataFile.getPath();
+          framework.debug(30, "trying to display image! "+filename);
+          ImageIcon icon = new ImageIcon(filename);
+          JLabel imagelabel = new JLabel(icon);
+          DataScrollPanel.getViewport().removeAll();
+          DataScrollPanel.getViewport().add(imagelabel);
+          
         }
         else if (text_flag) {
           // try building a table
