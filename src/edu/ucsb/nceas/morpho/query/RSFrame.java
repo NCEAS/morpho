@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.3 2000-08-31 23:06:05 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.4 2000-09-21 22:50:58 higgins Exp $'
  */
 
 
@@ -269,6 +269,8 @@ public class RSFrame extends javax.swing.JFrame
             DocFrame df = new DocFrame(file);
             df.setVisible(true);
             df.writeInfo();
+            df.setDoctype("eml-dataset");
+            
 	    }
 	   }
 	   else {

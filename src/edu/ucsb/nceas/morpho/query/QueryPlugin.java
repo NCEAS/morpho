@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.18 2000-09-13 23:38:58 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.19 2000-09-21 22:50:58 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -927,6 +927,7 @@ public class QueryBean extends AbstractQueryBean
             DocFrame df = new DocFrame(file);
             df.setVisible(true);
             df.writeInfo();
+//            df.setDoctype("eml-dataset");
 	   }
 	}
 
