@@ -159,7 +159,7 @@
     </file>
     <file>
       <name>Project</name>
-      <label>Project Description (Warning: Very Slow)</label>
+      <label>Project Description</label>
       <xmlfiletype>-//ecoinformatics.org//eml-project-2.0.0beta6//EN</xmlfiletype>
       <rootnode>eml-project</rootnode>
       <tooltip>Description of the overall project that collected the data.</tooltip>

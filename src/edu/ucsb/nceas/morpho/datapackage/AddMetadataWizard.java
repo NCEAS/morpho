@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:47:11 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2003-08-11 18:43:34 $'
+ * '$Revision: 1.38.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -588,7 +588,7 @@ public class AddMetadataWizard extends JFrame
             editor.openEditor(dummydoc, null, null, this);
         }
         else {
-            editor.openEditor(dummydoc, null, null, this, true);
+            editor.openEditor(dummydoc, null, null, this, false);
         }
         this.hide();
       }
