@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.7 2000-08-19 00:25:38 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.8 2000-09-25 19:59:14 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -55,7 +55,6 @@
 
       <copydir src="${srcdir}" 
                dest="${build.src}" 
-               filtering="yes"
                excludes="**/CVS* **/.#* "/>
    </target>
 
