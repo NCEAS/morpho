@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-09 22:20:19 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-10 21:50:27 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.ProgressBarThread;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.HyperlinkButton;
@@ -81,6 +82,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.swing.AbstractAction;
 
 public class AccessPage
     extends AbstractUIPage {
@@ -98,7 +100,7 @@ public class AccessPage
   private JPanel middlePanel;
   protected JTextField dnField;
   private JButton refreshButton;
-  private JLabel clickLabel;
+  private JLabel warnLabel;
   private JLabel introLabel;
   private JLabel accessDesc1, accessDesc2;
   private String userAccessType = new String("  Allow");
@@ -107,7 +109,9 @@ public class AccessPage
   protected JComboBox accessComboBox;
   private JScrollPane accessTreePane;
   private AccessProgressThread pbt = null;
+  private String accessListFilePath = "./lib/accesslist.xml";
   public JTreeTable treeTable = null;
+  private QueryMetacatThread queryMetacat = null;
   private final String[] accessTypeText = new String[] {
       "  Allow",
       "  Deny"
@@ -177,12 +181,10 @@ public class AccessPage
         + "datapackage, and modify access permissions.</li>"
         + "<li>All: Able to do everything.</li></ul>", 5);
 
-    clickLabel = WidgetFactory.makeHTMLLabel(
-        "<i>You can do multiple selections using shift-click and "
-        + "ctrl-click.</i>", 1);
+    warnLabel = WidgetFactory.makeLabel(EMPTY_STRING, true);
 
     accessDefinitionPanel.add(accessDefinitionLabel, BorderLayout.CENTER);
-    accessDefinitionPanel.add(clickLabel, BorderLayout.SOUTH);
+    accessDefinitionPanel.add(warnLabel, BorderLayout.SOUTH);
     bottomPanel.add(accessDefinitionPanel);
     bottomPanel.setBorder(new javax.swing.border.EmptyBorder(0,
         4 * WizardSettings.PADDING,
@@ -195,12 +197,6 @@ public class AccessPage
         getMetacatURLString()) == 0) {
 
       displayTree(Access.accessTreeNode);
-    } else {
-      /**
-       * accessTreePane is null... so we have to generate Access.accessTreeNode
-       */
-      generateAccessTree();
-
     }
   }
 
@@ -229,6 +225,13 @@ public class AccessPage
     if ( (doc = getDocumentFromFile()) == null) {
       pbt = new AccessProgressThread(this);
       pbt.start();
+      pbt.setCustomCancelAction(
+          new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+          Log.debug(45, "\nAccess: CustomAddAction called");
+          cancelGetDocumentFromMetacat();
+        }
+      });
 
       getDocumentFromMetacat();
     } else {
@@ -242,7 +245,7 @@ public class AccessPage
     ConfigXML accessXML = null;
 
     try {
-      accessXML = new ConfigXML("./lib/accesslist.xml");
+      accessXML = new ConfigXML(accessListFilePath);
 
       Document doc = accessXML.getDocument();
       NodeList nl = doc.getElementsByTagName("server");
@@ -275,7 +278,7 @@ public class AccessPage
 
       Node deepClone = serverNode.cloneNode(true);
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-      Document tempDoc = impl.createDocument("", "principals", null);
+      Document tempDoc = impl.createDocument(EMPTY_STRING, "principals", null);
       Node importedClone = tempDoc.importNode(deepClone, true);
       Node tempRoot = tempDoc.getDocumentElement();
       tempRoot.appendChild(importedClone);
@@ -304,6 +307,8 @@ public class AccessPage
       Log.debug(45, "Exception in AccessPage class in getDocumentfromFile(). "
           + "Exception:" + e.getClass());
       Log.debug(45, e.getMessage());
+
+      // TODO - Create accesslist file for next time....
       return null;
     }
     catch (Exception e) {
@@ -318,8 +323,8 @@ public class AccessPage
     pbt.setProgressBarString(
         "Contacting Metacat Server for Access information....");
 
-    QueryMetacatThread cm = new QueryMetacatThread(this);
-    cm.start();
+    queryMetacat = new QueryMetacatThread(this);
+    queryMetacat.start();
 
     return;
   }
@@ -327,9 +332,26 @@ public class AccessPage
   private void insertDocInAccessList(Document doc) {
 
     ConfigXML accessXML = null;
+    boolean fileExists = false;
 
     try {
       accessXML = new ConfigXML("./lib/accesslist.xml");
+      fileExists = true;
+    }
+    catch (FileNotFoundException e) {
+      Log.debug(10, "accesslist.xml not found in /lib/ directory.");
+      Log.debug(45, "Exception in AccessPage class in getDocumentfromFile(). "
+          + "Exception:" + e.getClass());
+      Log.debug(45, e.getMessage());
+
+      // TODO - Create accesslist file for next time....
+    }
+
+    try {
+      if (!fileExists) {
+        accessXML = new ConfigXML("./lib/accesslist.xml");
+      }
+
       Document doc1 = accessXML.getDocument();
       NodeList nl = doc1.getElementsByTagName("server");
       if (nl.getLength() < 1) {
@@ -492,7 +514,6 @@ public class AccessPage
     middlePanel.add(panel, BorderLayout.CENTER);
     middlePanel.add(getAccessControlPanel(true, "Retrieve the user list ..."),
         BorderLayout.SOUTH);
-    clickLabel.setVisible(false);
     introLabel.setText("Specify a Distinguished Name in text field below:");
     middlePanel.revalidate();
     middlePanel.repaint();
@@ -580,9 +601,14 @@ public class AccessPage
 
           pbt = new AccessProgressThread(accessP);
           pbt.start();
-
+          pbt.setCustomCancelAction(
+              new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+              Log.debug(45, "\nAccess: CustomAddAction called");
+              cancelGetDocumentFromMetacat();
+            }
+          });
           getDocumentFromMetacat();
-          // Access.refreshTree(accessP);
         }
       });
 
@@ -593,6 +619,12 @@ public class AccessPage
     }
     panel.add(controlPanel, BorderLayout.SOUTH);
     return panel;
+  }
+
+  private void cancelGetDocumentFromMetacat() {
+    Log.debug(10, "EXECUTED");
+
+    queryMetacat.interrupt();
   }
 
   /**
@@ -777,19 +809,31 @@ public class AccessPage
 
     if (dnField == null) {
       int[] i = treeTable.getSelectedRows();
+      if (i.length == 0) {
+        warnLabel.setText("Warning: Invalid input. Please make a selection.");
+        return false;
+      }
       for (int j = 0; j < i.length; j++) {
         Object o = treeTable.getValueAt(i[j], 0);
         if (o instanceof AccessTreeNodeObject) {
           AccessTreeNodeObject nodeOb = (AccessTreeNodeObject) o;
           if (nodeOb.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
               nodeOb.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+            warnLabel.setText(EMPTY_STRING);
             return true;
+          } else {
+            warnLabel.setText(
+                "Warning: Invalid input. Please select a user or a group.");
+            return false;
           }
         }
       }
     } else {
-      if (dnField.getText().trim().compareTo("") != 0) {
+      if (dnField.getText().trim().compareTo(EMPTY_STRING) != 0) {
+        warnLabel.setText(EMPTY_STRING);
         return true;
+      } else {
+        warnLabel.setText("Warning: Distinguished Name field can not be empty.");
       }
     }
     return false;
@@ -822,14 +866,14 @@ public class AccessPage
                 value = value.substring(value.indexOf("o=") + 2);
                 value = value.substring(0, value.indexOf(","));
               } else {
-                value = "";
+                value = EMPTY_STRING;
               }
               sub_surrogate.add(" " + value);
               if (nodeOb.getDescription() != null &&
-                  nodeOb.getDescription().compareTo("") != 0) {
+                  nodeOb.getDescription().compareTo(EMPTY_STRING) != 0) {
                 sub_surrogate.add(" " + nodeOb.getDescription().trim());
               } else {
-                sub_surrogate.add("");
+                sub_surrogate.add(EMPTY_STRING);
               }
               // Get access given to the user
               sub_surrogate.add(" " + userAccessType + "   " +
@@ -843,14 +887,14 @@ public class AccessPage
                 value = value.substring(value.indexOf("o=") + 2);
                 value = value.substring(0, value.indexOf(","));
               } else {
-                value = "";
+                value = EMPTY_STRING;
               }
               sub_surrogate.add(" " + value);
               if (nodeOb.getEmail() != null &&
-                  nodeOb.getEmail().compareTo("") != 0) {
+                  nodeOb.getEmail().compareTo(EMPTY_STRING) != 0) {
                 sub_surrogate.add(" " + nodeOb.getEmail().trim());
               } else {
-                sub_surrogate.add("");
+                sub_surrogate.add(EMPTY_STRING);
               }
               // Get access given to the user
               sub_surrogate.add(" " + userAccessType + "   " +
@@ -941,6 +985,15 @@ public class AccessPage
    */
 
   public void onLoadAction() {
+    if (Access.accessTreeNode != null &&
+        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.
+        getMetacatURLString()) == 0) {
+    } else {
+      /**
+       * accessTreePane is null... so we have to generate Access.accessTreeNode
+       */
+      generateAccessTree();
+    }
   }
 
   /**
@@ -1072,12 +1125,12 @@ class AccessProgressThread
 
     // wait for accessPage to show....
     while (!accessPage.isShowing()) {
-//      try {
-      //      this.sleep(10);
-      //  }
-      // catch (java.lang.InterruptedException e) {
-      //   this.exitProgressBarThread();
-      // }
+      try {
+        this.sleep(10);
+      }
+      catch (java.lang.InterruptedException e) {
+        this.exitProgressBarThread();
+      }
     }
 
     // get the ModalDialog which parent of accessPage shown...
