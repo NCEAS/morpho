@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-26 21:48:53 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-01-27 19:27:43 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import java.awt.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.datastore.MetacatDownloadException;
 
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
@@ -60,7 +61,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param name: the docid of the metacat file in &lt;scope&gt;.&lt;number&gt;
    * or &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
    */
-  public File openFile(String name) throws FileNotFoundException, 
+  public File openFile(String name) throws MetacatDownloadException, 
                                            CacheAccessException
   {
     String path = parseId(name);
@@ -154,10 +155,8 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
                                   "You may want to manually clear your cache " +
                                   "now.");
           }
-          
-          throw new FileNotFoundException(name + " does not exist on your " +
-                                          "current Metacat system: " + 
-                                          response.toString());
+          throw new MetacatDownloadException(name + " does not exist on your " +
+                                          "current Metacat system: ");
         }
         
         bfos.close();
@@ -167,11 +166,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         Morpho.connectionBusy = false;
         return localfile;
       }
+      catch (MetacatDownloadException mde) {
+        throw mde;
+      }
       catch(Exception e)
       {
         e.printStackTrace();
-       Morpho.connectionBusy = false;
-       return null;
+        Morpho.connectionBusy = false;
+        return null;
       }
     }
   }
