@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.50 2002-08-28 21:22:39 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.51 2002-09-04 16:42:12 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -64,7 +64,7 @@
       <property name="xerces" 
                 value="${libdir}/xercesImpl.jar" />
       <property name="apis" 
-                value="${libdir}/xmlParserAPIs.jar" />
+                value="${libdir}/xml-apis.jar" />
       <property name="xalan" 
                 value="${libdir}/xalan.jar" />
       <property name="sym" 
