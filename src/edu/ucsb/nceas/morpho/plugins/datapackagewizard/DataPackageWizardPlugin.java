@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-10 00:07:06 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-12-11 06:41:05 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,11 +99,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
 
-    dpWiz.setDataPackageWizardListener(listener);
-    dpWiz.setBounds(
-                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD, 
-                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-    dpWiz.setVisible(true);
+    startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, listener);
   }
   
 
@@ -116,9 +112,19 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startEntityWizard(DataPackageWizardListener listener) {
   
-    Log.debug(1, "This will soon be an Entity Wizard...");
+    startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, listener);
   }
 
+
+  private void startWizardAtPage(String pageID, DataPackageWizardListener listener) {
+
+    dpWiz.setDataPackageWizardListener(listener);
+    dpWiz.setBounds(
+                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD, 
+                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+    dpWiz.setCurrentPage(pageID);
+    dpWiz.setVisible(true);
+  }
 
 
   

@@ -4,12 +4,12 @@
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Chad Berkley
+ *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.21 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-11 06:41:05 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,6 @@ public class WizardContainerFrame extends JFrame {
     pageStack   = new Stack();
     pageLib = new WizardPageLibrary();
     init();
-    setCurrentPage(WizardSettings.FIRST_PAGE_ID);
   }
 
 
@@ -511,6 +510,9 @@ public class WizardContainerFrame extends JFrame {
     }
 
     listener.wizardComplete(rootNode);
+    
+    // now clean up
+    doCleanUp();    
   }
 
 
@@ -657,8 +659,22 @@ public class WizardContainerFrame extends JFrame {
    */
   private void cancelAction() {
     this.setVisible(false);
+    listener.wizardCanceled();
+    
+    // now clean up
+    doCleanUp();    
+    
   }
 
+  private void doCleanUp() {
+  
+    //clear out pageStack
+    pageStack.clear();
+    
+    //clear all page objects (re-init??)
+    pageLib.reInitialize();
+  }
+    
   /**
    *  sets the main title for this page
    *  @param newTitle the page title

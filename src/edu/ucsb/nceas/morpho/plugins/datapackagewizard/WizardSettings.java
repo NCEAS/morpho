@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-08 19:05:37 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2003-12-11 06:41:05 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,7 +120,9 @@ public class WizardSettings {
   public static final int DIALOG_HEIGHT
   = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
 
-  protected static final String FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
+  protected static final String PACKAGE_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
+
+  protected static final String ENTITY_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.DATA_LOCATION;
 
   protected static final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
 

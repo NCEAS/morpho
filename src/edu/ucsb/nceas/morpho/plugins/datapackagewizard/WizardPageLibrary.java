@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.14 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-11 06:41:05 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,18 @@ public class WizardPageLibrary {
 
 
   public WizardPageLibrary() {
+    
+    reInitialize();
+  }
+  
+  /**
+   *  clears out any existing pages from the library and populates it with 
+   *  new pages 
+   */
+  public static void reInitialize() {
 
+    pages.clear();
+    
     pages.put(DataPackageWizardInterface.INTRODUCTION,       new Introduction());
     pages.put(DataPackageWizardInterface.PROJECT_INTRO,      new ProjectIntro());
     pages.put(DataPackageWizardInterface.PROJECT,            new Project());

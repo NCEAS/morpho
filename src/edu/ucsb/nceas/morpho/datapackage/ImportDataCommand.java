@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-10 00:07:06 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-11 06:41:05 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,34 +69,37 @@ public class ImportDataCommand implements Command
   {   
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    if (morphoFrame != null)
-    {
+    if (morphoFrame != null) {
+      
        resultPane = AddDocumentationCommand.
                           getDataViewContainerPanelFromMorphoFrame(morphoFrame);
     }//if
     // make sure resulPanel is not null
-    if ( resultPane != null)
-    {
+    if ( resultPane != null) {
+      
       DataPackage dp = resultPane.getDataPackage();
       final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
       DataViewer dv = resultPane.getCurrentDataViewer();
       String entityId = null;
+      
       if (dv!=null) {
         entityId = dv.getEntityFileId();
       }
       if (dp!=null) {
+        
         if ((dp.hasDataFile(entityId))||(entityId==null)) {
+          
           Morpho morpho = resultPane.getFramework();
           DataPackage dataPackage = resultPane.getDataPackage();
           AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
                    dataPackage, morphoFrame, AddMetadataWizard.NOTSHOWMETADATA);
           amw.showImportDataScreen();
           morphoFrame.setVisible(false);
-        }
-        else {
+          
+        } else {
           // Log.debug(1,"No Data Branch");
-        (  new NewDataFile(morphoFrame, dp, resultPane.getFramework(),
-                         entityId)).setVisible(true);
+          (new NewDataFile( morphoFrame, dp, resultPane.getFramework(),
+                            entityId)).setVisible(true);
         }
       } else { // new AbstractDataPackage/Wizard calls will go here
 
@@ -135,25 +138,10 @@ public class ImportDataCommand implements Command
               Log.debug(45, "\n\n********** Wizard canceled!");
             }
           });
-
-
-
-
-
-
-
-
-
-
-
       }
     }//if
   
-  }//execute
-  
- 
-
-  
+  }//execute 
  
   
   /**
