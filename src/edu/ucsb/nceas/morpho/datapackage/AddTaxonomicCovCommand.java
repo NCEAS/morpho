@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-30 20:35:19 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-31 04:48:11 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,17 @@ public class AddTaxonomicCovCommand implements Command {
 		
     taxonomicPage = dpwPlugin.getPage(
         DataPackageWizardInterface.TAXONOMIC);
-		taxonomicPage.setPageData(map, "/coverage/taxonomicCoverage");
+				
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		Node taxonomicRoot = adp.getSubtree("taxonomicCoverage", 0);
+
+    if (taxonomicRoot!=null) {
+      map = XMLUtilities.getDOMTreeAsXPathMap(taxonomicRoot);
+    } else {
+			map = new OrderedMap();
+		}
+		
+		taxonomicPage.setPageData(map, "/taxonomicCoverage");
 		
     ModalDialog wpd = new ModalDialog(taxonomicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
@@ -123,7 +133,7 @@ public class AddTaxonomicCovCommand implements Command {
 				String k = (String)it.next();
 				System.out.println(k + " - " + (String)map.get(k));
 			}
-			AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			
 			Node covRoot = null;
 			try {
 				DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -133,6 +143,7 @@ public class AddTaxonomicCovCommand implements Command {
 				XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
 				// now the covRoot node may have a number of temporalCoverage children
 				NodeList kids = covRoot.getChildNodes();
+				adp.removeTaxonomicNodes();
 				for (int i=0;i<kids.getLength();i++) {
 					Node kid = kids.item(i);
 					adp.insertCoverage(kid);          
