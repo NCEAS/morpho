@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-10 19:03:04 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2001-12-13 17:01:49 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -491,101 +491,6 @@ public class DocFrame extends javax.swing.JFrame
     }
  }
     
- /** 
-  * this version will create a new DocFrame using a Vector of XML strings. Each one of the 
-  * strings in the vector is assumed to be a valid XML document
-  */
-	public DocFrame(ClientFramework cf, String sTitle, Vector docs, String id, String location,
-	                       String nodeName, String nodeValue) {
-	  this();
-	  Vector docRoots = new Vector();                      
-	  setTitle("Morpho Editor");
-	  this.framework = cf;
-	  counter++;
-	  setName("Morpho Editor"+counter);
-	  
-	  // assumed that the docs vector contains one or more XML strings
-	  // need to loop over all strings
-	  Enumeration docs_enum = docs.elements();
-	  while(docs_enum.hasMoreElements()) {
-		  XMLTextString = (String)docs_enum.nextElement();
-		  putXMLintoTree(treeModel, XMLTextString);
-		  // now want to possibly merge the input document with a formatting document
-		  // and set the 'editor' and 'help' fields for each node
-		  // use the root node name as a key
-		  rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-      String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
-      rootname = rootname+".xml";
-		  file = new File("./lib", rootname);
-		  DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
-		  DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
-		  String fXMLString = "";
-		  boolean formatflag = true;
-      try{
-        FileReader in = new FileReader(file);
-        StringWriter out = new StringWriter();
-        int c;
-        while ((c = in.read()) != -1) {
-          out.write(c);
-        }
-        in.close();
-        out.close();
-        fXMLString = out.toString();
-      }
-	    catch(Exception e){formatflag = false;}	
-		
-		  if (formatflag) {
-		    putXMLintoTree(ftreeModel,fXMLString);
-		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
-		    treeUnion(rootNode,frootNode);
-		  }
-    
-    
-      if (dtdfile!=null) {
-		    dtdtree = new DTDTree(dtdfile);
-		    dtdtree.setRootElementName(rootnodeName);
-		    dtdtree.parseDTD();
-		
-	      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-
-	        // the treeUnion method will 'merge' the input document with
-	        // a template XML document created using the DTD parser from the DTD doc
-	      treeUnion(rootNode,dtdtree.rootNode);
-            // treeTrim will remove nodes in the input that are not in the DTD
-            // remove the following line if this is not wanted
-        treeTrim(rootNode,dtdtree.rootNode);
-		  }
-		  // add this tree to the collection
-		  docRoots.addElement(rootNode);
-		} // end while loop over strings
-		DefaultMutableTreeNode newrootNode = new DefaultMutableTreeNode();
-		NodeInfo newni = new NodeInfo("DataPackage");
-		newrootNode.setUserObject(newni);
-		Enumeration docRootNodes = docRoots.elements();
-		while (docRootNodes.hasMoreElements()) {
-		  DefaultMutableTreeNode rnd = (DefaultMutableTreeNode)docRootNodes.nextElement();
-		  newrootNode.add(rnd); 
-		}
-		DefaultTreeModel newTreeModel = new DefaultTreeModel(newrootNode);
-  		tree = new JTree(newTreeModel);
-		OutputScrollPanel.getViewport().add(tree);
-    tree.setCellRenderer(new XMLTreeCellRenderer());
-		
-		tree.setShowsRootHandles(true);
-    tree.setEditable(false);
-    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    tree.setShowsRootHandles(true);
-    tree.putClientProperty("JTree.lineStyle", "Angled");
-		
-		SymTreeSelection lSymTreeSelection = new SymTreeSelection();
-		tree.addTreeSelectionListener(lSymTreeSelection);
-	
-		MouseListener popupListener = new PopupListener();
-    tree.addMouseListener(popupListener);
-    tree.setSelectionRow(0);
-                          
-                        
-	}
 	
 	
 	public String getIdString() {
@@ -1303,7 +1208,7 @@ void expandTreeToLevel(JTree jt, int level) {
      */
     void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
         Stack tempStack;
-        Vector tempVector;
+        Vector tempVector = new Vector();
         DefaultMutableTreeNode tNode;
         DefaultMutableTreeNode nd2;
         DefaultMutableTreeNode pqw;
@@ -1343,7 +1248,51 @@ void expandTreeToLevel(JTree jt, int level) {
             // loop over all the template nodes at the 'next' level
             Enumeration enum = nextLevelTemplateNodes.elements();
             while (enum.hasMoreElements()) {
+                boolean insTest = false;
+                
                 tNode = (DefaultMutableTreeNode)enum.nextElement();
+                
+                // insert (CHOICE) or (SEQUENCE) elements into instance
+                NodeInfo ni = (NodeInfo)tNode.getUserObject();
+                if ((ni.getName().startsWith("(CHOICE)"))||(ni.getName().startsWith("(SEQUENCE)"))) {
+                    DefaultMutableTreeNode templParent = (DefaultMutableTreeNode)tNode.getParent();
+                    DefaultMutableTreeNode specCopy = (DefaultMutableTreeNode)tNode.clone();
+                    // for now, ignore nested (CHOICE) nodes
+                    Vector choiceParentHits = simpleGetMatches(templParent, currentLevelInputNodes);
+                    for (int m=0;m<choiceParentHits.size();m++) {
+                        DefaultMutableTreeNode workingInstanceNode = (DefaultMutableTreeNode)choiceParentHits.elementAt(m);
+                        DefaultMutableTreeNode specCopyClone = (DefaultMutableTreeNode)(specCopy.clone());
+                        Enumeration kids = workingInstanceNode.children(); 
+                        Vector kidsVec = new Vector();
+                        int cindex = -1;
+                        while (kids.hasMoreElements()) {
+                            DefaultMutableTreeNode kidNode = (DefaultMutableTreeNode)kids.nextElement();
+                            if (hasAMatch(kidNode, tNode)) insTest = true;
+                            kidsVec.addElement(kidNode);    
+                        }
+                        if (insTest) {
+                            for (int n=0;n<kidsVec.size();n++) {
+                                DefaultMutableTreeNode test = (DefaultMutableTreeNode)(kidsVec.elementAt(n));
+                                if (hasAMatch(test, tNode)) {
+                                    if (cindex<0) {
+                                        cindex = workingInstanceNode.getIndex(test);
+                                    }
+                                    specCopyClone.add(test);  
+                                }
+                            }
+                            if (cindex==-1) {
+                                workingInstanceNode.insert(specCopyClone, 0);
+                                nextLevelInputNodes.insertElementAt(specCopyClone, 0);
+                            }
+                            else {
+                                workingInstanceNode.insert(specCopyClone, cindex);
+                                nextLevelInputNodes.insertElementAt(specCopyClone, cindex);
+                            }
+                        }
+                    }
+                }
+                if (!insTest) {
+  //              if (false) {
                 Vector hits = getMatches(tNode, nextLevelInputNodes);
                 // merge hits with template node
                 tempVector = (Vector)currentLevelInputNodes.clone();
@@ -1370,10 +1319,6 @@ void expandTreeToLevel(JTree jt, int level) {
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
                         newnode = deepNodeCopy(tNode);
                         trimSpecialAttributes(newnode);
-                        if ((((NodeInfo)tNode.getUserObject()).getName().startsWith("(CHOICE)")) ||
-                          (((NodeInfo)tNode.getUserObject()).getName().startsWith("(SEQUENCE)"))) {
-                            tempStack.push(newnode);
-                        }
                         int index1 = findDuplicateIndex(nextLevelInputNodes,index);
                         if (index1>=ind.getChildCount()) {
                           if (newnode!=null) {
@@ -1386,73 +1331,6 @@ void expandTreeToLevel(JTree jt, int level) {
                           }
                         }
                     }
-            
-                    if ((((NodeInfo)tNode.getUserObject()).getName().startsWith("(CHOICE)")) ||
-                          (((NodeInfo)tNode.getUserObject()).getName().startsWith("(SEQUENCE)"))) {                    
-                            // in this case, one of the 'children' of the CHOICE node probably exists
-                            // in the Info nodes for this level
-                        reverseStack(tempStack);
-                        while (!tempStack.empty()) {
-                            int indx1 = -1;
-                            DefaultMutableTreeNode nwnode = (DefaultMutableTreeNode)tempStack.pop();
-                            Vector childvec = new Vector();
-                            getRealChildren(tNode, childvec);
-                            Enumeration q = childvec.elements();
-//                            Enumeration q = tNode.children();
-                            while (q.hasMoreElements()) {
-                                DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)q.nextElement();
-                                Vector childvec1 = new Vector();
-                                getRealChildren(nwnode, childvec1);
-                                Enumeration ww = childvec1.elements();
-//                                Enumeration ww = nwnode.children();
-                                while (ww.hasMoreElements()) {
-                                    qw = (DefaultMutableTreeNode)ww.nextElement();
-                                    if (simpleCompareNodes(nd1,qw)) {
-                                        indx1 = nwnode.getIndex(qw);
-                                        if (indx1>-1) {
-                                            nwnode.remove(qw);
-                                        }
-                                        
-                                        Vector choice_hits1 = simpleGetMatches(nd1, currentLevelInputNodes);
-                                        for (Enumeration ttt = choice_hits1.elements();ttt.hasMoreElements();) {
-                                          nextLevelInputNodes.addElement((DefaultMutableTreeNode)ttt.nextElement()); 
-                                        }
-                                        
-                                        Vector choice_hits = simpleGetMatches(nd1, nextLevelInputNodes);
-
-                                        // choice_hits now contains a list of nodes to be moved
-                                        // under the CHOICE node; only those with the same parent
-                                        // should be moved to a single CHOICE
-                                        
-                                        if (choice_hits.size()>0){
-                                          choice_hits = sameParent(choice_hits);
-                                          
-                                          
-                                          
-                                          Enumeration qq = choice_hits.elements();
-                                          while (qq.hasMoreElements()) {
-                                            nd2 = (DefaultMutableTreeNode)qq.nextElement();
-                                            
-                                            
-                                     //       if ((indx1>=nwnode.getChildCount())||(indx1==-1)) {
-                                                nwnode.add(nd2);    
-                                     //       }
-                                     //       else {
-                                     //           nwnode.insert(nd2,indx1);
-                                     //       }
-                                      //      nwnode.insert(nd2, indx1);
-                                            nextLevelInputNodes.removeElement(nd2);
-                                          }
-                                        }
-                                     }
-                                }
-                            }
-                        }
-                    }
-                    
-                    
-                    
-//                } // end if hits.size==0
                 // put removed elements back
                 currentLevelInputNodes = tempVector;
                 // recalculate nextLevelInput  
@@ -1465,6 +1343,8 @@ void expandTreeToLevel(JTree jt, int level) {
                     }
                 }
 
+                    
+                } //end else
             }
  
             
@@ -1476,6 +1356,19 @@ void expandTreeToLevel(JTree jt, int level) {
 }
 
 
+/**
+ *  returns boolean indicating if input node mathches any child of tempparent
+ */
+ boolean hasAMatch(DefaultMutableTreeNode input, DefaultMutableTreeNode tempparent) {
+    String inputS = ((NodeInfo)input.getUserObject()).getName();
+    Enumeration enum = tempparent.children();
+    while (enum.hasMoreElements()) {
+        DefaultMutableTreeNode enumNode = (DefaultMutableTreeNode)enum.nextElement();
+        String matchS = ((NodeInfo)enumNode.getUserObject()).getName();
+        if (matchS.endsWith(inputS)) return true;
+    }
+    return false;
+ }
 
 /** get the children of a node, stripping out the 'SEQUENCE' and 'CHOICE' nodes and
   * inserting their children
@@ -1986,156 +1879,5 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	 }
 	
 	
-//--------------------------
-
-/* 
-* code for combining the content of two DefaultMutableTreeNode trees
-* inputTree is modified based on content of template tree
-* template may be based on DTD and thus provides info like cardinality
-* It is assumed that nodes use NodeInfo user objects
-*/
-	 
- void treeUnion1(DefaultMutableTreeNode instance, DefaultMutableTreeNode template) {
-    // start by looping over all nodes in the instance for possible insertion in template
-    Enumeration enum = instance.depthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-        DefaultMutableTreeNode currentTN = (DefaultMutableTreeNode)enum.nextElement();
-        // skip all text nodes
-        if (!((NodeInfo)currentTN.getUserObject()).getName().equals("#PCDATA")) {
-            TreeNode[] tnList = currentTN.getPath();
-            DefaultMutableTreeNode matched = getMatchingRealPath(template, tnList);
-            if (matched!=null)  {        // a match was found!
-                // now need to see if currentTN node carries any data i.e. text node or attributes
-                // if it does it should be added to the template tree
-                if (hasData(matched)) {
-                    // now merge data and add as sibling    
-                }
-           }
-        }
-    }
-        
- }
-
-/**
- *  is the input Object has a child text node or attribute data, method should return true
- *
- */
-  boolean hasData(DefaultMutableTreeNode tn) {
-    boolean res = false;
-    NodeInfo ni = (NodeInfo)tn.getUserObject();
-    Hashtable ht = ni.attr;
-    if (!ht.isEmpty()) res=true;
-    if (!res) {   // no need to check if
-         Enumeration children = tn.children();
-         while (children.hasMoreElements()) {
-            DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
-            String childName = ((NodeInfo)child.getUserObject()).getName();
-            if (childName.equalsIgnoreCase("#PCDATA")) {
-                res = true; 
-                break;
-            }
-         }
-    }
-    return res;
-  }
-  
-/**
- *  merge data from two nodes
- *  more precisely, source data is put in target data node
- */
-  void mergeNodeData(DefaultMutableTreeNode source, DefaultMutableTreeNode target) {
-    NodeInfo targetNodeInfo = (NodeInfo)target.getUserObject();
-    NodeInfo sourceNodeInfo = (NodeInfo)source.getUserObject();
-    Hashtable sourceAttr = sourceNodeInfo.attr;
-    Hashtable targetAttr = targetNodeInfo.attr;
-    Enumeration sourceEnum = sourceAttr.keys();
-    while (sourceEnum.hasMoreElements()) {
-       String key = (String)sourceEnum.nextElement();
-       if(!targetAttr.containsKey(key)) {
-           // add the pair from source to target if not there!
-           targetAttr.put(key,sourceAttr.get(key));
-       }
-    }
-    //now merge child text nodes
-    int indx = -1;
-    // find out index of target text node child
-    Enumeration targetChildren = target.children();
-    while(targetChildren.hasMoreElements()) {
-        indx++;
-        DefaultMutableTreeNode targetchild = (DefaultMutableTreeNode)targetChildren.nextElement();
-        String targetchildName = ((NodeInfo)targetchild.getUserObject()).getName();
-        if (targetchildName.equalsIgnoreCase("#PCDATA")) {
-            target.remove(indx);
-            break;   
-        }
-           
-    }
-    Enumeration children = source.children();
-    while (children.hasMoreElements()) {
-        DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
-        String childName = ((NodeInfo)child.getUserObject()).getName();
-        if (childName.equalsIgnoreCase("#PCDATA")) {
-            //add source child to target node here
-            target.insert(child, indx);
-        }
-    }
-    
-  }
- 
-  
-/**
- *  searches a tree (defined by a root node) for paths that match the input TreePath
- *  The match should be based on node names all along the path but igonore all
- *  SEQUENCE and CHOICE node along the path in the tree.
- *  The first node in the tree that matches the path is returned.
- *  null is returned if there is no match.
- */
- 
- private DefaultMutableTreeNode getMatchingRealPath(DefaultMutableTreeNode root, TreeNode[] tp) {
-	Vector testVec = null;
-    DefaultMutableTreeNode res = null;
-    DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode)tp[tp.length-1];
-    Enumeration nodeList = root.breadthFirstEnumeration();
-    while (nodeList.hasMoreElements()) {
-        DefaultMutableTreeNode testNode = (DefaultMutableTreeNode)nodeList.nextElement();
-        TreeNode[] testNodes = testNode.getPath();
-        DefaultMutableTreeNode lastTestNode = (DefaultMutableTreeNode)testNodes[testNodes.length-1];
-        // first check to see if last nodes match
-        if (namesMatch(lastNode, lastTestNode)) {
-            // now collapse the testNodes array and make into a vector of DefaultMutableTreeNode objects
-            testVec = new Vector();
-            for (int i=0;i<testNodes.length;i++) {
-                DefaultMutableTreeNode tn = (DefaultMutableTreeNode)testNodes[i];
-                String name = ((NodeInfo)tn.getUserObject()).getName();
-                if ((!name.startsWith("(CHOICE)"))&&(!name.startsWith("(SEQUENCE)"))) {
-                    testVec.addElement(tn);   
-                }
-            }
-            boolean eq = true;
-            if (testVec.size()==tp.length) {   // proceed only if paths are of same length
-                for (int j=0;j<tp.length;j++) {
-                    if (!namesMatch((DefaultMutableTreeNode)tp[j],(DefaultMutableTreeNode)testVec.elementAt(j))) {
-                        eq = false;
-                        break;
-                    }
-                }
-            }
-        }
-    res = (DefaultMutableTreeNode)testVec.elementAt(testVec.size());    
-    }
-    return res;
- }
-
-/**
- *  compares DefaultMutableTreeNodes on the basis of name
- */
- private boolean namesMatch(DefaultMutableTreeNode dmtn1, DefaultMutableTreeNode dmtn2) {
-    boolean ret = false;
-    String name1 = ((NodeInfo)dmtn1.getUserObject()).getName();
-    String name2 = ((NodeInfo)dmtn2.getUserObject()).getName();
-    if (name1.equals(name2)) ret = true;
-    
-    return ret;
- }
  
 }
