@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 20:46:13 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2002-12-18 01:03:25 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,17 @@ public class XMLTransformer
      */
     public static final String SUPPRESS_TRIPLES_OBJECTS_XSLPROP 
                                                 = "suppress_objects_identifier";
-                                                
+
+
+    /**
+     *  used to delimit the list of all module ID(s) to be suppressed in 
+     *  DataPackage metaview.  
+     *  @see    <ul><li>SUPPRESS_TRIPLES_SUBJECTS_XSLPROP</li>
+     *              <li>SUPPRESS_TRIPLES_OBJECTS_XSLPROP</li><ul>
+     */
+    public static final String SUPPRESS_TRIPLES_DELIMETER 
+                                                = " ";
+
     /**
      *  used to hold default css stylesheet name 
      */
