@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-05-31 19:23:19 $'
- * '$Revision: 1.95 $'
+ *     '$Date: 2002-06-14 17:07:01 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1507,15 +1507,8 @@ public class ClientFramework extends javax.swing.JFrame
   {
     try
     {
-      // Add the following code if you want the Look and Feel
-      // to be set to the Look and Feel of the native system.
-      /*
-         try {
-         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-         } 
-         catch (Exception e) { 
-         }
-       */
+        // set to the Look and Feel of the native system.
+        setLookAndFeel();
        
      // Set system property to use HTTPClient or ssl protocol
      // System.setProperty("java.protocol.handler.pkgs","HTTPClient");
@@ -1934,6 +1927,17 @@ public class ClientFramework extends javax.swing.JFrame
       debug(19, " - unable to open network connection to Metacat");
       networkStatus = false;
       if (profile!=null) profile.set("searchmetacat", 0, "false");
+    }
+  }
+  
+  /**
+   *   set look & feel to system default
+   **/
+  private static void setLookAndFeel(){
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (Exception e) { 
+      debug(19,"couldn't set L&F to native - using Java default"); 
     }
   }
 }
