@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 14:16:46 $'
- * '$Revision: 1.101 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-26 22:47:45 $'
+ * '$Revision: 1.102 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -822,7 +821,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     Node newSubtree = thisDom.importNode(subtreeRootNode, true); // 'true' imports children
     Node subTreeNode = getSubtreeNoClone(genericName, 0);
     if (subTreeNode == null) {  // no current subtree node
-			try{
+      try{
         NodeList insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
             "/xpathKeyMap/insertionList[@name='"+genericName+"']/prevNode");
         if (insertionList==null) {
@@ -832,20 +831,20 @@ public abstract class AbstractDataPackage extends MetadataObject
                     +genericName+"']/prevNode");
           return null;
         }
-				for (int i=0;i<insertionList.getLength();i++) {
+        for (int i=0;i<insertionList.getLength();i++) {
           Node nd = insertionList.item(i);
           String path = (nd.getFirstChild()).getNodeValue();
-					NodeList temp = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+          NodeList temp = XMLUtilities.getNodeListWithXPath(metadataNode, path);
           if ((temp!=null)&&(temp.getLength()>0)) {
             Log.debug(40, "found: "+path);
-						Node prevNode = temp.item(temp.getLength()-1);
+            Node prevNode = temp.item(temp.getLength()-1);
             Document doc = prevNode.getOwnerDocument();
             Node nextNode = prevNode.getNextSibling();
             Node par = prevNode.getParentNode();
             if (nextNode==null) { // no next sibling
-							par.appendChild(newSubtree);
+              par.appendChild(newSubtree);
             } else {
-							par.insertBefore(newSubtree, nextNode);
+              par.insertBefore(newSubtree, nextNode);
             }
             return newSubtree;
           }
@@ -1475,35 +1474,9 @@ public abstract class AbstractDataPackage extends MetadataObject
     Node entity = (entityArray[entNum]).getNode();
     Node parent = entity.getParentNode();
     parent.removeChild(entity);
-		entity = null;
-		Entity[] newEntArray = new Entity[entityArray.length - 1];
-		for (int i = 0; i < entNum; i++) {
-			newEntArray[i] = entityArray[i];
-		}
-		for (int i = entNum + 1; i < entityArray.length; i++) {
-			newEntArray[i-1] = entityArray[i];
-		}
-		entityArray = newEntArray; 
-  }
-	
-	/**
-   * This method deletes the indexed entity from the DOM
-   *
-   * @param entNum int
-   */
-  public void deleteAllEntities() {
-    if ( (entityArray == null) || (entityArray.length < 1)) {
-      Log.debug(20, "Unable to find any entities");
-      return;
-    }
-		Node parent = (entityArray[0]).getNode().getParentNode();
-		for(int i = 0; i < entityArray.length; i++) {
-			
-			Node entity = (entityArray[i]).getNode();
-			parent.removeChild(entity);
-		}
     entityArray = null;
   }
+
 
   /**
    * This method automatically adds an entity in the DOM at the next available
@@ -2602,6 +2575,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    * already been saved. If not, the temp directory is checked. Note that it
    * is assumed that the data file has been assigned an id and stored in the
    * temp directory if it has not been saved to one of the stores
+   *
+   * It has been assumed that the 'location' has been set to point to the
+   * place where the data is to be saved.
    */
   public void serializeData() throws MetacatUploadException {
     File dataFile = null;
@@ -2660,10 +2636,19 @@ public abstract class AbstractDataPackage extends MetadataObject
           dfis.close();
 //          dataFile.delete();
       }catch (Exception qq) {
-        // some other problem has occured
-        Log.debug(5, "Some problem with saving local data files has occurred!");
-        qq.printStackTrace();
-      }//end catch
+        // if a datafile is on metacat and one wants to save locally
+        try{
+          MetacatDataStore mds = new MetacatDataStore(morpho);
+          dataFile = mds.openDataFile(urlinfo);
+          InputStream dfis = new FileInputStream(dataFile);
+          fds.saveDataFile(urlinfo, dfis);
+          dfis.close();
+        }catch (Exception qqq) {
+          // some other problem has occured
+          Log.debug(5, "Some problem with saving local data files has occurred!");
+          qq.printStackTrace();
+        }//end catch
+      }
     }
   }
 
@@ -2673,13 +2658,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
     try {
-      dataFile = mds.openFile(urlinfo);
+      dataFile = mds.openDataFile(urlinfo);
     }
-    catch (FileNotFoundException fnf) {
-      // if the datfile has NOT been located, a FileNotFoundException will be thrown.
+    catch (Exception fnf) {
+      // if the datfile has NOT been located, an Exception will be thrown.
       // this indicates that the datafile with the url has NOT been saved
       // the datafile should be stored in the profile temp dir
-      //Log.debug(1, "FileNotFoundException");
       ConfigXML profile = morpho.getProfile();
       String separator = profile.get("separator", 0);
       separator = separator.trim();
@@ -2721,15 +2705,45 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
       catch (Exception qq) {
-        // some other problem has occured
-        Log.debug(5, "Some problem with saving data files has occurred!");
-        qq.printStackTrace();
+        // data file might already be in the local file store, but not the temp dir
+        try{
+          dataFile = fds.openFile(urlinfo);
+          InputStream dfis = new FileInputStream(dataFile);
+          try{
+            mds.newDataFile(urlinfo, dataFile);
+          } 
+          catch (MetacatUploadException mue) {
+            // if we reach here, most likely there has been a problem saving the datafile
+            // on metacat because the id is already in use
+            // so, get a new id
+            AccessionNumber an = new AccessionNumber(morpho);
+            String newid = an.getNextId();
+            // now try saving with the new id
+            try{
+              mds.newDataFile(newid, dataFile);
+              dataFile.delete();
+              // newDataFile must have worked; thus update the package
+              setDistributionUrl(entityIndex, 0, 0, newid);
+              String newPackageId = an.getNextId();
+              setAccessionNumber(newPackageId);
+              serialize(AbstractDataPackage.METACAT);
+              if(location.equals(BOTH)) {  // save new package locally
+                serialize(AbstractDataPackage.LOCAL);
+              }
+            } catch (MetacatUploadException mue1) {
+              Log.debug(5, "Problem saving data to metacat\n"+
+                           mue1.getMessage());
+              throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
+                          +mue1.getMessage());
+            }
+          }
+        }
+        catch (Exception qqq) {
+          // some other problem has occured
+          Log.debug(5, "Some problem with saving data files has occurred!");
+          qq.printStackTrace();
+        }
       }
-    }
-    catch (Exception ww) {
-        // some other problem has occured
-        Log.debug(5, "Some other problem with saving data files has occurred!");
-        ww.printStackTrace();
     }
   }
 
@@ -3282,177 +3296,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
   public Document openAsDom(String id) {
-		// ignore the id and just return the dom for this instance
-		return (this.getMetadataNode()).getOwnerDocument();
-	}
-	
-	
-	// Code Import stuff
-	
-	private List toBeImported = null;
-	private int toBeImportedCount = 0;
-	
-	private List lastImportedAttributes;
-	private String lastImportedEntityName;
-	private Vector lastImportedDataSet;
-	private Entity[] originalEntities = null;
-	
-	
-	public void addAttributeForImport(String entityName, String attributeName,
-	String scale, OrderedMap omap, String xPath,
-	boolean newTable) {
-		
-		List t = new ArrayList();
-		t.add(entityName);
-		t.add(attributeName);
-		t.add(scale);
-		t.add(omap);
-		t.add(xPath);
-		t.add(new Boolean(newTable));
-		if (toBeImported == null) {
-			toBeImported = new ArrayList();
-			toBeImportedCount = 0;
-		}
-		toBeImported.add(t);
-		toBeImportedCount++;
-		Log.debug(10,
-		"Adding Attr to Import - (" + entityName + ", " + attributeName +
-		") ; count = " + toBeImportedCount);
-	}
-	
-	
-	public String getCurrentImportEntityName() {
-		
-		if (toBeImportedCount == 0) {
-			return null;
-		}
-		List t = (List) toBeImported.get(0);
-		if (t == null) {
-			return null;
-		}
-		return (String) t.get(0);
-	}
-	
-	public String getCurrentImportAttributeName() {
-		
-		if (toBeImportedCount == 0) {
-			return null;
-		}
-		List t = (List) toBeImported.get(0);
-		if (t == null) {
-			return null;
-		}
-		return (String) t.get(1);
-	}
-	
-	public String getCurrentImportScale() {
-		if (toBeImportedCount == 0) {
-			return null;
-		}
-		List t = (List) toBeImported.get(0);
-		if (t == null) {
-			return null;
-		}
-		return (String) t.get(2);
-	}
-	
-	public OrderedMap getCurrentImportMap() {
-		if (toBeImportedCount == 0) {
-			return null;
-		}
-		List t = (List) toBeImported.get(0);
-		if (t == null) {
-			return null;
-		}
-		return (OrderedMap) t.get(3);
-	}
-	
-	public OrderedMap getSecondImportMap() {
-		if (toBeImportedCount < 2) {
-			return null;
-		}
-		List t = (List) toBeImported.get(1);
-		if (t == null) {
-			return null;
-		}
-		return (OrderedMap) t.get(3);
-	}
-	
-	public String getCurrentImportXPath() {
-		if (toBeImportedCount == 0) {
-			return null;
-		}
-		List t = (List) toBeImported.get(0);
-		if (t == null) {
-			return null;
-		}
-		return (String) t.get(4);
-	}
-	
-	public boolean isCurrentImportNewTable() {
-		if (toBeImportedCount == 0) {
-			return false;
-		}
-		List t = (List) toBeImported.get(0);
-		if (t == null) {
-			return false;
-		}
-		return ( (Boolean) t.get(5)).booleanValue();
-	}
-	
-	public int getAttributeImportCount() {
-		return toBeImportedCount;
-	}
-	
-	public void removeAttributeForImport() {
-		if (toBeImportedCount == 0) {
-			return;
-		}
-		toBeImported.remove(0);
-		toBeImportedCount--;
-	}
-	
-	public void setLastImportedEntity(String name) {
-		lastImportedEntityName = name;
-	}
-	
-	public void setLastImportedDataSet(Vector data) {
-		lastImportedDataSet = data;
-	}
-	
-	public void setLastImportedAttributes(List attr) {
-		lastImportedAttributes = attr;
-	}
-	
-	public String getLastImportedEntity() {
-		return lastImportedEntityName;
-	}
-	
-	public List getLastImportedAttributes() {
-		return lastImportedAttributes;
-	}
-	
-	public Vector getLastImportedDataSet() {
-		return lastImportedDataSet;
-	}
-
-	public Entity[] getOriginalEntityArray() {
-		return this.originalEntities;
-	}
-	
-	public void setOriginalEntityArray(Entity[] arr) {
-		this.originalEntities = arr;
-	}
-	
-	public void clearAllAttributeImports() {
-		
-		this.originalEntities = null;
-		toBeImported = null;
-		toBeImportedCount = 0;
-		lastImportedAttributes = null;
-		lastImportedEntityName = null;
-		lastImportedDataSet = null;
-		
-	}
+    // ignore the id and just return the dom for this instance
+    return (this.getMetadataNode()).getOwnerDocument();
+  }
 }
 
