@@ -34,10 +34,10 @@
 <!-- put text after this -->
 <table border=0 cellspacing=0 cellpadding="0" width="100%" class="tablepanel" >
     <tr> 
-        <td  class="tablehead"><b>The Morpho Screen</b></td>
+        <td colspan="2" class="tablehead"><b>The Morpho Screen</b></td>
     </tr>
     <tr> 
-        <td  width="100%"><br> <p>
+        <td colspan="2"><br> <p>
             <div class="helpsub">Morpho Welcome Screen</div>
             <br> <br>
             After you have created a profile, you will see Morpho's 'Welcome' screen:</p> 
@@ -97,7 +97,7 @@
             <table width="500" border="0" cellspacing="0" cellpadding="5">
                 <tr> 
                     <td width="37" align="left" valign="top"><img src="images/new_package_icon.gif"></td>
-                    <td width="443">The new data package button starts a wizard that 
+                    <td width="463">The new data package button starts a wizard that 
                         will guide you through the process of creating your own data 
                         package</td>
                 </tr>
@@ -114,7 +114,7 @@
             <table width="500" border="0" cellspacing="0" cellpadding="5">
                 <tr> 
                     <td width="94" align="left" valign="top"><img src="images/searchButtons.gif" width="87" height="27"></td>
-                    <td width="386">The next three buttons are enabled only when the 
+                    <td width="404">The next three buttons are enabled only when the 
                         frame contains the results of a search. The allow you to refresh 
                         the search, save the search for future use, or revise the 
                         search by changing the search parameters.</td>
@@ -131,8 +131,8 @@
             The three icons at the right end of the status bar indicate the following:<br> 
             <table width="400" border="0" cellpadding="5" cellspacing="0">
                 <tr> 
-                    <td width="25%">Network Status</td>
-                    <td width="75%"> <table width="100%">
+                    <td width="100">Network Status</td>
+                    <td width="300"> <table width="100%">
                             <tr> 
                                 <td><img src="images/connect_yes.gif" width="19" height="14"> 
                                     &nbsp;Network connection available</td>
@@ -144,8 +144,8 @@
                         </table></td>
                 </tr>
                 <tr> 
-                    <td width="25%">Login Status</td>
-                    <td width="75%"> <table width="100%">
+                    <td>Login Status</td>
+                    <td> <table width="100%">
                             <tr> 
                                 <td><img src="images/login_yes.gif" width="14" height="14"> 
                                     &nbsp;&nbsp;Logged into network</td>
@@ -157,8 +157,8 @@
                         </table></td>
                 </tr>
                 <tr> 
-                    <td width="25%">Security</td>
-                    <td width="75%"> <table width="100%">
+                    <td>Security</td>
+                    <td> <table width="100%">
                             <tr> 
                                 <td><img src="images/ssl_yes.gif" width="14" height="14"> 
                                     &nbsp;&nbsp;Using secure (SSL) connection*</td>
@@ -271,7 +271,22 @@
                 titled &quot;Population sampling data for zoo...&quot;)</p>
             <p align="left">Click the &quot;open&quot; button (or you can simply double-click 
                 the package, or right click and choose &quot;open&quot;)</p>
-            <div align="left"><br>
+            <div align="left">
+                <p>&nbsp;</p>
+                <p>The icons in the first column of the 'open' screen tell you if 
+                    the package contains: </p>
+                <table width="500" border="0" cellspacing="0" cellpadding="5">
+                    <tr> 
+                        <td width="21"><img src="images/dataicon.jpg" width="21" height="23"></td>
+                        <td width="206">Data and documentation </td>
+                        <td width="23"><img src="images/metadataicon.jpg" width="23" height="25"></td>
+                        <td width="210">Documentation only </td>
+                    </tr>
+                </table>
+                <p>Icons in the last two columns indicate whether the package is located 
+                    on the local machine or on the network (or both).</p>
+                <p></p>
+            <br>
                 &nbsp; <a name="search"></a> </div>
             <div class="helpsub">Search Interface</div>
             <div align="left"> 
@@ -341,18 +356,12 @@
             <p></p></td>
     </tr>
     <tr> 
-        <td> <table width="550">
-                <tr> 
-                    <td width="1">&nbsp; </td>
-                    <td width = "130" align="right"> 
-                        <div align="left"><a href="index.html" class="sitelink">Help 
-                            Home</a> </div></td>
-                    <td width = "420"> <a href="getting_started.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Previous</a> 
-                        &nbsp; &nbsp; &nbsp; <a href="packagesteps.html" class="sitelink">Creating 
-                        a New DataPackage<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a> 
-                    </td>
-                </tr>
-            </table></tr></tr>
+		<td align="left"><a href="index.html" class="sitelink">Help 
+				Home</a></td>
+		<td width = "400" align="right"><a href="getting_started.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Previous</a> 
+				&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="packagesteps.html" class="sitelink">Creating 
+				a New DataPackage<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></td>
+	</tr>
 </table>
 </body>
 </html>
