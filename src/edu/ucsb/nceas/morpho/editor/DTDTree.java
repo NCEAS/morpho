@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-11 03:55:21 $'
- * '$Revision: 1.22 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-04-30 23:14:07 $'
+ * '$Revision: 1.22.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.wutka.dtd.*;
 import java.util.*;
 import javax.swing.tree.*;
 import java.io.*;
+import java.net.URL;
 
 /**
  * class for creating a treeModel based on structure defined 
@@ -87,8 +88,11 @@ public class DTDTree
    */
 	public void parseDTD() {
 		try {
-			FileReader reader = new FileReader(DTDFileName);
-      DTDParser parser = new DTDParser(new BufferedReader(reader));
+      URL dtdUrl = new URL(DTDFileName);
+			//Reader reader = new FileReader(dtdUrl.openStream());
+      //DTDParser parser = new DTDParser(new BufferedReader(reader));
+      DTDParser parser = new DTDParser(new BufferedReader(
+                                      new InputStreamReader(dtdUrl.openStream())));
       dtd = parser.parse(true);
       elementnames = new Vector();
       Enumeration e = dtd.elements.elements();
@@ -117,7 +121,10 @@ public class DTDTree
 	    buildTree(rootTreeNode);
 	    treeModel = new DefaultTreeModel(rootTreeNode);
 	  }
-	  catch (Exception e) {}
+	  catch (Exception e) {
+      System.out.println("Problem while parsing DTD: " + e.getMessage());
+      System.out.println(e.getClass().getName());
+    }
 	}
 
 

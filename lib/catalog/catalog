@@ -21,6 +21,7 @@ OVERRIDE YES
 PUBLIC "-//NCEAS//eml-entity//EN" "eml-entity-2.0.0.beta6e.dtd"
 PUBLIC "-//ecoinformatics.org//eml-entity-2.0.0beta4//EN" "eml-entity-2.0.0.beta4e.dtd"
 PUBLIC "-//ecoinformatics.org//eml-entity-2.0.0beta6//EN" "eml-entity-2.0.0.beta6e.dtd"
+PUBLIC "table-entity" "eml-entity-2.0.0.beta6e.dtd"
 SYSTEM "eml-entity.dtd" "eml-entity-2.0.0.beta6e.dtd"
 
 OVERRIDE YES

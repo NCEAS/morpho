@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.95.2.1 $'
+ *     '$Date: 2002-04-30 23:14:07 $'
+ * '$Revision: 1.95.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -524,9 +524,12 @@ public class DocFrame extends javax.swing.JFrame
       // and info from the result is merged into the tree
       if (dtdMergeflag) {
         if (dtdfile!=null) {
+          System.out.println("dtdfile is: " + dtdfile);
 		      dtdtree = new DTDTree(dtdfile);
+          System.out.println("rootnodeName is: " + rootnodeName);
 		      dtdtree.setRootElementName(rootnodeName);
 		      dtdtree.parseDTD();
+          System.out.println("DTD Root Node: " + dtdtree.rootNode);
 		
 	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 
@@ -795,15 +798,19 @@ class SymAction implements java.awt.event.ActionListener {
                 doctype = ((NodeInfo)rt.getUserObject()).toString();
             }
             rootnodeName = mh.getDocname();
+            if (rootnodeName == null) {
+              rootnodeName = ((DefaultMutableTreeNode)tm.getRoot()).toString();
+            }
+            System.out.println("rootnodeName(1) = " + rootnodeName);
             System.out.println("doctype = " + doctype);
             String temp = myCatalog.resolvePublic(doctype,null);
             if (temp!=null) {
                 if (temp.startsWith("file:")) {
                      temp = temp.substring(5,temp.length());
                 }
-            System.out.println("cat out: "+temp);
-            dtdfile = temp;
-            systemIDString = temp;
+                System.out.println("cat out 1: "+temp);
+                dtdfile = temp;
+                systemIDString = temp;
             }
         } 
         catch (Exception e) { 
