@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-10-22 00:16:58 $'
-* '$Revision: 1.9 $'
+*     '$Date: 2003-10-30 20:05:17 $'
+* '$Revision: 1.10 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -535,10 +535,12 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 	// xpathRoot is up to 'enumeratedDomain' (NOT including the slash after)
 	private void getEnumListData(String xpathRoot, OrderedMap resultsMap) {
 		
+		// Check This - Can we put IGNORE for second col.
 		enumDefinitionList.deleteEmptyRows( CustomList.OR, 
 		new short[] {  
 			CustomList.EMPTY_STRING_TRIM,
-		CustomList.EMPTY_STRING_TRIM  } );
+		CustomList.IGNORE  } );
+		
 		
 		int index=1;
 		StringBuffer buff = new StringBuffer();
@@ -562,8 +564,10 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 			resultsMap.put( buff.toString() + "code",       
 			((String)(nextRow.get(0))).trim());
 			
+			srcObj = nextRow.get(1);
+			if(srcObj == null) continue;
 			resultsMap.put( buff.toString() + "definition", 
-			((String)(nextRow.get(1))).trim());
+			((String)srcObj).trim());
 			
 			srcObj = nextRow.get(2);
 			if (srcObj==null) continue;
@@ -685,26 +689,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		return;
 	}
 	
-	/** This function is to retrieve the selected index of the domainPickList, the 
-	*	selection combobox for "Enumerated domain/Text domain"
-	*   
-	*   @return - the index of the domainPickList 
-	*	       0 indicates Enumerated values, 1 indicates Text values
-	*/
 	
-	public int getDomainPickListSelectedIndex() {
-		return domainPickList.getSelectedIndex();	
-	}
-	
-	/** This function is to retrieve the Code definitions from the CustomList
-	*   
-	*   @return - the List of Rows of Code Definition. Each row is a 3 element list 
-	*		consisting of the Code, Definition and an optional Source
-	*/
-	
-	public List getEnumList() {
-		return this.enumDefinitionList.getListOfRowLists();
-	}
 	
 	/** This function is to retrieve the Pattern definitions from the CustomList
 	*   

@@ -5,8 +5,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-10-22 00:16:57 $'
-* '$Revision: 1.1 $'
+*     '$Date: 2003-10-30 20:05:17 $'
+* '$Revision: 1.2 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -494,7 +494,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		this.physicalWizard = physical;
 	}
 	
-	
+			
 	
 	//{{DECLARE_CONTROLS
 			java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
@@ -636,7 +636,6 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				StartingLineTextField_actionPerformed(event);
 		}
 	}
-	
 	
 	
 	public void startImport(String file) {
@@ -842,14 +841,12 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				// either nominal/ordinal  . We guess as  nominal
 				if (type.equals("text")) { 
 					
-					Log.debug(15,"Peru:Column "+k+" detected as text");
 					Vector unique = getUniqueColValues(k);
 					Enumeration en = unique.elements();
 					int pos =1;
 					while(en.hasMoreElements()) {
 						String elem = (String)en.nextElement();
 						String path = AttributeSettings.Nominal_xPath + "/enumeratedDomain[1]/codeDefinition["+pos+"]/code";
-						Log.debug(15,"Peru: in ImportWizard, putting ("+path+" , "+elem+")");
 						map.put(path,elem);
 						path = AttributeSettings.Ordinal_xPath + "/enumeratedDomain[1]/codeDefinition["+pos+"]/code";
 						map.put(path,elem);
@@ -859,7 +856,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				}
 				
 				
-				if (type.equals("float")) {
+				else if (type.equals("float")) {
 					String numberTypePath = AttributeSettings.Interval_xPath + "/numericDomain/numberType";
 					map.put(numberTypePath,numberTypesArray[3]);
 					numberTypePath = AttributeSettings.Ratio_xPath + "/numericDomain/numberType";
@@ -867,7 +864,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 					ad.setPageData(AttributeSettings.Attribute_xPath, map, "interval");
 				}
 				
-				if(type.equals("integer")) {
+				else if(type.equals("integer")) {
 				
 					String numType = guessNumberType(k);
 					
@@ -891,7 +888,9 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 					}
 					ad.setPageData(AttributeSettings.Attribute_xPath, map, "interval");
 				}
-				
+				else if (type.equals("date")) {
+					ad.setPageData(AttributeSettings.Attribute_xPath, map, "datetime");
+				}
 			}
 			
 		}
@@ -1405,7 +1404,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	
 	
 	
-	public String guessNumberType (int k)
+	private String guessNumberType (int k)
 	{
 		Vector v = getUniqueColValues(k);
 		Enumeration e = v.elements();
@@ -1457,14 +1456,20 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		if(colNum >= columnAttributes.size()) 
 			return;
 		AttributeDialog ad = (AttributeDialog)columnAttributes.elementAt(colNum);
-		
-		String type = ad.getMeasurementScale();
+		OrderedMap map = ad.getPageData(AttributeSettings.Attribute_xPath);
+		String type = findMeasurementScale(map);
 		if (type.equalsIgnoreCase("Nominal") || type.equalsIgnoreCase("Ordinal")) {
 		}
 		else if (type.equalsIgnoreCase("Interval") || type.equalsIgnoreCase("Ratio")) {
-			IntervalRatioPanel panel= (IntervalRatioPanel)ad.getCurrentMeasurementScalePanel();
-			if(panel == null) return;
-			int numType = panel.getNumberTypePickListSelectedIndex();
+			Object o1 = map.get(AttributeSettings.Interval_xPath + "/numericDomain/numberType"); 
+			if(o1 == null) return;
+			String numTypeStr = (String) o1;
+			int numType = -1;
+			if(numTypeStr.equalsIgnoreCase("natural")) numType = 0;
+			if(numTypeStr.equalsIgnoreCase("whole")) numType = 1;
+			if(numTypeStr.equalsIgnoreCase("integer")) numType = 2;
+			if(numTypeStr.equalsIgnoreCase("real")) numType = 3;
+			
 			for (int j=0;j<vec.size();j++) {
 				Vector v = (Vector)vec.elementAt(j);
 				String str = (String)v.elementAt(colNum);
@@ -1496,6 +1501,30 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			}
 		}
 		
+	}
+	
+	
+	private String findMeasurementScale(OrderedMap map) {
+		
+		Object o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) return "Nominal";
+		o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
+		if(o1 != null) return "Nominal";
+		
+		o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) return "Ordinal";
+		o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
+		if(o1 != null) return "Ordinal";
+		
+		o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
+		if(o1 != null) return "Interval";
+		o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
+		if(o1 != null) return "Ratio";
+		
+		o1 = map.get(AttributeSettings.DateTime_xPath+"/formatString");
+		if(o1 != null) return "Datetime";
+		
+		return "";
 	}
 	
 	
@@ -1545,8 +1574,9 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			TextImportResultsFrame rf = new TextImportResultsFrame();
 			rf.ResultsTextArea.setText(resultsBuffer.toString());
 			rf.setVisible(true);
+			
 		} catch (java.lang.Exception e) {
-		}
+		} 
 	}
 	
 	
@@ -1640,7 +1670,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	{
 		if (parseOn) {
 			parseDelimited();
-			JOptionPane.showMessageDialog(this, "called parseDelimited", "Message",JOptionPane.INFORMATION_MESSAGE, null);
+			
 		}
 	}
 	
@@ -1837,7 +1867,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		
 		for (int i=0;i<columnAttributes.size();i++) {
 			AttributeDialog ad = (AttributeDialog)columnAttributes.elementAt(i);
-			if (!ad.hasAllInfo()) {
+			if (!ad.onAdvanceAction()) {
 				temp = temp + "#" + (i+1) +" ";
 			}
 		}
@@ -1948,6 +1978,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		*/
 		
 		public void setCurrentAttributeIndex(int index) {
+
 			currentAttributeIndex = index;
 			AttributeDialog ad = (AttributeDialog) columnAttributes.elementAt(currentAttributeIndex);
 			htmlPanel.setText(ad.getText());

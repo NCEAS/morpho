@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 20:30:54 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-10-30 20:05:17 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -564,19 +564,7 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 	return;
   }
   
-  /** Function to get the number Type
-  *
-  *  @return  the index of the number type pick list
-  	      0 - Natural
-	      1 - Whole
-	      2 - Integer
-	      3 - Real
-  */
-  
-  public int getNumberTypePickListSelectedIndex() {
-	  return numberTypePickList.getSelectedIndex();
-  }
-	     
+     
 }
 
 

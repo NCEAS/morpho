@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 00:16:58 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-10-30 20:05:17 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ public class AttributeDialog extends WizardPopupDialog {
   public static final int MEASUREMENTSCALE_DATETIME = 4;
   
   
-  // 
+    // 
   public AttributeDialog(JFrame parent) { 
   
     super(parent); 
@@ -313,23 +313,8 @@ public class AttributeDialog extends WizardPopupDialog {
     this.measurementScale = scale;
   }
   
-  /** Function to retrive the current measurementScale of the Attribute
-  *
-  *   @return  the measurement scale as a String
-  **/
   
-  public String getMeasurementScale() {
-	return this.measurementScale;	  
-  }
   
-  /** Function to retrive the current measurement scale panel
-  *	
-  *   @return  the current panel as a JPanel
-  */
-  
-  public JPanel getCurrentMeasurementScalePanel() {
-	  return currentPanel;
-  }
 
   private void setMeasurementScaleUI(JPanel panel) {
 
@@ -542,12 +527,6 @@ public class AttributeDialog extends WizardPopupDialog {
 	if(defn != null)
 		attribDefinitionField.setText(defn);
 	
-	((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
-	((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
-	((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
-	((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
-	((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
-	
 	if(mScale == null || mScale.equals(""))
 		return;
 	
@@ -586,6 +565,13 @@ public class AttributeDialog extends WizardPopupDialog {
 		JRadioButton jrb = (JRadioButton)(radioPanel.getComponent(componentNum));
 		jrb.setSelected(true);
 	}
+	((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
+	((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
+	((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
+	((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
+	((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
+	ordinalPanel.invalidate();
+	refreshUI();
 	return;
   }
   
@@ -615,11 +601,44 @@ public class AttributeDialog extends WizardPopupDialog {
 	text += "</tr>";	
 	
 	String scale = measurementScale;
-	int index = -1;
-	if(measurementScale.equalsIgnoreCase("Nominal") || measurementScale.equalsIgnoreCase("Ordinal")) {
-		index = ((NominalOrdinalPanel)currentPanel).getDomainPickListSelectedIndex();
-		if(index == 0) scale += "; Enumerated values";
-		else scale += "; Text values";
+	int index = 0;
+	
+	
+	OrderedMap map = getPageData(AttributeSettings.Attribute_xPath);
+	
+	if(measurementScale.equalsIgnoreCase("Nominal")) {
+		Object o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) { scale += "; Enumerated values"; index = 0; }
+		else { 
+			o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
+			if(o1 != null)  { 
+				scale += "; Text values"; 
+				index = 1; 
+			}
+			// both arent there. so Enumerated is the default - 
+			// this occurs only at the first time, before the user edits the values
+			else { 
+				scale += "; Enumerated values"; 
+				index = 0; 
+			}  
+		}
+	}
+	else if(measurementScale.equalsIgnoreCase("Ordinal")) {
+		Object o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		if(o1 != null) { scale += "; Enumerated values"; index = 0; }
+		else { 
+			o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
+			if(o1 != null)  { 
+				scale += "; Text values"; 
+				index = 1; 
+			}
+			// both arent there. so Enumerated is the default - 
+			// this occurs only at the first time, before the user edits the values
+			else { 
+				scale += "; Enumerated values"; 
+				index = 0; 
+			}
+		}
 	}
 
 	// Third row - Measurement Scale:	
@@ -628,7 +647,7 @@ public class AttributeDialog extends WizardPopupDialog {
 	text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + scale + "</td>";
 	text += "</tr>";
 	
-	OrderedMap map = getPageData(AttributeSettings.Attribute_xPath);
+
 	
 	// Nominal measurement scale
 	if(measurementScale.equalsIgnoreCase("Nominal") || measurementScale.equalsIgnoreCase("Ordinal")) {
@@ -654,7 +673,11 @@ public class AttributeDialog extends WizardPopupDialog {
 				Object o = map.get(mainXPath + enumPath + i + "]/code" );
 				if(o == null) break;
 				String e1 = (String) o;
-				String e2 = (String) map.get(mainXPath + enumPath + i + "]/definition" );
+				o = map.get(mainXPath + enumPath + i + "]/definition" );
+				String e2;
+				if( o == null) e2 = "no definition"; 
+				else e2 = (String)o; 
+				
 				o = map.get(mainXPath + enumPath + i + "]/source" );
 				String e3;
 				if( o == null) e3 ="";
@@ -740,11 +763,7 @@ public class AttributeDialog extends WizardPopupDialog {
 		Object o2 = map.get(mainXPath + "/numericDomain/bounds[1]/maximum");
 		// add Bounds
 		if(o1 != null || o2 != null) {
-			
-			
-			
-			
-			
+					
 			int pos = 1;
 			while(true) {
 				Object ob1 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/minimum");
@@ -859,36 +878,7 @@ public class AttributeDialog extends WizardPopupDialog {
    }
     
   
-  /** 
-   *  function to check if all necessary data has been entered by the user. This is called 
-   *  by the TextImportWizard when the 'Finish' button is hit
-   *
-   *  @return   true - if the user has entered all required information
-   * 		false - if any necessary info is missing
-   */
-   
-  public boolean hasAllInfo() {
-	 
-	 if(attribNameField.getText().length() == 0) return false;
-	 if(attribDefinitionField.getText().length() == 0) return false;
-	 if(measurementScale == null) return false;
-	 
-	 if(measurementScale.equalsIgnoreCase("Nominal") || measurementScale.equalsIgnoreCase("Ordinal") ) {
-		if(! ((NominalOrdinalPanel)currentPanel).validateUserInput() ) 
-			return false;
-	 }
-	 
- 	 if(measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio") ) {
-		if(! ((IntervalRatioPanel)currentPanel).validateUserInput() ) 
-			return false;
-	 }
-	 
-	 if(measurementScale.equalsIgnoreCase("Datetime")) {
-		 if (! ((DateTimePanel) currentPanel).validateUserInput()) 
-			 return false;
-	 }
-	 return true;
-  }
+  
    
   
   

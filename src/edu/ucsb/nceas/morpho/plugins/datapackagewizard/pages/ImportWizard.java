@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 00:16:58 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-10-30 20:05:17 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ public class ImportWizard extends     AbstractWizardPage
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
                 
       importWiz = new TextImportWizardEml2(fileTextName, this);
-  
+      
       importWiz.setVisible(false);
       
       final JFrame parent = WizardContainerFrame.frame;
