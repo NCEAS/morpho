@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-26 00:05:51 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2001-05-30 17:57:28 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,9 +90,6 @@ public class LocalQuery extends DefaultHandler
    */
   static Hashtable dataPackage_collection; 
   
-  /** The string representation of the pathquery (XML format) */
-  private String queryString;
-  
   /** A reference to the container framework */
   private ClientFramework framework = null;
 
@@ -123,23 +120,6 @@ public class LocalQuery extends DefaultHandler
   /** The folder icon for representing local storage. */
   private ImageIcon localIcon = null;
     
-  // Query data structures used temporarily during XML parsing
-  private boolean containsExtendedSQL=false;
-  private String meta_file_id;
-  private String queryTitle;
-  private Vector doctypeList;
-  private Vector returnFieldList;
-  private Vector ownerList;
-  private Vector siteList;
-  private QueryGroup rootQG = null;
-
-  private Stack elementStack;
-  private Stack queryStack;
-  private String currentValue;
-  private String currentPathexpr;
-  private String parserName = null;
-  private String accNumberSeparator = null;
-  
   // create these static caches when class is first loaded
   static {
     dom_collection = new Hashtable();
@@ -168,35 +148,6 @@ public class LocalQuery extends DefaultHandler
       
     local_xml_directory = local_xml_directory.trim();
     xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-
-    // Initialize the members
-    doctypeList = new Vector();
-    elementStack = new Stack();
-    queryStack   = new Stack();
-    returnFieldList = new Vector();
-    ownerList = new Vector();
-    siteList = new Vector();
-
-
-
-    // Store the text of the initial query
-    queryString = savedQuery.toString();
-    framework.debug(9, queryString);
-
-    // Initialize the parser and read the queryspec
-    XMLReader parser = initializeParser();
-    if (parser == null) {
-      framework.debug(1, "SAX parser not instantiated properly.");
-    }
-    try {
-      parser.parse(new InputSource(new StringReader(queryString.trim())));
-    } catch (IOException ioe) {
-      framework.debug(4, "Error reading the query during parsing.");
-    } catch (SAXException e) {
-      framework.debug(4, "Error parsing Query (" + 
-                      e.getClass().getName() +").");
-      framework.debug(4, e.getMessage());
-    }
   }
 
   /**
@@ -205,7 +156,7 @@ public class LocalQuery extends DefaultHandler
   public ResultSet execute() 
   {
     // first, get a list of all packages that meet the query requirements
-    Vector packageList = executeLocal(this.rootQG);
+    Vector packageList = executeLocal(this.savedQuery.getQueryGroup());
     Vector row = null;
     Vector rowCollection = new Vector();
     
@@ -244,7 +195,7 @@ public class LocalQuery extends DefaultHandler
       myCatalog.parseCatalog(xmlcatalogfile);
       cer.setCatalog(myCatalog);
     } catch (Exception e) {
-      System.out.println("Problem creating Catalog!" + e.toString());
+      ClientFramework.debug(9,"Problem creating Catalog!" + e.toString());
     }
     parser.setEntityResolver(cer);
     // set start time variable
@@ -260,7 +211,7 @@ public class LocalQuery extends DefaultHandler
     for (int i=0;i<filevector.size();i++) {
       File currentfile = (File)filevector.elementAt(i);
       String filename = currentfile.getPath();
-      /*framework.debug(9, "Searching local file: " + filename);*/
+      /*ClientFramework.debug(9, "Searching local file: " + filename);*/
       
       // skips subdirectories
       if (currentfile.isFile()) {
@@ -276,7 +227,7 @@ public class LocalQuery extends DefaultHandler
           try {
             in = new InputSource(new FileInputStream(filename));
           } catch (FileNotFoundException fnf) {
-            System.err.println("FileInputStream of " + filename + 
+            ClientFramework.debug(9,"FileInputStream of " + filename + 
                                " threw: " + fnf.toString());
             //fnf.printStackTrace();
             continue;
@@ -285,7 +236,7 @@ public class LocalQuery extends DefaultHandler
             parser.parse(in);
           }
           catch(Exception e1) {
-            System.err.println("Parsing " + filename + 
+            ClientFramework.debug(9,"Parsing " + filename + 
                                " threw: " + e1.toString());
             //e1.printStackTrace();
             continue;
@@ -329,7 +280,7 @@ public class LocalQuery extends DefaultHandler
         }
         catch (Exception e2)
         {
-          System.err.println("selectNodeList threw: " + e2.toString() 
+          ClientFramework.debug(9,"selectNodeList threw: " + e2.toString() 
             + " perhaps your xpath didn't select any nodes");
           // e2.printStackTrace();
           continue;
@@ -337,14 +288,13 @@ public class LocalQuery extends DefaultHandler
       }
       else
       {
-        System.out.println("Bad input args: " + filename + ", " 
+        ClientFramework.debug(9,"Bad input args: " + filename + ", " 
           + xpathExpression);
       }
    } // end of 'for' loop over all files
         
  
     curtime = System.currentTimeMillis();
-    //System.out.println("total time: "+(int)(curtime-starttime));
     return package_IDs;
   }
   
@@ -357,7 +307,6 @@ public class LocalQuery extends DefaultHandler
     }
     return ret;
   }
-  
   
   /** Create a row vector that matches that needed for the ResultSet vector */
   private Vector createRSRow(String filename) {
@@ -392,7 +341,7 @@ public class LocalQuery extends DefaultHandler
     return rss;
   }
   
-  /*
+  /**
    *  utility routine to return the value of a node defined by
    *  a specified XPath; used to build result set from local
    *  queries
@@ -423,15 +372,16 @@ public class LocalQuery extends DefaultHandler
         }
       }
     } catch (Exception e){
-      System.out.println("Error in getValueForPath method");
+      ClientFramework.debug(9,"Error in getValueForPath method");
     }
     return val;    
   }
   
-  /*  Given a DOM document node, this method returns the DocType
-   *  as a String
+  /**
+   * Given a DOM document node, this method returns the DocType
+   * as a String
    */
-  static private String getDocTypeFromDOM(Document doc){
+  private static String getDocTypeFromDOM(Document doc){
     String ret = null;
     DocumentType ddd = doc.getDoctype();
     ret = ddd.getPublicId();
@@ -448,7 +398,7 @@ public class LocalQuery extends DefaultHandler
     * given a directory, return a vector of files it contains
     * including subdirectories
     */
-   static private void getFiles(File directoryFile, Vector vec) {
+   private static void getFiles(File directoryFile, Vector vec) {
       String[] files = directoryFile.list();
       
       for (int i=0;i<files.length;i++)
@@ -479,125 +429,6 @@ public class LocalQuery extends DefaultHandler
         return last;
    }
  
- // SAX Parser methods--------------------------------------------------------
-  /**
-   * Set up the SAX parser for reading the XML serialized query
-   */
-  private XMLReader initializeParser() {
-    XMLReader parser = null;
-
-    // Set up the SAX document handlers for parsing
-    try {
-
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-
-      // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
-
-      // Set the error Handler to this instance
-      parser.setErrorHandler(this);
-
-    } catch (Exception e) {
-       framework.debug(1, "Error in Query.initializeParser " + e.toString());
-    }
-
-    return parser;
-  }
-
-  /**
-   * callback method used by the SAX Parser when the start tag of an 
-   * element is detected. Used in this context to parse and store
-   * the query information in class variables.
-   */
-  public void startElement (String uri, String localName, 
-                            String qName, Attributes atts) 
-         throws SAXException {
-    BasicNode currentNode = new BasicNode(localName);
-    // add attributes to BasicNode here
-    if (atts != null) {
-      int len = atts.getLength();
-      for (int i = 0; i < len; i++) {
-        currentNode.setAttribute(atts.getLocalName(i), atts.getValue(i));
-      }
-    }
-
-    elementStack.push(currentNode); 
-    if (currentNode.getTagName().equals("querygroup")) {
-      QueryGroup currentGroup = new QueryGroup(
-                                currentNode.getAttribute("operator"));
-      if (rootQG == null) {
-        rootQG = currentGroup;
-      } else {
-        QueryGroup parentGroup = (QueryGroup)queryStack.peek();
-        parentGroup.addChild(currentGroup);
-      }
-      queryStack.push(currentGroup);
-    }
-  }
-
-  /**
-   * callback method used by the SAX Parser when the end tag of an 
-   * element is detected. Used in this context to parse and store
-   * the query information in class variables.
-   */
-  public void endElement (String uri, String localName,
-                          String qName) throws SAXException {
-    BasicNode leaving = (BasicNode)elementStack.pop(); 
-    if (leaving.getTagName().equals("queryterm")) {
-      boolean isCaseSensitive = (new Boolean(
-              leaving.getAttribute("casesensitive"))).booleanValue();
-      QueryTerm currentTerm = null;
-      if (currentPathexpr == null) {
-        currentTerm = new QueryTerm(isCaseSensitive,
-                      leaving.getAttribute("searchmode"),currentValue);
-      } else {
-        currentTerm = new QueryTerm(isCaseSensitive,
-                      leaving.getAttribute("searchmode"),currentValue,
-                      currentPathexpr);
-      }
-      QueryGroup currentGroup = (QueryGroup)queryStack.peek();
-      currentGroup.addChild(currentTerm);
-      currentValue = null;
-      currentPathexpr = null;
-    } else if (leaving.getTagName().equals("querygroup")) {
-      QueryGroup leavingGroup = (QueryGroup)queryStack.pop();
-    }
-  }
-
-  /**
-   * callback method used by the SAX Parser when the text sequences of an 
-   * xml stream are detected. Used in this context to parse and store
-   * the query information in class variables.
-   */
-  public void characters(char ch[], int start, int length) {
-
-    String inputString = new String(ch, start, length);
-    BasicNode currentNode = (BasicNode)elementStack.peek(); 
-    String currentTag = currentNode.getTagName();
-    if (currentTag.equals("meta_file_id")) {
-      meta_file_id = inputString;
-    } else if (currentTag.equals("querytitle")) {
-      queryTitle = inputString;
-    } else if (currentTag.equals("value")) {
-      currentValue = inputString;
-    } else if (currentTag.equals("pathexpr")) {
-      currentPathexpr = inputString;
-    } else if (currentTag.equals("returndoctype")) {
-      doctypeList.add(inputString);
-    } else if (currentTag.equals("returnfield")) {
-      returnFieldList.add(inputString);
-      containsExtendedSQL = true;
-    } else if (currentTag.equals("owner")) {
-      ownerList.add(inputString);
-    } else if (currentTag.equals("site")) {
-      siteList.add(inputString);
-    }
-  }
- 
-// -------------------------------------------------------------------------
-
-
   /**
    * given a QueryTerm, construct a XPath expression
    */
@@ -682,14 +513,14 @@ public class LocalQuery extends DefaultHandler
       if (child instanceof QueryTerm) {
         String xpath = QueryTermToXPath((QueryTerm)child);
         currentResults = executeXPathQuery(xpath);
-        framework.debug(9, "QT res count: " + currentResults.size()); 
+        ClientFramework.debug(9, "QT res count: " + currentResults.size()); 
       } else {  // QueryGroup
         currentResults = executeLocal((QueryGroup)child);
-        framework.debug(9, "QG res count: " + currentResults.size()); 
+        ClientFramework.debug(9, "QG res count: " + currentResults.size()); 
       }
  
       if (currentResults==null) {
-        framework.debug(9, "current is null!");
+        ClientFramework.debug(9, "current is null!");
       }
 
       if ((currentResults==null) &&
@@ -704,26 +535,26 @@ public class LocalQuery extends DefaultHandler
         if (combined == null) {
           combined = (Vector)currentResults.clone(); // 1st time
         } else {
-          framework.debug(9, "Intersecting results...");
+          ClientFramework.debug(9, "Intersecting results...");
           Vector original = (Vector)combined.clone();
-          framework.debug(9, "Original res count: " + original.size()); 
-          framework.debug(9, "Current res count: " + currentResults.size()); 
+          ClientFramework.debug(9, "Original res count: " + original.size()); 
+          ClientFramework.debug(9, "Current res count: " + currentResults.size()); 
           for (int i = 0; i < original.size(); i++) {
-            framework.debug(9, "Original res contains: " + original.get(i));
+            ClientFramework.debug(9, "Original res contains: " + original.get(i));
           }
           for (int i = 0; i < currentResults.size(); i++) {
-            framework.debug(9, "Current res contains: " + 
+            ClientFramework.debug(9, "Current res contains: " + 
                             currentResults.get(i));
           }
           combined = new Vector();
           for (int i = 0; i < currentResults.size(); i++) {
-            framework.debug(9, "Made it in loop.");
+            ClientFramework.debug(9, "Made it in loop.");
             Object obj = currentResults.get(i);
             if (original.contains(obj)) {
               combined.addElement(obj);
-              framework.debug(9, "Match.");
+              ClientFramework.debug(9, "Match.");
             } else {
-              framework.debug(9, "Mismatch.");
+              ClientFramework.debug(9, "Mismatch.");
             }
           }
         }
@@ -741,7 +572,7 @@ public class LocalQuery extends DefaultHandler
         }
       }
     }
-    framework.debug(9, "Returning res count: " + combined.size()); 
+    ClientFramework.debug(9, "Returning res count: " + combined.size()); 
     return combined;
   }   
 
@@ -750,8 +581,6 @@ public class LocalQuery extends DefaultHandler
    */
   private void loadConfigurationParameters()
   {
-    parserName = config.get("saxparser", 0);
-    accNumberSeparator = config.get("accNumberSeparator", 0);
     String searchLocalString = config.get("searchlocal", 0);
     //searchLocal = (new Boolean(searchLocalString)).booleanValue();
     returnFields = config.get("returnfield");
@@ -765,8 +594,8 @@ public class LocalQuery extends DefaultHandler
   static public void main(String[] args) 
   {
     if (args.length < 1) {
-      System.err.println("Wrong number of arguments!!!");
-      System.err.println("USAGE: java LocalQuery <xmlfile>");
+      ClientFramework.debug(9, "Wrong number of arguments!!!");
+      ClientFramework.debug(9, "USAGE: java LocalQuery <xmlfile>");
       return;
     } else {
       int i = 0;
@@ -786,14 +615,15 @@ public class LocalQuery extends DefaultHandler
         ResultSet rs = qspec.execute();
          
        } catch (IOException e) {
-         System.err.println(e.getMessage());
+         ClientFramework.debug(9, e.getMessage());
        }
      }
   }
    
- /** routine to get the package(s) that any document is contained in 
-  *  returns a vector since a document can be in multiple packages
-  *  current just returns itself
+ /** 
+  * routine to get the package(s) that any document is contained in 
+  * returns a vector since a document can be in multiple packages
+  * current just returns itself
   */
   private Vector getPackageID(String docid) {
     Vector ret = (Vector)dataPackage_collection.get(docid);
@@ -801,8 +631,8 @@ public class LocalQuery extends DefaultHandler
     return ret;
   }
 
- /** build hashtable of package elements
-  *  called by buildPackageList
+ /** 
+  * build hashtable of package elements called by buildPackageList
   */
   static private void addToPackageList(Node nd, String fn) {
     String subject = "";
@@ -814,7 +644,7 @@ public class LocalQuery extends DefaultHandler
       nl = XPathAPI.selectNodeList(root, xpathExpression);
     }
     catch (Exception ee) {
-      System.out.println("Error in building PackageList!");  
+      ClientFramework.debug(9, "Error in building PackageList!");  
     }
     if ((nl!=null)&&(nl.getLength()>0)) {
       for (int m=0;m<nl.getLength();m++) {
@@ -859,11 +689,13 @@ public class LocalQuery extends DefaultHandler
     }
   }
  
-  /* Builds package list by looping over all files
+  /** 
+   * Builds package list by looping over all files
    * in the local XML directory
    * Uses XPath to find all <triple> elements and builds list
    */
-  static private void buildPackageList() {
+  private static void buildPackageList() 
+  {
     Node root;
     long starttime, curtime, fm;
     DOMParser parser = new DOMParser();
@@ -875,7 +707,7 @@ public class LocalQuery extends DefaultHandler
       myCatalog.parseCatalog("./lib/catalog/catalog");
       cer.setCatalog(myCatalog);
     } catch (Exception e) {
-      System.out.println("Problem creating Catalog!" + e.toString());
+      ClientFramework.debug(9, "Problem creating Catalog!" + e.toString());
     }
     parser.setEntityResolver(cer);
     // set start time variable
@@ -894,54 +726,46 @@ public class LocalQuery extends DefaultHandler
       
       // skips subdirectories
       if (currentfile.isFile()) {
-          // checks to see if doc has already been placed in DOM cache
-          // if so, no need to parse again
+        // checks to see if doc has already been placed in DOM cache
+        // if so, no need to parse again
         if (dom_collection.containsKey(filename)){
           root = ((Document)dom_collection.get(filename)).getDocumentElement();
-        }
-        else {
+        } else {
           InputSource in;
-            try {
-              in = new InputSource(new FileInputStream(filename));
-            } catch (FileNotFoundException fnf) {
-              System.err.println("FileInputStream of " + filename + 
-                                 " threw: " + fnf.toString());
-              continue;
-            }
-            try {
-              parser.parse(in);
-            }
-            catch(Exception e1) {
-              System.err.println("Parsing " + filename + 
-                                 " threw: " + e1.toString());
-              continue;
-            }
+          try {
+            in = new InputSource(new FileInputStream(filename));
+          } catch (FileNotFoundException fnf) {
+            ClientFramework.debug(9, "FileInputStream of " + filename + 
+                               " threw: " + fnf.toString());
+            continue;
+          }
+          try {
+            parser.parse(in);
+          }
+          catch(Exception e1) {
+            ClientFramework.debug(9, "Parsing " + filename + 
+                               " threw: " + e1.toString());
+            continue;
+          }
 
-        // Get the documentElement from the parser, which is what 
-        // the selectNodeList method expects
+          // Get the documentElement from the parser, which is what 
+          // the selectNodeList method expects
           Document current_doc = parser.getDocument();
           root = parser.getDocument().getDocumentElement();
           dom_collection.put(filename,current_doc);
           String temp = getDocTypeFromDOM(current_doc);
           if (temp==null) temp = root.getNodeName();
           doctype_collection.put(filename,temp);
-  //        currentDoctype = temp;
         } // end else
       
-      addToPackageList(root, getLastPathElement(filename));  
+        addToPackageList(root, getLastPathElement(filename));  
       
+      } else {
+        ClientFramework.debug(9, "Bad input args: " + filename + ", " );
       }
-      else
-      {
-        System.out.println("Bad input args: " + filename + ", " );
-      }
-   } // end of 'for' loop over all files
+    } // end of 'for' loop over all files
         
- 
     curtime = System.currentTimeMillis();
-    
-    System.out.println("Build Package List Completed");
+    ClientFramework.debug(9, "Build Package List Completed");
   }
 }
-   
-
