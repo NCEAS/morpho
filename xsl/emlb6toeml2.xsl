@@ -120,7 +120,7 @@
               </xsl:for-each>
               <xsl:if test="$dsb6/dataset/keywordSet/keywordThesaurus!=''">
                 <xsl:element name="keywordThesaurus">
-                  <xsl:value-of select="."/>
+                  <xsl:value-of select="$dsb6/dataset/keywordSet/keywordThesaurus"/>
                 </xsl:element>
               </xsl:if>
             </xsl:element>
