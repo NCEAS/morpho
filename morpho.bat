@@ -1,1 +1,1 @@
-java -Xmx512m -cp .;lib/xercesImpl.jar;lib/xmlParserAPIs.jar;lib/xalan.jar;lib/kunststoff.jar;lib/morpho.jar;lib/morpho-config.jar;lib/jlfgr-1_0.jar;lib/httpclient.jar;lib/itislib.jar;lib/jsse.jar;lib/jcert.jar;lib/jnet.jar edu.ucsb.nceas.morpho.framework.ClientFramework
+java -Xmx512m -cp .;lib/xercesImpl.jar;lib/xmlParserAPIs.jar;lib/xalan.jar;lib/kunststoff.jar;lib/morpho.jar;lib/morpho-config.jar;lib/jlfgr-1_0.jar;lib/httpclient.jar;lib/itislib.jar;lib/jsse.jar;lib/jcert.jar;lib/jnet.jar edu.ucsb.nceas.morpho.Morpho
