@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-12 22:25:58 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-03-16 23:00:46 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,7 +135,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
         +"Precision of a date or time measurement, interpreted in the "
         +"smallest units represented by the datetime format."
         +"&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
-        +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: 0.1 "
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: 1 "
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_NO_TABLE_CLOSING));
 

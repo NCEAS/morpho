@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-11 02:53:08 $'
-* '$Revision: 1.6 $'
+*     '$Date: 2004-03-16 23:00:46 $'
+* '$Revision: 1.7 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -53,21 +53,27 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.BorderFactory;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusAdapter;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
+import javax.swing.InputVerifier;
 
 import java.util.List;
 import java.util.Vector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 
 public class Taxonomic extends AbstractWizardPage {
@@ -86,7 +92,7 @@ public class Taxonomic extends AbstractWizardPage {
 	private final String heading = "Enter Taxonomic Information for the Data Package. You can enter the data in place for upto two levels of taxonomic information for a given taxon. To define more levels and/or common names for each level, hit the 'Edit' button";
 	
 	// column titles for the customlist in the main-page
-	private String colNames[] = {"Ancestor Taxa", "Rank", "Name", 
+	private String colNames[] = {"Higher Level Taxa", "Rank", "Name", 
 	"Rank", "Name", "Common Name(s)"};
 	
 	// CustomList listing the taxons ranks and names
@@ -121,14 +127,21 @@ public class Taxonomic extends AbstractWizardPage {
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		this.add(centerPanel, BorderLayout.CENTER);
 		
-		Object colObjects[] = new Object[6];
+		JTextField colObjects[] = new JTextField[6];
 		colObjects[0] = new JTextField();
 		((JTextField)colObjects[0]).setEditable(false);
 		((JTextField)colObjects[0]).setBackground(Color.lightGray);
 		((JTextField)colObjects[0]).setDisabledTextColor(Color.black);
 		((JTextField)colObjects[0]).setForeground(Color.black);
-		for(int i = 1;i<6;i++)
+		for(int i = 1;i<6;i++) {
 			colObjects[i] = new JTextField();
+		}
+		
+		colObjects[1].setInputVerifier(new NewTaxonRankVerifier(this, 1));
+		colObjects[2].setInputVerifier(new TaxonNameVerifier(this, 2));
+		colObjects[3].setInputVerifier(new NewTaxonRankVerifier(this, 3));
+		colObjects[4].setInputVerifier(new TaxonNameVerifier(this, 4));
+		colObjects[5].setInputVerifier(new CommonNameVerifier(this));
 		taxonList = WidgetFactory.makeList(colNames, colObjects, 0, true, true, false, 
 		true, false, false);
 		double[] colPercentages = new double[] {28,14,14,14,14,16};
@@ -274,6 +287,7 @@ public class Taxonomic extends AbstractWizardPage {
 		taxonList.addRow(newRow);
 		
 	}
+	
 	
 	private void TaxonListEditAction() {
 		
@@ -450,6 +464,219 @@ public class Taxonomic extends AbstractWizardPage {
    *            key/value paired settings for this particular wizard page
    */
 	public void setPageData(OrderedMap data) { }
+	
+	//////////////////////////////////////////////////////
+	//InputVerifiers for the TextField in the CustomList
+	//////////////////////////////////////////////////////
+	
+	
+	private static int validateTaxonCounter = 0;
+	private static int commonNameCounter = 0;
+	private static int taxonNameCounter = 0;
+	class NewTaxonRankVerifier extends InputVerifier {
+		
+		Taxonomic parent;
+		int pos;
+		
+		NewTaxonRankVerifier(Taxonomic panel, int pos) {
+			this.parent = panel;
+			this.pos = pos;
+		}
+		
+		public boolean verify(JComponent jc) {
+			
+			if(validateTaxonCounter > 0) {
+				System.out.println("ret excess in newtaxonrank");
+				return true;
+			}
+			validateTaxonCounter++;
+			
+			boolean error = false;
+			JTextField textField = (JTextField) jc;
+			String newText = textField.getText();
+			if(newText == null || newText.trim().equals("")) {
+				validateTaxonCounter--;
+				return true;
+			}
+			if(!isValidName(newText)) {
+				JOptionPane.showMessageDialog(Taxonomic.this, "Invalid characters in the taxon rank. Only letters and spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
+				validateTaxonCounter--;
+				int idx = Taxonomic.this.taxonList.getSelectedRowIndex();
+				Taxonomic.this.taxonList.editCellAt(idx, pos);
+				int[] selRows = new int[]{idx};
+				Taxonomic.this.taxonList.setSelectedRows(selRows);
+				return false;
+			}
+				
+			List selRow = taxonList.getSelectedRowList();
+			
+			String hier = "";
+			String firstTaxon = "";
+			String secTaxon = "";
+			String comName = "";
+			List hierNames = null;
+			
+			int size = selRow.size();
+			if(size > 0) {
+				hier = (String)selRow.get(0);
+				hierNames = getHierarchy(hier);
+			}
+			if(size > 1)
+				firstTaxon = (String)selRow.get(1);
+			if(size > 3)
+				secTaxon = (String)selRow.get(3);
+			if(size > 5)
+				comName = (String)selRow.get(5);
+			
+			// check the hierarchy 
+			Iterator it = hierNames.iterator();
+			while(it.hasNext()) {
+				String token = (String)it.next();
+				if(token.equals(newText)) {
+					error = true;
+					break;
+				}
+			}
+			
+			if(pos == 1) {
+				
+				if(secTaxon.equals(newText)) {
+					error = true;
+				}
+			} else if (pos == 3) {
+				
+				if(firstTaxon.equals(newText)) {
+					error = true;
+				}
+			}
+			
+			if(error) {
+				JOptionPane.showMessageDialog(Taxonomic.this, "Error in the entry! The entered taxon rank is already present in the taxonomic hierarchy", "Error", JOptionPane.ERROR_MESSAGE);
+				int idx = Taxonomic.this.taxonList.getSelectedRowIndex();
+				Taxonomic.this.taxonList.editCellAt(idx, pos);
+				jc.requestFocus();
+				validateTaxonCounter--;
+				int[] selRows = new int[]{idx};
+				Taxonomic.this.taxonList.setSelectedRows(selRows);
+				return false;
+			}
+			validateTaxonCounter--;
+			return true;
+		}
+		
+		private boolean isValidName(String name) {
+			
+			char[] arr = name.toCharArray();
+			for(int i = 0; i < arr.length; i++)
+				if(!(Character.isLetter(arr[i]) || Character.isSpaceChar(arr[i]) ))
+					return false;
+			return true;
+		}
+		
+		private List getHierarchy(String hier) {
+			
+			StringTokenizer st = new StringTokenizer(hier, ";");
+			List result = new ArrayList();
+			if(hier.trim().equals(""))
+				return result;
+			
+			while(st.hasMoreTokens()) {
+				
+				String token = st.nextToken();
+				int idx = token.indexOf("=");
+				result.add(token.substring(0, idx));
+			}
+			
+			return result;
+		}
+	}
+	
+	class CommonNameVerifier extends InputVerifier {
+		
+		Taxonomic parent;
+		
+		CommonNameVerifier(Taxonomic panel) {
+			this.parent = panel;
+		}
+		
+		public boolean verify(JComponent jc) {
+			
+			if(commonNameCounter > 0) {
+				System.out.println("ret excess listener");
+				return true;
+			}
+			commonNameCounter++;
+			if(!validateCommonNames((JTextField)jc)) {
+				JOptionPane.showMessageDialog(parent, "Invalid characters in the common name(s). Only letters, digits and spaces are allowed. Common names are seperated by a comma", "Error", JOptionPane.ERROR_MESSAGE);
+				int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
+				Taxonomic.this.taxonList.editCellAt(rowIdx, 5);
+				jc.requestFocus();
+				commonNameCounter--;
+				int[] selRows = new int[]{rowIdx};
+				Taxonomic.this.taxonList.setSelectedRows(selRows);
+				return false;
+			}
+			commonNameCounter--;
+			return true;
+		}
+		
+		private boolean validateCommonNames(JTextField textField) {
+			
+			String text = textField.getText();
+			char arr[] = text.toCharArray();
+			for(int i =0; i < arr.length; i++) {
+				if(arr[i] == ',' || Character.isLetterOrDigit(arr[i]) || Character.isSpaceChar(arr[i]))
+					continue;
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	class TaxonNameVerifier extends InputVerifier {
+		
+		Taxonomic parent;
+		int pos;
+		
+		TaxonNameVerifier(Taxonomic panel, int pos) {
+			this.parent = panel;
+			this.pos = pos;
+		}
+		
+		public boolean verify(JComponent jc) {
+			
+			if(taxonNameCounter > 0) {
+				System.out.println("ret excess listener");
+				return true;
+			}
+			taxonNameCounter++;
+			
+			if(!isValidName( ((JTextField)jc).getText() )) {
+				JOptionPane.showMessageDialog(parent, "Invalid characters in the taxon name. Only letters, digits, spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
+				int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
+				Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
+				jc.requestFocus();
+				int[] selRows = new int[]{rowIdx};
+				Taxonomic.this.taxonList.setSelectedRows(selRows);
+				taxonNameCounter--;
+				return false;
+			}
+			taxonNameCounter--;
+			return true;
+		}
+		
+		private boolean isValidName(String text) {
+			
+			char arr[] = text.toCharArray();
+			for(int i =0; i < arr.length; i++) {
+				if(arr[i] == ',' || Character.isLetterOrDigit(arr[i]) || Character.isSpaceChar(arr[i]))
+					continue;
+				return false;
+			}
+			return true;
+		}
+	}
+	
 }
 
 
@@ -632,7 +859,24 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
 		short[] conditions = new short[] {CustomList.EMPTY_STRING_TRIM, CustomList.EMPTY_STRING_TRIM, CustomList.IGNORE }; 
 		hierList.deleteEmptyRows(CustomList.OR, conditions);
 		
-		return (hierList.getRowCount() > 0);
+		if (hierList.getRowCount() == 0)
+			return false;
+		
+		List ranks = new ArrayList();
+		List rows = hierList.getListOfRowLists();
+		Iterator it = rows.iterator();
+		while(it.hasNext()) {
+			
+			List row = (List)it.next();
+			String t = (String)row.get(0);
+			if(ranks.contains(t)) {
+				JOptionPane.showMessageDialog(this, "Invalid hierarchy! Two taxonomic levels cannot have the same taxon rank", "Error", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+			ranks.add(t);
+		}
+		
+		return true;
 	}
 	
 	/** 
@@ -714,7 +958,6 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
 		}
 		return panel;
 	}
+	
+	
 }
-
-
-

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-06 01:30:36 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-03-16 23:00:46 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -310,7 +310,8 @@ public class AttributePage extends AbstractWizardPage {
     topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
 
 
-    ////
+    ////////////////////////////////////////////
+		
     ActionListener listener = new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
@@ -354,11 +355,13 @@ public class AttributePage extends AbstractWizardPage {
                                 //"Select and define a Measurement Scale:"
                                 "Category:", true,
                                 WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-
+																
+		measScaleLabel.setAlignmentY(measScaleLabel.CENTER_ALIGNMENT);
+		
     JButton helpButton = new JButton("Help");
-    helpButton.setPreferredSize(new Dimension(35,17));
+    helpButton.setMinimumSize(new Dimension(35,15));
     helpButton.setMaximumSize(new Dimension(35,15));
-    helpButton.setMargin(new Insets(0, 2, 1, 2));
+		helpButton.setMargin(new Insets(0, 2, 1, 2));
     helpButton.setEnabled(true);
     helpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     helpButton.setFocusPainted(false);
@@ -371,37 +374,51 @@ public class AttributePage extends AbstractWizardPage {
 
         if(helpDialog == null) {
           helpDialog = new CategoryHelpDialog();
-					Point loc = getLocationOnScreen();
-					 
-					helpDialog.setLocation( (int)loc.getX() +100, (int)loc.getY() + 50);
-					helpDialog.setSize(HELP_DIALOG_SIZE);
-					helpDialog.setVisible(true);
-          
-        } else {
-					Point loc = getLocationOnScreen();
-					helpDialog.setLocation( (int)loc.getX() +100, (int)loc.getY() + 50);
-					helpDialog.setSize(HELP_DIALOG_SIZE);
-					helpDialog.setVisible(true);
-        	helpDialog.toFront();
 				}
+				Point loc = getLocationOnScreen();
+				int wd = getWidth();
+				int ht = getHeight();
+				int dwd = HELP_DIALOG_SIZE.width;
+				int dht = HELP_DIALOG_SIZE.height;
+				helpDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
+				helpDialog.setSize(HELP_DIALOG_SIZE);
+				helpDialog.setVisible(true);
+				helpDialog.toFront();
+				
       }
     });
-
-    JPanel categoryGrid = new JPanel(new GridLayout(1,2, 0, 0));
-    JPanel categoryPanel = new JPanel();
-    categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.X_AXIS));
-    categoryPanel.add(measScaleLabel);
-    categoryPanel.add(helpButton);
-
-    categoryGrid.add(categoryPanel);
-    categoryGrid.add(new JLabel(""));
-
-    topMiddlePanel.add(categoryGrid);
-
-    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
-
-    topMiddlePanel.add(radioPanel);
-
+		
+		JPanel categoryPanel = new JPanel();
+		categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.Y_AXIS));
+		
+		JPanel helpButtonPanel = new JPanel();
+		helpButtonPanel.setLayout(new BoxLayout(helpButtonPanel, BoxLayout.X_AXIS));
+		helpButtonPanel.add(helpButton);
+		helpButtonPanel.add(Box.createHorizontalGlue());
+		helpButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,3,0,0));
+		
+		categoryPanel.add(measScaleLabel);
+		categoryPanel.add(WidgetFactory.makeHalfSpacer());
+		categoryPanel.add(helpButtonPanel);
+		
+		categoryPanel.setMinimumSize(new Dimension(90, 45));
+		categoryPanel.setMaximumSize(new Dimension(90, 45));
+		
+		JPanel outerCategoryPanel = new JPanel(new BorderLayout());
+		outerCategoryPanel.add(categoryPanel, BorderLayout.CENTER);
+		outerCategoryPanel.add(Box.createGlue(), BorderLayout.SOUTH);
+		outerCategoryPanel.add(Box.createGlue(), BorderLayout.NORTH);
+		
+		radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
+		JPanel outerRadioPanel = new JPanel();
+    outerRadioPanel.setLayout(new BoxLayout(outerRadioPanel, BoxLayout.X_AXIS));
+		outerRadioPanel.add(categoryPanel);
+		outerRadioPanel.add(radioPanel);
+		
+    topMiddlePanel.add(outerRadioPanel);
+		
+		/////////////////////////////////////////////////////
+		
     middlePanel.add(topMiddlePanel);
 
 		currentPanel  = getEmptyPanel();

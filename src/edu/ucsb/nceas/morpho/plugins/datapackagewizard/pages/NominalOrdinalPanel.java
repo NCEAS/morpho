@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-11 02:53:08 $'
-* '$Revision: 1.21 $'
+*     '$Date: 2004-03-16 23:00:46 $'
+* '$Revision: 1.22 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,12 @@
 
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
+
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AddDocumentationCommand;
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
@@ -410,6 +416,11 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		tableNameButtonPanel.setBorder(new EmptyBorder(0,2*WizardSettings.PADDING,
 		0, WizardSettings.PADDING));
 		
+		// if no data tables are present, automatically set the import choice to be 'later'
+		if(!isAnyDataTablePresent()) {
+			tableNameTextField.setText(this.TO_BE_IMPORTED);
+			tableNameButton.setEnabled(false);
+		}
 		
 		tablePanel.add(tableNameButtonPanel);
 		
@@ -505,6 +516,31 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 	}
 	
 	
+	boolean isAnyDataTablePresent() {
+		
+		AbstractDataPackage adp = getADP();
+		if(adp == null)
+			return false;
+		return (adp.getEntityCount() > 0);
+	}
+	
+	
+	private AbstractDataPackage getADP() {
+		
+		AbstractDataPackage adp = null;
+		DataViewContainerPanel resultPane = null;
+		
+		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+		if (morphoFrame != null) {
+			resultPane = AddDocumentationCommand.
+			getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+		}//if
+		// make sure resulPanel is not null
+		if ( resultPane != null) {
+			adp = resultPane.getAbstractDataPackage();
+		}
+		return adp;
+	}
 	
 	
 	
