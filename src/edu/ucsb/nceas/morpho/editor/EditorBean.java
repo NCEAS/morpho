@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.Hashtable;
 
 import edu.ucsb.nceas.dtclient.PluginInterface;
 import edu.ucsb.nceas.dtclient.ClientFramework;
@@ -46,15 +47,15 @@ public class EditorBean extends Container implements PluginInterface
 
   /**
    * This method is called on component initialization to generate a list
-   * of the names of the menus, in display order, that the component wants
-   * added to the framework.  If a menu already exists (from another component
-   * or the framework itself), the order will be determined by the earlier
-   * registration of the menu.
+   * of the names of the menus, indexed by display position, that the component 
+   * wants added to the framework.  If a menu already exists (from another 
+   * component or the framework itself), the position will be determined by 
+   * the earlier registration of the menu.
    */
-  public String[] registerMenus() {
-    String menuList[] = new String[2];
-    menuList[0] = "File";
-    menuList[1] = "Test";
+  public Hashtable registerMenus() {
+    Hashtable menuList = new Hashtable();
+    menuList.put(new Integer(1), "File");
+    menuList.put(new Integer(5), "Test");
     return menuList;
   }
 

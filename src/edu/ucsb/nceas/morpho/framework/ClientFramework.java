@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 01:31:35 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2001-04-27 17:12:34 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public class ClientFramework extends javax.swing.JFrame
   private static String configFile = "lib/config.xml";
 
   /** Constant to indicate a spearator should precede an action */
-  public static String SEPARATOR_PRECEDING = "TRUE";
+  public static String SEPARATOR_PRECEDING = "separator_preceding";
 
   private String userName = "public";
   private String passWord = "none";
@@ -65,6 +65,7 @@ public class ClientFramework extends javax.swing.JFrame
   private boolean connected = false;
   edu.ucsb.nceas.querybean.LocalQuery lq = null;
   Hashtable menuList = null;
+  TreeMap menuOrder = null;
   Action[] fileMenuActions = null;
   Action[] editMenuActions = null;
   Action[] helpMenuActions = null;
@@ -74,10 +75,50 @@ public class ClientFramework extends javax.swing.JFrame
   ClientFramework framework = null;
   JTable table;
 
+  // Used by addNotify
+  boolean frameSizeAdjusted = false;
+
+  //{{DECLARE_CONTROLS
+  java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
+  java.awt.FileDialog openFileDialog = new java.awt.FileDialog(this);
+  javax.swing.JPanel ToolBarPanel = new javax.swing.JPanel();
+  javax.swing.JToolBar JToolBar1 = new javax.swing.JToolBar();
+
+  javax.swing.JPanel ContentPanel = new javax.swing.JPanel();
+  javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
+
+  javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
+  javax.swing.JLabel dataPict = new javax.swing.JLabel();
+  javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
+  com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 =
+    new com.symantec.itools.javax.swing.borders.LineBorder();
+  javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
+
+  //}}
+
+  //{{DECLARE_MENUS
+  //}}
+
+  /**
+   * Creates a new instance of ClientFramework with the given title.
+   * @param sTitle the title for the new frame.
+   * @see #JFrame1()
+   */
+  public ClientFramework(String sTitle)
+  {
+    this();
+    setTitle(sTitle);
+  }
+
+  /**
+   * Creates a new instance of ClientFramework
+   * @see #JFrame1()
+   */
   public ClientFramework()
   {
     // Create the list of menus for use by the framework and plugins
     menuList = new Hashtable();
+    menuOrder = new TreeMap();
 
     // Create the hash for services
     servicesRegistry = new Hashtable();
@@ -183,6 +224,12 @@ public class ClientFramework extends javax.swing.JFrame
 
         // Allow the plugin to add menus and toolbar items
         loadPluginMenusAndToolbars(plugin);
+        Set menusInOrder = menuOrder.entrySet();
+        Iterator it = menusInOrder.iterator();
+        while (it.hasNext()) {
+          JMenu currentMenu = (JMenu)((Map.Entry)it.next()).getValue();
+          JMenuBar1.add(currentMenu);
+        }
 
         // Allow the plugin to register services it can perform
         plugin.registerServices();
@@ -200,42 +247,47 @@ public class ClientFramework extends javax.swing.JFrame
   private void loadPluginMenusAndToolbars(PluginInterface plugin)
   {
     // Get the list of menus from the plugin components
-    String menus[] = plugin.registerMenus();
+    Hashtable menus = plugin.registerMenus();
 
     // Loop through the menus and create them
-    for (int i=0; i < menus.length; i++) {
-    String currentMenuName = menus[i];
+    for (Enumeration e = menus.keys(); e.hasMoreElements(); ) {
+      Integer currentMenuPosition = (Integer)e.nextElement();
+      String currentMenuName = (String)menus.get(currentMenuPosition);
 
-    JMenu currentMenu = null;
-    // Check if the menu exists already here
-    if (menuList.containsKey(currentMenuName)) {
-      currentMenu = (JMenu)menuList.get(currentMenuName);
-    } else {
-      currentMenu = new JMenu(); 
-      currentMenu.setText(currentMenuName);
-      currentMenu.setActionCommand(currentMenuName);
-      //currentMenu.setMnemonic((int)'H');
-      JMenuBar1.add(currentMenu);
-      menuList.put(currentMenuName, currentMenu);
-    }
+      JMenu currentMenu = null;
+      // Check if the menu exists already here
+      if (menuList.containsKey(currentMenuName)) {
+        currentMenu = (JMenu)menuList.get(currentMenuName);
+      } else {
+        currentMenu = new JMenu(); 
+        currentMenu.setText(currentMenuName);
+        currentMenu.setActionCommand(currentMenuName);
+        //currentMenu.setMnemonic((int)'H');
+        menuList.put(currentMenuName, currentMenu);
+        menuOrder.put(currentMenuPosition, currentMenu);
+      }
 
-    // Get the menu items (Actions) and add them to the menus
-    Action menuActions[] = plugin.registerMenuActions(currentMenuName);
-    if (menuActions != null) {
-      for (int j=0; j < menuActions.length; j++) {
-        Action currentAction = menuActions[j];
-        String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
-        if (currentMenuName.equals("File")) {
-	  // Insert File menu items above the "Exit" item and separator
-          int pos = currentMenu.getMenuComponentCount() - 2;
-          if (pos < 0) {
-            pos = 0;
-          }
-          if (hasDefaultSep != null &&
-            hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
-            currentMenu.insertSeparator(pos++);
-          }
-          currentMenu.insert(currentAction, pos);
+      // Get the menu items (Actions) and add them to the menus
+      Action menuActions[] = plugin.registerMenuActions(currentMenuName);
+      if (menuActions != null) {
+        for (int j=0; j < menuActions.length; j++) {
+          Action currentAction = menuActions[j];
+          String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
+          Integer menuPosition = (Integer)currentAction.getValue("menuPosition");
+          int menuPos = (menuPosition != null) ? menuPosition.intValue() : -1;
+
+          if (menuPos >= 0) {
+            // Insert menus at the specified position
+            int menuCount = currentMenu.getMenuComponentCount();
+            if (menuPos > menuCount) {
+              menuPos = menuCount;
+            }
+            
+            if (hasDefaultSep != null &&
+              hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
+              currentMenu.insertSeparator(menuPos++);
+            }
+            currentMenu.insert(currentAction, menuPos);
           } else {
 	    // Append everything else at the bottom of the menu
             if (hasDefaultSep != null &&
@@ -375,17 +427,6 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
-  /**
-   * Creates a new instance of JFrame1 with the given title.
-   * @param sTitle the title for the new frame.
-   * @see #JFrame1()
-   */
-  public ClientFramework(String sTitle)
-  {
-    this();
-    setTitle(sTitle);
-  }
-
   /** 
    * The plugin must store a reference to the ClientFramework 
    * in order to be able to call the services available through 
@@ -398,17 +439,17 @@ public class ClientFramework extends javax.swing.JFrame
 
   /**
    * This method is called on component initialization to generate a list
-   * of the names of the menus, in display order, that the component wants
-   * added to the framework.  If a menu already exists (from another component
-   * or the framework itself), the order will be determined by the earlier
-   * registration of the menu.
+   * of the names of the menus, indexed by display position, that the component 
+   * wants added to the framework.  If a menu already exists (from another 
+   * component or the framework itself), the position will be determined by 
+   * the earlier registration of the menu.
    */
-  public String[] registerMenus() {
-    String listOfMenus[] = new String[4];
-    listOfMenus[0] = "File";
-    listOfMenus[1] = "Edit";
-    listOfMenus[2] = "Window";
-    listOfMenus[3] = "Help";
+  public Hashtable registerMenus() {
+    Hashtable listOfMenus = new Hashtable();
+    listOfMenus.put(new Integer(1), "File");
+    listOfMenus.put(new Integer(2), "Edit");
+    listOfMenus.put(new Integer(6), "Window");
+    listOfMenus.put(new Integer(9), "Help");
     return listOfMenus;
   }
 
@@ -510,6 +551,7 @@ public class ClientFramework extends javax.swing.JFrame
     };
     exitItemAction.putValue(Action.SHORT_DESCRIPTION, "Exit Morpho");
     exitItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
+    exitItemAction.putValue("menuPosition", new Integer(-1));
     fileMenuActions[0] = exitItemAction;
 
     Action connectItemAction = new AbstractAction("Connect...") {
@@ -518,6 +560,7 @@ public class ClientFramework extends javax.swing.JFrame
       }
     };
     connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Log In");
+    connectItemAction.putValue("menuPosition", new Integer(0));
     fileMenuActions[1] = connectItemAction;
 
     // EDIT MENU ACTIONS
@@ -529,11 +572,9 @@ public class ClientFramework extends javax.swing.JFrame
     };
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Cut the selection and put it on the Clipboard");
-    // This is null in the unit testing framework
-    URL cutURL = getClass().getResource("cut.gif");
-    debug(9, cutURL.toString());
     cutItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("cut.gif")));
+    cutItemAction.putValue("menuPosition", new Integer(1));
     cutItemAction.setEnabled(false);
     editMenuActions[0] = cutItemAction;
 
@@ -546,6 +587,7 @@ public class ClientFramework extends javax.swing.JFrame
                   "Copy the selection and put it on the Clipboard");
     copyItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("copy.gif")));
+    copyItemAction.putValue("menuPosition", new Integer(2));
     copyItemAction.setEnabled(false);
     editMenuActions[1] = copyItemAction;
 
@@ -558,6 +600,7 @@ public class ClientFramework extends javax.swing.JFrame
                   "Paste the selection.");
     pasteItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("paste.gif")));
+    pasteItemAction.putValue("menuPosition", new Integer(3));
     pasteItemAction.setEnabled(false);
     editMenuActions[2] = pasteItemAction;
 
@@ -569,6 +612,7 @@ public class ClientFramework extends javax.swing.JFrame
     prefsItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Open the Preferences dialog.");
     prefsItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
+    prefsItemAction.putValue("menuPosition", new Integer(5));
     editMenuActions[3] = prefsItemAction;
 
     // HELP MENU ACTIONS
@@ -582,6 +626,7 @@ public class ClientFramework extends javax.swing.JFrame
     aboutItemAction.putValue(Action.SHORT_DESCRIPTION, "About Morpho");
     aboutItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("about.gif")));
+    aboutItemAction.putValue("menuPosition", new Integer(1));
     helpMenuActions[0] = aboutItemAction;
 
     Action testServiceAction = new AbstractAction("Test Log Service") {
@@ -592,6 +637,8 @@ public class ClientFramework extends javax.swing.JFrame
     testServiceAction.putValue(Action.SHORT_DESCRIPTION, "Test Logging");
     testServiceAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("about.gif")));
+    testServiceAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
+    testServiceAction.putValue("menuPosition", new Integer(2));
     helpMenuActions[1] = testServiceAction;
 
     // Set up the toolbar for the application
@@ -635,30 +682,9 @@ public class ClientFramework extends javax.swing.JFrame
             insets.top + insets.bottom + size.height + menuBarHeight);
   }
 
-  // Used by addNotify
-  boolean frameSizeAdjusted = false;
-
-  //{{DECLARE_CONTROLS
-  java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
-  java.awt.FileDialog openFileDialog = new java.awt.FileDialog(this);
-  javax.swing.JPanel ToolBarPanel = new javax.swing.JPanel();
-  javax.swing.JToolBar JToolBar1 = new javax.swing.JToolBar();
-
-  javax.swing.JPanel ContentPanel = new javax.swing.JPanel();
-  javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
-
-  javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
-  javax.swing.JLabel dataPict = new javax.swing.JLabel();
-  javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
-  com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 =
-    new com.symantec.itools.javax.swing.borders.LineBorder();
-  javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
-
-  //}}
-
-  //{{DECLARE_MENUS
-  //}}
-
+  /**
+   * Exit the application, asking the user if they are sure
+   */
   private void exitApplication()
   {
     try
@@ -714,13 +740,13 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
-  void ClientFramework_windowClosing(java.awt.event.WindowEvent event)
+  private void ClientFramework_windowClosing(java.awt.event.WindowEvent event)
   {
     // to do: code goes here.
     ClientFramework_windowClosing_Interaction1(event);
   }
 
-  void ClientFramework_windowClosing_Interaction1(java.awt.
+  private void ClientFramework_windowClosing_Interaction1(java.awt.
 						  event.WindowEvent event)
   {
     try
@@ -1051,5 +1077,4 @@ public class ClientFramework extends javax.swing.JFrame
       System.exit(1);
     }
   }
-
 }

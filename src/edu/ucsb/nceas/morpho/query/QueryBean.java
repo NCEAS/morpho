@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-27 01:31:35 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2001-04-27 17:12:34 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -873,14 +873,14 @@ public class QueryBean extends Container implements PluginInterface
 
   /**
    * This method is called on component initialization to generate a list
-   * of the names of the menus, in display order, that the component wants
-   * added to the framework.  If a menu already exists (from another component
-   * or the framework itself), the order will be determined by the earlier
-   * registration of the menu.
+   * of the names of the menus, indexed by display position, that the component 
+   * wants added to the framework.  If a menu already exists (from another 
+   * component or the framework itself), the position will be determined by 
+   * the earlier registration of the menu.
    */
-  public String[] registerMenus() {
-    String menuList[] = new String[1];
-    menuList[0] = "Search";
+  public Hashtable registerMenus() {
+    Hashtable menuList = new Hashtable();
+    menuList.put(new Integer(3), "Search");
     return menuList;
   }
 
@@ -961,6 +961,8 @@ public class QueryBean extends Container implements PluginInterface
         framework.debug(1, "Action fired: Search :-)");
       }
     };
+    searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
+    searchItemAction.putValue("menuPosition", new Integer(0));
     menuActions[0] = searchItemAction;
 
     // Set up the toolbar for the application

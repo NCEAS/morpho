@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-25 22:23:00 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-04-27 17:12:34 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.dtclient;
 
 import javax.swing.Action;
 import java.awt.Container;
+import java.util.Hashtable;
 
 /**
  * All component plugins that are to be included in the ClientFramework
@@ -47,12 +48,12 @@ public interface PluginInterface
 
   /**
    * This method is called on component initialization to generate a list
-   * of the names of the menus, in display order, that the component wants
-   * added to the framework.  If a menu already exists (from another component
-   * or the framework itself), the order will be determined by the earlier
-   * registration of the menu.
+   * of the names of the menus, indexed by display position, that the component 
+   * wants added to the framework.  If a menu already exists (from another 
+   * component or the framework itself), the position will be determined by 
+   * the earlier registration of the menu.
    */
-  public String[] registerMenus();
+  public Hashtable registerMenus();
 
   /**
    * The plugin must return the Actions that should be associated 
