@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 15:55:44 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-13 19:12:20 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,9 @@ import javax.swing.JLabel;
 
 import junit.framework.TestCase;
 
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin;
+
 import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
@@ -67,9 +70,16 @@ public class MetaDisplayTestResources
     public static final MetaDisplay             metaDisplay;
     static final JLabel topArea;
     static final JLabel dataArea;
+    private static XSLTResolverPlugin xsltResolverPlugin;
     
-    static
-    {
+    static {
+        xsltResolverPlugin = new XSLTResolverPlugin();
+        // Start by creating the new plugin
+        PluginInterface plugin = (PluginInterface)xsltResolverPlugin;
+  
+        // Set a reference to the framework in the Plugin
+        plugin.initialize(null);
+
         frame = new JFrame("MetaDisplay Test");
         topArea = new JLabel("Top Area");
         dataArea = new JLabel("Data Area");
