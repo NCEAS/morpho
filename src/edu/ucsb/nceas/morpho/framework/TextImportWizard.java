@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-22 18:28:49 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2002-02-22 23:54:43 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -777,6 +777,18 @@ public class TextImportWizard extends javax.swing.JFrame
 //		}
 	}
 
+   class UneditableTableModel extends javax.swing.table.DefaultTableModel 
+   {
+        public UneditableTableModel(Vector data, Vector columnNames) {
+            super(data, columnNames);
+        }
+        
+        public boolean isCellEditable(int row, int col) {
+            return false;
+        }
+   }
+
+
 	class SymWindow extends java.awt.event.WindowAdapter
 	{
 		public void windowClosing(java.awt.event.WindowEvent event)
@@ -917,7 +929,9 @@ public void startImport(String file) {
         Vector title = new Vector();
         title.addElement("#");
         title.addElement("Lines in "+filename);
-        JTable table = new JTable(vec, title);
+        UneditableTableModel linesTM = new UneditableTableModel(vec, title);
+//        JTable table = new JTable(vec, title);
+        JTable table = new JTable(linesTM);
 		    table.setFont(new Font("MonoSpaced", Font.PLAIN, 14));
 		    TableColumn column = null;
 		    column = table.getColumnModel().getColumn(0);
@@ -1163,7 +1177,10 @@ public void startImport(String file) {
 	 * @param data
 	 */
 	private void buildTable(Vector cTitles, Vector data) {
-      final JTable table = new JTable(vec, colTitles);
+ //     final JTable table = new JTable(vec, colTitles);
+      UneditableTableModel myTM = new UneditableTableModel(vec, colTitles);
+      JTable table = new JTable(myTM);
+      
       table.setColumnSelectionAllowed(true);
       table.setRowSelectionAllowed(false);
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
