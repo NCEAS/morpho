@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-17 20:39:41 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2002-03-15 21:59:39 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1955,5 +1955,9 @@ public class PackageWizard extends javax.swing.JFrame
     }
     //return the hex representation.
     return hex;
+  }
+  
+  public String getGlobalRoot() {
+    return globalRoot;
   }
 }

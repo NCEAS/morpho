@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-26 22:13:38 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2002-03-15 21:59:40 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -661,7 +661,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
       if ((wfc2.id!=null)&&(!(wfc2.id).equals("NULLDATAFILE"))) 
       {
-        aclt = new Triple(aclID, "isRelatedTo", wfc2.id);
+        aclt = new Triple(aclID, "provides access control rules for", wfc2.id);
         aclTriples.addElement(aclt);
       }
     }
@@ -738,6 +738,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(wfc.attributes.containsKey("relatedTo"))
       {
         String relation = (String)wfc.attributes.get("relatedTo");
+        ClientFramework.debug(30,"relation = "+relation);
         Vector v = (Vector)tripleNames.get(relation);
         for(int j=0; j<v.size(); j++)
         {
@@ -751,6 +752,8 @@ public class PackageWizardShell extends javax.swing.JFrame
                                          frameWizards.elementAt(k);
               if(((String)wfc2.attributes.get("name")).equals(triplesFile))
               {
+                String sub = (wfc.wizard).getGlobalRoot();
+                relationship = "provides "+sub+ " information for package";
                 t = new Triple(id, relationship, wfc2.id);
                 break;
               }
@@ -758,6 +761,9 @@ public class PackageWizardShell extends javax.swing.JFrame
           }
           else
           {
+            String sub = (wfc.wizard).getGlobalRoot();
+            String obj = ((String)wfc.attributes.get("relatedTo"));
+            relationship = "provides "+sub+ " information for "+obj;
             t = new Triple(id, relationship, rel);
           }
           tc.addTriple(t);
@@ -1158,6 +1164,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     descriptionPanel.validate();
     descriptionPanel.repaint();
   }
+  
   
   /**
    * returns the current description in the description panel
