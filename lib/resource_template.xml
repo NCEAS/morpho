@@ -1,185 +1,180 @@
 <?xml version="1.0"?>
+<!DOCTYPE resource PUBLIC "-//NCEAS//resource//EN" "file:///alpha.nceas.ucsb.edu/dtd/schemas/resource.dtd" >
 <resource>
 <dataset>
 <identifier>
- </identifier>
-<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/client.properties</datasetid>
-<title>client.properties</title>
+text</identifier>
+<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/build.xml</datasetid>
+<title >An Insertion Test</title>
 <alternateTitle>
- </alternateTitle>
+</alternateTitle>
 <originator>
 <responsibleParty>
 <individualName>
 <salutation>
- </salutation>
-<givenName>
- </givenName>
-<surName>
- </surName>
+</salutation>
+<givenName>Dan</givenName>
+<surName>Higgins</surName>
 </individualName>
-  <contactInfo>
+<contactInfo>
 <phone>
 <voice>
- </voice>
+</voice>
 <facsimile>
- </facsimile>
-  </phone>
+</facsimile>
+</phone>
 <address>
 <deliveryPoint>
- </deliveryPoint>
+</deliveryPoint>
 <city>
- </city>
+</city>
 <administrativeArea>
- </administrativeArea>
+</administrativeArea>
 <postalCode>
- </postalCode>
+</postalCode>
 <country>
- </country>
+</country>
 <electronicMailAddress>
- </electronicMailAddress>
+</electronicMailAddress>
 </address>
 <onlineResource>
 <linkage>
 <URL>
- </URL>
+</URL>
 </linkage>
 <protocol>
- </protocol>
+</protocol>
 <applicationProfile>
- </applicationProfile>
+</applicationProfile>
 <name>
- </name>
+</name>
 <description>
- </description>
+</description>
 <functionCode>
- </functionCode>
+</functionCode>
 </onlineResource>
 <hoursOfService>
- </hoursOfService>
+</hoursOfService>
 <contactInstructions>
- </contactInstructions>
+</contactInstructions>
 </contactInfo>
 <roleCode>
- </roleCode>
+</roleCode>
 </responsibleParty>
 </originator>
 <pubdate>
- </pubdate>
+</pubdate>
 <pubplace>
- </pubplace>
+</pubplace>
 <series>
- </series>
+</series>
 <abstract>
- </abstract>
+</abstract>
 <keywordInfo>
-<keyword>
- </keyword>
+<keyword>test Higgins</keyword>
 <keywordType>
- </keywordType>
+</keywordType>
 <keywordThesaurus>
- </keywordThesaurus>
+</keywordThesaurus>
 </keywordInfo>
 <url>
 <URL>
- </URL>
+</URL>
 </url>
 <additionalInfo>
- </additionalInfo>
+</additionalInfo>
 <geoForm>
- </geoForm>
+</geoForm>
 </dataset>
 <identifier>
- </identifier>
-<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/client.properties</datasetid>
-<title>client.properties</title>
+</identifier>
+<datasetid>http://dev.nceas.ucsb.edu:8090/metacat/upload/build.xml</datasetid>
+<title>An Insertion Test</title>
 <alternateTitle>
- </alternateTitle>
+</alternateTitle>
 <originator>
 <responsibleParty>
 <individualName>
 <salutation>
- </salutation>
-<givenName>
- </givenName>
-<surName>
- </surName>
+</salutation>
+<givenName>Dan</givenName>
+<surName>Higgins</surName>
 </individualName>
-  <contactInfo>
+<contactInfo>
 <phone>
 <voice>
- </voice>
+</voice>
 <facsimile>
- </facsimile>
-  </phone>
+</facsimile>
+</phone>
 <address>
 <deliveryPoint>
- </deliveryPoint>
+</deliveryPoint>
 <city>
- </city>
+</city>
 <administrativeArea>
- </administrativeArea>
+</administrativeArea>
 <postalCode>
- </postalCode>
+</postalCode>
 <country>
- </country>
+</country>
 <electronicMailAddress>
- </electronicMailAddress>
+</electronicMailAddress>
 </address>
 <onlineResource>
 <linkage>
 <URL>
- </URL>
+</URL>
 </linkage>
 <protocol>
- </protocol>
+</protocol>
 <applicationProfile>
- </applicationProfile>
+</applicationProfile>
 <name>
- </name>
+</name>
 <description>
- </description>
+</description>
 <functionCode>
- </functionCode>
+</functionCode>
 </onlineResource>
 <hoursOfService>
- </hoursOfService>
+</hoursOfService>
 <contactInstructions>
- </contactInstructions>
+</contactInstructions>
 </contactInfo>
 <roleCode>
- </roleCode>
+</roleCode>
 </responsibleParty>
 </originator>
 <pubdate>
- </pubdate>
+</pubdate>
 <pubplace>
- </pubplace>
+</pubplace>
 <series>
- </series>
+</series>
 <abstract>
- </abstract>
+</abstract>
 <keywordInfo>
-<keyword>
- </keyword>
+<keyword>test Higgins</keyword>
 <keywordType>
- </keywordType>
+</keywordType>
 <keywordThesaurus>
- </keywordThesaurus>
+</keywordThesaurus>
 </keywordInfo>
 <url>
 <URL>
- </URL>
+</URL>
 </url>
 <additionalInfo>
- </additionalInfo>
+</additionalInfo>
 <ISBN>
- </ISBN>
+</ISBN>
 <ISSN>
- </ISSN>
+</ISSN>
 <editor>
- </editor>
+</editor>
 <edition>
- </edition>
+</edition>
 <volume>
- </volume>
+</volume>
 </resource>

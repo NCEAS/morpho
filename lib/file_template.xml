@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
+<!DOCTYPE eml-file PUBLIC "-//NCEAS//eml-file//EN" "file:///PROGRAM FILES/MORPHO/catalog/eml-file.dtd" >
 <eml-file description="Data structural descriptors">
 <meta_file_id description="Unique identifier of this metadata record">
  </meta_file_id>
 <file description="Data set file">
-<file_name description="File name">client.properties</file_name>
+<file_name description="File name">build.xml</file_name>
 <file_size description="Size of file">
 <amount description="Amount">
  </amount>

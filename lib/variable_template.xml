@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!DOCTYPE eml-variable PUBLIC "-//NCEAS//eml-variable//EN" "file:///dmanclient/catalog/eml-variable.dtd" >
 <eml-variable description="Variable description for a file">
 <meta_file_id description="Unique identifier of this metadata record">
  </meta_file_id>

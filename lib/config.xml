@@ -7,8 +7,8 @@
 <searchnetwork>false</searchnetwork>
 <pathquery_config>
     <doctypes_searched><doctype>any</doctype></doctypes_searched>
-    <doctypes_returned><returndoc>any</returndoc></doctypes_returned>
-    <fields_returned><returnfield>/eml-dataset/keyword_info/keyword</returnfield><returnfield>/eml-file/meta_file_id</returnfield><returnfield>/resource/dataset/identifier</returnfield><returnfield>/eml-variable/meta_file_id</returnfield></fields_returned>
+    <doctypes_returned><returndoc>eml-variable</returndoc></doctypes_returned>
+    <fields_returned><returnfield>/resource/dataset/keywordInfo/keyword</returnfield></fields_returned>
 
     <doctypes_searched_default>
         <doctype_default>any</doctype_default>
