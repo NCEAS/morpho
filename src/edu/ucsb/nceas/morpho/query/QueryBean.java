@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.5 2000-08-07 23:43:23 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.6 2000-08-10 00:30:41 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1232,7 +1232,8 @@ public class QueryBean extends AbstractQueryBean
 	{
    //      simplequery_submitToDatabase("%NCEAS%");
 	    String temp = create_XMLQuery();
-//	    squery_submitToDatabase(temp);   
+	    LogIn();
+	    squery_submitToDatabase(temp);   
 	    if (SearchButton.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -1620,22 +1621,7 @@ public void searchFor(String searchText) {
 	public void squery_submitToDatabase(String queryXML) {
 	  Properties prop = new Properties();
         prop.put("action","squery");
-//        prop.put("query",queryXML);
-   try {
-        FileReader fr = new FileReader("test.xml");
-        StringBuffer txta = new StringBuffer();
-		    int x1;
-		    try {
-		    while((x1=fr.read())!=-1) {
-		        txta.append((char)x1);
-		    }
-		    }
-		    catch (Exception e) {}
-		    String txt1a = txta.toString();
-        
-        prop.put("query",txt1a);
-   }
-   catch (Exception qqqq) {}
+        prop.put("query",queryXML);
         
         String respType = "xml";
 		prop.put("qformat",respType);
@@ -1645,7 +1631,7 @@ public void searchFor(String searchText) {
         HttpMessage msg = new HttpMessage(url);
         InputStream in = msg.sendPostMessage(prop);
 
-        StringBuffer txt = new StringBuffer();
+  /*      StringBuffer txt = new StringBuffer();
 		    int x;
 		    try {
 		    while((x=in.read())!=-1) {
@@ -1655,9 +1641,9 @@ public void searchFor(String searchText) {
 		    catch (Exception e) {}
 		    String txt1 = txt.toString();
 		    System.out.println(txt1);
-
+*/
         
- /*       ExternalQuery rq = new ExternalQuery(in);
+        ExternalQuery rq = new ExternalQuery(in);
         RSFrame rs = new RSFrame("Results of Search");
             rs.setVisible(true);
             rs.local=false;
@@ -1665,7 +1651,7 @@ public void searchFor(String searchText) {
                 TableModel tm = ttt.getModel();
                 rs.JTable1.setModel(tm);
                 rs.pack();
- */
+ 
 		    in.close();
 
 	  }
@@ -1700,6 +1686,34 @@ public void searchFor(String searchText) {
 	}
 	
 
+public void LogIn() {
+      Properties prop = new Properties();
+       prop.put("action","Login Client");
 
+      // Now try to write the document to the database
+      try {
+        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+            prop.put("username", "higgins");
+            prop.put("password","neetar");
+        InputStream returnStream = msg.sendPostMessage(prop);
+	    StringWriter sw = new StringWriter();
+	    int c;
+	    while ((c = returnStream.read()) != -1) {
+           sw.write(c);
+        }
+        returnStream.close();
+        String res = sw.toString();
+        sw.close();
+        System.out.println(res);
+			 
+      } catch (Exception e) {
+        System.out.println("Error logging into system");
+      }
+    
+}
 
 }

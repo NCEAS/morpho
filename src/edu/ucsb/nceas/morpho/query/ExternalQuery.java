@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.1 2000-07-28 18:12:51 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.2 2000-08-10 00:30:41 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -36,11 +36,12 @@ public class ExternalQuery implements ContentHandler
     InputStream is;   
     private Stack elementStack = null;
     JTable RSTable = null;
-    String[] headers = {"Doc ID", "Document Name", "Document Type"};
+    String[] headers = {"Doc ID", "Document Name", "Document Type", "Document Title"};
     DefaultTableModel dtm;
     String docid;
     String docname;
     String doctype;
+    String doctitle;
     
 public ExternalQuery(InputStream is) {
     this.is = is;
@@ -78,7 +79,7 @@ public JTable getTable() {
     public void endElement (String uri, String localName,
                             String qName) throws SAXException {
       if (localName.equals("document")) {
-      String[] row = {docid, docname, doctype};
+      String[] row = {docid, docname, doctype, doctitle};
       dtm.addRow(row);
       }
       String leaving = (String)elementStack.pop();
@@ -97,6 +98,10 @@ public JTable getTable() {
       if (currentTag.equals("doctype")) {
           doctype = inputString;
       }
+      if (currentTag.equals("doctitle")) {
+          doctitle = inputString;
+      }
+      
     }
 
    public void startDocument() throws SAXException { 

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: pathqueryXML.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
+ *     Version: '$Id: pathqueryXML.java,v 1.3 2000-08-10 00:30:41 higgins Exp $'
  */
 
 
@@ -62,7 +62,7 @@ public void set_caseflag(boolean flg) {
 public void start_querygroup(String oper) {  // only AND and OR allow for oper
     String op = "UNION";
     if (oper.equalsIgnoreCase("INTERSECT")) op = "INTERSECT";
-    gStart = new StringBuffer("<querygroup booleantype=\""+op+"\">\n");
+    gStart = new StringBuffer("<querygroup operator=\""+op+"\">\n");
 }
 */
 
@@ -79,14 +79,14 @@ public void add_querygroup(String oper) {  // only AND and OR allow for oper
     if (!endStack.isEmpty()) {
         gStart.append((String)endStack.pop());
     }
-    gStart.append("<querygroup booleantype=\""+op+"\">\n");
+    gStart.append("<querygroup operator=\""+op+"\">\n");
     endStack.push("</querygroup>\n");
 }
 
 public void add_querygroup_asChild(String oper) {  // only AND and OR allow for oper
     String op = "UNION";
     if (oper.equalsIgnoreCase("INTERSECT")) op = "INTERSECT";
-    gStart.append("<querygroup booleantype=\""+op+"\">\n");
+    gStart.append("<querygroup operator=\""+op+"\">\n");
     endStack.push("</querygroup>\n");
 }
 
@@ -125,7 +125,7 @@ public void end_query() {
 
 public void end_query_plus(String op) {
     qXML = new StringBuffer(qHeader.toString());
-    qXML.append("<querygroup booleantype=\""+op+"\">\n");
+    qXML.append("<querygroup operator=\""+op+"\">\n");
     qXML.append(qBody);
     qXML.append("</querygroup>\n");
     qXML.append(qEnd);
