@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-19 19:28:04 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2004-03-19 20:31:19 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -568,7 +568,7 @@ public class WizardSettings {
    *  @return display String for the given unit type
    */
 	 
-	public static String getUnitTypeDisplayString(String unitType) {
+	public static String getDisplayFormOfUnitType(String unitType) {
 
     if (unitType==null || unitType.trim().equals("")) return "";
 
@@ -599,7 +599,7 @@ public class WizardSettings {
     return buff.toString();
   }
 	
-	private static String getOriginalUnitString(String unitType) {
+	public static String getStandardFormOfUnitType(String unitType) {
 		
 		StringTokenizer st = new StringTokenizer(unitType, " ");
 		String result = "";
@@ -672,7 +672,7 @@ public class WizardSettings {
 			return null;
 		}
 		
-		unitType = getOriginalUnitString(unitType);
+		unitType = getStandardFormOfUnitType(unitType);
 		Node unitTypeNode = null;
 		String unitTypeXPath = "/stmml:unitList/stmml:unitType[@name='" + unitType + "']";
 		try {
@@ -710,7 +710,7 @@ public class WizardSettings {
 				power = "1";
 			
 			List row = new ArrayList();
-			row.add(getUnitTypeDisplayString(name));
+			row.add(getDisplayFormOfUnitType(name));
 			row.add(power);
 			result.add(row);
 		}

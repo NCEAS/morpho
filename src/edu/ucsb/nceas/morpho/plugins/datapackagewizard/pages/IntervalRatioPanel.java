@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-19 18:11:52 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-03-19 20:31:19 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -802,12 +802,13 @@ class UnitsPickList extends JPanel {
 			return;
 		
 		OrderedMap map = customPanel.getPanelData("");
-		
+			
 		String type = getUnitTypeOfNewUnit(map);
 		String[] newUnits = getNewUnits(map);
+		String stdType = WizardSettings.getStandardFormOfUnitType(type);
 		if(isNewType(map)) {
 			
-			UnitTypesListItem item = new UnitTypesListItem(type, newUnits);
+			UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
 			UnitTypesListItem[] newArray = new UnitTypesListItem[unitTypesListItems.length + 1];
 			WizardSettings.insertObjectIntoArray(unitTypesListItems, item, newArray);
 			unitTypesListItems = newArray;
@@ -816,7 +817,7 @@ class UnitsPickList extends JPanel {
 		} else {
 			
 			// add units to existing type
-			UnitTypesListItem item = new UnitTypesListItem(type, newUnits);
+			UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
 			int idx = Arrays.binarySearch(unitTypesListItems, item);
 			if(idx >=0 && idx < unitTypesListItems.length)
 				unitTypesListItems[idx].addUnits(newUnits);
@@ -952,7 +953,7 @@ class UnitTypesListItem  implements Comparable{
   public UnitTypesListItem(String unitType, String[] unitsOfThisType) {
 
     this.unitType = unitType;
-    unitTypeDisplayString = WizardSettings.getUnitTypeDisplayString(unitType);
+    unitTypeDisplayString = WizardSettings.getDisplayFormOfUnitType(unitType);
 		this.unitsOfThisType = unitsOfThisType;
     model = new DefaultComboBoxModel(unitsOfThisType);
   }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-19 18:11:52 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-19 20:31:19 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		unitTypes = new String[tempUnitTypes.length + 1];
 		unitTypes[0] = "";
 		for(int i = 0; i < tempUnitTypes.length; i++)
-			unitTypes[i+1] = WizardSettings.getUnitTypeDisplayString(tempUnitTypes[i]);
+			unitTypes[i+1] = WizardSettings.getDisplayFormOfUnitType(tempUnitTypes[i]);
 		
 		tempUnitTypes = null;
 		
@@ -351,6 +351,7 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		}
 		WidgetFactory.unhiliteComponent(typeNameLabel);
 		
+		if(typeDefnList.isEnabled()) {
 		List defnRows = this.typeDefnList.getListOfRowLists();
 		if(defnRows != null && defnRows.size() > 0) {
 			
@@ -377,6 +378,11 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 				}
 				cnt++;
 			}
+		} else {
+			WidgetFactory.hiliteComponent(typeDefnLabel);
+			return false;
+		}
+
 		}
 		WidgetFactory.unhiliteComponent(typeDefnLabel);
 		
