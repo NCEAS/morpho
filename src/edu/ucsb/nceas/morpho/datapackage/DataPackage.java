@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-24 21:58:42 $'
- * '$Revision: 1.86 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-25 01:05:10 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,8 +99,10 @@ public class DataPackage implements XMLFactoryInterface
   private final MetacatDataStore    metacatDataStore;
   private final String              HTMLEXTENSION = ".html";
   private final String              METACATHTML = "metadata";
-
- 
+  private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
+  private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
+  private final String EXPORTSYLE ="export";
+  private final String EXPORTSYLEEXTENSION =".css";
   
   /**
    * Create a new data package object with an id, location and associated
@@ -1167,6 +1169,30 @@ public class DataPackage implements XMLFactoryInterface
           zos.closeEntry();
         }
       }
+      // for data file
+      String dataPackdir = packdir +"/data";
+      String tempDatapackdir = temppackdir +"/data";
+      File dataFile = new File(tempDatapackdir);
+      String[] dataFileList = dataFile.list();
+      if (dataFileList != null)
+      {
+        for(int i=0; i<dataFileList.length; i++)
+        {
+          String entry = tempDatapackdir + "/" + dataFileList[i];
+          ZipEntry ze = new ZipEntry(dataPackdir + "/" + dataFileList[i]);
+          File entryFile = new File(entry);
+          ze.setSize(entryFile.length());
+          zos.putNextEntry(ze);
+          FileInputStream fis = new FileInputStream(entryFile);
+          int c = fis.read();
+          while(c != -1)
+          {
+            zos.write(c);
+            c = fis.read();
+          }
+          zos.closeEntry();
+        }
+      }
       packdir += "/metadata";
       temppackdir += "/metadata";
       File sourcedir = new File(temppackdir);
@@ -1303,7 +1329,7 @@ public class DataPackage implements XMLFactoryInterface
             transformer.addTransformerProperty("package_id", id);
             transformer.
                     addTransformerProperty("package_index_name", METACATHTML);
-            transformer.addTransformerProperty("qformat", "export");
+            transformer.addTransformerProperty("qformat", EXPORTSYLE);
             transformer.addTransformerProperty("stylePath", ".");
             try {
               result = transformer.transform(xmlInputReader);
@@ -1366,7 +1392,9 @@ public class DataPackage implements XMLFactoryInterface
         System.out.println("Error in DataPackage.export(): " + e.getMessage());
         e.printStackTrace();
       }
-    }//for     
+    }//for 
+    // export style sheet
+    exportStyleSheet(packagePath);    
     
   }
 
@@ -1436,6 +1464,46 @@ public class DataPackage implements XMLFactoryInterface
     return map;
   }
   
+  /*
+   * A method to export a style sheet - export.css which will be used in html
+   */
+  private void exportStyleSheet(String path)
+  {
+    String styleSheetSource = getStylePath();
+    // create a reader
+    try
+    {
+      InputStream input = this.getClass().getResourceAsStream(styleSheetSource);
+      InputStreamReader styleSheetReader = new InputStreamReader(input);
+      //FileReader styleSheetReader = new FileReader(styleSheetSource);
+      StringBuffer buffer = IOUtil.getAsStringBuffer(styleSheetReader, true);
+      // Create a wrter
+      String fileName = path + "/"+ EXPORTSYLE + EXPORTSYLEEXTENSION;
+      FileWriter writer = new FileWriter(fileName);
+      IOUtil.writeToWriter(buffer, writer, true);
+    }
+    catch (Exception e)
+    {
+      Log.debug(30, "Error in exportStyleSheet: "+e.getMessage());
+    }
+    
+  }
+  /*
+   * returns string representation of full path to style directory in 
+   * Morpho-Config.jar.  All names are in config.xml file
+   */
+  private String getStylePath() 
+  {
+        StringBuffer pathBuff = new StringBuffer();
+        pathBuff.append("/");
+        pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+        pathBuff.append("/");
+        pathBuff.append(EXPORTSYLE);
+        pathBuff.append(EXPORTSYLEEXTENSION);
+        Log.debug(50,"DataPackage.getFullStylePath() returning: "
+                                                          +pathBuff.toString());
+        return pathBuff.toString();
+   }
  /** 
   * Checks a file to see if it is a text file by looking for bytes containing '0'
   */
