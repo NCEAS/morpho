@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-22 23:02:13 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2004-04-23 22:39:37 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,19 +84,6 @@ public class DataPackageFactory
       Log.debug(1,"Creating new eml2.0.0 package");
       dp = new EML200DataPackage();
       Log.debug(1,"loading new eml2.0.0 DOM");
-  /*   
-      dp.load(location,"jscientist.7.1",null);
-      try{
-        Node textNode = XMLUtilities.getTextNodeWithXPath(dp.getMetadataPath(),"/xpathKeyMap/contextNode[@name='package']/title");
-        String test = textNode.getNodeValue();
-        Log.debug(1,"test:"+test);
-        String temp = dp.getGenericValue("/xpathKeyMap/contextNode[@name='package']/title");
-        Log.debug(1,"temp:"+temp);
-      }
-      catch (Exception w) {
-        Log.debug(1,"exception");
-      }
-  */   
     }
     else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
               (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
@@ -158,7 +145,7 @@ public class DataPackageFactory
       AbstractDataPackage adptemp = new EML2Beta6DataPackage();
       adptemp.setInitialId(docid);
       adptemp.load(location,docid,morpho);
-      adptemp.location = "";
+//      adptemp.location = "";
       // adptemp is created using the EML2Beta6DataPackage class
       // however, the load routine for this class currently converts the
       // document to an EML200 doctype, so we really want to return an
@@ -166,7 +153,7 @@ public class DataPackageFactory
       // serialized
       dp = getDataPackage(adptemp.metadataNode);
       dp.setInitialId(docid);
-      dp.location = "";  // has NOT been saved
+//      dp.location = "";  // has NOT been saved
       Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
     }
 
@@ -279,7 +266,7 @@ public class DataPackageFactory
     int endIndex = 0;
     int startIndex = 0;
     StringBuffer buffer = new StringBuffer();
-    boolean comment = false;
+    boolean comment =false;
     char thirdPreviousCharacter = '?';
     char secondPreviousCharacter ='?';
     char previousCharacter = '?';
@@ -293,6 +280,8 @@ public class DataPackageFactory
         if (currentCharacter =='-' && previousCharacter == '-'  && 
           secondPreviousCharacter =='!' && thirdPreviousCharacter == '<')
         {
+          count --;
+          buffer = new StringBuffer();;
           comment = true;
         }
         //out of comment
@@ -303,7 +292,8 @@ public class DataPackageFactory
         }
       
         //this is not comment
-        if (currentCharacter != '!' && previousCharacter == '<' && !comment) {
+        if (previousCharacter =='<'  && !comment)
+        {
           count ++;
         }
         // get target line
