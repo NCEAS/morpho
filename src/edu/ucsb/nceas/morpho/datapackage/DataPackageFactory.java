@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-07 16:08:34 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-10-15 21:12:36 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,7 +116,6 @@ public class DataPackageFactory
     if (metacat && !local) location = AbstractDataPackage.METACAT;
     if (!metacat && local) location = AbstractDataPackage.LOCAL;
     if (metacat && local) location = AbstractDataPackage.BOTH;
-    
     Reader in = null;
     if ((location.equals(AbstractDataPackage.LOCAL))
                ||(location.equals(AbstractDataPackage.BOTH))) {
@@ -293,7 +292,8 @@ public class DataPackageFactory
   static public void main(String args[]) {
     try{
       Morpho.createMorphoInstance();
-      DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
+      AbstractDataPackage adp = DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
+      adp.showPackageSummary();
       System.exit(0);
     } catch (Exception w) {}
   }
