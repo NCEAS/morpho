@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-17 20:54:35 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-17 21:27:26 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,10 +107,11 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
                                               throws DocumentNotFoundException
     {
         Log.debug(50, "\nXSLTResolver got: "+docType);
-        
+        docType = "default";
         //H A C K ! ! ! ! !
         //needs to be implemented properly. 
         Reader rdr = null;
+        
         if (docType.indexOf("entity")>0) {
           rdr = new InputStreamReader(
           classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
