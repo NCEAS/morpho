@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:45:53 $'
- * '$Revision: 1.102 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-15 22:57:26 $'
+ * '$Revision: 1.103 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -574,6 +574,13 @@ public class DataViewer extends javax.swing.JPanel
       return entityFileId;
     }
 
+    public boolean getDataChangedFlag() {
+      boolean ret = false;
+      if (ptm!=null) {
+        ret = ptm.getChangeFlag();
+      }
+      return ret;
+    }
 
     /**
      * Method to get sort direction
@@ -1158,6 +1165,7 @@ public class DataViewer extends javax.swing.JPanel
 
     DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
+//    DataScrollPanel.getViewport().setBackground(Color.white);
 
     JTableHeader header = table.getTableHeader();
     header.addMouseListener(new HeaderMouseListener());
@@ -1171,7 +1179,7 @@ public class DataViewer extends javax.swing.JPanel
 
 	}
 
-    /*
+  /*
    * Method to set a table's interger and string column editor
    */
    private void setUpDelimiterEditor(JTable jtable, String delimiter,

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-09 22:14:38 $'
- * '$Revision: 1.94 $'
+ *     '$Date: 2004-03-15 22:57:26 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,6 +168,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * no parameter constuctor for DataViewContainerPanel.
    * Some basic gui setup
    */
+  
+  /**
+   * this array keeps the DataViewer objects for a package with multiple
+   * entities in memory. This insures that temporary changes are not lost
+   * as one moves from one tab to another.
+   */
+  private DataViewer[] dvArray = null;
+   
   public DataViewContainerPanel()
   {
     this.setLayout(new BorderLayout(0,0));
@@ -480,6 +488,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
     if (entityItems.size()>0)
     {
+      dvArray = new DataViewer[entityItems.size()];
       setDataViewer(0);
 
       // Register the instance of this class as an listener in state change
@@ -713,134 +722,144 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * large memory usage
    */
   private void setDataViewer(int index) {
-    File displayFile = null;
-    TabbedContainer comp =
-        (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
-    JSplitPane entireDataPanel = comp.getSplitPane();
-    JPanel currentDataPanelOld = (JPanel)entireDataPanel.getLeftComponent();
-    removePVObject();
-    currentDataPanelOld.removeAll();
-    lastTabSelected = index;
-    String dataId = null;
-      if (adp==null) {
-        Log.debug(1, "adp is null! No data package");
-        return;
-      }
-      String inline = adp.getDistributionInlineData(index, 0,0);
-         // assume the first set of physical and distribution data
-      if (inline.length()>0) {  // there is inline data
-        // there may be a problem here with putting inline data in a string
-        // if the amount of inline data is vary large; assume for now that very large sets
-        // of inline data has been removed before reaching here (needs to be done so that
-        // DOM can be created!!!)
-        // ********************
-        // now check to see if the inline data is in base64 format; if not, assumed to be in
-        // a text format
-        String encMethod = adp.getEncodingMethod(index, 0);
-        if ((encMethod.indexOf("Base64")>-1)||(encMethod.indexOf("base64")>-1)||
-            (encMethod.indexOf("Base 64")>-1)||(encMethod.indexOf("base 64")>-1)) {
-          // is Base64
+    if (dvArray[lastTabSelected]!=null) {
+      boolean fg = dvArray[lastTabSelected].getDataChangedFlag();
+//      Log.debug(1,"Data change = "+ fg+ "--- indx: "+lastTabSelected);
+    }
+    if (dvArray[index]==null) {
+      File displayFile = null;
+      TabbedContainer comp =
+          (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
+      JSplitPane entireDataPanel = comp.getSplitPane();
+      JPanel currentDataPanelOld = (JPanel)entireDataPanel.getLeftComponent();
+//      removePVObject();
+      currentDataPanelOld.removeAll();
+      lastTabSelected = index;
+      String dataId = null;
+        if (adp==null) {
+          Log.debug(1, "adp is null! No data package");
+          return;
+        }
+        String inline = adp.getDistributionInlineData(index, 0,0);
+           // assume the first set of physical and distribution data
+        if (inline.length()>0) {  // there is inline data
+          // there may be a problem here with putting inline data in a string
+          // if the amount of inline data is vary large; assume for now that very large sets
+          // of inline data has been removed before reaching here (needs to be done so that
+          // DOM can be created!!!)
+          // ********************
+          // now check to see if the inline data is in base64 format; if not, assumed to be in
+          // a text format
+          String encMethod = adp.getEncodingMethod(index, 0);
+          if ((encMethod.indexOf("Base64")>-1)||(encMethod.indexOf("base64")>-1)||
+              (encMethod.indexOf("Base 64")>-1)||(encMethod.indexOf("base 64")>-1)) {
+            // is Base64
 
 
-          byte[] decodedData = Base64.decode(inline);
-          ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-          InputStreamReader isr = new InputStreamReader(bais);
-          FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
-          displayFile = fds3.saveTempDataFile(adp.getAccessionNumber(), isr);
-        }
-        else {
-          // is assumed to be text
-          FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
-          StringReader sr2 = new StringReader(inline);
-          displayFile = fds2.saveTempDataFile(adp.getAccessionNumber(), sr2);
-        }
-      } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
-        // this is the case where there is a url link to the data
-        String urlinfo = adp.getDistributionUrl(index, 0,0);
-        // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
-        // protocol is probably 'ecogrid'; system name is 'knb'
-        // we just want the local id here
-        int indx2 = urlinfo.indexOf("//");
-        String protocol = urlinfo.substring(0,indx2);
-        if (protocol.equals("ecogrid:")) {
-          if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
-          // now start should be just past the '//'
-          indx2 = urlinfo.indexOf("/");
-          if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
-          //now should be past the system name
-          indx2 = urlinfo.indexOf("/");
-          if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
-          // should have trimmed 'other'
-          if (urlinfo.length()==0) return;
-          // if we reach here, urlinfo should be the id in a string
-          try{
-            String loc = adp.location;
-            if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
-              FileSystemDataStore fds = new FileSystemDataStore(morpho);
-              displayFile = fds.openFile(urlinfo);
-            }
-            else if (loc.equals(adp.METACAT)) {
-              MetacatDataStore mds = new MetacatDataStore(morpho);
-              displayFile = mds.openFile(urlinfo);
-            }
-            else if (loc.equals("")) {  // just created the package; not yet saved!!!
-              try{
-                // first try looking in the profile temp dir
-                ConfigXML profile = morpho.getProfile();
-                String separator = profile.get("separator", 0);
-                separator = separator.trim();
+            byte[] decodedData = Base64.decode(inline);
+            ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
+            InputStreamReader isr = new InputStreamReader(bais);
+            FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
+            displayFile = fds3.saveTempDataFile(adp.getAccessionNumber(), isr);
+          }
+          else {
+            // is assumed to be text
+            FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
+            StringReader sr2 = new StringReader(inline);
+            displayFile = fds2.saveTempDataFile(adp.getAccessionNumber(), sr2);
+          }
+        } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
+          // this is the case where there is a url link to the data
+          String urlinfo = adp.getDistributionUrl(index, 0,0);
+          // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
+          // protocol is probably 'ecogrid'; system name is 'knb'
+          // we just want the local id here
+          int indx2 = urlinfo.indexOf("//");
+          String protocol = urlinfo.substring(0,indx2);
+          if (protocol.equals("ecogrid:")) {
+            if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
+            // now start should be just past the '//'
+            indx2 = urlinfo.indexOf("/");
+            if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
+            //now should be past the system name
+            indx2 = urlinfo.indexOf("/");
+            if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
+            // should have trimmed 'other'
+            if (urlinfo.length()==0) return;
+            // if we reach here, urlinfo should be the id in a string
+            try{
+              String loc = adp.location;
+              if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
                 FileSystemDataStore fds = new FileSystemDataStore(morpho);
-                String temp = new String();
-                temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-                temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-                displayFile = fds.openTempFile(temp);
+                displayFile = fds.openFile(urlinfo);
               }
-              catch (Exception q1) {
-                // oops - now try locally
+              else if (loc.equals(adp.METACAT)) {
+                MetacatDataStore mds = new MetacatDataStore(morpho);
+                displayFile = mds.openFile(urlinfo);
+              }
+              else if (loc.equals("")) {  // just created the package; not yet saved!!!
                 try{
+                  // first try looking in the profile temp dir
+                  ConfigXML profile = morpho.getProfile();
+                  String separator = profile.get("separator", 0);
+                  separator = separator.trim();
                   FileSystemDataStore fds = new FileSystemDataStore(morpho);
-                  displayFile = fds.openFile(urlinfo);
+                  String temp = new String();
+                  temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+                  temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+                  displayFile = fds.openTempFile(temp);
                 }
-                catch (Exception q2) {
-                  // now try metacat
+                catch (Exception q1) {
+                  // oops - now try locally
                   try{
-                    MetacatDataStore mds = new MetacatDataStore(morpho);
-                    displayFile = mds.openFile(urlinfo);
+                    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+                    displayFile = fds.openFile(urlinfo);
                   }
-                  catch (Exception q3) {
-                    // give up!
-                    Log.debug(5,"Exception opening datafile after trying all sources!");
+                  catch (Exception q2) {
+                    // now try metacat
+                    try{
+                      MetacatDataStore mds = new MetacatDataStore(morpho);
+                      displayFile = mds.openFile(urlinfo);
+                    }
+                    catch (Exception q3) {
+                      // give up!
+                      Log.debug(5,"Exception opening datafile after trying all sources!");
+                    }
                   }
                 }
               }
             }
+            catch (Exception q) {
+              Log.debug(5,"Exception opening file!");
+              q.printStackTrace();
+            }
           }
-          catch (Exception q) {
-            Log.debug(5,"Exception opening file!");
-            q.printStackTrace();
+          else if (protocol.equals("http:")) {
+            Log.debug(20, "urlinfo: "+urlinfo);
+          }
+          else {
+            Log.debug(20, "protocol: "+protocol);
           }
         }
-        else if (protocol.equals("http:")) {
-          Log.debug(20, "urlinfo: "+urlinfo);
-        }
-        else {
-          Log.debug(20, "protocol: "+protocol);
-        }
-      }
-      else if (adp.getDistributionArray(index, 0)==null) {
-        // case where there is no distribution data in the package
+        else if (adp.getDistributionArray(index, 0)==null) {
+          // case where there is no distribution data in the package
 //        Log.debug(1, "This entity has NO distribution information!");
 //        JOptionPane.showMessageDialog(null,
 //                  "This entity has NO distribution information!",
 //                  "Information", JOptionPane.INFORMATION_MESSAGE );
-      }
-      dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
-      dv.setAbstractDataPackage(adp);
-      dv.setEntityIndex(index);
+        }
+        dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
+        dv.setAbstractDataPackage(adp);
+        dv.setEntityIndex(index);
 
-      dv.setDataFile(displayFile);
+        dv.setDataFile(displayFile);
 
-      dv.init();
+        dv.init();
+        dvArray[index] = dv;
+    } else {
+      lastTabSelected = index;
+      dv = dvArray[index];
+    }
       lastPV = dv.getPV();
       JPanel tablePanel = null;
       
@@ -848,10 +867,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
       tablePanel.setOpaque(true);
       tablePanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-      //JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
-      //JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
       TabbedContainer compn =
-        (TabbedContainer) tabbedEntitiesPanel.getComponentAt(index);
+          (TabbedContainer) tabbedEntitiesPanel.getComponentAt(index);
       JSplitPane entireDataPane = compn.getSplitPane();
       JPanel currentDataPanel = (JPanel)entireDataPane.getLeftComponent();
       currentDataPanel.setLayout(new BorderLayout(0,0));
