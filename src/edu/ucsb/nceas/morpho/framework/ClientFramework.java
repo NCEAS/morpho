@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-23 07:07:48 $'
- * '$Revision: 1.45 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-05-30 17:35:07 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -916,6 +916,37 @@ public class ClientFramework extends javax.swing.JFrame
   {
     return config;
   } 
+  
+  /**
+   * returns the next local id from the config file
+   * returns null if configXML was unable to increment the id number
+   */
+  public String getNextId()
+  {
+    String scope = config.get("scope", 0);
+    String lastidS = config.get("lastId", 0);
+    int lastid = (new Integer(lastidS)).intValue();
+    String separator = config.get("separator", 0);
+    
+    if(scope.trim().equals("USERNAME"))
+    { //this keyword means to use the username for the scope
+      String username = config.get("username", 0);
+      scope = username;
+    }
+    
+    String identifier = scope + separator + lastid;
+    lastid++;
+    String s = "" + lastid;
+    if(!config.set("lastId", 0, s))
+    {
+      debug(0, "Error incrementing the accession number id");
+      return null;
+    }
+    else
+    {
+      return identifier; 
+    }
+  }
 
   /**
    * Print debugging messages based on severity level, where severity level 1
