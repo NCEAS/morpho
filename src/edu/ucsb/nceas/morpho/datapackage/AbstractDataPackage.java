@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 23:37:19 $'
- * '$Revision: 1.74 $'
+ *     '$Date: 2004-03-25 04:15:34 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -441,8 +441,8 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @param id String
    */
   public void setAccessionNumber(String id) {
-    setGenericValue("/xpathKeyMap/contextNode[@name='package']/accessionNumber",
-                    id);
+    setGenericValue("/xpathKeyMap/contextNode[@name='package']/accessionNumber", id);
+		setInitialId(null);
   }
 
 
