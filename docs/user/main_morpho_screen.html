@@ -10,11 +10,10 @@
 &nbsp;
 <table class="tabledefault" >
 <tr>
-    <td ROWSPAN="2"><img SRC="images/KNBLogo.gif" width="101" height="66" ></td>
+    <td rowspan="2"><img src="images/KNBLogo.gif" width="101" height="66" ></td>
 
-<td COLSPAN="7">
+<td colspan="7">
 <div class="title">Morpho</div>
-
 <div class="subtitle">User Guide</div>
 </td>
 </tr>
@@ -33,232 +32,327 @@
 <hr>
 <br>&nbsp;
 <!-- put text after this -->
-<table BORDER=0 CELLSPACING=0 CELLPADDING="5" WIDTH="100%" class="tablepanel" >
-<tr class="tablehead">
-    <td colspan="2"><b>The Morpho Screen</b></td>
-</tr>
-
-  <tr> 
-    <td colspan="2" WIDTH="100%"><br>
-      <p>Initial Morpho Screen</p>
-       After you running morpho, the intial screen looks like the image below. 
-      <br>
-      <img src="images/main2.gif"><br>
-      <br>
-      <table width="75%">
-        <tr>
-          <td>
-            <p>It has three sub-frames in this screen. In Current Profile 
-            sub-frame, it showes the current profile and user can chose another
-            proflie from the drop list too. User also can create a new profile. </p>
-            <p>Status of connection to network (NOT Logged In) is shown in 
-            Network Status sub-frame. You can type password in Password text 
-            box to log in network using current profile.</p>
-            <p>In Work with you data sub-frame, User can create a new package 
-            only locally. And user can open an exsiting pakcage and search 
-            packages both locally and as guest user in network.</p>
-           </td>
-           <td width="200">&nbsp;</td>
-        </tr>
-      </table>
-        <br>
-        <br>
-        <p>Morpho Screen after Logged In</p>
-        <br>
-        <img src="images/mainlogged.gif">
-        <br>
-        <table width="75%">
-          <tr>
-            <td>
-               <p>After loggin in network, the above image will be shown. 
-               Current profile sub-frame will show the profile used when user 
-               login. User can chose another profile to login again and create a
-               new profile. </p>
-               <p>Network Status sub-frame shows that user is "Logged In". </p>
-               <p>In Work with your data sub-frame, user can do creating, 
-               opening and searching package both locally and as its user name 
-               in network.</p>
-            </td>
-            <td width="200">&nbsp;</td>
-          </tr>
-       </table>
-        <br>
-        These morpho screens have several features: 
-       <li>Menu (File, Edit, Search, Data, Window, Help) and a toolbar containing 
-        icons. <br>
-        <img src="images/search_icon.gif" width="24" height="24"> The search 
-        icon begins the data package search process.<br>
-        <img src="images/new_package_icon.gif" width="24" height="24"> The 
-        new data package icon begins the process required to create your own data 
-        package<br>
-        <img src="images/openicon.jpg" width="24" height="26"> The open package icon 
-        allows you to open one of your own data package .<br>
-        <p></p>
-      <li>Network icons (lower right of screen).</li>
-      <br>
-      <table width="37%" border="1">
-        <tr> 
-          <td width="38%">Network Connection</td>
-          <td width="62%"> 
-            <table width="100%">
-              <tr> 
-                <td><img src="images/conn.jpg" width="32" height="22"> Network connection 
-                  available</td>
-              </tr>
-              <tr> 
-                <td><img src="images/unconn.jpg" width="30" height="20"> Network connection 
-                  not available</td>
-              </tr>
+<table border=0 cellspacing=0 cellpadding="0" width="100%" class="tablepanel" >
+    <tr> 
+        <td  class="tablehead"><b>The Morpho Screen</b></td>
+    </tr>
+    <tr> 
+        <td  width="100%"><br> <p>
+            <div class="helpsub">Morpho Welcome Screen</div>
+            <br> <br>
+            After you have created a profile, you will see Morpho's 'Welcome' screen:</p> 
+            <div align="center"><img src="images/main2.jpg" width="550" height="366"></div>
+            <p>There are three panels on the left side of the screen - the 'Profile' 
+                panel, 'Login' panel, and 'Work with your data' panel. These are discussed 
+                in detail below:</p>
+            <p>&nbsp;</p>
+            <p class="helpsub">Welcome Screen - 'Profile' Panel</p>
+            <p> The top panel title-bar shows the current profile setting. You can 
+                use the drop-down list to change profiles, or you can click on the 
+                link to create a new profile:</p>
+            <p align="center"><img src="images/profilePanel_detail.jpg"></p>
+            <p>&nbsp;</p>
+            <p class="helpsub">Welcome Screen - 'Login' Panel</p>
+            <p>The middle panel shows your login status. If you status is &quot;NOT 
+                Logged In&quot;, you can type your password in the &quot;password&quot; 
+                field and click the &quot;Login&quot; button to login to the KNB network. 
+                You will be logged in with the username from the current profile:</p>
+            <p align="center"><img src="images/loginPanelNOT_detail.jpg" width="450" height="295"></p>
+            <p>If you are already logged in, you will see the following panel contents:</p>
+            <p align="center"><img src="images/loginPanelYes_detail.jpg" width="450" height="295"></p>
+            <p>Clicking on the &quot;logout&quot; link will log you out of the KNB 
+                network</p>
+            <p>&nbsp;</p>
+            <p class="helpsub">Welcome Screen - 'Work with your data...' Panel</p>
+            <p> The bottom panel, entitled 'Work with you data...' contains clickable 
+                links which allow you to:</p>
+            <ul>
+                <li>Create a new data package, </li>
+                <li>Open an exsiting data package, or </li>
+                <li>Search for an existing data package (both locally and on the KNB 
+                    network)</li>
+            </ul>
+            <p align="center"><img src="images/dataPanel_detail.jpg" width="450" height="261"></p>
+            <p><font color="yellow"><font color="#ff0000" size=+3><b>!</b></font></font> 
+                &nbsp; If you are not logged in, the only network data packages that 
+                will show up in your search are those which have &quot;public&quot; 
+                access priviliges.</p>
+            <p><a name="menutools" id="menutools"></a><br>
+            <div class="helpsub">Main Menus</div>
+            <br>
+            The menus at the top of each morpho screen allow you to access all the 
+            operations that are currently available in Morpho. </p> <p align="center"><img src="images/mainmenus.jpg" width="533" height="143"> 
+            </p>
+            <p> Items will sometimes appear greyed out, meaning they are not available 
+                for the current datapackage at this time (for example, copy and cut 
+                will be disabled on the Edit menu if you do not currently have anything 
+                selected) </p>
+            <p>&nbsp;</p>
+            <p><br>
+            <div class="helpsub">Main Toolbar</div>
+            <br>
+            The toolbar contains 'shortcut' buttons to commonly-used commands. The 
+            same commands can also be accessed using the menus, as described above. </p> 
+            <p align="center"><img src="images/maintoolbar.jpg" width="533" height="136"></p>
+            <table width="500" border="0" cellspacing="0" cellpadding="5">
+                <tr> 
+                    <td width="37" align="left" valign="top"><img src="images/new_package_icon.gif"></td>
+                    <td width="443">The new data package button starts a wizard that 
+                        will guide you through the process of creating your own data 
+                        package</td>
+                </tr>
+                <tr> 
+                    <td align="left" valign="top"><img src="images/openicon.gif"></td>
+                    <td>The open package button allows you to open an existing data 
+                        package (provided you have adequate access permissions).</td>
+                </tr>
+                <tr> 
+                    <td align="left" valign="top"><img src="images/search_icon.gif"></td>
+                    <td>The search button begins the data package search process.</td>
+                </tr>
             </table>
-          </td>
-        </tr>
-        <tr> 
-          <td width="38%">Logged In</td>
-          <td width="62%"> 
-            <table width="100%">
-              <tr> 
-                <td><img src="images/log.jpg" width="18" height="21"> Logged into 
-                  network</td>
-              </tr>
-              <tr> 
-                <td><img src="images/nonet.jpg" width="21" height="21">Not logged 
-                  into network</td>
-              </tr>
+            <table width="500" border="0" cellspacing="0" cellpadding="5">
+                <tr> 
+                    <td width="94" align="left" valign="top"><img src="images/searchButtons.gif" width="87" height="27"></td>
+                    <td width="386">The next three buttons are enabled only when the 
+                        frame contains the results of a search. The allow you to refresh 
+                        the search, save the search for future use, or revise the 
+                        search by changing the search parameters.</td>
+                </tr>
             </table>
-          </td>
-        </tr>
-        <tr> 
-          <td width="38%">Security</td>
-          <td width="62%"> 
-            <table width="100%">
-              <tr> 
-                <td><img src="images/secure.jpg" width="14" height="16"> Using secure 
-                  connection</td>
-              </tr>
-              <tr> 
-                <td> <img src="images/nosec.jpg" width="20" height="20"> Not using 
-                  secure connection</td>
-              </tr>
+            <p>&nbsp;</p>
+            <p> 
+            <div class="helpsub">Status Bar</div>
+            <br>
+            The status bar contains information about the current status of various 
+            Morpho settings and parameters. For example, when search results are displayed, 
+            the number of 'hits' is shown on the left end of the status bar</p> <p>&nbsp;</p>
+            <p align="center"><img src="images/statusbar.gif" width="515" height="124"></p>
+            The three icons at the right end of the status bar indicate the following:<br> 
+            <table width="400" border="0" cellpadding="5" cellspacing="0">
+                <tr> 
+                    <td width="25%">Network Status</td>
+                    <td width="75%"> <table width="100%">
+                            <tr> 
+                                <td><img src="images/connect_yes.gif" width="19" height="14"> 
+                                    &nbsp;Network connection available</td>
+                            </tr>
+                            <tr> 
+                                <td><img src="images/connect_no.gif" width="19" height="14"> 
+                                    &nbsp;Network connection not available</td>
+                            </tr>
+                        </table></td>
+                </tr>
+                <tr> 
+                    <td width="25%">Login Status</td>
+                    <td width="75%"> <table width="100%">
+                            <tr> 
+                                <td><img src="images/login_yes.gif" width="14" height="14"> 
+                                    &nbsp;&nbsp;Logged into network</td>
+                            </tr>
+                            <tr> 
+                                <td><img src="images/login_no.gif" width="14" height="14"> 
+                                    &nbsp;&nbsp;Not logged into network</td>
+                            </tr>
+                        </table></td>
+                </tr>
+                <tr> 
+                    <td width="25%">Security</td>
+                    <td width="75%"> <table width="100%">
+                            <tr> 
+                                <td><img src="images/ssl_yes.gif" width="14" height="14"> 
+                                    &nbsp;&nbsp;Using secure (SSL) connection*</td>
+                            </tr>
+                            <tr> 
+                                <td> <img src="images/ssl_no.gif" width="14" height="14"> 
+                                    &nbsp;&nbsp;Not using secure (SSL) connection</td>
+                            </tr>
+                        </table></td>
+                </tr>
             </table>
-          </td>
-        </tr>
-      </table>
-      <p></p>
-      <p></p>
-      <p></p>
-      <a name="package"></a> 
-      <div class="helpsub">Data Packages</div>
-      <table width="85%">
-        <tr>
-          <td>
+            <p>* Note that Morpho does not currently support SSL connections.</p>
+            <p>&nbsp; </p>
+            <a name="package"></a> <div class="helpsub">Data Packages</div>
             <p>Morpho uses the term "Data Package" to describe a set of metadata and 
-            /or data, and is represented by a &quot;Data Package&quot; screen, illustrated 
-            below.</p>
-           <p>This screen consists of several parts, illustrated below. The toolbar 
-           and menu are at the top of the screen. Below, there are three windows: 
-           the package window with documentation about the package, the data window 
-           with tabs to view different tables within the package, and a table documentation 
-           window with documentation for the table and table attributes (variables). 
-           All windows are adjustable using the bars that divide them.</p> 
-           <p>This data package is either stored locally and /or on a metacat server. 
-           Data packages, while created locally, can be uploaded to a Metacat server 
-           to become a shared Metacat Data Package. Data Packages are uploaded by 
-           choosing File, then Synchronize.</p>
-         </td>
-         <td width="100">&nbsp;</td>
-        </tr>
-      </table>
-      <img src="images/packagecopy.gif"><br>
-        <br>
-        <font color="yellow"> </font>
-      
-      <p>Open an Existing Data Package:</p>
-      <img src="images/opencopy.jpg" width="974" height="297">
-      <br>
-      <ul>
-        <li>Select the open icon <img src="images/openicon.jpg" width="24" height="26"> 
-          or from the File menu, choose &quot;open&quot;.</li>
-        <li>Select a data package to open (or open the sample package titled &quot;Population 
-          sampling data for zoo...&quot;)</li>
-        <li>Click the &quot;open&quot; button. (Or you can right click on the 
-          package and choose &quot;open&quot;)</li>
-      </ul>
-      <br>
-      &nbsp; <a name="search"></a> 
-      <div class="helpsub">Search Interface</div>
-      <br>
-      <img src="images/search_icon.gif" width="24" height="24"> Click 
-        the search icon or use the search menu to begin the data package search 
-        process.<br>
-      <p><img src="images/search_menu.gif" width="219" height="56"><br>
-        <br>
-        <img src="images/searchscreen.jpg" width="586" height="332"> <br>
-        <br>
-        <br>
-      <table width="85%">
-        <tr>
-          <td>
-            <p> The search interface allows you to name the query ("Query Title") in 
-            order to save it for repeated use. The "catalog" and "local" checkboxes 
-            imply your search will occur both locally and on a Metacat server. The 
-            tabs (Subject, Taxonomic, Spatial, Options) provide more detailed search 
-            criteria. After entering your search criteria your results are displayed 
-            as in the example below. </p>
-          </td>
-          <td width="100">&nbsp;</td>
-        </tr>
-      </table>
-      <img src="images/searchresult.jpg" width="887" height="226"><br>
-      </p>
-      <p>Search Icons:<br>
-      </p>
-      <ul>
-        <li><img src="images/refresh.jpg" width="24" height="26"> Refresh<br>
-        </li>
-        <li><img src="images/saveicon.jpg" width="24" height="26"> Save search<br>
-        </li>
-        <li><img src="images/revise.jpg" width="25" height="25"> Revise</li>
-      </ul>
-      <p>The icons in the first column of the search result screen tell you if 
-        the package contains: </p>
-      <ul>
-        <li><img src="images/dataicon.jpg" width="21" height="23"> Data and documentation 
-        </li>
-        <li><img src="images/metadataicon.jpg" width="23" height="25"> Documentation 
-          only </li>
-      </ul>
-      Similarly to uploading a data package, you can download a data package to 
-      your local PC from a Metacat by right-clicking and selecting "Synchronize" 
-      or through the same option on the file menu. Notice you also have the option 
-      to delete data packages. You are only allowed to delete files that you have 
-      created, or for which you have special permissions. See more on <i>permissions</i>
-      <p></p> 
-      <p></p>
-    </td>
- </tr>
-  <tr>
-   <td>
-      <table width="95%">
-        <tr>
-          <td width="300">
-             &nbsp;
-          </td>
-          <td width = "35%">
-             <a href="index.html" class="sitelink">Help Home</a>
-          </td>
-          <td width="100">
-             &nbsp;
-          </td>
-          <td width = "65%">
-           <a href="getting_started.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Previous</a>
-            &nbsp; &nbsp; &nbsp; 
-           <a href="packagesteps.html" class="sitelink">Creating a New DataPackage<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a>
-          </td>
-        </tr>
-      </table>
-  </tr>
-  </td>
- </tr>
+                /or data. After you <a href="#openpkg">open an existing data package</a> 
+                you will see the data package contents represented by a &quot;Data 
+                Package&quot; screen, illustrated below.</p>
+            <p align="center"><img src="images/packagescreen.gif" width="550" height="420"></p>
+            <p>This screen consists of several parts: the <a href="#menutools">menu 
+                and toolbar</a> are at the top of the screen. Below these are three 
+                panels: the package documentation panel, the data table panel, and 
+                the table documentation panel. These are described below</p>
+            <p>&nbsp;</p>
+            <p class="helpsub">Package Documentation Panel</p>
+            <p>The top panel contains a brief &quot;citation-style&quot; summary of 
+                the data package, with icons to indicate whether the package is located 
+                on the local machine, on the network, or both. Data packages, while 
+                created locally, can be uploaded to a Metacat server to become a shared 
+                Metacat Data Package. Data Packages are uploaded by choosing the 'File' 
+                menu, then clicking 'Synchronize'.</p>
+            <p align="center"><img src="images/packagemeta_closed.gif" width="550" height="289"></p>
+            <p>&nbsp;</p>
+            <p>The top panel can be expanded to reveal more-detailed documentation, 
+                either by dragging the divider bar, or by clicking the &quot;more&quot; 
+                link. Doing the latter will expand the top panel as shown below:</p>
+            <p align="center"><img src="images/packagemeta_open.gif" width="550" height="520"></p>
+            <p><font color="#FF0000" size="+3">!</font> note that clicking the blue 
+                links in this documentation window will cause the relevant part of 
+                the documentation to be displayed in the current panel. For example, 
+                clicking the &quot;tao.9049.1&quot; link in the above screen would 
+                cause the eml-physical documentation to be displayed. After navigating 
+                to different documentation pages, you can use the &quot;back&quot; 
+                button (near the top right corner of the panel) to navigate back to 
+                the initial view (this works in a similar way to a web-browser's &quot;back&quot; 
+                button ).</p>
+            <p>&nbsp;</p>
+            <p>The panel may be closed down to its original size in one of several 
+                ways:</p>
+            <ul>
+                <li>&nbsp; by clicking the link again (which will now say &quot;less&quot; 
+                    instead of &quot;more&quot;), </li>
+                <li> &nbsp;by clicking the &quot;hide&quot; button that is located 
+                    beneath the net/local icons</li>
+                <li>&nbsp;by using the mouse to drag the divider bar, or</li>
+                <li>&nbsp;by clicking the small arrow icons located on the divider 
+                    bar.</li>
+            </ul>
+            <p>The documentation may be edited by clicking the &quot;edit&quot; button 
+                that is located beneath the &quot;hide&quot; button.</p>
+            <p>&nbsp;</p>
+            <p class="helpsub">Data Table Panel</p>
+            <p></p>
+            <p></p>
+            <p>The data table panel shows the data in spreadsheet form (this is for 
+                text data; if you have image entities, these will be displayed as 
+                images). The tabs along the bottom of the data table panel may be 
+                used to select and view different tables (entities) within the package:</p>
+            <p align="center"><img src="images/packagedatatable.gif" width="550" height="590"></p>
+            <p>You can click and edit data directly within the table cells. After 
+                editing the data, click the &quot;update&quot; button to save the 
+                changes, or &quot;cancel&quot; to undo. You can right-click on the 
+                table to bring up a menu which allows you to:</p>
+            <ul>
+                <li> sort columns</li>
+                <li>insert and delete rows </li>
+                <li>insert and delete columns</li>
+                <li>add new tables</li>
+                <li>add/edit documentation</li>
+            </ul>
+            <p>These same options are available under the main &quot;Data&quot; menu 
+                at the top of the window.</p>
+            <p>&nbsp;</p>
+            <p class="helpsub">Table Documentation Panel</p>
+            <p></p>
+            <p>The table documentation panel (to the right of the data table) initially 
+                displays documentation for the table that is currently being viewed. 
+            </p>
+            <p align="center"><img src="images/entitymeta.jpg" width="480" height="460"></p>
+            <p>Clicking on any of the column headers in the table will cause the documentation 
+                panel to show information about the selected column (attribute). You 
+                can get back to thetable (entity) documentation either by using the 
+                'back' button (top left corner of this panel), or by clicking on the 
+                appropriate table selection tab at the bottom of the data table panel.</p>
+            <p align="center"><img src="images/attributemeta.jpg" width="455" height="460"></p>
+            <p>You can edit the currently-displayed documentation by clicking the 
+                'edit' button (located beneath the 'hide' button). As with the other 
+                panels, this panel can be resized by dragging the dividing bars, and 
+                can be hidden or expanded fully clicking the arrows on the divider 
+                bars, or by clicking the 'hide' button at the top-right corner. </p>
+            <p>&nbsp; </p>
+            <p><a name="openpkg" id="openpkg"></a></p>
+            <div class="helpsub">Open an Existing Data Package</div>
+            <p>Click the open button&nbsp; <img src="images/openicon.gif">&nbsp; or 
+                from the File menu, choose &quot;open&quot;. You will see a listing 
+                of the available packages:</p>
+            <div align="center"><img src="images/opencopy.jpg" width="550" height="285"> 
+            </div>
+            <p align="left">Select a data package to open (or open the sample package 
+                titled &quot;Population sampling data for zoo...&quot;)</p>
+            <p align="left">Click the &quot;open&quot; button (or you can simply double-click 
+                the package, or right click and choose &quot;open&quot;)</p>
+            <div align="left"><br>
+                &nbsp; <a name="search"></a> </div>
+            <div class="helpsub">Search Interface</div>
+            <div align="left"> 
+                <p><br>
+                    Click the search button&nbsp; <img src="images/search_icon.gif" width="24" height="24"> 
+                    &nbsp;or use the search menu to begin the data package search 
+                    process. You will then see the search interface:</p>
+                <p align="center"><br>
+                    <img src="images/searchscreen.jpg" width="480" height="350"> </p>
+                <p align="left"><br>
+                    The <b>search</b> interface allows you to name the query ("Query 
+                    Title") in order to save it for repeated use. After you save it, 
+                    you can access it directly from the 'Search' menu on the main 
+                    menu bar at th etop of each window.</p>
+                <p align="left">The "<b>catalog</b>" and "<b>local</b>" checkboxes 
+                    imply your search will occur both locally and on the KNB network. 
+                    The tabs (<b>Subject, Taxonomic, Spatial, Options</b>) provide 
+                    more detailed search criteria. After entering your search criteria 
+                    your results are displayed as in the example below. </p>
+                <p align="center"><img src="images/searchresult.gif" width="550" height="383"><br>
+                </p>
+            </div>
+            <p>The icons in the first column of the search result screen tell you 
+                if the package contains: </p>
+            <table width="500" border="0" cellspacing="0" cellpadding="5">
+                <tr>
+                    <td width="21"><img src="images/dataicon.jpg" width="21" height="23"></td>
+                    <td width="206">Data and documentation </td>
+                    <td width="23"><img src="images/metadataicon.jpg" width="23" height="25"></td>
+                    <td width="210">Documentation only </td>
+                </tr>
+            </table>
+            <p><br>
+                <img src="images/searchButtons.gif" width="87" height="27"> &nbsp;The 
+                search buttons allow you to refresh the search, save the search for 
+                future use, or revise the search by changing the search parameters. 
+                These options are also available from the main 'Search' menu.</p>
+            <p>&nbsp;</p>
+            <p>Similarly to uploading a data package, you can download a data package 
+                to your local PC from the network by right-clicking and selecting 
+                "Synchronize" or through the same option on the file menu. Notice 
+                you also have the option to delete data packages. You are only allowed 
+                to delete packages that you have created, or for which you have special 
+                permissions. See more on <i>permissions</i> </p>
+            <p>&nbsp;</p>
+            <div align="left"></div>
+            <div class="helpsub">The Spatial Search Tab</div>
+            <div align="left"> 
+                <p>If you select the "Spatial Search" tab you should see a screen 
+                    like that shown below: </p>
+            </div>
+            <p align="center"><img src="images/search_spatial.jpg" width="550" height="406"></p>
+            <p> You can create a 'bounding box' like the one shown over the United 
+                States by clicking somewhere on the map and then dragging with the 
+                mouse still pressed. Releasing the mouse will then complete the action 
+                and create a white rectangle like that shown. The latitude and longitude 
+                values indicated by the sides of the box are shown in the text boxes 
+                on the right. The box can be resized by dragging one of the white 
+                squares on the corners, or moved by dragging the white square in the 
+                center. You can also 'Zoom In' or 'Zoom Out'using the indicated buttons.<br>
+                <br>
+                When the "Search" button is click, datapackages will be queried to 
+                find those packages that contain geographic latitude/longitude coordinates 
+                inside the indicated bounding box.<br>
+            </p>
+            <p></p>
+            <p></p></td>
+    </tr>
+    <tr> 
+        <td> <table width="550">
+                <tr> 
+                    <td width="1">&nbsp; </td>
+                    <td width = "130" align="right"> 
+                        <div align="left"><a href="index.html" class="sitelink">Help 
+                            Home</a> </div></td>
+                    <td width = "420"> <a href="getting_started.html" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Previous</a> 
+                        &nbsp; &nbsp; &nbsp; <a href="packagesteps.html" class="sitelink">Creating 
+                        a New DataPackage<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a> 
+                    </td>
+                </tr>
+            </table></tr></tr>
 </table>
 </body>
 </html>
