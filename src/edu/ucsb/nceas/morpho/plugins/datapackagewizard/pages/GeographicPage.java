@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-18 18:21:08 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-03-14 21:27:01 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,9 @@ public class GeographicPage extends AbstractWizardPage {
   private String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage";
 
   private ConfigXML locationsXML = null;
+	
+	// use to indicate that text in the ooverage Description field has been changed by user
+	private boolean covDescFieldChangedFlag = false;
   
   public GeographicPage() {
 
@@ -117,6 +120,9 @@ public class GeographicPage extends AbstractWizardPage {
     JScrollPane jscrl = new JScrollPane(covDescField);
     covDescPanel.add(jscrl);
 
+		SymFocus aSymFocus = new SymFocus();
+		covDescField.addFocusListener(aSymFocus);
+		
     covDescPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(covDescPanel);
 
@@ -165,7 +171,7 @@ public class GeographicPage extends AbstractWizardPage {
     regionList = new JList(model);
     regionList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     regionList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
-    regionList.setSelectedIndex(0);
+    regionList.setSelectedIndex(-1);
     regionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     ListSelectionModel lsm = regionList.getSelectionModel();
     lsm.addListSelectionListener(new RegionSelectionHandler());
@@ -220,7 +226,8 @@ public class GeographicPage extends AbstractWizardPage {
                                     null,
                                     options,
                                     options[0]);        
-        JDialog dialog = optionPane.createDialog(currentInstance, "Add Current Selection to Named Region List");
+        JDialog dialog = optionPane.createDialog(currentInstance,
+				   "Add Current Selection to Named Region List?");
         dialog.show();
         String selectedValue = (String)(optionPane.getValue());
         if ((selectedValue!=null)&&(selectedValue.equals("Enter"))) {
@@ -260,13 +267,13 @@ public class GeographicPage extends AbstractWizardPage {
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new GridLayout(4, 1));
-    JPanel buttonSubpanel1 = new JPanel();
+//    JPanel buttonSubpanel1 = new JPanel();
     JPanel buttonSubpanel2 = new JPanel();
     JPanel buttonSubpanel3 = new JPanel();
     
-    buttonSubpanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
-    buttonSubpanel1.add(selectButton);
-    buttonSubpanel1.add(selectHelpLabel);
+//    buttonSubpanel1.setLayout(new FlowLayout(FlowLayout.LEFT));
+//    buttonSubpanel1.add(selectButton);
+//    buttonSubpanel1.add(selectHelpLabel);
     
     buttonSubpanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
     buttonSubpanel2.add(addButton);
@@ -276,7 +283,7 @@ public class GeographicPage extends AbstractWizardPage {
     buttonSubpanel3.add(deleteButton);
     buttonSubpanel3.add(deleteHelpLabel);
 
-    buttonPanel.add(buttonSubpanel1);
+//    buttonPanel.add(buttonSubpanel1);
     buttonPanel.add(buttonSubpanel2);
     buttonPanel.add(buttonSubpanel3);
     
@@ -286,7 +293,7 @@ public class GeographicPage extends AbstractWizardPage {
     regionPanel.add(regionSelectionPanel);
     regionPanel.add(buttonPanel);
 
-//    vbox.add(regionPanel);
+    vbox.add(regionPanel);
 
 //    vbox.add(WidgetFactory.makeDefaultSpacer());
     
@@ -294,30 +301,6 @@ public class GeographicPage extends AbstractWizardPage {
 
 //    vbox.add(WidgetFactory.makeDefaultSpacer());
   
-    final JLabel listDesc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Show List of Regions</b> A list of pre-defined geographic regions"
-       +" (bounding boxes) can be displayed by clicking the button below. You can "
-       +"select from the list, or add the current selection shown on the map to the list. "
-       +"</p>", 3);
-    vbox.add(listDesc);
-    
-    final JPanel listButtonPanel = new JPanel();
-    JButton showListButton = new JButton("Show Region List");
-    showListButton.setEnabled(true);
-    showListButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    showListButton.setFocusPainted(false);
-    showListButton.addActionListener( new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
-        vbox.remove(listDesc);
-        vbox.remove(listButtonPanel);
-        vbox.add(regionPanel);
-        vbox.validate();
-      }
-    });
-    listButtonPanel.add(showListButton);
-    vbox.add(listButtonPanel);
-    
-//    vbox.add(WidgetFactory.makeDefaultSpacer());
 
   }
   
@@ -327,15 +310,30 @@ public class GeographicPage extends AbstractWizardPage {
 
   class RegionSelectionHandler implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent eee) {
+		  boolean setTextFlag = true;
       if (deleteFlag) return;
       String selection = (String)regionList.getSelectedValue();
-//      Log.debug(1,"Selection: "+selection);
+			if (covDescField.hasFocus()) return;
+			if ((covDescFieldChangedFlag)&&(covDescField.getText().length()>0) ) {
+				 int res = JOptionPane.showConfirmDialog(covDescField, "Replace existing description",
+				            "Confirm:", JOptionPane.YES_NO_OPTION);
+				 if (res==JOptionPane.YES_OPTION) {
+					 setTextFlag = true;
+         }
+         else {
+					 setTextFlag = false;
+         }						
+			}
+ //     Log.debug(1,"Selection: "+selection);
       double n = (new Double(getNorth(selection))).doubleValue();
       double w = (new Double(getWest(selection))).doubleValue();
       double s = (new Double(getSouth(selection))).doubleValue();
       double e = (new Double(getEast(selection))).doubleValue();
-      lmp.setBoundingBox(n, w, s, e);      
-      covDescField.setText(getDescription(selection));
+      lmp.setBoundingBox(n, w, s, e);  
+			if (setTextFlag) {
+        covDescField.setText(getDescription(selection));
+		    covDescFieldChangedFlag = false;
+			}
     }
   }
   
@@ -639,7 +637,9 @@ public class GeographicPage extends AbstractWizardPage {
     /**
    *  This is a static main method configured to test the class 
    */
-  static public void main(String args[]) {
+  static public void main(String args[]) {			
+		System.out.println("Starting up!");
+
     JFrame frame = new JFrame("Demo/Test");
     frame.setSize(800, 600);
     frame.getContentPane().setLayout(new BorderLayout());
@@ -673,5 +673,26 @@ public class GeographicPage extends AbstractWizardPage {
 		 }
 		 return newMap;
 	 }
+	 
+	 
+	class SymFocus extends java.awt.event.FocusAdapter
+	{
+		private String startingString = "";
+		
+		public void focusLost(java.awt.event.FocusEvent event)
+		{
+//			System.out.println("FocusLost fired!");
+			String currentString = covDescField.getText();
+			if ((!startingString.equals(currentString))&&
+			    (currentString.length()>0)) {
+			  covDescFieldChangedFlag = true;
+			}
+		}
+    
+    public void focusGained(java.awt.event.FocusEvent event) {
+			startingString = covDescField.getText();
+    }
+
+	}
 
 }
