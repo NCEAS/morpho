@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-10-23 23:43:02 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-10-24 07:22:54 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,10 @@ public class ProfileDialog extends JDialog
   JTextField lastNameField = new JTextField();
   JTextField userIdField = new JTextField();
   JTextField otherOrgField = new JTextField();
-  JTextField constructionField = new JTextField();
+  JTextField scopeField = new JTextField();
   JList orgList = null;
+
+  KeyPressActionListener keyPressListener = new KeyPressActionListener();
 
   /**
    * Construct a dialog and set the framework
@@ -79,7 +81,7 @@ public class ProfileDialog extends JDialog
 
     framework = cont;
 
-    numScreens = 2;
+    numScreens = 3;
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -144,6 +146,7 @@ public class ProfileDialog extends JDialog
     buttonPanel.add(Box.createHorizontalGlue());
     cancelButton.setText("Cancel");
     cancelButton.setActionCommand("Cancel");
+    cancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
     cancelButton.setEnabled(true);
     buttonPanel.add(cancelButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
@@ -156,6 +159,7 @@ public class ProfileDialog extends JDialog
           getResource("/toolbarButtonGraphics/navigation/Forward16.gif"));
     nextButton = new JButton("Next", forwardIcon);
     nextButton.setHorizontalTextPosition(SwingConstants.LEFT);
+    nextButton.setMnemonic(KeyEvent.VK_ENTER);
     nextButton.setEnabled(true);
     buttonPanel.add(nextButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
@@ -182,8 +186,35 @@ public class ProfileDialog extends JDialog
     previousButton.addActionListener(myActionHandler);
     nextButton.addActionListener(myActionHandler);
     cancelButton.addActionListener(myActionHandler);
+    this.addKeyListener(keyPressListener);
 
     config = framework.getConfiguration();
+  }
+
+  /**
+   * Listens for key events coming from the dialog.  responds to escape and 
+   * enter buttons.  escape toggles the cancel button and enter toggles the
+   * next button
+   */
+  class KeyPressActionListener extends java.awt.event.KeyAdapter
+  {
+    public KeyPressActionListener()
+    {
+    }
+    
+    public void keyPressed(KeyEvent e)
+    {
+      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        java.awt.event.ActionEvent event = new 
+                       java.awt.event.ActionEvent(nextButton, 0, "Next");
+        nextButtonHandler(event);
+      } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        dispose();
+        java.awt.event.ActionEvent event = new 
+                       java.awt.event.ActionEvent(cancelButton, 0, "Cancel");
+        cancelButtonHandler(event);
+      }
+    }
   }
 
   /**
@@ -345,20 +376,21 @@ public class ProfileDialog extends JDialog
                             orgScrollPane, otherOrgField};
       addLabelTextRows(labels, components, gridbag, screenPanel);
     } else if (2 == currentScreen) {
-      String helpText = "<html>Enter your contact information.  This " +
-                        "data will be used to pre-fill in metadata " +
-                        "fields when you are entering data, and so will " +
-                        "increase entry efficiency.</html>";
+      String helpText = "<html><p>Enter miscellaneous profile options.  This " +
+                        "includes the prefix you wish to use to " +
+                        "construct data identifiers for your data." +
+                        "</p></html>";
       helpLabel.setText(helpText);
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
-                            "Contact Information"));
-      JLabel constructionLabel = new JLabel("Not yet implemented.");
-      constructionLabel.setForeground(Color.black);
-      constructionLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      constructionField.setColumns(15);
-      JLabel[] labels = {constructionLabel};
-      JTextField[] textFields = {constructionField};
+                            "Miscellaneous Information"));
+      JLabel scopeLabel = new JLabel("Identifier prefix: ");
+      scopeLabel.setForeground(Color.black);
+      scopeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      scopeField.setColumns(15);
+      scopeField.setText(userIdField.getText());
+      JLabel[] labels = {scopeLabel};
+      JTextField[] textFields = {scopeField};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
     }
 
@@ -398,8 +430,7 @@ public class ProfileDialog extends JDialog
       fieldsAreValid = false;
     }
 
-    if (userIdField.getText() == null || 
-        userIdField.getText().equals("")) {
+    if (userIdField.getText() == null || userIdField.getText().equals("")) {
       fieldsAreValid = false;
     }
 
@@ -411,6 +442,10 @@ public class ProfileDialog extends JDialog
             ClientFramework.debug(20, "second org was null");
             fieldsAreValid = false;
         }
+    }
+
+    if (scopeField.getText() == null || (scopeField.getText().equals(""))) {
+      fieldsAreValid = false;
     }
 
     return fieldsAreValid;
@@ -440,6 +475,7 @@ public class ProfileDialog extends JDialog
       if (null == org) {
           org = otherOrgField.getText();
       }
+      String scope = scopeField.getText();
       String profilePath = profileDirName + File.separator + profileName;
       String profileFileName = profilePath + File.separator + 
                         profileName + ".xml";
@@ -497,8 +533,8 @@ public class ProfileDialog extends JDialog
           if (! profile.set("lastname", 0, lastNameField.getText())) {
             success = profile.insert("lastname", lastNameField.getText());
           }
-          if (! profile.set("scope", 0, profileName)) {
-            success = profile.insert("scope", profileName);
+          if (! profile.set("scope", 0, scope)) {
+            success = profile.insert("scope", scope);
           }
           StringBuffer dn = new StringBuffer();
           String uidtag = config.get("uid_tag", 0);
@@ -569,7 +605,8 @@ public class ProfileDialog extends JDialog
       layoutScreen();
       String messageText = "Some required information was invalid.\n\n" +
                            "Please check that you have provided a\n" +
-                           "profile name, a user name, and an organization.\n";
+                           "profile name, a user name, an organization,\n" +
+                           "and an identifer prefix.\n";
       JOptionPane.showMessageDialog(this, messageText);      
     }
   }
