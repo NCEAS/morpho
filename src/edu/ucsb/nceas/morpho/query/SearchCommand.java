@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 23:57:38 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-08-24 00:13:59 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,9 @@ public class SearchCommand implements Command
       dialogBox = null;
     }//if
     // QueryDialog Create and show as modal
-    QueryDialog queryDialog = new QueryDialog(morpho);
+    MorphoFrame morphoFrame = 
+                          UIController.getInstance().getCurrentActiveWindow();
+    QueryDialog queryDialog = new QueryDialog(morphoFrame, morpho);
     queryDialog.setModal(true);
     queryDialog.show();
     if (queryDialog.isSearchStarted()) 
