@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-03 16:15:55 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2002-04-04 20:23:34 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,8 @@ public class ResultPanel extends JPanel
   private JLabel titleLabel;
   /** The label used to display the number of records */
   private JLabel recordCountLabel;
+  /** Morpho butterfly label */
+  private JLabel bflyLabel;
   /** A static hash listing all of the search menu query Actions by id */
   private static Hashtable savedQueriesList;
   /**popup menu for right clicks*/
@@ -106,6 +108,7 @@ public class ResultPanel extends JPanel
   boolean metacatLoc = false;
   boolean localLoc = false;
   
+  ImageIcon bfly;
   ImageIcon flapping;
   int threadCount = 0;
   
@@ -150,6 +153,14 @@ public class ResultPanel extends JPanel
     this.hasReviseButton = showRevise;
     this.framework = results.getFramework();
 
+    try {
+        bfly = new javax.swing.ImageIcon(getClass().getResource("Btfly.gif"));
+        flapping = new javax.swing.ImageIcon(getClass().getResource("Btfly4.gif"));
+    } catch (Exception w) {
+        System.out.println("Error in loading images");
+    }
+
+
     setLayout(new BorderLayout());
     setBackground(Color.white);
     setPreferredSize(new Dimension(775,500));
@@ -169,6 +180,7 @@ public class ResultPanel extends JPanel
       recordCountLabel = new JLabel(results.getRowCount() + " data packages");
       recordCountLabel.setForeground(Color.black);
       recordCountLabel.setFont(new Font("Dialog", Font.BOLD, 18));
+      bflyLabel = new JLabel(bfly);
       headerBox.add(recordCountLabel);
       headerBox.add(Box.createHorizontalStrut(4));
       refreshButton = new JButton("Refresh", new ImageIcon( getClass().
@@ -195,6 +207,7 @@ public class ResultPanel extends JPanel
         headerBox.add(saveButton);
         headerBox.add(Box.createHorizontalStrut(4));
       }
+      headerBox.add(bflyLabel);
       ActionHandler dispatcher = new ActionHandler();
       refreshButton.addActionListener(dispatcher);
       reviseButton.addActionListener(dispatcher);
@@ -226,11 +239,6 @@ public class ResultPanel extends JPanel
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
     
-      try {
-      flapping = new javax.swing.ImageIcon(getClass().getResource("Btfly4.gif"));
-      } catch (Exception w) {
-        System.out.println("Error in loading images");
-      }
     
     
       //Build the popup menu for the right click functionality
@@ -782,8 +790,7 @@ public class ResultPanel extends JPanel
 private void doUpload() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           
           
@@ -851,7 +858,7 @@ private void doUpload() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -864,8 +871,7 @@ private void doUpload() {
 private void doDownload() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
  
           String docid = selectedId;
@@ -896,7 +902,7 @@ private void doDownload() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -906,8 +912,7 @@ private void doDownload() {
 private void doDeleteLocal() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -948,7 +953,7 @@ private void doDeleteLocal() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -958,8 +963,7 @@ private void doDeleteLocal() {
 private void doDeleteMetacat() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1002,7 +1006,7 @@ private void doDeleteMetacat() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1012,8 +1016,7 @@ private void doDeleteMetacat() {
 private void doDeleteAll() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1054,7 +1057,7 @@ private void doDeleteAll() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1064,8 +1067,7 @@ private void doDeleteAll() {
 private void doExport() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1094,7 +1096,7 @@ private void doExport() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1104,8 +1106,7 @@ private void doExport() {
 private void doExportToZip() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1134,7 +1135,7 @@ private void doExportToZip() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1144,8 +1145,7 @@ private void doExportToZip() {
 private void doOpenDataPackage() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1174,7 +1174,7 @@ private void doOpenDataPackage() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1185,8 +1185,7 @@ private void doOpenDataPackage() {
 private void doRefreshQuery() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          recordCountLabel.setText("Working !!!");    
-          recordCountLabel.setIcon(flapping);
+          bflyLabel.setIcon(flapping);
           threadCount++;
           refreshQuery();
         
@@ -1198,7 +1197,7 @@ private void doRefreshQuery() {
           threadCount--;
           if (threadCount<1) {
            recordCountLabel.setText(results.getRowCount() + " data packages");    
-           recordCountLabel.setIcon(null);
+           bflyLabel.setIcon(bfly);
           }
         }
     };
