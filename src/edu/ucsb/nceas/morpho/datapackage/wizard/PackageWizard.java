@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-09 23:17:02 $'
- * '$Revision: 1.36 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-09 20:42:44 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1203,9 +1203,9 @@ public class PackageWizard extends javax.swing.JFrame
                   
                   if(tempElement.attributes.containsKey("defaulttext"))
                   {
-                    String defaultText = (String)
+                    String defaultText1 = (String)
                                      tempElement.attributes.get("defaulttext");
-                    newtextfield.setText(defaultText);
+                    newtextfield.setText(defaultText1);
                   }
                   JPanel layoutpanel = new JPanel();
                   BorderLayout bl = new BorderLayout();
