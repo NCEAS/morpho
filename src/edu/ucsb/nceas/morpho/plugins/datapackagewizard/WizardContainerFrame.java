@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-28 22:15:41 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-07-29 16:56:07 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,28 +58,6 @@ import java.util.Stack;
  */
 public class WizardContainerFrame extends JFrame {
 
-  private final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
-  // x-dimension is ignored:
-  private final Dimension TOP_PANEL_DIMS = new Dimension(100,60);
-  private final int PADDING = 5;
-  
-  private final Font  TITLE_FONT          = new Font("Sans-Serif", Font.BOLD,  12);
-  private final Color TITLE_TEXT_COLOR    = new Color(255,255,255);
-  private final Font  SUBTITLE_FONT       = new Font("Sans-Serif", Font.PLAIN, 11);
-  private final Color SUBTITLE_TEXT_COLOR = new Color(255,255,255);
-
-  private final Font  BUTTON_FONT         = new Font("Sans-Serif",Font.BOLD,12);
-  private final Color BUTTON_TEXT_COLOR   = new Color(51, 51, 51);
-
-  public static final  Font  WIZARD_CONTENT_FONT = new Font("Sans-Serif",Font.PLAIN,11);
-  public static final  Color WIZARD_CONTENT_TEXT_COLOR  = new Color(51, 51, 51);
-
-  private final  Color WIZARD_CONTENT_BG_COLOR    = new Color(221, 221, 221);
-
-  private final String FINISH_BUTTON_TEXT  = "Finish";
-  private final String NEXT_BUTTON_TEXT    = "Next >";
-  private final String PREV_BUTTON_TEXT    = "< Prev";
-  private final String CANCEL_BUTTON_TEXT  = "Cancel";
   
   /**
    * Constructor
@@ -91,8 +69,7 @@ public class WizardContainerFrame extends JFrame {
     pageStack   = new Stack();
     pageLib = new WizardPageLibrary();
     init();
-    
-    this.setVisible(true);
+    setCurrentPage(WizardSettings.FIRST_PAGE_ID);
   }
 
   /** 
@@ -143,7 +120,7 @@ public class WizardContainerFrame extends JFrame {
     middlePanel.add(getCurrentPage(), BorderLayout.CENTER);
     getCurrentPage().setOpaque(false);
     getCurrentPage().onLoadAction();
-    middlePanel.paintComponents(middlePanel.getGraphics());
+    middlePanel.repaint();
     updateButtonsStatus();
   }
 
@@ -180,9 +157,9 @@ public class WizardContainerFrame extends JFrame {
     
     // next/finish button label:
     if (getCurrentPage().getNextPageID()==null) {
-      nextFinishButton.setText(FINISH_BUTTON_TEXT);
+      nextFinishButton.setText(WizardSettings.FINISH_BUTTON_TEXT);
     } else {
-      nextFinishButton.setText(NEXT_BUTTON_TEXT);
+      nextFinishButton.setText(WizardSettings.NEXT_BUTTON_TEXT);
     }
   }
   
@@ -208,20 +185,20 @@ public class WizardContainerFrame extends JFrame {
     Log.debug(45,"WizardContainerFrame starting init()");
     
     titleLabel = new JLabel("");
-    titleLabel.setFont(TITLE_FONT);
-    titleLabel.setForeground(TITLE_TEXT_COLOR);
+    titleLabel.setFont(WizardSettings.TITLE_FONT);
+    titleLabel.setForeground(WizardSettings.TITLE_TEXT_COLOR);
     titleLabel.setBorder(new EmptyBorder(PADDING,0,PADDING,0));
     
     subtitleLabel = new JLabel("");
-    subtitleLabel.setFont(SUBTITLE_FONT);
-    subtitleLabel.setForeground(SUBTITLE_TEXT_COLOR);
+    subtitleLabel.setFont(WizardSettings.SUBTITLE_FONT);
+    subtitleLabel.setForeground(WizardSettings.SUBTITLE_TEXT_COLOR);
     subtitleLabel.setBorder(new EmptyBorder(PADDING,0,PADDING,0));
     
     topPanel = new JPanel();
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-    topPanel.setPreferredSize(TOP_PANEL_DIMS);
+    topPanel.setPreferredSize(WizardSettings.TOP_PANEL_DIMS);
     topPanel.setBorder(new EmptyBorder(0,3*PADDING,0,3*PADDING));
-    topPanel.setBackground(TOP_PANEL_BG_COLOR);
+    topPanel.setBackground(WizardSettings.TOP_PANEL_BG_COLOR);
     topPanel.setOpaque(true);
     topPanel.add(titleLabel);
     topPanel.add(subtitleLabel);
@@ -233,9 +210,8 @@ public class WizardContainerFrame extends JFrame {
   
     middlePanel = new JPanel();
     middlePanel.setLayout(new BorderLayout());
-    middlePanel.setBackground(WIZARD_CONTENT_BG_COLOR);
-//    middlePanel.setOpaque(false);
-//    middlePanel.setBorder(new EmptyBorder(PADDING,3*PADDING,PADDING,3*PADDING));
+    middlePanel.setBackground(WizardSettings.WIZARD_CONTENT_BG_COLOR);
+    middlePanel.setBorder(new EmptyBorder(PADDING,3*PADDING,PADDING,3*PADDING));
     contentPane.add(middlePanel, BorderLayout.CENTER);
   }
   
@@ -247,24 +223,24 @@ public class WizardContainerFrame extends JFrame {
     bottomPanel.setOpaque(false);
 
     bottomPanel.setBorder(
-                  BorderFactory.createMatteBorder(2, 0, 0, 0, TOP_PANEL_BG_COLOR));
+                  BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
 //    bottomPanel.setBorder(new EmptyBorder(PADDING,3*PADDING,3*PADDING,PADDING));
     contentPane.add(bottomPanel, BorderLayout.SOUTH);
   }
   
   private void initButtons()  {
   
-    prevButton        = addButton(PREV_BUTTON_TEXT, new ActionListener() {
+    prevButton        = addButton(WizardSettings.PREV_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         previousAction();
       }
     });
-    nextFinishButton  = addButton(NEXT_BUTTON_TEXT, new ActionListener() {
+    nextFinishButton  = addButton(WizardSettings.NEXT_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         nextFinishAction();
       }
     });
-    cancelButton      = addButton(CANCEL_BUTTON_TEXT, new ActionListener() {
+    cancelButton      = addButton(WizardSettings.CANCEL_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         cancelAction();
       }
@@ -357,8 +333,8 @@ public class WizardContainerFrame extends JFrame {
   private JButton addButton(String title, ActionListener actionListener) {
   
     JButton button = new JButton(title);
-    button.setForeground(BUTTON_TEXT_COLOR);
-    button.setFont(BUTTON_FONT);
+    button.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+    button.setFont(WizardSettings.BUTTON_FONT);
     if (actionListener!=null) button.addActionListener(actionListener);
     bottomPanel.add(button);
     bottomPanel.add(Box.createHorizontalStrut(PADDING));
@@ -368,6 +344,7 @@ public class WizardContainerFrame extends JFrame {
 
   // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+  private int PADDING = WizardSettings.PADDING;
   private Container contentPane;
   private JPanel topPanel;
   private JPanel middlePanel;

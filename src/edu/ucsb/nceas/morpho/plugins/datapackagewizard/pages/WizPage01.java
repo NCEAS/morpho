@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-28 22:15:41 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-07-29 16:56:07 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 import java.util.Map;
 
@@ -61,14 +61,8 @@ public class WizPage01 extends AbstractWizardPage{
    */
   private void init() {
     
-    
-    
-
-//    this.setBackground(defaultBGColor);
     JLabel htmlLabel = new JLabel(
-    "<html><div overflow=auto><table width=100% align=top>"
-    +"<tr><td width=10px>&nbsp;</td><td>&nbsp;</td><td width=10px>&nbsp;</td></tr>"    
-    +"<tr><td width=10px>&nbsp;</td><td valign=top align=left>"
+    "<html><table width=100% align=top><tr><td valign=top align=left>"
     +"<p>This wizard will walk you through the steps of creating a data package. "
     +"A number of components will be created, some of which are required, others "
     +"not. Required fields are shown in red, whereas optional fields are shown "
@@ -86,9 +80,7 @@ public class WizPage01 extends AbstractWizardPage{
     +"permissions will they be granted?<br></br></li>"
     +"<li>Distribution Information: <br></br>Are the data accessible online, or via "
     +"offline medium (i.e. CDROM, etc.)?<br></br></li></ul>"
-    +"</td><td width=10px>&nbsp;</td></tr>"
-    +"<tr><td width=10px>&nbsp;</td><td>&nbsp;</td><td width=10px>&nbsp;</td></tr>"    
-    +"</table></div></html>");
+    +"</td></tr></table></html>");
     htmlLabel.setFont(defaultFont);
     htmlLabel.setForeground(defaultFGColor);
     this.setLayout(new BorderLayout());
@@ -171,7 +163,7 @@ public class WizPage01 extends AbstractWizardPage{
   
   
   private final Font  defaultFont    
-                              = WizardContainerFrame.WIZARD_CONTENT_FONT;
+                              = WizardSettings.WIZARD_CONTENT_FONT;
   private final Color defaultFGColor 
-                              = WizardContainerFrame.WIZARD_CONTENT_TEXT_COLOR;
+                              = WizardSettings.WIZARD_CONTENT_TEXT_COLOR;
 }

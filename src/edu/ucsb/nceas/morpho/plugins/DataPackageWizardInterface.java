@@ -1,5 +1,5 @@
 /**
- *  '$RCSfile: DataPackageWizardController.java,v $'
+ *  '$RCSfile: DataPackageWizardInterface.java,v $'
  *    Purpose: A class that handles xml messages passed by the 
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
@@ -8,7 +8,7 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-28 19:08:19 $'
+ *     '$Date: 2003-07-29 16:56:07 $'
  * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,35 +26,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
-
+package edu.ucsb.nceas.morpho.plugins;
 
 
 /**
- *  Main controller class for creating and starting a Data Package Wizard
+ *  Interface for Data Package Wizard Plugin
  */
-public class DataPackageWizardController {
 
-  private final int WIZARD_X_COORD = 100;
-  private final int WIZARD_Y_COORD = 100;
-  private final int WIZARD_WIDTH   = 800;
-  private final int WIZARD_HEIGHT  = 600;
-  
-  private WizardContainerFrame wizardContainerFrame;
+public interface DataPackageWizardInterface {
 
-    /**
-     *  Constructor
-     */
-    public DataPackageWizardController() {
-    
-      wizardContainerFrame = new WizardContainerFrame();
-    }
 
-    public void startWizard(String firstPageID) {
-
-        wizardContainerFrame.setBounds( WIZARD_X_COORD, WIZARD_Y_COORD, 
-                                        WIZARD_WIDTH,   WIZARD_HEIGHT );
-        wizardContainerFrame.setCurrentPage(firstPageID);
-        wizardContainerFrame.setVisible(true);
-   }
+  /**
+   *  method to start the wizard
+   */
+  public void startWizard();
 }
