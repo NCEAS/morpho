@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-07 17:37:27 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-07 20:34:04 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ public class DataPackage implements PluginInterface
   Hashtable packagecomponents = new Hashtable();
   //this hashtable has all of the references of ids to filenames (or urls in
   //the case of a file on metacat).  
+  IdContainer accNum;
   
   public DataPackage()
   {
@@ -48,30 +49,8 @@ public class DataPackage implements PluginInterface
   
   public void initialize(ClientFramework cf)
   {
-    IdContainer id = new IdContainer(cf);
-    cf.debug(9, "init DataPackage Plugin"); 
+    accNum = new IdContainer(cf);
+    cf.debug(9, "Init DataPackage Plugin"); 
   }
-  
-  public String getID()
-  {
-    return new String();
-  }
-  
-  public String getTitle()
-  {
-    return new String();
-  }
-  
-  public String getParameters()
-  {
-    return new String();
-  }
-  
-  public void addParameter()
-  {
-    
-  }
-  
-  
   
 }
