@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-14 22:10:59 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2001-06-14 23:14:02 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,34 +126,53 @@ public class DocFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
+		setTitle("Morpho - Editor");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(600,305);
 		setVisible(false);
 		getContentPane().add(OutputScrollPanel);
 		getContentPane().add(BorderLayout.CENTER, NestedPanelScrollPanel);
-		ControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		getContentPane().add(BorderLayout.NORTH, ControlPanel);
-		reload.setText("Reload Tree");
-		reload.setActionCommand("Reload Tree");
-		ControlPanel.add(reload);
-		reload.setVisible(false);
-		DTDParse.setText("Parse DTD");
-		DTDParse.setActionCommand("Parse DTD");
-		ControlPanel.add(DTDParse);
-		DTDParse.setVisible(false);
+		TopPanel.setLayout(new BorderLayout(0,0));
+		getContentPane().add(BorderLayout.NORTH,TopPanel);
+		TopPanel.setBackground(java.awt.Color.white);
+		TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		TopPanel.add(BorderLayout.CENTER,TopLabelPanel);
+		TopLabelPanel.setBackground(java.awt.Color.white);
+		headLabel.setText("Morpho Editor");
+		TopLabelPanel.add(headLabel);
+		TopPanel.add(BorderLayout.WEST,logoLabel);
+		ControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
+		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
+		ControlPanel.setBackground(new java.awt.Color(204,204,204));
 		SaveXML.setText("Save XML...");
 		SaveXML.setActionCommand("Save XML...");
 		ControlPanel.add(SaveXML);
+		CancelButton.setText("Cancel");
+		CancelButton.setActionCommand("Cancel");
+		ControlPanel.add(CancelButton);
 		EditingExit.setText("Save Changes");
 		EditingExit.setActionCommand("jbutton");
 		ControlPanel.add(EditingExit);
-		CancelButtons.setText("Cancel");
-		CancelButtons.setActionCommand("Cancel");
-		ControlPanel.add(CancelButtons);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
+		//$$ saveFileDialog.move(24,312);
 		//}}
+    ImageIcon head = new ImageIcon(
+                         getClass().getResource("smallheader-bg.gif"));
+    ImageIcon logoIcon = 
+              new ImageIcon(getClass().getResource("logo-icon.gif"));
+    
+    logoLabel.setIcon(logoIcon);
+    headLabel.setIcon(head);
+    headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+    headLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
+    headLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    headLabel.setForeground(Color.black);
+    headLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+    headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+		
 		JSplitPane DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
 		       , OutputScrollPanel, NestedPanelScrollPanel);
 		     
@@ -185,13 +204,11 @@ public class DocFrame extends javax.swing.JFrame
 	  
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
-		reload.addActionListener(lSymAction);
-		DTDParse.addActionListener(lSymAction);
 		SaveXML.addActionListener(lSymAction);
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
 		EditingExit.addActionListener(lSymAction);
-		CancelButtons.addActionListener(lSymAction);
+		CancelButton.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -414,12 +431,14 @@ public class DocFrame extends javax.swing.JFrame
 	//{{DECLARE_CONTROLS
 	javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JScrollPane NestedPanelScrollPanel = new javax.swing.JScrollPane();
+	javax.swing.JPanel TopPanel = new javax.swing.JPanel();
+	javax.swing.JPanel TopLabelPanel = new javax.swing.JPanel();
+	javax.swing.JLabel headLabel = new javax.swing.JLabel();
+	javax.swing.JLabel logoLabel = new javax.swing.JLabel();
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
-	javax.swing.JButton reload = new javax.swing.JButton();
-	javax.swing.JButton DTDParse = new javax.swing.JButton();
 	javax.swing.JButton SaveXML = new javax.swing.JButton();
+	javax.swing.JButton CancelButton = new javax.swing.JButton();
 	javax.swing.JButton EditingExit = new javax.swing.JButton();
-	javax.swing.JButton CancelButtons = new javax.swing.JButton();
 	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	//}}
 
@@ -445,16 +464,13 @@ class SymAction implements java.awt.event.ActionListener {
 				Replace_actionPerformed(event);
 			else if (object == PastemenuItem)
 				Paste_actionPerformed(event);
-			else if (object == reload)
-				reload_actionPerformed(event);
-			else if (object == DTDParse)
-				DTDParse_actionPerformed(event);
+			
 			if (object == SaveXML)
 				SaveXML_actionPerformed(event);
 			else if (object == EditingExit)
 				EditingExit_actionPerformed(event);
-			else if (object == CancelButtons)
-				CancelButtons_actionPerformed(event);
+			else if (object == CancelButton)
+				CancelButton_actionPerformed(event);
 		}
 }
 
@@ -779,19 +795,6 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         // Either there was no selection, or the root was selected.
         Toolkit.getDefaultToolkit().beep();
     }	
-	
-
-    void reload_actionPerformed(java.awt.event.ActionEvent event) {
-		treeModel.reload();
-		tree.setModel(treeModel);
-	}
-	
-
-	void DTDParse_actionPerformed(java.awt.event.ActionEvent event) {
-//		dtdtree = new DTDTree(dtdfile);
-//		dtdtree.parseDTD();
-		tree.setModel(dtdtree.treeModel);
-	}
 
     /*
     * write the tree starting at the indicated node to a file 'fn'
@@ -1292,7 +1295,7 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	}
 	
 
-	void CancelButtons_actionPerformed(java.awt.event.ActionEvent event)
+	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 			  if (framework!=null) {
 			    framework.removeWindow(this);  
