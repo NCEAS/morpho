@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-05-10 22:43:10 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2002-06-06 22:22:58 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.io.*;
 import java.net.*;
-import java.util.Map;
 import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Date;
