@@ -19,8 +19,9 @@
   <returndoc>-//NCEAS//resource//EN</returndoc>
   <returndoc>eml://ecoinformatics.org/eml-2.0.0</returndoc> 
   <returnfield>dataset/title</returnfield>
-  <returnfield>originator/individualName/surName</returnfield>
-  <returnfield>keyword</returnfield>
+  <returnfield>individualName/surName</returnfield>
+  <returnfield>keyword</returnfield> 
+  <returnfield>entityName</returnfield>
   <scope>jones</scope>
   <lastId>3</lastId>
   <separator>.</separator>
