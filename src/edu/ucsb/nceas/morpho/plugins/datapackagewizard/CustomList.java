@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 23:26:45 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-10-01 16:17:45 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -943,7 +943,7 @@ class CustomJTable extends JTable  {
     
     public CustomJTable(Vector rowVect, Vector colNamesVec, Object[] editors) {
     
-      super(rowVect, colNamesVec);
+      super(new DefaultTableModel(rowVect, colNamesVec));
       this.editors = editors;
       super.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       defaultCellEditor.setClickCountToStart(1);
