@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 18:40:39 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-10-03 21:27:00 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,13 @@ public class XMLTreeCellRenderer extends javax.swing.tree.DefaultTreeCellRendere
                             tree, value, sel,
                             expanded, leaf, row,
                             hasFocus);
-            NodeInfo ni = (NodeInfo)((DefaultMutableTreeNode)(value)).getUserObject();                
+            if (((DefaultMutableTreeNode)(value)).getUserObject()==null) return this;  
+            NodeInfo ni= null;
+            try {              
+              ni = (NodeInfo)((DefaultMutableTreeNode)(value)).getUserObject(); 
+            } catch (Exception w) {
+              return this;
+            }
             if (ni!=null) {
                 ImageIcon curicon = ni.getIcon();
                 if (curicon!=null) {

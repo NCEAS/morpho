@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-15 22:03:16 $'
- * '$Revision: 1.113 $'
+ *     '$Date: 2003-10-03 21:27:00 $'
+ * '$Revision: 1.114 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.DBValidate;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.SAXValidate;
-
+import edu.ucsb.nceas.utilities.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -51,6 +51,7 @@ import javax.swing.tree.*;
 import org.xml.sax.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.*;
+import org.w3c.dom.*;
 
 /**
  * DocFrame is a container for an XML editor which shows combined outline and
@@ -799,6 +800,23 @@ public class DocFrame extends javax.swing.JFrame
     setSelectedNodes(rootNode);
   }
 
+  /*
+   *  this class initializes the editor from a DOM representation
+   *  of an XML document rather than a string.
+   */
+  public void initDoc(Morpho morpho, Node docnode)
+  {
+    setName("Morpho Editor");
+    treeModel = putDOMintoTree(docnode);
+    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+    treeModel.reload();
+    tree.setModel(treeModel);
+
+    tree.expandRow(1);
+    tree.expandRow(2);
+    tree.setSelectionRow(0);
+  }
+  
   /**
    * Creates a new DefaultMutableTreeNode with the special
    * NodeInfo userObject used here
@@ -900,8 +918,16 @@ public class DocFrame extends javax.swing.JFrame
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
     catch (Exception e) {}
-
-    (new DocFrame()).setVisible(true);
+    DocFrame df = new DocFrame();
+    df.setVisible(true);
+    // first create a DOM
+    Node domnode = null;
+    try{
+      domnode = XMLUtilities.getXMLAsDOMTreeRootNode("/test.xml");
+    }
+    catch (Exception e) {Log.debug(4,"Problem in creating DOM!"+e);}
+    // then display it
+    df.initDoc(null, domnode);
   }
 
   
@@ -1079,6 +1105,20 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
+  /**
+   * Create a JTree from a DOM and set the TreeModel
+   * (uses an example class from Xerces samples)
+   *
+   * @param tm       treemodel where XML tree is placed
+   * @param node  DOM node
+   */
+  DefaultTreeModel putDOMintoTree(Node node)
+  {
+    Document doc = node.getOwnerDocument();
+    JTree domtree = new DOMTree(doc);
+    return (DefaultTreeModel)domtree.getModel();
+  }
+  
   /**
    * method to handle changes in the JTree selection
    *
