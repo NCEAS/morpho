@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 20:04:28 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2004-03-24 00:04:39 $'
+  * '$Revision: 1.6 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -845,6 +845,10 @@
             <xsl:if test="$displaymodule='attributedomain'">
               <xsl:for-each select="measurementScale/*/*">
                 <xsl:call-template name="nonNumericDomain">
+                    <xsl:with-param name="displaymodule" select="$displaymodule"/>
+                    <xsl:with-param name="entitytype" select="$entitytype"/>
+                    <xsl:with-param name="entityindex" select="$entityindex"/>
+                    <xsl:with-param name="attributeindex" select="$attributeindex"/>
                     <xsl:with-param name="nondomainfirstColStyle" select="$firstColStyle"/>
                  </xsl:call-template>
               </xsl:for-each>
