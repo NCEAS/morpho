@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-04 22:12:07 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-09-06 23:08:47 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1568,7 +1568,7 @@ public class Morpho
     /**
      * Set up the config properties during startup
      *
-     * @param ******************
+     * @throws FileNotFoundException
      */
     private static void initializeConfiguration() throws FileNotFoundException {
 
