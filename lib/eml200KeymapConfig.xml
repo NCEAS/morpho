@@ -32,6 +32,8 @@
     <format>dataFormat/externallyDefinedFormat/formatName</format>
     <isText>count(dataFormat/textFormat)!=0</isText>  
     <distribution>distribution</distribution>
+    <compressionMethod>compressionMethod</compressionMethod>
+    <encodingMethod>encodingMethod</encodingMethod>
   </contextNode>
   <contextNode name="distribution">
     <isOnline>count(online/url)!=0</isOnline>
