@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 22:41:03 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-06-15 16:14:39 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -454,6 +454,8 @@ public class DataPackageGUI extends javax.swing.JFrame
       boolean metacatloc = false;
       boolean localloc = false;
       boolean bothloc = false;
+      String newid = "";
+      String newPackageId = "";
       if(location.equals(DataPackage.BOTH))
       {
         metacatloc = true;
@@ -484,17 +486,18 @@ public class DataPackageGUI extends javax.swing.JFrame
         if(id.trim().equals(dataPackage.getID().trim()))
         { //edit the package file
           String oldid = id;
-          String newid = a.incRev(id);
+          newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
           mds.saveFile(newid, new StringReader(newPackageFile), metacatpublic);
+          newPackageId = newid;
         }
         else
         { //edit another file in the package
           String oldid = id;
-          String newid = a.incRev(id);
+          newid = a.incRev(id);
           mds.saveFile(newid, new StringReader(xmlString), metacatpublic);
-          String newPackageId = a.incRev(dataPackage.getID());
+          newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
                                                     oldid,
                                                     newid);
@@ -508,24 +511,29 @@ public class DataPackageGUI extends javax.swing.JFrame
         if(id.trim().equals(dataPackage.getID().trim()))
         { //we just edited the package file itself
           String oldid = id;
-          String newid = a.incRev(id);
+          newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
           fsds.saveFile(newid, new StringReader(newPackageFile), false);
+          newPackageId = newid;
         }
         else
         { //we edited a file in the package
           String oldid = id;
-          String newid = a.incRev(id);
+          newid = a.incRev(id);
           fsds.saveFile(newid, new StringReader(xmlString), false);
-          String newPackageId = a.incRev(dataPackage.getID());
+          newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
                                                     oldid, 
                                                     newid);
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile), false);
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile), false); 
         }
       }
       
+      DataPackage newPackage = new DataPackage(location, newPackageId, null,
+                                                 framework);
+      this.hide();
+      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
     }
     catch(Exception e)
     {
@@ -540,7 +548,6 @@ public class DataPackageGUI extends javax.swing.JFrame
   {
     public void valueChanged(ListSelectionEvent e)
     {
-      ClientFramework.debug(20, "value changed (entity)");
       otherFileList.clearSelection();
       dataFileList.clearSelection();
     }
@@ -550,7 +557,6 @@ public class DataPackageGUI extends javax.swing.JFrame
   {
     public void valueChanged(ListSelectionEvent e)
     {
-      ClientFramework.debug(20, "value changed (data): ");
       entityFileList.clearSelection();
       otherFileList.clearSelection();
     }
@@ -560,7 +566,6 @@ public class DataPackageGUI extends javax.swing.JFrame
   {
     public void valueChanged(ListSelectionEvent e)
     {
-      ClientFramework.debug(20, "value changed (other): ");
       entityFileList.clearSelection();
       dataFileList.clearSelection();
     }

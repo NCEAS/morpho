@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2001-06-15 16:14:39 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -422,7 +422,7 @@ public class PackageWizard extends javax.swing.JFrame
           { //while there is an @ sign in the name of the parent tag, we need
             //to take the next tags and make them into attributes
             String attribute = (String)pathVec.elementAt(pathVec.size()-1);
-            if(attribute.equals("FIELDVALUE"))
+            if(attribute.trim().equals("FIELDVALUE"))
             { //the FIELDVALUE attribute is a keyword that tells you which
               //text box to take the value of the actual tag from
               emptyflag = false;
@@ -436,13 +436,13 @@ public class PackageWizard extends javax.swing.JFrame
               { //get the content and save it
                 if(!((String)content.get(keyPath)).equals(""))
                 {
-                  tagContent = (String)content.get(keyPath);
+                  tagContent = ((String)content.get(keyPath)).trim();
                 }
               }
             }
             else
             {
-              doc.append(" " + attribute + "=\"");
+              doc.append(" " + attribute.trim() + "=\"");
               
               //get the path to the content in the hash
               String keyPath = "";
