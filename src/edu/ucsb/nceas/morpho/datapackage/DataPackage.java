@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-13 17:59:20 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2002-08-13 19:50:45 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,11 +93,20 @@ public class DataPackage
   private ClientFramework   framework;
   private TripleCollection  triples;
   private File              tripleFile;
+  private File              dataPkgFile;
   private String            location;
   private String            id;
   private Document          tripleFileDom;
   private Hashtable         docAtts = new Hashtable();
+
+  private final FileSystemDataStore fileSysDataStore;
+  private final MetacatDataStore    metacatDataStore;
+
   
+//  private static final FileSystemDataStore fileSysDataStore 
+//                                          = new FileSystemDataStore(framework);
+//  private static final MetacatDataStore metacatDataStore 
+//                                          = new MetacatDataStore(framework);
   /**
    * used to signify that this package is located on a metacat server
    */
@@ -130,14 +139,17 @@ public class DataPackage
     this.framework  = framework;
     this.location   = location;
     this.id         = identifier;
-    this.config          = framework.getConfiguration();
+    this.config     = framework.getConfiguration();
     
     framework.debug(11, "Creating new DataPackage Object");
     framework.debug(11, "id: " + this.id);
     framework.debug(11, "location: " + location);
     
+    fileSysDataStore  = new FileSystemDataStore(framework);
+    metacatDataStore  = new MetacatDataStore(framework);
+    
     //read the file containing the triples - usually the datapackage file:
-    initTripleFile();
+    tripleFile = getDataPkgFile();
     //initialize global "triples" variable to hold collection of triples:
     initTriplesCollection();
     //parse triples file and get basic information (title, Originators etc)
@@ -145,46 +157,48 @@ public class DataPackage
   }
 
 
-  //read the file containing the triples - usually the datapackage file:
-  private void initTripleFile()  {
+  // util to read the file from either FileSystemDataStore or MetacatDataStore
+  private File getDataPkgFile() {
     
-    if(location.equals(METACAT))
-    {
-      try {
-        framework.debug(11, "opening metacat file");
-        MetacatDataStore mds = new MetacatDataStore(framework);
-        tripleFile = mds.openFile(this.id);
-        framework.debug(11, "file opened");
+    //check if datapackage file has been read already
+    if (dataPkgFile==null)  {
+      File returnFile = null;
+      if(location.equals(METACAT)) {
+        try {
+          framework.debug(11, "opening metacat file");
+          dataPkgFile = metacatDataStore.openFile(this.id);
+          framework.debug(11, "metacat file opened");
         
-      } catch(FileNotFoundException fnfe) {
+        } catch(FileNotFoundException fnfe) {
+
+          framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                  +"metacat file not found: "+fnfe.getMessage());
+          fnfe.printStackTrace();
+          return null;
+
+        } catch(CacheAccessException cae) {
       
-        framework.debug(0,"Error in DataPackage constructor: file not found: "
-                                                          +fnfe.getMessage());
-        fnfe.printStackTrace();
-        return;
+          framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                  +"metacat cache problem: "+cae.getMessage());
+          cae.printStackTrace();
+          return null;
+        }
+      } else {  //not metacat
+        try {
+          framework.debug(11, "opening local file");
+          dataPkgFile = fileSysDataStore.openFile(this.id);
+          framework.debug(11, "local file opened");
         
-      } catch(CacheAccessException cae) {
+        } catch(FileNotFoundException fnfe) {
       
-        framework.debug(0,"Error in DataPackage constructor: cache problem: "
-                                                          +cae.getMessage());
-        cae.printStackTrace();
-        return;
-      }
-    } else  {  //not metacat
-      try {
-        framework.debug(11, "opening local file");
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
-        tripleFile = fsds.openFile(this.id);
-        framework.debug(11, "file opened");
-        
-      } catch(FileNotFoundException fnfe) {
-      
-        framework.debug(0,"Error in DataPackage constructor: file not found: "
-                                                          +fnfe.getMessage());
-        fnfe.printStackTrace();
-        return;
+          framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                  +"local file not found: "+fnfe.getMessage());
+          fnfe.printStackTrace();
+          return null;
+        }
       }
     }
+    return dataPkgFile;  
   }
    
   //initialize the global "triples" variable to hold the collection of triples
@@ -203,23 +217,25 @@ public class DataPackage
    * @throws    FileNotFoundException       if document cannot succesfully be 
    *                                        opened and a Reader returned
    */
-  public Reader open(String identifier) throws  DocumentNotFoundException, 
-                                                FileNotFoundException
-  {
-    File xmlFile;
+  public Reader open(String identifier) 
+                      throws  DocumentNotFoundException, FileNotFoundException {
+    
+    //first check if this identifier points to a 
+    //valid sub-element (module or subtree)
+    
+    //if so, now get the sub-element and return it
+    File subElement;
     try {
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      xmlFile = fsds.openFile(identifier);
+      subElement = fileSysDataStore.openFile(identifier);
     } catch(Exception ex1) {
       try {
-        MetacatDataStore mds = new MetacatDataStore(framework);
-        xmlFile = mds.openFile(identifier);
+        subElement = metacatDataStore.openFile(identifier);
       } catch(Exception ex2) {
         throw new DocumentNotFoundException("DataPackage.open(): Error opening "
                   + "selected file (CacheAccessException): "+ ex2.getMessage());
       }
     }
-    return new FileReader(xmlFile);
+    return new FileReader(subElement);
   }
 
   /**
@@ -330,8 +346,6 @@ public class DataPackage
   {
     Vector tripleVec = triples.getCollection();
     Hashtable filesHash = new Hashtable();
-    MetacatDataStore mds = new MetacatDataStore(framework);
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
 //    ConfigXML config = framework.getConfiguration();
     String catalogPath = config.get("local_catalog_path", 0);
     
@@ -352,13 +366,13 @@ public class DataPackage
       {
         //try to open the file locally, if it isn't here then try to get
         //it from metacat
-        subfile = fsds.openFile(subject.trim());
+        subfile = fileSysDataStore.openFile(subject.trim());
       }
       catch(FileNotFoundException fnfe)
       {
         try
         {
-          subfile = mds.openFile(subject.trim());
+          subfile = metacatDataStore.openFile(subject.trim());
         }
         catch(FileNotFoundException fnfe2)
         {
@@ -368,8 +382,8 @@ public class DataPackage
         }
         catch(CacheAccessException cae)
         {
-          framework.debug(0, "The cache could not be accessed in " +
-                             "DataPackage.getRelatedFiles.");
+          framework.debug(0, "The cache could not be accessed in "
+                                              + "DataPackage.getRelatedFiles.");
           return null;
         }
       }
@@ -414,8 +428,8 @@ public class DataPackage
       }
       catch(Exception e)
       {
-        framework.debug(0, "error in DataPackage.getRelatedFiles(): " + 
-                           e.getMessage());
+        framework.debug(0, "error in DataPackage.getRelatedFiles(): "
+                                                              + e.getMessage());
       }
       
       //now parse the object files
@@ -423,13 +437,13 @@ public class DataPackage
       {
         //try to open the file locally, if it isn't here then try to get
         //it from metacat
-        objfile = fsds.openFile(object.trim());
+        objfile = fileSysDataStore.openFile(object.trim());
       }
       catch(FileNotFoundException fnfe)
       {
         try
         {
-          objfile = mds.openFile(object.trim());
+          objfile = metacatDataStore.openFile(object.trim());
         }
         catch(FileNotFoundException fnfe2)
         {
@@ -439,8 +453,8 @@ public class DataPackage
         }
         catch(CacheAccessException cae)
         {
-          framework.debug(0, "The cache could not be accessed in " +
-                             "DataPackage.getRelatedFiles.");
+          framework.debug(0, "The cache could not be accessed in "
+                                              + "DataPackage.getRelatedFiles.");
           return null;
         }
       }
@@ -556,13 +570,11 @@ public class DataPackage
         if(location.equals(DataPackage.LOCAL) || 
            location.equals(DataPackage.BOTH))
         { //open the file locally
-          FileSystemDataStore fsds = new FileSystemDataStore(framework);
-          f = fsds.openFile((String)fileids.elementAt(i));
+          f = fileSysDataStore.openFile((String)fileids.elementAt(i));
         }
         else
         { // get the file from metacat
-          MetacatDataStore mds = new MetacatDataStore(framework);
-          f = mds.openFile((String)fileids.elementAt(i));
+          f = metacatDataStore.openFile((String)fileids.elementAt(i));
         }
       }
       catch(FileNotFoundException fnfe)
@@ -609,8 +621,6 @@ public class DataPackage
       {
         throw e;
       }
-      
-      
     }
     throw new FileNotFoundException("The package did not contain an access file " +
                                 "(DataPackage.getAccessId()");
@@ -668,14 +678,12 @@ public class DataPackage
     { //if it is not already on metacat, send it there.
       Vector ids = this.getAllIdentifiers();
       Hashtable files = new Hashtable();
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      MetacatDataStore mds = new MetacatDataStore(framework);
       for(int i=0; i<ids.size(); i++)
       { //get a file pointer to each of the files in the package
         String id = (String)ids.elementAt(i);
         try
         {
-          files.put(id, fsds.openFile(id));
+          files.put(id, fileSysDataStore.openFile(id));
         }
         catch(FileNotFoundException fnfe)
         {
@@ -710,20 +718,20 @@ public class DataPackage
             { //we have to put all of the old versions in metacat first so that
               //the lineage is intact
               String accnum = scope + sep + id + sep + i;
-              File g = fsds.openFile(accnum);
+              File g = fileSysDataStore.openFile(accnum);
               if(i == 1)
               {
-                mds.newFile(accnum, new FileReader(g), this);
+                metacatDataStore.newFile(accnum, new FileReader(g), this);
               }
               else
               {
-                mds.saveFile(accnum, new FileReader(g), this);
+                metacatDataStore.saveFile(accnum, new FileReader(g), this);
               }
             }
           }
           else
           { //its a data file
-            mds.newDataFile(key, f);
+            metacatDataStore.newDataFile(key, f);
           }
         }
         catch(Exception e)
@@ -803,14 +811,12 @@ public class DataPackage
           }
           String fileString = sb.toString();
           fileString = replaceTextInString(fileString, fileId, newId);
-          FileSystemDataStore fsds = new FileSystemDataStore(framework);
-          MetacatDataStore mds = new MetacatDataStore(framework);
       
           //save the file
-          fsds.newFile(newId, new StringReader(fileString)); //new local file
+          fileSysDataStore.newFile(newId, new StringReader(fileString)); //new local file
           try
           {
-            mds.newFile(newId, new StringReader(fileString)); //new metacat file
+            metacatDataStore.newFile(newId, new StringReader(fileString)); //new metacat file
           }
           catch(MetacatUploadException mue)
           {
@@ -821,15 +827,13 @@ public class DataPackage
         }
       
         else {  // it is a datafile
-          FileSystemDataStore fsds = new FileSystemDataStore(framework);
-          MetacatDataStore mds = new MetacatDataStore(framework);
       
           //save the file
           File f = null;
           try {
             f = PackageUtil.openFile(fileId, framework);
             FileInputStream fis = new FileInputStream(f);
-            fsds.newDataFile(newId, fis); //new local file
+            fileSysDataStore.newDataFile(newId, fis); //new local file
             fis.close();
             
           }
@@ -839,7 +843,7 @@ public class DataPackage
           
           try
           {
-            mds.newDataFile(newId, f); //new metacat file
+            metacatDataStore.newDataFile(newId, f); //new metacat file
           }
           catch(MetacatUploadException mue)
           {
@@ -890,14 +894,11 @@ public class DataPackage
     packageFileString = replaceTextInString(packageFileString,
                                             this.id, newPackageId);
 
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
-    MetacatDataStore mds = new MetacatDataStore(framework);
-      
     //save the file
-    fsds.newFile(newPackageId, new StringReader(packageFileString)); //new local file
+    fileSysDataStore.newFile(newPackageId, new StringReader(packageFileString)); //new local file
     try
     {
-      mds.newFile(newPackageId, new StringReader(packageFileString)); //new metacat file
+      metacatDataStore.newFile(newPackageId, new StringReader(packageFileString)); //new metacat file
     }
     catch(MetacatUploadException mue)
     {
@@ -943,14 +944,12 @@ public class DataPackage
     { //if it is not already on the local disk, get it and put it there.
       Vector ids = this.getAllIdentifiers();
       Hashtable files = new Hashtable();
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      MetacatDataStore mds = new MetacatDataStore(framework);
       for(int i=0; i<ids.size(); i++)
       { //get a file pointer to each of the files in the package
         String id = (String)ids.elementAt(i);
         try
         {
-          files.put(id, mds.openFile(id));
+          files.put(id, metacatDataStore.openFile(id));
         }
         catch(FileNotFoundException fnfe)
         {
@@ -1006,20 +1005,20 @@ public class DataPackage
             { //we have to get all of the old versions from metacat first so that
               //the lineage is intact
               String accnum = scope + sep + id + sep + i;
-              File g = mds.openFile(accnum);
+              File g = metacatDataStore.openFile(accnum);
               if(i == 1)
               {
-                fsds.newFile(accnum, new FileReader(g));
+                fileSysDataStore.newFile(accnum, new FileReader(g));
               }
               else
               {
-                fsds.saveFile(accnum, new FileReader(g));
+                fileSysDataStore.saveFile(accnum, new FileReader(g));
               }
             }
           }
           else
           { //its a data file
-            fsds.saveDataFile(key, new FileInputStream(f));
+            fileSysDataStore.saveDataFile(key, new FileInputStream(f));
           }
         }
         catch(Exception e)
@@ -1039,8 +1038,6 @@ public class DataPackage
    */
   public void delete(String location)
   {
-    MetacatDataStore mds = new MetacatDataStore(framework);
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
     Vector v = this.getAllIdentifiers();
     boolean metacatLoc = false;
     boolean localLoc = false;
@@ -1068,13 +1065,13 @@ public class DataPackage
         { //we have to make sure that we delete all of the revisions or else
           //the package will still be found in a query
           String acc = delfile.substring(0, delfile.lastIndexOf("."));
-          fsds.deleteFile(acc + "." + j);
+          fileSysDataStore.deleteFile(acc + "." + j);
         }
       }
       
       if(metacatLoc)
       {
-        mds.deleteFile((String)v.elementAt(i));
+        metacatDataStore.deleteFile((String)v.elementAt(i));
       }
     }
   }
@@ -1179,8 +1176,6 @@ public class DataPackage
     //is a data file, save it with its original name.
     try
     {
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      MetacatDataStore mds = new MetacatDataStore(framework);
       String packagePath = path + "/" + id + ".package";
       String sourcePath = packagePath + "/metadata";
       File savedir = new File(packagePath);
@@ -1195,11 +1190,11 @@ public class DataPackage
         File openfile = null;
         if(localloc)
         { //get the file locally and save it
-          openfile = fsds.openFile((String)files.elementAt(i));
+          openfile = fileSysDataStore.openFile((String)files.elementAt(i));
         }
         else if(metacatloc)
         { //get the file from metacat
-          openfile = mds.openFile((String)files.elementAt(i));
+          openfile = metacatDataStore.openFile((String)files.elementAt(i));
         }
         
         fileV.addElement(openfile);
@@ -1581,8 +1576,6 @@ public class DataPackage
       {
         Triple triple = (Triple)triplesV.elementAt(i);
         String relationship = triple.getRelationship();
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
-        MetacatDataStore mds = new MetacatDataStore(framework);
         if(relationship.indexOf("isDataFileFor") != -1)
         {
           String dataFileID = triple.getSubject();
@@ -1593,7 +1586,7 @@ public class DataPackage
               if(localloc)
               { //get the file locally and save it
                 try {
-                  datafile = fsds.openFile(dataFileID);
+                  datafile = fileSysDataStore.openFile(dataFileID);
                 }
                 catch(Exception e)
                 {
@@ -1604,7 +1597,7 @@ public class DataPackage
               else if(metacatloc)
               { //get the file from metacat
                 try {
-                  datafile = mds.openFile(dataFileID);
+                  datafile = metacatDataStore.openFile(dataFileID);
                 }
                 catch(Exception e)
                 {
@@ -1643,8 +1636,6 @@ public class DataPackage
       {
         Triple triple = (Triple)triplesV.elementAt(i);
         String relationship = triple.getRelationship();
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
-        MetacatDataStore mds = new MetacatDataStore(framework);
         if(relationship.indexOf("isDataFileFor") != -1)
         {
           String dFileID = triple.getSubject();
@@ -1694,8 +1685,6 @@ public class DataPackage
 
   
   private File getFileType(String id, String typeString) {
-    MetacatDataStore mds = new MetacatDataStore(framework);
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
 //    ConfigXML config = framework.getConfiguration();
     String catalogPath = //config.getConfigDirectory() + File.separator +
                                      config.get("local_catalog_path", 0);
@@ -1705,13 +1694,13 @@ public class DataPackage
       {
         //try to open the file locally, if it isn't here then try to get
         //it from metacat
-        subfile = fsds.openFile(id.trim());
+        subfile = fileSysDataStore.openFile(id.trim());
       }
       catch(FileNotFoundException fnfe)
       {
         try
         {
-          subfile = mds.openFile(id.trim());
+          subfile = metacatDataStore.openFile(id.trim());
         }
         catch(FileNotFoundException fnfe2)
         {
