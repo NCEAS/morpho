@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-02 21:55:41 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-04-10 02:21:48 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,10 +112,10 @@ public class AddTaxonomicCovCommand implements Command {
 			
 			ModalDialog wpd = new ModalDialog(taxonomicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+                                UISettings.WIZARD_WIDTH,
+                                UISettings.WIZARD_HEIGHT, false);
 																
-			wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
+			wpd.setSize(UISettings.WIZARD_WIDTH, UISettings.WIZARD_HEIGHT);
 			wpd.setVisible(true);
 			
 			if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {

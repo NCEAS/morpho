@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-06 19:39:05 $'
- * '$Revision: 1.28 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-10 02:21:48 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,6 +91,8 @@ public class WizardPageLibrary {
       return new PartyPage(DataPackageWizardInterface.PARTY_ASSOCIATED);
     if(pageID.equals(DataPackageWizardInterface.PARTY_PERSONNEL))
       return new PartyPage(DataPackageWizardInterface.PARTY_PERSONNEL);
+		if(pageID.equals(DataPackageWizardInterface.PARTY_CITATION_AUTHOR))
+      return new PartyPage(DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
 
     if(pageID.equals(DataPackageWizardInterface.GEOGRAPHIC_PAGE))
       return new GeographicPage();

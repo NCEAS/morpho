@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-20 20:45:14 $'
- * '$Revision: 1.20 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-10 02:21:49 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,7 +201,7 @@ public class UISettings
 
     public static final int WIZARD_HEIGHT  = 600;
 
-    private   static final int DIALOG_SMALLER_THAN_WIZARD_BY = 30;
+    public static final int DIALOG_SMALLER_THAN_WIZARD_BY = 30;
 
     public static final int POPUPDIALOG_WIDTH
         = WIZARD_WIDTH - DIALOG_SMALLER_THAN_WIZARD_BY;

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 22:04:31 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-04-10 02:21:49 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,24 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.ReferencesHandler;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,6 +62,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -67,6 +78,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.w3c.dom.Node;
 
 public class CitationPage extends AbstractUIPage {
 
@@ -75,9 +87,17 @@ public class CitationPage extends AbstractUIPage {
   private final String pageNumber = "";
   private final String title      = "Citation Page";
   private final String subtitle   = "";
-
+	
+	private String DATAPACKAGE_PARTY_GENERIC_NAME = "creator";
+	
 	private JLabel titleLabel;
   private JTextField titleField;
+	
+	private JLabel authorLabel;
+	private CustomList authorList;
+	
+	private final String[] authorListNames = {"Party", "Role", "Address"};
+	private final Object[] editors = null; //makes non-directly-editable
 	
 	private JLabel salutationLabel;
   private JTextField salutationField;
@@ -114,13 +134,18 @@ public class CitationPage extends AbstractUIPage {
 
   // these must correspond to indices of measScaleElemNames array
 	
-	private static String citationType;
+	private static String citationType = "";
   public static final int CITATIONTYPE_BOOK  = 0;
   public static final int CITATIONTYPE_ARTICLE  = 1;
   public static final int CITATIONTYPE_REPORT = 2;
 	
+	// number of author names that are shown in the parent page. Only this many names are
+	// retrieved in the getSurrogate method
+	private static final int MAX_AUTHOR_NAMES_SHOWN = 2;
+	
 	private static final int BORDERED_PANEL_TOT_ROWS = 5;
-  
+  private final int PADDING = WizardSettings.PADDING;
+	
   public CitationPage() {
 
     initNames();
@@ -147,7 +172,7 @@ public class CitationPage extends AbstractUIPage {
     this.setLayout( new BorderLayout());
     this.add(middlePanel,BorderLayout.CENTER);
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-
+		middlePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, 3 * PADDING, PADDING, 3 * PADDING));
     topMiddlePanel.setLayout(new BoxLayout(topMiddlePanel, BoxLayout.Y_AXIS));
     topMiddlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>Define the Citation Details:</b></font>", 1));
@@ -164,64 +189,35 @@ public class CitationPage extends AbstractUIPage {
     titlePanel.add(titleLabel);
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
-    //salutationPanel.setBorder(new javax.swing.border.EmptyBorder(0,
-       // 12 * WizardSettings.PADDING,
-        //0, 8 * WizardSettings.PADDING));
     topMiddlePanel.add(titlePanel);
-    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
+    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
 
-		// Salutation
-    JPanel salutationPanel = WidgetFactory.makePanel(1);
-    salutationPanel.add(WidgetFactory.makeLabel("Salutation:", false));
-    salutationField = WidgetFactory.makeOneLineTextField();
-    salutationPanel.add(salutationField);
-    //salutationPanel.setBorder(new javax.swing.border.EmptyBorder(0,
-       // 12 * WizardSettings.PADDING,
-        //0, 8 * WizardSettings.PADDING));
-    topMiddlePanel.add(salutationPanel);
-    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
+		// Author custom list
+    JPanel authorPanel = WidgetFactory.makePanel(-1);
+		authorLabel = WidgetFactory.makeLabel("Author(s):", true);
+    authorPanel.add(authorLabel);
+		
+    authorList = WidgetFactory.makeList(authorListNames, editors, -1,
+                                         true, true, false, true, true, true);
+																				 
+		authorList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		authorList.setCustomAddAction(new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				showNewAuthorPartyDialog();
+			}
+		});
 
-    // First Name
-    JPanel firstNamePanel = WidgetFactory.makePanel(1);
-    firstNamePanel.add(WidgetFactory.makeLabel("First Name:", false));
-    firstNameField = WidgetFactory.makeOneLineTextField();
-    firstNamePanel.add(firstNameField);
-    //firstNamePanel.setBorder(new javax.swing.border.EmptyBorder(0,
-      //  12 * WizardSettings.PADDING,
-       // 0, 8 * WizardSettings.PADDING));
-    topMiddlePanel.add(firstNamePanel);
-    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
+    authorList.setCustomEditAction(new AbstractAction() {
+      public void actionPerformed(ActionEvent e) {
+				showEditAuthorPartyDialog();
+      }
+    });
 		
-		// Last Name
-    JPanel lastNamePanel = WidgetFactory.makePanel(1);
-    lastNameLabel = WidgetFactory.makeLabel("Last Name:", true);
-    lastNamePanel.add(lastNameLabel);
-    lastNameField = WidgetFactory.makeOneLineTextField();
-    lastNamePanel.add(lastNameField);
-    //lastNamePanel.setBorder(new javax.swing.border.EmptyBorder(0, 0,
-      //  0, 8 * WizardSettings.PADDING));
-    topMiddlePanel.add(lastNamePanel);
-    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
-		
-		// Organization
-    JPanel organizationPanel = WidgetFactory.makePanel(1);
-    organizationLabel = WidgetFactory.makeLabel("Organization:", true);
-    organizationPanel.add(organizationLabel);
-    organizationField = WidgetFactory.makeOneLineTextField();
-    organizationPanel.add(organizationField);
-    //organizationPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0,
-      //  0, 8 * WizardSettings.PADDING));
-    topMiddlePanel.add(organizationPanel);
-    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
-		
-    // Position Name
-    JPanel positionNamePanel = WidgetFactory.makePanel(1);
-    positionNameLabel = WidgetFactory.makeLabel("Position:", true);
-    positionNamePanel.add(positionNameLabel);
-    positionNameField = WidgetFactory.makeOneLineTextField();
-    positionNamePanel.add(positionNameField);
-    topMiddlePanel.add(positionNamePanel);
-    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
+		authorPanel.add(authorList);
+		authorPanel.setMaximumSize(new Dimension(2000, 135));
+    authorPanel.setPreferredSize(new Dimension(2000, 135));
+		topMiddlePanel.add(authorPanel);
+    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
 		
 		// Pub Date
     JPanel pubDatePanel = WidgetFactory.makePanel(1);
@@ -232,7 +228,7 @@ public class CitationPage extends AbstractUIPage {
        // 12 * WizardSettings.PADDING,
         //0, 8 * WizardSettings.PADDING));
     topMiddlePanel.add(pubDatePanel);
-    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
+    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////////////////////////////////////////////
 
@@ -276,7 +272,10 @@ public class CitationPage extends AbstractUIPage {
     outerRadioPanel.add(radioPanel);
 
     topMiddlePanel.add(outerRadioPanel);
-
+		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
+		topMiddlePanel.setPreferredSize(topMiddlePanel.getPreferredSize());
+    topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
+		
     /////////////////////////////////////////////////////
 
     middlePanel.add(topMiddlePanel);
@@ -287,16 +286,206 @@ public class CitationPage extends AbstractUIPage {
 
     middlePanel.add(Box.createGlue());
 
-    topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
-    topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
-
     bookPanel  = getBookPanel();
     articlePanel  = getArticlePanel();
     reportPanel = getReportPanel();
     
 		refreshUI();
   }
+	
+	private void showNewAuthorPartyDialog() {
+		
+		PartyPage partyPage = (PartyPage) WizardPageLibrary.getPage (DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
+		
+    ModalDialog wpd = new ModalDialog(partyPage,
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY, 
+																			UISettings.POPUPDIALOG_HEIGHT - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY);
 
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+
+      List newRow = partyPage.getSurrogate();
+      newRow.add(partyPage);
+      authorList.addRow(newRow);
+			
+			if (partyPage.editingOriginalRef) {
+        //have been editing an original reference via another party's dialog, so
+        //if the original ref is in this current page's list, update its
+        //PartyPage object before we write it to DOM...
+        updateOriginalRefPartyPage(partyPage.getReferencesNodeIDString());
+      }
+     //update datapackage...
+      updateDOMFromListOfPages();
+    }
+    WidgetFactory.unhiliteComponent(authorLabel);
+	}
+	
+	/**
+	* A method to edit exsisting Party Page dialog
+	*/
+	
+	private void showEditAuthorPartyDialog() {
+		
+		List selRowList = authorList.getSelectedRowList();
+		
+		if (selRowList == null || selRowList.size() < 4) return;
+		
+		Object dialogObj = selRowList.get(3);
+		
+		if (dialogObj == null || ! (dialogObj instanceof PartyPage)) return;
+		
+		PartyPage editPartyPage = (PartyPage) dialogObj;
+		
+		ModalDialog wpd = new ModalDialog(editPartyPage,
+														WizardContainerFrame.getDialogParent(),
+														UISettings.POPUPDIALOG_WIDTH,
+														UISettings.POPUPDIALOG_HEIGHT, false);
+		wpd.resetBounds();
+		wpd.setVisible(true);
+		
+		if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+			List newRow = editPartyPage.getSurrogate();
+			newRow.add(editPartyPage);
+			authorList.replaceSelectedRow(newRow);
+			
+			if (editPartyPage.editingOriginalRef) {
+				
+				//have been editing an original reference via another party's dialog, so
+				//if the original ref is in this current page's list, update its
+				//PartyPage object before we write it to DOM...
+				updateOriginalRefPartyPage(editPartyPage.getReferencesNodeIDString());
+			}
+			//update datapackage...
+			updateDOMFromListOfPages();
+		}
+	}
+
+	
+
+	//have been editing an original reference via another party's dialog, so
+  //if the original ref is in this current page's list, update its
+  //PartyPage object before we write it to DOM...
+  private void updateOriginalRefPartyPage(String originalRefID) {
+
+    AbstractDataPackage adp
+        = UIController.getInstance().getCurrentAbstractDataPackage();
+    if (adp == null) {
+      Log.debug(15, "\npackage from UIController is null");
+      Log.debug(5, "ERROR: cannot update!");
+      return;
+    }
+
+    List nextRowList = null;
+    PartyPage nextPage = null;
+
+    for (Iterator it = authorList.getListOfRowLists().iterator(); it.hasNext(); ) {
+
+      nextRowList = (List)it.next();
+      //column 3 is user object - check it exists and isn't null:
+      if (nextRowList.size() < 4)continue;
+      nextPage = (PartyPage)nextRowList.get(3);
+      if (nextPage == null)continue;
+      if (nextPage.getRefID().equals(originalRefID)) {
+
+        Node root = adp.getSubtreeAtReference(originalRefID);
+
+        OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(root);
+        Log.debug(45,
+                  "updateOriginalRefPartyPage() got a match with ID: "
+                  + originalRefID+"; map = "+map);
+
+        if (map == null || map.isEmpty())return;
+
+        boolean checkParty = nextPage.setPageData(
+            map, "/" + DATAPACKAGE_PARTY_GENERIC_NAME);
+      }
+    }
+  }
+	
+	private void updateDOMFromListOfPages() {
+
+    //update datapackage...
+    List nextRowList = null;
+    List pagesList = new ArrayList();
+    AbstractUIPage nextPage = null;
+
+    for (Iterator it = authorList.getListOfRowLists().iterator(); it.hasNext(); ) {
+
+      nextRowList = (List)it.next();
+      //column 3 is user object - check it exists and isn't null:
+      if (nextRowList.size() < 4)continue;
+      nextPage = (AbstractUIPage)nextRowList.get(3);
+      if (nextPage == null)continue;
+      pagesList.add(nextPage);
+    }
+    DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
+        UIController.getInstance().getCurrentAbstractDataPackage(),
+        pagesList, DATAPACKAGE_PARTY_GENERIC_NAME,
+				DATAPACKAGE_PARTY_GENERIC_NAME);
+				
+				
+				updateListFromDOM();
+	}
+	
+	private void updateListFromDOM() {
+		
+		AbstractDataPackage adp
+		= UIController.getInstance().getCurrentAbstractDataPackage();
+		if (adp == null) {
+			Log.debug(15, "\npackage from UIController is null");
+			Log.debug(5, "ERROR: cannot update!");
+			return;
+		}
+		
+		List personnelList = adp.getSubtrees(DATAPACKAGE_PARTY_GENERIC_NAME);
+		Log.debug(45, "updateListFromDOM - personnelList.size() = "
+		+ personnelList.size());
+		
+		List personnelOrderedMapList = new ArrayList();
+		
+		for (Iterator it = personnelList.iterator(); it.hasNext(); ) {
+			
+			personnelOrderedMapList.add(
+			XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
+		}
+		
+		populatePartiesList(personnelOrderedMapList,
+		"/"+DATAPACKAGE_PARTY_GENERIC_NAME + "[");
+	}
+	
+	
+	//personnelXPathRoot looks like:
+	//      /contact[
+	private boolean populatePartiesList(List personnelOrderedMapList,
+	String personnelXPathRoot) {
+		
+		Iterator persIt = personnelOrderedMapList.iterator();
+		OrderedMap nextPersonnelMap = null;
+		int partyPredicate = 1;
+		
+		authorList.removeAllRows();
+		boolean partyRetVal = true;
+		
+		while (persIt.hasNext()) {
+			
+			nextPersonnelMap = (OrderedMap)persIt.next();
+			if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
+			
+			PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
+			 	        DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
+			
+			boolean checkParty = nextParty.setPageData(nextPersonnelMap,
+			personnelXPathRoot + (partyPredicate++) + "]");
+			
+			if (!checkParty)partyRetVal = false;
+			List newRow = nextParty.getSurrogate();
+			newRow.add(nextParty);
+			
+			authorList.addRow(newRow);
+		}
+		return partyRetVal;
+	}
+	
   private void setCitationType(String type) {
 
 		this.citationType = type;
@@ -307,7 +496,6 @@ public class CitationPage extends AbstractUIPage {
 
   private void setCitationTypeUI(JPanel panel) {
 
-    topMiddlePanel.setMinimumSize(new Dimension(0,0));
     middlePanel.remove(currentPanel);
     //middlePanel.remove(topMiddlePanel);
 
@@ -320,7 +508,7 @@ public class CitationPage extends AbstractUIPage {
     ((WizardPageSubPanelAPI)currentPanel).onLoadAction();
 
     currentPanel.invalidate();
-
+		currentPanel.validate();
     currentPanel.repaint();
     topMiddlePanel.validate();
     topMiddlePanel.repaint();
@@ -465,29 +653,12 @@ public class CitationPage extends AbstractUIPage {
     }
     WidgetFactory.unhiliteComponent(titleLabel);
 
-    if (lastNameField.getText().trim().equals("")) {
-
-      WidgetFactory.hiliteComponent(lastNameLabel);
-      lastNameField.requestFocus();
+    if (authorList.getRowCount() == 0) {
+			
+      WidgetFactory.hiliteComponent(authorLabel);
       return false;
     }
-    WidgetFactory.unhiliteComponent(lastNameLabel);
-
-		if (organizationField.getText().trim().equals("")) {
-
-      WidgetFactory.hiliteComponent(organizationLabel);
-      organizationField.requestFocus();
-      return false;
-    }
-    WidgetFactory.unhiliteComponent(organizationLabel);
-
-		if (positionNameField.getText().trim().equals("")) {
-
-      WidgetFactory.hiliteComponent(positionNameLabel);
-      positionNameField.requestFocus();
-      return false;
-    }
-    WidgetFactory.unhiliteComponent(positionNameLabel);
+    WidgetFactory.unhiliteComponent(authorLabel);
 
     if (citationType==null || citationType.trim().equals("")) {
 
@@ -495,7 +666,7 @@ public class CitationPage extends AbstractUIPage {
       return false;
     }
     WidgetFactory.unhiliteComponent(citationTypeLabel);
-
+		
     return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
   }
 
@@ -509,22 +680,28 @@ public class CitationPage extends AbstractUIPage {
   public List getSurrogate() {
 
     List surrogate = new ArrayList();
+		surrogate.add(this.titleField.getText());
 		
-		if(this.titleField.getText().trim().length() > 0)
-			surrogate.add(this.titleField.getText());
+		Iterator it = authorList.getListOfRowLists().iterator();
+		String creator = "";
+		int cnt = 0;
+		while(it.hasNext()) {
+			if(cnt == MAX_AUTHOR_NAMES_SHOWN) { 
+				// show only MAX_AUTHOR_NAMES_SHOWN author names in the creator column in prev page
+				creator += " ...";
+				break;
+			}
+			List row = (List)it.next();
+			String party = (String)row.get(0);
+			int idx = party.indexOf(",");
+			if(idx >=0) party = party.substring(0, idx);
+			creator += party;
+			if(cnt < (MAX_AUTHOR_NAMES_SHOWN - 1) && it.hasNext()) creator += ", ";
+			cnt++;
+		}
 		
-		String creatorName = this.salutationField.getText().trim();
-		if(creatorName.trim().length() > 0 && creatorName.indexOf(".") < 0) creatorName+=". ";
-		if(creatorName.trim().length() > 0) creatorName += " ";
-		creatorName += this.firstNameField.getText().trim();
-		if(creatorName.trim().length() > 0) creatorName += " ";
-		creatorName += " " + this.lastNameField.getText();
-		
-		if(creatorName.trim().length() > 0)
-			surrogate.add(creatorName);
-		
-		if(citationType.length() > 0)
-			surrogate.add(this.citationType);
+		surrogate.add(creator);
+		surrogate.add(this.citationType);
 		return surrogate;
   }
 
@@ -563,22 +740,17 @@ public class CitationPage extends AbstractUIPage {
 		
 		map.put(xPath + "/title[1]", this.titleField.getText());
 		
-		String st = this.salutationField.getText(); 
-		if(!st.trim().equals(""))
-			map.put(xPath + "/creator[1]/individualName[1]/salutation[1]", st);
-		
-		String fn = this.firstNameField.getText(); 
-		if(!fn.trim().equals(""))
-			map.put(xPath + "/creator[1]/individualName[1]/givenName[1]", fn);
-		
-		String ln = this.lastNameField.getText(); 
-		map.put(xPath + "/creator[1]/individualName[1]/surName[1]", ln);
-		
-		String on = this.organizationField.getText(); 
-		map.put(xPath + "/creator[1]/organizationName[1]", on);
-		
-		String pn = this.positionNameField.getText(); 
-		map.put(xPath + "/creator[1]/positionName[1]", pn);
+		Iterator it = authorList.getListOfRowLists().iterator();
+		int idx = 1;
+		while(it.hasNext()) {
+			
+			List row = (List)it.next();
+			if(row.size() < 4) continue;
+			PartyPage party = (PartyPage) row.get(3);
+			OrderedMap partyMap = party.getPageData(xPath + "/creator[" + idx + "]");
+			map.putAll(partyMap);
+			idx++;
+		}
 		
 		String pubn = this.pubDateField.getText(); 
 		if(!pubn.trim().equals(""))
@@ -621,7 +793,19 @@ public class CitationPage extends AbstractUIPage {
 		return "";
 	}
 
-
+	private boolean mapContainsCreator(OrderedMap map, String xPath, int idx) {
+		
+		boolean b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/surName[1]");
+		if(b) return true;
+		b = map.containsKey(xPath + "/creator[" +idx+ "]/organizationName[1]");
+		if(b) return true;
+		b = map.containsKey(xPath + "/creator[" +idx+ "]/positionName[1]");
+		if(b) return true;
+		return false;
+		
+	}
+	
+	
   /**
    * sets the Data in the Attribute Dialog fields. This is called from the
    * TextImportWizard when it wants to set some information it has already
@@ -637,17 +821,15 @@ public class CitationPage extends AbstractUIPage {
 		
 		this.titleField.setText((String)map.get(xPath + "/title[1]"));
 		
-		String st = (String)map.get(xPath + "/creator[1]/individualName[1]/salutation[1]");
-		if(st != null)
-			this.salutationField.setText(st);
-		
-		String fn = (String)map.get(xPath + "/creator[1]/individualName[1]/givenName[1]");
-		if(fn != null)
-			this.firstNameField.setText(fn);
-		
-		this.lastNameField.setText((String)map.get(xPath + "/creator[1]/individualName[1]/surName[1]"));
-		this.organizationField.setText((String)map.get(xPath + "/creator[1]/organizationName[1]"));
-		this.positionNameField.setText((String)map.get(xPath + "/creator[1]/positionName[1]"));
+		for(int idx = 1; ; idx++) {
+			
+			if(!mapContainsCreator(map, xPath, idx)) break;
+			PartyPage page = (PartyPage)WizardPageLibrary.getPage( DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
+			page.setPageData(map, xPath + "/creator[" + idx + "]");
+			List row = page.getSurrogate();
+			row.add(page);
+			authorList.addRow(row);
+		}
 		
 		String pubn = (String)map.get(xPath + "/pubDate[1]");
 		if(pubn != null)
@@ -657,8 +839,7 @@ public class CitationPage extends AbstractUIPage {
 		int componentNum = -1;
 		
 		if(this.citationType.equals("Book")) {
-			
-			
+		
 			componentNum = 0;
 			this.setCitationType("Book");
 			this.setCitationTypeUI(bookPanel);
@@ -704,11 +885,13 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 	CitationPage parent;
 	private JLabel editionLabel;
 	private JLabel volumeLabel;
+	private JLabel publisherLabel;
+	private JLabel isbnLabel;
 	
 	private JTextField editionField;
 	private JTextField volumeField;
-	
-	MiniPublisherPanel publisherPanel;
+	private JTextField publisherField;
+	private JTextField isbnField;
 	
 	BookPanel(CitationPage page) {
 		
@@ -720,8 +903,13 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		publisherPanel = new MiniPublisherPanel("Publisher Name", "Publishing Orgn:");
-		
+		// Publisher (Organization)
+		JPanel publisherPanel = WidgetFactory.makePanel(1);
+    publisherLabel = WidgetFactory.makeLabel("Publisher:", true);
+    publisherPanel.add(publisherLabel);
+    publisherField = WidgetFactory.makeOneLineTextField();
+    publisherPanel.add(publisherField);
+    
 		this.add(publisherPanel);
 		this.add(WidgetFactory.makeHalfSpacer());
 		this.add(Box.createGlue());
@@ -735,7 +923,8 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
     this.add(editionPanel);
     this.add(WidgetFactory.makeHalfSpacer());
 		this.add(Box.createGlue());
-		// Organization
+		
+		// Volume
     JPanel volumePanel = WidgetFactory.makePanel(1);
     volumeLabel = WidgetFactory.makeLabel("Volume:", false);
     volumePanel.add(volumeLabel);
@@ -744,6 +933,17 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
     this.add(volumePanel);
     this.add(WidgetFactory.makeHalfSpacer());
 		this.add(Box.createGlue());
+		
+		// ISBN
+    JPanel isbnPanel = WidgetFactory.makePanel(1);
+    isbnLabel = WidgetFactory.makeLabel("ISBN:", false);
+    isbnPanel.add(isbnLabel);
+    isbnField = WidgetFactory.makeOneLineTextField();
+    isbnPanel.add(isbnField);
+    this.add(isbnPanel);
+    this.add(WidgetFactory.makeHalfSpacer());
+		this.add(Box.createGlue());
+		
 	}
 	
 	
@@ -757,10 +957,15 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
   
 	public boolean validateUserInput() {
 		
-		if(!publisherPanel.validateUserInput())
-			return false;
-
+		String text = publisherField.getText();
 		
+		if(text.trim().equals("")) {
+			WidgetFactory.hiliteComponent(publisherLabel);
+			publisherField.requestFocus();
+			return false;
+		}
+		
+		WidgetFactory.unhiliteComponent(publisherLabel);
 		return true;
 	}
 	
@@ -787,15 +992,18 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
   public OrderedMap getPanelData(String xPathRoot) {
 		
 		OrderedMap map = new OrderedMap();
-		map.putAll(publisherPanel.getPanelData(xPathRoot));
+		
+		String publisher = publisherField.getText().trim();
+		map.put(xPathRoot + "/publisher[1]/organizationName[1]", publisher);
 		
 		String en = this.editionField.getText();
-		if(!en.trim().equals(""))
-			map.put(xPathRoot + "/edition[1]", en);
+		if(!en.trim().equals("")) map.put(xPathRoot + "/edition[1]", en);
 		
 		String vn = this.volumeField.getText();
-		if(!vn.trim().equals(""))
-			map.put(xPathRoot + "/volume[1]", vn);
+		if(!vn.trim().equals("")) map.put(xPathRoot + "/volume[1]", vn);
+		
+		String isbn = this.isbnField.getText();
+		if(!isbn.trim().equals("")) map.put(xPathRoot + "/ISBN[1]", isbn);
 		
 		return map;
 	}
@@ -817,17 +1025,26 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 
 	public void setPanelData(String xPathRoot, OrderedMap map) {
 		
-		((WizardPageSubPanelAPI)publisherPanel).setPanelData(xPathRoot, map);
+		String pub = (String)map.get(xPathRoot + "/publisher[1]/organizationName[1]");
+		if(pub != null) {
+			this.publisherField.setText(pub);
+			map.remove(xPathRoot + "/publisher[1]/organizationName[1]");
+		}
 		
 		String en = (String)map.get(xPathRoot + "/edition[1]");
-		if(en != null)
+		if(en != null) {
 			this.editionField.setText(en);
+			map.remove(xPathRoot + "/edition[1]");
+		}
 		
 		String vn = (String)map.get(xPathRoot + "/volume[1]");
-		if(vn != null)
+		if(vn != null) {
 			this.volumeField.setText(vn);
+			map.remove(xPathRoot + "/volume[1]");
+		}
 		
 	}
+	
 }
 
 
@@ -837,12 +1054,14 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 	private JLabel journalLabel;
 	private JLabel volumeLabel;
 	private JLabel rangeLabel;
+	private JLabel publisherLabel;
+	private JLabel issueLabel;
 	
 	private JTextField journalField;
 	private JTextField volumeField;
 	private JTextField rangeField;
-	
-	MiniPublisherPanel publisherPanel;
+	private JTextField publisherField;
+	private JTextField issueField;
 	
 	ArticlePanel (CitationPage page) {
 		
@@ -863,6 +1082,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 		
 		this.add(journalPanel);
     this.add(WidgetFactory.makeHalfSpacer());
+		this.add(Box.createGlue());
 		
 		// Volume
     JPanel volumePanel = WidgetFactory.makePanel(1);
@@ -873,20 +1093,38 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 		this.add(Box.createGlue());
     this.add(volumePanel);
     this.add(WidgetFactory.makeHalfSpacer());
+		this.add(Box.createGlue());
+		
+		// Issue
+    JPanel issuePanel = WidgetFactory.makePanel(1);
+    issueLabel = WidgetFactory.makeLabel("Issue:", false);
+    issuePanel.add(issueLabel);
+    issueField = WidgetFactory.makeOneLineTextField();
+    issuePanel.add(issueField);
+		this.add(Box.createGlue());
+    this.add(issuePanel);
+    this.add(WidgetFactory.makeHalfSpacer());
+		this.add(Box.createGlue());
 		
 		// Page Range
     JPanel rangePanel = WidgetFactory.makePanel(1);
-    rangeLabel = WidgetFactory.makeLabel("Page Range:", false);
+    rangeLabel = WidgetFactory.makeLabel("Page Range:", true);
     rangePanel.add(rangeLabel);
     rangeField = WidgetFactory.makeOneLineTextField();
     rangePanel.add(rangeField);
 		this.add(Box.createGlue());
     this.add(rangePanel);
     this.add(WidgetFactory.makeHalfSpacer());
-		
-		publisherPanel = new MiniPublisherPanel("Publisher Name", "Publishing Orgn:");
 		this.add(Box.createGlue());
-		this.add(publisherPanel);
+		
+		// Publisher (Organization)
+		JPanel publisherPanel = WidgetFactory.makePanel(1);
+    publisherLabel = WidgetFactory.makeLabel("Publisher:", false);
+    publisherPanel.add(publisherLabel);
+    publisherField = WidgetFactory.makeOneLineTextField();
+    publisherPanel.add(publisherField);
+    this.add(publisherPanel);
+		this.add(WidgetFactory.makeHalfSpacer());
 		this.add(Box.createGlue());
 		
 	}
@@ -903,9 +1141,6 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 	
 	public boolean validateUserInput() {
 		
-		if(!publisherPanel.validateUserInput())
-			return false;
-
 		if (journalField.getText().trim().equals("")) {
 
       WidgetFactory.hiliteComponent(journalLabel);
@@ -921,7 +1156,15 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
       return false;
     }
     WidgetFactory.unhiliteComponent(volumeLabel);
+		
+		if (rangeField.getText().trim().equals("")) {
 
+      WidgetFactory.hiliteComponent(rangeLabel);
+      rangeField.requestFocus();
+      return false;
+    }
+    WidgetFactory.unhiliteComponent(rangeLabel);
+		
 		return true;
 	}
 	
@@ -950,11 +1193,13 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 		OrderedMap map = new OrderedMap();
 		map.put(xPathRoot + "/journal[1]", journalField.getText());
 		map.put(xPathRoot + "/volume[1]", volumeField.getText());
+		map.put(xPathRoot + "/pageRange[1]", this.rangeField.getText());
 		
-		String pr = this.rangeField.getText();
-		map.put(xPathRoot + "/pageRange[1]", pr);
+		String issue = (String) this.issueField.getText();
+		if(!issue.trim().equals("")) map.put(xPathRoot + "/issue[1]", issue);
 		
-		map.putAll(publisherPanel.getPanelData(xPathRoot));
+		String pub = (String)this.publisherField.getText();
+		if(pub.trim().equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
 		
 		return map;
 	}
@@ -978,12 +1223,22 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 		
 		journalField.setText((String) map.get(xPathRoot + "/journal[1]"));
 		volumeField.setText((String)map.get(xPathRoot + "/volume[1]"));
-		
 		String pr = (String)map.get(xPathRoot + "/pageRange[1]");
 		this.rangeField.setText(pr);
 		
-		((WizardPageSubPanelAPI)publisherPanel).setPanelData(xPathRoot, map);
+		String issue = (String)map.get(xPathRoot + "/issue[1]");
+		if(issue != null) {
+			this.issueField.setText(issue);
+			map.remove(xPathRoot + "/issue[1]");
+		}
 		
+		String pub = (String)map.get(xPathRoot + "/publisher[1]/organization[1]");
+		if(pub != null) {
+			this.publisherField.setText(pub);
+			map.remove(xPathRoot + "/publisher[1]/organization[1]");
+		}
+		
+		return;
 	}
 	
 }
@@ -994,11 +1249,12 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 	CitationPage parent;
 	private JLabel numberLabel;
 	private JLabel pagesLabel;
+	private JLabel publisherLabel;
 	
 	private JTextField numberField;
 	private JTextField pagesField;
+	private JTextField publisherField;
 	
-	MiniPublisherPanel publisherPanel;
 	
 	ReportPanel(CitationPage page) {
 		
@@ -1010,10 +1266,16 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		publisherPanel = new MiniPublisherPanel("Publisher Name", "Publishing Orgn:");
-		
+		// Publisher (Organization)
+		JPanel publisherPanel = WidgetFactory.makePanel(1);
+    publisherLabel = WidgetFactory.makeLabel("Publisher:", false);
+    publisherPanel.add(publisherLabel);
+    publisherField = WidgetFactory.makeOneLineTextField();
+    publisherPanel.add(publisherField);
 		this.add(Box.createGlue());
-		this.add(publisherPanel);
+    this.add(publisherPanel);
+		this.add(WidgetFactory.makeHalfSpacer());
+		this.add(Box.createGlue());
 		
 		// Report Number
     JPanel numberPanel = WidgetFactory.makePanel(1);
@@ -1021,8 +1283,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
     numberPanel.add(numberLabel);
     numberField = WidgetFactory.makeOneLineTextField();
     numberPanel.add(numberField);
-		this.add(Box.createGlue());
-    this.add(numberPanel);
+		this.add(numberPanel);
     this.add(WidgetFactory.makeHalfSpacer());
 		this.add(Box.createGlue());
 		
@@ -1048,8 +1309,6 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
   
 	public boolean validateUserInput() {
 		
-		if(!publisherPanel.validateUserInput())
-			return false;
 		return true;
 	}
 	
@@ -1076,15 +1335,15 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
   public OrderedMap getPanelData(String xPathRoot) {
 		
 		OrderedMap map = new OrderedMap();
-		map.putAll(publisherPanel.getPanelData(xPathRoot));
 		
-		String rn = this.numberField.getText();
-		if(!rn.trim().equals(""))
-			map.put(xPathRoot + "/reportNumber[1]", rn);
+		String pub = this.publisherField.getText().trim();
+		if(!pub.equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
+		
+		String rn = this.numberField.getText().trim();
+		if(!rn.equals("")) map.put(xPathRoot + "/reportNumber[1]", rn);
 		
 		String pn = this.pagesField.getText();
-		if(!pn.trim().equals(""))
-			map.put(xPathRoot + "/totalPages[1]", pn);
+		if(!pn.trim().equals("")) map.put(xPathRoot + "/totalPages[1]", pn);
 		
 		return map;
 	}
@@ -1105,134 +1364,26 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 
 	public void setPanelData(String xPathRoot, OrderedMap map) {
 	
-		((WizardPageSubPanelAPI)publisherPanel).setPanelData(xPathRoot, map);
+		String pub = (String)map.get(xPathRoot + "/publisher[1]/organizationName[1]");
+		if(pub != null) {
+			this.publisherField.setText(pub);
+			map.remove(xPathRoot + "/publisher[1]/organizationName[1]");
+		}
 		
 		String rn = (String)map.get(xPathRoot + "/reportNumber[1]");
-		
-		if(!rn.trim().equals(""))
+		if(rn != null) {
 			this.numberField.setText(rn);
+			map.remove(xPathRoot + "/reportNumber[1]");
+		}
 		
 		String pn = (String)map.get(xPathRoot + "/totalPages[1]");
-		
-		if(!pn.trim().equals(""))
+		if(pn != null) {
 			this.pagesField.setText(pn);
+			map.remove(xPathRoot + "/totalPages[1]");
+		}
 		
 	}
 	
 }
 
-
-class MiniPublisherPanel extends JPanel implements WizardPageSubPanelAPI {
-	
-	private JLabel lastNameLabel;
-	private JLabel organizationLabel;
-	
-	private JTextField lastNameField;
-	private JTextField organizationField;
-	
-	private String surname;
-	private String orgnName;
-	
-	MiniPublisherPanel(String surname, String orgnName ) {
-		
-		this.surname = surname;
-		this.orgnName = orgnName;
-		init();
-	}
-	
-	private void init() {
-		
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
-		// Last Name
-    JPanel lastNamePanel = WidgetFactory.makePanel(1);
-    lastNameLabel = WidgetFactory.makeLabel(surname, true);
-    lastNamePanel.add(lastNameLabel);
-    lastNameField = WidgetFactory.makeOneLineTextField();
-    lastNamePanel.add(lastNameField);
-    this.add(lastNamePanel);
-    this.add(WidgetFactory.makeHalfSpacer());
-		this.add(Box.createGlue());
-		
-		// Organization
-    JPanel organizationPanel = WidgetFactory.makePanel(1);
-    organizationLabel = WidgetFactory.makeLabel(orgnName, true, new Dimension(100, 40));
-    organizationPanel.add(organizationLabel);
-    organizationField = WidgetFactory.makeOneLineTextField();
-    organizationPanel.add(organizationField);
-    this.add(organizationPanel);
-    //this.add(Box.createGlue());
-		
-		//this.setBorder(BorderFactory.createLineBorder(Color.black));
-	}
-	
-	
-  /** 
-   *  checks that the user has filled in required fields - if not, highlights 
-   *  labels to draw attention to them
-   *
-   *  @return   boolean true if user data validated OK. false if intervention 
-   *            required
-   */
-  
-	public boolean validateUserInput() {
-		
-		return true;
-	}
-	
-	
-	/** 
-   *  The action to be executed when the panel is displayed. May be empty
-   */
-  public void onLoadAction() {}
-
-
-  /** 
-   *  gets the Map object that contains all the key/value paired
-   *
-   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-   *            appended when making name/value pairs.  For example, in the 
-   *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-   *            root would be /eml:eml/dataset/keywordSet[2]
-   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
-   *            SQUARE BRACKETS []
-   *
-   *  @return   data the OrderedMap object that contains all the
-   *            key/value paired settings for this particular panel
-   */
-  public OrderedMap getPanelData(String xPathRoot) {
-		
-		OrderedMap map = new OrderedMap();
-		map.put(xPathRoot + "/publisher/individualName/surname", this.lastNameField.getText());
-		
-		map.put(xPathRoot + "/publisher/organizationName", this.organizationField.getText());
-		
-		map.put(xPathRoot + "/publisher/positionName", "Unknown");
-		return map;
-	}
-	
-	
-	/**
-	*	  sets the data in the sub panel using the key/values paired Map object
-	*
-	*  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-  *            appended when making name/value pairs.  For example, in the 
-  *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-  *            root would be /eml:eml/dataset/keywordSet[2]
-  *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
-  *            SQUARE BRACKETS []
-	*  @param  map - OrderedMap of xPath-value pairs. xPaths in this map
-	*		    		are absolute xPath and not the relative xPaths
-	*
-	**/
-
-	public void setPanelData(String xPathRoot, OrderedMap map) {
-	
-		lastNameField.setText((String)map.get(xPathRoot +"/publisher[1]/individualName[1]/surname[1]")); 
-		
-		organizationField.setText((String)map.get(xPathRoot + "/publisher[1]/organizationName[1]"));
-		
-	}
-	
-}
 

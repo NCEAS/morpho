@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-09 22:35:59 $'
- * '$Revision: 1.41 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-10 02:21:49 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,7 +198,7 @@ public class PartyPage extends AbstractUIPage {
   /**
    *  Constructor - determines what type of dialog (what role):
    *
-   * @param role short - CREATOR, CONTACT, ASSOCIATED, PERSONNEL or UNDEFINED
+   * @param role short - CREATOR, CONTACT, ASSOCIATED, PERSONNEL, CITATION_AUTHOR or UNDEFINED
    */
   public PartyPage(String role) {
 
@@ -640,7 +640,7 @@ public class PartyPage extends AbstractUIPage {
   /**
    * sets the role and roleString for this wizard page
    *
-   * @param role short - CREATOR, CONTACT, ASSOCIATED, PERSONNEL or UNDEFINED
+   * @param role short - CREATOR, CONTACT, ASSOCIATED, PERSONNEL, CITATION_AUTHOR or UNDEFINED
    */
   private void setRole(String role) {
 
@@ -668,7 +668,13 @@ public class PartyPage extends AbstractUIPage {
 
       roleString = "Personnel";
       backupXPath = "/personnel";
-    }
+			
+    } else if (role.equals(DataPackageWizardInterface.PARTY_CITATION_AUTHOR)) {
+			
+			roleString = "Author";
+			backupXPath = "/creator";
+			isCreatorOrContact = true;
+		}
     //set display name for external refs dialog...
     referencesHandler.setDisplayName(roleString);
 

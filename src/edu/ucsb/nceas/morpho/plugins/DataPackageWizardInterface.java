@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.19 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-10 02:21:48 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ public interface DataPackageWizardInterface {
   public static final String PARTY_CONTACT      = "PARTY_CONTACT";
   public static final String PARTY_ASSOCIATED   = "PARTY_ASSOCIATED";
   public static final String PARTY_PERSONNEL    = "PARTY_PERSONNEL";
+	public static final String PARTY_CITATION_AUTHOR = "PARTY_CITATION_AUTHOR";
 
   public static final String GEOGRAPHIC         = "GEOGRAPHIC";
   public static final String GEOGRAPHIC_PAGE    = "GEOGRAPHIC_PAGE";
