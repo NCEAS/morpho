@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-21 17:56:05 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-10 22:47:07 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,85 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+
+import java.io.*;
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
  * e.g. eml2, beta6., etc extend this abstact class
  */
-public abstract class AbstractDataPackage
+public abstract class AbstractDataPackage extends MetadataObject
 {
+  protected String location;
+  protected String id;
+  protected ConfigXML config;
+  protected File dataPkgFile;
+  protected FileSystemDataStore fileSysDataStore;
+  protected MetacatDataStore  metacatDataStore;
+
+  abstract void serialize();
+  
+  abstract void load(String location, String identifier, Morpho morpho);
+  
+    /**
+   * used to signify that this package is located on a metacat server
+   */
+  public static final String METACAT  = "metacat";
+  /**
+   * used to signify that this package is located locally
+   */
+  public static final String LOCAL    = "local";
+  /**
+   * used to signify that this package is stored on metacat and locally.
+   */
+  public static final String BOTH     = "localmetacat";
+
+    // util to read the file from either FileSystemDataStore or MetacatDataStore
+  protected File getFileWithID(String ID) throws Throwable {
+    
+    File returnFile = null;
+    if(location.equals(METACAT)) {
+      try {
+        Log.debug(11, "opening metacat file");
+        dataPkgFile = metacatDataStore.openFile(ID);
+        Log.debug(11, "metacat file opened");
+      
+      } catch(FileNotFoundException fnfe) {
+
+        Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                +"metacat file not found: "+fnfe.getMessage());
+        fnfe.printStackTrace();
+        throw fnfe.fillInStackTrace();
+
+      } catch(CacheAccessException cae) {
+    
+        Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                +"metacat cache problem: "+cae.getMessage());
+        cae.printStackTrace();
+        throw cae.fillInStackTrace();
+      }
+    } else {  //not metacat
+      try {
+        Log.debug(11, "opening local file");
+        dataPkgFile = fileSysDataStore.openFile(ID);
+        Log.debug(11, "local file opened");
+      
+      } catch(FileNotFoundException fnfe) {
+    
+        Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                +"local file not found: "+fnfe.getMessage());
+        fnfe.printStackTrace();
+        throw fnfe.fillInStackTrace();
+      }
+    }
+    return dataPkgFile;  
+  }
+
 
 }
 

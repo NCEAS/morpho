@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-22 18:55:35 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-10 22:47:07 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,21 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Morpho;
+
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
  * e.g. eml2, beta6., etc extend this abstact class
  */
 public  class EML2Beta6DataPackage extends AbstractDataPackage
 {
+  void serialize() {
+    
+  }
+  
+  void load(String location, String identifier, Morpho morpho) {
+    
+  }
 
 }
 

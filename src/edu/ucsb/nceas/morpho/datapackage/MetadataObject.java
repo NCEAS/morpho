@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-09 22:34:29 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-10 22:47:07 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
+import org.apache.xpath.objects.*;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
@@ -58,37 +59,37 @@ public class MetadataObject
   /**
    * Document node of the in-memory DOM structure
    */
-  static private Document doc;
+  static protected Document doc;
   /**
    * root node of the in-memory DOM structure
    */
-  static private Node root;
+  static protected Node root;
   
   /**
    *   A DOM Node is the basic datastructure. This may be the root of a DOM or it
    *   may be the top level node of a subtree. Working with the Node allows several
    *   Metadata objects to share a DOM and avoids the need to move Nodes between DOMs
    */
-  private Node metadataNode = null;
+  protected Node metadataNode = null;
   
   /**
    *   paths is designed to provide a 'map' between generic paths and specific locations
    *   in a tree (Node) structure. This allows one to get items like 'name' from paths that
    *   may occur in different locations in the tree for different schemas
    */
-  private Hashtable metadataPaths = null;
+  protected Hashtable metadataPaths = null;
   
   /**
    *   specifies the general type of the grammar used to specify the schema;
    *   currently, the allowed types are "publicID", "systemID", "namespace",
    *   "rootname", and "unknown"
    */
-  private String grammarType = "unknown";
+  protected String grammarType = "unknown";
   
   /**
    *  the specific grammar value; i.e. publicID, namespace value, etc
    */
-   private String grammar = "";
+   protected String grammar = "";
 
   // class constructors -----------------------
   public MetadataObject() {
@@ -206,7 +207,15 @@ public class MetadataObject
     }
     root = doc.getDocumentElement();
     try{
-      NodeList nl = XPathAPI.selectNodeList(root, args[0]);
+      // assumed XPath is in args[0]; evaluation of XPath expression can result in a variety of
+      // object types; check i it is a NodeList
+      XObject xobj = XPathAPI.eval(root, args[0]);
+      Log.debug(1,"XObject evaluated: Type ="+xobj.getType());
+      if (xobj.getType()==XObject.CLASS_BOOLEAN) {
+          Log.debug(1,"XPath evaluation results in a BOOLEAN!"+"     val: "+xobj.bool());        
+      }
+      if (xobj.getType()==XObject.CLASS_NODESET) {
+        NodeList nl = XPathAPI.selectNodeList(root, args[0]);
 //      if (nl.getLength() == 0)  Log.debug(1,"NodeLIst has zero length");
         Log.debug(1,"Number of nodes: "+nl.getLength());
           // for now, just get first node value
@@ -219,9 +228,10 @@ public class MetadataObject
         } else {
           Log.debug(1,"No value!!!");
         }
-        } catch (Exception e) {
+      }
+      } catch (Exception e) {
           Log.debug(5, "error in XPath node selection in MetadataObject");
-        }
+      }
   }
   
 }

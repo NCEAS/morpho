@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-21 17:56:05 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-10 22:47:07 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,76 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.TransformerException;
+import org.apache.xpath.XPathAPI;
+import org.apache.xpath.objects.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+import com.arbortext.catalog.*;
+import java.io.*;
+import org.xml.sax.InputSource;
+import org.apache.xpath.XPathAPI;
+import java.util.Vector;
+import java.util.Hashtable;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
  * e.g. eml2, beta6., etc extend this abstact class
  */
 public  class EML200DataPackage extends AbstractDataPackage
 {
+  void serialize() {
+    
+  }
+  
+  void load(String location, String identifier, Morpho morpho) {
+    this.location   = location;
+    this.id         = identifier;
+    this.config     = Morpho.getConfiguration();
 
+    Log.debug(11, "Creating new DataPackage Object");
+    Log.debug(11, "id: " + this.id);
+    Log.debug(11, "location: " + location);
+
+    fileSysDataStore  = new FileSystemDataStore(morpho);
+    metacatDataStore  = new MetacatDataStore(morpho);
+    File packagefile;
+    try {
+      packagefile = getFileWithID(this.id);
+     } catch (Throwable t) {
+      //already handled in getFileWithID() method, 
+      //so just abandon this instance:
+      return;
+    }
+    
+    DocumentBuilder parser = Morpho.createDomParser();
+    InputSource in;
+    FileInputStream fs;
+    try
+    {
+      fs = new FileInputStream(packagefile);
+      in = new InputSource(fs);
+
+      Document doc = parser.parse(in);
+      fs.close();
+    } catch(Exception e1) {
+      Log.debug(4, "Parsing threw: " + e1.toString());
+      e1.printStackTrace();
+    }
+    metadataNode = doc.getDocumentElement();  // the root Node
+  }
+  
 }
 

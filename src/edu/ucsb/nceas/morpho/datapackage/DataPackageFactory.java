@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-09 22:34:29 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-10 22:47:07 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.io.*;
+import edu.ucsb.nceas.morpho.Morpho;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -52,7 +53,7 @@ public class DataPackageFactory
    */
   static private String docType = null;
   
-  
+  static private Morpho morpho = null;
   
   /**
    *  Create a new Datapackage given a Reader to a metadata stream
@@ -86,6 +87,12 @@ public class DataPackageFactory
     
     // temporary stub!!!
     AbstractDataPackage dp = new EML200DataPackage();
+    
+    String location = null;
+    if (metacat && !local) location = AbstractDataPackage.METACAT;
+    if (!metacat && local) location = AbstractDataPackage.LOCAL;
+    if (metacat && local) location = AbstractDataPackage.BOTH;
+    dp.load(location, docid, morpho);
     return dp;
     
   }
