@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-10 19:45:07 $'
- * '$Revision: 1.146 $'
+ *     '$Date: 2004-02-11 21:23:40 $'
+ * '$Revision: 1.147 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1908,6 +1908,32 @@ public class DocFrame extends javax.swing.JFrame
               // first see if there are nonempty sub-branches
 
               if (!hasNonEmptyTextLeaves(cNode)) {
+                tempNode = cNode;
+                parentNode = (DefaultMutableTreeNode)cNode.getParent();
+                if (parentNode != null) {
+                  parentNode.remove(tempNode);
+                }
+              }
+            }
+            else if (card.equals("ONE to MANY")) {
+              // if there is more than one, it can be eliminated
+              DefaultMutableTreeNode nextSibling = cNode.getNextSibling();
+              DefaultMutableTreeNode prevSibling = cNode.getPreviousSibling();
+              String cNodeName = cni.getName();
+              boolean multipleFlag = false;
+              if (prevSibling!=null) {
+                NodeInfo pni =(NodeInfo)prevSibling.getUserObject();
+                if ((pni.getName()).equals(cNodeName)) {
+                  multipleFlag  = true;
+                }
+              }
+              if (nextSibling!=null) {
+                NodeInfo nni =(NodeInfo)nextSibling.getUserObject();
+                if ((nni.getName()).equals(cNodeName)) {
+                  multipleFlag  = true;
+                }
+              }
+              if ((!hasNonEmptyTextLeaves(cNode))&&(multipleFlag)) {
                 tempNode = cNode;
                 parentNode = (DefaultMutableTreeNode)cNode.getParent();
                 if (parentNode != null) {
