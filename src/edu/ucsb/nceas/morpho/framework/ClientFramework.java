@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.18 2000-09-28 23:45:00 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.19 2000-09-29 00:40:08 jones Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -190,7 +190,6 @@ public class ClientFramework extends javax.swing.JFrame
 		JTabbedPane1.add(EditorPanel);
 		EditorPanel.setBounds(2,27,739,459);
 		EditorPanel.setVisible(false);
-		mdeBean1.setLayout(new BorderLayout(0,0));
 		EditorPanel.add(BorderLayout.CENTER,mdeBean1);
 		mdeBean1.setBounds(0,0,693,414);
 		QueryPanel.setLayout(new BorderLayout(0,0));
@@ -216,11 +215,18 @@ public class ClientFramework extends javax.swing.JFrame
 		UnderConstruction.setForeground(java.awt.Color.red);
 		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
 		UnderConstruction.setBounds(0,0,739,459);
+		EditorPanel2.setLayout(new BorderLayout(0,0));
+		JTabbedPane1.add(EditorPanel2);
+		//MBJSIZE//EditorPanel2.setBounds(2,27,739,459);
+		EditorPanel2.setVisible(false);
+		EditorPanel2.add(BorderLayout.CENTER,editorBean2);
+		//MBJSIZE//editorBean2.setBounds(0,0,693,414);
 		JTabbedPane1.setSelectedComponent(QueryPanel);
 		JTabbedPane1.setSelectedIndex(1);
 		JTabbedPane1.setTitleAt(0,"Edit Document");
 		JTabbedPane1.setTitleAt(1,"Search Document");
 		JTabbedPane1.setTitleAt(2,"Browse Data");
+		JTabbedPane1.setTitleAt(3,"Demo Editor");
 		//$$ lineBorder1.move(240,481);
 		//$$ stringListModel1.move(72,406);
 		//$$ stringComboBoxModel1.move(48,481);
@@ -471,6 +477,7 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
 	javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
 	javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
+	javax.swing.JPanel EditorPanel2 = new javax.swing.JPanel();
 	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
 	javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 = new com.symantec.itools.javax.swing.borders.LineBorder();
@@ -502,6 +509,7 @@ public class ClientFramework extends javax.swing.JFrame
     
 	edu.ucsb.nceas.querybean.AbstractQueryBean queryBean1 = (edu.ucsb.nceas.querybean.AbstractQueryBean)createObject("edu.ucsb.nceas.querybean.QueryBean");
 
+	edu.ucsb.nceas.metaedit.AbstractMdeBean editorBean2 = (edu.ucsb.nceas.metaedit.AbstractMdeBean)createObject("edu.ucsb.nceas.editor.EditorBean");
 	//{{DECLARE_MENUS
 	//}}
 

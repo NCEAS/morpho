@@ -54,55 +54,45 @@ public class Editor extends JPanel
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
-		//MBJBEAN//setTitle("JFC Application");
-		//MBJBEAN//setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
-		//MBJBEAN//getContentPane().setLayout(new BorderLayout(0,0));
 		setLayout(new BorderLayout(0,0));
-		setSize(549,370);
 		setVisible(false);
+		SummaryPanel.setLayout(new BorderLayout(0,0));
+		SummaryPanel.add(BorderLayout.NORTH, SummaryLabel);
+		add(BorderLayout.CENTER, SummaryPanel);
 		JPanel1.setLayout(new BorderLayout(0,0));
-		add(BorderLayout.CENTER, JPanel1);
-		//MBJBEAN//getContentPane().add(BorderLayout.CENTER, JPanel1);
-		JPanel1.setBounds(0,0,549,370);
+		SummaryPanel.add(BorderLayout.CENTER, JPanel1);
+		//add(BorderLayout.CENTER, JPanel1);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel1.add(BorderLayout.NORTH,JPanel2);
-		JPanel2.setBounds(0,0,549,35);
 		ParseButton.setText("Parse DTD");
 		ParseButton.setActionCommand("Parse DTD");
 		JPanel2.add(ParseButton);
-		ParseButton.setBounds(35,5,95,25);
 		DTDFileName.setColumns(30);
 		DTDFileName.setText("catalog/eml-dataset.dtd");
 		JPanel2.add(DTDFileName);
-		DTDFileName.setBounds(135,8,330,19);
 		JButton1.setText("...");
 		JButton1.setActionCommand("...");
 		JPanel2.add(JButton1);
-		JButton1.setBounds(470,5,43,25);
 		JPanel3.setLayout(new BorderLayout(0,0));
 		JPanel1.add(BorderLayout.CENTER,JPanel3);
-		JPanel3.setBounds(0,35,549,335);
 		JPanel4.setLayout(new BorderLayout(0,0));
 		JPanel3.add(BorderLayout.CENTER,JPanel4);
-		JPanel4.setBounds(0,0,20,40);
 		JPanel5.setLayout(new BorderLayout(0,0));
 		JPanel4.add(BorderLayout.WEST, JPanel5);
-		JPanel5.setBounds(0,0,20,40);
 		JPanel6.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel5.add(BorderLayout.SOUTH, JPanel6);
-		JPanel6.setBounds(0,0,20,40);
 		SaveButton.setText("Save");
 		SaveButton.setActionCommand("Save");
 		JPanel6.add(SaveButton);
 		SaveButton.setBounds(0,0,35,40);
+		SaveButton.setEnabled(false);
 		OpenButton.setText("Open");
 		OpenButton.setActionCommand("Open");
 		JPanel6.add(OpenButton);
 		OpenButton.setBounds(0,0,35,40);
+		OpenButton.setEnabled(false);
 		JPanel5.add(BorderLayout.CENTER, JScrollPane4);
-		JScrollPane4.setBounds(2,2,285,305);
 		JPanel4.add(BorderLayout.CENTER, OutputScrollPanel);
-		OutputScrollPanel.setBounds(0,0,20,40);
 		//OpenFileDialog.setMode(FileDialog.LOAD);
 		//OpenFileDialog.setTitle("Open");
 		//$$ OpenFileDialog.move(0,371);
@@ -171,7 +161,6 @@ public class Editor extends JPanel
 	public Editor(String sTitle)
 	{
 		this();
-		//MBJBEAN//setTitle(sTitle);
 	}
 	
 	/**
@@ -233,6 +222,9 @@ public class Editor extends JPanel
 	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
+	javax.swing.JPanel SummaryPanel = new javax.swing.JPanel();
+	javax.swing.JLabel SummaryLabel = new javax.swing.JLabel(
+           "For demonstration only: this editor will be removed.");
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
 	javax.swing.JButton ParseButton = new javax.swing.JButton();
@@ -271,7 +263,6 @@ public class Editor extends JPanel
 			if (reply == JOptionPane.YES_OPTION)
 			{
 		    	this.setVisible(false);    // hide the Frame
-		    	//MBJBEAN//this.dispose();            // free the system resources
 		    	System.exit(0);            // close the application
 			}
 		} catch (Exception e) {
