@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 02:45:14 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-09-28 00:42:24 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,45 +65,6 @@ public class HeaderPanel extends JPanel
     private static final String PATH_INIT_TEXT      = ""; //You are here:\n";
     private static final String PATH_SEPARATOR      = ">>";
  
-
-    // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
-
-//    private final Font TITLE_FONT  = new Font(null, Font.BOLD, 12);
-//    private final Font BUTTON_FONT = new Font(null, Font.BOLD, 11);
-//    
-//    private final static Color TITLE_TEXT_COLOR       = Color.white;
-//    private final static Color BACKBUTTON_TEXT_COLOR  = new Color(0, 198, 255);
-//    private final static Color CLOSEBUTTON_TEXT_COLOR = BACKBUTTON_TEXT_COLOR;
-//    private final static Color EDITBUTTON_TEXT_COLOR  = new Color(0, 255, 0);
-    
-    
-    // * * * * * *  D E F A U L T   D I M E N S I O N S  * * * * * * * * * * * * 
-    
-//    private final int TITLEBAR_HEIGHT           = 27;
-//    private final int TITLEBAR_TOP_PADDING      = 0;
-//    private final int TITLEBAR_SIDES_PADDING    = 0;
-//    private final int TITLEBAR_BOTTOM_PADDING   = 2;
-//
-//    private final int PATHBAR_TOP_PADDING       = 2;
-//    private final int PATHBAR_SIDES_PADDING     = 0;
-//    private final int PATHBAR_BOTTOM_PADDING    = 2;
-//
-//    private final int DUMMY_WIDTH = 100;    //ignored by BorderLayout
-//
-//    protected final Dimension TITLEBAR_DIMS 
-//                                  = new Dimension(DUMMY_WIDTH,TITLEBAR_HEIGHT);
-//    private final Dimension BOTTOMLINE_DIMS = new Dimension(DUMMY_WIDTH, 2);
-//    private final int TITLEBAR_COMPONENT_HEIGHT 
-//            = TITLEBAR_HEIGHT - TITLEBAR_TOP_PADDING - TITLEBAR_BOTTOM_PADDING;
-//        
-//    // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
-//    
-//    private final static Color TITLEBAR_COLOR       = Color.gray;
-//    private final static Color BACKGROUND_COLOR     = Color.lightGray;
-//    private final static Color BOTTOMLINE_COLOR     = Color.darkGray;
-//    private final static Color BACKBUTTON_COLOR     = TITLEBAR_COLOR;
-//    private final static Color CLOSEBUTTON_COLOR    = TITLEBAR_COLOR;
-//    private final static Color EDITBUTTON_COLOR     = TITLEBAR_COLOR;
 
     private JButton backButton;
     
