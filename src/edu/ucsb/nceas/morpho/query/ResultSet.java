@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-11 16:39:33 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-10-29 23:31:35 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -280,8 +280,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   {
     Object value = null;
     try {
-      Vector rowVector = (Vector)resultsVector.get(row);
-      value = rowVector.get(col);
+      Vector rowVector = (Vector)resultsVector.elementAt(row);
+      value = rowVector.elementAt(col);
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       String emptyString = "";
       value = null;
@@ -363,25 +363,25 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       Vector row = new Vector();
 
       // Display the right icon for the data package
-      row.add(metacatIcon);
+      row.addElement(metacatIcon);
 
       // Then display requested fields in requested order
       for (int i=0; i < cnt; i++) {
-        row.add((String)(params.get(returnFields.elementAt(i))));
+        row.addElement((String)(params.get(returnFields.elementAt(i))));
       }
 
       // Then store additional default fields
-      row.add(createdate);
-      row.add(updatedate);
-      row.add(docid);
-      row.add(docname);
-      row.add(doctype);
-      row.add(new Boolean(isLocal));
-      row.add(new Boolean(isMetacat));
-      row.add(tripleList);
+      row.addElement(createdate);
+      row.addElement(updatedate);
+      row.addElement(docid);
+      row.addElement(docname);
+      row.addElement(doctype);
+      row.addElement(new Boolean(isLocal));
+      row.addElement(new Boolean(isMetacat));
+      row.addElement(tripleList);
         
       // Add this document row to the list of results
-      resultsVector.add(row);
+      resultsVector.addElement(row);
     }
     String leaving = (String)elementStack.pop();
   }
@@ -505,7 +505,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public void openResultRecord(int row)
   {
     try {
-      Vector rowVector = (Vector)resultsVector.get(row);
+      Vector rowVector = (Vector)resultsVector.elementAt(row);
       openResultRecord(rowVector);
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       ClientFramework.debug(1, "array index out of bounds");
@@ -523,9 +523,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     boolean openMetacat = false;
     Vector rowTriples = null;
     try {
-      docid = (String)rowVector.get(numHeaders+2);
-      openLocal = ((Boolean)rowVector.get(numHeaders+5)).booleanValue();
-      openMetacat = ((Boolean)rowVector.get(numHeaders+6)).booleanValue();
+      docid = (String)rowVector.elementAt(numHeaders+2);
+      openLocal = ((Boolean)rowVector.elementAt(numHeaders+5)).booleanValue();
+      openMetacat = ((Boolean)rowVector.elementAt(numHeaders+6)).booleanValue();
       //rowTriples = (Vector)rowVector.get(numHeaders+7);
 /*    // DEBUGGING output to determine if the triples Hash is correct
       for (int j=0; j < rowTriples.size(); j++) {
@@ -576,8 +576,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       Hashtable docidList = new Hashtable();
       int numColumns = getColumnCount();
       for (int i=0; i < getRowCount(); i++) {
-        Vector rowVector = (Vector)resultsVector.get(i);
-        String currentDocid = (String)rowVector.get(numColumns+2);
+        Vector rowVector = (Vector)resultsVector.elementAt(i);
+        String currentDocid = (String)rowVector.elementAt(numColumns+2);
         docidList.put(currentDocid, new Integer(i));
       }
   
@@ -587,14 +587,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       Enumeration ee = r2Rows.elements();
       while (ee.hasMoreElements()) {
         Vector row = (Vector)ee.nextElement();
-        String currentDocid = (String)row.get(numColumns+2);
+        String currentDocid = (String)row.elementAt(numColumns+2);
         // if docids match, change the icon and location flags
         if (docidList.containsKey(currentDocid)) {
           int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
-          Vector originalRow = (Vector)resultsVector.get(rowIndex);
-          originalRow.set(0, bothIcon);
-          originalRow.set(numColumns+5, new Boolean(true));
-          originalRow.set(numColumns+6, new Boolean(true));
+          Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
+          originalRow.setElementAt(bothIcon, 0);
+          originalRow.setElementAt(new Boolean(true), numColumns+5);
+          originalRow.setElementAt(new Boolean(true), numColumns+6);
         } else {
           resultsVector.addElement(row);
         }

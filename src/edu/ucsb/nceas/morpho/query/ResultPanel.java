@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-17 17:53:00 $'
- * '$Revision: 1.22 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:31:35 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ public class ResultPanel extends JPanel
       // Set up the Header panel with a title and refresh/revise buttons
       titleLabel = new JLabel(results.getQuery().getQueryTitle());
       titleLabel.setForeground(Color.black);
-      titleLabel.setFont(new Font(null, Font.BOLD, 18));
+      titleLabel.setFont(new Font("Dialog", Font.BOLD, 18));
       Box headerBox = Box.createHorizontalBox();
       headerBox.setBackground(Color.white);
       headerBox.add(Box.createHorizontalStrut(8));
@@ -164,7 +164,7 @@ public class ResultPanel extends JPanel
       headerBox.add(Box.createHorizontalGlue());
       recordCountLabel = new JLabel(results.getRowCount() + " data packages");
       recordCountLabel.setForeground(Color.black);
-      recordCountLabel.setFont(new Font(null, Font.BOLD, 18));
+      recordCountLabel.setFont(new Font("Dialog", Font.BOLD, 18));
       headerBox.add(recordCountLabel);
       headerBox.add(Box.createHorizontalStrut(4));
       refreshButton = new JButton("Refresh", new ImageIcon( getClass().
@@ -210,7 +210,8 @@ public class ResultPanel extends JPanel
       table = new JTable(results);
       WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
       stringRenderer.setRows(5);
-      table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
+//DFH      table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
+      table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
       //table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
       initColumnSizes(table, results);
@@ -688,7 +689,8 @@ public class ResultPanel extends JPanel
                             profile.get("queriesdir", 0); 
     File queriesDir = new File(queriesDirName);
     if (queriesDir.exists()) {
-      File[] queriesList = queriesDir.listFiles();
+//DFH      File[] queriesList = queriesDir.listFiles();
+      File[] queriesList = listFiles(queriesDir);
       for (int n=0; n < queriesList.length; n++) {
         File queryFile = queriesList[n];
         if (queryFile.isFile()) {
@@ -725,12 +727,13 @@ public class ResultPanel extends JPanel
       Action savedSearchItemAction = 
              new AbstractAction(query.getQueryTitle()) {
         public void actionPerformed(ActionEvent e) {
-          Action queryAction = ((JMenuItem)e.getSource()).getAction();
-          Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
-          if (savedQuery != null) {
-            ResultSet rs = savedQuery.execute();
-            ResultFrame rsf = new ResultFrame(framework, rs);
-          }
+ //DFH - following lines disabled because donot work with Java 1.17
+ //         Action queryAction = ((JMenuItem)e.getSource()).getAction();
+ //         Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
+ //         if (savedQuery != null) {
+ //           ResultSet rs = savedQuery.execute();
+ //           ResultFrame rsf = new ResultFrame(framework, rs);
+ //         }
         }
       };
       savedSearchItemAction.putValue("SAVED_QUERY_OBJ", query);
@@ -747,4 +750,16 @@ public class ResultPanel extends JPanel
       savedQueryAction.putValue("SAVED_QUERY_OBJ", query);
     }
   }
+  
+  private File[] listFiles(File dir) {
+    String[] fileStrings = dir.list();
+    int len = fileStrings.length;
+    File[] list = new File[len];
+    for (int i=0; i<len; i++) {
+        list[i] = new File(dir, fileStrings[i]);    
+    }
+    return list;
+  }
+  
+  
 }

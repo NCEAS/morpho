@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-09-06 01:25:52 $'
- * '$Revision: 1.45 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:31:35 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,13 +206,16 @@ public class LocalQuery
     Vector filevector = new Vector();
     // get a list of all files to be searched
     getFiles(xmldir, filevector);
-  
+    
     // iterate over all the files that are in the local xml directory
     for (int i=0;i<filevector.size();i++) {
       File currentfile = (File)filevector.elementAt(i);
       String filename = currentfile.getPath();
-      String docid = currentfile.getParentFile().getName() + separator +
-                     currentfile.getName();
+//DFH      String docid = currentfile.getParentFile().getName() + separator +
+//DFH                     currentfile.getName();
+      File parentFile = new File(currentfile.getParent());
+      String docid = parentFile.getName() + separator + currentfile.getName();
+      
       // skips subdirectories
       if (currentfile.isFile()) {
         // checks to see if doc has already been placed in DOM cache
@@ -522,7 +525,7 @@ public class LocalQuery
           Vector original = (Vector)combined.clone();
           combined = new Vector();
           for (int i = 0; i < currentResults.size(); i++) {
-            Object obj = currentResults.get(i);
+            Object obj = currentResults.elementAt(i);
             if (original.contains(obj)) {
               combined.addElement(obj);
             } else {

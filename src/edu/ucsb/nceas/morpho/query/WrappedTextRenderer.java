@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-05 01:29:55 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:31:35 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class WrappedTextRenderer extends JTextArea
     setMargin(new Insets(margin, margin, margin, margin));
     setLineWrap(true);
     setWrapStyleWord(true);
-    setFont(new Font(null, Font.PLAIN, fontSize));
+    setFont(new Font("Dialog", Font.PLAIN, fontSize));
   }
 
   /**

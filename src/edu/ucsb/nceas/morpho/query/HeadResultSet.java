@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-27 22:09:55 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:31:36 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ import edu.ucsb.nceas.morpho.framework.*;
 import java.io.InputStream;
 
 import java.util.Enumeration;
-import java.util.HashMap;
+//DFH import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Vector;
 
 
@@ -91,8 +92,8 @@ public class HeadResultSet extends ResultSet
   {
     Object value = null;
     try {
-      Vector rowVector = (Vector)headResultsVector.get(row);
-      value = rowVector.get(col);
+      Vector rowVector = (Vector)headResultsVector.elementAt(row);
+      value = rowVector.elementAt(col);
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       String emptyString = "";
       value = null;
@@ -109,7 +110,7 @@ public class HeadResultSet extends ResultSet
   public void openResultRecord(int row)
   {
     try {
-      Vector rowVector = (Vector)headResultsVector.get(row);
+      Vector rowVector = (Vector)headResultsVector.elementAt(row);
       openResultRecord(rowVector);
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       ClientFramework.debug(1, "array index out of bounds");
@@ -133,19 +134,29 @@ public class HeadResultSet extends ResultSet
   private void consolidateResults() 
   {
     int numHeaders = getColumnCount();
-    HashMap maxRevHash = new HashMap();
-    HashMap maxRevRow = new HashMap();
+    Hashtable maxRevHash = new Hashtable();
+    Hashtable maxRevRow = new Hashtable();
     for (int i=0; i<resultsVector.size(); i++) {
       // Get the row, and its docid, parse out the rev #
-      Vector rowVector = (Vector)resultsVector.get(i);
-      String docid = (String)rowVector.get(numHeaders+2);
+      Vector rowVector = (Vector)resultsVector.elementAt(i);
+      String docid = (String)rowVector.elementAt(numHeaders+2);
       String family = docid.substring(0, docid.lastIndexOf("."));
       String rev = docid.substring(docid.lastIndexOf(".")+1);
       Integer currentRev = new Integer(rev);
       Integer maxRev = (Integer)maxRevHash.get(family);
+      
+      int currentRevint = 0;
+      int maxRevint = 0;
+      if (currentRev!=null) {
+        currentRevint = currentRev.intValue();
+      }
+      if (maxRev!=null) {
+        maxRevint = maxRev.intValue();
+      }
 
       // save the highest rev
-      if (maxRev == null || (currentRev.compareTo(maxRev) > 0)) {
+//DFH      if (maxRev == null || (currentRev.compareTo(maxRev) > 0)) {
+      if (maxRev == null || (currentRevint>maxRevint)) {
         // Store the familyid + current rev in a hash
         maxRevHash.put(family, currentRev);
         // Store the familyid + row for the current highest rev in a hash
@@ -154,6 +165,11 @@ public class HeadResultSet extends ResultSet
     }
    
     // Create the new consolidated vector of rows
-    headResultsVector = new Vector(maxRevRow.values());
+//DFH    headResultsVector = new Vector(maxRevRow.values());
+      headResultsVector = new Vector();
+      Enumeration enum = maxRevRow.elements();
+      while (enum.hasMoreElements()) {
+          headResultsVector.addElement(enum.nextElement());
+      }
   }
 }

@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-24 07:33:22 $'
- * '$Revision: 1.22 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:31:35 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -727,9 +727,9 @@ public class QueryDialog extends JDialog
       if (includeSynonyms) {
         synonymList = framework.getTaxonSynonyms(taxonTermPanel.getValue());
         for (int i=0; i<synonymList.size(); i++) {
-          ClientFramework.debug(20, "Adding synonym to query: " + synonymList.get(i));
+          ClientFramework.debug(20, "Adding synonym to query: " + synonymList.elementAt(i));
           QueryGroup synonymGroup = buildTaxonTerm(taxonTermPanel.getTaxonRank(),
-                                                   (String)synonymList.get(i),
+                                                   (String)synonymList.elementAt(i),
                                                    taxonTermPanel.getSearchMode());
           parentGroup.addChild(synonymGroup);
         }
