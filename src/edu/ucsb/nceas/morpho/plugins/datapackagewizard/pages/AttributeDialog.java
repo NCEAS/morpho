@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:15 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-15 23:32:08 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,11 +47,16 @@ import javax.swing.JTextArea;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 
 import java.util.List;
 import java.util.ArrayList;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Component;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -62,8 +67,8 @@ import java.awt.event.ItemListener;
 
 class AttributeDialog extends WizardPopupDialog {
 
-  private final int MEAS_SCALE_NUM_ROWS = 9;
-  private final int DOMAIN_NUM_ROWS = 5;
+  private final int BORDERED_PANEL_TOT_ROWS = 9;
+  private final int DOMAIN_NUM_ROWS = 8;
   
   private JTextField attribNameField;
   
@@ -90,10 +95,15 @@ class AttributeDialog extends WizardPopupDialog {
   private String nominalDomain;
   private String ordinalDomain;
 
-  private JLabel      nomTextDefinitionLabel;
-  private JTextField  nomTextDefinitionField;
-  private JTextField  nomTextSourceField;
-  private CustomList  nomTextPatternsList;
+  private JLabel[]     nomOrdTextDefinitionLabel = new JLabel[2];
+  private JTextField[] nomOrdTextDefinitionField = new JTextField[2];
+  private JTextField[] nomOrdTextSourceField     = new JTextField[2];
+  private CustomList[] nomOrdTextPatternsList    = new CustomList[2];
+  
+  private JLabel[]     nomOrdEnumDefinitionLabel = new JLabel[2];
+  private CustomList[] nomOrdEnumDefinitionList  = new CustomList[2];
+
+  private JCheckBox[] nomOrdEnumDefinitionFreeTextCheckBox = new JCheckBox[2];
   
   private JTextArea attribDefinitionField;
   private final String[] buttonsText  
@@ -182,7 +192,7 @@ class AttributeDialog extends WizardPopupDialog {
     ////////////////////////////////////////////////////////////////////////////
     
     middlePanel.add(WidgetFactory.makeHTMLLabel(
-    "Define and explain the contents of the attribute (or column) precisely, "
+    "Define the contents of the attribute (or column) precisely, "
     +"so that a data user could interpret the attribute accurately.<br></br>"
     +"<font color=\"666666\">&nbsp;&nbsp;[Example(s):&nbsp;&nbsp;&nbsp;"
     +"\"spden\" is the number of individuals of all macro invertebrate species "
@@ -252,12 +262,11 @@ class AttributeDialog extends WizardPopupDialog {
 
     middlePanel.add(radioPanel);
     
+    nominalTextSubPanel = getNomOrdTextSubPanel(MEASUREMENTSCALE_NOMINAL);
+    nominalEnumSubPanel = getNomOrdEnumSubPanel(MEASUREMENTSCALE_NOMINAL);
     
-    nominalTextSubPanel = getNominalTextSubPanel();
-    nominalEnumSubPanel = getNominalEnumSubPanel();
-    
-    ordinalTextSubPanel = getOrdinalTextSubPanel();
-    ordinalEnumSubPanel = getOrdinalEnumSubPanel();
+    ordinalTextSubPanel = getNomOrdTextSubPanel(MEASUREMENTSCALE_ORDINAL);
+    ordinalEnumSubPanel = getNomOrdEnumSubPanel(MEASUREMENTSCALE_ORDINAL);
     
     currentNominalSubPanel = nominalEnumSubPanel;
     currentOrdinalSubPanel = ordinalEnumSubPanel;
@@ -292,7 +301,7 @@ class AttributeDialog extends WizardPopupDialog {
   
   private JPanel getEmptyPanel() {
     
-    JPanel panel = WidgetFactory.makeVerticalPanel(MEAS_SCALE_NUM_ROWS);
+    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
     
     panel.add(WidgetFactory.makeDefaultSpacer());
 
@@ -303,19 +312,53 @@ class AttributeDialog extends WizardPopupDialog {
   
   private JLabel listLabel;
   
-  // measScaleElemNamesIndex can be MEASUREMENTSCALE_NOMINAL or 
-  // MEASUREMENTSCALE_ORDINAL
-  private JPanel getNomOrdPanel(final int measScaleElemNamesIndex) {
+  // nom_ord can be MEASUREMENTSCALE_NOMINAL or MEASUREMENTSCALE_ORDINAL
+  private JPanel getNomOrdPanel(final int nom_ord) {
     
-    JPanel panel = WidgetFactory.makeVerticalPanel(MEAS_SCALE_NUM_ROWS);
+    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
     
-    WidgetFactory.addTitledBorder(panel, measScaleElemNames[measScaleElemNamesIndex]);
+    WidgetFactory.addTitledBorder(panel, measScaleElemNames[nom_ord]);
     
-    
-    JComboBox domainPickList = WidgetFactory.makePickList(
-        
-        textEnumPicklistVals, false, 0, 
-        new ItemListener() {
+    final String TEXT_HELP 
+                = "<html>Describe a free text domain for the attribute.</html>";
+
+    final String ENUM_HELP 
+                = "<html>Describe any codes that are used as values of "
+                +"the attribute.</html>";
+    final JLabel helpTextLabel = getLabel(ENUM_HELP);
+                    
+//    JComboBox domainPickList = WidgetFactory.makePickList(
+//        
+//        textEnumPicklistVals, false, 0, 
+//        new ItemListener() {
+//        
+//          public void itemStateChanged(ItemEvent e) {
+//
+//            String value = e.getItem().toString();
+//            Log.debug(45, "PickList state changed: " +value);
+//            
+//            if (value.equals(textEnumPicklistVals[0])) { //enumerated
+//            
+//              Log.debug(45, measScaleElemNames[nom_ord]
+//                                                +"/enumeratedDomain selected");
+//              setNomOrdUI(nom_ord,     ENUMERATED_DOMAIN);
+//              setNomOrdDomain(nom_ord, ENUMERATED_DOMAIN);
+//              helpTextLabel.setText(ENUM_HELP);
+//              
+//            } else if (value.equals(textEnumPicklistVals[1])) { //text
+//              
+//              Log.debug(45, measScaleElemNames[nom_ord]
+//                                                +"/textDomain selected");
+//              setNomOrdUI(nom_ord,     TEXT_DOMAIN);
+//              setNomOrdDomain(nom_ord, TEXT_DOMAIN);
+//              helpTextLabel.setText(TEXT_HELP);
+//              
+//            }
+//            
+//          }
+//        });
+
+    ItemListener listener = new ItemListener() {
         
           public void itemStateChanged(ItemEvent e) {
 
@@ -324,44 +367,48 @@ class AttributeDialog extends WizardPopupDialog {
             
             if (value.equals(textEnumPicklistVals[0])) { //enumerated
             
-              Log.debug(45, measScaleElemNames[measScaleElemNamesIndex]
+              Log.debug(45, measScaleElemNames[nom_ord]
                                                 +"/enumeratedDomain selected");
-              setNomOrdUI(measScaleElemNamesIndex,     ENUMERATED_DOMAIN);
-              setNomOrdDomain(measScaleElemNamesIndex, ENUMERATED_DOMAIN);
+              setNomOrdUI(nom_ord,     ENUMERATED_DOMAIN);
+              setNomOrdDomain(nom_ord, ENUMERATED_DOMAIN);
+              helpTextLabel.setText(ENUM_HELP);
               
             } else if (value.equals(textEnumPicklistVals[1])) { //text
               
-              Log.debug(45, measScaleElemNames[measScaleElemNamesIndex]
+              Log.debug(45, measScaleElemNames[nom_ord]
                                                 +"/textDomain selected");
-              setNomOrdUI(measScaleElemNamesIndex,     TEXT_DOMAIN);
-              setNomOrdDomain(measScaleElemNamesIndex, TEXT_DOMAIN);
+              setNomOrdUI(nom_ord,     TEXT_DOMAIN);
+              setNomOrdDomain(nom_ord, TEXT_DOMAIN);
+              helpTextLabel.setText(TEXT_HELP);
               
             }
             
           }
-        });
-    
-    JPanel picklistPanel = WidgetFactory.makePanel();
-    picklistPanel.add(domainPickList);
-    picklistPanel.add(WidgetFactory.makeLabel(" ", false));
-    picklistPanel.add(WidgetFactory.makeLabel(" ", false));
-    panel.add(picklistPanel);
+        };
 
-//    Object[] colTemplates = new Object[] { pickList, new JTextField() };
-//
-//    String[] colNames = new String[] { 
-//      "Fixed-Width or Delimited?", 
-//      "Width or Delimiter Character:" 
-//    };
-//    
-//                                    
-//    list = WidgetFactory.makeList(colNames, colTemplates, 4,
-//                                  true, false, false, true, true, true);
-//    
-//    panel.add(list);
+
+    JComboBox domainPickList = new JComboBox(textEnumPicklistVals);
+    
+    domainPickList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    domainPickList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    domainPickList.addItemListener(listener);
+    domainPickList.setEditable(false);
+    domainPickList.setSelectedIndex(0);
+
+    
+    JPanel pickListPanel = WidgetFactory.makePanel();
+    pickListPanel.add(WidgetFactory.makeLabel("CHOOSE:", true));
+    pickListPanel.add(domainPickList);
  
+    JPanel measScalePanel = new JPanel();
+    measScalePanel.setLayout(new GridLayout(1,2));
+    measScalePanel.add(pickListPanel);
+    measScalePanel.add(helpTextLabel);
+
+    panel.add(measScalePanel);
+    
     ////
-    switch (measScaleElemNamesIndex) {
+    switch (nom_ord) {
     
       case 0: 
         panel.add(currentNominalSubPanel);
@@ -371,8 +418,6 @@ class AttributeDialog extends WizardPopupDialog {
         panel.add(currentOrdinalSubPanel);
         break;
     }
-    
-  
     return panel;
   }
   
@@ -420,7 +465,6 @@ class AttributeDialog extends WizardPopupDialog {
       
       Log.debug(45, "ordinalDomain set to "+domain);
       ordinalDomain = domainStr;
-      
     }
   
   }
@@ -428,94 +472,156 @@ class AttributeDialog extends WizardPopupDialog {
   // * * * * 
 
 
-
-  private JPanel getNominalTextSubPanel() {
+  private JPanel getNomOrdTextSubPanel(int nom_ord) {
   
     JPanel panel = WidgetFactory.makeVerticalPanel(DOMAIN_NUM_ROWS);
-  
-    JPanel definitionPanel = WidgetFactory.makePanel();
-    nomTextDefinitionLabel = WidgetFactory.makeLabel("Definition:", true);
-    definitionPanel.add(nomTextDefinitionLabel);
-    nomTextDefinitionField = WidgetFactory.makeOneLineTextField();
-    definitionPanel.add(nomTextDefinitionField);
-    definitionPanel.add(WidgetFactory.makeLabel(" ", true));
-    definitionPanel.add(WidgetFactory.makeLabel(" ", true));
-    panel.add(definitionPanel);
+
+    panel.add(this.makeHalfSpacer());
     
+    ///////////////////////////
+
+    JPanel topHorizPanel = new JPanel();
+    topHorizPanel.setLayout(new GridLayout(1,2));
+
+    JPanel defFieldPanel = WidgetFactory.makePanel();
+    nomOrdTextDefinitionLabel[nom_ord] 
+                                = WidgetFactory.makeLabel("Definition:", true);
+    defFieldPanel.add(nomOrdTextDefinitionLabel[nom_ord]);
+    nomOrdTextDefinitionField[nom_ord] = WidgetFactory.makeOneLineTextField();
+    defFieldPanel.add(nomOrdTextDefinitionField[nom_ord]);
+
+    topHorizPanel.add(defFieldPanel);
+
+    topHorizPanel.add(getLabel(
+        "<html><font color=\"#666666\">e.g: <i>U.S. telephone numbers in "
+        +"the format (999) 888-7777</i></font></html>"));
+
+    panel.add(topHorizPanel);
+
+    panel.add(this.makeHalfSpacer());
+    
+    ///////////////////////////
+        
+    JPanel middleHorizPanel = new JPanel();
+    middleHorizPanel.setLayout(new GridLayout(1,2));
+
+    JPanel srcFieldPanel = WidgetFactory.makePanel();
+    srcFieldPanel.add(WidgetFactory.makeLabel("Source:", false));
+    nomOrdTextSourceField[nom_ord] = WidgetFactory.makeOneLineTextField();
+    srcFieldPanel.add(nomOrdTextSourceField[nom_ord]);
+
+    middleHorizPanel.add(srcFieldPanel);
+
+    middleHorizPanel.add(getLabel(
+        "<html><font color=\"#666666\">e.g: <i>FIPS standard "
+        +"for postal abbreviations for U.S. states</i></font></html>"));
+
+    panel.add(middleHorizPanel);
+
+    panel.add(this.makeHalfSpacer());
 
     ///////////////////////////
         
+    JPanel bottomHorizPanel = new JPanel();
+    bottomHorizPanel.setLayout(new GridLayout(1,2));
+
     Object[] colTemplates = new Object[] { new JTextField() };
 
     JPanel patternPanel = WidgetFactory.makePanel();
-    patternPanel.add(WidgetFactory.makeLabel("Pattern(s)", true));
+    patternPanel.add(WidgetFactory.makeLabel("Pattern(s)", false));
     String[] colNames = new String[] { "Pattern(s) (optional):" };
     
-    nomTextPatternsList = WidgetFactory.makeList(colNames, colTemplates, 2,
-                                  true, false, false, false, false, true);
+    nomOrdTextPatternsList[nom_ord] 
+              = WidgetFactory.makeList( colNames, colTemplates, 2,
+                                        true, false, false, true, false, false);
+    patternPanel.add(nomOrdTextPatternsList[nom_ord]);
     
-    patternPanel.add(nomTextPatternsList);
-    patternPanel.add(WidgetFactory.makeLabel(" ", true));
-    panel.add(patternPanel);
-  
+    bottomHorizPanel.add(patternPanel);
+    
+    bottomHorizPanel.add(getLabel(
+        "<html><font color=\"#666666\">Patterns "
+        +"are interpreted as regular expressions constraining allowable "
+        +"character sequences - e.g: <i>'[0-9]{3}-[0-9]{3}-[0-9]{4}' allows for "
+        +"only numeric digits in the pattern of a US phone number."
+        +"</i></font></html>"));
+            
+    panel.add(bottomHorizPanel);
 
-    ///////////////////////////    
-    
-    JPanel srcPanel = WidgetFactory.makePanel();
-    srcPanel.add(WidgetFactory.makeLabel("Source:", true));
-    nomTextSourceField = WidgetFactory.makeOneLineTextField();
-    srcPanel.add(nomTextSourceField);
-    srcPanel.add(WidgetFactory.makeLabel(" ", true));
-    srcPanel.add(WidgetFactory.makeLabel(" ", true));
-    panel.add(srcPanel);
-    
-
-    ////
     return panel;
   }
     
   // * * * * 
  
-  private JPanel getNominalEnumSubPanel() {
+  private JPanel getNomOrdEnumSubPanel(int nom_ord) {
 
     JPanel panel = WidgetFactory.makeVerticalPanel(DOMAIN_NUM_ROWS);
 
-    panel.add(WidgetFactory.makeHTMLLabel("Enumerated values (belong to a pre-defined list)", 1));
+    ///////////////////////////
+    panel.add(this.makeHalfSpacer());
+
+    Object[] colTemplates 
+        = new Object[] { new JTextField(), new JTextField(), new JTextField() };
+
+    String[] colNames 
+                  = new String[] { "Code", "Definition", "Source (optional)" };
+
+    JPanel enumPanel = WidgetFactory.makePanel();
+    nomOrdEnumDefinitionLabel[nom_ord] 
+                                = WidgetFactory.makeLabel("Definitions", true);
+    enumPanel.add(nomOrdEnumDefinitionLabel[nom_ord]);
+    
+    nomOrdEnumDefinitionList[nom_ord] 
+              = WidgetFactory.makeList( colNames, colTemplates, 2,
+                                        true, false, false, true, false, false);
+                                        
+    enumPanel.add(nomOrdEnumDefinitionList[nom_ord]);
+    
+    panel.add(enumPanel);
+    
+    ///////////////////////////
+
+    JPanel helpPanel = new JPanel();
+    helpPanel.setLayout(new GridLayout(1,5));
+    
+    helpPanel.add(this.getLabel(
+        "<html><font color=\"#666666\">Examples:</font></html>"));
+        
+    helpPanel.add(this.getLabel(
+        "<html><center><font color=\"#666666\">CA</font></center></html>"));
+        
+    helpPanel.add(this.getLabel(
+        "<html><center><font color=\"#666666\">California</font></center></html>"));
+    
+    helpPanel.add(this.getLabel(
+        "<html><center><font color=\"#666666\">FIPS U.S. state codes</font></center></html>"));
+
+    helpPanel.add(this.getLabel(" "));
+
+    panel.add(helpPanel);
+ 
+    panel.add(this.makeHalfSpacer());
+            
+    nomOrdEnumDefinitionFreeTextCheckBox[nom_ord] = new JCheckBox(
+      "Attribute contains free-text in addition to those values listed above");
+ 
+    JPanel cbPanel = WidgetFactory.makePanel();
+    cbPanel.add(nomOrdEnumDefinitionFreeTextCheckBox[nom_ord]);
+    cbPanel.add(Box.createGlue());
+    panel.add(cbPanel);
+
     ////
     return panel;
 
   }
 
     
-  // * * * * 
- 
-  private JPanel getOrdinalTextSubPanel() {
-
-    JPanel panel = WidgetFactory.makeVerticalPanel(DOMAIN_NUM_ROWS);
-
-    ////
-    return panel;
-
-  }
-
-    
-  // * * * * 
- 
-  private JPanel getOrdinalEnumSubPanel() {
-
-    JPanel panel = WidgetFactory.makeVerticalPanel(DOMAIN_NUM_ROWS);
-
-    ////
-    return panel;
-
-  }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
   
   private JPanel getIntervalPanel() {
 
-    JPanel panel = WidgetFactory.makeVerticalPanel(MEAS_SCALE_NUM_ROWS);
+    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
     
     WidgetFactory.addTitledBorder(panel, measScaleElemNames[2]);
     
@@ -555,7 +661,7 @@ class AttributeDialog extends WizardPopupDialog {
   
   private JPanel getRatioPanel() {
 
-    JPanel panel = WidgetFactory.makeVerticalPanel(MEAS_SCALE_NUM_ROWS);
+    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
     
     WidgetFactory.addTitledBorder(panel, measScaleElemNames[3]);
     
@@ -570,7 +676,7 @@ class AttributeDialog extends WizardPopupDialog {
   
   private JPanel getDateTimePanel() {
 
-    JPanel panel = WidgetFactory.makeVerticalPanel(MEAS_SCALE_NUM_ROWS);
+    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
     
     WidgetFactory.addTitledBorder(panel, measScaleElemNames[4]);
     
@@ -583,11 +689,27 @@ class AttributeDialog extends WizardPopupDialog {
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
   
+  private JLabel getLabel(String text) {
+    
+    if (text==null) text="";
+    JLabel label = new JLabel(text);
+    
+    label.setAlignmentX(1.0f);
+    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
+    
+    return label;
+  }
   
   
   
-  
-  
+  private static Component makeHalfSpacer() {
+    
+    return Box.createRigidArea(new Dimension(
+                    WizardSettings.DEFAULT_SPACER_DIMS.width/2,
+                    WizardSettings.DEFAULT_SPACER_DIMS.height/2));
+  }
+
   
   
 

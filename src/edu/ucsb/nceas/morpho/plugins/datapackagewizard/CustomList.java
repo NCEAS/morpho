@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-05 22:29:54 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-09-15 23:32:08 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -234,17 +234,11 @@ public class CustomList extends JPanel {
         public void valueChanged(ListSelectionEvent e) {
         
           if (e.getValueIsAdjusting()) return;
-          
-//          ListSelectionModel lsModel = ((ListSelectionModel)(e.getSource()));
                 
           Log.debug(45,"ListSelectionListener::valueChanged():");
           Log.debug(45,"      - ListSelectionEvent first index  = "+e.getFirstIndex());
           Log.debug(45,"      - ListSelectionEvent last  index  = "+e.getLastIndex());
           Log.debug(45,"      - getSelectedRowIndex  = "+getSelectedRowIndex());
-          
-//          Log.debug(45,"      - ListSelectionModel.getMaxSelectionIndex()  = "+lsModel.getMaxSelectionIndex());
-          
-//          doEnablesDisables(lsModel.getMaxSelectionIndex());
           doEnablesDisables(getSelectedRowIndex());
         }
       });
@@ -323,15 +317,12 @@ public class CustomList extends JPanel {
     
       TableColumn column = table.getColumnModel().getColumn(i);
       
-      int preferredWidth = (int)(tableWidth*fraction) - 2;
-      if (preferredWidth <150) preferredWidth = 150;
-      
-      int minimumWidth   = (int)(preferredWidth*minFactor);
-      int maximumWidth   = (int)(preferredWidth*maxFactor);
+      int preferredWidth = (int)(tableWidth*fraction) - 3;
+      if (preferredWidth < 100) preferredWidth = 100;
 
       column.setPreferredWidth(preferredWidth);
-      column.setMinWidth(minimumWidth);
-      column.setMaxWidth(maximumWidth);
+      column.setMinWidth((int)(preferredWidth*minFactor));
+      column.setMaxWidth((int)(preferredWidth*maxFactor));
     }
   }
 
@@ -363,8 +354,6 @@ public class CustomList extends JPanel {
       duplicateButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(duplicateButton);
     }
-    
-    
     
     if (showDeleteButton) {
       

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:15 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-09-15 23:32:08 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ public class WizardSettings {
   
   protected static final int PADDING = 5;
 
-  protected static final Dimension DEFAULT_SPACER_DIMS = new Dimension(15, 15);
+  public static final Dimension DEFAULT_SPACER_DIMS = new Dimension(15, 15);
 
   
   protected static final Font  TITLE_FONT          
