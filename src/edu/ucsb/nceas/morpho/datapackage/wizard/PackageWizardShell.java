@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-26 19:33:06 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2002-12-26 20:00:39 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -438,7 +438,12 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
       
       donePanel = new JPanel();
-      saveToMetacatCheckBox = new JCheckBox("Save package to Network?", true);
+      if (Morpho.isConnected()) {
+        saveToMetacatCheckBox = new JCheckBox("Save package to Network?", true);
+      }
+      else {
+        saveToMetacatCheckBox = new JCheckBox("Save package to Network?", false);
+      }
       publicAccessCheckBox = new JCheckBox("Package should be publicly " +
                                            "readable (on Network)?", true);
       //saveToMetacatButton = new JButton("Save To Network");
@@ -1481,7 +1486,12 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     
     donePanel = new JPanel();
-    saveToMetacatCheckBox = new JCheckBox("Save package to Network?", true);
+      if (Morpho.isConnected()) {
+        saveToMetacatCheckBox = new JCheckBox("Save package to Network?", true);
+      }
+      else {
+        saveToMetacatCheckBox = new JCheckBox("Save package to Network?", false);
+      }
     publicAccessCheckBox = new JCheckBox("Package should be publicly " +
                                          "readable (on Network)?", true);
     //saveToMetacatButton = new JButton("Save To Network");
