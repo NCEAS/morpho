@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-14 18:03:43 $'
- * '$Revision: 1.16 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-14 23:17:58 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,8 @@ public class GeographicPage extends AbstractUIPage {
 
   // use to indicate that text in the ooverage Description field has been changed by user
   private boolean covDescFieldChangedFlag = false;
-
+  // user to indicate the event from sort command
+  private boolean eventFromSortCommand = false;
   public GeographicPage() {
 
     init();
@@ -247,7 +248,13 @@ public class GeographicPage extends AbstractUIPage {
             Log.debug(1, "Sorry, but a Name must be entered.");
           } else {
             // create new location here
-            addLocation(inputName, (covDescField.getText()).trim(),
+            //if description is empty, put the name as description
+            String description = (covDescField.getText()).trim();
+            if( description.equals(""))
+            {
+              description = inputName;
+            }
+            addLocation(inputName, description,
                                 lmp.getNorth(), lmp.getWest(),
                                 lmp.getSouth(), lmp.getEast());
             model.addElement(inputName);
@@ -286,6 +293,7 @@ public class GeographicPage extends AbstractUIPage {
     sortButton.setFocusPainted(false);
     sortButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
+        eventFromSortCommand = true;
         //create the sorting stylesheet
         StringBuffer sb = new StringBuffer();
         sb.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"");
@@ -366,6 +374,13 @@ public class GeographicPage extends AbstractUIPage {
     public void valueChanged(ListSelectionEvent eee) {
       boolean setTextFlag = true;
       if (deleteFlag) return;
+      // if this event come from sort command, do nothing except set 
+      // the indicator false
+      if (eventFromSortCommand)
+      {
+        eventFromSortCommand = false;
+        return;
+      }
       String selection = (String)regionList.getSelectedValue();
       if (covDescField.hasFocus()) return;
       if ((covDescFieldChangedFlag)&&(covDescField.getText().length()>0) ) {
