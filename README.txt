@@ -15,6 +15,10 @@ Contributors:
     Mark Schildhauer (schild@nceas.ucsb.edu)
     Eric Fegraus (fegraus@nceas.ucsb.edu)
 
+Other Credits:
+Icons used in this software were originally designed by other parties, and have be modified for Morpho.  They include incons from the IconFactory's World of Aqua series (http://www.iconfactory.com), and icons from Everaldo Coelho's Conectiva Crystal Series (http://www.everaldo.com).  Please see the ICONREADME.txt for more information about the IconFactory icons.  
+
+
 This is Morpho, a data management application for managing ecological data.  Morpho allows researchers to describe their data using a comprehensive and flexible metadata specification, and to share their data publicly or to specific collaborators over the Knowledge Netwrok for Biocomplexity system. Although Morpho can be used without an account on the KNB, it is free and simple to obtain one: just register at
 
  http://knb.ecoinformatics.org.
