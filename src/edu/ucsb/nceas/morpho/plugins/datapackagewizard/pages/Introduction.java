@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:53 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-13 20:18:10 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,9 @@ public class Introduction extends AbstractWizardPage {
   
 // FOR TESTING ONLY!!! SKIPS MANY PAGES!!! ///////////////
 //public final String nextPageID = WizardPageLibrary.ENTITY;
-//  
+//  public final String nextPageID = WizardPageLibrary.DATA_LOCATION;
+//
+  
   public final String nextPageID = WizardPageLibrary.GENERAL;
 //////////////////////////////////////////////////////////
 

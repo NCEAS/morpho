@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:53 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-13 20:18:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.TextImportWizard;
 import edu.ucsb.nceas.morpho.framework.TextImportListener;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.UIController;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
@@ -58,11 +59,8 @@ public class ImportWizard extends     AbstractWizardPage
   public final String subtitle   = "Import Data/Information";
   
   private OrderedMap resultsMap;
+  private TextImportWizard importWiz;
   
-  private final String CONFIG_FILE_PATH 
-      = System.getProperty("user.home") + java.io.File.separator 
-                                                        + ".morpho/config.xml";
-                        
   public ImportWizard() {
     
     init();
@@ -74,11 +72,6 @@ public class ImportWizard extends     AbstractWizardPage
    */
   private void init() {
   
-// HACK - TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
-// STILL DOESN'T WORK
-    try {
-      Morpho mofo = new Morpho(new ConfigXML(CONFIG_FILE_PATH));
-    } catch (Exception e) {}
   }
 
   
@@ -87,12 +80,18 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void onLoadAction() {
     
-// SAMPLE CODE:    
-    String fileTextName = CONFIG_FILE_PATH;
-//    if (!fileTextField.getText().equals("")) fileTextName = fileTextField.getText(); 
-//    if (!includeDataFileCheckBox.isSelected()) fileTextField.setText("");
-    
-    TextImportWizard importWiz = new TextImportWizard(fileTextName, this);
+
+// HACK - TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
+    Morpho.main(null);
+// use config file as input for now:
+    String fileTextName = System.getProperty("user.home") 
+                                          + java.io.File.separator 
+                                          + ".morpho"
+                                          + java.io.File.separator
+                                          +"config.xml";
+                          
+    importWiz = new TextImportWizard(fileTextName, this);
+    importWiz.setVisible(true);
   }
   
 
@@ -103,7 +102,10 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void importComplete(OrderedMap om) {
 
+    importWiz.setVisible(false);
     resultsMap = om;
+    Log.debug(5, "importComplete() called - OrderedMap = "+om);
+    
   }
   
   
@@ -112,6 +114,7 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void importCanceled() {
   
+    importWiz.setVisible(false);
     Log.debug(1, "TO DO: NEED TO GO BACK A PAGE HERE!!");
   
   }

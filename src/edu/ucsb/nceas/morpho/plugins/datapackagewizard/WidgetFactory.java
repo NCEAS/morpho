@@ -37,7 +37,6 @@ public class WidgetFactory {
     area.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     area.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     area.setEditable(isEditable);
-    area.setOpaque(isEditable);
     area.setLineWrap(true);
     area.setWrapStyleWord(true);
     return area;
