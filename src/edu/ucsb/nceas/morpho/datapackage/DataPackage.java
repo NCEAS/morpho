@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-20 20:30:55 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2002-03-22 21:48:47 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1479,6 +1479,44 @@ public class DataPackage
 
     
     return attributefile;
+  }
+
+  /**
+   * get the id of the access doc for the indicated id
+   */
+  public String getAccessFileId(String id) {
+    File accessfile = null;
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackage.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+    // assume that id is the object;
+    // ie eml-access is related to id
+    Vector triplesV = triples.getCollectionByObject(id) ;
+    for (int i=0;i<triplesV.size();i++) {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String sub = triple.getSubject();
+         accessfile = getFileType(sub, "access");
+         if (accessfile!=null) return sub.trim();
+    }
+    
+    return "unknown";
+  }
+
+  public String getAccessFileIdForDataPackage() {
+    String temp = getAccessFileId(this.identifier); 
+    return temp;
   }
 
   public File getDataFile(String entityID) {
