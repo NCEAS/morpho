@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-01 19:09:57 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-04-04 20:11:50 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,8 @@ public class SaveDialog extends JDialog
   private JButton executeButton = null;
   private JButton cancelButton = null;
   
+  private boolean showPackageFlag = true;
+  
   
   /** Radio button */
   private JCheckBox localLoc = new JCheckBox("Save Locally");
@@ -119,7 +121,11 @@ public class SaveDialog extends JDialog
  
   }
   
-
+  public SaveDialog(AbstractDataPackage adp, boolean showPackageFlag)
+  {
+    this(adp);
+    this.showPackageFlag = showPackageFlag;
+  }
   
   /** Method to initialize save dialog */
   private void initialize(Window parent)
@@ -344,7 +350,9 @@ public class SaveDialog extends JDialog
         ServiceProvider provider = 
                 services.getServiceProvider(DataPackageInterface.class);
         DataPackageInterface dataPackage = (DataPackageInterface)provider;
-        dataPackage.openNewDataPackage(adp, null);
+        if (showPackageFlag) {
+          dataPackage.openNewDataPackage(adp, null);
+        }
         UIController controller = UIController.getInstance();
         controller.removeWindow(morphoFrame);
         morphoFrame.dispose();

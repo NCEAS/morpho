@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:21:40 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-04 20:11:50 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,10 +50,12 @@ public class SavePackageCommand implements Command
 
   /** A reference to the AbstractDataPackage to be saved */
   private AbstractDataPackage adp = null;
-
+  
+  /** A flag indicating whether to display newly saved package */
+  private boolean showPackageFlag = true;
 
   /**
-   * Constructor of OpenExportDialogCommand
+   * Constructor of SavePackageCommand
    */
   public SavePackageCommand()
   {
@@ -61,14 +63,23 @@ public class SavePackageCommand implements Command
   }//SavePackageCommand
 
   /**
-   * Constructor of OpenExportDialogCommand
+   * Constructor of SavePackageCommand
    *
-   * @param myDialog the open dialog box will be applied this command
    */
   public SavePackageCommand(AbstractDataPackage adp)
   {
     this.adp = adp;
   }//SavePackageCommand
+  
+  /**
+   *  constructor with boolean to determine if saved package is displayed
+   */
+  public SavePackageCommand(AbstractDataPackage adp, boolean showPackageFlag)
+  {
+    this.adp = adp;
+    this.showPackageFlag = showPackageFlag;
+  }
+   
 
   /**
    * execute the save datapackage command
@@ -84,7 +95,7 @@ public class SavePackageCommand implements Command
     if (dvcp!=null) {
       adp = dvcp.getAbstractDataPackage();
     }
-    new SaveDialog(adp);
+    new SaveDialog(adp, showPackageFlag);
 
   }//execute
 
