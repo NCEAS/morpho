@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-26 23:07:13 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-03-27 17:34:11 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,12 +92,12 @@ public class DataViewer extends javax.swing.JFrame
   /**
    * data format
    */
-   String format;
+   String format = "";
    
    /**
     *  field delimiter (hex string)
     */
-   String field_delimiter;
+   String field_delimiter = "";
      
   /**
    * number of records
@@ -107,7 +107,7 @@ public class DataViewer extends javax.swing.JFrame
   /**
    * delimiter
    */
-   String delimiter_string;
+   String delimiter_string = "";
    
    /**
     * number of columns
@@ -271,10 +271,6 @@ public class DataViewer extends javax.swing.JFrame
         {
           String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
           this.field_delimiter = s;
-          if (s.trim().length()<1) {
-            framework.debug(30, "field delimiter is unknown!");
-            missing_metadata_flag = true; 
-          }
         }
                                                      
       }
@@ -388,7 +384,12 @@ public class DataViewer extends javax.swing.JFrame
         else if (text_flag) {
           // try building a table
           if ((column_labels!=null)&&(column_labels.size()>0)) {
-            buildTable();
+            if ((field_delimiter.trim().length()>0)) {
+              buildTable();
+            }
+            else {
+              buildTextDisplay();
+            }
           }
         }
         else {
