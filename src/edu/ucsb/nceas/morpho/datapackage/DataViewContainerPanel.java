@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-12 18:12:55 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-09-13 18:52:41 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,15 @@ import java.util.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+
+import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
+import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.plugins.metadisplay.*;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
@@ -115,6 +117,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   Vector entityItems;
   PersistentVector lastPV = null;
 
+  private static MetaDisplayFactoryInterface metaDisplayFactory = null;
+  
   
   /*
    * no parameter constuctor for DataViewContainerPanel.
@@ -214,7 +218,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 // refpanel is added there later
   
 // -----------------------Test of MetaDisplay-------------------------
-    MetaDisplay md = new MetaDisplay();
+    MetaDisplayInterface md = getMetaDisplayInstance();
     Component mdcomponent = null;
     try{
       mdcomponent = md.getDisplayComponent(dp.getID(), dp, null);
@@ -223,7 +227,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
       // can't display requested ID, so just display empty viewer:
       try{
-        mdcomponent = md.getBlankDisplayComponent(dp, null);
+        mdcomponent = md.getDisplayComponent(dp, null);
       }
       catch (Exception e) {
         Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
@@ -300,7 +304,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // add Component to 'currentEntityMetadataPanel' which has a borderlayout
       
       // -----------------------Test of MetaDisplay-------------------------
-      MetaDisplay md = new MetaDisplay();
+      MetaDisplayInterface md = getMetaDisplayInstance();
       Component mdcomponent = null;
       try{
         mdcomponent = md.getDisplayComponent(id, dp, null);
@@ -309,7 +313,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
         // can't display requested ID, so just display empty viewer:
         try{
-          mdcomponent = md.getBlankDisplayComponent(dp, null);
+          mdcomponent = md.getDisplayComponent(dp, null);
         }
         catch (Exception e) {
           Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
@@ -420,5 +424,21 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
   }
 
-
+  
+  private MetaDisplayInterface getMetaDisplayInstance()
+  {
+    if (metaDisplayFactory==null) {
+      ServiceProvider provider = null;
+      try {
+        ServiceController services = ServiceController.getInstance();
+        provider=services.getServiceProvider(MetaDisplayFactoryInterface.class);
+      } catch(ServiceNotHandledException ee) {
+        Log.debug(0, "Error acquiring MetaDisplay plugin: "+ee);
+        ee.printStackTrace();
+        return null;
+      }
+      metaDisplayFactory = (MetaDisplayFactoryInterface)provider;
+    }
+    return metaDisplayFactory.getInstance();
+  }  
 }
