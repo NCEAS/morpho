@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-15 04:48:14 $'
- * '$Revision: 1.15 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-04-20 21:29:08 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import org.w3c.dom.Node;
+import javax.swing.border.EmptyBorder;
 
 public class CitationPage extends AbstractUIPage {
 
@@ -160,7 +161,7 @@ public class CitationPage extends AbstractUIPage {
     this.setLayout( new BorderLayout());
     this.add(middlePanel,BorderLayout.CENTER);
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-    middlePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, 3 * PADDING, PADDING, 3 * PADDING));
+    middlePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, 3 * PADDING));
     topMiddlePanel.setLayout(new BoxLayout(topMiddlePanel, BoxLayout.Y_AXIS));
     topMiddlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>Define the Citation Details:</b></font>", 1));
@@ -177,8 +178,9 @@ public class CitationPage extends AbstractUIPage {
     titlePanel.add(titleLabel);
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
+    titlePanel.setBorder(new EmptyBorder(0,0,0, WizardSettings.PADDING));
     topMiddlePanel.add(titlePanel);
-    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
 
     // Author custom list
     JPanel authorPanel = WidgetFactory.makePanel(-1);
@@ -188,7 +190,7 @@ public class CitationPage extends AbstractUIPage {
     authorList = WidgetFactory.makeList(authorListNames, editors, -1,
                                          true, true, false, true, true, true);
 
-    authorList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+//    authorList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     authorList.setCustomAddAction(new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         showNewAuthorPartyDialog();
@@ -202,10 +204,10 @@ public class CitationPage extends AbstractUIPage {
     });
 
     authorPanel.add(authorList);
-    authorPanel.setMaximumSize(new Dimension(2000, 135));
-    authorPanel.setPreferredSize(new Dimension(2000, 135));
+    authorPanel.setMaximumSize(new Dimension(2000, 150));
+    authorPanel.setPreferredSize(new Dimension(2000, 150));
     topMiddlePanel.add(authorPanel);
-    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+//    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
 
     // Pub Date
     JPanel pubDatePanel = WidgetFactory.makePanel(1);
@@ -213,6 +215,7 @@ public class CitationPage extends AbstractUIPage {
     pubDatePanel.add(pubDateLabel);
     pubDateField = WidgetFactory.makeOneLineTextField();
     pubDatePanel.add(pubDateField);
+    pubDatePanel.setBorder(new EmptyBorder(0,0,0, WizardSettings.PADDING));
     //salutationPanel.setBorder(new javax.swing.border.EmptyBorder(0,
        // 12 * WizardSettings.PADDING,
         //0, 8 * WizardSettings.PADDING));
@@ -958,7 +961,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
     publisherPanel.add(publisherLabel);
     publisherField = WidgetFactory.makeOneLineTextField();
     publisherPanel.add(publisherField);
-
+    publisherPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0,2*WizardSettings.PADDING));
     this.add(publisherPanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
@@ -969,6 +972,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
     editionPanel.add(editionLabel);
     editionField = WidgetFactory.makeOneLineTextField();
     editionPanel.add(editionField);
+    editionPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(editionPanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
@@ -979,6 +983,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
     volumePanel.add(volumeLabel);
     volumeField = WidgetFactory.makeOneLineTextField();
     volumePanel.add(volumeField);
+    volumePanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(volumePanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
@@ -989,6 +994,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
     isbnPanel.add(isbnLabel);
     isbnField = WidgetFactory.makeOneLineTextField();
     isbnPanel.add(isbnField);
+    isbnPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(isbnPanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
@@ -1134,7 +1140,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
     journalPanel.add(journalLabel);
     journalField = WidgetFactory.makeOneLineTextField();
     journalPanel.add(journalField);
-
+    journalPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(journalPanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
@@ -1145,6 +1151,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
     volumePanel.add(volumeLabel);
     volumeField = WidgetFactory.makeOneLineTextField();
     volumePanel.add(volumeField);
+    volumePanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(Box.createGlue());
     this.add(volumePanel);
     this.add(WidgetFactory.makeHalfSpacer());
@@ -1156,6 +1163,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
     issuePanel.add(issueLabel);
     issueField = WidgetFactory.makeOneLineTextField();
     issuePanel.add(issueField);
+    issuePanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(Box.createGlue());
     this.add(issuePanel);
     this.add(WidgetFactory.makeHalfSpacer());
@@ -1167,6 +1175,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
     rangePanel.add(rangeLabel);
     rangeField = WidgetFactory.makeOneLineTextField();
     rangePanel.add(rangeField);
+    rangePanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(Box.createGlue());
     this.add(rangePanel);
     this.add(WidgetFactory.makeHalfSpacer());
@@ -1178,6 +1187,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
     publisherPanel.add(publisherLabel);
     publisherField = WidgetFactory.makeOneLineTextField();
     publisherPanel.add(publisherField);
+    publisherPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(publisherPanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
@@ -1326,6 +1336,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
     publisherPanel.add(publisherLabel);
     publisherField = WidgetFactory.makeOneLineTextField();
     publisherPanel.add(publisherField);
+    publisherPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(Box.createGlue());
     this.add(publisherPanel);
     this.add(WidgetFactory.makeHalfSpacer());
@@ -1337,6 +1348,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
     numberPanel.add(numberLabel);
     numberField = WidgetFactory.makeOneLineTextField();
     numberPanel.add(numberField);
+    numberPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(numberPanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
@@ -1347,6 +1359,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
     pagesPanel.add(pagesLabel);
     pagesField = WidgetFactory.makeOneLineTextField();
     pagesPanel.add(pagesField);
+    pagesPanel.setBorder(new EmptyBorder(0,WizardSettings.PADDING,0, 2*WizardSettings.PADDING));
     this.add(pagesPanel);
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(Box.createGlue());
