@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-17 19:27:30 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2004-02-23 22:45:58 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,6 +162,15 @@ public class XMLPanels extends Component
     // panel is the surrounding panel for this node
     // check to see if there is a special editor for this node
       NodeInfo inf = (NodeInfo)(node.getUserObject());
+      if (inf.getName().equals("references")) {
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode)node.getRoot();
+        DefaultMutableTreeNode kid = (DefaultMutableTreeNode)node.getFirstChild();
+        NodeInfo kidni = (NodeInfo)(kid.getUserObject());
+        String referencedId  = kidni.getPCValue();
+        DefaultMutableTreeNode referencedNode = getReferencedNode(root,referencedId);
+        node = referencedNode;
+        inf = (NodeInfo)(node.getUserObject());
+      }
       String temp = inf.getEditor();
       if (temp!=null) {
         if (temp.indexOf("LockedPanel")>-1) {
@@ -404,5 +413,22 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
       }
       return object;
    }
+    
+  /**
+   *  Finds a node with the given id, starting at the input node.
+   *  Note that id is an attribute with the name "ID"
+   */
+  private DefaultMutableTreeNode getReferencedNode(DefaultMutableTreeNode root, String id) {
+    Enumeration enum = root.breadthFirstEnumeration();
+    while (enum.hasMoreElements()) {
+      DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
+      NodeInfo curni = (NodeInfo)curNode.getUserObject();
+      String idval = curni.getAttrValue("id");
+      if (idval!=null) {  // check its value
+        if (idval.equals(id)) return curNode;
+      }
+    }
+    return null; // didn't find a match
+  }    
     
 }

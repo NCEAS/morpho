@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-23 21:27:40 $'
- * '$Revision: 1.156 $'
+ *     '$Date: 2004-02-23 22:45:58 $'
+ * '$Revision: 1.157 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1478,7 +1478,7 @@ public class DocFrame extends javax.swing.JFrame
           }
 
           tree.invalidate();
-          OutputScrollPanel.repaint();
+//DFH         OutputScrollPanel.repaint();
         }
 
         int width = this.getSize().width - DocControlPanel.getDividerLocation() - 40;

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-31 19:29:24 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-02-23 22:45:58 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -328,6 +328,14 @@ public class NodeInfo implements Serializable
     }
     
     return clone;
+  }
+  
+  public String getAttrValue(String key) {
+    String ret = null;
+    if (attr.containsKey(key)) {
+      ret = (String)attr.get(key);
+    } 
+    return ret;
   }
   
 }
