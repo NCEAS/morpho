@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-30 22:49:06 $'
- * '$Revision: 1.126 $'
+ *     '$Date: 2003-12-02 22:13:40 $'
+ * '$Revision: 1.127 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,7 +228,7 @@ public class DocFrame extends javax.swing.JFrame
     OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
     OutputScrollPanelContainer.add(BorderLayout.NORTH, TreeChoicePanel);
     JLabel test = new JLabel("Choice: ");
-    String[] choices = {"eml", "dataset", "creator", "contact", "keywordSet"};
+    String[] choices = {"eml", "dataset", "access", "creator", "contact", "keywordSet"};
     choiceCombo = new JComboBox(choices);
     choiceCombo.setVisible(false);
     choiceCombo.addItemListener(new SymItemListener());
