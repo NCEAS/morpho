@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-01 17:53:06 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-01 22:38:59 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,7 +141,8 @@ public class NodeInfo implements Serializable
   public void setIcon(String name) {
     iconName = name;
     if (!icons.containsKey(name)) {    //see if icon is not already in hashtable
-      ImageIcon temp = new ImageIcon("icons"+System.getProperty("file.separator")+name);
+ //     ImageIcon temp = new ImageIcon("icons"+System.getProperty("file.separator")+name);
+      ImageIcon temp = new ImageIcon(getClass().getResource(name));
       icons.put(name,temp);
     }
   }
