@@ -1,5 +1,5 @@
 /**
- *       Name: LiveMapPanel.java
+ *       Name: LiveMapPanel.javaptTool
  *    Purpose: Visual display for collecting query info from user
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-15 20:30:39 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-01-16 23:15:54 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,8 @@ package edu.ucsb.nceas.morpho.query;
 
 import java.io.*;
 import java.util.StringTokenizer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 //1.1 import java.awt.AWTEvent;
 import java.awt.Event;
@@ -101,13 +103,27 @@ import java.awt.Container; //1.0
 public class LiveMapPanel extends JPanel
     implements MapConstants
 {
- 
+
+  boolean toolFlag = false;
 
 	public LiveMapPanel()
 	{    
       super();
 	    init();
+
 	}
+  
+  public LiveMapPanel(boolean flag) {
+      super();
+      toolFlag = flag;
+	    init();
+      if (toolFlag) {
+        map.getTool().setDelta_X(0.125);
+        map.getTool().setDelta_Y(0.125);
+        map.selectTool(map.getSelected());
+      }
+	}
+    
 
   final static int IMAGE_SIZE_X = 450;  // 450
   final static int IMAGE_SIZE_Y = 225;  // 225
@@ -127,13 +143,16 @@ public class LiveMapPanel extends JPanel
   MapRegion [] regionArray = new MapRegion[0];
   Convert XConvert, YConvert, XText, YText;
 
-  TextField North;
-  TextField West;
-  TextField East;
-  TextField South;
+  JTextField North;
+  JTextField West;
+  JTextField East;
+  JTextField South;
 
-  Button zoom_in;
-  Button zoom_out;
+  JButton zoom_in;
+  JButton zoom_out;
+  
+  JRadioButton boxTool;
+  JRadioButton ptTool;
 
   Image img_0;
   int imgSizeX = IMAGE_SIZE_X;
@@ -141,19 +160,22 @@ public class LiveMapPanel extends JPanel
   int tool_type=TOOL_TYPE_XY;
   boolean need_to_center = false;    
 
-
-
+ 
   public void init() {     
 
     String img = "java_0_world_234k.jpg";
+//    String img = "us_contour.jpg";
     String img_x_domain = "-180 180";
     String img_y_domain = "-90 90";
+//    String img_x_domain = "-125 -65";
+//    String img_y_domain = "25 50";
     String toolType = "XY";
     String tool_x_range = "-180 180";
     String tool_y_range = "-90 90";
 
     img_0 = img_0 = getToolkit().getImage(
               getClass().getResource("java_0_world_234k.jpg"));
+//              getClass().getResource("us_contour.jpg"));
    
     tracker = new MediaTracker(this);
     tracker.addImage(img_0, 1);
@@ -183,16 +205,28 @@ public class LiveMapPanel extends JPanel
     JPanel posPanel = new JPanel();
     posPanel.setLayout(gridbag);
 
-    Font textFont = new Font("Courier", Font.PLAIN, 12);
-    North = new TextField("90 N", 8);
-    West  = new TextField("180 W", 8);
-    East  = new TextField("180 E", 8);
-    South = new TextField("90 S", 8);
+    Font textFont = new Font("Sans-Serif", Font.PLAIN, 10);
+    North = new JTextField("90 N", 8);
+    West  = new JTextField("180 W", 8);
+    East  = new JTextField("180 E", 8);
+    South = new JTextField("90 S", 8);
     North.setFont(textFont);
     South.setFont(textFont);
     East.setFont(textFont);
     West.setFont(textFont);
-
+    tfAction tfaction = new tfAction();
+    North.addActionListener(tfaction);
+    South.addActionListener(tfaction);
+    East.addActionListener(tfaction);
+    West.addActionListener(tfaction);
+    tfFocus tffocus = new tfFocus();
+    North.addFocusListener(tffocus);
+    South.addFocusListener(tffocus);
+    East.addFocusListener(tffocus);
+    West.addFocusListener(tffocus);
+    
+    
+    
     c.gridx = 1;
     c.gridy = 0;
     c.gridwidth = 2;
@@ -229,11 +263,54 @@ public class LiveMapPanel extends JPanel
     entryPanel.add(posPanel);
  
     // Zoom Panel
-    zoom_in = new Button("Zoom In");
-    zoom_out = new Button("Zoom Out");
-    Font buttonFont = new Font("TimesRoman", Font.PLAIN, 12);
+    zoom_in = new JButton("Zoom In");
+    zoom_out = new JButton("Zoom Out");
+    boxTool = new JRadioButton("Box Tool", true);
+    ptTool = new JRadioButton("Point Tool", false);
+    ButtonGroup group = new ButtonGroup();
+    group.add(boxTool);
+    group.add(ptTool);
+    Font buttonFont = new Font("Sans-Serif", Font.PLAIN, 10);
     zoom_in.setFont(buttonFont);
     zoom_out.setFont(buttonFont);
+    boxTool.setFont(buttonFont);
+    ptTool.setFont(buttonFont);
+    zoom_in.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+	      try {
+	        map.zoom_in();
+	      } catch (MaxZoomException mze) {
+	        System.out.println(mze);
+	      } catch (MinZoomException mze) {
+	        System.out.println(mze);
+	      }
+      }
+    });
+    zoom_out.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+	      try {
+	        map.zoom_out();
+	      } catch (MaxZoomException mze) {
+	        System.out.println(mze);
+	      } catch (MinZoomException mze) {
+	        System.out.println(mze);
+	      }
+      }
+    });
+    boxTool.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        if (boxTool.isSelected()) {
+          setTool("XY");
+        } 
+      }
+    });
+    ptTool.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        if (ptTool.isSelected()) {
+          setTool("PT");
+        } 
+      }
+    });
 
     JPanel zoomPanel = new JPanel(); //1.0
     zoomPanel.setLayout(gridbag);  //1.0
@@ -248,6 +325,16 @@ public class LiveMapPanel extends JPanel
     c.gridx = 1;
     gridbag.setConstraints(zoom_out, c);
     zoomPanel.add(zoom_out);
+    if (toolFlag) {
+      c.insets.top = 20;
+      c.gridx = 0;
+      c.gridy = 1;
+      gridbag.setConstraints(boxTool, c);
+      zoomPanel.add(boxTool);
+      c.gridx = 1;
+      gridbag.setConstraints(ptTool, c);
+      zoomPanel.add(ptTool);
+    }
 
     c.gridx = 0;
     c.gridy = 1;
@@ -286,7 +373,11 @@ public class LiveMapPanel extends JPanel
 
     toolArray[0].setRange_X(0.0, 360.0);
     toolArray[0].setRange_Y(-90.0, 90.0);
-    toolArray[0].setSnapping(true, true);
+    if (toolFlag) {
+//      toolArray[0].setSnapping(false, false);
+//    } else {
+      toolArray[0].setSnapping(true, true);
+    }
 
 //------------------------------------------------------------
 // 3) Set the Domain on the MapGrid
@@ -410,6 +501,7 @@ public class LiveMapPanel extends JPanel
     map.setRegionArray(regionArray);
 
     set_strings();
+    
  
   //  setBackground(Color.gray);
     setLayout( new BorderLayout() );  
@@ -458,7 +550,7 @@ public class LiveMapPanel extends JPanel
     //1.1 Object target = ev.getSource();
     Object target = ev.target;
 
-    if (target instanceof TextField) {
+    if (target instanceof JTextField) {
 
       try {
 
@@ -578,8 +670,8 @@ public class LiveMapPanel extends JPanel
 /* 1.0 ----------------------V-------------------------- */
 
   public boolean handleEvent(Event evt) {
-    if (evt.target instanceof Button && evt.id == Event.ACTION_EVENT) {
-      String which = ((Button)evt.target).getLabel();
+    if (evt.target instanceof JButton && evt.id == Event.ACTION_EVENT) {
+      String which = ((JButton)evt.target).getLabel();
       if (which.equals("Zoom In")) {
 	try {
 	  map.zoom_in();
@@ -600,7 +692,7 @@ public class LiveMapPanel extends JPanel
           return true;
       }
 
-    } else if (evt.target instanceof TextField && evt.id == Event.LOST_FOCUS) {
+    } else if (evt.target instanceof JTextField && evt.id == Event.LOST_FOCUS) {
 
       this.action(evt, null);
 
@@ -680,6 +772,162 @@ public class LiveMapPanel extends JPanel
     return right;
   }
   
+  /**
+   * Replace a tool in the toolArray.
+   * @param i index of the tool in the toolArray
+   * @param type the type of the new, replacement tool
+   */
+  public void setTool(String type) {
+    setTool(map.getSelected(),type);
+  }
 
+  /**
+   * Replace a tool in the toolArray.
+   * @param i index of the tool in the toolArray
+   * @param type the type of the new, replacement tool
+   */
+  public void setTool(int i, String type) {
+
+//System.out.println("setTool(" + i + ", " + type + ")");
+    MapTool newTool;
+    MapTool oldTool = map.getTool(i);
+
+    if ( type.equals("PT") ) {
+      newTool = new PTTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_PT;
+    } else if ( type.equals("X") ) {
+      newTool = new XTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_X;
+    } else if ( type.equals("Y") ) {
+      newTool = new YTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_Y;
+    } else if ( type.equals("XY") ) {
+      newTool = new XYTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_XY;
+    } else if ( type.equals("XcY") ) {
+      newTool = new XcYTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_XY;
+    } else if ( type.equals("YcX") ) {
+      newTool = new YcXTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_XY;
+    } else if ( type.equals("PTcX") ) {
+      newTool = new PTcXTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_X;
+    } else if ( type.equals("PTcY") ) {
+      newTool = new PTcYTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_Y;
+    } else if ( type.equals("PTcXY") ) {
+      newTool = new PTcXYTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_XY;
+    } else { // default to XY
+      newTool = new XYTool(oldTool.getRectangle(),oldTool.getColor());
+      tool_type = TOOL_TYPE_XY;
+    }
+
+    map.newToolFromOld(i, newTool, oldTool);
+    map.repaint();
+    set_strings();
+  }
+
+  void doTextFieldEdit(Object target) {
+      double top = 0.0;
+      double bottom = 0.0;
+      double left = 0.0;
+      double right = 0.0;
+    if (target instanceof JTextField) {
+
+      try {
+
+	      switch (tool_type) {
+	      case TOOL_TYPE_PT:
+	        if ( target == North ) {
+	          bottom = top = YConvert.toDouble(North.getText());
+	          right = left = XConvert.toDouble(West.getText());
+	        } else if ( target == South ) {
+	          bottom = top = YConvert.toDouble(South.getText());
+	          right = left = XConvert.toDouble(West.getText());
+	        } else if ( target == East ) {
+	          bottom = top = YConvert.toDouble(North.getText());
+	          right = left = XConvert.toDouble(East.getText());
+	        } else if ( target == West ) {
+	          bottom = top = YConvert.toDouble(North.getText());
+	          right = left = XConvert.toDouble(West.getText());
+	        }
+	        break;
+
+	      case TOOL_TYPE_X:
+	        if ( target == North ) {
+	          bottom = top = YConvert.toDouble(North.getText());
+	        } else if ( target == South ) {
+	          bottom = top = YConvert.toDouble(South.getText());
+	        } else {
+	          bottom = top = YConvert.toDouble(North.getText());
+	        }
+	        left = XConvert.toDouble(West.getText());
+	        right = XConvert.toDouble(East.getText());
+	        break;
+
+	      case TOOL_TYPE_Y:
+	        if ( target == West ) {
+	          right = left = XConvert.toDouble(West.getText());
+	        } else if ( target == East ) {
+	          right = left = XConvert.toDouble(East.getText());
+	        } else {
+	          right = left = XConvert.toDouble(West.getText());
+	        }
+	        top = YConvert.toDouble(North.getText());
+	        bottom = YConvert.toDouble(South.getText());
+	        break;
+
+	      case TOOL_TYPE_XY:
+	      default:
+	        top = YConvert.toDouble(North.getText());
+	        bottom = YConvert.toDouble(South.getText());
+	        left = XConvert.toDouble(West.getText());
+	        right = XConvert.toDouble(East.getText());
+	      break;
+	    }
+
+	    if ( top < bottom ) {
+	      double old_bottom = bottom;
+	      bottom = top;
+	      top = old_bottom;
+	    }
+
+      map.getTool().setUserBounds(left, right, bottom, top);
+      map.center_tool(1.0);
+
+      } catch (IllegalArgumentException e) {
+
+	    System.out.println(e.toString());
+
+      } finally {
+
+	    map.repaint();
+	    set_strings();
+		  }
+	  }
+  }
+
+  
+	class tfAction implements java.awt.event.ActionListener
+	{
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{ 
+      Object target = event.getSource();
+      doTextFieldEdit(target);
+    }
+  }
+
+  
+
+ class tfFocus extends java.awt.event.FocusAdapter
+	{
+		public void focusLost(java.awt.event.FocusEvent event)
+		{
+      Object target = event.getSource();
+      doTextFieldEdit(target);
+		}
+	}
 
 } 
