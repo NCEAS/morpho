@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-08 19:19:24 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2004-01-14 20:53:01 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -434,6 +434,77 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   * checks to see if the package has a coverage element at the package level
+   * returns a Node if it finds one; otherwise, null
+   */
+  public Node getCoverageNode() {
+    NodeList covNodes = null;
+    String covXpath = "";
+    try {
+      covXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/coverage")).getNodeValue();
+      covNodes = XMLUtilities.getNodeListWithXPath(metadataNode,
+          covXpath);
+      if (covNodes == null) {
+        return null;
+      }
+      else {
+        return covNodes.item(0);
+      }
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in getting keyword");
+    }
+    return null;
+  }
+  
+  /**
+   *  insert a coverage subtree (geographic, temporal, or taxonomic)
+   *  under the package level coverage node
+   *  'covSubtree' is assumed to be a DOM subtree of the proper type
+   *  to be added under a coverage node
+   */
+  public void insertCoverage(Node covSubtree) {
+    Document thisDom = getMetadataNode().getOwnerDocument();
+    Node newCovSubtree = thisDom.importNode(covSubtree, true); // 'true' imports children
+//    Node newCovSubtree = null;
+    
+    Node covNode = getCoverageNode();
+    if (covNode == null) {  // no current coverage node
+      try{
+        NodeList insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
+            "/xpathKeyMap/insertionList[@name='coverage']/prevNode");
+          for (int i=0;i<insertionList.getLength();i++) {
+          Node nd = insertionList.item(i);
+          String path = (nd.getFirstChild()).getNodeValue();
+          NodeList temp = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+          if ((temp!=null)&&(temp.getLength()>0)) {
+            Log.debug(1, "found: "+path);
+            Node prevNode = temp.item(0);
+            Document doc = prevNode.getOwnerDocument();
+            Node newCov = doc.createElement("coverage");
+            Node nextNode = prevNode.getNextSibling();
+            Node par = prevNode.getParentNode();
+            if (nextNode==null) { // no next sibling
+              par.appendChild(newCov);
+            } else {
+              par.insertBefore(newCov, nextNode);
+            }
+            newCov.appendChild(newCovSubtree);
+            return;
+          }
+        }
+      }
+      catch (Exception w) {
+        Log.debug(1, "Error in 'insertCoverage method in AbstractDataPackage");      
+      }
+    } else {  // node exists
+      covNode.appendChild(newCovSubtree);
+    }
+  }
+   
+  
   /*
    *  This method finds all the entities in the package and builds an array of
    *  'entity' nodes in the package dom. One could create an 'Entity' class descending from
