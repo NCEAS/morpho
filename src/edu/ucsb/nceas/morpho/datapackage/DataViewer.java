@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-09 15:11:07 $'
- * '$Revision: 1.17.2.4 $'
+ *     '$Date: 2002-08-09 21:27:07 $'
+ * '$Revision: 1.17.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -333,7 +333,6 @@ public class DataViewer extends javax.swing.JPanel
         {
           String s = numHeaderLinesList.item(0).getFirstChild().getNodeValue();
           this.numHeaderLines = s;
-          System.out.println("Number of header lines = "+s);
         }
                                                      
       }
@@ -692,6 +691,7 @@ public class DataViewer extends javax.swing.JPanel
     pv = new PersistentVector();
     pv.init(dataFile, num_header_lines);
     ptm = new PersistentTableModel(pv, column_labels);
+    ptm.setFieldDelimiter(field_delimiter);
     table.setModel(ptm);
     
     table.setColumnSelectionAllowed(true);

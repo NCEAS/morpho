@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-09 15:11:07 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-09 21:27:07 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,6 +291,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     }
     pv.delete();
     pv = newpv;  
+    setFieldDelimiter("#x09");
     fireTableStructureChanged();
   }
   
@@ -314,6 +315,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     }
     pv.delete();
     pv = newpv;  
+    setFieldDelimiter("#x09");
     fireTableStructureChanged();
   }
   
@@ -336,6 +338,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     }
     pv.delete();
     pv = newpv;  
+    setFieldDelimiter("#x09");
     fireTableStructureChanged();   
    }
 }

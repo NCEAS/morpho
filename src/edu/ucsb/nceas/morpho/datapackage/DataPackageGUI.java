@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-01 22:01:35 $'
- * '$Revision: 1.79.2.3 $'
+ *     '$Date: 2002-08-09 21:27:07 $'
+ * '$Revision: 1.79.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1073,7 +1073,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
                                                     oldids, 
                                                     newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);          
+//          System.out.println("oldid: " + oldid + " newid: " + newid);          
           fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
         }
       }
