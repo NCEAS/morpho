@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-08 17:32:56 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-11 17:56:45 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@ public class PartyDialog extends WizardPopupDialog {
   
   private short  role;
   private String roleString;
+  private JLabel     roleLabel;
+  private JTextField roleField;
   private JTextField salutationField;
   private JTextField firstNameField;
   private JLabel     lastNameLabel;
@@ -80,6 +82,7 @@ public class PartyDialog extends WizardPopupDialog {
   private JTextField emailField;
   private JTextField urlField;
 
+    
   public PartyDialog(JFrame parent, short role) {
     
     super(parent);
@@ -113,6 +116,16 @@ public class PartyDialog extends WizardPopupDialog {
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
     middlePanel.add(desc);
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    
+    ////
+    if (role == ASSOCIATED) {
+      JPanel rolePanel = WidgetFactory.makePanel(1);
+      roleLabel = WidgetFactory.makeLabel("Role:", true);
+      rolePanel.add(roleLabel);
+      roleField = WidgetFactory.makeOneLineTextField();
+      rolePanel.add(roleField);
+      middlePanel.add(rolePanel);
+    }
     
     ////
     JPanel salutationPanel = WidgetFactory.makePanel(1);
@@ -242,30 +255,45 @@ public class PartyDialog extends WizardPopupDialog {
     boolean lastNameOK      = false;
     boolean organizationOK  = false;
     boolean positionOK      = false;
-     
+    boolean isOKtoAdvance   = true;
+
+    if (role==ASSOCIATED) {
+    
+      if (notNullAndNotEmpty(roleField.getText().trim())) {
+      
+        WidgetFactory.unhiliteComponent(roleLabel);
+        isOKtoAdvance = true;
+        
+      } else {
+        
+        WidgetFactory.hiliteComponent(roleLabel);
+        isOKtoAdvance = false;
+      }
+    }
+    
     String lastName = lastNameField.getText().trim();
-    if (lastName!=null && !(lastName.equals(""))) lastNameOK = true;
+    if (notNullAndNotEmpty(lastName)) lastNameOK = true;
   
     String organization = organizationField.getText().trim();
-    if (organization!=null && !(organization.equals(""))) organizationOK = true;
+    if (notNullAndNotEmpty(organization)) organizationOK = true;
   
     String positionName = positionNameField.getText().trim();
-    if (positionName!=null && !(positionName.equals(""))) positionOK = true;
+    if (notNullAndNotEmpty(positionName)) positionOK = true;
     
     if (lastNameOK || organizationOK || positionOK) {
     
       WidgetFactory.unhiliteComponent(lastNameLabel);
       WidgetFactory.unhiliteComponent(organizationLabel);
       WidgetFactory.unhiliteComponent(positionNameLabel);
-      return true;
+      return isOKtoAdvance;
       
     } else {
     
       WidgetFactory.hiliteComponent(lastNameLabel);
       WidgetFactory.hiliteComponent(organizationLabel);
       WidgetFactory.hiliteComponent(positionNameLabel);
+      return false;
     }
-    return false;
   }
   
   /**
@@ -312,8 +340,11 @@ public class PartyDialog extends WizardPopupDialog {
 
     
     //role (second column) surrogate:
-    surrogate.add(roleString);
-    
+    if (role==ASSOCIATED) {
+      surrogate.add(roleString + " ("+roleField.getText().trim()+")");
+    } else {
+      surrogate.add(roleString);
+    }
 
     //address (third column) surrogate:
     StringBuffer addressBuff = new StringBuffer();
@@ -398,80 +429,87 @@ public class PartyDialog extends WizardPopupDialog {
     String nextText = null;
     
     nextText = salutationField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/individualName/salutation", nextText);
     }
     
     nextText = firstNameField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/individualName/givenName", nextText);
     }
     
     nextText = lastNameField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/individualName/surName", nextText);
     }
     
     nextText = organizationField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/organizationName", nextText);
     }
     
     nextText = positionNameField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/positionName", nextText);
     }
     
     nextText = address1Field.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/address/deliverypoint[1]", nextText);
     }
     
     nextText = address2Field.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/address/deliverypoint[2]", nextText);
     }
     
     nextText = cityField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/address/city", nextText);
     }
     
     nextText = stateField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/address/administrativeArea", nextText);
     }
     
     nextText = zipField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/address/postalCode", nextText);
     }
     
     nextText = countryField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/address/country", nextText);
     }
     
     nextText = phoneField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/phone[1]", nextText);
       returnMap.put(xPathRoot + "/phone[1]@phonetype", "voice");
     }
     
     nextText = faxField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/phone[2]", nextText);
       returnMap.put(xPathRoot + "/phone[2]@phonetype", "fax");
     }
     
     nextText = emailField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/electronicMailAddress", nextText);
     }
     
     nextText = urlField.getText().trim();
-    if (nextText!=null && !(nextText.equals(""))) {
+    if (notNullAndNotEmpty(nextText)) {
       returnMap.put(xPathRoot + "/onlineUrl", nextText);
+    }
+    
+    if (role==ASSOCIATED) {
+      nextText = roleField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/role", nextText);
+      }
     }
     return returnMap;
   }
