@@ -1,132 +1,134 @@
 <?xml version="1.0"?>
 <xpathKeyMap schemaGrammar="eml2.0.0">
-<!-- element name is key, element value is Xpath for this grammar -->
-  <contextNode name="package">
-    <entityParent>/eml:eml/dataset</entityParent>
-    <entities>(/eml:eml/dataset/dataTable)|(/eml:eml/dataset/spatialRaster)|(/eml:eml/dataset/spatialVector)|(/eml:eml/dataset/otherEntity)</entities>
-    <parties>(/eml:eml/dataset/creator)|(/eml:eml/dataset/metadataProvider)|(/eml:eml/dataset/associatedParty)|(/eml:eml/dataset/contact)|(/eml:eml/dataset/publisher)|(/eml:eml/dataset/project/personnel)</parties>
-    <creator>/eml:eml/dataset/creator</creator>
-    <contact>/eml:eml/dataset/contact</contact>
-    <associatedParty>/eml:eml/dataset/associatedParty</associatedParty>
-    <personnel>/eml:eml/dataset/project/personnel</personnel>
-    <title>/eml:eml/dataset/title</title>
-    <author>/eml:eml/dataset/creator/individualName/surName</author>
-    <accessionNumber>/eml:eml/@packageId</accessionNumber>
-    <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
-    <coverage>/eml:eml/dataset/coverage</coverage>
-    <methods>/eml:eml/dataset/methods</methods>
-    <project>/eml:eml/dataset/project</project>
-    <intellectualRights>/eml:eml/dataset/intellectualRights</intellectualRights>
-    <access>/eml:eml/dataset/access</access>
-    <geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>
-    <temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>
-    <taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>
-  </contextNode>
-  <!-- Xpaths for entity values are defined as relative to top node of entity -->
-  <contextNode name="entity">
-    <name>entityName</name>
-    <numRecords>numberOfRecords</numRecords>
-    <entityDescription>entityDescription</entityDescription >
-    <physical>physical</physical>
-    <attributeParent>attributeList</attributeParent>
-    <attributes>attributeList/attribute</attributes>
-  </contextNode>
-  <contextNode name="attribute">
-    <name>attributeName</name>
-    <dataType>storageType</dataType>                                     `
+	<!-- element name is key, element value is Xpath for this grammar -->
+	<contextNode name="package">
+		<entityParent>/eml:eml/dataset</entityParent>
+		<entities>(/eml:eml/dataset/dataTable)|(/eml:eml/dataset/spatialRaster)|(/eml:eml/dataset/spatialVector)|(/eml:eml/dataset/otherEntity)</entities>
+		<parties>(/eml:eml/dataset/creator)|(/eml:eml/dataset/metadataProvider)|(/eml:eml/dataset/associatedParty)|(/eml:eml/dataset/contact)|(/eml:eml/dataset/publisher)|(/eml:eml/dataset/project/personnel)</parties>
+		<creator>/eml:eml/dataset/creator</creator>
+		<contact>/eml:eml/dataset/contact</contact>
+		<associatedParty>/eml:eml/dataset/associatedParty</associatedParty>
+		<personnel>/eml:eml/dataset/project/personnel</personnel>
+		<title>/eml:eml/dataset/title</title>
+		<author>/eml:eml/dataset/creator/individualName/surName</author>
+		<accessionNumber>/eml:eml/@packageId</accessionNumber>
+		<keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
+		<coverage>/eml:eml/dataset/coverage</coverage>
+		<methods>/eml:eml/dataset/methods</methods>
+		<project>/eml:eml/dataset/project</project>
+		<intellectualRights>/eml:eml/dataset/intellectualRights</intellectualRights>
+		<access>/eml:eml/dataset/access</access>
+		<geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>
+		<temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>
+		<taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>
+	</contextNode>
+	<!-- Xpaths for entity values are defined as relative to top node of entity -->
+	<contextNode name="entity">
+		<name>entityName</name>
+		<numRecords>numberOfRecords</numRecords>
+		<entityDescription>entityDescription</entityDescription>
+		<physical>physical</physical>
+		<attributeParent>attributeList</attributeParent>
+		<attributes>attributeList/attribute</attributes>
+	</contextNode>
+	<contextNode name="attribute">
+		<name>attributeName</name>
+		<dataType>storageType</dataType>                                     `
     <numberType>measurementScale/interval/numericDomain/numberType|measurementScale/ratio/numericDomain/numberType</numberType>
-    <isText>count(measurementScale/nominal|measurementScale/ordinal)!=0</isText>
-    <isDate>count(measurementScale/datetime)!=0</isDate>
-    <unit>measurementScale/interval/unit/standardUnit|measurementScale/ratio/unit/standardUnit|measurementScale/interval/unit/customUnit|measurementScale/ratio/unit/customUnit</unit>
-  </contextNode>
-  <contextNode name="physical">
-    <name>objectName</name>
-    <fieldDelimiter>dataFormat/textFormat/simpleDelimited/fieldDelimiter</fieldDelimiter>
-    <numberHeaderLines>dataFormat/textFormat/numHeaderLines</numberHeaderLines>
-    <size>size</size>
-    <format>dataFormat/externallyDefinedFormat/formatName</format>
-    <isText>count(dataFormat/textFormat/simpleDelimited)!=0</isText>
-    <distribution>distribution</distribution>
-    <compressionMethod>compressionMethod</compressionMethod>
-    <encodingMethod>encodingMethod</encodingMethod>
-  </contextNode>
-  <contextNode name="distribution">
-    <isOnline>count(online/url)!=0</isOnline>
-    <url>online/url</url>
-    <isInline>count(inline)!=0</isInline>
-    <inline>inline</inline>
-  </contextNode>
-  <insertionList name="coverage">
-    <!-- coverage node should follow these nodes. A node list is needed because a number of nodes
+		<isText>count(measurementScale/nominal|measurementScale/ordinal)!=0</isText>
+		<isDate>count(measurementScale/datetime)!=0</isDate>
+		<unit>measurementScale/interval/unit/standardUnit|measurementScale/ratio/unit/standardUnit|measurementScale/interval/unit/customUnit|measurementScale/ratio/unit/customUnit</unit>
+	</contextNode>
+	<contextNode name="physical">
+		<name>objectName</name>
+		<fieldDelimiter>dataFormat/textFormat/simpleDelimited/fieldDelimiter</fieldDelimiter>
+		<numberHeaderLines>dataFormat/textFormat/numHeaderLines</numberHeaderLines>
+		<size>size</size>
+		<format>dataFormat/externallyDefinedFormat/formatName</format>
+		<isText>count(dataFormat/textFormat/simpleDelimited)!=0</isText>
+		<distribution>distribution</distribution>
+		<compressionMethod>compressionMethod</compressionMethod>
+		<encodingMethod>encodingMethod</encodingMethod>
+	</contextNode>
+	<contextNode name="distribution">
+		<isOnline>count(online/url)!=0</isOnline>
+		<url>online/url</url>
+		<isInline>count(inline)!=0</isInline>
+		<inline>inline</inline>
+	</contextNode>
+	<insertionList name="coverage">
+		<!-- coverage node should follow these nodes. A node list is needed because a number of nodes
          may be optional. First node that might appear as preceeding sibling should appear first,
          followed by preceeding node, and up the tree until a required node is included.
     -->
-    <prevNode>/eml:eml/dataset/distribution</prevNode>
-    <prevNode>/eml:eml/dataset/intellectualRights</prevNode>
-    <prevNode>/eml:eml/dataset/additionalInfo</prevNode>
-    <prevNode>/eml:eml/dataset/keywordSet</prevNode>
-    <prevNode>/eml:eml/dataset/abstract</prevNode>
-    <prevNode>/eml:eml/dataset/series</prevNode>
-    <prevNode>/eml:eml/dataset/language</prevNode>
-    <prevNode>/eml:eml/dataset/pubdate</prevNode>
-    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
-    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
-    <prevNode>/eml:eml/dataset/creator</prevNode>
-  </insertionList>
-  <insertionList name="creator">
-    <prevNode>/eml:eml/dataset/title</prevNode>
-  </insertionList>
-  <insertionList name="contact">
-    <prevNode>/eml:eml/dataset/maintenance</prevNode>
-    <prevNode>/eml:eml/dataset/purpose</prevNode>
-    <prevNode>/eml:eml/dataset/coverage</prevNode>
-    <prevNode>/eml:eml/dataset/distribution</prevNode>
-    <prevNode>/eml:eml/dataset/intellectualRights</prevNode>
-    <prevNode>/eml:eml/dataset/additionalInfo</prevNode>
-    <prevNode>/eml:eml/dataset/keywordSet</prevNode>
-    <prevNode>/eml:eml/dataset/abstract</prevNode>
-    <prevNode>/eml:eml/dataset/series</prevNode>
-    <prevNode>/eml:eml/dataset/language</prevNode>
-    <prevNode>/eml:eml/dataset/pubDate</prevNode>
-    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
-    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
-    <prevNode>/eml:eml/dataset/creator</prevNode>
-  </insertionList>
-  <insertionList name="associatedParty">
-    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
-    <prevNode>/eml:eml/dataset/creator</prevNode>
-  </insertionList>
-  <insertionList name="personnel">
-    <prevNode>/eml:eml/dataset/project/title</prevNode>
-  </insertionList>
-  <insertionList name="methods">
-    <prevNode>/eml:eml/dataset/pubPlace</prevNode>
-    <prevNode>/eml:eml/dataset/publisher</prevNode>
-    <prevNode>/eml:eml/dataset/contact</prevNode>
-  </insertionList>
-  <insertionList name="project">
-    <prevNode>/eml:eml/dataset/methods</prevNode>
-    <prevNode>/eml:eml/dataset/pubPlace</prevNode>
-    <prevNode>/eml:eml/dataset/publisher</prevNode>
-    <prevNode>/eml:eml/dataset/contact</prevNode>
-  </insertionList>
-  <insertionList name="access">
-    <prevNode>/eml:eml/dataset/project</prevNode>
-    <prevNode>/eml:eml/dataset/methods</prevNode>
-    <prevNode>/eml:eml/dataset/pubPlace</prevNode>
-    <prevNode>/eml:eml/dataset/publisher</prevNode>
-    <prevNode>/eml:eml/dataset/contact</prevNode>
-  </insertionList>
-  <insertionList name="intellectualRights">
-    <prevNode>/eml:eml/dataset/additionalInfo</prevNode>
-    <prevNode>/eml:eml/dataset/keywordSet</prevNode>
-    <prevNode>/eml:eml/dataset/abstract</prevNode>
-    <prevNode>/eml:eml/dataset/series</prevNode>
-    <prevNode>/eml:eml/dataset/language</prevNode>
-    <prevNode>/eml:eml/dataset/pubdate</prevNode>
-    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
-    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
-    <prevNode>/eml:eml/dataset/creator</prevNode>
-  </insertionList>
-
+		<prevNode>/eml:eml/dataset/distribution</prevNode>
+		<prevNode>/eml:eml/dataset/intellectualRights</prevNode>
+		<prevNode>/eml:eml/dataset/additionalInfo</prevNode>
+		<prevNode>/eml:eml/dataset/keywordSet</prevNode>
+		<prevNode>/eml:eml/dataset/abstract</prevNode>
+		<prevNode>/eml:eml/dataset/series</prevNode>
+		<prevNode>/eml:eml/dataset/language</prevNode>
+		<prevNode>/eml:eml/dataset/pubdate</prevNode>
+		<prevNode>/eml:eml/dataset/associatedParty</prevNode>
+		<prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+		<prevNode>/eml:eml/dataset/creator</prevNode>
+	</insertionList>
+	<insertionList name="creator">
+		<prevNode>/eml:eml/dataset/title</prevNode>
+	</insertionList>
+	<insertionList name="contact">
+		<prevNode>/eml:eml/dataset/maintenance</prevNode>
+		<prevNode>/eml:eml/dataset/purpose</prevNode>
+		<prevNode>/eml:eml/dataset/coverage</prevNode>
+		<prevNode>/eml:eml/dataset/distribution</prevNode>
+		<prevNode>/eml:eml/dataset/intellectualRights</prevNode>
+		<prevNode>/eml:eml/dataset/additionalInfo</prevNode>
+		<prevNode>/eml:eml/dataset/keywordSet</prevNode>
+		<prevNode>/eml:eml/dataset/abstract</prevNode>
+		<prevNode>/eml:eml/dataset/series</prevNode>
+		<prevNode>/eml:eml/dataset/language</prevNode>
+		<prevNode>/eml:eml/dataset/pubDate</prevNode>
+		<prevNode>/eml:eml/dataset/associatedParty</prevNode>
+		<prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+		<prevNode>/eml:eml/dataset/creator</prevNode>
+	</insertionList>
+	<insertionList name="associatedParty">
+		<prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+		<prevNode>/eml:eml/dataset/creator</prevNode>
+	</insertionList>
+	<insertionList name="personnel">
+		<prevNode>/eml:eml/dataset/project/title</prevNode>
+	</insertionList>
+	<insertionList name="methods">
+		<prevNode>/eml:eml/dataset/pubPlace</prevNode>
+		<prevNode>/eml:eml/dataset/publisher</prevNode>
+		<prevNode>/eml:eml/dataset/contact</prevNode>
+	</insertionList>
+	<insertionList name="project">
+		<prevNode>/eml:eml/dataset/methods</prevNode>
+		<prevNode>/eml:eml/dataset/pubPlace</prevNode>
+		<prevNode>/eml:eml/dataset/publisher</prevNode>
+		<prevNode>/eml:eml/dataset/contact</prevNode>
+	</insertionList>
+	<insertionList name="access">
+		<prevNode>/eml:eml/dataset/project</prevNode>
+		<prevNode>/eml:eml/dataset/methods</prevNode>
+		<prevNode>/eml:eml/dataset/pubPlace</prevNode>
+		<prevNode>/eml:eml/dataset/publisher</prevNode>
+		<prevNode>/eml:eml/dataset/contact</prevNode>
+	</insertionList>
+	<insertionList name="intellectualRights">
+		<prevNode>/eml:eml/dataset/additionalInfo</prevNode>
+		<prevNode>/eml:eml/dataset/keywordSet</prevNode>
+		<prevNode>/eml:eml/dataset/abstract</prevNode>
+		<prevNode>/eml:eml/dataset/series</prevNode>
+		<prevNode>/eml:eml/dataset/language</prevNode>
+		<prevNode>/eml:eml/dataset/pubdate</prevNode>
+		<prevNode>/eml:eml/dataset/associatedParty</prevNode>
+		<prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+		<prevNode>/eml:eml/dataset/creator</prevNode>
+	</insertionList>
+	<insertionList name="additionalMetadata">
+			<prevNode>/eml:eml/dataset</prevNode>
+	</insertionList>
 </xpathKeyMap>
