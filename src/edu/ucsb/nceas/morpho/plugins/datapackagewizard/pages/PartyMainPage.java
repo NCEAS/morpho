@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-07 06:07:08 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-04-07 10:26:20 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import org.w3c.dom.Node;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 public class PartyMainPage
     extends AbstractUIPage {
@@ -261,14 +263,22 @@ public class PartyMainPage
       newRow.add(partyPage);
       partiesList.addRow(newRow);
 
-      //update datapackage...
-      updateDPRefs();
+
+      if (partyPage.editingOriginalRef) {
+
+        //have been editing an original reference via another party's dialog, so
+        //if the original ref is in this current page's list, update its
+        //PartyPage object before we write it to DOM...
+        updateOriginalRefPartyPage(partyPage.getReferencesNodeIDString());
+      }
+     //update datapackage...
+      updateDOMFromListOfPages();
     }
     if (oneOrMoreRequired)WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
 
 
-  private void updateDPRefs() {
+  private void updateDOMFromListOfPages() {
 
     //update datapackage...
     List nextRowList = null;
@@ -288,8 +298,53 @@ public class PartyMainPage
         UIController.getInstance().getCurrentAbstractDataPackage(),
         pagesList, DATAPACKAGE_PARTY_GENERIC_NAME,
         DATAPACKAGE_PARTY_GENERIC_NAME);
+
+
+    updateListFromDOM();
   }
 
+
+
+
+  //have been editing an original reference via another party's dialog, so
+  //if the original ref is in this current page's list, update its
+  //PartyPage object before we write it to DOM...
+  private void updateOriginalRefPartyPage(String originalRefID) {
+
+    AbstractDataPackage adp
+        = UIController.getInstance().getCurrentAbstractDataPackage();
+    if (adp == null) {
+      Log.debug(15, "\npackage from UIController is null");
+      Log.debug(5, "ERROR: cannot update!");
+      return;
+    }
+
+    List nextRowList = null;
+    PartyPage nextPage = null;
+
+    for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) {
+
+      nextRowList = (List)it.next();
+      //column 3 is user object - check it exists and isn't null:
+      if (nextRowList.size() < 4)continue;
+      nextPage = (PartyPage)nextRowList.get(3);
+      if (nextPage == null)continue;
+      if (nextPage.getRefID().equals(originalRefID)) {
+
+        Node root = adp.getSubtreeAtReference(originalRefID);
+
+        OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(root);
+        Log.debug(45,
+                  "updateOriginalRefPartyPage() got a match with ID: "
+                  + originalRefID+"; map = "+map);
+
+        if (map == null || map.isEmpty())return;
+
+        boolean checkParty = nextPage.setPageData(
+            map, "/" + DATAPACKAGE_PARTY_GENERIC_NAME);
+      }
+    }
+  }
 
 
 
@@ -320,8 +375,16 @@ public class PartyMainPage
       newRow.add(editPartyPage);
       partiesList.replaceSelectedRow(newRow);
 
+
+      if (editPartyPage.editingOriginalRef) {
+
+        //have been editing an original reference via another party's dialog, so
+        //if the original ref is in this current page's list, update its
+        //PartyPage object before we write it to DOM...
+        updateOriginalRefPartyPage(editPartyPage.getReferencesNodeIDString());
+      }
       //update datapackage...
-      updateDPRefs();
+      updateDOMFromListOfPages();
     }
   }
 
@@ -356,7 +419,70 @@ public class PartyMainPage
     //manipulated the DOM directly
 
     if (oneOrMoreRequired)WidgetFactory.unhiliteComponent(minRequiredLabel);
+    updateListFromDOM();
   }
+
+
+  private void updateListFromDOM() {
+
+    AbstractDataPackage adp
+        = UIController.getInstance().getCurrentAbstractDataPackage();
+    if (adp == null) {
+      Log.debug(15, "\npackage from UIController is null");
+      Log.debug(5, "ERROR: cannot update!");
+      return;
+    }
+
+    List personnelList = adp.getSubtrees(DATAPACKAGE_PARTY_GENERIC_NAME);
+    Log.debug(45, "updateListFromDOM - personnelList.size() = "
+              + personnelList.size());
+
+    List personnelOrderedMapList = new ArrayList();
+
+    for (Iterator it = personnelList.iterator(); it.hasNext(); ) {
+
+      personnelOrderedMapList.add(
+          XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
+    }
+
+    populatePartiesList(personnelOrderedMapList,
+                        "/"+DATAPACKAGE_PARTY_GENERIC_NAME + "[");
+  }
+
+
+  //personnelXPathRoot looks like:
+  //      /contact[
+  private boolean populatePartiesList(List personnelOrderedMapList,
+                                      String personnelXPathRoot) {
+
+    Iterator persIt = personnelOrderedMapList.iterator();
+    OrderedMap nextPersonnelMap = null;
+    int partyPredicate = 1;
+
+    partiesList.removeAllRows();
+    boolean partyRetVal = true;
+
+    while (persIt.hasNext()) {
+
+      nextPersonnelMap = (OrderedMap)persIt.next();
+      if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
+
+      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
+          DataPackageWizardInterface.PARTY_PERSONNEL);
+
+      boolean checkParty = nextParty.setPageData(nextPersonnelMap,
+                                                 personnelXPathRoot
+                                                 + (partyPredicate++) + "]");
+
+      if (!checkParty)partyRetVal = false;
+      List newRow = nextParty.getSurrogate();
+      newRow.add(nextParty);
+
+      partiesList.addRow(newRow);
+    }
+    return partyRetVal;
+  }
+
 
 
   /**
@@ -409,6 +535,7 @@ public class PartyMainPage
   public OrderedMap getPageData() {
 
     returnMap.clear();
+    updateListFromDOM();
 
     int index = 1;
     List nextRowList = null;

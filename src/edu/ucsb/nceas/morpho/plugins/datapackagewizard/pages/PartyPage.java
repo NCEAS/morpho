@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-07 06:07:08 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2004-04-07 10:26:20 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,14 +182,14 @@ public class PartyPage extends AbstractUIPage {
 
   private boolean backupExists = false;
 
-  private boolean editingOriginalRef = false;
+  protected boolean editingOriginalRef = false;
 
   private String referenceIdString;
 
   private String referencesNodeIDString;
 
   private boolean editingAllowed = true;
-
+  private boolean isCreatorOrContact = false;
   //
   private final String[] checkBoxArray
       = new String[] { "Do you want to edit the above information?" };
@@ -643,7 +643,7 @@ public class PartyPage extends AbstractUIPage {
 
     rolePickList = null;
     rolePanel.removeAll();
-    boolean isCreatorOrContact = false;
+
     if (role.equals(DataPackageWizardInterface.PARTY_CREATOR)) {
 
       roleString = "Owner";
@@ -857,7 +857,6 @@ public class PartyPage extends AbstractUIPage {
       getRefID();
     }
 
-    //if (!processingReferenceSelection)
     rememberPreviousValues();
 
 
@@ -895,7 +894,7 @@ public class PartyPage extends AbstractUIPage {
     }
 
     this.setEditable(!this.isReference());
-
+    editingOriginalRef = false;
     Log.debug(45, "PartyPage.onAdvanceAction() - isReference() = "+isReference());
   }
 
@@ -919,6 +918,21 @@ public class PartyPage extends AbstractUIPage {
     referenceIdString = abs.getNewUniqueReferenceID();
 
     return referenceIdString;
+  }
+
+
+
+  /**
+   *  gets the referencesNodeIDString - ie if this party is a reference to
+   * another party, this method returns the reference id value it is using to
+   * "point to" that other party
+   *
+   *  @return String referencesNodeIDString
+   */
+  protected String getReferencesNodeIDString() {
+
+    if (notNullAndNotEmpty(referencesNodeIDString)) return referencesNodeIDString;
+    return EMPTY_STRING;
   }
 
 
@@ -1564,6 +1578,7 @@ public class PartyPage extends AbstractUIPage {
   private boolean addAndSetRole(String role) {
 
     if (rolePickList==null) return false;
+    if (isCreatorOrContact) return true;
 
     //quick way to check if role string is already in list:
     //first select it...

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 19:08:21 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-04-07 10:26:19 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -268,6 +268,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
       OrderedMap map = nextPage.getPageData(rootXPath);
 
+      Log.debug(45,
+          "\n deleteExistingAndAddPageDataToDOM() Got rootXPath: "+rootXPath);
       Log.debug(45,
           "\n deleteExistingAndAddPageDataToDOM() Got details from page "
           +index+" - " + map);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-07 06:07:08 $'
- * '$Revision: 1.91 $'
+ *     '$Date: 2004-04-07 10:26:19 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -545,6 +545,58 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
 
+
+
+  /**
+   * returns a List of cloned root Nodes of subtrees identified by genericName
+   * String; returns null if not found
+   * NOTE: the cloned subtrees are new nodes. Each new node is copied to a new
+   * Document object and made the root of the new document
+   *
+   * @param genericName String
+   * @return List containing the cloned root Nodes of subtrees, or an empty list
+   * if none found. Never returns null
+   */
+  public List getSubtrees(String genericName) {
+
+    List returnList = new ArrayList();
+
+    NodeList nodelist = null;
+    String genericNamePath = "";
+    try {
+      genericNamePath = (XMLUtilities.getTextNodeWithXPath(
+        getMetadataPath(), "/xpathKeyMap/contextNode[@name='package']/"
+        + genericName)).getNodeValue();
+      nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
+                                                   genericNamePath);
+
+    } catch (Exception e) {
+      Log.debug(50, "Exception in getSubtree!");
+    }
+    if ((nodelist == null) || (nodelist.getLength() == 0)) {
+
+      Log.debug(50, "AbstractDataPackage.getSubtrees() - no nodes found of "
+                + "type \n /xpathKeyMap/contextNode[@name='package']/"
+                + genericName + "\n returning empty List");
+
+    } else {
+
+      for (int index = 0; index < nodelist.getLength(); index++) {
+        // create deep cloned versions
+        Node deepClone = (nodelist.item(index)).cloneNode(true);
+        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+        Document doc = impl.createDocument("", "tempRoot", null);
+        Node importedClone = doc.importNode(deepClone, true);
+        Node tempRoot = doc.getDocumentElement();
+        doc.replaceChild(importedClone, tempRoot);
+        returnList.add(importedClone);
+      }
+    }
+    return returnList;
+  }
+
+
+
   /**
    * returns cloned root Node of subtree identified by the passed unique String
    * refID; returns null if not found
@@ -668,7 +720,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
     } catch (Exception e) {
-      Log.debug(50, "Exception in getSSubtreeNoClone!");
+      Log.debug(50, "Exception in getSubtreeNoClone!");
     }
     return null;
   }

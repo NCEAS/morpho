@@ -6,9 +6,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-06 22:50:52 $'
- * '$Revision: 1.37 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-07 10:26:20 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.ReferencesHandler;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+import org.w3c.dom.Node;
 
 public class Project extends AbstractUIPage {
 
@@ -227,26 +231,41 @@ public class Project extends AbstractUIPage {
     return panel;
   }
 
+
+
+
   /**
    *
    */
   private void initActions() {
-      partiesList.setCustomAddAction(
+    partiesList.setCustomAddAction(
         new AbstractAction() {
-          public void actionPerformed(ActionEvent e) {
-            Log.debug(45, "\nResearchProjInfo: CustomAddAction called");
-            showNewPartyDialog();
-          }
-        });
+      public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "\nResearchProjInfo: CustomAddAction called");
+        showNewPartyDialog();
+      }
+    });
 
-      partiesList.setCustomEditAction(
+    partiesList.setCustomEditAction(
         new AbstractAction() {
-          public void actionPerformed(ActionEvent e) {
-            Log.debug(45, "\nResearchProjInfo: CustomEditAction called");
-            showEditPartyDialog();
-          }
-        });
-    }
+      public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "\nResearchProjInfo: CustomEditAction called");
+        showEditPartyDialog();
+      }
+    });
+
+    partiesList.setCustomDeleteAction(
+
+        new AbstractAction() {
+
+      public void actionPerformed(ActionEvent e) {
+
+        Log.debug(45, "\nResearchProjInfo: CustomDeleteAction called");
+        deleteParty(((CustomList)e.getSource()));
+      }
+    });
+  }
+
 
     /**
      *
@@ -267,13 +286,20 @@ public class Project extends AbstractUIPage {
          newRow.add(partyPage);
          partiesList.addRow(newRow);
 
+         if (partyPage.editingOriginalRef) {
+
+           //have been editing an original reference via another party's dialog, so
+           //if the original ref is in this current page's list, update its
+           //PartyPage object before we write it to DOM...
+           updateOriginalRefPartyPage(partyPage.getReferencesNodeIDString());
+         }
          //update datapackage...
-         updateDPRefs();
+         updateDOMFromListOfPages();
        }
        WidgetFactory.unhiliteComponent(minRequiredLabel);
      }
 
-     private void updateDPRefs() {
+     private void updateDOMFromListOfPages() {
 
        //update datapackage...
        List nextRowList = null;
@@ -284,7 +310,6 @@ public class Project extends AbstractUIPage {
 
          nextRowList = (List)it.next();
          //column 3 is user object - check it exists and isn't null:
-         if (nextRowList.size() < 4)continue;
          nextPage = (AbstractUIPage)nextRowList.get(3);
          if (nextPage == null)continue;
          pagesList.add(nextPage);
@@ -293,6 +318,51 @@ public class Project extends AbstractUIPage {
            UIController.getInstance().getCurrentAbstractDataPackage(),
            pagesList, "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME,
            DATAPACKAGE_PERSONNEL_GENERIC_NAME);
+
+       updateListFromDOM();
+     }
+
+
+
+
+     //have been editing an original reference via another party's dialog, so
+     //if the original ref is in this current page's list, update its
+     //PartyPage object before we write it to DOM...
+     private void updateOriginalRefPartyPage(String originalRefID) {
+
+       AbstractDataPackage adp
+           = UIController.getInstance().getCurrentAbstractDataPackage();
+       if (adp == null) {
+         Log.debug(15, "\npackage from UIController is null");
+         Log.debug(5, "ERROR: cannot update!");
+         return;
+       }
+
+       List nextRowList = null;
+       PartyPage nextPage = null;
+
+       for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) {
+
+         nextRowList = (List)it.next();
+         //column 3 is user object - check it exists and isn't null:
+         if (nextRowList.size() < 4)continue;
+         nextPage = (PartyPage)nextRowList.get(3);
+         if (nextPage == null)continue;
+         if (nextPage.getRefID().equals(originalRefID)) {
+
+           Node root = adp.getSubtreeAtReference(originalRefID);
+
+           OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(root);
+           Log.debug(45,
+                     "updateOriginalRefPartyPage() got a match with ID: "
+                     + originalRefID+"; map = "+map);
+
+           if (map == null || map.isEmpty())return;
+
+           boolean checkParty = nextPage.setPageData(
+               map, "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME);
+         }
+       }
      }
 
 
@@ -320,10 +390,76 @@ public class Project extends AbstractUIPage {
          newRow.add(editPartyPage);
          partiesList.replaceSelectedRow(newRow);
 
+         if (editPartyPage.editingOriginalRef) {
+
+           //have been editing an original reference via another party's dialog, so
+           //if the original ref is in this current page's list, update its
+           //PartyPage object before we write it to DOM...
+           updateOriginalRefPartyPage(editPartyPage.getReferencesNodeIDString());
+         }
          //update datapackage...
-         updateDPRefs();
+         updateDOMFromListOfPages();
        }
      }
+
+
+     private void deleteParty(CustomList list) {
+
+       if (list==null) {
+         Log.debug(15, "**ERROR: deleteParty() received NULL CustomList");
+         return;
+       }
+       AbstractDataPackage adp
+           = UIController.getInstance().getCurrentAbstractDataPackage();
+       if (adp == null) {
+         Log.debug(15, "\npackage from UIController is null");
+         Log.debug(5, "ERROR: cannot delete!");
+         return;
+       }
+       Log.debug(45, "BEFORE: adp=" + adp);
+       List[] deletedRows = list.getSelectedRows();
+       int userObjIdx = deletedRows[0].size() - 1;
+
+       for (int i = 0; i < deletedRows.length; i++) {
+
+         PartyPage page = (PartyPage)(deletedRows[i].get(userObjIdx));
+
+         ReferencesHandler.deleteOriginalReferenceSubtree(adp, page.getRefID());
+       }
+       Log.debug(45, "AFTER: adp=" + adp);
+
+       //Do not update datapackage as we do for add/edit, because we've already
+       //manipulated the DOM directly
+
+       updateListFromDOM();
+     }
+
+
+     private void updateListFromDOM() {
+
+       AbstractDataPackage adp
+           = UIController.getInstance().getCurrentAbstractDataPackage();
+       if (adp == null) {
+         Log.debug(15, "\npackage from UIController is null");
+         Log.debug(5, "ERROR: cannot update!");
+         return;
+       }
+
+       List personnelList = adp.getSubtrees(DATAPACKAGE_PERSONNEL_GENERIC_NAME);
+       Log.debug(45, "updateListFromDOM - personnelList.size() = "
+                 + personnelList.size());
+
+       List personnelOrderedMapList = new ArrayList();
+
+       for (Iterator it = personnelList.iterator(); it.hasNext(); ) {
+
+         personnelOrderedMapList.add(
+             XMLUtilities.getDOMTreeAsXPathMap((Node)it.next()));
+       }
+
+       populatePartiesList(personnelOrderedMapList, "/"+PERSONNEL_REL_XPATH + "[");
+     }
+
 
 
   /**
@@ -391,6 +527,7 @@ public class Project extends AbstractUIPage {
     if (!rootXPath.endsWith("/")) rootXPath += "/";
 
     returnMap.clear();
+//    updateListFromDOM();
 
     if (currentPanel == dataPanel) {
 
@@ -500,14 +637,13 @@ public class Project extends AbstractUIPage {
       return true;
     }
 
-
     List toDeleteList = new ArrayList();
-    Iterator keyIt = map.keySet().iterator();
     Object nextXPathObj = null;
     String nextXPath = null;
     Object nextValObj = null;
     String nextVal = null;
 
+    Iterator keyIt = map.keySet().iterator();
     List personnelList = new ArrayList();
 
     while (keyIt.hasNext()) {
@@ -518,9 +654,6 @@ public class Project extends AbstractUIPage {
 
       nextValObj = map.get(nextXPathObj);
       nextVal = (nextValObj == null) ? "" : ((String)nextValObj).trim();
-
-      Log.debug(45, "Project:  nextXPath = " + nextXPath
-                + "\n nextVal   = " + nextVal);
 
       // remove everything up to and including the last occurrence of
       // this.xPathRoot to get relative xpaths, in case we're handling a
@@ -549,35 +682,11 @@ public class Project extends AbstractUIPage {
       }
     }
 
-    Iterator persIt = personnelList.iterator();
-    OrderedMap nextPersonnelMap = null;
-    int partyPredicate = 1;
+    boolean partyRetVal = populatePartiesList(personnelList, this.xPathRoot
+                                                 + PERSONNEL_REL_XPATH + "[");
 
-    partiesList.removeAllRows();
-    boolean partyRetVal = true;
-
-    while (persIt.hasNext()) {
-
-      nextPersonnelMap = (OrderedMap)persIt.next();
-      if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
-
-      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
-          DataPackageWizardInterface.PARTY_PERSONNEL);
-
-      boolean checkParty = nextParty.setPageData(nextPersonnelMap,
-                                                 this.xPathRoot
-                                                 + PERSONNEL_REL_XPATH
-                                                 + (partyPredicate++) + "]");
-
-      if (!checkParty) partyRetVal = false;
-      List newRow = nextParty.getSurrogate();
-      newRow.add(nextParty);
-
-      partiesList.addRow(newRow);
-    }
-    //check party return valuse...
+    //check party return values...
     if (!partyRetVal) {
-
       Log.debug(20, "Project.setPageData - Party sub-class returned FALSE");
     }
 
@@ -595,6 +704,41 @@ public class Project extends AbstractUIPage {
     }
     return (returnVal && partyRetVal);
   }
+
+
+  //personnelXPathRoot looks like:
+  //      /project/personnel[
+  private boolean populatePartiesList(List personnelOrderedMapList,
+                                      String personnelXPathRoot) {
+
+    Iterator persIt = personnelOrderedMapList.iterator();
+    OrderedMap nextPersonnelMap = null;
+    int partyPredicate = 1;
+
+    partiesList.removeAllRows();
+    boolean partyRetVal = true;
+
+    while (persIt.hasNext()) {
+
+      nextPersonnelMap = (OrderedMap)persIt.next();
+      if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
+
+      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
+          DataPackageWizardInterface.PARTY_PERSONNEL);
+
+      boolean checkParty = nextParty.setPageData(nextPersonnelMap,
+                                                 personnelXPathRoot
+                                                 + (partyPredicate++) + "]");
+
+      if (!checkParty)partyRetVal = false;
+      List newRow = nextParty.getSurrogate();
+      newRow.add(nextParty);
+
+      partiesList.addRow(newRow);
+    }
+    return partyRetVal;
+  }
+
 
 
   // resets all fields to blank

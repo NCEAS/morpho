@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-07 06:07:08 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-04-07 10:26:19 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -358,8 +358,8 @@ public class ReferencesHandler {
    * or if any of the input parameters are invalid
    */
   public static Node updateOriginalReferenceSubtree(AbstractDataPackage adp,
-                                             String subtreeID,
-                                             OrderedMap newData) {
+                                                    String subtreeID,
+                                                    OrderedMap newData) {
 
     Log.debug(45, "updateOriginalReferenceSubtree() Got subtreeID="+subtreeID
               +"\nnewData map:"+newData);
@@ -500,8 +500,6 @@ public class ReferencesHandler {
 
 
 
-
-
   private StringBuffer surrogateBuff = new StringBuffer();
   //
   private String getSurrogate(Node subtreeRoot) {
@@ -555,6 +553,7 @@ public class ReferencesHandler {
     }
     listenerList.add(listener);
   }
+
 
   /**
    * unregister a listener
