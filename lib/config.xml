@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>

@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.1.0 - April 8, 2002
+Version: 1.1.1 - May 9, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -67,6 +67,8 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 
 Version History
 -------------------------------
+
+Version 1.1.1 corrects several minor problems in Version 1.1.0 and adds the capability to open previous versions of packages. Previously only the most recent version could be opened. The user can open previous versions using a new menu item in the popup menu that appears when one 'right-clicks' on a row in the table displaying the user's data or the results of a query.
 
 Version 1.1.0 has a substantial number of changes from previous versions of Morpho, although most of these changes are internal and do not appear in the visual interface. In general, stability has been increased and the ability to handle large metadata and data files enhanced by reduction of unneccessary in-memory data/metadata storage. Also, many time-consuming tasks have been moved to independent threads so that Morpho is responsive to the user while these tasks are being carried out. (A 'flapping butterfly' icon is used to indicate that these background tasks are underway.)
 
