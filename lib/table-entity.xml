@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE table-entity PUBLIC "-//NCEAS//eml-entity-2.0//EN" "file:////C:/VisualCafe/Projects/edit_plugin/lib/catalog/eml-entity-2.0.dtd">
+<!DOCTYPE table-entity>
 <table-entity help="Descriptor of one table entity in the dataset.">
   <identifier help="The unique identifier for this metadata file"></identifier>
   <entityName help="The name identifies the entity in the dataset: file name, name of database table, etc."></entityName>
