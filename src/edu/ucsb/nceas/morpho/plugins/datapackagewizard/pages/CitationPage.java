@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-14 00:28:29 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-04-14 00:41:31 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -656,13 +656,14 @@ public class CitationPage extends AbstractUIPage {
     }
     WidgetFactory.unhiliteComponent(authorLabel);
 
-    String date = this.pubDateField.getText();
-//		if(!date.trim().equals("") && !isDate(date)) {
-    if(!date.trim().equals("")) {
-      WidgetFactory.hiliteComponent(pubDateLabel);
-
-      return false;
-    }
+// COMMENTED BY MB - DATE IS NOT REQD?!
+//    String date = this.pubDateField.getText();
+// //		if(!date.trim().equals("") && !isDate(date)) {
+//    if(!date.trim().equals("")) {
+//      WidgetFactory.hiliteComponent(pubDateLabel);
+//
+//      return false;
+//    }
 
     if (citationType==null || citationType.trim().equals("")) {
 
