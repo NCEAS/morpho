@@ -11,6 +11,7 @@ public class SplashFrame extends javax.swing.JFrame
 	public SplashFrame()
 	{
 		//{{INIT_CONTROLS
+		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		getContentPane().setBackground(java.awt.Color.white);
 		setSize(427,355);

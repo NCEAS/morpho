@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.9 2000-10-04 18:44:37 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.10 2000-10-05 15:36:41 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -32,6 +32,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
+		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Connection");
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(317,425);
@@ -52,19 +53,19 @@ public class ConnectionFrame extends javax.swing.JFrame
 		JPanel2.setBounds(0,16,317,374);
 		JButtonGroupPanel1.setLayout(new GridLayout(5,1,0,0));
 		JPanel2.add(BorderLayout.NORTH,JButtonGroupPanel1);
-		JButtonGroupPanel1.setBounds(0,0,317,104);
+		JButtonGroupPanel1.setBounds(0,0,317,145);
 		AnonymousRadioButton.setSelected(true);
 		AnonymousRadioButton.setText("Public Connection (no password needed)");
 		AnonymousRadioButton.setActionCommand("Public Connection (no pasword needed");
 		JButtonGroupPanel1.add(AnonymousRadioButton);
-		AnonymousRadioButton.setBounds(39,0,257,23);
+		AnonymousRadioButton.setBounds(0,0,317,29);
 		RegisteredUserRadioButton.setText("Registered User Connection");
 		RegisteredUserRadioButton.setActionCommand("Registered User Connection");
 		JButtonGroupPanel1.add(RegisteredUserRadioButton);
-		RegisteredUserRadioButton.setBounds(39,23,184,23);
+		RegisteredUserRadioButton.setBounds(0,29,317,29);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 		JButtonGroupPanel1.add(JPanel3);
-		JPanel3.setBounds(0,46,317,29);
+		JPanel3.setBounds(0,58,317,29);
 		Name.setText("Name");
 		Name.setEnabled(false);
 		JPanel3.add(Name);
@@ -78,7 +79,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 		NameTextField.setBounds(44,5,209,19);
 		JPanel4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 		JButtonGroupPanel1.add(JPanel4);
-		JPanel4.setBounds(0,75,317,29);
+		JPanel4.setBounds(0,87,317,29);
 		Password.setText("Password");
 		Password.setEnabled(false);
 		JPanel4.add(Password);
@@ -93,10 +94,10 @@ public class ConnectionFrame extends javax.swing.JFrame
 		ActivityLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		JButtonGroupPanel1.add(ActivityLabel);
 		ActivityLabel.setForeground(java.awt.Color.black);
-		ActivityLabel.setBounds(39,104,0,0);
+		ActivityLabel.setBounds(0,116,317,29);
 		ConnectionResultsTextArea.setText("Connection Results");
 		JPanel2.add(BorderLayout.CENTER,ConnectionResultsTextArea);
-		ConnectionResultsTextArea.setBounds(0,104,317,270);
+		ConnectionResultsTextArea.setBounds(0,145,317,229);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,JPanel1);
 		JPanel1.setBounds(0,390,317,35);
