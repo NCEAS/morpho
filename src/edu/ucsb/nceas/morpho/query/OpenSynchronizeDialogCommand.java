@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-31 00:27:22 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-12 01:01:12 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,53 +34,85 @@ import javax.swing.JDialog;
 
 
 /**
- * Class to handle Open a dialog box command
+ * Class to handle Open a synchronize (upload or download) dialog box command
  */
 public class OpenSynchronizeDialogCommand implements Command 
 {
+  /** A reference to OpenDialogBox */
+  private OpenDialogBox openDialog = null;
   
-
   /**
-   * Constructor of SearchCommand
+   * Constructor of open synchronize dialog command
    *
-   * @param morpho the Morpho app to which the cancel command will apply
    */
   public OpenSynchronizeDialogCommand()
   {
    
-  }//OpenDialogBoxCommand
+  }//OpenSynchronizeDialogBoxCommand
   
+  /**
+   * Constructor of OpenSynchronizeDialogCommand
+   *
+   * @param myDialog the open dialog box will be applied this command
+   */
+  public OpenSynchronizeDialogCommand(OpenDialogBox myDialog)
+  {
+    openDialog = myDialog;
+  }//OpenDialogBoxCommand
   
   /**
    * execute cancel command
    */    
   public void execute()
   {
-    MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
-    if ( frame != null)
+    ResultPanel resultPane = null;
+    MorphoFrame frame = null;
+    boolean parentIsOpenDialog = false;
+    if (openDialog != null)
     {
-       ResultPanel resultPane = 
-                 RefreshCommand.getResultPanelFromMorphoFrame(frame);
-    
-       // make sure the resultPane is not null
-      if ( resultPane != null)
-      {
-        String selectDocId = resultPane.getSelectedId();
-        boolean inNetwork = resultPane.getMetacatLocation();
-        boolean inLocal = resultPane.getLocalLocation();
-      
-        // Make sure selected a id, and there no package in metacat
-        if ( selectDocId != null && !selectDocId.equals("") && 
-                                                      !(inLocal && inNetwork))
-        {
-          // Show synchronize dialog
-          SynchronizeDialog dialog = 
-                new SynchronizeDialog(frame, selectDocId, inLocal, inNetwork);
-          dialog.setModal(true);
-          dialog.setVisible(true);
-        }
-      }
+      // This is for parent is a open dialog
+      parentIsOpenDialog = true;
+      resultPane = openDialog.getResultPanel();
+      frame = openDialog.getParentFrame();
     }//if
+    else
+    {
+      // this is for parent is current active frame
+      frame = UIController.getInstance().getCurrentActiveWindow();
+      if ( frame != null)
+      { 
+        resultPane = RefreshCommand.getResultPanelFromMorphoFrame(frame);
+      }//if
+    }//else
+    
+    // make sure the resultPane is not null
+    if ( resultPane != null)
+    {
+      String selectDocId = resultPane.getSelectedId();
+      boolean inNetwork = resultPane.getMetacatLocation();
+      boolean inLocal = resultPane.getLocalLocation();
+      
+      // Make sure selected a id, and there no package in metacat
+      if ( selectDocId != null && !selectDocId.equals("") && 
+                                                      !(inLocal && inNetwork))
+      {
+        // Show synchronize dialog
+        SynchronizeDialog synchronizeDialog = null;
+        if (parentIsOpenDialog)
+        {
+          synchronizeDialog = new SynchronizeDialog
+                           (openDialog, frame, selectDocId, inLocal, inNetwork);
+        }
+        else 
+        {
+          synchronizeDialog = new SynchronizeDialog
+                                      (frame, selectDocId, inLocal, inNetwork);
+        }
+        synchronizeDialog.setModal(true);
+        synchronizeDialog.setVisible(true);
+      }//if
+    }//if
+    
       
     
   }//execute
