@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-12-14 22:07:00 $'
- * '$Revision: 1.77 $'
+ *     '$Date: 2004-12-14 22:19:02 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1276,8 +1276,8 @@ public class Morpho
 
         Command helpCommand = new HelpCommand();
         GUIAction helpItemAction =
-            new GUIAction("Morpho Help...", null, helpCommand);
-        helpItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho Help");
+            new GUIAction("Morpho User Guide...", null, helpCommand);
+        helpItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho User Guide");
         helpItemAction.putValue(Action.SMALL_ICON,
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/Help16.gif")));
