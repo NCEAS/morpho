@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-24 16:57:40 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2001-07-25 17:59:58 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ public class DataPackageGUI extends javax.swing.JFrame
             displayName = displayName.substring(displayName.indexOf(":") + 1, 
                                                 displayName.length());
             String s = displayName.trim() + " (" + eleid + ")";
-            otheritems.addElement(s);
+            otheritems.addElement(s.trim());
           }
           else
           { //read the file to get the display text from the file
@@ -245,7 +245,7 @@ public class DataPackageGUI extends javax.swing.JFrame
               Node n = nl.item(j);
               String nodeContent = n.getFirstChild().getNodeValue();
               String s = nodeContent + " (" + eleid + ")";
-              otheritems.addElement(s);
+              otheritems.addElement(s.trim());
             }
           }
         }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-06 23:07:27 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-07-25 17:59:58 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,32 +173,31 @@ public class EntityGUI extends javax.swing.JFrame
     if(nameList.getLength() != 0)
     { 
       String s = nameList.item(0).getFirstChild().getNodeValue();
-      name = new JLabel(htmlBegin + s + htmlEnd);
+      name = new JLabel(s);
     }
     if(descList.getLength() != 0)
     {
       String s = descList.item(0).getFirstChild().getNodeValue();
-      description = new JLabel(htmlBegin + s + htmlEnd);
-      //description.setPreferredSize(new Dimension(200, 100));
+      description = new JLabel(s);
     }
     if(numrecList.getLength() != 0)
     {
       String s = numrecList.item(0).getFirstChild().getNodeValue();
-      numrecords = new JLabel(htmlBegin + s + htmlEnd);
+      numrecords = new JLabel(s);
     }
     if(caseSensList.getLength() != 0)
     {
       NamedNodeMap nnm = caseSensList.item(0).getAttributes();
       Node n = nnm.getNamedItem("yesorno");
       String s = n.getFirstChild().getNodeValue();
-      caseSensitive = new JLabel(htmlBegin + s + htmlEnd);
+      caseSensitive = new JLabel(s);
     }
     if(orientationList.getLength() != 0)
     {
       NamedNodeMap nnm = orientationList.item(0).getAttributes();
       Node n = nnm.getNamedItem("columnorrow");
       String s = n.getFirstChild().getNodeValue();
-      orientation = new JLabel(htmlBegin + s + htmlEnd);
+      orientation = new JLabel(s);
     }
   }
   
@@ -310,6 +309,31 @@ public class EntityGUI extends javax.swing.JFrame
     attributePanel.setPreferredSize(new Dimension(225, 315));
     attributePanel.setBackground(Color.white);
     
+    StringBuffer entityInfo = new StringBuffer();
+    entityInfo.append("<html><font color=black>");
+    entityInfo.append("<b>Name:</b> ").append(name.getText()).append("<br>");
+    entityInfo.append("<b>Description:</b> ").append(description.getText());
+    entityInfo.append("<br>");
+    entityInfo.append("<b>Number Of Records:</b> ").append(numrecords.getText());
+    entityInfo.append("<br>");
+    entityInfo.append("<b>Case Sensitive:</b> ").append(caseSensitive.getText());
+    entityInfo.append("<br>");
+    entityInfo.append("<b>Orientation:</b> ").append(orientation.getText());
+    entityInfo.append("<br></font></html>");
+    
+    JLabel entityInfoLabel = new JLabel(entityInfo.toString());
+    entityInfoLabel.setPreferredSize(new Dimension(190,1000));
+    entityInfoLabel.setForeground(Color.black);
+    entityInfoLabel.setAlignmentX(0);
+    JPanel entityInfoPanel = new JPanel();
+    entityInfoPanel.setLayout(new BoxLayout(entityInfoPanel, BoxLayout.Y_AXIS));
+    entityInfoPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
+    entityInfoPanel.add(entityInfoLabel);
+    entityInfoPanel.setBackground(Color.white);
+    entityInfoPanel.setAlignmentX(0);
+    entityPanel.add(new JScrollPane(entityInfoPanel));
+    
+    /*
     entityPanel.add(nameL);
     entityPanel.add(name);
     entityPanel.add(new JLabel(" "));
@@ -324,6 +348,7 @@ public class EntityGUI extends javax.swing.JFrame
     entityPanel.add(orientationL);
     entityPanel.add(orientation);
     entityPanel.add(new JLabel(" "));
+    */
     entityPanel.add(editEntityButton);
     entityPanel.setPreferredSize(new Dimension(225, 280));
     entityPanel.setBackground(Color.white);
