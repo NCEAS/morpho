@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.22 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-04 03:47:25 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ public class WizardPageLibrary {
 
     if(pageID.equals(DataPackageWizardInterface.ATTRIBUTE_PAGE)) return new AttributePage();
     if(pageID.equals(DataPackageWizardInterface.KEYWORDS_PAGE)) return new KeywordsPage();
+    if(pageID.equals(DataPackageWizardInterface.METHODS_PAGE)) return new MethodsPage();
     if(pageID.equals(DataPackageWizardInterface.PARTY_PAGE)) return new PartyPage();
     if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE)) return new AccessPage();
     if(pageID.equals(DataPackageWizardInterface.TEMPORAL_PAGE)) return new TemporalPage();
@@ -110,15 +111,16 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.USAGE_RIGHTS,       new UsageRights());
     pages.put(DataPackageWizardInterface.DATA_LOCATION,      new DataLocation());
     pages.put(DataPackageWizardInterface.TEXT_IMPORT_WIZARD, new ImportWizard(container));
-		pages.put(DataPackageWizardInterface.DATA_FORMAT,        new DataFormat());
+    pages.put(DataPackageWizardInterface.DATA_FORMAT,        new DataFormat());
     pages.put(DataPackageWizardInterface.ENTITY,             new Entity());
     pages.put(DataPackageWizardInterface.ACCESS,             new Access());
     pages.put(DataPackageWizardInterface.GEOGRAPHIC,         new Geographic());
     pages.put(DataPackageWizardInterface.TAXONOMIC,          new Taxonomic());
-		pages.put(DataPackageWizardInterface.TEMPORAL,           new Temporal());
+    pages.put(DataPackageWizardInterface.TEMPORAL,           new Temporal());
+    pages.put(DataPackageWizardInterface.METHODS,            new Methods());
     pages.put(DataPackageWizardInterface.SUMMARY,            new Summary(container));
-		pages.put(DataPackageWizardInterface.CODE_IMPORT_SUMMARY,new CodeImportSummary(container));
-		pages.put(DataPackageWizardInterface.CODE_DEFINITION,		 new CodeDefinition(container));
+    pages.put(DataPackageWizardInterface.CODE_IMPORT_SUMMARY,new CodeImportSummary(container));
+    pages.put(DataPackageWizardInterface.CODE_DEFINITION,    new CodeDefinition(container));
   }
 
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:51 $'
- * '$Revision: 1.16 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-04 03:51:15 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ public class Summary extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String nextPageID = null;
-  public final String pageNumber = "13";
+  public final String pageNumber = "14";
   public final String PACKAGE_WIZ_SUMMARY_TITLE = "Data Package Wizard";
   public final String ENTITY_WIZ_SUMMARY_TITLE  = "New DataTable Wizard";
   public final String SUBTITLE                  = "Summary";
@@ -133,8 +133,8 @@ public class Summary extends AbstractWizardPage {
 
       return "<p>If you want to add more data tables to your package, "
         +"select the \"Create New Datatable\" option on the \"Data\" menu</p>";
-				
-    } 
+
+    }
     return "";
   }
 
@@ -142,7 +142,7 @@ public class Summary extends AbstractWizardPage {
 
     String ID = mainWizFrame.getFirstPageID();
     if (ID==null) return "";
-		if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) 
+		if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
 			return "data table";
     else return "data package";
   }
@@ -168,7 +168,7 @@ public class Summary extends AbstractWizardPage {
                   +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     updateShowMeButton();
-		
+
   }
 
   private JComponent getShowMeButton() {
@@ -245,7 +245,7 @@ public class Summary extends AbstractWizardPage {
     }
   }
 
-	
+
   private String getDataLocation() {
 
     String summaryText = WizardSettings.getSummaryText();
@@ -279,7 +279,7 @@ public class Summary extends AbstractWizardPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-		return true; 
+		return true;
 	}
 
 

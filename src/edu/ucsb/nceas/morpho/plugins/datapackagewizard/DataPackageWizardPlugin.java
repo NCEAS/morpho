@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-02-24 20:54:11 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-03-04 03:47:25 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
-                      "New Datapackage Wizard");
+                      "New Data Package Wizard");
 	responsiblePartyList.clear();
 	PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   }
@@ -117,7 +117,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
                       "New Datatable Wizard");
   }
-	
+
 	/**
    *  method to start the wizard at a given page
    *
@@ -126,13 +126,13 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Entity Wizard has finished
    */
-	 
-	 
+
+
 	public void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
-		
+
 		startWizardAtPage(pageID, false, listener, title);
 	}
-	
+
   private void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {
 

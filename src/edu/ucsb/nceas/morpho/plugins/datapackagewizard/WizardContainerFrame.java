@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-03 01:38:05 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2004-03-04 03:47:25 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -499,6 +499,8 @@ public class WizardContainerFrame extends JFrame {
 		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_ASSOCIATED));
 		int PROJECT
 		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
+                int METHODS
+                = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.METHODS));
 		int USAGE_RIGHTS
 		= pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.USAGE_RIGHTS));
 		int GEOGRAPHIC
@@ -575,6 +577,11 @@ public class WizardContainerFrame extends JFrame {
 		if (PROJECT>=0)        {
 			addPageDataToResultsMap((WizardPage)(pagesList.get(PROJECT)),wizData);
 		}
+
+                //METHODS:
+                if (METHODS>=0)        {
+                        addPageDataToResultsMap((WizardPage)(pagesList.get(METHODS)),wizData);
+                }
 
 		//ACCESS:
 		if (ACCESS>=0)        {

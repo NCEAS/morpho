@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-19 20:04:44 $'
- * '$Revision: 1.47 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-04 03:47:25 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ public class WizardSettings {
   private static List unitsList      = new ArrayList();
   private static List unitsRemainderList  = new ArrayList();
   private static Map  unitDictionaryUnitsCacheMap = new HashMap();
-  
+
   private static Map  unitPreferenceMap = new HashMap();
 
   //static initialization - happens when classoader loads this class
@@ -182,15 +182,15 @@ public class WizardSettings {
   = new Dimension(2000,20);
 
 	private static final String FONT_STYLE = "style=\"font-size: 9px;\"";
-	
+
   public static final String HTML_FONT_OPENING
           = "<font " + FONT_STYLE + " face=\"Sans-Serif\">";
 
   public static final String HTML_EXAMPLE_FONT_OPENING
                                                   = "<font " + FONT_STYLE +
 																									" color=\"#666666\">";
-																									
-	 
+
+
 
   public static final String HTML_EXAMPLE_FONT_CLOSING = "</font>";
 
@@ -226,7 +226,7 @@ public class WizardSettings {
 
   protected static final String OK_BUTTON_TEXT      = "OK";
 
-  public static String NUMBER_OF_STEPS              = "13";
+  public static String NUMBER_OF_STEPS              = "14";
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "
@@ -464,16 +464,16 @@ public class WizardSettings {
 
         Node unitTypeAttrNode = attribNNMap.getNamedItem("unitType");
         Node parentSIAttrNode2 = attribNNMap.getNamedItem("parentSI");
-        
+
 
         // if attributes contains an attrib node called unitType {
         if (unitTypeAttrNode!=null) {
-          
+
           // if unitType value==requested unitType add name to unitsList
           if (((Attr)unitTypeAttrNode).getValue().equals(unitType)) {
 
             addAttributeNameToList(attribNNMap, unitsList);
-            
+
             if (parentSIAttrNode2!=null) {
               String parentSIVal2 = ((Attr)parentSIAttrNode2).getValue();
               unitPreferenceMap.put(unitType.toLowerCase(), parentSIVal2);
@@ -518,7 +518,7 @@ public class WizardSettings {
       unitsReturnList.addAll(unitsList);
 
       if (unitType.equalsIgnoreCase("amount")) {  //DFH - patch so that 'moles' is not the only choice
-        returnArray = new String[unitsReturnList.size()+1]; 
+        returnArray = new String[unitsReturnList.size()+1];
         unitsReturnList.add("dimensionless");
       } else {
         returnArray = new String[unitsReturnList.size()];

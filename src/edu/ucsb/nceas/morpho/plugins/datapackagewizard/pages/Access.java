@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-23 19:27:49 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-04 03:51:15 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public class Access extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.ACCESS;
   public final String nextPageID = DataPackageWizardInterface.SUMMARY;
-  public final String pageNumber = "12";
+  public final String pageNumber = "13";
 
   //////////////////////////////////////////////////////////
 
