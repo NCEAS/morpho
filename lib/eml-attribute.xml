@@ -36,7 +36,7 @@ help="Eml-attribute element represents a list of all attributes in a dataset.">
       <enumeratedDomain
       help="This element describes any code associated with the attribute.">
         <code
-        help="This element specifies a code associated with the attribute.XXXXX">
+        help="This element specifies a code associated with the attribute.">
         </code>
 
         <definition
