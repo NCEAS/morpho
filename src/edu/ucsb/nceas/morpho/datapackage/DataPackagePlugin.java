@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-03 23:04:44 $'
- * '$Revision: 1.17.6.2 $'
+ *     '$Date: 2002-08-01 22:01:35 $'
+ * '$Revision: 1.17.6.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.*;
 import java.awt.event.*;
+import java.awt.*;
 
 /**
  * Class that implements the plugin for package editing
@@ -157,9 +158,12 @@ public class DataPackagePlugin
     //                " relations: " + relations.toString());
     final DataPackageGUI gui = new DataPackageGUI(framework, dp);
     JPanel packagePanel = new JPanel();
+    JLabel refLabel = new JLabel("<html>"+gui.referenceLabel+"</html>");
+    refLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
     packagePanel.setLayout(new BorderLayout(0,0));
     packagePanel.add(BorderLayout.CENTER,gui.basicInfoPanel);
     packagePanel.add(BorderLayout.EAST,gui.listPanel);
+    packagePanel.add(BorderLayout.NORTH,refLabel);
     
     DataPackageViewer dpv = new DataPackageViewer("DataPackageViewer", dp);
     gui.dpv = dpv;

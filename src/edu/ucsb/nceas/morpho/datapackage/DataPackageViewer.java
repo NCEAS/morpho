@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-05 22:58:29 $'
- * '$Revision: 1.1.2.4 $'
+ *     '$Date: 2002-08-01 22:01:35 $'
+ * '$Revision: 1.1.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import java.util.*;
 
 import edu.ucsb.nceas.morpho.framework.*;
 /**
- * A basic JFC 1.1 based application.
+ * A window that presents a data-centric view of a dataPackage
  */
 public class DataPackageViewer extends javax.swing.JFrame implements javax.swing.event.ChangeListener
 {
@@ -46,18 +46,30 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
 	 */
 	DataPackage dp;
   
+  // toppanel is added to packageMetadataPanel by init
   public JPanel toppanel;
   
+  
+  String referenceLabelText = "referenceLabel";
+  //DataViewContainer is the top level container
+  JPanel dataViewContainerPanel = new javax.swing.JPanel();
+  
+  //tabbedEntitiesPanel is the tabbed panel which contains the entity list (as tabs) + dataView + entityMetadata
+  JTabbedPane tabbedEntitiesPanel;
+  
+  //dataViewPanel is the base panel for the data display
+  JPanel dataViewPanel;
+ 
+ //Panel where package level metadata is displayed
+  JPanel packageMetadataPanel;
+
   String entityId;
   ClientFramework framework;
   ConfigXML config;
   File entityFile;
   
-  JPanel DataDisplayPanel;
-  JPanel DataPackageInfoPanel;
-  JTabbedPane TabbedEntitiesPanel;
-  JSplitPane EntityPanel;
-  JPanel EntityMetadataPanel;
+  JSplitPane entityPanel;
+  JPanel entityMetadataPanel;
   JPanel currentDataPanel;
   
   Vector entityItems;
@@ -73,38 +85,36 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(800,600);
 		setVisible(false);
-		MainPanel.setLayout(new BorderLayout(0,0));
-		getContentPane().add(BorderLayout.CENTER, MainPanel);
+		dataViewContainerPanel.setLayout(new BorderLayout(0,0));
+		getContentPane().add(BorderLayout.CENTER, dataViewContainerPanel);
 
 		//{{REGISTER_LISTENERS
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
 		SymAction lSymAction = new SymAction();
 
-		DataPackageInfoPanel = new JPanel();
-    DataPackageInfoPanel.setLayout(new BorderLayout(0,0));
-		EntityMetadataPanel = new JPanel();
-    EntityMetadataPanel.setLayout(new BorderLayout(0,0));
-		DataDisplayPanel = new JPanel();
-    DataDisplayPanel.setLayout(new BorderLayout(0,0));
+		packageMetadataPanel = new JPanel();
+    packageMetadataPanel.setLayout(new BorderLayout(0,0));
+		entityMetadataPanel = new JPanel();
+    entityMetadataPanel.setLayout(new BorderLayout(0,0));
+		dataViewPanel = new JPanel();
+    dataViewPanel.setLayout(new BorderLayout(0,0));
 		JPanel AttributeMetadataPanel = new JPanel();
 		
-		JSplitPane TableDataPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,DataDisplayPanel,AttributeMetadataPanel);
+		JSplitPane TableDataPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel,AttributeMetadataPanel);
 		TableDataPanel.setOneTouchExpandable(true);
     
-		EntityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,EntityMetadataPanel,TableDataPanel);
-		EntityPanel.setOneTouchExpandable(true);
+		entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,entityMetadataPanel,TableDataPanel);
+		entityPanel.setOneTouchExpandable(true);
     
-    TabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
-    TabbedEntitiesPanel.addChangeListener(this);
-    //TabbedEntitiesPanel.addTab("First Entity", EntityPanel);
+    tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
+    tabbedEntitiesPanel.addChangeListener(this);
+    //tabbedEntitiesPanel.addTab("First Entity", entityPanel);
     
-		JSplitPane vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,DataPackageInfoPanel,TabbedEntitiesPanel);
+		JSplitPane vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
 		vertSplit.setOneTouchExpandable(true);
-		MainPanel.add(BorderLayout.CENTER,vertSplit);
-		vertSplit.setDividerLocation(200);
-		TableDataPanel.setDividerLocation(5000);
-		EntityPanel.setDividerLocation(0);
+		dataViewContainerPanel.add(BorderLayout.CENTER,vertSplit);
+		vertSplit.setDividerLocation(100);
     
 	}
 
@@ -135,7 +145,6 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
     this();
     setTitle(sTitle);
     this.dp = dp;
-    
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(0,0));
     packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
@@ -178,38 +187,7 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
 		}
 	}
 
-    /**
-     * Notifies this component that it has been added to a container
-     * This method should be called by <code>Container.add</code>, and 
-     * not by user code directly.
-     * Overridden here to adjust the size of the frame if needed.
-     * @see java.awt.Container#removeNotify
-     */
-	public void addNotify()
-	{
-		// Record the size of the window prior to calling parents addNotify.
-		Dimension size = getSize();
-		
-		super.addNotify();
-		
-		if (frameSizeAdjusted)
-			return;
-		frameSizeAdjusted = true;
-		
-		// Adjust size of frame according to the insets and menu bar
-		javax.swing.JMenuBar menuBar = getRootPane().getJMenuBar();
-		int menuBarHeight = 0;
-		if (menuBar != null)
-		    menuBarHeight = menuBar.getPreferredSize().height;
-		Insets insets = getInsets();
-		setSize(insets.left + insets.right + size.width, insets.top + insets.bottom + size.height + menuBarHeight);
-	}
-
-	// Used by addNotify
-	boolean frameSizeAdjusted = false;
-
-	javax.swing.JPanel MainPanel = new javax.swing.JPanel();
-
+   
 
 	void exitApplication()
 	{
@@ -231,8 +209,6 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
 
 	void DataPackageViewer_windowClosing(java.awt.event.WindowEvent event)
 	{
-		// to do: code goes here.
-			 
 		DataPackageViewer_windowClosing_Interaction1(event);
 	}
 
@@ -248,8 +224,6 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
 			Object object = event.getSource();
-			
-			
 		}
 	}
   
@@ -259,23 +233,20 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
       System.out.println("toppanel is null");
     }
     else {
-      DataPackageInfoPanel.add(BorderLayout.CENTER,toppanel);
+      packageMetadataPanel.add(BorderLayout.CENTER,toppanel);
     }
     
- //   String firstEntityName = (String)entityItems.elementAt(0);
- //   TabbedEntitiesPanel.setTitleAt(0, firstEntityName);
     for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
-      TabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
+      tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
       String item = (String)entityItems.elementAt(i);
       String id = (String)listValueHash.get(item);
       String location = dp.getLocation();
       EntityGUI entityEdit = new EntityGUI(dp, id, location, null, 
                                            framework);
       entityEdit.dpv = this;
- //     entityEdit.show();
-      
-      JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getLeftComponent();
+       
+      JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
       
       JPanel entityInfoPanel = new JPanel();
       entityInfoPanel.setLayout(new BorderLayout(0,0));
@@ -289,14 +260,13 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
       currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
 
 
-      EntityPanel.setDividerLocation(200);
+      entityPanel.setDividerLocation(600);
       this.entityFile = entityEdit.entityFile;
     
       // create the data display panel (usually a table) using DataViewer class
       String fn = dp.getDataFileName(id);    
       File fphysical = dp.getPhysicalFile(id);
       File fattribute = dp.getAttributeFile(id);
-//      System.out.println("eml-attribute: "+fattribute.getName());
       File f = dp.getDataFile(id);
       String dataString = "";
     }
@@ -314,9 +284,8 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
    * This needs to be dynamically done as tabs are selected due to large memory usage
    */
   private void setDataViewer(int index) {
-    JSplitPane entireDataPanel = (JSplitPane)(TabbedEntitiesPanel.getComponentAt(lastTabSelected));
-    JSplitPane tableDataPanel = (JSplitPane)entireDataPanel.getRightComponent();
-    JPanel currentDataPanel1 = (JPanel)tableDataPanel.getLeftComponent();
+    JSplitPane entireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(lastTabSelected));
+    JPanel currentDataPanel1 = (JPanel)entireDataPanel.getLeftComponent();
     currentDataPanel1.removeAll();
     lastTabSelected = index;
     String item = (String)entityItems.elementAt(index);
@@ -337,39 +306,31 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
     dv.parseFile();
     JPanel tablePanel = dv.DataViewerPanel;
     
-    JSplitPane EntireDataPanel = (JSplitPane)(TabbedEntitiesPanel.getComponentAt(index));
-    JSplitPane TableDataPanel = (JSplitPane)EntireDataPanel.getRightComponent();
-    JPanel currentDataPanel = (JPanel)TableDataPanel.getLeftComponent();
+    JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
+    JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
     currentDataPanel.setLayout(new BorderLayout(0,0));
     currentDataPanel.add(BorderLayout.CENTER,tablePanel);
    
   }
   
   private JSplitPane createEntityPanel() {
-    DataPackageInfoPanel = new JPanel();
-    DataPackageInfoPanel.setLayout(new BorderLayout(0,0));
-    JPanel EntityMetadataPanel = new JPanel();
-    EntityMetadataPanel.setLayout(new BorderLayout(0,0));
-	  DataDisplayPanel = new JPanel();
-    DataDisplayPanel.setLayout(new BorderLayout(0,0));
-    JPanel AttributeMetadataPanel = new JPanel();
-		
-    JSplitPane TableDataPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,DataDisplayPanel,AttributeMetadataPanel);
-	  TableDataPanel.setOneTouchExpandable(true);
-    TableDataPanel.setDividerLocation(5000);
+    JPanel entityMetadataPanel = new JPanel();
+    entityMetadataPanel.setLayout(new BorderLayout(0,0));
+	  dataViewPanel = new JPanel();
+    dataViewPanel.setLayout(new BorderLayout(0,0));
     
-	  EntityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,EntityMetadataPanel,TableDataPanel);
-	  EntityPanel.setOneTouchExpandable(true);
-    EntityPanel.setDividerLocation(200);
+	  entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, entityMetadataPanel);
+	  entityPanel.setOneTouchExpandable(true);
+    entityPanel.setDividerLocation(600);
     
-  return EntityPanel;
+  return entityPanel;
   }
 
 	public void stateChanged(javax.swing.event.ChangeEvent event)
 		{
 			Object object = event.getSource();
-			if (object == TabbedEntitiesPanel) {
-				int k = TabbedEntitiesPanel.getSelectedIndex();
+			if (object == tabbedEntitiesPanel) {
+				int k = tabbedEntitiesPanel.getSelectedIndex();
         setDataViewer(k);
 		  }
 	}

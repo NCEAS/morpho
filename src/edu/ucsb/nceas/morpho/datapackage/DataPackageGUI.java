@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-03 23:04:44 $'
- * '$Revision: 1.79.2.2 $'
+ *     '$Date: 2002-08-01 22:01:35 $'
+ * '$Revision: 1.79.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                                        WindowListener
 {
   public JPanel basicInfoPanel;
+  public String referenceLabel = "";
   ClientFramework framework;
   private ConfigXML config;
   Container contentPane;
@@ -353,8 +354,11 @@ public class DataPackageGUI extends javax.swing.JFrame
   /**
    * creates the basicinfopanel
    */
-  private JPanel createBasicInfoPanel()
+  public JPanel createBasicInfoPanel()
   {
+    referenceLabel = "";
+    String authorList = "";
+    
     String idPath = config.get("datasetIdPath", 0);
     String shortNamePath = config.get("datasetShortNamePath", 0);
     String titlePath = config.get("datasetTitlePath", 0);
@@ -470,6 +474,9 @@ public class DataPackageGUI extends javax.swing.JFrame
                   htmlize(shortName, "Short Name") + 
                   htmlize(keywords, "Keywords") + 
                   htmlize(abstractS, "Abstract");
+    
+    referenceLabel = referenceLabel + "<b><i>" + title + "</i></b><br>" +
+           "<b>KNB Accession Number " + id + "</b>  Keywords: " + keywords; 
     
     String originators = "<br><b>Originator(s)</b><br>";
     String name = "";
@@ -587,7 +594,12 @@ public class DataPackageGUI extends javax.swing.JFrame
       originators += htmlize(name) + htmlize(orgname) + htmlize(address) + 
                      htmlize(phone) + htmlize(email) + htmlize(web) +
                      htmlize(role) + "<br>";
+                     
+      authorList = authorList + name + ", ";          
     }
+    referenceLabel = authorList + referenceLabel;
+    
+ //   System.out.println("Ref Label: "+referenceLabel);
     
     wholelabel += originators + "</html>";
 //    JLabel biglabel = new JLabel(wholelabel);
@@ -987,11 +999,13 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     else if(label != null)
     {
-      return "<b>" + label + "</b>: " + s + "<br>";
+//      return "<b>" + label + "</b>: " + s + "<br>";
+      return "<b>" + label + "</b>: " + s + "  ";
     }
     else
     {
-      return s + "<br>";
+//      return s + "<br>";
+      return s + "  ";
     }
   }
   
