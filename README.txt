@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.0.0beta2 Release - December 17, 2001
+Version: 1.0.0 - January 08, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -14,10 +14,24 @@ Contributors: Matt Jones (jones@nceas.ucsb.edu)
               Mark Schildhauer (schild@nceas.ucsb.edu)
               Eric Fegraus (fegraus@nceas.ucsb.edu)
 
-This is the last BETA version of the Morpho client tool before we release
-version 1.0.0. At this point, this release represents a candidate for the 
-version 1.0.0 release, and we are using this release as a last test for 
-any bugs that might block the release of Morpho 1.0.0.
+This is Morpho, a data management application for managing ecological
+data.  Morpho allows researchers to describe their data using a comprehensive
+and flexible metadata specification, and to share their data publicly or
+to specific collaborators over the Knowledge Netwrok for Biocomplexity system.
+Although Morpho can be used without an account on the KNB, it is free and
+simple to obtain one: just register at http://knb.ecoinformatics.org.
+
+Morpho's main features include:
+  1. Flexible metadata creation and editing
+  2. Compiance with Ecological Metadata Language
+  3. Powerful metadata search for data on the network or locally
+  4. Comprehensive revision control for changing data and metadata
+  5. Easy-to-use collaboration features via the KNB system
+
+Further documentation is available under the help menu in Morpho (after it
+has been installed), or in the "docs"subdirectory of the Morpho installation
+(after it has been installed), or on the KNB website 
+(http://knb.ecoinformatics.org/software/morpho/).
 
 INSTALLATION
 ------------
@@ -27,12 +41,13 @@ so we recommend that you uninstall previous version using the Windows control
 panel "Add/Remove Programs" before proceeding with the installation.
 
 2. Download the new version, along with Java.
-Morpho is a Java application. One thus needs to have a Java Virtual Machine (JVM)
-installed on the machine running Morpho, preferably version 1.3 or later. 
-Morpho can be downloaded with Java for your convenience, or it can be obtained
-from Sun (http://java.sun.com).  With Java the Morpho distribution is 
-a much larger download, so if you already have Java 1.3 or later installed, 
-its better to download the Morpho-only distribution.
+Morpho is a Java application. One thus needs to have a Java Virtual 
+Machine (JVM) installed on the machine running Morpho, preferably 
+version 1.3 or later.  Morpho can be downloaded with Java for your 
+convenience, or it can be obtained from Sun (http://java.sun.com).
+With Java the Morpho distribution is a much larger download, so if you
+already have Java 1.3 or later installed, its better to download the
+Morpho-only distribution.
 
 3. Run the installer application
 Download the installation executable and run it on your desired platform.
