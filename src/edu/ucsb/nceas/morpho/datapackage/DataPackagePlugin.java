@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 20:19:05 $'
- * '$Revision: 1.94 $'
+ *     '$Date: 2005-01-27 23:12:05 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1031,6 +1031,8 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     packageWindow.setBusy(false);
+
+    UIController.getInstance().setCurrentActiveWindow(packageWindow);
   }
 
 
