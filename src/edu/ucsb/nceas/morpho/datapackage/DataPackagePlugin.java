@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-15 21:03:04 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2003-12-16 17:48:26 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -465,7 +465,6 @@ public class DataPackagePlugin
                        String doctype)
   {
     AbstractDataPackage adp = null;
-    DataPackageGUI gui = null;
     Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
       boolean metacat = false;
@@ -520,8 +519,6 @@ public class DataPackagePlugin
     dvcp = new DataViewContainerPanel(adp);
     dvcp.setFramework(morpho);
 
-//    dvcp.setEntityItems(gui.getEntityitems());
-//    dvcp.setListValueHash(gui.listValueHash);
     dvcp.init();
     long stoptime1 = System.currentTimeMillis();
     Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));
@@ -621,8 +618,6 @@ public class DataPackagePlugin
     dvcp = new DataViewContainerPanel(adp);
     dvcp.setFramework(morpho);
 
-//    dvcp.setEntityItems(gui.getEntityitems());
-//    dvcp.setListValueHash(gui.listValueHash);
     dvcp.init();
     long stoptime1 = System.currentTimeMillis();
     Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));
@@ -635,7 +630,7 @@ public class DataPackagePlugin
     // Broadcast stored event int dvcp
     dvcp.broadcastStoredStateChangeEvent();
     
-    // Create another evnets too
+    // Create another events too
     StateChangeMonitor monitor = StateChangeMonitor.getInstance();
       // open a unsynchronize pakcage
       monitor.notifyStateChange(
