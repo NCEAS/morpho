@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.7 2000-09-01 22:21:38 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.8 2000-09-13 23:38:58 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -68,7 +68,7 @@ public LocalQuery(String xpathstring) {
     local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
     local_xml_directory = local_xml_directory.trim();
     xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
+//    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
     xmlFileFolder = local_xml_directory.trim();
     this.xpathExpression = xpathstring;
 }
@@ -82,7 +82,7 @@ public LocalQuery(String xpathstring, JButton button) {
     local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
     local_xml_directory = local_xml_directory.trim();
     xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
+//    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
     xmlFileFolder = local_xml_directory.trim();
     this.xpathExpression = xpathstring;
 }
@@ -96,7 +96,7 @@ public LocalQuery(String[] xpathstrings, boolean and_flag, JButton button) {
     local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
     local_xml_directory = local_xml_directory.trim();
     xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
-    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
+//    xpathExpression = "//*[contains(text(),\"NCEAS\")]";
     xmlFileFolder = local_xml_directory.trim();
     this.xpathExpressions = xpathstrings;
     setAndFlag(and_flag);

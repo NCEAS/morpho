@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.17 2000-09-11 23:57:40 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.18 2000-09-13 23:38:58 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -61,7 +61,7 @@ public class QueryBean extends AbstractQueryBean
     // Tabbed panel that contains the QueryBean
     JTabbedPane tabbedPane = null;
     
-    String userName = "anonymous";
+    String userName = "public";
     String passWord = "none";
     boolean searchlocal = true;
     boolean searchnetwork = false;
@@ -973,8 +973,6 @@ public class QueryBean extends AbstractQueryBean
 
 	void SearchButton1_actionPerformed(java.awt.event.ActionEvent event)
 	{  
-//		searchlocal = LocalCheckBox1.isSelected();
-//		searchnetwork = dfgs.isSelected();
 	    
 	    
 	    if (searchlocal) {
@@ -984,6 +982,7 @@ public class QueryBean extends AbstractQueryBean
 	            lq = null;
 	        }
 	        SearchButton1.setText("Search");
+	        return;
 	    }
 	    else {
 	    String path;
@@ -1074,7 +1073,7 @@ public class QueryBean extends AbstractQueryBean
 	}
 		if(searchnetwork) {
 	        String temp = create_XMLQuery();
-	        LogIn();
+//	        LogIn();
 	        squery_submitToDatabase(temp);
 	    }
 		
@@ -1092,6 +1091,7 @@ public class QueryBean extends AbstractQueryBean
 	            lq = null;
 	        }
 	        SearchButton.setText("Search");
+	        return;
 	    }
 	    else {
 	    String path;
@@ -1161,7 +1161,7 @@ public class QueryBean extends AbstractQueryBean
 	  }
 		if(searchnetwork) {
 	        String temp = create_XMLQuery();
-	        LogIn();
+//	        LogIn();
 	        squery_submitToDatabase(temp);
 	    }
 		
@@ -1297,10 +1297,29 @@ private String getPath(String type, String match){
 	}
 // this method is called by external full text search routines	
 public void searchFor(String searchText) {
-    QueryChoiceTabs.setSelectedIndex(1);
-    TextValue1.setText(searchText);
+//    QueryChoiceTabs.setSelectedIndex(1);
+//    TextValue1.setText(searchText);
+  if(searchnetwork) {
     simplequery_submitToDatabase(searchText);
-    SearchButton1_actionPerformed(null);
+  }
+  if(searchlocal) {  //DFH
+    lq = new LocalQuery("//*[contains(text(),\""+searchText+"\")]");
+    System.out.println("query = "+"//*[contains(text(),\""+searchText+"\")]");
+    table = lq.getRSTable();
+    table.addMouseListener(popupListener);
+    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    RSFrame rs = new RSFrame("Results of Local Search");
+    rs.setEditor(mde);
+    rs.setTabbedPane(tabbedPane);
+    rs.setVisible(true);
+    rs.local=true;
+                JTable ttt = table;
+                TableModel tm = ttt.getModel();
+                rs.JTable1.setModel(tm);
+                rs.pack();
+                lq.start();
+  }
+//    SearchButton1_actionPerformed(null);
 }
 	
 	void DetachCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
@@ -1366,7 +1385,7 @@ public void searchFor(String searchText) {
 */
         
         ExternalQuery rq = new ExternalQuery(in);
-        RSFrame rs = new RSFrame("Results of Search");
+        RSFrame rs = new RSFrame("Results of Catalog Search");
             rs.setEditor(mde);
             rs.setTabbedPane(tabbedPane);
             rs.setVisible(true);
@@ -1394,7 +1413,7 @@ public void searchFor(String searchText) {
         HttpMessage msg = new HttpMessage(url);
         InputStream in = msg.sendPostMessage(prop);
         ExternalQuery rq = new ExternalQuery(in);
-        RSFrame rs = new RSFrame("Results of Search");
+        RSFrame rs = new RSFrame("Results of Catalog Search");
             rs.setVisible(true);
             rs.local=false;
                 JTable ttt = rq.getTable();

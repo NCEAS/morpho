@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.4 2000-09-01 22:21:38 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.5 2000-09-13 23:38:58 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -59,7 +59,7 @@ public class DataGuideBean extends java.awt.Container
     public JTree tree;
     TreePath tp;
 //  ClientFramework container = null;
-    String userName = "anonymous";
+    String userName = "public";
     String passWord = "none";
     Hashtable localDocTypes;
     JTable table;
@@ -387,7 +387,7 @@ public void LogOut() {
 
 	void getDocTypes()
 	{
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + MetaCatServletURL);
 		    URL url = new URL(MetaCatServletURL);
@@ -412,7 +412,7 @@ public void LogOut() {
         XMLList xmll = new XMLList(in,"doctype");
         Vector vec = xmll.getListVector();
         DocTypeList.setListData(vec);
-        LogOut();
+//        LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -422,7 +422,7 @@ public void LogOut() {
 
 	void getDGfromServer(String doctype)
 	{
-		LogIn();
+//		LogIn();
 	    try {
             System.err.println("Trying: " + MetaCatServletURL);
 		    URL url = new URL(MetaCatServletURL);
@@ -457,7 +457,7 @@ public void LogOut() {
            System.err.println(e.toString());
         }
 //
-        LogOut();
+//        LogOut();
 		}
 		catch (Exception e) {
 		    e.printStackTrace();
@@ -927,9 +927,9 @@ return "NONE";
             lq.start();
 	    }
 		String xml = pqs.buildXMLQuery(AndRadioButton.isSelected());
-	    LogIn();
+//	    LogIn();
 	    qb.squery_submitToDatabase(xml);
-	    LogOut();
+//	    LogOut();
 	    
 	}
 	
