@@ -1,11 +1,11 @@
-<!--
-       '$RCSfile: eml-entity-2.1.dtd,v $'
+<!--         
+       '$RCSfile: eml-coverage-2.0.1.dtd,v $'
        Copyright: 2000 Regents of the University of California and the
                   National Center for Ecological Analysis and Synthesis
      For Details: http://knb.ecoinformatics.org/
 
         '$Author: higgins $'
-          '$Date: 2001-09-27 22:41:10 $'
+          '$Date: 2001-10-03 21:45:08 $'
       '$Revision: 1.1 $'
 
     This program is free software; you can redistribute it and/or modify
@@ -22,39 +22,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -->
-<!-- EML DTD document that defines the structural
-     characteristics of every entity in a dataset. -->
-
-
-
-<!ELEMENT table-entity (identifier+, entityName, entityDescription?,
-                       temporalCov*, geographicCov*, taxonomicCov*, 
-                        orientation?, caseSensitive?, numberOfRecords?)>
-
-<!-- <!ELEMENT other-entity (%EntityBase;, entityType)>  
-ELEMENT commented out due to inability of DTD parser to handle multiple root nodes
--->
-
-<!-- fields for EntityBase -->
-<!ELEMENT identifier (#PCDATA)>
-
-<!ELEMENT entityName (#PCDATA) >
-<!ELEMENT entityDescription (#PCDATA) >
-
-<!-- fields for table-entity -->
-<!ELEMENT orientation EMPTY >
-<!ATTLIST orientation columnorrow (columnmajor|rowmajor) #REQUIRED>
-<!ELEMENT caseSensitive EMPTY >
-<!ATTLIST caseSensitive yesorno (no|yes) #REQUIRED>
-<!ELEMENT numberOfRecords (#PCDATA)>
-
-<!-- fields for other-entity 
-<!ELEMENT entityType (#PCDATA)>   
--->
-
 <!ELEMENT geographicCov (descgeog, bounding, dsgpoly*)>
 <!ELEMENT temporalCov (sngdate | mdattim | rngdates)>
 <!ELEMENT taxonomicCov (keywtax+, taxonsys?, taxongen?, taxoncl)>
+<!ELEMENT coverage (geographicCov, temporalCov, taxonomicCov)>
 <!ELEMENT begdate (#PCDATA)>
 <!ELEMENT beggeol (geolage)>
 <!ELEMENT begtime (#PCDATA)>
@@ -92,8 +63,8 @@ ELEMENT commented out due to inability of DTD parser to handle multiple root nod
 <!ELEMENT northbc (#PCDATA)>
 <!ELEMENT southbc (#PCDATA)>
 <!ELEMENT boundalt (altmin, almax, altunits)>
-<!ELEMENT dsgpolyo (grngpoin+ | gring)>
-<!ELEMENT dsgpolyx (grngpoin+ | gring)>
+<!ELEMENT dsgpolyo ((grngpoin, grngpoin, grngpoin, grngpoin+) | gring)>
+<!ELEMENT dsgpolyx ((grngpoin, grngpoin, grngpoin, grngpoin+) | gring)>
 <!ELEMENT taxonkt (#PCDATA)>
 <!ELEMENT taxonkey (#PCDATA)>
 <!ELEMENT classsys (classcit, classmod?)>
@@ -110,5 +81,4 @@ ELEMENT commented out due to inability of DTD parser to handle multiple root nod
 <!ELEMENT cntinfo (#PCDATA)>
 <!ELEMENT specimen (#PCDATA)>
 <!ELEMENT reposit (cntinfo)>
-
-<!-- End of file -->
+<!-- EOF -->
