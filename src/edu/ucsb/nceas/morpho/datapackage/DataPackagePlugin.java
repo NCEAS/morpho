@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-02 20:27:56 $'
- * '$Revision: 1.45 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-04 21:58:23 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -442,10 +442,11 @@ public class DataPackagePlugin
 
     MorphoFrame packageWindow = UIController.getInstance().addWindow(
                 "Data Package");
+    packageWindow.setBusy(true);
     packageWindow.setVisible(true);
     
     // Stop butterfly flapping for old window.
-    packageWindow.setBusy(true);
+    //packageWindow.setBusy(true);
     if (coordinator != null)
     {
       coordinator.stopFlap();
