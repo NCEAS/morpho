@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 23:37:56 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-03-17 00:19:45 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,8 +306,6 @@ public class TemporalPage extends AbstractWizardPage {
       }
     };
 
-
-
     JPanel typeRadioContainer = WidgetFactory.makeVerticalPanel(4);
 
     JPanel typeRadioPanel
@@ -319,10 +317,21 @@ public class TemporalPage extends AbstractWizardPage {
     panel.add(typeRadioContainer, BorderLayout.NORTH);
 
     timeTextField.setText(calendarToString(timeCalendar, ALL));
-    panel.add(timeTextField, BorderLayout.CENTER);
+
+    JPanel calendarPanel = new JPanel();
+    calendarPanel.setLayout(new BoxLayout(calendarPanel, BoxLayout.Y_AXIS));
+
+    WidgetFactory.setPrefMaxSizes(timeTextField,
+                                  WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
+    calendarPanel.add(Box.createGlue());
+    calendarPanel.add(timeTextField);
+    calendarPanel.add(Box.createGlue());
 
     timeCalendar.addPropertyChangeListener(propertyListener);
-    panel.add(timeCalendar, BorderLayout.SOUTH);
+    calendarPanel.add(timeCalendar);
+
+    calendarPanel.add(Box.createGlue());
+    panel.add(calendarPanel, BorderLayout.CENTER);
 
     setPrefMinMaxSizes(panel, PANEL_DIMS);
     outerPanel.add(panel);
