@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.4 2000-08-03 23:13:01 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.5 2000-08-07 23:43:23 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -50,7 +50,8 @@ import org.apache.xalan.xslt.XSLTResultTarget;
 import org.apache.xalan.xslt.XSLTProcessor;
 import org.apache.xalan.xpath.xml.*;
 
-public class QueryBean extends java.awt.Container
+//public class QueryBean extends java.awt.Container 
+public class QueryBean extends AbstractQueryBean 
 {
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
@@ -65,7 +66,6 @@ public class QueryBean extends java.awt.Container
 	    setLayout(new BorderLayout(0,0));
 		//{{INIT_CONTROLS
 //		setLayout(null);
-		setSize(0,0);
 //		setSize(729,492);
 		TopQueryPanel.setLayout(new BorderLayout(0,0));
 		TopQueryPanel.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -1590,7 +1590,7 @@ public void searchFor(String searchText) {
  //   TextMatch1.setSelectedIndex(0);
     TextValue11.setText(searchText);
     simplequery_submitToDatabase(searchText);
-    SearchButton_actionPerformed(null);
+//    SearchButton_actionPerformed(null);
 }
 	
 	void DetachCheckBox_itemStateChanged(java.awt.event.ItemEvent event)

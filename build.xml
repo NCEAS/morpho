@@ -41,8 +41,8 @@
        <copydir src="${src.dtclient.home}/images/" dest="${classesdir}/${dtclient.home}" />
    </target> 
  
-   <target name="buildAll" depends="init,compileClient">
-        <delete file="dmanclient.jar" />
+   <target name="buildAll" depends="compileClient">
+       <delete file="dmanclient.jar" />
        <jar jarfile="lib/dmanclient.jar" basedir="${classesdir}"  />
    </target>
 

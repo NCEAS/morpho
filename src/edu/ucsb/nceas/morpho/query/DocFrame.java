@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.3 2000-08-07 23:43:23 higgins Exp $'
  */
 
 
@@ -34,31 +34,35 @@ public class DocFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
-		setTitle("XML Document");
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(405,305);
-		setVisible(false);
 		DocControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.NORTH,DocControlPanel);
 		DocControlPanel.setBounds(0,0,20,40);
 		TransformButton.setText("Transform");
+		TransformButton.setActionCommand("Transform");
 		DocControlPanel.add(TransformButton);
 		TransformButton.setBounds(0,0,35,40);
 		JTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
-		getContentPane().add(JTabbedPane1);
+		getContentPane().add(BorderLayout.CENTER,JTabbedPane1);
 		JTabbedPane1.setBounds(0,0,405,305);
 		JScrollPane1.setOpaque(true);
 		JTabbedPane1.add(JScrollPane1);
 		JScrollPane1.setBounds(2,2,400,275);
+		JScrollPane1.setVisible(false);
 		JScrollPane1.getViewport().add(XMLText);
 		XMLText.setBounds(0,0,397,272);
+		JScrollPane2.setOpaque(true);
 		JTabbedPane1.add(JScrollPane2);
 		JScrollPane2.setBounds(0,0,20,40);
+		JScrollPane2.setVisible(false);
 		JScrollPane2.getViewport().add(HTMLPane);
 		HTMLPane.setBounds(0,0,20,40);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JTabbedPane1.add(JPanel1);
 		JPanel1.setBounds(2,2,400,275);
+		JPanel1.setVisible(false);
+		JTabbedPane1.setSelectedComponent(JScrollPane1);
 		JTabbedPane1.setSelectedIndex(0);
 		JTabbedPane1.setTitleAt(0,"Text");
 		JTabbedPane1.setTitleAt(1,"HTML");
