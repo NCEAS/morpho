@@ -1,7 +1,8 @@
 <?xml version="1.0"?>  
 <xpathKeyMap schemaGrammar="eml2.0.0">
 <!-- element name is key, element value is Xpath for this grammar -->
-  <contextNode name="package"> 
+  <contextNode name="package">
+    <entityParent>/eml:eml/dataset</entityParent> 
     <entities>(/eml:eml/dataset/dataTable)|(/eml:eml/dataset/spatialRaster)|(/eml:eml/dataset/spatialVector)|(/eml:eml/dataset/otherEntity)</entities> 
     <title>/eml:eml/dataset/title</title>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
@@ -14,6 +15,7 @@
     <numRecords>numberOfRecords</numRecords>
     <entityDescription>entityDescription</entityDescription >
     <physical>physical</physical>
+    <attributeParent>attributeList</attributeParent>
     <attributes>attributeList/attribute</attributes>
   </contextNode>
   <contextNode name="attribute"> 
