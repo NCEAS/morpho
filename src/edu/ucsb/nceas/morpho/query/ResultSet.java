@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-08-24 04:37:06 $'
- * '$Revision: 1.34 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-06 01:33:01 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -749,9 +749,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    * Method implements from SortTableModel. To make sure a col can be sort
    * or not. We decide it always be sortable.
    * @param col, the index of column which need to be sorted
-   * @param ascending, the sort order
+   * @param order, the sort order
    */
-  public void sortTableByColumn(int col, boolean ascending)
+  public void sortTableByColumn(int col, String order)
   {
   
   
