@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-13 18:52:41 $'
- * '$Revision: 1.17 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-18 18:02:04 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   private static MetaDisplayFactoryInterface metaDisplayFactory = null;
   
-  
+  private static final Color BACKGROUND = new Color(237, 237, 237);
+  private static final Color RED = Color.red;
   /*
    * no parameter constuctor for DataViewContainerPanel.
    * Some basic gui setup
@@ -393,13 +394,27 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     dv.init();
     dv.getEntityInfo();
     lastPV = dv.getPV();
-    JPanel tablePanel = dv.DataViewerPanel;
-    
+    JPanel tablePanel = null;
+    if (dv.getShowDataView())
+    {
+      tablePanel = dv.DataViewerPanel;
+    }
+    else
+    {
+      tablePanel = new JPanel();
+      tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
+      String text = "Data in data file "+ id +" cannot be read!";
+      JLabel warning = new JLabel(text);
+      warning.setForeground(RED);
+      tablePanel.add(BorderLayout.CENTER, warning);
+    }
+    tablePanel.setOpaque(true);
+    tablePanel.setBackground(BACKGROUND);
     JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
     JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
     currentDataPanel.setLayout(new BorderLayout(0,0));
     currentDataPanel.add(BorderLayout.CENTER,tablePanel);
-   
+    currentDataPanel.setBackground(BACKGROUND);
   }
   
   private JSplitPane createEntityPanel() {
