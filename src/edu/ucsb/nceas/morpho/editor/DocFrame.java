@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-09 16:59:57 $'
- * '$Revision: 1.80 $'
+ *     '$Date: 2002-01-10 21:29:35 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1245,23 +1245,16 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 boolean hasNonEmptyTextLeaves(DefaultMutableTreeNode node) {
   boolean res = false;
   DefaultMutableTreeNode parentNode = null;
-  DefaultMutableTreeNode curNode = node.getFirstLeaf();
-  Vector leafs = new Vector();
-  leafs.addElement(curNode);
-  while (curNode!=null) {
-    curNode = curNode.getNextLeaf();
-    if (curNode!=null) {
-      leafs.addElement(curNode);
-    }
-  }
-  Enumeration enum = leafs.elements();
+  Enumeration enum = node.depthFirstEnumeration();
   while (enum.hasMoreElements()) {
-    curNode = (DefaultMutableTreeNode)enum.nextElement();
-    NodeInfo ni = (NodeInfo)curNode.getUserObject();
-    if (ni.name.equals("#PCDATA")) {         // is a text node
-      String pcdata = ni.getPCValue();
-      if (pcdata.trim().length()>0) {        // has text data
-        return true;
+    DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
+    if (curNode.isLeaf()) {
+      NodeInfo ni = (NodeInfo)curNode.getUserObject();
+      if (ni.name.equals("#PCDATA")) {         // is a text node
+        String pcdata = ni.getPCValue();
+        if (pcdata.trim().length()>0) {        // has text data
+          return true;
+        }
       }
     }
   }
