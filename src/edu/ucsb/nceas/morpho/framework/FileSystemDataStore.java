@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:33:23 $'
- * '$Revision: 1.24 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-28 17:56:26 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,6 @@ public class FileSystemDataStore extends DataStore
         try
         {
           savedir.mkdirs(); //create any directories
-//DFH          savefile.createNewFile(); //create the file
         }
         catch(Exception ee)
         {
@@ -124,7 +123,6 @@ public class FileSystemDataStore extends DataStore
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/local.noid");
-//DFH      tempfile.createNewFile();
       FileWriter fw = new FileWriter(tempfile);
       int c = file.read();
       while(c != -1)
@@ -150,7 +148,6 @@ public class FileSystemDataStore extends DataStore
       }
       FileWriter writer = new FileWriter(savefile);
       int d = sr.read();
-//      System.out.println("writing file: ");
       while(d != -1)
       {
         writer.write(d); //write out everything in the reader

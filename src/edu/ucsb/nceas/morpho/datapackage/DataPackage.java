@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-27 16:47:06 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2001-11-28 17:56:26 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -620,8 +620,10 @@ public class DataPackage
   
   /**
    * Uploads a local package to metacat
+   * @return the package that was uploaded.  Note that this may have a different
+   * id from the one that was told to upload.
    */
-  public void upload()
+  public DataPackage upload()
   {
     ClientFramework.debug(20, "Uploading package.");
     
@@ -706,12 +708,159 @@ public class DataPackage
         }
         catch(Exception e)
         {
-          framework.debug(0, "Error uploading " + key + " to metacat: " + 
-                          e.getMessage());
-          e.printStackTrace();
+          String message = e.getMessage();
+          String accNumMess1 = "Accession number";
+          String accNumMess2 = "is already in use.";
+          if(message.indexOf(accNumMess1) != -1 && 
+             message.indexOf(accNumMess2) != -1)
+          {
+            return incrementPackageIds();
+          }
+          else
+          {
+            framework.debug(0, "Error uploading " + key + " to metacat: " + 
+                            e.getMessage());
+            e.printStackTrace();
+          }
         }
       }
     }
+    return this;
+  }
+  
+  /**
+   * find the next unused id then give each file in the package a new id
+   * starting with the next unused one.  All of the ids within the package
+   * files must also be updated, including the id tags and the triples.
+   * @return a new package with the new ids.
+   */
+  private DataPackage incrementPackageIds()
+  {
+    Vector fileIds = getAllIdentifiers();
+    Hashtable updatedIds = new Hashtable();
+    Hashtable updatedFiles = new Hashtable();
+    AccessionNumber accNum = new AccessionNumber(framework);
+    for(int i=0; i<fileIds.size(); i++)
+    {
+      String fileId = (String)fileIds.elementAt(i);
+      StringBuffer sb = new StringBuffer();
+      if(!fileId.equals(this.id))
+      { //we want to save the package file for last so we can update all 
+        //of the ids in the triples.
+        String newId = accNum.getNextId();
+        updatedIds.put(fileId, newId); //keep a record of what we changed
+        try
+        {
+          File f = PackageUtil.openFile(fileId, framework);
+          FileInputStream fis = new FileInputStream(f);
+          int c = fis.read();
+          while(c != -1)
+          { //read the file into a stringbuffer
+            sb.append((char)c);
+            c = fis.read();
+          }
+        }
+        catch(Exception e)
+        {
+          framework.debug(0, "Error reading file " + fileId + " in package." +
+                          "DataPackage.incrementPackageIds()");
+        }
+        String fileString = sb.toString();
+        fileString = replaceTextInString(fileString, fileId, newId);
+        //so now we have the file with all of the ids in the text replaced
+        updatedFiles.put(newId, fileString);
+        //put it in a hashtable to be saved later.
+      }
+    }
+    
+    StringBuffer sb = new StringBuffer();
+    try
+    {
+      File packageFile = getTriplesFile();
+      FileInputStream fis = new FileInputStream(packageFile);
+      int c = fis.read();
+      while(c != -1)
+      {
+        sb.append((char)c);
+        c = fis.read();
+      }
+    }
+    catch(FileNotFoundException fnfe)
+    {
+      framework.debug(0, "Error finding package file in DataPackage." +
+                      "incrementPackageIds(): " + fnfe.getMessage());
+    }
+    catch(IOException ioe)
+    {
+      framework.debug(0, "Error reading package file in DataPackage." +
+                      "incrementPackageIds(): " + ioe.getMessage());
+    }
+    
+    String packageFileString = sb.toString();
+    //update the triples file
+    Enumeration oldids = updatedIds.keys();
+    while(oldids.hasMoreElements())
+    { //replace all of the old ids with the new ids from files in the package
+      String oldid = (String)oldids.nextElement();
+      String newid = (String)updatedIds.get(oldid);
+      packageFileString = replaceTextInString(packageFileString,
+                                              oldid, newid);
+    }
+    //replace the id of the package file itself.
+    String newPackageId = accNum.getNextId();
+    packageFileString = replaceTextInString(packageFileString,
+                                            this.id, newPackageId);
+    updatedFiles.put(newPackageId, packageFileString);
+    
+    //now we should have the complete package updated.  we need to go through
+    //and save all of the files.
+    Enumeration packageids = updatedFiles.keys();
+    while(packageids.hasMoreElements())
+    {
+      String fileid = (String)packageids.nextElement();
+      String filestring = (String)updatedFiles.get(fileid);
+      
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      
+      //save the files
+      fsds.newFile(fileid, new StringReader(filestring)); //new local file
+      try
+      {
+        mds.newFile(fileid, new StringReader(filestring)); //new metacat file
+      }
+      catch(MetacatUploadException mue)
+      {
+        framework.debug(0, "Error uploading file " + fileid + " to metacat" +
+                        " in DataPackage.incrementPackageIds(): " +
+                        mue.getMessage());
+      }
+    }
+    
+    //create a new package
+    DataPackage dp = new DataPackage(this.location, newPackageId, null, 
+                                     framework);
+    this.delete(this.location);
+    return dp;
+  }
+  
+  /**
+   * replaces s1 with s2 in text and returns the new string
+   */
+  private String replaceTextInString(String text, String s1, String s2)
+  {
+    int s1Index = text.indexOf(s1);
+    while(s1Index != -1)
+    { 
+      String begin = text.substring(0, s1Index);
+      String end = text.substring(s1Index + s1.length(), 
+                                        text.length());
+      begin += s2; //add the new text
+      //put the strings back together again.
+      text = begin + end;
+      s1Index = text.indexOf(s1);
+    }
+    return text;
   }
   
   /**

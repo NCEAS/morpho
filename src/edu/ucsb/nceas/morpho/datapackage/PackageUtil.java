@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-16 19:53:18 $'
- * '$Revision: 1.14 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-28 17:56:26 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,8 +317,7 @@ public class PackageUtil
       sb.append(node.getNodeName());
       sb.append('>');
     }
-
-    //sb.flush();
+    
     return sb.toString();
   }
   
@@ -531,13 +530,11 @@ public class PackageUtil
     {
       FileReader fr = new FileReader(xmlFile);
       int c = fr.read();
-//DFH        while(fr.ready() && c != -1)
         while(c != -1)
       {
         sb.append((char)c);
         c = fr.read();
       }
-//      sb.append((char)c);
       fr.close();
       return sb.toString();
     }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:33:23 $'
- * '$Revision: 1.27 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-28 17:56:26 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,37 +212,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     StringBuffer fileText = new StringBuffer();
     StringBuffer messageBuf = new StringBuffer();
     String accessFileId = null;
-    /*
-    if(checkforaccessfile)
-    {
-      try
-      {
-        accessFileId = dp.getAccessId();
-        //System.out.println("===================accessFileId: " + accessFileId);
-      }
-      catch(Exception e)
-      {
-        throw new MetacatUploadException("Error finding an access control file " +
-                                         "in MetacatDataStore.saveFile(): " + 
-                                         e.getMessage());
-      }
-      
-      if(publicAccess)
-      {
-        access = "yes";
-        if(accessFileId != null && !accessFileId.equals(""))
-        { //we need to open the access file and make sure it is giving 
-          //public read access to this package.
-          
-        }
-      }
-      else
-      { //we need to open the access file and make sure it does not give public
-        //read access to this package.
-        
-      }
-    }
-    */
+
     try
     {
       /*
@@ -258,7 +228,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/metacat.noid");
-//DFH      tempfile.createNewFile();
       FileWriter fw = new FileWriter(tempfile);
       int c = file.read();
       while(c != -1)
@@ -339,6 +308,16 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       //e.printStackTrace();
       throw new MetacatUploadException(e.getMessage());
     }
+  }
+  
+  /**
+   * Create and save a new file to metacat using the "insert" action.
+   * @param name: the id of the new file
+   * @param file: the stream to the file to write to metacat
+   */
+  public File newFile(String name, Reader file) throws MetacatUploadException
+  {
+    return saveFile(name, file, null, "insert", true);
   }
   
   /**

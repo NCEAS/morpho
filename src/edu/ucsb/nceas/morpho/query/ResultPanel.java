@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-06 21:21:19 $'
- * '$Revision: 1.24 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-28 17:56:26 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 
 
@@ -477,17 +478,49 @@ public class ResultPanel extends JPanel
 			else if (object == deleteLocalMenu)
 		  { //delete the local package
         ClientFramework.debug(20, "Deleteing the local package.");
-        dataPackage.delete(docid, DataPackage.LOCAL);
+        String message = "Are you sure you want to delete the package from " +
+                         "your local file system?";
+        int choice = JOptionPane.YES_OPTION;
+        choice = JOptionPane.showConfirmDialog(null, message, 
+                               "Morpho", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          dataPackage.delete(docid, DataPackage.LOCAL);
+        }
       }
 			else if (object == deleteMetacatMenu)
 			{ //delete the object on metacat
         ClientFramework.debug(20, "Deleteing the metacat package.");
-        dataPackage.delete(docid, DataPackage.METACAT);
+        String message = "Are you sure you want to delete the package from " +
+                         "Metacat? You will not be able to upload it " +
+                         "again with the same identifier.";
+        int choice = JOptionPane.YES_OPTION;
+        choice = JOptionPane.showConfirmDialog(null, message, 
+                               "Morpho", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          dataPackage.delete(docid, DataPackage.METACAT);
+        }
       }
 			else if (object == deleteAllMenu)
 			{ //delete both of the objects
         ClientFramework.debug(20, "Deleting both copies of the package.");
-        dataPackage.delete(docid, DataPackage.BOTH);
+        String message = "Are you sure you want to delete the package from " +
+                         "Metacat and your local file system? " +
+                         "Deleting a package cannot be undone!";
+        int choice = JOptionPane.YES_OPTION;
+        choice = JOptionPane.showConfirmDialog(null, message, 
+                               "Morpho", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          dataPackage.delete(docid, DataPackage.BOTH);
+        }
       }
       else if (object == exportMenu)
       {
