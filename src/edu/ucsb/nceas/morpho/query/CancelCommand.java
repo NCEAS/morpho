@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 23:41:48 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-26 21:08:31 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,9 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.util.*;
-import java.awt.*;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.Window;
 
 /**
  * Class to handle cancel command
