@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.0.1 - January 15, 2002
+Version: 1.0.2 - January 25, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -97,7 +97,7 @@ Known Bugs and Feature Requests
 See http://bugzilla.ecoinformatics.org where we maintain a comprehensive
 list of the know issues with Morpho, and a list ofthe new features that
 have been requested.  Submit reports of new bugs to this address as well.
-
+---
 Version 1.0.1 of Morpho is bug-fix. Specifically, it fixes one problem with
 the editor that occurred when multiple empty nodes are displayed. Previously,
 when data was entered in one node, it also appeared in all copies of the
@@ -112,6 +112,10 @@ column by clicking on a text field, the caret that indicates that a text field
 is selected sometimes does not appear. Despite the appearance that the text
 field is not selected, one can type keystrokes and the characters should appear
 in the text field.
+---
+Version 1.0.2 of Morpho is another bug-fix. In particular, problems in handling
+large data files have been fixed and non-scrolling lists have been corrected
+to scroll properly
 
 Legalese
 --------
