@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-15 22:57:26 $'
- * '$Revision: 1.103 $'
+ *     '$Date: 2004-03-16 00:21:04 $'
+ * '$Revision: 1.104 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1145,6 +1145,10 @@ public class DataViewer extends javax.swing.JPanel
     }
     ptm = new PersistentTableModel(pv, column_labels);
     ptm.setFieldDelimiter(field_delimiter);
+    
+    UIManager.put("Table.focusCellBackground",new Color(0,0,150));
+    UIManager.put("Table.focusCellForeground",Color.white);
+    
     table.setModel(ptm);
 
     table.setColumnSelectionAllowed(true);
