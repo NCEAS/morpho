@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-19 23:50:09 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2003-01-09 20:21:53 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -303,7 +303,7 @@ public class LocalQuery
  //           Log.debug(30,"starting XPathSearch: "+xpathExpression);
             boolean allHits = false;
             // there is no sense in actually returning all the text nodes
-            // this, if we are searching for any text node, skip the selectNodeList
+            // thus, if we are searching for any text node, skip the selectNodeList
             // routine (which is time consuming) since we are going to get a 'hit'
             // no matter what
             if (xpathExpression.equals("//*[text()]")) {
@@ -660,6 +660,15 @@ public class LocalQuery
     separator = profile.get("separator", 0);
   }
 
+  /*
+   * remove the indicated doc from all local caches
+   */
+  public static void removeFromCache(String docid) {
+    dom_collection.remove(docid);
+    doctype_collection.remove(docid);
+    dataPackage_collection.remove(docid);
+  }
+  
   /** Main routine for testing */
   public static void main(String[] args) 
   {
