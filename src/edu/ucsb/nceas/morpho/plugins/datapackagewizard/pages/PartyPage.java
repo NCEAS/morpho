@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-22 06:58:15 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-03-23 00:17:49 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,25 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -45,18 +56,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import org.w3c.dom.Node;
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
 
 public class PartyPage extends AbstractUIPage {
@@ -151,10 +151,11 @@ public class PartyPage extends AbstractUIPage {
     init();
   }
 
+
   /**
-   *  sets the role and roleString for this wizard page
+   * sets the role and roleString for this wizard page
    *
-   *  @return
+   * @param role short
    */
   public void setRole(short role) {
     this.role = role;
@@ -607,12 +608,11 @@ public class PartyPage extends AbstractUIPage {
     getPartyList();
   }
 
+
   /**
-   *  The action removes all previous entries in party list and adds all
-   *  entries in WidgetFactory.responsiblePartyList to the list.
-   *  So in way it refreshes the list.
-   *
-   *  @return
+   * The action removes all previous entries in party list and adds all entries
+   * in WidgetFactory.responsiblePartyList to the list. So in way it refreshes
+   * the list.
    */
   private void getPartyList() {
     // remove all previous items
@@ -632,11 +632,13 @@ public class PartyPage extends AbstractUIPage {
     }
   }
 
+
   /**
-   *  The action checks if the referedPage was created in present DP.
+   * The action checks if the referedPage was created in present DP.
    *
-   *  @return PartyPage Object if referedPage was created in same DP.
-   *          Otherwise returns null
+   * @return PartyPage Object if referedPage was created in same DP. Otherwise
+   *   returns null
+   * @param referedPage PartyPage
    */
   private PartyPage partyInSameDP(PartyPage referedPage){
 
@@ -668,11 +670,12 @@ public class PartyPage extends AbstractUIPage {
     return null;
   }
 
+
   /**
-   *  The action sets the value of all Fields in 'this' page equal to values
-   *  of corresponding fields in PartyPage passed as arguement
+   * The action sets the value of all Fields in 'this' page equal to values of
+   * corresponding fields in PartyPage passed as arguement
    *
-   *  @return
+   * @param Page PartyPage
    */
   private void setValue(PartyPage Page) {
     if (Page == null) {
@@ -721,11 +724,12 @@ public class PartyPage extends AbstractUIPage {
     }
   }
 
+
   /**
-   *  The action sets all the fields in 'this' page editable or non-editable
-   *  based on boolean arguement passed
+   * The action sets all the fields in 'this' page editable or non-editable
+   * based on boolean arguement passed
    *
-   *  @return
+   * @param editable boolean
    */
   public void setEditable(boolean editable) {
     if (rolePickList != null) {
@@ -748,10 +752,12 @@ public class PartyPage extends AbstractUIPage {
     urlField.setEditable(editable);
   }
 
+
   /**
-   *  The action sets prefered Min and Max Sizes for the Components
+   * The action sets prefered Min and Max Sizes for the Components
    *
-   *  @return
+   * @param component JComponent
+   * @param dims Dimension
    */
   private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
     WidgetFactory.setPrefMaxSizes(component, dims);
@@ -924,13 +930,11 @@ public class PartyPage extends AbstractUIPage {
     return referenceIdString;
   }
 
+
   /**
-   *  The action is called from PartyMainPage. It gets updated values of
-   *  all fields of referedPage and sets it in 'this' Page. Also it updates
-   *  Party list irrespective of whether this is a refered page or not.
-   *
-   *  @return boolean true if dialog should close and return to wizard, false
-   *          if not (e.g. if a required field hasn't been filled in)
+   * The action is called from PartyMainPage. It gets updated values of all
+   * fields of referedPage and sets it in 'this' Page. Also it updates Party
+   * list irrespective of whether this is a refered page or not.
    */
   public void setEditValue() {
 
@@ -1411,8 +1415,9 @@ public class PartyPage extends AbstractUIPage {
 
   public void setPageData(OrderedMap map, String _xPathRoot) {
 
-Log.debug(45, "PartyPage.setPageData() called with _xPathRoot = "+_xPathRoot
-              +"\n Map = \n"+map);
+    Log.debug(45,
+              "PartyPage.setPageData() called with _xPathRoot = " + _xPathRoot
+              + "\n Map = \n" + map);
 
 // ultimately, we need to be able to get a list of available refs from
 // datapackage and display them. For now, just hide picklist
@@ -1420,28 +1425,36 @@ Log.debug(45, "PartyPage.setPageData() called with _xPathRoot = "+_xPathRoot
 
     radioPanel.setVisible(false);
 
+    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot =
+                                                                     _xPathRoot;
 
-    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
-
-    String xpathRootNoPredicates = stripPredicates(this.xPathRoot);
+    String xpathRootNoPredicates
+        = XMLUtilities.removeAllPredicates(this.xPathRoot);
 
     while (xpathRootNoPredicates.endsWith("/")) {
       xpathRootNoPredicates
-          = xpathRootNoPredicates.substring(0,xpathRootNoPredicates.length()-1);
+          = xpathRootNoPredicates.substring(0,
+                                            xpathRootNoPredicates.length() - 1);
     }
-Log.debug(45, "PartyPage.setPageData() stripPredicates(xPathRoot) = "+xpathRootNoPredicates);
+    Log.debug(45,
+        "PartyPage.setPageData() XMLUtilities.removeAllPredicates(xPathRoot) = "
+              + xpathRootNoPredicates);
 
     OrderedMap map2 = map;
-    map = stripIndexOneFromMapKeys(map);
+    map = removePredicatesFromMapKeys(map);
 
-Log.debug(45, "PartyPage.setPageData() after stripIndexOneFromMapKeys. map = \n"+map);
+    Log.debug(45,
+        "PartyPage.setPageData() after removePredicatesFromMapKeys. map = \n"
+              + map);
 
     // check if it's a reference:
     String ref = (String)map.get(xpathRootNoPredicates + "/references");
     if (notNullAndNotEmpty(ref)) {
 
       //get party details from AbstractDataPackage...
-      AbstractDataPackage abs = getAbstractDataPackage();
+      AbstractDataPackage abs
+          = UIController.getInstance().getCurrentAbstractDataPackage();
+
       if (abs == null) {
 
         Log.debug(45,
@@ -1467,129 +1480,94 @@ Log.debug(45, "PartyPage.setPageData() after stripIndexOneFromMapKeys. map = \n"
 
     //role
     if (role == ASSOCIATED || role == PERSONNEL) {
-      String role = (String) map.get(xpathRootNoPredicates + "/role");
-         if (role != null) {
-           rolePickList.addItem(role);
-           rolePickList.setSelectedItem(role);
-        }
+      String role = (String)map.get(xpathRootNoPredicates + "/role");
+      if (role != null) {
+        rolePickList.addItem(role);
+        rolePickList.setSelectedItem(role);
+      }
     }
 
-    String name = (String) map.get(xpathRootNoPredicates + "/individualName/salutation");
+    String name = (String)map.get(xpathRootNoPredicates
+                                  + "/individualName/salutation");
     if (name != null) {
       salutationField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/individualName/givenName");
+    name = (String)map.get(xpathRootNoPredicates + "/individualName/givenName");
     if (name != null) {
       firstNameField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/individualName/surName");
+    name = (String)map.get(xpathRootNoPredicates + "/individualName/surName");
     if (name != null) {
       lastNameField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/organizationName");
+    name = (String)map.get(xpathRootNoPredicates + "/organizationName");
     if (name != null) {
       organizationField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/positionName");
+    name = (String)map.get(xpathRootNoPredicates + "/positionName");
     if (name != null) {
       positionNameField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/address/deliveryPoint");
+    name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint");
     if (name != null) {
       address1Field.setText(name);
     }
-    name = (String) map2.get(xpathRootNoPredicates + "/address[1]/deliveryPoint[2]");
+    name = (String)map2.get(xpathRootNoPredicates
+                            + "/address[1]/deliveryPoint[2]");
     if (name != null) {
       address2Field.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/address/city");
+    name = (String)map.get(xpathRootNoPredicates + "/address/city");
     if (name != null) {
       cityField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/address/administrativeArea");
+    name = (String)map.get(xpathRootNoPredicates
+                           + "/address/administrativeArea");
     if (name != null) {
       stateField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/address/postalCode");
+    name = (String)map.get(xpathRootNoPredicates + "/address/postalCode");
     if (name != null) {
       zipField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/address/country");
+    name = (String)map.get(xpathRootNoPredicates + "/address/country");
     if (name != null) {
       countryField.setText(name);
     }
-    name = (String) map2.get(xpathRootNoPredicates + "/phone[1]");
-    String type = (String) map2.get(xpathRootNoPredicates + "/phone[1]/@phonetype");
-    if ( (name != null) && (type.equals("voice"))) {
+    name = (String)map2.get(xpathRootNoPredicates + "/phone[1]");
+    String type = (String)map2.get(xpathRootNoPredicates
+                                   + "/phone[1]/@phonetype");
+    if ((name != null) && (type.equals("voice"))) {
       phoneField.setText(name);
     }
-    name = (String) map2.get(xpathRootNoPredicates + "/phone[2]");
-    type = (String) map2.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
-    if ( (name != null) && (type.equals("fax"))) {
+    name = (String)map2.get(xpathRootNoPredicates + "/phone[2]");
+    type = (String)map2.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
+    if ((name != null) && (type.equals("fax"))) {
       faxField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/electronicMailAddress");
+    name = (String)map.get(xpathRootNoPredicates + "/electronicMailAddress");
     if (name != null) {
       emailField.setText(name);
     }
-    name = (String) map.get(xpathRootNoPredicates + "/onlineUrl");
+    name = (String)map.get(xpathRootNoPredicates + "/onlineUrl");
     if (name != null) {
       urlField.setText(name);
     }
 
   }
 
-  private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
+  private OrderedMap removePredicatesFromMapKeys(OrderedMap map) {
 
     OrderedMap newMap = new OrderedMap();
     Iterator it = map.keySet().iterator();
     while(it.hasNext()) {
       String key = (String) it.next();
       String val = (String)map.get(key);
-      newMap.put(stripPredicates(key), val);
+      newMap.put(XMLUtilities.removeAllPredicates(key), val);
     }
     return newMap;
   }
 
 
-  private StringBuffer strippedXPathBuff = new StringBuffer();
-  //
-  private String stripPredicates(String xpath) {
-
-    int pos;
-    if ((pos = xpath.indexOf("[")) < 0) return xpath;
-
-    strippedXPathBuff.delete(0, strippedXPathBuff.length());
-
-    for (; pos != -1; pos = xpath.indexOf("[")) {
-      strippedXPathBuff.append(xpath.substring(0, pos));
-      pos = 1 + xpath.indexOf("]");
-      if (pos < 1) pos = xpath.length();
-      xpath = xpath.substring(pos);
-    }
-    strippedXPathBuff.append(xpath);
-
-    return strippedXPathBuff.toString();
-  }
-
-
-  private AbstractDataPackage getAbstractDataPackage() {
-
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-
-    if (morphoFrame == null) {
-
-      Log.debug(20, "PartyPage setPageData() - morphoFrame==null");
-      return null;
-    }
-    DataViewContainerPanel dataViewContainerPanel = morphoFrame.
-                                                    getDataViewContainerPanel();
-    if (dataViewContainerPanel == null) {
-
-      Log.debug(20, "PartyPage setPageData() - dataViewContainerPanel==null");
-      return null;
-    }
-    return dataViewContainerPanel.getAbstractDataPackage();
-  }
 
 }

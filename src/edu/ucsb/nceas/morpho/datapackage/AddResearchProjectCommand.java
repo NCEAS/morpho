@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-22 06:58:15 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-03-23 00:17:49 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,30 +70,15 @@ public class AddResearchProjectCommand implements Command {
   public void execute(ActionEvent event) {
 
     dataViewContainerPanel = null;
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 
-    if (morphoFrame == null) {
-
-      Log.debug(20, "AddResearchProjectCommand - morphoFrame==null");
-      Log.debug(5, "Unable to open project details!");
-      return;
-    }
-    dataViewContainerPanel = morphoFrame.getDataViewContainerPanel();
-
-    if (dataViewContainerPanel==null) {
-
-      Log.debug(20, "AddResearchProjectCommand - dataViewContainerPanel==null");
-      Log.debug(5, "Unable to open project details!");
-      return;
-    }
-    adp = dataViewContainerPanel.getAbstractDataPackage();
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     if (showProjectDialog()) {
 
       try {
         insertProject();
       } catch (Exception w) {
-        Log.debug(20, "Exception trying to modify project DOM: "+w);
+        Log.debug(15, "Exception trying to modify project DOM: "+w);
         w.printStackTrace();
         Log.debug(5, "Unable to add project details!");
       }
@@ -142,43 +127,49 @@ public class AddResearchProjectCommand implements Command {
 
     OrderedMap map = projectPage.getPageData(PROJECT_SUBTREE_NODENAME);
 
-Log.debug(45, "got project details from Project page -\n\n" + map.toString());
+    Log.debug(45, "got project details from Project page -\n\n" + map.toString());
 
     if (map==null || map.isEmpty()) {
       Log.debug(5, "Unable to get project details from input!");
       return;
     }
-    if (projectRoot==null) {
-      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-      Document doc = impl.createDocument("", "project", null);
 
-      projectRoot = doc.getDocumentElement();
+    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    Document doc = impl.createDocument("", "project", null);
 
-    } else {
+    projectRoot = doc.getDocumentElement();
 
-      XMLUtilities.removeAllChildren(projectRoot);
-    }
 
     try {
-Log.debug(45, "adding project details to package -\n\n" + map);
-
       XMLUtilities.getXPathMapAsDOMTree(map, projectRoot);
 
     } catch (TransformerException w) {
       Log.debug(5, "Unable to add project details to package!");
-      Log.debug(20, "TransformerException (" + w + ") calling "
+      Log.debug(15, "TransformerException (" + w + ") calling "
                 +"XMLUtilities.getXPathMapAsDOMTree(map, projectRoot) with \n"
                 +"map = " + map
                 +" and projectRoot = " + projectRoot);
       w.printStackTrace();
+      return;
     }
+    //delete old project from datapackage
+    Node check = adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+
+    if (check != null) {
+      Log.debug(45, "deleted old project details from package...");
+    } else {
+      Log.debug(5,  "Unable to delete old project details from package...");
+    }
+
     // add to the datapackage
-    adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, projectRoot, 0);
+    check = adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, projectRoot, 0);
 
-Log.debug(45, "added project details to package -\n\n"
-        + XMLUtilities.getDOMTreeAsString(projectRoot));
+    if (check != null) {
+      Log.debug(45, "added new project details to package...");
+    } else {
+      Log.debug(5, "Unable to add new project details to package...");
+    }
   }
-
 
   private Node projectRoot;
   private AbstractDataPackage adp;

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-22 06:58:15 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-03-23 00:17:49 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JCheckBox;
 
 public class Project extends AbstractUIPage {
 
@@ -66,6 +67,7 @@ public class Project extends AbstractUIPage {
   public final String subtitle   = " ";
   public final String pageNumber = "8";
 
+  private JPanel checkBoxPanel;
   private JPanel dataPanel;
   private JPanel noDataPanel;
   private JPanel currentPanel;
@@ -131,11 +133,11 @@ public class Project extends AbstractUIPage {
       }
     };
 
-    JPanel radioPanel = WidgetFactory.makeCheckBoxPanel(buttonsText, -1, ilistener);
-    radioPanel.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
+    checkBoxPanel = WidgetFactory.makeCheckBoxPanel(buttonsText, -1, ilistener);
+    checkBoxPanel.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
                                           WizardSettings.PADDING,
                                           2 * WizardSettings.PADDING));
-    topBox.add(radioPanel);
+    topBox.add(checkBoxPanel);
     topBox.add(WidgetFactory.makeHalfSpacer());
 
     this.add(topBox, BorderLayout.NORTH);
@@ -456,12 +458,18 @@ public class Project extends AbstractUIPage {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
-    if (data == null || data.isEmpty())return;
+    JCheckBox checkBox = ((JCheckBox)(checkBoxPanel.getComponent(0)));
+    if (data == null || data.isEmpty()) {
+
+      checkBox.setSelected(false);
+      return;
+    }
+    checkBox.setSelected(true);
 
     hiddenFieldsMap.clear();
     personnelMap.clear();
 
-    Iterator it = data.keySet().iterator();
+    Iterator keyIt = data.keySet().iterator();
     Object nextXPathObj = null;
     String nextXPath = null;
     Object nextValObj = null;
@@ -469,16 +477,17 @@ public class Project extends AbstractUIPage {
 
     List personnelList = new ArrayList();
 
-    while (it.hasNext()) {
+    while (keyIt.hasNext()) {
 
-      nextXPathObj = it.next();
+      nextXPathObj = keyIt.next();
       if (nextXPathObj == null)continue;
       nextXPath = (String)nextXPathObj;
 
       nextValObj = data.get(nextXPathObj);
       nextVal = (nextValObj == null) ? "" : ((String)nextValObj).trim();
 
-      Log.debug(45, "Project:  nextXPath = " + nextXPath + "\n nextVal   = " + nextVal);
+      Log.debug(45, "Project:  nextXPath = " + nextXPath
+                + "\n nextVal   = " + nextVal);
 
       // remove everything up to and including the last occurrence of
       // this.xPathRoot to get relative xpaths, in case we're handling a
@@ -498,7 +507,8 @@ public class Project extends AbstractUIPage {
 
       } else if (nextXPath.startsWith(PERSONNEL_REL_XPATH)) {
 
-        Log.debug(15,">>>>>>>>>> adding to personnelList: nextXPathObj="+nextXPathObj+"; nextValObj="+nextValObj);
+        Log.debug(45,">>>>>>>>>> adding to personnelList: nextXPathObj="
+                  +nextXPathObj+"; nextValObj="+nextValObj);
         addToPersonnel(nextXPathObj, nextValObj, personnelList);
       } else {
 
@@ -506,16 +516,16 @@ public class Project extends AbstractUIPage {
       }
     }
 
-    Iterator itp2 = personnelList.iterator();
+    Iterator persIt = personnelList.iterator();
     Object nextPersonnelMapObj = null;
     OrderedMap nextPersonnelMap = null;
     int partyPredicate = 1;
 
     partiesList.removeAllRows();
 
-    while (itp2.hasNext()) {
+    while (persIt.hasNext()) {
 
-      nextPersonnelMapObj = itp2.next();
+      nextPersonnelMapObj = persIt.next();
       if (nextPersonnelMapObj == null) continue;
       nextPersonnelMap = (OrderedMap)nextPersonnelMapObj;
       if (nextPersonnelMap.isEmpty()) continue;
@@ -552,27 +562,21 @@ public class Project extends AbstractUIPage {
     if (nextPersonnelXPathObj == null) return;
     String nextPersonnelXPath = (String)nextPersonnelXPathObj;
     int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH);
-//Log.debug(45, "~~~~~~~~~~~ predicate="+predicate+"; personnelList.size()="+personnelList.size());
+
 // NOTE predicate is 1-relative, but List indices are 0-relative!!!
     if (predicate >= personnelList.size()) {
 
-//Log.debug(45, "~~~~~~~~~~~ predicate >= personnelList.size(); making list bigger...");
       for (int i = personnelList.size(); i <= predicate; i++) {
         personnelList.add(new OrderedMap());
 //Log.debug(45, "~~~~~~~~~~~ added "+1);
       }
-//Log.debug(45, "~~~~~~~~~~~ personnelList.size() now = "+personnelList.size());
     }
-//Log.debug(45, "~~~~~~~~~~~ predicate="+predicate+"; personnelList.size()="+personnelList.size());
 
     if (predicate < personnelList.size()) {
       Object nextMapObj = personnelList.get(predicate);
       OrderedMap nextMap = (OrderedMap)nextMapObj;
-//Log.debug(45,"~~~~~~~~~~~ adding to map: nextPersonnelXPathObj="
-//                +nextPersonnelXPathObj+"; nextPersonnelVal="+nextPersonnelVal);
       nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
     } else {
-
       Log.debug(15,"**** ERROR - Project.addToPersonnel() - predicate > personnelList.size()");
     }
   }
