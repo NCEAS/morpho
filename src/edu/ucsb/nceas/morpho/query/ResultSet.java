@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-09 16:44:57 $'
- * '$Revision: 1.8 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-05-09 20:29:28 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -475,7 +475,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       ServiceProvider provider = 
                       framework.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataStore = (DataPackageInterface)provider;
-      dataStore.openDataPackage(location, docid);
+      dataStore.openDataPackage(location, docid, relationsVector);
     } catch (ServiceNotHandledException snhe) {
       framework.debug(6, snhe.getMessage());
     }

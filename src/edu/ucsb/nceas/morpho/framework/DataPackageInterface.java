@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-07 21:14:08 $'
- * '$Revision: 1.1 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-05-09 20:29:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.framework;
 import javax.swing.Action;
 import java.awt.Component;
 import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * All component plugins that handle access to data packages should implement
@@ -45,5 +46,6 @@ public interface DataPackageInterface
    * @param location indicates the location from which to open the data
    * @param identifier the unique identifier to use to open the data
    */
-  public void openDataPackage(String location, String identifier);
+  public void openDataPackage(String location, String identifier, 
+                              Vector relations);
 }

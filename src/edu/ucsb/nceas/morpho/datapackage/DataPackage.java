@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-08 15:24:57 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-09 20:28:39 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,121 +29,22 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.framework.*;
 
 import java.util.Hashtable;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import java.awt.event.ActionEvent;
+import java.util.Vector;
 
 public class DataPackage 
-       implements PluginInterface, ServiceProvider, DataPackageInterface
 {
-  /** A reference to the container framework */
-  private ClientFramework framework = null;
-
-  /** The configuration options object reference from the framework */
-  private ConfigXML config = null;
-
-  /** Store our menus and toolbars */
-  private Action[] menuActions = null;
-  private Action[] toolbarActions = null;
-
   /**
-   * This hashtable has all of the references of ids to filenames (or urls in
-   * the case of a file on metacat).  
+   * Create a new data package object with an id, location and associated
+   * relations.
+   * @param location: the location of the file (server or local)
+   * @param identifier: the id of the data package.  usually the id of the
+   * file that contains the triples.
+   * @param relations: a vector of all relations in this package.
    */
-  Hashtable packagecomponents = new Hashtable();
-
-  /** WHAT IS THIS FOR, CHAD? */
-  IdContainer accNum;
-
-  /**
-   * Construct the plugin.  Initialize our menus and toolbars.
-   */
-  public DataPackage()
+  public DataPackage(String location, String identifier, Vector relations, 
+                     ClientFramework framework)
   {
-    // Create the menus and toolbar actions, will register later
-    initializeActions();
-  }
-
-  /** 
-   * The plugin must store a reference to the ClientFramework 
-   * in order to be able to call the services available through 
-   * the framework.  This is also the time to register menus
-   * and toolbars with the framework.
-   */
-  public void initialize(ClientFramework cf)
-  {
-    this.framework = cf;
-    this.config = framework.getConfiguration();
-    loadConfigurationParameters();
-
-    // Create the IdContainer
-    accNum = new IdContainer(cf);
-
-    // Add menus, and toolbars
-    framework.addMenu("File", new Integer(1), menuActions);
-    framework.addToolbarActions(toolbarActions);
-
-    // Register Services
-    try {
-      framework.addService(DataPackageInterface.class, this);
-      framework.debug(6, "Service added: DataPackageInterface.");
-    } catch (ServiceExistsException see) {
-      framework.debug(6, "Service registration failed: DataPackageInterface.");
-      framework.debug(6, see.toString());
-    }
-
-    cf.debug(9, "Init DataPackage Plugin"); 
-  }
-
-  /**
-   * Set up the actions for menus and toolbars
-   */
-  private void initializeActions() {
-    // Set up the menus for the application
-
-    menuActions = new Action[2];
-    Action searchItemAction = new AbstractAction("New Data Package") 
-    {
-      public void actionPerformed(ActionEvent e) 
-      {
-        framework.debug(1, "Action fired: New Data Package");
-      }
-    };
-    
-    searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
-    searchItemAction.putValue("menuPosition", new Integer(0));
-    menuActions[0] = searchItemAction;
-    Action reviseItemAction = new AbstractAction("Open Data Package") 
-    {
-      public void actionPerformed(ActionEvent e) 
-      {
-        framework.debug(1, "Action fired: Open Data Package");
-      }
-    };
-    
-    reviseItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                              "Revise current search");
-    reviseItemAction.putValue("menuPosition", new Integer(1));
-    menuActions[1] = reviseItemAction;
-
-    // Set up the toolbar for the application
-    toolbarActions = new Action[2];
-    toolbarActions[0] = searchItemAction;
-    toolbarActions[1] = reviseItemAction;
-  }
-
-  /**
-   * Load the configuration parameters that we need
-   */
-  private void loadConfigurationParameters()
-  {
-  }
-
-
-  public void openDataPackage(String location, String identifier)
-  {
-    framework.debug(9, "DataPackage: Got service request to open: " + 
-                    identifier + " from " + location + ".");
+    framework.debug(9, "Creating new DataPackage Object");
+    framework.debug(9, "relations are: " + relations.toString());
   }
 }
