@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-16 22:48:43 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-17 17:59:08 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     JPanel mainPanel = new JPanel();
     mainPanel.setMaximumSize(new Dimension(500,500));
+    mainPanel.setLayout(new GridLayout(1,1));
     PackageWizard pw = new PackageWizard(framework, mainPanel, 
                                          "Resource Information");
     //JTextField nameField = new JTextField();

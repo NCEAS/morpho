@@ -5,6 +5,7 @@
 <!ELEMENT group (group* | textbox* | combobox*)>
 <!ATTLIST group label (#PCDATA)
                 field (#PCDATA)
+                size  (#PCDATA)
                 type  (panel | pathgrouping) "pathgrouping"
                 repeatable (yes | no) "no">
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-16 22:48:43 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-17 17:59:08 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,15 +55,12 @@ public class PackageWizard extends javax.swing.JFrame
     doc = pwp.getDoc();
     Hashtable wizardAtts = doc.attributes;
     String size = (String)wizardAtts.get("size");
-    int xindex = size.indexOf("x");
-    int width = new Integer(size.substring(0, xindex)).intValue();
-    int height = new Integer(size.substring(xindex+1, size.length())).intValue();
     //System.out.println("width: " + width + " height: " + height);
     //System.out.println("name: " + (String)wizardAtts.get("dtd"));
     setTitle((String)wizardAtts.get("dtd"));
     initComponents();
     pack();
-    setSize(width, height);
+    setSize(parseSize(size));
   }
   
   public PackageWizard(ClientFramework framework, Container contentPane, 
@@ -103,6 +100,8 @@ public class PackageWizard extends javax.swing.JFrame
       doc = pwp.getDoc();
       
       mainTabbedPane = new JTabbedPane();
+      mainTabbedPane.setPreferredSize(new Dimension(500,400));
+      //mainTabbedPane.setLayout(new FlowLayout());
       contentPane.add(mainTabbedPane);
       docPanel = new JPanelWrapper();
       //createMenu(contentPane);
@@ -618,6 +617,7 @@ public class PackageWizard extends javax.swing.JFrame
       final XMLElement tempElement = (XMLElement)e.content.elementAt(i);
       final int tempi = i;
       final JPanelWrapper tempPanel = new JPanelWrapper();
+      
       if(tempElement.name.equals("group"))
       {//add a new path or panel
         JButton button = null;
@@ -626,10 +626,18 @@ public class PackageWizard extends javax.swing.JFrame
         if(tempElement.attributes.containsKey("type") && 
           ((String)tempElement.attributes.get("type")).equals("panel"))
         {
-          tempPanel.setLayout(new GridLayout(0,1)/*FlowLayout()*/);
+          if(tempElement.attributes.containsKey("size"))
+          {
+            String size = (String)tempElement.attributes.get("size");
+            tempPanel.setPreferredSize(parseSize(size));
+          }
+          //tempPanel.setLayout(new /*GridLayout(0,1)*/FlowLayout());
+          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          tempPanel.setLayout(box);
           parentPanel.children.addElement(tempPanel);
+          JScrollPane tempScrollPane = new JScrollPane(tempPanel);
           mainTabbedPane.addTab((String)tempElement.attributes.get("label"), 
-                                tempPanel);
+                                tempScrollPane);
         }
         else
         {
@@ -674,7 +682,15 @@ public class PackageWizard extends javax.swing.JFrame
             tempPanel.add(new JPanel());
           }
           
-          tempPanel.setLayout(new GridLayout(0,2)/*FlowLayout()*/);
+          if(tempElement.attributes.containsKey("size"))
+          {
+            String size = (String)tempElement.attributes.get("size");
+            //tempPanel.setPreferredSize(parseSize(size));
+          }
+          
+          //tempPanel.setLayout(new /*GridLayout(0,2)*/FlowLayout());
+          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          tempPanel.setLayout(box);
           if(prevIndex == null)
           {
             parentPanel.children.addElement(tempPanel);
@@ -684,15 +700,16 @@ public class PackageWizard extends javax.swing.JFrame
             parentPanel.children.insertElementAt(tempPanel, prevIndex.intValue()+1);
           }
           
-          parentPanel.add(tempPanel);
+          parentPanel.add(new JScrollPane(tempPanel));
         }
       }
       else if(tempElement.name.equals("textbox"))
       {//add a new text box
         final JTextFieldWrapper textfield = new JTextFieldWrapper();
         textfield.element = tempElement;
-        textfield.setPreferredSize(new Dimension(10, 10));
-        final JLabel label = new JLabel((String)tempElement.attributes.get("label"));
+        textfield.setPreferredSize(new Dimension(10, 20));
+        final JLabel label = new JLabel(
+                                 (String)tempElement.attributes.get("label"));
         Integer size = new Integer((String)tempElement.attributes.get("size"));
         JButton button = null;
         boolean required = false;
@@ -715,8 +732,13 @@ public class PackageWizard extends javax.swing.JFrame
                   JLabel newLabel = new JLabel(label.getText());
                   JTextFieldWrapper newtextfield = new JTextFieldWrapper();
                   newtextfield.element = newtempElement;
+                  newtextfield.setPreferredSize(new Dimension(10, 20));
+                  Integer newsize = new Integer(
+                                 (String)newtempElement.attributes.get("size"));
+                  newtextfield.setColumns(newsize.intValue());
                   int textfieldindex = parentPanel.children.indexOf(textfield);
-                  parentPanel.children.insertElementAt(newtextfield, textfieldindex+1);
+                  parentPanel.children.insertElementAt(newtextfield, 
+                                                       textfieldindex+1);
                   
                   int numcomponents = parentPanel.getComponentCount();
                   int insertindex = numcomponents;
@@ -728,9 +750,13 @@ public class PackageWizard extends javax.swing.JFrame
                       insertindex = j;
                     }
                   }
+                  JPanel labelAndText = new JPanel();
+                  labelAndText.add(newLabel);
+                  labelAndText.add(newtextfield);
                   
                   parentPanel.add(newLabel, insertindex + 1);
                   parentPanel.add(newtextfield, insertindex + 2);
+                  //parentPanel.add(labelAndText /*,insertindex + 1*/);
                   contentPane.repaint();
                 }
               }
@@ -753,19 +779,19 @@ public class PackageWizard extends javax.swing.JFrame
         }
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
+        
         if(button != null)
         {
-          //JPanel layoutpanel = new JPanel();
+          JPanel layoutpanel = new JPanel();
           button.add(label);
           //layoutpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-          //layoutpanel.add(button);
+          layoutpanel.add(button);
           parentPanel.add(button);
         }
         else
         {
           parentPanel.add(label);
         }
-        
         parentPanel.add(textfield);
       }
       else if(tempElement.name.equals("combobox"))
@@ -853,10 +879,10 @@ public class PackageWizard extends javax.swing.JFrame
         
         if(button != null)
         {
-          //JPanel layoutpanel = new JPanel();
+          JPanel layoutpanel = new JPanel();
           //layoutpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
           button.add(label);
-          //layoutpanel.add(button);
+          layoutpanel.add(button);
           parentPanel.add(button);
         }
         else
@@ -886,6 +912,17 @@ public class PackageWizard extends javax.swing.JFrame
         createPanel(tempElement, contentPane, parentPanel);
       }
     }
+  }
+  
+  /**
+   * parses a NxM (ex. 500x500) string dimension into a Dimension object.  
+   */
+  private Dimension parseSize(String size)
+  {
+    int xindex = size.indexOf("x");
+    int width = new Integer(size.substring(0, xindex)).intValue();
+    int height = new Integer(size.substring(xindex+1, size.length())).intValue();
+    return new Dimension(width, height);
   }
   
   /**
@@ -941,6 +978,64 @@ public class PackageWizard extends javax.swing.JFrame
     {
       
     }
+  }
+  
+  private class JFieldWrapper extends JComponent
+  {
+    private JTextFieldWrapper textfield = null;
+    private JComboBoxWrapper combobox = null;
+    private JLabel label;
+    
+    public JFieldWrapper(String label, JTextFieldWrapper textfield)
+    {
+      if(combobox == null)
+      {
+        this.label = new JLabel(label);
+        this.textfield = textfield;
+      }
+      else
+      {
+        //error because either combobox or text box needs to be null
+        System.out.println("error1 in JFieldWrapper: this class can only be " +
+        "instantiated for a combobox or a textbox but not both");
+      }
+    }
+    /*
+    public JFieldWrapper(String label, JComboBoxWrapper combobox)
+    {
+      if(textbox == null)
+      {
+        this.label = new JLabel(label);
+        this.combobox = combobox;
+      }
+      else
+      {
+         //error because either combobox or text box needs to be null
+        System.out.println("error2 in JFieldWrapper: this class can only be " +
+        "instantiated for a combobox or a textbox but not both");
+      }
+    
+      public JPanel getWrappedElement()
+      {
+        JPanel tempPanel = new JPanel();
+        tempPanel.add(this.label);
+        if(textbox == null && combobox != null)
+        {
+          tempPanel.add(this.combobox);
+        }
+        else if(textbox != null && combobox == null)
+        {
+          tempPanel.add(this.textbox);
+        }
+        else
+        {
+          //error because either combobox or text box needs to be null
+          System.out.println("error3 in JFieldWrapper: this class can only be " +
+          "instantiated for a combobox or a textbox but not both");
+        }
+      }
+    }
+    */
   }
   
   /**
