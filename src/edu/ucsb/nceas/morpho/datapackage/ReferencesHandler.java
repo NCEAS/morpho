@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 18:39:21 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-03-30 20:36:46 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,9 +119,7 @@ public class ReferencesHandler {
    *
    * @param dataPkg the AbstractDataPackage from whence the references should
    *   be obtained. If this is null, an empty Map is returned
-   * @param extraSlots int the number of additional array slots to add to the
-   * return-array size for subsequent use by the calling code
-   * @return an array of ReferenceMapping objects containing all the IDs
+   * @return a List of ReferenceMapping objects containing all the IDs
    *   currently in the DataPackage that point to subtree root-nodes
    *   corresponding to the genericName used to instantiate this
    *   ReferencesHandler, and String surrogates for those referenced subtrees.
@@ -254,9 +252,6 @@ public class ReferencesHandler {
 
     List refMapList = this.getReferences(dataPkg);
 
-    refMapList.add(new ReferenceMapping("", ""));
-    refMapList.add(new ReferenceMapping(" ", " "));
-
     Object[] array = refMapList.toArray();
 
     Arrays.sort(array, new Comparator() {
@@ -277,29 +272,13 @@ public class ReferencesHandler {
                                           EXT_DIALOG_DROPDOWN_ITEM);
 
     for (int i=0; i < array.length; i++) {
-
-      if (i > refMappingsLength - 2) break;
       refMappings[i + 2] = (ReferenceMapping)array[i];
     }
-
     dropdown.setModel(new DefaultComboBoxModel(refMappings));
     dropdown.invalidate();
     dropdown.validate();
   }
 
-
-  private String dumpArray(Object[] array) {
-
-    if (array==null) return "";
-    StringBuffer buff = new StringBuffer(0);
-
-    for (int i = 0; i < array.length; i++) {
-
-      buff.append(array[i]);
-      buff.append("\n");
-    }
-    return buff.toString();
-  }
 
   /**
    * Open a dialog to allow the user to browse a list of existing local

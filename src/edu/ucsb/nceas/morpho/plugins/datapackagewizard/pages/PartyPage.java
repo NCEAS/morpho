@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 00:09:15 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2004-03-30 20:36:46 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -967,30 +967,9 @@ public class PartyPage extends AbstractUIPage {
 //      referredPage.urlField.setText(nextText);
 //    }
 
-    addToPartyRefsLists();
+    if (!this.isReference) getRefID();
 
     return true;
-  }
-
-
-  /**
-   * If appropriate, adds this party object to
-   * WidgetFactory.partyRefsListForAllPkgs
-   */
-  protected void addToPartyRefsLists() {
-
-    Log.debug(45, "addToPartyRefsLists() called - ");
-
-    if (!this.isReference) {
-
-      Log.debug(45,
-                "this id NOT a reference - adding to partyRefsListForAllPkgs...");
-
-      List newRow = this.getSurrogate();
-      newRow.add(this);
-
-      if (!this.referDiffDP) WidgetFactory.partyRefsListForAllPkgs.add(newRow);
-    }
   }
 
 
@@ -1018,10 +997,17 @@ public class PartyPage extends AbstractUIPage {
    *  @return String refID
    */
   protected String getRefID() {
-    if (!notNullAndNotEmpty(referenceIdString)) {
-      referenceIdString = "ResponsibleParty." +
-          PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT++;
+
+    if (notNullAndNotEmpty(referenceIdString)) return referenceIdString;
+
+    AbstractDataPackage abs
+        = UIController.getInstance().getCurrentAbstractDataPackage();
+
+    if (abs == null) {
+      Log.debug(45, "*** ERROR - PartyPage.getRefID() can't get AbsDataPkg");
+      return "";
     }
+    referenceIdString = abs.getNewUniqueReferenceID();
 
     return referenceIdString;
   }
@@ -1419,8 +1405,8 @@ public class PartyPage extends AbstractUIPage {
     }
     else {
 
-      if (notNullAndNotEmpty(referenceIdString)) {
-        returnMap.put(rootXPath + "/@id", referenceIdString);
+      if (!isReference) {
+        returnMap.put(rootXPath + "/@id", getRefID());
         Log.debug(45, "Setting reference as " + referenceIdString);
       }
 
@@ -1508,7 +1494,6 @@ public class PartyPage extends AbstractUIPage {
         returnMap.put(rootXPath + "/role", getCurrentRole());
       }
     }
-
     return returnMap;
   }
 
@@ -1533,15 +1518,8 @@ public class PartyPage extends AbstractUIPage {
           = xpathRootNoPredicates.substring(0,
                                             xpathRootNoPredicates.length() - 1);
     }
-    Log.debug(45,
-        "PartyPage.setPageData() XMLUtilities.removeAllPredicates(rootXPath) = "
+    Log.debug(45, "PartyPage.setPageData() xpathRootNoPredicates = "
               + xpathRootNoPredicates);
-
-    map = removeAllButLastPredicatesFromMapKeys(map);
-
-    Log.debug(45,
-        "PartyPage.setPageData() after removeAllButLastPredicatesFromMapKeys. map = \n"
-              + map);
 
     isReference = false;
 
@@ -1565,6 +1543,11 @@ public class PartyPage extends AbstractUIPage {
       }
     }
 
+    map = keepOnlyLastPredicateInKeys(map, rootXPath);
+
+    Log.debug(45, "PartyPage.setPageData() - map with only last predicates: \n"
+              + map);
+
     String id = (String)map.get(xpathRootNoPredicates + "/@id");
     if (id != null) {
       referenceIdString = (String)map.get(xpathRootNoPredicates + "/@id");
@@ -1584,89 +1567,98 @@ public class PartyPage extends AbstractUIPage {
       }
     }
 
-    String name = (String)map.get(xpathRootNoPredicates
+    String nextVal = (String)map.get(xpathRootNoPredicates
                                   + "/individualName/salutation[1]");
-    if (name != null) {
-      salutationField.setText(name);
+    if (nextVal != null) {
+      salutationField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/individualName/salutation[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/individualName/givenName[1]");
-    if (name != null) {
-      firstNameField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/individualName/givenName[1]");
+    if (nextVal != null) {
+      firstNameField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/individualName/givenName[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/individualName/surName[1]");
-    if (name != null) {
-      lastNameField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/individualName/surName[1]");
+    if (nextVal != null) {
+      lastNameField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/individualName/surName[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/organizationName[1]");
-    if (name != null) {
-      organizationField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/organizationName[1]");
+    if (nextVal != null) {
+      organizationField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/organizationName[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/positionName[1]");
-    if (name != null) {
-      positionNameField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/positionName[1]");
+    if (nextVal != null) {
+      positionNameField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/positionName[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[1]");
-    if (name != null) {
-      address1Field.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[1]");
+    if (nextVal != null) {
+      address1Field.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/address/deliveryPoint[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[2]");
-    if (name != null) {
-      address2Field.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[2]");
+    if (nextVal != null) {
+      address2Field.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/address/deliveryPoint[2]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/city[1]");
-    if (name != null) {
-      cityField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/address/city[1]");
+    if (nextVal != null) {
+      cityField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/address/city[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates
+    nextVal = (String)map.get(xpathRootNoPredicates
                            + "/address/administrativeArea[1]");
-    if (name != null) {
-      stateField.setText(name);
+    if (nextVal != null) {
+      stateField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/address/administrativeArea[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/postalCode[1]");
-    if (name != null) {
-      zipField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/address/postalCode[1]");
+    if (nextVal != null) {
+      zipField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/address/postalCode[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/country[1]");
-    if (name != null) {
-      countryField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/address/country[1]");
+    if (nextVal != null) {
+      countryField.setText(nextVal);
       map.remove(xpathRootNoPredicates  + "/address/country[1]");
     }
 
-    name = (String)map.get(xpathRootNoPredicates + "/phone[1]");
+
+    nextVal = (String)map.get(xpathRootNoPredicates + "/phone[1]");
     String type = (String)map.get(xpathRootNoPredicates + "/phone[1]/@phonetype");
-    if (type!=null) map.remove(xpathRootNoPredicates + "/phone[1]/@phonetype");
 
-    if (name != null) {
+    if (nextVal != null) {
+      if (type!=null) {
+        if (type.equals("voice"))phoneField.setText(nextVal);
+        if (type.equals("fax"))faxField.setText(nextVal);
+        map.remove(xpathRootNoPredicates + "/phone[1]/@phonetype");
+      }
       map.remove(xpathRootNoPredicates  + "/phone[1]");
-      if (type.equals("voice")) phoneField.setText(name);
     }
 
-    name = (String)map.get(xpathRootNoPredicates + "/phone[2]");
+    nextVal = (String)map.get(xpathRootNoPredicates + "/phone[2]");
     type = (String)map.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
-    if (type!=null) map.remove(xpathRootNoPredicates + "/phone[2]/@phonetype");
 
-    if (name != null) {
+
+    if (nextVal != null) {
+      if (type!=null) {
+        if (type.equals("voice"))phoneField.setText(nextVal);
+        if (type.equals("fax"))faxField.setText(nextVal);
+        map.remove(xpathRootNoPredicates + "/phone[2]/@phonetype");
+      }
       map.remove(xpathRootNoPredicates  + "/phone[2]");
-      if (type.equals("fax")) faxField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/electronicMailAddress[1]");
-    if (name != null) {
-      emailField.setText(name);
+
+    nextVal = (String)map.get(xpathRootNoPredicates + "/electronicMailAddress[1]");
+    if (nextVal != null) {
+      emailField.setText(nextVal);
       map.remove(xpathRootNoPredicates + "/electronicMailAddress[1]");
     }
-    name = (String)map.get(xpathRootNoPredicates + "/onlineUrl[1]");
-    if (name != null) {
-      urlField.setText(name);
+    nextVal = (String)map.get(xpathRootNoPredicates + "/onlineUrl[1]");
+    if (nextVal != null) {
+      urlField.setText(nextVal);
       map.remove(xpathRootNoPredicates + "/onlineUrl[1]");
     }
 
@@ -1683,7 +1675,8 @@ public class PartyPage extends AbstractUIPage {
 
   }
 
-  private OrderedMap removeAllButLastPredicatesFromMapKeys(OrderedMap map) {
+  private OrderedMap keepOnlyLastPredicateInKeys(OrderedMap map,
+                                                 String xpathRootWithPredicates) {
 
     OrderedMap newMap = new OrderedMap();
     Iterator it = map.keySet().iterator();
@@ -1695,6 +1688,11 @@ public class PartyPage extends AbstractUIPage {
 
       int lastOpenBracketIndex = key.lastIndexOf("[");
 
+      //if its an attribute at the subtree root, delete *all* the predicates...
+      int lastAttribIndex = key.lastIndexOf("@");
+      if (lastAttribIndex==xpathRootWithPredicates.length()) {
+        lastOpenBracketIndex = lastAttribIndex;
+      }
       if (lastOpenBracketIndex > -1 && lastOpenBracketIndex < key.length()) {
 
         firstPart = key.substring(0, lastOpenBracketIndex);

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-03-27 00:48:24 $'
- * '$Revision: 1.80 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-30 20:36:47 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 
@@ -590,8 +591,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 
     List returnList = new ArrayList();
 
-		String IDXpath = "";
-		NodeList IDNodes;
+    String IDXpath = "";
+    NodeList IDNodes;
     try {
       IDXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
           "/xpathKeyMap/contextNode[@name='package']/"+genericName)).getNodeValue();
@@ -601,23 +602,43 @@ public abstract class AbstractDataPackage extends MetadataObject
         Log.debug(40, "IDs returnList is null!");
         return returnList;
       }
-		}
-		catch (Exception w) {
+    }
+    catch (Exception w) {
       Log.debug(50, "exception in getting IDsForNodes");
       w.printStackTrace();
       return returnList;
-		}
-	  // add an ID string to the returnList for each Node in the NodeList
-		for (int i=0;i<IDNodes.getLength();i++) {
-		  Element node = (Element)IDNodes.item(i);
-		  String IDValue = node.getAttribute("id");
+    }
+    // add an ID string to the returnList for each Node in the NodeList
+    for (int i=0;i<IDNodes.getLength();i++) {
+      Element node = (Element)IDNodes.item(i);
+      String IDValue = node.getAttribute("id");
       //Log.debug(1,"tagName: "+node.getTagName()+"---IDValue: "+IDValue);
-		  if (!IDValue.equals("")) {
-			  returnList.add(IDValue);
-		  }
-	  }
+      if (!IDValue.equals("")) {
+        returnList.add(IDValue);
+      }
+    }
     return returnList;
   }
+
+  /**
+   * returns a new refID that is guaranteed to be unique within this datapackage
+   *
+   * @return String a new refID that is guaranteed to be unique within this
+   * datapackage
+   */
+  public synchronized String getNewUniqueReferenceID() {
+
+    String newID = null;
+
+    do {
+
+      newID = String.valueOf(System.currentTimeMillis());
+
+    } while (getSubtreeAtReference(newID)!=null);
+
+    return newID;
+  }
+
 
   /**
    * inserts subtree rooted at Node, at location identified by genericName

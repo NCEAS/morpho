@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-26 00:19:54 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2004-03-30 20:36:46 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -262,7 +262,7 @@ public class Project extends AbstractUIPage {
          newRow.add(partyPage);
          partiesList.addRow(newRow);
 
-         partyPage.addToPartyRefsLists();
+         //partyPage.addToPartyRefsLists();
 
 //         if (!partyPage.isReference) {
 //           WidgetFactory.getPartyRefsListForCurrentPkg().add(newRow);
