@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-02 23:06:57 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2001-07-03 22:44:42 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +118,7 @@ public class DocFrame extends javax.swing.JFrame
     javax.swing.JMenuItem CopymenuItem;
     javax.swing.JMenuItem ReplacemenuItem;
     javax.swing.JMenuItem PastemenuItem;
+    javax.swing.JMenuItem AddtextItem;
     
     //* Morpho/Metacat id of the document being displayed */
     String id = null;
@@ -199,6 +200,10 @@ public class DocFrame extends javax.swing.JFrame
         AttrmenuItem = new JMenuItem("Edit Attributes");
         popup.add(AttrmenuItem);
         popup.add(new JSeparator());
+        AddtextItem = new JMenuItem("Add Text");
+        AddtextItem.setEnabled(false);
+        popup.add(AddtextItem);
+        popup.add(new JSeparator());
         CopymenuItem = new JMenuItem("Copy Node & Children");
         popup.add(CopymenuItem);
         ReplacemenuItem = new JMenuItem("Replace Selected Node from Clipboard");
@@ -222,6 +227,7 @@ public class DocFrame extends javax.swing.JFrame
 		CopymenuItem.addActionListener(lSymAction);
 		ReplacemenuItem.addActionListener(lSymAction);
 		PastemenuItem.addActionListener(lSymAction);
+		AddtextItem.addActionListener(lSymAction);
     //Create the popup menu.
     javax.swing.JPopupMenu popup = new JPopupMenu();
 		
@@ -556,6 +562,8 @@ class SymAction implements java.awt.event.ActionListener {
 				Replace_actionPerformed(event);
 			else if (object == PastemenuItem)
 				Paste_actionPerformed(event);
+			else if (object == AddtextItem)
+				Addtext_actionPerformed(event);
 			
 			if (object == EditingExit)
 				EditingExit_actionPerformed(event);
@@ -654,6 +662,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
          
          NodeInfo ni = (NodeInfo)node.getUserObject();
          
+         
          if ((ni.getCardinality().equals("NOT SELECTED"))
                   ||(ni.getCardinality().equals("SELECTED"))) {
             for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
@@ -720,7 +729,19 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	          } 
           }
           
+          
           NodeInfo ni = (NodeInfo)selectedNode.getUserObject();
+          
+         if (selectedNode.isLeaf()) {
+            if (!(ni.getName().equals("#PCDATA"))&&(!(ni.getName().equals("Empty")))) {
+              AddtextItem.setEnabled(true);  
+            }
+            else {
+              AddtextItem.setEnabled(false);
+            }
+         }
+          
+          
           CardmenuItem.setText("Number: "+ni.getCardinality());
           if (ni.getCardinality().equalsIgnoreCase("ONE")) {
             DupmenuItem.setEnabled(false);
@@ -795,6 +816,19 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	            }
 	        }
         }
+    }
+
+    void Addtext_actionPerformed(java.awt.event.ActionEvent event) {
+        TreePath tp = tree.getSelectionPath();
+	    if (tp!=null) {
+	        Object ob = tp.getLastPathComponent();
+	        DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+		      NodeInfo ni = new NodeInfo("#PCDATA");
+          ni.setPCValue(" ");
+		      DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
+		      node.add (newNode);
+		      AddtextItem.setEnabled(false);
+	    }
     }
 
     void Replace_actionPerformed(java.awt.event.ActionEvent event) {
