@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-15 23:32:08 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-09-18 21:59:40 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
@@ -98,7 +99,7 @@ public class CustomList extends JPanel {
   protected static  AddAction     addAction;
   private static  TableModelEvent tableModelEvent;
   private DefaultTableModel model;
-
+  private Dimension buttonDims;
   
   // these Actions are optional, but are defined by the caller to provide 
   // custom functionality for the list buttons
@@ -327,14 +328,20 @@ public class CustomList extends JPanel {
   }
 
   
+  public void setListButtonDimensions(Dimension dims) {
+  
+    if (dims==null) buttonDims = WizardSettings.LIST_BUTTON_DIMS;
+    else buttonDims = dims;
+    resizeButtons();
+  }
+  
   private void initButtons() {
   
     Box buttonBox = Box.createVerticalBox();
-
+    
     if (showAddButton) {
       
       addButton      = new JButton(addAction);
-      WidgetFactory.setPrefMaxSizes(addButton, WizardSettings.LIST_BUTTON_DIMS);
       addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(addButton);
     }
@@ -342,7 +349,6 @@ public class CustomList extends JPanel {
     if (showEditButton) {
       
       editButton     = new JButton(new EditAction(table, this));
-      WidgetFactory.setPrefMaxSizes(editButton, WizardSettings.LIST_BUTTON_DIMS);
       editButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(editButton);
     }
@@ -350,7 +356,6 @@ public class CustomList extends JPanel {
     if (showDuplicateButton) {
       
       duplicateButton = new JButton(new DuplicateAction(table, this));
-      WidgetFactory.setPrefMaxSizes(duplicateButton, WizardSettings.LIST_BUTTON_DIMS);
       duplicateButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(duplicateButton);
     }
@@ -358,7 +363,6 @@ public class CustomList extends JPanel {
     if (showDeleteButton) {
       
       deleteButton   = new JButton(new DeleteAction(table, this));
-      WidgetFactory.setPrefMaxSizes(deleteButton, WizardSettings.LIST_BUTTON_DIMS);
       deleteButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(deleteButton);
     }
@@ -366,7 +370,6 @@ public class CustomList extends JPanel {
     if (showMoveUpButton) {
       
       moveUpButton   = new JButton(new MoveUpAction(table, this));
-      WidgetFactory.setPrefMaxSizes(moveUpButton, WizardSettings.LIST_BUTTON_DIMS);
       moveUpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveUpButton);
     }
@@ -374,14 +377,28 @@ public class CustomList extends JPanel {
     if (showMoveDownButton) {
       
       moveDownButton = new JButton(new MoveDownAction(table, this));
-      WidgetFactory.setPrefMaxSizes(moveDownButton, WizardSettings.LIST_BUTTON_DIMS);
       moveDownButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveDownButton);
     }
+    
+    setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS);
+    resizeButtons();
+    
     buttonBox.add(Box.createGlue());
     this.add(buttonBox, BorderLayout.EAST);
   }
 
+  
+  private void resizeButtons() {
+  
+    if (showAddButton) WidgetFactory.setPrefMaxSizes(addButton, buttonDims);
+    if (showEditButton) WidgetFactory.setPrefMaxSizes(editButton, buttonDims);
+    if (showDuplicateButton) WidgetFactory.setPrefMaxSizes(duplicateButton, buttonDims);
+    if (showDeleteButton) WidgetFactory.setPrefMaxSizes(deleteButton, buttonDims);
+    if (showMoveUpButton) WidgetFactory.setPrefMaxSizes(moveUpButton, buttonDims);
+    if (showMoveDownButton) WidgetFactory.setPrefMaxSizes(moveDownButton, buttonDims);
+  }
+  
  
   
   private boolean selectionExists = true;

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 01:26:21 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-09-18 21:59:40 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.utilities.IOUtil;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -38,7 +39,19 @@ import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Font;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import java.io.Reader;
+import java.io.IOException;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.transform.TransformerException;
 
 /**
  *  WizardSettings
@@ -132,6 +145,9 @@ public class WizardSettings {
                                       
   public static final  Dimension LIST_BUTTON_DIMS  
                                       = new Dimension(100,30);
+                                      
+  public static final  Dimension LIST_BUTTON_DIMS_SMALL  
+                                      = new Dimension(70,25);
                                       
   public    static final String FINISH_BUTTON_TEXT  = "Finish";
   
@@ -235,13 +251,54 @@ public class WizardSettings {
    *
    *  @return String array containing all the unitTypes in the unitdictionary
    */
+  private static final String UNIT_TYPES_XPATH    = "/stmml:unitList/unitType";
+  private static final String UNIT_TYPES_NAME_ATT = "@name";
+  private static final String UNIT_TYPES_EXCLUDE  = "dimension";
+  private static Map          unitDictionaryNVPs;
+  /////////////
   public static String[] getUnitDictionaryUnitTypes() { 
   
-    Reader reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
+    Reader reader 
+              = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
     
-    return new String[] {"testUnitType1", "testUnitType2", "testUnitType3"};
+    Node udRootNode = null;
+    try {
+    
+      udRootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(reader);
+      
+    } catch (IOException ioe) {
+    
+      ioe.printStackTrace();
+      return new String[] {"IOException!"};
+    }
+    
+    unitDictionaryNVPs = XMLUtilities.getDOMTreeAsXPathMap(udRootNode);
+    
+    List returnList = new ArrayList();
+    Object nextObj  = null;
+    String nextStr  = null;
+    
+    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
+    
+      nextObj = it.next();
+      if (nextObj==null) continue;
+      nextStr = (String)nextObj;
+      
+      if ( (nextStr.indexOf(UNIT_TYPES_XPATH) == 0) 
+                  && (nextStr.indexOf(UNIT_TYPES_NAME_ATT) > 0) 
+                              && (nextStr.indexOf(UNIT_TYPES_EXCLUDE) < 0) ) {
+
+        returnList.add((String)(unitDictionaryNVPs.get(nextStr)));
+      }
+    }
+    String[] returnArray = new String[returnList.size()];
+
+    returnArray = (String[])(returnList.toArray(returnArray));
+    Arrays.sort(returnArray);
+    return returnArray;
   }
 
+  
   /**
    *  from the eml unit dictionary, gets all the units of the given unitType 
    *
@@ -250,206 +307,63 @@ public class WizardSettings {
    *  @return String array containing all the units in the unitdictionary that 
    *          have the given unitType
    */
+  private static final String UNITS_XPATH    = "/stmml:unitList/unit";
+  private static final String UNITS_TYPE_ATT = "@unitType";
+  private static final String UNITS_PRNT_ATT = "@parentSI";
+  private static final String UNITS_EXCLUDE  = "description";
+  private static final String UNITS_NAME_ATT = "@name";
+  //////// 
   public static String[] getUnitDictionaryUnitsOfType(String UnitType) { 
   
-    return new String[] { UnitType+"_testUnit1", 
-                          UnitType+"_testUnit2", UnitType+"_testUnit3"};
+
+    List returnList     = new ArrayList();
+    Object nextKeyObj   = null;
+    String nextKeyStr   = null;
+    Object nextValObj   = null;
+    String nextValueStr = null;
+    
+    
+    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
+    
+      nextKeyObj = it.next();
+      if (nextKeyObj==null) continue;
+      nextKeyStr = (String)nextKeyObj;
+      
+      int unitTypeIndex = nextKeyStr.indexOf(UNITS_TYPE_ATT);
+      int parentSIIndex = nextKeyStr.indexOf(UNITS_PRNT_ATT);
+      int trimIndex = -1;
+      
+      if (unitTypeIndex>0) {
+      
+        trimIndex = unitTypeIndex;
+        
+      } else if (parentSIIndex>0) {
+      
+        trimIndex = parentSIIndex;
+      }
+      
+      if ( (nextKeyStr.indexOf(UNITS_XPATH) == 0) && (trimIndex > 0)
+                              && (nextKeyStr.indexOf(UNITS_EXCLUDE) < 0) ) {
+
+        nextValObj = unitDictionaryNVPs.get(nextKeyStr);
+        
+        if (nextValObj==null) continue;
+        
+        nextValueStr = (String)nextValObj;
+        
+        if (nextValueStr.equals(UnitType)) {
+        
+          nextKeyStr = nextKeyStr.substring(0, trimIndex);
+          returnList.add((String)(unitDictionaryNVPs.get(
+                                                nextKeyStr + UNITS_NAME_ATT)));
+        }
+      }
+    }
+    String[] returnArray = new String[returnList.size()];
+
+    returnArray = (String[])(returnList.toArray(returnArray));
+    Arrays.sort(returnArray);
+    return returnArray;
   }
-  
-//  private final String[] unitPicklistVals
-//                  = { "dimensionless",
-//                      "second",
-//                      "meter",
-//                      "kilogram",
-//                      "kelvin",
-//                      "coulomb",
-//                      "ampere",
-//                      "mole",
-//                      "candela",
-//                      "number",
-//                      "cubicMeter",
-//                      "nominalMinute",
-//                      "nominalHour",
-//                      "nominalDay",
-//                      "nominalWeek",
-//                      "nominalYear",
-//                      "nominalLeapYear",
-//                      "nanogram",
-//                      "microgram",
-//                      "milligram",
-//                      "centigram",
-//                      "decigram",
-//                      "gram",
-//                      "dekagram",
-//                      "hectogram",
-//                      "megagram",
-//                      "tonne",
-//                      "pound",
-//                      "ton",
-//                      "celsius",
-//                      "fahrenheit",
-//                      "nanometer",
-//                      "micrometer",
-//                      "micron",
-//                      "millimeter",
-//                      "centimeter",
-//                      "decimeter",
-//                      "dekameter",
-//                      "hectometer",
-//                      "kilometer",
-//                      "megameter",
-//                      "angstrom",
-//                      "inch",
-//                      "Foot_US",
-//                      "foot",
-//                      "Foot_Gold_Coast",
-//                      "fathom",
-//                      "nauticalMile",
-//                      "yard",
-//                      "Yard_Indian",
-//                      "Link_Clarke",
-//                      "Yard_Sears",
-//                      "mile",
-//                      "nanosecond",
-//                      "microsecond",
-//                      "millisecond",
-//                      "centisecond",
-//                      "decisecond",
-//                      "dekasecond",
-//                      "hectosecond",
-//                      "kilosecond",
-//                      "megasecond",
-//                      "minute",
-//                      "hour",
-//                      "kiloliter",
-//                      "microliter",
-//                      "milliliter",
-//                      "liter",
-//                      "gallon",
-//                      "quart",
-//                      "bushel",
-//                      "cubicInch",
-//                      "pint",
-//                      "radian",
-//                      "degree",
-//                      "grad",
-//                      "megahertz",
-//                      "kilohertz",
-//                      "hertz",
-//                      "millihertz",
-//                      "newton",
-//                      "joule",
-//                      "calorie",
-//                      "britishThermalUnit",
-//                      "footPound",
-//                      "lumen",
-//                      "lux",
-//                      "becquerel",
-//                      "gray",
-//                      "sievert",
-//                      "katal",
-//                      "henry",
-//                      "megawatt",
-//                      "kilowatt",
-//                      "watt",
-//                      "milliwatt",
-//                      "megavolt",
-//                      "kilovolt",
-//                      "volt",
-//                      "millivolt",
-//                      "farad",
-//                      "ohm",
-//                      "ohmMeter",
-//                      "siemen",
-//                      "weber",
-//                      "tesla",
-//                      "pascal",
-//                      "megapascal",
-//                      "kilopascal",
-//                      "atmosphere",
-//                      "bar",
-//                      "millibar",
-//                      "kilogramsPerSquareMeter",
-//                      "gramsPerSquareMeter",
-//                      "milligramsPerSquareMeter",
-//                      "kilogramsPerHectare",
-//                      "tonnePerHectare",
-//                      "poundsPerSquareInch",
-//                      "kilogramPerCubicMeter",
-//                      "milliGramsPerMilliLiter",
-//                      "gramsPerLiter",
-//                      "milligramsPerCubicMeter",
-//                      "microgramsPerLiter",
-//                      "milligramsPerLiter",
-//                      "gramsPerCubicCentimeter",
-//                      "gramsPerMilliliter",
-//                      "gramsPerLiterPerDay",
-//                      "litersPerSecond",
-//                      "cubicMetersPerSecond",
-//                      "cubicFeetPerSecond",
-//                      "squareMeter",
-//                      "are",
-//                      "hectare",
-//                      "squareKilometers",
-//                      "squareMillimeters",
-//                      "squareCentimeters",
-//                      "acre",
-//                      "squareFoot",
-//                      "squareYard",
-//                      "squareMile",
-//                      "litersPerSquareMeter",
-//                      "bushelsPerAcre",
-//                      "litersPerHectare",
-//                      "squareMeterPerKilogram",
-//                      "metersPerSecond",
-//                      "metersPerDay",
-//                      "feetPerDay",
-//                      "feetPerSecond",
-//                      "feetPerHour",
-//                      "yardsPerSecond",
-//                      "milesPerHour",
-//                      "milesPerSecond",
-//                      "milesPerMinute",
-//                      "centimetersPerSecond",
-//                      "millimetersPerSecond",
-//                      "centimeterPerYear",
-//                      "knots",
-//                      "kilometersPerHour",
-//                      "metersPerSecondSquared",
-//                      "waveNumber",
-//                      "cubicMeterPerKilogram",
-//                      "cubicMicrometersPerGram",
-//                      "amperePerSquareMeter",
-//                      "amperePerMeter",
-//                      "molePerCubicMeter",
-//                      "molarity",
-//                      "molality",
-//                      "candelaPerSquareMeter",
-//                      "metersSquaredPerSecond",
-//                      "metersSquaredPerDay",
-//                      "feetSquaredPerDay",
-//                      "kilogramsPerMeterSquaredPerSecond",
-//                      "gramsPerCentimeterSquaredPerSecond",
-//                      "gramsPerMeterSquaredPerYear",
-//                      "gramsPerHectarePerDay",
-//                      "kilogramsPerHectarePerYear",
-//                      "kilogramsPerMeterSquaredPerYear",
-//                      "molesPerKilogram",
-//                      "molesPerGram",
-//                      "millimolesPerGram",
-//                      "molesPerKilogramPerSecond",
-//                      "nanomolesPerGramPerSecond",
-//                      "kilogramsPerSecond",
-//                      "tonnesPerYear",
-//                      "gramsPerYear",
-//                      "numberPerMeterSquared",
-//                      "numberPerKilometerSquared",
-//                      "numberPerMeterCubed",
-//                      "metersPerGram",
-//                      "numberPerGram",
-//                      "gramsPerGram",
-//                      "microgramsPerGram",
-//                      "cubicCentimetersPerCubicCentimeters" };
-//  
 }
 

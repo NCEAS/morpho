@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 01:52:13 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-18 21:59:40 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,7 +206,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     JPanel panel 
             = WidgetFactory.makeVerticalPanel(AttributeDialog.DOMAIN_NUM_ROWS);
 
-    panel.add(this.makeHalfSpacer());
+    panel.add(WidgetFactory.makeHalfSpacer());
     
     ///////////////////////////
 
@@ -227,7 +227,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 
     panel.add(topHorizPanel);
 
-    panel.add(this.makeHalfSpacer());
+    panel.add(WidgetFactory.makeHalfSpacer());
     
     ///////////////////////////
         
@@ -247,7 +247,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 
     panel.add(middleHorizPanel);
 
-    panel.add(this.makeHalfSpacer());
+    panel.add(WidgetFactory.makeHalfSpacer());
 
     ///////////////////////////
         
@@ -263,6 +263,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     textPatternsList 
               = WidgetFactory.makeList( colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
+    textPatternsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     patternPanel.add(textPatternsList);
     
     bottomHorizPanel.add(patternPanel);
@@ -286,7 +287,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     JPanel panel = WidgetFactory.makeVerticalPanel(AttributeDialog.DOMAIN_NUM_ROWS);
 
     ///////////////////////////
-    panel.add(this.makeHalfSpacer());
+    panel.add(WidgetFactory.makeHalfSpacer());
 
     Object[] colTemplates 
         = new Object[] { new JTextField(), new JTextField(), new JTextField() };
@@ -302,6 +303,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
               = WidgetFactory.makeList( colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
                                         
+    enumDefinitionList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     enumPanel.add(enumDefinitionList);
     
     panel.add(enumPanel);
@@ -327,7 +329,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 
     panel.add(helpPanel);
  
-    panel.add(this.makeHalfSpacer());
+    panel.add(WidgetFactory.makeHalfSpacer());
             
     enumDefinitionFreeTextCheckBox = new JCheckBox(
       "Attribute contains free-text in addition to those values listed above");
@@ -358,15 +360,6 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
     return label;
   }
   
-  
-  
-  private static Component makeHalfSpacer() {
-    
-    return Box.createRigidArea(new Dimension(
-                    WizardSettings.DEFAULT_SPACER_DIMS.width/2,
-                    WizardSettings.DEFAULT_SPACER_DIMS.height/2));
-  }
-
   
   
 

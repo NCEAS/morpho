@@ -170,6 +170,15 @@ public class WidgetFactory {
     return Box.createRigidArea(WizardSettings.DEFAULT_SPACER_DIMS);
   }
 
+  
+  public static Component makeHalfSpacer() {
+    
+    return Box.createRigidArea(new Dimension(
+                    WizardSettings.DEFAULT_SPACER_DIMS.width/2,
+                    WizardSettings.DEFAULT_SPACER_DIMS.height/2));
+  }
+
+  
   public static void hiliteComponent(JComponent component) {
   
     component.setOpaque(true);

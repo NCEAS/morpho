@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 01:26:21 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-18 21:59:40 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   
   private JTextField precisionField;
   private JComboBox  numberTypePickList;
+  private CustomList boundsList;
   
   private AttributeDialog attributeDialog;
   
@@ -116,12 +117,8 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     pickListPanel.add(unitsPickListLabel);
     pickListPanel.add(unitsPickList);
  
-    JPanel pickListGrid = new JPanel(new GridLayout(1,2));
-    pickListGrid.add(pickListPanel);
-    pickListGrid.add(WidgetFactory.makeDefaultSpacer() );
-
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(pickListGrid);
+    this.add(WidgetFactory.makeHalfSpacer());
+    this.add(pickListPanel);
     
     ////////////////////////
     
@@ -133,12 +130,13 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 
     JPanel precisionGrid = new JPanel(new GridLayout(1,2));
     precisionGrid.add(precisionPanel);
-    precisionGrid.add(WidgetFactory.makeHTMLLabel(
-        "<font color=\"#666666\">e.g: for an attribute with unit \"meter\", "
+    precisionGrid.add(WidgetFactory.makeLabel(
+        "<html><font color=\"#666666\">e.g: for an attribute with unit \"meter\", "
         +"a precision of \"0.1\" would be interpreted as precise to the "
-        +"nearest 1/10th of a meter</font>", 2) );
+        +"nearest 1/10th of a meter</font></html>", false,
+        new Dimension(1000,40)) );
 
-    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeHalfSpacer());
     this.add(precisionGrid);
   
     ////////////////////////
@@ -161,15 +159,35 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     numberTypePanel.add(numberTypeLabel);
     numberTypePanel.add(numberTypePickList);
 
-    JPanel numberTypeGrid = new JPanel(new GridLayout(1,2));
-    numberTypeGrid.add(numberTypePanel);
-    numberTypeGrid.add(WidgetFactory.makeHTMLLabel(
-        "<font color=\"#666666\">e.g: for an attribute with unit \"meter\", "
-        +"a precision of \"0.1\" would be interpreted as precise to the "
-        +"nearest 1/10th of a meter</font>", 2) );
+    JPanel numericDomainGrid = new JPanel(new GridLayout(1,2));
+    numericDomainGrid.add(numberTypePanel);
 
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(numberTypeGrid);
+    ///////////////////////////
+        
+    JPanel boundsPanel = WidgetFactory.makePanel();
+
+    JLabel boundsLabel = WidgetFactory.makeLabel("    Bounds:", false);
+    final Dimension boundsLabelDim 
+              = new Dimension(WizardSettings.WIZARD_CONTENT_LABEL_DIMS.width/2,
+                              WizardSettings.WIZARD_CONTENT_LABEL_DIMS.height);
+    boundsLabel.setPreferredSize(boundsLabelDim);
+    boundsLabel.setMaximumSize(boundsLabelDim);
+    boundsPanel.add(boundsLabel);
+    
+    String[] colNames     = new String[] {"Min (optional):", "Max (optional):"};
+    Object[] colTemplates = new Object[] {new JTextField(),   new JTextField()};
+    
+    boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
+                                        true, false, false, true, false, false);
+    boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+    boundsPanel.add(boundsList);
+    
+    numericDomainGrid.add(boundsPanel);
+    
+    /////////////////
+
+    this.add(WidgetFactory.makeHalfSpacer());
+    this.add(numericDomainGrid);
   
     ////////////////////////
     
@@ -274,7 +292,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 //                      precisionField.getText().trim());
 //      
 //      int index = 1;
-//      List rowLists = textPatternsList.getListOfRowLists();
+//      List rowLists = boundsList.getListOfRowLists();
 //      String nextStr = null;
 //    
 //      for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
@@ -354,7 +372,14 @@ class UnitsPickList extends JPanel {
       
     setUI(unitTypesList);
     unitTypesList.setSelectedIndex(0);
+
+    JPanel unitTypesPanel = WidgetFactory.makePanel();
+    unitTypesPanel.add(unitTypesList);
+    unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
+    unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
+    unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
     
+    ///////////////////////
     unitsList.addItemListener(
       new ItemListener() {
     
@@ -362,15 +387,23 @@ class UnitsPickList extends JPanel {
 
           String value = e.getItem().toString();
           Log.debug(45, "unitsList state changed: " +value);
-          
         }
       });
     setUI(unitsList);
     
-    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-    this.add(unitTypesList);
-    this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(unitsList);
+    JPanel unitsPanel = WidgetFactory.makePanel();
+    unitsPanel.add(unitsList);
+    unitsPanel.add(WidgetFactory.makeDefaultSpacer());
+    unitsPanel.add(WidgetFactory.makeDefaultSpacer());
+    unitsPanel.add(WidgetFactory.makeDefaultSpacer());
+
+    ///////////////////////
+//    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    this.setLayout(new GridLayout(1,2));
+    this.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+    this.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+    this.add(unitTypesPanel);
+    this.add(unitsPanel);
   }
   
   public String getSelectedUnit() {

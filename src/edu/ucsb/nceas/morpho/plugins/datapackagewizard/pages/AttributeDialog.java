@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-17 01:52:13 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-18 21:59:40 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -183,12 +183,26 @@ class AttributeDialog extends WizardPopupDialog {
 
     ////////////////////////////////////////////////////////////////////////////
     
-    middlePanel.add(WidgetFactory.makeHTMLLabel(
-    "Define the contents of the attribute (or column) precisely, "
+    // this embedding and use of html on a label instead of calling 
+    // WidgetFactory.makeHTMLLabel() is required because the Java HTML rendering 
+    // on JLabels seems to be buggy - using WidgetFactory.makeHTMLLabel() yields
+    // labels that resize themselves depending which radiobutton is chosen :-(
+    Dimension infoDim = new Dimension(600,40);
+    JPanel infoPanel  = new JPanel();
+    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+    
+    JLabel infoLabel = WidgetFactory.makeLabel(
+    "<html>Define the contents of the attribute (or column) precisely, "
     +"so that a data user could interpret the attribute accurately.<br></br>"
     +"<font color=\"666666\">&nbsp;&nbsp;[Example(s):&nbsp;&nbsp;&nbsp;"
     +"\"spden\" is the number of individuals of all macro invertebrate species "
-    +"found in the plot]</font>", 2));
+    +"found in the plot]</font><html>", false, infoDim);
+    
+    infoLabel.setAlignmentX(1.0f);
+    
+    infoPanel.add(infoLabel);
+    infoPanel.add(Box.createGlue());
+    middlePanel.add(infoPanel);
 
     JPanel attribDefinitionPanel = WidgetFactory.makePanel(2);
 
