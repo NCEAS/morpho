@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 01:28:02 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-05-31 18:47:09 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,12 @@ public class QueryDialog extends JDialog
   /** default search path for keyword   */
   String keywordSearchPath = "keyword";
 
+  /** default search path for rank   */
+  String taxonRankSearchPath = "taxoncl/taxonrn";
+
+  /** default search path for taxonomic value   */
+  String taxonValueSearchPath = "taxoncl/taxonrv";
+
   /** Flag, true if Metacat searches are performed for this query */
   private boolean searchMetacat = true;
 
@@ -113,7 +119,7 @@ public class QueryDialog extends JDialog
   private JButton taxonLessButton = new JButton();
   private JPanel spatialPanel = new JPanel();
   private JTextField queryTitleTF = new JTextField(20);
-  private JCheckBox otherTabsCheckBox = new JCheckBox();
+  private JCheckBox allTabsCheckBox = new JCheckBox();
   private JCheckBox catalogSearchCheckBox = new JCheckBox();
   private JCheckBox localSearchCheckBox = new JCheckBox();
   private JButton executeButton = new JButton();
@@ -313,9 +319,9 @@ public class QueryDialog extends JDialog
     controlButtonsPanel.setLayout(new BoxLayout(controlButtonsPanel,
                                   BoxLayout.X_AXIS));
     controlButtonsPanel.add(Box.createHorizontalStrut(8));
-    otherTabsCheckBox.setText("Combine constraints from all tabs");
-    otherTabsCheckBox.setActionCommand("Combine constraints from all tabs");
-    controlButtonsPanel.add(otherTabsCheckBox);
+    allTabsCheckBox.setText("Combine constraints from all tabs");
+    allTabsCheckBox.setActionCommand("Combine constraints from all tabs");
+    controlButtonsPanel.add(allTabsCheckBox);
     controlButtonsPanel.add(Box.createHorizontalGlue());
     executeButton.setText("Search");
     executeButton.setActionCommand("Search");
@@ -333,6 +339,8 @@ public class QueryDialog extends JDialog
     SymAction lSymAction = new SymAction();
     moreButton.addActionListener(lSymAction);
     lessButton.addActionListener(lSymAction);
+    taxonMoreButton.addActionListener(lSymAction);
+    taxonLessButton.addActionListener(lSymAction);
     executeButton.addActionListener(lSymAction);
     cancelButton.addActionListener(lSymAction);
     //}}
@@ -385,21 +393,26 @@ public class QueryDialog extends JDialog
     public void actionPerformed(java.awt.event.ActionEvent event)
     {
       Object object = event.getSource();
-      if (object == moreButton)
-        moreButton_actionPerformed(event);
-      else if (object == lessButton)
-        lessButton_actionPerformed(event);
-      else if (object == executeButton)
-        executeButton_actionPerformed(event);
-      else if (object == cancelButton)
-        cancelButton_actionPerformed(event);
+      if (object == moreButton) {
+        handleMoreButtonAction(event);
+      } else if (object == lessButton) {
+        handleLessButtonAction(event);
+      } else if (object == taxonMoreButton) {
+        handleTaxonMoreButtonAction(event);
+      } else if (object == taxonLessButton) {
+        handleTaxonLessButtonAction(event);
+      } else if (object == executeButton) {
+        handleExecuteButtonAction(event);
+      } else if (object == cancelButton) {
+        handleCancelButtonAction(event);
+      }
     }
   }
 
   /**
    * Performs actions associated with pressing the "More" button
    */
-  private void moreButton_actionPerformed(java.awt.event.ActionEvent event)
+  private void handleMoreButtonAction(java.awt.event.ActionEvent event)
   {
     SubjectTermPanel tq = new SubjectTermPanel();
     queryChoicesPanel.add(tq);
@@ -412,15 +425,44 @@ public class QueryDialog extends JDialog
   /**
    * Performs actions associated with pressing the "Less" button
    */
-  private void lessButton_actionPerformed(java.awt.event.ActionEvent event)
+  private void handleLessButtonAction(java.awt.event.ActionEvent event)
   {
     Component comp = (Component) textPanels.lastElement();
-      queryChoicesPanel.remove(comp);
-      textPanels.removeElementAt(textPanels.size() - 1);
-    if (textPanels.size() < 2)
+    queryChoicesPanel.remove(comp);
+    textPanels.removeElementAt(textPanels.size() - 1);
+    if (textPanels.size() < 2) {
         lessButton.setEnabled(false);
-      queryChoicesPanel.invalidate();
-      subjectPanel.validate();
+    }
+    queryChoicesPanel.invalidate();
+    subjectPanel.validate();
+  }
+
+  /**
+   * Performs actions associated with pressing the "More" button
+   */
+  private void handleTaxonMoreButtonAction(java.awt.event.ActionEvent event)
+  {
+    TaxonTermPanel term = new TaxonTermPanel();
+    taxonChoicesPanel.add(term);
+    taxonPanels.addElement(term);
+    taxonLessButton.setEnabled(true);
+    taxonChoicesPanel.invalidate();
+    taxonPanel.validate();
+  }
+
+  /**
+   * Performs actions associated with pressing the "Less" button
+   */
+  private void handleTaxonLessButtonAction(java.awt.event.ActionEvent event)
+  {
+    Component comp = (Component)taxonPanels.lastElement();
+    taxonChoicesPanel.remove(comp);
+    taxonPanels.removeElementAt(taxonPanels.size() - 1);
+    if (taxonPanels.size() < 2) {
+        taxonLessButton.setEnabled(false);
+    }
+    taxonChoicesPanel.invalidate();
+    taxonPanel.validate();
   }
 
   /** 
@@ -443,10 +485,39 @@ public class QueryDialog extends JDialog
     QueryGroup rootQG = new QueryGroup("INTERSECT");
     newQuery.setQueryGroup(rootQG);
 
-    // Add a child query group for each panel
-    QueryGroup subjectGroup = buildSubjectQueryGroup();
-    rootQG.addChild(subjectGroup);
+    // Determine which parts of the query we should build
+    boolean buildSubject = false;
+    boolean buildTaxon = false;
+    boolean buildSpatial = false;
 
+    if (allTabsCheckBox.isSelected()) {
+      buildSubject = true;
+      buildTaxon = true;
+      buildSpatial = true;
+    } else {
+      int tabIndex = queryTabs.getSelectedIndex();
+      if (0 == tabIndex) {
+        buildSubject = true;
+      } else if (1 == tabIndex) {
+        buildTaxon = true;
+      } else if (2 == tabIndex) {
+        buildSpatial = true;
+      } 
+    }
+
+    // Add a child query group for the subject search
+    if (buildSubject) {
+      QueryGroup subjectGroup = buildSubjectQueryGroup();
+      rootQG.addChild(subjectGroup);
+    }
+
+    // Add a child query group for the taxon search
+    if (buildTaxon) {
+      QueryGroup taxonGroup = buildTaxonQueryGroup();
+      rootQG.addChild(taxonGroup);
+    }
+
+    framework.debug(9, newQuery.toXml());
     return newQuery;
   }
 
@@ -512,11 +583,59 @@ public class QueryDialog extends JDialog
     return subjectGroup;
   }
 
+  /** 
+   * method to constuct a QueryGroup for the taxon panel of the dialog
+   */
+  private QueryGroup buildTaxonQueryGroup()
+  {
+    String path = "//*";
+    String op = "UNION";
+    String value = "*";
+    String mode = "contains";
+
+    // Add a query group for the overall Taxon tab
+    if (taxonOrRadioButton.isSelected()) {
+      op = "UNION";
+    } else {
+      op = "INTERSECT";
+    }
+    QueryGroup taxonGroup = new QueryGroup(op);
+
+    // For each taxon constraint, add a query group
+    Enumeration enum = taxonPanels.elements();
+    while (enum.hasMoreElements())
+    {
+      TaxonTermPanel taxonTermPanel = (TaxonTermPanel)enum.nextElement();
+
+      // Create a separate QG for each taxonPanel (always INTERSECT)
+      // This is needed because the taxon queries are really composed of
+      // two query terms, one which matches the rank, and the other that
+      // matches the taxonomic phrase, combined using AND
+      QueryGroup termGroup = new QueryGroup("INTERSECT");
+      taxonGroup.addChild(termGroup);
+
+      // Create the QueryTerm for the taxon Rank
+      value = taxonTermPanel.getTaxonRank();
+      path = taxonRankSearchPath;
+      QueryTerm rankTerm = new QueryTerm(true, "exact-match", value, path);
+      termGroup.addChild(rankTerm);
+
+      // Create the QueryTerm for the taxon value phrase
+      value = taxonTermPanel.getValue();
+      mode = taxonTermPanel.getSearchMode();
+      path = taxonValueSearchPath;
+      QueryTerm valueTerm = new QueryTerm(caseSensitive, mode, value, path);
+      termGroup.addChild(valueTerm);
+    }
+
+    return taxonGroup;
+  }
+
   /**
    * Save the query when the execute button is set, making it accessible to
    * the getQuery() method
    */
-  private void executeButton_actionPerformed(java.awt.event.ActionEvent event)
+  private void handleExecuteButtonAction(java.awt.event.ActionEvent event)
   {
     savedQuery = buildQuery();
     searchStarted = true;
@@ -526,7 +645,7 @@ public class QueryDialog extends JDialog
   /**
    * Close the dialog when the cancel button is pressed
    */
-  private void cancelButton_actionPerformed(java.awt.event.ActionEvent event)
+  private void handleCancelButtonAction(java.awt.event.ActionEvent event)
   {
     searchStarted = false;
     setVisible(false);
@@ -557,16 +676,16 @@ public class QueryDialog extends JDialog
 
     queryTitleTF.setText(query.getQueryTitle());
     // Now refill all of the screen widgets with the query info
-    framework.debug(9, "Warning: setQuery implementation not complete!");
     QueryGroup rootGroup = savedQuery.getQueryGroup();
-    initializeSubjectSearch(rootGroup);
+    repopulateSubjectSearchTab(rootGroup);
+    repopulateTaxonSearchTab(rootGroup);
   }
 
   /**
    * Fill in the fields in the subject query with the proper values from
    * a QueryGroup
    */
-  private void initializeSubjectSearch(QueryGroup rootGroup) 
+  private void repopulateSubjectSearchTab(QueryGroup rootGroup) 
   {
     // Remove any existing text panels
     for (int i = 0;  i < textPanels.size();  i++) {
@@ -578,70 +697,102 @@ public class QueryDialog extends JDialog
     // Find the QueryGroup containing the subject parameters
     Enumeration rootChildren = rootGroup.getChildren();
 
-    // Find the group with the subject info (this is too simplistic for later
-    // when taxon and spatial searches are added)
-    QueryGroup subjectGroup = (QueryGroup)rootChildren.nextElement();
-
-    // Set the And/Or button from operator param in the Subject group
-    String op = subjectGroup.getOperator();
-    if (op.equalsIgnoreCase("INTERSECT")) {
-      orRadioButton.setSelected(false);
-      andRadioButton.setSelected(true);
-    } else {
-      orRadioButton.setSelected(true);
-      andRadioButton.setSelected(false);
-    }
-
-    // Create a textPanel for each group in the subject group
-    Enumeration subjectChildren = subjectGroup.getChildren();
-    while (subjectChildren.hasMoreElements()) {
-
-      Object obj = subjectChildren.nextElement();
-
-      // Create the panel for this subject term, and set defaults
-      SubjectTermPanel tq = new SubjectTermPanel();
-      tq.setAllState(true);
-      tq.setTitleState(false);
-      tq.setAbstractState(false);
-      tq.setKeywordsState(false);
-
+    // Find the group with the subject info by testing if the expected 
+    // pathquery structure is in place 
+    // (pathquery/QueryGroup/QueryGroup/QueryGroup/QueryTerm)
+    QueryGroup subjectGroup = null;
+    boolean foundSubjectGroup = false;
+    while (rootChildren.hasMoreElements()) {
+      // test if this is the subject group
+      QueryGroup tempSubjectGroup = (QueryGroup)rootChildren.nextElement();
+      Enumeration tempSubjectChildren = tempSubjectGroup.getChildren();
       try {
-        // Process each subject query group and make a text panel out of it
-        // By getting the params out of the contained QueryTerms
-        QueryGroup termsGroup = (QueryGroup)obj;
-        Enumeration qtList = termsGroup.getChildren();
-  
-        // Step through the QueryTerms and extract parameters
-        while (qtList.hasMoreElements()) {
-          Object obj2 = qtList.nextElement();
-          QueryTerm qt = (QueryTerm)obj2;
-    
-          tq.setValue(qt.getValue());
-          tq.setSearchMode(qt.getSearchMode());
-          String pathExpression = qt.getPathExpression();
-          if (pathExpression == null) {
-            tq.setAllState(true);
-          } else {
-            tq.setAllState(false);
-            if (pathExpression.equals(titleSearchPath)) {
-              tq.setTitleState(true);
-            } else if (pathExpression.equals(abstractSearchPath)) {
-              tq.setAbstractState(true);
-            } else if (pathExpression.equals(keywordSearchPath)) {
-              tq.setKeywordsState(true);
-            }
-          }
+        QueryGroup tempTermsGroup = 
+                   (QueryGroup)tempSubjectChildren.nextElement();
+        Enumeration tempQTList = tempTermsGroup.getChildren();
+        QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();
+        String path = tempQT.getPathExpression();
+        if ( (path == null)|| 
+             (path.equals(titleSearchPath)) || 
+             (path.equals(abstractSearchPath)) || 
+             (path.equals(keywordSearchPath)) ) {
+          foundSubjectGroup = true;
+          subjectGroup = tempSubjectGroup;
+          break;
         }
       } catch (ClassCastException cce) {
-        framework.debug(3, "Query doesn't meet expectations, " +
-                        "so couldn't rebuild dialog correctly!");
-        tq = new SubjectTermPanel();
-        tq.setAllState(true);
+        // Not the subject group
+        foundSubjectGroup = false;
+      }
+    }
+
+    if (foundSubjectGroup) {
+      // Set the And/Or button from operator param in the Subject group
+      String op = subjectGroup.getOperator();
+      if (op.equalsIgnoreCase("INTERSECT")) {
+        orRadioButton.setSelected(false);
+        andRadioButton.setSelected(true);
+      } else {
+        orRadioButton.setSelected(true);
+        andRadioButton.setSelected(false);
       }
 
-      // Add the text panel to the dialog
-      queryChoicesPanel.add(tq);
-      textPanels.addElement(tq);
+      // Create a textPanel for each group in the subject group
+      Enumeration subjectChildren = subjectGroup.getChildren();
+      while (subjectChildren.hasMoreElements()) {
+  
+        Object obj = subjectChildren.nextElement();
+  
+        // Create the panel for this subject term, and set defaults
+        SubjectTermPanel tq = new SubjectTermPanel();
+        tq.setAllState(true);
+        tq.setTitleState(false);
+        tq.setAbstractState(false);
+        tq.setKeywordsState(false);
+  
+        try {
+          // Process each subject query group and make a text panel out of it
+          // By getting the params out of the contained QueryTerms
+          QueryGroup termsGroup = (QueryGroup)obj;
+          Enumeration qtList = termsGroup.getChildren();
+    
+          // Step through the QueryTerms and extract parameters
+          while (qtList.hasMoreElements()) {
+            Object obj2 = qtList.nextElement();
+            QueryTerm qt = (QueryTerm)obj2;
+      
+            tq.setValue(qt.getValue());
+            tq.setSearchMode(qt.getSearchMode());
+            String pathExpression = qt.getPathExpression();
+            if (pathExpression == null) {
+              tq.setAllState(true);
+            } else {
+              tq.setAllState(false);
+              if (pathExpression.equals(titleSearchPath)) {
+                tq.setTitleState(true);
+              } else if (pathExpression.equals(abstractSearchPath)) {
+                tq.setAbstractState(true);
+              } else if (pathExpression.equals(keywordSearchPath)) {
+                tq.setKeywordsState(true);
+              }
+            }
+          }
+        } catch (ClassCastException cce) {
+          framework.debug(3, "Query doesn't meet expectations, " +
+                          "so couldn't rebuild dialog correctly!");
+          tq = new SubjectTermPanel();
+          tq.setAllState(true);
+        }
+  
+        // Add the text panel to the dialog
+        queryChoicesPanel.add(tq);
+        textPanels.addElement(tq);
+      }
+    } else {
+      SubjectTermPanel defaultPanel = new SubjectTermPanel();
+      defaultPanel.setAllState(true);
+      queryChoicesPanel.add(defaultPanel);
+      textPanels.addElement(defaultPanel);
     }
     if (textPanels.size() < 2) {
       lessButton.setEnabled(false);
@@ -652,5 +803,119 @@ public class QueryDialog extends JDialog
     // Force the window to redraw
     queryChoicesPanel.invalidate();
     subjectPanel.validate();
+  }
+
+  /**
+   * Fill in the fields in the taxon query with the proper values from
+   * a QueryGroup
+   */
+  private void repopulateTaxonSearchTab(QueryGroup rootGroup) 
+  {
+    // Remove any existing taxon panels
+    for (int i = 0;  i < taxonPanels.size();  i++) {
+      Component comp = (Component)taxonPanels.lastElement();
+      taxonChoicesPanel.remove(comp);
+      taxonPanels.removeElementAt(taxonPanels.size() - 1);
+    }
+
+    // Find the QueryGroup containing the taxon parameters
+    Enumeration rootChildren = rootGroup.getChildren();
+
+    // Find the group with the taxon info by testing if the expected 
+    // pathquery structure is in place 
+    // (pathquery/QueryGroup/QueryGroup/QueryTerm,QueryTerm)
+    QueryGroup taxonGroup = null;
+    boolean foundTaxonGroup = false;
+    while (rootChildren.hasMoreElements()) {
+      // test if this is the taxon group
+      QueryGroup tempTaxonGroup = (QueryGroup)rootChildren.nextElement();
+      Enumeration tempTaxonChildren = tempTaxonGroup.getChildren();
+      try {
+        QueryGroup tempTermsGroup = 
+                   (QueryGroup)tempTaxonChildren.nextElement();
+        Enumeration tempQTList = tempTermsGroup.getChildren();
+        QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();
+        String path = tempQT.getPathExpression();
+        if ((path != null) && path.equals(taxonRankSearchPath)) {
+          tempQT = (QueryTerm)tempQTList.nextElement();
+          path = tempQT.getPathExpression();
+          if (path.equals(taxonValueSearchPath)) {
+            foundTaxonGroup = true;
+            taxonGroup = tempTaxonGroup;
+            break;
+          }
+        }
+      } catch (ClassCastException cce) {
+        // Not the taxon group
+        foundTaxonGroup = false;
+      }
+    }
+
+    if (foundTaxonGroup) {
+      // Set the And/Or button from operator param in the Taxon group
+      String op = taxonGroup.getOperator();
+      if (op.equalsIgnoreCase("INTERSECT")) {
+        taxonOrRadioButton.setSelected(false);
+        taxonAndRadioButton.setSelected(true);
+      } else {
+        taxonOrRadioButton.setSelected(true);
+        taxonAndRadioButton.setSelected(false);
+      }
+
+      // Create a taxonPanel for each group in the taxon group
+      Enumeration taxonChildren = taxonGroup.getChildren();
+      while (taxonChildren.hasMoreElements()) {
+  
+        // Create the panel for this taxon term, and set defaults
+        TaxonTermPanel termPanel = new TaxonTermPanel();
+  
+        try {
+          // Process each taxon query group and make a taxon panel out of it
+          // By getting the params out of the contained QueryTerms
+          QueryGroup termsGroup = (QueryGroup)taxonChildren.nextElement();
+  
+          Enumeration qtList = termsGroup.getChildren();
+    
+          // Step through the QueryTerms and extract parameters
+          while (qtList.hasMoreElements()) {
+            QueryTerm qt = (QueryTerm)qtList.nextElement();
+      
+            //termPanel.setValue(qt.getValue());
+            //termPanel.setSearchMode(qt.getSearchMode());
+            String searchMode = qt.getSearchMode();
+            String pathExpression = qt.getPathExpression();
+            String value = qt.getValue();
+
+            if (pathExpression.equals(taxonRankSearchPath)) {
+              termPanel.setTaxonRank(value);
+            } else if (pathExpression.equals(taxonValueSearchPath)) {
+              termPanel.setSearchMode(searchMode);
+              termPanel.setValue(value);
+            }
+          }
+        } catch (ClassCastException cce) {
+          framework.debug(3, "Query doesn't meet expectations, " +
+                          "so couldn't rebuild dialog correctly!");
+          termPanel = new TaxonTermPanel();
+        }
+  
+        // Add the text panel to the dialog
+        taxonChoicesPanel.add(termPanel);
+        taxonPanels.addElement(termPanel);
+      }
+    } else {
+      TaxonTermPanel defaultPanel = new TaxonTermPanel();
+      taxonChoicesPanel.add(defaultPanel);
+      taxonPanels.addElement(defaultPanel);
+    }
+    if (taxonPanels.size() < 2) {
+      taxonLessButton.setEnabled(false);
+    } else {
+      taxonLessButton.setEnabled(true);
+    }
+
+    // Force the window to redraw
+    taxonChoicesPanel.invalidate();
+    taxonPanel.validate();
   }
 }

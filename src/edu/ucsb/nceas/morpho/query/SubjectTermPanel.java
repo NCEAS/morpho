@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 01:28:02 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-31 18:47:09 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,12 +53,12 @@ public class SubjectTermPanel extends JComponent
 {
 
   //{{DECLARE_CONTROLS
-  JCheckBox titleCheckBox = new JCheckBox();
-  JCheckBox abstractCheckBox = new JCheckBox();
-  JCheckBox keywordsCheckBox = new JCheckBox();
-  JCheckBox allCheckBox = new JCheckBox();
-  JComboBox searchModeComboBox = new JComboBox();
-  JTextField textValueBox = new JTextField();
+  private JCheckBox titleCheckBox = new JCheckBox();
+  private JCheckBox abstractCheckBox = new JCheckBox();
+  private JCheckBox keywordsCheckBox = new JCheckBox();
+  private JCheckBox allCheckBox = new JCheckBox();
+  private JComboBox searchModeComboBox = new JComboBox();
+  private JTextField textValueBox = new JTextField();
   //}}
 
   /**
@@ -248,7 +248,7 @@ public class SubjectTermPanel extends JComponent
     keywordsCheckBox.setSelected(state);
   }
 
-  class SymItem implements java.awt.event.ItemListener
+  private class SymItem implements java.awt.event.ItemListener
   {
     public void itemStateChanged(java.awt.event.ItemEvent event)
     {
@@ -264,7 +264,7 @@ public class SubjectTermPanel extends JComponent
    * 
    * @param event
    */
-  void allCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+  private void allCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
   {
     if (allCheckBox.isSelected()) {
       titleCheckBox.setEnabled(false);

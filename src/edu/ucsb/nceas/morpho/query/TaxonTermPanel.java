@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 01:28:02 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-31 18:47:09 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,12 +53,9 @@ public class TaxonTermPanel extends JComponent
 {
 
   //{{DECLARE_CONTROLS
-  JCheckBox titleCheckBox = new JCheckBox();
-  JCheckBox abstractCheckBox = new JCheckBox();
-  JCheckBox keywordsCheckBox = new JCheckBox();
-  JCheckBox allCheckBox = new JCheckBox();
-  JComboBox searchModeComboBox = new JComboBox();
-  JTextField textValueBox = new JTextField();
+  private JComboBox rankComboBox = new JComboBox();
+  private JComboBox searchModeComboBox = new JComboBox();
+  private JTextField textValueBox = new JTextField();
   //}}
 
   /**
@@ -76,6 +73,7 @@ public class TaxonTermPanel extends JComponent
                               BoxLayout(setChoicesPanel, BoxLayout.Y_AXIS));
     add(BorderLayout.CENTER, setChoicesPanel);
 
+/*
     JPanel queryTermHelpPanel = new JPanel();
     queryTermHelpPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
     JLabel helpLabel = new JLabel();
@@ -83,63 +81,48 @@ public class TaxonTermPanel extends JComponent
                       "are searched.");
     queryTermHelpPanel.add(helpLabel);
     setChoicesPanel.add(queryTermHelpPanel);
+*/
 
     JPanel queryTermPanel = new JPanel();
     queryTermPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Box checkBoxHorizontal = Box.createHorizontalBox();
-    allCheckBox.setText("All");
-    allCheckBox.setActionCommand("All");
-    allCheckBox.setSelected(true);
-    allCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-    checkBoxHorizontal.add(allCheckBox);
 
-    JPanel checkBoxVertical = new JPanel();
-    checkBoxVertical.setLayout(new BoxLayout(checkBoxVertical,
-                                             BoxLayout.Y_AXIS));
-    checkBoxVertical.setAlignmentX(Component.LEFT_ALIGNMENT);
-    titleCheckBox.setText("Title");
-    titleCheckBox.setActionCommand("Title");
-    titleCheckBox.setSelected(true);
-    titleCheckBox.setEnabled(false);
-    checkBoxVertical.add(titleCheckBox);
-    abstractCheckBox.setText("Abstract");
-    abstractCheckBox.setActionCommand("Abstract");
-    abstractCheckBox.setSelected(true);
-    abstractCheckBox.setEnabled(false);
-    checkBoxVertical.add(abstractCheckBox);
-    keywordsCheckBox.setText("Keywords");
-    keywordsCheckBox.setActionCommand("Keywords");
-    keywordsCheckBox.setSelected(true);
-    keywordsCheckBox.setEnabled(false);
-    checkBoxVertical.add(keywordsCheckBox);
-    checkBoxHorizontal.add(checkBoxVertical);
-    queryTermPanel.add(checkBoxHorizontal);
+    rankComboBox.addItem("Kingdom");
+    rankComboBox.addItem("Phylum");
+    rankComboBox.addItem("Division");
+    rankComboBox.addItem("Superclass");
+    rankComboBox.addItem("Class");
+    rankComboBox.addItem("Subclass");
+    rankComboBox.addItem("Order");
+    rankComboBox.addItem("Family");
+    rankComboBox.addItem("Genus");
+    rankComboBox.addItem("Species");
+    rankComboBox.addItem("Subspecies");
+    rankComboBox.setSelectedIndex(0);
+    rankComboBox.setBackground(java.awt.Color.white);
+    queryTermPanel.add(rankComboBox);
 
-    queryTermPanel.add(searchModeComboBox);
-    searchModeComboBox.setBackground(java.awt.Color.white);
-    JLabel valueLabel = new JLabel();
-    //valueLabel.setText("Subject");
-    valueLabel.setText("  ");
-    queryTermPanel.add(valueLabel);
-    valueLabel.setForeground(java.awt.Color.black);
-    valueLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-    textValueBox.setColumns(20);
-    queryTermPanel.add(textValueBox);
-    setChoicesPanel.add(queryTermPanel);
-    setChoicesPanel.add(Box.createVerticalGlue());
-    setChoicesPanel.add(Box.createRigidArea(new Dimension(8, 8)));
-    //}}
     searchModeComboBox.addItem("contains");
     searchModeComboBox.addItem("starts-with");
     searchModeComboBox.addItem("ends-with");
     searchModeComboBox.addItem("matches-exactly");
     searchModeComboBox.setSelectedIndex(0);
+    searchModeComboBox.setBackground(java.awt.Color.white);
+    queryTermPanel.add(searchModeComboBox);
 
+    JLabel valueLabel = new JLabel();
+    valueLabel.setText("  ");
+    valueLabel.setForeground(java.awt.Color.black);
+    valueLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    queryTermPanel.add(valueLabel);
+
+    textValueBox.setColumns(20);
+    queryTermPanel.add(textValueBox);
+
+    setChoicesPanel.add(queryTermPanel);
     setChoicesPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+    //}}
 
     //{{REGISTER_LISTENERS
-    SymItem lSymItem = new SymItem();
-    allCheckBox.addItemListener(lSymItem);
     //}}
   }
 
@@ -149,7 +132,7 @@ public class TaxonTermPanel extends JComponent
   public String getValue()
   {
     String ret = textValueBox.getText();
-      return ret;
+    return ret;
   }
 
   /**
@@ -167,7 +150,7 @@ public class TaxonTermPanel extends JComponent
   public String getSearchMode()
   {
     String ret = (String) searchModeComboBox.getSelectedItem();
-      return ret;
+    return ret;
   }
 
   /**
@@ -175,105 +158,32 @@ public class TaxonTermPanel extends JComponent
    */
   public void setSearchMode(String value)
   {
-    for (int i = 0; i < searchModeComboBox.getItemCount(); i++)
-    {
-      if (value.equals(searchModeComboBox.getItemAt(i)))
-      {
+    for (int i = 0; i < searchModeComboBox.getItemCount(); i++) {
+      if (value.equals(searchModeComboBox.getItemAt(i))) {
         searchModeComboBox.setSelectedIndex(i);
       }
     }
   }
 
   /**
-   * get state of 'All' check box
+   * return the value of the combobox which contains the
+   * taxonomic rank (i.e. contains, Kingdom, Phylum, etc.)
    */
-  public boolean getAllState()
+  public String getTaxonRank()
   {
-    return allCheckBox.isSelected();
+    String ret = (String) rankComboBox.getSelectedItem();
+    return ret;
   }
 
   /**
-   * set state of 'All' check box
+   * set the taxon rank field
    */
-  public void setAllState(boolean state)
+  public void setTaxonRank(String value)
   {
-    allCheckBox.setSelected(state);
-  }
-
-  /**
-   * returns state of Title checkbox
-   */
-  public boolean getTitleState()
-  {
-    return titleCheckBox.isSelected();
-  }
-
-  /**
-   * set state of Title check box
-   */
-  public void setTitleState(boolean state)
-  {
-    titleCheckBox.setSelected(state);
-  }
-
-  /**
-   * returns state of Abstract checkbox
-   */
-  public boolean getAbstractState()
-  {
-    return abstractCheckBox.isSelected();
-  }
-
-  /**
-   * set state of Abstract check box
-   */
-  public void setAbstractState(boolean state)
-  {
-    abstractCheckBox.setSelected(state);
-  }
-
-   /**
-    * returns state of Keywords check box
-    */
-  public boolean getKeywordsState()
-  {
-    return keywordsCheckBox.isSelected();
-  }
-
-  /**
-   * set state of Keywords check box
-   */
-  public void setKeywordsState(boolean state)
-  {
-    keywordsCheckBox.setSelected(state);
-  }
-
-  class SymItem implements java.awt.event.ItemListener
-  {
-    public void itemStateChanged(java.awt.event.ItemEvent event)
-    {
-      Object object = event.getSource();
-      if (object == allCheckBox) {
-        allCheckBox_itemStateChanged(event);
+    for (int i = 0; i < rankComboBox.getItemCount(); i++) {
+      if (value.equals(rankComboBox.getItemAt(i))) {
+        rankComboBox.setSelectedIndex(i);
       }
-    }
-  }
-
-  /**
-   * used to change the enabled state of checkbox
-   * 
-   * @param event
-   */
-  void allCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
-  {
-    if (allCheckBox.isSelected()) {
-      titleCheckBox.setEnabled(false);
-      abstractCheckBox.setEnabled(false);
-      keywordsCheckBox.setEnabled(false);
-    } else {
-      titleCheckBox.setEnabled(true);
-      abstractCheckBox.setEnabled(true);
-      keywordsCheckBox.setEnabled(true);
     }
   }
 }
