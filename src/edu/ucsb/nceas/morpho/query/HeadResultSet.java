@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-06 01:33:54 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,16 +231,37 @@ public class HeadResultSet extends ResultSet
    * Method implements from SortTableModel. To make sure a col can be sort
    * or not. We decide it always be sortable.
    * @param col, the index of column which need to be sorted
-   * @param ascending, the sort order
+   * @param order, the sort order
    */
-  public void sortTableByColumn(int col, boolean ascending)
+  public void sortTableByColumn(int col, String order)
   {
-   
-   //look up index in result vector
-    int resultColIndex = lookupResultsVectorIndex(col);
-    // sort the result vector
-    Collections.sort(headResultsVector,
+    boolean sort = false;
+    boolean ascending = false;
+    
+    // look up sort and ascending
+    if (order.equals(SortableJTable.ASCENDING))
+    {
+      sort = true;
+      ascending = true;
+    }
+    else if (order.equals(SortableJTable.DECENDING))
+    {
+      sort = true;
+      ascending = false;
+    }
+    else if (order.equals(SortableJTable.NONORDERED))
+    {
+      sort = false;
+    }
+    // sorting
+    if (sort)
+    {
+      //look up index in result vector
+      int resultColIndex = lookupResultsVectorIndex(col);
+      // sort the result vector
+      Collections.sort(headResultsVector,
                     new CellComparator(resultColIndex, ascending));
+    }
  
   }//sortColumn
 }
