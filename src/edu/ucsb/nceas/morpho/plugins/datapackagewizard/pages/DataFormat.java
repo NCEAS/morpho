@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-06 04:20:38 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-08 22:11:21 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 public class DataFormat extends AbstractWizardPage{
 
   private final String pageID     = WizardPageLibrary.DATA_FORMAT;
-  private String nextPageID       = null;
+  private String nextPageID       = WizardPageLibrary.SUMMARY;
   
   private final String title      = "Data File Information:";
   private final String subtitle   = "File Format";

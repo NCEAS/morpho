@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-08 22:11:21 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,9 @@ import java.awt.Font;
 
 public class WizardSettings {
 
+  
+  private static String summaryText;
+  private static String dataLocation;
 
   protected static final int WIZARD_X_COORD = 100;
 
@@ -120,14 +123,94 @@ public class WizardSettings {
   public static final  Dimension LIST_BUTTON_DIMS  
                                       = new Dimension(100,30);
                                       
-  protected static final String FINISH_BUTTON_TEXT  = "Finish";
+  public    static final String FINISH_BUTTON_TEXT  = "Finish";
+  
+  public    static final String PREV_BUTTON_TEXT    = "< Back";
   
   protected static final String NEXT_BUTTON_TEXT    = "Next >";
-  
-  protected static final String PREV_BUTTON_TEXT    = "< Back";
   
   protected static final String CANCEL_BUTTON_TEXT  = "Cancel";
 
   protected static final String OK_BUTTON_TEXT      = "OK";
+  
+  public static final String SUMMARY_TEXT_INLINE 
+    = "In addition to describing your data, you have chosen to include it "
+    + "within the data package.";
+    
+  public static final String SUMMARY_TEXT_ONLINE 
+    = "You have chosen to describe data that is available online at: ";
+    
+  public static final String SUMMARY_TEXT_OFFLINE 
+    = "You have chosen to describe data, but not make the data itself "
+    + "available at this time.";
+  
+  public static final String SUMMARY_TEXT_NODATA 
+    = "You have chosen not to include or describe any data in your data "
+    + "package at this time. Data may be added later";
+
+  
+  /**
+   *  sets summary text that will be shown on the final page of the wizard
+   *
+   *  @param  text the String to be displayed. Must be one of the final static 
+   *          Strings defined elsewhere in this class, named SUMMARY_TEXT_***, 
+   *          otherwise text will be unchanged
+   */
+  public static void setSummaryText(String text) {
+  
+    if (text==null) return;
+    if (text.equals(SUMMARY_TEXT_INLINE) || text.equals(SUMMARY_TEXT_ONLINE)
+     || text.equals(SUMMARY_TEXT_NODATA) || text.equals(SUMMARY_TEXT_OFFLINE)) {
+      
+      summaryText = text;
+      System.err.println("\n XXXXXXXX setSummaryText() after set; summaryText: "
+                                                                  +summaryText);
+    }
+  }
+
+  /**
+   *  gets summary text that will be shown on the final page of the wizard
+   *
+   *  @return text the summary String to be displayed.
+   */
+  public static String getSummaryText() { 
+  
+    System.err.println("\n XXXXXXXX getSummaryText() returning: "+summaryText);
+    return summaryText; 
+  }
+
+  
+  /**
+   *  sets data location to be used in summary text that will be shown on the 
+   *  page of the wizard. For Online data, this would be a URL, and for inline 
+   *  data, it could be a file:// url or the filename or something similar. 
+   *
+   *  @param  loc the location to be displayed. Must be non-null and must 
+   *          contain characters other than whitespace, otherwise location will 
+   *          be unchanged
+   */
+  public static void setDataLocation(String loc) {
+  
+    if (loc==null || loc.trim().equals("")) return;
+    dataLocation = loc;
+  }
+
+  
+  /**
+   *  gets data location to be used in summary text that will be shown on the 
+   *  page of the wizard. For Online data, this would be a URL, and for inline 
+   *  data, it could be a file:// url or the filename or something similar. 
+   *  Note that text should be displayed only if the summary text is set to  
+   *  SUMMARY_TEXT_INLINE or SUMMARY_TEXT_ONLINE. If a null value is returned
+   *  for the location string, the summary should default gracefully and not 
+   *  show a location.
+   *
+   *  @return the String location to be displayed.
+   */
+  public static String getDataLocation() {
+  
+    return dataLocation;
+  }
+  
 }
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-06 01:37:15 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-08 22:11:21 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,32 +79,34 @@ public class WizardPageLibrary {
 
     pages = new HashMap();
     
-    pages.put(INTRODUCTION,   new Introduction());
-    pages.put(GENERAL,        new General());
-    pages.put(KEYWORDS,       new Keywords());
+    pages.put(INTRODUCTION,     new Introduction());
+    pages.put(GENERAL,          new General());
+    pages.put(KEYWORDS,         new Keywords());
 //    pages.put(KEYWORDS_DIALOG,  new KeywordsDialog());
-    pages.put(PARTY_INTRO,    new PartyIntro());
+    pages.put(PARTY_INTRO,      new PartyIntro());
     pages.put(PARTY_CREATOR,    new PartyPage(PartyDialog.CREATOR));
     pages.put(PARTY_CONTACT,    new PartyPage(PartyDialog.CONTACT));
     pages.put(PARTY_ASSOCIATED, new PartyPage(PartyDialog.ASSOCIATED));
     
-    pages.put(USAGE_RIGHTS,   new UsageRights());
-    pages.put(DATA_LOCATION,  new DataLocation());
-    pages.put(DATA_FORMAT,    new DataFormat());
+    pages.put(USAGE_RIGHTS,     new UsageRights());
+    pages.put(DATA_LOCATION,    new DataLocation());
+    pages.put(DATA_FORMAT,      new DataFormat());
+    pages.put(SUMMARY,          new Summary());
 //    pages.put(TEXT_IMPORT_WIZARD,  new TextImportWizard());
   }
 
-  public static final String INTRODUCTION     = "INTRODUCTION";
-  public static final String GENERAL          = "GENERAL";
-  public static final String KEYWORDS         = "KEYWORDS";
-  public static final String KEYWORDS_DIALOG  = "KEYWORDS_DIALOG";
-  public static final String PARTY_INTRO      = "PARTY_INTRO";
-  public static final String PARTY_CREATOR    = "PARTY_CREATOR";
-  public static final String PARTY_CONTACT    = "PARTY_CONTACT";
-  public static final String PARTY_ASSOCIATED = "PARTY_ASSOCIATED";
-  public static final String USAGE_RIGHTS     = "USAGE_RIGHTS";
-  public static final String DATA_LOCATION    = "DATA_LOCATION";
+  public static final String INTRODUCTION       = "INTRODUCTION";
+  public static final String GENERAL            = "GENERAL";
+  public static final String KEYWORDS           = "KEYWORDS";
+  public static final String KEYWORDS_DIALOG    = "KEYWORDS_DIALOG";
+  public static final String PARTY_INTRO        = "PARTY_INTRO";
+  public static final String PARTY_CREATOR      = "PARTY_CREATOR";
+  public static final String PARTY_CONTACT      = "PARTY_CONTACT";
+  public static final String PARTY_ASSOCIATED   = "PARTY_ASSOCIATED";
+  public static final String USAGE_RIGHTS       = "USAGE_RIGHTS";
+  public static final String DATA_LOCATION      = "DATA_LOCATION";
   public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
   public static final String DATA_FORMAT        = "DATA_FORMAT";
+  public static final String SUMMARY            = "SUMMARY";
 
 }

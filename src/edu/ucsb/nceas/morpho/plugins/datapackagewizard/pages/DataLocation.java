@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-30 03:02:31 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-08 22:11:21 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,14 +51,13 @@ import javax.swing.BorderFactory;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 
 public class DataLocation extends AbstractWizardPage{
 
   private final String pageID     = WizardPageLibrary.DATA_LOCATION;
   private String nextPageID       = WizardPageLibrary.TEXT_IMPORT_WIZARD;
-  private String nextPageGenerateID = WizardPageLibrary.TEXT_IMPORT_WIZARD;
-  private String nextPageByHandID   = WizardPageLibrary.DATA_FORMAT;
   
   private final String title      = "Data File Information:";
   private final String subtitle   = "Location";
@@ -79,6 +78,10 @@ public class DataLocation extends AbstractWizardPage{
   private String fileNameInline = "FILENAME FROM IMPORT WIZARD GOES HERE";
   private String dataInline     = "INLINE DATA FROM IMPORT WIZARD GOES HERE";
   
+  private String inlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
+  private String onlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
+  private String offlineNextPageID = WizardPageLibrary.TEXT_IMPORT_WIZARD;
+    
   private JPanel inlinePanel;
   private JPanel onlinePanel;
   private JPanel offlinePanel;
@@ -302,8 +305,6 @@ public class DataLocation extends AbstractWizardPage{
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
   
-  
-  
     return panel;
   }
   
@@ -315,7 +316,6 @@ public class DataLocation extends AbstractWizardPage{
    */
   public void onLoadAction() {
 
-//    titleField.requestFocus();
     WidgetFactory.unhiliteComponent(radioLabel);
     WidgetFactory.unhiliteComponent(fileNameLabelOnline);
     WidgetFactory.unhiliteComponent(urlLabelOnline);
@@ -328,9 +328,7 @@ public class DataLocation extends AbstractWizardPage{
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
-  public void onRewindAction() {
-    
-  }
+  public void onRewindAction() {}
   
   
   /** 
@@ -351,6 +349,9 @@ public class DataLocation extends AbstractWizardPage{
     } else if (distribXPath==INLINE_XPATH) {
 //  I N L I N E  /////////////////////////////////////
 
+      WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_INLINE);
+//      WizardSettings.setDataLocation(/* what? */);
+      nextPageID = inlineNextPageID;
 
     } else if (distribXPath==ONLINE_XPATH) {
 //  O N L I N E  /////////////////////////////////////
@@ -366,8 +367,13 @@ public class DataLocation extends AbstractWizardPage{
       
         WidgetFactory.hiliteComponent(urlLabelOnline);
         urlFieldOnline.requestFocus();
+
         return false;
       }
+      WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_ONLINE);
+      WizardSettings.setDataLocation(urlFieldOnline.getText().trim());
+
+      nextPageID = onlineNextPageID;
       
     } else if (distribXPath==OFFLINE_XPATH) {
 //  O F F L I N E  ///////////////////////////////////
@@ -377,13 +383,19 @@ public class DataLocation extends AbstractWizardPage{
       
         WidgetFactory.hiliteComponent(fileNameLabelOffline);
         fileNameFieldOffline.requestFocus();
+
+        WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_OFFLINE);
+
         return false;
       }
     
+      nextPageID = offlineNextPageID;
+
     } else if (distribXPath==NODATA_XPATH) {
 //  N O   D A T A  ///////////////////////////////////
-    
-    
+
+      WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_NODATA);
+      nextPageID = WizardPageLibrary.SUMMARY;
     }
     return true;
   }
@@ -425,17 +437,6 @@ public class DataLocation extends AbstractWizardPage{
     
       returnMap.put(OBJECTNAME_XPATH, fileNameFieldOffline.getText().trim());
     }
-    
-    
-    
-    
-//    returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
-//    
-//    if ( !(absField.getText().trim().equals("")) ) {
-//      
-//      returnMap.put("/eml:eml/dataset/abstract/section/para[1]", 
-//                    absField.getText().trim());
-//    }
     return returnMap;
   }
   
@@ -452,15 +453,25 @@ public class DataLocation extends AbstractWizardPage{
       
           if (e.getActionCommand().equals(genHandButtonsText[0])) {
         
-            nextPageID = nextPageGenerateID;
+            setNextPageID(WizardPageLibrary.TEXT_IMPORT_WIZARD);
         
           } else if (e.getActionCommand().equals(genHandButtonsText[1])) {
       
-            nextPageID = nextPageByHandID;
+            setNextPageID(WizardPageLibrary.DATA_FORMAT);
           }
         }
       });
   }
+  
+  
+  
+  private void setNextPageID(String id) {
+  
+    if (distribXPath==INLINE_XPATH)  inlineNextPageID  = id;
+    if (distribXPath==ONLINE_XPATH)  onlineNextPageID  = id;
+    if (distribXPath==OFFLINE_XPATH) offlineNextPageID = id;
+  }
+
   
   
   /**
