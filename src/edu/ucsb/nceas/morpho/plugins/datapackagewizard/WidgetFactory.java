@@ -1,38 +1,135 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeListener;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.BorderLayout;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 
-import javax.swing.JCheckBox;
-import javax.swing.JRadioButton;
-import javax.swing.ButtonGroup;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JDialog;
+import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JComponent;
-import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import java.util.List;
-import java.util.ArrayList;
+
 
 public class WidgetFactory {
 
   private static boolean debugHilite = false;
 
-  public static List responsiblePartyList = new ArrayList();
+  public static List partyRefsListForAllPkgs = new ArrayList();
+
+//  /**
+//   * Used for keeping track of parties being added to each specific DP
+//   *
+//   * @return List containing Party refs for current pkg
+//   */
+//  private static Map partyRefsListsPerPackageMap = new HashMap();
+//  private static List currentWizardList = null;
+//  private static boolean needToAddStateChangeMonitor = true;
+//  //
+//  public static List getPartyRefsListForCurrentPkg() {
+//
+//    List returnList = null;
+//
+//    if (UIController.getInstance().isWizardRunning()) { //WIZARD IS RUNNING/////
+//
+//      if (currentWizardList==null) {
+//
+//        //if this is a new wizard, we don't yet have a list, so create one, and
+//        //then add a listener to receive a callback when the new datapackage has
+//        //been fully created, so we can get a reference to it and use that
+//        //reference as a key in the map...
+//
+//        currentWizardList = new ArrayList();
+//
+//        if (needToAddStateChangeMonitor) {
+//
+//          needToAddStateChangeMonitor = false;
+//
+//          StateChangeMonitor.getInstance().addStateChangeListener(
+//              StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+//              new StateChangeListener() {
+//
+//            public void handleStateChange(StateChangeEvent e) {
+//
+//              if (currentWizardList == null || e.getChangedState()
+//                  != StateChangeEvent.CREATE_DATAPACKAGE_FRAME) return;
+//
+//              AbstractDataPackage thisDP = UIController.getInstance().
+//                                           getCurrentAbstractDataPackage();
+//              if (thisDP != null) {
+//
+//                partyRefsListsPerPackageMap.put(thisDP, currentWizardList);
+//
+//              } else {
+//
+//                Log.debug(20, "ERROR: getPartyRefsListForCurrentPkg() cannot "
+//                          + "add Wizard's party references to Map because "
+//                          + "UIController.getInstance()."
+//                          + "getCurrentAbstractDataPackage() returned NULL");
+//              }
+//              currentWizardList = null;
+//            }
+//          });
+//
+//        }
+//        //StateChangeEvent.CREATE_DATAPACKAGE_FRAME)
+//      }
+//      return currentWizardList;
+//
+//    } else { //WIZARD NOT RUNNING///////////////////////////////////////////////
+//
+//      AbstractDataPackage thisDP = UIController.getInstance().
+//                                   getCurrentAbstractDataPackage();
+//      if (ensureCurrentPartyRefsListExists(thisDP)) {
+//        returnList = (List)partyRefsListsPerPackageMap.get(thisDP);
+//      }
+//      return returnList;
+//    }
+//  }
+//
+//
+//  private static boolean ensureCurrentPartyRefsListExists(AbstractDataPackage thisDP) {
+//
+//    if (thisDP==null) return false;
+//
+//    if (!partyRefsListsPerPackageMap.containsKey(thisDP)) {
+//
+//      Log.debug(45,
+//          "addRowToPartyRefsListForCurrentPkg - no list found - creating new");
+//      partyRefsListsPerPackageMap.put(thisDP, new ArrayList());
+//    }
+//    return true;
+//  }
+
+
+
 
   private WidgetFactory() {}
 
@@ -368,77 +465,77 @@ public class WidgetFactory {
     component.setPreferredSize(dims);
     component.setMaximumSize(dims);
   }
-	
-	
-	/**
-		Function that creates a container dialog for a given panel. The container provides 
-		the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
-		'OK' and 'Cancel' button are provided as parameters.
-		
-		@param centerPanel - the JPanel that is to displayed in this dialog
-		@param okListener  - the ActionListener for the 'OK' button
-		@param cancelListener  - the ActionListener for the 'Cancel' button
-		@return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
-												at the bottom
-	*/
-	
-	public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
-		
-		return makeContainerDialog(centerPanel, okListener, cancelListener, "OK", "Cancel");
-	}
-	
-	/**
-		Function that creates a container dialog for a given panel. The container provides 
-		the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
-		'OK' and 'Cancel' button are provided as parameters. The labels for the buttons are 
-		also provided.
-		
-		@param centerPanel - the JPanel that is to displayed in this dialog
-		@param okListener  - the ActionListener for the 'OK' button
-		@param cancelListener  - the ActionListener for the 'Cancel' button
-		@param okCaption  - the label for the 'OK' button
-		@param cancelCaption  - the label for the 'Cancel' button
-		@return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
-												at the bottom
-	*/
-	
-	public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption)
-	{
-		
-		JDialog dialog = new JDialog();
-		Container c = dialog.getContentPane();
-		c.setLayout(new BorderLayout());
-		
-		dialog.setModal(true);
-		dialog.setVisible(false);
-		
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
-		buttonsPanel.add(Box.createHorizontalGlue());
-		buttonsPanel.setOpaque(false);
-		
-		buttonsPanel.setBorder(
-		BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
-		c.add(buttonsPanel, BorderLayout.SOUTH);
-		
-		JButton okButton  = new JButton(okCaption);
-		okButton.addActionListener(okListener);
-		okButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
-		okButton.setFont(WizardSettings.BUTTON_FONT);
-		
-		JButton cancelButton = new JButton(cancelCaption);
-		cancelButton.addActionListener(cancelListener);
-		cancelButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
-		cancelButton.setFont(WizardSettings.BUTTON_FONT);
-		
-		buttonsPanel.add(okButton);
-		buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
-		buttonsPanel.add(cancelButton);
-		buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
-		
-		c.add(centerPanel, BorderLayout.CENTER);
-		return dialog;
-	}
-	
+
+
+  /**
+    Function that creates a container dialog for a given panel. The container provides
+    the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
+    'OK' and 'Cancel' button are provided as parameters.
+
+    @param centerPanel - the JPanel that is to displayed in this dialog
+    @param okListener  - the ActionListener for the 'OK' button
+    @param cancelListener  - the ActionListener for the 'Cancel' button
+    @return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
+                        at the bottom
+  */
+
+  public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
+
+    return makeContainerDialog(centerPanel, okListener, cancelListener, "OK", "Cancel");
+  }
+
+  /**
+    Function that creates a container dialog for a given panel. The container provides
+    the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
+    'OK' and 'Cancel' button are provided as parameters. The labels for the buttons are
+    also provided.
+
+    @param centerPanel - the JPanel that is to displayed in this dialog
+    @param okListener  - the ActionListener for the 'OK' button
+    @param cancelListener  - the ActionListener for the 'Cancel' button
+    @param okCaption  - the label for the 'OK' button
+    @param cancelCaption  - the label for the 'Cancel' button
+    @return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
+                        at the bottom
+  */
+
+  public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption)
+  {
+
+    JDialog dialog = new JDialog();
+    Container c = dialog.getContentPane();
+    c.setLayout(new BorderLayout());
+
+    dialog.setModal(true);
+    dialog.setVisible(false);
+
+    JPanel buttonsPanel = new JPanel();
+    buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+    buttonsPanel.add(Box.createHorizontalGlue());
+    buttonsPanel.setOpaque(false);
+
+    buttonsPanel.setBorder(
+    BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
+    c.add(buttonsPanel, BorderLayout.SOUTH);
+
+    JButton okButton  = new JButton(okCaption);
+    okButton.addActionListener(okListener);
+    okButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+    okButton.setFont(WizardSettings.BUTTON_FONT);
+
+    JButton cancelButton = new JButton(cancelCaption);
+    cancelButton.addActionListener(cancelListener);
+    cancelButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+    cancelButton.setFont(WizardSettings.BUTTON_FONT);
+
+    buttonsPanel.add(okButton);
+    buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
+    buttonsPanel.add(cancelButton);
+    buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
+
+    c.add(centerPanel, BorderLayout.CENTER);
+    return dialog;
+  }
+
 }
 
