@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-19 17:21:05 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -677,11 +677,11 @@ public class DataPackage
               File g = fsds.openFile(accnum);
               if(i == 1)
               {
-                mds.newFile(accnum, new FileReader(g), true, this);
+                mds.newFile(accnum, new FileReader(g), this);
               }
               else
               {
-                mds.saveFile(accnum, new FileReader(g), true, this);
+                mds.saveFile(accnum, new FileReader(g), this);
               }
             }
           }

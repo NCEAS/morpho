@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:53 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,23 +74,17 @@ public class FileSystemDataStore extends DataStore
   
   public File saveFile(String name, Reader file)
   {
-    return saveFile(name, file, false, datadir, null);
+    return saveFile(name, file, datadir, null);
   }
   
-  public File saveFile(String name, Reader file, boolean publicAccess)
+  public File saveFile(String name, Reader file, DataPackage dp)
   {
-    return saveFile(name, file, publicAccess, datadir, null);
-  }
-  
-  public File saveFile(String name, Reader file, boolean publicAccess, 
-                       DataPackage dp)
-  {
-    return saveFile(name, file, publicAccess, datadir, dp);
+    return saveFile(name, file, datadir, dp);
   }
   
   public File saveTempFile(String name, Reader file)
   {
-    return saveFile(name, file, false, tempdir, null);
+    return saveFile(name, file, tempdir, null);
   }
   
   /**
@@ -106,8 +100,7 @@ public class FileSystemDataStore extends DataStore
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  public File saveFile(String name, Reader file, boolean publicAccess, 
-                       String rootDir, DataPackage dp)
+  public File saveFile(String name, Reader file, String rootDir, DataPackage dp)
   {
     try
     {
@@ -181,10 +174,9 @@ public class FileSystemDataStore extends DataStore
    * @param publicAccess: flag for unauthenticated read access to the file.
    * true if anauthenticated users can read the file, false otherwise.
    */
-  public File newFile(String name, Reader file, boolean publicAccess,
-                      DataPackage dp)
+  public File newFile(String name, Reader file, DataPackage dp)
   {
-    return saveFile(name, file, publicAccess, datadir, dp);
+    return saveFile(name, file, datadir, dp);
   }
   
    /**
@@ -196,7 +188,7 @@ public class FileSystemDataStore extends DataStore
    */
   public File newFile(String name, Reader file)
   {
-    return saveFile(name, file, false, datadir, null);
+    return saveFile(name, file, datadir, null);
   }
   
   /**
@@ -226,7 +218,7 @@ public class FileSystemDataStore extends DataStore
         ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
         FileSystemDataStore fsds = new FileSystemDataStore(cf);
         File newfile = fsds.openFile(filename);
-        fsds.saveFile(filename2, new FileReader(newfile), true);
+        fsds.saveFile(filename2, new FileReader(newfile));
       }
       catch(Exception e)
       {
@@ -240,7 +232,7 @@ public class FileSystemDataStore extends DataStore
         ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
         FileSystemDataStore fsds = new FileSystemDataStore(cf);
         File newfile = new File(filename);
-        fsds.saveFile(filename2, new FileReader(newfile), true);
+        fsds.saveFile(filename2, new FileReader(newfile));
       }
       catch(Exception e)
       {

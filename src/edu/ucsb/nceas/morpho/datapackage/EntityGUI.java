@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:52 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -484,20 +484,9 @@ public class EntityGUI extends javax.swing.JFrame
         try
         {
           MetacatDataStore mds = new MetacatDataStore(framework);
-          int choice = JOptionPane.showConfirmDialog(null, 
-                               "Do you wish to make this file publicly readable "+ 
-                               "(Searchable) on Metacat?", 
-                               "Package Editor", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-          if(choice == JOptionPane.YES_OPTION)
-          {
-            metacatpublic = true;
-          }
-          mds.newFile(id, new StringReader(xmlString), metacatpublic, 
-                      dataPackage);
-          mds.saveFile(packageId, new StringReader(packageFile), metacatpublic, 
-                       dataPackage);
+          
+          mds.newFile(id, new StringReader(xmlString), dataPackage);
+          mds.saveFile(packageId, new StringReader(packageFile), dataPackage);
         }
         catch(Exception e)
         {
@@ -572,8 +561,7 @@ public class EntityGUI extends javax.swing.JFrame
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          mds.saveFile(newid, new StringReader(newPackageFile), metacatpublic,
-                       dataPackage);
+          mds.saveFile(newid, new StringReader(newPackageFile), dataPackage);
           newPackageId = newid;
         }
         else
@@ -581,8 +569,7 @@ public class EntityGUI extends javax.swing.JFrame
           String oldid = id;
           newid = a.incRev(id);
           //save the file that was edited
-          mds.saveFile(newid, new StringReader(xmlString), metacatpublic, 
-                       dataPackage);
+          mds.saveFile(newid, new StringReader(xmlString), dataPackage);
           newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
                                                     oldid,
@@ -593,7 +580,7 @@ public class EntityGUI extends javax.swing.JFrame
                                              dataPackage.getID(), 
                                              newPackageId);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       metacatpublic, dataPackage);
+                       dataPackage);
         }
       }
     }

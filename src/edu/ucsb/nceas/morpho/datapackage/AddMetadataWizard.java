@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:52 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-10-22 20:31:21 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -845,7 +845,7 @@ public class AddMetadataWizard extends JFrame
       
       try
       { //save the new package file
-        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile), false);
+        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile));
       }
       catch(Exception e)
       {
@@ -873,7 +873,7 @@ public class AddMetadataWizard extends JFrame
       
       try
       { //save the new package file
-        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), true, 
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), 
                      dataPackage);
       }
       catch(MetacatUploadException mue)
@@ -1030,7 +1030,7 @@ public class AddMetadataWizard extends JFrame
       
       try
       { //save the new package file
-        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile), false);
+        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile));
       }
       catch(Exception e)
       {
@@ -1043,29 +1043,15 @@ public class AddMetadataWizard extends JFrame
     if(locMetacat)
     { //save the real files to metacat.
       MetacatDataStore mds = new MetacatDataStore(framework);
-      boolean metacatpublic = false;
       try
       {
-        int choice = JOptionPane.showConfirmDialog(null, 
-                               "Do you wish to make this file publicly readable "+ 
-                               "(Searchable) on Metacat?", 
-                               "New Description", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          metacatpublic = true;
-        }
-        
         if(editingExistingFile)
         {
-          mds.saveFile(newid, new FileReader(newxmlFile), metacatpublic, 
-                       dataPackage);
+          mds.saveFile(newid, new FileReader(newxmlFile), dataPackage);
         }
         else
         {
-          mds.newFile(newid, new FileReader(newxmlFile), metacatpublic, 
-                      dataPackage);
+          mds.newFile(newid, new FileReader(newxmlFile), dataPackage);
         }
         
       }
@@ -1078,8 +1064,7 @@ public class AddMetadataWizard extends JFrame
       
       try
       {
-        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), 
-                     metacatpublic, dataPackage);
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), dataPackage);
       }
       catch(Exception e)
       {

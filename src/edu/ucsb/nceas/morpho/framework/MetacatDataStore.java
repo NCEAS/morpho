@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-19 17:03:30 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,18 +177,17 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param publicAccess: true if the file can be read by unauthenticated
    * users, false otherwise.
    */
-  public File saveFile(String name, Reader file, boolean publicAccess, 
-                       DataPackage dp) 
+  public File saveFile(String name, Reader file, DataPackage dp) 
               throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, dp, "update", true);
+    return saveFile(name, file, dp, "update", true);
   }
   
-  public File saveFile(String name, Reader file, boolean publicAccess, 
+  public File saveFile(String name, Reader file, 
                        DataPackage dp, boolean checkforaccessfile) 
               throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, dp, "update", checkforaccessfile);
+    return saveFile(name, file, dp, "update", checkforaccessfile);
   }
   
   /**
@@ -200,7 +199,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * users, false otherwise.
    * @param action: the action (update or insert) to perform
    */
-  private File saveFile(String name, Reader file, boolean publicAccess, 
+  private File saveFile(String name, Reader file, 
                         DataPackage dp, String action, boolean checkforaccessfile) 
                        throws MetacatUploadException
   { //-attempt to write file to metacat
@@ -210,7 +209,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     StringBuffer fileText = new StringBuffer();
     StringBuffer messageBuf = new StringBuffer();
     String accessFileId = null;
-    
+    /*
     if(checkforaccessfile)
     {
       try
@@ -240,7 +239,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         
       }
     }
-    
+    */
     try
     {
       /*
@@ -249,9 +248,9 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       {
         fileText.append((char)c);
         c = file.read();
-      }
+      }*/
       //System.out.println(fileText.toString());
-      */
+      
       
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
@@ -346,18 +345,17 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param publicAccess: flag for unauthenticated read access to the new file
    * true if unauthenticated users should have read access, false otherwise
    */
-  public File newFile(String name, Reader file, boolean publicAccess, 
-                      DataPackage dp)
+  public File newFile(String name, Reader file, DataPackage dp)
          throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, dp, "insert", true);
+    return saveFile(name, file, dp, "insert", true);
   }
   
-  public File newFile(String name, Reader file, boolean publicAccess, 
-                      DataPackage dp, boolean checkforaccessfile)
+  public File newFile(String name, Reader file, DataPackage dp, 
+                      boolean checkforaccessfile)
          throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, dp, "insert", checkforaccessfile);
+    return saveFile(name, file, dp, "insert", checkforaccessfile);
   }
   
   /**

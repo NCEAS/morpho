@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:52 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,11 +182,9 @@ public abstract class DataStore implements DataStoreInterface
   
   abstract public File openFile(String name) throws FileNotFoundException, 
                                                     CacheAccessException;
-  abstract public File saveFile(String name, Reader file, boolean publicAccess, 
-                                DataPackage dp)
+  abstract public File saveFile(String name, Reader file, DataPackage dp)
            throws Exception;
-  abstract public File newFile(String name, Reader file, boolean publicAccess,
-                               DataPackage dp)
+  abstract public File newFile(String name, Reader file, DataPackage dp)
            throws Exception;
   abstract public boolean deleteFile(String name) throws Exception;
 }

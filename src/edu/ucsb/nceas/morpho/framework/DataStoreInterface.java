@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:53 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,16 +51,14 @@ public interface DataStoreInterface
    * is true, then an unauthenticated user may read the document from the 
    * data store.
    */
-  public File saveFile(String name, Reader file, boolean publicAccess, 
-                       DataPackage dp)
+  public File saveFile(String name, Reader file, DataPackage dp)
          throws Exception;
   
   /**
    * create a new file with an id of name in the datastore and return a File
    * object that represents it.
    */
-  public File newFile(String name, Reader file, boolean publicAccess,
-                      DataPackage dp)
+  public File newFile(String name, Reader file, DataPackage dp)
          throws Exception;
   
   /**

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-21 00:03:12 $'
- * '$Revision: 1.50 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -837,7 +837,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           else
           { //this is an xml file
             //send it to metacat
-            mds.newFile(id, fr, publicAcc, dp, false);
+            mds.newFile(id, fr, dp);
           }
           fr.close();
         }

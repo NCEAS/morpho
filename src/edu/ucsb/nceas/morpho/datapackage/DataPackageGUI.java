@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-19 16:14:48 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2001-10-22 20:31:22 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -851,21 +851,8 @@ public class DataPackageGUI extends javax.swing.JFrame
         {
           MetacatDataStore mds = new MetacatDataStore(framework);
           deleted = mds.deleteFile(id);
-          boolean metacatpublic = false;
-          int choice = JOptionPane.showConfirmDialog(null, 
-                                 "Do you wish to make this package publicly " +
-                                 "readable "+ 
-                                 "(Searchable) on Metacat?", 
-                                 "Package Editor", 
-                                 JOptionPane.YES_NO_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-          if(choice == JOptionPane.YES_OPTION)
-          {
-            metacatpublic = true;
-          }
-          
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       metacatpublic, dataPackage);
+                       dataPackage);
         }
         catch(Exception eee)
         {
@@ -1028,7 +1015,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           newids.addElement(newid);
           String newPackageFile = a.incRevInTriples(f, oldids, newids);
           mds.saveFile(newid, new StringReader(newPackageFile), 
-                       metacatpublic, dataPackage);
+                       dataPackage);
           newPackageId = newid;
         }
         else
@@ -1037,8 +1024,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           Vector newids = new Vector();
           String oldid = id;
           newid = a.incRev(id);
-          mds.saveFile(newid, new StringReader(xmlString), metacatpublic, 
-                       dataPackage);
+          mds.saveFile(newid, new StringReader(xmlString), dataPackage);
           newPackageId = a.incRev(dataPackage.getID());
           //increment the package files id in the triples
           oldids.addElement(oldid);
@@ -1049,7 +1035,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                                                     oldids,
                                                     newids);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
-                       metacatpublic, dataPackage);
+                       dataPackage);
         }
       }
     }
