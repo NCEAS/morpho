@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-29 00:55:02 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-09-06 23:17:51 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SortableJTable;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -152,6 +153,8 @@ public class OpenDialogBox extends JDialog
     // Create result panel
     createOwnerPanel();
     ownerPanel.setBackground(Color.white);
+    // Sort ownerPanel by last updated date
+    ownerPanel.sortTable(5, SortableJTable.DECENDING);
     getContentPane().add(BorderLayout.CENTER, ownerPanel);
     
     // Create bottom box
