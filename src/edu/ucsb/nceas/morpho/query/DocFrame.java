@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.7 2000-09-21 22:50:58 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.8 2000-09-25 20:01:36 higgins Exp $'
  */
 
 
@@ -231,20 +231,20 @@ public void writeInfo() {
 
 	void TransformToHTML()
 	{
-        CatalogEntityResolver cer = new CatalogEntityResolver();
-    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-    String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
-    String local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
-    
-    String xmlcatalogfile = local_dtd_directory+"/catalog"; 
-       // String xmlcatalogfile = "./catalog/catalog"; 
-        
-        try {
-            Catalog myCatalog = new Catalog();
-            myCatalog.loadSystemCatalogs();
-            myCatalog.parseCatalog(xmlcatalogfile);
-            cer.setCatalog(myCatalog);
-        }
+                CatalogEntityResolver cer = new CatalogEntityResolver();
+            	PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+            	String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+            	String local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
+            
+            	String xmlcatalogfile = local_dtd_directory+"/catalog"; 
+               // String xmlcatalogfile = "./catalog/catalog"; 
+                
+                try {
+                    Catalog myCatalog = new Catalog();
+                    myCatalog.loadSystemCatalogs();
+                    myCatalog.parseCatalog(xmlcatalogfile);
+                    cer.setCatalog(myCatalog);
+                }
         catch (Exception e) {System.out.println("Problem creating Catalog!");}
 	    
 	try{
@@ -281,6 +281,19 @@ public void writeInfo() {
 		
 void putXMLintoTree() {
     if (XMLTextString!=null) {
+          CatalogEntityResolver cer = new CatalogEntityResolver();
+          PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+          String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+          String local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
+            
+          String xmlcatalogfile = local_dtd_directory+"/catalog"; 
+          try {
+               Catalog myCatalog = new Catalog();
+               myCatalog.loadSystemCatalogs();
+               myCatalog.parseCatalog(xmlcatalogfile);
+               cer.setCatalog(myCatalog);
+                }
+        catch (Exception e) {System.out.println("Problem creating Catalog!");}
         try {
             StringReader sr = new StringReader(XMLTextString);
             String parserName = "org.apache.xerces.parsers.SAXParser";
@@ -289,6 +302,7 @@ void putXMLintoTree() {
             parser = XMLReaderFactory.createXMLReader(parserName);
             myDisplayHandler mh = new myDisplayHandler(treeModel);
             parser.setContentHandler(mh);
+	    parser.setEntityResolver(cer);
             parser.parse(new InputSource(sr));
             DefaultMutableTreeNode rt = (DefaultMutableTreeNode)treeModel.getRoot();
             doctype = ((NodeInfo)rt.getUserObject()).toString();

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.5 2000-09-13 23:38:58 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.6 2000-09-25 20:01:36 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -47,6 +47,8 @@ public class DataGuideBean extends java.awt.Container
     JMenuItem ShowmenuItem;
     JMenuItem SavemenuItem;
     JMenuItem EditmenuItem;
+    ImageIcon BflyStill;
+    ImageIcon BflyMove;
     
     PathQueries pqs;
     LocalQuery lq;
@@ -108,6 +110,7 @@ public class DataGuideBean extends java.awt.Container
 		JPanel4.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel3.add(BorderLayout.SOUTH,JPanel4);
 		JPanel4.setBounds(0,326,316,35);
+		JPanel4.setVisible(false);
 		LocalButton.setText("Get Local Info");
 		LocalButton.setActionCommand("Get Local Info");
 		JPanel4.add(LocalButton);
@@ -138,7 +141,7 @@ public class DataGuideBean extends java.awt.Container
 		PathTextArea.setRows(2);
 		PathTextArea.setWrapStyleWord(true);
 		PathTextArea.setLineWrap(true);
-		JPanel6.add(PathTextArea);
+		JPanel6.add(BorderLayout.CENTER,PathTextArea);
 		PathTextArea.setBounds(30,0,278,35);
 		JPanel7.setLayout(new BorderLayout(4,4));
 		JPanel5.add(JPanel7,new com.symantec.itools.awt.GridBagConstraintsD(0,2,1,1,1.0,0.0,java.awt.GridBagConstraints.CENTER,java.awt.GridBagConstraints.HORIZONTAL,new Insets(4,0,0,0),185,0));
@@ -154,24 +157,33 @@ public class DataGuideBean extends java.awt.Container
 		JPanel5.add(JPanel8,new com.symantec.itools.awt.GridBagConstraintsD(0,3,1,1,1.0,0.0,java.awt.GridBagConstraints.CENTER,java.awt.GridBagConstraints.HORIZONTAL,new Insets(4,0,0,0),87,0));
 		JPanel8.setBounds(0,86,316,35);
 		SetButton.setText("Set");
+		SetButton.setActionCommand("Set");
 		JPanel8.add(SetButton);
 		SetButton.setBounds(48,5,53,25);
 		ClearButton.setText("Clear");
+		ClearButton.setActionCommand("Clear");
 		JPanel8.add(ClearButton);
 		ClearButton.setBounds(106,5,65,25);
 		AndRadioButton.setText("And");
+		AndRadioButton.setActionCommand("And");
 		JPanel8.add(AndRadioButton);
 		AndRadioButton.setBounds(176,6,47,23);
 		OrRadioButton.setSelected(true);
 		OrRadioButton.setText("Or");
+		OrRadioButton.setActionCommand("Or");
 		JPanel8.add(OrRadioButton);
 		OrRadioButton.setBounds(228,6,39,23);
 		JPanel9.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		QueryPanel.add(BorderLayout.SOUTH,JPanel9);
 		JPanel9.setBounds(0,326,316,35);
 		DGSearch.setText("Search");
+		DGSearch.setActionCommand("Search");
 		JPanel9.add(DGSearch);
-		DGSearch.setBounds(120,5,75,25);
+		DGSearch.setBounds(118,5,75,25);
+		DGBfly.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		DGBfly.setIconTextGap(0);
+		JPanel9.add(DGBfly);
+		DGBfly.setBounds(198,17,0,0);
 		{
 			String[] tempString = new String[2];
 			tempString[0] = "First Item";
@@ -205,6 +217,8 @@ public class DataGuideBean extends java.awt.Container
 		AndRadioButton.addItemListener(lSymItem);
 		OrRadioButton.addItemListener(lSymItem);
 		DGSearch.addActionListener(lSymAction);
+		SymPropertyChange lSymPropertyChange = new SymPropertyChange();
+		DGSearch.addPropertyChangeListener(lSymPropertyChange);
 		//}}
 		popupListener = new PopupListener();
 		ShowmenuItem = new JMenuItem("Display Document");
@@ -218,6 +232,12 @@ public class DataGuideBean extends java.awt.Container
 		
 		pqs = new PathQueries();
 		
+        try {
+		    BflyStill = new ImageIcon(getClass().getResource("Btflyyel.gif"));
+		    BflyMove = new ImageIcon(getClass().getResource("Btflyyel4.gif"));
+		    DGBfly.setIcon(BflyStill);
+		}
+		catch (Exception w) {}
 		rootNode = newNode("root");
 		treeModel = new MyDefaultTreeModel(rootNode);
 
@@ -240,7 +260,7 @@ public class DataGuideBean extends java.awt.Container
       local_dtd_directory = (String)options.handleGetObject("local_dtd_directory");
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
-		
+	getDocTypes();	
 		
 	}
 
@@ -273,6 +293,7 @@ public class DataGuideBean extends java.awt.Container
 	javax.swing.JRadioButton OrRadioButton = new javax.swing.JRadioButton();
 	javax.swing.JPanel JPanel9 = new javax.swing.JPanel();
 	javax.swing.JButton DGSearch = new javax.swing.JButton();
+	javax.swing.JLabel DGBfly = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.models.StringListModel stringListModel1 = new com.symantec.itools.javax.swing.models.StringListModel();
 	com.symantec.itools.javax.swing.models.StringComboBoxModel stringComboBoxModel1 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
 	//}}
@@ -304,6 +325,7 @@ public class DataGuideBean extends java.awt.Container
 
     void create_localDocTypes() {
         localDocTypes = new Hashtable();
+        localDocTypes.put("resource","resource.dtd");
         localDocTypes.put("eml-dataset","eml-dataset.dtd");
         localDocTypes.put("eml-access","eml-access.dtd");
         localDocTypes.put("eml-context","eml-context.dtd");
@@ -387,6 +409,16 @@ public void LogOut() {
 
 	void getDocTypes()
 	{
+	// first get local doctypes
+        create_localDocTypes();
+        Enumeration keys = localDocTypes.keys();
+        Vector vec = new Vector();
+        while (keys.hasMoreElements()) {
+            vec.addElement((String)keys.nextElement());
+        } 
+        DocTypeList.setListData(vec);  // put local doctypes in list while 
+        // fetching server doc types
+        
 //		LogIn();
 	    try {
             System.err.println("Trying: " + MetaCatServletURL);
@@ -398,24 +430,18 @@ public void LogOut() {
 		    
 		    InputStream in = msg.sendPostMessage(prop);
 		    
-/*		    StringBuffer txt = new StringBuffer();
-		    int x;
-		    try {
-		    while((x=in.read())!=-1) {
-		        txt.append((char)x);
-		    }
-		    }
-		    catch (Exception e) {}
-		    String txt1 = txt.toString();
-		    System.out.println(txt1);
-*/
         XMLList xmll = new XMLList(in,"doctype");
-        Vector vec = xmll.getListVector();
+        Vector vec1 = xmll.getListVector();
+        for (Enumeration e = vec1.elements() ; e.hasMoreElements() ;) {
+            vec.add(e.nextElement());
+        }
+        
         DocTypeList.setListData(vec);
 //        LogOut();
 		}
 		catch (Exception e) {
-		    e.printStackTrace();
+		    JOptionPane.showMessageDialog(this,"Error getting doctypes from remote catalog system!");
+//		    e.printStackTrace();
 		}
 			 
 	}
@@ -951,4 +977,24 @@ return "NONE";
     }
 	
 	
+
+	class SymPropertyChange implements java.beans.PropertyChangeListener
+	{
+		public void propertyChange(java.beans.PropertyChangeEvent event)
+		{
+			Object object = event.getSource();
+			if (object == DGSearch)
+				DGSearch_propertyChange(event);
+		}
+	}
+
+	void DGSearch_propertyChange(java.beans.PropertyChangeEvent event)
+	{
+		if(DGSearch.getText().equals("Search")) {
+	     DGBfly.setIcon(BflyStill);
+		}
+		else {
+	     DGBfly.setIcon(BflyMove);
+		}	 
+	}
 }
