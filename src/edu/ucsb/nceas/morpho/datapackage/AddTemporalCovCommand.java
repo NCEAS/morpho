@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-21 04:43:17 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-16 19:20:51 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,9 +67,8 @@ public class AddTemporalCovCommand implements Command {
 
   private DataViewContainerPanel resultPane;
   private Temporal temporalPage;
-  private DataViewer dataView;
-
-  public AddTemporalCovCommand() {
+  
+	public AddTemporalCovCommand() {
   }
 
   /**
@@ -87,22 +86,18 @@ public class AddTemporalCovCommand implements Command {
 
     // make sure resulPanel is not null
     if (resultPane != null) {
-
-      dataView = resultPane.getCurrentDataViewer();
-      if (dataView != null){
-
-        showTemporalDialog();
-        if (infoAddFlag) {
-
-          try {
-              insertNewTemporal();
-          }
-          catch (Exception w) {
-            Log.debug(20, "Exception trying to modify coverage DOM");
-          }
-        }
-      }
-
+			
+			showTemporalDialog();
+			if (infoAddFlag) {
+				
+				try {
+					insertNewTemporal();
+				}
+				catch (Exception w) {
+					Log.debug(20, "Exception trying to modify coverage DOM");
+				}
+			}
+			
     }
   }
 
@@ -155,7 +150,7 @@ public class AddTemporalCovCommand implements Command {
 
     covRoot = null;
     map = temporalPage.getPageData("/temporalCoverage[");
-    adp = dataView.getAbstractDataPackage();
+    adp = resultPane.getAbstractDataPackage();
 
     mapSet = map.keySet();
     mapSetIt = mapSet.iterator();

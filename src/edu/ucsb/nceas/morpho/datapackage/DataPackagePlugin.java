@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:45:53 $'
- * '$Revision: 1.80 $'
+ *     '$Date: 2004-03-16 19:20:51 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -294,7 +294,7 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteDatatable);
 
 		i= i+1; 
-    GUIAction addTaxonomicCovColumn = new GUIAction("Add Taxonomic Information..",
+    GUIAction addTaxonomicCovColumn = new GUIAction("Add Taxonomic Information...",
                                            null, new AddTaxonomicCovCommand());
     addTaxonomicCovColumn.setToolTipText("Add taxonomic coverage information");
     addTaxonomicCovColumn.setMenuItemPosition(i);
@@ -308,7 +308,7 @@ public class DataPackagePlugin
 		controller.addGuiAction(addTaxonomicCovColumn);
 		
     i= i+2; // separator will take a position so add 2
-    GUIAction addTemporalCovColumn = new GUIAction("Add Temporal Information..",
+    GUIAction addTemporalCovColumn = new GUIAction("Add Temporal Information...",
                                            null, new AddTemporalCovCommand());
     addTemporalCovColumn.setToolTipText("Add temporal coverage information");
     addTemporalCovColumn.setMenuItemPosition(i);

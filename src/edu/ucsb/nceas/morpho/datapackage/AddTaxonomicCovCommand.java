@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-06 22:09:33 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-16 19:20:51 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,26 +65,9 @@ public class AddTaxonomicCovCommand implements Command {
    * execute add command
    */
   public void execute(ActionEvent event) {
-
-    resultPane = null;
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-
-    if (morphoFrame != null) {
-      resultPane = AddDocumentationCommand.
-          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
-    }
-
-    // make sure resulPanel is not null
-    if (resultPane != null) {
-
-      dataView = resultPane.getCurrentDataViewer();
-      if (dataView != null){
-
-        showTaxonomicDialog();
-        
-      }
-
-    }
+		
+    showTaxonomicDialog();
+    
   }
 
 
