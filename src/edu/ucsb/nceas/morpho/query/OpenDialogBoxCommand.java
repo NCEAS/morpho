@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-22 20:42:52 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-25 22:55:06 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -64,16 +66,45 @@ public class OpenDialogBoxCommand implements Command
    */    
   public void execute()
   {
-    OpenDialogBox open = null;
-    open 
-        = new OpenDialogBox(UIController.getInstance().getCurrentActiveWindow(), 
-                                                            morpho, ownerQuery);
-    // Set the open dialog box modal true
-    open.setModal(true);
-    open.setVisible(true);
+    // Get the current morphoFrame. Maybe change get open dialog parent
+    MorphoFrame frame = 
+                    UIController.getInstance().getCurrentActiveWindow();
+    
+    // Open a open dialog
+    doOpenDialog(frame);
+    
    
   }//execute
 
+  /**
+   * Using SwingWorket class to open open dialog
+   */
+  private void doOpenDialog(final MorphoFrame morphoFrame)
+  {
+    
+    final SwingWorker worker = new SwingWorker() 
+    {
+        OpenDialogBox open = null;
+        public Object construct() 
+        {
+          // set frame butterfly flapping
+          morphoFrame.setBusy(true);
+          open = new OpenDialogBox(morphoFrame, morpho, ownerQuery);
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() 
+        {
+          morphoFrame.setBusy(false);
+          // Set the open dialog box modal true
+          open.setModal(true);
+          open.setVisible(true);
+          
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+  }//doOpenDialog
   /**
    * Construct a query suitable for getting the owner documents
    */
