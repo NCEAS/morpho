@@ -30,7 +30,14 @@
           </xsl:if>
           
           <xsl:element name="attributeDefinition">
-            <xsl:value-of select="./attributeDefinition"/>
+            <xsl:choose>
+              <xsl:when test="./attributeDefinition!=''">
+                <xsl:value-of select="./attributeDefinition"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="'N/A'"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:element>
           
           <xsl:if test="$attb6/eml-attribute/attribute/dataType!=''">
