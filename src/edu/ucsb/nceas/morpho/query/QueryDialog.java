@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-06 18:37:01 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-02-06 19:27:46 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,11 +94,24 @@ public class QueryDialog extends JDialog
   String keywordSearchPath = "keyword";
 
   /** default search path for rank   */
-  String taxonRankSearchPath = "taxoncl/taxonrn";
+  String taxonRankSearchPath = "taxonomicClassification/taxonRankName";
 
   /** default search path for taxonomic value   */
-  String taxonValueSearchPath = "taxoncl/taxonrv";
+  String taxonValueSearchPath = "taxonomicClassification/taxonRankValue";
 
+  /** default search path for NorthBoundary value   */
+  String northBCSearchPath = "northBoundingCoordinate";
+
+    /** default search path for WestBoundary value  */
+  String westBCSearchPath = "westBoundingCoordinate";
+
+  /** default search path for SouthBoundary value   */
+  String southBCSearchPath = "southBoundingCoordinate";
+
+    /** default search path for EastBoundary value  */
+  String eastBCSearchPath = "eastBoundingCoordinate";
+
+  
   /** Flag, true if Metacat searches are performed for this query */
   private boolean searchMetacat = true;
 
@@ -177,6 +190,30 @@ public class QueryDialog extends JDialog
     temp = config.get("keywordSearchPath", 0);
     if (temp != null) {
         keywordSearchPath = temp;
+    }
+    temp = config.get("northBCSearchPath", 0);
+    if (temp != null) {
+        northBCSearchPath = temp;
+    }
+    temp = config.get("westBCSearchPath", 0);
+    if (temp != null) {
+        westBCSearchPath = temp;
+    }
+    temp = config.get("southBCSearchPath", 0);
+    if (temp != null) {
+        southBCSearchPath = temp;
+    }
+    temp = config.get("eastBCSearchPath", 0);
+    if (temp != null) {
+        eastBCSearchPath = temp;
+    }
+    temp = config.get("taxonValueSearchPath", 0);
+    if (temp != null) {
+        taxonValueSearchPath = temp;
+    }
+    temp = config.get("taxonRankSearchPath", 0);
+    if (temp != null) {
+        taxonRankSearchPath = temp;
     }
     ConfigXML profile = morpho.getProfile();
     String searchMetacatString = profile.get("searchmetacat", 0);
@@ -730,25 +767,25 @@ public class QueryDialog extends JDialog
     
     value = (new Double(liveMap.getTop()).toString());
     mode = "less-than";
-    path = "northBoundingCoordinate";
+    path = northBCSearchPath;
     QueryTerm maxLat = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(maxLat);
 
     value = (new Double(liveMap.getBottom()).toString());
     mode = "greater-than";
-    path = "northBoundingCoordinate";
+    path = northBCSearchPath;
     QueryTerm minLat = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(minLat);
 
     value = (new Double(liveMap.getRight()).toString());
     mode = "less-than";
-    path = "westBoundingCoordinate";
+    path = westBCSearchPath;
     QueryTerm maxLong = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(maxLong);
 
     value = (new Double(liveMap.getLeft()).toString());
     mode = "greater-than";
-    path = "westBoundingCoordinate";
+    path = westBCSearchPath;
     QueryTerm minLong = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(minLong);
 
