@@ -1,15 +1,13 @@
 /**
- *       Name: ClientFramework.java
- *    Purpose: A Class that is the top frame for an XML_Query sample
- *             application (searchs local collection of XML files
+ *  '$RCSfile: ClientFramework.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
- *    Authors: Dan Higgins, Matt Jones
+ *    Authors: @authors@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-18 01:56:02 $'
- * '$Revision: 1.31.2.6 $'
+ *     '$Date: 2001-04-21 03:43:02 $'
+ * '$Revision: 1.31.2.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +23,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 
 package edu.ucsb.nceas.dtclient;
 
@@ -88,6 +85,7 @@ public class ClientFramework extends javax.swing.JFrame
   String userName = "public";
   String passWord = "none";
   // redirects standard out and err streams
+  static int debug_level = 0;
   static boolean log_file = false;
   String xmlcatalogfile = null;
   String MetaCatServletURL = null;
@@ -99,6 +97,8 @@ public class ClientFramework extends javax.swing.JFrame
   Action[] editMenuActions = null;
   Action[] helpMenuActions = null;
   Action[] containerToolbarActions = null;
+  Hashtable servicesRegistry = null;
+  ClientFramework framework = null;
 
   // String[] searchmode = {"contains","contains-not","is",
   //                        "is-not","starts-with","ends-with"};
@@ -109,6 +109,8 @@ public class ClientFramework extends javax.swing.JFrame
     // Create the list of menus for use by the framework and plugins
     menuList = new Hashtable();
 
+    // Create the hash for services
+    servicesRegistry = new Hashtable();
 /*
     try
     {
@@ -183,6 +185,8 @@ public class ClientFramework extends javax.swing.JFrame
       String local_dtd_directory = config.get("local_dtd_directory", 0);
       xmlcatalogfile = local_dtd_directory + "/catalog";
       MetaCatServletURL = config.get("MetaCatServletURL", 0);
+      debug_level = (new Integer(config.get("debug_level", 0))).intValue();
+      debug(9, "Debug_level set to: " + debug_level);
     }
     catch(Exception e)
     {
@@ -192,6 +196,7 @@ public class ClientFramework extends javax.swing.JFrame
     // Set up the container's menus and toolbars
     initializeActions();
     loadPluginMenusAndToolbars(this);
+    this.registerServices();
 
     // Load all of the plugins, their menus, and toolbars
     loadPlugins();
@@ -220,6 +225,9 @@ public class ClientFramework extends javax.swing.JFrame
 	PluginInterface plugin = (PluginInterface)
 	                createObject((String) (q.nextElement()));
 
+        // Set a reference to the framework in the Plugin
+        plugin.setFramework(this);
+
 	// Create a panel to contain the plugin
 	JPanel pluginPanel = new JPanel();
 	pluginPanel.setLayout(new BorderLayout(0, 0));
@@ -229,11 +237,14 @@ public class ClientFramework extends javax.swing.JFrame
 
         // Allow the plugin to add menus and toolbar items
         loadPluginMenusAndToolbars(plugin);
+
+        // Allow the plugin to register services it can perform
+        plugin.registerServices();
       }
     }
     catch(ClassCastException cce)
     {
-      System.err.println("Error loading plugin: wrong class!");
+      debug(5, "Error loading plugin: wrong class!");
     }
   }
 
@@ -307,6 +318,52 @@ public class ClientFramework extends javax.swing.JFrame
   }
 
   /**
+   * This method is called by plugins to register a particular service that
+   * the plugin can perform.  The service is identified by a serviceName
+   * which must be globally unique within the runtime environment of the
+   * Morpho appliaction.  If a plugin tries to register a service under
+   * a name that is already used, the addService method will generate an 
+   * exception.
+   *
+   * @param serviceName the application unique identifier for the service
+   * @param serviceProvider a reference to the object providing the service
+   * @throws ServiceExistsException
+   */
+  public void addService(String serviceName, PluginInterface serviceProvider)
+              throws ServiceExistsException
+  {
+    if (servicesRegistry.containsKey(serviceName)) {
+      throw (new ServiceExistsException(serviceName));
+    } else {
+      debug(7, "Adding service: " + serviceName);
+      servicesRegistry.put(serviceName, serviceProvider);
+    }
+  }
+
+  /**
+   * This method is called by plugins to request a particular service that
+   * the plugin can perform.  The service request is encapsulated in a
+   * ServiceRequest object.  The plugin receives directly the return data
+   * in a ServiceResponse object.
+   *
+   * @param request the service request and associated data
+   * @throws ServiceNotHandledException
+   */
+  public void requestService(ServiceRequest request)
+              throws ServiceNotHandledException
+  {
+    String serviceName = request.getServiceName();
+    if (servicesRegistry.containsKey(serviceName)) {
+      PluginInterface serviceHandler = 
+                      (PluginInterface)servicesRegistry.get(serviceName);
+      serviceHandler.handleServiceRequest(request);
+    } else {
+      throw (new ServiceNotHandledException("Service does not exist: " +
+                                            serviceName));
+    }
+  }
+
+  /**
    * Creates a new instance of JFrame1 with the given title.
    * @param sTitle the title for the new frame.
    * @see #JFrame1()
@@ -315,6 +372,16 @@ public class ClientFramework extends javax.swing.JFrame
   {
     this();
     setTitle(sTitle);
+  }
+
+  /** 
+   * The plugin must store a reference to the ClientFramework 
+   * in order to be able to call the services available through 
+   * the framework
+   */
+  public void setFramework(ClientFramework cf) 
+  {
+    framework = cf;
   }
 
   /**
@@ -358,7 +425,52 @@ public class ClientFramework extends javax.swing.JFrame
     return containerToolbarActions;;
   }
 
-  public void setContainer(Object o) 
+  /**
+   * This method is called by the framework when the plugin should 
+   * register any services that it handles.  The plugin should then
+   * call the framework's 'addService' method for each service it can
+   * handle.
+   */
+  public void registerServices()
+  {
+    debug(9, "Entered ClientFramework::registerServices");
+    try {
+      this.addService("LogService", this);
+    } catch (ServiceExistsException see) {
+      debug(6, "Service registration failed for LogService.");
+      debug(6, see.toString());
+    }
+  }
+
+  /**
+   * This is the general dispatch method that is called by the framework
+   * whenever a plugin is expected to handle a service request.  The
+   * details of the request and data for the request are contained in
+   * the ServiceRequest object.
+   *
+   * @param request request details and data
+   */
+  public void handleServiceRequest(ServiceRequest request) 
+              throws ServiceNotHandledException
+  {
+    String serviceName = request.getServiceName();
+    if (serviceName.equals("LogService")) {
+      String message = (String)request.getDataObject("Message");
+      System.out.println(message);
+    } else {
+      throw (new ServiceNotHandledException(serviceName));
+    }
+  }
+
+  /**
+   * This method is called by a service provider that is handling 
+   *  a service request that originated with the plugin.  Data
+   * from the ServiceRequest is handed back to the source plugin in
+   * the ServiceResponse object.
+   *
+   * @param response response details and data
+   */
+  public void handleServiceResponse(ServiceResponse response)
   {
   }
 
@@ -391,7 +503,7 @@ public class ClientFramework extends javax.swing.JFrame
     editMenuActions = new Action[4];
     Action cutItemAction = new AbstractAction("Cut") {
       public void actionPerformed(ActionEvent e) {
-        System.err.println("Cut requested.");
+        debug(9, "Cut requested.");
       }
     };
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -403,7 +515,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     Action copyItemAction = new AbstractAction("Copy") {
       public void actionPerformed(ActionEvent e) {
-        System.err.println("Copy requested.");
+        debug(9, "Copy requested.");
       }
     };
     copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -415,7 +527,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     Action pasteItemAction = new AbstractAction("Paste") {
       public void actionPerformed(ActionEvent e) {
-        System.err.println("Paste requested.");
+        debug(9, "Paste requested.");
       }
     };
     pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -427,7 +539,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     Action prefsItemAction = new AbstractAction("Preferences...") {
       public void actionPerformed(ActionEvent e) {
-        System.err.println("Preferences requested. GUI not yet implemented!");
+        debug(9, "Preferences requested. GUI not yet implemented!");
       }
     };
     prefsItemAction.putValue(Action.SHORT_DESCRIPTION, 
@@ -436,7 +548,7 @@ public class ClientFramework extends javax.swing.JFrame
     editMenuActions[3] = prefsItemAction;
 
     // HELP MENU ACTIONS
-    helpMenuActions = new Action[1];
+    helpMenuActions = new Action[2];
     Action aboutItemAction = new AbstractAction("About...") {
       public void actionPerformed(ActionEvent e) {
         SplashFrame sf = new SplashFrame();
@@ -447,6 +559,16 @@ public class ClientFramework extends javax.swing.JFrame
     aboutItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("about.gif")));
     helpMenuActions[0] = aboutItemAction;
+
+    Action testServiceAction = new AbstractAction("Test Log Service") {
+      public void actionPerformed(ActionEvent e) {
+        testLogService();
+      }
+    };
+    testServiceAction.putValue(Action.SHORT_DESCRIPTION, "Test Logging");
+    testServiceAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().getResource("about.gif")));
+    helpMenuActions[1] = testServiceAction;
 
     // Set up the toolbar for the application
     containerToolbarActions = new Action[3];
@@ -621,6 +743,25 @@ public class ClientFramework extends javax.swing.JFrame
     catch(Exception e)
     {
     }
+  }
+
+  void testLogService()
+  {
+    ServiceRequest req = new ServiceRequest((PluginInterface)this,
+                                            "LogService");
+    req.addDataObject("Message", "Holy cow, batman!");
+    try {
+      this.requestService(req);
+    } catch (ServiceNotHandledException snhe) {
+      System.out.println(snhe);
+    }
+/*
+    int reply = JOptionPane.showConfirmDialog(this,
+						"Did logging work?",
+						"Morpho - Exit",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+*/
   }
 
   class SymWindow extends java.awt.event.WindowAdapter
@@ -926,7 +1067,7 @@ public class ClientFramework extends javax.swing.JFrame
     {
       //MBJEXCISE//ConfigXML config = new ConfigXML("config.xml");
       String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-        System.err.println("Trying: " + MetaCatServletURL);
+        debug(9, "Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
       HttpMessage msg = new HttpMessage(url);
         prop.put("username", userName);
@@ -960,7 +1101,7 @@ public class ClientFramework extends javax.swing.JFrame
     {
       //MBJEXCISE//ConfigXML config = new ConfigXML("config.xml");
       String MetaCatServletURL = config.get("MetaCatServletURL", 0);
-        System.err.println("Trying: " + MetaCatServletURL);
+        debug(9, "Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
       HttpMessage msg = new HttpMessage(url);
       InputStream returnStream = msg.sendPostMessage(prop);
@@ -1011,4 +1152,20 @@ public class ClientFramework extends javax.swing.JFrame
   {
     mdeBean1.newDocument();
   }
+
+  /**
+   * Print debugging messages based on severity level, where severity level 1
+   * are the most critical and severity level 9 the most trivial messages.
+   * Setting the debug_level to 0 in the configuration file turns all messages
+   * off.
+   *
+   * @param severity the severity of the debug message
+   * @param message the message to log
+   */
+  public void debug (int severity, String message)
+  {
+    if (debug_level > 0 && severity <= debug_level) {
+      System.err.println(message);
+    }
+  } 
 }

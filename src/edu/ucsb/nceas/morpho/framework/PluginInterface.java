@@ -1,15 +1,13 @@
 /**
- *       Name: PluginInterface.java
- *    Purpose: An interface representing the methods that all plugin
- *             components must implement
+ *  '$RCSfile: PluginInterface.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
- *             National Center for Ecological Analysis and Synthesis
- *    Authors: Matt Jones
+ *              National Center for Ecological Analysis and Synthesis
+ *    Authors: @authors@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-17 01:07:47 $'
- * '$Revision: 1.2.2.1 $'
+ *     '$Date: 2001-04-21 03:43:03 $'
+ * '$Revision: 1.2.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +37,13 @@ import javax.swing.Action;
 public interface PluginInterface
 {
 
+  /** 
+   * The plugin must store a reference to the ClientFramework 
+   * in order to be able to call the services available through 
+   * the framework
+   */
+  public void setFramework(ClientFramework cf);
+
   /**
    * This method is called on component initialization to generate a list
    * of the names of the menus, in display order, that the component wants
@@ -61,9 +66,33 @@ public interface PluginInterface
    */
   public Action[] registerToolbarActions();
 
-
-  /** 
-   * The plugin must be able to get an instance of ClientFramework
+  /**
+   * This method is called by the framework when the plugin should 
+   * register any services that it handles.  The plugin should then
+   * call the framework's 'addService' method for each service it can
+   * handle.
    */
-  public void setContainer(Object o);
+  public void registerServices();
+
+  /**
+   * This is the general dispatch method that is called by the framework
+   * whenever a plugin is expected to handle a service request.  The
+   * details of the request and data for the request are contained in
+   * the ServiceRequest object.
+   *
+   * @param request request details and data
+   */
+  public void handleServiceRequest(ServiceRequest request) 
+              throws ServiceNotHandledException;
+
+  /**
+   * This method is called by a service provider that is handling 
+   *  a service request that originated with the plugin.  Data
+   * from the ServiceRequest is handed back to the source plugin in
+   * the ServiceResponse object.
+   *
+   * @param response response details and data
+   */
+  public void handleServiceResponse(ServiceResponse response);
+
 }
