@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-26 20:17:05 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-11-20 20:41:48 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizardShell;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -37,6 +39,11 @@ import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.editor.*;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
 /**
  * Class to handle create new data package command
  */
@@ -62,24 +69,34 @@ public class CreateNewDataPackageCommand implements Command
    */    
   public void execute(ActionEvent event)
   {   
-     Log.debug(20, "Action fired: New Data Package");
-     final PackageWizardShell pws = new PackageWizardShell(morpho);
-     pws.setName("Package Wizard");
-     //MBJ framework.addWindow(pws);
-     pws.addWindowListener(new WindowAdapter()
-     {
-       public void windowClosed(WindowEvent e)
-       {
-            //MBJ framework.removeWindow(pws);
-        }
-          
-        public void windowClosing(WindowEvent e)
-        {
-            //MBJ framework.removeWindow(pws);
-        }
-     });
-     pws.show();
+    Log.debug(20, "Action fired: New Data Package");
+    DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
+    //plugin.initialize(Morpho.thisStaticInstance);
+    plugin.startWizard(
+      new DataPackageWizardListener() {
+      
+        public void wizardComplete(Node newDOM) {
+        Log.debug(1,"Wizard complete - Will now create an AbstractDataPackage..");
+          AbstractDataPackage dp = DataPackageFactory.getDataPackage(newDOM, "eml:eml");
+//          dp.serialize();
+         Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
+         Node domnode = dp.getMetadataNode();
+          DocFrame df = new DocFrame();
+          df.setVisible(true);
+          df.initDoc(null, domnode);
         
+          Log.debug(45, "\n\n********** Wizard finished: DOM:");
+          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+//          System.exit(0);
+        }
+
+        public void wizardCanceled() {
+      
+          Log.debug(45, "\n\n********** Wizard canceled!");
+          System.exit(0);
+        }
+      }
+    );
   }//execute
   
  
