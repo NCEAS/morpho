@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-12-20 22:50:52 $'
- * '$Revision: 1.5 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-12-14 22:08:18 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ import javax.swing.JFrame;
 /**
  * Class to handle help command
  */
-public class HelpCommand implements Command 
+public class HelpCommand implements Command
 {
   // Main HelpSet & Broker
   private HelpSet mainHS = null;
@@ -51,51 +51,59 @@ public class HelpCommand implements Command
   private ActionListener helpListener = null;
   // Defaults for Main Help
   static final String helpsetName = "morpho";
+  private String id = null;
   private String errorMessage = null;
   // Size of help window
   private int helpWidth = 800;
   private int helpHeight= 520;
   private Dimension size = new Dimension(helpWidth, helpHeight);
   // Location of help window
-  private int helpCenterX = caculateCenterX(0, UISettings.CLIENT_SCREEN_WIDTH, 
+  private int helpCenterX = caculateCenterX(0, UISettings.CLIENT_SCREEN_WIDTH,
                                             helpWidth );
   private int helpCenterY = caculateCenterY(0, UISettings.CLIENT_SCREEN_HEIGHT,
                                             helpHeight);
   private Point location = new Point(helpCenterX, helpCenterY);
-                       
+
   /**
    * Constructor of HelpCommand
    */
   public HelpCommand()
   {
-    try 
+    try
     {
 	    ClassLoader cl = HelpCommand.class.getClassLoader();
 	    URL url = HelpSet.findHelpSet(cl, helpsetName);
 	    mainHS = new HelpSet(cl, url);
-	  } 
-    catch (Exception ee) 
+	  }
+    catch (Exception ee)
     {
 	    errorMessage = "Help Set "+helpsetName+" not found!";
       Log.debug(30, errorMessage);
 	    return;
-	  } 
-    catch (ExceptionInInitializerError ex) 
+	  }
+    catch (ExceptionInInitializerError ex)
     {
 	    Log.debug(30, "initialization error:");
 	    ex.getException().printStackTrace();
 	  }
-    	  
+
     mainHB = mainHS.createHelpBroker();
     mainHB.setSize(size);
     mainHB.setLocation(location);
     helpListener = new CSH.DisplayHelpFromSource(mainHB);
-  }//CancelCommand
-  
-  
+  }//Constructor
+
+  /**
+   * Constructor of HelpCommand with string id
+   */
+  public HelpCommand(String id){
+    this();
+    this.id = id;
+  }//Constructor
+
   /**
    * execute help command
-   */    
+   */
   public void execute(ActionEvent event)
   {
     if (helpListener != null)
@@ -112,8 +120,9 @@ public class HelpCommand implements Command
         helpCenterX = caculateCenterX(parentX, parentWidth, helpWidth);
         helpCenterY = caculateCenterY(parentY, parentHeight, helpHeight);
         location.setLocation(helpCenterX, helpCenterY);
-        mainHB.setLocation(location); 
-      }//if 
+        mainHB.setLocation(location);
+        if(id != null) { mainHB.setCurrentID(id); }
+      }//if
       helpListener.actionPerformed(event);
     }//if
     else
@@ -121,30 +130,30 @@ public class HelpCommand implements Command
       Log.debug(5, errorMessage);
     }
   }//execute
-  
+
   /* Method to child frame X value if the child frame is in the center of
      parent frame */
-  public static int caculateCenterX(double parentX, int parentWidth, 
+  public static int caculateCenterX(double parentX, int parentWidth,
                                      int childWidth)
   {
     double parentCenterX = parentX + 0.5 * parentWidth;
     int childCenterX =(new Double(parentCenterX - 0.5 * childWidth)).intValue();
     return childCenterX;
   }
-  
+
   /* Method to child frame Y value if the child frame is in the center of
      parent frame */
-  public static int caculateCenterY(double parentY, int parentHeight, 
+  public static int caculateCenterY(double parentY, int parentHeight,
                                      int childHeight)
   {
     double parentCenterY = parentY + 0.5 * parentHeight;
     int childCenterY=(new Double(parentCenterY - 0.5 * childHeight)).intValue();
     return childCenterY;
   }
-  
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand
