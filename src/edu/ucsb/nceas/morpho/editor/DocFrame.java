@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-08 23:53:27 $'
- * '$Revision: 1.158 $'
+ *     '$Date: 2004-03-18 19:13:22 $'
+ * '$Revision: 1.159 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3863,9 +3863,11 @@ Log.debug(20, xmlout);
 				parent = (DefaultMutableTreeNode)(parent.getParent());
 			}
 			DefaultMutableTreeNode grandparent = (DefaultMutableTreeNode)(parent.getParent());
+      int parentIndex = grandparent.getIndex(parent);
 			nd.removeFromParent();
 			parent.removeFromParent();
 			Enumeration kids = parent.children();
+      int indx = parentIndex;
 			while (kids.hasMoreElements()) {
 				DefaultMutableTreeNode cnd = (DefaultMutableTreeNode)kids.nextElement();
         // kid nodes are set to be choice nodes (choice between kids and references)
@@ -3873,7 +3875,8 @@ Log.debug(20, xmlout);
         NodeInfo ni_cnd = (NodeInfo)cnd.getUserObject();
         ni_cnd.setChoice(false);
         ni_cnd.setSelected(ni_cnd.isSelected()); // forces icon update
-				grandparent.add(cnd);
+				grandparent.insert(cnd, indx);
+        indx++;
 			}
 		}
 	}
