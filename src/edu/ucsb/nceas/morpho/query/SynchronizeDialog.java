@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-02 20:34:07 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-11 22:45:02 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ public class SynchronizeDialog extends JDialog
   private static String WARNING =
       "Note:\n"
       +"  If you are copying from local to network, you may be"
-      + "prompted to renumber   the Data Package";
+      + " prompted to renumber the Data Package";
 
   /** A reference to morpho frame */
   private MorphoFrame morphoFrame = null;
