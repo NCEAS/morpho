@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-08 23:29:03 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-23 18:40:39 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+package edu.ucsb.nceas.morpho.editor;
 
 
 import java.awt.*;
@@ -102,41 +103,15 @@ public class DocFrame extends javax.swing.JFrame
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(405,305);
 		setVisible(false);
-		DocControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		getContentPane().add(BorderLayout.NORTH, DocControlPanel);
-		JTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
-		getContentPane().add(BorderLayout.CENTER, JTabbedPane1);
-		JScrollPane1.setOpaque(true);
-		JTabbedPane1.add(JScrollPane1);
-		JScrollPane1.setBounds(2,2,400,265);
-		JScrollPane1.setVisible(false);
-		XMLText.setLineWrap(true);
-		XMLText.setWrapStyleWord(true);
-		JScrollPane1.getViewport().add(XMLText);
-		XMLText.setBounds(0,0,397,262);
-		JScrollPane2.setOpaque(true);
-		JTabbedPane1.add(JScrollPane2);
-		JScrollPane2.setBounds(2,2,400,265);
-		JScrollPane2.setVisible(false);
-		HTMLPane.setEditable(false);
-		JScrollPane2.getViewport().add(HTMLPane);
-		HTMLPane.setBounds(0,0,397,262);
-		JPanel1.setLayout(new BorderLayout(0,0));
-		JTabbedPane1.add(JPanel1);
-		JPanel1.setBounds(2,2,400,265);
-		JPanel1.setVisible(false);
-		JPanel1.add(BorderLayout.WEST, OutputScrollPanel);
-		JPanel1.add(BorderLayout.CENTER, NestedPanelScrollPanel);
+		DocControlPanel.setLayout(new BorderLayout(0,0));
+		getContentPane().add(BorderLayout.CENTER, DocControlPanel);
+		DocControlPanel.add(BorderLayout.WEST,OutputScrollPanel);
+		DocControlPanel.add(BorderLayout.CENTER,NestedPanelScrollPanel);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		JPanel1.add(BorderLayout.NORTH, JPanel2);
+		DocControlPanel.add(BorderLayout.NORTH,JPanel2);
 		reload.setText("Reload Tree");
 		reload.setActionCommand("Reload Tree");
 		JPanel2.add(reload);
-		JTabbedPane1.setSelectedIndex(0);
-		JTabbedPane1.setSelectedComponent(JScrollPane1);
-		JTabbedPane1.setTitleAt(0,"Text");
-		JTabbedPane1.setTitleAt(1,"HTML");
-		JTabbedPane1.setTitleAt(2,"Tree");
 		//}}
 
 		//{{INIT_MENUS
@@ -156,7 +131,6 @@ public class DocFrame extends javax.swing.JFrame
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
 		SymChange lSymChange = new SymChange();
-		JTabbedPane1.addChangeListener(lSymChange);
 		reload.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
@@ -199,9 +173,7 @@ public class DocFrame extends javax.swing.JFrame
 		this();
 		setTitle(sTitle);
 		XMLTextString = doctext;
-		XMLText.setText(doctext);
 		putXMLintoTree();
-        JTabbedPane1.setSelectedIndex(1);
         tree.setSelectionRow(0);
 	}
 	
@@ -256,12 +228,6 @@ public class DocFrame extends javax.swing.JFrame
 
 	//{{DECLARE_CONTROLS
 	javax.swing.JPanel DocControlPanel = new javax.swing.JPanel();
-	javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
-	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
-	javax.swing.JTextArea XMLText = new javax.swing.JTextArea();
-	javax.swing.JScrollPane JScrollPane2 = new javax.swing.JScrollPane();
-	javax.swing.JEditorPane HTMLPane = new javax.swing.JEditorPane();
-	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JScrollPane NestedPanelScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
@@ -285,9 +251,7 @@ public void writeInfo() {
         in.close();
         out.close();
         XMLTextString = out.toString();
-    XMLText.setText(out.toString());
 		putXMLintoTree();
-        JTabbedPane1.setSelectedIndex(1);
         tree.setSelectionRow(0);
         
     }
@@ -313,7 +277,7 @@ public void writeInfo() {
 	void TransformToHTML()
 	{
                 CatalogEntityResolver cer = new CatalogEntityResolver();
-		        config = new ConfigXML("config.xml");
+		        config = new ConfigXML("lib/config.xml");
 		        String local_dtd_directory = config.get("local_dtd_directory",0);
 		        String local_xml_directory = config.get("local_xml_directory",0);
 //            	PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
@@ -360,8 +324,6 @@ public void writeInfo() {
                       trans,
                       new XSLTResultTarget("html.out"));
     File html = new File("html.out");
-    HTMLPane.setPage("file:///"+html.getAbsolutePath());
-    JTabbedPane1.setSelectedIndex(1);
     }
     catch (Exception w) {}
 	}
@@ -369,7 +331,7 @@ public void writeInfo() {
 void putXMLintoTree() {
     if (XMLTextString!=null) {
           CatalogEntityResolver cer = new CatalogEntityResolver();
-		ConfigXML config = new ConfigXML("config.xml");
+		      ConfigXML config = new ConfigXML("lib/config.xml");
           String local_dtd_directory =config.get("local_dtd_directory",0);     // DFH
           String local_xml_directory =config.get("local_xml_directory",0);     // DFH
             
@@ -437,19 +399,7 @@ void putXMLintoTree() {
 	{
 		public void stateChanged(javax.swing.event.ChangeEvent event)
 		{
-			Object object = event.getSource();
-			if (object == JTabbedPane1)
-				JTabbedPane1_stateChanged(event);
 		}
-	}
-
-	void JTabbedPane1_stateChanged(javax.swing.event.ChangeEvent event)
-	{
-		if((JTabbedPane1.getSelectedIndex()==1)&&(transform_flag)) {
-		    TransformToHTML();
-		    transform_flag=false;
-		}
-			 
 	}
 	
     class PopupListener extends MouseAdapter {

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-08 23:29:04 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-23 18:40:40 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+package edu.ucsb.nceas.morpho.editor;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 import java.util.*;
+
 
 /**
  * DFHPanel is an example of a class that can be dynamically

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-08 23:29:03 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-23 18:40:39 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+package edu.ucsb.nceas.morpho.editor;
 
 import javax.swing.tree.*;
 import java.beans.*;

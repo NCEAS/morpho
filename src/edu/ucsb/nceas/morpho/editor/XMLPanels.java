@@ -1,12 +1,4 @@
 
-import java.awt.*;
-import javax.swing.*;
-import java.util.Hashtable;
-import javax.swing.tree.*;
-import java.util.Enumeration;
-import java.lang.reflect.*;
-
-
 /**
  *       Name: XMLPanels.java
  *  Copyright: 2000 Regents of the University of California and the
@@ -15,8 +7,8 @@ import java.lang.reflect.*;
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-08 23:29:03 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-23 18:40:39 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +45,15 @@ import java.lang.reflect.*;
  * 
  * @author higgins
  */
+package edu.ucsb.nceas.morpho.editor;
+
+import java.awt.*;
+import javax.swing.*;
+import java.util.Hashtable;
+import javax.swing.tree.*;
+import java.util.Enumeration;
+import java.lang.reflect.*;
+
  
 public class XMLPanels extends Component
 {
