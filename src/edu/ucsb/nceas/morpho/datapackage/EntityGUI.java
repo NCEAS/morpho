@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-26 22:38:51 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-27 17:03:41 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ import org.xml.sax.InputSource;
 import org.apache.xerces.dom.DocumentTypeImpl;
 
 /**
- * Class that implements a GUI to edit a data package
+ * Class that implements a GUI to edit an entity
  */
 public class EntityGUI extends javax.swing.JFrame 
                        implements ActionListener, 
@@ -65,6 +65,8 @@ public class EntityGUI extends javax.swing.JFrame
   private static final String numrecPath = "//numberOfRecords";
   private static final String caseSensPath = "//caseSensitive";
   private static final String orientationPath = "//orientation";
+  private static final String attributeNamePath = 
+                                         "/eml-variable/variable/variable_name";
   
   private ClientFramework framework;
   private Container contentPane;
@@ -72,13 +74,15 @@ public class EntityGUI extends javax.swing.JFrame
   private String entityId;
   private Vector attributes = new Vector();
   private String location;
+  private Hashtable attributeHash = new Hashtable();
+  private boolean editAttribute = false;
   
   //visual components
-  private JLabel name = new JLabel(htmlBegin + "xml_documents" + htmlEnd);
-  private JLabel description = new JLabel(htmlBegin + "Some entity that is neat and has a very very very very very long description" + htmlEnd);
-  private JLabel numrecords = new JLabel(htmlBegin + "1232123" + htmlEnd);
-  private JLabel caseSensitive = new JLabel(htmlBegin + "yes" + htmlEnd);
-  private JLabel orientation = new JLabel(htmlBegin + "column" + htmlEnd);
+  private JLabel name = new JLabel();
+  private JLabel description = new JLabel();
+  private JLabel numrecords = new JLabel();
+  private JLabel caseSensitive = new JLabel();
+  private JLabel orientation = new JLabel();
   private JList attributeList = new JList();
   private DataPackageGUI parent;
   
@@ -191,7 +195,6 @@ public class EntityGUI extends javax.swing.JFrame
   
   private void initComponents()
   {
-    String attributeNamePath = "/eml-variable/variable/variable_name";
     JButton editEntityButton = new JButton("Edit Table Description");
     JButton editAttributes = new JButton("Edit Attributes");
     editEntityButton.addActionListener(this);
@@ -234,10 +237,21 @@ public class EntityGUI extends javax.swing.JFrame
         Node n = nl.item(j);
         String att = n.getFirstChild().getNodeValue();
         attributes.addElement(att.trim());
+        attributeHash.put(att.trim(), id);
       }
     }
     
     attributeList = new JList(attributes);
+    attributeList.addMouseListener(new MouseAdapter()
+    {
+      public void mouseClicked(MouseEvent e)
+      {
+        if(e.getClickCount() == 2) 
+        {
+          actionPerformed(new ActionEvent(this, 0, "Edit Attributes"));
+        }
+      }
+    });
     attributeList.setPreferredSize(new Dimension(180, 215)); 
     attributeList.setMaximumSize(new Dimension(180, 215));
     attributeList.setBorder(BorderFactory.createCompoundBorder(
@@ -466,8 +480,20 @@ public class EntityGUI extends javax.swing.JFrame
       parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
-      EntityGUI newEntitygui = new EntityGUI(dataPackage, a.incRev(entityId), location, 
-                                             newgui, framework);
+      EntityGUI newEntitygui;
+      DataPackage newDataPackage = new DataPackage(location, 
+                                           a.incRev(dataPackage.getID()),
+                                           null, framework);
+      if(editAttribute)
+      {
+        newEntitygui = new EntityGUI(newDataPackage, entityId, location, newgui, 
+                                     framework);
+      }
+      else
+      {
+        newEntitygui = new EntityGUI(newDataPackage, a.incRev(entityId), 
+                                     location, newgui, framework);
+      }
       newgui.show();
       newEntitygui.show();
     }
@@ -490,6 +516,7 @@ public class EntityGUI extends javax.swing.JFrame
     
     if(command.equals("Edit Table Description"))
     {
+      editAttribute = false;
       EditorInterface editor;
       try
       {
@@ -555,7 +582,34 @@ public class EntityGUI extends javax.swing.JFrame
     }
     else if(command.equals("Edit Attributes"))
     {
-      
+      editAttribute = true;
+      String selectedItem = (String)attributeList.getSelectedValue();
+      if(selectedItem == null)
+      {
+        ClientFramework.debug(0, "You must select an attribute to edit.");
+        return;
+      }
+      File f;
+      String id = (String)attributeHash.get(selectedItem);
+      try
+      {
+        f = PackageUtil.openFile(id, location, framework);
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        framework.debug(0, "The attribute file was not found in EntityGUI." + 
+                           "actionPerformed(): " + fnfe.getMessage());
+        return;
+      }
+      catch(CacheAccessException cae)
+      {
+        framework.debug(0, "Cannot access the cache in EntityGUI." + 
+                           "actionPerformed(): " + cae.getMessage());
+        return;
+      }
+      String s = PackageUtil.getStringFromFile(f);
+      EditorInterface editor = PackageUtil.getEditor(framework);
+      editor.openEditor(s, id, location, this);
     }
   }
 }

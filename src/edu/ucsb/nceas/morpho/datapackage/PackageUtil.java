@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-25 22:13:43 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-27 17:03:42 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -392,5 +392,128 @@ public class PackageUtil
     docString += "\n<!DOCTYPE " + nameid +  " PUBLIC \"" + publicid + 
                  "\" \"" + systemid + "\">\n";
     return docString;
+  }
+  
+  /**
+   * opens a file on metacat or local.  It defaults to local if it is on both.
+   */
+  public static File openFile(String name, ClientFramework framework) 
+                                                  throws FileNotFoundException,
+                                                         CacheAccessException
+  {
+    return openFile(name, null, framework);
+  }
+  
+  /**
+   * figures out a files location if it is not known and opens it.  the default
+   * is to open it from the local system, if it is in both places.  
+   */
+  public static File openFile(String name, String location, 
+                              ClientFramework framework) throws 
+                                                         FileNotFoundException,
+                                                         CacheAccessException
+  {
+    File f;
+    if(location == null)
+    {
+      try
+      {
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        f = fsds.openFile(name);
+        return f;
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        try
+        {
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          f = mds.openFile(name);
+          return f;
+        }
+        catch(FileNotFoundException fnfe2)
+        {
+          throw new FileNotFoundException(fnfe2.getMessage());
+        }
+        catch(CacheAccessException cae2)
+        {
+          throw new CacheAccessException(cae2.getMessage());
+        }
+      }
+    }
+    else
+    {
+      try
+      {
+        if(location.equals(DataPackage.LOCAL) || 
+           location.equals(DataPackage.BOTH))
+        {
+          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          f = fsds.openFile(name);
+          return f;
+        }
+        else
+        {
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          f = mds.openFile(name);
+          return f;
+        }
+      }
+      catch(FileNotFoundException fnfe3)
+      {
+        throw new FileNotFoundException(fnfe3.getMessage());
+      }
+      catch(CacheAccessException cae3)
+      {
+        throw new CacheAccessException(cae3.getMessage());
+      }
+    }
+  }
+  
+  /**
+   * gets the editor context and returns it
+   */
+  public static EditorInterface getEditor(ClientFramework framework)
+  {
+    try
+    {
+      EditorInterface editor;
+      ServiceProvider provider = 
+                      framework.getServiceProvider(EditorInterface.class);
+      editor = (EditorInterface)provider;
+      return editor;
+    }
+    catch(ServiceNotHandledException snhe)
+    {
+      framework.debug(0, "Could not capture the editor in PackageUtil." +
+                         "getEditor(): " + snhe.getMessage());
+      return null;
+    }
+  }
+  
+  /**
+   * returns the string representation of a file
+   */
+  public static String getStringFromFile(File xmlFile)
+  {
+    StringBuffer sb = new StringBuffer();
+    try
+    {
+      FileReader fr = new FileReader(xmlFile);
+      int c = fr.read();
+      while(fr.ready() && c != -1)
+      {
+        sb.append((char)c);
+        c = fr.read();
+      }
+      sb.append((char)c);
+      fr.close();
+      return sb.toString();
+    }
+    catch(Exception e)
+    {
+      ClientFramework.debug(0, "Error reading file in PackageUtil." +
+                               "getStringFromFile(): " + e.getMessage());
+      return null;
+    }
   }
 }
