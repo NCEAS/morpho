@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 00:54:36 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-10 04:22:36 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,7 +350,6 @@ public class DataLocation extends AbstractWizardPage{
 //  I N L I N E  /////////////////////////////////////
 
       WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_INLINE);
-//      WizardSettings.setDataLocation(/* what? */);
       nextPageID = inlineNextPageID;
 
     } else if (distribXPath==ONLINE_XPATH) {

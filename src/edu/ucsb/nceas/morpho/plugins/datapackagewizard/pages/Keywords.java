@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 00:54:36 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-10 04:22:36 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,6 @@ public class Keywords extends AbstractWizardPage{
   private final Object[] editors  =   null; //makes non-directly-editable
   
   private CustomList  keywordsList;
-  private JLabel      keywordsLabel;
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -100,13 +99,6 @@ public class Keywords extends AbstractWizardPage{
     
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    
-    keywordsLabel = WidgetFactory.makeLabel(
-        "Enter one or more keywords, with an optional keyword thesaurus, as "
-          +"groups of keyword sets:", 
-          true, WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-    vbox.add(keywordsLabel);
-    
     
     vbox.add(WidgetFactory.makeDefaultSpacer());
     
@@ -158,7 +150,6 @@ public class Keywords extends AbstractWizardPage{
       newRow.add(keywordsDialog);
       keywordsList.addRow(newRow);
     }
-    WidgetFactory.unhiliteComponent(keywordsLabel);
   }
   
 
@@ -201,10 +192,7 @@ public class Keywords extends AbstractWizardPage{
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
-  public void onRewindAction() {
-    
-    WidgetFactory.unhiliteComponent(keywordsLabel);
-  }
+  public void onRewindAction() {}
   
   
   /** 
@@ -216,12 +204,7 @@ public class Keywords extends AbstractWizardPage{
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    
-    if (keywordsList.getRowCount() < 1) {
-
-      WidgetFactory.hiliteComponent(keywordsLabel);
-      return false;
-    }
+  
     return true; 
   }
   

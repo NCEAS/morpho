@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 00:54:36 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-10 04:22:36 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -119,19 +120,17 @@ public class Entity extends AbstractWizardPage{
     this.add(attributePanel);
     
     this.add(WidgetFactory.makeDefaultSpacer());
-    this.add(WidgetFactory.makeDefaultSpacer());
     
     ////////////////////////////////////////////////////////////////////////////
     
     JLabel entityDesc = WidgetFactory.makeHTMLLabel(
-    "Enter a descriptive paragraph that describes the entity, its type, and "
-    +"relevant information about the data in the entity.<br></br>Example: "
-    +"Species abundance data for 1996 at the VCR LTER site", 3);
+    "Enter a paragraph that describes the table or entity, its type, and "
+    +"relevant information about the data that it contains.<br></br>"
+    +"<font color=\"666666\">&nbsp;&nbsp;[Example:&nbsp;&nbsp;&nbsp;Species "
+    +"abundance data for 1996 at the VCR LTER site]</font>", 3);
     
     this.add(entityDesc);
 
-    this.add(WidgetFactory.makeDefaultSpacer());
-        
     JPanel entityDescPanel = WidgetFactory.makePanel();
 
     JLabel entityLabel = WidgetFactory.makeLabel("Description", false);
@@ -147,11 +146,20 @@ public class Entity extends AbstractWizardPage{
     ////////////////////////////////////////////////////////////////////////////
     this.add(WidgetFactory.makeDefaultSpacer());
     
+    this.add(WidgetFactory.makeHTMLLabel(
+                      "One or more attributes (columns) must be defined:", 1));
+    
+    JPanel attribsPanel = WidgetFactory.makePanel();
+
+    attributesLabel = WidgetFactory.makeLabel("Attributes", true);
+    attribsPanel.add(attributesLabel);
+    
     attributeList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
+    attribsPanel.add(attributeList);
     
-    this.add(attributeList);
-    
+    this.add(attribsPanel);
+
     initActions();
   }
 
@@ -186,13 +194,12 @@ public class Entity extends AbstractWizardPage{
   
   private void showNewEntityDialog() {
     
-    EntityDialog keywordsDialog 
-                              = new EntityDialog(WizardContainerFrame.frame);
+    EntityDialog entityDialog = new EntityDialog(WizardContainerFrame.frame);
 
-    if (keywordsDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (entityDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
     
-      List newRow = keywordsDialog.getSurrogate();
-      newRow.add(keywordsDialog);
+      List newRow = entityDialog.getSurrogate();
+      newRow.add(entityDialog);
       attributeList.addRow(newRow);
     }
     WidgetFactory.unhiliteComponent(attributesLabel);
@@ -231,6 +238,7 @@ public class Entity extends AbstractWizardPage{
    */
   public void onLoadAction() {
 
+    entityNameField.requestFocus();
   }
   
   
@@ -253,6 +261,12 @@ public class Entity extends AbstractWizardPage{
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+    
+    if (entityNameField.getText().trim().equals("")) {
+
+      WidgetFactory.hiliteComponent(entityNameLabel);
+      return false;
+    }
     
     if (attributeList.getRowCount() < 1) {
 
@@ -295,13 +309,14 @@ public class Entity extends AbstractWizardPage{
       
       nextRowList = (List)nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size()<3)     continue;
-      nextUserObject = nextRowList.get(2);
+      if (nextRowList.size()<4)     continue;
+      nextUserObject = nextRowList.get(3);
       if (nextUserObject==null) continue;
       
       nextEntityDialog = (EntityDialog)nextUserObject;
       
-      nextNVPMap = nextEntityDialog.getPageData(xPathRoot + (index++) + "]");
+      nextNVPMap = nextEntityDialog.getPageData(xPathRoot 
+                                + "/attributeList/attribute["+(index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
@@ -358,15 +373,24 @@ public class Entity extends AbstractWizardPage{
 
 class EntityDialog extends WizardPopupDialog {
 
-  private JTextField thesaurusField;
+  private JTextField attribNameField;
+  private JTextField measScaleField;
+  
   private JLabel kwLabel;
-  private CustomList kwList;
-  private String[] kwTypeArray = new String[]{  "discipline",
-                                                "place",
-                                                "stratum", 
-                                                "taxonomic",
-                                                "temporal",
-                                                "thematic" };
+  private JLabel attribNameLabel;
+  private JLabel attribDefinitionLabel;
+  private JLabel measScaleLabel;
+  
+  private String measurementScale;
+  
+  private JTextArea attribDefinitionField;
+  private final String[] buttonsText = new String[] {
+      "Nominal",
+      "Ordinal",
+      "Interval",
+      "Ratio",
+      "DateTime"
+    };
   
   public EntityDialog(JFrame parent) { 
   
@@ -382,34 +406,116 @@ class EntityDialog extends WizardPopupDialog {
    */
   private void init() {
     
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-                      "<font size=\"4\"><b>Define Keyword Set:</b></font>", 1);
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
     
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     
-    middlePanel.add(desc);
+    middlePanel.add(WidgetFactory.makeHTMLLabel(
+              "<font size=\"4\"><b>Define Column or Attribute:</b></font>", 1));
     
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     
     ////
-    JPanel thesaurusPanel = WidgetFactory.makePanel(1);
-    thesaurusPanel.add(WidgetFactory.makeLabel("Thesaurus name:", false));
-    thesaurusField = WidgetFactory.makeOneLineTextField();
-    thesaurusPanel.add(thesaurusField);
-    middlePanel.add(thesaurusPanel);
+    JPanel attribNamePanel = WidgetFactory.makePanel(1);
+    attribNameLabel = WidgetFactory.makeLabel("Attribute name:", true);
+    attribNamePanel.add(attribNameLabel);
+    attribNameField = WidgetFactory.makeOneLineTextField();
+    attribNamePanel.add(attribNameField);
+    middlePanel.add(attribNamePanel);
         
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
+
+    
+    ////////////////////////////////////////////////////////////////////////////
+    
+    middlePanel.add(WidgetFactory.makeHTMLLabel(
+    "Enter a paragraph that gives a precise definition of the attribute or "
+    +"table-column. Explain the contents of the attribute fully so that a data "
+    +"user could interpret the attribute accurately.<br></br>"
+    +"<font color=\"666666\">&nbsp;&nbsp;[Example(s):&nbsp;&nbsp;&nbsp;"
+    +"\"spden\" is the number of individuals of all macro invertebrate species "
+    +"found in the plot]</font>", 3));
+
+    JPanel attribDefinitionPanel = WidgetFactory.makePanel();
+
+    attribDefinitionLabel = WidgetFactory.makeLabel("Definition", true);
+    attribDefinitionLabel.setVerticalAlignment(SwingConstants.TOP);
+    attribDefinitionLabel.setAlignmentY(SwingConstants.TOP);
+    attribDefinitionPanel.add(attribDefinitionLabel);
+    
+    attribDefinitionField = WidgetFactory.makeTextArea("", 4, true);
+    JScrollPane jscrl = new JScrollPane(attribDefinitionField);
+    attribDefinitionPanel.add(jscrl);
+    middlePanel.add(attribDefinitionPanel);
+ 
+  
+    ////
+    measScaleLabel = WidgetFactory.makeLabel(
+                                "Select and define a Measurement Scale:", true, 
+                                WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
+    middlePanel.add(measScaleLabel);
+    
+    JPanel measScalePanel = WidgetFactory.makePanel(5);
+    measScaleField = WidgetFactory.makeOneLineTextField();
+    measScalePanel.add(measScaleField);
+    middlePanel.add(measScalePanel);
+    
+    final JPanel instance = middlePanel;
+    
+    ActionListener listener = new ActionListener() {
+      
+      public void actionPerformed(ActionEvent e) {
+        
+        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+
+        //undo any hilites:
+        
+        if (e.getActionCommand().equals(buttonsText[0])) {
+          
+//          instance.remove(currentPanel);
+//          currentPanel = inlinePanel;
+//          distribXPath = INLINE_XPATH;
+//          instance.add(inlinePanel, BorderLayout.CENTER);
+
+          setMeasurementScale("/nominal");
+                    
+        } else if (e.getActionCommand().equals(buttonsText[1])) {
+        
+          setMeasurementScale("/ordinal");
+                  
+          
+        } else if (e.getActionCommand().equals(buttonsText[2])) {
+        
+          setMeasurementScale("/interval");
+                  
+          
+        } else if (e.getActionCommand().equals(buttonsText[3])) {
+        
+          setMeasurementScale("/ratio");
+                  
+        } else if (e.getActionCommand().equals(buttonsText[3])) {
+        
+          setMeasurementScale("/dateTime");
+                    
+        }
+        instance.validate();
+        instance.repaint();
+      }
+    };
+    
+    
+    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
+    
+    middlePanel.add(radioPanel);
+      
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
-    ////
-    JPanel kwPanel = WidgetFactory.makePanel(4);
-    kwLabel = WidgetFactory.makeLabel("Entity:", true);
-    kwPanel.add(kwLabel);
-    
-    middlePanel.add(kwPanel);
   } 
+  
+  private void setMeasurementScale(String scale) {
+  
+    this.measurementScale = scale;
+  }
   
   
   /** 
@@ -421,11 +527,22 @@ class EntityDialog extends WizardPopupDialog {
    */
   public boolean onAdvanceAction() {
    
-    if (kwList.getRowCount() < 1) {
+    if (attribNameField.getText().trim().equals("")) {
   
-      WidgetFactory.hiliteComponent(kwLabel);
+      WidgetFactory.hiliteComponent(attribNameLabel);
+      attribNameField.requestFocus();
       return false;
     }
+    WidgetFactory.unhiliteComponent(attribNameLabel);
+    
+    if (attribDefinitionField.getText().trim().equals("")) {
+  
+      WidgetFactory.hiliteComponent(attribDefinitionLabel);
+      attribDefinitionField.requestFocus();
+      return false;
+    }
+    WidgetFactory.unhiliteComponent(attribDefinitionLabel);
+
     return true; 
   }
 
@@ -435,48 +552,30 @@ class EntityDialog extends WizardPopupDialog {
    *  2-col list in which this surrogate is displayed
    *
    */
-  private final StringBuffer surrogateBuff = new StringBuffer();
-  //
   public List getSurrogate() {
 
-    WidgetFactory.unhiliteComponent(kwLabel);
+    WidgetFactory.unhiliteComponent(attribDefinitionLabel);
     
     List surrogate = new ArrayList();
     
-    //thesaurus (first column) surrogate:
-    String thesaurus   = thesaurusField.getText().trim();
-    if (thesaurus==null) thesaurus = "";
-    surrogate.add(thesaurus);
+    //attribName (first column) surrogate:
+    String attribName   = attribNameField.getText().trim();
+    if (attribName==null) attribName = "";
+    surrogate.add(attribName);
 
     
-    //keywords (second column) surrogate:
-    surrogateBuff.delete(0, surrogateBuff.length());
-    List rowLists = kwList.getListOfRowLists();
-    boolean firstKW = true;
-    String  nextKW  = null;
-  
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-  
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
-      Object nextRowObj = it.next();
-      if (nextRowObj==null) continue;
-      
-      List nextRow = (List)nextRowObj;
-      if (nextRow.size() < 1) continue;
-      
-      if (nextRow.get(0)==null) continue;
-      nextKW = ((String)(nextRow.get(0))).trim();
-      
-      if (nextKW.equals("")) continue;
-      
-      if (firstKW) firstKW = false;
-      else surrogateBuff.append(", ");
-
-      surrogateBuff.append(nextKW);
-    }
+    //attribDefinition (second column) surrogate:
+    String attribDefinition   = attribDefinitionField.getText().trim();
+    if (attribDefinition==null) attribDefinition = "";
+    surrogate.add(attribDefinition);
     
-    surrogate.add(surrogateBuff.toString());
-
+    
+    //measurementScale (third column) surrogate:
+//    String measurementScale   = measurementScaleField.getText().trim();
+    String measurementScale   = "";
+    if (measurementScale==null) measurementScale = "";
+    surrogate.add(measurementScale);
+    
     return surrogate;
   }
 
@@ -500,63 +599,17 @@ class EntityDialog extends WizardPopupDialog {
   
     returnMap.clear();
 
-    returnMap.putAll(getKWListAsNVP(xPathRoot));
+    String attribName = attribNameField.getText().trim();
+    if (attribName!=null && !attribName.equals("")) {
+      returnMap.put(xPathRoot + "/attributeName", attribName);
+    }
     
-    String thesaurus = thesaurusField.getText().trim();
-    if (thesaurus!=null && !thesaurus.equals("")) {
-      returnMap.put(xPathRoot + "/keywordThesaurus", thesaurus);
+
+    String attribDef = attribDefinitionField.getText().trim();
+    if (attribDef!=null && !attribDef.equals("")) {
+      returnMap.put(xPathRoot + "/attributeDefinition", attribDef);
     }
     
     return returnMap;
   }
-
-  
-  private final OrderedMap listResultsMap    = new OrderedMap();
-  private final StringBuffer listResultsBuff = new StringBuffer();
-  //
-  private OrderedMap getKWListAsNVP(String xPathRoot) {
-  
-    listResultsMap.clear();
-    
-    int index=0;
-    List rowLists = kwList.getListOfRowLists();
-    String nextKW = null;
-    String nextKWType = null;
-  
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-  
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
-      Object nextRowObj = it.next();
-      if (nextRowObj==null) continue;
-      
-      List nextRow = (List)nextRowObj;
-      if (nextRow.size() < 1) continue;
-      
-      if (nextRow.get(0)==null) continue;
-      nextKW = ((String)(nextRow.get(0))).trim();
-      
-      if (nextKW.equals("")) continue;
-      
-      listResultsBuff.delete(0,listResultsBuff.length());
-      listResultsBuff.append(xPathRoot);
-      listResultsBuff.append("/keyword[");
-      listResultsBuff.append(++index);
-      listResultsBuff.append("]");
-      listResultsMap.put(listResultsBuff.toString(), nextKW);
-    
-      if (nextRow.get(1)==null) continue;
-      nextKWType = ((String)(nextRow.get(1))).trim();
-    
-      if (nextKWType.equals("")) continue;
-    
-      listResultsBuff.delete(0,listResultsBuff.length());
-      listResultsBuff.append(xPathRoot);
-      listResultsBuff.append("/keyword[");
-      listResultsBuff.append(index);
-      listResultsBuff.append("]@keywordType");
-      listResultsMap.put(listResultsBuff.toString(), nextKWType);
-    }
-    return listResultsMap;
-  }
-  
 }

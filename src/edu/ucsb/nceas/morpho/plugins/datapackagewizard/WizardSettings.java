@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-08 22:11:21 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-10 04:22:36 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,7 +150,10 @@ public class WizardSettings {
 
   
   /**
-   *  sets summary text that will be shown on the final page of the wizard
+   *  sets summary text that will be shown on the final page of the wizard. 
+   *  <em>NOTE that this method makes an internal call to setDataLocation() and  
+   *  sets the dataLocation to null; therefore, any calls to setDataLocation()
+   *  shoudl be made *AFTER* calling this function!</em>
    *
    *  @param  text the String to be displayed. Must be one of the final static 
    *          Strings defined elsewhere in this class, named SUMMARY_TEXT_***, 
@@ -163,8 +166,7 @@ public class WizardSettings {
      || text.equals(SUMMARY_TEXT_NODATA) || text.equals(SUMMARY_TEXT_OFFLINE)) {
       
       summaryText = text;
-      System.err.println("\n XXXXXXXX setSummaryText() after set; summaryText: "
-                                                                  +summaryText);
+      setDataLocation(null);
     }
   }
 
@@ -175,7 +177,6 @@ public class WizardSettings {
    */
   public static String getSummaryText() { 
   
-    System.err.println("\n XXXXXXXX getSummaryText() returning: "+summaryText);
     return summaryText; 
   }
 
@@ -185,15 +186,10 @@ public class WizardSettings {
    *  page of the wizard. For Online data, this would be a URL, and for inline 
    *  data, it could be a file:// url or the filename or something similar. 
    *
-   *  @param  loc the location to be displayed. Must be non-null and must 
-   *          contain characters other than whitespace, otherwise location will 
-   *          be unchanged
+   *  @param  loc the location to be displayed. May be null or empty, or may  
+   *          contain only whitespace characters.
    */
-  public static void setDataLocation(String loc) {
-  
-    if (loc==null || loc.trim().equals("")) return;
-    dataLocation = loc;
-  }
+  public static void setDataLocation(String loc) { dataLocation = loc; }
 
   
   /**
@@ -201,16 +197,15 @@ public class WizardSettings {
    *  page of the wizard. For Online data, this would be a URL, and for inline 
    *  data, it could be a file:// url or the filename or something similar. 
    *  Note that text should be displayed only if the summary text is set to  
-   *  SUMMARY_TEXT_INLINE or SUMMARY_TEXT_ONLINE. If a null value is returned
-   *  for the location string, the summary should default gracefully and not 
-   *  show a location.
+   *  SUMMARY_TEXT_INLINE or SUMMARY_TEXT_ONLINE. NOTE that this method may 
+   *  return a null value or an empty value for the location string, if that's 
+   *  what the user has set, so the summary should default gracefully and not 
+   *  show a location in such cases.
    *
-   *  @return the String location to be displayed.
+   *  @return the String location to be displayed. May be null or empty, or may  
+   *          contain only whitespace characters.
    */
-  public static String getDataLocation() {
-  
-    return dataLocation;
-  }
+  public static String getDataLocation() { return dataLocation; }
   
 }
 
