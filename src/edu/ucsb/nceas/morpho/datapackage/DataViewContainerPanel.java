@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-11 22:49:18 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2002-12-13 05:10:24 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -207,7 +207,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     entitiesContainerPanel.add(BorderLayout.CENTER, tabbedEntitiesPanel);
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, packageMetadataPanel,
                                                           entitiesContainerPanel);
-    vertSplit.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
+    if (UIManager.getSystemLookAndFeelClassName().indexOf(
+                                                "WindowsLookAndFeel")>-1) {
+      vertSplit.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
+    }
     SymComponent aSymComponent = new SymComponent();
 		packageMetadataPanel.addComponentListener(aSymComponent);
 
