@@ -23,6 +23,7 @@ class myHandler extends DefaultHandler {
     public void startElement (String uri, String localName,
                               String qName, Attributes atts)
            throws SAXException {
+       if(!localName.equals("resultset")) {
 		//  Create new Node
 		NodeInfoDG ni = new NodeInfoDG(localName);
 		for (int i=0;i<atts.getLength();i++) {
@@ -42,14 +43,16 @@ class myHandler extends DefaultHandler {
 		nodeCount++;
 		//  Push current Node on top of Stack
 		stack.push (newNode);
-		
+	   }
     }
   
     public void endElement (String uri, String localName,
                             String qName) throws SAXException {
+       if(!localName.equals("resultset")) {
 		if (nodeCount>1) {
 		    stack.pop ();
 		}
+	   }
     }
   
     public void characters(char ch[], int start, int length) {

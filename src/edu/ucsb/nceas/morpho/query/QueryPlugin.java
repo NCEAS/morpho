@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.10 2000-08-22 19:16:09 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.11 2000-08-23 16:18:39 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -520,12 +520,12 @@ public class QueryBean extends AbstractQueryBean
 		JScrollPane6.setOpaque(true);
 		JPanel32.add(JScrollPane6);
 		JScrollPane6.setBounds(5,5,223,33);
-		JTextArea1.setColumns(20);
-		JTextArea1.setRows(2);
-		JTextArea1.setText("Query Summary String");
-		JTextArea1.setLineWrap(true);
-		JScrollPane6.getViewport().add(JTextArea1);
-		JTextArea1.setBounds(0,0,220,30);
+		QueryStringTextArea1.setColumns(20);
+		QueryStringTextArea1.setRows(2);
+		QueryStringTextArea1.setText("Query Summary String");
+		QueryStringTextArea1.setLineWrap(true);
+		JScrollPane6.getViewport().add(QueryStringTextArea1);
+		QueryStringTextArea1.setBounds(0,0,220,30);
 		JPanel33.setLayout(new GridLayout(2,1,0,0));
 		JPanel30.add(BorderLayout.EAST, JPanel33);
 		JPanel33.setBounds(493,0,227,46);
@@ -574,12 +574,12 @@ public class QueryBean extends AbstractQueryBean
 		JScrollPane8.setOpaque(true);
 		JPanel36.add(JScrollPane8);
 		JScrollPane8.setBounds(5,5,223,33);
-		JTextArea2.setColumns(20);
-		JTextArea2.setRows(2);
-		JTextArea2.setText("Query Summary String");
-		JTextArea2.setLineWrap(true);
-		JScrollPane8.getViewport().add(JTextArea2);
-		JTextArea2.setBounds(0,0,220,30);
+		QueryStringTextArea2.setColumns(20);
+		QueryStringTextArea2.setRows(2);
+		QueryStringTextArea2.setText("Query Summary String");
+		QueryStringTextArea2.setLineWrap(true);
+		JScrollPane8.getViewport().add(QueryStringTextArea2);
+		QueryStringTextArea2.setBounds(0,0,220,30);
 		JPanel37.setLayout(new GridLayout(2,1,0,0));
 		JPanel34.add(BorderLayout.EAST, JPanel37);
 		JPanel37.setBounds(493,0,227,46);
@@ -730,21 +730,21 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JLabel JLabel24 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel32 = new javax.swing.JPanel();
 	javax.swing.JScrollPane JScrollPane6 = new javax.swing.JScrollPane();
-	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
+	javax.swing.JTextArea QueryStringTextArea1 = new javax.swing.JTextArea();
 	javax.swing.JPanel JPanel33 = new javax.swing.JPanel();
 	javax.swing.JCheckBox DetachCheckBox1 = new javax.swing.JCheckBox();
 	javax.swing.JCheckBox JCheckBox11 = new javax.swing.JCheckBox();
 	javax.swing.JScrollPane RSScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JPanel DocumentTypePanel = new javax.swing.JPanel();
 	javax.swing.JPanel Query2 = new javax.swing.JPanel();
-	edu.ucsb.nceas.querybean.DataGuideBean dataGuideBean1 = new edu.ucsb.nceas.querybean.DataGuideBean();
+	edu.ucsb.nceas.querybean.DataGuideBean dataGuideBean1 = new edu.ucsb.nceas.querybean.DataGuideBean(this);
 	javax.swing.JPanel RS_Panel2 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel34 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel35 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel25 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel36 = new javax.swing.JPanel();
 	javax.swing.JScrollPane JScrollPane8 = new javax.swing.JScrollPane();
-	javax.swing.JTextArea JTextArea2 = new javax.swing.JTextArea();
+	javax.swing.JTextArea QueryStringTextArea2 = new javax.swing.JTextArea();
 	javax.swing.JPanel JPanel37 = new javax.swing.JPanel();
 	javax.swing.JCheckBox JCheckBox12 = new javax.swing.JCheckBox();
 	javax.swing.JCheckBox JCheckBox13 = new javax.swing.JCheckBox();
@@ -909,7 +909,7 @@ public class QueryBean extends AbstractQueryBean
 	    
 		if ((TextChoices1.isVisible())&&(TextValue1.getText().length()>0)) {
 		    mode = TextMatch1.getSelectedItem().toString();
-		    match = TextValue11.getText();
+		    match = TextValue1.getText();
 		    paths[0] = getPath(mode,match);
 		}
 		if ((TextChoices2.isVisible())&&(TextValue2.getText().length()>0)) {
@@ -1163,7 +1163,7 @@ public class QueryBean extends AbstractQueryBean
 		if ((TextChoices6.isVisible())&&(TextValue6.getText().length()>0)) {
 		    pqx.add_queryterm(TextValue6.getText(),"//*",searchmode[TextMatch6.getSelectedIndex()],true);
 		}
-//		pqx.end_querygroup();
+		pqx.end_query();
 	 }
 		try{
 		    out = pqx.get_XML();

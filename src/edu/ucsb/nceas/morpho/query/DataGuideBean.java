@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.1 2000-08-22 19:16:10 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.2 2000-08-23 16:18:39 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -53,18 +53,21 @@ public class DataGuideBean extends java.awt.Container
     public MyDefaultTreeModel treeModel;
     public JTree tree;
     TreePath tp;
-//    ClientFramework container = null;
+//  ClientFramework container = null;
     String userName = "anonymous";
     String passWord = "none";
     Hashtable localDocTypes;
     JTable table;
     
+    public QueryBean qb;
+    
     boolean local = true;
     
     String MetaCatServletURL = "http://dev.nceas.ucsb.edu/metadata/servlet/metacat";
     
-	public DataGuideBean()
+	public DataGuideBean(QueryBean qb)
 	{
+	    this.qb=qb;
 		//{{INIT_CONTROLS
 		setLayout(new GridLayout(1,2,2,2));
 		setBackground(java.awt.Color.lightGray);
@@ -275,7 +278,7 @@ public class DataGuideBean extends java.awt.Container
 				});
 				getContentPane().setLayout(new BorderLayout(0,0));
 				setSize(700,500);
-				getContentPane().add(new DataGuideBean());
+				getContentPane().add(new DataGuideBean(null));
 			}
 		}
 
@@ -835,7 +838,6 @@ return "NONE";
 	    }
 	    else {
 	    
-//		String xml = pqs.buildXMLQuery(AndRadioButton.isSelected());
 		String[] xpath = pqs.getXPathArray();
 		String xpatharray = "";
 		for (int k=0;k<xpath.length;k++) {
@@ -867,12 +869,16 @@ return "NONE";
             });
         
 		     
-		     RSFrame rs = new RSFrame();
-		     rs.RSScrollPane.getViewport().add(table);
-		     rs.QueryStringTextArea.setText(xpatharray);
-		     rs.setVisible(true);
+	//	     RSFrame rs = new RSFrame();
+		     qb.RSScrollPane2.getViewport().add(table);
+		     qb.QueryStringTextArea2.setText(xpatharray);
+//		     rs.setVisible(true);
             lq.start();
 	    }
-	
+		String xml = pqs.buildXMLQuery(AndRadioButton.isSelected());
+	    LogIn();
+	    qb.squery_submitToDatabase(xml);
+	    LogOut();
+	    
 	}
 }
