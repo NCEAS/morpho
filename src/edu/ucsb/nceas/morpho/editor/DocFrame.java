@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-26 19:57:08 $'
- * '$Revision: 1.74 $'
+ *     '$Date: 2001-12-27 23:26:08 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ import org.apache.xalan.xpath.xml.*;
 import java.util.PropertyResourceBundle;
 import javax.swing.*;
 import javax.swing.tree.*;
-
+import java.util.Hashtable;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.*;
@@ -63,6 +63,12 @@ import edu.ucsb.nceas.morpho.framework.*;
  */
 public class DocFrame extends javax.swing.JFrame
 {
+  
+    /** a hashtable for saving trees with help and formatting info
+     *  assume that the key is the name of the rootnode
+     */
+     public static Hashtable helpTrees = new Hashtable();
+  
      /**
      *  number of level of expansion of the initial JTree
      */
@@ -368,6 +374,7 @@ public class DocFrame extends javax.swing.JFrame
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, boolean flag) 
 	{
 	  this();
+	  DefaultMutableTreeNode frootNode = null;
 //	  this.templateFlag = flag;
 	  setTitle("Morpho Editor");
 	  this.framework = cf;
@@ -385,65 +392,91 @@ public class DocFrame extends javax.swing.JFrame
     // ".xml" as a file name; the formatting document is XML with the same
     // tree structure as the document being formatted; 'help' and 'editor' attributes
     // are used to set help and editor strings for nodes
-    rootname = rootname+".xml";
-		file = new File("./lib", rootname);
-		DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
-		DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
-		String fXMLString = "";
-		boolean formatflag = true;
-    try{
-      FileReader in = new FileReader(file);
-      StringWriter out = new StringWriter();
-      int c;
-      while ((c = in.read()) != -1) {
-        out.write(c);
+//    if (!helpTrees.containsKey(rootname)) {
+    if (true) {
+      rootname = rootname+".xml";
+		  file = new File("./lib", rootname);
+		  frootNode = new DefaultMutableTreeNode("froot");
+		  DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
+		  String fXMLString = "";
+		  boolean formatflag = true;
+      try{
+        FileReader in = new FileReader(file);
+        StringWriter out = new StringWriter();
+        int c;
+        while ((c = in.read()) != -1) {
+          out.write(c);
+        }
+        in.close();
+        out.close();
+        fXMLString = out.toString();
       }
-      in.close();
-      out.close();
-      fXMLString = out.toString();
-    }
 	    catch(Exception e){formatflag = false;}	
 		
-		if (formatflag) {
-		  putXMLintoTree(ftreeModel,fXMLString);
-		  frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
-		  // formatting info has now been put into a JTree which is merged with
-		  // the previously created document tree
-		  treeUnion(rootNode,frootNode);
-		}
-   
-    // if the document instance has a DTD, the DTD is parsed
-    // and info from the result is merged into the tree
-    if (dtdMergeflag) {
-      if (dtdfile!=null) {
-		    dtdtree = new DTDTree(dtdfile);
-		    dtdtree.setRootElementName(rootnodeName);
-		    dtdtree.parseDTD();
+		  if (formatflag) {
+		    putXMLintoTree(ftreeModel,fXMLString);
+		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+		    // formatting info has now been put into a JTree which is merged with
+		    // the previously created document tree
+		    treeUnion(rootNode,frootNode);
+		  }
+      // if the document instance has a DTD, the DTD is parsed
+      // and info from the result is merged into the tree
+      if (dtdMergeflag) {
+        if (dtdfile!=null) {
+		      dtdtree = new DTDTree(dtdfile);
+		      dtdtree.setRootElementName(rootnodeName);
+		      dtdtree.parseDTD();
 		
-	      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 
 	        // the treeUnion method will 'merge' the input document with
 	        // a template XML document created using the DTD parser from the DTD doc
-	  if (!templateFlag) {   // 
+	        if (!templateFlag) {   // 
+	           long temp = System.currentTimeMillis();
+	           System.out.println("StarttreeUnion:"+((new Long(temp)).toString()));
 	            treeUnion(rootNode,dtdtree.rootNode);
+//            treeUnion(frootNode, dtdtree.rootNode);
+//            helpTrees.put(rootname, frootNode); 
+//            treeUnion(rootNode, frootNode);
+	           temp = System.currentTimeMillis();
+	           System.out.println("FinishtreeUnion:"+((new Long(temp)).toString()));
 	        
             // treeTrim will remove nodes in the input that are not in the DTD
             // remove the following line if this is not wanted
-        if (trimNodesNotInDTDflag) {
-          treeTrim(rootNode,dtdtree.rootNode);
+           if (trimNodesNotInDTDflag) {
+              treeTrim(rootNode,dtdtree.rootNode);
+           }
+          }
         }
-      }
-      }
-	}
+	    }
+    }// end of if (!helpTrees.containsKey())
+    else {
+	           long temp = System.currentTimeMillis();
+	           System.out.println("StarttreeUnionCache:"+((new Long(temp)).toString()));
+            treeUnion(rootNode, frootNode);
+	           temp = System.currentTimeMillis();
+	           System.out.println("FinishtreeUnionCache:"+((new Long(temp)).toString()));
+	        
+            // treeTrim will remove nodes in the input that are not in the DTD
+            // remove the following line if this is not wanted
+           if (trimNodesNotInDTDflag) {
+	           temp = System.currentTimeMillis();
+	           System.out.println("StartTrimTree:"+((new Long(temp)).toString()));
+              treeTrim(rootNode,dtdtree.rootNode);
+	           temp = System.currentTimeMillis();
+	           System.out.println("FiinishTrimTree:"+((new Long(temp)).toString()));
+           }
+      
+    }
 	
-	
-	if (!templateFlag) {	
+	if (!templateFlag) {
 		treeModel.reload();
 		tree.setModel(treeModel);
 	}
 	else {
-        DefaultTreeModel dftm = new DefaultTreeModel(dtdtree.rootNode);
-        tree.setModel(dftm);
+    DefaultTreeModel dftm = new DefaultTreeModel(dtdtree.rootNode);
+    tree.setModel(dftm);
 	}
 		tree.expandRow(1);
 		tree.expandRow(2);
@@ -843,6 +876,19 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         catch (Exception e) {
             System.out.println("Exception in creating copy of node!");
         }
+    }
+
+    public DefaultMutableTreeNode readDeepNodeCopyFile(String filename) {
+        DefaultMutableTreeNode node = null;
+        try {
+            FileInputStream in = new FileInputStream(filename);
+            ObjectInputStream os = new ObjectInputStream(in);
+            node = (DefaultMutableTreeNode)os.readObject();
+        }
+        catch (Exception e) {
+          return null;
+        }
+       return node; 
     }
 
     void Copy_actionPerformed(java.awt.event.ActionEvent event) {
@@ -1337,7 +1383,8 @@ void expandTreeToLevel(JTree jt, int level) {
                     }
                 }
                 if (!insTest) {
-                Vector hits = getMatches(tNode, nextLevelInputNodes);
+//                Vector hits = getMatches(tNode, nextLevelInputNodes);
+                Vector hits = simpleGetMatches(tNode, nextLevelInputNodes);
                 // merge hits with template node
                 tempVector = (Vector)currentLevelInputNodes.clone();
                 Enumeration en1 = hits.elements();
@@ -1357,11 +1404,13 @@ void expandTreeToLevel(JTree jt, int level) {
  //               if (hits.size()==0) {
                     DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
                     int index = ptNode.getIndex(tNode);
-                    Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
+//                    Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
+                    Vector parent_hits = simpleGetMatches(ptNode, currentLevelInputNodes);
                     Enumeration en2 = parent_hits.elements();
                     while (en2.hasMoreElements()) {
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
-                        newnode = deepNodeCopy(tNode);
+//                        newnode = deepNodeCopy(tNode);
+                        newnode = (DefaultMutableTreeNode)tNode.clone();
                         trimSpecialAttributes(newnode);
                         int index1 = findDuplicateIndex(nextLevelInputNodes,index);
                         if (index1>=ind.getChildCount()) {
@@ -1554,7 +1603,8 @@ private Vector sameParent(Vector list) {
             Enumeration enum = nextLevelInputNodes.elements();
             while (enum.hasMoreElements()) {
                 inNode = (DefaultMutableTreeNode)enum.nextElement();
-                Vector hits = getMatches(inNode, nextLevelTemplateNodes);
+//                Vector hits = getMatches(inNode, nextLevelTemplateNodes);
+                Vector hits = simpleGetMatches(inNode, nextLevelTemplateNodes);
                  // if there are no 'hits' then the node should be removed
                 if (hits.size()<1) {
                     parNode = (DefaultMutableTreeNode)inNode.getParent();
@@ -1657,6 +1707,9 @@ private Vector sameParent(Vector list) {
             NodeInfo inputni = (NodeInfo)input.getUserObject();
             NodeInfo templateni = (NodeInfo)template.getUserObject();
             inputni.setCardinality(templateni.getCardinality());
+            if (templateni.getHelp()!=null) {
+              inputni.setHelp(templateni.getHelp());
+            }
     
             // copy attribute to input tree
             Enumeration attrlist = templateni.attr.keys();
