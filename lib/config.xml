@@ -207,7 +207,7 @@
   <genericStylesheet>style/generic.xsl</genericStylesheet>
   <doctype_xslt_mappings>
       <doctype>"eml://ecoinformatics.org/eml-2.0.0"</doctype>
-      <xslt>style/eml2/eml-2.0.0.xsl</xslt>
+      <xslt>style/eml200/eml-2.0.0.xsl</xslt>
       <doctype>-//ecoinformatics.org//eml-access-2.0.0beta6//EN</doctype>
       <xslt>style/eml-access-2.0.0beta6.xsl</xslt>
       <doctype>-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN</doctype>
