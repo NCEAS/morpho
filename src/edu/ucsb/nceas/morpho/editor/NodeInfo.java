@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-24 23:41:55 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2002-01-12 22:22:41 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 package edu.ucsb.nceas.morpho.editor;
 
 import java.util.Hashtable;
+import java.util.Enumeration;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.*;
@@ -210,4 +211,25 @@ public class NodeInfo implements Serializable
   public String getIconName() {
     return iconName;
   }
+  
+  
+  public NodeInfo cloneNodeInfo() {
+    NodeInfo clone = new NodeInfo(this.name);
+    clone.cardinality = this.cardinality;
+    clone.iconName = this.iconName;
+    clone.PCDataValue = this.PCDataValue;
+    clone.Item = this.Item;
+    clone.editor = this.editor;
+    clone.rooteditor = this.rooteditor;
+    clone.help = this.help;
+    Enumeration enum = this.attr.keys();
+    while (enum.hasMoreElements()) {
+        Object kk = enum.nextElement();
+        Object val = this.attr.get(kk);
+        clone.attr.put(kk, val);    
+    }
+    
+    return clone;
+  }
+  
 }
