@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-19 23:49:49 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-23 05:24:31 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,7 +278,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         Log.debug(1,"attributeList is null!");
         return null;
       }
-      Node[] attr = XMLUtilities.getNodeListAsNodeArray(attributeNodes);
+//      Node[] attr = XMLUtilities.getNodeListAsNodeArray(attributeNodes);
       return XMLUtilities.getNodeListAsNodeArray(attributeNodes);      
     }
     catch (Exception w) {
@@ -306,6 +306,53 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     catch (Exception w) {
       Log.debug(4,"exception in getting entity description"+w.toString());
+    }
+    return temp;
+  }
+  
+  
+  public Node[] getPhysicalArray(int entityIndex) {
+    if(entityIndex>(entityArray.length-1)){
+      Log.debug(1, "entity index > number of entities");
+      return null;
+    }
+    String physicalXpath = "";
+    try{
+      physicalXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='entity']/physical")).getNodeValue();
+      NodeList physicalNodes = XMLUtilities.getNodeListWithXPath(entityArray[entityIndex],physicalXpath);
+      if (physicalNodes==null) {
+        Log.debug(1,"physicalList is null!");
+        return null;
+      }
+      return XMLUtilities.getNodeListAsNodeArray(physicalNodes);      
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting physicalArray");
+    }
+    return null;
+  }
+
+  public String getPhysicalName(int entityIndex, int physicalIndex) {
+    String temp = "";
+    if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
+      return "No such entity!";
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ((physicals==null)||(physicals.length<1)) return "no physicals!";
+    if (physicalIndex>(physicals.length-1)) return "physical index too large!";
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='physical']/name")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(4,"exception in getting physical objectName description"+w.toString());
     }
     return temp;
   }
