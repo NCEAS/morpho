@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-03 06:35:09 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-04-05 07:06:52 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,10 +87,9 @@ public class PartyPage extends AbstractUIPage {
   private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700, 20);
 
   // xpath for the this page
-  private String rootXPath = "/eml:eml/dataset/creator[1]";
+//  private String rootXPath = "/eml:eml/dataset/creator[1]";
 
-  // variables to describe role
-  //private String role;
+  private String backupXPath;
 
   private String roleString;
 
@@ -642,21 +641,24 @@ public class PartyPage extends AbstractUIPage {
     if (role.equals(DataPackageWizardInterface.PARTY_CREATOR)) {
 
         roleString = "Owner";
+        backupXPath = "/creator";
         return;
 
       } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
 
         roleString = "Contact";
+        backupXPath = "/contact";
         return;
 
       } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
 
         roleString = "Associated Party";
-
+        backupXPath = "/associatedParty";
 
       } else if (role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) {
 
         roleString = "Personnel";
+        backupXPath = "/personnel";
 
       } else {
 
@@ -703,9 +705,9 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
-  protected String getRootXPath() {
-    return this.rootXPath;
-  }
+//  protected String getRootXPath() {
+//    return this.rootXPath;
+//  }
 
 
   /**
@@ -1051,41 +1053,47 @@ public class PartyPage extends AbstractUIPage {
   /**
    *  gets the Map object that contains all the key/value paired
    *
-   *  @param    rootXPath the string xpath to which this dialog's xpaths will be
-   *            appended when making name/value pairs.  For example, in the
-   *            xpath: /eml:eml/dataset/creator[2]/individualName/surName, the
-   *            root would be /eml:eml/dataset/creator[2].
-   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN
-   *            SQUARE BRACKETS []
-   *
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap returnMap = new OrderedMap();
-
   //
   public OrderedMap getPageData() {
-    return getPageData(rootXPath);
+
+    throw new UnsupportedOperationException(
+      "PartyPage -> getPageData() method not implemented!");
   }
 
-
+  /**
+    *  gets the Map object that contains all the key/value paired
+    *
+    *  @param    rootXPath the string xpath to which this dialog's xpaths will be
+    *            appended when making name/value pairs.  For example, in the
+    *            xpath: /eml:eml/dataset/creator[2]/individualName/surName, the
+    *            root would be /eml:eml/dataset/creator[2].
+    *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN
+    *            SQUARE BRACKETS []
+    *
+    *  @return   data the Map object that contains all the
+    *            key/value paired settings for this particular wizard page
+    */
   public OrderedMap getPageData(String rootXPath) {
 
     returnMap.clear();
     String nextText = null;
 
 
-    if (isReference() && referencesNodeIDString!=null) {
+    if (isReference()) {
 
       returnMap.put(rootXPath + "/references", referencesNodeIDString);
-      Log.debug(45, "Setting reference to " + referencesNodeIDString);
+      Log.debug(45, "getPageData("+rootXPath
+                +") Setting /references to " + referencesNodeIDString);
 
     } else {
 
-      if (!isReference()) {
-        returnMap.put(rootXPath + "/@id", getRefID());
-        Log.debug(45, "Setting reference as " + referenceIdString);
-      }
+      returnMap.put(rootXPath + "/@id", getRefID());
+      Log.debug(45, "getPageData("+rootXPath
+                +") setting refID /@id as " + referenceIdString);
 
       nextText = salutationField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
@@ -1179,21 +1187,20 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
-  public boolean setPageData(OrderedMap map, String _rootXPath) {
+  public boolean setPageData(OrderedMap map, String rootXPath) {
 
     Log.debug(45,
-              "PartyPage.setPageData() called with _rootXPath = " + _rootXPath
+              "PartyPage.setPageData() called with rootXPath = " + rootXPath
               + "\n Map = \n" + map);
 
     checkBoxPanel.setVisible(false);
 
-    if (_rootXPath != null && _rootXPath.trim().length() > 0) {
+    if (rootXPath != null && rootXPath.trim().length() > 0) {
 
       //remove any trailing slashes...
-      while (_rootXPath.endsWith("/")) {
-        _rootXPath = _rootXPath.substring(0, _rootXPath.length() - 1);
+      while (rootXPath.endsWith("/")) {
+        rootXPath = rootXPath.substring(0, rootXPath.length() - 1);
       }
-      this.rootXPath = _rootXPath;
     }
 
     clearAllFields();
@@ -1217,11 +1224,24 @@ public class PartyPage extends AbstractUIPage {
         referencesNodeIDString = ref;
         this.setEditable(false);
         checkBoxPanel.setVisible(true);
-        int lastSlashIdx = this.rootXPath.lastIndexOf("/");
-        if (lastSlashIdx > -1) {
-
-          this.rootXPath = this.rootXPath.substring(lastSlashIdx);
+        //NOTE - rootXPath needs changing to match referenced node's xpath
+        int index = 0;
+        for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
+          if (index++ > 1) break;
+          rootXPath = (String)it.next();
         }
+        //strip leading slash(es)
+        while (rootXPath.startsWith("/")) rootXPath = rootXPath.substring(1);
+
+        int firstSlashIdx = rootXPath.indexOf("/");
+        if (firstSlashIdx > -1) {
+          rootXPath = rootXPath.substring(0, firstSlashIdx);
+        }
+        rootXPath = "/" + rootXPath;
+        Log.debug(45,
+           "PartyPage.setPageData() got a referenced party; new rootXPath = "
+           + rootXPath);
+
       } else {
 
         Log.debug(15,
@@ -1232,7 +1252,7 @@ public class PartyPage extends AbstractUIPage {
     }
 
     String xpathRootNoPredicates
-        = XMLUtilities.removeAllPredicates(this.rootXPath);
+        = XMLUtilities.removeAllPredicates(rootXPath);
 
     Log.debug(45, "PartyPage.setPageData() xpathRootNoPredicates = "
               + xpathRootNoPredicates);
@@ -1380,6 +1400,7 @@ public class PartyPage extends AbstractUIPage {
 
 
   private OrderedMap keepOnlyLastPredicateInKeys(OrderedMap map) {
+
     OrderedMap newMap = new OrderedMap();
     Iterator it = map.keySet().iterator();
 
@@ -1449,27 +1470,28 @@ public class PartyPage extends AbstractUIPage {
 
   OrderedMap previousValuesMap = new OrderedMap();
   //
-  String previousRootXPath = null;
+//  String previousRootXPath = null;
   //
   private void rememberPreviousValues() {
 
     previousValuesMap.clear();
-    previousValuesMap = this.getPageData(this.rootXPath);
-    previousRootXPath = this.rootXPath;
+    previousValuesMap = this.getPageData(backupXPath);
+//    previousRootXPath = rootXPath;
     backupExists = true;
-    Log.debug(45, "\n\nPartyPage.rememberPreviousValues() remembering: \nXPath = "
-              +previousRootXPath+"\nMap = "+previousValuesMap);
+    Log.debug(45, "\n\nPartyPage.rememberPreviousValues() remembering: \n "
+              +"\nMap = "+previousValuesMap);
   }
 
 
   private boolean restoreFromPreviousValues() {
 
-    Log.debug(45, "\n\nPartyPage.restoreFromPreviousValues() restoring: \npreviousRootXPath = "
-              +previousRootXPath+"\nMap = "+previousValuesMap);
+    Log.debug(45, "\n\nPartyPage.restoreFromPreviousValues() restoring: \n "
+              +"\nMap = "+previousValuesMap);
     if (previousValuesMap.isEmpty()) return true;
 
     processingReferenceSelection = true;
-    boolean canHandleAllData = this.setPageData(previousValuesMap, previousRootXPath);
+    boolean canHandleAllData = this.setPageData(previousValuesMap,
+                                                backupXPath);
     processingReferenceSelection = false;
     return canHandleAllData;
   }

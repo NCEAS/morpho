@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-03 06:35:09 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2004-04-05 07:06:52 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import java.util.ArrayList;
 
 public class PartyMainPage
     extends AbstractUIPage {
@@ -247,10 +248,7 @@ public class PartyMainPage
    */
   private void showNewPartyDialog() {
 
-    int predicate = 2 + partiesList.getSelectedRowIndex();
-    if (predicate < 1) predicate = 1 + partiesList.getRowCount();
-
-    PartyPage partyPage =  (PartyPage) WizardPageLibrary.getPage(role);
+    PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(role);
 
     ModalDialog wpd = new ModalDialog(partyPage,
                                       WizardContainerFrame.getDialogParent(),
@@ -263,14 +261,36 @@ public class PartyMainPage
       newRow.add(partyPage);
       partiesList.addRow(newRow);
 
-      //add new party to datapackage...
-      DataPackageWizardPlugin.addPageDataToDOM(
-          UIController.getInstance().getCurrentAbstractDataPackage(), partyPage,
-          "/" + DATAPACKAGE_PARTY_GENERIC_NAME,
-          DATAPACKAGE_PARTY_GENERIC_NAME, predicate);
+      //update datapackage...
+      updateDPRefs();
     }
-    if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
+    if (oneOrMoreRequired)WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
+
+
+  private void updateDPRefs() {
+
+    //update datapackage...
+    List nextRowList = null;
+    List pagesList = new ArrayList();
+    AbstractUIPage nextPage = null;
+
+    for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) {
+
+      nextRowList = (List)it.next();
+      //column 3 is user object - check it exists and isn't null:
+      if (nextRowList.size() < 4)continue;
+      nextPage = (AbstractUIPage)nextRowList.get(3);
+      if (nextPage == null)continue;
+      pagesList.add(nextPage);
+    }
+    DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
+        UIController.getInstance().getCurrentAbstractDataPackage(),
+        pagesList, DATAPACKAGE_PARTY_GENERIC_NAME,
+        DATAPACKAGE_PARTY_GENERIC_NAME);
+  }
+
+
 
 
   /**
@@ -278,7 +298,7 @@ public class PartyMainPage
    */
   private void showEditPartyDialog() {
 
-    int predicate = 2 + partiesList.getSelectedRowIndex();
+    int predicate = 1 + partiesList.getSelectedRowIndex();
     if (predicate < 1) predicate = 1 + partiesList.getRowCount();
 
     List selRowList = partiesList.getSelectedRowList();
@@ -303,11 +323,8 @@ public class PartyMainPage
       newRow.add(editPartyPage);
       partiesList.replaceSelectedRow(newRow);
 
-      //replace party in datapackage...
-      DataPackageWizardPlugin.addPageDataToDOM(
-          UIController.getInstance().getCurrentAbstractDataPackage(),
-          editPartyPage, "/" + DATAPACKAGE_PARTY_GENERIC_NAME,
-          DATAPACKAGE_PARTY_GENERIC_NAME, predicate);
+      //update datapackage...
+      updateDPRefs();
     }
   }
 
@@ -365,32 +382,17 @@ public class PartyMainPage
     returnMap.clear();
 
     int index = 1;
-    Object nextRowObj = null;
     List nextRowList = null;
-    Object nextUserObject = null;
     OrderedMap nextNVPMap = null;
     PartyPage nextPartyPage = null;
 
-    List rowLists = partiesList.getListOfRowLists();
+    for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) {
 
-    if (rowLists != null && rowLists.isEmpty()) {
-      return null;
-    }
-
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-
-      nextRowObj = it.next();
-      if (nextRowObj == null) continue;
-
-      nextRowList = (List) nextRowObj;
+      nextRowList = (List) it.next();
       //column 3 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 4) {
-        continue;
-      }
-      nextUserObject = nextRowList.get(3);
-      if (nextUserObject == null) continue;
-
-      nextPartyPage = (PartyPage) nextUserObject;
+      if (nextRowList.size() < 4) continue;
+      nextPartyPage = (PartyPage) nextRowList.get(3);
+      if (nextPartyPage == null) continue;
 
       nextNVPMap = nextPartyPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-03 06:35:09 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2004-04-05 07:06:52 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,9 +255,6 @@ public class Project extends AbstractUIPage {
      */
      private void showNewPartyDialog() {
 
-       int predicate = 2 + partiesList.getSelectedRowIndex();
-       if (predicate < 1) predicate = 1 + partiesList.getRowCount();
-
        PartyPage partyPage
            = (PartyPage)WizardPageLibrary.getPage(
              DataPackageWizardInterface.PARTY_PERSONNEL);
@@ -272,24 +269,39 @@ public class Project extends AbstractUIPage {
          newRow.add(partyPage);
          partiesList.addRow(newRow);
 
-         //add new party to datapackage...
-         DataPackageWizardPlugin.addPageDataToDOM(
-             UIController.getInstance().getCurrentAbstractDataPackage(), partyPage,
-             "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME,
-             DATAPACKAGE_PERSONNEL_GENERIC_NAME, predicate);
+         //update datapackage...
+         updateDPRefs();
        }
        WidgetFactory.unhiliteComponent(minRequiredLabel);
      }
 
+     private void updateDPRefs() {
+
+       //update datapackage...
+       List nextRowList = null;
+       List pagesList = new ArrayList();
+       AbstractUIPage nextPage = null;
+
+       for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) {
+
+         nextRowList = (List)it.next();
+         //column 3 is user object - check it exists and isn't null:
+         if (nextRowList.size() < 4)continue;
+         nextPage = (AbstractUIPage)nextRowList.get(3);
+         if (nextPage == null)continue;
+         pagesList.add(nextPage);
+       }
+       DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
+           UIController.getInstance().getCurrentAbstractDataPackage(),
+           pagesList, "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME,
+           DATAPACKAGE_PERSONNEL_GENERIC_NAME);
+     }
 
 
      /**
       *
       */
      private void showEditPartyDialog() {
-
-       int predicate = 2 + partiesList.getSelectedRowIndex();
-       if (predicate < 1) predicate = 1 + partiesList.getRowCount();
 
        List selRowList = partiesList.getSelectedRowList();
        if (selRowList==null || selRowList.size() < 4) return;
@@ -310,11 +322,8 @@ public class Project extends AbstractUIPage {
          newRow.add(editPartyPage);
          partiesList.replaceSelectedRow(newRow);
 
-         //replace party in datapackage...
-         DataPackageWizardPlugin.addPageDataToDOM(
-             UIController.getInstance().getCurrentAbstractDataPackage(),
-            editPartyPage, "/" + DATAPACKAGE_PERSONNEL_GENERIC_NAME,
-             DATAPACKAGE_PERSONNEL_GENERIC_NAME, predicate);
+         //update datapackage...
+         updateDPRefs();
        }
      }
 

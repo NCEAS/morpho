@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-03 06:35:09 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-04-05 07:06:52 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Class to handle add project command
@@ -103,16 +105,19 @@ public class AddResearchProjectCommand implements Command {
           }
           try {
             //replace project in datapackage...
-            DataPackageWizardPlugin.addPageDataToDOM(
+            List pagesList = new ArrayList();
+            pagesList.add(projectPage);
+
+            DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
                 UIController.getInstance().getCurrentAbstractDataPackage(),
-                projectPage, PROJECT_SUBTREE_NODENAME,
-                DATAPACKAGE_PROJECT_GENERIC_NAME, 1);
+                pagesList, PROJECT_SUBTREE_NODENAME,
+                DATAPACKAGE_PROJECT_GENERIC_NAME);
 
             //update package display in main frame...
             UIController.showNewPackage(adp);
 
           } catch (Exception w) {
-            Log.debug(15, "Exception trying to modify project DOM: "+w);
+            Log.debug(15, "Exception trying to modify project DOM: " + w);
             w.printStackTrace();
             Log.debug(5, "Unable to add project details!");
           }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 22:29:18 $'
- * '$Revision: 1.86 $'
+ *     '$Date: 2004-04-05 07:06:52 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -555,8 +555,52 @@ public abstract class AbstractDataPackage extends MetadataObject
   abstract public Node getSubtreeAtReference(String refID);
 
 
+  /**
+   * <em>DELETES ALL</em> subtrees identified by genericName String; returns
+   * null if none found - <em>USE WITH CARE!!</em>
+   *
+   * @param genericName String
+   * @return List of deleted subtrees; empty List if not found. SHOULD NEVER
+   * RETURN null
+   */
+  public List deleteAllSubtrees(String genericName) {
 
-    /**
+    NodeList nodelist = null;
+    List returnList = new ArrayList();
+    String genericNamePath = "";
+    try {
+      genericNamePath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+                                   "/xpathKeyMap/contextNode[@name='package']/"
+                                   + genericName)).getNodeValue();
+
+      nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
+                                                   genericNamePath);
+
+      if (nodelist == null) return returnList;
+
+      int startIdx = nodelist.getLength() - 1;
+
+      for (int index = startIdx; index > -1; index--) {
+
+        Node node = nodelist.item(index);
+        Node parnode = node.getParentNode();
+        if (parnode == null) return returnList;
+        returnList.add(parnode.removeChild(node));
+      }
+
+    } catch (Exception e) {
+      Log.debug(15, "Exception in deleteAllSubtrees!" + e);
+      e.printStackTrace();
+      returnList.clear();
+      return returnList;
+    }
+    return returnList;
+  }
+
+
+
+
+  /**
    * returns root Node of subtree identified by genericName String and int
    * index; returns null if not found
    *
