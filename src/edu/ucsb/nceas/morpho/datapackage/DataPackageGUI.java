@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-14 22:03:42 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2002-08-16 00:30:23 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -757,7 +757,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       StringBuffer sb = new StringBuffer();
       Reader reader = null;
       try {
-        reader = dataPackage.open(id);
+        reader = dataPackage.openAsReader(id);
         char[] buff = new char[4096];
         int numCharsRead;
       
