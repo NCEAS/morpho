@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-02 16:54:25 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-09-05 23:45:46 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,12 +122,12 @@ public class MetaDisplay implements MetaDisplayInterface
         return ui;
     }
 
-    //
+    //returns String contents read from Reader. NOTE - closes Reader when done
     private String getAsString(Reader reader) throws DocumentNotFoundException
     {
         StringBuffer docBuff = null;
         try {
-            docBuff = IOUtil.getAsStringBuffer(reader);
+            docBuff = IOUtil.getAsStringBuffer(reader, true);
         } catch (IOException ioe) {
             Log.debug(12, "Error reading reader "+ioe.getMessage());
             DocumentNotFoundException dnfe =  new DocumentNotFoundException(

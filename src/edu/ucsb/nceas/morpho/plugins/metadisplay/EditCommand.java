@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-28 01:02:42 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-05 23:45:46 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public class EditCommand implements Command {
         StringBuffer buffer = new StringBuffer();
         try {
             buffer = IOUtil.getAsStringBuffer(
-                                    controller.getFactory().openAsReader(id));
+                                controller.getFactory().openAsReader(id),true);
         } catch (DocumentNotFoundException dnfe) {
             Log.debug(0, "Error finding file : "+id+" "+dnfe.getMessage());
             dnfe.printStackTrace();
