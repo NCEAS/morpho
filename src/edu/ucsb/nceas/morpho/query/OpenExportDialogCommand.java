@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 19:17:24 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-04-04 22:27:57 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ public class OpenExportDialogCommand implements Command
    */
   public OpenExportDialogCommand()
   {
-   
+
   }//OpenDialogBoxCommand
   
   /**
@@ -102,7 +102,15 @@ public class OpenExportDialogCommand implements Command
         inLocal = resultPane.getLocalLocation();
   
         // Make sure selected a id, and there no package in metacat
-        if ( selectDocId != null && !selectDocId.equals(""))
+        if (openDialog==null) {
+          // Show export dialog
+            exportDialog = 
+                     new ExportDialog(frame, MorphoFrame.DATAPACKAGEFRAME, 
+                               selectDocId, inLocal, inNetwork);
+          exportDialog.setModal(true);
+          exportDialog.setVisible(true);
+        }
+        else if ( selectDocId != null && !selectDocId.equals("") )
         {
           // Show export dialog
             exportDialog = 
