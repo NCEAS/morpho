@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-04 15:23:36 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-04 16:26:37 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,8 @@ public class TripleParser extends DefaultHandler
 {
   private Triple triple;
   private TripleCollection collection = new TripleCollection();
-  String tag;
+  String tag="";
+  boolean instart = true;
   
   public TripleParser(FileReader xml, String parserName)
   {
@@ -69,9 +70,6 @@ public class TripleParser extends DefaultHandler
     }
     try 
     {
-      //Reader r = is.getCharacterStream();
-      //while(r.ready())
-      //  System.out.print((char)r.read());
       parser.parse(new InputSource(xml));
     } 
     catch (SAXException e) 
@@ -113,60 +111,67 @@ public class TripleParser extends DefaultHandler
   public void startElement(String uri, String localName, String qName, 
                            Attributes attributes) throws SAXException
   {
+    tag = localName;
     if(localName.equals("triple"))
-    {
+    { //create a new triple object to hold the next triple
       triple = new Triple();
     }
-    else if(localName.equals("subject"))
-    {
-      tag = "subject";
-    }
-    else if(localName.equals("relationship"))
-    {
-      tag = "relationship";
-    }
-    else if(localName.equals("object"))
-    {
-      tag = "object";
-    }
+    instart=true;
   }
   
   public void endElement(String uri, String localName, String qName) 
               throws SAXException
   {
     if(localName.equals("triple"))
-    {
+    { //we are at the end of a triple so add the new triple to the collection
       collection.addTriple(triple);
     }
+    instart=false;
   }
   
   public void characters(char[] ch, int start, int length)
   {
-    String content = new String(ch, start, length);
-    if(tag.equals("subject"))
+    if(instart)
     {
-      triple.setSubject(content);
-    }
-    else if(tag.equals("relationship"))
-    {
-      triple.setRelationship(content);
-    }
-    else if(tag.equals("object"))
-    {
-      triple.setObject(content);
+      String content = new String(ch, start, length);
+      if(tag.equals("subject"))
+      { //get the subject content
+        triple.setSubject(content);
+      }
+      else if(tag.equals("relationship"))
+      { //get the relationship content
+        triple.setRelationship(content);
+      }
+      else if(tag.equals("object"))
+      { //get the object content
+        triple.setObject(content);
+      }
     }
   }
   
+  /**
+   * returns the TripleCollection of all of the triples in this document
+   */
   public TripleCollection getTriples()
   {
     return collection;
   }
   
+  /**
+   * command line test method.  the first argument is the file you want to parse
+   */
   public static void main(String[] args)
   {
     //get the document name, parse it then output the
     //the doc object as text.
+    if(args.length == 0)
+    {
+      System.out.println("usage: TripleParser <xml_file>");
+      return;
+    }
+    
     String filename = args[0];
+    
     System.out.println("Parsing " + args[0]);
     try
     {

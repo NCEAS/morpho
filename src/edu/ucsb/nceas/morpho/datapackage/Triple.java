@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-04 15:23:36 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-04 16:26:37 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,9 @@ public class Triple
    */
   public Triple(Triple t)
   {
-    
+    this.subject = t.getSubject();
+    this.relationship = t.getRelationship();
+    this.object = t.getObject();
   }
 
   /**
