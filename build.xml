@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.89 2004-04-08 01:48:14 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.90 2004-04-08 02:34:24 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -24,7 +24,7 @@
       <property name="mpass" value="your-pw-goes-here"/>
       <property name="cvsroot" value=":ext:tao@cvs.ecoinformatics.org:/cvs" />
       <property name="eml-module" value="eml" />
-      <property name="eml-tag" value="RELEAS_EML_2_0_0" />
+      <property name="eml-tag" value="RELEASE_EML_2_0_0" />
       <property name="eml.doc.dir" value="simpledocs" />
       <property name="java.help.dir" value="/home/tao/download/jh1.1.3/javahelp/bin" />
       <property name="java.help.doc.dir" value="/home/tao/download/jh1.1.3/javahelp/bin/morphohelp" />
@@ -149,7 +149,7 @@
 
    </target>
    <target name="transferemldoctohelp" depends="prepare">
-      <xslt in="${input}" out="Map.jhm" style="${xsldir}/emlDocToMapInHelp.xsl">
+      <xslt in="${input}" out="map.jhm" style="${xsldir}/emlDocToMapInHelp.xsl">
       <param name="filename" expression="${input}"/>
        <outputproperty name="method" value="xml"/>
       <outputproperty name="standalone" value="yes"/>
