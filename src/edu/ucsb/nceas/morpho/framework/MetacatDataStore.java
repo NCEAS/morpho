@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-14 22:05:53 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-16 16:37:24 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -279,10 +279,11 @@ public class MetacatDataStore extends DataStore
       
       ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
       cf.setUserName("berkley");
-      cf.setPassword("UnSinn123");
+      cf.setPassword("");
       cf.logIn();
       MetacatDataStore mds = new MetacatDataStore(cf);
     
+      //File metacatfile = mds.newFile(id, fr, true);
       File metacatfile = mds.saveFile(id, fr, true);
       System.out.println("file done");
     }
