@@ -128,16 +128,6 @@
       <visible>no</visible>
     </file>
     <file>
-      <name>Distribution</name>
-      <label>Distribution Information</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-distribution-2.0.0beta4//EN</xmlfiletype>
-      <rootnode>eml-distribution</rootnode>
-      <tooltip>Description of how this data package can be distributed either electronically or otherwise.</tooltip>
-      <displaypath>FIXED:Distribution Information</displaypath>
-      <editexisting>no</editexisting>
-      <idpath>/eml-distribution/identifier</idpath>
-    </file>
-    <file>
       <name>Physical</name>
       <label>Physical Object Description</label>
       <xmlfiletype>-//ecoinformatics.org//eml-physical-2.0.0beta4//EN</xmlfiletype>
