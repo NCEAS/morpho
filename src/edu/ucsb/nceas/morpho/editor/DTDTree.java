@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:55:42 $'
- * '$Revision: 1.25 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-04 21:59:49 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -270,9 +270,9 @@ private void DTDItems(DTDItem item, Vector vec, boolean flg) {
     vec.addElement(ni);
   }
   else if (item instanceof DTDEmpty) {
-//    NodeInfo ni = new NodeInfo("Empty");
-//    ni.setCardinality(getCardinality(item));
-//   vec.addElement(ni);
+    NodeInfo ni = new NodeInfo("Empty");
+    ni.setCardinality(getCardinality(item));
+    vec.addElement(ni);
   }
   else if (item instanceof DTDName) {
     NodeInfo ni = new NodeInfo(((DTDName) item).value);
