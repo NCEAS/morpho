@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.34 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-08 19:05:37 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ public class WizardSettings {
   = new Dimension(2000,20);
 
   public static final String HTML_FONT_OPENING
-          = "<font size=\"3\" face=\"san-sarif\">";
+          = "<font size=\"3\" face=\"Sans-Serif\">";
 
   public static final String HTML_EXAMPLE_FONT_OPENING
                                                   = "<font color=\"#666666\">";
