@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.28 2001-08-01 05:52:44 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.29 2001-08-09 21:48:34 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -171,6 +171,8 @@
       <cvs command="update lib/config.xml" />
       <copy file="./lib/config.xml" todir="${morpho.lib}"/>
       <copy file="./lib/dataset.xml" todir="${morpho.lib}"/>
+      <copy file="./lib/eml-variable.xml" todir="${morpho.lib}"/>
+      <copy file="./lib/table-entity.xml" todir="${morpho.lib}"/>
       <copy file="./lib/default-profile.xml" todir="${morpho.lib}"/>
       <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
       <copy file="./lib/jlfgr-1_0.jar" todir="${morpho.lib}"/>
