@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-06 04:20:38 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-08 17:10:03 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -361,7 +361,8 @@ public class PartyDialog extends WizardPopupDialog {
   // returns true if stringbuffer does NOT end with ", "
   private boolean hasNoTrailingComma(StringBuffer buff) {
   
-    return !(buff.lastIndexOf(", ")==buff.length() - 2);
+    int lastIndex = buff.length() - 1;
+    return !((buff.charAt(lastIndex)==' ') && (buff.charAt(lastIndex-1)==','));
   }
   
 
