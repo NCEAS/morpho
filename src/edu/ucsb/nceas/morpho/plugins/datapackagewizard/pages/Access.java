@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-11 22:18:43 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2004-04-12 18:47:45 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import javax.swing.JRadioButton;
 
 public class Access
     extends AbstractUIPage {
@@ -108,8 +109,8 @@ public class Access
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<p><b>Would you like to allow the public to read your dataset?</b>"
-      + "</p>", 3);
+        "<p><b>Would you like to allow the public to read your dataset?</b>"
+        + "</p>", 3);
 
     vBox.add(desc);
 
@@ -134,11 +135,11 @@ public class Access
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-      "<p><b>Would you like to give special access rights to other people?"
-      + "</b> You can specify access for other members of your team or any "
-      + "other person. "
-      + "Use the table below to add, edit and "
-      + "delete access rights to your data package.</p>", 3);
+        "<p><b>Would you like to give special access rights to other people?"
+        + "</b> You can specify access for other members of your team or any "
+        + "other person. "
+        + "Use the table below to add, edit and "
+        + "delete access rights to your data package.</p>", 3);
     vBox.add(desc1);
 
     accessList = WidgetFactory.makeList(colNames, editors, 4,
@@ -194,8 +195,8 @@ public class Access
 
       List newRows = accessPage.getSurrogate();
       Iterator itRow = newRows.iterator();
-      while(itRow.hasNext()){
-        List newRow = (ArrayList)itRow.next();
+      while (itRow.hasNext()) {
+        List newRow = (ArrayList) itRow.next();
         newRow.add(accessPage);
         accessList.addRow(newRow);
       }
@@ -229,9 +230,9 @@ public class Access
     List rowLists = accessList.getListOfRowLists();
     Iterator it = rowLists.iterator();
     int count = 0;
-    while(it.hasNext()){
-      List row = (List)it.next();
-      if(row.get(4) == dialogObj){
+    while (it.hasNext()) {
+      List row = (List) it.next();
+      if (row.get(4) == dialogObj) {
         delRow.add(new Integer(count));
       }
       count++;
@@ -239,15 +240,15 @@ public class Access
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
       int size = delRow.size();
-      for(int j=size; j>0; j--){
-        Integer i = (Integer) delRow.get(j-1);
+      for (int j = size; j > 0; j--) {
+        Integer i = (Integer) delRow.get(j - 1);
         accessList.removeRow(i.intValue());
       }
 
       List newRows = editAccessPage.getSurrogate();
       Iterator itRow = newRows.iterator();
-      while(itRow.hasNext()){
-        List newRow = (ArrayList)itRow.next();
+      while (itRow.hasNext()) {
+        List newRow = (ArrayList) itRow.next();
         newRow.add(editAccessPage);
         accessList.addRow(newRow);
       }
@@ -319,6 +320,13 @@ public class Access
       returnMap.put(rootXPath + "allow[" + (allowIndex) + "]/principal",
           "public");
       returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
+          "read");
+    } else {
+      returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
+      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+      returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
+          "public");
+      returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
           "read");
     }
 
@@ -507,15 +515,15 @@ public class Access
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
           this.xPathRoot + "allow[" +
-          + (accessPredicate++) + "]/");
+          + (accessPredicate++) + "]");
 
       if (!checkAccess) {
         accessAllowRetVal = false;
       }
       List newRows = nextStep.getSurrogate();
       Iterator itRow = newRows.iterator();
-      while(itRow.hasNext()){
-        List newRow = (ArrayList)itRow.next();
+      while (itRow.hasNext()) {
+        List newRow = (ArrayList) itRow.next();
         newRow.add(nextStep);
         accessList.addRow(newRow);
       }
@@ -544,8 +552,8 @@ public class Access
       }
       List newRows = nextStep.getSurrogate();
       Iterator itRow = newRows.iterator();
-      while(itRow.hasNext()){
-        List newRow = (ArrayList)itRow.next();
+      while (itRow.hasNext()) {
+        List newRow = (ArrayList) itRow.next();
         newRow.add(nextStep);
         accessList.addRow(newRow);
       }
@@ -556,8 +564,53 @@ public class Access
       Log.debug(20, "Access.setPageData - Access sub-class returned FALSE");
     }
 
-    if(publicMap != null){
+    if (publicMap != null) {
       // TODO parse publicMap to set public access radio buttons...
+
+      Iterator pmIt = publicMap.keySet().iterator();
+      boolean invalidSizeError = false;
+      boolean hasRead = false;
+      boolean hasPublic = false;
+
+      if (publicMap.size() != 2) {
+        invalidSizeError = true;
+      }
+
+      while (pmIt.hasNext() && !invalidSizeError) {
+        nextXPathObj = pmIt.next();
+        if (nextXPathObj == null) {
+          continue;
+        }
+        nextXPath = (String) nextXPathObj;
+
+        nextValObj = map.get(nextXPathObj);
+        nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+        if (nextVal.compareTo("read") == 0) {
+          hasRead = true;
+
+          JPanel innerPanel = ((JPanel)(radioPanel.getComponent(1)));
+          JRadioButton allowReadAccess = ((JRadioButton)(innerPanel.getComponent(0)));
+          JRadioButton denyReadAccess = ((JRadioButton)(innerPanel.getComponent(1)));
+          if (nextXPath.indexOf("allow") > -1) {
+            allowReadAccess.setSelected(true);
+            denyReadAccess.setSelected(false);
+          } else {
+            allowReadAccess.setSelected(false);
+            denyReadAccess.setSelected(true);
+          }
+
+        } else if (nextVal.compareTo("public") == 0) {
+          hasPublic = true;
+        }
+
+      }
+      if(invalidSizeError && !hasRead && !hasPublic){
+        Log.debug(20,
+            "Access.setPageData returning FALSE! Map contains invalid public access:"
+            + publicMap);
+      }
+
     }
     //remove entries we have used from map:
     Iterator dlIt = toDeleteList.iterator();
@@ -570,7 +623,7 @@ public class Access
 
     if (!returnVal) {
 
-      Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
+      Log.debug(20, "Access.setPageData returning FALSE! Map still contains:"
           + map);
     }
     return (returnVal && accessAllowRetVal && accessDenyRetVal);
@@ -599,7 +652,7 @@ public class Access
       OrderedMap nextMap = (OrderedMap) nextMapObj;
       nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
 
-      if(((String)nextPersonnelVal).compareTo("public") == 0){
+      if ( ( (String) nextPersonnelVal).compareTo("public") == 0) {
         publicMap = nextMap;
       }
 

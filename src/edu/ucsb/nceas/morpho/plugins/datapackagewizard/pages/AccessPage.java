@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-11 22:18:43 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-04-12 18:47:45 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ProgressBarThread;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import java.util.Vector;
 
 public class AccessPage
     extends AbstractUIPage {
@@ -104,6 +105,8 @@ public class AccessPage
   public JTreeTable treeTable = null;
   private QueryMetacatThread queryMetacat = null;
   private boolean queryMetacatCancelled;
+  private String userName = null;
+  private String userEmail = null;
 
   private final String[] accessTypeText = new String[] {
       "  Allow",
@@ -902,9 +905,24 @@ public class AccessPage
       }
     } else {
       List sub_surrogate = new ArrayList();
-      sub_surrogate.add(" " + dnField.getText().trim());
-      sub_surrogate.add(" ");
-      sub_surrogate.add(" ");
+
+      String userOrg = dnField.getText().trim();
+      if (userOrg != null && userOrg.indexOf("o=") > 0) {
+        userOrg = userOrg.substring(userOrg.indexOf("o=") + 2);
+        userOrg = userOrg.substring(0, userOrg.indexOf(","));
+      } else {
+        userOrg = EMPTY_STRING;
+      }
+
+      if(userName == null){
+        sub_surrogate.add(" " + dnField.getText().trim());
+        sub_surrogate.add(" " + userOrg);
+        sub_surrogate.add(" ");
+      } else {
+        sub_surrogate.add(userName);
+        sub_surrogate.add(" " + userOrg);
+        sub_surrogate.add(userEmail);
+      }
       // Get access given to the user
       sub_surrogate.add(" " + userAccessType + "   " + userAccess.trim());
 //      sub_surrogate.add(" " + dnField.getText().trim());
@@ -981,7 +999,7 @@ public class AccessPage
    */
 
   public void onLoadAction() {
-    if(dnField == null){  // only do this if
+    if (dnField == null) { // only do this if
       if (Access.accessTreeNode == null ||
           Access.accessTreeMetacatServerName.compareTo(Morpho.
           thisStaticInstance.
@@ -1094,24 +1112,46 @@ public class AccessPage
 
       Log.debug(45, "Access: TRIMMED nextXPath   = " + nextXPath);
 
-      if (nextXPath.startsWith("permission")) {
-        String value = (String) nextValObj;
-        if (value.compareTo("read") == 0) {
+      if (nextXPath.startsWith("permission") ||
+          nextXPath.startsWith("/permission")) {
+        if (nextVal.compareTo("read") == 0) {
           access = access | 1;
-        } else if (value.compareTo("write") == 0) {
+        } else if (nextVal.compareTo("write") == 0) {
           access = access | 2;
-        } else if (value.compareTo("changePermission") == 0) {
+        } else if (nextVal.compareTo("changePermission") == 0) {
           access = access | 4;
-        } else if (value.compareTo("all") == 0) {
+        } else if (nextVal.compareTo("all") == 0) {
           access = access | 8;
         } else {
           Log.debug(20, "Unknown access type received in setPageData() in " +
               "AccessPage.java");
         }
         toDeleteList.add(nextXPathObj);
-      } else if (nextXPath.startsWith("principal")) {
+      } else if (nextXPath.startsWith("principal")||
+          nextXPath.startsWith("/principal")) {
         if (dnField.getText().trim().compareTo(EMPTY_STRING) == 0) {
           dnField.setText( (String) nextValObj);
+
+          ConfigXML accessXML = null;
+
+          try {
+            accessXML = new ConfigXML(accessListFilePath);
+
+            Vector username = accessXML.getValuesForPath("username[.='"+(String)nextValObj+"']/../name");
+            if(username.size() > 0){
+              userName = (String)username.get(0);
+            }
+            Vector useremail = accessXML.getValuesForPath("username[.='"+(String)nextValObj+"']/../email");
+            if(useremail.size() > 0){
+              userEmail = (String)useremail.get(0);
+            }
+
+          } catch (Exception e){
+
+          }
+
+
+
         } else {
           Log.debug(10, "AccessPage.setPageData returning FALSE! Principal "
               + "contains multiple DNs. Multiple are not "
@@ -1141,7 +1181,8 @@ public class AccessPage
     boolean returnVal = map.isEmpty();
 
     if (!returnVal) {
-      Log.debug(10, "AccessPage.setPageData returning FALSE! Map still contains:"
+      Log.debug(10,
+          "AccessPage.setPageData returning FALSE! Map still contains:"
           + map);
     }
 
