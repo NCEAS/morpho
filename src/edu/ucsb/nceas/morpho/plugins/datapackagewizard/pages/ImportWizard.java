@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,6 +175,25 @@ public class ImportWizard extends     AbstractUIPage
    *            key/value paired settings for this particular wizard page
    */
   public OrderedMap getPageData() { return resultsMap; }
+
+
+
+
+  /**
+   * gets the Map object that contains all the key/value paired settings for
+   * this particular wizard page
+   *
+   * @param rootXPath the root xpath to prepend to all the xpaths returned by
+   *   this method
+   * @return data the Map object that contains all the key/value paired
+   *   settings for this particular wizard page
+   */
+  public OrderedMap getPageData(String rootXPath) {
+
+    throw new UnsupportedOperationException(
+      "getPageData(String rootXPath) Method Not Implemented");
+  }
+
 
   /**
    *  gets the unique ID for this wizard page

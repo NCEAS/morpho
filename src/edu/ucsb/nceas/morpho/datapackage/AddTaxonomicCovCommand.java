@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 22:56:22 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +31,8 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -54,7 +52,7 @@ public class AddTaxonomicCovCommand implements Command {
   private MorphoFrame morphoFrame = null;
 
   private DataViewContainerPanel resultPane;
-  private Taxonomic taxonomicPage;
+  private AbstractUIPage taxonomicPage;
   private DataViewer dataView;
 
   public AddTaxonomicCovCommand() {
@@ -76,11 +74,11 @@ public class AddTaxonomicCovCommand implements Command {
   private void showTaxonomicDialog() {
 
     ServiceController sc;
-    DataPackageWizardPlugin dpwPlugin = null;
+    DataPackageWizardInterface dpwPlugin = null;
 
     try {
       sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardPlugin) sc.getServiceProvider(
+      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
           DataPackageWizardInterface.class);
     }
     catch (ServiceNotHandledException se) {
@@ -91,14 +89,14 @@ public class AddTaxonomicCovCommand implements Command {
       return;
     }
 
-    taxonomicPage = (Taxonomic) dpwPlugin.getPage(
+    taxonomicPage = dpwPlugin.getPage(
         DataPackageWizardInterface.TAXONOMIC);
     ModalDialog wpd = new ModalDialog(taxonomicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
 
-    wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.DIALOG_HEIGHT);
+    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {

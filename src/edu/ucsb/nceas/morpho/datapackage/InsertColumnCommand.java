@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: brooke $'
-*     '$Date: 2004-03-17 22:56:22 $'
-* '$Revision: 1.15 $'
+*     '$Date: 2004-03-18 00:23:33 $'
+* '$Revision: 1.16 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -286,7 +284,7 @@ public class InsertColumnCommand implements Command
       Log.debug(15,"Error retrieving OrderedMap while Inserting Column");
       return;
     }
-    map.put("/attribute/@id", WizardSettings.getUniqueID());
+    map.put("/attribute/@id", UISettings.getUniqueID());
     Attribute attrObject = new Attribute(map);
     if(adp == null)
       adp = dataView.getAbstractDataPackage();
@@ -301,10 +299,10 @@ public class InsertColumnCommand implements Command
   private void showAttributeDialog() {
 
     ServiceController sc;
-    DataPackageWizardPlugin dpwPlugin = null;
+    DataPackageWizardInterface dpwPlugin = null;
     try {
       sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
+      dpwPlugin = (DataPackageWizardInterface)sc.getServiceProvider(DataPackageWizardInterface.class);
     } catch (ServiceNotHandledException se) {
       Log.debug(6, se.getMessage());
     }
@@ -316,7 +314,7 @@ public class InsertColumnCommand implements Command
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
-    wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
+    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
     wpd.setVisible(true);
 
     entityIndex = dataView.getEntityIndex();
@@ -349,7 +347,7 @@ public class InsertColumnCommand implements Command
             return;
           }
         };
-        dpwPlugin.startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, dpwListener, "Import Code Definitions");
+        dpwPlugin.startCodeDefImportWizard(dpwListener);
 
       } else { // if import is not needed
         insertEml2Column();

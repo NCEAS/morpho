@@ -320,6 +320,22 @@ public class CodeImportPage extends AbstractUIPage {
   public OrderedMap getPageData() { return resultsMap; }
 
   /**
+   * gets the Map object that contains all the key/value paired settings for
+   * this particular wizard page
+   *
+   * @param rootXPath the root xpath to prepend to all the xpaths returned by
+   *   this method
+   * @return data the Map object that contains all the key/value paired
+   *   settings for this particular wizard page
+   */
+  public OrderedMap getPageData(String rootXPath) {
+
+    throw new UnsupportedOperationException(
+      "getPageData(String rootXPath) Method Not Implemented");
+  }
+
+
+  /**
    *  gets the unique ID for this wizard page
    *
    *  @return   the unique ID String for this wizard page

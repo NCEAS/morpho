@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 19:48:35 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 
 /**
@@ -166,7 +167,7 @@ public class TempCovPanel extends JPanel
 
      panel.add(singlePanel);
      panel.setBorder(new javax.swing.border.EmptyBorder(0,
-         8*WizardSettings.PADDING,0,8*WizardSettings.PADDING));
+         8*UISettings.WIZARD_PADDING,0,8*UISettings.WIZARD_PADDING));
 
      return panel;
    }
@@ -212,7 +213,7 @@ public class TempCovPanel extends JPanel
      panel.add(endPanel);
 
      panel.setBorder(new javax.swing.border.EmptyBorder(0,
-         8*WizardSettings.PADDING,0,8*WizardSettings.PADDING));
+         8*UISettings.WIZARD_PADDING,0,8*UISettings.WIZARD_PADDING));
      return panel;
    }
 
@@ -234,8 +235,8 @@ public class TempCovPanel extends JPanel
       JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       panel.setBorder(new javax.swing.border.EmptyBorder(
-          2*WizardSettings.PADDING,WizardSettings.PADDING,0,
-          WizardSettings.PADDING));
+          2*UISettings.WIZARD_PADDING,UISettings.WIZARD_PADDING,0,
+          UISettings.WIZARD_PADDING));
 
       timeTextField.setText(calendarToString(timeCalendar, ALL));
       panel.add(timeTextField, BorderLayout.NORTH);

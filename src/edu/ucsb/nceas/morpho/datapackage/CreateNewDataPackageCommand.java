@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-09 16:51:41 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -51,11 +50,11 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 /**
  * Class to handle create new data package command
  */
-public class CreateNewDataPackageCommand implements Command 
+public class CreateNewDataPackageCommand implements Command
 {
-  
+
   private Morpho morpho = null;
-  
+
   /**
    * Constructor of CreateNewDataPackageCommand
    * @param morpho the morpho will apply to this command
@@ -63,49 +62,49 @@ public class CreateNewDataPackageCommand implements Command
   public CreateNewDataPackageCommand(Morpho morpho) {
     this.morpho = morpho;
   }
-  
+
   /**
    * execute create data package  command
-   */    
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     Log.debug(20, "Action fired: New Data Package");
     DataPackageWizardInterface dpw = null;
     try {
       ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
+      ServiceProvider provider =
          services.getServiceProvider(DataPackageWizardInterface.class);
       dpw = (DataPackageWizardInterface)provider;
-      
+
     } catch (ServiceNotHandledException snhe) {
-    
+
       Log.debug(6, snhe.getMessage());
     }
 
     dpw.startPackageWizard(
       new DataPackageWizardListener() {
-    
+
         public void wizardComplete(Node newDOM) {
-        
+
           Log.debug(30,"Wizard complete - Will now create an AbstractDataPackage..");
-          
+
           AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
           Log.debug(30,"AbstractDataPackage complete - Will now show in an XML Editor..");
           Node domnode = adp.getMetadataNode();
-          
+
           Morpho morpho = Morpho.thisStaticInstance;
           AccessionNumber an = new AccessionNumber(morpho);
           adp.setAccessionNumber(an.getNextId());
-          
+
           try {
             ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
+            ServiceProvider provider =
                        services.getServiceProvider(DataPackageInterface.class);
             DataPackageInterface dataPackage = (DataPackageInterface)provider;
             dataPackage.openNewDataPackage(adp, null);
-          
+
           } catch (ServiceNotHandledException snhe) {
-        
+
             Log.debug(6, snhe.getMessage());
           }
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
@@ -113,15 +112,15 @@ public class CreateNewDataPackageCommand implements Command
         }
 
         public void wizardCanceled() {
-  
+
           Log.debug(45, "\n\n********** Wizard canceled!");
         }
       });
   }
 
- 
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 }

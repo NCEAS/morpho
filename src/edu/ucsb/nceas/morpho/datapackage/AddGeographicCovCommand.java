@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 22:56:22 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +31,8 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Geographic;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -63,7 +61,7 @@ public class AddGeographicCovCommand implements Command {
   private MorphoFrame morphoFrame = null;
 
   private DataViewContainerPanel resultPane;
-  private Geographic geographicPage;
+  private AbstractUIPage geographicPage;
 
   public AddGeographicCovCommand() {
   }
@@ -105,11 +103,11 @@ public class AddGeographicCovCommand implements Command {
   private void showGeographicDialog() {
 
     ServiceController sc;
-    DataPackageWizardPlugin dpwPlugin = null;
+    DataPackageWizardInterface dpwPlugin = null;
 
     try {
       sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardPlugin) sc.getServiceProvider(
+      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
           DataPackageWizardInterface.class);
     }
     catch (ServiceNotHandledException se) {
@@ -120,14 +118,14 @@ public class AddGeographicCovCommand implements Command {
       return;
     }
 
-    geographicPage = (Geographic) dpwPlugin.getPage(
+    geographicPage = dpwPlugin.getPage(
         DataPackageWizardInterface.GEOGRAPHIC);
     ModalDialog wpd = new ModalDialog(geographicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
 
-    wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.DIALOG_HEIGHT);
+    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 22:56:23 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,15 @@ public interface DataPackageWizardInterface {
    *                  back when the Wizard has finished
    */
   public void startEntityWizard(DataPackageWizardListener listener);
+
+
+  /**
+   *  method to start the Code Definitions Import wizard
+   *
+   *  @param listener the <code>DataPackageWizardListener</code> to be called
+   *                  back when the Wizard has finished
+   */
+  public void startCodeDefImportWizard(DataPackageWizardListener listener);
 
 
   /**

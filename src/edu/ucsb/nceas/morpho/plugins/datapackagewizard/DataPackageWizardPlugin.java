@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,6 +120,20 @@ public class DataPackageWizardPlugin implements PluginInterface,
                       "New Datatable Wizard");
   }
 
+
+  /**
+   *  method to start the Code Definitions Import wizard
+   *
+   *  @param listener the <code>DataPackageWizardListener</code> to be called
+   *                  back when the Wizard has finished
+   */
+  public void startCodeDefImportWizard(DataPackageWizardListener listener) {
+
+    startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, false,
+                      listener, "Import Code Definitions");
+  }
+
+
   /**
    *  method to start the wizard at a given page
    *
@@ -128,12 +142,11 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Entity Wizard has finished
    */
-
-
-  public void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
+  private void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
 
     startWizardAtPage(pageID, false, listener, title);
   }
+
 
   private void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {

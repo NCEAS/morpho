@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 22:56:23 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -334,7 +334,6 @@ public class WizardSettings {
   public static String getDataLocation() { return dataLocation; }
 
 
-  private static long previousTimeStamp;
   /**
    *  gets a String id that is guaranteed to be unique within the current
    *  document (ie document scope). Note that the ID String is a timestamp in
@@ -348,22 +347,7 @@ public class WizardSettings {
    */
   public static String getUniqueID() {
 
-    //just use a timestamp, but ensure that any
-    //subsequent calls won't get same timestamp (feasible if this method called
-    //twice in less than 0.5mS):
-    long timeStamp = 0L;
-
-    do {
-      timeStamp = System.currentTimeMillis();
-
-    } while (timeStamp==previousTimeStamp);
-
-    //remember value for next time...
-    previousTimeStamp = timeStamp;
-
-    String id = String.valueOf(timeStamp);
-
-    return id;
+    return UISettings.getUniqueID();
   }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 22:56:22 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-03-18 00:23:33 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -140,10 +138,10 @@ public class EditColumnMetaDataCommand implements Command
                     "/eml:eml/dataset/dataTable/attributeList");
 
     ServiceController sc;
-    DataPackageWizardPlugin dpwPlugin = null;
+    DataPackageWizardInterface dpwPlugin = null;
     try {
       sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
+      dpwPlugin = (DataPackageWizardInterface)sc.getServiceProvider(DataPackageWizardInterface.class);
 
     } catch (ServiceNotHandledException se) {
       Log.debug(6, se.getMessage());
@@ -160,7 +158,7 @@ public class EditColumnMetaDataCommand implements Command
                                 UISettings.POPUPDIALOG_HEIGHT
 , false);
     attributePage.refreshUI();
-    wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
+    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
     wpd.validate();
     wpd.setVisible(true);
 
@@ -208,7 +206,7 @@ public class EditColumnMetaDataCommand implements Command
             return;
           }
         };
-        dpwPlugin.startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, dpwListener, "Import Code Definitions");
+        dpwPlugin.startCodeDefImportWizard(dpwListener);
 
       } else { // if import is not needed
 
