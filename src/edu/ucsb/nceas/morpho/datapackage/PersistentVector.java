@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-01-08 19:30:35 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-06 20:07:27 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -386,7 +386,8 @@ public class PersistentVector
   }
     
   public int size() {
-    return objectList.size();
+		if(objectList == null) return 0;
+    else return objectList.size();
   }
     
   public void removeAllElements() {

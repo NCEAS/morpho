@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:55:46 $'
- * '$Revision: 1.1 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-06 20:07:27 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,7 @@ public class SortDataTableCommand implements Command
     {
       ptm.sort(sel, sortdirection);
       pv = ptm.getPersistentVector();
+			viewer.setPV(pv);
       sortdirection = -1 * sortdirection;
       viewer.setSortDirection(sortdirection);
     }//if

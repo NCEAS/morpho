@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-15 21:03:04 $'
- * '$Revision: 1.3 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-06 20:07:27 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,7 @@ public class DeleteColumnCommand implements Command
          Document attributeDocument=dataView.getAttributeDoc();
          Vector columnLabels=dataView.getColumnLabels();
          deleteColumn(jtable, ptmodel, vector, adp, entityIndex, columnLabels);
+				 dataView.setPV(ptmodel.getPersistentVector());
        }
        
     }//if
@@ -114,6 +115,7 @@ public class DeleteColumnCommand implements Command
       column_labels.removeElementAt(sel);
       ptm.deleteColumn(sel);
       pv = ptm.getPersistentVector();
+			
       ptm.fireTableStructureChanged();    
       
     }
