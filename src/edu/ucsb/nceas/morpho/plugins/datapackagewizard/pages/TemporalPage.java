@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 13:30:46 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-04-03 18:58:38 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -575,9 +575,9 @@ public class TemporalPage extends AbstractUIPage {
         String eyearS = endString.substring(0,4);
         String emonthS = endString.substring(5,7);
         String edayS = endString.substring(8,10);
-        int eyear = (new Integer(syearS)).intValue();
-        int emonth = (new Integer(smonthS)).intValue();
-        int eday = (new Integer(sdayS)).intValue();
+        int eyear = (new Integer(eyearS)).intValue();
+        int emonth = (new Integer(emonthS)).intValue();
+        int eday = (new Integer(edayS)).intValue();
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.set(eyear, emonth-1, eday);
         endTimeCalendar.setCalendar(endCalendar);
