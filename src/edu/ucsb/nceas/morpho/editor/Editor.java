@@ -50,7 +50,8 @@ public class Editor extends JPanel
     javax.swing.JMenuItem DeletemenuItem;
     javax.swing.JMenuItem DupmenuItem;
     
-    
+    ClientFramework framework;    
+    Stack windowStack;
     
 	public Editor()
 	{
@@ -79,6 +80,12 @@ public class Editor extends JPanel
 		JButton1.setText("...");
 		JButton1.setActionCommand("...");
 		JPanel2.add(JButton1);
+		TestButton.setText("Add Window");
+		TestButton.setActionCommand("Add Window");
+		JPanel2.add(TestButton);
+		TestButton2.setText("Rm Window");
+		TestButton2.setActionCommand("Rm Window");
+		JPanel2.add(TestButton2);
 		JPanel3.setLayout(new BorderLayout(0,0));
 		JPanel1.add(BorderLayout.CENTER,JPanel3);
 		JPanel4.setLayout(new BorderLayout(0,0));
@@ -127,6 +134,8 @@ public class Editor extends JPanel
 		SymAction lSymAction = new SymAction();
 		ParseButton.addActionListener(lSymAction);
 		JButton1.addActionListener(lSymAction);
+		TestButton.addActionListener(lSymAction);
+		TestButton2.addActionListener(lSymAction);
 		SaveButton.addActionListener(lSymAction);
 		OpenButton.addActionListener(lSymAction);
 		//}}
@@ -156,7 +165,8 @@ public class Editor extends JPanel
 		
 		MouseListener popupListener = new PopupListener();
         tree.addMouseListener(popupListener);
-		
+	
+          windowStack = new Stack();	
 	}
 
     /**
@@ -236,6 +246,8 @@ public class Editor extends JPanel
 	javax.swing.JButton ParseButton = new javax.swing.JButton();
 	javax.swing.JTextField DTDFileName = new javax.swing.JTextField();
 	javax.swing.JButton JButton1 = new javax.swing.JButton();
+	javax.swing.JButton TestButton = new javax.swing.JButton();
+	javax.swing.JButton TestButton2 = new javax.swing.JButton();
 	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel5 = new javax.swing.JPanel();
@@ -308,6 +320,10 @@ public class Editor extends JPanel
 				ParseButton_actionPerformed(event);
 			else if (object == JButton1)
 				JButton1_actionPerformed(event);
+			else if (object == TestButton)
+				TestButton_actionPerformed(event);
+			else if (object == TestButton2)
+				TestButton2_actionPerformed(event);
 			else if (object == SaveButton)
 				SaveButton_actionPerformed(event);
 			else if (object == OpenButton)
@@ -709,6 +725,25 @@ return "ONE";
 		}
 
 	}
+
+	void TestButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+                JFrame window = new JFrame("Testing");
+                window.setName("Testing");
+                window.setSize(200,200);
+                framework.addWindow(window);
+                windowStack.push(window);
+                window.setVisible(true);
+                //framework.removeWindow(window);
+	}
+
+	void TestButton2_actionPerformed(java.awt.event.ActionEvent event)
+	{
+                JFrame window = (JFrame)windowStack.pop();
+                framework.removeWindow(window);
+                window.setVisible(false);
+                window.dispose();
+	}
 	
 	public DefaultMutableTreeNode newNode (Object name) {
 	    NodeInfo ni = new NodeInfo(name.toString());
@@ -912,5 +947,9 @@ public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
 		
 			 
 	}
-	
+
+  public void setFramework(ClientFramework cf)
+  {
+    this.framework = cf;
+  }	
 }
