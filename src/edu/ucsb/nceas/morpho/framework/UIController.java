@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 18:26:30 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-03-27 21:42:06 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Container;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.Point;
+import java.awt.Dimension;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -178,6 +180,28 @@ public class UIController
           }
         }
 */
+        setCurrentActiveWindow(window);
+        setWindowLocation(window);
+        window.toFront();
+        count++;
+        return window;
+    }
+
+		
+  public MorphoFrame addHiddenWindow(String windowName)
+    {
+        String title = "Untitled";
+        if (windowName != null) {
+            title = windowName;
+        }
+        Log.debug(30, "Adding window: " + title);
+        MorphoFrame window = MorphoFrame.getHiddenInstance();
+        window.setTitle(title);
+
+        registerWindow(window);
+
+        updateStatusBar(window.getStatusBar());
+
         setCurrentActiveWindow(window);
         setWindowLocation(window);
         window.toFront();
@@ -993,15 +1017,22 @@ public class UIController
       }
     }
       MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      morphoFrame.setVisible(false);
+      Point pos = morphoFrame.getLocation(); 
+      Dimension size = morphoFrame.getSize();
     
       try {
         ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
                 services.getServiceProvider(DataPackageInterface.class);
         DataPackageInterface dataPackage = (DataPackageInterface)provider;
-        dataPackage.openNewDataPackage(adp, null);
+        dataPackage.openHiddenNewDataPackage(adp, null);
         UIController controller = UIController.getInstance();
+				MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
+				newMorphoFrame.setLocation(pos);
+				newMorphoFrame.setSize(size);
+				newMorphoFrame.setVisible(true);
+				morphoFrame.setVisible(false);
+
         controller.removeWindow(morphoFrame);
         morphoFrame.dispose();
       }

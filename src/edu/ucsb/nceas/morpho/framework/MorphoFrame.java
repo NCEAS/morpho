@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-22 18:44:04 $'
- * '$Revision: 1.23 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-27 21:42:06 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,6 +193,19 @@ public class MorphoFrame extends JFrame
         instance = this;
     }
 
+
+  /**
+   * Create a new instance and set its visible to false
+   *
+   * @return MorphoFrame
+   */
+  public static MorphoFrame getHiddenInstance() {
+        MorphoFrame window = new MorphoFrame();
+				window.setVisible(false);
+        window.calculateDefaultSizes();
+        window.addDefaultContentArea();
+        return window;
+    }
 
   /**
    * Create a new instance and set its default size

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-03-26 21:48:55 $'
- * '$Revision: 1.21 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-27 21:42:06 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,11 @@ public interface DataPackageInterface
   public void openNewDataPackage( AbstractDataPackage adp,
                                   ButterflyFlapCoordinator coordinator);
 
+  /**
+   *  same as openNewDataPackage except the frame is notVisible
+   */                                 
+  public void openHiddenNewDataPackage( AbstractDataPackage adp,
+                                  ButterflyFlapCoordinator coordinator);
 
   /**
    * This method is called to open a data package that resides either locally
