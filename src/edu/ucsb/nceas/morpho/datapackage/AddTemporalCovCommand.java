@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 23:37:19 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-03-25 13:49:48 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,8 @@ public class AddTemporalCovCommand implements Command {
       if (infoAddFlag) {
 
         try {
+					// inserting new, so remove old
+					adp.removeTemporalNodes();
           insertNewTemporal();
         }
         catch (Exception w) {
@@ -187,7 +189,6 @@ public class AddTemporalCovCommand implements Command {
 //  Log.debug(1, "tempMap: "+tempMap);
        temporalPage.setPageData(tempMap, "");
     }
-    adp.removeTemporalNodes();
   }
   
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 23:37:19 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-03-25 13:49:47 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ import org.w3c.dom.NodeList;
 
 
 /**
- * Class to handle add temporal coverage command
+ * Class to handle add geographic coverage command
  */
 public class AddGeographicCovCommand implements Command {
 
@@ -94,6 +94,8 @@ public class AddGeographicCovCommand implements Command {
       if (infoAddFlag) {
 
         try {
+					// inserting new, so remove old
+					adp.removeGeographicNodes();
           insertNewGeographic();
         }
         catch (Exception w) {
@@ -186,6 +188,5 @@ public class AddGeographicCovCommand implements Command {
 //  Log.debug(1, "geoMap: "+geoMap);
        geographicPage.setPageData(geoMap, "");
     }
-    adp.removeGeographicNodes();
   }
 }
