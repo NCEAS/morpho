@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-20 21:13:54 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-08-22 00:09:08 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,14 +44,17 @@ public class SearchCommand implements Command
   /** A reference to the Morpho application */
   private Morpho morpho = null;
   
+ 
   /**
    * Constructor of SearcCommand
-   * @param morpho the morpho application which the cancel command will apply
+   * @param myDialogBox the dialogbox has a search button
+   * @param morpho the morpho application which the search command will apply
    */
   public SearchCommand(JDialog myDialogBox, Morpho morpho)
   {
     dialogBox = myDialogBox;
     this.morpho = morpho;
+   
   }//SearchCommand
   
   
@@ -81,6 +84,7 @@ public class SearchCommand implements Command
         resultWindow.setBusy(true);
         resultWindow.setVisible(true);
         doQuery(resultWindow, query);
+     
 
       }//if
     }//if
@@ -111,6 +115,7 @@ public class SearchCommand implements Command
           resultWindow.setMainContentPane(resultDisplayPanel);
           resultWindow.setMessage(results.getRowCount() + " data sets found");
           resultWindow.setBusy(false);
+         
         }
     };
     worker.start();  //required for SwingWorker 3
