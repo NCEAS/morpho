@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-20 20:41:48 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-11-21 22:33:45 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,10 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -76,14 +80,29 @@ public class CreateNewDataPackageCommand implements Command
       new DataPackageWizardListener() {
       
         public void wizardComplete(Node newDOM) {
-        Log.debug(1,"Wizard complete - Will now create an AbstractDataPackage..");
-          AbstractDataPackage dp = DataPackageFactory.getDataPackage(newDOM, "eml:eml");
+        Log.debug(30,"Wizard complete - Will now create an AbstractDataPackage..");
+          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM, "eml:eml");
 //          dp.serialize();
-         Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
-         Node domnode = dp.getMetadataNode();
-          DocFrame df = new DocFrame();
-          df.setVisible(true);
-          df.initDoc(null, domnode);
+         Log.debug(30,"AbstractDataPackage complete - Will now show in an XML Editor..");
+         Node domnode = adp.getMetadataNode();
+
+         try 
+         {
+           ServiceController services = ServiceController.getInstance();
+           ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+           DataPackageInterface dataPackage = (DataPackageInterface)provider;
+           dataPackage.openNewDataPackage(adp, null, "eml:eml");
+         }
+         catch (ServiceNotHandledException snhe) 
+         {
+           Log.debug(6, snhe.getMessage());
+         }
+
+         
+//          DocFrame df = new DocFrame();
+//          df.setVisible(true);
+//          df.initDoc(null, domnode);
         
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));

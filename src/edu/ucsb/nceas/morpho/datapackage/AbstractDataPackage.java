@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-19 22:50:27 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2003-11-21 22:33:45 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,7 +180,7 @@ import java.io.*;
  */
 public abstract class AbstractDataPackage extends MetadataObject
 {
-  protected String location;
+  protected String location = "";
   protected String id;
   protected ConfigXML config;
   protected File dataPkgFile;

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-19 22:50:27 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2003-11-21 22:33:45 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -573,6 +573,95 @@ public class DataPackagePlugin
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     packageWindow.setBusy(false);
   }
+
+
+  /*
+   *  This method is to be used to display a newly created AbstractDataPackage
+   *  location and identifier have not yet been established
+   */
+  public void openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator,
+                       String doctype)
+  {
+    Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
+    boolean metacat = false;
+    boolean local = false;
+
+    long starttime = System.currentTimeMillis();
+    final MorphoFrame packageWindow = UIController.getInstance().addWindow(
+                "Data Package: "+"new");
+    packageWindow.setBusy(true);
+    packageWindow.setVisible(true);
+    
+    
+    packageWindow.addWindowListener(
+                new WindowAdapter() {
+                public void windowActivated(WindowEvent e) 
+                {
+                    Log.debug(50, "Processing window activated event");
+                    if (hasClipboardData(packageWindow)){
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow, 
+                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+                    }
+                    else {
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow, 
+                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));                    
+                }
+                } 
+            });
+
+    
+    // Stop butterfly flapping for old window.
+    //packageWindow.setBusy(true);
+    if (coordinator != null)
+    {
+      coordinator.stopFlap();
+    }
+    long stoptime = System.currentTimeMillis();
+    Log.debug(20,"ViewContainer startUp time: "+(stoptime-starttime));
+ 
+    long starttime1 = System.currentTimeMillis();
+ 
+    DataViewContainerPanel dvcp = null;
+    dvcp = new DataViewContainerPanel(adp);
+    dvcp.setFramework(morpho);
+
+//    dvcp.setEntityItems(gui.getEntityitems());
+//    dvcp.setListValueHash(gui.listValueHash);
+    dvcp.init();
+    long stoptime1 = System.currentTimeMillis();
+    Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));
+
+    dvcp.setSize(packageWindow.getDefaultContentAreaSize());
+    dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());
+//    dvcp.setVisible(true);
+    packageWindow.setMainContentPane(dvcp);
+    
+    // Broadcast stored event int dvcp
+    dvcp.broadcastStoredStateChangeEvent();
+    
+    // Create another evnets too
+    StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+      // open a unsynchronize pakcage
+      monitor.notifyStateChange(
+                 new StateChangeEvent( 
+                 dvcp, 
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
+    
+      // open a single version package
+      monitor.notifyStateChange(
+                 new StateChangeEvent( 
+                 dvcp, 
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
+    
+    monitor.notifyStateChange(
+                 new StateChangeEvent( 
+                 dvcp, 
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
+    packageWindow.setBusy(false);
+  }
+
   
   /**
    * Uploads the package to metacat.  The location is assumed to be 

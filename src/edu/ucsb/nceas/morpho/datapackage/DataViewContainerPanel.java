@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:18 $'
- * '$Revision: 1.66 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-11-21 22:33:45 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -878,9 +878,20 @@ public class DataViewContainerPanel extends javax.swing.JPanel
             FileSystemDataStore fds = new FileSystemDataStore(morpho);
             displayFile = fds.openFile(urlinfo);            
           }
-          else {
+          else if (loc.equals(adp.METACAT)) {
             MetacatDataStore mds = new MetacatDataStore(morpho);
             displayFile = mds.openFile(urlinfo);            
+          }
+          else if (loc.equals("")) {  // just created the package; not yet saved!!!
+            // the datafile should be stored in the profile temp dir
+            ConfigXML profile = morpho.getProfile();
+            String separator = profile.get("separator", 0);
+            separator = separator.trim();
+            FileSystemDataStore fds = new FileSystemDataStore(morpho);
+            String temp = new String();
+            temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+            temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+            displayFile = fds.openTempFile(temp);            
           }
         }
         catch (Exception q) {Log.debug(5,"Exception opening file!");}
