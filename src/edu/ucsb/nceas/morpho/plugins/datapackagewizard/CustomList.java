@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-08 00:56:17 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-08-08 21:18:03 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,23 +33,13 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.util.Log;
 
-import java.util.ArrayList;
 import java.util.EventObject;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Iterator;
 import java.util.Vector;
 
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.Container;
-import java.awt.Point;
-import java.awt.Dimension;
 
-import javax.swing.BoxLayout;
 import javax.swing.Box;
 import javax.swing.AbstractAction;
 import javax.swing.JTable;
@@ -67,11 +57,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ListSelectionModel;
 
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.CellEditorListener;
-
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
   
 
 /**
@@ -81,8 +71,7 @@ import javax.swing.event.CellEditorListener;
 
 public class CustomList extends JPanel {
 
-  private JTable table;
-//  private TableModel tableModel;
+  private CustomJTable table;
 
   private JButton addButton;
   private JButton editButton;
@@ -90,26 +79,36 @@ public class CustomList extends JPanel {
   private JButton moveUpButton;
   private JButton moveDownButton;
   private double  tableWidthReference;
+
+  private boolean showAddButton;
+  private boolean showEditButton;
+  private boolean showDeleteButton;
+  private boolean showMoveUpButton;
+  private boolean showMoveDownButton;
   
+  private static  TableModelEvent tableModelEvent;
 
   public CustomList(String[] colNames, int displayRows, boolean showAddButton, 
                     boolean showEditButton,       boolean showDeleteButton, 
                     boolean showMoveUpButton,     boolean showMoveDownButton) { 
   
-    init(colNames, displayRows, showAddButton, showEditButton, 
-          showDeleteButton, showMoveUpButton, showMoveDownButton); 
+    this.showAddButton      = showAddButton;
+    this.showEditButton     = showEditButton;
+    this.showDeleteButton   = showDeleteButton;
+    this.showMoveUpButton   = showMoveUpButton;
+    this.showMoveDownButton = showMoveDownButton;
+    
+    init(colNames, displayRows); 
   }
     
-  private void init(String[] colNames, int displayRows, boolean showAddButton, 
-                    boolean showEditButton,       boolean showDeleteButton, 
-                    boolean showMoveUpButton,     boolean showMoveDownButton) { 
+  private void init(String[] colNames, int displayRows) { 
   
     this.setLayout(new BorderLayout());
 
     initList(colNames, displayRows);
     
-    initButtons(showAddButton,  showEditButton,   showDeleteButton, 
-                                showMoveUpButton, showMoveDownButton);
+    initButtons();
+    doEnablesDisables(0);
   }
   
   private void initList(String[] colNames, int displayRows) {
@@ -134,8 +133,6 @@ public class CustomList extends JPanel {
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
-    table.editCellAt(0, 0, new EventObject(table.getValueAt(0, 0)));
-    table.setRowSelectionInterval(0, 0);
     
     final JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.getViewport().setBackground(java.awt.Color.white);
@@ -147,7 +144,27 @@ public class CustomList extends JPanel {
       }
     });
     this.add(scrollPane, BorderLayout.CENTER);
+
+    tableModelEvent = new TableModelEvent(table.getModel());
+      
+    table.editCellAt(0, 0, new EventObject(table.getValueAt(0, 0)));
+    table.setRowSelectionInterval(0, 0);
+      
+    table.getSelectionModel().addListSelectionListener(
+      new ListSelectionListener() {
+      
+        public void valueChanged(ListSelectionEvent e) {
+        
+          if (e.getValueIsAdjusting()) return;
+          
+          ListSelectionModel lsModel = ((ListSelectionModel)(e.getSource()));
+                
+          doEnablesDisables(lsModel.getMaxSelectionIndex());
+        }
+      });
   }
+  
+  
   
   private void setTableWidthReference(double width) {
   
@@ -160,6 +177,10 @@ public class CustomList extends JPanel {
   }
   
   
+  public static TableModelEvent getTableModelEvent() {
+  
+    return tableModelEvent;
+  }
   
   
   private void setColumnSizes(double tableWidth) {
@@ -187,9 +208,7 @@ public class CustomList extends JPanel {
   
 
   
-  private void initButtons( boolean showAddButton,    boolean showEditButton,       
-                            boolean showDeleteButton, boolean showMoveUpButton,     
-                                                      boolean showMoveDownButton) {
+  private void initButtons() {
   
     Box buttonBox = Box.createVerticalBox();
 
@@ -235,17 +254,47 @@ public class CustomList extends JPanel {
     buttonBox.add(Box.createGlue());
     this.add(buttonBox, BorderLayout.EAST);
   }
+
+ 
+  
+  private boolean selectionExists = true;
+  //
+  private void doEnablesDisables(int selRow) {
+  
+    Log.debug(45, "\n\n>>>> doEnablesDisables(): selRow = "+selRow);
+    
+    selectionExists = (selRow > -1);
+
+    // ADD always available:
+    //if (showAddButton) addButton.setEnabled(true);
+    
+    // EDIT available only if a row selected:
+    if (showEditButton) editButton.setEnabled(selectionExists);
+    
+    // DELETE available only if a row selected:
+    if (showDeleteButton) deleteButton.setEnabled(selectionExists);
+    
+    // MOVE UP available only if a row selected *and* it's not row 0:
+    if (showMoveUpButton) moveUpButton.setEnabled(selectionExists 
+                                        && selRow > 0);
+    
+    // MOVE DOWN available only if a row selected *and* it's not last row:
+    if (showMoveDownButton) moveDownButton.setEnabled(selectionExists 
+                                        && selRow < (table.getRowCount() - 1));
+  }
   
 }
-
+  
+  
+ 
  
 
 class AddAction extends AbstractAction {
 
-  private JTable table;
+  private CustomJTable table;
   private DefaultTableModel model;
   
-  public AddAction(JTable table) { 
+  public AddAction(CustomJTable table) { 
     
     super("Add"); 
     this.table = table;
@@ -256,14 +305,16 @@ class AddAction extends AbstractAction {
 
     Log.debug(45, "CustomList ADD action");
     int row = table.getSelectedRow();
-    
     if (row < 0) {
+      row = model.getRowCount();
       model.addRow(new Vector());
-      row = model.getRowCount() - 1;
     } else {
       model.insertRow(++row, (Vector)null);
     }
-    table.tableChanged(new TableModelEvent(model));
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
+    table.tableChanged(CustomList.getTableModelEvent());
     Component comp = table.getComponentAt(row, 0);
     table.editCellAt(row, 0, new EventObject(comp));
     comp.requestFocus();
@@ -274,9 +325,9 @@ class AddAction extends AbstractAction {
 
 class EditAction extends AbstractAction {
 
-  private JTable table;
+  private CustomJTable table;
   
-  public EditAction(JTable table) { 
+  public EditAction(CustomJTable table) { 
     
     super("Edit"); 
     this.table = table;
@@ -287,6 +338,9 @@ class EditAction extends AbstractAction {
     Log.debug(45, "CustomList EDIT action");  
     int row = table.getSelectedRow();
     if (row < 0) return;
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
     // get object here - only a String surrogate is shown by the cell renderer, 
     // but the entire object is actually in the table model!
   }
@@ -294,10 +348,11 @@ class EditAction extends AbstractAction {
 
 class DeleteAction extends AbstractAction {
 
-  private JTable table;
+  private CustomJTable table;
   private DefaultTableModel model;
+  private AddAction addAction;
   
-  public DeleteAction(JTable table) { 
+  public DeleteAction(CustomJTable table) { 
     
     super("Delete"); 
     this.table = table;
@@ -313,17 +368,24 @@ class DeleteAction extends AbstractAction {
       table.editingStopped(new ChangeEvent(table.getEditorComponent()));
     }
     model.removeRow(row);
-    table.tableChanged(new TableModelEvent(model));
+    if (table.getRowCount() < 1) addFirstRowBack();
+    table.tableChanged(CustomList.getTableModelEvent());
     table.clearSelection();
+  }
+  
+  private void addFirstRowBack() {
+  
+    if (addAction==null) addAction = new AddAction(table);
+    addAction.actionPerformed(null);
   }
 }
 
 class MoveUpAction extends AbstractAction {
 
-  private JTable table;
+  private CustomJTable table;
   private DefaultTableModel model;
   
-  public MoveUpAction(JTable table) { 
+  public MoveUpAction(CustomJTable table) { 
     
     super("Move Up"); 
     this.table = table;
@@ -339,7 +401,7 @@ class MoveUpAction extends AbstractAction {
       table.editingStopped(new ChangeEvent(table.getEditorComponent()));
     }
     model.moveRow(row, row, row - 1);
-    table.tableChanged(new TableModelEvent(model));
+    table.tableChanged(CustomList.getTableModelEvent());
     table.setRowSelectionInterval(row - 1, row - 1);
     table.repaint();
   }
@@ -347,10 +409,10 @@ class MoveUpAction extends AbstractAction {
 
 class MoveDownAction extends AbstractAction {
 
-  private JTable table;
+  private CustomJTable table;
   private DefaultTableModel model;
   
-  public MoveDownAction(JTable table) { 
+  public MoveDownAction(CustomJTable table) { 
     
     super("Move Down"); 
     this.table = table;
@@ -366,7 +428,7 @@ class MoveDownAction extends AbstractAction {
       table.editingStopped(new ChangeEvent(table.getEditorComponent()));
     }
     model.moveRow(row, row, row + 1);
-    table.tableChanged(new TableModelEvent(model));
+    table.tableChanged(CustomList.getTableModelEvent());
     table.setRowSelectionInterval(row + 1, row + 1);
   }
 }
@@ -395,7 +457,7 @@ class CustomJTable extends JTable  {
     public TableCellRenderer getCellRenderer(int row, int col) {
     
         Class colClass = getModel().getColumnClass(col);
-        Log.debug(45, "getCellRenderer(): colClass.getName() = "+colClass.getName());
+//        Log.debug(45, "getCellRenderer(): colClass.getName() = "+colClass.getName());
         // can test for surrogates here////
 
 //        if (colClass.getName().equals("java.lang.String")) return editableStringRenderer;
@@ -406,18 +468,20 @@ class CustomJTable extends JTable  {
     public TableCellEditor getCellEditor(int row, int col) {
 
         Class colClass = getModel().getColumnClass(col);
-        Log.debug(45, "getCellEditor(): colClass.getName() = "+colClass.getName());
+//        Log.debug(45, "getCellEditor(): colClass.getName() = "+colClass.getName());
         // can test for surrogates here////
         
         return defaultCellEditor;
     }
 
-
-
-
     //override super
     public boolean getDragEnabled() { return false; }
 
+    //override super
+    public int getSelectedRow() {  
+    
+      return super.getSelectionModel().getMaxSelectionIndex();
+    }
 }
 
 
