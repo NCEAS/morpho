@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.6 2000-10-04 18:44:37 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.7 2000-12-14 22:39:05 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -45,6 +45,7 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
     private String errorMessage = "";
     String documentID;
     String parserName = "org.apache.xerces.parsers.SAXParser";
+    char sepchar = '.';
     String tempXMLFileName = null;
     boolean idExistsFlag = false;
     
@@ -129,7 +130,7 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		globalidTextBox.setColumns(8);
 		JPanel7.add(globalidTextBox);
 		globalidTextBox.setBounds(110,5,88,19);
-		JLabel5.setText(":");
+		JLabel5.setText(".");
 		JPanel7.add(JLabel5);
 		JLabel5.setBounds(203,7,3,15);
 		localidTextBox.setColumns(8);
@@ -291,9 +292,9 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		    System.out.println("temp file created:");
 		    String idstring = getIDFromFile(tempXMLFileName,"meta_file_id");
 		    if (idstring!=null) {
-		        if (idstring.indexOf(":")>0) {  // no colon -->invalid id
-                    String global = idstring.substring(0,idstring.indexOf(":"));
-                    String local =  idstring.substring(idstring.indexOf(":")+1,idstring.length());
+		        if (idstring.lastIndexOf(sepchar)>0) {  // no colon -->invalid id
+                    String global = idstring.substring(0,idstring.lastIndexOf(sepchar));
+                    String local =  idstring.substring(idstring.lastIndexOf(sepchar)+1,idstring.length());
                     globalidTextBox.setText(global);
                     localidTextBox.setText(local);
                     idExistsFlag = true;
@@ -443,9 +444,9 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		    DocumentTextBox.setText(file);
 		    String idstring = getIDFromFile(file,idtagTextField.getText());
 		    if (idstring!=null) {
-		        if (idstring.indexOf(":")>0) {  // no colon -->invalid id
-                    String global = idstring.substring(0,idstring.indexOf(":"));
-                    String local =  idstring.substring(idstring.indexOf(":")+1,idstring.length());
+		        if (idstring.lastIndexOf(sepchar)>0) {  // no colon -->invalid id
+                    String global = idstring.substring(0,idstring.lastIndexOf(sepchar));
+                    String local =  idstring.substring(idstring.lastIndexOf(sepchar)+1,idstring.length());
                     globalidTextBox.setText(global);
                     localidTextBox.setText(local);
                     idExistsFlag = true;
@@ -643,7 +644,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    if (!CurrentCheckBox.isSelected()) {
 	        if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	            String newID = globalidTextBox.getText()+":"+localidTextBox.getText();
+	            String newID = globalidTextBox.getText()+sepchar+localidTextBox.getText();
 		        ReplaceFile(DocumentTextBox.getText(),idtagTextField.getText(),newID);
 		    }
 		    else {
@@ -716,8 +717,8 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 
         if (writeSucceeded) {
    //       System.out.println("Success. The docid is " + documentID + ".");
-            String global = documentID.substring(0,documentID.indexOf(":"));
-            String local =  documentID.substring(documentID.indexOf(":")+1,documentID.length());
+            String global = documentID.substring(0,documentID.lastIndexOf(sepchar));
+            String local =  documentID.substring(documentID.lastIndexOf(sepchar)+1,documentID.length());
             boolean change_flag = false;
             if (globalidTextBox.getText().equals(global)) change_flag=true;
             if (localidTextBox.getText().equals(local)) change_flag=true;
@@ -725,7 +726,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
             localidTextBox.setText(local);
 	        if (!CurrentCheckBox.isSelected()) {
 	            if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	                String newID = globalidTextBox.getText()+":"+localidTextBox.getText();
+	                String newID = globalidTextBox.getText()+sepchar+localidTextBox.getText();
 		            ReplaceFile(DocumentTextBox.getText(),idtagTextField.getText(),newID);
 		        }
 		        else {
@@ -738,7 +739,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		            File tmp = new File(tempXMLFileName);
 		            if (tmp.exists()) {
 	                    if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	                        String newID = globalidTextBox.getText()+":"+localidTextBox.getText();
+	                        String newID = globalidTextBox.getText()+sepchar+localidTextBox.getText();
 		                    ReplaceFile(tempXMLFileName,idtagTextField.getText(),newID);
 		                    container.mdeBean1.openDocument(tmp);
 		                }
@@ -771,7 +772,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	    String result = null;
 //	    if (!ServerRadioButton.isSelected()) {
 	       if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
-	            result =  globalidTextBox.getText()+":"+localidTextBox.getText();
+	            result =  globalidTextBox.getText()+sepchar+localidTextBox.getText();
 //	       }
 	    }
 	    return result;
@@ -933,8 +934,8 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 
         if (writeSucceeded) {
    //       System.out.println("Success. The docid is " + documentID + ".");
-            String global = documentID.substring(0,documentID.indexOf(":"));
-            String local =  documentID.substring(documentID.indexOf(":")+1,documentID.length());
+            String global = documentID.substring(0,documentID.lastIndexOf(sepchar));
+            String local =  documentID.substring(documentID.lastIndexOf(sepchar)+1,documentID.length());
             boolean change_flag = false;
             if (!globalidTextBox.getText().equals(global)) change_flag=true;
             if (!localidTextBox.getText().equals(local)) change_flag=true;
