@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-20 20:32:59 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2001-10-21 00:03:12 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1066,9 +1066,13 @@ public class PackageWizardShell extends javax.swing.JFrame
  
   /** create a new ACL file */
   private File getACLFile(String id) {
+    String pubID = "-//ecoinformatics.org//eml-access//2.0.0beta4//EN";  //current default
+    if (config!=null) {
+        pubID = config.get("accessFileType", 0);   
+    }
     StringBuffer sb = new StringBuffer();
     sb.append("<?xml version=\"1.0\"?>\n");
-    sb.append("<!DOCTYPE acl PUBLIC \"-//ecoinformatics.org//eml-access//2.0.0beta4//EN\" \"eml-access.dtd\">\n");
+    sb.append("<!DOCTYPE acl PUBLIC \""+pubID+"\" \"eml-access.dtd\">\n");
     sb.append("<acl authSystem=\"knb\" order=\"allowFirst\">\n");
 // Note: newer acl eml dtd requires the 'system' attribute - BE SURE NEW dtd is added to metacat!!!
 //    sb.append("<identifier system=\"knb\">" + id + "</identifier>\n");
