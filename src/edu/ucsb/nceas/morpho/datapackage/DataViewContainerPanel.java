@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-08 17:38:37 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2003-12-08 19:56:28 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -516,14 +516,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
       // entity metadata
-      String id = getEntityIDForThisEntityName(item);
-      
+//DFH      String id = getEntityIDForThisEntityName(item);
+      String id = adp.getPackageId();
 //      String location = dp.getLocation();
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
     
     MetaDisplayInterface md = null;
-    if (dp!=null) {  // old datapackage
+//DFH    if (dp!=null) {  // old datapackage
       // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
       // add Component to 'currentEntityMetadataPanel' which has a borderlayout
       
@@ -533,14 +533,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       md.setTitle(RIGHT_METAVIEW_TITLE);
       Component mdcomponent = null;
       try{
-        mdcomponent = md.getDisplayComponent(id, dp, 
+        mdcomponent = md.getDisplayComponent(id, adp, 
                                       new MetaViewListener(currentEntityPanel));
       }
       catch (Exception m) {
         Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
         // can't display requested ID, so just display empty viewer:
         try{
-          mdcomponent = md.getDisplayComponent(dp, null);
+          mdcomponent = md.getDisplayComponent(adp, null);
         }
         catch (Exception e) {
           Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
@@ -548,21 +548,21 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         }
       }
       currentEntityMetadataPanel.add(BorderLayout.CENTER, mdcomponent);
-    }
+//DFH    }
       currentEntityPanel.setDividerLocation(METADATA_PANEL_DEFAULT_WIDTH);
       
       // create a tabbed component instance
       TabbedContainer component = new TabbedContainer();
       component.setSplitPane(currentEntityPanel);
-      if(dp != null) {
+//DFH      if(dp != null) {
         component.setMetaDisplayInterface(md);
-      }
+//DFH      }
       component.setVisible(true);
       tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i),component);
       //tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
-      if (dp!=null) {
-        this.entityFile[i] = dp.getFileFromId(id);
-      }
+//DFH      if (dp!=null) {
+//DFH        this.entityFile[i] = dp.getFileFromId(id);
+//DFH      }
     
       // create the data display panel (usually a table) using DataViewer class
 //      String fn = dp.getDataFileName(id);    
