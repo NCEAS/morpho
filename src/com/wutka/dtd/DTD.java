@@ -6,7 +6,7 @@ import java.io.*;
 /** Represents a parsed Document Type Definition
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:30 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-19 20:56:40 $ by $Author: higgins $
  */
 
 
@@ -83,7 +83,10 @@ public class DTD implements DTDOutput
 /** Returns the items as an array */
     public Object[] getItems()
     {
-        return items.toArray();
+        Object[] obs = new Object[items.size()];
+        items.copyInto(obs);
+
+        return obs;
     }
 
 /** Stores an item in the items array */
@@ -111,7 +114,7 @@ public class DTD implements DTDOutput
 
             if (itemType.isAssignableFrom(ob.getClass()))
             {
-                results.addElement(itemType);
+                results.addElement(ob);
             }
         }
 

@@ -10,7 +10,7 @@ import java.io.*;
  *  is used to keep track of where it is.
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:29 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-19 20:56:39 $ by $Author: higgins $
  */
 public class DTDAttlist implements DTDOutput
 {
@@ -39,14 +39,15 @@ public class DTDAttlist implements DTDOutput
         out.print("<!ATTLIST ");
         out.println(name);
 
-        Iterator itr = attributes.iterator();
+        int len = attributes.size();
 
-        while (itr.hasNext())
+        for (int i=0; i < len; i++)
         {
             out.print("           ");
-            DTDAttribute attr = (DTDAttribute) itr.next();
+            DTDAttribute attr = (DTDAttribute) attributes.elementAt(i);
             attr.write(out);
-            if (itr.hasNext())
+
+            if (i < len-1)
             {
                 out.println();
             }

@@ -6,7 +6,7 @@ import java.io.*;
 /** Represents an element defined with the ELEMENT DTD tag
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:29 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-19 20:56:39 $ by $Author: higgins $
  */
 public class DTDElement implements DTDOutput
 {
@@ -49,27 +49,6 @@ public class DTDElement implements DTDOutput
         }
         out.println(">");
         out.println();
-
-/*
-        if (attributes.size() > 0)
-        {
-            out.print("<!ATTLIST ");
-            out.println(name);
-	    TreeMap tm=new TreeMap(attributes);
-	    Collection values=tm.values();
-	    Iterator iterator=values.iterator();
-	    while (iterator.hasNext())
-	    {
-                out.print("           ");
-                DTDAttribute attr = (DTDAttribute) iterator.next();
-                attr.write(out);
-		if (iterator.hasNext())
-                	out.println();
-		else
-	                out.println(">");
-	    }
-        }
-*/
     }
 
     public boolean equals(Object ob)

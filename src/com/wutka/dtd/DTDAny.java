@@ -5,7 +5,7 @@ import java.io.*;
 /** Represents the ANY keyword in an Element's content spec
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:30 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-19 20:56:40 $ by $Author: higgins $
  */
 public class DTDAny extends DTDItem
 {
