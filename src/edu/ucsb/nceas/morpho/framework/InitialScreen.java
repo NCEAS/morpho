@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-13 19:37:12 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-12-13 19:51:15 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,9 @@ public class InitialScreen extends JPanel
                                     UISettings.NEW_PROFILE_ICON, newProfileCmd);
         newProfileAction.setRolloverSmallIcon(
                                     UISettings.NEW_PROFILE_ICON_ROLLOVER);
-        panel.addToRow3( new HyperlinkButton(newProfileAction));
+        HyperlinkButton newProfileLink = new HyperlinkButton(newProfileAction);
+        setSizes(newProfileLink,UISettings.INIT_SCR_LINKBUTTON_DIMS);
+        panel.addToRow3(newProfileLink);
         panel.addToRow3(Box.createHorizontalGlue());
         
         //DO INITIAL UPDATES:
@@ -261,6 +263,7 @@ public class InitialScreen extends JPanel
                                                 logoutCommand);
         logoutAction.setRolloverSmallIcon(UISettings.LOGOUT_ICON_ROLLOVER);
         logoutLink = new HyperlinkButton(logoutAction);
+        setSizes(logoutLink,UISettings.INIT_SCR_LINKBUTTON_DIMS);
         //////////////
 
         
@@ -438,7 +441,9 @@ public class InitialScreen extends JPanel
                                     UISettings.NEW_DATAPACKAGE_ICON, newPkgCmd);
         newAction.setRolloverSmallIcon(
                                     UISettings.NEW_DATAPACKAGE_ICON_ROLLOVER);
-        panel.addToRow1(new HyperlinkButton(newAction));
+        HyperlinkButton newLink = new HyperlinkButton(newAction);
+        setSizes(newLink,UISettings.INIT_SCR_LINKBUTTON_DIMS);
+        panel.addToRow1(newLink);
         panel.addToRow1(Box.createHorizontalGlue());
 
         // ROW 2 ///////////////////////////////////////////////////////////////
@@ -447,7 +452,9 @@ public class InitialScreen extends JPanel
                                     UISettings.OPEN_DATAPACKAGE_ICON,openPkgCmd);
         openAction.setRolloverSmallIcon(
                                     UISettings.OPEN_DATAPACKAGE_ICON_ROLLOVER);
-        panel.addToRow2(new HyperlinkButton(openAction));
+        HyperlinkButton openLink = new HyperlinkButton(openAction);
+        setSizes(openLink,UISettings.INIT_SCR_LINKBUTTON_DIMS);
+        panel.addToRow2(openLink);
         panel.addToRow2(Box.createHorizontalGlue());
 
         // ROW 3 ///////////////////////////////////////////////////////////////
@@ -456,7 +463,10 @@ public class InitialScreen extends JPanel
                                     UISettings.SEARCH_ICON, searchCmd);
         searchAction.setRolloverSmallIcon(
                                     UISettings.SEARCH_ICON_ROLLOVER);
-        panel.addToRow3( new HyperlinkButton(searchAction));
+
+        HyperlinkButton searchLink = new HyperlinkButton(searchAction);
+        setSizes(searchLink,UISettings.INIT_SCR_LINKBUTTON_DIMS);
+        panel.addToRow3(searchLink);
         panel.addToRow3(Box.createHorizontalGlue());
     }
 
