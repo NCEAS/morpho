@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-21 22:10:26 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-02-22 18:28:49 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,9 +70,19 @@ public class TextImportWizard extends javax.swing.JFrame
   boolean blankCheckFlag = false;
   
 	/**
-	 * number of lines in file
+	 * actual number of lines in fdata file
 	 */
-	int nlines;  
+	int nlines_actual;  
+
+	/**
+	 * number of parsed lines in file
+	 */
+	int nlines; 
+	
+	/**
+	 * max number of lines to be parsed in file
+	 */
+	int nlines_max = 5000;  
 
 	/**
 	 * array of line strings
@@ -1015,17 +1025,20 @@ public void startImport(String file) {
             while ((temp = in.readLine())!=null) {
                 if (temp.length()>0) {   // do not count blank lines
                 nlines++;} 
-                if (nlines>10000) {
-                  JOptionPane.showMessageDialog(this, "Data File parsing has been truncated at 10000 lines due to large size!",
-                        "Message",JOptionPane.INFORMATION_MESSAGE, null);
-                  break;
-                }
             }
             in.close();
         }
         catch (IOException e) {};
         }
         catch (IOException e) {};
+        
+        nlines_actual = nlines;
+        if (nlines>nlines_max) {
+           nlines = nlines_max; 
+           JOptionPane.showMessageDialog(this, "Data File parsing has been truncated due to large size!",
+                        "Message",JOptionPane.INFORMATION_MESSAGE, null);
+        }
+        
         lines = new String[nlines];
         // now read again since we know how many lines
         try {
@@ -1073,6 +1086,9 @@ public void startImport(String file) {
             in.close();
           }
         catch (Exception e) {};
+        
+        nlines_actual = nlines;
+        if (nlines>nlines_max) nlines=nlines_max;
         lines = new String[nlines];
           // now read again since we know how many lines
           BufferedReader in1 = new BufferedReader(new StringReader(s));
@@ -1087,7 +1103,7 @@ public void startImport(String file) {
           }
           catch (Exception e) {};
         resultsBuffer = new StringBuffer("");
-        resultsBuffer.append("Number of lines: "+nlines+"\n");
+        resultsBuffer.append("Number of lines: "+nlines_actual+"\n");
         resultsBuffer.append("Most probable delimiter is "+guessDelimiter()+"\n");
     }            
 	
@@ -2080,7 +2096,7 @@ public void startImport(String file) {
 	  XMLBuffer.append("    <entityDescription> "+normalize(TableDescriptionTextField.getText())+"</entityDescription>\n");
 	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"></orientation>\n");
 	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"></caseSensitive>\n");
-	  String numRecords = (new Integer(nlines - startingLine + 1)).toString();
+	  String numRecords = (new Integer(nlines_actual - startingLine + 1)).toString();
 	  XMLBuffer.append("    <numberOfRecords> "+normalize(numRecords)+"</numberOfRecords>\n");
 	  XMLBuffer.append("</table-entity>\n");
 	  return XMLBuffer.toString();
