@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-29 16:56:07 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-07-29 19:26:31 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,12 +48,14 @@ public class DataPackageWizardPlugin implements DataPackageWizardInterface,
                                                 ServiceProvider {
 
 
-  private WizardContainerFrame wizardContainerFrame;
+  private static WizardContainerFrame dpWiz;
 
   /**
   *  Constructor
   */
   public DataPackageWizardPlugin() {
+    dpWiz = new WizardContainerFrame();
+    dpWiz.setVisible(false);
   }
 
 
@@ -64,8 +66,6 @@ public class DataPackageWizardPlugin implements DataPackageWizardInterface,
   *  @param morpho    a reference to the <code>Morpho</code>
   */
   public void initialize(Morpho morpho) {
-    wizardContainerFrame = new WizardContainerFrame();
-    wizardContainerFrame.setVisible(false);
     try {
       ServiceController services = ServiceController.getInstance();
       services.addService(DataPackageWizardInterface.class, this);
@@ -83,9 +83,17 @@ public class DataPackageWizardPlugin implements DataPackageWizardInterface,
    */
   public void startWizard() {
 
-    wizardContainerFrame.setBounds(
+    dpWiz.setBounds(
     WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD, 
     WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-    wizardContainerFrame.setVisible(true);
+    dpWiz.setVisible(true);
+  }
+  
+  
+  // for testing/development
+  public static void main(String[] args) {
+    DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
+    plugin.startWizard();
+    dpWiz.setVisible(true);
   }
 }
