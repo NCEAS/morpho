@@ -74,3 +74,4 @@
 <!ELEMENT city (#PCDATA)>
 <!ELEMENT administrativeArea (#PCDATA)>
 <!ELEMENT postalCode (#PCDATA)>
+<!ELEMENT country (#PCDATA)>
