@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-16 00:52:19 $'
- * '$Revision: 1.1.2.6 $'
+ *     '$Date: 2002-08-16 20:27:21 $'
+ * '$Revision: 1.1.2.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,9 +78,10 @@ public class UIController
     }
 
     /**
-     * Get the single instance of the UIController, creating it if needed.
+     * Initialize the single instance of the UIController, 
+     * creating it if needed.
      */
-    public static UIController getInstance(Morpho morpho)
+    public static UIController initialize(Morpho morpho)
     {
         if (controller == null) {
             controller = new UIController(morpho);
@@ -90,12 +91,13 @@ public class UIController
 
     /**
      * Get the single instance of the UIController, creating it if needed.
+     * If the controller has not yet been created yet (using the 
+     * method "initialize(Morpho)", then this method returns null.
+     *
+     * @returns the single instance of the UIController
      */
     public static UIController getInstance()
     {
-        if (controller == null) {
-            controller = new UIController(null);
-        }
         return controller;
     }
 

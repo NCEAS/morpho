@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-16 00:52:19 $'
- * '$Revision: 1.1.2.8 $'
+ *     '$Date: 2002-08-16 20:27:21 $'
+ * '$Revision: 1.1.2.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,12 +140,8 @@ public class Morpho
     timer.setRepeats(true);
     timer.start();
     */
-    
-    // Set up the framework's menus and toolbars, and services
-    initializeActions();
   }
 
-  
   /**
    * Load all of the plugins specified in the configuration file. The plugins
    * are classes that implement the PluginInterface interface.
@@ -169,15 +165,6 @@ public class Morpho
         plugin.initialize(this);
       }
 
-      // After all plugins have a chance to add their menus, create the
-      // menu bar so that the menus are created in the right order
-      Vector sortedmenus = sortValues(menuOrder);
-      Enumeration qqq = sortedmenus.elements();
-      while (qqq.hasMoreElements()) {
-        JMenu currentMenu = (JMenu)qqq.nextElement();
-        morphoMenuBar.add(currentMenu);
-      }
-      
       pluginsLoaded = true;
     }
     catch(ClassCastException cce)
@@ -188,10 +175,12 @@ public class Morpho
   }
 
   /**
-   * Set up the actions for menus and toolbars
+   * Set up the actions for menus and toolbars for the application
    */
   private void initializeActions() {
-    /*
+
+    UIController controller = UIController.getInstance();
+
     // FILE MENU ACTIONS
     fileMenuActions = new Action[4];
 
@@ -235,7 +224,7 @@ public class Morpho
     switchItemAction.putValue("menuPosition", new Integer(2));
     fileMenuActions[3] = switchItemAction;
 
-    addMenu("File", new Integer(1), fileMenuActions);
+    controller.addMenu("File", new Integer(0), fileMenuActions);
 
     // EDIT MENU ACTIONS
     editMenuActions = new Action[4];
@@ -302,9 +291,11 @@ public class Morpho
     prefsItemAction.setEnabled(false);
     editMenuActions[3] = prefsItemAction;
 
-    addMenu("Edit", new Integer(2), editMenuActions);
-
-    addMenu("Window", new Integer(6));
+    controller.addMenu("Edit", new Integer(1), editMenuActions);
+    controller.addMenu("Search", new Integer(2));
+    controller.addMenu("Data", new Integer(3));
+    controller.addMenu("View", new Integer(4));
+    controller.addMenu("Window", new Integer(5));
 
     // HELP MENU ACTIONS
     helpMenuActions = new Action[2];
@@ -324,8 +315,6 @@ public class Morpho
       public void actionPerformed(ActionEvent e) {
         HTMLBrowser hb = new HTMLBrowser();
         hb.setVisible(true);
- //       SplashFrame sf = new SplashFrame();
- //       sf.setVisible(true);
       }
     };
     helpItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho Help");
@@ -336,15 +325,14 @@ public class Morpho
  
     helpMenuActions[0] = aboutItemAction;
     helpMenuActions[1] = helpItemAction;
-    addMenu("Help", new Integer(9), helpMenuActions);
+    controller.addMenu("Help", new Integer(6), helpMenuActions);
 
     // Set up the toolbar for the application
     containerToolbarActions = new Action[3];
     containerToolbarActions[0] = cutItemAction;
     containerToolbarActions[1] = copyItemAction;
     containerToolbarActions[2] = pasteItemAction;
-    addToolbarActions(containerToolbarActions);
-    */
+    controller.addToolbarActions(containerToolbarActions);
   }
 
   /**
@@ -1185,29 +1173,10 @@ public class Morpho
         // not implemented yet
 
         // Set up the User Interface controller (UIController)
-        UIController controller = UIController.getInstance(morpho);
+        UIController controller = UIController.initialize(morpho);
 
-        // Add the default menus
-        controller.addMenu("File", new Integer(0));
-        controller.addMenu("Edit", new Integer(1));
-        controller.addMenu("Search", new Integer(2));
-        controller.addMenu("Data", new Integer(3));
-        controller.addMenu("View", new Integer(4));
-        controller.addMenu("Window", new Integer(5));
-        controller.addMenu("Help", new Integer(6));
-
-        // Add the default toolbar items
-        Action cutItemAction = new AbstractAction("Cut") {
-            public void actionPerformed(ActionEvent e) {
-                Log.debug(9, "Cut is not yet implemented.");
-            }
-        };
-        cutItemAction.putValue(Action.SMALL_ICON, new ImageIcon( 
-            morpho.getClass().getResource(
-            "/toolbarButtonGraphics/general/Cut16.gif")));
-        Action[] tbActions = new Action[1];
-        tbActions[0] = cutItemAction;
-        controller.addToolbarActions(tbActions);
+        // Add the default menus and toolbars
+        morpho.initializeActions();
 
         // Load all of the plugins, their menus, and toolbars
         morpho.loadPlugins();
@@ -1216,31 +1185,8 @@ public class Morpho
         sf.dispose();
         
         // Create a blank frame as a placeholder until a plugin takes over
-        MorphoFrame tempFrame = controller.addWindow("Test window");
-        tempFrame.setVisible(true);
-        MorphoFrame tempFrame2 = controller.addWindow("Test 2 window");
-        tempFrame2.setVisible(true);
-
-        Log.debug(4, "Butterfly flaps after clicking OK ...");
-        tempFrame2.setBusy(true);
-        Log.debug(4, "Butterfly stops flapping after clicking OK ...");
-        tempFrame2.setBusy(false);
-
-        Action copyItemAction = new AbstractAction("Copy") {
-            public void actionPerformed(ActionEvent e) {
-                Log.debug(9, "Copy is not yet implemented.");
-            }
-        };
-        copyItemAction.putValue(Action.SMALL_ICON, new ImageIcon( 
-            morpho.getClass().getResource(
-            "/toolbarButtonGraphics/general/Copy16.gif")));
-        Action[] tbActions2 = new Action[1];
-        tbActions2[0] = copyItemAction;
-        controller.addToolbarActions(tbActions2);
-
-        MorphoFrame tempFrame3 = controller.addWindow("Test 3 window");
-        tempFrame3.setVisible(true);
-
+        MorphoFrame initialFrame = controller.addWindow("Morpho");
+        initialFrame.setVisible(true);
       }
     } catch(Throwable t) {
       t.printStackTrace();
