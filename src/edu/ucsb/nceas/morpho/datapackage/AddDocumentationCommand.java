@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:31 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-15 21:03:04 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,11 +73,11 @@ public class AddDocumentationCommand implements Command
     // make sure resulPanel is not null
     if ( resultPane != null)
     {
-      Morpho morpho = resultPane.getFramework();
-      AbstractDataPackage adp = resultPane.getAbstractDataPackage();
-      DocFrame df = new DocFrame();
-      df.setVisible(true);
-      df.initDoc(null, adp.getMetadataNode());
+       Morpho morpho = resultPane.getFramework();
+       AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+       DocFrame df = new DocFrame();
+       df.setVisible(true);
+       df.initDoc(null, adp.getMetadataNode());
     }//if
   
   }//execute

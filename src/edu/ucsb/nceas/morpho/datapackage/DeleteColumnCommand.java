@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-02 20:33:38 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-12-15 21:03:04 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,6 @@ public class DeleteColumnCommand implements Command
        if (dataView != null)
        {
          // Get parameters and run it
-         DataPackage dp = dataView.getDataPackage();
          AbstractDataPackage adp = dataView.getAbstractDataPackage();
          int entityIndex = dataView.getEntityIndex();
          JTable jtable=dataView.getDataTable();
@@ -90,11 +89,7 @@ public class DeleteColumnCommand implements Command
          PersistentVector vector=dataView.getPV();
          Document attributeDocument=dataView.getAttributeDoc();
          Vector columnLabels=dataView.getColumnLabels();
-         if (dp!=null) {  // old datapackage
-           deleteColumn(jtable, ptmodel, vector, attributeDocument,columnLabels);
-         } else { // new eml2
-           deleteColumn(jtable, ptmodel, vector, adp, entityIndex, columnLabels);
-         }
+         deleteColumn(jtable, ptmodel, vector, adp, entityIndex, columnLabels);
        }
        
     }//if

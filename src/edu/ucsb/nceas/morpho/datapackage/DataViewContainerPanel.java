@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:31 $'
- * '$Revision: 1.78 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-15 21:03:04 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,10 +90,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    */
   private static final String RIGHT_METAVIEW_TITLE = "Entity/Attribute";
 
-  /**
-   * The DataPackage that contains the data
-   */
-  DataPackage dp;
 
   /**
    * The AbstractDataPackage that contains the data
@@ -241,118 +237,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   }
 
-  /*
-   * this constructor uses DataPackage and DataPackageGUI objects
-   * to build the interior object in the Panel
-   * (DataPackageGui is used because it already exist. The parts of it
-   * that are used will probably be moved and the rest deleted since
-   * many of its methods are now not needed)
-   */
-  public DataViewContainerPanel(DataPackage dp, DataPackageGUI dpgui)
-  {
-    this();
-    this.dp = dp;
-    JPanel packagePanel = new JPanel();
-    packagePanel.setLayout(new BorderLayout(5,5));
-
-// the following code builds the datapackage summary at the top of
-// the DataViewContainerPanel
-    JLabel authorRefLabel = new JLabel(dpgui.authorRefLabel);
-    authorRefLabel.setFont(UISettings.TITLE_CITATION_FONT);
-    JLabel titleRefLabel = new JLabel(dpgui.titleRefLabel);
-    titleRefLabel.setFont(UISettings.TITLE_CITATION_FONT_BOLD);
-    JLabel accessionRefLabel = new JLabel(dpgui.accessionRefLabel);
-    accessionRefLabel.setFont(UISettings.TITLE_CITATION_FONT_BOLD);
-    JLabel keywordsRefLabel = new JLabel(dpgui.keywordsRefLabel);
-    keywordsRefLabel.setFont(UISettings.TITLE_CITATION_FONT);
-    moreLabel = new JLabel("<html><a href=\".\"><b>more</b></a></html>");
-    moreLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    moreLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    moreLabel.addMouseListener(this);
-    moreLabel.setToolTipText("Show more/less of package documentation");
-
-    JPanel refPanelTop = new JPanel();
-    refPanelTop.setPreferredSize(UISettings.TITLE_CITATION_DIMS);
-    refPanelTop.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
-    refPanelTop.setLayout(new BorderLayout(0,0));
-    refPanelTop.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    JPanel refPanel = new JPanel();
-    refPanel.setLayout(new GridLayout(3,1));
-    refPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    JPanel refPanelLine1 = new JPanel();
-    refPanelLine1.setLayout(new BorderLayout(0,0));
-    refPanelLine1.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    refPanelLine1.add(BorderLayout.WEST, authorRefLabel);
-    refPanelLine1.add(BorderLayout.CENTER, titleRefLabel);
-    JPanel refPanelLine2 = new JPanel();
-    refPanelLine2.setLayout(new BorderLayout(0,0));
-    refPanelLine2.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    refPanelLine2.add(BorderLayout.WEST, accessionRefLabel);
-    refPanelLine2.add(BorderLayout.CENTER, keywordsRefLabel);
-    refPanel.add(refPanelLine1);
-    refPanel.add(refPanelLine2);
-    refPanel.add(moreLabel);
-    refPanelTop.add(BorderLayout.CENTER, refPanel);
-
- //   refPanel.add(BorderLayout.CENTER, refLabel);
- //   refLabel.setFont(UISettings.TITLE_CITATION_FONT);
-
-    // location panel contains 2 labels whose icons indicate wether the
-    // displayed package is local/network or both
-    JPanel locationPanel = new JPanel();
-  //  locationPanel.setBackground(UISettings.CUSTOM_GRAY);
-    Border margin0 = BorderFactory.createEmptyBorder(0, 2,0,2); //top,lft,bot,rgt
-    locationPanel.setPreferredSize(UISettings.TITLE_LOCATION_DIMS);
-    locationPanel.setBorder(margin0);
-    locationPanel.setBackground(UISettings.CUSTOM_GRAY);
-    locationPanel.setOpaque(true);
-    ImageIcon localIcon
-      = new ImageIcon(getClass().getResource("local-package-small.png"));
-    ImageIcon metacatIcon
-      = new ImageIcon(getClass().getResource("network-package-small.png"));
-    ImageIcon blankIcon
-      = new ImageIcon(getClass().getResource("blank.gif"));
-    JLabel localLabel = new JLabel("local");
-    localLabel.setBackground(UISettings.CUSTOM_GRAY);
-    localLabel.setOpaque(true);
-    localLabel.setFont(UISettings.TITLE_LOCATION_FONT);
-    localLabel.setIcon(localIcon);
-    localLabel.setToolTipText("Package is stored locally");
-    JLabel netLabel = new JLabel("net");
-    netLabel.setBackground(UISettings.CUSTOM_GRAY);
-    netLabel.setFont(UISettings.TITLE_LOCATION_FONT);
-    netLabel.setOpaque(true);
-    netLabel.setIcon(metacatIcon);
-    netLabel.setToolTipText("Package is stored on the network");
-    String location = dp.getLocation();
-    if (location.equals(DataPackageInterface.METACAT)) {
-      localLabel.setText("");
-      localLabel.setIcon(blankIcon);
-    }
-    else if (location.equals(DataPackageInterface.LOCAL)) {
-      netLabel.setText("");
-      netLabel.setIcon(blankIcon);
-    }
-    else {   // both
-
-    }
-    locationPanel.add(BorderLayout.NORTH,localLabel);
-    locationPanel.add(BorderLayout.SOUTH, netLabel);
-
-    refPanelTop.add(BorderLayout.EAST, locationPanel);
-
-// refpanel is created in this class and added to the top of the
-// panel in the next statement
-    packagePanel.add(BorderLayout.NORTH,refPanelTop);
-    this.morpho = dpgui.morpho;
-    this.toppanel = packagePanel;
-    this.entityItems = dpgui.getEntityitems();
-    this.listValueHash = dpgui.listValueHash;
-    this.setVisible(true);
-  // trying to get the height here always gives zero
-//  vertSplit.setDividerLocation(refPanel.getHeight());
-
-  }
 
   /*
    * this constructor uses an 'AbstractDataPackage' object
@@ -714,14 +598,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   }
 
   /**
-   * Method to get data package
-   */
-  public DataPackage getDataPackage()
-  {
-    return dp;
-  }
-
-  /**
    * Method to get current data viewer
    */
   public DataViewer getCurrentDataViewer()
@@ -834,23 +710,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     currentDataPanelOld.removeAll();
     lastTabSelected = index;
     String dataId = null;
-    if (dp!=null) {
-      String item = (String)entityItems.elementAt(index);
-      String id = getEntityIDForThisEntityName(item);
-      dataId = dp.getDataFileID(id);
-      String fn = dp.getDataFileName(id);
-      File fphysical = dp.getPhysicalFile(id);
-      File fattribute = dp.getAttributeFile(id);
-      File f = dp.getDataFile(id);
-      String dataString = "";
-      dv = new DataViewer(morpho, "DataFile: "+fn, f);
-      dv.setDataID(dp.getDataFileID(id));
-      dv.setPhysicalFile(fphysical);
-      dv.setAttributeFile(fattribute);
-      dv.setEntityFile(entityFile[index]);
-      dv.setEntityFileId(id);
-      dv.setDataPackage(this.dp);
-    } else {  // new eml2.0.0
       if (adp==null) {
         Log.debug(1, "Both dp and adp are null! No data package");
         return;
@@ -956,7 +815,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dv.setEntityIndex(index);
 //      File testFile = new File("C:/Documents and Settings/higgins/.morpho/profiles/higgins/data/jscientist/3.1");
       dv.setDataFile(displayFile);
-    }
+    
     dv.init();
 //    dv.getEntityInfo();  // this is already done in init
     lastPV = dv.getPV();
@@ -1220,9 +1079,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
      * so it is set to null when the editor is called.
      * We thus get it here by checking the dataPackage instance.
      */
-    if (location==null) {
-      location = dp.getLocation();
-    }
     AccessionNumber a = new AccessionNumber(morpho);
     boolean metacatpublic = false;
     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
@@ -1245,6 +1101,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       localloc = true;
     }
 
+//DFH - need to rewrite for eml2 !!!!
+/*
     try
     {
       if(localloc)
@@ -1382,7 +1240,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     UIController controller = UIController.getInstance();
     controller.removeWindow(thisFrame);
     thisFrame.dispose();
-
+*/
   }
 
   public void editingCanceled(String xmlString, String id, String location) {

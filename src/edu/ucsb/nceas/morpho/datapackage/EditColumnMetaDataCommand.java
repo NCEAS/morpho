@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:52:52 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-15 21:03:04 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,9 +81,9 @@ public class EditColumnMetaDataCommand implements Command
        if (dataView != null)
        {
          // Get parameters and run it
-         DataPackage dataPackage = resultPane.getDataPackage();
-         String entityId = dataView.getEntityFileId();
-         edit(dataPackage, dataView, entityId);
+//         DataPackage dataPackage = resultPane.getDataPackage();
+//         String entityId = dataView.getEntityFileId();
+//         edit(dataPackage, dataView, entityId);
        }
        
     }//if
@@ -93,6 +93,7 @@ public class EditColumnMetaDataCommand implements Command
   
   
   /* Method to run edit cloumn meta data */
+/*DFH need to rewrite
   private void edit(DataPackage dp, DataViewer thisRef, String entityFileId)
   {  
         EditorInterface editor = null;
@@ -147,7 +148,7 @@ public class EditColumnMetaDataCommand implements Command
         
         editor.openEditor(sb.toString(), id, dp.getLocation(), thisRef);
   }//edit
-
+*/
  
   /**
    * could also have undo functionality; disabled for now

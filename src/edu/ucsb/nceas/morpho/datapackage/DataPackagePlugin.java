@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:31 $'
- * '$Revision: 1.64 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-15 21:03:04 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -464,14 +464,10 @@ public class DataPackagePlugin
                        Vector relations, ButterflyFlapCoordinator coordinator,
                        String doctype)
   {
-    DataPackage dp = null;
     AbstractDataPackage adp = null;
     DataPackageGUI gui = null;
     Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
-//DFH    if ((doctype!=null)&&(doctype.indexOf("eml://ecoinformatics.org/eml-2.0.0")>-1)) {
-    if (true) {  // set so that an old-style datapackage is never created
-                 // will excise unneeded code later
       boolean metacat = false;
       boolean local = false;
       if ((location.equals(DataPackageInterface.METACAT))||
@@ -479,16 +475,9 @@ public class DataPackagePlugin
       if ((location.equals(DataPackageInterface.LOCAL))||
                (location.equals(DataPackageInterface.BOTH))) local = true;
       adp = DataPackageFactory.getDataPackage(identifier, metacat, local);
-    } else {
-      dp = new DataPackage(location, identifier, 
-                                     relations, morpho, true);
-    }
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
     
-    if (dp!=null) {
-      gui = new DataPackageGUI(morpho, dp);
-    }
 
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
@@ -528,11 +517,7 @@ public class DataPackagePlugin
     long starttime1 = System.currentTimeMillis();
  
     DataViewContainerPanel dvcp = null;
-    if (adp!=null) {
-      dvcp = new DataViewContainerPanel(adp);
-    } else {
-      dvcp = new DataViewContainerPanel(dp, gui);
-    }
+    dvcp = new DataViewContainerPanel(adp);
     dvcp.setFramework(morpho);
 
 //    dvcp.setEntityItems(gui.getEntityitems());
@@ -570,15 +555,6 @@ public class DataPackagePlugin
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
     }
     
-    if ((dp!=null)&&(dp.hasMutipleVersions()))
-    {
-      // open a mutiple versions package
-      monitor.notifyStateChange(
-                 new StateChangeEvent( 
-                 dvcp, 
-                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
-    }
-    else
     {
       // open a single version package
       monitor.notifyStateChange(
@@ -830,15 +806,8 @@ public class DataPackagePlugin
   public String getDocIdFromMorphoFrame(MorphoFrame morphoFrame)
   {
     String docid = null;
-    DataPackage data = getDataPackageFromMorphoFrame(morphoFrame);
-    if (data != null)
-    {
-      docid = data.getID();
-    }
-    else {
-      AbstractDataPackage adp = getAbstractDataPackageFromMorphoFrame(morphoFrame);
-      docid = adp.getPackageId();
-    }
+    AbstractDataPackage adp = getAbstractDataPackageFromMorphoFrame(morphoFrame);
+    docid = adp.getPackageId();
     Log.debug(50, "docid is: "+ docid);
     return docid;
   }
@@ -854,14 +823,10 @@ public class DataPackagePlugin
     boolean flagInLocal = false;
      DataViewContainerPanel dvcp = AddDocumentationCommand.
                                getDataViewContainerPanelFromMorphoFrame(morphoFrame);
-     DataPackage dataPackage = dvcp.getDataPackage();
      AbstractDataPackage adp = dvcp.getAbstractDataPackage();
-     if (dataPackage!=null) {
-       location = dataPackage.getLocation();
-     }
-     else if (adp!=null) {
+
        location = adp.getLocation();
-     }
+     
     
       if (location.equals(DataPackageInterface.LOCAL) || 
          location.equals(DataPackageInterface.BOTH))
@@ -883,14 +848,8 @@ public class DataPackagePlugin
     boolean flagInNetwork = false;
      DataViewContainerPanel dvcp = AddDocumentationCommand.
                                getDataViewContainerPanelFromMorphoFrame(morphoFrame);
-     DataPackage dataPackage = dvcp.getDataPackage();
      AbstractDataPackage adp = dvcp.getAbstractDataPackage();
-     if (dataPackage!=null) {
-       location = dataPackage.getLocation();
-     }
-     else if (adp!=null) {
        location = adp.getLocation();
-     }
 
       if (location.equals(DataPackageInterface.METACAT) || 
          location.equals(DataPackageInterface.BOTH))
@@ -901,28 +860,6 @@ public class DataPackagePlugin
     return flagInNetwork;
   }
   
-  /*
-   * Method to get package in a given morphoFrame. If the morpho frame doesn't
-   * contain a datapackage, null will be returned
-   */
-  private DataPackage getDataPackageFromMorphoFrame(MorphoFrame morphoFrame)
-  {
-    DataPackage data = null;
-    DataViewContainerPanel resultPane = null;
-    
-    if (morphoFrame != null)
-    {
-       resultPane = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
-    }//if
-    
-    // make sure resulPanel is not null
-    if (resultPane != null)
-    {
-       data = resultPane.getDataPackage();
-    }//if
-    return data;
-  }//getDataPackageFromMorphoFrame
 
   /*
    * Method to get package in a given morphoFrame. If the morpho frame doesn't

@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:31 $'
- * '$Revision: 1.91 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-15 21:03:04 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -233,7 +234,7 @@ public class DataViewer extends javax.swing.JPanel
 	/**
 	 * The DataPackage that contains the data
 	 */
-	 DataPackage dp = null;
+//DFH	 DataPackage dp = null;
 
    /**
 	 * The AbstractDataPackage that contains the data (eml2.0.0)
@@ -965,15 +966,7 @@ public class DataViewer extends javax.swing.JPanel
     public AbstractDataPackage getAbstractDataPackage() {
       return this.adp;
     }
-    
-    public void setDataPackage(DataPackage dp) {
-      this.dp = dp;
-    }
-
-    public DataPackage getDataPackage() {
-      return this.dp;
-    }
-     
+         
     public void setAttributeFile(File attr) {
         this.attributeFile = attr;
     }
@@ -1427,7 +1420,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       localloc = true;
     }
-  
+/*DFH  
     try
     { 
       if(localloc)
@@ -1558,7 +1551,7 @@ public class DataViewer extends javax.swing.JPanel
     UIController controller = UIController.getInstance();
     controller.removeWindow(thisFrame);
     thisFrame.dispose();
-
+*/
     
   }
   
@@ -1642,280 +1635,6 @@ public class DataViewer extends javax.swing.JPanel
  Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
  Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
     }
-	  if (dp!=null) {
-      // make a temporary copy of the data file
-      // PersistentVector get from ptm
-      //PersistentVector pVector = ptm.getPersistentVector(); 
-      //ptm.setFieldDelimiter(delimiter_string);
-      //pVector.setFieldDelimiter(delimiter_string);
-      //pVector.setFirstRow(num_header_lines);
-      ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
-      File newDataFile = new File(tempdir + "/" + "tempdata");
-      long newDataFileLength = newDataFile.length();
-           
-      
-      try {
-        String attrDocType = "<!DOCTYPE eml-attribute PUBLIC "+
-            "\"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "+
-            "\"eml-attribute.dtd\">";
-        String entityDocType = "<!DOCTYPE table-entity PUBLIC "+
-            "\"-//ecoinformatics.org//eml-entity-2.0.0beta6//EN\" "+
-            "\"eml-entity.dtd\">";
-        String physicalDocType = "<!DOCTYPE eml-physical PUBLIC "+
-            "\"-//ecoinformatics.org//eml-physical-2.0.0beta6//EN\" "+
-            "\"eml-physical.dtd\">";
-            
-        // changes in the attribute metadata should be up-to-date since they
-        // are changed when columns are added or deleted.
-        // thus just save a copy to a file
-        PackageUtil.saveDOM(tempdir + "/" + "tempattribute", attributeDoc, attrDocType, morpho);
-        
-        // entity metadata needs to be changed due to a change in the number of records
-        // that occurs when rows are added to the dataset
-        // Here we get the current entity metadata and save a new temp copy
-        
-        Document doc = PackageUtil.getDoc(entityFile, morpho);
-        NodeList nl = doc.getElementsByTagName("numberOfRecords");
-        Node textNode = nl.item(0).getFirstChild(); // assumed to be a text node
-        int rowcnt = ptm.getRowCount();
-        String rowcntS = (new Integer(rowcnt)).toString();
-        textNode.setNodeValue(rowcntS);  //set to new record count
-        PackageUtil.saveDOM(tempdir + "/" + "tempentity", doc, entityDocType, morpho);
-        
-        // physical metadata needs to be updated due to change in datafile size (and
-        // perhaps the delimiter)
-        doc = PackageUtil.getDoc(physicalFile, morpho);
-        nl = doc.getElementsByTagName("size");
-        textNode = nl.item(0).getFirstChild(); // assumed to be a text node
-        String sizeS = (new Long(newDataFileLength)).toString();
-        textNode.setNodeValue(sizeS);  //set to new file length
-
-        doc = PackageUtil.getDoc(physicalFile, morpho);
-        nl = doc.getElementsByTagName("fieldDelimiter");
-        textNode = nl.item(0).getFirstChild(); // assumed to be a text node
-        textNode.setNodeValue(field_delimiter);  //set to delimiter
-        
-        
-        PackageUtil.saveDOM(tempdir + "/" + "tempphysical", doc, physicalDocType, morpho);
-      }
-      catch (Exception q) {
-        Log.debug(20, "Error trying to save from DOM");
-      }
-      
-      
-        AccessionNumber a = new AccessionNumber(morpho);
-        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-        MetacatDataStore mds = new MetacatDataStore(morpho);
-  
-        boolean metacatloc = false;
-        boolean localloc = false;
-        boolean bothloc = false;
-        String newid = "";
-        String location = dp.getLocation();
-        String newPackageId = "";
-        if(location.equals(DataPackageInterface.BOTH))
-        {
-            metacatloc = true;
-            localloc = true;
-        }
-        else if(location.equals(DataPackageInterface.METACAT))
-        {
-            metacatloc = true;
-        }
-        else if(location.equals(DataPackageInterface.LOCAL))
-        {
-            localloc = true;
-        }
-
-        try{
-          Vector newids = new Vector();
-          Vector oldids = new Vector();
-          String oldid = dataID;
-          if (oldid.length()>0) {
-           newid = a.incRev(dataID);
-          }
-          else {
-            newid = a.getNextId();
-          }
-          // save data to a temporary file
-          FileReader fr = null;
-          FileReader frAttr = null;
-          FileReader frPhy = null;
-          FileReader frEnt = null;
-          
-         try{
-           //ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
-            tempfile = new File(tempdir + "/" + "tempdata");
-          }
-          catch (Exception ww) {
-            Log.debug(1,"Problem making temporary copy of data");
-          }
-          
-          
-          try{
-            tempfileAttr = new File(tempdir + "/" + "tempattribute");
-          }
-          catch (Exception ww) {
-            Log.debug(20,"Problem making Attr FileReader");
-          }
-          String attrFileId = dp.getAttributeFileId(entityFileId);
-          String newAttrFileId = a.incRev(attrFileId);
-          oldids.addElement(attrFileId);
-          newids.addElement(newAttrFileId);
-
-          try{
-            tempfilePhy = new File(tempdir + "/" + "tempphysical");
-          }
-          catch (Exception ww) {
-            Log.debug(20,"Problem making Physical FileReader");
-          }
-          String phyFileId = dp.getPhysicalFileId(entityFileId);
-          String newPhyFileId = a.incRev(phyFileId);
-          oldids.addElement(phyFileId);
-          newids.addElement(newPhyFileId);          
-           
-          try{
-            tempfileEnt = new File(tempdir + "/" + "tempentity");
-          }
-          catch (Exception ww) {
-            Log.debug(20,"Problem making Entity FileReader");
-          }
-          String newEntFileId = a.incRev(entityFileId);
-          oldids.addElement(entityFileId);
-          newids.addElement(newEntFileId);          
-      
-      fr = new FileReader(tempfile);
-      frAttr = new FileReader(tempfileAttr);
-      frPhy = new FileReader(tempfilePhy);
-      frEnt = new FileReader(tempfileEnt);
-      
-
-      if(localloc)
-      { //save it locally
-        try{
-          
-          fsds.saveFile(newid, fr);  // this is the new datafile
-          
-          fsds.saveFile(newAttrFileId, frAttr);  // new attribute file
-
-          fsds.saveFile(newPhyFileId, frPhy);  // new physical file
-
-          fsds.saveFile(newEntFileId, frEnt);  // new entity file
-           
-          newPackageId = a.incRev(dp.getID());
-          oldids.addElement(oldid);
-          oldids.addElement(dp.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
-                                                    oldids, 
-                                                    newids);
-          // handle case where there us currently no datafile in the package
-          // by adding triples for non-existing datefile and access file
-          // and add triple connecting entity to data
-          if (!dp.hasDataFile(entityFileId)) {
-            triples = buildTriplesForNewData(dp.getAccessId(), newEntFileId, newid);
-            newPackageFile = PackageUtil.addTriplesToTriplesString(triples,
-                                                    newPackageFile,
-                                                    morpho); 
-          }
-   System.out.println(newPackageFile);       
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
-          
-          fr.close();
-          frAttr.close();
-          frPhy.close();
-          frEnt.close();
-
-        }
-        catch (Exception e) {
-          Log.debug(20, "error in local update");    
-        }
-      }
-      
-      // now recreate readers since they may have been used in creating local docs
-      fr = new FileReader(tempfile);
-      frAttr = new FileReader(tempfileAttr);
-      frPhy = new FileReader(tempfilePhy);
-      frEnt = new FileReader(tempfileEnt);
-
-      if(metacatloc)
-      { //save it to metacat
-       try{
-          mds.newDataFile(newid, tempfile);
-          
-          mds.saveFile(newAttrFileId, frAttr, dp);  // new attribute file
-
-          mds.saveFile(newPhyFileId, frPhy, dp);  // new physical file
-
-          mds.saveFile(newEntFileId, frEnt, dp);  // new entity file
-           
-
-          newPackageId = a.incRev(dp.getID());
-          oldids.addElement(oldid);
-          oldids.addElement(dp.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          
-          //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
-                                                    oldids, 
-                                                    newids);
-
-          // handle case where there us currently no datafile in the package
-          // by adding triples for non-existing datefile and access file
-          // and add triple connecting entity to data
-          if (!dp.hasDataFile(entityFileId)) {
-            triples = buildTriplesForNewData(dp.getAccessId(),newEntFileId,newid);
-            newPackageFile = PackageUtil.addTriplesToTriplesString(triples,
-                                                    newPackageFile,
-                                                    morpho); 
-          }
-          
-          Log.debug(20, "oldid: " + oldid + " newid: " + newid);          
-          mds.saveFile(newPackageId, new StringReader(newPackageFile), dp); 
-          
-          fr.close();
-          frAttr.close();
-          frPhy.close();
-          frEnt.close();
-
-        }
-        catch (Exception e) {
-            Log.debug(20, "error in metacat update of data file"+e.getMessage());    
-        }
-      }
-      newPackage = new DataPackage(location, newPackageId, null,
-                                               morpho, true);
-                                                 
-      thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
-      }
-      catch (Exception www) {
-        Log.debug(1, "Error!"+www.getMessage());
-      }
-  
-    // Show the new package
-    try 
-    {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
-                      services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newPackage.getID(), null, null, null);
-    }
-    catch (ServiceNotHandledException snhe) 
-    {
-       Log.debug(6, snhe.getMessage());
-    }
-    
-    thisFrame.setVisible(false);
-    UIController controller = UIController.getInstance();
-    controller.removeWindow(thisFrame);
-    thisFrame.dispose();
-
-
-	  }		
     
 	}
 
@@ -1938,27 +1657,6 @@ public class DataViewer extends javax.swing.JPanel
   }
 
   
-	private TripleCollection buildTriplesForNewData(String accessId, 
-                                  String entityFileId,
-                                  String dataid) {
-        AccessionNumber a = new AccessionNumber(morpho);
-        String newPackageId = a.incRev(dp.getID());
-
-        Triple t = new Triple(dataid, "isDataFileFor", newPackageId);
-        TripleCollection triples = new TripleCollection();
-        triples.addTriple(t);
-    
-        // add an access triple for the new datafile
-        Triple tacc = new Triple(accessId,"provides access control rules for", dataid);
-        triples.addTriple(tacc);
-    
-        // connect this entity to the new datafile
-        Triple t1 = new Triple(entityFileId, 
-                              "provides table-entity information for DATAFILE", 
-                              dataid);
-        triples.addTriple(t1);
-        return triples;
-  }
   
   class HeaderMouseListener implements MouseListener {
 
