@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-01 19:26:24 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-10-07 16:08:34 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ public class DataPackageFactory
 
     dp.load(location, docid, morpho);
 
-    dp.showPackageSummary();
+//    dp.showPackageSummary();
    
     return dp;    
   }
@@ -175,7 +175,7 @@ public class DataPackageFactory
     
     dp.grammar = doctype;
     dp.metadataNode = node;
-    dp.showPackageSummary();
+//    dp.showPackageSummary();
     
     return dp;
   }
