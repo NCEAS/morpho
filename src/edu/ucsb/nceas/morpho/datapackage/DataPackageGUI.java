@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-29 21:54:21 $'
- * '$Revision: 1.72 $'
+ *     '$Date: 2002-02-06 22:20:14 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
+import javax.swing.text.html.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -74,6 +75,10 @@ public class DataPackageGUI extends javax.swing.JFrame
   private static final String htmlBegin = "<html><font color=black>";
   private static final String htmlEnd = "</font></html>";
   
+  JScrollPane tpscroll;
+  String wholelabel;
+  JEditorPane biglabel;
+  
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
     this.location = dp.getLocation();
@@ -85,8 +90,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     contentPane = getContentPane();
     setTitle("Data Package Editor");
-    BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
-    contentPane.setLayout(box);
+//    BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
+    contentPane.setLayout(new BorderLayout());
     initComponents();
     pack();
     setSize(500, 550);
@@ -95,6 +100,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     Rectangle frameDim = getBounds();
     setLocation((screenDim.width - frameDim.width) / 2 ,
                 (screenDim.height - frameDim.height) / 2);
+    
+    biglabel.setCaretPosition(0);
   }
   
   /**
@@ -106,7 +113,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     fileAttributes = PackageUtil.getConfigFileTypeAttributes(framework, 
                                                              "xmlfiletype");
     
-    contentPane.setLayout(new FlowLayout());
+//    contentPane.setLayout(new FlowLayout());
     Vector orig = new Vector();
     String title = "No Title Provided";
     String altTitle = "No Alternate Title Provided";
@@ -303,25 +310,26 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     JPanel listPanel = createListPanel(entityitems, otheritems);
     JPanel layoutPanel = new JPanel();
-    layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
-    layoutPanel.setPreferredSize(new Dimension(450, 500));
-    layoutPanel.setMinimumSize(new Dimension(450, 500));
-    
+    layoutPanel.setLayout(new GridLayout(2,1,8,8));
+//    layoutPanel.setPreferredSize(new Dimension(450, 500));
+//    layoutPanel.setMinimumSize(new Dimension(450, 500));
+/*    
     basicInfoPanel.setPreferredSize(new Dimension(500, 250));
     basicInfoPanel.setMaximumSize(new Dimension(500, 250));
     basicInfoPanel.setMinimumSize(new Dimension(500, 250));
-    //basicInfoPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
+*/    //basicInfoPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
     
     toppanel.setAlignmentX(0);
     basicInfoPanel.setAlignmentX(0);
     listPanel.setAlignmentX(0);
     
-    layoutPanel.add(toppanel);      
-    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+    contentPane.add(BorderLayout.NORTH, toppanel);
+//    layoutPanel.add(toppanel);      
+//    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
     layoutPanel.add(basicInfoPanel);
-    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+//    layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
     layoutPanel.add(listPanel);
-    contentPane.add(layoutPanel);
+    contentPane.add(BorderLayout.CENTER,layoutPanel);
   }
   
   /**
@@ -354,7 +362,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     textpanel.setBorder(BorderFactory.createCompoundBorder(
                         BorderFactory.createLoweredBevelBorder(),
                         BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-    textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
+//    textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
+    textpanel.setLayout(new BorderLayout());
     textpanel.setBackground(Color.white);
     //the button to edit the base info
     editBaseInfoButton = new JButton("Edit");
@@ -398,7 +407,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     
     //get the data from the nodes
-    String wholelabel = "<html><font color=black>";
+    wholelabel = "<html><font color=black>";
     String id = "";
     String shortName = "";
     String title = "";
@@ -568,20 +577,25 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     
     wholelabel += originators + "</html>";
-    JLabel biglabel = new JLabel(wholelabel);
-    biglabel.setMaximumSize(new Dimension(350,1000));
-    JPanel biglabelPanel = new JPanel();
+//    JLabel biglabel = new JLabel(wholelabel);
+    biglabel = new JEditorPane("text/html",wholelabel);
+    biglabel.setEditable(false);
+//    biglabel.setContentType("text/html");
+//    biglabel.setText(wholelabel);
+//    biglabel.setMaximumSize(new Dimension(350,1000));
+ /*   JPanel biglabelPanel = new JPanel();
     biglabelPanel.setLayout(new BoxLayout(biglabelPanel, BoxLayout.Y_AXIS));
     biglabelPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
     biglabel.setAlignmentX(0);
     biglabelPanel.add(biglabel);
     biglabelPanel.setBackground(Color.white);
-    
+*/    
     headerPanel.setAlignmentX(0);
-    biglabelPanel.setAlignmentX(0);
-    textpanel.add(headerPanel);
-    textpanel.add(new JScrollPane(biglabelPanel));
-    
+    textpanel.add(BorderLayout.NORTH,headerPanel);
+//    biglabelPanel.setAlignmentX(0);
+    tpscroll = new JScrollPane(biglabel);
+//    tpscroll.getViewport().add(biglabel);
+    textpanel.add(BorderLayout.CENTER,tpscroll);
     return textpanel;
   }
   
@@ -1144,7 +1158,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     framework.removeWindow(this);
   }
   public void windowActivated(WindowEvent event)
-  {}
+  {
+    }
   public void windowDeactivated(WindowEvent event)
   {}
   public void windowIconified(WindowEvent event)
@@ -1152,7 +1167,8 @@ public class DataPackageGUI extends javax.swing.JFrame
   public void windowDeiconified(WindowEvent event)
   {}
   public void windowOpened(WindowEvent event)
-  {}
+  {
+    }
   
   /**
    * makes sure that there is only one file selected in the list boxes at
