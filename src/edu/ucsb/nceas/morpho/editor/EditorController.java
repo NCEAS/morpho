@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 18:01:26 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-28 22:13:16 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.*;
 import javax.swing.*;
 import com.symantec.itools.javax.swing.JToolBarSeparator;
 import com.symantec.itools.javax.swing.icons.ImageIcon;
@@ -84,6 +85,10 @@ public class EditorController extends javax.swing.JFrame implements EditingCompl
 		DisplayButton.setActionCommand("Display");
 		DisplayButton.setDefaultCapable(false);
 		JToolBar1.add(DisplayButton);
+		TestButton.setText("Test");
+		TestButton.setActionCommand("Test");
+		TestButton.setDefaultCapable(false);
+		JToolBar1.add(TestButton);
 		JPanel1.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER, JPanel1);
 		JScrollPane1.setOpaque(true);
@@ -125,6 +130,7 @@ public class EditorController extends javax.swing.JFrame implements EditingCompl
 		openItem.addActionListener(lSymAction);
 		exitItem.addActionListener(lSymAction);
 		DisplayButton.addActionListener(lSymAction);
+		TestButton.addActionListener(lSymAction);
 		//}}
 		startup();
 	}
@@ -211,6 +217,7 @@ public class EditorController extends javax.swing.JFrame implements EditingCompl
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
 	javax.swing.JToolBar JToolBar1 = new javax.swing.JToolBar();
 	javax.swing.JButton DisplayButton = new javax.swing.JButton();
+	javax.swing.JButton TestButton = new javax.swing.JButton();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
@@ -289,6 +296,8 @@ public class EditorController extends javax.swing.JFrame implements EditingCompl
 			
 			if (object == DisplayButton)
 				DisplayButton_actionPerformed(event);
+			else if (object == TestButton)
+				TestButton_actionPerformed(event);
 			
 		}
 	}
@@ -397,4 +406,31 @@ public void editingCompleted(String xmlString, String id, String location) {
 // --------------------------
 
 
+
+	void TestButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		String doc1 = "<?xml version=\"1.0\"?>";
+		doc1 = doc1 + "<!DOCTYPE dataset PUBLIC \"-//NCEAS//eml-dataset-2.0//EN\" \"eml-dataset.dtd\">";
+		doc1 = doc1 + "<dataset> </dataset>";
+		String doc2 = "<?xml version=\"1.0\"?>";
+		doc2 = doc2 + "<!DOCTYPE table-entity PUBLIC \"-//NCEAS//eml-entity-2.0//EN\" \"eml-entity.dtd\">";
+		doc2 = doc2 + "<table-entity> </table-entity>";
+		String doc3 = "<?xml version=\"1.0\"?>";
+		doc3 = doc3 + "<!DOCTYPE table-entity PUBLIC \"-//NCEAS//eml-variable//EN\" \"eml-variable.dtd\">";
+		doc3 = doc3 + "<eml-variable> </eml-variable>";
+		Vector docs = new Vector();
+		docs.addElement(doc1);
+		docs.addElement(doc2);
+		docs.addElement(doc3);
+		
+    try {
+      ServiceProvider provider = 
+                      framework.getServiceProvider(EditorInterface.class);
+      EditorInterface editor = (EditorInterface)provider;
+      editor.openEditor(docs, null, null, null, null, this);
+    } catch (ServiceNotHandledException snhe) {
+      framework.debug(6, snhe.getMessage());
+    }
+		
+	}
 }

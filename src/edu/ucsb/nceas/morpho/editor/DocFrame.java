@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 18:01:26 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2001-06-28 22:13:16 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -345,6 +345,10 @@ public class DocFrame extends javax.swing.JFrame
 	  this.location = location;
 	}
 
+
+/** this version allows one to create a new DocFrame and set the initially selected
+ *  nodename/nodetext
+  */
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location,
 	                       String nodeName, String nodeValue) {
     this(cf, sTitle, doctext, id, location);
@@ -354,7 +358,101 @@ public class DocFrame extends javax.swing.JFrame
     else {
       selectMatchingNode(rootNode, nodeName);  
     }
+ }
     
+ /** 
+  * this version will create a new DocFrame using a Vector of XML strings. Each one of the 
+  * strings in the vector is assumed to be a valid XML document
+  */
+	public DocFrame(ClientFramework cf, String sTitle, Vector docs, String id, String location,
+	                       String nodeName, String nodeValue) {
+	  this();
+	  Vector docRoots = new Vector();                      
+	  setTitle("Morpho Editor");
+	  this.framework = cf;
+	  counter++;
+	  setName("Morpho Editor"+counter);
+	  
+	  // assumed that the docs vector contains one or more XML strings
+	  // need to loop over all strings
+	  Enumeration docs_enum = docs.elements();
+	  while(docs_enum.hasMoreElements()) {
+		  XMLTextString = (String)docs_enum.nextElement();
+		  putXMLintoTree(treeModel, XMLTextString);
+		  // now want to possibly merge the input document with a formatting document
+		  // and set the 'editor' and 'help' fields for each node
+		  // use the root node name as a key
+		  rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+      String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+      rootname = rootname+".xml";
+		  file = new File("./lib", rootname);
+		  DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
+		  DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
+		  String fXMLString = "";
+		  boolean formatflag = true;
+      try{
+        FileReader in = new FileReader(file);
+        StringWriter out = new StringWriter();
+        int c;
+        while ((c = in.read()) != -1) {
+          out.write(c);
+        }
+        in.close();
+        out.close();
+        fXMLString = out.toString();
+      }
+	    catch(Exception e){formatflag = false;}	
+		
+		  if (formatflag) {
+		    putXMLintoTree(ftreeModel,fXMLString);
+		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+		    treeUnion(rootNode,frootNode);
+		  }
+    
+    
+      if (dtdfile!=null) {
+		    dtdtree = new DTDTree(dtdfile);
+		    dtdtree.setRootElementName(rootnodeName);
+		    dtdtree.parseDTD();
+		
+	      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+
+	        // the treeUnion method will 'merge' the input document with
+	        // a template XML document created using the DTD parser from the DTD doc
+	      treeUnion(rootNode,dtdtree.rootNode);
+            // treeTrim will remove nodes in the input that are not in the DTD
+            // remove the following line if this is not wanted
+        treeTrim(rootNode,dtdtree.rootNode);
+		  }
+		// add this tree to the collection
+		docRoots.addElement(rootNode);
+		} // end while loop over strings
+		DefaultMutableTreeNode newrootNode = new DefaultMutableTreeNode();
+		NodeInfo newni = new NodeInfo("DataPackage");
+		newrootNode.setUserObject(newni);
+		Enumeration docRootNodes = docRoots.elements();
+		while (docRootNodes.hasMoreElements()) {
+		  DefaultMutableTreeNode rnd = (DefaultMutableTreeNode)docRootNodes.nextElement();
+		  newrootNode.add(rnd); 
+		}
+		DefaultTreeModel newTreeModel = new DefaultTreeModel(newrootNode);
+  		tree = new JTree(newTreeModel);
+		OutputScrollPanel.getViewport().add(tree);
+    tree.setCellRenderer(new XMLTreeCellRenderer());
+		
+		tree.setShowsRootHandles(true);
+    tree.setEditable(false);
+    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    tree.setShowsRootHandles(true);
+    tree.putClientProperty("JTree.lineStyle", "Angled");
+		
+		SymTreeSelection lSymTreeSelection = new SymTreeSelection();
+		tree.addTreeSelectionListener(lSymTreeSelection);
+	
+		MouseListener popupListener = new PopupListener();
+    tree.addMouseListener(popupListener);
+    tree.setSelectionRow(0);
+                          
                         
 	}
 	

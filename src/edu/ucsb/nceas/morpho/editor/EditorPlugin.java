@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 18:01:26 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-06-28 22:13:16 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,6 +206,22 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     }
     docframes.put(editorframe, listener);
   }
+
+  public void openEditor(Vector xmlDocs, String id, String location,
+                         String nodeName, String nodeValue,
+                         EditingCompleteListener listener) {
+    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlDocs, id, location,
+                          nodeName, nodeValue);
+    editorframe.setController(this);
+    editorframe.setVisible(true);
+    this.id = id;
+    this.location = location;
+    if (framework!=null) {
+      framework.addWindow(editorframe);
+    }
+    docframes.put(editorframe, listener);
+  }
+  
   
   public Object getClipboardObject() {
     return clipboardObject; 
