@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-17 20:01:37 $'
- * '$Revision: 1.1 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-25 01:36:58 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ public void add_returndoctype(String val) {
 }
 
 public void add_queryterm(String value, String path) {
-  String query = "  <queryterm casesensitive=\"true\" searchmode=\"contains\">\n";
+  String query = "  <queryterm casesensitive=\"false\" searchmode=\"contains\">\n";
   query = query + "   <value>"+value+"</value>\n";
   if (!path.equals("//*")) {
     query = query + "   <pathexpr>"+path+"</pathexpr>\n";
