@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-19 19:09:03 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2002-04-03 16:36:07 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -867,7 +867,7 @@ public void startImport(String file) {
         nlines_actual = nlines;
         if (nlines>nlines_max) {
            nlines = nlines_max; 
-           JOptionPane.showMessageDialog(this, "Data File parsing has been truncated due to large size!",
+           JOptionPane.showMessageDialog(this, "Data File parsing has been truncated due to large size! (Note: NO data has been lost!)",
                         "Message",JOptionPane.INFORMATION_MESSAGE, null);
         }
         
@@ -1203,11 +1203,11 @@ public void startImport(String file) {
 	// info should be null if all fields are not blank
 	if (info!=null) {
         int  choice = JOptionPane.showConfirmDialog(null, 
-                             "This package may be invalid because certain " + 
-                             "fields in columns \n"+info+"\n contain no information. \n " +
+                             "This package may be invalid because certain metadata" + 
+                             "fields which refer to columns \n"+info+"\n contain no information. \n " +
                              "To correct this, please press Cancel or No\n" +
                              "and then select each column in the table\n" +
-                             "and enter the appropriate information.\n\n"+
+                             "and enter the appropriate metadata information.\n\n"+
                              "Are you sure you want to save now?", 
                              "Invalid Document", 
                              JOptionPane.YES_NO_CANCEL_OPTION,
