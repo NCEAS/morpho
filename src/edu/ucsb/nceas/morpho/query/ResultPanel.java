@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-14 03:36:52 $'
- * '$Revision: 1.17 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-19 22:13:26 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ public class ResultPanel extends JPanel
       headerBox.add(Box.createHorizontalStrut(8));
       headerBox.add(titleLabel);
       headerBox.add(Box.createHorizontalGlue());
-      recordCountLabel = new JLabel(results.getRowCount() + " data sets");
+      recordCountLabel = new JLabel(results.getRowCount() + " data packages");
       recordCountLabel.setForeground(Color.black);
       recordCountLabel.setFont(new Font(null, Font.BOLD, 18));
       headerBox.add(recordCountLabel);
@@ -366,7 +366,7 @@ public class ResultPanel extends JPanel
     }
  
     // Update the record count
-    recordCountLabel.setText(results.getRowCount() + " data sets");
+    recordCountLabel.setText(results.getRowCount() + " data packages");
 
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);
