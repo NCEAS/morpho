@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-20 23:51:05 $'
- * '$Revision: 1.67 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-11-29 22:36:05 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1055,9 +1055,30 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      framework.debug(0, "Error saving file to metacat"+ id + " to " + location +
+      String message = e.getMessage();
+      if(message.indexOf("Next revision number must be") != 1)
+      {
+        framework.debug(0,"The file you are attempting to update " +
+                                 "has been changed by another user.  " +
+                                 "Please refresh your query screen, " + 
+                                 "open the package again and " +
+                                 "re-enter your changes.");
+        try 
+        {
+        ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+        } 
+        catch (ServiceNotHandledException snhe) 
+        {
+          framework.debug(6, snhe.getMessage());
+        }
+        this.dispose();
+        return;
+      }
+      framework.debug(0, "Error saving file to metacat "+ id + " to " + location +
                          "--message: " + e.getMessage());
-      framework.debug(11, "File: " + xmlString);
+      //framework.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
     

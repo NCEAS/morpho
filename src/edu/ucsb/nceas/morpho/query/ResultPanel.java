@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-28 17:56:26 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-11-29 22:36:05 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -468,7 +468,42 @@ public class ResultPanel extends JPanel
 			else if (object == uploadMenu)
       { //upload the current selection to metacat
         ClientFramework.debug(20, "Uploading package.");
-        dataPackage.upload(docid);
+        try
+        {
+          dataPackage.upload(docid, false);
+        }
+        catch(MetacatUploadException mue)
+        {
+          //ask the user if he is sure he wants to overwrite the package
+          //if he is do it, otherwise return
+          String message = "A conflict has been found in one or more of the " +
+             "identifiers \nin your package.  It is possible that you or \n" + 
+             "someone else has made a change on the server that has not \n" +
+             "been reflected on your local copy. If you proceed, you may \n" +
+             "overwrite package information.  If you proceed the identifier \n"+
+             "for this package will be changed.  Are you sure you want to \n" +
+             "proceed with the upload?";
+          int choice = JOptionPane.YES_OPTION;
+          choice = JOptionPane.showConfirmDialog(null, message, 
+                                 "Morpho", 
+                                 JOptionPane.YES_NO_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+          if(choice == JOptionPane.YES_OPTION)
+          {
+            try
+            {
+              dataPackage.upload(docid, true);
+            }
+            catch(MetacatUploadException mue2)
+            {
+              framework.debug(0, mue2.getMessage());
+            }
+          }
+          else
+          {
+            return;
+          }
+        }
       }
 			else if (object == downloadMenu)
       { //download the current selection to the local disk
@@ -478,7 +513,7 @@ public class ResultPanel extends JPanel
 			else if (object == deleteLocalMenu)
 		  { //delete the local package
         ClientFramework.debug(20, "Deleteing the local package.");
-        String message = "Are you sure you want to delete the package from " +
+        String message = "Are you sure you want to delete \nthe package from " +
                          "your local file system?";
         int choice = JOptionPane.YES_OPTION;
         choice = JOptionPane.showConfirmDialog(null, message, 
@@ -493,8 +528,8 @@ public class ResultPanel extends JPanel
 			else if (object == deleteMetacatMenu)
 			{ //delete the object on metacat
         ClientFramework.debug(20, "Deleteing the metacat package.");
-        String message = "Are you sure you want to delete the package from " +
-                         "Metacat? You will not be able to upload it " +
+        String message = "Are you sure you want to delete \nthe package from " +
+                         "Metacat? You \nwill not be able to upload \nit " +
                          "again with the same identifier.";
         int choice = JOptionPane.YES_OPTION;
         choice = JOptionPane.showConfirmDialog(null, message, 
@@ -509,9 +544,9 @@ public class ResultPanel extends JPanel
 			else if (object == deleteAllMenu)
 			{ //delete both of the objects
         ClientFramework.debug(20, "Deleting both copies of the package.");
-        String message = "Are you sure you want to delete the package from " +
-                         "Metacat and your local file system? " +
-                         "Deleting a package cannot be undone!";
+        String message = "Are you sure you want to delete \nthe package from " +
+                         "Metacat and your \nlocal file system? " +
+                         "Deleting a package\n cannot be undone!";
         int choice = JOptionPane.YES_OPTION;
         choice = JOptionPane.showConfirmDialog(null, message, 
                                "Morpho", 

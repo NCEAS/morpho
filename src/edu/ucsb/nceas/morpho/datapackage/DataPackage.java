@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-28 17:56:26 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2001-11-29 22:36:05 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -619,11 +619,24 @@ public class DataPackage
   }
   
   /**
+   * uploads the package with the default of automatically updating the ids
+   * when a conflict occurs.
+   */
+  public DataPackage upload() throws MetacatUploadException
+  {
+    return upload(true);
+  }
+  
+  /**
    * Uploads a local package to metacat
    * @return the package that was uploaded.  Note that this may have a different
    * id from the one that was told to upload.
+   * @param updateIds if this is true, the upload will automatically update
+   * the ids of all of the package documents if an id conflict is found.  if
+   * it is false, a MetacatUploadException will be raised when an id conflict 
+   * occurs
    */
-  public DataPackage upload()
+  public DataPackage upload(boolean updateIds) throws MetacatUploadException
   {
     ClientFramework.debug(20, "Uploading package.");
     
@@ -714,13 +727,21 @@ public class DataPackage
           if(message.indexOf(accNumMess1) != -1 && 
              message.indexOf(accNumMess2) != -1)
           {
-            return incrementPackageIds();
+            if(updateIds)
+            {
+              return incrementPackageIds();
+            }
+            else
+            {
+              throw new MetacatUploadException(e.getMessage());
+            }
           }
           else
           {
-            framework.debug(0, "Error uploading " + key + " to metacat: " + 
-                            e.getMessage());
-            e.printStackTrace();
+            //framework.debug(0, "Error uploading " + key + " to metacat: " + 
+            //                e.getMessage());
+            //e.printStackTrace();
+            throw new MetacatUploadException(e.getMessage());
           }
         }
       }

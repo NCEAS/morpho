@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-17 17:53:00 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-11-29 22:36:05 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,10 +176,11 @@ public class DataPackagePlugin
    * DataPackage.LOCAL
    * @param docid the id of the package to upload
    */
-  public void upload(String docid)
+  public void upload(String docid, boolean updateIds) 
+              throws MetacatUploadException
   {
     DataPackage dp = new DataPackage(DataPackage.LOCAL, docid, null, framework);
-    dp.upload();
+    dp.upload(updateIds);
   }
   
   /**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-17 17:53:00 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-11-29 22:36:05 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,11 @@ public interface DataPackageInterface
    * This method is called to upload a datapackage that is currently stored
    * locally to metacat
    * @param docid the id of the package to upload
+   * @param updateIds boolean to tell whether to automatically update ids
+   * when a conflict is found.
    */
-  public void upload(String docid);
+  public void upload(String docid, boolean updatedIds) 
+              throws MetacatUploadException;
   
   /**
    * This method is called to download a datapackage from metacat to the local
