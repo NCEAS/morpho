@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-11 22:51:21 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2003-09-12 00:00:14 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1858,7 +1858,6 @@ public void startImport(String file) {
               +"bounds/minimum"+"["+(i+1)+"]",""+cd.colMin);
         om.put(header+"attributeList/attribute/"+"measurementScale/interval/numericDomain/"
               +"bounds/maximum"+"["+(i+1)+"]",""+cd.colMax);
-        
       }
       else if(cd.colType.equals("date")) {
         om.put(header+"attributeList/attribute/"+"measurementScale/datetime/"
@@ -1871,7 +1870,26 @@ public void startImport(String file) {
               +"dataTimeDomain/bounds/maximum"+"["+(i+1)+"]","???");
       }
       else { //assume a string
- 
+        if (cd.enumChoice) {
+          for (int k=0;k<cd.enumCodeVector.size();k++) {
+            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain/"
+                  +"codeDefinition/code"+"["+(k+1)+"]",(String)cd.enumCodeVector.elementAt(k));
+            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain/"
+                  +"codeDefinition/definition"+"["+(k+1)+"]",(String)cd.enumDefinitionVector.elementAt(k));
+            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/enumeratedDomain/"
+                  +"codeDefinition/source"+"["+(k+1)+"]",(String)cd.enumSourceVector.elementAt(k));
+          }
+        }
+        else { // simple text
+          if (cd.colTextDefinition.length()>0) {
+            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/textDomain/"
+                  +"definition"+"["+(i+1)+"]",cd.colTextDefinition);
+          }
+          else{
+            om.put(header+"attributeList/attribute/"+"measurementScale/nominal/nonNumericDomain/textDomain/"
+                  +"definition"+"["+(i+1)+"]","any text");
+          }
+        }
       }
     }
     int temp = 0;
