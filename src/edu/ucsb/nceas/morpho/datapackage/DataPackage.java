@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-10 03:59:12 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-10 21:15:20 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,13 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
+import java.io.*;
 
 public class DataPackage 
 {
   TripleCollection triples = new TripleCollection();
+  
   /**
    * Create a new data package object with an id, location and associated
    * relations.
@@ -48,22 +49,54 @@ public class DataPackage
     framework.debug(9, "Creating new DataPackage Object");
     framework.debug(9, "id: " + identifier);
     framework.debug(9, "location: " + location);
-    /*for(int i=0; i<relations.size(); i++)
+    
+    if(location.equals("metacat"))
     {
+      framework.debug(9, "opening metacat file");
+      MetacatDataStore mds = new MetacatDataStore(framework);
       
-      System.out.print(((String[])relations.elementAt(i))[0] + " ");
-      System.out.print(((String[])relations.elementAt(i))[1] + " ");
-      System.out.print(((String[])relations.elementAt(i))[2] + " ");
-      System.out.println();
-    }*/
-    getTriples(identifier, location);
+    }
+    else if(location.equals("local"))
+    {
+      framework.debug(9, "opening local file");
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      try
+      {
+        File resourcefile = fsds.openFile(identifier);
+        framework.debug(9, "file opened");
+        FileReader reader = new FileReader(resourcefile);
+        while(reader.ready())
+        {
+          System.out.print((char)reader.read());
+        }
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        fnfe.printStackTrace();
+      }
+      catch(Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
   }
   
-  /**
-   * get the file with the given id and parse any triples out of it.
-   */
-  private void getTriples(String id, String location)
+  public static void main(String[] args)
   {
-    
+    String filename = args[0];
+    String location = args[1];
+    String action = args[2];
+    System.out.println("location: " + location);
+    System.out.println("id: " + filename);
+    System.out.println("action: " + action);
+    if(action.equals("read"))
+    {
+      ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
+      DataPackage dp = new DataPackage(location, filename, null, cf);
+    }
+    else if(action.equals("write"))
+    {
+      
+    }
   }
 }
