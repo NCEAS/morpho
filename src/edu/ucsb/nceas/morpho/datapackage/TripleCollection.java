@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-01 21:27:16 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-04 21:26:43 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,6 +174,11 @@ public class TripleCollection
     return this.triples;
   }
   
+  public String toXML()
+  {
+    return toXML(null);
+  }
+  
   /**
    * returns a string representation of this collection in xml format.
    * the xml looks like this:
@@ -190,13 +195,25 @@ public class TripleCollection
    * some content 3&lt;/object&gt;&lt;/triple&gt;
    * </pre>
    */
-  public String toXML()
+  public String toXML(String root)
   {
     StringBuffer sb = new StringBuffer();
+    sb.append("<?xml version=\"1.0\"?>");
+    if(root != null)
+    {
+      sb.append("<" + root + ">");
+    }
+    
     for(int i=0; i<triples.size(); i++)
     {
       sb.append(((Triple)triples.elementAt(i)).toXML());
     }
+    
+    if(root != null)
+    {
+      sb.append("</" + root + ">");
+    }
+    
     return sb.toString();
   }
   
@@ -204,8 +221,7 @@ public class TripleCollection
   {
     DOMParser parser = new DOMParser();
     InputSource in;
-
-    in = new InputSource(new StringReader(toXML()));
+    in = new InputSource(new StringReader(toXML("triples")));
     try
     {
       parser.parse(in);

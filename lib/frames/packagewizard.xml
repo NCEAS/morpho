@@ -3,7 +3,7 @@
     <spec name="Resource" 
           path="./lib/frames/resource.xml" 
           idtag="/dataset/identifier" 
-          triplestag="/dataset/triple"/>
+          triplestag="/dataset/triples"/>
     <spec name="Entity" 
           path="./lib/frames/entity.xml" 
           idtag="/table-entity/identifier" 
