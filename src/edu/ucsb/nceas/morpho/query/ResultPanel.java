@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-10 23:08:29 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2002-04-12 22:53:34 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,8 @@ public class ResultPanel extends JPanel
   ImageIcon flapping;
   int threadCount = 0;
   int selectedRow = -1;
+  
+  DynamicMenuAction dynamicmenuhandler;
   
   /**
    * Construct a new ResultPanel and display the result set.  By default
@@ -273,6 +275,8 @@ public class ResultPanel extends JPanel
       refreshMenu.addActionListener(menuhandler);
       exportMenu.addActionListener(menuhandler);
       exportToZipMenu.addActionListener(menuhandler);
+      
+      dynamicmenuhandler = new DynamicMenuAction();
       
       MouseListener popupListener = new PopupListener();
       table.addMouseListener(popupListener);
@@ -535,6 +539,43 @@ public class ResultPanel extends JPanel
       getParent().repaint();
 		}
   }
+
+  /**
+   * Event handler for the right click popup menu dynamic menus
+   * i.e. those for previous version of a datapackage
+   */
+  class DynamicMenuAction implements java.awt.event.ActionListener 
+  {
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{
+			Object object = event.getSource();
+			JMenuItem jmi = (JMenuItem)object;
+      ClientFramework.debug(30, "Event String:"+jmi.getText());
+
+      DataPackageInterface dataPackage;
+      try 
+      {
+        ServiceProvider provider = 
+                     framework.getServiceProvider(DataPackageInterface.class);
+        dataPackage = (DataPackageInterface)provider;
+      } 
+      catch (ServiceNotHandledException snhe) 
+      {
+        framework.debug(6, snhe.getMessage());
+        return;
+      }
+      String location = "";
+      if (localLoc) location = "local";
+      else {
+        location = "metacat";
+      }
+      dataPackage.openDataPackage(location, jmi.getText(), null);
+
+      getParent().invalidate();
+      getParent().repaint();
+		}
+  }
+  
   
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
@@ -565,6 +606,7 @@ public class ResultPanel extends JPanel
       }
       System.out.println("\nrow: " + selrow + " rowV: " + rowV.toString());*/
       docid = (String)rowV.elementAt(6);
+      selectedId = docid;
       localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
       metacatLoc = ((Boolean)rowV.elementAt(10)).booleanValue();
       ClientFramework.debug(30, "selectedId is: "+docid);
@@ -584,7 +626,20 @@ public class ResultPanel extends JPanel
       if(e.isPopupTrigger() || trigger) 
       {     
         int vers = getNumberOfPrevVersions();
-        System.out.println("Number of versions: "+vers);
+ //       System.out.println("Number of versions: "+vers);
+        openPreviousVersion.removeAll();
+        if (vers>0) {
+          String temp = getIdWithoutVersion();
+          openPreviousVersion.setEnabled(true);
+          for (int k=0;k<vers;k++) {
+            JMenuItem jmi = new JMenuItem(temp+"."+(k+1));
+            jmi.addActionListener(dynamicmenuhandler);
+            openPreviousVersion.add(jmi);
+          }
+        }
+        else {
+          openPreviousVersion.setEnabled(false);
+        }
         
         uploadMenu.setEnabled(localLoc && !metacatLoc);
         downloadMenu.setEnabled(metacatLoc && !localLoc);
@@ -605,6 +660,13 @@ public class ResultPanel extends JPanel
       prevVersions = (new Integer(ver)).intValue();
       prevVersions = prevVersions - 1;
       return prevVersions;
+    }
+    
+    private String getIdWithoutVersion() {
+      int prevVersions = 0;
+      int iii = docid.lastIndexOf(".");
+      String ver = docid.substring(0,iii);
+      return ver;
     }
     
   }	
