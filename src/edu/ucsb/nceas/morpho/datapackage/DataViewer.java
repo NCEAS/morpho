@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-07 16:34:04 $'
- * '$Revision: 1.17.2.3 $'
+ *     '$Date: 2002-08-09 15:11:07 $'
+ * '$Revision: 1.17.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.Enumeration;
+import java.awt.event.*;
 
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
@@ -53,6 +54,21 @@ import edu.ucsb.nceas.morpho.framework.*;
 //public class DataViewer extends javax.swing.JFrame
 public class DataViewer extends javax.swing.JPanel
 {
+	public JPanel DataViewerPanel = new javax.swing.JPanel();
+	  JPanel TablePanel = new javax.swing.JPanel();
+	  JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
+	  JPanel ControlPanel = new javax.swing.JPanel();
+	  JPanel ButtonControlPanel = new javax.swing.JPanel();
+	  JLabel DataIDLabel = new javax.swing.JLabel();
+	  JButton CancelButton = new javax.swing.JButton();
+	  JButton UpdateButton = new javax.swing.JButton();
+
+    PersistentVector pv;
+    PersistentTableModel ptm;
+    JTable table;
+    
+    int sortdirection = 1;
+  
     ClientFramework framework;
     ConfigXML config;
     String datadir;
@@ -65,6 +81,18 @@ public class DataViewer extends javax.swing.JPanel
     DataPackageGUI grandParent;
     EntityGUI parent;
     
+  /**popup menu for right clicks*/
+  private JPopupMenu popup;
+  /**menu items for the popup menu*/
+  private JMenuItem createNewDatatable = new JMenuItem("Create New Datatable...");
+  private JMenuItem sortBySelectedColumn = new JMenuItem("Sort by Selected Column");
+  private JMenuItem insertRowAfter = new JMenuItem("insert Row After Selected Row");
+  private JMenuItem insertRowBefore = new JMenuItem("insert Row Before Selected Row");
+  private JMenuItem deleteRow = new JMenuItem("Delete Selected Row");
+  private JMenuItem insertColumnBefore = new JMenuItem("insert Column Before Selected Column");
+  private JMenuItem insertColumnAfter = new JMenuItem("insert Column After Selected Column");
+  private JMenuItem deleteColumn = new JMenuItem("Delete Selected Column");
+  private JMenuItem editColumnMetadata = new JMenuItem("Edit Column Metadata");
 
 
   /**
@@ -156,8 +184,7 @@ public class DataViewer extends javax.swing.JPanel
 	 */
 	 DataPackage dp;
 
-  // starting line
-  int startingLine = 1;
+
 
 	public DataViewer()
 	{
@@ -171,34 +198,52 @@ public class DataViewer extends javax.swing.JPanel
 		TablePanel.add(BorderLayout.CENTER, DataScrollPanel);
 		ControlPanel.setLayout(new BorderLayout(0,0));
 		DataViewerPanel.add(BorderLayout.SOUTH, ControlPanel);
-		JPanel1.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
-		ControlPanel.add(BorderLayout.CENTER, JPanel1);
+		ButtonControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
+		ControlPanel.add(BorderLayout.CENTER, ButtonControlPanel);
 		DataIDLabel.setText("Data ID: ");
 		DataIDLabel.setNextFocusableComponent(CancelButton);
-		JPanel1.add(DataIDLabel);
+		ButtonControlPanel.add(DataIDLabel);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
-		JPanel1.add(CancelButton);
+		ButtonControlPanel.add(CancelButton);
 		UpdateButton.setText("Update");
 		UpdateButton.setActionCommand("Update");
-		JPanel1.add(UpdateButton);
-		JPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		ControlPanel.add(BorderLayout.WEST, JPanel2);
-		ImportNewButton.setText("Import New Data...");
-		ImportNewButton.setActionCommand("Import New Data...");
-		JPanel2.add(ImportNewButton);
-		ImportNewButton.setVisible(false);
-		//}}
-
-		//{{INIT_MENUS
-		//}}
+		ButtonControlPanel.add(UpdateButton);
+	
 	
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
 		CancelButton.addActionListener(lSymAction);
 		UpdateButton.addActionListener(lSymAction);
-		//}}
-		
+    //}}
+	
+    //Build the popup menu for the right click functionality
+    popup = new JPopupMenu();
+    popup.add(createNewDatatable);
+    popup.add(new JSeparator());
+    popup.add(sortBySelectedColumn);
+    popup.add(new JSeparator());
+    popup.add(insertRowAfter);
+    popup.add(insertRowBefore);
+    popup.add(deleteRow);
+    popup.add(new JSeparator());
+    popup.add(insertColumnAfter);
+    popup.add(insertColumnBefore);
+    popup.add(deleteColumn);
+    popup.add(new JSeparator());
+    popup.add(editColumnMetadata);
+    
+    MenuAction menuhandler = new MenuAction();
+    createNewDatatable.addActionListener(menuhandler);
+    sortBySelectedColumn.addActionListener(menuhandler);
+    insertRowAfter.addActionListener(menuhandler);
+    insertRowBefore.addActionListener(menuhandler);
+    deleteRow.addActionListener(menuhandler);
+    insertColumnAfter.addActionListener(menuhandler);
+    insertColumnBefore.addActionListener(menuhandler);
+    deleteColumn.addActionListener(menuhandler);
+    editColumnMetadata.addActionListener(menuhandler);
+
 	}
 
     public DataViewer(ClientFramework framework, String sTitle)
@@ -243,6 +288,9 @@ public class DataViewer extends javax.swing.JPanel
         this.dataFile = dataFile;
     }
     
+    public PersistentVector getPV() {
+      return pv;  
+    }
     
     public void init() {
       boolean missing_metadata_flag = false;
@@ -285,6 +333,7 @@ public class DataViewer extends javax.swing.JPanel
         {
           String s = numHeaderLinesList.item(0).getFirstChild().getNodeValue();
           this.numHeaderLines = s;
+          System.out.println("Number of header lines = "+s);
         }
                                                      
       }
@@ -404,6 +453,8 @@ public class DataViewer extends javax.swing.JPanel
             else {
               buildTextDisplay();
             }
+            MouseListener popupListener = new PopupListener();
+            table.addMouseListener(popupListener);
           }
         }
         else {
@@ -430,24 +481,10 @@ public class DataViewer extends javax.swing.JPanel
         this.physicalFile = phys;
     }
     
- /*   public void setDataString(String dataString) {
-        this.dataString = dataString;
-        JTextArea ta = new JTextArea(dataString);
-        ta.setEditable(false);
-        JScrollPane1.getViewport().removeAll();
-        JScrollPane1.getViewport().add(ta);
-        if (dataFile!=null) {
-            parseFile();
-        } else {
-	        parseString(dataString);
-        }
-//	    parseDelimited();
-        
-    }
-*/    
     public void setParent(EntityGUI egui) {
       this.parent = egui; 
     }
+    
     public void setGrandParent(DataPackageGUI dpgui) {
       this.grandParent = dpgui; 
     }
@@ -464,42 +501,47 @@ public class DataViewer extends javax.swing.JPanel
 		(new DataViewer()).setVisible(true);
 	}
 
-	public void addNotify()
-	{
-		// Record the size of the window prior to calling parents addNotify.
-		Dimension size = getSize();
 
-		super.addNotify();
+  class PopupListener extends MouseAdapter {
+    // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
+    // on the PC; use the trigger flag to record a trigger, but do not show popup until the
+    // mouse released event (DFH)
+    boolean trigger = false;
+    
+    public void mousePressed(MouseEvent e) 
+    {
+      //select the clicked row first
+      table.clearSelection();
+      int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
+      int selcol = table.columnAtPoint(new Point(e.getX(), e.getY()));
+      table.setRowSelectionInterval(selrow, selrow);
+      table.setEditingRow(selrow);
+      table.setColumnSelectionInterval(selcol, selcol);
+      
+      if (e.isPopupTrigger()) 
+      {
+        trigger = true;
+      }  
+    }
+    
+    public void mouseReleased(MouseEvent e) 
+    {
+      maybeShowPopup(e);
+    }
 
-		if (frameSizeAdjusted)
-			return;
-		frameSizeAdjusted = true;
-
-		// Adjust size of frame according to the insets and menu bar
-		Insets insets = getInsets();
-		javax.swing.JMenuBar menuBar = getRootPane().getJMenuBar();
-		int menuBarHeight = 0;
-		if (menuBar != null)
-			menuBarHeight = menuBar.getPreferredSize().height;
-		setSize(insets.left + insets.right + size.width, insets.top + insets.bottom + size.height + menuBarHeight);
-	}
-
-	// Used by addNotify
-	boolean frameSizeAdjusted = false;
-
-	//{{DECLARE_CONTROLS
-	public javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
-	javax.swing.JPanel TablePanel = new javax.swing.JPanel();
-	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
-	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
-	javax.swing.JLabel DataIDLabel = new javax.swing.JLabel();
-	javax.swing.JButton CancelButton = new javax.swing.JButton();
-	javax.swing.JButton UpdateButton = new javax.swing.JButton();
-	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
-	javax.swing.JButton ImportNewButton = new javax.swing.JButton();
-	//}}
-
+    private void maybeShowPopup(MouseEvent e) 
+    {
+      if(e.isPopupTrigger() || trigger) 
+      {     
+        
+	      trigger = false;
+        popup.show(e.getComponent(), e.getX(), e.getY());
+        
+      }
+    }
+  }
+  
+  
 	/**
 	 * parses a line of text data into a Vector of column data for that row
 	 * 
@@ -565,42 +607,6 @@ public class DataViewer extends javax.swing.JPanel
 	}
 	
   
-    
-    /**
-     * parses data input string into an array of lines (Strings)
-     * 
-     * @param s input string
-     */
-
-    private void parseString (String s) {
-        int i;
-        int pos;
-        String temp, temp1;
-          BufferedReader in = new BufferedReader(new StringReader(s));
-          nlines = 0;
-          try {
-            while ((temp = in.readLine())!=null) {
-                if (temp.length()>0) {   // do not count blank lines
-                nlines++;} 
-            }
-            in.close();
-          }
-        catch (Exception e) {};
-        
-        lines = new String[nlines];
-          // now read again since we know how many lines
-          BufferedReader in1 = new BufferedReader(new StringReader(s));
-          try {
-            for (i=0;i<nlines;i++) {
-                temp = in1.readLine();
-                while (temp.length()==0) {temp=in1.readLine();}
-                lines[i] = temp + "\n";
-
-            }
-            in1.close();
-          }
-          catch (Exception e) {};
-    }            
 
 
     /**
@@ -672,47 +678,110 @@ public class DataViewer extends javax.swing.JPanel
 	 * @param data
 	 */
 	private void buildTable() {
+    num_header_lines = 0;
+    // Note: numHeaderLines is a String; if temp is null, then
+    // it cannot be made into an integer and default num_header_lines int
+    // is used (DFH)
+    Integer temp = new Integer(numHeaderLines);
+    if (temp!=null) {
+      num_header_lines = temp.intValue();  
+    }
+
 	  vec = new Vector();
-    final JTable table = new JTable();
-    DefaultTableModel model = new DefaultTableModel(vec, column_labels);
-    table.setModel(model);
+    table = new JTable();
+    pv = new PersistentVector();
+    pv.init(dataFile, num_header_lines);
+    ptm = new PersistentTableModel(pv, column_labels);
+    table.setModel(ptm);
+    
     table.setColumnSelectionAllowed(true);
-    table.setRowSelectionAllowed(false);
-    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    table.setRowSelectionAllowed(true);
+ //   table.setCellSelectionEnabled(true);
+    table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	  (table.getTableHeader()).setReorderingAllowed(false);
       
-  /*    
-      ListSelectionModel colSM = table.getColumnModel().getSelectionModel();
-          colSM.addListSelectionListener(new ListSelectionListener() {
-              public void valueChanged(ListSelectionEvent e) {
-                  //Ignore extra messages.
-                  if (e.getValueIsAdjusting()) return;
-                  
-                  ListSelectionModel lsm =
-                      (ListSelectionModel)e.getSource();
-              }
-          });
-  */   
-      DataScrollPanel.getViewport().removeAll();
-      DataScrollPanel.getViewport().add(table);
-      parseFile();
-      num_header_lines = 0;
-      // Note: numHeaderLines in a Stringt; if temp is null, then
-      // it cannot be made into an integer and default num_header_lines int
-      // is used (DFH)
-      Integer temp = new Integer(numHeaderLines);
-      if (temp!=null) {
-        num_header_lines = temp.intValue();  
-      }
-      for (int i=num_header_lines;i<nlines;i++) {
-        Vector rowvals = getColumnValues(lines[i]); 
-        model.addRow(rowvals);
-      }
+    DataScrollPanel.getViewport().removeAll();
+    DataScrollPanel.getViewport().add(table);
+    
+  
 	}
 
 
-	//{{DECLARE_MENUS
-	//}}
+  /**
+   * Event handler for the right click popup menu
+   */
+  class MenuAction implements java.awt.event.ActionListener 
+  {
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{
+			Object object = event.getSource();
+			if (object == createNewDatatable) {
+        
+      }
+      else if (object == sortBySelectedColumn) {
+        int sel = table.getSelectedColumn();
+        if (sel>-1) {
+          ptm.sort(sel, sortdirection);
+          pv = ptm.getPersistentVector();
+          sortdirection = -1 * sortdirection;
+        }
+      }
+      else if (object == insertRowAfter) {
+        int sel = table.getSelectedRow();
+        if (sel>-1) {
+          Vector blanks = new Vector();
+          blanks.addElement(" \t");
+          blanks.addElement(" \t");
+          blanks.addElement(" \t");
+          ptm.insertRow(sel+1, blanks);	 
+        }
+      }
+      else if (object == insertRowBefore) {
+        int sel = table.getSelectedRow();
+        if (sel>-1) {
+          Vector blanks = new Vector();
+          blanks.addElement(" \t");
+          blanks.addElement(" \t");
+          blanks.addElement(" \t");
+          ptm.insertRow(sel, blanks);	 
+        }
+      }
+      else if (object == deleteRow) {
+        int sel = table.getSelectedRow();
+        if (sel>-1) {
+          ptm.deleteRow(sel);	 
+        }
+      }
+      else if (object == insertColumnBefore) {
+        int sel = table.getSelectedColumn();
+        if (sel>-1) {
+          column_labels.insertElementAt("New Column", sel);
+          ptm.insertColumn(sel); 
+          pv = ptm.getPersistentVector();
+        }
+      }
+      else if (object == insertColumnAfter) {
+        int sel = table.getSelectedColumn();
+        if (sel>-1) {
+          column_labels.insertElementAt("New Column", sel+1);
+          ptm.insertColumn(sel+1); 
+          pv = ptm.getPersistentVector();
+        }        
+      }
+      else if (object == deleteColumn) {
+        int sel = table.getSelectedColumn();
+        if (sel>-1) {
+          column_labels.removeElementAt(sel);
+          ptm.deleteColumn(sel);
+          pv = ptm.getPersistentVector();
+        }
+      }
+      else if (object == editColumnMetadata) {
+        
+      }
+
+    }
+  }
 
 	class SymAction implements java.awt.event.ActionListener
 	{
@@ -728,8 +797,7 @@ public class DataViewer extends javax.swing.JPanel
 
 	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		this.hide();
-		//this.dispose();
+		this.init();
 			 
 	}
 	
@@ -757,6 +825,7 @@ public class DataViewer extends javax.swing.JPanel
 
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
+    /*
 	  if(nlines>=nlines_max) {
 	    framework.debug(9,"Sorry, this data file is too large to be updated from within Morpho!");
 	    return;
@@ -879,8 +948,8 @@ public class DataViewer extends javax.swing.JPanel
         framework.debug(6, snhe.getMessage());
       }
       newgui.show();
-        
-	  }		 
+	  }		
+  */  
 	}
 
 	

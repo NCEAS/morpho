@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-06 20:02:17 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-09 15:11:07 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,9 @@ public class PersistentVector
         catch (Exception w) {}
     }
     
-    
+    public void setFirstRow(int frow) {
+      this.firstRow = frow;
+    }
     //read a text file and store each line as an object in an ObjectFile
     public void init(String filename) {
         String temp;
@@ -95,8 +97,41 @@ public class PersistentVector
           catch (Exception e) {};
         }
         catch (Exception w) {};
-
     }
+    
+    //read a text file and store each line as an object in an ObjectFile
+    // start with a file object
+    public void init(File f) {
+        String temp;
+        int nlines;
+        try{
+          BufferedReader in = new BufferedReader(new FileReader(f));
+          nlines = 0;
+          long pos = 0;
+          try {
+            while (((temp = in.readLine())!=null)) {
+                if (temp.length()>0) {   // do not count blank lines
+                  nlines++;
+                  if (nlines>firstRow) {
+                    pos = obj.writeObject(temp);  // object added to file
+                    Long lpos = new Long(pos);
+                    objectList.addElement(lpos); // position added to objectList
+                  }
+                } 
+            }
+//            System.out.println(nlines + " added to ObjectFile");
+            in.close();
+          }
+          catch (Exception e) {};
+        }
+        catch (Exception w) {};
+    }
+
+    public void init (File f, int fRow) {
+      this.firstRow = fRow;
+      init(f);
+    }    
+    
     
     //write a text file from the pv
     public void writeObjects(String filename) {

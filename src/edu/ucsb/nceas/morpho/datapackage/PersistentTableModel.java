@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-06 20:02:17 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-09 15:11:07 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 package edu.ucsb.nceas.morpho.datapackage;
 import javax.swing.table.*;
 import java.util.Vector;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.StringTokenizer;
 import javax.swing.event.*;
 
@@ -38,8 +40,11 @@ import javax.swing.event.*;
 public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 {
     PersistentVector pv;
-
+    Vector colNames = null;
+    
     String delimiter = "\t";
+    
+    String field_delimiter = "#x09";
     
     // first row of data (allow for comments preceeding data)
     int firstRow = 0;
@@ -47,6 +52,12 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     public PersistentTableModel(PersistentVector perV) {
         super();
         pv = perV;
+    }
+
+    public PersistentTableModel(PersistentVector perV, Vector colNames) {
+        super();
+        pv = perV;
+        this.colNames = colNames;
     }
         
     public PersistentVector getPersistentVector() {
@@ -57,8 +68,17 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
       this.pv = pv;
     }
     
+    public void setFieldDelimiter(String s) {
+      this.field_delimiter = s.trim();
+    }
+    
     public void saveAsFile(String fileName) {
       pv.writeObjects(fileName);
+    }
+    
+    public String getColumnName(int col) {
+      String colName = (String)colNames.elementAt(col);
+        return colName;
     }
     
     public boolean isCellEditable(int rowindex, int colindex) {
@@ -67,10 +87,16 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     
     public int getColumnCount()
     {
+      int numCols = 0;
+      if (colNames!=null) {
+        numCols = colNames.size();  
+      }
+      else {
         String firstRecord = (String)pv.elementAt(firstRow);
         Vector vals = getColumnValues(firstRecord);
-        int numCols = vals.size();
-        return numCols;
+        numCols = vals.size();
+      }
+      return numCols;
     }
 
     public int getRowCount()
@@ -81,11 +107,6 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     public Object getValueAt(int rowIndex, int columnIndex)
     {
         Object ocell;
- //       if (columnIndex==0) {
- //           String colcnt = "Column "+(rowIndex+1);
- //           return colcnt;
- //       }
-//        else {
             Object obj = pv.elementAt(rowIndex);
             String record = (String)obj;
             Vector vals = getColumnValues(record);
@@ -96,7 +117,6 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
                 ocell = "";
             }
             return ocell;
-//        }
     }
 
 	/**
@@ -106,8 +126,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 	 * @return a vector with each elements being column data for the row
 	 */
 	private Vector getColumnValues(String str) {
-	  //  String sDelim = getDelimiterString();
-	    String sDelim = ",\t";
+	    String sDelim = getDelimiterString();
 	    String oldToken = "";
 	    String token = "";
 	    Vector res = new Vector();
@@ -147,7 +166,50 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 	    return result;
 	}
 
-
+	private String getDelimiterString() {
+	  String str = "";
+	  String temp = field_delimiter;
+    if (temp.startsWith("#x")) {
+      temp = temp.substring(2);
+      if (temp.equals("0A")) str = "\n";
+      if (temp.equals("09")) str = "\t";
+      if (temp.equals("20")) str = " ";
+    }
+    else {
+      str = temp;
+    }
+	  return str;
+	}
+  
+  /**
+   * sorts the table; 
+   * set sortdir=1 for ascending
+   * set sortdir = -1 for descending
+   */
+  public void sort (int colnum, int sortdir) {
+    final int cn = colnum;
+    final int sdir = sortdir;
+    Collections.sort(pv.objectList, new Comparator() {
+      public int compare(Object o1, Object o2) {
+        int res = 0;
+        try{
+          String o1Str = (String)pv.obj.readObject(((Long)o1).longValue());
+          Vector o1vec = getColumnValues(o1Str);
+          String token1 = (String)o1vec.elementAt(cn);
+          String o2Str = (String)pv.obj.readObject(((Long)o2).longValue());
+          Vector o2vec = getColumnValues(o2Str);
+          String token2 = (String)o2vec.elementAt(cn);
+          res = token1.compareTo(token2);
+          res = sdir*res;
+        }
+        catch (Exception w) {}
+	    return res;
+      }
+    });
+    
+    fireTableStructureChanged();   
+  }
+  
   public void setValueAt(Object obj, int row, int col) {
  //   System.out.println("vals "+setColumnValue(row, col, obj));
     setColumnValues(row, setColumnValue(row, col, obj));  

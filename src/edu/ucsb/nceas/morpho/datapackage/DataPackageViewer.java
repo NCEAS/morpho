@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-05 15:35:18 $'
- * '$Revision: 1.1.2.6 $'
+ *     '$Date: 2002-08-09 15:11:07 $'
+ * '$Revision: 1.1.2.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,6 +129,7 @@ public class DataPackageViewer extends javax.swing.JFrame implements javax.swing
 
   void exitApplication() {
     this.setVisible(false);    // hide the Frame
+    dataViewContainerPanel.removePVObject();
     this.dispose();            // free the system resources
 			
   }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-05 15:35:18 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-09 15:11:07 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
   // toppanel is added to packageMetadataPanel by init
   public JPanel toppanel;
   
+  PersistentVector lastPV = null;
   
   String referenceLabelText = "referenceLabel";
   
@@ -182,7 +183,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     this.listValueHash = ht;
   }
 
- 
+  public void removePVObject() {
+    if (lastPV!=null) {
+      lastPV.delete();  
+    }
+  }
     /**
    * creates the data display and puts it into the center of the window
    * This needs to be dynamically done as tabs are selected due to large memory usage
@@ -190,6 +195,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
   private void setDataViewer(int index) {
     JSplitPane entireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(lastTabSelected));
     JPanel currentDataPanel1 = (JPanel)entireDataPanel.getLeftComponent();
+    removePVObject();
     currentDataPanel1.removeAll();
     lastTabSelected = index;
     String item = (String)entityItems.elementAt(index);
@@ -207,7 +213,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     dv.setEntityFile(entityFile);
     dv.setDataPackage(this.dp);
     dv.init();
-    dv.parseFile();
+    lastPV = dv.getPV();
     JPanel tablePanel = dv.DataViewerPanel;
     
     JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
