@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-02 18:22:44 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-11-20 05:16:50 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     metacatDataStore  = new MetacatDataStore(morpho);
     File packagefile;
     try {
-      packagefile = getFileWithID(this.id);
+      packagefile = getFileWithID(this.id, morpho);
      } catch (Throwable t) {
       //already handled in getFileWithID() method, 
       //so just abandon this instance:
