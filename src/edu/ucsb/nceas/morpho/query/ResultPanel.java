@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-05 17:29:53 $'
- * '$Revision: 1.40.4.1 $'
+ *     '$Date: 2002-08-07 00:10:11 $'
+ * '$Revision: 1.40.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -240,11 +240,16 @@ public class ResultPanel extends JPanel
  
       // Set up the results table
       table = new SortableJTable(results);
+      // Set resize model
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      // Set horizontal line off
+      table.setShowHorizontalLines(false);
+      table.setShowVerticalLines(false);
+      
       WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
       stringRenderer.setRows(5);
-//DFH      table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
-      table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
-      //table.setRowHeight(results.getRowHeight());
+      //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
+      table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
       initColumnSizes(table, results);
   
