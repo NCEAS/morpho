@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-23 23:55:51 $'
- * '$Revision: 1.72 $'
+ *     '$Date: 2004-03-24 16:35:14 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -511,8 +511,9 @@ public abstract class AbstractDataPackage extends MetadataObject
           Node deepClone = (nodelist.item(index)).cloneNode(true);
           DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
           Document doc = impl.createDocument("", "tempRoot", null);
+          Node importedClone = doc.importNode(deepClone, true);
           Node tempRoot = doc.getDocumentElement();
-          doc.replaceChild(deepClone, tempRoot);
+          doc.replaceChild(importedClone, tempRoot);
           return deepClone;
         } else {
 
