@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-26 23:33:21 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2005-01-27 20:17:26 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ public class Keywords
     List rowLists = keywordsList.getListOfRowLists();
 
     if (rowLists != null && rowLists.isEmpty()) {
-      return null;
+      return returnMap;
     }
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 16:28:01 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2005-01-27 20:19:37 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,8 +176,7 @@ public class AddKeywordCommand
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
     //delete old title from datapackage
-    adp.deleteSubtree(DATAPACKAGE_KEYWORD_GENERIC_NAME, 0);
-
+    adp.deleteAllSubtrees(DATAPACKAGE_KEYWORD_GENERIC_NAME);
 
     Iterator keyIt = map.keySet().iterator();
     Object nextXPathObj = null;
