@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 17:20:49 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-09-26 18:55:17 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.IOUtil;
+import edu.ucsb.nceas.utilities.StringUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import javax.swing.JLabel;
@@ -49,8 +50,10 @@ import java.util.Iterator;
 import java.io.Reader;
 import java.io.IOException;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Attr;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
 
@@ -250,6 +253,7 @@ public class WizardSettings {
   private static final String UNIT_TYPES_XPATH 
                                       = "/stmml:unitList/stmml:unitType/@name";
   private static Node udRootNode = null;
+  ///
   /**
    *  from the eml unit dictionary, gets all the unitTypes (both fundamental 
    *  and derived) 
@@ -285,21 +289,7 @@ public class WizardSettings {
       ioe.printStackTrace();
       return new String[] {"IOException!"};
     }
-    
-//    NodeList unitTypesNodeList = null;
-//    try {
-//      unitTypesNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, 
-//                                                            UNIT_TYPES_XPATH);
-//    } catch (Exception ioe) {
-//      Log.debug(12,"Exception getting unitTypesNodeList: "+ioe);
-//      ioe.printStackTrace();
-//      return new String[] {"Exception!"};
-//    }
-//    
-//    if (unitTypesNodeList==null) {
-//      Log.debug(1,"Fatal error - unitTypesNodeList == NULL");
-//      return new String[] {"ERROR!"};
-//    }    
+
     Node[] unitTypesNodeArray = null;
     
     unitTypesNodeArray = getNodeArrayWithXPath(udRootNode, UNIT_TYPES_XPATH);
@@ -323,6 +313,9 @@ public class WizardSettings {
   
   private static Node[] unitsNodeArray = null;
   private static final String UNITS_XPATH    = "/stmml:unitList/stmml:unit";
+  private static List returnList     = new ArrayList();
+  private static List unitsList      = new ArrayList();
+  private static List remainderList  = new ArrayList();
   //
   /**
    *  from the eml unit dictionary, gets all the units of the given unitType 
@@ -339,10 +332,17 @@ public class WizardSettings {
   //////// 
   public static String[] getUnitDictionaryUnitsOfType(String UnitType) { 
   
+
+System.err.println("getUnitDictionaryUnitsOfType() called with: "+UnitType);
+  
     // ensure xml DOM has already been created...
     if (udRootNode==null) getUnitDictionaryUnitTypes();
     
-    //0. init - get node array containing all <unit> elements - do only once!
+    returnList.clear();
+    unitsList.clear();
+    remainderList.clear();
+  
+    // init - get node array containing all <unit> elements - do only once!
     if (unitsNodeArray==null) {
     
       unitsNodeArray = getNodeArrayWithXPath(udRootNode, UNITS_XPATH);
@@ -353,87 +353,92 @@ public class WizardSettings {
       }    
     }
 
-    List returnList     = new ArrayList();
+//System.err.println("getUnitDictionaryUnitsOfType() - unitsNodeArray = "+unitsNodeArray);  
+System.err.println("**** DOING FIRST LOOP ***********************************");  
+    
+    // for each unit element node, get list of attribute nodes;
+    for (int i=0; i<unitsNodeArray.length; i++) {
+    
+      NamedNodeMap attribNNMap = unitsNodeArray[i].getAttributes();
+//System.err.println("unitsNodeArray["+i+"] - attribNNMap = "+attribNNMap);  
+                          
+      if (attribNNMap==null || attribNNMap.getLength()<1) continue;
 
-    //-- on calling this method with a unitType: --
-    //
-    //1. for each unit element node, get list of attribute nodes;
-    //   - if attributes contains an attrib node called unitType {
-    //
-    //        if unitType value==requested unitType add to unitsList 
-    //    } else 
-    //        add to remainderList
-    //    }
-    //
+      Node unitTypeAttrNode = attribNNMap.getNamedItem("unitType");
+//System.err.println("unitsNodeArray["+i+"] - unitTypeAttrNode = "+unitTypeAttrNode);  
+
+      // if attributes contains an attrib node called unitType {
+      if (unitTypeAttrNode!=null) {
+      
+        // if unitType value==requested unitType add name to unitsList
+        if (((Attr)unitTypeAttrNode).getValue().equals(UnitType)) {
+        
+          addAttributeNameToList(attribNNMap, unitsList);
+        }
+      } else {  //  add unit node to remainderList
+//System.err.println("unitsNodeArray["+i+"] - adding node to remainderList");  
+        
+        remainderList.add(unitsNodeArray[i]);
+      }
+    }
+        
+System.err.println("\n\ngetUnitDictionaryUnitsOfType() - unitsList = "+unitsList);  
+//System.err.println("\n\ngetUnitDictionaryUnitsOfType() - remainderList = "+remainderList);  
+        
+System.err.println("**** DOING SECOND LOOP **********************************");int i=0;
     //2. for each unit element in remainderList, 
-    //   - if attributes contains an attrib node called parentSI {
-    //
-    //        if unitsList.contains(parentSI value), add to resultsList
-    //    } 
-    //
-    //3. finally, add unitsList to resultsList, make into array, sort and return
+    for (Iterator it = remainderList.iterator(); it.hasNext(); ) {
 
+      Object nextObj = it.next();
+
+      if (nextObj!=null) {
+
+        NamedNodeMap attribNNMap = ((Node)nextObj).getAttributes();
+System.err.println("remainderList["+(i++)+"] - attribNNMap = "+attribNNMap);  
+                          
+        if (attribNNMap==null || attribNNMap.getLength()<1) continue;
+
+        Node parentSIAttrNode = attribNNMap.getNamedItem("parentSI");
+System.err.println("remainderList["+(i++)+"] - parentSIAttrNode = "+parentSIAttrNode);  
+        
+        // if attributes contains an attrib node called parentSI
+        if (parentSIAttrNode!=null) {
+        
+          // if unitsList.contains(parentSI value), add name attr to returnList
+          if (unitsList.contains( StringUtil.stripTabsNewLines(
+                                        ((Attr)parentSIAttrNode).getValue()))) {
+          
+System.err.println("remainderList["+(i++)+"] - unitsList contains parentSIAttrNode - adding to returnList");  
+            addAttributeNameToList(attribNNMap, returnList);
+          }
+        }
+      }
+    }
+    
+System.err.println("\n\ngetUnitDictionaryUnitsOfType() - BEFORE ADDALL: returnList = "+returnList);  
+    
+    //3. finally, add unitsList to returnList, make into array, sort and return
+    returnList.addAll(unitsList);
+System.err.println("\n\ngetUnitDictionaryUnitsOfType() -  AFTER ADDALL: returnList = "+returnList);  
   
-  
-  
-  
-  
-  
+System.err.println("\n\ngetUnitDictionaryUnitsOfType() -  returnList.size() = "+returnList.size()); 
+ 
     String[] returnArray = new String[returnList.size()];
-    
-    
-    
 
-//    Object nextKeyObj   = null;
-//    String nextKeyStr   = null;
-//    Object nextValObj   = null;
-//    String nextValueStr = null;
-//    
-//    
-//    if (unitDictionaryNVPs==null) return new String[] {"ERROR!"};
-//    
-//    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
-//    
-//      nextKeyObj = it.next();
-//      if (nextKeyObj==null) continue;
-//      nextKeyStr = (String)nextKeyObj;
-//      
-//      int unitTypeIndex = nextKeyStr.indexOf(UNITS_TYPE_ATT);
-//      int parentSIIndex = nextKeyStr.indexOf(UNITS_PRNT_ATT);
-//      int trimIndex = -1;
-//      
-//      if (unitTypeIndex>0) {
-//      
-//        trimIndex = unitTypeIndex;
-//        
-//      } else if (parentSIIndex>0) {
-//      
-//        trimIndex = parentSIIndex;
-//      }
-//      
-//      if ( (nextKeyStr.indexOf(UNITS_XPATH) == 0) && (trimIndex > 0)
-//                              && (nextKeyStr.indexOf(UNITS_EXCLUDE) < 0) ) {
-//
-//        nextValObj = unitDictionaryNVPs.get(nextKeyStr);
-//        
-//        if (nextValObj==null) continue;
-//        
-//        nextValueStr = (String)nextValObj;
-//        
-//        if (nextValueStr.equals(UnitType)) {
-//        
-//          nextKeyStr = nextKeyStr.substring(0, trimIndex);
-//          returnList.add((String)(unitDictionaryNVPs.get(
-//                                                nextKeyStr + UNITS_NAME_ATT)));
-//        }
-//      }
-//    }
-
-    Arrays.sort(returnArray);
+    //if (returnArray.length > 1) Arrays.sort(returnArray);
     return returnArray;
   }
   
+  
+  private static void addAttributeNameToList(NamedNodeMap map, List list) {
 
+    Node nameAttrNode = map.getNamedItem("name");
+System.err.println("addAttributeNameToList - nameAttrNode = "+nameAttrNode);  
+    if (nameAttrNode!=null) {
+      list.add(StringUtil.stripTabsNewLines(((Attr)nameAttrNode).getValue()));
+System.err.println("addAttributeNameToList - added "+((Attr)nameAttrNode).getValue());  
+    }
+  }
 
   private static Node[] getNodeArrayWithXPath(Node rootNode, String xpath) {
     
