@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-11 23:01:28 $'
- * '$Revision: 1.19 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-04 04:27:00 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ public class OpenDialogBox extends JDialog
     // Set OpenDialog size depent on parent size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
-    int dialogWidth = 780;
+    int dialogWidth = 820;
     int dialogHeight = 500;
     setSize(dialogWidth, dialogHeight);
     
