@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-30 23:19:31 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-09-21 18:41:27 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,8 +66,8 @@ public class EntityGUI extends javax.swing.JFrame
   private static final String caseSensPath = "//caseSensitive";
   private static final String orientationPath = "//orientation";
   private static final String attributeNamePath = 
-                                         "/eml-variable/variable/variable_name";
-  private static final String attributeNameNode = "variable_name";
+                                       "/eml-attribute/attribute/attributeName";
+  private static final String attributeNameNode = "attributeName";
   
   private ClientFramework framework;
   private ConfigXML config;

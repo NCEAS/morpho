@@ -11,10 +11,10 @@
           relatedTo="DATAFILE" 
           displayNamePath="/table-entity/entityName"/>
     <spec name="Fields" 
-          path="./lib/frames/variable.xml" 
-          idtag="/attribute/identifier"
+          path="./lib/frames/attribute.xml" 
+          idtag="/eml-attribute/identifier"
           relatedTo="Table"
-          displayNamePath="/eml-variable/variable/variable_name"/>
+          displayNamePath="/eml-attribute/attribute/attributeName"/>
   </specs>
   
   <frame name="Table"

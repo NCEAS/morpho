@@ -25,7 +25,7 @@
     <listdoctypes>
       <entitydoctype>-//NCEAS//eml-entity-2.0//EN</entitydoctype>
       <resourcedoctype>-//NCEAS//eml-dataset-2.0//EN</resourcedoctype>
-      <attributedoctype>-//NCEAS//eml-variable//EN</attributedoctype>
+      <attributedoctype>-//NCEAS//eml-attribute-2.0//EN</attributedoctype>
     </listdoctypes>
   </packageEditor>
   <customFrames>
@@ -52,14 +52,14 @@
     <file>
       <name>Attribute</name>
       <label>Field Description</label>
-      <xmlfiletype>-//NCEAS//eml-variable//EN</xmlfiletype>
-      <rootnode>eml-variable</rootnode>
+      <xmlfiletype>-//NCEAS//eml-attribute-2.0//EN</xmlfiletype>
+      <rootnode>eml-attribute</rootnode>
       <tooltip>Information about the fields (columns) in your data tables.</tooltip>
       <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
-      <displaypath>//variable_name</displaypath>
+      <displaypath>//attributeName</displaypath>
       <editexisting>yes</editexisting>
       <visible>no</visible>
-      <idpath>/eml-variable/meta_file_id</idpath>
+      <idpath>/eml-attribute/identifier</idpath>
     </file>
     <file>
       <name>Access</name>
@@ -112,5 +112,5 @@
       <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
     </file>
   </newxmlfiletypes>
-  <current_profile/>
+  <current_profile></current_profile>
 </config>
