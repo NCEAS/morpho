@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-27 23:08:42 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2004-03-17 19:15:26 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ import org.xml.sax.XMLReader;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.5.0alpha6.0";
+    public static String VERSION = "1.5.0beta2.0";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -829,14 +829,15 @@ public class Morpho
         String ver1 = ver.substring(pos1 + 1, pos2);
         int iver0 = (new Integer(ver0)).intValue();
         int iver1 = (new Integer(ver1)).intValue();
-        if ((iver0 == 1) && (iver1 < 3)) {
+//        if ((iver0 == 1) && (iver1 < 3)) {
+        if (iver1 < 4) {
             versionFlag = false;
             JOptionPane.showMessageDialog(null,
                     "Version " + ver + " of the Java Virtual Machine(JVM) " +
                     "is currently in use.\n" +
                     "Although most of Morpho will operate using early " +
                     "versions of the JVM,\n" +
-                    "Version 1.3 or greater is required for all " +
+                    "Version 1.4 or greater is recommended for all " +
                     "functions to work properly!");
         } else {
             if (System.getProperty("os.name").equalsIgnoreCase("Linux") 
@@ -866,12 +867,12 @@ public class Morpho
     public static void main(String args[])
     {
       
-    JOptionPane.showMessageDialog(null,
+/*    JOptionPane.showMessageDialog(null,
                     "Warning!!! This version of Morpho is 'ALPHA' code.\n" +
                     "\n" +
                     "This means that it is very fragile and known to\n" +
                     "contain errors. Please do not expect flawless operation.\n");
-
+*/
             
         try {
           SplashFrame sf = new SplashFrame(true);
@@ -1249,7 +1250,7 @@ public class Morpho
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/About16.gif")));
         aboutItemAction.putValue("menuPosition", new Integer(1));
-        aboutItemAction.setMenu("Help", 5);
+        aboutItemAction.setMenu("Help", 6);
         controller.addGuiAction(aboutItemAction);
 
         Command helpCommand = new HelpCommand();
@@ -1260,7 +1261,7 @@ public class Morpho
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/Help16.gif")));
         helpItemAction.putValue("menuPosition", new Integer(2));
-        helpItemAction.setMenu("Help", 5);
+        helpItemAction.setMenu("Help", 6);
         controller.addGuiAction(helpItemAction);
     }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-16 21:54:01 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2004-03-17 19:13:50 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,10 @@ public class DataPackagePlugin
   private Morpho morpho = null;
 
   /** Constant int for data menu position */
-  public static final int DATAMENUPOSITION = 3;
+  public static final int DOCUMENTATIONMENUPOSITION = 3;
+  
+  /** Constant int for data menu position */
+  public static final int DATAMENUPOSITION = 4;
 
   /** Constant int for edit menu position */
   public static final int EDITMENUPOSITION = 1;
@@ -263,14 +266,13 @@ public class DataPackagePlugin
     cut.setEnabled(false);
     paste.setEnabled(false);
 
-    // For data menu
-    int i = 0; // postition for menu item in data menu
-
+    int i = 0; // postition for menu item
     GUIAction addDocumentation = new GUIAction("Add Documentation...", null,
                                           new AddDocumentationCommand());
     addDocumentation.setToolTipText("Add a XML documentation");
     addDocumentation.setMenuItemPosition(i);
-    addDocumentation.setMenu("Data", DATAMENUPOSITION);
+    addDocumentation.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addDocumentation.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     addDocumentation.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
@@ -279,7 +281,52 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addDocumentation);
 
-        i = i+1;
+		i=i+2;
+    GUIAction addGeographicCovColumn = new GUIAction("Add Geographic Information...",
+                                           null, new AddGeographicCovCommand());
+    addGeographicCovColumn.setToolTipText("Add geographic coverage information");
+    addGeographicCovColumn.setMenuItemPosition(i);
+    addGeographicCovColumn.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addGeographicCovColumn.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    addGeographicCovColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addGeographicCovColumn);
+
+    i=i+1;
+    GUIAction addTemporalCovColumn = new GUIAction("Add Temporal Information...",
+                                           null, new AddTemporalCovCommand());
+    addTemporalCovColumn.setToolTipText("Add temporal coverage information");
+    addTemporalCovColumn.setMenuItemPosition(i);
+    addTemporalCovColumn.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addTemporalCovColumn.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    addTemporalCovColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addTemporalCovColumn);
+
+    i=i+1;
+    GUIAction addTaxonomicCovColumn = new GUIAction("Add Taxonomic Information...",
+                                           null, new AddTaxonomicCovCommand());
+    addTaxonomicCovColumn.setToolTipText("Add taxonomic coverage information");
+    addTaxonomicCovColumn.setMenuItemPosition(i);
+    addTaxonomicCovColumn.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addTaxonomicCovColumn.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    addTaxonomicCovColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+		controller.addGuiAction(addTaxonomicCovColumn);
+
+    // For data menu
+    i = 0; // postition for menu item in data menu
+
+
     GUIAction createNewDatatable = new GUIAction("Create/Import New Datatable...", null,
                                                       new ImportDataCommand());
     createNewDatatable.setToolTipText("Add a new table");
@@ -315,34 +362,6 @@ public class DataPackagePlugin
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(deleteDatatable);
 
-		i= i+1; 
-    GUIAction addTaxonomicCovColumn = new GUIAction("Add Taxonomic Information...",
-                                           null, new AddTaxonomicCovCommand());
-    addTaxonomicCovColumn.setToolTipText("Add taxonomic coverage information");
-    addTaxonomicCovColumn.setMenuItemPosition(i);
-    addTaxonomicCovColumn.setMenu("Data", DATAMENUPOSITION);
-    addTaxonomicCovColumn.setEnabledOnStateChange(
-                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                      true, GUIAction.EVENT_LOCAL);
-    addTaxonomicCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
-                            true, GUIAction.EVENT_LOCAL);
-		controller.addGuiAction(addTaxonomicCovColumn);
-		
-    i= i+2; // separator will take a position so add 2
-    GUIAction addTemporalCovColumn = new GUIAction("Add Temporal Information...",
-                                           null, new AddTemporalCovCommand());
-    addTemporalCovColumn.setToolTipText("Add temporal coverage information");
-    addTemporalCovColumn.setMenuItemPosition(i);
-    addTemporalCovColumn.setMenu("Data", DATAMENUPOSITION);
-    addTemporalCovColumn.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    addTemporalCovColumn.setEnabledOnStateChange(
-                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                      true, GUIAction.EVENT_LOCAL);
-    addTemporalCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
-                            true, GUIAction.EVENT_LOCAL);
-    controller.addGuiAction(addTemporalCovColumn);
 		
     i= i+2; // separator will take a position so add 2
     GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column",
@@ -510,6 +529,7 @@ public class DataPackagePlugin
     addDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     deleteDatatable.setEnabled(false);
+    addGeographicCovColumn.setEnabled(false);
     addTemporalCovColumn.setEnabled(false);
 		addTaxonomicCovColumn.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
