@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.74 2003-01-03 18:25:19 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.75 2003-04-01 00:28:54 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -17,7 +17,7 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.3.0"/>
+      <property name="release" value="1.4.0"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
@@ -39,6 +39,7 @@
       <property name="itisdir" value="../itislib" />
       <property name="srcdir" value="./src" />
       <property name="libdir" value="./lib" />
+      <property name="xsldir" value="./xsl" />
       <property name="docuserdir" value="./docs/user" />
       <property name="jwsdir"
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
@@ -51,11 +52,13 @@
       <property name="build.samples" value="${build.dir}/samples"/>
       <property name="build.tests" value="${build.dir}/tests"/>
       <property name="build.data" value="${build.dir}/data"/>
-      <property name="build.javadocs" value="${build.dir}/docs/api"/>
+      <property name="build.javadocs" value="${build.dir}/docs/api"/> 
+      <property name="build.xsl" value="${build.dir}/xsl"/>
 
       <property name="dist.dir" value="./dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
       <property name="morpho.lib" value="${morpho.dir}/lib"/>
+      <property name="morpho.xsl" value="${morpho.dir}/xsl"/>
       <property name="morpho.lib.catalog" value="${morpho.lib}/catalog"/>
       <property name="morpho.lib.frames" value="${morpho.lib}/frames"/>
       <property name="morpho.lib.sampledata" value="${morpho.lib}/sampledata"/>
@@ -253,6 +256,7 @@
       <mkdir dir="${morpho.lib}"/>
       <mkdir dir="${morpho.lib.sampledata}"/>
       <mkdir dir="${morpho.docs}"/>
+      <mkdir dir="${morpho.xsl}"/>
       <mkdir dir="${morpho.docs.dev}"/>
       <mkdir dir="${morpho.docs.dev.api}"/>
       <copy file="./LICENSE" todir="${morpho.dir}"/>
@@ -261,6 +265,9 @@
       <copy file="./README.txt" todir="${morpho.dir}"/>
       <copy todir="${morpho.lib.sampledata}">
         <fileset dir="./lib/sampledata"/>
+      </copy>
+      <copy todir="${morpho.xsl}">
+        <fileset dir="./xsl"/>
       </copy>
       <copy todir="${morpho.docs}">
         <fileset dir="${build.docs}">

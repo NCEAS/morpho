@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.3.0
+Version: 1.4.0
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -79,6 +79,16 @@ The large dataset problem has been fixed in Morpho 1.3.0.
 
 Version History
 -------------------------------
+
+***
+Version 1.4
+
+Version 1.4 of Morpho add two new features as well as a number of speed enhancements to the previous version. 
+
+There is now a 'Preferences' menu item in the File menu. This menu item brings up a dialog box which allows the user to change the URL of the network server (i.e. the Metacat server) that is being used, to set the debug level and logging to file options, and to change the visual 'look-and-feel' used by Morpho. These options have always been set in the Morpho 'config.xml' file, but now they can be set directly from the Morpho application.    
+
+Secondly, the 'Export' menu item now displays a dialog that allows the user to export a package to a directory, to a zip file, or to a eml2 format file. The eml2 format is a single eml file that contains a combination of the multiple eml-beta6 documents that are created by Morpho. The 'triples' of earlier versions of eml are replaced by the single document structure of eml2.
+ 
 
 ***
 Version 1.3
