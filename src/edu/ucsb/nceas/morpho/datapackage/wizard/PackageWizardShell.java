@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-30 17:24:54 $'
- * '$Revision: 1.55 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-31 16:35:53 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -416,8 +416,9 @@ public class PackageWizardShell extends javax.swing.JFrame
       String prevFrameType = ((WizardFrameContainer)
                              frameWizards.elementAt(frameWizardIndex)).type;
       if(prevFrameType.equals("GETDATA") && 
-        importDataRButton.isSelected()   &&
-        !fileTextField.getText().equals(""))
+        importDataRButton.isSelected()   
+     //   && !fileTextField.getText().equals("")
+      )
       {
         int entitynum = frameWizardIndex + 1;
         int attributenum = frameWizardIndex + 2;
@@ -426,8 +427,9 @@ public class PackageWizardShell extends javax.swing.JFrame
         PackageWizard pw1 = wfc1.wizard;
         PackageWizard pw2 = wfc2.wizard;
         
-        
-        TextImportWizard tiw = new TextImportWizard(fileTextField.getText(), this);
+        String fileTextName = null;
+        if (!fileTextField.getText().equals("")) fileTextName = fileTextField.getText(); 
+        TextImportWizard tiw = new TextImportWizard(fileTextName, this);
         //the TextImport wizard has reference to PackageWizards so it can save the
         // XML text it generates
         tiw.setEntityWizard(pw1);
