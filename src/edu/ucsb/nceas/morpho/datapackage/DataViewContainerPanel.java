@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-06 21:36:54 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2002-12-06 22:37:30 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -293,7 +293,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     more_lessLabel = new JLabel();
     more_lessLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
     more_lessLabel.setFont(UISettings.TITLE_CITATION_FONT);
-    more_lessLabel.setForeground(Color.BLUE);
+    more_lessLabel.setForeground(Color.blue);
     more_lessLabel.setText(more_lessLabelText);
     more_lessLabel.addMouseListener(this);
     more_lessLabel.setToolTipText("Show more/less of package documentation");
