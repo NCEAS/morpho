@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 19:27:39 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-24 23:26:45 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,7 +308,8 @@ class KeywordsDialog extends WizardPopupDialog {
   private JComboBox  kwTypePickList;
   private JLabel kwLabel;
   private CustomList kwList;
-  private String[] kwTypeArray = new String[]{  "place",
+  private String[] kwTypeArray = new String[]{  "",
+                                                "place",
                                                 "stratum", 
                                                 "taxonomic",
                                                 "temporal",
@@ -354,7 +355,7 @@ class KeywordsDialog extends WizardPopupDialog {
     kwLabel = WidgetFactory.makeLabel("Keywords:", true);
     kwPanel.add(kwLabel);
     
-    kwTypePickList = WidgetFactory.makePickList(kwTypeArray, false, -1, 
+    kwTypePickList = WidgetFactory.makePickList(kwTypeArray, false, 0, 
             new ItemListener(){ public void itemStateChanged(ItemEvent e) {}});
             
     kwList = WidgetFactory.makeList(new String[]{ "Keyword",

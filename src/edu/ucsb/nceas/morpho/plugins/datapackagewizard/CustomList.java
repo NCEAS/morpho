@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 19:27:39 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-09-24 23:26:45 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ListSelectionModel;
+import javax.swing.ListModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -276,17 +277,23 @@ public class CustomList extends JPanel {
           if (editor instanceof JTextField) {
         
             Log.debug(45, "(JTextField)");
-            column.setCellEditor(new DefaultCellEditor((JTextField)editor));
+            DefaultCellEditor cellEd = new DefaultCellEditor((JTextField)editor);
+            cellEd.setClickCountToStart(1);
+            column.setCellEditor(cellEd);
           
           } else if (editor instanceof JCheckBox) {
         
             Log.debug(45, "(JCheckBox)");
-            column.setCellEditor(new DefaultCellEditor((JCheckBox)editor));
-
+            DefaultCellEditor cellEd = new DefaultCellEditor((JCheckBox)editor);
+            cellEd.setClickCountToStart(1);
+            column.setCellEditor(cellEd);
+            
           } else if (editor instanceof JComboBox) {
         
             Log.debug(45, "(JComboBox)");
-            column.setCellEditor(new DefaultCellEditor((JComboBox)editor));
+            DefaultCellEditor cellEd = new DefaultCellEditor((JComboBox)editor);
+//            cellEd.setClickCountToStart(1);
+            column.setCellEditor(cellEd);
           
           } else {
           
@@ -548,13 +555,14 @@ public class CustomList extends JPanel {
     table.tableChanged(getTableModelEvent());
     Component comp = table.getComponentAt(row, 0);
     if (comp!=null) {
-      table.editCellAt(row, 0, new EventObject(comp));
+//      table.editCellAt(row, 0, new EventObject(comp));
       comp.requestFocus();
     } 
-System.err.println("\n*** addRow--> table.getCellRect(row,0,true) = "
-                                                +table.getCellRect(row,0,true));
-table.scrollRectToVisible(table.getCellRect(row,0,true));
+    table.scrollRectToVisible(table.getCellRect(row,0,true));
     table.setRowSelectionInterval(row, row);
+    table.validate();
+    table.repaint();
+    
   }
 
   
@@ -929,7 +937,6 @@ class CustomJTable extends JTable  {
     
     private DefaultCellEditor defaultCellEditor 
                                       = new DefaultCellEditor(new JTextField());
-    
     Object[] editors;
     
     boolean[] columnsEditableFlags;
@@ -955,6 +962,8 @@ class CustomJTable extends JTable  {
       Log.debug(45, "\nCustomJTable.getCellRenderer(): colClass.getName() = "
                                                                     +colClass);
       if (colClass==null) return defaultRenderer;
+
+/////// JCHECKBOX //////////////////////////////////////////////////////////////
       if (colClass.getName().equals("javax.swing.JCheckBox")) {
         return new TableCellRenderer() {
         
@@ -976,15 +985,58 @@ class CustomJTable extends JTable  {
                     cell.setForeground(table.getSelectionForeground());
                     cell.setBackground(table.getSelectionBackground());
                 }
-                if (cell.getFont()==null) cell.setFont(table.getFont());
-                cell.setOpaque(true);
               }
+              if (cell.getFont()==null) cell.setFont(table.getFont());
+              cell.setOpaque(true);
+              cell.validate();
+              cell.repaint();
               return cell;
             }
           };
       }
+      
+/////// JCOMBOBOX //////////////////////////////////////////////////////////////
+      if (colClass.getName().equals("javax.swing.JComboBox")) {
+      
+        JComboBox origList = (JComboBox)(editors[col]);
+
+        ListModel model = origList.getModel();
+        
+        int listLength = model.getSize();
+        
+        final Object[] listElemArray = new Object[listLength];
+        
+        for (int i = 0; i < listLength; i++) {
+        
+          listElemArray[i] = model.getElementAt(i);
+        }
+        
+        return new TableCellRenderer() {
+        
+            public Component getTableCellRendererComponent( JTable table,
+                                                            Object value,
+                                                            boolean isSelected,
+                                                            boolean hasFocus,
+                                                            int row,
+                                                            int column) {
+
+              JComboBox cell = new JComboBox(listElemArray);
+
+              if (value!=null) cell.setSelectedItem(value);
+              else cell.setSelectedIndex(0);
+
+              if (cell.getFont()==null) cell.setFont(table.getFont());
+              
+              cell.validate();
+              cell.repaint();
+              return cell;
+            }
+          };
+      }
+      
       return defaultRenderer;
     }
+    
 
     //override super
     public Class getColumnClass(int col) {
