@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.28 2000-12-22 00:13:45 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.29 2000-12-27 22:59:10 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -104,6 +104,8 @@ public class ClientFramework extends javax.swing.JFrame
 		aboutItem.setIcon(xxx);
 		xxx = new ImageIcon(getClass().getResource("saveserver.gif"));
 		saveserverButton.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("export.gif"));
+		exportButton.setIcon(xxx);
 		xxx = new ImageIcon(getClass().getResource("datafiles.gif"));
 		dataPict.setIcon(xxx);
 	    }
@@ -152,6 +154,12 @@ public class ClientFramework extends javax.swing.JFrame
 		saveserverButton.setToolTipText("Load, Delete, or Update Information on Server");
 		JToolBar1.add(saveserverButton);
 		saveserverButton.setBounds(121,11,35,11);
+
+		exportButton.setDefaultCapable(false);
+		exportButton.setToolTipText("Export Datafile to Central Catalog");
+		JToolBar1.add(exportButton);
+	//	saveserverButton.setBounds(121,11,35,11);
+		
 		
 		JToolBar1.add(JToolBarSeparator1);
 		JToolBarSeparator1.setBounds(156,9,10,5);
@@ -375,6 +383,7 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 		openButton.addActionListener(lSymAction);
 		saveButton.addActionListener(lSymAction);
 		saveserverButton.addActionListener(lSymAction);
+		exportButton.addActionListener(lSymAction);
 		aboutButton.addActionListener(lSymAction);
 		SymItem lSymItem = new SymItem();
 		queryButton.addActionListener(lSymAction);
@@ -601,6 +610,7 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 	javax.swing.JButton openButton = new javax.swing.JButton();
 	javax.swing.JButton saveButton = new javax.swing.JButton();
 	javax.swing.JButton saveserverButton = new javax.swing.JButton();
+	javax.swing.JButton exportButton = new javax.swing.JButton();
 	com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator1 = new com.symantec.itools.javax.swing.JToolBarSeparator();
 	javax.swing.JButton cutButton = new javax.swing.JButton();
 	javax.swing.JButton copyButton = new javax.swing.JButton();
@@ -721,6 +731,8 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 				saveButton_actionPerformed(event);
 			else if (object == saveserverButton)
 				saveserverButton_actionPerformed(event);
+			else if (object == exportButton)
+				SaveDataItem_actionPerformed(event);
 			else if (object == aboutButton)
 				aboutButton_actionPerformed(event);
 			if (object == queryButton)
