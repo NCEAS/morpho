@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-11-24 18:33:17 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,15 +148,16 @@ public class Keywords extends AbstractWizardPage{
   private void showNewKeywordsDialog() {
     
     ServiceController sc;
-    DataPackageWizardPlugin dpwPlugin = null;
+    DataPackageWizardInterface dpwPlugin = null;
     try {
-	sc = ServiceController.getInstance();
-	dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardPlugin.class);
+      sc = ServiceController.getInstance();
+      dpwPlugin = (DataPackageWizardInterface)sc.getServiceProvider(DataPackageWizardInterface.class);
     } catch (ServiceNotHandledException se) {
-	Log.debug(6, se.getMessage());
+	    Log.debug(6, se.getMessage());
+      se.printStackTrace();
     }
-    if(dpwPlugin == null) 
-	return;
+    if(dpwPlugin == null) return;
+    
     KeywordsPage keywordsPage = (KeywordsPage)dpwPlugin.getPage(DataPackageWizardInterface.KEYWORDS_PAGE);
     WizardPopupDialog wpd = new WizardPopupDialog(keywordsPage, WizardContainerFrame.frame, false);
     wpd.setVisible(true);
