@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-01 17:12:32 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-04-01 17:37:49 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,8 +80,6 @@ public class AddTaxonomicCovCommand implements Command {
 		
 		
     showTaxonomicDialog();
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-    UIController.showNewPackage(adp);
 		
   }
 
@@ -156,8 +154,9 @@ public class AddTaxonomicCovCommand implements Command {
 				Log.debug(5, "Unable to add OrderMap elements to DOM");
 				w.printStackTrace();
 			}
-
+    
 			//taxonomicPage.setPageData(map, "/coverage/taxonomicCoverage");
+      UIController.showNewPackage(adp);
     }
     else {
 
