@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-26 23:53:47 $'
- * '$Revision: 1.79 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-03-27 00:48:24 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2764,7 +2764,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     String accnum = getAccessionNumber();
     if (localLoc) {
-      fileSysDataStore.deleteFile(accnum);
+      boolean localSuccess = fileSysDataStore.deleteFile(accnum);
+      if (!localSuccess)
+      {
+        throw new Exception("User couldn't delete the local copy");
+      }
       LocalQuery.removeFromCache(accnum);
     }
     if (metacatLoc) {
