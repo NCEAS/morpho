@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-06 01:30:36 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2004-03-16 23:51:20 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -57,6 +58,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
+import javax.swing.InputVerifier;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
@@ -72,7 +74,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.BoxLayout;
-
+import javax.swing.DefaultListSelectionModel;
 
 /**
  *  Interface   CustomList
@@ -314,12 +316,21 @@ public class CustomList extends JPanel {
 							if(! ((JTextField)editor).isEditable() ) {
 									jtf.setEditable(false);
 							}
+							InputVerifier iv = ((JTextField)editor).getInputVerifier();
+							if(iv != null)
+								jtf.setInputVerifier(iv);
+							FocusListener fl[] = ((JTextField)editor).getFocusListeners();
+							for(int k = 0; k < fl.length; k++) {
+								jtf.addFocusListener(fl[k]);
+								System.out.println("adding FL " +k);
+							}
 							jtf.setForeground(((JTextField)editor).getForeground());
 							jtf.setDisabledTextColor(((JTextField)editor).getDisabledTextColor());
 							jtf.setBackground(((JTextField)editor).getBackground());
 							Log.debug(45, "(JTextField)");
 							DefaultCellEditor cellEd = new DefaultCellEditor(jtf);
 							cellEd.setClickCountToStart(1);
+							
 							column.setCellEditor(cellEd);
 
 					} else if (editor instanceof JCheckBox) {
@@ -678,7 +689,14 @@ public class CustomList extends JPanel {
     return (List)rowObj;
   }
 
-	
+	public void setSelectedRows(int idx[]) {
+		
+		DefaultListSelectionModel newModel = new DefaultListSelectionModel();
+		newModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		for(int i = 0; i < idx.length; i++)
+			newModel.addSelectionInterval(idx[i], idx[i]);
+		table.setSelectionModel(newModel);
+	}
 
   /**
    * replaces the currently-selected row with the Objects in the List provided,
@@ -1113,6 +1131,14 @@ public class CustomList extends JPanel {
 		table.setEditableForAllColumns(editable);
 	}
 	
+	public void editCellAt(int row, int col) {
+		
+		if(row >= table.getRowCount() || row < 0)
+			return;
+		if(col >= table.getColumnCount() || col < 0)
+			return;
+		table.editCellAt(row, col);
+	}
 }
 
 
