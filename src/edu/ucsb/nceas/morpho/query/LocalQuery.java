@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-07 15:25:42 $'
- * '$Revision: 1.39 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-06-12 21:00:42 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,8 +53,6 @@ import edu.ucsb.nceas.morpho.framework.*;
  * nodes specified by the expressions. All XML documents in a given
  * local subdirectory are scanned. The process thus mimics the database
  * search on Metacat, but is applied only to local documents.
- * 
- * @author higgins
  */
 public class LocalQuery
 {
@@ -65,7 +63,7 @@ public class LocalQuery
    * every time an XPath search is carried out. key is filename which should
    * match document id.
    */
-  static Hashtable dom_collection;
+  private static Hashtable dom_collection;
 
   /**
    * The query on which this LocalQuery is based.
@@ -76,13 +74,13 @@ public class LocalQuery
    * hash table which contains doctype information about each of
    * the locally stored XML documents
    */
-  static Hashtable doctype_collection;
+  private static Hashtable doctype_collection;
   
   /**
    * hash table with docids as key and a Vector of package IDs
    * as the values
    */
-  static Hashtable dataPackage_collection; 
+  private static Hashtable dataPackage_collection; 
   
   /** A reference to the container framework */
   private ClientFramework framework = null;
@@ -90,8 +88,14 @@ public class LocalQuery
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
     
-  /** The directory containing all local stored metadata */
-  private String local_xml_directory;
+  /** The name of the current profile */
+  private String currentProfile;
+  
+  /** The profile directory */
+  private String profileDir;
+  
+  /** The directory containing all local stored metadata and data */
+  private String datadir;
   
   /** The directory containing locally stored dtds */
   private String local_dtd_directory;
@@ -122,7 +126,7 @@ public class LocalQuery
     dom_collection = new Hashtable();
     doctype_collection = new Hashtable();
     dataPackage_collection = new Hashtable();
-    buildPackageList();    
+    //buildPackageList();    
   }
     
   /**
@@ -135,15 +139,14 @@ public class LocalQuery
     super();
     this.savedQuery = query;
   
-    localIcon = new ImageIcon( getClass().
-                getResource("local.gif"));
+    localIcon = new ImageIcon( getClass().  getResource("local.gif"));
   
     this.framework = framework;
     this.config = framework.getConfiguration();   
   
     loadConfigurationParameters();
       
-    local_xml_directory = local_xml_directory.trim();
+    datadir = datadir.trim();
     xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
   }
 
@@ -173,7 +176,7 @@ public class LocalQuery
   }
 
   /**
-   *  loops recursively over all files in the 'local_xml_directory'
+   *  loops recursively over all files in the 'datadir'
    *  and applies XPath search
    *
    * @param xpathExpression the XPath query string
@@ -199,7 +202,7 @@ public class LocalQuery
     starttime = System.currentTimeMillis();
     StringWriter sw = new StringWriter();
 
-    File xmldir = new File(local_xml_directory);
+    File xmldir = new File(datadir);
     Vector filevector = new Vector();
     // get a list of all files to be searched
     getFiles(xmldir, filevector);
@@ -208,16 +211,17 @@ public class LocalQuery
     for (int i=0;i<filevector.size();i++) {
       File currentfile = (File)filevector.elementAt(i);
       String filename = currentfile.getPath();
-      /*ClientFramework.debug(9, "Searching local file: " + filename);*/
-      
+      ClientFramework.debug(9, "Searching local file: " + filename);
+      String docid = currentfile.getParentFile().getName() + separator +
+                     currentfile.getName();
       // skips subdirectories
       if (currentfile.isFile()) {
-          // checks to see if doc has already been placed in DOM cache
-          // if so, no need to parse again
-        if (dom_collection.containsKey(filename)){
-          root = ((Document)dom_collection.get(filename)).getDocumentElement();
-          if (doctype_collection.containsKey(filename)) {
-            currentDoctype = ((String)doctype_collection.get(filename));   
+        // checks to see if doc has already been placed in DOM cache
+        // if so, no need to parse again
+        if (dom_collection.containsKey(docid)){
+          root = ((Document)dom_collection.get(docid)).getDocumentElement();
+          if (doctype_collection.containsKey(docid)) {
+            currentDoctype = ((String)doctype_collection.get(docid));   
           }
         } else {
           InputSource in;
@@ -226,16 +230,13 @@ public class LocalQuery
           } catch (FileNotFoundException fnf) {
             ClientFramework.debug(9,"FileInputStream of " + filename + 
                                " threw: " + fnf.toString());
-            //fnf.printStackTrace();
             continue;
           }
           try {
             parser.parse(in);
-          }
-          catch(Exception e1) {
+          } catch(Exception e1) {
             ClientFramework.debug(9,"Parsing " + filename + 
                                " threw: " + e1.toString());
-            //e1.printStackTrace();
             continue;
           }
 
@@ -243,28 +244,29 @@ public class LocalQuery
           // the selectNodeList method expects
           Document current_doc = parser.getDocument();
           root = parser.getDocument().getDocumentElement();
-          dom_collection.put(filename,current_doc);
+          dom_collection.put(docid,current_doc);
           String temp = getDocTypeFromDOM(current_doc);
           if (temp==null) temp = root.getNodeName();
-          doctype_collection.put(filename,temp);
+          doctype_collection.put(docid,temp);
           currentDoctype = temp;
-          addToPackageList(root, getLastPathElement(filename));
-   } // end else
+          addToPackageList(root, docid);
+        } // end else
       
         String rootname = root.getNodeName();
         NodeList nl = null;
         try {
             // see if current doctype is in list of doctypes to be searched
           if ((doctypes2bsearched.contains("any"))
-                ||(doctypes2bsearched.contains(currentDoctype))) {
-                 
-              // Use the simple XPath API to obtain a node list.
-              nl = XPathAPI.selectNodeList(root, xpathExpression);
-              // if nl has no elements, then the document does not contain the
-              // XPath expression of interest; otherwise, get the
-              // corresponding dataPackage
-              if (nl.getLength()>0) {
-                Vector ids = getPackageID(getLastPathElement(filename));
+              ||(doctypes2bsearched.contains(currentDoctype))) {
+                
+            // Use the simple XPath API to obtain a node list.
+            nl = XPathAPI.selectNodeList(root, xpathExpression);
+            // if nl has no elements, then the document does not contain the
+            // XPath expression of interest; otherwise, get the
+            // corresponding dataPackage
+            if (nl != null && nl.getLength()>0) {
+              try {
+                Vector ids = getPackageID(docid);
                 Enumeration q = ids.elements();
                 while (q.hasMoreElements()) {
                   Object id = q.nextElement();
@@ -273,66 +275,63 @@ public class LocalQuery
                     package_IDs.addElement(id);
                   }
                 }
+              } catch (Exception rogue) {
+                ClientFramework.debug(9, "Rogue exception: ");
+                ClientFramework.debug(9, rogue.getMessage());
               }
+            }
           }
-        }
-        catch (Exception e2)
-        {
+        } catch (Exception e2) {
           ClientFramework.debug(9,"selectNodeList threw: " + e2.toString() 
             + " perhaps your xpath didn't select any nodes");
-          // e2.printStackTrace();
           continue;
         }
-      }
-      else
-      {
+      } else {
         ClientFramework.debug(9,"Bad input args: " + filename + ", " 
           + xpathExpression);
       }
-   } // end of 'for' loop over all files
+    } // end of 'for' loop over all files
         
- 
     curtime = System.currentTimeMillis();
     return package_IDs;
   }
   
   
   /** Determine the document type for a given file */
-  private String getDoctypeFor(String filename) {
+  private String getDoctypeFor(String docid) {
     String ret = "";
-    if (doctype_collection.containsKey(filename)) {
-      ret = (String)doctype_collection.get(filename);   
+    if (doctype_collection.containsKey(docid)) {
+      ret = (String)doctype_collection.get(docid);   
     }
     return ret;
   }
   
   /** Create a row vector that matches that needed for the ResultSet vector */
-  private Vector createRSRow(String filename) {
-    String originalfn = filename;
-    int iii = filename.indexOf(separator);
-    filename = filename.substring(0,iii) + System.getProperty("file.separator")
-                 + filename.substring(iii+1,filename.length());
-    File fn = new File(local_xml_directory, filename);
+  private Vector createRSRow(String docid) {
+    int firstSep = docid.indexOf(separator);
+    String filename = docid.substring(0,firstSep) + File.separator + 
+                      docid.substring(firstSep+1, docid.length());
+    File fn = new File(datadir, filename);
     String fullfilename = fn.getPath();
     Vector rss = new Vector();
     // add icon
     rss.addElement(localIcon);
 
     for (int i=0;i<returnFields.size();i++) {
-      String tmp = (String)returnFields.elementAt(i);  
-      rss.addElement(getValueForPath(tmp,fullfilename));   
+      String fieldName = (String)returnFields.elementAt(i);  
+      rss.addElement(getValueForPath(fieldName,docid));   
     }
     File fl = new File(fullfilename);
     Date creationDate = new Date(fl.lastModified());
     String date = creationDate.toString();
     rss.addElement(date);                                 // create date
     rss.addElement(date);                                 // update date
-    rss.addElement(originalfn);                           // docid
-    Document doc = (Document)dom_collection.get(fullfilename);
+    rss.addElement(docid);                                // docid
+    Document doc = (Document)dom_collection.get(docid);
     String docname = doc.getNodeName();
     rss.addElement(docname);                              // docname
-    String temp = (String)doctype_collection.get(fullfilename);
-    rss.addElement(temp);                                 // doctype
+    String thisDoctype = (String)doctype_collection.get(docid);
+    rss.addElement(thisDoctype);                          // doctype
     rss.addElement(new Boolean(true));                    // isLocal
     rss.addElement(new Boolean(false));                   // isMetacat
     // need to add the triple list vector, but the current
@@ -351,7 +350,7 @@ public class LocalQuery
   private String getValueForPath(String pathstring, String filename) {
     String val = "";
     if (!pathstring.startsWith("/")) {
-      pathstring = "//*/"+pathstring;
+      pathstring = "//"+pathstring;
     }
     try{
       // assume that the filename file has already been parsed
@@ -376,14 +375,14 @@ public class LocalQuery
     } catch (Exception e){
       ClientFramework.debug(9,"Error in getValueForPath method");
     }
-    return val;    
+    return val;
   }
   
   /**
    * Given a DOM document node, this method returns the DocType
    * as a String
    */
-  private static String getDocTypeFromDOM(Document doc){
+  private String getDocTypeFromDOM(Document doc){
     String ret = null;
     DocumentType ddd = doc.getDoctype();
     ret = ddd.getPublicId();
@@ -400,7 +399,7 @@ public class LocalQuery
     * given a directory, return a vector of files it contains
     * including subdirectories
     */
-   private static void getFiles(File directoryFile, Vector vec) {
+   private void getFiles(File directoryFile, Vector vec) {
       String[] files = directoryFile.list();
       
       for (int i=0;i<files.length;i++)
@@ -414,25 +413,6 @@ public class LocalQuery
                 vec.addElement(currentfile);   
             }
         }
-   }
- 
-   
-   /** use to get the last element in a path string */
-   static private String getLastPathElement(String str) {
-        ConfigXML tempconfig = new ConfigXML("./lib/config.xml");
-        String local_xml_dir = tempconfig.get("local_xml_directory", 0);
-        String separator = tempconfig.get("separator", 0);
-        String last = "";
-        int pos = str.indexOf("./"+local_xml_dir);
-        char[] separ = separator.toCharArray();
-        String sep = System.getProperty("file.separator");
-        char[] sp = sep.toCharArray();
-        pos = pos + local_xml_dir.length()+2;
-        last = str.substring(pos, str.length());
-        //last should now have the part of the path after the local_xml_directory
-        last = last.replace(sp[0], separ[0]);
-                
-        return last;
    }
  
   /**
@@ -567,18 +547,22 @@ public class LocalQuery
    */
   private void loadConfigurationParameters()
   {
-    String searchLocalString = config.get("searchlocal", 0);
+    ConfigXML profile = framework.getProfile();
+    currentProfile = config.get("current_profile", 0);
+    profileDir = config.get("profile_directory", 0) + File.separator +
+                 currentProfile;
+    datadir = profileDir + File.separator + profile.get("datadir", 0);
+    String searchLocalString = profile.get("searchlocal", 0);
     //searchLocal = (new Boolean(searchLocalString)).booleanValue();
-    returnFields = config.get("returnfield");
-    doctypes2bsearched = config.get("doctype");
-    dt2bReturned = config.get("returndoc");
+    returnFields = profile.get("returnfield");
+    doctypes2bsearched = profile.get("doctype");
+    dt2bReturned = profile.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
-    local_xml_directory = config.get("local_xml_directory", 0);
-    separator = config.get("separator", 0);
+    separator = profile.get("separator", 0);
   }
 
   /** Main routine for testing */
-  static public void main(String[] args) 
+  public static void main(String[] args) 
   {
     if (args.length < 1) {
       ClientFramework.debug(9, "Wrong number of arguments!!!");
@@ -614,14 +598,13 @@ public class LocalQuery
   */
   private Vector getPackageID(String docid) {
     Vector ret = (Vector)dataPackage_collection.get(docid);
-    //ret.addElement(docid);  // temp
     return ret;
   }
 
  /** 
   * build hashtable of package elements called by buildPackageList
   */
-  static private void addToPackageList(Node nd, String fn) {
+  private void addToPackageList(Node nd, String fn) {
     String subject = "";
     String object = "";
     Node root = nd;
@@ -629,13 +612,12 @@ public class LocalQuery
     String xpathExpression = "//triple";
     try{
       nl = XPathAPI.selectNodeList(root, xpathExpression);
-    }
-    catch (Exception ee) {
+    } catch (Exception ee) {
       ClientFramework.debug(9, "Error in building PackageList!");  
     }
     if ((nl!=null)&&(nl.getLength()>0)) {
       for (int m=0;m<nl.getLength();m++) {
-      NodeList nlchildren = (nl.item(m)).getChildNodes();
+        NodeList nlchildren = (nl.item(m)).getChildNodes();
         for (int n=0;n<nlchildren.getLength();n++) {
           if (nlchildren.item(n).getNodeType()!=Node.TEXT_NODE) {
             if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("subject"))
@@ -681,6 +663,16 @@ public class LocalQuery
    * in the local XML directory
    * Uses XPath to find all <triple> elements and builds list
    */
+/*
+  // MBJ Removed this method because it inappropriately loads its own
+  // configuration object using hardcoded paths.  Now that we are using
+  // profiles to store user data and options, there is no way to correctly
+  // determine which profile to use until the user has logged in and thus
+  // the config objects have been instantiated.  Thus, this static method
+  // would by definition run before the information it needs is available
+  // and all heck would break loose.  Plus, its redundant anyway (the
+  // caches get initialized on the first search)
+
   private static void buildPackageList() 
   {
     ConfigXML tempconfig = new ConfigXML("./lib/config.xml");
@@ -748,7 +740,7 @@ public class LocalQuery
           doctype_collection.put(filename,temp);
         } // end else
       
-        addToPackageList(root, getLastPathElement(filename));  
+        addToPackageList(root, currentfile.getName());  
       
       } else {
         ClientFramework.debug(9, "Bad input args: " + filename + ", " );
@@ -758,4 +750,5 @@ public class LocalQuery
     curtime = System.currentTimeMillis();
     ClientFramework.debug(9, "Build Package List Completed");
   }
+*/
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-11 02:13:37 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2001-06-12 21:00:42 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,19 +127,12 @@ public class ClientFramework extends javax.swing.JFrame
     setTitle("Morpho - Data Management for Ecologists");
     setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
-    setSize(775, 550);
     setVisible(false);
 
-    //saveFileDialog.setMode(FileDialog.SAVE);
-    //saveFileDialog.setTitle("Save");
-    //openFileDialog.setMode(FileDialog.LOAD);
-    //openFileDialog.setTitle("Open");
     toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     getContentPane().add(BorderLayout.NORTH, toolbarPanel);
-    toolbarPanel.setBounds(0, 0, 744, 36);
     morphoToolbar.setAlignmentY(0.222222F);
     toolbarPanel.add(morphoToolbar);
-    morphoToolbar.setBounds(0, 0, 834, 36);
     //}}
 
     //{{INIT_MENUS
@@ -156,9 +149,6 @@ public class ClientFramework extends javax.swing.JFrame
 
     // Set up the framework's menus and toolbars, and services
     initializeActions();
-
-    // Load all of the plugins, their menus, and toolbars
-    loadPlugins();
   }
 
   /**
@@ -1090,10 +1080,12 @@ public class ClientFramework extends javax.swing.JFrame
             "See http://knb.ecoinformatics.org/ for a newer version.");
         }
 
-        String profileDir = config.get("profile_directory", 0);
-        String currentProfile = config.get("current_profile", 0);
+
+        sf.dispose();
 
         // Load the current profile and log in
+        String profileDir = config.get("profile_directory", 0);
+        String currentProfile = config.get("current_profile", 0);
         if (currentProfile == null) {
           ProfileDialog dialog = new ProfileDialog(clf);
           dialog.setVisible(true);
@@ -1112,10 +1104,6 @@ public class ClientFramework extends javax.swing.JFrame
           clf.establishConnection();          
         }
 
-        // make the ClientFramework visible.
-        clf.setVisible(true);
-        sf.dispose();
-
         // Set up logging as appropriate
         String log_file_setting = config.get("log_file", 0);
         if (log_file_setting != null) {
@@ -1132,6 +1120,14 @@ public class ClientFramework extends javax.swing.JFrame
           System.setErr(errPrintStream);
           System.setOut(errPrintStream);
         }
+
+        // Load all of the plugins, their menus, and toolbars
+        clf.loadPlugins();
+
+        // make the ClientFramework visible.
+        clf.pack();
+        clf.setVisible(true);
+
       }
     }
     catch(Throwable t)

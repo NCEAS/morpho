@@ -11,11 +11,11 @@
   <searchmetacat>true</searchmetacat>
   <searchlocal>true</searchlocal>
   <casesensitive>false</casesensitive>
-  <doctype_searched>any</doctype_searched>
+  <doctype>any</doctype>
   <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
   <returndoc>-//NCEAS//resource//EN</returndoc>
   <returnfield>dataset/title</returnfield>
-  <returnfield>originator/responsibleParty/individualName/surName</returnfield>
+  <returnfield>originator/individualName/surName</returnfield>
   <returnfield>keyword</returnfield>
   <scope>jones</scope>
   <lastId>2</lastId>

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-11 23:55:32 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-12 21:00:42 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -462,8 +462,12 @@ public class ProfileDialog extends JDialog
           for (int n=0; n < samplesList.length; n++) {
             File srcFile = samplesList[n];
             if (srcFile.isFile()) {
-              String destName = dataPath + File.separator + 
-                                username + "." + srcFile.getName();
+              String destDirName = dataPath + File.separator + username;
+              File destDir = new File(destDirName);
+              destDir.mkdirs();
+              String destName = destDirName + File.separator + 
+                                srcFile.getName();
+              ClientFramework.debug(9, destName);
               FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
             }
           }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 01:02:21 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-12 21:00:42 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,6 +120,7 @@ public class ResultPanel extends JPanel
 
     setLayout(new BorderLayout());
     setBackground(Color.white);
+    setPreferredSize(new Dimension(775,500));
 
     if (results != null) {
       setName(results.getQuery().getQueryTitle());
