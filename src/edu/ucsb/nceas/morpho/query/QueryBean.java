@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.34 2000-12-28 21:56:27 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.35 2001-01-05 21:32:18 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -917,8 +917,15 @@ public class QueryBean extends AbstractQueryBean
 	}
 
     class PopupListener extends MouseAdapter {
+        // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
+        // on the PC; use the trigger flag to record a trigger, but do not show popup until the
+        // mouse released event
+        boolean trigger = false;
               public void mousePressed(MouseEvent e) {
-                  maybeShowPopup(e);
+                 // maybeShowPopup(e);
+                 if (e.isPopupTrigger()) {
+                    trigger = true;
+                 }  
               }
 
               public void mouseReleased(MouseEvent e) {
@@ -926,12 +933,15 @@ public class QueryBean extends AbstractQueryBean
               }
 
               private void maybeShowPopup(MouseEvent e) {
-                  if (e.isPopupTrigger()) {
+                  if ((e.isPopupTrigger())||(trigger)) {
+                     trigger = false;
                      popup.show(e.getComponent(), e.getX(), e.getY());
                   }
                       
               }
     }
+
+
     	
 
 	void AndRadioButton_itemStateChanged(java.awt.event.ItemEvent event)

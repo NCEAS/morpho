@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.10 2000-11-30 19:43:43 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.11 2001-01-05 21:32:18 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -970,8 +970,15 @@ return "NONE";
 	}
 	
     class PopupListener extends MouseAdapter {
+        // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
+        // on the PC; use the trigger flag to record a trigger, but do not show popup until the
+        // mouse released event
+        boolean trigger = false;
               public void mousePressed(MouseEvent e) {
-                  maybeShowPopup(e);
+                 // maybeShowPopup(e);
+                 if (e.isPopupTrigger()) {
+                    trigger = true;
+                 }  
               }
 
               public void mouseReleased(MouseEvent e) {
@@ -979,12 +986,15 @@ return "NONE";
               }
 
               private void maybeShowPopup(MouseEvent e) {
-                  if (e.isPopupTrigger()) {
+                  if ((e.isPopupTrigger())||(trigger)) {
+                     trigger = false;
                      popup.show(e.getComponent(), e.getX(), e.getY());
                   }
                       
               }
     }
+
+
 	
 	
 
