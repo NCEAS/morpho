@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 23:01:22 $'
- * '$Revision: 1.60 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-24 06:29:31 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -872,6 +872,15 @@ public class DataPackageGUI extends javax.swing.JFrame
       DataPackage newpack = new DataPackage(location, newPackageId, null, 
                                             framework);
       DataPackageGUI dpg = new DataPackageGUI(framework, newpack);
+      // Refresh the query results after the edit is completed
+      try {
+        ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+      } catch (ServiceNotHandledException snhe) {
+        framework.debug(6, snhe.getMessage());
+      }
+
       dpg.show();
     }
     else if(command.equals("EditEntity"))
@@ -917,6 +926,14 @@ public class DataPackageGUI extends javax.swing.JFrame
                                             null,
                                             framework);
         DataPackageGUI dpg = new DataPackageGUI(framework, newdp);
+        // Refresh the query results after the edit is completed
+        try {
+          ServiceProvider provider = 
+                 framework.getServiceProvider(QueryRefreshInterface.class);
+          ((QueryRefreshInterface)provider).refresh();
+        } catch (ServiceNotHandledException snhe) {
+          framework.debug(6, snhe.getMessage());
+        }
         dpg.show();
       }
     }
@@ -1074,6 +1091,16 @@ public class DataPackageGUI extends javax.swing.JFrame
       
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                                  framework);
+
+      // Refresh the query results after the edit is completed
+      try {
+        ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+      } catch (ServiceNotHandledException snhe) {
+        framework.debug(6, snhe.getMessage());
+      }
+
       this.dispose();
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
       newgui.show();

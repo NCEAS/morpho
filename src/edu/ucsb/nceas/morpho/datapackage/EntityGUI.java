@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-23 18:42:18 $'
- * '$Revision: 1.24 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-24 06:29:31 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -524,6 +524,16 @@ public class EntityGUI extends javax.swing.JFrame
       parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+
+      // Refresh the query results after the update
+      try {
+        ServiceProvider provider = 
+               framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+      } catch (ServiceNotHandledException snhe) {
+        framework.debug(6, snhe.getMessage());
+      }
+
       EntityGUI newEntitygui;
       newEntitygui = new EntityGUI(newPackage, entityId, location, newgui, 
                                    framework);
@@ -652,6 +662,15 @@ public class EntityGUI extends javax.swing.JFrame
         newEntitygui = new EntityGUI(newDataPackage, a.incRev(entityId), 
                                      location, newgui, framework);
       }
+      // Refresh the query results after the update
+      try {
+        ServiceProvider provider = 
+               framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+      } catch (ServiceNotHandledException snhe) {
+        framework.debug(6, snhe.getMessage());
+      }
+
       newgui.show();
       newEntitygui.show();
     }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-10-23 22:05:11 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2001-10-24 06:29:32 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
-public class QueryPlugin implements PluginInterface, ConnectionListener
+public class QueryPlugin implements PluginInterface, ConnectionListener,
+                                    ServiceProvider, QueryRefreshInterface
 {
   /** A reference to the container framework */
   private ClientFramework framework = null;
@@ -83,6 +84,17 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     // Create the tabbed pane for the owner queries
     createOwnerPanel();
 
+    // Register Services
+    try
+    {
+        framework.addService(QueryRefreshInterface.class, this);
+        framework.debug(20, "Service added: QueryRefreshInterface.");
+    } catch (ServiceExistsException see) {
+        framework.debug(6, "Service registration failed: QueryRefreshInterface.");
+        framework.debug(6, see.toString());
+    }
+    
+        
     // Listen for changes to the connection status
     framework.addConnectionListener(this);
   }
@@ -222,5 +234,14 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
 
     // Reload any saved queries in the search menu
     ownerPanel.loadSavedQueries();
+  }
+
+  /** 
+   * This method is called to refresh a query when a change is made that should
+   * be propogated to the query result screens.
+   */
+  public void refresh()
+  {
+      refreshOwnerPanel();
   }
 }

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:22 $'
- * '$Revision: 1.51 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-24 06:29:31 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -860,6 +860,17 @@ public class PackageWizardShell extends javax.swing.JFrame
       location = DataPackage.BOTH;
     }
     
+    // Update the query window to reflect the newly created package
+    try {
+      ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+      //QueryRefreshInterface qinterface = (QueryRefreshInterface)provider;
+      ((QueryRefreshInterface)provider).refresh();
+    } catch (ServiceNotHandledException snhe) {
+      framework.debug(6, snhe.getMessage());
+    }
+
+    // Show the package in a window
     DataPackageGUI gui = new DataPackageGUI(framework, dp);
     gui.show();
         

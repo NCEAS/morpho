@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:21 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-24 06:29:31 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -908,6 +908,14 @@ public class AddMetadataWizard extends JFrame
     dpg.setName("Package Editor:" + newpackage.getID());
     framework.addWindow(dpg);
     framework.removeWindow(this);
+    try {
+      ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+      //QueryRefreshInterface qinterface = (QueryRefreshInterface)provider;
+      ((QueryRefreshInterface)provider).refresh();
+    } catch (ServiceNotHandledException snhe) {
+      framework.debug(6, snhe.getMessage());
+    }
   }
   
   /**
@@ -1083,6 +1091,14 @@ public class AddMetadataWizard extends JFrame
     dpg.setName("Package Editor:" + newpackage.getID());
     framework.addWindow(dpg);
     framework.removeWindow(this);
+    try {
+      ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+      //QueryRefreshInterface qinterface = (QueryRefreshInterface)provider;
+      ((QueryRefreshInterface)provider).refresh();
+    } catch (ServiceNotHandledException snhe) {
+      framework.debug(6, snhe.getMessage());
+    }
   }
 
   public void actionPerformed(ActionEvent e) 
