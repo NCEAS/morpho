@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-15 21:52:26 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2003-08-07 17:50:16 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ public class NodeInfo implements Serializable
     String PCDataValue;
     
     // allowed values - ONE, ZERO to MANY, ONE to MANY, OPTIONAL
-    String cardinality = "ZERO to MANY"; 
+    String cardinality = "ONE"; 
         
     // attributes of associated XML element
     Hashtable attr;
@@ -87,9 +87,32 @@ public class NodeInfo implements Serializable
     /** indicates whether this node is SELECTED 
      *  only meaningful if choice_flag is true
      */
-     boolean selected_flag;
-
+    boolean selected_flag;
     
+    /** indicates whether this node is a CHECKBOX
+     *  this is a selected node whose parent CHOICE element
+     *  is repeatable, meaning that multiple choice can occur.
+     *
+     *  only meaningful if choice_flag is true
+     */
+    boolean checkbox_flag;
+    
+    
+   /**
+    * flag to indicate that this nodeInfo object really is an XML attribute of its parent
+    * node. Needed so that xml attributes can be displayed just kike other PCDATA node
+    * but system can put then back as xml attributes when a tree is serialized
+    */
+   boolean xml_attribute = false;
+
+    /**
+     *  indicates the 'visibility level'. This parameter is
+     *  used to indicate whether nodes should be included in the
+     *  tree display. Default is '0' indicatng that a node should always
+     *  appear. Higher levels indicate less importance (i.e. all levels
+     *  above some threshold may be ignored)
+     */
+     int nodeVisLevel = 0;
  /**
   * creates a new NodeInfo object with the indicated name.
   * 
@@ -99,10 +122,11 @@ public class NodeInfo implements Serializable
  public NodeInfo(String name) {
     attr = new Hashtable();
     this.name = name;
-    this.iconName  = "green.gif";
-    setIcon("green.gif");
+    this.iconName  = "red.gif";
+    setIcon("red.gif");
     choice_flag = false;
     selected_flag = false;
+    checkbox_flag = false;
  }
  
   public String toString() {
@@ -111,16 +135,32 @@ public class NodeInfo implements Serializable
       return PCDataValue;
     }
     else {
-      if (name.startsWith("(CHOICE)")) {
+      if (name.indexOf("CHOICE")>-1) {
         return "(CHOICE)";
       }
-      else if (name.startsWith("(SEQUENCE)")) {
+      else if (name.indexOf("SEQUENCE")>-1) {
         return "(SEQUENCE)";
       }
       else {
         return name;
       }
     }
+  }
+  
+  public void setNodeVisLevel(int nvl) {
+    this.nodeVisLevel = nvl;
+  }
+
+  public int getNodeVisLevel() {
+    return nodeVisLevel;
+  }
+  
+  public void setXMLAttribute (boolean val) {
+    xml_attribute = val;
+  }
+  
+  public boolean isXMLAttribute() {
+    return xml_attribute;
   }
   
   public void setCardinality(String card) {
@@ -157,17 +197,43 @@ public class NodeInfo implements Serializable
     this.choice_flag = flg;
   }
 
+  public void setCheckboxFlag(boolean flg) {
+    this.checkbox_flag = flg;
+    if (choice_flag && selected_flag && !checkbox_flag) {
+        setIcon("sel.gif");  
+    }
+    if (choice_flag && selected_flag && checkbox_flag) {
+        setIcon("checkedBox.gif");  
+    }
+    if (choice_flag && !selected_flag && !checkbox_flag) {
+        setIcon("unsel.gif");  
+    }
+    if (choice_flag && !selected_flag && checkbox_flag) {
+        setIcon("uncheckedBox.gif");  
+    }
+  }
+  
+  public boolean isCheckbox() {
+    return checkbox_flag;
+  }
+  
   public boolean isSelected() {
     return selected_flag;  
   }
   
   public void setSelected(boolean flg) {
     this.selected_flag = flg;
-    if (choice_flag && selected_flag) {
+    if (choice_flag && selected_flag && !checkbox_flag) {
         setIcon("sel.gif");  
     }
-    if (choice_flag && !selected_flag) {
+    if (choice_flag && selected_flag && checkbox_flag) {
+        setIcon("checkedBox.gif");  
+    }
+    if (choice_flag && !selected_flag && !checkbox_flag) {
         setIcon("unsel.gif");  
+    }
+    if (choice_flag && !selected_flag && checkbox_flag) {
+        setIcon("uncheckedBox.gif");  
     }
   }
   

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:38 $'
- * '$Revision: 1.24 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-08-07 17:50:16 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     DocFrame editorframe = new DocFrame(morpho, "Working...", xmlText, false);
     editorframe.setController(this);
 //    editorframe.setVisible(true);
-    editorframe.initDoc(morpho, xmlText, false);
+    editorframe.initDoc(morpho, xmlText);
     //MBJ framework.addWindow(editorframe);
   }
 
@@ -191,7 +191,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     DocFrame editorframe = new DocFrame(morpho, "Working...", xmlText, id, location);
     editorframe.setController(this);
 //    editorframe.setVisible(true);
-    editorframe.initDoc(morpho, xmlText, false);
+    editorframe.initDoc(morpho, xmlText);
     this.id = id;
     this.location = location;
     //MBJ if (framework!=null) {
@@ -205,7 +205,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     DocFrame editorframe = new DocFrame(morpho, "Working...", xmlText, id, location, template );
     editorframe.setController(this);
  //   editorframe.setVisible(true);
-    editorframe.initDoc(morpho, xmlText, false);
+    editorframe.initDoc(morpho, xmlText);
     this.id = id;
     this.location = location;
     //MBJ if (framework!=null) {
@@ -226,7 +226,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
                           nodeName, nodeValue);
     editorframe.setController(this);
   //  editorframe.setVisible(true);
-    editorframe.initDoc(morpho, xmlText, false);
+    editorframe.initDoc(morpho, xmlText);
     this.id = id;
     this.location = location;
     //MBJ if (framework!=null) {

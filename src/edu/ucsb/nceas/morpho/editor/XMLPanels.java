@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-05 19:45:47 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2003-08-07 17:50:16 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ import java.util.Hashtable;
 import javax.swing.tree.*;
 import java.util.Enumeration;
 import java.lang.reflect.*;
+import edu.ucsb.nceas.morpho.util.Log;
 
  
 public class XMLPanels extends Component
@@ -197,24 +198,34 @@ public class XMLPanels extends Component
         while(nodes.hasMoreElements()) {
           DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
 		      NodeInfo info = (NodeInfo)(nd.getUserObject());
-          if (!((info.name).equals("#PCDATA"))) {
-            JPanel new_panel = new JPanel();
-            new_panel.setBorder(BorderFactory.createCompoundBorder(
-               BorderFactory.createTitledBorder(info.toString()),
-               BorderFactory.createEmptyBorder(4, 4, 4, 4)
-               ));
-            numPanels++;
-            if (numPanels<500) {   // limited for performance reasons
-		          new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
-              panel.add(new_panel);
-              doPanels(nd, new_panel);
-            }
-            else {
+//          Log.debug(0, "info.name: "+info.name);
+          if ((!((info.name).equals("#PCDATA"))) &&
+                (info.isSelected()) )
+          {
+            if (((info.name).indexOf("CHOICE")<0) &&
+                ((info.name).indexOf("SEQUENCE")<0) )  
+            {
+              JPanel new_panel = new JPanel();
+              new_panel.setBorder(BorderFactory.createCompoundBorder(
+                 BorderFactory.createTitledBorder(info.toString()),
+                 BorderFactory.createEmptyBorder(4, 4, 4, 4)
+                 ));
+              numPanels++;
+              if (numPanels<500) {   // limited for performance reasons
+		            new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
+                panel.add(new_panel);
+                doPanels(nd, new_panel);
+              }
+              else {
                 String message = "<html><p>List Terminated Due to Large Size!<br>";
                 message = message + "Click on SubNodes in the Outline on the Left to Edit those Items</html>";
                 JLabel trunc = new JLabel(message);
                 panel.add(trunc);
                 break;
+              }
+            }
+            else {
+              doPanels(nd, panel);
             }
           }
         }

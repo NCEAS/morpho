@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-13 22:34:04 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2003-08-07 17:50:16 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,11 +88,15 @@ public class DTDTree
    */
 	public void parseDTD() {
 		try {
-      URL dtdUrl = new URL(DTDFileName);
+ //     URL dtdUrl = new URL(DTDFileName);
+      File file = new File(DTDFileName);
+      if (file==null) {
+        Log.debug(0,"DTD file is null!");
+      }
 			//Reader reader = new FileReader(dtdUrl.openStream());
       //DTDParser parser = new DTDParser(new BufferedReader(reader));
       DTDParser parser = new DTDParser(new BufferedReader(
-                                      new InputStreamReader(dtdUrl.openStream())));
+                                      new FileReader(file)));
       dtd = parser.parse(true);
       elementnames = new Vector();
       Enumeration e = dtd.elements.elements();
@@ -122,8 +126,8 @@ public class DTDTree
 	    treeModel = new DefaultTreeModel(rootTreeNode);
 	  }
 	  catch (Exception e) {
-      Log.debug(10, "Problem while parsing DTD: " + e.getMessage());
-      Log.debug(10, e.getClass().getName());
+      Log.debug(0, "Problem while parsing DTD: " + e.getMessage());
+      Log.debug(0, e.getClass().getName());
     }
 	}
 
@@ -174,7 +178,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
   else if(name.equalsIgnoreCase("#PCDATA")) {
     
   }
-  else if(name.startsWith("(SEQUENCE)")) {
+  else if(name.indexOf("SEQUENCE")>-1) {
     Vector vec2 = new Vector();
     DTDSequence item = null;
     if (ni.getItem()!=null) {
@@ -193,7 +197,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
     }
   }
   
-  else if(name.startsWith("(CHOICE)")) {
+  else if(name.indexOf("CHOICE")>-1) {
     Vector vec2 = new Vector();
     DTDChoice item = null;
     if (ni.getItem()!=null) {
@@ -283,7 +287,7 @@ private void DTDItems(DTDItem item, Vector vec, boolean flg) {
     DTDItem[] items = ((DTDChoice) item).getItems();
     if (items.length>1) {
       cntr++;
-      NodeInfo ni = new NodeInfo("(CHOICE)"+cntr);
+      NodeInfo ni = new NodeInfo("CHOICE"+cntr);
       ni.setItem(item);
       ni.setCardinality(getCardinality(item));
       vec.addElement(ni);
@@ -303,7 +307,7 @@ private void DTDItems(DTDItem item, Vector vec, boolean flg) {
         
          {
             cntr++;
-            NodeInfo ni = new NodeInfo("(SEQUENCE)"+cntr);
+            NodeInfo ni = new NodeInfo("SEQUENCE"+cntr);
             ni.setItem(item);
             ni.setCardinality(getCardinality(item));
             vec.addElement(ni);
