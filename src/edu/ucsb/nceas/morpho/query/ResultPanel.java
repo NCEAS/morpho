@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.40 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-05 17:29:53 $'
+ * '$Revision: 1.40.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -71,8 +72,10 @@ public class ResultPanel extends JPanel
   private ResultSet results = null;
   /** A reference to the framework */
   private ClientFramework framework = null;
+  /** A reference to the mediator */
+  private ResultPanelAndFrameMediator mediator = null;
   /** The table used to display the results */
-  JTable table = null;
+  SortableJTable table = null;
   /** Indicate whether the refresh button should appear */
   private boolean hasRefreshButton = false;
   /** Indicate whether the revise button should appear */
@@ -127,9 +130,9 @@ public class ResultPanel extends JPanel
    *
    * @param results the result listing to display
    */
-  public ResultPanel(ResultSet results)
+  public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator)
   {
-    this(results, true, true);
+    this(results, true, true, myMediator);
   }
 
   /**
@@ -140,9 +143,9 @@ public class ResultPanel extends JPanel
    * @param showRevise boolean true if the Revise button should appear
    */
   public ResultPanel(ResultSet results, boolean showRefresh, 
-                     boolean showRevise)
+                 boolean showRevise, ResultPanelAndFrameMediator myMediator)
   {
-    this(results, showRefresh, showRevise, 12);
+    this(results, showRefresh, showRevise, 12, myMediator);
   }
 
   /**
@@ -154,13 +157,16 @@ public class ResultPanel extends JPanel
    * @param fontSize the fontsize for the cells of the table
    */
   public ResultPanel(ResultSet results, boolean showRefresh,
-                     boolean showRevise, int fontSize)
+       boolean showRevise, int fontSize, ResultPanelAndFrameMediator myMediator)
   {
     super();
     this.results = results;
     this.hasRefreshButton = showRefresh;
     this.hasReviseButton = showRevise;
     this.framework = results.getFramework();
+    this.mediator = myMediator;
+    // Register result panel to mediator
+    mediator.registerResultPanel(this);
 
     try {
         bfly = new javax.swing.ImageIcon(getClass().getResource("Btfly.gif"));
@@ -233,7 +239,7 @@ public class ResultPanel extends JPanel
       add(headerPanel, BorderLayout.NORTH);
  
       // Set up the results table
-      table = new JTable(results);
+      table = new SortableJTable(results);
       WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
       stringRenderer.setRows(5);
 //DFH      table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
@@ -340,6 +346,7 @@ public class ResultPanel extends JPanel
    * multiple rows are selected, open them all.
    */
   private void openResultRecord(JTable table) {
+    System.out.println("in openResultRecord");
     int[] selectedRows = table.getSelectedRows();
 
     for (int i = 0; i < selectedRows.length; i++) {
@@ -483,9 +490,11 @@ public class ResultPanel extends JPanel
    */
   class MenuAction implements java.awt.event.ActionListener 
   {
+    
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
-			Object object = event.getSource();
+			System.out.println("in MenuAction");
+      Object object = event.getSource();
       String docid = selectedId;
       DataPackageInterface dataPackage;
       try 
@@ -501,6 +510,7 @@ public class ResultPanel extends JPanel
       }
 			if (object == openMenu)
       { 
+        System.out.println("in openMenu");
         doOpenDataPackage();
         //open the current selection in the package editor
       }
@@ -604,6 +614,9 @@ public class ResultPanel extends JPanel
       table.setRowSelectionInterval(selrow, selrow);
       Vector resultV = results.getResultsVector();
       Vector rowV = (Vector)resultV.elementAt(selrow);
+      // If select a row, open button will enable
+      mediator.enableOpenButton();
+    
       /*//System.out.println("resultsV: " + resultV.toString());
       for(int i=0; i<resultV.size(); i++)
       {
@@ -680,6 +693,7 @@ public class ResultPanel extends JPanel
    */
   public void reviseQuery()
   {
+    System.out.println("in reviseQuery");
     // Save the original identifier
     String identifier = results.getQuery().getIdentifier();
 
@@ -1233,7 +1247,8 @@ private void doExportToZip() {
     worker.start();  //required for SwingWorker 3
 }
 
-private void doOpenDataPackage() {
+  public void doOpenDataPackage() {
+    System.out.println("in doOpenDataPackage");
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
           bflyLabel.setIcon(flapping);
@@ -1249,12 +1264,12 @@ private void doOpenDataPackage() {
           } 
           catch (ServiceNotHandledException snhe) 
           {
-            framework.debug(6, "Error in upload");
+            framework.debug(6, "Error in doOpenDataPackage");
             return null;
           }
           
 			  //do open
-          ClientFramework.debug(20, "Opening package.");
+          ClientFramework.debug(20, "Opening package!.");
           openResultRecord(table);
         
           return null;  
