@@ -5,6 +5,7 @@
 <MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
+<local_cache_directory>./cache</local_cache_directory>
 <debug_level>9</debug_level>
 <log_file>false</log_file>
 <searchmetacat>true</searchmetacat>
