@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-06 00:58:21 $'
- * '$Revision: 1.110 $'
+ *     '$Date: 2004-04-06 23:25:32 $'
+ * '$Revision: 1.111 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -389,14 +389,41 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    * identified by the current profile
    * @return AbstractTableModel containing results
    * @param headNames the select column names
+   * @param deletedDocid  the docid should be delted from the vector
    * (@see edu.ucsb.nceas.morpho.query.ResultSet)
    */
-  public ColumnSortableTableModel doOwnerQueryForCurrentUser(String[] headNames){
+  public ColumnSortableTableModel doOwnerQueryForCurrentUser(String[] headNames,
+                                                    String deletedDocid){
 
     OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
     Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
     LocalQuery localOwnerQuery = new LocalQuery(ownerQuery, morpho);
     HeadResultSet originalSet = (HeadResultSet)localOwnerQuery.execute();
+    Vector results = originalSet.getResultsVector();
+    Vector newResults = new Vector();
+    if (deletedDocid != null && !deletedDocid.equals(""))
+    {
+      //go through the vector
+      for (int i=0; i<results.size(); i++)
+      {
+         Vector rowVector = (Vector)results.elementAt(i);
+         String docid =(String) rowVector.elementAt(ResultSet.DOCIDINDEX);
+         if (docid != null && docid.equals(deletedDocid))
+         {
+           continue;
+         }//if
+         else
+         {
+           newResults.add(rowVector);
+         }//else
+      }//for
+
+    }//if
+    else
+    {
+        newResults = results;
+    }
+    originalSet.setResultsVector(newResults);
     // reset the header name
     originalSet.setHeader(headNames);
 

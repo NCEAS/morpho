@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-06 01:25:27 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-04-06 23:25:32 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,13 +46,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 
@@ -62,23 +67,36 @@ public class ExternalRefsPage extends AbstractUIPage
 {
 
   private ReferencesHandler referenceHandler;
-  private SortableJTable table;
+  private SortableJTable dataPackageTable;
+  private JTable referenceIdTable;
   private JList idList;
   private ColumnSortableTableModel resultsModel;
   private ReferenceSelectionEvent event;
   private String refID;
+  private String displayName;
+  private Vector refIDTableCloumnName = new Vector();
   private String currentDataPackageID;
+  private String selectedDataPackageID;
   private AbstractDataPackage currentDataPackage;
+  private AbstractDataPackage selectedDataPackage;
   private Node referencedSubtree;
   private QueryRefreshInterface queryRefreshInterface;
   // select columns
   private String[] columnNames = {QueryRefreshInterface.TITLE,
                                   QueryRefreshInterface.DOCID};
-  private static final int DOCIDINDEX = 1;
+
+  // constant
+  private static final int       DOCIDINDEX = 1;
+  private static final String SELECTPACKAGE = "1) Select a data package";
+  private static final int           TOPGAP = 0;
+  private static final int        BOTTOMGAP = 8;
+  private static final int       BIGSIDEGAP = 16;
+  private static final int     SMALLSIDEGAP = 8;
 
   ExternalRefsPage(ReferencesHandler referenceHandler)
   {
     this.referenceHandler = referenceHandler;
+    this.displayName = referenceHandler.getGenericName();
     init();
     addingMouseListenerForSearchResultTable();
    }
@@ -96,30 +114,46 @@ public class ExternalRefsPage extends AbstractUIPage
     return event;
   }
 
- /* protected void setCurrentDataPackageID(String currentDataPackageID)
+ protected void setCurrentDataPackageID(String currentDataPackageID)
   {
 
     this.currentDataPackageID = currentDataPackageID;
-  }*/
+  }
 
   private void init()
   {
 
     this.setLayout(new BorderLayout());
 
-    table = new SortableJTable();
+    //left panel is data package panel
+    JPanel packageListPanel = new JPanel();
+    packageListPanel.setBorder(BorderFactory.createEmptyBorder
+                               (TOPGAP, BIGSIDEGAP, BOTTOMGAP, SMALLSIDEGAP));
+    packageListPanel.setLayout(new BorderLayout());
+    JLabel selectPackageLabel = new JLabel(SELECTPACKAGE);
+    packageListPanel.add(selectPackageLabel, BorderLayout.NORTH);
+    dataPackageTable = new SortableJTable();
     doQueryAndPopulateDialog();
-    JScrollPane scroll = new JScrollPane(table);
+    JScrollPane scroll = new JScrollPane(dataPackageTable);
     scroll.getViewport().setBackground(Color.white);
-    this.add(scroll, BorderLayout.WEST);
+    packageListPanel.add(scroll, BorderLayout.CENTER);
 
-    idList = new JList();
+    this.add(packageListPanel, BorderLayout.WEST);
+    // add the displayName into the column name vector in reference id
+    refIDTableCloumnName.add(displayName);
+    // right panel is the reference id panel
     JPanel refsPanel = new JPanel();
-    refsPanel.setLayout(new BoxLayout(refsPanel, BoxLayout.Y_AXIS));
-    refsPanel.add(idList);
-
-    refsPanel.setOpaque(true);
-    refsPanel.setBackground(Color.green);
+    String selectRefsString = "2) Select a " + displayName +
+                              " from this data package";
+    JLabel selectedRefsLabel = new JLabel(selectRefsString);
+    refsPanel.setBorder(BorderFactory.createEmptyBorder(
+                        TOPGAP, SMALLSIDEGAP, BOTTOMGAP, BIGSIDEGAP));
+    refsPanel.setLayout(new BorderLayout());
+    refsPanel.add(selectedRefsLabel, BorderLayout.NORTH);
+    referenceIdTable = new JTable(null, refIDTableCloumnName);
+    JScrollPane scrollPanel = new JScrollPane(referenceIdTable);
+    scrollPanel.getViewport().setBackground(Color.white);
+    refsPanel.add(scrollPanel);
 
     this.add(refsPanel, BorderLayout.CENTER);
   }
@@ -130,63 +164,52 @@ public class ExternalRefsPage extends AbstractUIPage
    private void addingMouseListenerForSearchResultTable()
    {
      // Listen for mouse events to see if the user double-clicks
-     table.addMouseListener(new MouseAdapter()
+     dataPackageTable.addMouseListener(new MouseAdapter()
      {
        public void mouseClicked(MouseEvent e)
        {
-         int selectedRow = table.getSelectedRow();
-         currentDataPackageID =
-                 (String) table.getModel().getValueAt(selectedRow, DOCIDINDEX);
+         int selectedRow = dataPackageTable.getSelectedRow();
+         selectedDataPackageID = (String)
+                dataPackageTable.getModel().getValueAt(selectedRow, DOCIDINDEX);
          // create a data package base on selected docid
          // because we only search the local, so set metacat = false
          boolean metacat = false;
          boolean local   = true;
-         currentDataPackage = DataPackageFactory.
-                           getDataPackage(currentDataPackageID, metacat, local);
-         parsingPackageIntoList(currentDataPackage);
+         selectedDataPackage = DataPackageFactory.
+                          getDataPackage(selectedDataPackageID, metacat, local);
+         parsingPackageIntoTable(selectedDataPackage);
        }
      });
    }//addingMouseListener
 
   /*
-   * Method to parse selected data package into a list
+   * Method to parse selected data package into a table
    */
-  private void parsingPackageIntoList(AbstractDataPackage selectedPackage)
+  private void parsingPackageIntoTable(AbstractDataPackage selectedPackage)
   {
      String id = null;
      List content = referenceHandler.getReferences(selectedPackage, id);
-     //tansfer a List to vector and vector will be the data model of JList
+     //tansfer a List to vector of vector, the vetor will be the data model
+     //of jtable
      Iterator iterator = content.iterator();
-     Vector listDataVector = new Vector();
+     Vector dataVector = new Vector();
+
      while (iterator.hasNext())
      {
+       Vector rowDataVector = new Vector();
        ReferenceMapping mapping = (ReferenceMapping) iterator.next();
        if (mapping != null)
        {
-         listDataVector.add(mapping);
+         rowDataVector.add(mapping);
+         dataVector.add(rowDataVector);
        }
      }
-     idList.setListData(listDataVector);
-     // set single selection mode
-     idList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-     // add list selection listener
-     /*idList.addListSelectionListener
-     ( new ListSelectionListener ()
-          {
-            public void valueChanged(ListSelectionEvent e)
-            {
-               //selected row number in list
-               int selectedListRow = e.getLastIndex();
-               Log.debug(20, "The selected row number in list is "
-                         + selectedListRow);
-
-
-            }
-          }
-
-      );*/
-      idList.validate();
-      idList.repaint();
+     //new data model for table
+     DefaultTableModel referenceIdModel = new DefaultTableModel();
+     referenceIdModel.setDataVector(dataVector, refIDTableCloumnName);
+     referenceIdTable.setModel(referenceIdModel);
+     referenceIdTable.validate();
+     referenceIdTable.repaint();
 
    }
 
@@ -209,7 +232,8 @@ public class ExternalRefsPage extends AbstractUIPage
 
       public Object construct() {
 
-        resultsModel = queryPlugin.doOwnerQueryForCurrentUser(columnNames);
+        resultsModel = queryPlugin.doOwnerQueryForCurrentUser(
+                                   columnNames, currentDataPackageID);
 
         return null;
       }
@@ -261,15 +285,15 @@ public class ExternalRefsPage extends AbstractUIPage
   private void setQueryResults(ColumnSortableTableModel model)
   {
 
-    table.setModel(model);
-    table.validate();
-    table.repaint();
+    dataPackageTable.setModel(model);
+    dataPackageTable.validate();
+    dataPackageTable.repaint();
   }
 
   /*
    * Method to setup table's column size
    */
-  private void setTableCloumnSize(int width)
+  private void setTableCloumnSize(int width, JTable table)
   {
     double [] columnWidth = {0.65, 0.35};
     // column object
@@ -399,7 +423,14 @@ public class ExternalRefsPage extends AbstractUIPage
    */
   public boolean onAdvanceAction()
   {
-    ReferenceMapping map = (ReferenceMapping) idList.getSelectedValue();
+    ReferenceMapping map = null;
+    int selectedRowInReferencedTable = referenceIdTable.getSelectedRow();
+    // because referenceIdtable has only one column, so column =0;
+    if (selectedRowInReferencedTable != -1)
+    {
+      map = (ReferenceMapping)
+          referenceIdTable.getValueAt(selectedRowInReferencedTable, 0);
+    }
     // get refID
     if (map != null)
     {
@@ -411,10 +442,10 @@ public class ExternalRefsPage extends AbstractUIPage
     }
     else
     {
-      Log.debug(30, "The external package is " + currentDataPackageID);
+      Log.debug(30, "The external package is " + selectedDataPackageID);
       Log.debug(30, "The reference id in external package is " + refID);
       // get subtee from current selected package
-      referencedSubtree = currentDataPackage.getSubtreeAtReference(refID);
+      referencedSubtree = selectedDataPackage.getSubtreeAtReference(refID);
     }
     event.setReferenceID(refID);
     event.setLocation(ReferenceSelectionEvent.DIFFERENT_DATA_PACKAGE);

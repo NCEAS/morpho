@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-02 23:14:47 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-04-06 23:25:32 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,15 @@ public class HeadResultSet extends ResultSet
    */
   public Vector getResultsVector() {
     return headResultsVector;
+  }
+
+  /**
+   *  Set results vector
+   * @param vector Vector
+   */
+  public void setResultsVector(Vector vector)
+  {
+    headResultsVector = vector;
   }
 
   /**
