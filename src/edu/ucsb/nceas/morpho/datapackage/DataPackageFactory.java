@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-04 20:47:26 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2003-11-12 19:50:33 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.DOMImplementation;
 
 import org.xml.sax.InputSource;
 
@@ -43,7 +44,9 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.*;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.*;
-
+import org.apache.xerces.dom.DOMImplementationImpl;
+import edu.ucsb.nceas.utilities.*;
+import edu.ucsb.nceas.morpho.editor.*;
 
 /**
  * class (factory) for creating a new DataPackage
@@ -294,12 +297,45 @@ public class DataPackageFactory
    *  "jscientist.7.1".
    */
   static public void main(String args[]) {
+    Node attrRoot = null;
+    OrderedMap om = new OrderedMap();
+    AbstractDataPackage adp = null;
     try{
       Morpho.createMorphoInstance();
-      AbstractDataPackage adp = DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
+      adp = DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
       adp.showPackageSummary();
-      System.exit(0);
-    } catch (Exception w) {}
+      
+      // now let us test the add attribute
+      om.put("attribute"+"[0]/"+"attributeName","TestAttributeName");
+      om.put("attribute"+"[0]/"+"attributeLabel","TestAttibuteLabel");
+      om.put("attribute"+"[-0]/"+"attributeDefinition","Test Attribute Definition");
+      // set measurementScale 
+      om.put("attribute"+"[0]/"+"measurementScale/interval/"
+              +"unit/standardUnit","meters");
+      om.put("attribute"+"[0]/"+"measurementScale/interval/numericDomain/"
+              +"numberType","floating point");
+      om.put("attribute"+"[0]/"+"measurementScale/interval/numericDomain/"
+              +"bounds/minimum","0.0");
+      om.put("attribute"+"[0]/"+"measurementScale/interval/numericDomain/"
+              +"bounds/maximum","1.0");
+    } catch (Exception w) {Log.debug(5, "problem creating ordered map!");}
+      try{        
+        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+ Log.debug(1, "DOMImplementationImpl"+ om);    
+        Document doc = impl.createDocument(null, "attribute", null);
+ Log.debug(1, "createDocument");    
+        attrRoot = doc.getDocumentElement();
+ Log.debug(1, "getDocumentElement:"+attrRoot);    
+        XMLUtilities.getXPathMapAsDOMTree(om, attrRoot);
+      }
+      catch (Exception e) {Log.debug(5, "problem creating DOM tree!"+ e);}
+  Log.debug(1, "attrRoot: "+attrRoot);    
+       Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
+       Node domnode = adp.getMetadataNode();
+       DocFrame df = new DocFrame();
+       df.setVisible(true);
+       df.initDoc(null, domnode);
+//      System.exit(0);
   }
 
 }
