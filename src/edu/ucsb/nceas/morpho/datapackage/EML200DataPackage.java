@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-19 04:35:55 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-12-23 21:25:56 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import java.io.*;
 import org.xml.sax.InputSource;
 import org.apache.xpath.XPathAPI;
 import java.util.Vector;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -87,6 +88,40 @@ public  class EML200DataPackage extends AbstractDataPackage
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
         }
       }
+  }
+  
+  /*
+   *  This method loops over the entities associated witht the package and
+   *  finds associated datafile id referenced in distribution url
+   */
+  private Vector getAssociatedDataFiles() {
+    String urlinfo = null;
+    Vector res = new Vector();
+    Entity[] ents = getEntityArray();
+    for (int i=0;i<ents.length;i++) {
+      if (getDistributionUrl(i, 0,0).length()>0) {  // there is a url link
+        urlinfo = getDistributionUrl(i, 0,0);
+        if (urlinfo.startsWith("ecogrid://")) {
+          // assumed that urlinfo is of the form 'ecogrid://systemname/localid/other'
+          // system name is 'knb'
+          // we just want the local id here
+          int indx2 = urlinfo.indexOf("//");
+          if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
+          // now start should be just past the '//'
+          indx2 = urlinfo.indexOf("/");
+          if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
+          //now should be past the system name
+          indx2 = urlinfo.indexOf("/");
+          if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
+          // should have trimmed 'other'
+          if (urlinfo.length()>0) {
+            // if we reach here, urlinfo should be the locvalid in a string
+            res.addElement(urlinfo);
+          }
+        }
+      }
+    }
+    return res;
   }
   
   public void load(String location, String identifier, Morpho morpho) {
@@ -171,14 +206,69 @@ public  class EML200DataPackage extends AbstractDataPackage
   }
   
   public AbstractDataPackage upload(String id) throws MetacatUploadException {
-    load(AbstractDataPackage.LOCAL, id, Morpho.thisStaticInstance);
+    Morpho morpho = Morpho.thisStaticInstance;
+    load(AbstractDataPackage.LOCAL, id, morpho);
     serialize(AbstractDataPackage.METACAT);
+    // now upoload the data files
+    Vector idlist = getAssociatedDataFiles();
+    Enumeration e = idlist.elements();
+    while (e.hasMoreElements()) {
+      String curid = (String)e.nextElement();
+      File datafile = null;
+      if (!curid.equals("")) {
+        try{
+          // first try looking in the profile temp dir
+          ConfigXML profile = morpho.getProfile();
+          String separator = profile.get("separator", 0);
+          separator = separator.trim();
+          FileSystemDataStore fds = new FileSystemDataStore(morpho);
+          datafile = fds.openTempFile(curid);
+        }
+        catch (Exception q1) {
+          // oops - now try locally
+          try{
+            FileSystemDataStore fds = new FileSystemDataStore(morpho);
+            datafile = fds.openFile(curid);
+          }
+          catch (Exception q3) {
+            // give up!
+            Log.debug(5,"Exception opening datafile after trying all sources!");
+          }
+        }
+      }
+      if (datafile!=null) {
+        try{
+          MetacatDataStore mds = new MetacatDataStore(morpho);
+          mds.newDataFile(curid, datafile);
+        }
+        catch (Exception q) {
+          Log.debug(5, "Error saving datafile "+curid+"to Metacat");
+        }
+      }
+    }
     return this;
   }
   
   public AbstractDataPackage download(String id) {
+    Morpho morpho = Morpho.thisStaticInstance;
     //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
     serialize(AbstractDataPackage.LOCAL);
+    // now download the associated data files
+    Vector idlist = getAssociatedDataFiles();
+    Enumeration e = idlist.elements();
+    MetacatDataStore mds = new MetacatDataStore(morpho);
+    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    while (e.hasMoreElements()) {
+      String curid = (String)e.nextElement();
+      try{
+        File datafile = mds.openFile(curid);
+        FileReader fr = new FileReader(datafile);
+        fds.saveFile(curid, fr);
+      }
+      catch (Exception q3) {
+        Log.debug(5,"Exception opening datafile from metacat and saving locally");
+      }
+    }
     return this;
   }
   
