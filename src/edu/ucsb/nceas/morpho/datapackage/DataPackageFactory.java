@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-19 23:15:35 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2004-03-22 19:31:17 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,12 +149,14 @@ public class DataPackageFactory
       dp = new EML200DataPackage();
       Log.debug(40,"loading new eml2.0.0 DOM");
       dp.load(location,docid,morpho);
+      dp.setInitialId(docid);
     }
 
     else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
               (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
       Log.debug(20,"Creating new eml2Beta6 package");
       AbstractDataPackage adptemp = new EML2Beta6DataPackage();
+      adptemp.setInitialId(docid);
       adptemp.load(location,docid,morpho);
       adptemp.location = "";
       // adptemp is created using the EML2Beta6DataPackage class
@@ -163,6 +165,7 @@ public class DataPackageFactory
       // AbstractDataPackage of that type for later use when the doc is
       // serialized
       dp = getDataPackage(adptemp.metadataNode);
+      dp.setInitialId(docid);
       dp.location = "";  // has NOT been saved
       Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
     }

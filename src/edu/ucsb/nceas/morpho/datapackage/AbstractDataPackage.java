@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-22 06:53:13 $'
- * '$Revision: 1.68 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-22 19:31:17 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,6 +202,15 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected File dataPkgFile;
   protected FileSystemDataStore fileSysDataStore;
   protected MetacatDataStore metacatDataStore;
+  
+  /*
+   *  If the AbstractDataPackage is created by opening an existing document,
+   *  the id of the document being opened is stored here. Note that the id is also
+   *  assumed stored inside the xml document, but there are cases where the two
+   *  ids do not agree! (even though they should). This value remains null if there
+   *  is no intial ID
+   */
+  protected String initialId = null; 
 
   protected Entity[] entityArray;
 
@@ -330,7 +339,21 @@ public abstract class AbstractDataPackage extends MetadataObject
     return dataPkgFile;
   }
 
+  /**
+   *  sets the initialId variable
+   */
+  public void setInitialId(String initId) {
+    this.initialId = initId;
+  }
 
+  /**
+   *  gets the initialId variable
+   */
+  public String getInitialId() {
+    return initialId;
+  }
+  
+  
   /**
    * Method to return the location
    *
@@ -383,9 +406,15 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return String
    */
   public String getAccessionNumber() {
-    String temp = "";
-    temp = getGenericValue(
-        "/xpathKeyMap/contextNode[@name='package']/accessionNumber");
+    String initId = getInitialId();
+    String temp = getGenericValue(
+          "/xpathKeyMap/contextNode[@name='package']/accessionNumber");
+    if (initId!=null) {
+      if (!initId.equals(temp)) {
+        Log.debug(10,"Internal Id DOES NOT match Storage Id!!!");
+      }
+      temp = initId;
+    } 
     return temp;
   }
 
