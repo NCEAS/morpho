@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 22:41:03 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-06-22 17:51:05 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ import org.apache.xerces.dom.DocumentTypeImpl;
 
 import com.arbortext.catalog.*;
 
+/**
+ * class that represents a data package.
+ */
 public class DataPackage 
 {
   private ConfigXML config;
@@ -71,11 +74,6 @@ public class DataPackage
    */
   public static final String BOTH = "localmetacat";
   
-  /*
-  public DataPackage()
-  {
-    
-  }*/
   
   /**
    * Create a new data package object with an id, location and associated
@@ -209,7 +207,7 @@ public class DataPackage
     {
       ConfigXML config = framework.getConfiguration();
       String catalogPath = config.get("local_catalog_path", 0);
-      doc = getDoc(tripleFile, catalogPath);
+      doc = PackageUtil.getDoc(tripleFile, catalogPath);
     }
     catch (Exception e)
     {
@@ -285,61 +283,6 @@ public class DataPackage
   }
   
   /**
-   * parses file with the dom parser and returns a dom Document
-   */
-  public static Document getDoc(File file, String catalogPath) throws 
-                                                               SAXException, 
-                                                               Exception
-  {
-    DOMParser parser = new DOMParser();
-    Document doc;
-    InputSource in;
-    FileInputStream fs;
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    try 
-    {
-      Catalog myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
-      //ConfigXML config = framework.getConfiguration();
-      //String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
-      cer.setCatalog(myCatalog);
-    } 
-    catch (Exception e) 
-    {
-      ClientFramework.debug(11, "Problem creating Catalog in " +
-                   "packagewizardshell.handleFinishAction!" + e.toString());
-      throw new Exception(e.getMessage());
-    }
-    
-    parser.setEntityResolver(cer);
-    
-    try
-    { //parse the wizard created file without the triples
-      fs = new FileInputStream(file);
-      in = new InputSource(fs);
-    }
-    catch(FileNotFoundException fnf)
-    {
-      fnf.printStackTrace();
-      throw new Exception(fnf.getMessage());
-    }
-    try
-    {
-      parser.parse(in);
-      fs.close();
-    }
-    catch(Exception e1)
-    {
-      throw new Exception(e1.getMessage());
-    }
-    //get the DOM rep of the document without triples
-    doc = parser.getDocument();
-    
-    return doc;
-  }
-  
-  /**
    * returns a hashtable of the related files taken from the triples.  These
    * are organized so that the key of the hashtable is the type of metadata
    * (e.g. 'Entity') and the value of the hashtable is a vector of docids
@@ -388,7 +331,7 @@ public class DataPackage
       }
       
       try
-      {
+      { //get the subject files
         FileReader fr = new FileReader(subfile);
         String xmlString = "";
         for(int j=0; j<5; j++)
@@ -399,7 +342,7 @@ public class DataPackage
         String name;
         if(xmlString.equals("<?xml"))
         { //we are dealing with a data file here.
-          Document subDoc = getDoc(subfile, catalogPath);
+          Document subDoc = PackageUtil.getDoc(subfile, catalogPath);
           DocumentTypeImpl dt = (DocumentTypeImpl)subDoc.getDoctype();
           name = dt.getPublicId();
         }
@@ -459,7 +402,7 @@ public class DataPackage
       }
       
       try
-      {
+      { //object files
         FileReader fr = new FileReader(objfile);
         String xmlString = "";
         for(int j=0; j<5; j++)
@@ -470,7 +413,7 @@ public class DataPackage
         String name;
         if(xmlString.equals("<?xml"))
         { //we are dealing with a data file here.
-          Document objDoc = getDoc(objfile, catalogPath);
+          Document objDoc = PackageUtil.getDoc(objfile, catalogPath);
           DocumentTypeImpl dt = (DocumentTypeImpl)objDoc.getDoctype();
           name = dt.getPublicId();
           
@@ -539,25 +482,4 @@ public class DataPackage
   {
     return this.identifier;
   }
-  
-/*
-  public static void main(String[] args)
-  {
-    String filename = args[0];
-    String location = args[1];
-    String action = args[2];
-    System.out.println("location: " + location);
-    System.out.println("id: " + filename);
-    System.out.println("action: " + action);
-    if(action.equals("read"))
-    {
-      ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
-      DataPackage dp = new DataPackage(location, filename, null, cf);
-    }
-    else if(action.equals("write"))
-    {
-      
-    }
-  }
-*/
 }

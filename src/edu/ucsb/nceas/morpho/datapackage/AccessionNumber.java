@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 16:26:42 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-22 17:51:04 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,22 +145,6 @@ public class AccessionNumber
    */
   public String incRevInTriples(File xmlfile, String oldid, String newid)
   {
-    /*try
-    {
-      FileReader fr = new FileReader(xmlfile);
-      int c = fr.read();
-      while(c != -1)
-      {
-        System.out.print((char)c);
-        c = fr.read();
-      }
-    }
-    catch(Exception e)
-    {
-      System.out.println("ERRRRRRRRRRRRRRRRRRRRRRRROR");
-    }
-    System.out.println();
-    */
     DOMParser parser = new DOMParser();
     Document doc;
     InputSource in;
@@ -172,7 +156,7 @@ public class AccessionNumber
     {
       ConfigXML config = framework.getConfiguration();
       String catalogPath = config.get("local_catalog_path", 0);
-      doc = DataPackage.getDoc(xmlfile, catalogPath);
+      doc = PackageUtil.getDoc(xmlfile, catalogPath);
     }
     catch (Exception e)
     {

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-18 23:07:58 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-22 17:51:06 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,6 @@ public class PackageWizardShellParser extends DefaultHandler
    * @param parserName the fully specifified parser name to be used in 
    * processing
    */
-  
   public PackageWizardShellParser(FileReader xml, String parserName)
   {
     XMLReader parser = initializeParser(parserName);
@@ -95,6 +94,9 @@ public class PackageWizardShellParser extends DefaultHandler
     }
   }
   
+  /**
+   * performs init functions on the parser
+   */
   private XMLReader initializeParser(String parserName) 
   {
     XMLReader parser = null;

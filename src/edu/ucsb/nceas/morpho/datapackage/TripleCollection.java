@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-07 17:45:23 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-22 17:51:05 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class TripleCollection
      {
        ConfigXML config = framework.getConfiguration();
        String catalogPath = config.get("local_catalog_path", 0);
-       doc = DataPackage.getDoc(triplesFile, catalogPath);
+       doc = PackageUtil.getDoc(triplesFile, catalogPath);
      }
      catch(Exception e)
      {

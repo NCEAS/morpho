@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 16:14:55 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2001-06-22 17:51:05 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 
+/**
+ * Class that implements a GUI to edit a data package
+ */
 public class DataPackageGUI extends javax.swing.JFrame 
                             implements ActionListener, 
                                        EditingCompleteListener
@@ -106,19 +109,18 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     
     JPanel basicInfoPanel = new JPanel();
+    //create the top panel with the package basic info
     basicInfoPanel = createBasicInfoPanel(dataPackage.getIdentifier(), 
                                                  title, 
                                                  altTitle, orig);
                                                  
     Hashtable relfiles = dataPackage.getRelatedFiles();
-
     Vector otheritems = new Vector();
     Vector dataitems = new Vector();
     Vector entityitems = new Vector();
-    //listitems.add("Basic Information (" + this.id + ")");
     Enumeration keys = relfiles.keys();
-    while(keys.hasMoreElements())
-    {
+    while(keys.hasMoreElements()) 
+    { //populate the list box vectors
       String key = (String)keys.nextElement();
       if(key.equals("Data File"))
       {
@@ -152,6 +154,8 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
     }
     
+    //if you don't add these spaces, the sizes of the list boxes get all
+    //messed up.
     if(otheritems.size()==0)
     {
       otheritems.add(" ");
@@ -161,6 +165,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       otheritems.add(" ");
     }
     
+    //create the banner panel
     ImageIcon head = new ImageIcon(
                          framework.getClass().getResource("smallheader-bg.gif"));
     ImageIcon logoIcon = 
@@ -187,15 +192,16 @@ public class DataPackageGUI extends javax.swing.JFrame
     layoutPanel.setPreferredSize(new Dimension(450, 500));
     layoutPanel.setMinimumSize(new Dimension(450, 500));
     
-    layoutPanel.add(toppanel);
-    //layoutPanel.add(Box.createRigidArea(new Dimension(0,10)));                         
+    layoutPanel.add(toppanel);                         
     layoutPanel.add(basicInfoPanel);
-    //layoutPanel.add(Box.createRigidArea(new Dimension(0,10)));
     layoutPanel.add(listPanel);
     
     contentPane.add(layoutPanel);
   }
   
+  /**
+   * creates the basicinfopanel
+   */
   private JPanel createBasicInfoPanel(String identifier, String title, 
                                       String altTitle, Vector originator)
   {
@@ -203,8 +209,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     textpanel.setBorder(BorderFactory.createLoweredBevelBorder());
     textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
     textpanel.setBackground(Color.white);
-    //textpanel.setPreferredSize(new Dimension(600, 300));
-    //textpanel.setMinimumSize(new Dimension(600, 300));
     editBaseInfoButton = new JButton("Edit Basic Information");
     editBaseInfoButton.addActionListener(this);
     JPanel panel = new JPanel();
@@ -214,10 +218,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     JLabel originatorL = new JLabel("Data Originator: ");
     String htmlBegin = "<html><p>";
     String htmlEnd = "</p></html>";
-    
-    //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    //panel.setMinimumSize(new Dimension(600, 300));
-    //panel.setPreferredSize(new Dimension(600, 300));
     
     JPanel titleTempPanel = new JPanel();
     titleTempPanel.setLayout(new BoxLayout(titleTempPanel, BoxLayout.X_AXIS));
@@ -322,6 +322,9 @@ public class DataPackageGUI extends javax.swing.JFrame
     return panel;
   }
   
+  /**
+   * creates the list panel with the list boxes
+   */
   private JPanel createListPanel(Vector entityfiles, 
                                  Vector otherfiles)
   { 
@@ -419,15 +422,15 @@ public class DataPackageGUI extends javax.swing.JFrame
     String item = null;
     
     if(command.equals("Edit Basic Information"))
-    {
+    { //this is the button that edits the basic info.
+      //just set the item to the appropriate id and the let the edit
+      //if statement take care of it.
       item = "Base Info (" + dataPackage.getID() + ")";
       command = "Edit";
-      System.out.println("item: " + item + " command: " + command);
     }
     
     if(command.equals("Edit"))
-    {
-      System.out.println("item: " + item + " command: " + command);
+    { //edit the currently select package member
       try
       {
         ServiceProvider provider = 
@@ -507,11 +510,11 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     else if(command.equals("Add"))
     {
-      System.out.println("Adding");
+      ClientFramework.debug(9, "Adding-doesn't work yet!");
     }
     else if(command.equals("Remove"))
     {
-      System.out.println("Removing");
+      ClientFramework.debug(9, "Removing-doesn't work yet!");
     }
   }
   
@@ -599,7 +602,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     try
     { 
       if(localloc)
-      { //save it locally
+      { //save the file locally
         if(id.trim().equals(dataPackage.getID().trim()))
         { //we just edited the package file itself
           String oldid = id;
@@ -637,6 +640,10 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
   }
   
+  /**
+   * makes sure that there is only one file selected in the list boxes at
+   * any given time
+   */
   private class EntitySelectionHandler implements ListSelectionListener
   {
     public void valueChanged(ListSelectionEvent e)
@@ -645,15 +652,10 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
   }
   
-  private class DataSelectionHandler implements ListSelectionListener
-  {
-    public void valueChanged(ListSelectionEvent e)
-    {
-      entityFileList.clearSelection();
-      otherFileList.clearSelection();
-    }
-  }
-  
+  /**
+   * makes sure that there is only one file selected in the list boxes at
+   * any given time
+   */
   private class OtherSelectionHandler implements ListSelectionListener
   {
     public void valueChanged(ListSelectionEvent e)

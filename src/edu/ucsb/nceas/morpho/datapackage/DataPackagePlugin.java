@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-18 23:07:58 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-22 17:51:05 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,9 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import java.awt.event.*;
 
+/**
+ * Class that implements the plugin for package editing
+ */
 public class DataPackagePlugin 
        implements PluginInterface, ServiceProvider, DataPackageInterface
 {
@@ -97,15 +100,12 @@ public class DataPackagePlugin
   private void initializeActions() 
   {
     // Set up the menus for the application
-
     menuActions = new Action[1];
     Action newItemAction = new AbstractAction("New Data Package") 
     {
       public void actionPerformed(ActionEvent e) 
       {
         framework.debug(20, "Action fired: New Data Package");
-        //DataPackage dp = new DataPackage();
-        //DataPackageGUI gui = new DataPackageGUI(framework, dp);
         final PackageWizardShell pws = new PackageWizardShell(framework);
         pws.setName("Package Wizard");
         framework.addWindow(pws);
@@ -141,8 +141,8 @@ public class DataPackagePlugin
    */
   private void loadConfigurationParameters()
   {
+    //we dont' need any!
   }
-
 
   public void openDataPackage(String location, String identifier, 
                               Vector relations)

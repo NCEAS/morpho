@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 16:14:55 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-06-22 17:51:06 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,14 @@ import org.apache.xerces.dom.DocumentTypeImpl;
 
 import com.arbortext.catalog.*;
 
+/**
+ * This is the shell of the package wizard.  it handles the 
+ * non-information-gathering panels in the wizard dialog.  the instructions
+ * pane, the buttons and the title bar.  it also serves as a container for 
+ * the package wizard panel.  the shell's config file defines the order
+ * in which the wizard frames are "played" and also the descriptions
+ * that are put in the left most pane.
+ */
 public class PackageWizardShell extends javax.swing.JFrame
                                 implements ActionListener
 {
@@ -85,16 +93,8 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JButton saveToMetacatButton;
   private JButton cancelButton = new JButton();
   
-  private String getDataDescription;/* = "Enter the path to the " +
-                        "data file that you wish to " +
-                        "describe. Click the 'Browse' button to browse for " +
-                        "the file.";*/
-  private String finishDescription;/* = "The Package Wizard is now " +
-                              "ready to create your new package.  The list " +
-                              "shows the files that the package will contain." + 
-                              "If you want to revise your " +
-                              "metadata, click the previous button to go back.";
-                              */
+  private String getDataDescription;
+  private String finishDescription;
   private Hashtable descriptions = new Hashtable();
   
   public PackageWizardShell()
@@ -122,6 +122,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     Vector packageWizardConfigV = config.get("packageWizardConfig");
     String wizardFile = (String)packageWizardConfigV.elementAt(0);
     
+    //the parser to parse the config file for the shell
     PackageWizardShellParser pwsp = null;
     
     try
@@ -147,10 +148,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     getDataDescription = (String)descriptions.get("getData");
     finishDescription = (String)descriptions.get("Finish");
     
-    //wizardFrame = (JPanel)mainWizardFrame.getComponent(1);
-    //get the location of the main wizard frame config file, parse it
-    //and have it draw itself into the topWizardFrame
-    
     frames = pwsp.getFrames();
     if(descriptions.containsKey("InitialDescription"))
     {
@@ -161,6 +158,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     triplesFile = pwsp.getMainFrame();
     for(int i=0; i<frames.size(); i++)
     {
+      //all of the wizard frames are pre built here and put into a vector
+      //for retrieval later.
       Hashtable frame = (Hashtable)frames.elementAt(i);
       JPanel framePanel = new JPanel();
       WizardFrameContainer wfc = new WizardFrameContainer(framePanel);
@@ -172,7 +171,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       
       wfc.attributes = frame;
       if(frame.containsKey("GETDATA"))
-      {
+      { //this field is built when the wizard need to get a data file
         JButton chooseFileButton = new JButton("Browse...");
         chooseFileButton.addActionListener(this);
         fileTextField = new JTextField();
@@ -185,7 +184,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         wfc.description = getDataDescription;
       }
       else if(frame.containsKey("InitialDescription"))
-      {
+      { //this is the frame that is first displayed with the initial instructions
         String initdesc = (String)descriptions.get("InitialDescription");
         JLabel initdescLabel = new JLabel("<html><font color=000000>" + initdesc + "</font></html>");
         initdescLabel.setForeground(Color.black); 
@@ -197,12 +196,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         wfc.attributes.put("name", "InitialDescription");
       }
       else
-      {
+      { //this builds a packagewizard frame
         PackageWizard pw = new PackageWizard(framework, framePanel, 
                                              (String)frame.get("path"));
         wfc.wizard = pw;
         wfc.type = "WIZARD";
       }
+      //frameWizards holds all of these frames for later retrieval
       frameWizards.addElement(wfc);
     }
     
@@ -221,12 +221,13 @@ public class PackageWizardShell extends javax.swing.JFrame
   { //go forward a frame
     //System.out.println("atts: " + activeContainer.attributes.toString());
     if(activeContainer.attributes.containsKey("repeatable"))
-    {
+    { //certain frames can be repeated.  this handles adding them dynamically
       String repeatable = (String)activeContainer.attributes.get("repeatable");
       if(repeatable.equals("yes"))
       { //ask the user if he wished to add another file of the type which
         //he just created
         File f = activeContainer.getFile(true);
+        //write out the file from the current Active container
         if(f == null)
         { //the user pressed the no button when prompted if he wanted to create
           //an invalid document OR the user did not enter a data file that was
@@ -274,7 +275,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     
     if(frameWizardIndex == frameWizards.size()-1)
-    { //we are at the end of the frames...
+    { //we are at the end of the frames so we need to build the finish
+      //frame and prepare to exit the wizard
       
       //-save the last frame's data
       //-display the finish frame
@@ -292,7 +294,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       changeDescription(finishDescription);
       Vector listContent = new Vector();
       for(int i=0; i<frameWizards.size(); i++)
-      {
+      { //build the summary list box
         WizardFrameContainer wfcont = (WizardFrameContainer)
                                                       frameWizards.elementAt(i);
         String id = wfcont.id;
@@ -356,7 +358,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       next.setIcon(null);
     }
     else
-    {
+    { //this is the default action of the next button...to display the next panel
       //remove the current panel
       //display the next panel
       File f = activeContainer.getFile(true);
@@ -384,7 +386,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     wizardFrame.validate();
     wizardFrame.repaint();
-    //show();
   }
   
   /**
@@ -410,7 +411,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     wizardFrame.add(nextContainer.panel);
     
     if(frameWizardIndex == 0)
-    {
+    { //we are at the beginning, we don't want people going past the beginning
+      //because bad stuff happens
       previous.setEnabled(false);
     }
     
@@ -430,7 +432,7 @@ public class PackageWizardShell extends javax.swing.JFrame
    * Handles the action when the user presses the 'finish' button
    */
   private void handleFinishAction()
-  { //write out all of the files to their proper homes with proper ids
+  { //write out all of the files to their proper homes with proper (non temp) ids
     //add the triples to the triples file
     //open the new package in the package editor if the check box is true
     Vector packageFiles = new Vector();
@@ -561,12 +563,6 @@ public class PackageWizardShell extends javax.swing.JFrame
           return;
         }
         
-        /*Vector fileVec = new Vector();
-        fileVec.addElement(wfc.id);
-        fileVec.addElement(f);
-        fileVec.addElement(wfc.type);
-        packageFiles.addElement(fileVec);*/
-        
         DOMParser parser = new DOMParser();
         InputSource in;
         FileInputStream fs;
@@ -611,23 +607,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         //get the DOM rep of the document without triples
         doc = parser.getDocument();
-        //DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
-        
-        //System.out.println("DOCTYPES " + dt.getPublicId() + " " + 
-        //                  dt.getSystemId());
-        //String publicid = dt.getPublicId();
-        //String systemid = dt.getSystemId();
-        //String nameid = dt.getName();
         NodeList tripleNodeList = triples.getNodeList();
         NodeList docTriplesNodeList = null;
-        
-        //System.out.println("Document: " + print(doc.getDocumentElement()));
         
         try
         {
           //find where the triples go in the file
           docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
-          //System.out.println("docTriples: " + docTriplesNodeList.getLength());
         }
         catch(SAXException se)
         {
@@ -649,7 +635,6 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           //find where the triples go in the file
           newtriples = XPathAPI.selectNodeList(doc, triplesTag);
-          //System.out.println("docTriples: " + docTriplesNodeList.getLength());
         }
         catch(SAXException se)
         {
@@ -673,19 +658,14 @@ public class PackageWizardShell extends javax.swing.JFrame
         StringReader sr = new StringReader(docString);
         FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
         localDataStore.saveFile(wfc.id, sr, false); //write out the file
-        //framework.debug(11, "saving file: " + wfc.id);
-        //System.out.println("xml with triples: " + 
-        //                      print(doc.getDocumentElement()));
       }
     }
     
     if(saveToMetacatCheckBox.isSelected())
     {
       //save the package to metacat here
-      framework.debug(11, "saving the package to metacat");
+      framework.debug(15, "saving the package to metacat");
       
-      //System.out.println("packageFiles: size: " + packageFiles.size());
-      //System.out.println("packageFiles: " + packageFiles.toString());
       MetacatDataStore mds = new MetacatDataStore(framework);
       for(int i=packageFiles.size()-1; i>=0; i--)
       {
@@ -696,9 +676,8 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           continue;
         }
-        String type = (String)v.elementAt(2);
-        //System.out.println("id: " + id + " type: " + type);
         
+        String type = (String)v.elementAt(2);
         FileReader fr;
         try
         {
@@ -712,6 +691,9 @@ public class PackageWizardShell extends javax.swing.JFrame
           { //this is a data file.  send it to metacat
             ClientFramework.debug(9, "PLEASE NOTE: Currently, metacat does " +
                                   "not upload DATA FILES.");
+            ////////////////////////////////////////////////////////////////////
+            //this is broken because metacat needs to be updated...see bugzilla
+            ////////////////////////////////////////////////////////////////////
             //mds.newDataFile(id, fr, publicAcc);
           }
           else
@@ -725,18 +707,14 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           ClientFramework.debug(0, "The upload to metacat failed (1): " + 
                                 fnfe.getMessage()); 
-          //framework.debug(0, "Your package is hosed.  A file was not found.");
         }
         catch(MetacatUploadException mue)
         {
-          //framework.debug(0, "Metacat is broken. You can't upload your " +
-          //                   "package now.");
           ClientFramework.debug(0, "The upload to metacat failed (2): " + 
                                 mue.getMessage());
         }
         catch(IOException ioe)
         {
-          //framework.debug(0, "IO Error in packagewizardshell");
           ClientFramework.debug(0, "The upload to metacat failed (3): " + 
                                 ioe.getMessage());
         }
@@ -748,15 +726,13 @@ public class PackageWizardShell extends javax.swing.JFrame
     String location = DataPackage.LOCAL;
     String identifier = wfc.id;
     Vector relations = triples.getCollection();
-    //framework.debug(11, "location: " + location + " identifier: " + 
-    //                identifier + " relations: " + relations.toString());
     DataPackage dp = new DataPackage(location, identifier, 
                                    relations, framework);
     DataPackageGUI gui = new DataPackageGUI(framework, dp);
     gui.show();
         
     //make the package wizard go away
-    this.hide();
+    this.dispose();
   }
   
   /**
@@ -801,10 +777,10 @@ public class PackageWizardShell extends javax.swing.JFrame
                                "Package Wizard", 
                                JOptionPane.YES_NO_CANCEL_OPTION,
                                JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          this.dispose();
-        }
+      if(choice == JOptionPane.YES_OPTION)
+      {
+        this.dispose();
+      }
     }
   }
   
@@ -845,9 +821,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     descriptionPanel.add(imageLabel);
     
     mainPanel.setLayout(new BorderLayout());
-    //wizardFrame.setMaximumSize(new Dimension(595, 450));
-    //wizardFrame.setPreferredSize(new Dimension(595, 450));
-    
     wizardFrame.setMaximumSize(new Dimension(595, 450));
     wizardFrame.setPreferredSize(new Dimension(595, 450));
     buttonPanel.setMaximumSize(new Dimension(595, 50));
@@ -912,8 +885,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     return descriptionText.getText();
   }
   
-  
-  
   /**
    * Test method
    */
@@ -929,6 +900,11 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
   }
   
+  /**
+   * Provides a container for the wizard frames and all of their attributes
+   * this also implements the getData() method which is where the xml (or
+   * other output) gets written to disk (or to metacat)
+   */
   private class WizardFrameContainer
   {
     protected String id = null;

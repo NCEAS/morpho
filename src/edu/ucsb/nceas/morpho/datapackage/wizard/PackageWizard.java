@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 16:14:55 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2001-06-22 17:51:06 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,11 @@ import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * This class builds a custom frame based on a configuration file.  the config
+ * file specifies both the look of the frame as well as the textual output
+ * of it's contents in xml format.
+ */
 public class PackageWizard extends javax.swing.JFrame 
                            implements ActionListener, ItemListener
                                                                  
@@ -276,6 +281,34 @@ public class PackageWizard extends javax.swing.JFrame
    */
   private StringBuffer createDocumentContent(Vector paths, Hashtable content)
   {
+    /*
+    This method works on the assumption of two different vectors.  The first
+    vector (pathVec) is the current path that we have just gotten from the 
+    paths vector.  The second vector (elements) is the pathVec from the 
+    previous iteration of the loop.  The two vectors are comared to each 
+    other and the result is an integer (diff) which points to the place
+    in pathVec where the two vectors tag content diverge.  Based on the
+    value of diff, there are three different cases that need to be handled:
+    1) diff==0, 2) diff < elements.size()-1, 3) diff==elements.size()-1.
+    When diff==0 the two vectors are completely different.  This should
+    only happen at the beginning of the document when elements is null and 
+    pathVec contains the root element.  When diff<elements.size()-1
+    there are new tags that have just shown up so old tags (the ones in positions
+    greater than diff in elements) need to be ended and the new ones (the ones
+    greater than diff in pathVec) need to be started.  An example of this is:
+    elements->/dataset/originator/individualName pathVec->/dataset/keyworkds
+    if diff==elements.size()=1 then there are new tags on pathVec but pathvec 
+    and elements still have the same parent tag on the end of the vector.  
+    an example of this is: elements->/dataset/originator 
+    pathVec->/dataset/originator/surName.
+    
+    attributes are handled seperately but in the same manner
+    
+    WARNING: This is a complicated method!  It took me several weeks to get it
+    working robustly.  Don't change anything unless you really know what
+    you are doing.  Modifying the logic of any of the if statements will 
+    probably break the xml output.
+    */
     StringBuffer doc = new StringBuffer();
     Vector vStack = new Vector();
     String attName = "";
@@ -757,14 +790,16 @@ public class PackageWizard extends javax.swing.JFrame
           String localfield = (String)jtfw.element.attributes.get("field");
           
           while(paths.containsKey(fields + "/" + localfield))
-          {
+          { //this is a bit wierd but it works:
+            //since hashtables can't have duplicate keys, I append a space on
+            //the end of any duplicate field.  that way a string match will 
+            //still work and the information can be extracted later in the
+            //createDocumentContent method
             localfield += " ";
           }
           
-          paths.put(fields + "/" + localfield, jtfwContent);
-          
-          
           //put the field and the content into the hash.
+          paths.put(fields + "/" + localfield, jtfwContent);
         }
         catch(java.lang.ClassCastException cce2)
         { //get the combobox and append its field onto the paths
@@ -783,7 +818,8 @@ public class PackageWizard extends javax.swing.JFrame
           //paths.addElement(fields + "/" + jcbw.element.attributes.get("field"));
           String jcbwContent = (String)jcbw.getSelectedItem();
           if(jcbwContent.equals("") && !allowNullB)
-          {
+          { //this is a flag so that later we can alert the user that they 
+            //are creating an invalid document
             paths.put("MISSINGREQUIREDELEMENTS", "true");
           }
           String localfield = (String)jcbw.element.attributes.get("field");
@@ -793,9 +829,8 @@ public class PackageWizard extends javax.swing.JFrame
             localfield += " ";
           }
           
-          paths.put(fields + "/" + localfield, jcbwContent);
-          //paths.put(fields + "/" + jcbw.element.attributes.get("field"), jcbwContent);
           //put the field and the content into the hash.
+          paths.put(fields + "/" + localfield, jcbwContent);
         }
       }
       catch(java.util.EmptyStackException ese)
@@ -897,6 +932,11 @@ public class PackageWizard extends javax.swing.JFrame
    * The method goes through the XMLElement doc and creates from it the panel
    * and text element structure.  It also builds a tree out of the J*
    * elements so that the structure of the document can be recreated.
+   * @param e the xmlelement to build the panel for
+   * @param contentPane the pane to build the panel in
+   * @param parentPanel the panel that is a parent to e
+   * @param prevIndex the index in parentPanel to add the new panel created
+   * from e.
    */
   private void createPanel(XMLElement e, final Container contentPane, 
                            final JPanelWrapper parentPanel, Integer prevIndex)
@@ -936,7 +976,6 @@ public class PackageWizard extends javax.swing.JFrame
             }
           }
           
-          //tempPanel.setLayout(new /*GridLayout(0,1)*/FlowLayout());
           BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           //if you want to change the layout of the tabbed pane change it here
           tempPanel.setLayout(box);
@@ -1011,7 +1050,7 @@ public class PackageWizard extends javax.swing.JFrame
           }
           
           if(button != null)
-          {
+          { //the repeat button
             JPanel layoutpanel = new JPanel();
             layoutpanel.add(button);
             tempPanel.add(layoutpanel);
@@ -1084,7 +1123,7 @@ public class PackageWizard extends javax.swing.JFrame
         String defaultText = null;
         
         if(tempElement.attributes.containsKey("defaulttext"))
-        {
+        { //get the default text for the text box`
           defaultText = (String)tempElement.attributes.get("defaulttext");
         }
         
@@ -1135,11 +1174,13 @@ public class PackageWizard extends javax.swing.JFrame
                     }
                     catch(ClassCastException cce)
                     {
-                      
+                      ClientFramework.debug(11, 
+                                     "Error in packagewizard.createpanel()(1)");
                     }
                     catch(ArrayIndexOutOfBoundsException aioobe)
                     {
-                      
+                      ClientFramework.debug(11, 
+                                     "Error in packagewizard.createpanel()(2)");
                     }
                   }
                   
@@ -1158,12 +1199,7 @@ public class PackageWizard extends javax.swing.JFrame
                   layoutpanel.setLayout(bl);
                   layoutpanel.add(newLabel, BorderLayout.WEST);
                   layoutpanel.add(newtextfield, BorderLayout.EAST);
-                  //Dimension d = parentPanel2.getSize();
-                  //parentPanel2.setSize(d.width, d.height + 10);
-                  //System.out.println("new size: " + d.width + "x" + d.height);
                   parentPanel2.add(layoutpanel, insertindex + 1);
-                  //parentPanel.add(newLabel, insertindex + 1);
-                  //parentPanel.add(newtextfield, insertindex + 2);
                   parentPanel2.validate();
                   parentPanel2.repaint();
                   contentPane.validate();
@@ -1185,12 +1221,12 @@ public class PackageWizard extends javax.swing.JFrame
         }
         
         if(required)
-        {
+        { //make the label red if it is required
           label.setForeground(Color.red);
         }
         
         if(tempElement.attributes.containsKey("editable"))
-        {
+        { //make the text box uneditable if the config file says so
           String editable = (String)tempElement.attributes.get("editable");
           if(editable.equals("no"))
           {
@@ -1200,37 +1236,25 @@ public class PackageWizard extends javax.swing.JFrame
         }
         
         //set the user defined size of the text field
-        
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
+        //add the new textfield to the children of the parentPanel for later
+        //navigation
         
         JPanel layoutpanel = new JPanel();
         Dimension d;
-        if(parentPanel.getPreferredSize().getWidth() > 0)
-        {
-          d = new Dimension((int)parentPanel.getPreferredSize().getWidth(), 
-                            20);
-        }
-        else
-        {
-          d = new Dimension(20,20);
-        }
-        //layoutpanel.setPreferredSize(d);
         BorderLayout bl = new BorderLayout();
         bl.setHgap(10);
         bl.setVgap(10);
         layoutpanel.setLayout(bl);
         
         if(button != null)
-        { //if this item is repeatable add the button
-          
+        { //if this item is repeatable add the button  
           button.add(label);
           layoutpanel.add(button, BorderLayout.WEST);
-          //parentPanel.add(button);
         }
         else
         { //add just the label if it is not repeatable
-          //parentPanel.add(label);
           layoutpanel.add(label, BorderLayout.WEST);
         }
         
@@ -1238,7 +1262,7 @@ public class PackageWizard extends javax.swing.JFrame
         {
           String visible = (String)tempElement.attributes.get("visible");
           if(visible.equals("no"))
-          {
+          { //make the box invisible
             layoutpanel.setVisible(false);
             textfield.setVisible(false);
           }
@@ -1318,11 +1342,13 @@ public class PackageWizard extends javax.swing.JFrame
                     }
                     catch(ClassCastException cce)
                     {
-                      
+                      ClientFramework.debug(11, 
+                                     "Error in packagewizard.createpanel()(3)");
                     }
                     catch(ArrayIndexOutOfBoundsException aioobe)
                     {
-                      
+                      ClientFramework.debug(11, 
+                                     "Error in packagewizard.createpanel()(4)");
                     }
                   }
                   
@@ -1343,8 +1369,6 @@ public class PackageWizard extends javax.swing.JFrame
                   layoutpanel.add(newLabel, BorderLayout.WEST);
                   layoutpanel.add(newcombofield, BorderLayout.EAST);
                   parentPanel2.add(layoutpanel, insertindex + 1);
-                  //parentPanel.add(newLabel, insertindex + 1);
-                  //parentPanel.add(newcombofield, insertindex + 2);
                   parentPanel2.validate();
                   parentPanel2.repaint();
                   contentPane.validate();
@@ -1427,6 +1451,9 @@ public class PackageWizard extends javax.swing.JFrame
     }
   }
   
+  /**
+   * util method to print a vector in a nice way
+   */
   private void printVector(Vector v)
   {
     for(int i=0; i<v.size(); i++)
@@ -1435,6 +1462,9 @@ public class PackageWizard extends javax.swing.JFrame
     }
   }
   
+  /**
+   * util method to print a hashtable in a nice way
+   */
   private void printHashtable(Hashtable h)
   {
     Enumeration keys = h.keys();
@@ -1448,7 +1478,8 @@ public class PackageWizard extends javax.swing.JFrame
   }
   
   /**
-   * parses a NxM (ex. 500x500) string dimension into a Dimension object.  
+   * parses a NxM (ex. 500x500) string dimension into a Dimension object.
+   * @param size the size in NxM form
    */
   private Dimension parseSize(String size)
   {
@@ -1457,24 +1488,11 @@ public class PackageWizard extends javax.swing.JFrame
     int height = new Integer(size.substring(xindex+1, size.length())).intValue();
     return new Dimension(width, height);
   }
-  
-  /**
-   * wrapper for a JComponent that allows the tracing of paths back through
-   * the form to recreate the XML document.
-   */
-  private class JComponentWrapper extends JComponent
-  {
-    public Vector children = new Vector();
-    public XMLElement element;
-    
-    JComponentWrapper()
-    {
-      
-    }
-  }
-  
+
    /**
-   
+    Wrapper for JPanels
+    this allows the paths to be traced back from the panel when the xml
+    document is created
    */
   private class JPanelWrapper extends JPanel
   {
@@ -1488,7 +1506,9 @@ public class PackageWizard extends javax.swing.JFrame
   }
   
    /**
-  .
+  . Wrapper for Jcomboboxes
+    this allows the paths to be traced back from the panel when the xml
+    document is created
    */
   private class JComboBoxWrapper extends JComboBox
   {
@@ -1501,7 +1521,9 @@ public class PackageWizard extends javax.swing.JFrame
   }
   
    /**
-
+     Wrapper for JTextfield
+     this allows the paths to be traced back from the panel when the xml
+     document is created
    */
   private class JTextFieldWrapper extends JTextField
   {
@@ -1510,28 +1532,6 @@ public class PackageWizard extends javax.swing.JFrame
     public JTextFieldWrapper()
     {
       
-    }
-  }
-  
-  private class JFieldWrapper extends JComponent
-  {
-    private JTextFieldWrapper textfield = null;
-    private JComboBoxWrapper combobox = null;
-    private JLabel label;
-    
-    public JFieldWrapper(String label, JTextFieldWrapper textfield)
-    {
-      if(combobox == null)
-      {
-        this.label = new JLabel(label);
-        this.textfield = textfield;
-      }
-      else
-      {
-        //error because either combobox or text box needs to be null
-        System.out.println("error1 in JFieldWrapper: this class can only be " +
-        "instantiated for a combobox or a textbox but not both");
-      }
     }
   }
   
