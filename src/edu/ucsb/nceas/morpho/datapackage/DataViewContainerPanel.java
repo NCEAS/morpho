@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-04 21:58:23 $'
- * '$Revision: 1.32 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-07 21:51:25 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -523,7 +523,17 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       tablePanel = new JPanel();
       tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
-      String text = "Data in data file "+ id +" cannot be read!";
+      String dataId = dp.getDataFileID(id);
+      String text = null;
+      if (dataId.equals("") || dataId == null)
+      {
+        text = "There is no data file and format of data "+
+               "file could not be recongnized!";
+      }
+      else
+      {
+        text = "Data in data file "+ dataId+" cannot be read!";
+      }
       JLabel warning = new JLabel(text);
       warning.setForeground(UISettings.ALERT_TEXT_COLOR);
       tablePanel.add(BorderLayout.CENTER, warning);
