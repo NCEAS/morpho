@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-09-06 20:16:53 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2001-09-07 00:43:28 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.itis.Itis;
+import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 
 import java.awt.*;
@@ -1212,12 +1213,22 @@ public class ClientFramework extends javax.swing.JFrame
 
     // Look up the name we were passed
     ClientFramework.debug(20, "Searching ITIS for synonyms of: " + taxonName);
-    long newTsn = itis.findTaxonTsn(taxonName);
-    Vector synonyms = itis.getSynonymTsnList(newTsn);
-    for (int i=0; i < synonyms.size(); i++) {
-      long synonymTsn = ((Long)synonyms.get(i)).longValue();
-      Taxon synonymTaxon = itis.getTaxon(synonymTsn);
-      synonymList.add(synonymTaxon.getScientificName());
+    try {
+      long newTsn = itis.findTaxonTsn(taxonName);
+      if (newTsn > 0) {
+        try {
+          Vector synonyms = itis.getSynonymTsnList(newTsn);
+          for (int i=0; i < synonyms.size(); i++) {
+            long synonymTsn = ((Long)synonyms.get(i)).longValue();
+            Taxon synonymTaxon = itis.getTaxon(synonymTsn);
+            synonymList.add(synonymTaxon.getScientificName());
+          }
+        } catch (ItisException ie) {
+          ClientFramework.debug(20, "Problem with ITIS lookup for: " + taxonName);
+        }
+      }
+    } catch (ItisException iesearch) {
+      ClientFramework.debug(20, "Taxon not found in ITIS: " + taxonName);
     }
     return synonymList;
   }
