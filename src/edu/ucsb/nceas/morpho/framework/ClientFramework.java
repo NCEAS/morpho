@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.3 2000-08-02 23:11:16 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.4 2000-08-04 22:05:00 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -144,12 +144,13 @@ public class ClientFramework extends javax.swing.JFrame
 		JTabbedPane1.add(QueryPanel);
 		QueryPanel.setBounds(2,27,693,410);
 		QueryPanel.setVisible(false);
-		QueryPanel.add(BorderLayout.CENTER,queryBean1);
-		queryBean1.setBounds(0,0,697,243);
+		QueryPanel.add(queryBean1);
+		queryBean1.setBounds(0,0,693,239);
 		DataViewerPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JTabbedPane1.add(DataViewerPanel);
 		DataViewerPanel.setBounds(2,27,693,410);
 		DataViewerPanel.setVisible(false);
+		JTabbedPane1.setSelectedComponent(QueryPanel);
 		JTabbedPane1.setSelectedIndex(1);
 		JTabbedPane1.setTitleAt(0,"MetaData Editor");
 		JTabbedPane1.setTitleAt(1,"MetaData Query");
@@ -197,16 +198,19 @@ public class ClientFramework extends javax.swing.JFrame
 		editMenu.setActionCommand("Edit");
 		editMenu.setMnemonic((int)'E');
 		JMenuBar1.add(editMenu);
+		cutItem.setEnabled(false);
 		cutItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.Event.CTRL_MASK));
 		cutItem.setText("Cut");
 		cutItem.setActionCommand("Cut");
 		cutItem.setMnemonic((int)'T');
 		editMenu.add(cutItem);
+		copyItem.setEnabled(false);
 		copyItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.Event.CTRL_MASK));
 		copyItem.setText("Copy");
 		copyItem.setActionCommand("Copy");
 		copyItem.setMnemonic((int)'C');
 		editMenu.add(copyItem);
+		pasteItem.setEnabled(false);
 		pasteItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.Event.CTRL_MASK));
 		pasteItem.setText("Paste");
 		pasteItem.setActionCommand("Paste");
@@ -223,10 +227,10 @@ public class ClientFramework extends javax.swing.JFrame
 		ElementChoiceMenuItem.setText("Element Choice");
 		ElementChoiceMenuItem.setActionCommand("Element Choice");
 		WindowsMenu.add(ElementChoiceMenuItem);
-		ElementTextMenuitem.setSelected(true);
-		ElementTextMenuitem.setText("Element Text");
-		ElementTextMenuitem.setActionCommand("Element Text");
-		WindowsMenu.add(ElementTextMenuitem);
+		ElementTextMenuItem.setSelected(true);
+		ElementTextMenuItem.setText("Element Text");
+		ElementTextMenuItem.setActionCommand("Element Text");
+		WindowsMenu.add(ElementTextMenuItem);
 		helpMenu.setText("Help");
 		helpMenu.setActionCommand("Help");
 		helpMenu.setMnemonic((int)'H');
@@ -260,6 +264,8 @@ public class ClientFramework extends javax.swing.JFrame
 		SaveToDatabase.addActionListener(lSymAction);
 		PreviewXML.addActionListener(lSymAction);
 		OptionsMenuItem.addActionListener(lSymAction);
+		SymChange lSymChange = new SymChange();
+		JTabbedPane1.addChangeListener(lSymChange);
 		//}}
 //      Example of loading icon as resource - DFH 
      try {
@@ -295,6 +301,7 @@ public class ClientFramework extends javax.swing.JFrame
       MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
+		JTabbedPane1_stateChanged(null);
 
 	}
 
@@ -413,7 +420,7 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JMenuItem OptionsMenuItem = new javax.swing.JMenuItem();
 	javax.swing.JMenu WindowsMenu = new javax.swing.JMenu();
 	javax.swing.JCheckBoxMenuItem ElementChoiceMenuItem = new javax.swing.JCheckBoxMenuItem();
-	javax.swing.JCheckBoxMenuItem ElementTextMenuitem = new javax.swing.JCheckBoxMenuItem();
+	javax.swing.JCheckBoxMenuItem ElementTextMenuItem = new javax.swing.JCheckBoxMenuItem();
 	javax.swing.JMenu helpMenu = new javax.swing.JMenu();
 	javax.swing.JMenuItem aboutItem = new javax.swing.JMenuItem();
 	//}}
@@ -705,5 +712,59 @@ public class ClientFramework extends javax.swing.JFrame
 	void OptionsMenuItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		mdeBean1.showOptions();;
+	}
+
+	class SymChange implements javax.swing.event.ChangeListener
+	{
+		public void stateChanged(javax.swing.event.ChangeEvent event)
+		{
+			Object object = event.getSource();
+			if (object == JTabbedPane1)
+				JTabbedPane1_stateChanged(event);
+		}
+	}
+
+	void JTabbedPane1_stateChanged(javax.swing.event.ChangeEvent event)
+	{
+		if (JTabbedPane1.getSelectedIndex()==0) {
+		    ElementChoiceMenuItem.setEnabled(true);
+		    ElementTextMenuItem.setEnabled(true);
+		    newItem.setEnabled(true);
+		    openItem.setEnabled(true);
+		    saveItem.setEnabled(true);
+		    SaveToDatabase.setEnabled(true);
+		    PreviewXML.setEnabled(true);
+		    newButton.setEnabled(true);
+		    openButton.setEnabled(true);
+		    saveButton.setEnabled(true);
+		    saveserverButton.setEnabled(true);
+		}
+		if (JTabbedPane1.getSelectedIndex()==1) {
+		    ElementChoiceMenuItem.setEnabled(false);
+		    ElementTextMenuItem.setEnabled(false);
+		    newItem.setEnabled(false);
+		    openItem.setEnabled(false);
+		    saveItem.setEnabled(false);
+		    SaveToDatabase.setEnabled(false);
+		    PreviewXML.setEnabled(false);
+		    newButton.setEnabled(false);
+		    openButton.setEnabled(false);
+		    saveButton.setEnabled(false);
+		    saveserverButton.setEnabled(false);
+		}
+		if (JTabbedPane1.getSelectedIndex()==2) {
+		    ElementChoiceMenuItem.setEnabled(false);
+		    ElementTextMenuItem.setEnabled(false);
+		    newItem.setEnabled(false);
+		    openItem.setEnabled(false);
+		    saveItem.setEnabled(false);
+		    SaveToDatabase.setEnabled(false);
+		    PreviewXML.setEnabled(false);
+		    newButton.setEnabled(false);
+		    openButton.setEnabled(false);
+		    saveButton.setEnabled(false);
+		    saveserverButton.setEnabled(false);
+		}
+			 
 	}
 }
