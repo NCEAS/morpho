@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.17 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-17 20:44:09 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
          Node domnode = dp.getMetadataNode();
           DocFrame df = new DocFrame();
           df.setVisible(true);
-          df.initDoc(null, domnode);
+          df.initDoc(null, domnode, null, null);
 
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
