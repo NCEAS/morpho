@@ -24,6 +24,7 @@ public class NodeInfo implements Serializable
   String cardinality = "ONE";  
 
   boolean Item;
+  DTDItem dtditem;
   Hashtable attr;
 
   public NodeInfo(String name) {

@@ -11,7 +11,8 @@ import javax.swing.tree.*;
 import javax.swing.event.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
-
+import com.arbortext.catalog.*;
+import edu.ucsb.nceas.dtclient.*;
 
 
 /**
@@ -20,16 +21,21 @@ import org.xml.sax.helpers.*;
 //public class Editor extends javax.swing.JFrame
 public class Editor extends JPanel
 {
+    ConfigXML config;
+
     Vector elementnames;
     public DTD dtd = null;
     StringBuffer sb; 
     StringBuffer start_buffer;
     StringBuffer start;
     StringBuffer end_buffer;
-    Stack tempStack;
-    int indent = 0;
+    Stack tempStack;        
+    boolean showAllNodes = true;     //used to decide whether only selected or all node are
+                                     //written to output
 
-    int levels = 9;
+  int indent = 0;
+
+    int levels = 15;
     DTDItem oldItem;
     public DefaultMutableTreeNode rootNode;
     public MyDefaultTreeModel treeModel;
@@ -85,19 +91,19 @@ public class Editor extends JPanel
 		SaveButton.setActionCommand("Save");
 		JPanel6.add(SaveButton);
 		SaveButton.setBounds(0,0,35,40);
-		SaveButton.setEnabled(false);
+		SaveButton.setEnabled(true);
 		OpenButton.setText("Open");
 		OpenButton.setActionCommand("Open");
 		JPanel6.add(OpenButton);
 		OpenButton.setBounds(0,0,35,40);
-		OpenButton.setEnabled(false);
+		OpenButton.setEnabled(true);
 		JPanel5.add(BorderLayout.CENTER, JScrollPane4);
 		JPanel4.add(BorderLayout.CENTER, OutputScrollPanel);
-		//OpenFileDialog.setMode(FileDialog.LOAD);
-		//OpenFileDialog.setTitle("Open");
+		OpenFileDialog.setMode(FileDialog.LOAD);
+		OpenFileDialog.setTitle("Open");
 		//$$ OpenFileDialog.move(0,371);
-		//SaveFileDialog.setMode(FileDialog.SAVE);
-		//SaveFileDialog.setTitle("Save");
+		SaveFileDialog.setMode(FileDialog.SAVE);
+		SaveFileDialog.setTitle("Save");
 		//$$ SaveFileDialog.move(24,371);
 		//}}
               CMmenuItem = new JMenuItem("Content Model = ");
@@ -238,8 +244,8 @@ public class Editor extends JPanel
 	javax.swing.JButton OpenButton = new javax.swing.JButton();
 	javax.swing.JScrollPane JScrollPane4 = new javax.swing.JScrollPane();
 	javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
-	//MBJBEAN//java.awt.FileDialog OpenFileDialog = new java.awt.FileDialog(this);
-	//MBJBEAN//java.awt.FileDialog SaveFileDialog = new java.awt.FileDialog(this);
+	java.awt.FileDialog OpenFileDialog = new java.awt.FileDialog(new Frame());
+	java.awt.FileDialog SaveFileDialog = new java.awt.FileDialog(new Frame());
 	//}}
 
 	//{{DECLARE_MENUS
@@ -446,7 +452,7 @@ public class Editor extends JPanel
 	    String end;
 	    NodeInfo ni = (NodeInfo)node.getUserObject();
 	    name = ni.name;
-	   if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
+	   if ((!((ni.getCardinality()).equals("NOT SELECTED")))||(showAllNodes)) {
 	   if (!name.equals("(CHOICE)")) {
 	    start.append("<"+name+" ");  
 	    
@@ -477,7 +483,7 @@ public class Editor extends JPanel
 	            write_loop(nd);
 	        }
 	    }
-	   if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
+	   if ((!((ni.getCardinality()).equals("NOT SELECTED")))||(showAllNodes)) {
 	   if (!name.equals("(CHOICE)")) {
 	    start.append((String)(tempStack.pop()));
 	   }
@@ -521,7 +527,8 @@ public Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
            Vector vec2 = new Vector();
            DTDChoice item = null;
            if (ni.getItem()) {
-                item = (DTDChoice)oldItem;
+                //item = (DTDChoice)oldItem;
+                item = (DTDChoice)(ni.dtditem);
            }
             DTDItem[] items = ((DTDChoice) item).getItems();
             for (int i=0; i < items.length; i++)
@@ -589,6 +596,7 @@ public void DTDItems(DTDItem item, Vector vec) {
                 NodeInfo ni = new NodeInfo("(CHOICE)");
                 ni.setCardinality(getCardinality(item));
                 ni.setItem(true);
+                ni.dtditem = item;
                 vec.addElement(ni);
             }
             else {
@@ -623,7 +631,7 @@ public void DTDItems(DTDItem item, Vector vec) {
         else if (item instanceof DTDPCData)
         {
             NodeInfo ni = new NodeInfo("#PCDATA");
-            ni.attr.put("Value", "text");
+            ni.attr.put("Value", "N/A");
             ni.setCardinality(getCardinality(item));
             vec.addElement(ni);
         }
@@ -693,13 +701,13 @@ return "ONE";
 /* *************************************************************** */	
 	void JButton1_actionPerformed(java.awt.event.ActionEvent event)
 	{
-/*
+
 		OpenFileDialog.setVisible(true);
 		String filename = OpenFileDialog.getFile();
 		if (filename!=null) {
 		    DTDFileName.setText(OpenFileDialog.getDirectory()+filename);
 		}
-*/
+
 	}
 	
 	public DefaultMutableTreeNode newNode (Object name) {
@@ -709,8 +717,15 @@ return "ONE";
 	}
 	
     class PopupListener extends MouseAdapter {
+        // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
+        // on the PC; use the trigger flag to record a trigger, but do not show popup until the
+        // mouse released event
+        boolean trigger = false;
               public void mousePressed(MouseEvent e) {
-                  maybeShowPopup(e);
+                 // maybeShowPopup(e);
+                 if (e.isPopupTrigger()) {
+                    trigger = true;
+                 }  
               }
 
               public void mouseReleased(MouseEvent e) {
@@ -718,7 +733,8 @@ return "ONE";
               }
 
               private void maybeShowPopup(MouseEvent e) {
-                  if (e.isPopupTrigger()) {
+                  if ((e.isPopupTrigger())||(trigger)) {
+                       trigger = false;
                        TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
                        tree.setSelectionPath(selPath);
                        if (selectedNode!=null) {
@@ -787,24 +803,41 @@ return "ONE";
     
 	void SaveButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-/*
+
 	    SaveFileDialog.setVisible(true);
-	    String filename = SaveFileDialog.getFile();
+	    String filename = SaveFileDialog.getDirectory()+SaveFileDialog.getFile();
 	    if (filename!=null) {
 	        writeXML((DefaultMutableTreeNode)(treeModel.getRoot()),filename);
 	//	    String str1 = start.toString();
 	//	    xmlstring = "<?xml version=\"1.0\"?>\n"+str1;
 	//	    JTextArea1.setText(xmlstring);
 		}	 
-*/
+
 	}
 
 	void OpenButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-/*
+
 	OpenFileDialog.setVisible(true);
-	String filename = OpenFileDialog.getFile();
+	String filename = OpenFileDialog.getDirectory()+OpenFileDialog.getFile();
 	if (filename!=null) {
+
+
+         CatalogEntityResolver cer = new CatalogEntityResolver();
+	 config = new ConfigXML("config.xml");
+	 String local_dtd_directory = config.get("local_dtd_directory",0);
+	 String local_xml_directory = config.get("local_xml_directory",0);
+            
+         String xmlcatalogfile = local_dtd_directory+"/catalog"; 
+                
+         try {
+             Catalog myCatalog = new Catalog();
+             myCatalog.loadSystemCatalogs();
+             myCatalog.parseCatalog(xmlcatalogfile);
+             cer.setCatalog(myCatalog);
+         }
+         catch (Exception e) {System.out.println("Problem creating Catalog!");}
+
 	   
         try {
           String parserName = "org.apache.xerces.parsers.SAXParser";
@@ -812,6 +845,7 @@ return "ONE";
           FileReader fr = new FileReader(filename);
           // Get an instance of the parser
           parser = XMLReaderFactory.createXMLReader(parserName);
+          parser.setEntityResolver(cer);
           myHandler mh = new myHandler(treeModel);
           parser.setContentHandler(mh);
           parser.parse(new InputSource(fr));
@@ -819,7 +853,7 @@ return "ONE";
           System.err.println(e.toString());
         }
 	}
-*/
+
 	}
 	
 public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
