@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-26 23:59:26 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-27 16:48:24 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,11 +54,6 @@ public class DeleteCommand implements Command
   /** A refernce to the ResultPanel */
    private ResultPanel resultPane = null;
    
-  /** Constant String to show state of delete */
-  public static final String DELETELOCAL = "LOCAL";
-  public static final String DELETENETWORK = "METACAT";
-  public static final String DELETEBOTH = "BOTH";
-  
   /** State of the delete */
   private String state = null;
   
@@ -86,7 +81,7 @@ public class DeleteCommand implements Command
     
   /**
    * Constructor of DeleteCommand
-   * @param dialog a upload command will be happened at this dialog 
+   * @param dialog a delete command will be happened at this dialog 
    * @param myState which deletion will happend, local, network or both
    */
   public DeleteCommand(OpenDialogBox box, String myState)
@@ -113,7 +108,7 @@ public class DeleteCommand implements Command
       boolean inNetwork = resultPane.getMetacatLocation();
       boolean inLocal = resultPane.getLocalLocation();
       // Decide delete state
-      if (myState.equals(DELETELOCAL))
+      if (myState.equals(DataPackageInterface.LOCAL))
       {
         // Delete local copy
         state = myState;
@@ -121,7 +116,7 @@ public class DeleteCommand implements Command
         // If has local copy, can execute delete local
         execute = inLocal;
       }
-      else if (myState.equals(DELETENETWORK))
+      else if (myState.equals(DataPackageInterface.METACAT))
       {
         // Delete network copy
         state = myState;
@@ -129,7 +124,7 @@ public class DeleteCommand implements Command
         // If has network copy can delete network copy
         execute = inNetwork;
       } 
-      else if (myState.equals(DELETEBOTH))
+      else if (myState.equals(DataPackageInterface.BOTH))
       { 
         // Delete both
         state = myState;
@@ -154,7 +149,7 @@ public class DeleteCommand implements Command
       // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals("") && execute)
       {
-        doDeleteLocal(selectDocId, morphoFrame, dialog);
+        doDelete(selectDocId, morphoFrame, dialog);
       }
    
     
@@ -164,7 +159,7 @@ public class DeleteCommand implements Command
    * Using SwingWorket class to delete a local package
    *
    */
- private void doDeleteLocal(final String docid, final MorphoFrame frame, 
+ private void doDelete(final String docid, final MorphoFrame frame, 
                                                       final OpenDialogBox box) 
  {
   final SwingWorker worker = new SwingWorker() 
@@ -191,7 +186,7 @@ public class DeleteCommand implements Command
           // find the location of delete
                     
 		      //delete the local package
-          Log.debug(20, "Deleteing the local package.");
+          Log.debug(20, "Deleteing the package.");
           int choice = JOptionPane.YES_OPTION;
           choice = JOptionPane.showConfirmDialog(null, message, 
                                "Morpho", 
@@ -200,7 +195,7 @@ public class DeleteCommand implements Command
                                
           if(choice == JOptionPane.YES_OPTION)
           {
-            //dataPackage.delete(docid, DataPackage.LOCAL);
+            dataPackage.delete(docid, state);
             refresh.execute();
           }
           
