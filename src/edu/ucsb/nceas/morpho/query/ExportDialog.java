@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 19:17:24 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-12-16 17:46:51 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,6 @@ public class ExportDialog extends JDialog
   /** Radio button */
   private JRadioButton exportToDir = new JRadioButton("Export to a Directory...");
   private JRadioButton exportToZip = new JRadioButton("Export to a Zip File...");
-  private JRadioButton exportToEML2 = new JRadioButton("Export to EML2");
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
@@ -184,17 +183,14 @@ public class ExportDialog extends JDialog
     // Initially set radio button disable
     exportToDir.setEnabled(true);
     exportToZip.setEnabled(true);
-    exportToEML2.setEnabled(true);
     // Put them into group
     ButtonGroup group = new ButtonGroup();
     group.add(exportToDir);
     group.add(exportToZip);
-    group.add(exportToEML2);
     // Vector to keep track of enabled radio button
     Vector enabledRadioButtonList = new Vector();
       enabledRadioButtonList.add(exportToDir);
       enabledRadioButtonList.add(exportToZip);
-      enabledRadioButtonList.add(exportToEML2);
     
     // Create JPanel and set it border layout
     JPanel mainPanel = new JPanel();
@@ -216,7 +212,6 @@ public class ExportDialog extends JDialog
     Box radioBox = Box.createVerticalBox();
     radioBox.add(exportToDir);
     radioBox.add(exportToZip);
-    radioBox.add(exportToEML2);
     
     // create another center box which will put radion box in the center
     // and it will be add into center of mainPanel
@@ -271,7 +266,6 @@ public class ExportDialog extends JDialog
     RadioButtonListener listener = new RadioButtonListener(this);
     exportToDir.addItemListener(listener);
     exportToZip.addItemListener(listener);
-    exportToEML2.addItemListener(listener);
     
     setVisible(false);
    
@@ -302,18 +296,6 @@ public class ExportDialog extends JDialog
         }
         else {
           executeAction.setCommand( new ExportCommand(null, ExportCommand.ZIP, this));
-        }
-      }
-      else if (object == exportToEML2)
-      {
-         // Enable execute button
-        Log.debug(20, "In export to eml2 branch");
-        executeAction.setEnabled(true);
-        if (openDialog!=null) {
-          executeAction.setCommand(new ExportCommand(openDialog, ExportCommand.TOEML2, this));
-        }
-        else {
-          executeAction.setCommand( new ExportCommand(null, ExportCommand.TOEML2, this));
         }
       }
    }//enableExecuteButton
