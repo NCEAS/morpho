@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-24 18:45:12 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2002-10-26 08:04:13 $'
+  * '$Revision: 1.6 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -221,6 +221,7 @@
   </xsl:template> 
        
   <xsl:template name="renderTriple">
+    <xsl:if test="not(contains(./relationship,'ttribute'))">
     <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
       <xsl:text>&#160;</xsl:text></td><td width="{$secondColWidth}" class="{$secondColStyle}">
       <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
@@ -242,6 +243,7 @@
           <xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./object"/>
       </a>
     </td></tr>
+    </xsl:if>
     </xsl:template>
   
 </xsl:stylesheet>

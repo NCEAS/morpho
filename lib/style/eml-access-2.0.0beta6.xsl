@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 18:34:49 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2002-10-26 08:04:13 $'
+  * '$Revision: 1.5 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -43,16 +43,11 @@
               href="{$stylePath}/{$qformat}.css" />
       </head>
       <body>
-        <center>
-          <h3>Access Control Rules</h3>
-          
-        </center>
-
-        <table class="tabledefault" width="90%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
         <xsl:apply-templates select="acl/identifier" mode="resource"/>
         <xsl:apply-templates select="acl"/>
         <tr><td class="{$subHeaderStyle}" colspan="2">
-        <xsl:text>Rules:</xsl:text></td></tr>
+        <xsl:text>Access Control Rules:</xsl:text></td></tr>
         <xsl:if test="normalize-space(acl/@order)='allowFirst' and (//allow)">
         <tr><td width="{$firstColWidth}" class="{$firstColStyle}">&#160;</td>
             <td width="{$secondColWidth}" class="{$secondColStyle}">&#160;</td>

@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 18:34:49 $'
-  * '$Revision: 1.6 $'
+  *     '$Date: 2002-10-26 08:04:13 $'
+  * '$Revision: 1.7 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:import href="eml-settings-2.0.0beta6.xsl" />
-<xsl:import href="eml-identifier-2.0.0beta6.xsl" />
 
   <xsl:output method="html" encoding="iso-8859-1"/>
 
@@ -38,55 +37,57 @@
     <html>
       <head>
         <link rel="stylesheet" type="text/css" 
-              href="{$stylePath}/{$qformat}.css" />
+              href="{$stylePath}/{$entitystyle}.css" />
       </head>
       <body>
-        <center>
-          <h3>Attribute structure description 
-          <xsl:if test="$selected_attribute &gt; -1">
-            <xsl:text>(column </xsl:text><xsl:value-of select="($selected_attribute+1)"/><xsl:text>)</xsl:text>
-          </xsl:if></h3>
-        </center>
-
-        <table class="tabledefault" width="90%" border="0" cellpadding="0" cellspacing="5"><!-- width needed for NN4 - doesn't recognize width in css -->
-        <xsl:apply-templates select="eml-attribute/identifier" mode="resource"/>
+        <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        
         <tr><td class="{$subHeaderStyle}" colspan="2">
-        Attributes in the Data Set</td></tr>
-        <tr>
-        <td colspan="2"><table width="100%" border="0" cellpadding="0" cellspacing="5"><tr> 
-            <td class="{$firstColStyle}" width="{$firstColWidth}">Attribute Name</td>
-            <td class="{$firstColStyle}" >Label</td>
-            <td class="{$firstColStyle}" >Definition</td>
-            <td class="{$firstColStyle}" >Unit</td>
-            <td class="{$firstColStyle}" >Type</td>
-            <td class="{$firstColStyle}" >Missing</td>
-            <td class="{$firstColStyle}" >Precision</td>
-            <td class="{$firstColStyle}" >Attrib Domain</td>
-        </tr>
+            Attribute structure description<br />
+            (Identifier: <xsl:value-of select="eml-attribute/identifier"/>
+            <xsl:if test="normalize-space(./@system)!=''">
+              ; &#160;Catalog System:<xsl:value-of select="./@system"/>
+           </xsl:if>
+        )</td></tr>
         <xsl:for-each select="eml-attribute/attribute">
           <xsl:choose>
-            <xsl:when test="position() = ($selected_attribute+1) or $selected_attribute&lt;0 or normalize-space($selected_attribute)=''">
-              <tr valign="top">
-                <xsl:variable name="stripes">
-                  <xsl:choose>
-                    <xsl:when test="position() mod 2 = 1">rowodd</xsl:when>
-                    <xsl:when test="position() mod 2 = 0">roweven</xsl:when>
-                  </xsl:choose>
-                </xsl:variable>
-                  <td width="{$firstColWidth}" class="{$firstColStyle}"><xsl:value-of select="attributeName"/></td>
-                  <td class="{$stripes}"><xsl:value-of select="attributeLabel"/>&#160;</td>
-                  <td class="{$stripes}"><xsl:value-of select="attributeDefinition"/></td>
-                  <td class="{$stripes}"><xsl:value-of select="unit"/>&#160;</td>
-                  <td class="{$stripes}"><xsl:value-of select="dataType"/>&#160;</td>
-                  <td class="{$stripes}">
-                    <xsl:for-each select="missingValueCode">
+            <xsl:when test="contains($selected_attribute, (position()-1)) or $selected_attribute&lt;0 or normalize-space($selected_attribute)=''">
+        <tr>
+            <td class="{$firstColStyle}" width="{$firstColWidth}">Attribute Name</td>
+            <td class="{$secondColStyle}" width="{$secondColWidth}"><xsl:value-of select="attributeName"/>&#160;</td>
+        </tr>
+        <tr>
+            <td class="{$firstColStyle}" width="{$firstColWidth}">Label</td>
+            <td class="{$secondColStyle}" width="{$secondColWidth}"><xsl:value-of select="attributeLabel"/>&#160;</td>
+        </tr>
+        <tr>
+            <td class="{$firstColStyle}" width="{$firstColWidth}">Definition</td>
+            <td class="{$secondColStyle}" width="{$secondColWidth}"><xsl:value-of select="attributeDefinition"/>&#160;</td>
+        </tr>
+        <tr>
+            <td class="{$firstColStyle}" width="{$firstColWidth}">Unit</td>
+            <td class="{$secondColStyle}" width="{$secondColWidth}"><xsl:value-of select="unit"/>&#160;</td>
+        </tr>
+        <tr>
+            <td class="{$firstColStyle}" width="{$firstColWidth}">Type</td>
+            <td class="{$secondColStyle}" width="{$secondColWidth}"><xsl:value-of select="dataType"/>&#160;</td>
+        </tr>
+        <tr>
+           <td class="{$firstColStyle}" width="{$firstColWidth}">Missing</td>
+           <td class="{$secondColStyle}" width="{$secondColWidth}">
+           <xsl:for-each select="missingValueCode">
                         <xsl:value-of select="."/>&#160;<br />
-                    </xsl:for-each>
-                    </td>
-                  <td class="{$stripes}"><xsl:value-of select="precision"/>&#160;</td>
-
-                  <td class="{$stripes}">
-                  <table width="100%" border="0" cellpadding="0" cellspacing="5">
+           </xsl:for-each>
+           </td>
+        </tr>
+        <tr>
+            <td class="{$firstColStyle}" width="{$firstColWidth}">Precision</td>
+            <td class="{$secondColStyle}" width="{$secondColWidth}"><xsl:value-of select="precision"/>&#160;</td>
+        </tr>
+        <tr>
+            <td class="{$firstColStyle}" width="{$firstColWidth}" valign="top">Attrib Domain</td>
+            <td class="{$secondColStyle}" width="{$secondColWidth}">                  
+            <table width="100%">
                       <xsl:for-each select="attributeDomain/enumeratedDomain">
                         <xsl:apply-templates select="."/>
                       </xsl:for-each>
@@ -96,14 +97,11 @@
                       <xsl:for-each select="attributeDomain/numericDomain">
                         <xsl:apply-templates select="."/>
                       </xsl:for-each>
-                  </table></td>
-              </tr>
+           </table>&#160;</td>
+        </tr>
             </xsl:when>
           </xsl:choose>
         </xsl:for-each>
-        </table>
-        </td>
-        </tr>
         </table>
       </body>
     </html>

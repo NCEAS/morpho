@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-24 18:45:12 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2002-10-26 08:04:13 $'
+  * '$Revision: 1.6 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@
       </head>
       <body>
         <center>
-          <h1>Data set description</h1>
+          <h3>Data set description</h3>
         </center>
         <table width="100%">
         <xsl:apply-templates select="/dataset/title" mode="layout"/>

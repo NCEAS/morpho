@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 18:34:49 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2002-10-26 08:04:13 $'
+  * '$Revision: 1.6 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@
           <h3>Literature (Citation) Description</h3>
           
         </center>
-        <table class="tabledefault" width="90%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
           <xsl:apply-templates select="./citation"/>
           </table>
       </body>

@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 18:34:49 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2002-10-26 08:04:13 $'
+  * '$Revision: 1.5 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -42,14 +42,10 @@
         <link rel="stylesheet" type="text/css" href="{$stylePath}/{$qformat}.css" />
       </head>
       <body>
-        <center>
-          <h3>Physical Structure Description</h3>
-          <br />
-        </center>
-        <table class="tabledefault" width="90%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
         <xsl:apply-templates select="eml-physical/identifier" mode="resource"/>
         <tr>
-        <td class="tablehead" colspan="2">Physical Structure:</td></tr>
+        <td class="tablehead" colspan="2">Physical Structure Description:</td></tr>
         <xsl:apply-templates select="eml-physical/*"/>
         </table>       
       </body>

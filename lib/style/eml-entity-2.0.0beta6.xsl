@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 18:34:49 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2002-10-26 08:04:13 $'
+  * '$Revision: 1.5 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
   * suitable for rendering with modern web browsers.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-  <xsl:import href="eml-identifier-2.0.0beta6.xsl" />
   <xsl:import href="eml-coverage-2.0.0beta6.xsl" />
 
   <xsl:output method="html" encoding="iso-8859-1"/>
@@ -39,16 +38,16 @@
     <html>
       <head>
           <link rel="stylesheet" type="text/css"
-            href="{$stylePath}/{$qformat}.css" />
+            href="{$stylePath}/{$entitystyle}.css" />
       </head>
       <body>
-        <center>
-          <h3>Table structure description</h3>
-          
-        </center>
-        <table class="tabledefault" width="90%"><!-- width needed for NN4 - doesn't recognize width in css -->
-          <xsl:apply-templates select="table-entity/identifier" mode="resource"/>
-          <tr class="{$subHeaderStyle}"><td colspan="2">Entity:</td></tr>
+        <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
+          <tr class="{$subHeaderStyle}"><td colspan="2">Entity (Table) Description<br />
+            (Identifier: <xsl:value-of select="table-entity/identifier"/>
+            <xsl:if test="normalize-space(./@system)!=''">
+              ; &#160;Catalog System:<xsl:value-of select="./@system"/>
+           </xsl:if>
+        )</td></tr>
           <xsl:apply-templates select="table-entity/entityName"/>
           <xsl:apply-templates select="table-entity/entityDescription"/>
           <xsl:apply-templates select="table-entity/caseSensitive"/>
