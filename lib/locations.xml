@@ -524,13 +524,6 @@
  <south>39.033</south>
  <east>-79.683</east>
  </location>
- <location> <name>Field Research Station</name>
- <description>Field Research Station</description>
- <north>-122.290</north>
- <west>37.183333</west>
- <south>-122.290</south>
- <east>37.183333</east>
- </location>
  <location> <name>Flathead Lake Biological Station</name>
  <description>Flathead Lake Biological Station</description>
  <north>47.876</north>
