@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:47:11 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2003-08-19 20:00:43 $'
+ * '$Revision: 1.24.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,8 +140,12 @@ public class PackageUtil
     int lastsep = parent.lastIndexOf(File.separator);
     parent = parent.substring(lastsep+1);
     fileName = parent+"."+fileName;
-    if (LocalQuery.dom_collection.containsKey(fileName)) {
-      return ((Document)LocalQuery.dom_collection.get(fileName));
+
+//    if (LocalQuery.dom_collection.containsKey(fileName)) {
+    if (LocalQuery.inDomCollection(fileName)) {
+//      return ((Document)LocalQuery.dom_collection.get(fileName));
+      Log.debug(10, "filename: "+fileName+" recovered");
+      return LocalQuery.getDom(fileName);
     }
             
     DocumentBuilder parser = Morpho.createDomParser();

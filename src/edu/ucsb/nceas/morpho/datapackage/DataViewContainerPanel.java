@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-17 23:27:19 $'
- * '$Revision: 1.58.2.2 $'
+ *     '$Date: 2003-08-19 20:00:43 $'
+ * '$Revision: 1.58.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -985,8 +985,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           
           // remove old version from cache
-          if (LocalQuery.dom_collection.containsKey(oldid)) {
-              LocalQuery.dom_collection.remove(oldid);
+//          if (LocalQuery.dom_collection.containsKey(oldid)) {
+//              LocalQuery.dom_collection.remove(oldid);
+          if (LocalQuery.inDomCollection(oldid)) {
+              LocalQuery.removeFromCache(oldid);
           }
 
      if (f==null) {
