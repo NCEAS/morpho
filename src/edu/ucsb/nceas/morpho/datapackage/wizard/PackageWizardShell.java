@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-07-23 16:01:33 $'
- * '$Revision: 1.34 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-23 17:13:49 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -949,6 +949,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     sb.append("<identifier>" + id + "</identifier>\n");
     sb.append("<allow>\n");
     sb.append("<principal>" + framework.getUserName() + "</principal>\n");
+    sb.append("<permission>read</permission>\n");
+    sb.append("<permission>write</permission>\n");
     sb.append("<permission>all</permission>\n");
     sb.append("</allow>\n");
     if (publicAccessCheckBox.isSelected()) {
@@ -956,12 +958,6 @@ public class PackageWizardShell extends javax.swing.JFrame
         sb.append("<principal>public</principal>\n");
         sb.append("<permission>read</permission>\n");
         sb.append("</allow>\n");
-    }
-    else {
-        sb.append("<deny>\n");
-        sb.append("<principal>public</principal>\n");
-        sb.append("<permission>all</permission>\n");
-        sb.append("</deny>\n");
     }
     sb.append("</acl>");
     String aclString = sb.toString();
