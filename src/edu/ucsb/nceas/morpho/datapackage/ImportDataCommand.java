@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-24 20:09:10 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-02 22:11:39 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,24 +70,28 @@ public class ImportDataCommand implements Command
     if ( resultPane != null)
     {
       DataPackage dp = resultPane.getDataPackage();
+      AbstractDataPackage adp = resultPane.getAbstractDataPackage();
       DataViewer dv = resultPane.getCurrentDataViewer();
       String entityId = null;
       if (dv!=null) {
         entityId = dv.getEntityFileId();
       }
-    
-      if ((dp.hasDataFile(entityId))||(entityId==null)) {
-        Morpho morpho = resultPane.getFramework();
-        DataPackage dataPackage = resultPane.getDataPackage();
-        AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
+      if (dp!=null) {
+        if ((dp.hasDataFile(entityId))||(entityId==null)) {
+          Morpho morpho = resultPane.getFramework();
+          DataPackage dataPackage = resultPane.getDataPackage();
+          AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
                    dataPackage, morphoFrame, AddMetadataWizard.NOTSHOWMETADATA);
-        amw.showImportDataScreen();
-        morphoFrame.setVisible(false);
-      }
-      else {
-        // Log.debug(1,"No Data Branch");
-        (new NewDataFile(morphoFrame, dp, resultPane.getFramework(),
+          amw.showImportDataScreen();
+          morphoFrame.setVisible(false);
+        }
+        else {
+          // Log.debug(1,"No Data Branch");
+        (  new NewDataFile(morphoFrame, dp, resultPane.getFramework(),
                          entityId)).setVisible(true);
+        }
+      } else { // new AbstractDataPackage/Wizard calls will go here
+        Log.debug(1, "Cslls back to the second part of the Wizard will happen here!");
       }
     }//if
   

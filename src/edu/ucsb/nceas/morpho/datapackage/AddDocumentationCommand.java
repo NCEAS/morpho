@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-02 22:11:39 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +30,13 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.editor.*;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
+import org.w3c.dom.Node;
 
 /**
  * Class to handle add documentation command
@@ -73,10 +75,17 @@ public class AddDocumentationCommand implements Command
     {
        Morpho morpho = resultPane.getFramework();
        DataPackage dataPackage = resultPane.getDataPackage();
-       morphoFrame.setVisible(false);
-       AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
+       AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+       if (dataPackage!=null) {
+         morphoFrame.setVisible(false);
+         AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
                  dataPackage, morphoFrame, AddMetadataWizard.NOTSHOWIMPORTDATA);
-       amw.setVisible(true);
+         amw.setVisible(true);
+       } else {  // assume adp is NOT null if do us
+          DocFrame df = new DocFrame();
+          df.setVisible(true);
+          df.initDoc(null, adp.getMetadataNode());
+       }
     }//if
   
   }//execute
