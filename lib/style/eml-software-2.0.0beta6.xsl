@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-09-28 03:29:14 $'
-  * '$Revision: 1.3 $'
+  *     '$Date: 2002-10-25 18:34:49 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -43,10 +43,10 @@
       </head>
       <body>
         <center>
-          <h1>Software Description</h1>
-          <h3>Ecological Metadata Language</h3>
+          <h3>Software Description</h3>
+          
         </center>
-        <table class="tabledefault" width="80%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        <table class="tabledefault" width="90%"><!-- width needed for NN4 - doesn't recognize width in css -->
 
           <!--xsl:apply-templates select="software/identifier" mode="resource"/>
           <xsl:apply-templates select="software/pubDate" mode="resource"/>

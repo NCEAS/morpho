@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-25 16:45:30 $'
-  * '$Revision: 1.5 $'
+  *     '$Date: 2002-10-25 18:34:49 $'
+  * '$Revision: 1.6 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -42,15 +42,18 @@
       </head>
       <body>
         <center>
-          <h3>Attribute structure description <xsl:value-of select="$selected_attribute"/></h3>
+          <h3>Attribute structure description 
+          <xsl:if test="$selected_attribute &gt; -1">
+            <xsl:text>(column </xsl:text><xsl:value-of select="($selected_attribute+1)"/><xsl:text>)</xsl:text>
+          </xsl:if></h3>
         </center>
 
-        <table class="tabledefault" width="80%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        <table class="tabledefault" width="90%" border="0" cellpadding="0" cellspacing="5"><!-- width needed for NN4 - doesn't recognize width in css -->
         <xsl:apply-templates select="eml-attribute/identifier" mode="resource"/>
         <tr><td class="{$subHeaderStyle}" colspan="2">
         Attributes in the Data Set</td></tr>
         <tr>
-        <td colspan="2"><table width="100%"><tr> 
+        <td colspan="2"><table width="100%" border="0" cellpadding="0" cellspacing="5"><tr> 
             <td class="{$firstColStyle}" width="{$firstColWidth}">Attribute Name</td>
             <td class="{$firstColStyle}" >Label</td>
             <td class="{$firstColStyle}" >Definition</td>
@@ -83,7 +86,7 @@
                   <td class="{$stripes}"><xsl:value-of select="precision"/>&#160;</td>
 
                   <td class="{$stripes}">
-                  <table width="100%">
+                  <table width="100%" border="0" cellpadding="0" cellspacing="5">
                       <xsl:for-each select="attributeDomain/enumeratedDomain">
                         <xsl:apply-templates select="."/>
                       </xsl:for-each>

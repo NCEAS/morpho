@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-09-28 03:29:14 $'
-  * '$Revision: 1.3 $'
+  *     '$Date: 2002-10-25 18:34:49 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -42,10 +42,10 @@
       </head>
       <body>
         <center>
-          <h1>Protocol Description</h1>
-          <h3>Ecological Metadata Language</h3><br />
+          <h3>Protocol Description</h3>
+          <br />
         </center>
-        <table class="tabledefault" width="80%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        <table class="tabledefault" width="90%"><!-- width needed for NN4 - doesn't recognize width in css -->
         <xsl:apply-templates select="eml-protocol/identifier" mode="resource"/>
         <xsl:apply-templates select="eml-protocol/protocol"/>
         </table>
