@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-30 21:42:18 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2004-03-31 04:49:41 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -656,8 +656,12 @@ public class CustomList
    */
   public void fireEditingStopped() {
 
-    if (table.getEditorComponent() != null) {
-      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+		Component editingComp = table.getEditorComponent();
+    if (editingComp != null) {
+      table.editingStopped(new ChangeEvent(editingComp));
+			EventListener[] list = editingComp.getListeners(java.awt.event.FocusListener.class);
+			for(int i = 0; list != null && i < list.length; i++) 
+				((FocusListener)list[i]).focusLost(new FocusEvent(editingComp, FocusEvent.FOCUS_LOST));
     }
   }
 
