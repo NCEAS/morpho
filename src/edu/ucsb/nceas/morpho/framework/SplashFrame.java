@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-23 23:08:02 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-05-24 02:22:22 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -95,7 +96,7 @@ public class SplashFrame extends javax.swing.JFrame
     getContentPane().setLayout(
                      new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     getContentPane().setBackground(java.awt.Color.white);
-    setSize(450, 380);
+    setSize(490, 380);
 
     // Center the Frame
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -117,7 +118,7 @@ public class SplashFrame extends javax.swing.JFrame
     titleBox.setBackground(Color.white);
     titleBox.add(Box.createHorizontalStrut(8));
     titleBox.add(Box.createHorizontalGlue());
-    BFlyIcon = new ImageIcon(getClass().getResource("Morphoblue.gif"));
+    BFlyIcon = new ImageIcon(getClass().getResource("morpho-splash.gif"));
     JLabel imageLabel = new JLabel();
     imageLabel.setIcon(BFlyIcon);
     titleBox.add(imageLabel);
@@ -141,7 +142,6 @@ public class SplashFrame extends javax.swing.JFrame
     subTitleBox.add(subTitleLabel);
     subTitleBox.add(Box.createVerticalGlue());
     subTitleBox.add(Box.createVerticalStrut(8));
-    //getContentPane().add(subTitleLabel);
 
     titleBox.add(subTitleBox);
     titleBox.add(Box.createHorizontalGlue());
@@ -150,41 +150,47 @@ public class SplashFrame extends javax.swing.JFrame
 
     getContentPane().add(Box.createVerticalStrut(8));
 
-    Box contributorsBox = Box.createVerticalBox();
+    JPanel contribPanel = new JPanel();
+    contribPanel.setLayout(new BoxLayout(contribPanel, BoxLayout.Y_AXIS));
+    contribPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+    contribPanel.setBackground(java.awt.Color.white);
     JLabel contributorsLabel = new JLabel("Contributors:");
     contributorsLabel.setForeground(java.awt.Color.black);
     contributorsLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    contributorsBox.add(contributorsLabel);
+    contribPanel.add(contributorsLabel);
     for (int i = 0; i < coders.length; i++) {
       JLabel coderLabel = new JLabel();
       coderLabel.setBackground(java.awt.Color.white);
       coderLabel.setForeground(java.awt.Color.black);
       coderLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       coderLabel.setText("    " + coders[i]);
-      contributorsBox.add(coderLabel);
+      contribPanel.add(coderLabel);
     }
 
-    Box orgBox = Box.createVerticalBox();
+    JPanel orgPanel = new JPanel();
+    orgPanel.setLayout(new BoxLayout(orgPanel, BoxLayout.Y_AXIS));
+    orgPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+    orgPanel.setBackground(java.awt.Color.white);
     JLabel orgLabel = new JLabel("Sponsoring Organizations:");
     orgLabel.setForeground(java.awt.Color.black);
     orgLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    orgBox.add(orgLabel);
+    orgPanel.add(orgLabel);
     for (int i = 0; i < orgs.length; i++) {
       JLabel instLabel = new JLabel();
       instLabel.setBackground(java.awt.Color.white);
       instLabel.setForeground(java.awt.Color.black);
       instLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       instLabel.setText("    " + orgs[i]);
-      orgBox.add(instLabel);
+      orgPanel.add(instLabel);
     }
 
     Box creditsBox = Box.createHorizontalBox();
     creditsBox.setBackground(Color.white);
     creditsBox.add(Box.createHorizontalStrut(8));
-    creditsBox.add(contributorsBox);
+    creditsBox.add(contribPanel);
     creditsBox.add(Box.createHorizontalStrut(8));
     creditsBox.add(Box.createHorizontalGlue());
-    creditsBox.add(orgBox);
+    creditsBox.add(orgPanel);
     creditsBox.add(Box.createHorizontalStrut(8));
     getContentPane().add(creditsBox);
 
