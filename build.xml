@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.65 2002-11-01 22:46:29 berkley Exp $'
+  *    File Info: '$Id: build.xml,v 1.66 2002-11-01 22:50:17 berkley Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -209,7 +209,7 @@
         </fileset>
       </copy>
       <copy todir="${morpho.docs.dev.api}">
-        <fileset dir="${build.docs}/dev/api"/>
+        <fileset dir="${build.docs}/api"/>
       </copy>
       <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
       <copy file="./lib/shippedIcons.jar" todir="${morpho.lib}"/>
