@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-28 18:00:01 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-28 18:20:57 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@ public class EntityGUI extends javax.swing.JFrame
   private static final String orientationPath = "//orientation";
   private static final String attributeNamePath = 
                                          "/eml-variable/variable/variable_name";
+  private static final String attributeNameNode = "variable_name";
   
   private ClientFramework framework;
   private Container contentPane;
@@ -606,7 +607,7 @@ public class EntityGUI extends javax.swing.JFrame
       }
       String s = PackageUtil.getStringFromFile(f);
       EditorInterface editor = PackageUtil.getEditor(framework);
-      editor.openEditor(s, id, location, this);
+      editor.openEditor(s, id, location, attributeNameNode, selectedItem, this);
     }
   }
 }
