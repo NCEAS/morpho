@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-13 00:47:21 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2003-08-19 20:01:31 $'
+ * '$Revision: 1.63.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Stack;
 import javax.swing.ImageIcon;
+import java.lang.ref.WeakReference;
 
 /**
  * LocalQuery is a class designed to execute a query defined in
@@ -101,6 +102,8 @@ public class LocalQuery
    */
   private static Hashtable packageTriples; 
   
+  private static DocumentBuilder parser = null;
+  
   /** A reference to the Morpho application */
   private Morpho morpho = null;
 
@@ -114,7 +117,7 @@ public class LocalQuery
   private String profileDir;
   
   /** The directory containing all local stored metadata and data */
-  private String datadir;
+  private static String datadir;
   
   /** The directory containing locally stored dtds */
   private String local_dtd_directory;
@@ -123,7 +126,7 @@ public class LocalQuery
   private String xmlcatalogfile; 
   
   /** The separator used in accesion numbers */
-  private String separator;
+  private static String separator;
  
   /** list of field to be returned from query */
   private Vector returnFields;
@@ -217,7 +220,7 @@ public class LocalQuery
     Node root;
     long starttime, curtime, fm;
     Log.debug(30, "(3.0) Creating DOM parser...");
-    DocumentBuilder parser = morpho.createDomParser();
+    parser = morpho.createDomParser();
     Log.debug(30, "(3.1) DOM parser created...");
     // first set up the catalog system for handling locations of DTDs
     CatalogEntityResolver cer = new CatalogEntityResolver();
@@ -259,13 +262,16 @@ public class LocalQuery
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
         //Log.debug(10,"current id: "+docid);
-        if (dom_collection.containsKey(docid)){
-          root = ((Document)dom_collection.get(docid)).getDocumentElement();
+        
+//        if (dom_collection.containsKey(docid)){
+//          root = ((Document)dom_collection.get(docid)).getDocumentElement();
+        if (inDomCollection(docid)) {
+          root = getDom(docid);
           if (doctype_collection.containsKey(docid)) {
             currentDoctype = ((String)doctype_collection.get(docid));   
           }
         } else {
-        //  Log.debug(10,"parsing "+docid);
+          Log.debug(30,"parsing "+docid);
           InputSource in;
           try {
             in = new InputSource(new FileInputStream(filename));
@@ -290,7 +296,8 @@ public class LocalQuery
           // Get the documentElement from the parser, which is what 
           // the selectNodeList method expects
           root = current_doc.getDocumentElement();
-          dom_collection.put(docid,current_doc);
+          dom_collection.put(docid,(new WeakReference(current_doc)));
+//DFH          dom_collection1.put(docid,current_doc);
           String temp = getDocTypeFromDOM(current_doc);
           if (temp==null) temp = root.getNodeName();
           doctype_collection.put(docid,temp);
@@ -416,7 +423,8 @@ public class LocalQuery
     rss.addElement(date);                                 // create date
     rss.addElement(date);                                 // update date
     rss.addElement(docid);                                // docid
-    Document doc = (Document)dom_collection.get(docid);
+//    Document doc = (Document)dom_collection.get(docid);
+    Document doc = getDom(docid);
     String docname = doc.getNodeName();
     rss.addElement(docname);                              // docname
     String thisDoctype = (String)doctype_collection.get(docid);
@@ -437,6 +445,7 @@ public class LocalQuery
    *  utility routine to return the value of a node defined by
    *  a specified XPath; used to build result set from local
    *  queries
+   * 'filename' is actually the docid
    */
   private String getValueForPath(String pathstring, String filename) {
     String val = "";
@@ -445,9 +454,13 @@ public class LocalQuery
     }
     try{
       // assume that the filename file has already been parsed
-      if (dom_collection.containsKey(filename)){
-        Node doc = ((Document)dom_collection.get(filename)).
-                   getDocumentElement();
+//      if (dom_collection.containsKey(filename)){
+//        Node doc = ((Document)dom_collection.get(filename)).
+//                   getDocumentElement();
+        Node doc = getDom(filename).getDocumentElement();
+        if (doc==null) {
+          Log.debug(1, "Oops!, doc is null!");
+        }
         NodeList nl = null;
         nl = XPathAPI.selectNodeList(doc, pathstring);
         if ((nl!=null)&&(nl.getLength()>0)) {
@@ -462,9 +475,8 @@ public class LocalQuery
             }
           }
         }
-      }
     } catch (Exception e){
-      Log.debug(6,"Error in getValueForPath method");
+      Log.debug(6,"Error in getValueForPath method (LocalQuery)"+filename+":"+pathstring);
     }
     return val;
   }
@@ -697,6 +709,28 @@ public class LocalQuery
     dt2bReturned = profile.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     separator = profile.get("separator", 0);
+
+      parser = morpho.createDomParser();
+      Log.debug(30, "(3.1) DOM parser created...");
+      // first set up the catalog system for handling locations of DTDs
+      CatalogEntityResolver cer = new CatalogEntityResolver();
+      String catalogPath = //config.getConfigDirectory() + File.separator +
+                                                    config.get("local_catalog_path",0);     
+
+      try {
+        Catalog myCatalog = new Catalog();
+        myCatalog.loadSystemCatalogs();
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        URL catalogURL = cl.getResource(catalogPath);
+        
+        myCatalog.parseCatalog(catalogURL.toString());
+        //myCatalog.parseCatalog(xmlcatalogfile);
+        cer.setCatalog(myCatalog);
+      } catch (Exception e) {
+        Log.debug(6,"Problem creating Catalog!" + e.toString());
+      }
+      parser.setEntityResolver(cer);
+
   }
 
   /*
@@ -833,4 +867,62 @@ public class LocalQuery
       packageTriples.put(packageDocid, tripleList);
     }
   }
+  
+  public static boolean inDomCollection(String docid) {
+    boolean res = false;
+    if (dom_collection.containsKey(docid)) {
+      WeakReference wr = (WeakReference)dom_collection.get(docid);
+      if (wr.get()!=null) {
+        res = true;
+      }
+      else {
+        // has been garbage collected; thus remove
+        dom_collection.remove(docid);
+//        Log.debug(1,"just removed - size: "+dom_collection.size());
+      }
+    }
+    return res;
+  }
+  
+  public static Document getDom(String docid) {
+    Document res = null;
+    if (inDomCollection(docid)) {
+      WeakReference wr = (WeakReference)dom_collection.get(docid);
+//    Log.debug(1,"just found ref - size: "+dom_collection.size());
+     res = (Document)wr.get();
+    }
+    else {
+      // read the file and parse
+
+      int firstSep = docid.indexOf(separator);
+      String filename = docid.substring(0,firstSep) + File.separator + 
+                                    docid.substring(firstSep+1, docid.length());
+      File fn = new File(datadir, filename);
+      String fullfilename = fn.getPath();
+      InputSource in = null;
+      try {
+        in = new InputSource(new FileInputStream(fullfilename));
+      } catch (FileNotFoundException fnf) {
+        Log.debug(6,"FileInputStream of " + fullfilename + 
+                               " threw: " + fnf.toString());
+      }
+      Document current_doc = null;
+      try {
+        Log.debug(30, "(3.2) Starting parse...");
+        current_doc = parser.parse(in);
+        Log.debug(30, "(3.3) Ended parse...");
+      } catch(Exception e1) {
+        // Either this isn't an XML doc, or its broken, so skip it
+        Log.debug(20,"Parsing error: " + filename);
+        Log.debug(20,e1.toString());
+        doNotParse_collection.addElement(docid);
+      }
+      // Get the documentElement from the parser, which is what 
+      // the selectNodeList method expects
+      dom_collection.put(docid,(new WeakReference(current_doc)));
+      return current_doc;
+    }
+    return res;
+  }
+  
 }
