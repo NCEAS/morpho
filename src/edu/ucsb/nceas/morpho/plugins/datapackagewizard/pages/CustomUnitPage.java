@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-19 15:12:42 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-19 21:43:54 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -742,7 +742,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		OrderedMap map = new OrderedMap();
 		String unit = this.unitNameField.getText();
 		String desc = this.unitDescField.getText();
-		 
+		if (desc.trim().equals("")) desc = unit; 
 		xPathRoot += "/unitList";
 		
 		int category = this.getSelectedRadioIndex(this.categoryRadioPanel);
