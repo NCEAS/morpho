@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-23 17:17:41 $'
- * '$Revision: 1.6 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-30 18:13:21 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -726,9 +726,10 @@ public class Morpho
             java.security.Security.addProvider(
                 new com.sun.net.ssl.internal.ssl.Provider());
 
+
             // Show the Splash frame
-            SplashFrame sf = new SplashFrame(true);
-            sf.setVisible(true);
+            //SplashFrame sf = new SplashFrame(true);
+           // sf.setVisible(true);
 
             // Make sure the config directory exists
             File configurationFile = null;
@@ -785,6 +786,11 @@ public class Morpho
             // Set the version number
             VERSION = config.get("version", 0);
 
+            // Show the Splash frame
+              // must occur after the VERSION number has been retrieved
+            SplashFrame sf = new SplashFrame(true);
+            sf.setVisible(true);
+            
             // set to the Look and Feel of the native system.
             setLookAndFeel(config.get("lookAndFeel", 0));
 
