@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-07-02 20:39:47 $'
- * '$Revision: 1.98 $'
+ *     '$Date: 2002-07-12 18:29:45 $'
+ * '$Revision: 1.99 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1507,12 +1507,15 @@ public class ClientFramework extends javax.swing.JFrame
              URLStreamHandler urlsh = new HTTPClient.http.Handler(); 
               return urlsh; 
            }
-           catch (Exception e) {return null;}           
+           catch (Exception e) {
+             System.out.println("Error setting URL StreamHandler!");
+             return null;
+           }           
          }
          return null;
          }
      });
-
+   
  
       // Set the keystore used
       System.setProperty("javax.net.ssl.trustStore", "./lib/morphocacerts");
@@ -1948,7 +1951,16 @@ public class ClientFramework extends javax.swing.JFrame
     try {
       if (lnf!=null) {
         if (lnf.equalsIgnoreCase("kunststoff")) {
-          UIManager.setLookAndFeel(new com.incors.plaf.kunststoff.KunststoffLookAndFeel());
+          debug(19,"kunststoff - loading");
+          try{
+            Class classDefinition = Class.forName("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
+            LookAndFeel test = (LookAndFeel)classDefinition.newInstance();
+            UIManager.setLookAndFeel(test);
+          }
+          catch (ClassNotFoundException www) {
+            debug(19,"couldn't set L&F to kunststoff - using Java default");
+            return;
+          }
         }
         else if (lnf.equalsIgnoreCase("metal")) {          
           UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
