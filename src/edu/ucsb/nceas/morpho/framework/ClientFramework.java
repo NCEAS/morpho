@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:33:23 $'
- * '$Revision: 1.80 $'
+ *     '$Date: 2001-11-01 00:21:20 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -293,8 +293,8 @@ public class ClientFramework extends javax.swing.JFrame
             currentMenu.insertSeparator(menuPos++);
           }
           currentItem = currentMenu.insert(currentAction, menuPos);
-//DFH          currentItem.setAccelerator(
-//DFH                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
+          currentItem.setAccelerator(
+                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             menuPos++;
@@ -307,8 +307,8 @@ public class ClientFramework extends javax.swing.JFrame
             currentMenu.addSeparator();
           }
           currentItem = currentMenu.add(currentAction);
-//DFH          currentItem.setAccelerator(
-//DFH                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
+          currentItem.setAccelerator(
+                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             currentMenu.addSeparator();
@@ -492,8 +492,8 @@ public class ClientFramework extends javax.swing.JFrame
         exitApplication();
       }
     };
-//DFH    exitItemAction.putValue(Action.ACCELERATOR_KEY, 
-//DFH                            KeyStroke.getKeyStroke("control Q"));
+    exitItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control Q"));
     exitItemAction.putValue(Action.SHORT_DESCRIPTION, "Exit Morpho");
     exitItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     exitItemAction.putValue("menuPosition", new Integer(-1));
@@ -536,8 +536,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Cut is not yet implemented.");
       }
     };
-//DFH    cutItemAction.putValue(Action.ACCELERATOR_KEY, 
-//DFH                            KeyStroke.getKeyStroke("control X"));
+    cutItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control X"));
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Cut the selection and put it on the Clipboard");
     cutItemAction.putValue(Action.SMALL_ICON, 
@@ -552,8 +552,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Copy is not yet implemented.");
       }
     };
-//DFH    copyItemAction.putValue(Action.ACCELERATOR_KEY, 
-//DFH                            KeyStroke.getKeyStroke("control C"));
+    copyItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control C"));
     copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Copy the selection and put it on the Clipboard");
     copyItemAction.putValue(Action.SMALL_ICON, 
@@ -568,8 +568,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Paste is not yet implemented.");
       }
     };
-//DFH    pasteItemAction.putValue(Action.ACCELERATOR_KEY, 
-//DFH                            KeyStroke.getKeyStroke("control P"));
+    pasteItemAction.putValue(Action.ACCELERATOR_KEY, 
+                            KeyStroke.getKeyStroke("control P"));
     pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Paste the selection.");
     pasteItemAction.putValue(Action.SMALL_ICON, 
