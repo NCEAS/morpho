@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 16:47:13 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-08-27 17:54:25 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-
+import edu.ucsb.nceas.morpho.Morpho;
 import javax.swing.Action;
 import java.awt.Component;
 import java.util.Hashtable;
@@ -105,4 +105,15 @@ public interface DataPackageInterface
    * @param location the current location of the package: METACAT, LOCAL or BOTH
    */
   public void exportToZip(String docid, String path, String location);
+  
+  /**
+   * This method will create a dialog for open previouse version of a 
+   * datapackage
+   * @param title the title of the dialog, docid will be set as tile
+   * @param numOfVersion the total number of versions in this docid
+   * @param morpho the morpho file
+   * @param local the package is local or not
+   */
+  public void createOpenPreviousVersionDialog(String title, int numOfVersion,
+                                              Morpho morpho, boolean local);
 }
