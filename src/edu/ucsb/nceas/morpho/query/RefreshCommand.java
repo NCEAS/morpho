@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-04 23:28:56 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-09-05 18:33:25 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,8 +95,6 @@ public class RefreshCommand implements Command
       myQuery = resultPane.getResultSet().getQuery();
       if (myQuery != null)
       {
-        
-        morphoFrame.setBusy(true);
         doQuery(myQuery);
       }//if
     }//if
@@ -146,7 +144,7 @@ public class RefreshCommand implements Command
         ResultPanel resultDisplayPanel = null;
         public Object construct() 
         {
-          
+          morphoFrame.setBusy(true);
           results = query.execute();
           
           // The size of resultpanel for morpho frame
@@ -162,7 +160,6 @@ public class RefreshCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          
           morphoFrame.setBusy(false);
         }
     };
