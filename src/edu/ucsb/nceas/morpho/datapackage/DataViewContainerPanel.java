@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-13 20:30:25 $'
- * '$Revision: 1.51 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-18 01:00:08 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -187,7 +187,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                             tabbedEntitiesPanel.getComponentAt(lastTabSelected);
           mdi = container.getMetaDisplayInterface();
           item = (String)entityItems.elementAt(lastTabSelected);
-          id = (String)listValueHash.get(item);
+//          id = (String)listValueHash.get(item);
+          id = getEntityIDForThisEntityName(item);
           if (id==mdi.getIdentifier()) return;
           //update metaview to show entity:
           try {
@@ -334,6 +335,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   }
  
+
+
   /*
    * Initialization continues here. In particular, the tabbed panels
    * for each of the entities are created and added to the tab panel;
@@ -379,7 +382,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
       // entity metadata
-      String id = (String)listValueHash.get(item);
+//      String id = (String)listValueHash.get(item);
+      String id = getEntityIDForThisEntityName(item);
+      
       String location = dp.getLocation();
       EntityGUI entityEdit;
       if (id!=null) {
@@ -484,12 +489,41 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   
       if (hasData) {
         String attributeFileID = dp.getAttributeFileId(dv.getEntityFileId());
+        
+        StringBuffer suppressBuff = new StringBuffer();
+        String nextAttributeFileID = null;
+        String nextDataFileID = null;
+        String nextEntityID = null;
+        Object nextObj = null;
+        Iterator it = entityItems.iterator();
+        while (it.hasNext()) {
+            nextObj = it.next();
+            if (nextObj==null || !(nextObj instanceof String)) continue;
+            
+            nextEntityID        = getEntityIDForThisEntityName((String)nextObj);
+            nextDataFileID      = dp.getDataFileID(nextEntityID);
+            nextAttributeFileID = dp.getAttributeFileId(nextEntityID);
+            
+            if (nextDataFileID!=null && !nextDataFileID.equals("")) {
+                suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
+                suppressBuff.append(nextDataFileID);
+                Log.debug(44,"adding datafile: "+nextDataFileID
+                                                     +" to XSL suppress list");
+            }
+            
+            if (nextAttributeFileID!=null && !nextAttributeFileID.equals("")) {
+                suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
+                suppressBuff.append(nextAttributeFileID);
+                Log.debug(44,"adding attribute: "+nextAttributeFileID
+                                                     +" to XSL suppress list");
+            }
+        }
         md.useTransformerProperty(  
                               XMLTransformer.SUPPRESS_TRIPLES_SUBJECTS_XSLPROP, 
-                              attributeFileID);
+                              suppressBuff.toString());
         md.useTransformerProperty( 
                               XMLTransformer.SUPPRESS_TRIPLES_OBJECTS_XSLPROP, 
-                              attributeFileID);
+                              suppressBuff.toString());
       }
       try{
         mdcomponent = md.getDisplayComponent( dp.getID(), dp,  
@@ -587,7 +621,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         //check if it's an entity (if so, deselect all)  
         //or an attribute (if so, select that attribute)
         String item = (String)entityItems.elementAt(lastTabSelected);
-        String entityID = (String)listValueHash.get(item);
+//        String entityID = (String)listValueHash.get(item);
+        String entityID = getEntityIDForThisEntityName(item);
         if (newID.equalsIgnoreCase(entityID)) {
           //deselect columns in table:
           resetTableSelection();
@@ -623,6 +658,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
   }
   
+  //convenience method to get the entity identifier for a given entity 
+  //title/name
+  private String getEntityIDForThisEntityName(String entityName) {
+  
+      return (String)listValueHash.get(entityName);
+  }
   
   /**
    * creates the data display and puts it into the center of the window
@@ -639,7 +680,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     currentDataPanelOld.removeAll();
     lastTabSelected = index;
     String item = (String)entityItems.elementAt(index);
-    String id = (String)listValueHash.get(item);
+//    String id = (String)listValueHash.get(item);
+    String id = getEntityIDForThisEntityName(item);
     String fn = dp.getDataFileName(id);    
     File fphysical = dp.getPhysicalFile(id);
     File fattribute = dp.getAttributeFile(id);
@@ -738,7 +780,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     MetaDisplayInterface meta = container.getMetaDisplayInterface();
     // Get attribute file identifier
     String item = (String)entityItems.elementAt(lastTabSelected);
-    String id = (String)listValueHash.get(item);
+//    String id = (String)listValueHash.get(item);
+    String id = getEntityIDForThisEntityName(item);
     String identifier = dp.getAttributeFileId(id);
     try
     {
