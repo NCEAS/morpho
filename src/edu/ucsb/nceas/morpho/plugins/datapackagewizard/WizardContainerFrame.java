@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2004-04-01 22:33:49 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -39,8 +41,10 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
@@ -65,8 +69,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.w3c.dom.Node;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 
 /**
  *  provides a top-level container for AbstractUIPage objects. The top (title) panel
@@ -499,59 +501,67 @@ public class WizardContainerFrame
 
   public Node collectDataFromPages() {
 
+    //pages map
+    Map pageMap = new HashMap();
+
     //results Map:
     OrderedMap wizData = new OrderedMap();
 
     //NOTE: the order of pages on the stack is *not* the same as the order
-    //of writing data to the DOM. We therefore convert the Stack to a Vector and
-    //access the pages non-sequentially in a feat of hard-coded madness:
+    //of writing data to the DOM. We therefore convert the Stack to a Map
+    //(indexed by pageID) and access the pages non-sequentially in a flurry of
+    //hard-coded madness:
     //
-    List pagesList = (Vector) pageStack;
 
-    int GENERAL
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GENERAL));
-    int KEYWORDS
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.KEYWORDS));
-    int PARTY_CREATOR
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            PARTY_CREATOR));
-    int PARTY_CONTACT
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            PARTY_CONTACT));
-    int PARTY_ASSOCIATED
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            PARTY_ASSOCIATED));
-    int PROJECT
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
-    int METHODS
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.METHODS));
-    int USAGE_RIGHTS
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            USAGE_RIGHTS));
-    int GEOGRAPHIC
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            GEOGRAPHIC));
-    int TEMPORAL
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEMPORAL));
-    int ACCESS
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ACCESS));
-    int DATA_LOCATION
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            DATA_LOCATION));
-    int TEXT_IMPORT_WIZARD
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            TEXT_IMPORT_WIZARD));
-    int DATA_FORMAT
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.
-                                            DATA_FORMAT));
-    int ENTITY
-        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ENTITY));
+    while (!pageStack.isEmpty()) {
+
+      AbstractUIPage nextPage = (AbstractUIPage)pageStack.pop();
+      String nextPageID = nextPage.getPageID();
+      if (nextPageID==null || nextPageID.trim().length()<1) {
+
+        Log.debug(15,"*** WARNING - WizardContainerFrame.collectDataFromPages()"
+                  +" has encountered a page with no ID! Object is: "+nextPage);
+        continue;
+      }
+      pageMap.put(nextPageID, nextPage);
+    }
+
+    AbstractUIPage GENERAL
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GENERAL);
+    AbstractUIPage KEYWORDS
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.KEYWORDS);
+    AbstractUIPage PARTY_CREATOR
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CREATOR);
+    AbstractUIPage PARTY_CONTACT
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CONTACT);
+    AbstractUIPage PARTY_ASSOCIATED
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_ASSOCIATED);
+    AbstractUIPage PROJECT
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PROJECT);
+    AbstractUIPage METHODS
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.METHODS);
+    AbstractUIPage USAGE_RIGHTS
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.USAGE_RIGHTS);
+    AbstractUIPage GEOGRAPHIC
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GEOGRAPHIC);
+    AbstractUIPage TEMPORAL
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEMPORAL);
+    AbstractUIPage ACCESS
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.ACCESS);
+    AbstractUIPage DATA_LOCATION
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_LOCATION);
+    AbstractUIPage TEXT_IMPORT_WIZARD
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+    AbstractUIPage DATA_FORMAT
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_FORMAT);
+    AbstractUIPage ENTITY
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.ENTITY);
 
     //TITLE:
     OrderedMap generalMap = null;
-    if (GENERAL >= 0) {
+    if (GENERAL != null) {
 
-      generalMap = ( (AbstractUIPage) (pagesList.get(GENERAL))).getPageData();
+      generalMap = GENERAL.getPageData();
       final String titleXPath = "/eml:eml/dataset/title[1]";
       Object titleObj = generalMap.get(titleXPath);
       if (titleObj != null) {
@@ -561,15 +571,13 @@ public class WizardContainerFrame
     }
 
     //CREATOR:
-    if (PARTY_CREATOR >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(PARTY_CREATOR)),
-                              wizData);
+    if (PARTY_CREATOR != null) {
+      addPageDataToResultsMap( PARTY_CREATOR, wizData);
     }
 
     //ASSOCIATED PARTY:
-    if (PARTY_ASSOCIATED >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(PARTY_ASSOCIATED)),
-                              wizData);
+    if (PARTY_ASSOCIATED != null) {
+      addPageDataToResultsMap( PARTY_ASSOCIATED, wizData);
     }
 
     //ABSTRACT:
@@ -584,71 +592,59 @@ public class WizardContainerFrame
     }
 
     //KEYWORDS:
-    if (KEYWORDS >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(KEYWORDS)),
-                              wizData);
+    if (KEYWORDS != null) {
+      addPageDataToResultsMap( KEYWORDS, wizData);
     }
 
     //INTELLECTUAL RIGHTS:
-    if (USAGE_RIGHTS >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(USAGE_RIGHTS)),
-                              wizData);
+    if (USAGE_RIGHTS != null) {
+      addPageDataToResultsMap( USAGE_RIGHTS, wizData);
     }
 
     //GEOGRAPHIC:
-    if (GEOGRAPHIC >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(GEOGRAPHIC)),
-                              wizData);
+    if (GEOGRAPHIC != null) {
+      addPageDataToResultsMap( GEOGRAPHIC, wizData);
     }
 
     //TEMPORAL:
-    if (TEMPORAL >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(TEMPORAL)),
-                              wizData);
+    if (TEMPORAL != null) {
+      addPageDataToResultsMap( TEMPORAL, wizData);
     }
 
     //CONTACT:
-    if (PARTY_CONTACT >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(PARTY_CONTACT)),
-                              wizData);
+    if (PARTY_CONTACT != null) {
+      addPageDataToResultsMap( PARTY_CONTACT, wizData);
     }
 
     //METHODS:
-    if (METHODS >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(METHODS)),
-                              wizData);
+    if (METHODS != null) {
+      addPageDataToResultsMap( METHODS, wizData);
     }
 
     //PROJECT:
-    if (PROJECT >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(PROJECT)),
-                              wizData);
+    if (PROJECT != null) {
+      addPageDataToResultsMap( PROJECT, wizData);
     }
 
     //ACCESS:
-    if (ACCESS >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(ACCESS)),
-                              wizData);
+    if (ACCESS != null) {
+      addPageDataToResultsMap( ACCESS, wizData);
     }
 
-    if (TEXT_IMPORT_WIZARD >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(
-          TEXT_IMPORT_WIZARD)), wizData);
+    if (TEXT_IMPORT_WIZARD != null) {
+      addPageDataToResultsMap( TEXT_IMPORT_WIZARD, wizData);
     }
 
-    if (ENTITY >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(ENTITY)),
-                              wizData);
+    if (ENTITY != null) {
+      addPageDataToResultsMap( ENTITY, wizData);
     }
 
-    if (DATA_FORMAT >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(DATA_FORMAT)),
-                              wizData);
+    if (DATA_FORMAT != null) {
+      addPageDataToResultsMap( DATA_FORMAT, wizData);
     }
 
-    if (DATA_LOCATION >= 0) {
-      addPageDataToResultsMap( (AbstractUIPage) (pagesList.get(DATA_LOCATION)),
-                              wizData);
+    if (DATA_LOCATION != null) {
+      addPageDataToResultsMap( DATA_LOCATION, wizData);
     }
     // now add unique ID's to all dataTables and attributes
     addIDs(
