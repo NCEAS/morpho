@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-16 17:48:26 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2003-12-22 21:36:56 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -689,8 +689,20 @@ public class DataPackagePlugin
    */
   public void delete(String docid, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
-    dp.delete(location);
+//    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
+//    dp.delete(location);
+    boolean metacat = false;
+    boolean local = false;
+    if (location.equals(AbstractDataPackage.METACAT)) metacat = true;
+    if (location.equals(AbstractDataPackage.LOCAL)) local = true;
+    if (location.equals(AbstractDataPackage.BOTH)) {
+      metacat = true;
+      local = true;
+    }
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+    if (adp!=null) {
+      adp.delete(location);
+    }
   }
   
   /**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-19 22:38:57 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2003-12-22 21:36:56 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,6 +151,7 @@ import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
 
 
 import org.apache.xpath.XPathAPI;
@@ -1566,6 +1567,35 @@ public abstract class AbstractDataPackage extends MetadataObject
         list[i] = new File(dir, fileStrings[i]);    
     }
     return list;
+  }
+ 
+  /**
+   * Deletes the package from the specified location
+   * @param locattion the location of the package that you want to delete
+   * use either BOTH, METACAT or LOCAL 
+   */
+ 
+  public void delete(String location) {
+    boolean metacatLoc = false;
+    boolean localLoc = false;
+    if(location.equals(METACAT) || 
+       location.equals(BOTH))
+    {
+      metacatLoc = true;
+    }
+    if(location.equals(LOCAL) ||
+       location.equals(BOTH))
+    {
+      localLoc = true;
+    }
+    String accnum = getAccessionNumber();
+    if (localLoc) {
+      fileSysDataStore.deleteFile(accnum);
+      LocalQuery.removeFromCache(accnum);
+    }
+    if (metacatLoc) {
+      metacatDataStore.deleteFile(accnum);
+    }
   }
   
   /**
