@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 01:21:01 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-05-30 19:03:26 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -780,7 +780,7 @@ public class Query extends DefaultHandler {
 
     Properties prop = new Properties();
     prop.put("action", "squery");
-    prop.put("query", queryString);
+    prop.put("query", toXml());
     prop.put("qformat", "xml");
     try
     {

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-26 02:00:25 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-05-30 19:03:26 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -414,92 +414,93 @@ public class QueryDialog extends javax.swing.JDialog
     }
   }
 
-  /** method to constuct a pathQuery XML document from
-   *  the visual settings of the Subject/Text tab of this
-   *  QueryDialog
+  /** 
+   * method to constuct a Query from the dialog tabs
    */
-  private String buildTextPathQuery()
+  private Query buildQuery()
   {
-    String ret = "";
+    // Create the Query object
+    Query newQuery = new Query(framework);
+
+    // Set top level query params
+    if (queryTitleTF.getText().length() < 1) {
+      queryTitleTF.setText(new Date().toString());
+    }
+    newQuery.setQueryTitle(queryTitleTF.getText());
+    newQuery.setSearchMetacat(CatalogSearchCheckBox.isSelected());
+    newQuery.setSearchLocal(LocalSearchCheckBox.isSelected());
+
+    // Add a query group that combines the tabs (always INTERSECT)
+    QueryGroup rootQG = new QueryGroup("INTERSECT");
+    newQuery.setQueryGroup(rootQG);
+
+    // Add a child query group for each panel
+    QueryGroup subjectGroup = buildSubjectQueryGroup();
+    rootQG.addChild(subjectGroup);
+
+    return newQuery;
+  }
+
+  /** 
+   * method to constuct a QueryGroup for the subject panel of the dialog
+   */
+  private QueryGroup buildSubjectQueryGroup()
+  {
     String path = "//*";
     String op = "UNION";
     String value = "*";
     String mode = "contains";
 
-    // loop over the collection of TextQueryTermPanels
-    PathQueryXMLDoc pqxml = new PathQueryXMLDoc(config);
-
-    // Add a query group that combines the tabs (always INTERSECT)
-    pqxml.add_querygroup("INTERSECT");
-
-    // Add a query group for the Subject tab (to combine the panels)
+    // Add a query group for the overall Subject tab
     if (OrRadioButton.isSelected()) {
       op = "UNION";
     } else {
       op = "INTERSECT";
     }
+    QueryGroup subjectGroup = new QueryGroup(op);
 
-    pqxml.add_querygroup_asChild(op);
+    // For each subject constraint, add a query group
     Enumeration enum = textPanels.elements();
     while (enum.hasMoreElements())
     {
       TextQueryTermPanel tqtp = (TextQueryTermPanel) enum.nextElement();
       // Create a separate QG for each textPanel (always INTERSECT)
-      pqxml.add_querygroup_asChild("UNION");
+      QueryGroup termGroup = new QueryGroup("UNION");
+      subjectGroup.addChild(termGroup);
 
       if (tqtp.getAllState())
       { // All button selected; single query term
         path = "//*";
         value = tqtp.getValue();
         mode = tqtp.getSearchMode();
-        pqxml.add_queryterm(value, path, mode, caseSensitive);
+        QueryTerm allTerm = new QueryTerm(caseSensitive, mode, value);
+        termGroup.addChild(allTerm);
       }
       else
       { // check other button choices; multiple queries possible
-        int bCnt = 0;
-        if (tqtp.getTitleState())
-          bCnt++;
-        if (tqtp.getAbstractState())
-          bCnt++;
-        if (tqtp.getKeyWordsState())
-          bCnt++;
-        if (bCnt > 0)
-        {
-          if (tqtp.getTitleState())
-          {
-            path = titleSearchPath;
-            value = tqtp.getValue();
-            mode = tqtp.getSearchMode();
-            pqxml.add_queryterm(value, path, mode, caseSensitive);
-          }
-          if (tqtp.getAbstractState())
-          {
-            path = abstractSearchPath;
-            value = tqtp.getValue();
-            mode = tqtp.getSearchMode();
-            if (!value.equals(""))
-            {
-              pqxml.add_queryterm(value, path, mode, caseSensitive);
-            }
-          }
-          if (tqtp.getKeyWordsState())
-          {
-            path = keywordSearchPath;
-            value = tqtp.getValue();
-            mode = tqtp.getSearchMode();
-            pqxml.add_queryterm(value, path, mode, caseSensitive);
+        value = tqtp.getValue();
+        mode = tqtp.getSearchMode();
+        if (tqtp.getTitleState()) {
+          path = titleSearchPath;
+          QueryTerm newTerm = new QueryTerm(caseSensitive, mode, value, path);
+          termGroup.addChild(newTerm);
+        }
+        if (tqtp.getAbstractState()) {
+          path = abstractSearchPath;
+          if (!value.equals("")) {
+            QueryTerm newTerm = new QueryTerm(caseSensitive, mode, value, path);
+            termGroup.addChild(newTerm);
           }
         }
+        if (tqtp.getKeyWordsState()) {
+          path = keywordSearchPath;
+          QueryTerm newTerm = new QueryTerm(caseSensitive, mode, value, path);
+          termGroup.addChild(newTerm);
+        }
       }
-
-      // End the group associated with each panel
-      pqxml.end_querygroup();
     }
-    // End the group associated with each tab
-    pqxml.end_querygroup();
-    pqxml.end_query();
-    ret = pqxml.get_XML();
-    return ret;
+
+    return subjectGroup;
   }
 
   /**
@@ -508,17 +509,7 @@ public class QueryDialog extends javax.swing.JDialog
    */
   private void executeButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    String temp = buildTextPathQuery();
-    if (queryTitleTF.getText().length() < 1)
-    {
-      queryTitleTF.setText(new Date().toString());
-    }
-
-    Query query = new Query(temp, framework);
-    query.setQueryTitle(queryTitleTF.getText());
-    query.setSearchMetacat(CatalogSearchCheckBox.isSelected());
-    query.setSearchLocal(LocalSearchCheckBox.isSelected());
-    savedQuery = query;
+    savedQuery = buildQuery();
     searchStarted = true;
     setVisible(false);
   }
