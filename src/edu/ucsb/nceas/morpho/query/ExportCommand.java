@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-29 00:52:22 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-11 22:57:33 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,7 +205,14 @@ public class ExportCommand implements Command
     File exportDir;
     // Choose the parent of savedialog
     int result;
-    result = filechooser.showSaveDialog(morphoFrame);
+    if (dialog == null)
+    {
+      result = filechooser.showSaveDialog(morphoFrame);
+    }
+    else
+    {
+      result = filechooser.showSaveDialog(dialog);
+    }
    
     
     exportDir = filechooser.getCurrentDirectory();
@@ -252,7 +259,14 @@ public class ExportCommand implements Command
     File exportDir;
       // Choose the parent of savedialog
     int result;
-    result = filechooser.showSaveDialog(morphoFrame);
+    if (dialog == null)
+    {
+      result = filechooser.showSaveDialog(morphoFrame);
+    }
+    else
+    {
+      result = filechooser.showSaveDialog(dialog);
+    }
    
     exportDir = filechooser.getSelectedFile();
     if (result==JFileChooser.APPROVE_OPTION) {
