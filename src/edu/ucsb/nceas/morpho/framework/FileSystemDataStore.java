@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 14:57:24 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-07-05 18:04:32 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,11 @@ public class FileSystemDataStore extends DataStore
     }
     
     return file;
+  }
+  
+  public File saveFile(String name, Reader file)
+  {
+    return saveFile(name, file, false, datadir);
   }
   
   public File saveFile(String name, Reader file, boolean publicAccess)
@@ -147,6 +152,18 @@ public class FileSystemDataStore extends DataStore
   }
   
   /**
+   * deletes a file from the local file system. returns true if the file is
+   * successfully deleted, false otherwise.
+   * @param name the name of the file to delete
+   */
+   public boolean deleteFile(String name)
+   {
+     String path = parseId(name);
+     File delfile = new File(datadir + "/" + path); //the path to the file
+     return delfile.delete();
+   }
+  
+  /**
    * Test method
    */
   public static void main(String[] args)
@@ -184,13 +201,4 @@ public class FileSystemDataStore extends DataStore
     }
     ClientFramework.debug(20, "done");
   }
-  
-  /**
-   * deletes a file from the local file system
-   * @param name the name of the file to delete
-   */
-   public void deleteFile(String name)
-   {
-     
-   }
 }

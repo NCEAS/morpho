@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-03 20:46:16 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-07-05 18:04:32 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,9 @@ public class PackageUtil
   
   /**
    * parses file with the dom parser and returns a dom Document
+   * @param file the file to create the document from
+   * @param catalogPath the path to the catalog where the files doctype info
+   * can be found.
    */
   public static Document getDoc(File file, String catalogPath) throws 
                                                                SAXException, 
@@ -396,6 +399,8 @@ public class PackageUtil
   
   /**
    * opens a file on metacat or local.  It defaults to local if it is on both.
+   * @param name the name of the file
+   * @param framework the framework object that is currently running.
    */
   public static File openFile(String name, ClientFramework framework) 
                                                   throws FileNotFoundException,
@@ -407,6 +412,10 @@ public class PackageUtil
   /**
    * figures out a files location if it is not known and opens it.  the default
    * is to open it from the local system, if it is in both places.  
+   * @param name the file to open
+   * @param location the location of the file.  set to null if the location is 
+   * unknown
+   * @param framework the framework object that is currently running.
    */
   public static File openFile(String name, String location, 
                               ClientFramework framework) throws 
@@ -517,6 +526,14 @@ public class PackageUtil
     }
   }
   
+  /**
+   * method to add a collection of triples to a triples file.  this method
+   * searches for any triples already in the file and appends the new
+   * ones after the existing ones.  
+   * @param triples the collection of triples to add
+   * @param dataPackage the package that you want to add the triples to
+   * @param framework the framework object that is currently running.
+   */
   public static String addTriplesToTriplesFile(TripleCollection triples,
                                                DataPackage dataPackage, 
                                                ClientFramework framework)
@@ -597,6 +614,133 @@ public class PackageUtil
       else
       {
         parent.insertBefore(n, triplesNode.getNextSibling());
+      }
+    }
+    
+    String docString = PackageUtil.printDoctype(doc);
+    docString += PackageUtil.print(doc.getDocumentElement());
+    return docString;
+  }
+  
+  /**
+   * method to delete triples with a specified string from the triples file 
+   * @param searchstring the string to search for in the triples.  when this
+   * string is found the entire triple to which it belongs is deleted.
+   * @param dataPackage the package that you want to delete the triples from
+   * @param framework the framework object that is currently running.
+   */
+  public static String deleteTriplesInTriplesFile(String searchstring,
+                                                  DataPackage dataPackage, 
+                                                  ClientFramework framework)
+  {
+    String triplesTag = framework.getConfiguration().get("triplesTag", 0);
+    File packageFile = dataPackage.getTriplesFile();
+    Document doc;
+    DOMParser parser = new DOMParser();
+    InputSource in;
+    FileInputStream fs;
+    
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try 
+    {
+      Catalog myCatalog = new Catalog();
+      myCatalog.loadSystemCatalogs();
+      ConfigXML config = framework.getConfiguration();
+      String catalogPath = config.get("local_catalog_path", 0);
+      myCatalog.parseCatalog(catalogPath);
+      cer.setCatalog(myCatalog);
+    } 
+    catch (Exception e) 
+    {
+      ClientFramework.debug(9, "Problem creating Catalog in " +
+                   "PackageUtil.updateTriplesFile" + 
+                   e.toString());
+    }
+    
+    parser.setEntityResolver(cer);
+    
+    try
+    { //parse the wizard created file with existing triples
+      fs = new FileInputStream(packageFile);
+      in = new InputSource(fs);
+    }
+    catch(FileNotFoundException fnf)
+    {
+      fnf.printStackTrace();
+      return null;
+    }
+    try
+    {
+      parser.parse(in);
+      fs.close();
+    }
+    catch(Exception e1)
+    {
+      System.err.println("File: " + packageFile.getPath() + " : parse threw: " + 
+                         e1.toString());
+    }
+    //get the DOM rep of the document with existing triples
+    doc = parser.getDocument();
+    NodeList docTriplesNodeList = null;
+    
+    try
+    {
+      //find all the triples
+      docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
+    }
+    catch(SAXException se)
+    {
+      System.err.println("file: " + packageFile.getPath() + " : parse threw: " + 
+                         se.toString());
+    }
+    
+    for(int i=0; i<docTriplesNodeList.getLength(); i++)
+    {
+      Node triple = docTriplesNodeList.item(i);   //the triple node
+      Node parent = triple.getParentNode();       //the triples parent
+      NodeList children = triple.getChildNodes(); //the triples children
+      
+      for(int j=0; j<children.getLength(); j++)
+      {
+        Node n = children.item(j);
+        if(n.getNodeName().equals("subject") ||
+           n.getNodeName().equals("object"))
+        {
+          Node o = n.getFirstChild();
+          if(o.getNodeValue().trim().equals(searchstring))
+          { //found a match delete the triple
+            NodeList countTriples = null;
+            try
+            {
+              countTriples = XPathAPI.selectNodeList(doc, triplesTag);
+            }
+            catch(SAXException se2)
+            {
+              System.err.println("file: " + packageFile.getPath() + 
+                                 " : parse threw: " + 
+                                 se2.toString());
+            }
+            
+            if(countTriples.getLength() == 1)
+            { //this is the last triple. if it is a match we don't want to 
+              //delete the last one, just the content of the s, r and o
+              for(int k=0; k<children.getLength(); k++)
+              {
+                Node lastchild = children.item(k);
+                if(lastchild.getNodeName().equals("subject") || 
+                   lastchild.getNodeName().equals("relationship") ||
+                   lastchild.getNodeName().equals("object"))
+                {
+                  lastchild.getFirstChild().setNodeValue(" ");
+                }
+              }
+            }
+            else
+            {
+              parent.removeChild(triple);
+            }
+          }
+        }
       }
     }
     

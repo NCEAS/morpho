@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 14:57:23 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2001-07-05 18:04:31 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -581,8 +581,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     else if(command.equals("Remove"))
     {
-      ClientFramework.debug(9, "Removing-doesn't work yet!");
-      /*
       item = "";
       if(otherFileList.getSelectedIndex() == -1)
       {
@@ -605,7 +603,94 @@ public class DataPackageGUI extends javax.swing.JFrame
       String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
       
       //remove the file.
-      */
+      boolean locMetacat = false;
+      boolean locLocal = false;
+      if(location.equals(DataPackage.METACAT) || 
+         location.equals(DataPackage.BOTH))
+      {
+        locMetacat = true;
+      }
+      if(location.equals(DataPackage.LOCAL) ||
+         location.equals(DataPackage.BOTH))
+      {
+        locLocal = true;
+      }
+      
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      AccessionNumber a = new AccessionNumber(framework);
+      
+      //remove the file id from the triples in the package file.
+      String newPackageFile = PackageUtil.deleteTriplesInTriplesFile(id, 
+                                                                    dataPackage, 
+                                                                    framework);
+      File tempPackageFile = fsds.saveTempFile("tmp.0", 
+                                             new StringReader(newPackageFile));
+      String newPackageId = a.incRev(dataPackage.getID());
+      newPackageFile = a.incRevInTriples(tempPackageFile, dataPackage.getID(), 
+                                         newPackageId);
+      //delete the files.
+      if(locLocal)
+      { //delete locally
+        boolean deleted = false;
+        try
+        {
+          deleted = fsds.deleteFile(id);
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile));
+        }
+        catch(Exception ee)
+        {
+          ClientFramework.debug(0, "Error saving package file and/or deleting" +
+                                " requested file: " + ee.getMessage());
+        }
+        
+        if(!deleted)
+        {
+          ClientFramework.debug(0, "Error deleting requested file.");
+        }
+      }
+      
+      if(locMetacat)
+      { //delete on metacat
+        boolean deleted = false;
+        try
+        {
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          deleted = mds.deleteFile(id);
+          boolean metacatpublic = false;
+          int choice = JOptionPane.showConfirmDialog(null, 
+                                 "Do you wish to make this package publicly " +
+                                 "readable "+ 
+                                 "(Searchable) on Metacat?", 
+                                 "Package Editor", 
+                                 JOptionPane.YES_NO_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+          if(choice == JOptionPane.YES_OPTION)
+          {
+            metacatpublic = true;
+          }
+          
+          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
+                       metacatpublic);
+        }
+        catch(Exception eee)
+        {
+          ClientFramework.debug(0, "Error saving package file and/or deleting" +
+                          " requested file from Metacat: " + eee.getMessage()); 
+        }
+        
+        if(!deleted)
+        {
+          ClientFramework.debug(0, "Error deleting requested file from " +
+                                "Metacat.");
+        }
+      }
+      
+      //refresh the PE
+      this.dispose();
+      DataPackage newpack = new DataPackage(location, newPackageId, null, 
+                                            framework);
+      DataPackageGUI dpg = new DataPackageGUI(framework, newpack);
+      dpg.show();
     }
     else if(command.equals("EditEntity"))
     {

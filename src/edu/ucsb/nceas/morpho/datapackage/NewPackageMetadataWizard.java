@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-03 22:01:31 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-07-05 18:04:32 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,8 +53,7 @@ import org.apache.xerces.dom.DocumentTypeImpl;
 import com.arbortext.catalog.*;
 
 /**
- * A graphical window for creating a new user profile with user provided
- * information.
+ * A graphical window for adding new files to a package
  */
 public class NewPackageMetadataWizard extends JDialog
                                       implements ActionListener,
@@ -341,6 +340,8 @@ public class NewPackageMetadataWizard extends JDialog
    */
   private void cancelButtonHandler(ActionEvent event)
   {
+    DataPackageGUI dpg = new DataPackageGUI(framework, dataPackage);
+    dpg.show();
     dispose();
   }
 

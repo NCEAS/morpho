@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-26 22:38:50 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-07-05 18:04:31 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -307,6 +307,11 @@ public class DataPackage
       File subfile;
       File objfile;
       //first parse the subject file
+      if(subject.trim().equals("") || object.trim().equals(""))
+      {
+        continue;
+      }
+      
       try
       {
         //try to open the file locally, if it isn't here then try to get

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 14:57:24 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-07-05 18:04:32 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,6 +296,11 @@ public class MetacatDataStore extends DataStore
     return saveFile(name, file, publicAccess, "insert");
   }
   
+  /**
+   * method to create a new data file on metacat.  
+   * NOTE: THIS METHOD DOES NOT WORK YET because metacat does not support
+   * sending an id with the data file.
+   */
   public File newDataFile(String name, Reader file, boolean publicAccess)
                           throws MetacatUploadException
   {
@@ -347,23 +352,77 @@ public class MetacatDataStore extends DataStore
       int i2 = cookie.indexOf(":", i1);
       //get just the session id
       cookie = cookie.substring(i1, i2);
-      //////////////////////////////////////////////////////////////////////////
-      //////////////////////////////////////////////////////////////////////////
-      ///this isn't done!!!!!!!!!!!!!///////////////////////////////////////////
-      //////////////////////////////////////////////////////////////////////////
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
+      ///this isn't done!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
     }
     
     return null;
   }
   
   /**
-   * deletes a file from metacat
+   * deletes a file from metacat. returns true if the file was deleted 
+   * succesfully, false otherwise.
    * @param name the name of the file to delete
    */
-   public void deleteFile(String name)
-   {
-     
-   }
+  public boolean deleteFile(String name)
+  {
+    StringBuffer messageBuf = new StringBuffer();
+    Properties prop = new Properties();
+    prop.put("action", "delete");
+    prop.put("docid", name);
+    ClientFramework.debug(11, "deleting docid: " + name + " from metacat");
+    
+    InputStream metacatInput = null;
+    metacatInput = framework.getMetacatInputStream(prop, true);
+    InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+    
+    try
+    {
+      int d = metacatInputReader.read();
+      while(d != -1)
+      {
+        messageBuf.append((char)d);
+        d = metacatInputReader.read();
+      }
+    }
+    catch(IOException ioe)
+    {
+      ClientFramework.debug(0, "Error deleting file from metacat: " + 
+                            ioe.getMessage());
+      return false;
+    }
+    
+    String message = messageBuf.toString();
+    ClientFramework.debug(11, "message from server: " + message);
+    
+    if(message.indexOf("<error>") != -1)
+    { //there was an error
+      try
+      {
+        metacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      return false;
+    }
+    else if(message.indexOf("<success>") != -1)
+    { //the operation worked
+      try
+      {
+        metacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      return true;
+    }
+    else
+    {//something weird happened.
+      return false;
+    } 
+  }
   
   /**
    * Test method
