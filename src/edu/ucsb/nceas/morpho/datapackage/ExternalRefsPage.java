@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-06 23:28:06 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-04-06 23:31:51 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,11 +97,7 @@ public class ExternalRefsPage extends AbstractUIPage
   {
     this.referenceHandler = referenceHandler;
     this.displayName = this.referenceHandler.getDisplayName();
-    if ( displayName == null)
-    {
-      this.displayName = referenceHandler.getGenericName();
-    }
-    // add the displayName into the column name vector in reference id
+     // add the displayName into the column name vector in reference id
     refIDTableCloumnName.add(displayName);
     init();
     addingMouseListenerForSearchResultTable();
