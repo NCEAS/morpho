@@ -5,18 +5,31 @@ import javax.swing.tree.*;
 import com.symantec.itools.javax.swing.JToolBarSeparator;
 import com.symantec.itools.javax.swing.icons.ImageIcon;
 import java.util.*;
+import java.io.*;
 
 import org.apache.xerces.impl.xs.psvi.*;
+
+
 
 /**
  * A basic JFC 1.1 based application.
  */
 public class SchemaInfoFrame extends javax.swing.JFrame
 {
+    String publicIDString = null;
+    String systemIDString = null;
+    StringBuffer sb;
+    StringBuffer start;
+    Stack tempStack;
+    boolean textnode = false;
+    
     NodeInfo topni = new NodeInfo("Schema");
     DefaultMutableTreeNode top = new DefaultMutableTreeNode(topni);
     
     XSModel xsmodel;
+    
+    int cnt=0;
+    
     
 	public SchemaInfoFrame()
 	{
@@ -40,7 +53,7 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 		TopPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER, TopPanel);
 		SchemaNamePanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		TopPanel.add(BorderLayout.NORTH,SchemaNamePanel);
+		TopPanel.add(BorderLayout.NORTH, SchemaNamePanel);
 		SchemaNameTextField.setText("eml.xsd");
 		SchemaNameTextField.setColumns(20);
 		SchemaNamePanel.add(SchemaNameTextField);
@@ -50,16 +63,19 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 		globalElementsButton.setText("Get Global Elements");
 		globalElementsButton.setActionCommand("jbutton");
 		SchemaNamePanel.add(globalElementsButton);
+		SaveButton.setText("Save");
+		SaveButton.setActionCommand("Save");
+		SchemaNamePanel.add(SaveButton);
 		JPanel1.setLayout(new BorderLayout(0,0));
-		TopPanel.add(BorderLayout.CENTER,JPanel1);
+		TopPanel.add(BorderLayout.CENTER, JPanel1);
 		JPanel3.setLayout(new BorderLayout(0,0));
-		JPanel1.add(BorderLayout.CENTER,JPanel3);
+		JPanel1.add(BorderLayout.CENTER, JPanel3);
 		JScrollPane1.setOpaque(true);
-		JPanel3.add(BorderLayout.CENTER,JScrollPane1);
+		JPanel3.add(BorderLayout.CENTER, JScrollPane1);
 		JScrollPane1.getViewport().add(tree);
 		tree.setBounds(0,0,78,72);
 		NodePropsPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		TopPanel.add(BorderLayout.SOUTH,NodePropsPanel);
+		TopPanel.add(BorderLayout.SOUTH, NodePropsPanel);
 		NodePropsLabel.setText("Properties:");
 		NodePropsPanel.add(NodePropsLabel);
 		//}}
@@ -75,6 +91,7 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 		globalElementsButton.addActionListener(lSymAction);
 		SymTreeSelection lSymTreeSelection = new SymTreeSelection();
 		tree.addTreeSelectionListener(lSymTreeSelection);
+		SaveButton.addActionListener(lSymAction);
 		//}}
 		
 //		tree.setCellRenderer(new XMLTreeCellRenderer());
@@ -172,6 +189,7 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 	javax.swing.JTextField SchemaNameTextField = new javax.swing.JTextField();
 	javax.swing.JButton getXSModel = new javax.swing.JButton();
 	javax.swing.JButton globalElementsButton = new javax.swing.JButton();
+	javax.swing.JButton SaveButton = new javax.swing.JButton();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
 	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
@@ -238,6 +256,8 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 				getXSModel_actionPerformed(event);
 			else if (object == globalElementsButton)
 				globalElementsButton_actionPerformed(event);
+			else if (object == SaveButton)
+				SaveButton_actionPerformed(event);
 			
 		}
 	}
@@ -287,6 +307,14 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 	        globalGroups.add(new DefaultMutableTreeNode((String)vec.elementAt(i)));
 	      }
 	    }
+	    NodeInfo gct = new NodeInfo("Global Complex Types");
+	    DefaultMutableTreeNode globalComplexTypes = new DefaultMutableTreeNode(gct);
+	    if (xsmodel!=null) {
+	      Vector vec = SchemaStructure.getGlobalComplexTypes(xsmodel);
+	      for (int i=0; i<vec.size();i++) {
+	        globalComplexTypes.add(new DefaultMutableTreeNode((String)vec.elementAt(i)));
+	      }
+	    }
 	    NodeInfo nsni = new NodeInfo("Namespaces");
 	    DefaultMutableTreeNode namespaces = new DefaultMutableTreeNode(nsni);
 	    if (xsmodel!=null) {
@@ -297,6 +325,7 @@ public class SchemaInfoFrame extends javax.swing.JFrame
 	    }
 	    top.add(globalElements);
 	    top.add(globalAttributes);
+	    top.add(globalComplexTypes);
 	    top.add(globalGroups);
 	    top.add(namespaces);
 	    
@@ -349,5 +378,210 @@ public class SchemaInfoFrame extends javax.swing.JFrame
     }
 	}
 	
-	
+    /*
+        write the tree starting at the indicated node to a File named 'fn'
+      */
+    /**
+     * write the tree starting at the indicated node to a File named 'fn'
+     * i.e. serializes the tree to xml in a file
+     *
+     * @param node  top level node
+     * @param fn    file name
+     */
+    void writeXML(DefaultMutableTreeNode node, String fn)
+    {
+        cnt=0;
+        //setSelectedNodes(node);
+        trimAttributeNames(node);  // remove extra info in attribute nodes
+        File outputFile = new File(fn);
+        try {
+            FileWriter out = new FileWriter(outputFile);
+            tempStack = new Stack();
+            start = new StringBuffer();
+            write_loop(node, 0);
+            String str1 = start.toString();
+
+            String doctype = "";
+            if (publicIDString != null) {
+                String rootNodeName = 
+                    ((NodeInfo)node.getUserObject()).getName();
+                String temp = "";
+                if (publicIDString != null) {
+                    temp = "\"" + publicIDString + "\"";
+                }
+                String temp1 = "";
+                if (systemIDString != null) {
+                    temp1 = "\"file://" + systemIDString + "\"";
+                }
+                doctype = "<!DOCTYPE " + rootNodeName + " PUBLIC " + 
+                    temp + " " + temp1 + ">\n";
+            }
+            str1 = "<?xml version=\"1.0\"?>\n" + doctype + str1;
+
+            out.write(str1);
+            out.close();
+        } catch (Exception e) {}
+    }
+
+  /**
+   * need to trim extra text added to attribute nodes before saving
+   *
+   */
+  void trimAttributeNames(DefaultMutableTreeNode root) {
+    Enumeration kids = root.children();
+    while(kids.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)kids.nextElement();
+      NodeInfo ni = (NodeInfo)node.getUserObject();
+      if(ni.toString().startsWith("attribute")) {  // an attribute node
+        ni.setName("attribute");
+      }
+    }
+  }
+
+    /*
+        recursive routine to create xml output
+      */
+    /**
+     * recursive routine to create xml output
+     *
+     * @param node    starting node
+     * @param indent  indent level
+     */
+    void write_loop(DefaultMutableTreeNode node, int indent)
+    {
+        String indentString = "";
+        while (indentString.length() < indent) {
+            indentString = indentString + " ";
+        }
+        StringBuffer start1 = new StringBuffer();
+        String name;
+        String end;
+//	  boolean emptyFlag = true;
+        boolean emptyNodeParent = false;
+        NodeInfo ni = (NodeInfo)node.getUserObject();
+        name = ni.name;
+//	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
+        if ((!ni.isChoice()) || (ni.isChoice() && (ni.isSelected()))) {
+            // completely ignore NOT SELECTED nodes AND their children
+            if ((!name.startsWith("(CHOICE)")) && 
+                (!name.startsWith("(SEQUENCE)")) && (!name.equals("Empty"))
+//DFH                && !((name.indexOf("SEQUENCE")>-1)&&(((ni.getMinOcc().equals(ni.getMaxOcc())))))
+                ) {
+                // ignore (CHOICE) nodes but process their children
+                if ((name.indexOf("SEQUENCE")>-1)|| (name.indexOf("CHOICE")>-1)){
+                  name = name+cnt;
+                  cnt++;
+                }
+                start1.append("\n" + indentString + "<" + name);
+
+                Enumeration keys = (ni.attr).keys();
+                while (keys.hasMoreElements()) {
+                    String str = (String)(keys.nextElement());
+                    String val = (String)((ni.attr).get(str));
+                    start1.append(" " + str + "=\"" + val + "\"");
+                }
+                // add the cardinality info as xml attribute
+                    start1.append(" "+"minOccurs=\""+ni.getMinOcc()+"\" maxOccurs=\""+ni.getMaxOcc()+"\"");
+                    
+                    String help = "";
+                    String helps = ni.getHelp();
+                    if (helps!=null) {
+                      int start = helps.indexOf("<doc:summary >")+14;
+                      int stop = helps.indexOf("</doc:summary");
+                      help = helps.substring(start, stop);
+                    }
+                    
+                    start1.append(" "+"help=\""+help+"\"");
+
+                start1.append(">");
+                end = "</" + name + ">";
+                tempStack.push(end);
+            }
+            Enumeration enum = node.children();
+
+// if enum has no elements, then node is a leaf node
+            if (!enum.hasMoreElements()) {
+                start.append(start1.toString());
+                start1 = new StringBuffer();
+//	      textnode = true;
+            }
+
+            while (enum.hasMoreElements()) {
+                // process child nodes
+                DefaultMutableTreeNode nd = 
+                    (DefaultMutableTreeNode)(enum.nextElement());
+                NodeInfo ni1 = (NodeInfo)nd.getUserObject();
+                if (ni1.name.equals("#PCDATA")) {
+                    // remove nodes with empty PCDATA
+                    String pcdata = ni1.getPCValue();
+//                    if (emptyFlag) {
+                    if (false) {
+                        if (pcdata.trim().length() < 1) {
+                            String card = ni.getCardinality();
+                            if ((card.equals("ZERO to MANY")) || 
+                                (card.equals("OPTIONAL"))) {
+                                start1 = new StringBuffer();
+                                tempStack.pop();
+                                tempStack.push("");
+                            }
+                        }
+                    }
+                    start.append(start1.toString());
+                    start1 = new StringBuffer();
+//                    start.append(XMLUtil.normalize(ni1.getPCValue()));
+                    start.append(ni1.getPCValue());
+                    textnode = true;
+                } else if (ni1.name.equals("Empty")) {
+                    // remove the '>' at the end and replace with '/>'
+                    start1.setCharAt(start1.length() - 1, '/');
+                    start1.append(">");
+                    start.append(start1.toString());
+                    start1 = new StringBuffer();
+                    tempStack.pop();
+                    emptyNodeParent = true;
+                    write_loop(nd, indent + 2);
+                } else {
+                    start.append(start1.toString());
+                    start1 = new StringBuffer();
+                    write_loop(nd, indent + 2);
+                }
+            }
+            if ((!name.startsWith("(CHOICE)")) && 
+                (!name.startsWith("(SEQUENCE)")) && (!name.equals("Empty"))
+ //DFH               && !((name.indexOf("SEQUENCE")>-1)&&(((ni.getMinOcc().equals(ni.getMaxOcc())))))
+                ) {
+                if (textnode) {
+                    if (!tempStack.isEmpty()) {
+                        start.append((String)(tempStack.pop()));
+                    }
+                } else {
+                    if (!emptyNodeParent) {
+                        if (!tempStack.isEmpty()) {
+                            start.append("\n" + indentString + 
+                                (String)(tempStack.pop()));
+                        }
+                    } else {
+                        emptyNodeParent = false;
+                    }
+                }
+                textnode = false;
+            }
+        }
+    }
+
+
+
+
+	void SaveButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	  TreePath tp = tree.getSelectionPath();
+      if (tp != null) {
+        Object ob = tp.getLastPathComponent();
+        DefaultMutableTreeNode node = null;
+        if (ob != null) {
+          node = (DefaultMutableTreeNode)ob;
+          writeXML(node, "SchemaOut.xml");
+        }
+	  }
+	}
 }

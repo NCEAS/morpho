@@ -31,7 +31,7 @@ public class SchemaStructure
      * num_levels is used to control the level of recursions 
      * expansion of the tree stops when the node is at 'num_levels' from the root
      */
-    public static int num_levels = 12;
+    public static int num_levels = 14;
     
     // property IDs:
 
@@ -151,9 +151,9 @@ public class SchemaStructure
     // vector of element names as strings
     Vector names = new Vector();
     XSNamedMap elemNames = xsm.getComponents(XSConstants.ELEMENT_DECLARATION); 
-    int len = elemNames.getMapLength();
+    int len = elemNames.getLength();
     for (int ii=0;ii<len;ii++) { 
-      XSObject obj = elemNames.getItem(ii);
+      XSObject obj = elemNames.item(ii);
       names.addElement(obj.getName());
     }    
     return names;
@@ -169,9 +169,9 @@ public class SchemaStructure
     // vector of attribute names as strings
     Vector names = new Vector();
     XSNamedMap attrNames = xsm.getComponents(XSConstants.ATTRIBUTE_DECLARATION); 
-    int len = attrNames.getMapLength();
+    int len = attrNames.getLength();
     for (int ii=0;ii<len;ii++) { 
-      XSObject obj = attrNames.getItem(ii);
+      XSObject obj = attrNames.item(ii);
       names.addElement(obj.getName());
     }    
     return names;
@@ -187,9 +187,22 @@ public class SchemaStructure
     // vector of group names as strings
     Vector names = new Vector();
     XSNamedMap modelGroupNames = xsm.getComponents(XSConstants.MODEL_GROUP_DEFINITION); 
-    int len = modelGroupNames.getMapLength();
+    int len = modelGroupNames.getLength();
     for (int ii=0;ii<len;ii++) { 
-      XSObject obj = modelGroupNames.getItem(ii);
+      XSObject obj = modelGroupNames.item(ii);
+      names.addElement(obj.getName());
+    }    
+    return names;
+  }
+
+  
+  static Vector getGlobalComplexTypes(XSModel xsm) {
+    // vector of group names as strings
+    Vector names = new Vector();
+    XSNamedMap modelCTNames = xsm.getComponents(XSConstants.TYPE_DEFINITION); 
+    int len = modelCTNames.getLength();
+    for (int ii=0;ii<len;ii++) { 
+      XSObject obj = modelCTNames.item(ii);
       names.addElement(obj.getName());
     }    
     return names;
@@ -219,9 +232,9 @@ public class SchemaStructure
     // vector of annotation names as strings
     Vector names = new Vector();
     XSNamedMap annNames = xsm.getComponents(XSConstants.ANNOTATION); 
-    int len = annNames.getMapLength();
+    int len = annNames.getLength();
     for (int ii=0;ii<len;ii++) { 
-      XSObject obj = annNames.getItem(ii);
+      XSObject obj = annNames.item(ii);
       names.addElement(obj.getName());
     }    
     return names;
@@ -236,15 +249,15 @@ public class SchemaStructure
   static void showElementInfo(XSModel xsm, int iii) {
     // iii is the index of the elementDecl
     XSNamedMap elemNames = xsm.getComponents(XSConstants.ELEMENT_DECLARATION); 
-    int len = elemNames.getMapLength();
-    XSElementDeclaration test = (XSElementDeclaration)elemNames.getItem(iii);   
+    int len = elemNames.getLength();
+    XSElementDeclaration test = (XSElementDeclaration)elemNames.item(iii);   
     XSTypeDefinition testtd = test.getTypeDefinition();
     if (testtd.getTypeCategory()==XSTypeDefinition.COMPLEX_TYPE) {
       System.out.println("Complex type!");
        XSComplexTypeDefinition comp = (XSComplexTypeDefinition)testtd;    
        XSParticle part = comp.getParticle(); 
        System.out.println("Minimum occurances: "+part.getMinOccurs());
-       if (part.getIsMaxOccursUnbounded()) {
+       if (part.getMaxOccursUnbounded()) {
          System.out.println("unlimited number of occurances");
        }
        else {
@@ -261,7 +274,7 @@ public class SchemaStructure
        else System.out.println("term:unknown");
        XSObjectList list = mg.getParticles();
        for (int k=0;k<list.getLength();k++) {
-         getParticleInfo((XSParticle)list.getItem(k)); 
+         getParticleInfo((XSParticle)list.item(k)); 
        }
     }
     if (testtd.getTypeCategory()==XSTypeDefinition.SIMPLE_TYPE) {
@@ -275,7 +288,7 @@ public class SchemaStructure
      * @param part
      */
     static void getParticleInfo(XSParticle part) {
-        if (part.getIsMaxOccursUnbounded()) {
+        if (part.getMaxOccursUnbounded()) {
             System.out.println("particle MaxOccurs unbounded");
         }
         else {
@@ -315,7 +328,7 @@ public class SchemaStructure
        else System.out.println("term:unknown");
        XSObjectList list = mg.getParticles();
        for (int k=0;k<list.getLength();k++) {
-         getParticleInfo((XSParticle)list.getItem(k)); 
+         getParticleInfo((XSParticle)list.item(k)); 
        }
     }
 
@@ -330,9 +343,9 @@ public class SchemaStructure
   static DefaultMutableTreeNode getElementInfoFromName(XSModel xsm, String name) {
     DefaultMutableTreeNode node = null;
     XSNamedMap elemNames = xsm.getComponents(XSConstants.ELEMENT_DECLARATION); 
-    int len = elemNames.getMapLength();
+    int len = elemNames.getLength();
     for (int ii=0;ii<len;ii++) { 
-      XSObject obj = elemNames.getItem(ii);
+      XSObject obj = elemNames.item(ii);
       if (name.equals(obj.getName())) {
         node = getElementInfo((XSElementDeclaration)obj, null);
       }
@@ -351,10 +364,11 @@ public class SchemaStructure
    * children of the original element
    */
   static DefaultMutableTreeNode getElementInfo(XSElementDeclaration test, DefaultMutableTreeNode nd) {
+
     DefaultMutableTreeNode child = null;
     DefaultMutableTreeNode node = null;
     if (nd==null) {
-      NodeInfo nodeni = new NodeInfo(test.getName());
+      NodeInfo nodeni = new NodeInfo(test.getNamespace()+"::"+test.getName());
       node = new DefaultMutableTreeNode(nodeni);
     }
     else {
@@ -362,8 +376,29 @@ public class SchemaStructure
     }
     XSTypeDefinition testtd = test.getTypeDefinition();
     if (testtd.getTypeCategory()==XSTypeDefinition.COMPLEX_TYPE) {
-       XSComplexTypeDefinition comp = (XSComplexTypeDefinition)testtd;   
+       XSComplexTypeDefinition comp = (XSComplexTypeDefinition)testtd; 
        if (comp==null) System.out.println("complextype defn is null!");
+       XSObjectList xslist = comp.getAnnotations();
+       if (xslist==null) {
+        System.out.println("annotation list is null!");
+       } else {
+       if (xslist.getLength()==0) {
+         System.out.println("annotation list has no elements!");
+       } else {
+        try{
+         XSAnnotation xsannot = (XSAnnotation)xslist.item(0);
+         String annot = xsannot.getAnnotationString();
+         if (annot!=null) {
+//           System.out.println("Annotation: "+annot);
+           ((NodeInfo)(node.getUserObject())).setHelp(annot);
+         }
+         else {
+           System.out.println("Annotation is NULL !!!");
+         }
+        }
+        catch (Exception w) {}
+       }
+       }
        Hashtable attr_hash = getAttributes(comp);
        if (!attr_hash.isEmpty()) {
          ((NodeInfo)(node.getUserObject())).setAttributes(attr_hash);
@@ -373,10 +408,11 @@ public class SchemaStructure
          System.out.println("particle defn is null!");
        }
        else {
+        
          String maxocc = "";
          String minocc = "";
          minocc = (new Integer(part.getMinOccurs())).toString();
-         if (part.getIsMaxOccursUnbounded()) {
+         if (part.getMaxOccursUnbounded()) {
            maxocc = "unbounded";
          }
          else {
@@ -401,7 +437,7 @@ public class SchemaStructure
          else System.out.println("term:unknown");
          XSObjectList list = mg.getParticles();
          for (int k=0;k<list.getLength();k++) {
-           getParticleInfo((XSParticle)list.getItem(k), child); 
+           getParticleInfo((XSParticle)list.item(k), child); 
          }
       }
       if (testtd.getTypeCategory()==XSTypeDefinition.SIMPLE_TYPE) {
@@ -420,7 +456,7 @@ public class SchemaStructure
     static void getParticleInfo(XSParticle part, DefaultMutableTreeNode cnode) {
         String maxocc = "";
         String minocc = "";
-        if (part.getIsMaxOccursUnbounded()) {
+        if (part.getMaxOccursUnbounded()) {
             maxocc = "unbounded";
         }
         else {
@@ -435,6 +471,22 @@ public class SchemaStructure
             NodeInfo gcnodeni = new NodeInfo(((XSElementDeclaration)xst).getName());
             gcnodeni.setMinOcc(minocc);
             gcnodeni.setMaxOcc(maxocc);
+            
+       XSAnnotation xsannot = ((XSElementDeclaration)xst).getAnnotation();
+       if (xsannot==null) {
+         System.out.println("XSAnnotation is null");
+       } else {
+         String annot = xsannot.getAnnotationString();
+         if (annot!=null) {
+           gcnodeni.setHelp(annot);
+         }
+         else {
+           System.out.println("Annotation is NULL !!!");
+         }
+       }
+
+            
+            
             DefaultMutableTreeNode gcnode = new DefaultMutableTreeNode(gcnodeni);
             cnode.add(gcnode);
             
@@ -488,7 +540,7 @@ public class SchemaStructure
        else System.out.println("term:unknown");
        XSObjectList list = mg.getParticles();
        for (int k=0;k<list.getLength();k++) {
-         getParticleInfo((XSParticle)list.getItem(k), child); 
+         getParticleInfo((XSParticle)list.item(k), child); 
        }
     }
     
@@ -501,7 +553,7 @@ public class SchemaStructure
       Hashtable attr_hash = new Hashtable();
       XSObjectList attlist = compl.getAttributeUses();
       for (int i=0; i<attlist.getLength();i++) {
-        XSAttributeUse au = (XSAttributeUse)(attlist.getItem(i)); 
+        XSAttributeUse au = (XSAttributeUse)(attlist.item(i)); 
         if (au==null) System.out.println("au is null!");
         String name = (au.getAttrDeclaration()).getName();
         if (name==null) System.out.println("Attribute name is null!");
