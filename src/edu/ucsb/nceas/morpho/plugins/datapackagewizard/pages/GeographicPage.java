@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:13:44 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-01-21 21:28:47 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,6 +116,7 @@ public class GeographicPage extends AbstractWizardPage {
     vbox.add(covDescPanel);
 
 //DFH    vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel bbDesc = WidgetFactory.makeHTMLLabel(
         "<p><b>Set the geographic coordinates which bound the coverage</b> Latitude and longitude"
@@ -136,7 +137,7 @@ public class GeographicPage extends AbstractWizardPage {
     lmp = new LiveMapPanel(true);
     bboxPanel.add(lmp);
 
-    bboxPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
+    bboxPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,4,5*WizardSettings.PADDING));
     vbox.add(bboxPanel);
 
   ////////////////////////////////////////////////////////////////////////////
