@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-24 23:41:55 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2001-08-25 03:35:32 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1242,13 +1242,12 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	
 
 void expandTreeToLevel(JTree jt, int level) {
-    boolean endFlag = false;
     DefaultMutableTreeNode childNode;
     TreeModel tm = jt.getModel();
     DefaultMutableTreeNode root = (DefaultMutableTreeNode)tm.getRoot();
     Enumeration enum = root.breadthFirstEnumeration();
     DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
-    while ((!endFlag)&&(curNode.getLevel()<level)) {
+    while ((enum.hasMoreElements())&&(curNode.getLevel()<level)) {
       try {
         childNode = (DefaultMutableTreeNode)curNode.getFirstChild();  
         NodeInfo ni = (NodeInfo)childNode.getUserObject();
@@ -1259,11 +1258,8 @@ void expandTreeToLevel(JTree jt, int level) {
         }
       }
       catch (Exception w) {
-        endFlag = true;
       }
-      if (!endFlag) {
-        curNode = (DefaultMutableTreeNode)enum.nextElement();
-      }
+      curNode = (DefaultMutableTreeNode)enum.nextElement();
     }
 }
 
