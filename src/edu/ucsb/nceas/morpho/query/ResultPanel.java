@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-09 17:01:28 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-22 19:45:58 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,9 @@ public class ResultPanel extends JPanel
   /** The label used to display the query title */
   JLabel titleLabel;
 
+  /** The label used to display the number of records */
+  JLabel recordCountLabel;
+
   /**
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
@@ -124,6 +127,11 @@ public class ResultPanel extends JPanel
       headerBox.add(Box.createHorizontalStrut(8));
       headerBox.add(titleLabel);
       headerBox.add(Box.createHorizontalGlue());
+      recordCountLabel = new JLabel(results.getRowCount() + " data sets");
+      recordCountLabel.setForeground(Color.black);
+      recordCountLabel.setFont(new Font(null, Font.BOLD, 18));
+      headerBox.add(recordCountLabel);
+      headerBox.add(Box.createHorizontalStrut(4));
       refreshButton = new JButton("Refresh");
       if (hasRefreshButton) {
         headerBox.add(refreshButton);
@@ -261,6 +269,7 @@ public class ResultPanel extends JPanel
   {
     this.results = newResults;
     titleLabel.setText(results.getQuery().getQueryTitle());
+    recordCountLabel.setText(results.getRowCount() + " data sets");
 
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);
