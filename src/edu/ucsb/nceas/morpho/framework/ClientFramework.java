@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-04 04:31:19 $'
- * '$Revision: 1.84 $'
+ *     '$Date: 2001-12-14 16:47:07 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1401,8 +1401,8 @@ public class ClientFramework extends javax.swing.JFrame
       sf.setVisible(true);
 
 
-      Date expiration = new Date(102, 3, 1);
-      Date warning = new Date(102, 2, 15);
+      Date expiration = new Date(102, 5, 1);
+      Date warning = new Date(102, 4, 15);
       Date now = new Date();
       if (now.after(expiration))
       {
