@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-17 03:22:54 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-02-17 18:53:47 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,9 +111,8 @@ public class AttributePanel extends JPanel
 					df1.addXMLAttributeNodes(root);
 					df1.setAttributeNames(root);
 					NodeInfo nir = (NodeInfo)(root.getUserObject());
-					nir.setChoice(true);
-					nir.setCheckboxFlag(true);
-					nir.setSelected(true);
+					nir.setChoice(false);
+					nir.setCheckboxFlag(false);
 					(df1.treeModel).reload();
         } catch (Exception e) {
           Log.debug(5, "Problem in AttributePanel");
