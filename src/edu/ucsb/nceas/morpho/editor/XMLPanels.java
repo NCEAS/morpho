@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 00:29:36 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2004-03-29 17:31:10 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -448,9 +448,11 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
     Enumeration enum = node.children();
     while (enum.hasMoreElements()) {
       DefaultMutableTreeNode kid = (DefaultMutableTreeNode)enum.nextElement();
+      if (kid==null) return ret;
       String name = ((NodeInfo)kid.getUserObject()).getName();
       if (name.equals("references")) {
         // before we return the node, check to see if it contans anything
+        if (kid.getChildCount()<1) return ret;
         DefaultMutableTreeNode textNode = (DefaultMutableTreeNode)kid.getFirstChild();
         String tname = ((NodeInfo)textNode.getUserObject()).getName();
         if (tname.equalsIgnoreCase("#PCDATA")) {
