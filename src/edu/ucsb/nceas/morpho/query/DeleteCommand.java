@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-04 23:27:35 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-05 18:24:01 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,6 +162,10 @@ public class DeleteCommand implements Command
  {
   final SwingWorker worker = new SwingWorker() 
   {
+        // A variable to indicate it reach refresh command or not
+        // This is for butterfly flapping, if reach refresh, butterfly will
+        // stop flapping by refresh
+        boolean refreshFlag = false;
         public Object construct() 
         {
           if (frame!=null)
@@ -169,8 +173,8 @@ public class DeleteCommand implements Command
             frame.setBusy(true);
           }
           DataPackageInterface dataPackage;
-          // Create a refresh command 
-          RefreshCommand refresh = new RefreshCommand(null);
+          // Create a refresh command finished
+          RefreshCommand refresh = new RefreshCommand(frame);
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -197,9 +201,10 @@ public class DeleteCommand implements Command
           if(choice == JOptionPane.YES_OPTION)
           {
             dataPackage.delete(docid, state);
+            refreshFlag = true;
             refresh.execute();
           }
-          
+         
            return null;  
           
         }
@@ -207,9 +212,9 @@ public class DeleteCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          if (frame!=null)
+          if (frame!=null && !refreshFlag)
           {
-            // Stop butterfly
+            // Refresh will stop butterfly flapping. So here we don't need
             frame.setBusy(false);
           }
         }
