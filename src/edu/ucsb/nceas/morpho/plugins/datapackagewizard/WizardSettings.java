@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 17:09:21 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2003-09-26 17:20:49 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -286,29 +286,29 @@ public class WizardSettings {
       return new String[] {"IOException!"};
     }
     
-    NodeList unitTypesNodeList = null;
-    try {
-      unitTypesNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, 
-                                                            UNIT_TYPES_XPATH);
-    } catch (Exception ioe) {
-      Log.debug(12,"Exception getting unitTypesNodeList: "+ioe);
-      ioe.printStackTrace();
-      return new String[] {"Exception!"};
-    }
+//    NodeList unitTypesNodeList = null;
+//    try {
+//      unitTypesNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, 
+//                                                            UNIT_TYPES_XPATH);
+//    } catch (Exception ioe) {
+//      Log.debug(12,"Exception getting unitTypesNodeList: "+ioe);
+//      ioe.printStackTrace();
+//      return new String[] {"Exception!"};
+//    }
+//    
+//    if (unitTypesNodeList==null) {
+//      Log.debug(1,"Fatal error - unitTypesNodeList == NULL");
+//      return new String[] {"ERROR!"};
+//    }    
+    Node[] unitTypesNodeArray = null;
     
-    if (unitTypesNodeList==null) {
-      Log.debug(1,"Fatal error - unitTypesNodeList == NULL");
-      return new String[] {"ERROR!"};
-    }    
-    
-    Node[] unitTypesNodeArray 
-                      = XMLUtilities.getNodeListAsNodeArray(unitTypesNodeList);
+    unitTypesNodeArray = getNodeArrayWithXPath(udRootNode, UNIT_TYPES_XPATH);
     
     if (unitTypesNodeArray==null) {
       Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
       return new String[] {"ERROR!!"};
     }    
-
+    
     final int totUnitTypes      = unitTypesNodeArray.length;
     final String[] returnArray  = new String[totUnitTypes];
     
@@ -345,9 +345,13 @@ public class WizardSettings {
     //0. init - get node array containing all <unit> elements - do only once!
     if (unitsNodeArray==null) {
     
-      unitsNodeArray = getNodeArrayWithXPath();
+      unitsNodeArray = getNodeArrayWithXPath(udRootNode, UNITS_XPATH);
+      
+      if (unitsNodeArray==null) {
+        Log.debug(1,"Fatal error - unitsNodeArray == NULL");
+        return new String[] {"ERROR!!"};
+      }    
     }
-
 
     List returnList     = new ArrayList();
 
@@ -431,28 +435,24 @@ public class WizardSettings {
   
 
 
-  private Node[] getNodeArrayWithXPath(Node rootNode, String xpath) {
+  private static Node[] getNodeArrayWithXPath(Node rootNode, String xpath) {
     
     NodeList nodeList = null;
     try {
       nodeList = XMLUtilities.getNodeListWithXPath(rootNode, xpath);
     } catch (Exception ioe) {
-      Log.debug(12,"Exception getting unitsNodeList: "+ioe);
+      Log.debug(12,"Exception getting nodeList: "+ioe);
       ioe.printStackTrace();
-      return new String[] {"Exception!"};
+      return null;
     }
-    if (unitsNodeList==null) {
-      Log.debug(1,"Fatal error - unitsNodeList == NULL");
-      return new String[] {"ERROR!"};
+    if (nodeList==null) {
+      Log.debug(1,"Fatal error - nodeList == NULL");
+      return null;
     }    
-  
-    unitsNodeArray = XMLUtilities.getNodeListAsNodeArray(unitsNodeList);
-  
-    if (unitsNodeArray==null) {
-      Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
-      return new String[] {"ERROR!!"};
-    }    
+    return XMLUtilities.getNodeListAsNodeArray(nodeList);
   }
+  
+  
   
   /**
    * returns true if the String can be parsed as a float
