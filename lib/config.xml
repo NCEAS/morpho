@@ -20,6 +20,9 @@
       <originatorPath>/dataset/originator/individualName/surName</originatorPath>
       <altTitlePath>/dataset/shortName</altTitlePath>
     </paths>
+    <listdoctypes>
+      <entitydoctype>-//NCEAS//eml-entity-2.0//EN</entitydoctype>
+    </listdoctypes>
   </packageEditor>
   <customFrames>
     <mainFrame>Resource</mainFrame>

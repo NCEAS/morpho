@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 15:20:47 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-06-14 22:41:04 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   //visual components
   private Container contentPane;
   private JPanel descriptionPanel;
+  private JPanel headPanel;
   private JTextArea descriptionText;
   private JLabel descriptionLabel;
   private JPanel wizardFrame;
@@ -99,7 +100,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(620, 600);
+    setSize(800, 600);
   }
   
   public PackageWizardShell(ClientFramework cf)
@@ -108,7 +109,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(620, 600);
+    setSize(800, 600);
   }
   
   private void initComponents()
@@ -141,12 +142,12 @@ public class PackageWizardShell extends javax.swing.JFrame
     contentPane.add(mainWizardFrame);
     //get the context of the middle frame (not the button frame) so that we
     //can add the first wizard frame to it.
-    descriptionPanel = (JPanel)mainWizardFrame.getComponent(0);
+    //descriptionPanel = (JPanel)mainWizardFrame.getComponent(0);
     String description = "Enter your contact information and " +
                           "basic data package information here.";
     changeDescription(description);
     
-    wizardFrame = (JPanel)mainWizardFrame.getComponent(1);
+    //wizardFrame = (JPanel)mainWizardFrame.getComponent(1);
     //get the location of the main wizard frame config file, parse it
     //and have it draw itself into the topWizardFrame
     
@@ -168,6 +169,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         fileTextField.setColumns(25);
         framePanel.add(fileTextField);
         framePanel.add(chooseFileButton);
+        
         wfc.textfield = fileTextField;
         wfc.type = "GETDATA";
         wfc.description = getDataDescription;
@@ -307,6 +309,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       wizardFrame.add(donePanel);
       wizardFrame.validate();
       next.setText("Finish");
+      next.setIcon(null);
     }
     else
     {
@@ -369,7 +372,10 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     if(frameWizardIndex == frameWizards.size()-1)
     {
-      next.setText("Next >>");
+      next.setText("Next");
+      next.setIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/navigation/Forward16.gif")));
+      next.setHorizontalTextPosition(SwingConstants.LEFT);
     }
     wizardFrame.validate();
     wizardFrame.repaint();
@@ -698,11 +704,11 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     framework.debug(11, "action fired: |" + command + "|");
     
-    if(command.equals("<< Previous"))
+    if(command.equals("Previous"))
     { 
       handlePreviousAction();
     }
-    else if(command.equals("Next >>"))
+    else if(command.equals("Next"))
     { 
       handleNextAction();
     }
@@ -725,24 +731,51 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JPanel createWizardFrame()
   {
     JPanel mainPanel = new JPanel();
-    JPanel wizardPanel = new JPanel();
+    wizardFrame = new JPanel();
     JPanel buttonPanel = new JPanel();
-    JPanel descriptionPanel = new JPanel();
+    descriptionPanel = new JPanel();
+    headPanel = new JPanel();
     
-    //BoxLayout box = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
-    //mainPanel.setLayout(box);
+    JLabel headLabel = new JLabel();
+    headLabel.setText("Creating new Package");
+    ImageIcon head = new ImageIcon(
+                         framework.getClass().getResource("smallheader-bg.gif"));
+    headLabel.setIcon(head);
+    headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+    headLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
+    headLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    headLabel.setForeground(Color.black);
+    headLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+    headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+    headPanel.setLayout(new FlowLayout());
+    headPanel.add(headLabel);
+    headPanel.setPreferredSize(new Dimension(300, 50));
+    headPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+    
+    descriptionPanel.setBackground(Color.white);
+    descriptionPanel.setPreferredSize(new Dimension(160, 450));
+    ImageIcon logoIcon = new ImageIcon(
+                             framework.getClass().getResource("logo-icon.gif"));
+    JLabel imageLabel = new JLabel();
+    imageLabel.setIcon(logoIcon);
+    descriptionPanel.add(imageLabel);
+    
     mainPanel.setLayout(new BorderLayout());
-    wizardPanel.setMaximumSize(new Dimension(595, 450));
-    wizardPanel.setPreferredSize(new Dimension(595, 450));
-    //wizardPanel.setBorder(BorderFactory.createLineBorder(new Color(255,255,255)));
+    //wizardFrame.setMaximumSize(new Dimension(595, 450));
+    //wizardFrame.setPreferredSize(new Dimension(595, 450));
+    
+    wizardFrame.setMaximumSize(new Dimension(595, 450));
+    wizardFrame.setPreferredSize(new Dimension(595, 450));
     buttonPanel.setMaximumSize(new Dimension(595, 50));
     buttonPanel.setPreferredSize(new Dimension(595, 50));
-    //descriptionPanel.setMaximumSize(new Dimension(595, 50));
-    //descriptionPanel.setPreferredSize(new Dimension(595, 50));
     
-    previous = new JButton("<< Previous");
+    previous = new JButton("Previous", new ImageIcon(getClass().
+               getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
     previous.setVisible(false);
-    next = new JButton("Next >>");
+    next = new JButton("Next", new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/navigation/Forward16.gif")));
+    next.setHorizontalTextPosition(SwingConstants.LEFT);
     previous.addActionListener(this);
     next.addActionListener(this);
     BoxLayout buttonLayout = new BoxLayout(buttonPanel, BoxLayout.X_AXIS);
@@ -753,8 +786,9 @@ public class PackageWizardShell extends javax.swing.JFrame
     buttonPanel.add(next);
     buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
     
-    mainPanel.add(descriptionPanel, BorderLayout.NORTH);
-    mainPanel.add(wizardPanel, BorderLayout.CENTER);
+    mainPanel.add(headPanel, BorderLayout.NORTH);
+    mainPanel.add(descriptionPanel, BorderLayout.WEST);
+    mainPanel.add(wizardFrame, BorderLayout.CENTER);
     mainPanel.add(buttonPanel, BorderLayout.SOUTH);
     return mainPanel;
   }
@@ -764,16 +798,16 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   private void changeDescription(String desc)
   {
-    /*descriptionText = new JTextArea(desc);
-    descriptionText.setPreferredSize(new Dimension(580,40));
-    descriptionText.setLineWrap(true);
-    descriptionText.setWrapStyleWord(true);
-    descriptionText.setEnabled(false);
+    descriptionLabel = new JLabel("<html>" + desc + "</html>");
+    descriptionLabel.setForeground(Color.black);
+    descriptionLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+    ImageIcon logoIcon = new ImageIcon(
+                             framework.getClass().getResource("logo-icon.gif"));
+    JLabel imageLabel = new JLabel();
+    imageLabel.setIcon(logoIcon);
+    descriptionLabel.setPreferredSize(new Dimension(150, 400));
     descriptionPanel.removeAll();
-    descriptionPanel.add(new JScrollPane(descriptionText));*/
-    descriptionLabel = new JLabel("<html><p>" + desc + "</p></html>");
-    descriptionLabel.setPreferredSize(new Dimension(580, 50));
-    descriptionPanel.removeAll();
+    descriptionPanel.add(imageLabel);
     descriptionPanel.add(descriptionLabel);
     descriptionPanel.validate();
     descriptionPanel.repaint();

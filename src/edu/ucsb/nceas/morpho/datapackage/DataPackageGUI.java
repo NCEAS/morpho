@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 17:03:47 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-06-14 22:41:03 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,17 +35,22 @@ import javax.swing.border.*;
 import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.event.*;
 
 public class DataPackageGUI extends javax.swing.JFrame 
-                            implements ActionListener, EditingCompleteListener
+                            implements ActionListener, 
+                                       EditingCompleteListener
 {
   private ClientFramework framework;
   private ConfigXML config;
   Container contentPane;
   private DataPackage dataPackage;
   private JList otherFileList;
+  private JList entityFileList;
+  private JList dataFileList;
   private String location = null;
   private String id = null;
+  private JButton editBaseInfoButton = new JButton();
   
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
@@ -60,7 +65,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     contentPane.setLayout(box);
     initComponents();
     pack();
-    setSize(500, 500);
+    setSize(800, 450);
     this.show();
   }
   
@@ -75,7 +80,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     String altTitle = "No Alternate Title Provided";
     Hashtable docAtts = dataPackage.getAttributes();
     
-    
+    String entitytype = config.get("entitydoctype", 0);
     
     if(docAtts.containsKey("originator"))
     {
@@ -104,12 +109,46 @@ public class DataPackageGUI extends javax.swing.JFrame
                                                  title, 
                                                  altTitle, orig);
     Hashtable relfiles = dataPackage.getRelatedFiles();
-    Vector listitems = new Vector();
-    listitems.add("Basic Information (" + this.id + ")");
+    System.out.println("relfiles: " + relfiles.toString());
+    Vector otheritems = new Vector();
+    Vector dataitems = new Vector();
+    Vector entityitems = new Vector();
+    //listitems.add("Basic Information (" + this.id + ")");
     Enumeration keys = relfiles.keys();
     while(keys.hasMoreElements())
     {
       String key = (String)keys.nextElement();
+      if(key.equals("Data File"))
+      {
+        Vector v = (Vector)relfiles.get(key);
+        for(int i=0; i<v.size(); i++)
+        {
+          String eleid = (String)v.elementAt(i);
+          String s = key + " (" + eleid + ")";
+          dataitems.addElement(s);
+        }
+      }
+      else if(key.equals(entitytype))
+      {
+        Vector v = (Vector)relfiles.get(key);
+        for(int i=0; i<v.size(); i++)
+        {
+          String eleid = (String)v.elementAt(i);
+          String s = "Entity File (" + eleid + ")";
+          entityitems.addElement(s);
+        }
+      }
+      else
+      {
+        Vector v = (Vector)relfiles.get(key);
+        for(int i=0; i<v.size(); i++)
+        {
+          String eleid = (String)v.elementAt(i);
+          String s = key + " (" + eleid + ")";
+          otheritems.addElement(s);
+        }
+      }
+      /*
       Vector v = (Vector)relfiles.get(key);
       for(int i=0; i<v.size(); i++)
       {
@@ -120,8 +159,9 @@ public class DataPackageGUI extends javax.swing.JFrame
           listitems.addElement(s);
         }
       }
+      */
     }
-    JPanel listPanel = createListPanel(listitems);
+    JPanel listPanel = createListPanel(dataitems, entityitems, otheritems);
     contentPane.add(basicInfoPanel);
     contentPane.add(listPanel);
   }
@@ -129,13 +169,15 @@ public class DataPackageGUI extends javax.swing.JFrame
   private JPanel createBasicInfoPanel(String identifier, String title, 
                                       String altTitle, Vector originator)
   {
+    editBaseInfoButton = new JButton("Edit Base Info");
+    editBaseInfoButton.addActionListener(this);
     JPanel panel = new JPanel();
     JLabel identifierL = new JLabel("Identifier: ");
     JLabel titleL = new JLabel("Title: ");
     JLabel altTitleL = new JLabel("Alternate Title: ");
     JLabel originatorL = new JLabel("Data Originator: ");
-    String htmlBegin = "<html><p>";
-    String htmlEnd = "</p></html";
+    String htmlBegin = "<html>";
+    String htmlEnd = "</html>";
     
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     
@@ -148,33 +190,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     tempPanel = new JPanel();
     tempPanel.add(titleL);
     tempPanel.add(new JLabel(title));
-    //tempPanel.setPreferredSize(new Dimension(400, 50));
-    /*
-    JPanel layoutPanel = new JPanel();
-    layoutPanel.add(titleL);
-    layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
-    int l = title.length();
-    int inc = 40;
-    for(int i=0; i<l; i+=inc)
-    {
-      int end;
-      if(i+inc > l)
-      {
-        end = l;
-      }
-      else
-      {
-        end = i+inc;
-      }
-      String sub = title.substring(i, end);
-      JLabel sublabel = new JLabel(sub);
-      layoutPanel.add(sublabel, BorderLayout.CENTER);
-    }
-    */
-    //JLabel titleLabel = new JLabel(title);
-    //tempPanel.add(titleLabel);
+    
     panel.add(tempPanel);
-    //panel.add(layoutPanel);
     
     tempPanel = new JPanel();
     tempPanel.add(altTitleL);
@@ -192,47 +209,118 @@ public class DataPackageGUI extends javax.swing.JFrame
       tempPanel2.add(new JLabel(person));
     }
     tempPanel.add(tempPanel2);
+    
     panel.add(tempPanel);
+    panel.add(editBaseInfoButton);
     
     return panel;
   }
   
-  private JPanel createListPanel(Vector v)
+  private JPanel createListPanel(Vector datafiles, Vector entityfiles, 
+                                 Vector otherfiles)
   { 
-    otherFileList = new JList(v);
+    JPanel listPanel = new JPanel();
+    JPanel outerPanel = new JPanel();
+    
+    JButton dataFileAdd = new JButton("Add");
+    dataFileAdd.addActionListener(this);
+    JButton dataFileRemove = new JButton("Remove");
+    dataFileRemove.addActionListener(this);
+    JButton dataFileEdit = new JButton("Edit");
+    dataFileEdit.addActionListener(this);
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(new BoxLayout(buttonPanel, 
+                                                BoxLayout.X_AXIS));
+    buttonPanel.add(dataFileAdd);
+    buttonPanel.add(dataFileRemove);
+    buttonPanel.add(dataFileEdit);
+    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+    
+    ////////////////////data files///////////////////////
+    
+    dataFileList = new JList(datafiles);
+    dataFileList.addListSelectionListener(new DataSelectionHandler());
+    dataFileList.addMouseListener(new MouseAdapter()
+    {
+      public void mouseClicked(MouseEvent e)
+      {
+        if(e.getClickCount() == 2) 
+        {
+          actionPerformed(new ActionEvent(this, 0, "Edit"));
+        }
+      }
+    });
+    dataFileList.setVisibleRowCount(10);
+    JScrollPane dataFileScrollPane = new JScrollPane(dataFileList);
+    
+    JPanel dataFileButtonList = new JPanel();
+    dataFileButtonList.setLayout(new BoxLayout(dataFileButtonList,
+                                               BoxLayout.Y_AXIS));
+    dataFileButtonList.add(new JLabel("Data Files"));
+    dataFileButtonList.add(dataFileScrollPane);
+    
+    listPanel.add(dataFileButtonList);
+    
+    //////////////entity files////////////////////////
+    
+    entityFileList = new JList(entityfiles);
+    entityFileList.addListSelectionListener(new EntitySelectionHandler());
+    entityFileList.addMouseListener(new MouseAdapter()
+    {
+      public void mouseClicked(MouseEvent e)
+      {
+        if(e.getClickCount() == 2) 
+        {
+          actionPerformed(new ActionEvent(this, 0, "Edit"));
+        }
+      }
+    });
+    entityFileList.setVisibleRowCount(10);
+    JScrollPane entityFileScrollPane = new JScrollPane(entityFileList);
+    JPanel entityFileButtonList = new JPanel();
+    entityFileButtonList.setLayout(new BoxLayout(entityFileButtonList,
+                                                 BoxLayout.Y_AXIS));
+    entityFileButtonList.add(new JLabel("Entity Members"));
+    entityFileButtonList.add(entityFileScrollPane);
+    
+    listPanel.add(entityFileButtonList);
+    
+    ////////////////other files//////////////////////
+    
+    otherFileList = new JList(otherfiles);
+    otherFileList.addListSelectionListener(new OtherSelectionHandler());
+    otherFileList.addMouseListener(new MouseAdapter()
+    {
+      public void mouseClicked(MouseEvent e)
+      {
+        if(e.getClickCount() == 2) 
+        {
+          actionPerformed(new ActionEvent(this, 0, "Edit"));
+        }
+      }
+    });
     otherFileList.setVisibleRowCount(10);
     JScrollPane otherFileScrollPane = new JScrollPane(otherFileList);
-    JButton otherFileAdd = new JButton("Add");
-    otherFileAdd.addActionListener(this);
-    JButton otherFileRemove = new JButton("Remove");
-    otherFileRemove.addActionListener(this);
-    JButton otherFileEdit = new JButton("Edit");
-    otherFileEdit.addActionListener(this);
-    JPanel otherFileButtonPanel = new JPanel();
-    otherFileButtonPanel.setLayout(new BoxLayout(otherFileButtonPanel, 
-                                                BoxLayout.X_AXIS));
-    otherFileButtonPanel.add(otherFileAdd);
-    otherFileButtonPanel.add(otherFileRemove);
-    otherFileButtonPanel.add(otherFileEdit);
     JPanel otherFileButtonList = new JPanel();
     otherFileButtonList.setLayout(new BoxLayout(otherFileButtonList,
                                                BoxLayout.Y_AXIS));
-    otherFileButtonList.add(new JLabel("Package Members"));
+    otherFileButtonList.add(new JLabel("Other Members"));
     otherFileButtonList.add(otherFileScrollPane);
-    otherFileButtonList.add(otherFileButtonPanel);
     
-    JPanel listPanel = new JPanel();
     listPanel.setBorder(BorderFactory.createCompoundBorder(
                         BorderFactory.createTitledBorder(
                         /*"Package Members"*/""),
                         BorderFactory.createEmptyBorder(4, 4, 4, 4)));
     listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.X_AXIS));
-    listPanel.setPreferredSize(new Dimension(400, 270));
-    //listPanel.add(dataFileButtonList);
-    //listPanel.add(entityFileButtonList);
-    listPanel.add(otherFileButtonList);
+    listPanel.setPreferredSize(new Dimension(700, 270));
     
-    return listPanel; 
+    
+    outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
+    listPanel.add(otherFileButtonList);
+    outerPanel.add(listPanel);
+    outerPanel.add(buttonPanel);
+    
+    return outerPanel; 
   }
   
   /**
@@ -243,10 +331,16 @@ public class DataPackageGUI extends javax.swing.JFrame
     String command = e.getActionCommand();
     framework.debug(11, "action fired: " + command);
     EditorInterface editor;
+    String item = null;
+    
+    if(command.equals("Edit Base Info"))
+    {
+      item = "Base Info (" + dataPackage.getID() + ")";
+      command = "Edit";
+    }
     
     if(command.equals("Edit"))
     {
-      System.out.println("Editing");
       try
       {
         ServiceProvider provider = 
@@ -259,7 +353,34 @@ public class DataPackageGUI extends javax.swing.JFrame
         ee.printStackTrace();
         return;
       }
-      String item = (String)otherFileList.getSelectedValue();
+      
+      if(item == null)
+      {
+        if(dataFileList.getSelectedIndex() == -1)
+        {
+          if(otherFileList.getSelectedIndex() == -1)
+          {
+            if(entityFileList.getSelectedIndex() == -1)
+            { //nothing is selected, give an error and return
+              ClientFramework.debug(1, "You must select an item to edit.");
+              return;
+            }
+            else
+            { 
+              item = (String)entityFileList.getSelectedValue();
+            }
+          }
+          else
+          {
+            item = (String)otherFileList.getSelectedValue();
+          }
+        }
+        else
+        {
+          item = (String)dataFileList.getSelectedValue();
+        }
+      }
+      
       String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
       System.out.println("id: " + id);
       File xmlFile;
@@ -412,6 +533,36 @@ public class DataPackageGUI extends javax.swing.JFrame
                          " --message: " + e.getMessage());
       
       e.printStackTrace();
+    }
+  }
+  
+  private class EntitySelectionHandler implements ListSelectionListener
+  {
+    public void valueChanged(ListSelectionEvent e)
+    {
+      ClientFramework.debug(20, "value changed (entity)");
+      otherFileList.clearSelection();
+      dataFileList.clearSelection();
+    }
+  }
+  
+  private class DataSelectionHandler implements ListSelectionListener
+  {
+    public void valueChanged(ListSelectionEvent e)
+    {
+      ClientFramework.debug(20, "value changed (data): ");
+      entityFileList.clearSelection();
+      otherFileList.clearSelection();
+    }
+  }
+  
+  private class OtherSelectionHandler implements ListSelectionListener
+  {
+    public void valueChanged(ListSelectionEvent e)
+    {
+      ClientFramework.debug(20, "value changed (other): ");
+      entityFileList.clearSelection();
+      dataFileList.clearSelection();
     }
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 17:03:47 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-06-14 22:41:03 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -401,7 +401,7 @@ public class DataPackage
         { //we are dealing with a data file here.
           Document subDoc = getDoc(subfile, catalogPath);
           DocumentTypeImpl dt = (DocumentTypeImpl)subDoc.getDoctype();
-          name = dt.getName();
+          name = dt.getPublicId();
         }
         else
         { //this is a data file not an xml file
@@ -472,7 +472,7 @@ public class DataPackage
         { //we are dealing with a data file here.
           Document objDoc = getDoc(objfile, catalogPath);
           DocumentTypeImpl dt = (DocumentTypeImpl)objDoc.getDoctype();
-          name = dt.getName();
+          name = dt.getPublicId();
           
         }
         else
