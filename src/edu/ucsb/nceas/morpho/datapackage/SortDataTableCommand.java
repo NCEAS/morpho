@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:21:40 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-06 01:27:05 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
 
@@ -92,15 +93,20 @@ public class SortDataTableCommand implements Command
               PersistentTableModel ptm, PersistentVector pv, int sortdirection)
   {
     frame.setBusy(true);
-    int sel = table.getSelectedColumn();
-    if (sel>-1)
-    {
-      ptm.sort(sel, sortdirection);
+    int colsel = table.getSelectedColumn();
+    int rowsel = table.getSelectedRow();
+    if (colsel>-1) {
+      ptm.sort(colsel, sortdirection);
       pv = ptm.getPersistentVector();
       viewer.setPV(pv);
       sortdirection = -1 * sortdirection;
       viewer.setSortDirection(sortdirection);
+      table.setColumnSelectionInterval(colsel, colsel);
+      table.setRowSelectionInterval(rowsel, rowsel);
     }//if
+    else {
+      Log.debug(45, "No selection!");
+    }
     frame.setBusy(false);
 
   }//sort

@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:20 $'
- * '$Revision: 1.113 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-06 01:27:05 $'
+ * '$Revision: 1.114 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -956,14 +956,14 @@ public class DataViewer extends javax.swing.JPanel
     {
       //select the clicked row first
 
-      /*
+      
       table.clearSelection();
       int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
       int selcol = table.columnAtPoint(new Point(e.getX(), e.getY()));
       table.setRowSelectionInterval(selrow, selrow);
       table.setEditingRow(selrow);
       table.setColumnSelectionInterval(selcol, selcol);
-      */
+      
       if (e.isPopupTrigger())
       {
         trigger = true;

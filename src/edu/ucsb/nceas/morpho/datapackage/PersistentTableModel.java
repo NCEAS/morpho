@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-02 23:23:27 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-06 01:27:05 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
    	long stop = System.currentTimeMillis();
 		int time = (int)(stop-start);
     System.out.println("Time = "+time);
-
+    changeFlag = true;
     fireTableStructureChanged();   
   }
   
