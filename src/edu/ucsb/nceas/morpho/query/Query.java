@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 04:42:42 $'
- * '$Revision: 1.20.2.4 $'
+ *     '$Date: 2004-04-13 06:17:17 $'
+ * '$Revision: 1.20.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -349,6 +349,15 @@ public class Query extends DefaultHandler {
   public void setQueryGroup(QueryGroup qg)
   {
     this.rootQG = qg;
+  }
+
+  /**
+   *  get the morpho from query
+   * @return Morpho
+   */
+  public Morpho getMorpho()
+  {
+    return morpho;
   }
 
   /**
@@ -839,9 +848,19 @@ public class Query extends DefaultHandler {
  * This method will run the query and display the query results streamly in
  * a given panel
  * @param frame MorphoFrame   the frame which the rsult pane will be display
+ * @param resultDisplayPanel  the result panel
+ * @param sort                table need sort or not
+ * @param sortIndex           column index to sort
+ * @param sortOrder           acceend or decend
+ * @param stateEvent          event of state change
  */
  public void displaySearchResult(final MorphoFrame resultWindow,
-                                 final ResultPanel resultDisplayPanel)
+                                 final ResultPanel resultDisplayPanel,
+                                 final boolean sort, final int sortIndex,
+                                 final String sortOder,
+                                 final boolean showSearchNumber,
+                                 final StateChangeEvent stateEvent)
+
  {
 
    final SwingWorker worker = new SwingWorker()
@@ -872,19 +891,25 @@ public class Query extends DefaultHandler {
             doMetacatSearchDisplay(resultDisplayPanel, morpho, localResult);
 
          }//else
-         resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
-         StateChangeMonitor.getInstance().notifyStateChange(
-                         new StateChangeEvent(
-                                 resultDisplayPanel,
-                                 StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
+         if (sort)
+         {
+           resultDisplayPanel.sortTable(5, sortOder);
+         }
+         if (stateEvent != null)
+         {
+           StateChangeMonitor.getInstance().notifyStateChange(stateEvent);
+         }
          return null;
        }
 
        //Runs on the event-dispatching thread.
        public void finished()
        {
-         resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
-                                 + " data sets found");
+         if (showSearchNumber)
+         {
+           resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
+                                   + " data sets found");
+         }
          resultWindow.setBusy(false);
 
        }
