@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-03-26 01:55:49 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-03-26 21:49:18 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -249,7 +249,15 @@ public class DeleteCommand implements Command
             if (comeFromOpenDialog)
             {
               // this is for open dialg box
-              dataPackage.delete(docid, state);
+              try
+              {
+                dataPackage.delete(docid, state);
+              }
+              catch (Exception e)
+              {
+                 JOptionPane.showMessageDialog(open, e.getMessage());
+                 return null;
+              }
               refreshFlag = true;
               ResultPanel result = open.getResultPanel();
               refreshSearchResultPanel(result,open, comeFromOpenDialog);
@@ -259,7 +267,15 @@ public class DeleteCommand implements Command
                      morphoFrameType.equals(morphoFrame.SEARCHRESULTFRAME))
             {
               //for search result frame
-              dataPackage.delete(docid, state);
+              try
+              {
+                dataPackage.delete(docid, state);
+              }
+              catch (Exception e)
+              {
+                JOptionPane.showMessageDialog(morphoFrame, e.getMessage());
+                return null;
+              }
               refreshFlag = true;
               ResultPanel result =(ResultPanel)
                                      morphoFrame.getContentComponent();
@@ -270,9 +286,17 @@ public class DeleteCommand implements Command
                      morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
             {
               //Fore data package frame
-              morphoFrame.setBusy(true);
+              //morphoFrame.setBusy(true);
+              try
+              {
+                dataPackage.delete(docid, state);
+              }
+              catch (Exception e)
+              {
+                JOptionPane.showMessageDialog(morphoFrame, e.getMessage());
+                 return null;
+              }
               refreshFlag = true;
-              dataPackage.delete(docid, state);
               refreshDataPackageFrame();
               refreshFlag=false;
 
