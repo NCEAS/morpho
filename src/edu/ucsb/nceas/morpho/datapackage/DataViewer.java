@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:12:29 $'
- * '$Revision: 1.83 $'
+ *     '$Date: 2003-10-15 19:22:10 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,7 +230,19 @@ public class DataViewer extends javax.swing.JPanel
 	/**
 	 * The DataPackage that contains the data
 	 */
-	 DataPackage dp;
+	 DataPackage dp = null;
+
+   /**
+	 * The AbstractDataPackage that contains the data (eml2.0.0)
+	 */
+	 AbstractDataPackage adp = null;
+   
+   /**
+	 *  The index of the entity within the AbstractDataPackage
+   *  Note that we do not need an entityfile, etc when using 
+   *  the AbstractDataPackage!
+	 */
+	 int entityIndex = -1;
 
  	/**
 	 * value of entityName element
@@ -574,6 +586,11 @@ public class DataViewer extends javax.swing.JPanel
    {
      return text_flag;
    }
+   
+   
+   public void setEntityIndex(int indx) {
+     entityIndex = indx;
+   }
     
     
     /**
@@ -583,154 +600,218 @@ public class DataViewer extends javax.swing.JPanel
      */
     public void init() {
       missing_metadata_flag = false;
-      if (physicalFile==null) {
-          Log.debug(15, "Physical information about the data is missing!");
-          missing_metadata_flag = true;
-      } else {
-        // get format, recordDelimiter, field delimiter
-        // in general, get all info need to read a record
-        
-        Vector formatPath = new Vector();
-        formatPath.addElement("eml-physical/format");
-        NodeList formatList = PackageUtil.getPathContent(physicalFile, 
-                                                     formatPath, 
-                                                     morpho);  
-        if(formatList != null && formatList.getLength() != 0)
-        {
-          String s = formatList.item(0).getFirstChild().getNodeValue();
-          this.format = s;
+      if(adp!=null) {  // eml200 branch !
+        if (entityIndex == -1) {
+          Log.debug(1, "Entity index has not been set!");
+          return;
+        } else {  
+          Node[] physicalArray = adp.getPhysicalArray(entityIndex);
+          if (physicalArray.length==0) {
+            Log.debug(15, "Physical information about the data is missing!");
+            missing_metadata_flag = true;
+          } else {
+          // get format, recordDelimiter, field delimiter
+          // in general, get all info need to read a record
+          this.format = adp.getPhysicalFormat(entityIndex, 0);
+              // assume that we always use the first physical object
           Log.debug(20, "format: "+format);
-        }
-        
-        Vector fieldDelimiterPath = new Vector();
-        fieldDelimiterPath.addElement("eml-physical/fieldDelimiter");
-        NodeList fieldDelimiterList = PackageUtil.getPathContent(physicalFile, 
-                                                     fieldDelimiterPath, 
-                                                     morpho);  
-        if(fieldDelimiterList != null && fieldDelimiterList.getLength() != 0)
-        {
-          String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
-          this.field_delimiter = s;
-        }
-        // Set delimiter_String
-        this.delimiter_string = getDelimiterString();
-        
-        Vector numHeaderLinesPath = new Vector();
-        numHeaderLinesPath.addElement("eml-physical/numHeaderLines");
-        NodeList numHeaderLinesList = PackageUtil.getPathContent(physicalFile, 
-                                                     numHeaderLinesPath, 
-                                                     morpho); 
-        if(numHeaderLinesList != null && numHeaderLinesList.getLength() != 0) 
-        {
-          String s = numHeaderLinesList.item(0).getFirstChild().getNodeValue();
-          this.numHeaderLines = s;
-        }
-                                                     
-      }
-      if (entityFile==null) {
-          Log.debug(15, "Entity information about the data is missing!");
-          missing_metadata_flag = true;
-      } else {
-        // get number of records, etc
-        Vector numRecordsPath = new Vector();
-        numRecordsPath.addElement("table-entity/numberOfRecords");
-        NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
-                                                     numRecordsPath, 
-                                                     morpho);  
-        if(numRecordsList != null && numRecordsList.getLength() != 0)
-        {
-          String s = numRecordsList.item(0).getFirstChild().getNodeValue();
+          this.field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
+          this.delimiter_string = getDelimiterString();
+          Log.debug(20, "delimiter_string: "+delimiter_string);
+          this.numHeaderLines = adp.getPhysicalNumberHeaderLines(entityIndex, 0);          
+          Log.debug(20, "numHeaderLines: "+numHeaderLines);
+          }
+          // get entity info (number of records, etc)
+          String s = adp.getEntityNumRecords(entityIndex);
           if ((s!=null)&&(s.length()>0))  {
             try {
               num_records = (new Integer(s.trim())).intValue();
             }
-            catch(Exception w) {}
+            catch(Exception w) {Log.debug(20, "error converting to integer");}
+          }
+          entityName = adp.getEntityName(entityIndex).trim();
+          entityDescription = adp.getEntityDescription(entityIndex).trim();
+          if (entityName.length()>0) {
+            headerLabel.setText(entityName);
+          } 
+          if (entityDescription.length()>0) {
+            headerLabel.setText(entityDescription);
+          } 
+          Node[] attributeArray = adp.getAttributeArray(entityIndex);
+          if (attributeArray.length==0) {
+            Log.debug(15, "Attribute information about the data is missing!");
+            missing_metadata_flag = true;
+          } else {
+            column_labels = new Vector(); 
+            for (int i=0;i<attributeArray.length;i++) {
+              String unitString = "";
+              String dataTypeString = "";
+              String temp = adp.getAttributeName(entityIndex, i);
+              // attribute Name is a required node; we want the associated
+              // unit and dataType node values, which are NOT required
+              dataTypeString = adp.getAttributeDataType(entityIndex, i);
+              unitString = adp.getAttributeUnit(entityIndex, i);
+              
+              temp = "<html><font face=\"Courier\"><center><small>"+dataTypeString+"<br>"+unitString
+                                                  +"<br></small><b>"
+                                                  +temp+"</b></font></center></html>";
+              column_labels.addElement(temp);
+            }
           }
         }
         
-        Vector entityNamesPath = new Vector();
-        entityNamesPath.addElement("table-entity/entityName");
-        NodeList entityNamesList = PackageUtil.getPathContent(entityFile, 
+      } else {  // old datapackage instructions
+        if (physicalFile==null) {
+            Log.debug(15, "Physical information about the data is missing!");
+            missing_metadata_flag = true;
+        } else {
+          // get format, recordDelimiter, field delimiter
+          // in general, get all info need to read a record
+        
+          Vector formatPath = new Vector();
+          formatPath.addElement("eml-physical/format");
+          NodeList formatList = PackageUtil.getPathContent(physicalFile, 
+                                                     formatPath, 
+                                                     morpho);  
+          if(formatList != null && formatList.getLength() != 0)
+          {
+            String s = formatList.item(0).getFirstChild().getNodeValue();
+            this.format = s;
+            Log.debug(20, "format: "+format);
+          }
+        
+          Vector fieldDelimiterPath = new Vector();
+          fieldDelimiterPath.addElement("eml-physical/fieldDelimiter");
+          NodeList fieldDelimiterList = PackageUtil.getPathContent(physicalFile, 
+                                                     fieldDelimiterPath, 
+                                                     morpho);  
+          if(fieldDelimiterList != null && fieldDelimiterList.getLength() != 0)
+          {
+            String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
+            this.field_delimiter = s;
+          }
+          // Set delimiter_String
+          this.delimiter_string = getDelimiterString();
+        
+          Vector numHeaderLinesPath = new Vector();
+          numHeaderLinesPath.addElement("eml-physical/numHeaderLines");
+          NodeList numHeaderLinesList = PackageUtil.getPathContent(physicalFile, 
+                                                     numHeaderLinesPath, 
+                                                     morpho); 
+          if(numHeaderLinesList != null && numHeaderLinesList.getLength() != 0) 
+          {
+            String s = numHeaderLinesList.item(0).getFirstChild().getNodeValue();
+            this.numHeaderLines = s;
+          }
+                                                     
+        }
+        if (entityFile==null) {
+            Log.debug(15, "Entity information about the data is missing!");
+            missing_metadata_flag = true;
+        } else {
+          // get number of records, etc
+          Vector numRecordsPath = new Vector();
+          numRecordsPath.addElement("table-entity/numberOfRecords");
+          NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
+                                                     numRecordsPath, 
+                                                     morpho);  
+          if(numRecordsList != null && numRecordsList.getLength() != 0)
+          {
+            String s = numRecordsList.item(0).getFirstChild().getNodeValue();
+            if ((s!=null)&&(s.length()>0))  {
+              try {
+                num_records = (new Integer(s.trim())).intValue();
+              }
+              catch(Exception w) {}
+            }
+          }
+        
+          Vector entityNamesPath = new Vector();
+          entityNamesPath.addElement("table-entity/entityName");
+          NodeList entityNamesList = PackageUtil.getPathContent(entityFile, 
                                                      entityNamesPath, 
                                                      morpho);  
-        if(entityNamesList != null && entityNamesList.getLength() != 0)
-        {
-          String s = entityNamesList.item(0).getFirstChild().getNodeValue();
-          if ((s!=null)&&(s.length()>0))  {
-            try {
-              entityName = s.trim();
+          if(entityNamesList != null && entityNamesList.getLength() != 0)
+          {
+            String s = entityNamesList.item(0).getFirstChild().getNodeValue();
+            if ((s!=null)&&(s.length()>0))  {
+              try {
+                entityName = s.trim();
+              }
+              catch(Exception w) {}
             }
-            catch(Exception w) {}
           }
-        }
  
-        Vector entityDescriptionPath = new Vector();
-        entityDescriptionPath.addElement("table-entity/entityDescription");
-        NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile, 
+          Vector entityDescriptionPath = new Vector();
+          entityDescriptionPath.addElement("table-entity/entityDescription");
+          NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile, 
                                                      entityDescriptionPath, 
                                                      morpho);  
-        if(entityDescriptionList != null && entityDescriptionList.getLength() != 0)
-        {
-          String s = entityDescriptionList.item(0).getFirstChild().getNodeValue();
-          if ((s!=null)&&(s.length()>0))  {
-            try {
-              entityDescription = s.trim();
+          if(entityDescriptionList != null && entityDescriptionList.getLength() != 0)
+          {
+            String s = entityDescriptionList.item(0).getFirstChild().getNodeValue();
+            if ((s!=null)&&(s.length()>0))  {
+              try {
+                entityDescription = s.trim();
+              }
+              catch(Exception w) {}
             }
-            catch(Exception w) {}
           }
-        }
-        if (entityName.length()>0) {
-          headerLabel.setText(entityName);
-        } 
-        if (entityDescription.length()>0) {
-          headerLabel.setText(entityDescription);
-        } 
+          if (entityName.length()>0) {
+            headerLabel.setText(entityName);
+          } 
+          if (entityDescription.length()>0) {
+            headerLabel.setText(entityDescription);
+          } 
 
-      }
-      if (attributeFile==null) {
-          Log.debug(1, "Attribute information about the data is missing!");
-          missing_metadata_flag = true;
-      } else {
-        // build a DOM represntation of the attribute file
-        try{
-          attributeDoc = PackageUtil.getDoc(attributeFile, morpho);
         }
-        catch (Exception qq) {
-          Log.debug(20,"Error building attribute DOM !");
-        }
-        // get attribute labels and build column headers
-        Vector attributeNamesPath = new Vector();
-        attributeNamesPath.addElement("eml-attribute/attribute/attributeName");
-           // use names rather than Label because name is required!
-        NodeList attributeNamesList = PackageUtil.getPathContent(attributeFile, 
+        if (attributeFile==null) {
+            Log.debug(1, "Attribute information about the data is missing!");
+            missing_metadata_flag = true;
+        } else {
+          // build a DOM represntation of the attribute file
+          try{
+            attributeDoc = PackageUtil.getDoc(attributeFile, morpho);
+          }
+          catch (Exception qq) {
+            Log.debug(20,"Error building attribute DOM !");
+          }
+          // get attribute labels and build column headers
+          Vector attributeNamesPath = new Vector();
+          attributeNamesPath.addElement("eml-attribute/attribute/attributeName");
+             // use names rather than Label because name is required!
+          NodeList attributeNamesList = PackageUtil.getPathContent(attributeFile, 
                                                      attributeNamesPath, 
                                                      morpho);  
-       if(attributeNamesList != null && attributeNamesList.getLength() != 0)
-        {
-          column_labels = new Vector(); 
-          for (int i=0;i<attributeNamesList.getLength();i++) {
-            String unitString = "";
-            String dataTypeString = "";
-            String temp = attributeNamesList.item(i).getFirstChild().getNodeValue();
-            // attribute Name is a required node; we want the associated
-            // unit and dataType node values, which are NOT required
-            Node nd = attributeNamesList.item(i).getNextSibling();
-            while (nd!=null) {
-              if (nd.getNodeName().equals("dataType")) {
-                dataTypeString = nd.getFirstChild().getNodeValue();
+          if(attributeNamesList != null && attributeNamesList.getLength() != 0)
+          {
+            column_labels = new Vector(); 
+            for (int i=0;i<attributeNamesList.getLength();i++) {
+              String unitString = "";
+              String dataTypeString = "";
+              String temp = attributeNamesList.item(i).getFirstChild().getNodeValue();
+              // attribute Name is a required node; we want the associated
+              // unit and dataType node values, which are NOT required
+              Node nd = attributeNamesList.item(i).getNextSibling();
+              while (nd!=null) {
+                if (nd.getNodeName().equals("dataType")) {
+                  dataTypeString = nd.getFirstChild().getNodeValue();
+                }
+                if (nd.getNodeName().equals("unit")) {
+                  unitString = nd.getFirstChild().getNodeValue();                
+                }
+                nd = nd.getNextSibling();  
               }
-              if (nd.getNodeName().equals("unit")) {
-                unitString = nd.getFirstChild().getNodeValue();                
-              }
-              nd = nd.getNextSibling();  
-            }
-            temp = "<html><font face=\"Courier\"><center><small>"+dataTypeString+"<br>"+unitString
+              temp = "<html><font face=\"Courier\"><center><small>"+dataTypeString+"<br>"+unitString
                                                   +"<br></small><b>"
                                                   +temp+"</b></font></center></html>";
-            column_labels.addElement(temp);
+              column_labels.addElement(temp);
+            }
           }
         }
-      }
+      
+      } // end adp/dp check
+      
       // now examine format info and see if we want to simply display a text
       // file, create a table, or display an image
       if (missing_metadata_flag) {
@@ -741,6 +822,7 @@ public class DataViewer extends javax.swing.JPanel
         buildTextDisplay();
       }
       else { 
+Log.debug(1,"format: "+format);        
         if (format.indexOf("text")>-1){
           text_flag=true;
         }
@@ -869,6 +951,10 @@ public class DataViewer extends javax.swing.JPanel
         }
       }
       
+    }
+    
+    public void setAbstractDataPackage(AbstractDataPackage adp) {
+      this.adp = adp;
     }
     
     public void setDataPackage(DataPackage dp) {

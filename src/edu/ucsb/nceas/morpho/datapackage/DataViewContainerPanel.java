@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:12:29 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2003-10-15 19:22:10 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -360,6 +360,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     this.adp = adp;
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(5,5));
+    
+//    entityItems = new Vector();
+//    int numEnts = (adp.getEntityArray()).length;
+//    for (int k=0;k<numEnts;k++) {
+//      entityItems.addElement(adp.getEntityName(k));
+//    }
 
 // the following code builds the datapackage summary at the top of
 // the DataViewContainerPanel
@@ -430,8 +436,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     netLabel.setOpaque(true);
     netLabel.setIcon(metacatIcon);
     netLabel.setToolTipText("Package is stored on the network");
-//DFH    String location = dp.getLocation();
-    String location = DataPackageInterface.LOCAL;
+    String location = adp.getLocation();
     if (location.equals(DataPackageInterface.METACAT)) {
       localLabel.setText("");
       localLabel.setIcon(blankIcon);
@@ -477,8 +482,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       packageMetadataPanel.removeAll();
       packageMetadataPanel.add(BorderLayout.CENTER,toppanel);
     }
-    if (entityItems==null) 
-    {
+    if (entityItems==null) {
       Log.debug(20, "EntityItems vector is null");
       vertSplit.removeAll();
       vertSplit.add(packageMetadataPanel);
@@ -508,7 +512,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // entity metadata
       String id = getEntityIDForThisEntityName(item);
       
-      String location = dp.getLocation();
+//      String location = dp.getLocation();
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
       
@@ -550,11 +554,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       this.entityFile[i] = dp.getFileFromId(id);
     
       // create the data display panel (usually a table) using DataViewer class
-      String fn = dp.getDataFileName(id);    
-      File fphysical = dp.getPhysicalFile(id);
-      File fattribute = dp.getAttributeFile(id);
-      File f = dp.getDataFile(id);
-      String dataString = "";
+//      String fn = dp.getDataFileName(id);    
+//      File fphysical = dp.getPhysicalFile(id);
+//      File fattribute = dp.getAttributeFile(id);
+//      File f = dp.getDataFile(id);
+//      String dataString = "";
     }
     tabbedEntitiesPanel.addChangeListener(this);
     
@@ -790,23 +794,30 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     removePVObject();
     currentDataPanelOld.removeAll();
     lastTabSelected = index;
-    String item = (String)entityItems.elementAt(index);
-//    String id = (String)listValueHash.get(item);
-    String id = getEntityIDForThisEntityName(item);
-    String fn = dp.getDataFileName(id);    
-    File fphysical = dp.getPhysicalFile(id);
-    File fattribute = dp.getAttributeFile(id);
-    File f = dp.getDataFile(id);
-    String dataString = "";
-    dv = new DataViewer(morpho, "DataFile: "+fn, f);
-    dv.setDataID(dp.getDataFileID(id));
-    dv.setPhysicalFile(fphysical);
-    dv.setAttributeFile(fattribute);
-    dv.setEntityFile(entityFile[index]);
-    dv.setEntityFileId(id);
-    dv.setDataPackage(this.dp);
+    String dataId = null;
+    if (dp!=null) {
+      String item = (String)entityItems.elementAt(index);
+      String id = getEntityIDForThisEntityName(item);
+      dataId = dp.getDataFileID(id);
+      String fn = dp.getDataFileName(id);    
+      File fphysical = dp.getPhysicalFile(id);
+      File fattribute = dp.getAttributeFile(id);
+      File f = dp.getDataFile(id);
+      String dataString = "";
+      dv = new DataViewer(morpho, "DataFile: "+fn, f);
+      dv.setDataID(dp.getDataFileID(id));
+      dv.setPhysicalFile(fphysical);
+      dv.setAttributeFile(fattribute);
+      dv.setEntityFile(entityFile[index]);
+      dv.setEntityFileId(id);
+      dv.setDataPackage(this.dp);
+    } else {  // new eml2.0.0
+      dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
+      dv.setAbstractDataPackage(adp);
+      dv.setEntityIndex(index);
+    }
     dv.init();
-    dv.getEntityInfo();
+//    dv.getEntityInfo();  // this is already done in init
     lastPV = dv.getPV();
     JPanel tablePanel = null;
     if (dv.getShowDataView())
@@ -817,7 +828,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       tablePanel = new JPanel();
       tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
-      String dataId = dp.getDataFileID(id);
       String text = null;
       if (dataId.equals("") || dataId == null)
       {
