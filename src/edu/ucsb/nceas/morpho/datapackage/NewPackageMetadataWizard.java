@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-03 20:46:16 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-07-03 22:01:31 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ public class NewPackageMetadataWizard extends JDialog
   Vector relatedFileIds;
   File addedFile = null;
   String relateDataFileTo = "";
+  String dummydoc = "";
   
   JLabel helpLabel = new JLabel();
   JPanel screenPanel = null;
@@ -445,6 +446,7 @@ public class NewPackageMetadataWizard extends JDialog
         }
         screenPanel.add(layoutpanel);
         screenPanel.setLayout(new GridLayout(0,1));
+        dummydoc = "";
       }
       else
       { //display an open file dialog
@@ -468,31 +470,34 @@ public class NewPackageMetadataWizard extends JDialog
     }
     else if(2 == currentScreen)
     {
-      if(prevFlag)
-      {
-        previousButtonHandler(new ActionEvent(this, 0, ""));
-        return;
-      }
+      //if(prevFlag)
+      //{
+      //  previousButtonHandler(new ActionEvent(this, 0, ""));
+      //  return;
+      //}
       
       if(createNew.isSelected())
       { //open the editor and handle the editing complete action
         
         //pick which type of file to open
-        String dummydoc = "";
-        for(int i=0; i<radioButtons.size(); i++)
+        //dummydoc = "";
+        if(dummydoc.equals(""))
         {
-          JRadioButton jrb = (JRadioButton)radioButtons.elementAt(i);
-          if(jrb.isSelected())
-          { //this was the type selected.  open the editor for this type.
-            String label = jrb.getLabel();
-            Hashtable h = (Hashtable)newXMLFileAtts.get(label);
-            String doctype = (String)h.get("xmlfiletype");
-            String rootnode = (String)h.get("rootnode");
-            dummydoc += "<?xml version=\"1.0\"?>\n";
-            dummydoc += "<!DOCTYPE " + rootnode + " PUBLIC \"" + doctype + 
-                        "\" \"" + rootnode + ".dtd\">\n";
-            dummydoc += "<" + rootnode + ">" + "</" + rootnode + ">";
-            break;
+          for(int i=0; i<radioButtons.size(); i++)
+          {
+            JRadioButton jrb = (JRadioButton)radioButtons.elementAt(i);
+            if(jrb.isSelected())
+            { //this was the type selected.  open the editor for this type.
+              String label = jrb.getLabel();
+              Hashtable h = (Hashtable)newXMLFileAtts.get(label);
+              String doctype = (String)h.get("xmlfiletype");
+              String rootnode = (String)h.get("rootnode");
+              dummydoc += "<?xml version=\"1.0\"?>\n";
+              dummydoc += "<!DOCTYPE " + rootnode + " PUBLIC \"" + doctype + 
+                          "\" \"" + rootnode + ".dtd\">\n";
+              dummydoc += "<" + rootnode + ">" + "</" + rootnode + ">";
+              break;
+            }
           }
         }
       
@@ -624,6 +629,11 @@ public class NewPackageMetadataWizard extends JDialog
       else
       { //there is only one file to associate the new file with so we skip 
         //this frame
+        if(prevFlag)
+        {
+          previousButtonHandler(new ActionEvent(this, 0, ""));
+          return;
+        }
         nextButtonHandler(new ActionEvent(this, 0, ""));
       }
     }
@@ -935,6 +945,7 @@ public class NewPackageMetadataWizard extends JDialog
    */
   public void editingCompleted(String xmlString, String id, String location)
   {
+    dummydoc = xmlString;
     this.show();
     id = "tmp.npmw.0";
     String displayPath = "";
