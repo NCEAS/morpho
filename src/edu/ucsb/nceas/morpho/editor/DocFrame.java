@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-19 19:53:51 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2001-06-19 20:39:35 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -880,10 +880,11 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      String pcdata = ni1.getPCValue();
 	      if (pcdata.trim().length()<1) {
 	        String card = ni.getCardinality();
-	        if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
+/*	        if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
 	          notempty = false;
 	          start1 = new StringBuffer();
 	        }
+*/
 	      }
 	      start.append(start1.toString());
 	      start1 = new StringBuffer();
