@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 19:29:06 $'
- * '$Revision: 1.20.2.6 $'
+ *     '$Date: 2004-04-13 21:23:35 $'
+ * '$Revision: 1.20.2.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -953,6 +953,7 @@ public class Query extends DefaultHandler {
              resultDisplayPanel.resetResultsVector(allResults);
              length = allResults.size();
            }
+
          }//while
 
          // merge the allResult into local result if it is not null

@@ -74,6 +74,10 @@ public class ResultsetHandler implements ContentHandler, Runnable
                           SynchronizeVector resultsVector,
                           Morpho morpho, String source)
   {
+     if (resultsXMLStream == null)
+     {
+       isdone= true;
+     }
      this.resultsXMLStream = resultsXMLStream;
      this.resultsVector = resultsVector;
      this.morpho = morpho;
@@ -120,6 +124,8 @@ public class ResultsetHandler implements ContentHandler, Runnable
     // Parse the incoming XML stream and extract the data
     XMLReader parser = null;
     // Set up the SAX document handlers for parsing
+    if (!isdone)
+    {
     try {
      // Get an instance of the parser
      parser = Morpho.createSaxParser((ContentHandler)this, null);
@@ -128,11 +134,12 @@ public class ResultsetHandler implements ContentHandler, Runnable
      parser.parse(new InputSource(new InputStreamReader(resultsXMLStream)));
      Log.debug(30, "(2.44) Creating result set ...");
     } catch (Exception e) {
+     isdone = true;
      Log.debug(30, "(2.431) Exception creating result set ...");
      Log.debug(6, "(2.432) " + e.toString());
      Log.debug(30, "(2.433) Exception is: " + e.getClass().getName());
     }
-
+   }//if
   }
 
   /**
