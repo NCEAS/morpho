@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-08 23:53:04 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2003-04-02 18:47:11 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import javax.swing.table.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.framework.ColumnData;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 //import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -670,20 +671,20 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     String temp = "<attribute>\n";
     attribute.append(temp);
     
-    temp = "<attributeName>"+normalize(nameTextField.getText())+"</attributeName>\n";
+    temp = "<attributeName>"+XMLUtil.normalize(nameTextField.getText())+"</attributeName>\n";
     attribute.append(temp);
     
-    temp = "<attributeLabel>"+normalize(labelTextField.getText())+"</attributeLabel>\n";
+    temp = "<attributeLabel>"+XMLUtil.normalize(labelTextField.getText())+"</attributeLabel>\n";
     attribute.append(temp);
 
-    temp = "<attributeDefinition>"+normalize(definitionTextArea.getText())
+    temp = "<attributeDefinition>"+XMLUtil.normalize(definitionTextArea.getText())
                                                      +"</attributeDefinition>\n";
     attribute.append(temp);
 
     temp = "<unit>"+unitTextField.getText()+"</unit>\n";
     attribute.append(temp);
    
-    temp = "<dataType>"+normalize(typeComboBox.getSelectedItem().toString())
+    temp = "<dataType>"+XMLUtil.normalize(typeComboBox.getSelectedItem().toString())
                                                 +"</dataType>\n";
     attribute.append(temp);
     
@@ -693,11 +694,11 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
       for (int j=0;j<pv.size();j++) {
         String[] rec = (String[])pv.elementAt(j);
         if (rec[0].length()>0) {
-          temp = "<code>"+normalize(rec[0])+"</code>\n";
+          temp = "<code>"+XMLUtil.normalize(rec[0])+"</code>\n";
           attribute.append(temp);
-          temp = "<definition>"+normalize(rec[1])+"</definition>\n";
+          temp = "<definition>"+XMLUtil.normalize(rec[1])+"</definition>\n";
           attribute.append(temp);
-          temp = "<source>"+normalize(rec[2])+"</source>\n";
+          temp = "<source>"+XMLUtil.normalize(rec[2])+"</source>\n";
           attribute.append(temp);
         }
       }
@@ -705,19 +706,19 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     }
     else if (textButton.isSelected()) {
       attribute.append("<textDomain>\n");  
-        temp = "<definition>"+normalize(textDefinitionTextField.getText())+"</definition>\n";
+        temp = "<definition>"+XMLUtil.normalize(textDefinitionTextField.getText())+"</definition>\n";
         attribute.append(temp);
-        temp = "<pattern>"+normalize(textPatternTextField.getText())+"</pattern>\n";
+        temp = "<pattern>"+XMLUtil.normalize(textPatternTextField.getText())+"</pattern>\n";
         attribute.append(temp);
-        temp = "<source>"+normalize(textSourceTextField.getText())+"</source>\n";
+        temp = "<source>"+XMLUtil.normalize(textSourceTextField.getText())+"</source>\n";
         attribute.append(temp);
       attribute.append("</textDomain>\n");  
     }
     else if (numButton.isSelected()) {
       attribute.append("<numericDomain>\n");  
-        temp = "<minimum>"+normalize(minimumTextField.getText())+"</minimum>\n";
+        temp = "<minimum>"+XMLUtil.normalize(minimumTextField.getText())+"</minimum>\n";
         attribute.append(temp);
-        temp = "<maximum>"+normalize(maximumTextField.getText())+"</maximum>\n";
+        temp = "<maximum>"+XMLUtil.normalize(maximumTextField.getText())+"</maximum>\n";
         attribute.append(temp);
         attribute.append(temp);
       attribute.append("</numericDomain>\n");  
@@ -757,66 +758,6 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     return res;
   }
   
-      /**
-     * Normalizes the given string.
-     *
-     * @param s  Description of Parameter
-     * @return   Description of the Returned Value
-     */
-    private String normalize(String s)
-    {
-        StringBuffer str = new StringBuffer();
-
-        int len = (s != null) ? s.length() : 0;
-        for (int i = 0; i < len; i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<':
-                {
-                    str.append("&lt;");
-                    break;
-                }
-                case '>':
-                {
-                    str.append("&gt;");
-                    break;
-                }
-                case '&':
-                {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"':
-                {
-                    str.append("&quot;");
-                    break;
-                }
-                case '\r':
-                case '\t':
-                case '\n':
-                {
-                    if (false) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
-                        break;
-                    }
-                    // else, default append char
-                    break;
-                }
-                default:
-                {
-                    str.append(ch);
-                }
-            }
-        }
-        String res = str.toString();
-        res = res.trim();
-        if (res.length() == 0) {
-            res = " ";
-        }
-        return res;
-    }
 
   void insertNewAttributeAt(int index, Document doc) 
   {
@@ -827,27 +768,27 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     Node newAttrRoot = doc.createElement("attribute");
     
     Node temp = doc.createElement("attributeName");
-    Node newText = doc.createTextNode(normalize(nameTextField.getText()));
+    Node newText = doc.createTextNode(XMLUtil.normalize(nameTextField.getText()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
 
     temp = doc.createElement("attributeLabel");
-    newText = doc.createTextNode(normalize(labelTextField.getText()));
+    newText = doc.createTextNode(XMLUtil.normalize(labelTextField.getText()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
     
     temp = doc.createElement("attributeDefinition");
-    newText = doc.createTextNode(normalize(definitionTextArea.getText()));
+    newText = doc.createTextNode(XMLUtil.normalize(definitionTextArea.getText()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
    
     temp = doc.createElement("unit");
-    newText = doc.createTextNode(normalize(unitTextField.getText()));
+    newText = doc.createTextNode(XMLUtil.normalize(unitTextField.getText()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
 
     temp = doc.createElement("dataType");
-    newText = doc.createTextNode(normalize(typeComboBox.getSelectedItem().toString()));
+    newText = doc.createTextNode(XMLUtil.normalize(typeComboBox.getSelectedItem().toString()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
     
@@ -880,17 +821,17 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
           domainNode.appendChild(enumNode);
           
           temp = doc.createElement("code");
-          newText = doc.createTextNode(normalize(rec[0]));
+          newText = doc.createTextNode(XMLUtil.normalize(rec[0]));
           temp.appendChild(newText);
           enumNode.appendChild(temp);      
 
           temp = doc.createElement("definition");
-          newText = doc.createTextNode(normalize(rec[1]));
+          newText = doc.createTextNode(XMLUtil.normalize(rec[1]));
           temp.appendChild(newText);
           enumNode.appendChild(temp);      
         
           temp = doc.createElement("source");
-          newText = doc.createTextNode(normalize(rec[2]));
+          newText = doc.createTextNode(XMLUtil.normalize(rec[2]));
           temp.appendChild(newText);
           enumNode.appendChild(temp);      
         }
@@ -901,17 +842,17 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
       domainNode.appendChild(textNode);
 
       temp = doc.createElement("definition");
-      newText = doc.createTextNode(normalize(textDefinitionTextField.getText()));
+      newText = doc.createTextNode(XMLUtil.normalize(textDefinitionTextField.getText()));
       temp.appendChild(newText);
       textNode.appendChild(temp);      
 
       temp = doc.createElement("pattern");
-      newText = doc.createTextNode(normalize(textPatternTextField.getText()));
+      newText = doc.createTextNode(XMLUtil.normalize(textPatternTextField.getText()));
       temp.appendChild(newText);
       textNode.appendChild(temp);      
 
       temp = doc.createElement("source");
-      newText = doc.createTextNode(normalize(textSourceTextField.getText()));
+      newText = doc.createTextNode(XMLUtil.normalize(textSourceTextField.getText()));
       temp.appendChild(newText);
       textNode.appendChild(temp);      
     }
@@ -920,24 +861,24 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
       domainNode.appendChild(numericNode);
       
       temp = doc.createElement("minimum");
-      newText = doc.createTextNode(normalize(minimumTextField.getText()));
+      newText = doc.createTextNode(XMLUtil.normalize(minimumTextField.getText()));
       temp.appendChild(newText);
       numericNode.appendChild(temp);      
 
       temp = doc.createElement("maximum");
-      newText = doc.createTextNode(normalize(maximumTextField.getText()));
+      newText = doc.createTextNode(XMLUtil.normalize(maximumTextField.getText()));
       temp.appendChild(newText);
       numericNode.appendChild(temp);      
       
     }
 
     temp = doc.createElement("missingValueCode");
-    newText = doc.createTextNode(normalize(missingValueTextField.getText()));
+    newText = doc.createTextNode(XMLUtil.normalize(missingValueTextField.getText()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
     
     temp = doc.createElement("precision");
-    newText = doc.createTextNode(normalize(precisionTextField.getText()));
+    newText = doc.createTextNode(XMLUtil.normalize(precisionTextField.getText()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
     
@@ -1271,7 +1212,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
         out.print(' ');
         out.print(attr.getNodeName());
         out.print("=\"");
-        out.print(normalize(attr.getNodeValue()));
+        out.print(XMLUtil.normalize(attr.getNodeValue()));
         out.print('"');
       }
       out.print('>');
@@ -1310,7 +1251,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
       // print text
     case Node.TEXT_NODE:
     {
-      out.print(normalize(node.getNodeValue()));
+      out.print(XMLUtil.normalize(node.getNodeValue()));
       break;
     }
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:34 $'
- * '$Revision: 1.50 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-04-02 18:47:26 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import javax.swing.*;
 import javax.swing.border.*; 
 import java.io.*;
@@ -1773,7 +1774,7 @@ public class PackageWizard extends javax.swing.JFrame
     
     public Object getSelectedItem() {
       Object item = super.getSelectedItem();
-      Object newitem = (Object)(normalize((String)item));
+      Object newitem = (Object)(XMLUtil.normalize((String)item));
       return newitem;
     }
   }
@@ -1794,7 +1795,7 @@ public class PackageWizard extends javax.swing.JFrame
     
     public String getText() {
       String rawtext = super.getText();
-      String normalizedText = normalize(rawtext);
+      String normalizedText = XMLUtil.normalize(rawtext);
       return normalizedText;
     }
   }
@@ -1815,7 +1816,7 @@ public class PackageWizard extends javax.swing.JFrame
     
     public String getText() {
       String rawtext = super.getText();
-      String normalizedText = normalize(rawtext);
+      String normalizedText = XMLUtil.normalize(rawtext);
       return normalizedText;
     }
   }
@@ -1842,52 +1843,6 @@ public class PackageWizard extends javax.swing.JFrame
       e.printStackTrace(System.out);
     }
   }
-  
-    /** Normalizes the given string. */
-    private String normalize(String s) {
-        StringBuffer str = new StringBuffer();
-
-        int len = (s != null) ? s.length() : 0;
-        for (int i = 0; i < len; i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<': {
-                    str.append("&lt;");
-                    break;
-                }
-                case '>': {
-                    str.append("&gt;");
-                    break;
-                }
-                case '&': {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"': {
-                    str.append("&quot;");
-                    break;
-                }
-                case '\r':
-                  case '\t':
-                case '\n': {
-                    if (false) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
-                        break;
-                    }
-                    // else, default append char
-                    break;
-                }
-                default: {
-                    str.append(ch);
-                }
-            }
-        }
-
-        return str.toString();
-
-    } // normalize(String):String
   
   /**
    * prints each component inside of a component to system.out

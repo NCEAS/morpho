@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-13 20:46:08 $'
- * '$Revision: 1.84 $'
+ *     '$Date: 2003-04-02 18:47:26 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 import javax.swing.*;
 import javax.swing.border.*; 
@@ -742,7 +743,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           relationship = relationship.substring(slashindex, 
                                                 relationship.length());
                                                 
-          relationship = "isDataFileFor(" + normalize(relationship) + ")";
+          relationship = "isDataFileFor(" + XMLUtil.normalize(relationship) + ")";
         }
         
         for(int k=0; k<frameWizards.size(); k++)
@@ -1528,51 +1529,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
   }
   
-    /** Normalizes the given string. */
-    private String normalize(String s) {
-        StringBuffer str = new StringBuffer();
-
-        int len = (s != null) ? s.length() : 0;
-        for (int i = 0; i < len; i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<': {
-                    str.append("&lt;");
-                    break;
-                }
-                case '>': {
-                    str.append("&gt;");
-                    break;
-                }
-                case '&': {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"': {
-                    str.append("&quot;");
-                    break;
-                }
-                case '\r':
-		case '\t':
-                case '\n': {
-                    if (false) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
-                        break;
-                    }
-                    // else, default append char
-			break;
-                }
-                default: {
-                    str.append(ch);
-                }
-            }
-        }
-
-        return str.toString();
-
-    } // normalize(String):String
 	
 private Vector handleFinishAddData()
 {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-13 00:45:05 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2003-04-02 18:47:11 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
@@ -300,7 +301,7 @@ public class PackageUtil
         sb.append(' ');
         sb.append(attr.getNodeName());
         sb.append("=\"");
-        sb.append(normalize(attr.getNodeValue()));
+        sb.append(XMLUtil.normalize(attr.getNodeValue()));
         sb.append('"');
       }
       sb.append('>');
@@ -339,7 +340,7 @@ public class PackageUtil
       // print text
     case Node.TEXT_NODE:
     {
-      sb.append(normalize(node.getNodeValue()));
+      sb.append(XMLUtil.normalize(node.getNodeValue()));
       break;
     }
 
@@ -404,50 +405,6 @@ public class PackageUtil
 
   }
 
-  /** Normalizes the given string. Taken from configXML.java*/
-  protected static String normalize(String s)
-  {
-    StringBuffer str = new StringBuffer();
-
-    int len = (s != null) ? s.length() : 0;
-    for (int i = 0; i < len; i++)
-    {
-      char ch = s.charAt(i);
-      switch (ch)
-      {
-      case '<':
-      {
-        str.append("&lt;");
-        break;
-      }
-        case '>':
-      {
-        str.append("&gt;");
-        break;
-      }
-      case '&':
-      {
-        str.append("&amp;");
-        break;
-      }
-      case '"':
-      {
-        str.append("&quot;");
-        break;
-      }
-      case '\r':
-      case '\n':
-      {
-        // else, default append char
-      }
-      default:
-      {
-        str.append(ch);
-      }
-      }
-    }
-    return (str.toString());
-  } 
   
   /** 
    * prints out the doctype part of and xml document.  this can be appended to 
@@ -1072,7 +1029,7 @@ public class PackageUtil
         out.print(' ');
         out.print(attr.getNodeName());
         out.print("=\"");
-        out.print(normalize(attr.getNodeValue()));
+        out.print(XMLUtil.normalize(attr.getNodeValue()));
         out.print('"');
       }
       out.print('>');
@@ -1111,7 +1068,7 @@ public class PackageUtil
       // print text
     case Node.TEXT_NODE:
     {
-      out.print(normalize(node.getNodeValue()));
+      out.print(XMLUtil.normalize(node.getNodeValue()));
       break;
     }
 

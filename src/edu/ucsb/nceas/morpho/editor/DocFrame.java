@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-18 23:04:24 $'
- * '$Revision: 1.108 $'
+ *     '$Date: 2003-04-02 18:47:41 $'
+ * '$Revision: 1.109 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.DBValidate;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -1435,7 +1436,7 @@ public class DocFrame extends javax.swing.JFrame
                     }
                     start.append(start1.toString());
                     start1 = new StringBuffer();
-                    start.append(normalize(ni1.getPCValue()));
+                    start.append(XMLUtil.normalize(ni1.getPCValue()));
                     textnode = true;
                 } else if (ni1.name.equals("Empty")) {
                     // remove the '>' at the end and replace with '/>'
@@ -2518,66 +2519,6 @@ public class DocFrame extends javax.swing.JFrame
     }
 
 
-    /**
-     * Normalizes the given string.
-     *
-     * @param s  Description of Parameter
-     * @return   Description of the Returned Value
-     */
-    private String normalize(String s)
-    {
-        StringBuffer str = new StringBuffer();
-
-        int len = (s != null) ? s.length() : 0;
-        for (int i = 0; i < len; i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<':
-                {
-                    str.append("&lt;");
-                    break;
-                }
-                case '>':
-                {
-                    str.append("&gt;");
-                    break;
-                }
-                case '&':
-                {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"':
-                {
-                    str.append("&quot;");
-                    break;
-                }
-                case '\r':
-                case '\t':
-                case '\n':
-                {
-                    if (false) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
-                        break;
-                    }
-                    // else, default append char
-                    break;
-                }
-                default:
-                {
-                    str.append(ch);
-                }
-            }
-        }
-        String res = str.toString();
-        res = res.trim();
-        if (res.length() == 0) {
-            res = " ";
-        }
-        return res;
-    }
 
 
     /**
@@ -2754,7 +2695,7 @@ public class DocFrame extends javax.swing.JFrame
         }
 
     }
-    // normalize(String):String
+
 
 
     /**

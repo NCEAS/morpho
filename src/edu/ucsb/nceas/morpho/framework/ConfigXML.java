@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:36 $'
- * '$Revision: 1.14 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-04-02 18:48:00 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
@@ -476,7 +477,7 @@ public class ConfigXML
         out.print(' ');
         out.print(attr.getNodeName());
         out.print("=\"");
-        out.print(normalize(attr.getNodeValue()));
+        out.print(XMLUtil.normalize(attr.getNodeValue()));
         out.print('"');
       }
       out.print('>');
@@ -515,7 +516,7 @@ public class ConfigXML
       // print text
     case Node.TEXT_NODE:
     {
-      out.print(normalize(node.getNodeValue()));
+      out.print(XMLUtil.normalize(node.getNodeValue()));
       break;
     }
 
@@ -581,52 +582,6 @@ public class ConfigXML
 
   } // sortAttributes(NamedNodeMap):Attr[]
 
-  /** Normalizes the given string. */
-  protected String normalize(String s)
-  {
-    StringBuffer str = new StringBuffer();
-
-    int len = (s != null) ? s.length() : 0;
-    for (int i = 0; i < len; i++)
-    {
-      char ch = s.charAt(i);
-      switch (ch)
-      {
-      case '<':
-      {
-        str.append("&lt;");
-        break;
-      }
-        case '>':
-      {
-        str.append("&gt;");
-        break;
-      }
-      case '&':
-      {
-        str.append("&amp;");
-        break;
-      }
-      case '"':
-      {
-        str.append("&quot;");
-        break;
-      }
-      case '\r':
-      case '\n':
-      {
-        // else, default append char
-      }
-      default:
-      {
-        str.append(ch);
-      }
-      }
-    }
-
-    return (str.toString());
-
-  } // normalize(String):String
 
   /*
    *  utility routine to return the value(s) of a node defined by

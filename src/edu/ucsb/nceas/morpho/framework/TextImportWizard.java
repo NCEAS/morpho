@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-08 23:54:14 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2003-04-02 18:48:00 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import java.util.Enumeration;
 import java.text.DateFormat;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
 
@@ -1718,11 +1719,11 @@ public void startImport(String file) {
 	  for (int i=0;i<colTitles.size();i++) {
 	    ColumnData cd = (ColumnData)colDataInfo.elementAt(i);
 	    XMLBuffer.append("    <attribute>\n");
-	    XMLBuffer.append("        <attributeName> "+normalize(cd.colName)+"</attributeName>\n");
-	    XMLBuffer.append("        <attributeLabel> "+normalize(cd.colTitle)+"</attributeLabel>\n");
-	    XMLBuffer.append("        <attributeDefinition>"+normalize(cd.colDefinition)+"</attributeDefinition>\n");
-	    XMLBuffer.append("        <unit> "+normalize(cd.colUnits)+"</unit>\n");
-	    XMLBuffer.append("        <dataType> "+normalize(cd.colType)+"</dataType>\n");
+	    XMLBuffer.append("        <attributeName> "+XMLUtil.normalize(cd.colName)+"</attributeName>\n");
+	    XMLBuffer.append("        <attributeLabel> "+XMLUtil.normalize(cd.colTitle)+"</attributeLabel>\n");
+	    XMLBuffer.append("        <attributeDefinition>"+XMLUtil.normalize(cd.colDefinition)+"</attributeDefinition>\n");
+	    XMLBuffer.append("        <unit> "+XMLUtil.normalize(cd.colUnits)+"</unit>\n");
+	    XMLBuffer.append("        <dataType> "+XMLUtil.normalize(cd.colType)+"</dataType>\n");
 	    XMLBuffer.append("        <attributeDomain>\n");
       if (cd.numChoice) {
 	        XMLBuffer.append("             <numericDomain>\n");
@@ -1775,15 +1776,15 @@ public void startImport(String file) {
 	  XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//ecoinformatics.org//eml-entity-2.0.0beta6//EN\" \"eml-entity.dtd\">\n");
 	  XMLBuffer.append("<table-entity>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
-	  XMLBuffer.append("    <entityName> "+normalize(TableNameTextField.getText())+"</entityName>\n");
-	  XMLBuffer.append("    <entityDescription> "+normalize(TableDescriptionTextField.getText())+"</entityDescription>\n");
+	  XMLBuffer.append("    <entityName> "+XMLUtil.normalize(TableNameTextField.getText())+"</entityName>\n");
+	  XMLBuffer.append("    <entityDescription> "+XMLUtil.normalize(TableDescriptionTextField.getText())+"</entityDescription>\n");
 	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"></orientation>\n");
 	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"></caseSensitive>\n");
     int temp = 0;
     if (labelsInStartingLine) temp = 1;
     int numrecs = nlines_actual - startingLine +1 + temp;
 	  String numRecords = (new Integer(numrecs)).toString();
-	  XMLBuffer.append("    <numberOfRecords> "+normalize(numRecords)+"</numberOfRecords>\n");
+	  XMLBuffer.append("    <numberOfRecords> "+XMLUtil.normalize(numRecords)+"</numberOfRecords>\n");
 	  XMLBuffer.append("</table-entity>\n");
 	  return XMLBuffer.toString();
 	}
@@ -1825,53 +1826,6 @@ public void startImport(String file) {
 	}
 	
 	
-    /** Normalizes the given string. */
-    private String normalize(Object ss) {
-        String s = "";
-        s = (String)ss;
-        StringBuffer str = new StringBuffer();
-
-        int len = (s != null) ? s.length() : 0;
-        for (int i = 0; i < len; i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<': {
-                    str.append("&lt;");
-                    break;
-                }
-                case '>': {
-                    str.append("&gt;");
-                    break;
-                }
-                case '&': {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"': {
-                    str.append("&quot;");
-                    break;
-                }
-                case '\r':
-		case '\t':
-                case '\n': {
-                    if (false) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
-                        break;
-                    }
-                    // else, default append char
-			break;
-                }
-                default: {
-                    str.append(ch);
-                }
-            }
-        }
-
-        return str.toString();
-
-    } // normalize(String):String
 
 	private String checkForBlankInfo() {
 	    String res = null;  // return null if all fields have data

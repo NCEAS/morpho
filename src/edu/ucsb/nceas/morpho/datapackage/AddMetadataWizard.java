@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-26 19:32:54 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2003-04-02 18:47:11 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 import java.net.*;
 import java.io.*;
@@ -845,7 +846,7 @@ public class AddMetadataWizard extends JFrame
       
         relationship = relationship.substring(slashindex, 
                                             relationship.length());
-        relationship = "isDataFileFor(" + normalize(relationship) + ")";
+        relationship = "isDataFileFor(" + XMLUtil.normalize(relationship) + ")";
       }
     }
     else if (addedMetadataFile!=null) {
@@ -1013,7 +1014,7 @@ public class AddMetadataWizard extends JFrame
       
         relationship = relationship.substring(slashindex, 
                                             relationship.length());
-        relationship = "isDataFileFor(" + normalize(relationship) + ")";
+        relationship = "isDataFileFor(" + XMLUtil.normalize(relationship) + ")";
       }
     }
     else if (type.equals("WIZARD")) {
@@ -1606,51 +1607,6 @@ public class AddMetadataWizard extends JFrame
 
   }
  
-    /** Normalizes the given string. */
-    private String normalize(String s) {
-        StringBuffer str = new StringBuffer();
-
-        int len = (s != null) ? s.length() : 0;
-        for (int i = 0; i < len; i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<': {
-                    str.append("&lt;");
-                    break;
-                }
-                case '>': {
-                    str.append("&gt;");
-                    break;
-                }
-                case '&': {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"': {
-                    str.append("&quot;");
-                    break;
-                }
-                case '\r':
-		case '\t':
-                case '\n': {
-                    if (false) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
-                        break;
-                    }
-                    // else, default append char
-			break;
-                }
-                default: {
-                    str.append(ch);
-                }
-            }
-        }
-
-        return str.toString();
-
-    } // normalize(String):String
 
  
   public void windowClosed(WindowEvent event)
