@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-13 01:40:28 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2002-09-13 21:21:12 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1083,7 +1083,7 @@ public class DataViewer extends javax.swing.JPanel
           if (columnAddFlag) {
             try {
               cmep.setMorpho(morpho);
-              cmep.insertNewAttributeAt(sel, attributeDoc);
+              cmep.insertNewAttributeAt((sel+1), attributeDoc);
  //             cmep.save();
             }
             catch (Exception w) {
