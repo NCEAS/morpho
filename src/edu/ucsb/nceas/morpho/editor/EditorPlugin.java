@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-18 15:55:09 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-20 17:56:06 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
     // Add the menus and toolbars
-    framework.addMenu("Editor", new Integer(4), menuActions);
+//    framework.addMenu("Editor", new Integer(4), menuActions);
     framework.addToolbarActions(toolbarActions);
 
     editingCompleteRegistry = new Vector();
