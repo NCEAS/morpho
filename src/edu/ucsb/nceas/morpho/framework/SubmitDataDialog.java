@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.1 2000-12-22 00:13:45 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.2 2000-12-22 20:49:35 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -41,7 +41,7 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
     private boolean writeSucceeded = false;
     String documentID;
     String parserName = "org.apache.xerces.parsers.SAXParser";
-    
+    String shortFileName = "";
 	public SubmitDataDialog(Frame parent)
 	{
 		super(parent);
@@ -54,48 +54,81 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		//{{INIT_CONTROLS
 		setTitle("Data Storage on Server");
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(369,198);
+		setSize(568,308);
 		setVisible(false);
-		GetFilePanel.setLayout(new GridLayout(2,1,0,0));
+		GetFilePanel.setLayout(new GridLayout(4,1,0,0));
 		getContentPane().add(BorderLayout.NORTH,GetFilePanel);
-		GetFilePanel.setBounds(0,0,369,70);
+		GetFilePanel.setBounds(0,0,568,140);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		GetFilePanel.add(JPanel3);
-		JPanel3.setBounds(0,0,369,35);
+		JPanel3.setBounds(0,0,568,35);
 		JLabel1.setText("File");
 		JPanel3.add(JLabel1);
-		JLabel1.setBounds(7,7,19,15);
+		JLabel1.setBounds(20,10,19,15);
 		FileNameTextField.setColumns(30);
-		FileNameTextField.setText("FileName of data to be sent to server should appear here ");
+		FileNameTextField.setText("FileName of data to be sent to server should appear here");
 		JPanel3.add(FileNameTextField);
-		FileNameTextField.setBounds(31,5,330,19);
-		JPanel4.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		GetFilePanel.add(JPanel4);
-		JPanel4.setBounds(0,35,369,35);
+		FileNameTextField.setBounds(44,8,330,19);
+		FileMetadataTextField.setColumns(30);
+		FileMetadataTextField.setText("./file_template.xml");
+		JPanel3.add(FileMetadataTextField);
+		FileMetadataTextField.setBounds(159,5,330,19);
 		SelectFile.setText("Select File...");
 		SelectFile.setActionCommand("Select File...");
-		JPanel4.add(SelectFile);
-		SelectFile.setBounds(134,5,101,25);
+		JPanel3.add(SelectFile);
+		SelectFile.setBounds(379,5,101,25);
+		VirtualFileCheckBox.setToolTipText("If set, only a reference to the data file is inserted.");
+		VirtualFileCheckBox.setText("Virtual");
+		JPanel3.add(VirtualFileCheckBox);
+		VirtualFileCheckBox.setBounds(485,6,62,23);
+		JPanel4.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		GetFilePanel.add(JPanel4);
+		JPanel4.setBounds(0,35,568,35);
+		JLabel2.setText("File Metadata");
+		JPanel4.add(JLabel2);
+		JLabel2.setBounds(79,7,75,15);
+		JPanel4.add(FileMetadataTextField);
+		JPanel5.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		GetFilePanel.add(JPanel5);
+		JPanel5.setBounds(0,70,568,35);
+		JLabel3.setText("Resource Metadata");
+		JPanel5.add(JLabel3);
+		JLabel3.setBounds(61,7,111,15);
+		ResourceMetadataTextField.setColumns(30);
+		ResourceMetadataTextField.setText("./resource_template.xml");
+		JPanel5.add(ResourceMetadataTextField);
+		ResourceMetadataTextField.setBounds(177,5,330,19);
+		JPanel6.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		GetFilePanel.add(JPanel6);
+		JPanel6.setBounds(0,105,568,35);
+		JLabel4.setText("Package Name");
+		JPanel6.add(JLabel4);
+		JLabel4.setBounds(73,7,86,15);
+		PackageNameTextField.setColumns(30);
+		PackageNameTextField.setText("packageExample");
+		JPanel6.add(PackageNameTextField);
+		PackageNameTextField.setBounds(164,5,330,19);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,JPanel1);
-		JPanel1.setBounds(0,163,369,35);
+		JPanel1.setBounds(0,273,568,35);
 		SubmitDataButton.setText("Submit");
 		SubmitDataButton.setActionCommand("Submit");
 		JPanel1.add(SubmitDataButton);
-		SubmitDataButton.setBounds(108,5,75,25);
+		SubmitDataButton.setBounds(207,5,75,25);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
 		JPanel1.add(CancelButton);
-		CancelButton.setBounds(188,5,73,25);
+		CancelButton.setBounds(287,5,73,25);
 		JPanel2.setAlignmentY(0.466667F);
 		JPanel2.setLayout(new BoxLayout(JPanel2,BoxLayout.X_AXIS));
 		getContentPane().add(BorderLayout.CENTER,JPanel2);
-		JPanel2.setBounds(0,70,369,93);
+		JPanel2.setBounds(0,140,568,133);
+		SubmitDataTextArea.setEditable(false);
 		SubmitDataTextArea.setWrapStyleWord(true);
 		SubmitDataTextArea.setText("Select File to be sent to server for centralized storage using \"Select File...\" button and then submit using the \"Submit\" button");
 		SubmitDataTextArea.setLineWrap(true);
 		JPanel2.add(SubmitDataTextArea);
-		SubmitDataTextArea.setBounds(0,0,369,93);
+		SubmitDataTextArea.setBounds(0,0,568,133);
 		//}}
 	
 		//{{REGISTER_LISTENERS
@@ -162,8 +195,17 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
 	javax.swing.JTextField FileNameTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
 	javax.swing.JButton SelectFile = new javax.swing.JButton();
+	javax.swing.JCheckBox VirtualFileCheckBox = new javax.swing.JCheckBox();
+	javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
+	javax.swing.JTextField FileMetadataTextField = new javax.swing.JTextField();
+	javax.swing.JPanel JPanel5 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
+	javax.swing.JTextField ResourceMetadataTextField = new javax.swing.JTextField();
+	javax.swing.JPanel JPanel6 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
+	javax.swing.JTextField PackageNameTextField = new javax.swing.JTextField();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JButton SubmitDataButton = new javax.swing.JButton();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
@@ -194,6 +236,7 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		} catch (Exception e) {}
 		String file = container.openFileDialog.getFile();
 		if (file!=null) {
+		    shortFileName = file;
 		    file = container.openFileDialog.getDirectory() + file;
 		    FileNameTextField.setText(file);
 		}
@@ -209,15 +252,60 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	    if (container.userName.equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to insert data into the system catalog!");
 	    }
+	    else if (FileNameTextField.getText().startsWith("FileName of data to be sent to server"))
+	        {JOptionPane.showMessageDialog(this,"Please enter a file name.");}
+	         
 	    else {
+	  String dataURL = FileNameTextField.getText();      
+	  if (!VirtualFileCheckBox.isSelected()) {     
 	    // need to change 'hardwired' SendFile parameters
-	    String dataURL = SendFile(FileNameTextField.getText(),"dev.nceas.ucsb.edu",4444);
-		SubmitDataTextArea.setText(dataURL);
+	    dataURL = SendFile(FileNameTextField.getText(),"dev.nceas.ucsb.edu",4444);
+	  }
 		// now insert the dataURL into the resourcetemplate file
-		ReplaceFile("./resource_template.xml", "datasetid", dataURL);
-		String resourceID = insertIntoMetacat("./resource_template.xml");
-		System.out.println("ID of resource_template file is :"+resourceID);
+		String resourcemetadatafile = "./resource_template.xml";
+		if (!ResourceMetadataTextField.getText().equals("")) {
+		   resourcemetadatafile = ResourceMetadataTextField.getText();} 
+		ReplaceFile(resourcemetadatafile, "datasetid", dataURL);
+		ReplaceFile(resourcemetadatafile, "title", shortFileName);
+		String resourceID = insertIntoMetacat(resourcemetadatafile);
+	//	System.out.println("ID of resource_template file is :"+resourceID);
+	    String filemetadatafile = "./file_template.xml";
+		if (!FileMetadataTextField.getText().equals("")) {
+		   resourcemetadatafile = FileMetadataTextField.getText();} 
+		ReplaceFile(filemetadatafile, "file_name", shortFileName);
+		String fileID = insertIntoMetacat(filemetadatafile);
+	//	System.out.println("ID of file_template file is :"+fileID);
+		String pack = buildPackage(resourceID, "ismetadatafor", dataURL, fileID, "ismetadatafor", dataURL);
+		String packID = insertStringIntoMetacat(pack);
+	//	System.out.println("ID of packagefile is :"+packID);
+		String ids = dataURL+"\nfileID = "+fileID+"\nresourceID = "+resourceID+"\npackage ID "+packID;
+		SubmitDataTextArea.setText(ids);
+		
 		}
+	}
+	
+	String buildPackage(String subj1, String rel1, String obj1, String subj2, String rel2, String obj2) {
+	    StringBuffer pack = new StringBuffer();
+	    pack.append("<?xml version=\"1.0\"?>\n");
+	    pack.append("<!DOCTYPE package PUBLIC \"-//NCEAS//package//EN\" \"http://dev.nceas.ucsb.edu/berkley/dtd/package.dtd\">\n");
+        pack.append("<package>\n");
+        String packagename = "packageExample";
+        if (!PackageNameTextField.getText().equals("")) {
+            packagename = PackageNameTextField.getText(); }
+        pack.append("<name>"+packagename+"</name>\n");
+        pack.append("<relation>\n");
+        pack.append("<subject>"+subj1+"</subject>\n");
+        pack.append("<relationship>"+rel1+"</relationship>\n");
+        pack.append("<object>"+obj1+"</object>\n");
+        pack.append("</relation>\n");
+        pack.append("<relation>\n");
+        pack.append("<subject>"+subj2+"</subject>\n");
+        pack.append("<relationship>"+rel2+"</relationship>\n");
+        pack.append("<object>"+obj2+"</object>\n");
+        pack.append("</relation>\n");
+        pack.append("</package>\n");
+        
+        return (pack.toString());
 	}
 	
 	/**
@@ -393,6 +481,38 @@ public String getIDFromFile(String file_in, String tag) {
         return null;
         }
 }
+
+public String insertStringIntoMetacat(String xmlstring) {
+        String res = "error";
+        try {
+		    URL url = new URL(container.MetaCatServletURL);
+		    HttpMessage msg = new HttpMessage(url);
+		    Properties prop = new Properties();
+		    prop.put("action","insert");
+		    prop.put("doctext",xmlstring);
+		    InputStream inn = msg.sendPostMessage(prop);
+	
+        // Determine the assigned docid if insert successful
+        XMLReader parser = null;
+
+        // Set up the SAX document handlers for parsing
+  //      try {
+          // Get an instance of the parser
+          parser = XMLReaderFactory.createXMLReader(parserName);
+          // Set the ContentHandler to this instance
+          parser.setContentHandler(this);
+          parser.parse(new InputSource(inn));
+        } catch (Exception e) {
+           System.err.println(e.toString());
+        }
+
+        if (writeSucceeded) {
+            res = documentID;     
+        }
+  return res;
+    
+}
+	
 	
 public String insertIntoMetacat(String filename) {
         String res = "error";
