@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-15 23:10:53 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-06-28 18:01:26 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -328,7 +328,8 @@ public class EditorController extends javax.swing.JFrame implements EditingCompl
         ServiceProvider provider = 
                       framework.getServiceProvider(EditorInterface.class);
         EditorInterface editor = (EditorInterface)provider;
-        editor.openEditor(JTextArea1.getText(), null, null, this);
+        //editor.openEditor(JTextArea1.getText(), null, null, this);
+        editor.openEditor(JTextArea1.getText(), null, null, null, null, this);
       } 
       catch (ServiceNotHandledException snhe) {
         framework.debug(6, snhe.getMessage());
@@ -356,7 +357,7 @@ public class EditorController extends javax.swing.JFrame implements EditingCompl
       ServiceProvider provider = 
                       framework.getServiceProvider(EditorInterface.class);
       EditorInterface editor = (EditorInterface)provider;
-      editor.openEditor(JTextArea1.getText(), null, null, this);
+      editor.openEditor(JTextArea1.getText(), null, null, null, null, this);
     } catch (ServiceNotHandledException snhe) {
       framework.debug(6, snhe.getMessage());
     }

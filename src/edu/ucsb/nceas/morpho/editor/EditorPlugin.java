@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-26 16:38:58 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-06-28 18:01:26 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
     // Add the menus and toolbars
-//    framework.addMenu("Editor", new Integer(4), menuActions);
+    framework.addMenu("Editor", new Integer(4), menuActions);
     framework.addToolbarActions(toolbarActions);
 
     editingCompleteRegistry = new Vector();
@@ -190,6 +190,21 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   public void openEditor(String xmlText, EditingCompleteListener listener)
   {
     openEditor(xmlText, null, null, listener);
+  }
+  
+  public void openEditor(String xmlText, String id, String location,
+                         String nodeName, String nodeValue,
+                         EditingCompleteListener listener) {
+    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, id, location,
+                          nodeName, nodeValue);
+    editorframe.setController(this);
+    editorframe.setVisible(true);
+    this.id = id;
+    this.location = location;
+    if (framework!=null) {
+      framework.addWindow(editorframe);
+    }
+    docframes.put(editorframe, listener);
   }
   
   public Object getClipboardObject() {

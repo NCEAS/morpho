@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 04:11:38 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2001-06-28 18:01:26 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -344,6 +344,20 @@ public class DocFrame extends javax.swing.JFrame
 	  this.id = id;
 	  this.location = location;
 	}
+
+	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location,
+	                       String nodeName, String nodeValue) {
+    this(cf, sTitle, doctext, id, location);
+    if (nodeValue!=null) {
+      selectMatchingNode(rootNode, nodeName, nodeValue);
+    }
+    else {
+      selectMatchingNode(rootNode, nodeName);  
+    }
+    
+                        
+	}
+	
 	
 	public String getIdString() {
 	  return id;
@@ -1388,11 +1402,37 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	    // if hit is true at this point, then there is a match
 	    // otherwise, there was no match
 	    if (hit) {
-	        setTreeValueFlag(false);
 		    TreePath tp = new TreePath(nd.getPath());
 		    tree.setSelectionPath(tp);
 		    tree.scrollPathToVisible(tp);        
-	    }
+	    	if (tp!=null) {
+	        Object ob = tp.getLastPathComponent();
+	        DefaultMutableTreeNode node = null;
+	        if (ob!=null) {node =(DefaultMutableTreeNode)ob;}
+          selectedNode = node;
+         
+          NodeInfo ni = (NodeInfo)node.getUserObject();
+         
+          if ((ni.getCardinality().equals("NOT SELECTED"))
+                  ||(ni.getCardinality().equals("SELECTED"))) {
+            for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
+                DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
+                NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
+                ni1.setCardinality("NOT SELECTED");
+            }
+            ni.setCardinality("SELECTED");
+            tree.invalidate();
+            OutputScrollPanel.repaint();
+         }
+         
+         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+         XMLPanels xp = new XMLPanels(node, width);
+         xp.setTreeModel(treeModel);
+         xp.setContainer(this);
+         xp.setTree(tree);
+         NestedPanelScrollPanel.getViewport().add(xp.topPanel);
+        }
+      }
 	 }
 	 
 	/** 
@@ -1414,7 +1454,7 @@ class SymWindow extends java.awt.event.WindowAdapter {
                 DefaultMutableTreeNode ndchild = null;
                 while(nodes.hasMoreElements()) {
                     ndchild = (DefaultMutableTreeNode)(nodes.nextElement());
-		            NodeInfo info1 = (NodeInfo)(nd.getUserObject());
+		            NodeInfo info1 = (NodeInfo)(ndchild.getUserObject());
 		            if ((info1.name).equals("#PCDATA")) {
 		                txt = info1.getPCValue();
                     }
@@ -1431,7 +1471,36 @@ class SymWindow extends java.awt.event.WindowAdapter {
 		    TreePath tp = new TreePath(nd.getPath());
 		    tree.setSelectionPath(tp);
 		    tree.scrollPathToVisible(tp);        
-	    }
+	    
+	    	if (tp!=null) {
+	        Object ob = tp.getLastPathComponent();
+	        DefaultMutableTreeNode node = null;
+	        if (ob!=null) {node =(DefaultMutableTreeNode)ob;}
+          selectedNode = node;
+         
+          NodeInfo ni = (NodeInfo)node.getUserObject();
+         
+          if ((ni.getCardinality().equals("NOT SELECTED"))
+                  ||(ni.getCardinality().equals("SELECTED"))) {
+            for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
+                DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
+                NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
+                ni1.setCardinality("NOT SELECTED");
+            }
+            ni.setCardinality("SELECTED");
+            tree.invalidate();
+            OutputScrollPanel.repaint();
+         }
+         
+         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+         XMLPanels xp = new XMLPanels(node, width);
+         xp.setTreeModel(treeModel);
+         xp.setContainer(this);
+         xp.setTree(tree);
+         NestedPanelScrollPanel.getViewport().add(xp.topPanel);
+        }
+      }
+	    
 	 }
 	
 }
