@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<wizard size="460x400" dtd="eml-variable.dtd" 
+        doctype="-//NCEAS//eml-variable//EN">
+  <group label="Field Information" type="panel">
+    <group field="eml-variable">
+      <textbox field="meta_file_id" size="10" allowNull="no" 
+               editable="no" defaulttext="to be assigned" visible="no"/>
+      <group field="variable" repeatable="yes">
+        <textbox label="Field Name" field="variable_name" size="15" allowNull="no"
+                 defaulttext="Enter Field Name here"/>
+        <textbox label="Definition" field="variable_definition" size="15" allowNull="no" 
+                 defaulttext="Enter Field Definition here" />
+        <textbox label="Units" field="unit" size="15"/>
+        <group>
+        <group label="Numeric Range" field="numeric_range" repeatable="yes"
+               size="50x120">
+          <textbox label="Minimum" field="minimum" size="15"/>
+          <textbox label="Maximum" field="maximum" size="15"/>
+        </group>
+        </group>
+        <textbox label="Missing Value Code" field="missing_value_code" 
+                 size="15" repeatable="yes"/>
+        <textbox label="Precision" field="precision" size="15"/>
+      </group>
+    </group>
+  </group>
+</wizard>
