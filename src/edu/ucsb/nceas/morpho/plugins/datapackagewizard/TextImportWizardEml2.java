@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-06 00:15:03 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-03-11 02:54:42 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1079,6 +1079,11 @@ public class TextImportWizardEml2 extends JFrame {
 		
 		mainWizFrame.setLastImportedEntity(entityName);
 		mainWizFrame.setLastImportedAttributes(colNames);
+		if(vec != null)
+			mainWizFrame.setLastImportedDataSet(vec);
+		else {
+			mainWizFrame.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
+		}
 		
 		String prevPageID = mainWizFrame.getPreviousPageID();
 		

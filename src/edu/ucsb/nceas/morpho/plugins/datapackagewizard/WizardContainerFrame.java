@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:47:25 $'
- * '$Revision: 1.45 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-11 02:54:42 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -603,7 +603,6 @@ public class WizardContainerFrame extends JFrame {
 		if (DATA_LOCATION>=0)       {
 			addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
 		}
-
 		// now add unique ID's to all dataTables and attributes
 		addIDs(
 		new String[]  {
@@ -812,6 +811,20 @@ public class WizardContainerFrame extends JFrame {
 
     setCurrentPage(previousPage);
   }
+	
+	/**  
+		Function to clear the current page stack
+	*/
+	public void reInitializePageStack() {
+		
+		
+		if(pageStack == null) {
+			pageStack = new Stack();
+			return;
+		}
+		pageStack.removeAllElements();
+		return;
+	}
 
 
   /**
@@ -967,7 +980,11 @@ public class WizardContainerFrame extends JFrame {
 	public void setLastImportedEntity(String name) {
 		lastImportedEntityName = name;
 	}
-
+	
+	public void setLastImportedDataSet(Vector data) {
+		lastImportedDataSet = data;
+	}
+	
 	public void setLastImportedAttributes(List attr) {
 		lastImportedAttributes = attr;
 	}
@@ -978,6 +995,10 @@ public class WizardContainerFrame extends JFrame {
 
 	public List getLastImportedAttributes() {
 		return lastImportedAttributes;
+	}
+	
+	public Vector getLastImportedDataSet() {
+		return lastImportedDataSet;
 	}
 
   // * * *  V A R I A B L E S  * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1003,6 +1024,7 @@ public class WizardContainerFrame extends JFrame {
 
 	private List lastImportedAttributes;
 	private String lastImportedEntityName;
-
+	private Vector lastImportedDataSet;
+	
   private String firstPageID;
 }

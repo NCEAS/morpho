@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-09 18:36:23 $'
- * '$Revision: 1.51 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-11 02:54:42 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -680,6 +680,8 @@ public class WizardSettings {
 	public static final String[] stdTaxonRanks = {"Kingdom", "Sub-Kingdom", "Phylum", "Sub-Phylum", "Class", "Sub-Class", "Order", "Sub-Order", "Family", "Sub-Family", "Genus", "Sub-Genus", "Species", "Sub-Species"};
 	
 	public static final String[] commonTaxonRanks = {"Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"};
+	
+	public static final int NUMBER_OF_TAXON_RANKS = 7;
 	
 	public static int getIndexOfTaxonRank(String rank) {
 		

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:47:25 $'
- * '$Revision: 1.23 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-11 02:54:42 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ public class WizardPageLibrary {
     if(pageID.equals(DataPackageWizardInterface.TEMPORAL_PAGE)) return new TemporalPage();
     if(pageID.equals(DataPackageWizardInterface.GEOGRAPHIC_PAGE)) return new GeographicPage();
 		if(pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) return new CodeImportPage(container);
+		if(pageID.equals(DataPackageWizardInterface.CODE_DEFINITION)) return new CodeDefinition(container);
     if (containsPageID(pageID)) return (AbstractWizardPage)pages.get(pageID);
 
     return null;
@@ -109,10 +110,10 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.PARTY_CONTACT,      new PartyMainPage(PartyPage.CONTACT));
     pages.put(DataPackageWizardInterface.PARTY_ASSOCIATED,   new PartyMainPage(PartyPage.ASSOCIATED));
     pages.put(DataPackageWizardInterface.USAGE_RIGHTS,       new UsageRights());
-    pages.put(DataPackageWizardInterface.DATA_LOCATION,      new DataLocation());
+    pages.put(DataPackageWizardInterface.DATA_LOCATION,      new DataLocation(container));
     pages.put(DataPackageWizardInterface.TEXT_IMPORT_WIZARD, new ImportWizard(container));
     pages.put(DataPackageWizardInterface.DATA_FORMAT,        new DataFormat());
-    pages.put(DataPackageWizardInterface.ENTITY,             new Entity());
+    pages.put(DataPackageWizardInterface.ENTITY,             new Entity(container));
     pages.put(DataPackageWizardInterface.ACCESS,             new Access());
     pages.put(DataPackageWizardInterface.GEOGRAPHIC,         new Geographic());
     pages.put(DataPackageWizardInterface.TAXONOMIC,          new Taxonomic());
@@ -120,7 +121,7 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.METHODS,            new Methods());
     pages.put(DataPackageWizardInterface.SUMMARY,            new Summary(container));
     pages.put(DataPackageWizardInterface.CODE_IMPORT_SUMMARY,new CodeImportSummary(container));
-    pages.put(DataPackageWizardInterface.CODE_DEFINITION,    new CodeDefinition(container));
+    
   }
 
 

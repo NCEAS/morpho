@@ -128,9 +128,26 @@ public class CustomTable extends JPanel {
 		return table.getSelectedColumns();
 	}
 	
+	public void setSelectedColumns(int[] selectedCols) {
+		
+		table.setSelectedColumns(selectedCols);
+	}
+	
 	public Vector getColumnHeaderStrings(int colIdx) {
 		
 		return table.getColumnHeaderStrings(colIdx);
+	}
+	
+	public void setColumnHeaderStrings(int colIdx, Vector colHeader) {
+		
+		table.setColumnHeaderStrings(colIdx, colHeader);
+		return;
+	}
+	
+	public void setExtraColumnHeaderInfo(int colIdx, String info) {
+		
+		table.setExtraColumnHeaderInfo(colIdx, info);
+		return;
 	}
 }
 
@@ -277,6 +294,46 @@ class ColumnarTable extends JTable {
 		return chr.getColumnHeader();
 	}
 	
+	public void setColumnHeaderStrings(int colIdx, Vector colHeader) {
+		
+		if(colIdx >= getColumnCount()) 
+			return;
+		TableColumn column = columnModel.getColumn(colIdx);
+		CustomHeaderRenderer chr = (CustomHeaderRenderer)column.getHeaderRenderer();
+		chr.setColumnHeader(colHeader);
+	}
+	
+	public void setExtraColumnHeaderInfo(int colIdx, String info) {
+		
+		if(colIdx >= getColumnCount()) 
+			return;
+		TableColumn column = columnModel.getColumn(colIdx);
+		CustomHeaderRenderer chr = (CustomHeaderRenderer)column.getHeaderRenderer();
+		chr.setExtraColumnHeaderInfo(info);
+		return;
+	}
+	
+	public void setSelectedColumns(int[] selectedCols) {
+		
+		colSelectionModel.clearSelection();
+		if(columnModel == null)
+			columnModel = this.getColumnModel();
+		
+		for(int i=0; i < selectedCols.length; i++) {
+			colSelectionModel.addSelectionInterval(selectedCols[i], selectedCols[i]);
+			TableColumn column = columnModel.getColumn(selectedCols[i]);
+			CustomHeaderRenderer chr = (CustomHeaderRenderer)column.getHeaderRenderer();
+			chr.setCheckboxSelected(true);
+		}
+		
+		int rows = rowData.size();
+		if (rows > 0) {
+          this.setRowSelectionInterval(0, rows - 1);
+		}
+		getTableHeader().resizeAndRepaint();
+		return;
+	}
+	
 	public boolean isCellEditable(int row, int col) {
 		return false;
 	}
@@ -356,6 +413,10 @@ class CustomHeaderRenderer extends DefaultTableCellRenderer {
 		return panel;
 	}
 	
+	public void setCheckboxSelected(boolean sel) {
+		
+		cb.setSelected(sel);
+	}
 	
 	public boolean invertSelection() {
 		cb.setSelected(!cb.isSelected());
@@ -385,6 +446,22 @@ class CustomHeaderRenderer extends DefaultTableCellRenderer {
 		
 		return v;
 	}
+	
+	public void setColumnHeader(Vector colHeader) {
+		
+		int size = colHeader.size();
+		System.out.println("in table: current header size = " + headerValues.size() + " , new header size =  " + colHeader.size());
+		headerValues = colHeader;
+		return;
+	}
+	
+	public void setExtraColumnHeaderInfo(String info) {
+		
+		this.extraHeaderInformation = info;
+		this.displayExtraHeaderInfo = true;
+		return;
+	}
+	
 }
 
 
