@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-05 23:06:05 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-06-06 17:36:41 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,8 +47,12 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
+import org.apache.xerces.dom.DocumentTypeImpl;
+
+import com.arbortext.catalog.*;
 
 public class PackageWizardShell extends javax.swing.JFrame
                                 implements ActionListener
@@ -79,13 +83,23 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JCheckBox publicAccessCheckBox;
   private JButton saveToMetacatButton;
   
+  private static final String getDataDescription = "Enter the path to the " +
+                        "data file that you wish to " +
+                        "describe. Click the 'Browse' button to browse for " +
+                        "the file.";
+  private static final String finishDescription = "The Package Wizard is now " +
+                              "ready to create your new package.  The list " +
+                              "shows the files that the package will contain." + 
+                              "If you want to revise your " +
+                              "metadata, click the previous button to go back.";
+  
   
   public PackageWizardShell()
   {
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(600, 500);
+    setSize(620, 600);
   }
   
   public PackageWizardShell(ClientFramework cf)
@@ -94,7 +108,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(600, 550);
+    setSize(620, 600);
   }
   
   private void initComponents()
@@ -131,7 +145,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     String description = "Enter your contact information and " +
                           "basic data package information here.";
     changeDescription(description);
-    System.out.println("changing description 5");
     
     wizardFrame = (JPanel)mainWizardFrame.getComponent(1);
     //get the location of the main wizard frame config file, parse it
@@ -157,9 +170,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         framePanel.add(chooseFileButton);
         wfc.textfield = fileTextField;
         wfc.type = "GETDATA";
-        wfc.description="Enter the path to the data file that you wish to " +
-                        "describe. Click the 'Browse' button to browse for " +
-                        "the file.";
+        wfc.description = getDataDescription;
       }
       else
       {
@@ -224,7 +235,6 @@ public class PackageWizardShell extends javax.swing.JFrame
           frameWizards.add(frameWizardIndex, wfc);
           wizardFrame.add(wfc.panel);
           changeDescription(wfc.description);
-          System.out.println("changing description 1");
           //show();
           wizardFrame.validate();
           wizardFrame.repaint();
@@ -256,11 +266,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       wizardFrame.removeAll();
       wizardFrame.invalidate();
       frameWizardIndex++;
-      changeDescription("Click 'Save to Metacat' if you would like to save " +
-                        "your new package to a Metacat server.  Check the " +
-                        "box if you would like your new package opened in " + 
-                        "the package editor.");
-      System.out.println("changing description 2");
+      changeDescription(finishDescription);
       Vector listContent = new Vector();
       for(int i=0; i<frameWizards.size(); i++)
       {
@@ -321,7 +327,6 @@ public class PackageWizardShell extends javax.swing.JFrame
                                          frameWizards.elementAt(frameWizardIndex);
       activeContainer = nextContainer;
       changeDescription(nextContainer.description);
-      System.out.println("changing description 3");
       wizardFrame.add(nextContainer.panel);
       
       if(frameWizardIndex > 0)
@@ -355,7 +360,6 @@ public class PackageWizardShell extends javax.swing.JFrame
                                        frameWizards.elementAt(frameWizardIndex);
     activeContainer = nextContainer;
     changeDescription(nextContainer.description);
-    System.out.println("changing description 4");
     wizardFrame.add(nextContainer.panel);
     
     if(frameWizardIndex == 0)
@@ -487,6 +491,24 @@ public class PackageWizardShell extends javax.swing.JFrame
         DOMParser parser = new DOMParser();
         InputSource in;
         FileInputStream fs;
+        
+        CatalogEntityResolver cer = new CatalogEntityResolver();
+        try {
+          Catalog myCatalog = new Catalog();
+          myCatalog.loadSystemCatalogs();
+          ConfigXML config = framework.getConfiguration();
+          String catalogPath = config.get("local_catalog_path", 0);
+          myCatalog.parseCatalog(catalogPath);
+          cer.setCatalog(myCatalog);
+        } 
+        catch (Exception e) 
+        {
+          ClientFramework.debug(9, "Problem creating Catalog in " +
+                       "packagewizardshell.handleFinishAction!" + e.toString());
+        }
+        
+        parser.setEntityResolver(cer);
+        
         try
         { //parse the wizard created file without the triples
           fs = new FileInputStream(f);
@@ -509,6 +531,12 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         //get the DOM rep of the document without triples
         doc = parser.getDocument();
+        DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+        //System.out.println("DOCTYPES " + dt.getPublicId() + " " + 
+        //                    dt.getSystemId());
+        String publicid = dt.getPublicId();
+        String systemid = dt.getSystemId();
+        String nameid = dt.getName();
         NodeList tripleNodeList = triples.getNodeList();
         NodeList docTriplesNodeList = null;
         
@@ -532,7 +560,12 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         
         //write out the tiples file
-        StringReader sr = new StringReader(print(doc.getDocumentElement()));
+        String docString = "<?xml version=\"1.0\"?>";
+        docString += "\n<!DOCTYPE " + nameid +  " PUBLIC \"" + publicid + 
+                    "\" \"" + systemid + "\">\n";
+        docString += print(doc.getDocumentElement());
+        
+        StringReader sr = new StringReader(docString);
         FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
         localDataStore.saveFile(wfc.id, sr, false); //write out the file
         //framework.debug(9, "saving file: " + wfc.id);
@@ -656,12 +689,16 @@ public class PackageWizardShell extends javax.swing.JFrame
     JPanel buttonPanel = new JPanel();
     JPanel descriptionPanel = new JPanel();
     
-    BoxLayout box = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
-    mainPanel.setLayout(box);
-    wizardPanel.setMaximumSize(new Dimension(595, 448));
-    wizardPanel.setBorder(BorderFactory.createLineBorder(new Color(255,255,255)));
-    buttonPanel.setMaximumSize(new Dimension(595, 48));
-    descriptionPanel.setMaximumSize(new Dimension(595, 48));
+    //BoxLayout box = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
+    //mainPanel.setLayout(box);
+    mainPanel.setLayout(new BorderLayout());
+    wizardPanel.setMaximumSize(new Dimension(595, 450));
+    wizardPanel.setPreferredSize(new Dimension(595, 450));
+    //wizardPanel.setBorder(BorderFactory.createLineBorder(new Color(255,255,255)));
+    buttonPanel.setMaximumSize(new Dimension(595, 50));
+    buttonPanel.setPreferredSize(new Dimension(595, 50));
+    //descriptionPanel.setMaximumSize(new Dimension(595, 50));
+    //descriptionPanel.setPreferredSize(new Dimension(595, 50));
     
     previous = new JButton("<< Previous");
     previous.setVisible(false);
@@ -676,9 +713,9 @@ public class PackageWizardShell extends javax.swing.JFrame
     buttonPanel.add(next);
     buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
     
-    mainPanel.add(descriptionPanel);
-    mainPanel.add(wizardPanel);
-    mainPanel.add(buttonPanel);
+    mainPanel.add(descriptionPanel, BorderLayout.NORTH);
+    mainPanel.add(wizardPanel, BorderLayout.CENTER);
+    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
     return mainPanel;
   }
   
@@ -695,7 +732,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     descriptionPanel.removeAll();
     descriptionPanel.add(new JScrollPane(descriptionText));*/
     descriptionLabel = new JLabel("<html><p>" + desc + "</p></html>");
-    descriptionLabel.setPreferredSize(new Dimension(580,50));
+    descriptionLabel.setPreferredSize(new Dimension(580, 50));
     descriptionPanel.removeAll();
     descriptionPanel.add(descriptionLabel);
     descriptionPanel.validate();

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-05 19:01:38 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-06-06 17:36:41 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,6 +190,7 @@ public class PackageWizard extends javax.swing.JFrame
       StringBuffer xmldoc = createDocumentContent(pathReps, content); //IMPORTANT
       String doctype = "<?xml version=\"1.0\"?>\n<!DOCTYPE " + globalRoot;
       doctype += " PUBLIC \"" + globalDoctype + "\" \"" + globalDtd + "\">";
+      //doctype += " PUBLIC \"" + globalDoctype + "\">";
       doctype += "\n" + xmldoc.toString();
       return doctype;
     }

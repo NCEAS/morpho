@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard size="590x430" dtd="eml-entity.dtd" doctype="-//NCEAS//eml-entity2.0//EN">
+<wizard size="590x430" dtd="eml-entity.dtd" doctype="-//NCEAS//eml-entity-2.0//EN">
   <group label="Entity Information" field="table-entity" type="panel">
       <textbox label="identifier" size="10" visible="no" field="identifier" 
                required="yes"/>

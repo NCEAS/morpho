@@ -5,6 +5,7 @@
 <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
 <MetaCatServletURL>http://dev.nceas.ucsb.edu/jones/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./lib/catalog</local_dtd_directory>
+<local_catalog_path>./lib/catalog/catalog</local_catalog_path>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
 <local_cache_directory>./cache</local_cache_directory>
 <debug_level>9</debug_level>
@@ -57,12 +58,12 @@
     <localdoctypedtd>eml-variable.dtd</localdoctypedtd>
 </localdoctypes>
 <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
-<username>jones</username>
+<username>berkley</username>
 <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
 <tempDir>./tmp</tempDir>
 <accessionNumber>
   <scope>USERNAME</scope>
-  <lastId>391</lastId>
+  <lastId>636</lastId>
   <separator>.</separator>
 </accessionNumber>
 <customFrames>

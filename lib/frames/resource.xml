@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<wizard size="590x430" dtd="/home/berkley/mdstandards/eml/eml-dataset.dtd" 
-        doctype="-//NCEAS//eml-resource2.0//EN">
+<wizard size="590x430" dtd="eml-dataset.dtd" 
+        doctype="-//NCEAS//eml-dataset-2.0//EN">
   <group label="Base Information" field="dataset"  type="panel">
     <group size="480x80" layout="flow">
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" 
