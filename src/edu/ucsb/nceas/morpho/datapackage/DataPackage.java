@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 15:53:44 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2002-09-12 16:05:04 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1246,18 +1246,12 @@ public class DataPackage implements XMLFactoryInterface
       
       //create a html file from all of the metadata
       StringBuffer[] htmldoc        = new StringBuffer[fileV.size()];
-      ClassLoader   classLoader     = this.getClass().getClassLoader();
-      String        stylesheet      = config.get("genericStylesheet", 0);
       Reader        xmlInputReader  = null;
-      Reader        xslInputReader  = null;
       Reader        result          = null;
       StringBuffer  tempPathBuff    = new StringBuffer();
       
-      for(int i=0; i<fileV.size(); i++)
-      {
+      for(int i=0; i<fileV.size(); i++) {
       
-Log.debug(50,"* * DataPackage: LOOP "+i+"...");       
-     
         FileInputStream fis = new FileInputStream((File)fileV.elementAt(i));
         String header = "";
         for(int j=0; j<10; j++)
@@ -1266,37 +1260,17 @@ Log.debug(50,"* * DataPackage: LOOP "+i+"...");
         }
         fis.close();
         
-Log.debug(50,"* * DataPackage: header = "+header);            
-
         if (header.indexOf("<?xml") != -1)
         { //this is an xml file so we can transform it.
           //transform each file individually then concatenate all of the 
           //transformations .
-          
-Log.debug(50,"* * DataPackage: doing xml transform");   
          
             xmlInputReader = new FileReader((File)fileV.elementAt(i));
             
-//            xslInputReader = new InputStreamReader(
-//                                   classLoader.getResourceAsStream(stylesheet));
-
             XMLTransformer transformer = XMLTransformer.getInstance();
             
-Log.debug(50,"* * DataPackage: File ="+((File)fileV.elementAt(i)).getAbsolutePath());            
-Log.debug(50,"* * DataPackage: xmlInputReader ="+xmlInputReader);            
-Log.debug(50,"* * DataPackage: stylesheet ="+stylesheet);            
-//Log.debug(50,"* * DataPackage: xslInputReader ="+xslInputReader);
-Log.debug(50,"* * DataPackage: transformer ="+transformer); 
-           
             try {
-            
-Log.debug(50,"* * DataPackage: GETTING result...");
-
               result = transformer.transform(xmlInputReader);
-
-//              result = transformer.transform(xmlInputReader, xslInputReader);
-              
-Log.debug(50,"* * DataPackage: GOT result: "+result);            
             } catch (IOException e) {
               e.printStackTrace();
               Log.debug(9,"Unexpected Error Styling Document: "+e.getMessage());
@@ -1304,10 +1278,8 @@ Log.debug(50,"* * DataPackage: GOT result: "+result);
               throw e;
             } finally {
                 xmlInputReader.close();
-                xslInputReader.close();
             }
 
-Log.debug(50,"* * DataPackage: GETTING HTML DOC...");            
             try {
               htmldoc[i] = IOUtil.getAsStringBuffer(result, true); 
               //"true" closes Reader after reading
@@ -1318,15 +1290,8 @@ Log.debug(50,"* * DataPackage: GETTING HTML DOC...");
               e.fillInStackTrace();
               throw e;
             }
-            
-Log.debug(50,"* * DataPackage: * * * * * * * * * * * * * * * * * * * * * *");            
-Log.debug(50,"* * DataPackage: HTML DOC "+i+" = \n"+htmldoc[i]);            
-Log.debug(50,"* * DataPackage: * * * * * * * * * * * * * * * * * * * * * *");            
-            
         } else { 
           //this is a data file so we should link to it in the html
-Log.debug(50,"* * DataPackage: doing data file");            
-          
           String datafileid = getIdFromPath(((File)fileV.elementAt(i)).toString());
           htmldoc[i] = new StringBuffer("<html><head></head><body>");
           htmldoc[i].append("<h2>Data File: ");
