@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-01 00:38:45 $'
-* '$Revision: 1.7 $'
+*     '$Date: 2004-04-29 22:24:31 $'
+* '$Revision: 1.8 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -482,7 +482,8 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		
 		String field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
 		String delimiter = getDelimiterString(field_delimiter);
-		List rowData = CodeDefnPanel.getColumnValues(entityFile, textCols, numHeaderLines, delimiter, -1);
+		boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIndex, 0);
+		List rowData = CodeDefnPanel.getColumnValues(entityFile, textCols, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, -1);
 		return rowData;
 	}
 	

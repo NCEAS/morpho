@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-22 00:07:25 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-29 22:24:31 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,8 +130,10 @@ public class AddTaxonomicCovCommand implements Command {
         //Restore project subtree to state it was in when we started...
 
         adp.removeTaxonomicNodes();
-				OrderedMap newMap = preprendKeysWithString(existingValuesMap, "/coverage");
-				if (existingValuesMap != null) insertTaxonomicNode(newMap);
+				if (existingValuesMap != null) {
+					OrderedMap newMap = preprendKeysWithString(existingValuesMap, "/coverage");
+					insertTaxonomicNode(newMap);
+				}
       }
 
     } else {
@@ -198,7 +200,9 @@ public class AddTaxonomicCovCommand implements Command {
 
 	private OrderedMap preprendKeysWithString(OrderedMap map, String prefix) {
 		
+		if(map == null) return null;
 		OrderedMap newMap = new OrderedMap();
+		if(map.size() < 1) return newMap;
 		Iterator it = map.keySet().iterator();
 		while(it.hasNext()) {
 			String key = (String)it.next();

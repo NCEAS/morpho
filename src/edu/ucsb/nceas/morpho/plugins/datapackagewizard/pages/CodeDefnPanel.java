@@ -264,8 +264,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
       String field_delimiter = adp.getPhysicalFieldDelimiter(idx, 0);
       String delimiter = getDelimiterString(field_delimiter);
-
-      List data = getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, -1);
+			boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(idx, 0);
+			List data = getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, -1);
 
       if(data != null && data.size() < 1)
         continue;
@@ -938,11 +938,11 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     return entityFile;
   }
 
-  public static List getColumnValues(File file, Vector colIndices, int numHeaderLines, String delimiter, int maxLinesNeeded) {
+  public static List getColumnValues(File file, Vector colIndices, int numHeaderLines, String delimiter, boolean ignoreConsequtiveDelimiters, int maxLinesNeeded) {
 
     List result = new ArrayList();
     String line;
-    boolean ignoreConsequtiveDelimiters = false;
+    
     String token, oldToken = "";
     try
     {

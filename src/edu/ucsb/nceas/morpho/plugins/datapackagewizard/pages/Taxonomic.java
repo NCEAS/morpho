@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-22 02:01:08 $'
-* '$Revision: 1.29 $'
+*     '$Date: 2004-04-29 22:24:31 $'
+* '$Revision: 1.30 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -832,7 +832,7 @@ public class Taxonomic extends AbstractUIPage {
         } else {
 
           //cmp--;
-          prevHier = hierarchies[1];
+          prevHier = hierarchies[i];
           int start = 0;
           int temp = 0;
           int idx = -1;
