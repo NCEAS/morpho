@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-08 19:30:35 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-08-17 21:48:21 $'
+ * '$Revision: 1.14.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import java.util.*;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /* 
 A vector-like class that uses persistent storage (ObjectFile) rather than RAM for
@@ -116,9 +117,26 @@ public class PersistentVector
       {
         objName = objName + objNum;
       }
-      obj = new ObjectFile(objName);  
+      obj = new ObjectFile(objName);
+      if (obj != null) {
+        //Log.debug(1, "ObjectFile created");
+      } else {
+        Log.debug(1, "ObjectFile NOT created");
+      }
     }
-    catch (Exception w) {}
+    catch (Exception w) {
+      Log.debug(1, "Problem during creation of new PersistentVector");
+    }
+  }
+  
+  public void dispose()
+  {
+    if (obj != null) {
+      obj.dispose();
+      obj = null;
+    }
+    objName = null;
+    objectList = null;
   }
   
   /*

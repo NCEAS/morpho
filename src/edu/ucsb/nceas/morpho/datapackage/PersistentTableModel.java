@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-23 14:55:06 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-08-17 21:48:21 $'
+ * '$Revision: 1.11.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,15 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     pv = perV;
     this.colNames = colNames;
     changeLogStack = new Stack();
+  }
+        
+  public void dispose() 
+  {
+    changeLogStack = null;
+    if (pv!=null) {
+      pv.dispose();
+      pv = null;
+    }
   }
         
   public PersistentVector getPersistentVector() {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-07 23:25:15 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2003-08-17 21:48:21 $'
+ * '$Revision: 1.58.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -345,7 +345,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   }
  
-
+ public void dispose() {
+   if (dv!=null) {
+     dv.dispose();
+     dv = null;
+   }
+   // need to add dispose for metadata info?
+ }
 
   /*
    * Initialization continues here. In particular, the tabbed panels

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-07 23:25:15 $'
- * '$Revision: 1.81 $'
+ *     '$Date: 2003-08-17 21:48:21 $'
+ * '$Revision: 1.81.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -455,6 +455,20 @@ public class DataViewer extends javax.swing.JPanel
         separator = profile.get("separator", 0);
         separator = separator.trim();
         this.dataFile = dataFile;
+    }
+    
+    public void dispose() {
+      if (table != null) {
+        table = null;
+      }
+      if (ptm!=null) {
+        ptm.dispose();
+      }
+      if (pv!=null) {
+        pv.dispose();
+      }
+      ptm = null;
+      pv = null;      
     }
     
     public PersistentVector getPV() {

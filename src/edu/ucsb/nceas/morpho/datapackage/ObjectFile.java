@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-09 18:25:44 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-08-17 21:48:21 $'
+ * '$Revision: 1.3.6.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 import java.io.*;
 import java.util.*;
+import edu.ucsb.nceas.morpho.util.Log;
 
 public class ObjectFile
 {
@@ -57,6 +58,19 @@ public class ObjectFile
     File f = new File(sName);
     if (f.exists()) f.delete();
     dataFile = new RandomAccessFile(sName, "rw");
+  }
+  
+  public void dispose()
+  {
+    try {
+      dataFile.close();
+    }
+    catch (Exception e) {
+      Log.debug(20, "Failed to close datafile!");
+    }
+    File f = new File(sFileName);
+    f.delete();
+    dataFile = null;
   }
     
   /*
