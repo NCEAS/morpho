@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-31 16:46:33 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-01 01:09:02 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,15 +42,19 @@ public class PackageWizardShell extends javax.swing.JFrame
 {
   private ClientFramework framework;
   private PackageWizard visiblePackageWizard;
+  private int frameWizardIndex = 0;
+  private int currentFrame = 0;
   private Vector frames;
-  private int framesIndex = 0;
   private Vector previousFrames = new Vector();
-  private boolean getdataFlag = false;
+  private Vector frameWizards = new Vector();
   private Hashtable frameObjects;
+  private boolean getdataFlag = false;
   private boolean lastFrameFlag = false;
   private boolean getdataVisibleFlag = false;
+  private boolean previousFlag = false;
   
   //visual components
+  private Container contentPane;
   private JPanel descriptionPanel;
   private JTextArea descriptionText;
   private JPanel wizardFrame;
@@ -61,6 +65,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JPanel donePanel = new JPanel();
   private JCheckBox openCheckBox;
   private JButton saveToMetacatButton;
+  private JPanel activeWizardPanel = new JPanel();
   
   public PackageWizardShell()
   {
@@ -104,10 +109,10 @@ public class PackageWizardShell extends javax.swing.JFrame
       e.printStackTrace();
     }
     
-    Container contentPane = getContentPane();
+    contentPane = getContentPane();
     JPanel mainWizardFrame = createWizardFrame();
     contentPane.add(mainWizardFrame);
-    //get the context of the top frame (not the button frame) so that we
+    //get the context of the middle frame (not the button frame) so that we
     //can add the first wizard frame to it.
     descriptionPanel = (JPanel)mainWizardFrame.getComponent(0);
     changeDescription("Enter your contact information and " +
@@ -116,36 +121,37 @@ public class PackageWizardShell extends javax.swing.JFrame
     wizardFrame = (JPanel)mainWizardFrame.getComponent(1);
     //get the location of the main wizard frame config file, parse it
     //and have it draw itself into the topWizardFrame
+    
     frames = pwsp.getFrames();
-    frameObjects = pwsp.getFrameObjects();
-    Hashtable firstFrameHash = getNextFrame();
-    String path = (String)firstFrameHash.get("path");
-    PackageWizard pw = new PackageWizard(framework, wizardFrame, path);
-    visiblePackageWizard = pw;
-  }
-  
-  /**
-   * returns the hashtable representing the next frame to be displayed
-   */
-  private Hashtable getNextFrame()
-  {
-    Hashtable frameHash = (Hashtable)frames.elementAt(framesIndex);
-    
-    framesIndex++;
-    
-    if(framesIndex >= 2)
+    System.out.println("frames: " + frames);
+    for(int i=0; i<frames.size(); i++)
     {
-      previous.setVisible(true);
+      Hashtable frame = (Hashtable)frames.elementAt(i);
+      JPanel framePanel = new JPanel();
+      WizardFrameContainer wfc = new WizardFrameContainer(framePanel);
+      wfc.description = (String)frame.get("description");
+      System.out.println("description: " + wfc.description);
+      if(frame.containsKey("GETDATA"))
+      {
+        JButton chooseFileButton = new JButton("Browse...");
+        fileTextField = new JTextField();
+        fileTextField.setColumns(25);
+        framePanel.add(fileTextField);
+        framePanel.add(chooseFileButton);
+        wfc.textfield = fileTextField;
+        wfc.type = "GETDATA";
+      }
+      else
+      {
+        PackageWizard pw = new PackageWizard(framework, framePanel, (String)frame.get("path"));
+        wfc.wizard = pw;
+        wfc.type = "WIZARD";
+      }
+      frameWizards.addElement(wfc);
     }
     
-    if(framesIndex == frames.size())
-    {
-      lastFrameFlag = true;
-    }
-    
-    
-    
-    return frameHash;
+    wizardFrame.add(((WizardFrameContainer)frameWizards.elementAt(frameWizardIndex)).panel);
+    frameWizardIndex++;
   }
   
   /**
@@ -163,6 +169,43 @@ public class PackageWizardShell extends javax.swing.JFrame
   }
   
   /**
+   * returns the current description in the description panel
+   */
+  private String getDescription()
+  {
+    return descriptionText.getText();
+  }
+  
+  /**
+   * Handles the action when the user presses the 'next' button.
+   */
+  private void handleNextAction()
+  {
+    //remove the current panel
+    //display the next panel
+    wizardFrame.removeAll();
+    System.out.println("adding frame");
+    
+    WizardFrameContainer nextContainer = (WizardFrameContainer)frameWizards.elementAt(frameWizardIndex);
+    changeDescription(nextContainer.description);
+    wizardFrame.add(nextContainer.panel);
+    System.out.println("description: " + nextContainer.description);
+    nextContainer.panel.setVisible(true);
+    contentPane.doLayout();
+    frameWizardIndex++;
+  }
+  
+  /**
+   * Handles the action when the user presses the 'previous' button
+   */
+  private void handlePreviousAction()
+  {
+    //wizardFrame.removeAll();
+    frameWizardIndex--;
+    wizardFrame.add(((WizardFrameContainer)frameWizards.elementAt(frameWizardIndex)).panel);
+  }
+  
+  /**
    * handles the actions from the menus if this package wizard is 
    * run in stand alone mode.  
    */
@@ -177,121 +220,12 @@ public class PackageWizardShell extends javax.swing.JFrame
     framework.debug(9, "action fired: |" + command + "|");
     
     if(command.equals("<< Previous"))
-    { //go back a frame
-      System.out.println("go back a frame");
+    { 
+      handlePreviousAction();
     }
     else if(command.equals("Next >>"))
     { 
-      //get the data from the current frame and display the next one
-      
-      if(getdataVisibleFlag)
-      { //if the get data screen is visible, make it invisible
-        getFilePanel.setVisible(false);
-        getdataVisibleFlag = false;
-      }
-      
-      //save the current frame
-      //in case the user presses the previous button.
-      WizardFrame prevFrame = new WizardFrame(visiblePackageWizard);
-      if(!getdataFlag)
-      { 
-        String xml = visiblePackageWizard.getXML();
-        if(xml == null)
-        { //the user pressed the 'no' button on the 'are you sure you want
-          //to create an invalid document' dialog
-          return;
-        }
-        
-        StringReader xmlReader = new StringReader(xml);
-        String id = framework.getNextId();
-        prevFrame.id = id;
-        prevFrame.file = localDataStore.saveFile(id, xmlReader, false);
-        previousFrames.addElement(prevFrame);
-      }
-      else
-      {
-        File datafile = new File(fileTextField.getText());
-        File f = null;
-        FileReader fr = null;
-        try
-        {
-          fr = new FileReader(datafile);
-        }
-        catch(FileNotFoundException fnfe)
-        {
-          JOptionPane.showConfirmDialog(this,
-                                 "The file you selected was not found.",
-                                 "File Not Found", 
-                                 JOptionPane.OK_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-          return;
-        }
-        
-        String id = framework.getNextId();
-        framework.debug(9, "data file id generated: " + id);
-        f = localDataStore.saveFile(id, fr, false);
-        WizardFrame wf = new WizardFrame(getFilePanel);
-        wf.file = f;
-        wf.id = id;
-        previousFrames.addElement(wf);
-        getdataFlag = false;
-      }
-      
-      visiblePackageWizard.setVisible(false); //make current wizard invisible
-      
-      Hashtable nextFrame = getNextFrame();
-      
-      if(lastFrameFlag)
-      { //we are on the last frame, change the next button to 'finish' and
-        //prepare to write out the triples in the package
-        System.out.println("LAST FRAME");
-        next.setText("Finish");
-      }
-      
-      System.out.println("nextFrame: " + nextFrame.toString());
-      if(nextFrame.containsKey("GETDATA"))
-      { //display the data acquisition frame
-        
-        //JPanel nextPanel = createDataAcquisitionPanel();
-        ConfigXML config = framework.getConfiguration();
-        String datadir = config.get("local_xml_directory", 0);
-        filechooser = new JFileChooser(datadir);
-        changeDescription("Click the \"Choose File\" button " +
-                          "to choose the data file that you want " +
-                          "your metadata to describe.");
-        
-        JButton showOpenDialog = new JButton("Choose File");
-        
-        //showOpenDialog.setPreferredSize(new Dimension(200, 100));
-        //add an icon to the button here!
-        showOpenDialog.addActionListener(this);
-        fileTextField.setColumns(25);
-        getFilePanel.add(fileTextField);
-        getFilePanel.add(showOpenDialog);
-        wizardFrame.add(getFilePanel);
-        getdataFlag = true;
-        getdataVisibleFlag = true;
-      }
-      else
-      { //show next frame in the frames vector
-        if(getdataFlag)
-        {//hide the getdata screen
-          System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-          wizardFrame.removeAll();
-          getdataFlag = false;
-        }
-        else
-        {
-          visiblePackageWizard.setVisible(false);
-        }
-        
-        String path = (String)nextFrame.get("path");
-        String name = (String)nextFrame.get("name");
-        PackageWizard pw = new PackageWizard(framework, wizardFrame, path);
-        visiblePackageWizard = pw;
-        String description = (String)nextFrame.get("description");
-        changeDescription(description);
-      }
+      handleNextAction();
     }
     else if(command.equals("Choose File"))
     {
@@ -312,40 +246,18 @@ public class PackageWizardShell extends javax.swing.JFrame
                         "box if you would like your new package opened in " + 
                         "the package editor.");
       
-      String xml = visiblePackageWizard.getXML();
-      if(xml == null)
-      { //the user pressed the 'no' button on the 'are you sure you want
-        //to create an invalid document' dialog
-        return;
-      }
       
-      //change the buttons
-      next.setText("Done");
-      previous.setVisible(false);
-      
-      //save the last frames data
-      WizardFrame prevFrame = new WizardFrame(visiblePackageWizard);
-      StringReader xmlReader = new StringReader(xml);
-      String id = framework.getNextId();
-      prevFrame.id = id;
-      prevFrame.file = localDataStore.saveFile(id, xmlReader, false);
-      previousFrames.addElement(prevFrame);
-      visiblePackageWizard.setVisible(false);
-      
-      //create the new frame with the metacat save button and a check box
-      //asking if the user wants to open the new package in the package
-      //editor
-      donePanel = new JPanel();
-      openCheckBox = new JCheckBox("Open new package in package " +
-                                             "editor?", true);
-      saveToMetacatButton = new JButton("Save To Metacat");
-      donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
-      donePanel.add(Box.createRigidArea(new Dimension(0,150)));
-      donePanel.add(Box.createVerticalGlue());
-      donePanel.add(saveToMetacatButton);
-      donePanel.add(Box.createRigidArea(new Dimension(0,20)));
-      donePanel.add(openCheckBox);
-      wizardFrame.add(donePanel);
+        donePanel = new JPanel();
+        openCheckBox = new JCheckBox("Open new package in package " +
+                                               "editor?", true);
+        saveToMetacatButton = new JButton("Save To Metacat");
+        donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
+        donePanel.add(Box.createRigidArea(new Dimension(0,150)));
+        donePanel.add(Box.createVerticalGlue());
+        donePanel.add(saveToMetacatButton);
+        donePanel.add(Box.createRigidArea(new Dimension(0,20)));
+        donePanel.add(openCheckBox);
+        wizardFrame.add(donePanel);
     }
     else if(command.equals("Done"))
     {
@@ -371,7 +283,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     wizardPanel.setBorder(BorderFactory.createLineBorder(new Color(255,255,255)));
     buttonPanel.setMaximumSize(new Dimension(595, 48));
     descriptionPanel.setMaximumSize(new Dimension(595, 48));
-    //buttonPanel.setBorder(BorderFactory.createLineBorder(new Color(255,255,255)));
     
     previous = new JButton("<< Previous");
     previous.setVisible(false);
@@ -400,20 +311,57 @@ public class PackageWizardShell extends javax.swing.JFrame
     pws.show();
   }
   
-  private class WizardFrame
+  private class WizardFrameContainer
   {
     protected String id = null;
     protected PackageWizard wizard = null;
     protected File file = null;
     protected JPanel panel = null;
-    WizardFrame(PackageWizard pw)
-    {
-      wizard = pw;
-    }
+    protected String description = null;
+    protected String type = null;
+    protected JTextField textfield = null;
+    private FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
     
-    WizardFrame(JPanel panel)
+    WizardFrameContainer(JPanel panel)
     {
       this.panel = panel;
+    }
+    
+    protected File getFile()
+    {
+      if(type.equals("WIZARD"))
+      {
+        id = framework.getNextId();
+        String xml = wizard.getXML();
+        if(xml == null)
+        {
+          return null;
+        }
+        StringReader xmlReader = new StringReader(xml);
+        file = localDataStore.saveFile(id, xmlReader, false);
+        return this.file;
+      }
+      else
+      {
+        id = framework.getNextId();
+        file = new File(textfield.getText());
+        FileReader fr = null;
+        try
+        {
+          fr = new FileReader(file);
+        }
+        catch(FileNotFoundException fnfe)
+        {
+          JOptionPane.showConfirmDialog(panel,
+                                 "The file you selected was not found.",
+                                 "File Not Found", 
+                                 JOptionPane.OK_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+          return null;
+        }
+        file = localDataStore.saveFile(id, fr, false);
+        return this.file;
+      }
     }
   }
 }
