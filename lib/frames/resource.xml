@@ -1,46 +1,42 @@
 <?xml version="1.0"?>
-<wizard size="450x400" dtd="eml-dataset.dtd" 
+<wizard size="420x400" dtd="eml-dataset.dtd" 
         doctype="-//NCEAS//eml-dataset-2.0//EN">
-  <group label="Base Information" field="dataset"  type="panel">
+  <group label="Base Information" field="dataset" type="panel">
     <group>
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" 
                editable="no" defaulttext="to be assigned" visible="no"/>
-      <textbox label="Short Name" field="shortName" size="10" />
-      <textbox label="Title" field="title" size="10" allowNull="no" 
-               defaulttext="test title" />
+      <textbox label="Short Name" field="shortName" size="20" />
+      <textbox label="Title" field="title" size="20" allowNull="no" 
+               defaulttext="Enter Data Package Title Here" />
     </group>
   
-    <group label="Originator" repeatable="yes" field="originator" allowNull="no"
-           size="400x700">
+    <group label="Originator" repeatable="yes" field="originator" allowNull="no">
       <group  label="Name and Organization">
-      <textbox label="Salutation" field="individualName/salutation" size="5" 
-               repeatable="yes"/>
-      <textbox label="Given Name" field="individualName/givenName" size="10" 
-               repeatable="yes"/>
-      <textbox label="Sur Name" field="individualName/surName" size="10" 
+      <textbox label="Salutation" field="individualName/salutation" size="5"/>
+      <textbox label="Given Name" field="individualName/givenName" size="15"/>
+      <textbox label="Sur Name" field="individualName/surName" size="20" 
                allowNull="no" defaulttext="berkley"/>
       
-      <textbox label="Organization" field="organizationName" size="10" 
+      <textbox label="Organization" field="organizationName" size="15" 
                repeatable="yes"/>
       </group>
       <group  label="Address Information">
-      <textbox label="Address" field="address/deliveryPoint" size="10" 
+      <textbox label="Address" field="address/deliveryPoint" size="15" 
                repeatable="yes"/>
       <textbox label="City" field="address/city" size="10" />
       <textbox label="State" field="address/administrativeArea" size="10" />
-      <textbox label="ZIP" field="address/postalCode" size="10" />
-      <textbox label="Country" field="address/country" size="10" defaulttext="USA"/>
+      <textbox label="ZIP" field="address/postalCode" size="5" />
+      <textbox label="Country" field="address/country" size="3" defaulttext="USA"/>
       </group>
 
       <group label="Phone and Electronic Information">
       <group field="@phone">
-        <textbox label="Phone Number" field="FIELDVALUE" size="10"/>
+        <textbox label="Phone Number" field="FIELDVALUE" size="15"/>
         <textbox label="Phone Type" field="phonetype" size="10" defaulttext="voice"/>
       </group>
       <textbox label="Email address" field="electronicMailAddress" 
-               size="10" />
-      <textbox label="Web Site" field="onlineLink" size="10" 
-               repeatable="yes" 
+               size="20" />
+      <textbox label="Web Site" field="onlineLink" size="15" 
                defaulttext="http://knb.ecoinformatics.org"/>
       <combobox label="Originators Role" field="role" size="10" 
               allowNull="no" repeatable="yes" defaulttext="originator">

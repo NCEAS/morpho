@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 22:41:04 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-06-18 23:07:58 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,24 +83,26 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JCheckBox saveToMetacatCheckBox;
   private JCheckBox publicAccessCheckBox;
   private JButton saveToMetacatButton;
+  private JButton cancelButton = new JButton();
   
-  private static final String getDataDescription = "Enter the path to the " +
+  private String getDataDescription;/* = "Enter the path to the " +
                         "data file that you wish to " +
                         "describe. Click the 'Browse' button to browse for " +
-                        "the file.";
-  private static final String finishDescription = "The Package Wizard is now " +
+                        "the file.";*/
+  private String finishDescription;/* = "The Package Wizard is now " +
                               "ready to create your new package.  The list " +
                               "shows the files that the package will contain." + 
                               "If you want to revise your " +
                               "metadata, click the previous button to go back.";
-  
+                              */
+  private Hashtable descriptions = new Hashtable();
   
   public PackageWizardShell()
   {
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(800, 600);
+    setSize(620, 550);
   }
   
   public PackageWizardShell(ClientFramework cf)
@@ -109,7 +111,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     setTitle("Data Package Wizard");
     initComponents();
     pack();
-    setSize(800, 600);
+    setSize(620, 550);
   }
   
   private void initComponents()
@@ -136,30 +138,41 @@ public class PackageWizardShell extends javax.swing.JFrame
                       "PackageWizardShell.initComponents().");
       e.printStackTrace();
     }
+    descriptions = pwsp.getDescriptions();
     
     contentPane = getContentPane();
     JPanel mainWizardFrame = createWizardFrame();
     contentPane.add(mainWizardFrame);
-    //get the context of the middle frame (not the button frame) so that we
-    //can add the first wizard frame to it.
-    //descriptionPanel = (JPanel)mainWizardFrame.getComponent(0);
-    String description = "Enter your contact information and " +
-                          "basic data package information here.";
+    String description = (String)descriptions.get(pwsp.getMainFrame());
+    
     changeDescription(description);
+    getDataDescription = (String)descriptions.get("getData");
+    finishDescription = (String)descriptions.get("Finish");
     
     //wizardFrame = (JPanel)mainWizardFrame.getComponent(1);
     //get the location of the main wizard frame config file, parse it
     //and have it draw itself into the topWizardFrame
     
     frames = pwsp.getFrames();
+    if(descriptions.containsKey("InitialDescription"))
+    {
+      Hashtable temphash = new Hashtable();
+      temphash.put("InitialDescription", "");
+      frames.insertElementAt(temphash, 0);
+    }
     triplesFile = pwsp.getMainFrame();
-    
+    System.out.println("frames: " + frames.toString());
     for(int i=0; i<frames.size(); i++)
     {
       Hashtable frame = (Hashtable)frames.elementAt(i);
       JPanel framePanel = new JPanel();
       WizardFrameContainer wfc = new WizardFrameContainer(framePanel);
-      wfc.description = (String)frame.get("description");
+      System.out.println("frame: " + frame.toString());
+      if(frame.containsKey("name"))
+      {
+        wfc.description = (String)descriptions.get((String)frame.get("name"));
+      }
+      
       wfc.attributes = frame;
       if(frame.containsKey("GETDATA"))
       {
@@ -174,6 +187,16 @@ public class PackageWizardShell extends javax.swing.JFrame
         wfc.type = "GETDATA";
         wfc.description = getDataDescription;
       }
+      else if(frame.containsKey("InitialDescription"))
+      {
+        String initdesc = (String)descriptions.get("InitialDescription");
+        JLabel initdescLabel = new JLabel("<html>" + initdesc + "</html>");
+        initdescLabel.setPreferredSize(new Dimension(400, 400));
+        framePanel.add(initdescLabel);
+        wfc.type="IGNORE";
+        wfc.description = "Instructions";
+        wfc.attributes.put("name", "InitialDescription");
+      }
       else
       {
         PackageWizard pw = new PackageWizard(framework, framePanel, 
@@ -186,7 +209,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     WizardFrameContainer nextContainer = (WizardFrameContainer)
                                        frameWizards.elementAt(frameWizardIndex);
-    nextContainer.description = description;
+    //nextContainer.description = description;
+    changeDescription(nextContainer.description);
     activeContainer = nextContainer;
     wizardFrame.add(nextContainer.panel);
   }
@@ -250,8 +274,6 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
     }
     
-    
-    
     if(frameWizardIndex == frameWizards.size()-1)
     { //we are at the end of the frames...
       
@@ -277,24 +299,40 @@ public class PackageWizardShell extends javax.swing.JFrame
         String id = wfcont.id;
         Hashtable atts = wfcont.attributes;
         String name = (String)atts.get("name");
+        String item = name;
         if(name == null)
         {
-          name = "Data";
+          name = "Data File";
+          item = wfcont.originalDataFilePath;
         }
-        String item = name;
-        listContent.add(item);
+        else if(!name.equals("InitialDescription"))
+        {
+          if(wfcont.attributes.containsKey("displayNamePath"))
+          {
+            String namePath = (String)wfcont.attributes.get("displayNamePath");
+            NodeList namelist = getPathContent(wfcont.file, namePath);
+            Node itemnode = namelist.item(0);
+            item = (String)itemnode.getFirstChild().getNodeValue().trim();
+          }
+        }
+        
+        if(!item.equals("InitialDescription"))
+        {
+          listContent.add(item);
+        }
       }
       
       donePanel = new JPanel();
       openCheckBox = new JCheckBox("Open new package in package " +
                                              "editor?", true);
-      saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", false);
+      saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", true);
       publicAccessCheckBox = new JCheckBox("Package should be publicly " +
                                            "readable (on Metacat)?", true);
       //saveToMetacatButton = new JButton("Save To Metacat");
       JList idlist = new JList(listContent);
       idlist.setPreferredSize(new Dimension(100,100));
-      JLabel listLabel = new JLabel("You are creating the following files: ");
+      JLabel listLabel = new JLabel("You are creating the following package " +
+                                    "members: ");
       donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
       donePanel.add(Box.createRigidArea(new Dimension(0,90)));
       donePanel.add(Box.createVerticalGlue());
@@ -304,8 +342,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       donePanel.add(saveToMetacatCheckBox);
       donePanel.add(Box.createRigidArea(new Dimension(0,20)));
       donePanel.add(publicAccessCheckBox);
-      donePanel.add(Box.createRigidArea(new Dimension(0,20)));
-      donePanel.add(openCheckBox);
+      //donePanel.add(Box.createRigidArea(new Dimension(0,20)));
+      //donePanel.add(openCheckBox);
       wizardFrame.add(donePanel);
       wizardFrame.validate();
       next.setText("Finish");
@@ -334,7 +372,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       
       if(frameWizardIndex > 0)
       {
-        previous.setVisible(true);
+        previous.setEnabled(true);
       }
     }
     
@@ -367,7 +405,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     if(frameWizardIndex == 0)
     {
-      previous.setVisible(false);
+      previous.setEnabled(false);
     }
     
     if(frameWizardIndex == frameWizards.size()-1)
@@ -411,6 +449,11 @@ public class PackageWizardShell extends javax.swing.JFrame
       {
         return;
       }
+      
+      if(f.getName().equals("FAKE"))
+      {
+        continue;
+      }
       Vector fileVec = new Vector();
       fileVec.addElement(wfc.id);
       fileVec.addElement(f);
@@ -442,7 +485,10 @@ public class PackageWizardShell extends javax.swing.JFrame
         v = new Vector();
       }
       
-      v.addElement(id);
+      if(id != null)
+      {
+        v.addElement(id);
+      }
       tripleNames.put(name, v);
     }
     
@@ -672,23 +718,90 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
     }
     
-    if(openCheckBox.isSelected())
-    {
-      WizardFrameContainer wfc = (WizardFrameContainer)
-                                  frameWizards.elementAt(0);
-      String location = DataPackage.LOCAL;
-      String identifier = wfc.id;
-      Vector relations = triples.getCollection();
-      //framework.debug(11, "location: " + location + " identifier: " + 
-      //                identifier + " relations: " + relations.toString());
-      DataPackage dp = new DataPackage(location, identifier, 
-                                     relations, framework);
-      DataPackageGUI gui = new DataPackageGUI(framework, dp);
-      gui.show();
-    }
-    
+    WizardFrameContainer wfc = (WizardFrameContainer)
+                                frameWizards.elementAt(1);
+    String location = DataPackage.LOCAL;
+    String identifier = wfc.id;
+    Vector relations = triples.getCollection();
+    //framework.debug(11, "location: " + location + " identifier: " + 
+    //                identifier + " relations: " + relations.toString());
+    DataPackage dp = new DataPackage(location, identifier, 
+                                   relations, framework);
+    DataPackageGUI gui = new DataPackageGUI(framework, dp);
+    gui.show();
+        
     //make the package wizard go away
     this.hide();
+  }
+  
+  /**
+   * gets the content of a tag in a given xml file with the given path
+   */
+  public NodeList getPathContent(File f, String path)
+  {
+    if(f == null)
+    {
+      return null;
+    }
+   
+    DOMParser parser = new DOMParser();
+    InputSource in;
+    FileInputStream fs;
+    
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try 
+    {
+      Catalog myCatalog = new Catalog();
+      myCatalog.loadSystemCatalogs();
+      ConfigXML config = framework.getConfiguration();
+      String catalogPath = config.get("local_catalog_path", 0);
+      myCatalog.parseCatalog(catalogPath);
+      cer.setCatalog(myCatalog);
+    } 
+    catch (Exception e) 
+    {
+      ClientFramework.debug(11, "Problem creating Catalog in " +
+                   "packagewizardshell.handleFinishAction!" + e.toString());
+    }
+    
+    parser.setEntityResolver(cer);
+    
+    try
+    { 
+      fs = new FileInputStream(f);
+      in = new InputSource(fs);
+    }
+    catch(FileNotFoundException fnf)
+    {
+      fnf.printStackTrace();
+      return null;
+    }
+    
+    try
+    {
+      parser.parse(in);
+      fs.close();
+    }
+    catch(Exception e1)
+    {
+      System.err.println("File: " + f.getPath() + " : parse threw: " + 
+                         e1.toString());
+      return null;
+    }
+    
+    Document doc = parser.getDocument();
+    
+    try
+    {
+      NodeList docNodeList = XPathAPI.selectNodeList(doc, path);
+      return docNodeList;
+    }
+    catch(SAXException se)
+    {
+      System.err.println("file: " + f.getPath() + " : parse threw: " + 
+                         se.toString());
+      return null;
+    }
   }
   
   /**
@@ -723,6 +836,21 @@ public class PackageWizardShell extends javax.swing.JFrame
     {
       handleFinishAction();
     }
+    else if(command.equals("Cancel"))
+    {
+      int choice = JOptionPane.YES_OPTION;
+        choice = JOptionPane.showConfirmDialog(null, 
+                               "Are you sure that you want to cancel the " +
+                               "Package Wizard now?  All created documents " +
+                               "will be lost.", 
+                               "Package Wizard", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          this.dispose();
+        }
+    }
   }
   
   /**
@@ -737,7 +865,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     headPanel = new JPanel();
     
     JLabel headLabel = new JLabel();
-    headLabel.setText("Creating new Package");
+    headLabel.setText("Package Wizard");
     ImageIcon head = new ImageIcon(
                          framework.getClass().getResource("smallheader-bg.gif"));
     headLabel.setIcon(head);
@@ -772,15 +900,21 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     previous = new JButton("Previous", new ImageIcon(getClass().
                getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
-    previous.setVisible(false);
+    previous.setEnabled(false);
     next = new JButton("Next", new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/navigation/Forward16.gif")));
     next.setHorizontalTextPosition(SwingConstants.LEFT);
+    
     previous.addActionListener(this);
     next.addActionListener(this);
+    cancelButton = new JButton("Cancel", new ImageIcon(getClass().
+                   getResource("/toolbarButtonGraphics/general/Stop16.gif")));
+    cancelButton.addActionListener(this);
     BoxLayout buttonLayout = new BoxLayout(buttonPanel, BoxLayout.X_AXIS);
     buttonPanel.setLayout(buttonLayout);
     buttonPanel.add(Box.createHorizontalGlue());
+    buttonPanel.add(cancelButton);
+    buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
     buttonPanel.add(previous);
     buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
     buttonPanel.add(next);
@@ -1057,6 +1191,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     protected String type = null;
     protected JTextField textfield = null;
     protected Hashtable attributes = null;
+    protected String originalDataFilePath = null;
     private FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
     
     WizardFrameContainer(JPanel panel)
@@ -1099,6 +1234,10 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         return this.file;
       }
+      else if(type.equals("IGNORE"))
+      {
+        return new File("FAKE");
+      }
       else
       {
         if(temp && id == null)
@@ -1111,6 +1250,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
 
         file = new File(textfield.getText());
+        originalDataFilePath = textfield.getText();
         FileReader fr = null;
         try
         {

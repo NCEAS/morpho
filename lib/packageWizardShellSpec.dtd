@@ -1,4 +1,4 @@
-<!ELEMENT packageWizard (specs, frame+)>
+<!ELEMENT packageWizard (specs, frame+, descriptions)>
 <!ATTLIST packageWizard size (#PCDATA)> <!--the size of the wizard shell in pixels
                                             in MxN form (ex. 500x500).-->
 <!ELEMENT specs (spec+)>
@@ -21,3 +21,8 @@
                                           the description box of this frame-->
                 repeatable ("yes" | "no") "no"> <!--whether a user can make more 
                                                     than one of these frames-->
+<!ELEMENT descriptions (description*)> <!--a list of descriptions for the non-
+                                           frame tag frames.  -->
+<!ELEMENT description (#PCDATA)>
+<!ATTLIST description name (#PCDATA)> <!--the name of the frame that the 
+                                          description is for-->

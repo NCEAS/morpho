@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-15 22:18:04 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-06-18 23:07:58 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     initComponents();
     pack();
     setSize(800, 600);
-    this.show();
   }
   
   /**

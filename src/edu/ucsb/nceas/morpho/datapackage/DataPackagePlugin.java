@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-18 23:07:58 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import java.awt.event.*;
 
 public class DataPackagePlugin 
        implements PluginInterface, ServiceProvider, DataPackageInterface
@@ -105,7 +106,21 @@ public class DataPackagePlugin
         framework.debug(20, "Action fired: New Data Package");
         //DataPackage dp = new DataPackage();
         //DataPackageGUI gui = new DataPackageGUI(framework, dp);
-        PackageWizardShell pws = new PackageWizardShell(framework);
+        final PackageWizardShell pws = new PackageWizardShell(framework);
+        pws.setName("Package Wizard");
+        framework.addWindow(pws);
+        pws.addWindowListener(new WindowAdapter()
+        {
+          public void windowClosed(WindowEvent e)
+          {
+            framework.removeWindow(pws);
+          }
+          
+          public void windowClosing(WindowEvent e)
+          {
+            framework.removeWindow(pws);
+          }
+        });
         pws.show();
       }
     };
@@ -138,6 +153,21 @@ public class DataPackagePlugin
                                      relations, framework);
     //framework.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
-    DataPackageGUI gui = new DataPackageGUI(framework, dp);
+    final DataPackageGUI gui = new DataPackageGUI(framework, dp);
+    gui.addWindowListener(new WindowAdapter()
+    {
+      public void windowClosed(WindowEvent e)
+      {
+        framework.removeWindow(gui);
+      }
+      
+      public void windowClosing(WindowEvent e)
+      {
+        framework.removeWindow(gui);
+      }
+    });
+    gui.setName("Package Editor: " + dp.getID());
+    framework.addWindow(gui);
+    gui.show();
   }
 }

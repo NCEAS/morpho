@@ -3,20 +3,58 @@
     <spec name="Resource" 
           path="./lib/frames/resource.xml" 
           idtag="/dataset/identifier" 
-          triplestag="/dataset/triple"/>
-    <spec name="Entity" 
+          triplestag="/dataset/triple"
+          displayNamePath="/dataset/title"/>
+    <spec name="Table" 
           path="./lib/frames/entity.xml" 
           idtag="/table-entity/identifier" 
-          relatedTo="DATAFILE" />
+          relatedTo="DATAFILE" 
+          displayNamePath="/table-entity/entityName"/>
     <!--<spec name="Attribute" 
           path="./lib/frames/attribute.xml" 
           idtag="/attribute/identifier"
           relatedTo="Entity"/>-->
   </specs>
   
-  <frame name="Entity"
-         description="Data entered here should describe the enties in your dataset." 
+  <frame name="Table"
          repeatable="yes"/>
+         
   <!--<frame name="Attribute" description="Enter metadata about the attributes in your entity."/>-->
+  <descriptions>
+    <description name="InitialDescription">
+      Welcome to the Morpho Package Wizard.  This wizard will assist you in 
+      creating a data package consisting of your data file(s) and the information
+      about your data file needed to track and use it more efficiently.  You will
+      be asked to fill out a series of forms with information pertinent to your
+      data as well as to show the wizard which data file you wish to describe.
+      When the wizard is finished, your new data package will be opened in the
+      Morpho Package Editor so that you can further manipulate it.  You will
+      also be given the chance to upload you package to your Metacat server 
+      (if you have one).
+    </description>
+    <description name="getData">
+      Enter the path to the data file that you wish to describe. Click the 
+      'Browse' button to browse for the file.
+    </description>
+    <description name="Resource">
+      Enter your contact information and basic data package information here.
+      Scroll down to see more fields.  If a label is red, that field
+      is required.  If a label is a button it is repeatable.  Click the button
+      to repeat the element.  Whole groups can be repeated by clicking on the
+      'repeat' button at the top of the group.
+    </description>
+    <description name="Finish">
+      The Package Wizard is now ready to create your new package.  The list 
+      shows the files that the package will contain.  If you want to revise 
+      your metadata, click the previous button to go back.
+    </description>
+    <description name="Table">
+      Data entered here should describe the tables in your dataset.
+      If you have more than one table, you will be prompted
+      to fill in another table form when you click the 'Next'
+      button. You should fill out as many table forms as you
+      have tables in your dataset.
+    </description>
+  </descriptions>
   
 </packageWizard>

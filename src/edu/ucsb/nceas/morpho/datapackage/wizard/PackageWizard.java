@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-15 22:18:04 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2001-06-18 23:07:58 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,8 +100,9 @@ public class PackageWizard extends javax.swing.JFrame
       //create the initial tabbed pane
       mainTabbedPane = new JTabbedPane();
       mainTabbedPane.setPreferredSize(parseSize(size));
+      mainFrame = new JPanel();
       mainFrame.setPreferredSize(parseSize(size));
-      mainFrame.setMaximumSize(parseSize(size));
+      
       //contentPane.add(mainTabbedPane);
       docPanel = new JPanelWrapper();
       docPanel.element = doc;
@@ -114,6 +115,7 @@ public class PackageWizard extends javax.swing.JFrame
       e.printStackTrace();
     }
   }
+  
   
   /**
    * Creates the panels and hands off tasks to other methods
@@ -918,6 +920,7 @@ public class PackageWizard extends javax.swing.JFrame
           {
             String size = (String)tempElement.attributes.get("size");
             tempPanel.setPreferredSize(parseSize(size));
+            tempPanel.setMaximumSize(parseSize(size));
           }
           
           if(tempElement.attributes.containsKey("visible"))
@@ -948,8 +951,13 @@ public class PackageWizard extends javax.swing.JFrame
                                 BorderFactory.createTitledBorder(
                                 (String)tempElement.attributes.get("label")),
                                 BorderFactory.createEmptyBorder(4, 4, 4, 4)));
+            
+            //tempScrollPane.setVerticalScrollBarPolicy(
+            //                           JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             mainFrame.add(tempScrollPane);
+            contentPane.invalidate();
             contentPane.add(mainFrame);
+            contentPane.validate();
           }
         }
         else
@@ -990,6 +998,7 @@ public class PackageWizard extends javax.swing.JFrame
                     newe.content.addElement(newtempElement);
                     createPanel(newe, contentPane, parentPanel,
                                 new Integer(parentPanel.children.indexOf(tempPanel))); 
+                    contentPane.validate();
                     contentPane.repaint();
                   }
                 }
@@ -1087,7 +1096,6 @@ public class PackageWizard extends javax.swing.JFrame
                 public void actionPerformed(ActionEvent e) 
                 { //the user wants to repeat this element, make a copy of it
                   //and stick it in the tree.  then repaint.
-                  System.out.println("repeat");
                   XMLElement newtempElement = new XMLElement(tempElement);
                   JLabel newLabel = new JLabel(label.getText());
                   JTextFieldWrapper newtextfield = new JTextFieldWrapper();
@@ -1144,6 +1152,9 @@ public class PackageWizard extends javax.swing.JFrame
                   parentPanel2.add(layoutpanel, insertindex + 1);
                   //parentPanel.add(newLabel, insertindex + 1);
                   //parentPanel.add(newtextfield, insertindex + 2);
+                  parentPanel2.validate();
+                  parentPanel2.repaint();
+                  contentPane.validate();
                   contentPane.repaint();
                 }
               }
@@ -1298,6 +1309,9 @@ public class PackageWizard extends javax.swing.JFrame
                   parentPanel2.add(layoutpanel, insertindex + 1);
                   //parentPanel.add(newLabel, insertindex + 1);
                   //parentPanel.add(newcombofield, insertindex + 2);
+                  parentPanel2.validate();
+                  parentPanel2.repaint();
+                  contentPane.validate();
                   contentPane.repaint();
                 }
               }

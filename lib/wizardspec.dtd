@@ -10,8 +10,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-05 22:14:53 $' 
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-18 23:07:57 $' 
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,9 +37,11 @@
 <!ATTLIST group label (#PCDATA) <!--the text label for the group-->
                 field (#PCDATA) <!--the xml field that this group encompasses-->
                 size  (#PCDATA) <!--the size (in pixels) in NxM form-->
-                type  (panel | pathgrouping) "pathgrouping" 
+                type  (panel | pathgrouping | frame) "pathgrouping" 
                 <!--a panel group will create a new tab in the tabbed pane,
-                    a pathgrouping panel simply adds a new path to the nesting-->
+                    a pathgrouping panel simply adds a new path to the nesting
+                    a frame adds a top level panel that is not a tabbed pane.
+                    this can only be used at the upper most group.-->
                 repeatable (yes  | no)  "no" <!--makes this panel repeatable-->
                 layout     (flow | box) "box" <!--chooses the layout manager
                                                    for the contents of this 

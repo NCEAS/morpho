@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-05 19:01:38 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-18 23:07:58 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,9 @@ public class PackageWizardShellParser extends DefaultHandler
   private Vector frames = new Vector();
   private String mainframe = new String();
   private boolean initFlag = false;
+  private Hashtable descriptions = new Hashtable();
+  private String descname = "";
+  private boolean startflag = false;
   
   /**
    * @param xml a FileReader object that reprents a stream of XML
@@ -163,15 +166,36 @@ public class PackageWizardShellParser extends DefaultHandler
       String description = atts.getValue(1);
       Hashtable g = (Hashtable)frameObjects.remove(name);
       g.put("description", description);
+      descriptions.put(name, description);
       
-      if(atts.getLength() == 3)
+      if(atts.getLength() == 2)
       {
-        String repeatable = atts.getValue(2);
+        String repeatable = atts.getValue(1);
         g.put("repeatable", repeatable);
       }
       frameObjects.put(name, g);
       frames.addElement(frameObjects.get(name));
     }
+    else if(currentTag.equals("description"))
+    {
+      descname = (String)atts.getValue(0);
+      startflag = true;
+    }
+  }
+  
+  public void characters(char[] ch, int start, int length)
+  {
+    if(startflag && currentTag.equals("description"))
+    {
+      String desc = new String(ch, start, length);
+      descriptions.put(descname, desc);
+      startflag = false;
+    }
+  }
+  
+  public Hashtable getDescriptions()
+  {
+    return descriptions;
   }
   
   public Hashtable getFrameObjects()
