@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-17 15:43:09 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-17 20:03:42 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import javax.swing.*;
 import com.symantec.itools.javax.swing.JToolBarSeparator;
 import com.symantec.itools.javax.swing.icons.ImageIcon;
 
+import edu.ucsb.nceas.morpho.framework.*;
 
 /**
  * A test window for launching the QueryDialog
@@ -215,7 +216,7 @@ public class LaunchFrame extends javax.swing.JFrame
 		try {
 			// QueryDialog Create and show as non-modal
 			{
-				QueryDialog QueryDialog1 = new QueryDialog();
+				QueryDialog QueryDialog1 = new QueryDialog(this,new ConfigXML("lib/config.xml"));
 				QueryDialog1.setModal(false);
 				QueryDialog1.show();
 			}

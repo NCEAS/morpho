@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-17 15:43:09 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-17 20:03:41 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,9 +154,6 @@ public class TextQueryTermPanel extends javax.swing.JComponent
 /**
  * get the text that is to be seached for.
  */
-/*
- * returns the value string; i.e. the text to be searched for
- */
 public String getValue() {
   String ret = TextValueBox.getText();
   return ret;
@@ -165,10 +162,6 @@ public String getValue() {
 /**
  * return the value of the combobox which contains the
  * search mode (i.e. contains, starts-with, etc.)
- */
-/*
- * returns the searchMode
- * i.e. (contains|starts-with|ends-with|matches-exactly)
  */
  public String getSearchMode() {
     String ret = (String)QueryTypeComboBox.getSelectedItem();
