@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-05-09 16:13:38 $'
- * '$Revision: 1.77 $'
+ *     '$Date: 2002-05-09 17:20:23 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1056,19 +1056,6 @@ public class DataPackageGUI extends javax.swing.JFrame
           fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
         }
       }
-      
-      DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 framework);
-
-      // Refresh the query results after the edit is completed
-      try {
-        ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
-        ((QueryRefreshInterface)provider).refresh();
-      } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
-      }
-
     }
     catch(Exception e)
     {
@@ -1156,6 +1143,17 @@ public class DataPackageGUI extends javax.swing.JFrame
       e.printStackTrace();
     }
     
+      DataPackage newPackage = new DataPackage(location, newPackageId, null,
+                                                 framework);
+
+      // Refresh the query results after the edit is completed
+      try {
+        ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+      } catch (ServiceNotHandledException snhe) {
+        framework.debug(6, snhe.getMessage());
+      }
     
       this.dispose();
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
