@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-29 21:34:13 $'
- * '$Revision: 1.10 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-30 16:46:16 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.framework;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Container;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -59,10 +60,16 @@ public class UIController
     private static Vector orderedMenuList;
     private static Hashtable orderedMenuActions;
     private static Vector toolbarList;
+    // A hashtable to store the pair: submenu-path, 
+    // such as synchronize - file/synchroize
+    private static Hashtable subMenuAndPath;
 
     // Constants
     public static final String SEPARATOR_PRECEDING = "separator_preceding";
     public static final String SEPARATOR_FOLLOWING = "separator_following";
+    public static final String PULL_RIGHT_MENU = "pull_right_menu";
+    public static final String YES = "yes";
+    public static final String MENU_PATH = "menu_path";
 
     /**
      * Creates a new instance of UIController, but is private because this
@@ -75,6 +82,7 @@ public class UIController
         orderedMenuList = new Vector();
         orderedMenuActions = new Hashtable();
         toolbarList = new Vector();
+        subMenuAndPath = new Hashtable();
     }
 
     /**
@@ -466,7 +474,19 @@ public class UIController
     private static void createMenuItems(String menuName, JMenu currentMenu)
     {
         Vector currentActions = (Vector)orderedMenuActions.get(menuName);
+        registerActionToMenu(currentMenu, currentActions); 
         Log.debug(50, "Creating menu items for: " + menuName + " (" +
+                currentActions.size() + " actions)");
+       
+    }
+    
+     /**
+     * Create new menu items for a particular menu
+     */
+    private static void createMenuItemsCopy(String menuName, JMenu currentMenu)
+    {
+        Vector currentActions = (Vector)orderedMenuActions.get(menuName);
+        Log.debug(20, "Creating menu items for: " + menuName + " (" +
                 currentActions.size() + " actions)");
         for (int j=0; j < currentActions.size(); j++) {
             Action currentAction = (Action)currentActions.elementAt(j);
@@ -519,4 +539,166 @@ public class UIController
             }
         }
     }
+    
+    /**
+     * Register a array actions to a menu. This method using recursion to handle
+     * pull right submenu.
+     */
+    private static void registerActionToMenu(JMenu currentMenu, Vector actions)
+    {
+      boolean pullRightMenuFlag = false;// flag for a pull right menu
+      JMenu currentPullRightMenu = null;// for a pull right menu
+      Vector subMenuActions = null; // Store the actions for submenu
+      JMenuItem currentItem = null;// for a menuitem if it is not a pull menu
+      // Make sure the meun and vector is valid
+      if (currentMenu == null || actions.size() == 0)
+      {
+        return;
+      }
+      for (int j=0; j < actions.size(); j++) 
+      {
+        Action currentAction = (Action)actions.elementAt(j);
+         // To check the action if it is a pull right menu
+        String pullRightMenu =(String)currentAction.getValue(PULL_RIGHT_MENU);
+        if (pullRightMenu !=null && pullRightMenu.equals(YES))
+        {
+          Log.debug(50, "in submenu ");
+          // Get the action's path
+          String pullRightMenuPath = (String)currentAction.getValue(MENU_PATH);
+          Log.debug(50, "Pull right Menu path: "+pullRightMenuPath);
+          // check the sub menu path if it exsit
+          /*if (pullRightMenuPath == null || pullRightMenuPath.equals("") ||
+                            isSubMenuPathExisted(pullRightMenuPath))
+          {
+            continue;
+          }*/
+          pullRightMenuFlag = true;
+          // This is pull right menu and create a new JMenu
+          currentPullRightMenu = new JMenu(currentAction);
+          // initialize subMenuActions
+          subMenuActions = new Vector();
+          // Get every subactions for this menu, the subaction menu path
+          // should contains the jmenu path
+          for ( int i =0; i< actions.size(); i++)
+          {
+            Action current = (Action)actions.elementAt(i);
+            String actionMenuPath = (String)current.getValue(MENU_PATH);
+            // If action path start will pull right menu path
+            // this mean this action is a subaction of this JMenu
+            if (actionMenuPath!=null && current!=currentAction &&
+                                  actionMenuPath.startsWith(pullRightMenuPath))
+            {
+                 Log.debug(50, "Action path : "+actionMenuPath);
+                 subMenuActions.add(current);
+            }//if
+          }//for
+          // if it is new, register the subMenu and path
+          subMenuAndPath.put(currentPullRightMenu, pullRightMenuPath);
+       }//if
+       else
+       {
+         // Handle MenuItem
+         // Get the path the action
+         // Get the action's path
+         String actionPath = (String)currentAction.getValue(MENU_PATH);
+         // Get the path of the JMenu - parameter of this mehtod
+         String paramterMenuPath = (String)subMenuAndPath.get(currentMenu);
+         // If MenuItem's path is not equals the menu's path, this means
+         // this menu item is not add to this menu skip it.
+         if (paramterMenuPath != null && actionPath != null &&
+              !paramterMenuPath.equals(actionPath))
+         {
+           continue;
+         }//if
+       }//else
+          
+       String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
+       Integer itemPosition = (Integer)currentAction.getValue("menuPosition");
+      
+       int menuPos = (itemPosition != null) ? itemPosition.intValue() : -1;
+      
+       //menuPos = -1; 
+      
+       if (menuPos >= 0) 
+       {
+         // Insert menus at the specified position
+         Log.debug(50, "Inserting Action as menu item.");
+         int menuCount = currentMenu.getMenuComponentCount();
+         if (menuPos > menuCount) {
+            menuPos = menuCount;
+         }
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING)) 
+         {
+           currentMenu.insertSeparator(menuPos);
+           menuPos++;
+         }
+         // If it is pull right menu recall this method
+         if (pullRightMenuFlag)
+         {
+           registerActionToMenu(currentPullRightMenu, subMenuActions);
+           // Add submenu to the menu
+           currentItem =currentMenu.insert(currentPullRightMenu, menuPos);
+           
+         }
+         else
+         {
+           currentItem = currentMenu.insert(currentAction, menuPos);
+           currentItem.setAccelerator(
+                    (KeyStroke)currentAction.getValue(
+                    Action.ACCELERATOR_KEY));
+         }
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING)) 
+         {
+           menuPos++;
+           currentMenu.insertSeparator(menuPos);
+         }
+      } //if
+      else
+      {
+         // Append everything else at the bottom of the menu
+         Log.debug(50, "Appending Action as menu item.");
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING)) 
+         {
+           currentMenu.addSeparator();
+         }
+         if (pullRightMenuFlag)
+         {
+           registerActionToMenu(currentPullRightMenu, subMenuActions);
+           // Add submenu to the menu
+           currentItem = currentMenu.add(currentPullRightMenu);
+           
+         }
+         else
+         {
+           currentItem = currentMenu.add(currentAction);
+           currentItem.setAccelerator(
+                    (KeyStroke)currentAction.getValue(
+                    Action.ACCELERATOR_KEY));
+         }
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING)) 
+         {
+           currentMenu.addSeparator();
+         }
+      }//else
+    }//for
+  }//registerActionToMenu
+  
+   /**
+    * Check a sub menu path already in the subMenuAndPath hashtable
+    */
+   private static boolean isSubMenuPathExisted(String path)
+   {
+       boolean flag = false;
+       Enumeration menuPath = subMenuAndPath.elements();
+       while (menuPath.hasMoreElements()) 
+       {
+            String existedPath = (String)menuPath.nextElement();
+            if (existedPath.equals(path))
+            {
+              flag = true;
+              break;
+            }//if
+       }//if
+       return flag;
+   }//isSubMenuPathExisted
 }
