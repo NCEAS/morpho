@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-19 01:42:19 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-09 23:06:20 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,12 +92,12 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
   /**
    *  Required by DataPackageWizardInterface:
-   *  method to start the wizard
+   *  method to start the Package wizard
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called 
-   *                  back when the Wizard has finished
+   *                  back when the Package Wizard has finished
    */
-  public void startWizard(DataPackageWizardListener listener) {
+  public void startPackageWizard(DataPackageWizardListener listener) {
 
     dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
@@ -106,6 +106,20 @@ public class DataPackageWizardPlugin implements PluginInterface,
     dpWiz.setVisible(true);
   }
   
+
+  /**
+   *  Required by DataPackageWizardInterface:
+   *  method to start the Entity wizard
+   *
+   *  @param listener the <code>DataPackageWizardListener</code> to be called
+   *                  back when the Entity Wizard has finished
+   */
+  public void startEntityWizard(DataPackageWizardListener listener) {
+  
+  }
+
+
+
   
   /** 
    *  returns the WizardPage with the corresponding pageID provided
@@ -130,12 +144,12 @@ public class DataPackageWizardPlugin implements PluginInterface,
     Log.setDebugLevel(55);
     DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
     //plugin.initialize(Morpho.thisStaticInstance);
-    plugin.startWizard(
+    plugin.startPackageWizard(
       new DataPackageWizardListener() {
       
         public void wizardComplete(Node newDOM) {
         Log.debug(1,"Wizard complete - Will now create an AbstractDataPackage..");
-          AbstractDataPackage dp = DataPackageFactory.getDataPackage(newDOM, "eml:eml");
+          AbstractDataPackage dp = DataPackageFactory.getDataPackage(newDOM);
 //          dp.serialize();
          Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
          Node domnode = dp.getMetadataNode();

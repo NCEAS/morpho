@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.5 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-09 23:06:20 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public interface DataPackageWizardInterface {
   public static final String PROJECT            = "PROJECT";
   public static final String GENERAL            = "GENERAL";
   public static final String KEYWORDS           = "KEYWORDS";
-  public static final String KEYWORDS_PAGE	= "KEYWORDS_PAGE";
+  public static final String KEYWORDS_PAGE      = "KEYWORDS_PAGE";
   public static final String PARTY_INTRO        = "PARTY_INTRO";
   public static final String PARTY_CREATOR      = "PARTY_CREATOR";
   public static final String PARTY_CONTACT      = "PARTY_CONTACT";
@@ -60,17 +60,28 @@ public interface DataPackageWizardInterface {
   public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
   public static final String DATA_FORMAT        = "DATA_FORMAT";
   public static final String ENTITY             = "ENTITY";
-  public static final String ATTRIBUTE_PAGE	= "ATTRIBUTE_PAGE";
-  public static final String PARTY_PAGE		= "PARTY_PAGE";
+  public static final String ATTRIBUTE_PAGE     = "ATTRIBUTE_PAGE";
+  public static final String PARTY_PAGE         = "PARTY_PAGE";
   public static final String ACCESS             = "ACCESS";
   public static final String SUMMARY            = "SUMMARY";
+  
+  
   /**
    *  method to start the wizard
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    */
-  public void startWizard(DataPackageWizardListener listener);
+  public void startPackageWizard(DataPackageWizardListener listener);
+
+  
+  /**
+   *  method to start the wizard
+   *
+   *  @param listener the <code>DataPackageWizardListener</code> to be called
+   *                  back when the Wizard has finished
+   */
+  public void startEntityWizard(DataPackageWizardListener listener);
 
 
   /**

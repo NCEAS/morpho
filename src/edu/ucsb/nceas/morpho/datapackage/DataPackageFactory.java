@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-11-26 21:49:09 $'
- * '$Revision: 1.26 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-09 23:06:20 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ public class DataPackageFactory
       // document to an EML200 doctype, so we really want to return an
       // AbstractDataPackage of that type for later use when the doc is
       // serialized
-      dp = getDataPackage(adptemp.metadataNode, "eml:eml");
+      dp = getDataPackage(adptemp.metadataNode);
       dp.location = adptemp.location;
       Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
     }
@@ -176,7 +176,7 @@ public class DataPackageFactory
    *  given a node in a DOM (the root?), create an AbstractDataPackage object
    *  needed for use with DPWizard?
    */
-  public static AbstractDataPackage getDataPackage(Node node, String doctype) {
+  public static AbstractDataPackage getDataPackage(Node node) {
     AbstractDataPackage dp = new EML200DataPackage();
     
     try{
@@ -188,12 +188,15 @@ public class DataPackageFactory
       e2.printStackTrace();
     }
 
-
     // no 'load' operation is required
     
-    dp.grammar = doctype;
+////////////////////////////////////////////////////////////////////////////////
+// NOTE: this method should be changed to inspect the passed DOM ("node" param)
+// in orderr to find the value for the "doctype" that should be used for the 
+// "dp.grammar" setting below. For now, it is hardcoded for eml2
+////////////////////////////////////////////////////////////////////////////////
+    dp.grammar = "eml:eml";
     dp.metadataNode = node;
-//    dp.showPackageSummary();
     
     return dp;
   }

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-11-24 19:00:26 $'
- * '$Revision: 1.4 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-09 23:06:20 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,18 +56,14 @@ public class CreateNewDataPackageCommand implements Command
 {
   
   private Morpho morpho = null;
+  
   /**
    * Constructor of CreateNewDataPackageCommand
    * @param morpho the morpho will apply to this command
    */
-  public CreateNewDataPackageCommand(Morpho morpho)
-  {
+  public CreateNewDataPackageCommand(Morpho morpho) {
     this.morpho = morpho;
- 
-  }//RefreshCommand
-  
-  
-  
+  }
   
   /**
    * execute create data package  command
@@ -76,67 +72,53 @@ public class CreateNewDataPackageCommand implements Command
   {   
     Log.debug(20, "Action fired: New Data Package");
     DataPackageWizardInterface dpw = null;
-    try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-           services.getServiceProvider(DataPackageWizardInterface.class);
-        dpw = (DataPackageWizardInterface)provider;
-      }
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-      }
-
-
-      dpw.startWizard(
-      new DataPackageWizardListener() {
+    try {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+         services.getServiceProvider(DataPackageWizardInterface.class);
+      dpw = (DataPackageWizardInterface)provider;
       
+    } catch (ServiceNotHandledException snhe) {
+    
+      Log.debug(6, snhe.getMessage());
+    }
+
+    dpw.startPackageWizard(
+      new DataPackageWizardListener() {
+    
         public void wizardComplete(Node newDOM) {
-        Log.debug(30,"Wizard complete - Will now create an AbstractDataPackage..");
-          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM, "eml:eml");
-//          dp.serialize();
-         Log.debug(30,"AbstractDataPackage complete - Will now show in an XML Editor..");
-         Node domnode = adp.getMetadataNode();
-
-         try 
-         {
-           ServiceController services = ServiceController.getInstance();
-           ServiceProvider provider = 
-                      services.getServiceProvider(DataPackageInterface.class);
-           DataPackageInterface dataPackage = (DataPackageInterface)provider;
-           dataPackage.openNewDataPackage(adp, null, "eml:eml");
-         }
-         catch (ServiceNotHandledException snhe) 
-         {
-           Log.debug(6, snhe.getMessage());
-         }
-
-         
-//          DocFrame df = new DocFrame();
-//          df.setVisible(true);
-//          df.initDoc(null, domnode);
         
+          Log.debug(30,"Wizard complete - Will now create an AbstractDataPackage..");
+          
+          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
+          Log.debug(30,"AbstractDataPackage complete - Will now show in an XML Editor..");
+          Node domnode = adp.getMetadataNode();
+
+          try {
+            ServiceController services = ServiceController.getInstance();
+            ServiceProvider provider = 
+                       services.getServiceProvider(DataPackageInterface.class);
+            DataPackageInterface dataPackage = (DataPackageInterface)provider;
+            dataPackage.openNewDataPackage(adp, null, "eml:eml");
+          
+          } catch (ServiceNotHandledException snhe) {
+        
+            Log.debug(6, snhe.getMessage());
+          }
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-//          System.exit(0);
         }
 
         public void wizardCanceled() {
-      
-          Log.debug(45, "\n\n********** Wizard canceled!");
-          System.exit(0);
-        }
-      }
-    );
-  }//execute
   
- 
+          Log.debug(45, "\n\n********** Wizard canceled!");
+        }
+      });
+  }
 
  
   /**
    * could also have undo functionality; disabled for now
    */ 
   // public void undo();
-
-}//class CancelCommand
+}
