@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-08 21:01:14 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2002-02-08 22:42:00 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1227,7 +1227,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             tempNode = parentNode;
             parentNode = (DefaultMutableTreeNode)parentNode.getParent();
             if (parentNode!=null) {
-	            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL"))||(card.equals("NOT SELECTED")) ) {
+	            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL"))||(card.equals("NOT SELECTED"))||(card.equals("SELECTED")) ) {
 	              if (!hasNonEmptyTextLeaves(tempNode)) {
 	                parentNode.remove(tempNode);
 //	                parentNode = null;
@@ -1249,10 +1249,10 @@ boolean hasNonEmptyTextLeaves(DefaultMutableTreeNode node) {
     DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
     if (curNode.isLeaf()) {
       NodeInfo ni = (NodeInfo)curNode.getUserObject();
-      String card = ni.getCardinality();
-      if ((card.equals("ONE"))||(card.equals("ONE to MANY"))) {
-        return true; 
-      }
+//      String card = ni.getCardinality();
+//      if ((card.equals("ONE"))||(card.equals("ONE to MANY"))) {
+//        return true; 
+//      }
       if (ni.name.equals("#PCDATA")) {         // is a text node
         String pcdata = ni.getPCValue();
         if (pcdata.trim().length()>0) {        // has text data
