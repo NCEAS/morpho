@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-06 21:09:13 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-06 23:10:49 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +133,7 @@ public class XMLTransformerTest extends TestCase
         testException = null;
         result = null;
 
-        for (int i=0;i<200 ;i++) {
+        for (int i=0;i<10 ;i++) {
             System.out.println("test #"+i+" with proper XML *and* XSL reader..."); 
             try {
                 result = transformer.transform(getXML_testDoc(), getXSL_testDoc());
