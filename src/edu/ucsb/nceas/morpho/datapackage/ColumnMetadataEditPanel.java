@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-08 04:26:17 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-01-08 20:15:24 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -486,7 +486,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     enumPanel.setMaximumSize(new Dimension(3000,100));
     enumPanel.setMinimumSize(new Dimension(3000,100));
     enumPanel.setPreferredSize(new Dimension(3000,100));
-    enumPanel.setVisible(true);
+    enumPanel.setVisible(false);
     enumScrollPane = new JScrollPane();
     enumPanel.add(BorderLayout.CENTER,enumScrollPane);
     buildEnumTable();
@@ -496,7 +496,6 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     numPanel = new JPanel();
     numPanel.setLayout(new BoxLayout(numPanel,BoxLayout.Y_AXIS));
     numPanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
-    numPanel.setVisible(true);
     JPanel minimumPanel = new JPanel();
     minimumPanel.setLayout(new BoxLayout(minimumPanel,BoxLayout.X_AXIS));
     minimumPanel.setBorder(BorderFactory.createEmptyBorder(1,3,1,3));
@@ -527,7 +526,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     maximumPanel.add(maximumTextField);
     numPanel.add(maximumPanel);
     
-    numPanel.setVisible(false);
+    numPanel.setVisible(true);
     
     attrPanel.add(numPanel);
     
