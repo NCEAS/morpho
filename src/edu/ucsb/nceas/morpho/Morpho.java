@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 04:08:11 $'
- * '$Revision: 1.19 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-21 18:37:26 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1212,25 +1212,8 @@ public class Morpho
                     Log.debug(9, "No change in profile.");
                 } else {
                     setProfile(newProfile);
-                    // Update saved queries depend on new profile
-                    QueryRefreshInterface query;
-                    try 
-                    {
-                      ServiceController services = 
-                                                ServiceController.getInstance();
-                      ServiceProvider provider = 
-                       services.getServiceProvider(QueryRefreshInterface.class);
-                      query = (QueryRefreshInterface)provider;
-                      // Update saved query
-                      query.updateSavedQueryMenuItems(this);
-                    } 
-                    catch (ServiceNotHandledException snhe) 
-                    {
-                        Log.debug(6, "Error in upload");
-                      
-                    }
-                    
-                   
+                    // close all old windows and initial a new one
+                    cleanUpFrames();
                     Log.debug(9, "New profile is: " + newProfile);
                 }
             }
@@ -1240,6 +1223,21 @@ public class Morpho
                     "profile_directory is not a directory.");
         }
     }
+    
+    /*
+     * This method will close all frames and show a blank frame
+     */
+   private void cleanUpFrames()
+   {
+     // Get ui constroller
+     UIController controller = UIController.getInstance();
+     // Close other window
+     controller.removeAllWindows();     
+     // Add a blank window
+     MorphoFrame initialFrame = controller.addWindow(INITIALFRAMENAME);
+     initialFrame.setVisible(true);
+    
+   }
 
     /**
      * use to dynamically create an object from its name at run time uses
