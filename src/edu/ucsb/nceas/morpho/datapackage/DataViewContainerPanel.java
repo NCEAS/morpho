@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 15:55:41 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-09-24 17:30:17 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   JPanel currentDataPanel;
   JSplitPane vertSplit;
   
-  Vector entityItems;
+  Vector entityItems = null;
   PersistentVector lastPV = null;
 
   private static MetaDisplayFactoryInterface metaDisplayFactory = null;
@@ -255,12 +255,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     packagePanel.add(BorderLayout.NORTH,refPanel);
     this.morpho = dpgui.morpho;
     this.toppanel = packagePanel;
-    this.entityItems = dpgui.entityitems;
-    
+    this.entityItems = dpgui.getEntityitems();
     this.listValueHash = dpgui.listValueHash;
     this.setVisible(true);
-   
-// trying to get the height here always gives zero
+  // trying to get the height here always gives zero
 //  vertSplit.setDividerLocation(refPanel.getHeight());
 
   }
@@ -281,7 +279,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       packageMetadataPanel.removeAll();
       packageMetadataPanel.add(BorderLayout.CENTER,toppanel);
     }
-    if (entityItems==null) Log.debug(20, "EntityItems vector is null!!!");
+    if (entityItems==null) 
+    {
+      Log.debug(20, "EntityItems vector is null");
+      vertSplit.removeAll();
+      vertSplit.add(packageMetadataPanel);
+      return;
+    }
     entityFile = new File[entityItems.size()];
     for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
