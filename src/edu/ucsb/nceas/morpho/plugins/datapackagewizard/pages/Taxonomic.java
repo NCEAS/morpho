@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-30 20:35:19 $'
-* '$Revision: 1.12 $'
+*     '$Date: 2004-03-31 04:46:47 $'
+* '$Revision: 1.13 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -323,13 +323,9 @@ public class Taxonomic extends AbstractUIPage {
                                 UISettings.POPUPDIALOG_HEIGHT);
 		if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 			
+			int rowNum = this.classList.getRowCount();
 			List row = citationPage.getSurrogate();
-			OrderedMap map = citationPage.getPageData("/classificationSystemCitation");
-			Iterator it = map.keySet().iterator();
-			while(it.hasNext()) {
-				String k = (String) it.next();
-				System.out.println(k + " - " + (String)map.get(k));
-			}
+			OrderedMap map = citationPage.getPageData("/classificationSystemCitation[1]");
 			row.add(map);
 			this.classList.addRow(row);
 		}
@@ -346,7 +342,7 @@ public class Taxonomic extends AbstractUIPage {
 		OrderedMap map = (OrderedMap) row.get(3);
 		
 		CitationPage citationPage = new CitationPage();
-		citationPage.setPageData(map, "/classificationSystemCitation");
+		citationPage.setPageData(map, "/classificationSystemCitation[1]");
 		
 		ModalDialog wpd = new ModalDialog(citationPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
@@ -354,7 +350,7 @@ public class Taxonomic extends AbstractUIPage {
                                 UISettings.POPUPDIALOG_HEIGHT);
 		if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 			
-			row.set(3, citationPage.getPageData("/classificationSystemCitation"));
+			row.set(3, citationPage.getPageData("/classificationSystemCitation[1]"));
 			this.classList.replaceSelectedRow(row);
 		}
 		
@@ -638,6 +634,7 @@ public class Taxonomic extends AbstractUIPage {
 				String tRank = level.getRank();
 				String tName = level.getName();
 				if(tRank.trim().equals("") || tName.trim().equals("")) continue;
+				
 				result.put(prefix + "/taxonRankName",  tRank);
 				result.put(prefix + "/taxonRankValue",  tName);
 				String[] cn = level.getCommonNames();
@@ -649,72 +646,70 @@ public class Taxonomic extends AbstractUIPage {
 					prefix += "/taxonomicClassification[1]";
 				}
 			}
-		}
-		
-		TaxonHierarchy prevHier = hierarchies[0];
-		for(int i = 1; i < len; i++) {
 			
 			
-			int cmp = hierarchies[i].compareTo(prevHier);
-			if(cmp == 0) continue;
-			if(cmp < 0) {
+			TaxonHierarchy prevHier = hierarchies[0];
+			for(int i = 1; i < len; i++) {
 				
-				Log.debug(10, "Error in getPageData! Sorting not correct");
-			} else {
 				
-				//cmp--;
-				int start = 0;
-				int temp = 0;
-				int idx = -1;
-				while(temp < cmp) {
-					idx = lastAddedPrefix.indexOf("taxonomicClassification", start);
-					if(idx == -1) break;
-					start = idx + new String("taxonomicClassification").length();
-					temp++;
-				}
-				
-				String currPrefix = lastAddedPrefix.substring(0, start);
-				
-				int closingBrace = lastAddedPrefix.indexOf("]", start);
-				int currPosition = 0;
-				
-				if(closingBrace < (start +1)) {
-					Log.debug(25, "Error - cldnt get index");
+				int cmp = hierarchies[i].compareTo(prevHier);
+				if(cmp == 0) continue;
+				if(cmp < 0) {
+					
+					Log.debug(10, "Error in getPageData! Sorting not correct");
 				} else {
-					String pos = lastAddedPrefix.substring(start +1, closingBrace);
-					try {
-						currPosition = Integer.parseInt(pos);
-					} catch(Exception e) {
-						Log.debug(45, "not a number - " + pos);
+					
+					//cmp--;
+					int start = 0;
+					int temp = 0;
+					int idx = -1;
+					while(temp < cmp) {
+						idx = lastAddedPrefix.indexOf("taxonomicClassification", start);
+						if(idx == -1) break;
+						start = idx + new String("taxonomicClassification").length();
+						temp++;
+					}
+					
+					String currPrefix = lastAddedPrefix.substring(0, start);
+					
+					int closingBrace = lastAddedPrefix.indexOf("]", start);
+					int currPosition = 0;
+					
+					if(closingBrace < (start +1)) {
+						Log.debug(25, "Error - cldnt get index");
+					} else {
+						String pos = lastAddedPrefix.substring(start +1, closingBrace);
+						try {
+							currPosition = Integer.parseInt(pos);
+						} catch(Exception e) {
+							Log.debug(45, "not a number - " + pos);
+						}
+					}
+					currPosition++;
+					
+					currPrefix += "[" + currPosition + "]";
+					
+					Vector newTaxonLevels = hierarchies[i].getAllTaxons();
+					for(int k = temp - 1; k < newTaxonLevels.size(); k++) {
+						
+						TaxonLevel level = (TaxonLevel)newTaxonLevels.get(k);
+						String tRank = level.getRank();
+						String tName = level.getName();
+						if(tRank.trim().equals("") || tName.trim().equals("")) continue;
+						
+						result.put(currPrefix + "/taxonRankName",  tRank);
+						result.put(currPrefix + "/taxonRankValue",  tName);
+						String[] cn = level.getCommonNames();
+						for(int j = 0; cn != null && j < cn.length; j++) {
+							result.put(currPrefix + "/commonName[" + (j + 1) +"]", cn[j]);
+						}
+						lastAddedPrefix = currPrefix;
+						if(k < (newTaxonLevels.size() - 1)) {
+							currPrefix += "/taxonomicClassification[1]";
+						}
 					}
 				}
-				currPosition++;
-				
-				currPrefix += "[" + currPosition + "]";
-				
-				Vector taxonLevels = hierarchies[i].getAllTaxons();
-				for(int k = temp - 1; k < taxonLevels.size(); k++) {
-					
-					TaxonLevel level = (TaxonLevel)taxonLevels.get(k);
-					String tRank = level.getRank();
-					String tName = level.getName();
-					if(tRank.trim().equals("") || tName.trim().equals("")) continue;
-					
-					result.put(currPrefix + "/taxonRankName",  tRank);
-					result.put(currPrefix + "/taxonRankValue",  tName);
-					String[] cn = level.getCommonNames();
-					for(int j = 0; cn != null && j < cn.length; j++) {
-						result.put(currPrefix + "/commonName[" + (j + 1) +"]", cn[j]);
-					}
-					lastAddedPrefix = currPrefix;
-					if(k < (taxonLevels.size() - 1)) {
-						currPrefix += "/taxonomicClassification[1]";
-					}
-				}
-				
-				
 			}
-			
 		}
 		
 		List rows = this.classList.getListOfRowLists();
@@ -727,11 +722,18 @@ public class Taxonomic extends AbstractUIPage {
 				Iterator it = map.keySet().iterator();
 				while(it.hasNext()) {
 					String k = (String)it.next();
-					String newKey = rootXPath + "/taxonomicSystem/classificationSystem[" + i + "]" +  k;
+					String newKey = rootXPath + "/taxonomicSystem[1]/classificationSystem[" +(i+1)+ "]" +  k;
 					result.put(newKey, (String)map.get(k));
 				}
 			}
 			
+		}
+		
+		Iterator it1 = result.keySet().iterator();
+		Log.debug(45, "OrderedMap returning from TaxonomicPage");
+		while(it1.hasNext()) {
+			String k = (String)it1.next();
+			Log.debug(45, k + "--" + (String)result.get(k));
 		}
 		
 		return result;
@@ -792,7 +794,7 @@ public class Taxonomic extends AbstractUIPage {
 		boolean result = true;
 		try {
 			DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-			Document doc = impl.createDocument("", "coverage", null);
+			Document doc = impl.createDocument("", "taxonomicCoverage", null);
 			
 			covRoot = doc.getDocumentElement();
 			XMLUtilities.getXPathMapAsDOMTree(data, covRoot);
@@ -805,17 +807,17 @@ public class Taxonomic extends AbstractUIPage {
 		if(this.taxonList.getRowCount() == 0) {
 			
 			TaxonListAddAction();
-		}
+		} 
 		
 		
 		int size = data.keySet().size();
 		String[] keys = new String[size];
 		keys = (String[])data.keySet().toArray(keys);
-		int pos = 0;
+		int pos = 1;
 		for(int cnt = 0; cnt < size; cnt++) {
 			
 			String key = keys[cnt];
-			int idx = key.indexOf("/taxonomicSystem/classificationSystem[" + pos + "]"); 
+			int idx = key.indexOf("/taxonomicSystem[1]/classificationSystem[" + pos + "]"); 
 			if( idx > -1) {
 				
 				OrderedMap map = new OrderedMap();
@@ -825,7 +827,7 @@ public class Taxonomic extends AbstractUIPage {
 				for(;cnt < size; cnt++) {
 					
 					key = keys[cnt];
-					int newidx = key.indexOf("/taxonomicSystem/classificationSystem[" + pos + "]"); 
+					int newidx = key.indexOf("/taxonomicSystem[1]/classificationSystem[" + pos + "]"); 
 					if( newidx > -1) {
 						int citidx = key.substring(newidx).indexOf("/classificationSystemCitation");
 						map.put(key.substring(citidx + newidx), data.get(key));
@@ -836,7 +838,7 @@ public class Taxonomic extends AbstractUIPage {
 				}
 				
 				CitationPage cpage = new CitationPage();
-				cpage.setPageData(map, "/classificationSystemCitation");
+				cpage.setPageData(map, "/classificationSystemCitation[1]");
 				List row = cpage.getSurrogate();
 				if(row.size() == 0)
 					break;
@@ -844,7 +846,7 @@ public class Taxonomic extends AbstractUIPage {
 				this.classList.addRow(row);
 				pos++;
 			}
-			else break;
+			
 			
 		}
 		
@@ -860,19 +862,22 @@ public class Taxonomic extends AbstractUIPage {
 		if(root == null) {
 			return true;
 		}
+		
 		NodeList children = root.getChildNodes();
 		if(children.getLength() == 0) {
 			return true;
 		}
+		Log.debug(40, "Traversing - " + root.getNodeName());
 		TaxonLevel level = null;
-		boolean middle = false;
+		boolean middleNodePresent = false;
+		boolean endNodePresent = false;
 		for(int i = 0; i < children.getLength(); i++) {
 			
 			Node child = children.item(i);
 			String name = child.getNodeName();
 			if(name.equals("taxonomicClassification")) {
 				traverseTree(child, (TaxonHierarchy)hier.clone());
-				middle = true;
+				middleNodePresent = true;
 			}
 			
 			else if(name.equals("taxonRankName")) {
@@ -904,6 +909,8 @@ public class Taxonomic extends AbstractUIPage {
 				}
 				level = new TaxonLevel(rankName, rankVal, cns);
 				hier.addTaxon(level);
+				endNodePresent = true;
+				
 			} else {
 				
 				toReturn = false;
@@ -911,7 +918,7 @@ public class Taxonomic extends AbstractUIPage {
 			
 		}
 		
-		if(!middle) {
+		if((!middleNodePresent) && endNodePresent) {
 			ParentTaxaPanel panel = new ParentTaxaPanel();
 			panel.setHierarchy(hier);
 			List list = panel.getSurrogate();

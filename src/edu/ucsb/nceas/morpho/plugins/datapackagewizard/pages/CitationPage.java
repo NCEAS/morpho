@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-30 20:35:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-31 04:46:47 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -564,11 +564,11 @@ public class CitationPage extends AbstractUIPage {
 		
 		String st = this.salutationField.getText(); 
 		if(!st.trim().equals(""))
-			map.put(xPath + "/creator/individualName/salutation[0]", st);
+			map.put(xPath + "/creator/individualName/salutation[1]", st);
 		
 		String fn = this.firstNameField.getText(); 
 		if(!fn.trim().equals(""))
-			map.put(xPath + "/creator/individualName/givenName[0]", fn);
+			map.put(xPath + "/creator/individualName/givenName[1]", fn);
 		
 		String ln = this.lastNameField.getText(); 
 		map.put(xPath + "/creator/individualName/surName", ln);
@@ -608,13 +608,13 @@ public class CitationPage extends AbstractUIPage {
 
 		///// check for Book
 		
-		Object o1 = map.get(xPath + "/book/publisher/organizationName");
+		Object o1 = map.get(xPath + "/book[1]/publisher[1]/organizationName[1]");
 		if(o1 != null) return "Book";
 		
-		o1 = map.get(xPath + "/article/journal");
+		o1 = map.get(xPath + "/article[1]/journal[1]");
 		if(o1 != null) return "Article";
 		
-		o1 = map.get(xPath + "/report/publisher/organizationName");
+		o1 = map.get(xPath + "/report[1]/publisher[1]/organizationName[1]");
 		if(o1 != null) return "Report";
 		
 		return "";
@@ -634,27 +634,21 @@ public class CitationPage extends AbstractUIPage {
    */
   public boolean setPageData(OrderedMap map, String xPath) {
 		
-		Iterator it = map.keySet().iterator();
-		while(it.hasNext())
-		{
-			String k = (String)it.next();
-			System.out.println(k + " ---- " + (String)map.get(k));
-		}
-		this.titleField.setText((String)map.get(xPath + "/title"));
+		this.titleField.setText((String)map.get(xPath + "/title[1]"));
 		
-		String st = (String)map.get(xPath + "/creator/individualName/salutation[0]");
+		String st = (String)map.get(xPath + "/creator[1]/individualName[1]/salutation[1]");
 		if(st != null)
 			this.salutationField.setText(st);
 		
-		String fn = (String)map.get(xPath + "/creator/individualName/givenName[0]");
+		String fn = (String)map.get(xPath + "/creator[1]/individualName[1]/givenName[1]");
 		if(fn != null)
 			this.firstNameField.setText(fn);
 		
-		this.lastNameField.setText((String)map.get(xPath + "/creator/individualName/surName"));
-		this.organizationField.setText((String)map.get(xPath + "/creator/organizationName"));
-		this.positionNameField.setText((String)map.get(xPath + "/creator/positionName"));
+		this.lastNameField.setText((String)map.get(xPath + "/creator[1]/individualName[1]/surName[1]"));
+		this.organizationField.setText((String)map.get(xPath + "/creator[1]/organizationName[1]"));
+		this.positionNameField.setText((String)map.get(xPath + "/creator[1]/positionName[1]"));
 		
-		String pubn = (String)map.get(xPath + "/pubDate");
+		String pubn = (String)map.get(xPath + "/pubDate[1]");
 		if(pubn != null)
 			this.pubDateField.setText(pubn);
 		
@@ -667,7 +661,7 @@ public class CitationPage extends AbstractUIPage {
 			componentNum = 0;
 			this.setCitationType("Book");
 			this.setCitationTypeUI(bookPanel);
-			((WizardPageSubPanelAPI)bookPanel).setPanelData(xPath + "/book", map);
+			((WizardPageSubPanelAPI)bookPanel).setPanelData(xPath + "/book[1]", map);
 			
 		} else if(citationType.equals("Article")) {
 			
@@ -675,7 +669,7 @@ public class CitationPage extends AbstractUIPage {
 			componentNum = 1;
 			this.setCitationType("Article");
 			this.setCitationTypeUI(articlePanel);
-			((WizardPageSubPanelAPI)articlePanel).setPanelData(xPath + "/article", map);
+			((WizardPageSubPanelAPI)articlePanel).setPanelData(xPath + "/article[1]", map);
 			
 		} else if(citationType.equals("Report")) {
 			
@@ -683,8 +677,8 @@ public class CitationPage extends AbstractUIPage {
 			componentNum = 2;
 			this.setCitationType("Report");
 			this.setCitationTypeUI(reportPanel);
-			((WizardPageSubPanelAPI)reportPanel).setPanelData(xPath + "/report", map);
-		}
+			((WizardPageSubPanelAPI)reportPanel).setPanelData(xPath + "/report[1]", map);
+		} else 
 		
 		
 		if (componentNum != -1) {
@@ -824,11 +818,11 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 		
 		((WizardPageSubPanelAPI)publisherPanel).setPanelData(xPathRoot, map);
 		
-		String en = (String)map.get(xPathRoot + "/edition");
+		String en = (String)map.get(xPathRoot + "/edition[1]");
 		if(en != null)
 			this.editionField.setText(en);
 		
-		String vn = (String)map.get(xPathRoot + "/volume");
+		String vn = (String)map.get(xPathRoot + "/volume[1]");
 		if(vn != null)
 			this.volumeField.setText(vn);
 		
@@ -982,10 +976,10 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
 	public void setPanelData(String xPathRoot, OrderedMap map) {
 		
-		journalField.setText((String) map.get(xPathRoot + "/journal"));
-		volumeField.setText((String)map.get(xPathRoot + "/volume"));
+		journalField.setText((String) map.get(xPathRoot + "/journal[1]"));
+		volumeField.setText((String)map.get(xPathRoot + "/volume[1]"));
 		
-		String pr = (String)map.get(xPathRoot + "/pageRange");
+		String pr = (String)map.get(xPathRoot + "/pageRange[1]");
 		if(!pr.trim().equals(""))
 			this.rangeField.setText(pr);
 		
@@ -1114,12 +1108,12 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 	
 		((WizardPageSubPanelAPI)publisherPanel).setPanelData(xPathRoot, map);
 		
-		String rn = (String)map.get(xPathRoot + "/reportNumber");
+		String rn = (String)map.get(xPathRoot + "/reportNumber[1]");
 		
 		if(!rn.trim().equals(""))
 			this.numberField.setText(rn);
 		
-		String pn = (String)map.get(xPathRoot + "/totalPages");
+		String pn = (String)map.get(xPathRoot + "/totalPages[1]");
 		
 		if(!pn.trim().equals(""))
 			this.pagesField.setText(pn);
@@ -1235,9 +1229,9 @@ class MiniPublisherPanel extends JPanel implements WizardPageSubPanelAPI {
 
 	public void setPanelData(String xPathRoot, OrderedMap map) {
 	
-		lastNameField.setText((String)map.get(xPathRoot +"/publisher/individualName/surname")); 
+		lastNameField.setText((String)map.get(xPathRoot +"/publisher[1]/individualName[1]/surname[1]")); 
 		
-		organizationField.setText((String)map.get(xPathRoot + "/publisher/organizationName"));
+		organizationField.setText((String)map.get(xPathRoot + "/publisher[1]/organizationName[1]"));
 		
 	}
 	
