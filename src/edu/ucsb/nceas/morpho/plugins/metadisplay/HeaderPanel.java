@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-28 01:04:36 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-28 15:55:33 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import  edu.ucsb.nceas.morpho.util.UIUtil;
 import  edu.ucsb.nceas.morpho.util.Command;
 import  edu.ucsb.nceas.morpho.util.GUIAction;
 
