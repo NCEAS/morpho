@@ -27,6 +27,7 @@ public class EditorBean extends Container implements PluginInterface
     me.setVisible(true);
     me.invalidate();
     add(BorderLayout.CENTER,me);
+    setName("Demo Editor");
     setVisible(true);
    
     initializeActions();
@@ -40,6 +41,7 @@ public class EditorBean extends Container implements PluginInterface
   public void setFramework(ClientFramework cf) 
   {
     this.framework = cf;
+    me.setFramework(cf);
   }
 
   /**
@@ -75,6 +77,16 @@ public class EditorBean extends Container implements PluginInterface
    */ 
   public Action[] registerToolbarActions() {
     return toolbarActions;;
+  }
+
+  /**
+   * This method is called by the framework when the plugin should 
+   * register a UI tab pane that is to incorporated into the main
+   * user interface.
+   */
+  public Container registerTabPane()
+  {
+    return (Container)this;
   }
 
   /**
