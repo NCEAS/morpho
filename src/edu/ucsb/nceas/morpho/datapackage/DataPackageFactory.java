@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-17 20:45:04 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2003-12-29 18:51:51 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -173,31 +174,33 @@ public class DataPackageFactory
 
 
   /**
-   *  given a node in a DOM (the root?), create an AbstractDataPackage object
+   *  given the root node in a DOM, create an AbstractDataPackage object
    *  needed for use with DPWizard?
    */
   public static AbstractDataPackage getDataPackage(Node node) {
-    AbstractDataPackage dp = new EML200DataPackage();
+    AbstractDataPackage dp = null;
+    String doctype = getDocType(node);
+    Log.debug(50, "doctype: "+doctype);
+    if(doctype.indexOf("eml-2.0.0")>-1) {
+      dp = new EML200DataPackage();
     
-    try{
-      Node metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
-      dp.setMetadataPath(metadataPathNode);
-    }
-    catch (Exception e2) {
-      Log.debug(20, "getting DOM for Paths threw error: " + e2.toString());
-      e2.printStackTrace();
-    }
+      try{
+        Node metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
+        dp.setMetadataPath(metadataPathNode);
+      }
+      catch (Exception e2) {
+        Log.debug(20, "getting DOM for Paths threw error: " + e2.toString());
+        e2.printStackTrace();
+      }
 
-    // no 'load' operation is required
     
-////////////////////////////////////////////////////////////////////////////////
-// NOTE: this method should be changed to inspect the passed DOM ("node" param)
-// in orderr to find the value for the "doctype" that should be used for the 
-// "dp.grammar" setting below. For now, it is hardcoded for eml2
-////////////////////////////////////////////////////////////////////////////////
-    dp.grammar = "eml:eml";
-    dp.metadataNode = node;
-    
+      dp.grammar = "eml:eml";
+      dp.metadataNode = node;
+    }
+   // handlers for other types of documents hosuld be inserted here !!! 
+    if (dp==null) {
+      Log.debug(1,"DOM document type is unknown! (DataPackaqeFactory.getDataPackage)");
+    }
     return dp;
   }
   
@@ -306,6 +309,50 @@ public class DataPackageFactory
     } catch (Exception e) {Log.debug(6, "Error in getSchemaLine!");}
     return secondLine;
   }
+  
+  /**
+   *  This method is designed to try and determine the type of document
+   *  the dom indicated by the rootNode 'rNode' represents
+   */
+  private static String getDocType(Node rNode) {
+    Element rootNode = (Element)rNode;
+    Document domDoc = rootNode.getOwnerDocument();
+    Log.debug(50,"domDoc is: "+XMLUtilities.getDOMTreeAsString(rootNode));
+
+    String identifier = null;
+
+    //first try to get public DOCTYPE:
+    if (domDoc.getDoctype()!=null) {
+      identifier = domDoc.getDoctype().getPublicId();
+      Log.debug(50,"getPublicId() gives: "+identifier);
+    }
+    //if this is null, then try to get schemaLocation:
+    if (identifier==null || identifier.trim().equals("")) {
+      identifier = rootNode.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance",
+                                               "schemaLocation");
+      // since schema location string may contain multiple substrings
+      // separated by spaces, we take only the first of these substrings:
+      if ((identifier!=null) && ( !identifier.trim().equals(""))) {
+        identifier = identifier.trim().substring(0, identifier.indexOf(" "));
+          Log.debug(50,"getAttributeNS schemaLocation is: "+identifier);
+      }
+    }
+
+    //if this is null, then try to get namespace of root node:
+    if (identifier==null || identifier.trim().equals("")) {
+
+      identifier = rootNode.getNamespaceURI();
+      Log.debug(50,"rootNode.getNamespaceURI() gives: "+identifier);
+    }
+
+    //finally, if this is null, give up!
+    if (identifier==null || identifier.trim().equals("")) {
+      identifier = "no identifier";
+      Log.debug(50,"no identifier - requesting generic stylesheet");
+    }
+    return identifier;
+  }
+  
   /**
    *  This is a static main method configured to test the class by
    *  creating a datapackage from a 'test' file with the id
