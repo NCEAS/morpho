@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.3 2000-12-27 20:24:01 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.4 2000-12-27 22:14:00 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -349,19 +349,19 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	String buildPackage(String subj1, String rel1, String obj1, String subj2, String rel2, String obj2) {
 	    StringBuffer pack = new StringBuffer();
 	    pack.append("<?xml version=\"1.0\"?>\n");
-	    pack.append("<!DOCTYPE package PUBLIC \"-//NCEAS//package//EN\" \"http://dev.nceas.ucsb.edu/berkley/dtd/package.dtd\">\n");
+	    pack.append("<!DOCTYPE package PUBLIC \"-//NCEAS//package1.0//EN\" \"http://dev.nceas.ucsb.edu/berkley/dtd/package.dtd\">\n");
         pack.append("<package>\n");
         String packagename = "packageExample";
         if (!PackageNameTextField.getText().equals("")) {
             packagename = PackageNameTextField.getText(); }
         pack.append("<name>"+packagename+"</name>\n");
         pack.append("<relation>\n");
-        pack.append("<subject>"+subj1+"</subject>\n");
+        pack.append("<subject>"+"metacat://dev.nceas.ucsb.edu:8090/metacat?docid="+subj1+"</subject>\n");
         pack.append("<relationship>"+rel1+"</relationship>\n");
         pack.append("<object>"+obj1+"</object>\n");
         pack.append("</relation>\n");
         pack.append("<relation>\n");
-        pack.append("<subject>"+subj2+"</subject>\n");
+        pack.append("<subject>"+"metacat://dev.nceas.ucsb.edu:8090/metacat?docid="+subj2+"</subject>\n");
         pack.append("<relationship>"+rel2+"</relationship>\n");
         pack.append("<object>"+obj2+"</object>\n");
         pack.append("</relation>\n");
