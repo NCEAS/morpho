@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-06 18:00:30 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-03-06 23:39:53 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,10 @@ public class DataViewer extends javax.swing.JFrame
     String tempdir;
     String dataString = "";
     String dataID = "";
+    
+    DataPackageGUI grandParent;
+    EntityGUI parent;
+    
 	/**
 	 * actual number of lines in fdata file
 	 */
@@ -111,7 +115,7 @@ public class DataViewer extends javax.swing.JFrame
 		TabbedViewPanel.add(TablePanel);
 		TablePanel.setBounds(2,24,750,421);
 		TablePanel.setVisible(false);
-		TablePanel.add(DataScrollPanel);
+		TablePanel.add(BorderLayout.CENTER,DataScrollPanel);
 		TabbedViewPanel.setSelectedIndex(0);
 		TabbedViewPanel.setSelectedComponent(TextPanel);
 		TabbedViewPanel.setTitleAt(0,"Text View");
@@ -134,6 +138,7 @@ public class DataViewer extends javax.swing.JFrame
 		ImportNewButton.setText("Import New Data...");
 		ImportNewButton.setActionCommand("Import New Data...");
 		JPanel2.add(ImportNewButton);
+		ImportNewButton.setVisible(false);
 		//}}
 
 		//{{INIT_MENUS
@@ -185,6 +190,13 @@ public class DataViewer extends javax.swing.JFrame
 	    parseString(dataString);
 	    parseDelimited();
         
+    }
+    
+    public void setParent(EntityGUI egui) {
+      this.parent = egui; 
+    }
+    public void setGrandParent(DataPackageGUI dpgui) {
+      this.grandParent = dpgui; 
     }
     
     
@@ -649,8 +661,22 @@ public class DataViewer extends javax.swing.JFrame
             framework.debug(20, "error in metacat update of data file"+e.getMessage());    
         }
       }
-      
-        
+      DataPackage newPackage = new DataPackage(location, newPackageId, null,
+                                                 framework);
+      this.dispose();
+      if (parent!=null) parent.dispose();
+      if (grandParent!=null) grandParent.dispose();
+      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+
+      // Refresh the query results after the update
+      try {
+        ServiceProvider provider = 
+               framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+      } catch (ServiceNotHandledException snhe) {
+        framework.debug(6, snhe.getMessage());
+      }
+      newgui.show();
         
 	  }		 
 	}

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-05 23:46:31 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2002-03-06 23:39:53 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -834,6 +834,9 @@ public class EntityGUI extends javax.swing.JFrame
         dv.setDataID(dataPackage.getDataFileID(entityId));
         dv.setDataString(dataString);
         dv.setDataPackage(this.dataPackage);
+        dv.setParent(this);
+        dv.setGrandParent(this.parent);
+        
         dv.show();
 //        JTextArea ta = new JTextArea(dataString);
 //        ta.setEditable(false);
