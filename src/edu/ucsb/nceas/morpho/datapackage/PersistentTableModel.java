@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-23 14:55:06 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import java.util.StringTokenizer;
 import javax.swing.event.*;
 import java.lang.Class;
 
+import edu.ucsb.nceas.morpho.util.Log;
 
 public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 {
@@ -139,15 +140,9 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 	 */
 	private Vector columnValuesAsVector(String[] str) {
 	  Vector res = new Vector();
-    int imax = getColumnCount();
-    if (imax<str.length) imax = str.length;
+    int imax = str.length;
     for (int i=0;i<imax;i++) {
-      if (i<str.length) {
         res.addElement(str[i]);
-      }
-      else {
-        res.addElement("");
-      }
     }
 	  return res;
 	}
