@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.22 2000-10-02 23:00:27 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.23 2000-10-03 23:21:08 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -566,10 +566,10 @@ public class QueryBean extends AbstractQueryBean
 		Query2.setLayout(new BorderLayout(0,0));
 		DocumentTypePanel.add(BorderLayout.NORTH,Query2);
 		Query2.setBounds(0,0,-5,4);
-//		dataGuideBean1.setLayout(new GridLayout(1,2,2,2));
-//		Query2.add(BorderLayout.CENTER, dataGuideBean1);
-//		dataGuideBean1.setBackground(java.awt.Color.lightGray);
-//		dataGuideBean1.setBounds(0,0,635,453);
+		dataGuideBean1.setLayout(new GridLayout(1,2,2,2));
+		Query2.add(BorderLayout.CENTER, dataGuideBean1);
+		dataGuideBean1.setBackground(java.awt.Color.lightGray);
+		dataGuideBean1.setBounds(0,0,635,453);
 		RS_Panel2.setLayout(new BorderLayout(0,0));
 		DocumentTypePanel.add(BorderLayout.CENTER,RS_Panel2);
 		RS_Panel2.setBackground(java.awt.Color.white);
@@ -622,10 +622,16 @@ public class QueryBean extends AbstractQueryBean
 		UnderConstruction.setForeground(java.awt.Color.red);
 		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
 		UnderConstruction.setBounds(0,0,-5,-114);
+		JLabel2.setText("Eventually, taxonomic based based queries will appear on this tab");
+		JPanel11.add(BorderLayout.NORTH,JLabel2);
+		JLabel2.setBounds(0,0,20,40);
 		JPanel12.setLayout(new BorderLayout(0,0));
 		QueryChoiceTabs.add(JPanel12);
 		JPanel12.setBounds(2,111,-5,-114);
 		JPanel12.setVisible(false);
+		JLabel3.setText("Eventually, tools for searching by spatial location (e.g. maps) will appear here.");
+		JPanel12.add(BorderLayout.NORTH,JLabel3);
+		JLabel3.setBounds(0,0,20,40);
 		UnderConstruction1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		UnderConstruction1.setText("Under Construction!!!");
 		JPanel12.add(BorderLayout.CENTER,UnderConstruction1);
@@ -815,7 +821,9 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JScrollPane RSScrollPane2 = new javax.swing.JScrollPane();
 	javax.swing.JPanel JPanel11 = new javax.swing.JPanel();
 	javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel12 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
 	javax.swing.JLabel UnderConstruction1 = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.models.StringListModel DocTypeListModel = new com.symantec.itools.javax.swing.models.StringListModel();
 	com.symantec.itools.javax.swing.models.StringComboBoxModel MatchTypesModel = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
