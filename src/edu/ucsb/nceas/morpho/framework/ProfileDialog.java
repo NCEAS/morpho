@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-02 15:09:23 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2002-10-29 18:17:31 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -632,14 +632,14 @@ public class ProfileDialog extends JDialog
           String samplePath = config.get("samples_directory", 0);
           File sampleDir = new File(samplePath);
 //DFH          File[] samplesList = sampleDir.listFiles();
-          /* 
+           
           // MBJ commented out because samples are now in the -config.jar file
           // Need to reimplement from the jar file
           File[] samplesList = listFiles(sampleDir);
           for (int n=0; n < samplesList.length; n++) {
             File srcFile = samplesList[n];
             if (srcFile.isFile()) {
-              String destDirName = dataPath + File.separator + profileName;
+              String destDirName = dataPath + File.separator + "jscientist";
               File destDir = new File(destDirName);
               destDir.mkdirs();
               String destName = destDirName + File.separator + 
@@ -648,7 +648,7 @@ public class ProfileDialog extends JDialog
               FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
             }
           }
-          */
+          
            
           // Create a metacat user
  
