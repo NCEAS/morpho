@@ -290,7 +290,7 @@ help="The table entity element is a descriptor of one entity in the dataset iden
 
     </gring>
 
-    <keywtax help="">
+    <keywtax help="The taxonomic keyword fields provide locations for keywords and the               thesaurii from which they are formally defined that are specific to the               taxonomic extent of the dataset or resource.">
       <taxonkt
       help="Reference to a formally registered thesaurus or similar authoritative source of taxonomic keywords.">
 
@@ -407,7 +407,7 @@ help="The table entity element is a descriptor of one entity in the dataset iden
   <taxonomicCov
   help="This element describes the taxonomic extent of data in the dataset. This can be a list of species, or a group of species at a higher taxonomic rank (such as genus or family).">
 
-    <keywtax help="">
+    <keywtax help="The taxonomic keyword fields provide locations for keywords and the               thesaurii from which they are formally defined that are specific to the               taxonomic extent of the dataset or resource.">
       <taxonkt
       help="Reference to a formally registered thesaurus or similar authoritative source of taxonomic keywords.">
 

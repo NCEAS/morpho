@@ -148,7 +148,7 @@
 
   </gring>
 
-  <keywtax help="">
+  <keywtax help="The taxonomic keyword fields provide locations for keywords and the               thesaurii from which they are formally defined that are specific to the               taxonomic extent of the dataset or resource.">
     <taxonkt
     help="Reference to a formally registered thesaurus or similar authoritative source of taxonomic keywords.">
 
