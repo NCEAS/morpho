@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-08 22:46:32 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-09 20:47:39 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,7 +201,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     final int cn = colnum;
     final int sdir = sortdir;
  		long start = System.currentTimeMillis();
-   Collections.sort(pv.objectList, new Comparator() {
+    Collections.sort(pv.objectList, new Comparator() {
         String[] o1Str;
         String[] o2Str;
         String token1;
@@ -259,7 +259,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
   }
   
   public void setLogFlag(boolean bol) {
-     logFlag = bol; 
+    logFlag = bol; 
   }
   
   private void pushLogValues(int row, int col, String oldVal, String newVal,

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-09 18:25:44 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-09 20:47:39 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,13 +108,6 @@ public class PersistentVector
    public void setFirstRow(int frow) {
      this.firstRow = frow;
    }
-
-  /*
-   * needed for skipping over comments, header info
-   */
-  public void setInMemoryNum(int num) {
-    this.inMemoryNum = num;
-  }
     
   /*
    * read a text file and store each line as an object in an ObjectFile
@@ -385,6 +378,20 @@ public class PersistentVector
       str = temp;
     }
     return str;
+  }
+  
+  /*
+   * setter for the number of object stored in RAM before going to disk
+   */
+  public void setInMemoryNum (int num) {
+    this.inMemoryNum = num;
+  }
+
+  /*
+   * getter for the number of object stored in RAM before going to disk
+   */
+  public int getInMemoryNum () {
+    return inMemoryNum;
   }
   
 	static public void main(String args[])
