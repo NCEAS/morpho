@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-05 21:55:59 $'
- * '$Revision: 1.24 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-18 23:51:30 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -111,25 +112,29 @@ public class AddMetadataWizard extends JFrame
   JTextField fileTextField = new JTextField();
   JList relatedFileList;
   
+  private MorphoFrame packageFrame = null;
   /**
    * Construct a dialog and set the framework
    *
    * @param morpho the container framework that created this dialog
+   * @param packageFrame the parent of this dialog
    */
-  public AddMetadataWizard(Morpho morpho) {
-    this(morpho, true, null);
+  public AddMetadataWizard(Morpho morpho, MorphoFrame packageFrame) 
+  {
+    this(morpho, true, null, packageFrame);
   }
 
   /**
    * Construct the dialog
    */
   public AddMetadataWizard(Morpho morpho, boolean modal,
-                           DataPackage dataPackage)
+                           DataPackage dataPackage, MorphoFrame packageFrame)
   {
     //super((Frame)cont, modal);
     this.morpho = morpho;
     config = morpho.getConfiguration();
     this.dataPackage = dataPackage;
+    this.packageFrame = packageFrame;
     this.addWindowListener(this);
     
     //if functionality to add an existing file is added, remove this line.
@@ -1563,9 +1568,11 @@ public class AddMetadataWizard extends JFrame
   {
     if(!finishflag)
     {
-      DataPackageGUI dpg = new DataPackageGUI(morpho, dataPackage);
-      dpg.show();
-      dpg.setName("Package Editor:" + dataPackage.getID());
+      //DataPackageGUI dpg = new DataPackageGUI(morpho, dataPackage);
+      //dpg.show();
+      //dpg.setName("Package Editor:" + dataPackage.getID());
+      
+      packageFrame.setVisible(true);
       //MBJ framework.addWindow(dpg);
     }
     //MBJ framework.removeWindow(this); 
