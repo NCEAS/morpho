@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-02 18:41:30 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-04-16 02:01:55 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,6 @@ public class ProfileDialog extends JDialog
   public ProfileDialog(ClientFramework cont, boolean modal)
   {
     super((Frame)cont, modal);
-
     framework = cont;
 
     numScreens = 3;
@@ -146,24 +145,27 @@ public class ProfileDialog extends JDialog
     buttonPanel.add(Box.createHorizontalGlue());
     cancelButton.setText("Cancel");
     cancelButton.setActionCommand("Cancel");
-    cancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
+    cancelButton.setMnemonic(KeyEvent.VK_C);
     cancelButton.setEnabled(true);
+    addKeyListenerToComponent(cancelButton);
     buttonPanel.add(cancelButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
     previousButton = new JButton("Previous", new ImageIcon( getClass().
           getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
     previousButton.setHorizontalTextPosition(SwingConstants.RIGHT);
+    previousButton.setMnemonic(KeyEvent.VK_P);
+    addKeyListenerToComponent(previousButton);
     buttonPanel.add(previousButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
     forwardIcon = new ImageIcon( getClass().
           getResource("/toolbarButtonGraphics/navigation/Forward16.gif"));
     nextButton = new JButton("Next", forwardIcon);
     nextButton.setHorizontalTextPosition(SwingConstants.LEFT);
-    nextButton.setMnemonic(KeyEvent.VK_ENTER);
+    nextButton.setMnemonic(KeyEvent.VK_N);
+    addKeyListenerToComponent(nextButton);
     nextButton.setEnabled(true);
     buttonPanel.add(nextButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
-
     entryPanel.add(buttonPanel);
     entryPanel.add(Box.createVerticalStrut(8));
     getContentPane().add(entryPanel);
@@ -175,6 +177,8 @@ public class ProfileDialog extends JDialog
 
     // Size and center the frame
     pack();
+    profileNameField.requestFocus();
+        
     setResizable(false);
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
     Rectangle frameDim = getBounds();
@@ -186,8 +190,8 @@ public class ProfileDialog extends JDialog
     previousButton.addActionListener(myActionHandler);
     nextButton.addActionListener(myActionHandler);
     cancelButton.addActionListener(myActionHandler);
-    this.addKeyListener(keyPressListener);
-
+    //this.addKeyListener(keyPressListener);
+    
     config = framework.getConfiguration();
   }
 
@@ -201,13 +205,18 @@ public class ProfileDialog extends JDialog
     public KeyPressActionListener()
     {
     }
-    
+
     public void keyPressed(KeyEvent e)
     {
-      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        java.awt.event.ActionEvent event = new 
-                       java.awt.event.ActionEvent(nextButton, 0, "Next");
-        nextButtonHandler(event);
+	    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        //if enter was pressed whilst a button was in focus, just click it
+        if (e.getSource() instanceof JButton){
+          ((JButton)e.getSource()).doClick();
+        } else {
+          java.awt.event.ActionEvent event = new 
+                         java.awt.event.ActionEvent(nextButton, 0, "Next");
+          nextButtonHandler(event);
+        }
       } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
         dispose();
         java.awt.event.ActionEvent event = new 
@@ -217,6 +226,36 @@ public class ProfileDialog extends JDialog
     }
   }
 
+  
+  /**
+   * Adds listener to all components contained in passed array
+   */
+  private void addKeyListenerToComponents(Component[] components){
+    if (components!=null){
+      for (int i=0;i<components.length;i++){    
+        addKeyListenerToComponent(components[i]);
+      }
+    } else {
+      ClientFramework.debug(10, 
+            "ProfileDialog.addKeyListenerToComponents() - received null array");
+      return;
+    }
+  }
+  
+   /**
+   * Adds listener to passed Component object
+   */
+  private void addKeyListenerToComponent(Component component){
+    if (component!=null) {
+          component.addKeyListener(keyPressListener);
+    } else {
+      ClientFramework.debug(10,
+              "ProfileDialog.addKeyListenerToComponent() - received NULL arg");
+      return;
+    }
+  }
+ 
+  
   /**
    * Listener used to detect button presses
    */
@@ -338,7 +377,7 @@ public class ProfileDialog extends JDialog
       JTextField[] textFields = {profileNameField, firstNameField,
                         lastNameField};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
-      firstNameField.requestFocus();
+      addKeyListenerToComponents(textFields);
     } else if (1 == currentScreen) {
       String helpText = "<html><p>Enter your Metacat account information. " +
                         "This will allow you to log in to Metacat " +
@@ -377,6 +416,7 @@ public class ProfileDialog extends JDialog
       JComponent[] components = {userIdField,
                             orgScrollPane, otherOrgField};
       addLabelTextRows(labels, components, gridbag, screenPanel);
+      addKeyListenerToComponents(components);
       userIdField.requestFocus();
     } else if (2 == currentScreen) {
       String helpText = "<html><p>Enter miscellaneous profile options.  This " +
@@ -395,6 +435,7 @@ public class ProfileDialog extends JDialog
       JLabel[] labels = {scopeLabel};
       JTextField[] textFields = {scopeField};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
+      addKeyListenerToComponents(textFields);
       scopeField.requestFocus();
     }
 
@@ -414,8 +455,9 @@ public class ProfileDialog extends JDialog
       nextButton.setText("Next");
       nextButton.setIcon(forwardIcon);
     }
-
-    // Repaint the screen
+    nextButton.isDefaultButton();
+    
+    // Repaint the numScreens
     screenPanel.validate();
     screenPanel.paint(screenPanel.getGraphics());
   }
