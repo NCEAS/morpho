@@ -1,45 +1,30 @@
-7/28/00 - The contents of dmanclient have been completely reorganized
-All java source code is now inside the src directory within subdirectories
-representing the package structure where compiled classes should be stored.
-Xalan.jar, xerces.jar and several other jar files needed for compilation
-and execution are included in the lib directory.
+Morpho: XML Metadata Client
+------------------------------
 
-You should be able to execute the Desktop Client immediately after 'checking
-out' the code from CVS by executing runme.bat (Windows machines - Unix machines
-should be able to run the program by typing the contents of runme.bat on
-the command line.) Certain features (e.g. the metadata editor) will not operate
-properly until paths in 'mde.cfg' are set properly for the user's machine,
-however. 
+Version: Alpha 3 Release - June 22, 2001
 
-Note that there are a number of sample xml files in the directory xmlfiles.
-Queries currently search all files in this local directory. 
+Feedback and bugs to: knb-software@nceas.ucsb.edu
 
-One can compile the code by moving all *.java files to a single directory
-and then using 'javac' to compile with the '-d' switch so that packages are
-placed in the proper directories.
+Contributors: Matt Jones (jones@nceas.ucsb.edu)
+              Chad Berkley (berkley@nceas.ucsb.edu)
+              Dan Higgins (higgins@nceas.ucsb.edu)
 
-A much easier method is to use the java-based 'ant' program from www.apache.org.
-Ant is a cross-platform utility designed to replace the Unix 'make' utility.
-Ant can be obtained from "http://jakarta.apache.org/ant/index.html". 
+This is a ALPHA version of the Morpho client tool. It is known to be incomplete
+and to have a number of 'bugs'. It is being released simply for preliminary
+review. 
 
-The binary distribution of Ant consists of three directories: bin, docs and lib. 
-Only the bin and lib directory are crucial for running Ant. To run
-Ant, the following must be done:
+It is almost a complete change from previous versions - thus, previous help 
+documentation is NOT applicable. 
 
-     Add the bin directory to your path. 
-     Set the ANT_HOME environment variable. This should be set to the directory 
-         which contains the bin and lib directory. 
-     Set the JAVA_HOME environment variable. 
-         This should be set to the directory where the JDK is installed.   
+Morpho is a Java application. One thus needs to have a Java Virtual Machine (JVM)
+installed on the machine running Morpho. You can see if a JVM is installed by
+typing 'java' on the command line and seeing if any messages appear. If Java is
+not installed, a Java runtime system can be downloaded from Sun at
+"http://java.sun.com/j2se/1.3/jre"
 
-Ant works by reading instructions from an XML file. In this case, the file is called
-'build.xml'. One can open and read this file to see the steps needed to install the
-desktop client code in this version of the Client. Simply CDing the base directory
-and entering 'Ant' will run the build.xml file. This will compile the java code,
-move the image files into the same directory as compiled class files, and then
-create a jar file, dmanclient.jar, which should contain everything needed to run the
-application.
+The current version of Morpho has only been tested on Windows and Linux OSs using 
+Java version 1.3. It is not expected to run on Macs that do not have OS X (and it
+has not been tested even on OS X machines).
 
-                          
-
-Dan Higgins  (higgins@nceas.ucsb.edu)
+If Java is properly installed, you should be able to start Morpho by simply
+executing the 'morpho.bat' file in Windows or the 'morpho' script on Linux.
