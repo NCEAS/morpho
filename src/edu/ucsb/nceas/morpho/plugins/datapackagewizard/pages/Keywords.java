@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 02:54:10 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-24 19:27:39 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,7 +350,7 @@ class KeywordsDialog extends WizardPopupDialog {
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////
-    JPanel kwPanel = WidgetFactory.makePanel(4);
+    JPanel kwPanel = WidgetFactory.makePanel(8);
     kwLabel = WidgetFactory.makeLabel("Keywords:", true);
     kwPanel.add(kwLabel);
     

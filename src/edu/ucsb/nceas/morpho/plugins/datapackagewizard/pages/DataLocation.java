@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-09-24 19:27:39 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -494,12 +494,14 @@ public class DataLocation extends AbstractWizardPage {
     } else if (distribXPath==OFFLINE_XPATH)  {
 //  O F F L I N E  ///////////////////////////////////
     
-      if (offlineNextPageID==WizardPageLibrary.DATA_FORMAT) {
+      if (nextPageID==WizardPageLibrary.DATA_FORMAT) {
         //entered by hand:    
         returnMap.put(OBJECTNAME_XPATH, getImportFileNameOnly());
+        returnMap.put(distribXPath, ""); //all offline subelems are optional!
+
       } else {
         //entered by import wizard:
-        //nothing needs doing - inport wizard gets these values
+        //nothing needs doing - import wizard gets these values
       }
     }
     return returnMap;

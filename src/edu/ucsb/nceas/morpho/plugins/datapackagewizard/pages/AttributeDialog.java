@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-23 18:48:14 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-09-24 19:27:39 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,13 +99,13 @@ class AttributeDialog extends WizardPopupDialog {
           +"</td></tr></table></html>",
           
           "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
-          +"ORDINAL:&nbsp;&nbsp;&nbsp;can determine the order of categories, "
+          +"ORDINAL:&nbsp;&nbsp;&nbsp;can determine order of categories, "
           +"but not magnitude of their differences. <font color=\"#666666\">"
-          +"e.g: a ranking system: 1=good, 2=fair, 3=poor.</font>"
+          +"e.g: ranking system: 1=good,2=fair,3=poor.</font>"
           +"</td></tr></table></html>",
           
           "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
-          +"INTERVAL:&nbsp;&nbsp;data which consist of equidistant points on a " 
+          +"INTERVAL:&nbsp;&nbsp;data consist of equidistant points on a " 
           +"scale. <font color=\"#666666\">e.g: Celsius scale (no "
           +"natural zero point; 20C is not twice as hot as 10C)</font>"
           +"</td></tr></table></html>",
@@ -156,8 +156,8 @@ class AttributeDialog extends WizardPopupDialog {
     measScaleElemNames[MEASUREMENTSCALE_RATIO]    = "ratio";
     measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "datetime";
   }
-  
-  
+
+
   /** 
    * initialize method does frame-specific design - i.e. adding the widgets that 
    are displayed only in this frame (doesn't include prev/next buttons etc)

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 04:40:38 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-09-24 19:27:39 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,7 +101,8 @@ public class CustomList extends JPanel {
   protected static  AddAction     addAction;
   private static  TableModelEvent tableModelEvent;
   private DefaultTableModel model;
-  private Dimension buttonDims;
+  private Dimension   buttonDims;
+  private JScrollPane scrollPane;
   
   // these Actions are optional, but are defined by the caller to provide 
   // custom functionality for the list buttons
@@ -212,7 +213,7 @@ public class CustomList extends JPanel {
     
     /////////////////////////////////
     
-    final JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.getViewport().setBackground(java.awt.Color.white);
     scrollPane.getViewport().addChangeListener(new ChangeListener() {
@@ -517,7 +518,7 @@ public class CustomList extends JPanel {
   
   /**
    *  adds the row to the list after the currently-selected row, or at the end 
-   *  if no row is selected
+   *  if no row is selected. Then scrolls to make the new row visible.
    *
    *  @param  the List defining the row data. If the list has "n" columns, the 
    *          passed List may have 0 -> (n+1) elements as follows:
@@ -549,7 +550,10 @@ public class CustomList extends JPanel {
     if (comp!=null) {
       table.editCellAt(row, 0, new EventObject(comp));
       comp.requestFocus();
-    }
+    } 
+System.err.println("\n*** addRow--> table.getCellRect(row,0,true) = "
+                                                +table.getCellRect(row,0,true));
+table.scrollRectToVisible(table.getCellRect(row,0,true));
     table.setRowSelectionInterval(row, row);
   }
 
@@ -745,7 +749,7 @@ class AddAction extends AbstractAction {
 
     Log.debug(45, "CustomList ADD action");
     
-    if  (parentList.getCustomAddAction()==null) parentList.addRow(new Vector());
+    if (parentList.getCustomAddAction()==null) parentList.addRow(new Vector());
     else parentList.getCustomAddAction().actionPerformed(null);
   }
 }

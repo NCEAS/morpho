@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 16:40:55 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-24 19:27:39 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
   private JCheckBox enumDefinitionFreeTextCheckBox;
 
   private final String[] textEnumPicklistVals
-                      = { "Enumerated values (belong to a pre-defined list)", 
+                      = { "Enumerated values (belong to predefined list)", 
                           "Text values (free-form or matching a pattern)"     };
 
   private final String[] nomOrdDisplayNames = { "nominal", "ordinal" };
