@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-10-02 18:01:13 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,11 +77,44 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   private AttributeDialog attributeDialog;
   
   private String[] numberTypesArray = new String[] { 
-                        "natural", 
-                        "whole",
-                        "integer", 
-                        "real" 
+                        "NATURAL (non-zero counting numbers: 1, 2, 3..)", 
+                        "WHOLE  (counting numbers & zero: 0, 1, 2, 3..)",
+                        "INTEGER (+/- counting nums & zero: -2, -1, 0, 1..)", 
+                        "REAL  (+/- fractions & non-fractions: -1/2, 3.14..)" 
                     };
+  
+//////////////////////////////////////////////////
+//
+//from eml-entity.xsd:
+//  
+//Natural numbers
+//
+//The number type for this attribute consists
+//of the 'natural' numbers, otherwise known as the counting numbers:
+//1, 2, 3, 4, ...
+//
+//Whole numbers
+//
+//The number type for this attribute consists
+//of the 'whole' numbers, which are the natural numbers plus the
+//zero value: 0, 1, 2, 3, 4, ...
+//
+//Integer numbers
+//
+//The number type for this attribute consists
+//of the 'integer' numbers, which are the natural numbers, plus the
+//zero value, plus the negatives of the natural numbers: ..., -4, -3, 
+//-2, -1, 0, 1, 2, 3, 4, ...
+//
+//Real numbers
+//
+//The number type for this attribute consists
+//of the 'real' numbers, which contains both the rational numbers
+//that can be expressed as fractions and the irrational numbers 
+//that can not be expressed as fractions (such as the square root of 2).
+//
+//////////////////////////////////////////////////////
+
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
