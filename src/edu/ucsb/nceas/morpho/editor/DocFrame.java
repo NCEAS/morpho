@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 18:32:22 $'
- * '$Revision: 1.163 $'
+ *     '$Date: 2004-03-30 19:07:06 $'
+ * '$Revision: 1.164 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,6 +252,10 @@ public class DocFrame extends javax.swing.JFrame
    */
   private boolean removeReferencesFlag = true; 
 
+  // the index of the node found in findNode
+  private int findNodeCount = 0;
+  private String lastFoundString = "";
+  
   /** This constructor builds the contents of the DocFrame Display  */
 
   public DocFrame()  {
@@ -1139,9 +1143,10 @@ public class DocFrame extends javax.swing.JFrame
      // no node was found
      String msg = "Sorry, could not locate a node containing '"+name+"'";
      JOptionPane.showMessageDialog(this, msg, "alert", JOptionPane.INFORMATION_MESSAGE);
+     findNodeCount = 0;
+     
   }     
  
-
  
   /**
    * Creates a new DefaultMutableTreeNode with the special
@@ -3354,7 +3359,14 @@ Log.debug(20, xmlout);
         tree.setSelectionRow(0);
       }
       else {
-        findNode(rootNode, sel, 0);
+        if (sel.equals(lastFoundString)) {
+          findNodeCount++;
+        }
+        else {
+          findNodeCount = 0;
+        }
+        findNode(rootNode, sel, findNodeCount);
+        lastFoundString = sel;
       }
   }
 
