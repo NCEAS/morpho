@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: PathQueries.java,v 1.1 2000-08-22 19:16:09 higgins Exp $'
+ *     Version: '$Id: PathQueries.java,v 1.2 2000-08-29 15:58:25 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -41,7 +41,7 @@ public class PathQueries
     // insert will add a PathQuery to the collection IF it is NOT already there!
     public void insert(PathQuery pq) {
         if(!contains(pq)) {
-            queries.add(pq);
+            queries.addElement(pq);
         }
     }
   

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.2 2000-08-23 16:18:39 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.3 2000-08-29 15:58:26 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -302,7 +302,7 @@ public class DataGuideBean extends java.awt.Container
         Enumeration keys = localDocTypes.keys();
         Vector vec = new Vector();
         while (keys.hasMoreElements()) {
-            vec.add((String)keys.nextElement());
+            vec.addElement((String)keys.nextElement());
         } 
         DocTypeList.setListData(vec);
     }

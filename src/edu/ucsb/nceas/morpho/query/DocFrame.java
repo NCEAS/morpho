@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.4 2000-08-23 17:31:50 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.5 2000-08-29 15:58:26 higgins Exp $'
  */
 
 
@@ -22,6 +22,7 @@ import org.apache.xalan.xslt.XSLTInputSource;
 import org.apache.xalan.xslt.XSLTResultTarget;
 import org.apache.xalan.xslt.XSLTProcessor;
 import org.apache.xalan.xpath.xml.*;
+import java.util.PropertyResourceBundle;
 
 public class DocFrame extends javax.swing.JFrame
 {
@@ -180,7 +181,12 @@ public void writeInfo() {
 	void TransformButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
         CatalogEntityResolver cer = new CatalogEntityResolver();
-        String xmlcatalogfile = "./catalog/catalog"; 
+    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+    String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+    String local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
+    
+    String xmlcatalogfile = local_dtd_directory+"/catalog"; 
+       // String xmlcatalogfile = "./catalog/catalog"; 
         
         try {
             Catalog myCatalog = new Catalog();
