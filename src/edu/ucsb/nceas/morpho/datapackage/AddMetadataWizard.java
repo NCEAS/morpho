@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-22 21:51:04 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-03-26 19:30:14 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1028,7 +1028,12 @@ public class AddMetadataWizard extends JFrame
         File newPackageMember;
         try
         { //save the new package member
+          if ((i==0)&&(hasData)) {
+            newPackageMember = fsds.newDataFile(newid, new FileInputStream(currentFile)); 
+          }
+          else {
             newPackageMember = fsds.newFile(newid, new FileReader(currentFile));
+          }
         }
         catch(Exception e)
         {
@@ -1061,7 +1066,6 @@ public class AddMetadataWizard extends JFrame
         return;
       }
     }
-    
     }  
   } // end of loop over files vector
     File packageFile = dataPackage.getTriplesFile();

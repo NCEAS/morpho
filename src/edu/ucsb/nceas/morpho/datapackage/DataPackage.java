@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-22 21:48:47 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2002-03-26 19:30:14 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -978,7 +978,8 @@ public class DataPackage
           else
           { //its a data file
             //fsds.newFile(key, new FileReader(f));
-            fsds.saveDataFile(key, new FileReader(f));   //DFH
+ //           fsds.saveDataFile(key, new FileReader(f));   //DFH
+            fsds.saveDataFile(key, new FileInputStream(f));
           }
         }
         catch(Exception e)

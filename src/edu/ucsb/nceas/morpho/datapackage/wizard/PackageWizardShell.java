@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-15 21:59:40 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2002-03-26 19:29:28 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1308,11 +1308,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           file = new File(filepath);
           originalDataFilePath = textfield.getText();
-          FileReader fr = null;
+ //DFH         FileReader fr = null;
+          FileInputStream fr = null;
           attributes.remove("name");
           try
           {
-            fr = new FileReader(file);
+//DFH            fr = new FileReader(file);
+              fr = new FileInputStream(file);
           }
           catch(FileNotFoundException fnfe)
           {

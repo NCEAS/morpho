@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 21:47:10 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-03-26 19:30:14 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,8 +239,8 @@ public class NewDataFile extends javax.swing.JDialog
         }
 	     
 	    // now remove this window
-		this.hide();
-		this.dispose();
+		  this.hide();
+		  this.dispose();
         
       if (dataPackageId!=null) {
         EntityGUI eu = (EntityGUI)parent;
@@ -338,7 +338,7 @@ public class NewDataFile extends javax.swing.JDialog
       { //save the new package member
         if (addedFile!=null) 
         {
-          newPackageMember = fsds.newFile(newid, new FileReader(addedFile));
+          newPackageMember = fsds.newDataFile(newid, new FileInputStream(addedFile));
         }
       }
       catch(Exception e)
