@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-15 23:32:08 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-09-17 00:35:44 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ public class WizardSettings {
                                       = new Dimension(2000,20);
 
   // x-dimension is ignored:
-  protected static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS  
+  public static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS  
                                       = new Dimension(2000,20);
 
                                       

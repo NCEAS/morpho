@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 04:22:36 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-17 00:35:44 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,8 +101,10 @@ public class Summary extends AbstractWizardPage {
   private String getDataLocation() {
    
     String summaryText = WizardSettings.getSummaryText();
-    if ( summaryText.equals(WizardSettings.SUMMARY_TEXT_ONLINE) 
-      || summaryText.equals(WizardSettings.SUMMARY_TEXT_INLINE)) {
+    if (summaryText!=null 
+            && (   summaryText.equals(WizardSettings.SUMMARY_TEXT_ONLINE) 
+                || summaryText.equals(WizardSettings.SUMMARY_TEXT_INLINE)) ) {
+                
       String loc = WizardSettings.getDataLocation();
       if (loc!=null) return "<span style=\"text-decoration: underline;\">"+loc
                                                                     +"</span>";
