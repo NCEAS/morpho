@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.12 2001-01-08 19:08:18 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.13 2001-03-05 17:46:56 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -42,7 +42,7 @@ import edu.ucsb.nceas.dtclient.*;
 public class DataGuideBean extends java.awt.Container
 {   
     String 	local_dtd_directory = null;
-    PropertyResourceBundle options;
+//    PropertyResourceBundle options;
     MouseListener popupListener;
     JMenuItem ShowmenuItem;
     JMenuItem SavemenuItem;
@@ -259,9 +259,10 @@ public class DataGuideBean extends java.awt.Container
 		
 		
     try {
-      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
-      local_dtd_directory = (String)options.handleGetObject("local_dtd_directory");
+      // options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+	  ConfigXML config = new ConfigXML("config.xml");
+      MetaCatServletURL = config.get("MetaCatServletURL",0);
+      local_dtd_directory = config.get("local_dtd_directory",0);
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
 	getDocTypes();	
@@ -328,7 +329,7 @@ public class DataGuideBean extends java.awt.Container
 		new DriverFrame().show();
 	}
 
-    void create_localDocTypes() {
+/*    void create_localDocTypes() {
         localDocTypes = new Hashtable();
         localDocTypes.put("resource","resource.dtd");
         localDocTypes.put("eml-dataset","eml-dataset.dtd");
@@ -339,6 +340,16 @@ public class DataGuideBean extends java.awt.Container
         localDocTypes.put("eml-software","eml-software.dtd");
         localDocTypes.put("eml-supplement","eml-supplement.dtd");
         localDocTypes.put("eml-variable","eml-variable.dtd");
+    }
+*/
+    void create_localDocTypes() {
+        localDocTypes = new Hashtable();
+		ConfigXML config = new ConfigXML("config.xml");
+        Vector vvv = config.get("localdoctypename");
+        for (Enumeration e = vvv.elements();e.hasMoreElements();) {
+            String nnn = (String)e.nextElement();
+            localDocTypes.put(nnn, nnn+".dtd"); 
+        }
     }
 
     void getLocalDocTypes() {

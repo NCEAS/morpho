@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.42 2001-02-12 23:32:35 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.43 2001-03-05 17:46:56 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -68,7 +68,7 @@ public class QueryBean extends AbstractQueryBean
     boolean searchnetwork = true;
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
-    PropertyResourceBundle options;
+//    PropertyResourceBundle options;
     ImageIcon BflyStill;
     ImageIcon BflyMove;
     
@@ -1457,10 +1457,11 @@ public void searchFor(String searchText) {
     public void getConfigData() {
 		// Get the configuration file information
     try {
-      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+      ConfigXML config = new ConfigXML("config.xml");  
+  //    options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+      String local_dtd_directory =config.get("local_dtd_directory",0);     // DFH
       xmlcatalogfile = local_dtd_directory+"/catalog"; 
-      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+      MetaCatServletURL = config.get("MetaCatServletURL",0);
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
 	}
@@ -1574,8 +1575,9 @@ public void LogIn() {
 
       // Now try to write the document to the database
       try {
-        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        ConfigXML config = new ConfigXML("config.xml");
+//        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =config.get("MetaCatServletURL",0);     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);
@@ -1603,8 +1605,9 @@ public void LogOut() {
 
       // Now try to write the document to the database
       try {
-        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        ConfigXML config = new ConfigXML("config.xml");
+    //    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        String MetaCatServletURL =config.get("MetaCatServletURL",0);     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);

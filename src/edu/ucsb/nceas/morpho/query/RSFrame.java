@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.13 2001-01-15 02:23:21 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.14 2001-03-05 17:46:56 higgins Exp $'
  */
 
 
@@ -37,7 +37,8 @@ public class RSFrame extends javax.swing.JFrame
     public boolean local = true;
     // local or remote results?
     
-    PropertyResourceBundle options;
+//    PropertyResourceBundle options;
+    ConfigXML config;
     String MetaCatServletURL = null;
     
     Hashtable relations;
@@ -119,8 +120,9 @@ public class RSFrame extends javax.swing.JFrame
 		
 		
     try {
-      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+        config = new ConfigXML("config.xml");
+//      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+      MetaCatServletURL = config.get("MetaCatServletURL", 0);
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
 		

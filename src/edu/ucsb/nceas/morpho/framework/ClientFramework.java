@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.30 2001-02-02 23:17:55 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.31 2001-03-05 17:47:41 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -64,7 +64,8 @@ public class ClientFramework extends javax.swing.JFrame
     static boolean log_file = false; // redirects standard out and err streams
     String xmlcatalogfile = null;
     String MetaCatServletURL = null;
-    PropertyResourceBundle options = null;
+  //  PropertyResourceBundle options = null;
+    ConfigXML config;
     boolean connected = false;
     edu.ucsb.nceas.querybean.LocalQuery lq = null;
     Hashtable menuList = null;
@@ -405,10 +406,11 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 		//}}
 		// Get the configuration file information
     try {
-      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+        config = new ConfigXML("config.xml");
+//      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+      String local_dtd_directory =config.get("local_dtd_directory",0);     // DFH
       xmlcatalogfile = local_dtd_directory+"/catalog"; 
-      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+      MetaCatServletURL = config.get("MetaCatServletURL",0);
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
 		JTabbedPane1_stateChanged(null);
@@ -561,8 +563,9 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 			sf.dispose();
 //			ConnectionFrame cf = new ConnectionFrame(clf);
 //			cf.setVisible(true);
-            PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-            String log_file_setting =(String)options.handleGetObject("log_file");     // DFH
+//            PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+            ConfigXML config = new ConfigXML("config.xml");
+            String log_file_setting = config.get("log_file",0);     // DFH
 			if (log_file_setting!=null)
 			{ if(log_file_setting.equalsIgnoreCase("true")) {
 			    log_file=true;
@@ -995,8 +998,9 @@ public void LogIn() {
 
       // Now try to write the document to the database
       try {
-        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+        //PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        ConfigXML config = new ConfigXML("config.xml");
+        String MetaCatServletURL = config.get("MetaCatServletURL",0);     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);
@@ -1024,8 +1028,9 @@ public void LogOut() {
 
       // Now try to write the document to the database
       try {
-        PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-        String MetaCatServletURL =(String)options.handleGetObject("MetaCatServletURL");     // DFH
+    //    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+        ConfigXML config = new ConfigXML("config.xml");
+        String MetaCatServletURL =config.get("MetaCatServletURL",0);     // DFH
         System.err.println("Trying: " + MetaCatServletURL);
         URL url = new URL(MetaCatServletURL);
         HttpMessage msg = new HttpMessage(url);
