@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <locationList><location> <name>ACM Wilderness Field Station</name>
  <description>ACM Wilderness Field Station</description>
  <north>47.995</north>
@@ -91,14 +90,7 @@
  <south>48.200</south>
  <east>-122.000</east>
  </location>
- <location> <name>Bahamas Environmental Research Center</name>
- <description>Bahamas Environmental Research Center</description>
- <north>-78.000</north>
- <west>25.0</west>
- <south>-78.000</south>
- <east>25.0</east>
- </location>
- <location> <name>Ball State Field Station and Evironmental Ed Center</name>
+  <location> <name>Ball State Field Station and Evironmental Ed Center</name>
  <description>Ball State Field Station and Evironmental Ed Center</description>
  <north>40.320</north>
  <west>-85.680</west>
@@ -126,14 +118,7 @@
  <south>42.030</south>
  <east>-73.900</east>
  </location>
- <location> <name>Baruch Marine Field Laboratory</name>
- <description>Baruch Marine Field Laboratory</description>
- <north>-79.193</north>
- <west>33.350833</west>
- <south>-79.193</south>
- <east>33.350833</east>
- </location>
- <location> <name>Bath Field Station</name>
+  <location> <name>Bath Field Station</name>
  <description>Bath Field Station</description>
  <north>41.109</north>
  <west>-81.388</west>
@@ -238,7 +223,7 @@
  <south>33.722</south>
  <east>-116.384</east>
  </location>
-  <location> <name>Brackenridge Field Laboratory</name>
+ <location> <name>Brackenridge Field Laboratory</name>
  <description>Brackenridge Field Laboratory</description>
  <north>30.274</north>
  <west>-97.732</west>
@@ -301,7 +286,7 @@
  <south>45.4</south>
  <east>-93.2</east>
  </location>
-  <location> <name>Cedar Mountain Science Center</name>
+ <location> <name>Cedar Mountain Science Center</name>
  <description>Cedar Mountain Science Center</description>
  <north>37.595</north>
  <west>-113.1</west>
@@ -322,14 +307,7 @@
  <south>33.54</south>
  <east>-112.07</east>
  </location>
- <location> <name>Chapala Ecology Station</name>
- <description>Chapala Ecology Station</description>
- <north>-102.000</north>
- <west>21.0</west>
- <south>-102.000</south>
- <east>21.0</east>
- </location>
- <location><name>Chickering American River Reserve UCNRS</name>
+  <location><name>Chickering American River Reserve UCNRS</name>
  <description>Chickering American River Reserve UCNRS</description>
  <north>39.24675</north>
  <west>-120.3253</west>
@@ -364,7 +342,7 @@
  <south>45.694</south>
  <east>-85.540</east>
  </location>
-  <location> <name>Coal Oil Point Reserve</name>
+ <location> <name>Coal Oil Point Reserve</name>
  <description>Coal Oil Point Reserve</description>
  <north>34.417</north>
  <west>-119.875</west>
@@ -399,7 +377,7 @@
  <south>35.0</south>
  <east>-83.5</east>
  </location>
-  <location> <name>Cranberry Lake Biological Station</name>
+ <location> <name>Cranberry Lake Biological Station</name>
  <description>Cranberry Lake Biological Station</description>
  <north>44.222</north>
  <west>-74.837</west>
@@ -413,7 +391,7 @@
  <south>43.557</south>
  <east>-73.655</east>
  </location>
-  <location><name>Dawson Los Monos Canyon Reserve UCNRS</name>
+ <location><name>Dawson Los Monos Canyon Reserve UCNRS</name>
  <description>Dawson Los Monos Canyon Reserve UCNRS</description>
  <north>33.141666666666666</north>
  <west>-117.25555555555556</west>
@@ -462,7 +440,7 @@
  <south>42.516</south>
  <east>-74.138</east>
  </location>
-  <location><name>Eagle Lake Field Station UCNRS</name>
+ <location><name>Eagle Lake Field Station UCNRS</name>
  <description>Eagle Lake Field Station UCNRS</description>
  <north>40.617222222222225</north>
  <west>-120.72694444444444</west>
@@ -574,14 +552,7 @@
  <south>40.353</south>
  <east>-90.050</east>
  </location>
- <location> <name>Forfar Field Station - Andros Island</name>
- <description>Forfar Field Station - (ndros Island</description>
- <north>-78.000</north>
- <west>25.0</west>
- <south>-78.000</south>
- <east>25.0</east>
- </location>
- <location><name>Fort Ord Natural Reserve UCNRS</name>
+  <location><name>Fort Ord Natural Reserve UCNRS</name>
  <description>Fort Ord Natural Reserve UCNRS</description>
  <north>36.666666666666664</north>
  <west>-121.76666666666667</west>
@@ -630,7 +601,7 @@
  <south>39.660</south>
  <east>-84.000</east>
  </location>
-  <location> <name>Gobabeb Training and Research Centre</name>
+ <location> <name>Gobabeb Training and Research Centre</name>
  <description>Gobabeb Training and Research Centre</description>
  <north>-23.569</north>
  <west>15.046</west>
@@ -784,14 +755,7 @@
  <south>46.850</south>
  <east>-87.670</east>
  </location>
- <location> <name>Illinois River Biological Station</name>
- <description>Illinois River Biological Station</description>
- <north>-90.022</north>
- <west>40.352778</west>
- <south>-90.022</south>
- <east>40.352778</east>
- </location>
- <location> <name>Indiana Univ Research and Training Preserve</name>
+  <location> <name>Indiana Univ Research and Training Preserve</name>
  <description>Indiana Univ Research and Training Preserve</description>
  <north>39.180</north>
  <west>-86.500</west>
@@ -861,14 +825,14 @@
  <south>-21.000</south>
  <east>-42.500</east>
  </location>
-  <location> <name>Jaguar Creek</name>
+ <location> <name>Jaguar Creek</name>
  <description>Jaguar Creek</description>
  <north>17.161</north>
  <west>-88.680</west>
  <south>17.161</south>
  <east>-88.680</east>
  </location>
-  <location><name>James San Jacinto Mountains Reserve UCNRS</name>
+ <location><name>James San Jacinto Mountains Reserve UCNRS</name>
  <description>James San Jacinto Mountains Reserve UCNRS</description>
  <north>33.80833333333333</north>
  <west>-116.77777777777777</west>
@@ -1113,14 +1077,7 @@
  <south>41.128</south>
  <east>-73.732</east>
  </location>
- <location> <name>LUMCON Marine Center-Cocodrie</name>
- <description>LUMCON Marine Center-Cocodrie</description>
- <north>-90.661</north>
- <west>29.246944</west>
- <south>-90.661</south>
- <east>29.246944</east>
- </location>
- <location><name>Luquillo Experimental Forest LTER (LUQ)</name>
+  <location><name>Luquillo Experimental Forest LTER (LUQ)</name>
  <description>Luquillo Experimental Forest LTER (LUQ)</description>
  <north>18.3</north>
  <west>-65.8</west>
@@ -1610,7 +1567,7 @@
  <south>34.0</south>
  <east>-119.0</east>
  </location>
-  <location><name>Santa Cruz Island Reserve UCNRS</name>
+ <location><name>Santa Cruz Island Reserve UCNRS</name>
  <description>Santa Cruz Island Reserve UCNRS</description>
  <north>34.0</north>
  <west>-119.73333333333333</west>
@@ -2030,7 +1987,7 @@
  <south>47.901</south>
  <east>-91.868</east>
  </location>
-  <location><name>Virginia Coast Reserve LTER (VCR)</name>
+ <location><name>Virginia Coast Reserve LTER (VCR)</name>
  <description>Virginia Coast Reserve LTER (VCR)</description>
  <north>37.5</north>
  <west>-74.8</west>
