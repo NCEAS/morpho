@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-09 03:01:25 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2003-09-16 21:58:15 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ public class Morpho
     private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
-    private static Morpho thisStaticInstance;
+    public static Morpho thisStaticInstance;
     /** flag set to indicate that connection to metacat is busy
      *  used by doPing to avoid thread problem
      */
@@ -903,6 +903,19 @@ public class Morpho
         }
     }
 
+    public static void createMorphoInstance() {
+      try{
+        initializeConfiguration();
+        // Create a new instance of our application
+        Morpho morpho = new Morpho(config);
+        // Load the current profile and log in
+        morpho.loadProfile(morpho);
+        thisStaticInstance = morpho;
+      } catch (Exception e) {
+        Log.debug(10,"error creating Morpho Instance");
+      }
+    }
+    
     /**
      * Set up a SAX parser for reading an XML document
      *
