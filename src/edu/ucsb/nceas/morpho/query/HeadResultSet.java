@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-10 20:45:52 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-04-10 21:17:54 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,12 +50,12 @@ public class HeadResultSet extends ResultSet
    * Construct a HeadResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  /*public HeadResultSet(Query query, String source,
+  public HeadResultSet(Query query, String source,
                        InputStream resultsXMLStream, Morpho morpho)
   {
     super(query, source, resultsXMLStream, morpho);
     consolidateResults();
-  }*/
+  }
 
 
   /**
