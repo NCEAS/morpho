@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-16 20:39:27 $'
- * '$Revision: 1.106 $'
+ *     '$Date: 2002-12-18 20:32:54 $'
+ * '$Revision: 1.107 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.DBValidate;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -2169,9 +2170,9 @@ public class DocFrame extends javax.swing.JFrame
         else {
           Log.debug(20,"Validation problem: "+valresult);
           int opt1 = JOptionPane.showConfirmDialog(null,
-                 "Validation Problem!",
                  valresult+"\n"+
                  "Do you want to Continue Exiting the Editor?",
+                 "Validation Problem!",
                  JOptionPane.YES_NO_OPTION);
           if (opt1== JOptionPane.YES_OPTION) {
             controller.fireEditingCompleteEvent(this, xmlout);
@@ -2862,6 +2863,12 @@ public class DocFrame extends javax.swing.JFrame
 //--------------------------------------------------------------------------------------    
 
   public String validate(String xml) {
+    DBValidate dbval = new DBValidate("org.apache.xerces.parsers.SAXParser", morpho);
+    dbval.validateString(xml);
+    return dbval.returnErrors();
+  }
+/*
+  public String validate(String xml) {
     Log.debug(11,"DocFrame: validating output using Metacat");
     String res = "oops!";
     Properties props = new Properties();
@@ -2903,6 +2910,6 @@ public class DocFrame extends javax.swing.JFrame
     }
     return res;
   }
-
+*/
 }
 
