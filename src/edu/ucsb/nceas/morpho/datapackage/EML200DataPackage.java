@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-16 21:57:23 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2004-04-17 20:45:43 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -288,7 +288,8 @@ public  class EML200DataPackage extends AbstractDataPackage
     while (e.hasMoreElements()) {
       String curid = (String)e.nextElement();
       try{
-        File datafile = mds.openFile(curid);
+Log.debug(2,"AAAA");
+        File datafile = mds.openDataFile(curid);
         FileReader fr = new FileReader(datafile);
         fds.saveFile(curid, fr);
       }
