@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-05 23:44:30 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-06 21:10:54 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.util;
 
 import java.io.Reader;
+import java.io.Writer;
 import java.io.IOException;
 
 import edu.ucsb.nceas.morpho.util.Log;
@@ -54,8 +55,7 @@ public class IOUtil
      *  @return                     <code>StringBuffer</code> containing  
      *                              characters read from the <code>Reader</code>
      *
-     *  @throws DocumentNotFoundException if id does not point to a document, or
-     *          if requested document exists but cannot be accessed.
+     *  @throws IOException if there are problems accessing or using the Reader.
      */
     public static StringBuffer getAsStringBuffer(   Reader reader, 
                                                     boolean closeWhenFinished) 
@@ -86,6 +86,55 @@ public class IOUtil
             }
         }
         return sb;
+    }
+    
+    /**
+     *  reads character data from the <code>StringBuffer</code> provided, and 
+     *  writes it to the <code>Writer</code> provided, using a buffered write. 
+     *
+     *  @param  buffer              <code>StringBuffer</code> whose contents are 
+     *                              to be written to the <code>Writer</code>
+     *
+     *  @param  writer              <code>java.io.Writer</code> where contents 
+     *                              of StringBuffer are to be written
+     *
+     *  @param  closeWhenFinished   <code>boolean</code> value to indicate 
+     *                              whether Reader should be closed when reading
+     *                              finished
+     *
+     *  @return                     <code>StringBuffer</code> containing  
+     *                              characters read from the <code>Reader</code>
+     *
+     *  @throws IOException if there are problems accessing or using the Writer.
+     */
+    public static void writeToWriter(StringBuffer buffer, Writer writer,
+                                                  boolean closeWhenFinished) 
+                                                            throws IOException
+    {
+        if (writer==null) {
+            throw new IOException("IOUtil.writeToWriter(): Writer is NULL!");
+        }
+        
+        char[] bufferChars = new char[buffer.length()];
+        buffer.getChars(0,buffer.length(),bufferChars,0);
+        
+        try {
+            writer.write(bufferChars);
+            writer.flush();
+        } catch (IOException ioe) {
+            Log.debug(12, "IOUtil.writeToWriter(): Error writing to Writer: "
+                                                            +ioe.getMessage());
+            throw ioe;
+        } finally {
+            if (closeWhenFinished) {
+                try { 
+                    if (writer!=null) writer.close();
+                } catch (IOException ce) {  
+                    Log.debug(12, "IOUtil.writeToWriter(): closing Writer: "
+                                                            +ce.getMessage());
+                }
+            }
+        }
     }
 }
 
