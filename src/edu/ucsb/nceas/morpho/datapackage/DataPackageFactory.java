@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-09 23:06:20 $'
- * '$Revision: 1.27 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-17 20:45:04 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -358,7 +358,7 @@ public class DataPackageFactory
       Node domnode = adp.getMetadataNode();
       DocFrame df = new DocFrame();
       df.setVisible(true);
-      df.initDoc(null, domnode);
+      df.initDoc(null, domnode, null, null);
   }
 
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-15 21:03:04 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-17 20:45:04 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,9 @@ public class AddDocumentationCommand implements Command
        AbstractDataPackage adp = resultPane.getAbstractDataPackage();
        DocFrame df = new DocFrame();
        df.setVisible(true);
-       df.initDoc(null, adp.getMetadataNode());
+       String id = adp.getPackageId();
+       String loc = adp.getLocation();
+       df.initDoc(null, adp.getMetadataNode(), id, loc);
     }//if
   
   }//execute

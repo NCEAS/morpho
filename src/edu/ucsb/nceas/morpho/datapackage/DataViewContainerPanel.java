@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-15 21:03:04 $'
- * '$Revision: 1.79 $'
+ *     '$Date: 2003-12-17 20:45:04 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1073,7 +1073,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   public void editingCompleted(String xmlString, String id, String location) {
 
-    Log.debug(11, "editing complete: id: " + id + " location: " + location);
+    Log.debug(1, "editing complete: id: " + id + " location: " + location);
+    if (location==null) return;
 
     /* metadisplay class does not 'know' the location of a package
      * so it is set to null when the editor is called.
