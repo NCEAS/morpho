@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-10 23:30:30 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-07-11 16:40:56 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,9 +127,10 @@ public class XMLPanels extends Component
 		    topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));    
          // is there anything to do?
         if (doc == null) { return; }
-        String temp = info.getEditor();
- /*       if (temp!=null) {
+        String temp = info.getRootEditor();
+        if (temp!=null) {
           try {
+   //         defaultPanel = false;  // set to avoid 'doPanels' creating a duplicate
             Object[] Args = new Object[] {doc};
             Class[] ArgsClass = new Class[] {DefaultMutableTreeNode.class};
             Class componentDefinition = Class.forName(temp);
@@ -149,10 +150,8 @@ public class XMLPanels extends Component
             System.out.println(e);
           }
         }
-*/
- //       info.setEditor(null); // so it is not repeated
+
           doPanels(doc,topPanel);
- //       info.setEditor(temp);  // reset for next time
     }
     
     void doPanels(DefaultMutableTreeNode node, JPanel panel) {
@@ -201,6 +200,7 @@ public class XMLPanels extends Component
           }
         }
       }
+      defaultPanel = true;
     }
     
     

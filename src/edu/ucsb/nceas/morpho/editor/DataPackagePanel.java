@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-06 19:00:14 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-07-11 16:40:55 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import javax.swing.tree.*;
 import java.util.*;
 
 /**
- * VariablePanel is an example of a plug-in panel to
+ * DataPackagePanel is an example of a plug-in panel to
  * be used by the XML editor. 
  */
 public class DataPackagePanel extends JPanel

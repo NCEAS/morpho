@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-10 23:30:30 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-07-11 16:40:56 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,9 @@ public class NodeInfo implements Serializable
     
     /** name of special class used to display this node */
     String editor = null;
+
+    /** name of special class used to display rootnode */
+    String rooteditor = null;
     
     /** help string for this node */
     String help = null;
@@ -137,6 +140,13 @@ public class NodeInfo implements Serializable
   }
   public void setEditor(String edt) {
     this.editor = edt;
+  }
+
+  public String getRootEditor() {
+    return rooteditor;
+  }
+  public void setRootEditor(String redt) {
+    this.rooteditor = redt;
   }
   
   
