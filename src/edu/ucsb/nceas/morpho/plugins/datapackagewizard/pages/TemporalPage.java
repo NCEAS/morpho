@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.16 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-24 23:36:37 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ public class TemporalPage extends AbstractUIPage {
     "July", "August", "September", "October", "November", "December"
   };
 
-  private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage";
+  private String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage";
 
   private static final Dimension PANEL_DIMS = new Dimension(325,350);
   private static final int YYYYMMDD = 8;
@@ -537,5 +537,62 @@ public class TemporalPage extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  public boolean setPageData(OrderedMap map, String _xPathRoot) { 
+
+    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+
+    String name = (String)map.get(xPathRoot + "/singleDateTime[1]/calendarDate[1]");
+    if (name!=null) {
+      map.remove(xPathRoot + "/singleDateTime[1]/calendarDate[1]");
+      // name is the calendar date in YYYY-MM-DD format
+      String yearS = name.substring(0,4);
+      String monthS = name.substring(5,7);
+      String dayS = name.substring(8,10);
+//      Log.debug(1,"year: "+yearS+"-----month: "+monthS+"-----day: "+dayS);
+      int year = (new Integer(yearS)).intValue();
+      int month = (new Integer(monthS)).intValue();
+      int day = (new Integer(dayS)).intValue();
+      Calendar singleCalendar = Calendar.getInstance();
+      singleCalendar.set(year, month-1, day-1);
+      singleTimeCalendar.setCalendar(singleCalendar);
+      currentPanel = singlePointPanel;
+    }
+    else {
+      String startString = (String)map.get(xPathRoot + "/rangeOfDates[1]/beginDate[1]/calendarDate[1]");
+      String endString = (String)map.get(xPathRoot + "/rangeOfDates[1]/endDate[1]/calendarDate[1]");
+      if ((startString!=null)&&(endString!=null)) {
+        map.remove(xPathRoot + "/rangeOfDates[1]/beginDate[1]/calendarDate[1]");
+        map.remove(xPathRoot + "/rangeOfDates[1]/endDate[1]/calendarDate[1]");
+        String syearS = startString.substring(0,4);
+        String smonthS = startString.substring(5,7);
+        String sdayS = startString.substring(8,10);
+        int syear = (new Integer(syearS)).intValue();
+        int smonth = (new Integer(smonthS)).intValue();
+        int sday = (new Integer(sdayS)).intValue();
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.set(syear, smonth-1, sday-1);
+        startTimeCalendar.setCalendar(startCalendar);
+        String eyearS = endString.substring(0,4);
+        String emonthS = endString.substring(5,7);
+        String edayS = endString.substring(8,10);
+        int eyear = (new Integer(syearS)).intValue();
+        int emonth = (new Integer(smonthS)).intValue();
+        int eday = (new Integer(sdayS)).intValue();
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.set(eyear, emonth-1, eday-1);
+        endTimeCalendar.setCalendar(endCalendar);
+        currentPanel = rangeTimePanel;
+      }
+    }
+    //if anything left in map, then it included stuff we can't handle...
+     boolean returnVal = map.isEmpty();
+
+     if (!returnVal) {
+
+       Log.debug(20,
+                 "TemporalPage.setPageData returning FALSE! Map still contains:"
+                 + map);
+     }
+     return returnVal;
+  }
 }

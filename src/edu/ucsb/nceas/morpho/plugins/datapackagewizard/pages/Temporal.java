@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.18 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-24 23:36:37 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -331,6 +331,14 @@ public class Temporal extends AbstractUIPage{
      */
   public String getPageNumber() { return pageNumber; }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+ // assume that 'data' is an orderedMap for a single temporalCov subtree
+  public boolean setPageData(OrderedMap data, String xPathRoot) { 
+    TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
+    temporalPage.setPageData(data, "/temporalCoverage");
+    List newRow = temporalPage.getSurrogate();
+    newRow.add(temporalPage);
+    timespanList.addRow(newRow);
+    return true; 
+  }
 }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 16:35:14 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2004-03-24 23:37:19 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -709,10 +709,71 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
     }
     catch (Exception w) {
-      Log.debug(50, "exception in getting keyword");
+      Log.debug(50, "exception in getting coverageNode");
     }
     return null;
   }
+  
+  /**
+   * gets a list of geographic nodes
+   */
+  public NodeList getGeographicNodeList() {
+    NodeList geoNodes = null;
+    String geoXpath = "";
+    try {
+      geoXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/geographicCoverage")).getNodeValue();
+      geoNodes = XMLUtilities.getNodeListWithXPath(metadataNode,
+          geoXpath);
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in getting geoNodeLIst");
+    }
+    return geoNodes;    
+  }
+
+  /**
+   *  remove all the geographicNodes
+   */
+   public void removeGeographicNodes() {
+     NodeList gList = getGeographicNodeList();
+     for (int i=0;i<gList.getLength();i++) {
+       Node node = gList.item(i);
+       Node par = node.getParentNode();
+       par.removeChild(node);
+     }
+   }
+   
+   
+    /**
+   * gets a list of temporal nodes
+   */
+  public NodeList getTemporalNodeList() {
+    NodeList tempNodes = null;
+    String tempXpath = "";
+    try {
+      tempXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/temporalCoverage")).getNodeValue();
+      tempNodes = XMLUtilities.getNodeListWithXPath(metadataNode,
+          tempXpath);
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in getting tempoNodeLIst");
+    }
+    return tempNodes;    
+  }
+
+    /**
+   *  remove all the geographicNodes
+   */
+   public void removeTemporalNodes() {
+     NodeList tList = getTemporalNodeList();
+     for (int i=0;i<tList.getLength();i++) {
+       Node node = tList.item(i);
+       Node par = node.getParentNode();
+       par.removeChild(node);
+     }
+   }
 
   /**
    *  insert a coverage subtree (geographic, temporal, or taxonomic)

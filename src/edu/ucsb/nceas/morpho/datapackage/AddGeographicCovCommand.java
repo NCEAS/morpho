@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-23 21:08:01 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-03-24 23:37:19 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,8 @@ public class AddGeographicCovCommand implements Command {
   private DataViewContainerPanel resultPane;
   private AbstractUIPage geographicPage;
 
+  private AbstractDataPackage adp;
+  
   public AddGeographicCovCommand() {
   }
 
@@ -75,6 +77,8 @@ public class AddGeographicCovCommand implements Command {
    * @param event ActionEvent
    */
   public void execute(ActionEvent event) {
+
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
@@ -121,6 +125,8 @@ public class AddGeographicCovCommand implements Command {
 
     geographicPage = dpwPlugin.getPage(
         DataPackageWizardInterface.GEOGRAPHIC);
+        
+    insertCurrentData();    
     ModalDialog wpd = new ModalDialog(geographicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
@@ -142,9 +148,7 @@ public class AddGeographicCovCommand implements Command {
   private Node covRoot;
   private Set mapSet;
   private Iterator mapSetIt;
-  private Object key;
-  private OrderedMap map, newMap;
-  AbstractDataPackage adp;
+  private OrderedMap map;
 
   private void insertNewGeographic() {
 
@@ -153,26 +157,35 @@ public class AddGeographicCovCommand implements Command {
     adp = resultPane.getAbstractDataPackage();
 
 
-       try {
-        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-        Document doc = impl.createDocument("", "coverage", null);
+    try {
+      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+      Document doc = impl.createDocument("", "coverage", null);
 
-        covRoot = doc.getDocumentElement();
-        XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
-        // now the covRoot node may have a number of geographicCoverage children
-        NodeList kids = covRoot.getChildNodes();
-        for (int i=0;i<kids.getLength();i++) {
-          Node kid = kids.item(i);
-          adp.insertCoverage(kid);          
-        }
+      covRoot = doc.getDocumentElement();
+      XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
+      // now the covRoot node may have a number of geographicCoverage children
+      NodeList kids = covRoot.getChildNodes();
+      for (int i=0;i<kids.getLength();i++) {
+        Node kid = kids.item(i);
+        adp.insertCoverage(kid);          
       }
-      catch (Exception w) {
-        Log.debug(5, "Unable to add OrderMap elements to DOM");
-        w.printStackTrace();
-      }
-    
-
-    return;
+    }
+    catch (Exception w) {
+      Log.debug(5, "Unable to add OrderMap elements to DOM");
+      w.printStackTrace();
+    }
+  return;
   }
 
+  private void insertCurrentData() {
+    NodeList geoList = adp.getGeographicNodeList();
+    if (geoList==null) return;
+    for (int i=0;i<geoList.getLength();i++) {
+       // create a new GeographicPage and add surrogate to list
+       OrderedMap geoMap = XMLUtilities.getDOMTreeAsXPathMap(geoList.item(i));
+//  Log.debug(1, "geoMap: "+geoMap);
+       geographicPage.setPageData(geoMap, "");
+    }
+    adp.removeGeographicNodes();
+  }
 }

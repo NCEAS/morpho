@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-24 23:36:37 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -590,7 +590,7 @@ public class GeographicPage extends AbstractUIPage {
     double w = -179.0;
     double s = -89.0;
     double e = 179.0;
-    String name = (String)map.get(xPathRoot + "/geographicDescription[1]");
+    String name = (String)map.get(_xPathRoot + "/geographicDescription[1]");
     if(name != null) {
       map = stripIndexOneFromMapKeys(map);
       map.remove(xPathRoot + "/geographicDescription[1]");

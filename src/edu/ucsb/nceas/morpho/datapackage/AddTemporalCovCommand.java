@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-23 21:08:01 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-03-24 23:37:19 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,8 @@ public class AddTemporalCovCommand implements Command {
   private DataViewContainerPanel resultPane;
   private AbstractUIPage temporalPage;
 
+  private AbstractDataPackage adp;
+
   public AddTemporalCovCommand() {
   }
 
@@ -74,6 +76,8 @@ public class AddTemporalCovCommand implements Command {
    * @param event ActionEvent
    */
   public void execute(ActionEvent event) {
+
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
@@ -120,11 +124,13 @@ public class AddTemporalCovCommand implements Command {
 
     temporalPage = dpwPlugin.getPage(
         DataPackageWizardInterface.TEMPORAL);
+        
+        
     ModalDialog wpd = new ModalDialog(temporalPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT, false);
-
+    insertCurrentData();
     wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
     wpd.setVisible(true);
 
@@ -143,7 +149,6 @@ public class AddTemporalCovCommand implements Command {
   private Iterator mapSetIt;
   private Object key;
   private OrderedMap map, newMap;
-  AbstractDataPackage adp;
 
   private void insertNewTemporal() {
 
@@ -173,4 +178,16 @@ public class AddTemporalCovCommand implements Command {
     return;
   }
 
+  private void insertCurrentData() {
+    NodeList tempList = adp.getTemporalNodeList();
+    if (tempList==null) return;
+    for (int i=0;i<tempList.getLength();i++) {
+       // create a new TemporalPage and add surrogate to list
+       OrderedMap tempMap = XMLUtilities.getDOMTreeAsXPathMap(tempList.item(i));
+//  Log.debug(1, "tempMap: "+tempMap);
+       temporalPage.setPageData(tempMap, "");
+    }
+    adp.removeTemporalNodes();
+  }
+  
 }

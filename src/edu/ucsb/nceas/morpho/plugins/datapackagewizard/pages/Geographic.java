@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 17:13:52 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-03-24 23:36:37 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,7 +160,6 @@ public class Geographic extends AbstractUIPage{
     Object dialogObj = selRowList.get(1);
 
     if (dialogObj==null || !(dialogObj instanceof GeographicPage)) return;
-Log.debug(1, "CCCC");
     GeographicPage editGeographicPage = (GeographicPage)dialogObj;
 
     ModalDialog wpd = new ModalDialog(editGeographicPage,
@@ -309,6 +308,15 @@ Log.debug(1, "CCCC");
      */
   public String getPageNumber() { return pageNumber; }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+
+// assume that 'data' is an orderedMap for a single geographicCov subtree
+  public boolean setPageData(OrderedMap data, String xPathRoot) { 
+    GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
+    geographicPage.setPageData(data, "/geographicCoverage");
+    List newRow = geographicPage.getSurrogate();
+    newRow.add(geographicPage);
+    geographicspanList.addRow(newRow);
+    return true; 
+  }
 }
 
