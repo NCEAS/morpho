@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-27 16:14:14 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2002-09-27 17:25:14 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,11 @@ public class DataPackagePlugin
   
   /** Constant int for edit menu position */
   public static final int EDITMENUPOSITION = 1;
+  
+  /** String for accelerator key */
+  public static final String COPYKEY  = "control c";
+  public static final String CUTKEY   = "control x";
+  public static final String PASTEKEY = "control v";
   /**
    * Construct the plugin.  Initialize our menus and toolbars.
    */
@@ -130,18 +135,27 @@ public class DataPackagePlugin
     // For edit menu
     GUIAction copy = new GUIAction("Copy", null, new TableCopyCommand());
     copy.setToolTipText("Copy value in data table cells");
+    copy.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Copy16.gif")));
+    copy.setAcceleratorKey(COPYKEY);
     copy.setMenuItemPosition(0);
     copy.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(copy);
     
     GUIAction cut = new GUIAction("Cut", null, new TableCutCommand());
     cut.setToolTipText("Cut value in data table cells");
+    cut.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Cut16.gif")));
+    cut.setAcceleratorKey(CUTKEY);
     cut.setMenuItemPosition(1);
     cut.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(cut);
     
     GUIAction paste = new GUIAction("Paste", null, new TablePasteCommand());
-    paste.setToolTipText("paste value in data table cells");
+    paste.setToolTipText("Paste value in data table cells");
+    paste.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Paste16.gif")));
+    paste.setAcceleratorKey(PASTEKEY);
     paste.setMenuItemPosition(2);
     paste.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(paste);
