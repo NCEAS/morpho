@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-15 21:59:39 $'
- * '$Revision: 1.48 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-01 17:04:01 $'
+ * '$Revision: 1.48.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,8 +98,15 @@ public class PackageWizard extends javax.swing.JFrame
       saxparser = (String)saxparserV.elementAt(0);
       
       //get the config file and parse it
-      File mainFile = new File(framefile);
-      FileReader xml = new FileReader(mainFile);
+      //File mainFile = new File(framefile);
+      //FileReader xml = new FileReader(mainFile);
+      ClassLoader cl = this.getClass().getClassLoader();
+      InputStream is = cl.getResourceAsStream(framefile);
+      if (is == null) {
+          framework.debug(10, "Null input stream returned " + 
+                              "for frame resource (1).");
+      }
+      BufferedReader xml = new BufferedReader(new InputStreamReader(is));
       pwp = new PackageWizardParser(xml, saxparser);
       doc = pwp.getDoc();
       globalDtd = pwp.getDtd();

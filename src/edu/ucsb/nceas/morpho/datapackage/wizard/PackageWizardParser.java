@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-12-11 00:23:35 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-01 17:04:01 $'
+ * '$Revision: 1.6.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import java.util.Hashtable;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -71,7 +72,7 @@ public class PackageWizardParser extends DefaultHandler
    * processing
    */
   
-  public PackageWizardParser(FileReader xml, String parserName)
+  public PackageWizardParser(Reader xml, String parserName)
   {
     XMLReader parser = initializeParser(parserName);
     if (parser == null) 
