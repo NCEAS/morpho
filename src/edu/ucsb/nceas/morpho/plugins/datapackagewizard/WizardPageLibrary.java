@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,7 +112,7 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.GEOGRAPHIC,         new Geographic());
     pages.put(DataPackageWizardInterface.TAXONOMIC,          new Taxonomic());
     pages.put(DataPackageWizardInterface.TEMPORAL,           new Temporal());
-    pages.put(DataPackageWizardInterface.SUMMARY,            new Summary());
+    pages.put(DataPackageWizardInterface.SUMMARY,            new Summary(container));
   }
 
 

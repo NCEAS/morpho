@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 04:24:32 $'
- * '$Revision: 1.10 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -238,7 +237,12 @@ public class TextImportWizardEml2 extends JFrame {
     return false;
   }
 
+  private SymAction lSymAction;
+
   private void initControls() {
+
+    lSymAction = new SymAction();
+
     //{{INIT_CONTROLS
     setTitle("Text Import Wizard");
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -249,7 +253,6 @@ public class TextImportWizardEml2 extends JFrame {
     saveFileDialog.setTitle("Save");
     openFileDialog.setMode(FileDialog.LOAD);
     openFileDialog.setTitle("Open");
-    //$$ openFileDialog.move(0,336);
     MainDisplayPanel.setLayout(new BorderLayout(0, 0));
     getContentPane().add(MainDisplayPanel, BorderLayout.CENTER);
     ControlsPlusDataPanel.setLayout(new GridLayout(2, 1, 0, 4));
@@ -266,11 +269,10 @@ public class TextImportWizardEml2 extends JFrame {
     Step1FullControlsPanel.setAlignmentY(0.0F);
     Step1FullControlsPanel.setAlignmentX(0.0F);
     Step1FullControlsPanel.setLayout(new BorderLayout());
-	//new GridLayout(8, 1, 0, 10));
     ControlsPanel.add("card1", Step1FullControlsPanel);
 
 
-    JLabel Step1_titleLabel = new JLabel("Text Import Wizard");
+    JLabel Step1_titleLabel = new JLabel("New DataTable Wizard");
     Step1_titleLabel.setFont(WizardSettings.TITLE_FONT);
     Step1_titleLabel.setForeground(WizardSettings.TITLE_TEXT_COLOR);
     Step1_titleLabel.setBorder(new EmptyBorder(WizardSettings.PADDING,0,WizardSettings.PADDING,0));
@@ -293,8 +295,6 @@ public class TextImportWizardEml2 extends JFrame {
     Step1_TopTitlePanel.add(Step1_TopTitleLabel);
     Step1_TopTitleLabel.setForeground(java.awt.Color.black);
     Step1_TopTitleLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    //Step1_TableNamePanel.setAlignmentY(0.473684F);
-    //Step1_TableNamePanel.setAlignmentX(0.0F);
     Step1_TableNamePanel.setLayout(new BoxLayout(Step1_TableNamePanel,
                                                  BoxLayout.X_AXIS));
     Step1ControlsPanel.add(Step1_TableNamePanel);
@@ -313,8 +313,6 @@ public class TextImportWizardEml2 extends JFrame {
     TableNameTextField.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     TableNameTextField.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     Step1_TableNamePanel.add(TableNameTextField);
-    //Step1_TableDescriptionPanel.setAlignmentY(0.473684F);
-    //Step1_TableDescriptionPanel.setAlignmentX(0.0F);
     Step1_TableDescriptionPanel.setLayout(new BoxLayout(
         Step1_TableDescriptionPanel, BoxLayout.X_AXIS));
     Step1ControlsPanel.add(Step1_TableDescriptionPanel);
@@ -327,42 +325,6 @@ public class TextImportWizardEml2 extends JFrame {
     TableDescriptionTextField.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     Step1_TableDescriptionPanel.add(TableDescriptionTextField);
 
-    /*
-    Step1_DelimiterChoicePanel.setAlignmentX(0.0F);
-    Step1_DelimiterChoicePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
-    Step1ControlsPanel.add(Step1_DelimiterChoicePanel);
-    Step1_DelimiterLabel.setText(
-        "Choose the method used to separate fields on each line of your data");
-    Step1_DelimiterLabel.setAlignmentY(0.0F);
-    Step1_DelimiterChoicePanel.add(Step1_DelimiterLabel);
-    Step1_DelimiterLabel.setForeground(new java.awt.Color(102, 102, 153));
-    Step1_DelimiterLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Step1_DelimeterRadioPanel.setAlignmentX(0.0F);
-    Step1_DelimeterRadioPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step1ControlsPanel.add(Step1_DelimeterRadioPanel);
-    DelimitedRadioButton.setHorizontalTextPosition(SwingConstants.
-                                                   RIGHT);
-    DelimitedRadioButton.setText(
-        "Delimited  -  Characters such as tabs or commas separate each data field");
-    DelimitedRadioButton.setActionCommand(
-        "Delimited  -  Characters such as tabs or commas separate each data field");
-    DelimitedRadioButton.setAlignmentY(0.0F);
-    DelimitedRadioButton.setSelected(true);
-    Step1_DelimeterRadioPanel.add(DelimitedRadioButton);
-    DelimitedRadioButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Step1_FixedFieldRadioPanel.setAlignmentX(0.0F);
-    Step1_FixedFieldRadioPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step1ControlsPanel.add(Step1_FixedFieldRadioPanel);
-    FixedFieldRadioButton.setText("Fixed Width  -  Fields are aligned in columns with specified number of characters");
-    FixedFieldRadioButton.setActionCommand("Fixed Width  -  Fields are aligned in columns with specified number of characters");
-    FixedFieldRadioButton.setAlignmentY(0.0F);
-    FixedFieldRadioButton.setEnabled(false);
-    Step1_FixedFieldRadioPanel.add(FixedFieldRadioButton);
-    FixedFieldRadioButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-	*/
-
-    //StartingLinePanel.setAlignmentX(0.0F);
     StartingLinePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
     Step1ControlsPanel.add(StartingLinePanel);
     StartingLineLabel.setText("Start import at row: ");
@@ -474,18 +436,23 @@ public class TextImportWizardEml2 extends JFrame {
     StepNumberLabel.setText("Step #1");
     JPanelCenter.add(StepNumberLabel);
     StepNumberLabel.setForeground(java.awt.Color.black);
-    CancelButton.setText("Cancel");
-    CancelButton.setActionCommand("Cancel");
+
+    CancelButton
+      = WidgetFactory.makeJButton(WizardSettings.CANCEL_BUTTON_TEXT, lSymAction,
+                                  WizardSettings.NAV_BUTTON_DIMS);
     JPanelCenter.add(CancelButton);
-    BackButton.setText("< Back");
-    BackButton.setActionCommand("< Back");
-    BackButton.setEnabled(false);
+    BackButton
+      = WidgetFactory.makeJButton(WizardSettings.PREV_BUTTON_TEXT, lSymAction,
+                                  WizardSettings.NAV_BUTTON_DIMS);
+    BackButton.setEnabled(true);
     JPanelCenter.add(BackButton);
-    NextButton.setText("Next >");
-    NextButton.setActionCommand("Next >");
+    NextButton
+      = WidgetFactory.makeJButton(WizardSettings.NEXT_BUTTON_TEXT, lSymAction,
+                                  WizardSettings.NAV_BUTTON_DIMS);
     JPanelCenter.add(NextButton);
-    FinishButton.setText("Finish");
-    FinishButton.setActionCommand("Finish");
+    FinishButton
+      = WidgetFactory.makeJButton(WizardSettings.IMPORT_BUTTON_TEXT, lSymAction,
+                                  WizardSettings.NAV_BUTTON_DIMS);
     FinishButton.setEnabled(false);
     JPanelCenter.add(FinishButton);
   }
@@ -495,10 +462,7 @@ public class TextImportWizardEml2 extends JFrame {
     //{{REGISTER_LISTENERS
     SymWindow aSymWindow = new SymWindow();
     this.addWindowListener(aSymWindow);
-    SymAction lSymAction = new SymAction();
-    NextButton.addActionListener(lSymAction);
-    BackButton.addActionListener(lSymAction);
-    FinishButton.addActionListener(lSymAction);
+
     SymListSelection lSymListSelection = new SymListSelection();
     StartingLineTextField.addActionListener(lSymAction);
     SymFocus aSymFocus = new SymFocus();
@@ -510,8 +474,6 @@ public class TextImportWizardEml2 extends JFrame {
     SpaceCheckBox.addItemListener(lSymItem);
     SemicolonCheckBox.addItemListener(lSymItem);
     OtherCheckBox.addItemListener(lSymItem);
-    CancelButton.addActionListener(lSymAction);
-    //}}
   }
 
   private void setDistribution(short distribution) {
@@ -575,6 +537,7 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   class SymAction implements java.awt.event.ActionListener {
+
     public void actionPerformed(java.awt.event.ActionEvent event) {
       Object object = event.getSource();
       if (object == NextButton)
@@ -647,12 +610,12 @@ public class TextImportWizardEml2 extends JFrame {
       }
       nlines = 0;
       nlines_actual = 0;
-      
+
       List linesList = new ArrayList();
       try {
         while ((temp = in.readLine()) != null) {
           // do not count blank lines
-					if (temp.length() > 0) {
+          if (temp.length() > 0) {
             nlines_actual++;
             if (nlines < nlines_max) {
               nlines++;
@@ -735,8 +698,6 @@ public class TextImportWizardEml2 extends JFrame {
         ad = (AttributePage)WizardPageLibrary.getPage(
             DataPackageWizardInterface.ATTRIBUTE_PAGE);
         ad.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        //WizardPopupDialog wpd = new WizardPopupDialog(ad, WizardContainerFrame.frame, false);
-        //wpd.setVisible(false);
 
         columnAttributes.add(ad);
 
@@ -929,9 +890,9 @@ public class TextImportWizardEml2 extends JFrame {
     if (stepNumber < 3)BackButton.setEnabled(true);
 
     if(fullColumnModel != null)
-      	StepNumberLabel.setText("Step #" + stepNumber + " of " + (fullColumnModel.getColumnCount() + 2));
+        StepNumberLabel.setText("Step #" + stepNumber + " of " + (fullColumnModel.getColumnCount() + 2));
     else
-    	StepNumberLabel.setText("Step #" + stepNumber);
+      StepNumberLabel.setText("Step #" + stepNumber);
     CardLayout cl = (CardLayout)ControlsPanel.getLayout();
     cl.show(ControlsPanel, "card" + stepNumber);
 
@@ -954,9 +915,6 @@ public class TextImportWizardEml2 extends JFrame {
                               + (fullColumnModel.getColumnCount() + 2));
       AttributePage attrd = (AttributePage)columnAttributes.elementAt(
           stepNumber - 3);
-      /*ColumnDataPanel.removeAll();
-             ColumnDataPanel.add(attrd,BorderLayout.CENTER);
-             ColumnDataPanel.validate();*/
       MainDisplayPanel.remove(MainDisplayPanel.getComponent(1));
       MainDisplayPanel.add(attrd, BorderLayout.CENTER);
       attrd.refreshUI();
@@ -1609,9 +1567,8 @@ public class TextImportWizardEml2 extends JFrame {
   private JPanel JPanelLeft = new JPanel();
   private JPanel JPanelCenter = new JPanel();
   private JLabel StepNumberLabel = new JLabel();
-  private JButton CancelButton = new JButton();
-  private JButton BackButton = new JButton();
-  private JButton NextButton = new JButton();
-  private JButton FinishButton = new JButton();
-
+  private JButton CancelButton;
+  private JButton BackButton;
+  private JButton NextButton;
+  private JButton FinishButton;
 }

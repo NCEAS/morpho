@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 00:10:05 $'
- * '$Revision: 1.30 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,6 +124,8 @@ public class WizardContainerFrame extends JFrame {
       Log.debug(15,"setCurrentPage: page library does NOT contain ID: "+pageID);
       return;
     }
+    //if this is the first page, remember its ID
+    if (pageStack.isEmpty()) firstPageID = pageID;
 
     AbstractWizardPage pageForID = pageLib.getPage(pageID);
 
@@ -149,8 +151,12 @@ public class WizardContainerFrame extends JFrame {
 
     setpageTitle(newPage.getTitle());
     setpageSubtitle(getCurrentPage().getSubtitle());
-    stepLabel.setText("Step " + getCurrentPage().getPageNumber() + " of " + WizardSettings.NUMBER_OF_STEPS );
-
+    if (showPageCount) {
+      stepLabel.setText("Step " + getCurrentPage().getPageNumber()
+                                    + " of " + WizardSettings.NUMBER_OF_STEPS );
+    } else {
+      stepLabel.setText("");
+    }
     middlePanel.removeAll();
 
     middlePanel.add(getCurrentPage(), BorderLayout.CENTER);
@@ -177,13 +183,13 @@ public class WizardContainerFrame extends JFrame {
     if (getCurrentPage()==null) {
 
       prevButton.setEnabled(false);
-      nextFinishButton.setEnabled(false);
+      nextButton.setEnabled(false);
       return;
 
     } else {
 
       prevButton.setEnabled(true);
-      nextFinishButton.setEnabled(true);
+      nextButton.setEnabled(true);
     }
 
     // prev button enable/disable:
@@ -191,11 +197,13 @@ public class WizardContainerFrame extends JFrame {
       prevButton.setEnabled(false);
     }
 
-    // next/finish button label:
+    // finish button:
     if (getCurrentPage().getNextPageID()==null) {
-      nextFinishButton.setText(WizardSettings.FINISH_BUTTON_TEXT);
+      nextButton.setEnabled(false);
+      finishButton.setEnabled(true);
     } else {
-      nextFinishButton.setText(WizardSettings.NEXT_BUTTON_TEXT);
+      nextButton.setEnabled(true);
+      finishButton.setEnabled(false);
     }
   }
 
@@ -207,6 +215,7 @@ public class WizardContainerFrame extends JFrame {
     initMiddlePanel();
     initBottomPanel();
     initButtons();
+    updateButtonsStatus();
   }
 
 
@@ -264,80 +273,105 @@ public class WizardContainerFrame extends JFrame {
     bottomPanel.setBorder(new EmptyBorder(PADDING/2,0,0,0));
     bottomBorderPanel.setBorder(
                   BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
-//    bottomPanel.setBorder(new EmptyBorder(PADDING,3*PADDING,3*PADDING,PADDING));
+    bottomPanel.setBorder(new EmptyBorder(PADDING,PADDING,PADDING,PADDING));
 
     stepLabel = new JLabel();
     stepLabel.setBorder(BorderFactory.createEmptyBorder(3,10,3,3));
     stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS );
-		
+
     bottomBorderPanel.add(stepLabel, BorderLayout.WEST);
     bottomBorderPanel.add(bottomPanel, BorderLayout.CENTER);
-		//bottomBorderPanel.add(WidgetFactory.makeHalfSpacer(), BorderLayout.NORTH);
-		
+    //bottomBorderPanel.add(WidgetFactory.makeHalfSpacer(), BorderLayout.NORTH);
+
     contentPane.add(bottomBorderPanel, BorderLayout.SOUTH);
   }
 
   private void initButtons()  {
 
-    prevButton        = addButton(WizardSettings.PREV_BUTTON_TEXT, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        previousAction();
-      }
-    });
-    nextFinishButton  = addButton(WizardSettings.NEXT_BUTTON_TEXT, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        nextFinishAction();
-      }
-    });
     cancelButton      = addButton(WizardSettings.CANCEL_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         cancelAction();
       }
     });
-    this.getRootPane().setDefaultButton(nextFinishButton);
+    prevButton        = addButton(WizardSettings.PREV_BUTTON_TEXT, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        previousAction();
+      }
+    });
+    nextButton  = addButton(WizardSettings.NEXT_BUTTON_TEXT, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        nextAction();
+      }
+    });
+    finishButton  = addButton(WizardSettings.FINISH_BUTTON_TEXT, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        finishAction();
+      }
+    });
+
+    this.getRootPane().setDefaultButton(nextButton);
   }
 
   /**
-   *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. It's up to the content to know
-   *  whether it's the last page or not
+   * if true is passed, the "page # of ##" counter will be shown in the footer
+   *
+   * @param show boolean
    */
-  public void nextFinishAction() {
+  protected void setShowPageCountdown(boolean show) {
 
-    Log.debug(45,"nextFinishAction called");
+    showPageCount = show;
+  }
+
+  /**
+   * returns the String ID of the first page that was displayed in the current
+   * wizard sequence. Used, for example, by Summary page to determine which
+   * wizard sequence it is summarizing
+   *
+   * @return String ID of the first page that was displayed in the current
+   * 					wizard sequence (@see DataPackageWizardInterface for values)
+   */
+  public String getFirstPageID() {
+
+    return firstPageID;
+  }
+
+
+  /**
+   *  The action to be executed when the "Next" button (pages 1 to last-but-one)
+   *  is pressed. It's up to the content to know whether it's the last page or
+   *  not
+   */
+  public void nextAction() {
+
+    Log.debug(45, "nextFinishAction called");
 
     // if the page's onAdvanceAction() returns false, don't advance...
-    if ( !(getCurrentPage().onAdvanceAction()) ) return;
+    if (!(getCurrentPage().onAdvanceAction()))return;
 
-
-    if (getCurrentPage().getNextPageID()!=null) {
+    if (getCurrentPage().getNextPageID() == null)return;
 
     // * * * N E X T * * *
 
-      //put current page on stack
-      Log.debug(45,"setCurrentPage pushing currentPage to Stack ("
-                                              +getCurrentPage().getPageID()+")");
-      pageStack.push(this.getCurrentPage());
+    //put current page on stack
+    Log.debug(45, "nextFinishAction pushing currentPage to Stack ("
+              + getCurrentPage().getPageID() + ")");
+    pageStack.push(this.getCurrentPage());
 
-      String nextPgID = getCurrentPage().getNextPageID();
-      Log.debug(45,"nextFinishAction - next page ID is: "+nextPgID);
+    String nextPgID = getCurrentPage().getNextPageID();
+    Log.debug(45, "nextFinishAction - next page ID is: " + nextPgID);
 
-      setCurrentPage(pageLib.getPage(nextPgID));
-
-      stepLabel.setText("Step " + getCurrentPage().getPageNumber() + " of " + WizardSettings.NUMBER_OF_STEPS );
-    } else {
-
-    // * * * F I N I S H * * *
-      pageStack.push(this.getCurrentPage());
-      doFinish();
-      return;
-    }
+    setCurrentPage(pageLib.getPage(nextPgID));
   }
 
 
 
-  // call this when user presses "finish"
-  private void doFinish() {
+  /**
+   *  The action to be executed when the "Finish" button is pressed.
+   */
+  private void finishAction() {
+
+    // * * * F I N I S H * * *
+    pageStack.push(this.getCurrentPage());
 
     this.setVisible(false);
 
@@ -648,8 +682,6 @@ public class WizardContainerFrame extends JFrame {
     Log.debug(45,"previousAction - popped page with ID: "
                                       +previousPage.getPageID()+" from stack");
 
-    stepLabel.setText("Step " + previousPage.getPageNumber() + " of " + WizardSettings.NUMBER_OF_STEPS );
-
     getCurrentPage().onRewindAction();
 
     setCurrentPage(previousPage);
@@ -659,7 +691,7 @@ public class WizardContainerFrame extends JFrame {
   /**
    *  The action to be executed when the "Cancel" button is pressed
    */
-  private void cancelAction() {
+  public void cancelAction() {
     this.setVisible(false);
     listener.wizardCanceled();
 
@@ -706,7 +738,8 @@ public class WizardContainerFrame extends JFrame {
    */
   private JButton addButton(String title, ActionListener actionListener) {
 
-    JButton button = WidgetFactory.makeJButton(title, actionListener);
+    JButton button = WidgetFactory.makeJButton(title, actionListener,
+                                               WizardSettings.NAV_BUTTON_DIMS);
     bottomPanel.add(button);
     bottomPanel.add(Box.createHorizontalStrut(PADDING));
     return button;
@@ -723,10 +756,14 @@ public class WizardContainerFrame extends JFrame {
   private JPanel bottomBorderPanel;
   private JPanel bottomPanel;
   private JLabel titleLabel, subtitleLabel;
-  private JButton nextFinishButton;
+  private JButton nextButton;
   private JButton prevButton;
   private JButton cancelButton;
+  private JButton finishButton;
   private AbstractWizardPage currentPage;
   private Stack pageStack;
   private WizardPageLibrary pageLib;
+  private boolean showPageCount;
+
+  private String firstPageID;
 }

@@ -103,15 +103,18 @@ public class WidgetFactory {
     return label;
   }
 
-
   public static JButton makeJButton(String title, ActionListener actionListener) {
+    return makeJButton(title, actionListener, WizardSettings.LIST_BUTTON_DIMS);
+  }
 
+  public static JButton makeJButton(String title, ActionListener actionListener,
+                                                              Dimension dims) {
     if (title==null) title = "";
     JButton button = new JButton(title);
     button.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
     button.setFont(WizardSettings.BUTTON_FONT);
     if (actionListener!=null) button.addActionListener(actionListener);
-    setPrefMaxSizes(button, WizardSettings.LIST_BUTTON_DIMS);
+    setPrefMaxSizes(button, dims);
     return button;
   }
 
@@ -228,19 +231,19 @@ public class WidgetFactory {
                                   int selectedIndex, ActionListener listener) {
 
     if (buttonsText==null) buttonsText = new String[] { "" };
-    
+
     JPanel outerRadioPanel = new JPanel(new BorderLayout());
-    
+
     JPanel radioPanel = new JPanel(new GridLayout(0, 1));
 
     int totalButtons = buttonsText.length;
 
     JRadioButton[] buttons = new JRadioButton[totalButtons];
     ButtonGroup group = new ButtonGroup();
-    //adding an invisible button as the first in the container, and the 
-    //buttongroup, since once any button has been clicked, the group cannot 
-    //be reset so none are selected, other than by "clicking" (programmatically) 
-    //on this hidden jbutton. Note that the existence of this feature is 
+    //adding an invisible button as the first in the container, and the
+    //buttongroup, since once any button has been clicked, the group cannot
+    //be reset so none are selected, other than by "clicking" (programmatically)
+    //on this hidden jbutton. Note that the existence of this feature is
     //transparent to client code.
     JRadioButton dummyJButton = new JRadioButton("");
     Dimension hiddenDims = new Dimension(10,1);
@@ -249,7 +252,7 @@ public class WidgetFactory {
     dummyJButton.setVisible(false);
     group.add(dummyJButton);
     outerRadioPanel.add(dummyJButton, BorderLayout.NORTH);
-    
+
     for (int i=0; i<totalButtons; i++) {
 
       buttons[i] = new JRadioButton(buttonsText[i]);
@@ -263,7 +266,7 @@ public class WidgetFactory {
     }
     setPrefMaxSizes(radioPanel, getDimForNumberOfLines(5*totalButtons/4));
     outerRadioPanel.add(radioPanel, BorderLayout.CENTER);
-    
+
     return outerRadioPanel;
   }
 

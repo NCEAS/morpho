@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 04:24:32 $'
- * '$Revision: 1.19 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,32 +26,25 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.*;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import com.arbortext.catalog.*;
-import java.io.*;
-import org.xml.sax.InputSource;
-import org.apache.xpath.XPathAPI;
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.utilities.*;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.StringReader;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -60,36 +53,36 @@ import edu.ucsb.nceas.utilities.*;
  */
 public  class EML200DataPackage extends AbstractDataPackage
 {
-	// serialize to the indicated location
+  // serialize to the indicated location
   public void serialize(String location) {
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     StringReader sr = new StringReader(temp);
       if((location.equals(AbstractDataPackage.LOCAL))||
                  (location.equals(AbstractDataPackage.BOTH))) {
-        FileSystemDataStore fsds = new FileSystemDataStore(morpho);  
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         fsds.saveFile(getAccessionNumber(),sr);
       }
       if((location.equals(AbstractDataPackage.METACAT))||
                  (location.equals(AbstractDataPackage.BOTH))) {
-        MetacatDataStore mds = new MetacatDataStore(morpho);  
+        MetacatDataStore mds = new MetacatDataStore(morpho);
       try{
-				if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
-					 (this.getLocation().equals(AbstractDataPackage.BOTH)))
-				{
+        if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
+           (this.getLocation().equals(AbstractDataPackage.BOTH)))
+        {
           mds.saveFile(getAccessionNumber(),sr);
-				} // originally came from metacat; thus update
-				else
-				{
-					mds.newFile(getAccessionNumber(),sr);
-				}// not currently on metacat
-					
+        } // originally came from metacat; thus update
+        else
+        {
+          mds.newFile(getAccessionNumber(),sr);
+        }// not currently on metacat
+
       } catch(Exception e) {
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
         }
       }
   }
-  
+
   /*
    *  This method loops over the entities associated witht the package and
    *  finds associated datafile id referenced in distribution url
@@ -98,9 +91,9 @@ public  class EML200DataPackage extends AbstractDataPackage
     String urlinfo = null;
     Vector res = new Vector();
     Entity[] ents = getEntityArray();
-		// if package has no data 
-		if(ents == null)
-			return res;
+    // if package has no data
+    if(ents == null)
+      return res;
     for (int i=0;i<ents.length;i++) {
       if (getDistributionUrl(i, 0,0).length()>0) {  // there is a url link
         urlinfo = getDistributionUrl(i, 0,0);
@@ -126,7 +119,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return res;
   }
-  
+
   public void load(String location, String identifier, Morpho morpho) {
     this.location   = location;
     this.id         = identifier;
@@ -136,18 +129,18 @@ public  class EML200DataPackage extends AbstractDataPackage
     Log.debug(20, "id: " + this.id);
     Log.debug(20, "location: " + location);
     morpho = Morpho.thisStaticInstance;
-    
+
     fileSysDataStore  = new FileSystemDataStore(morpho);
     metacatDataStore  = new MetacatDataStore(morpho);
     File packagefile;
     try {
       packagefile = getFileWithID(this.id, morpho);
      } catch (Throwable t) {
-      //already handled in getFileWithID() method, 
+      //already handled in getFileWithID() method,
       //so just abandon this instance:
       return;
     }
-    
+
     DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     FileInputStream fs;
@@ -175,9 +168,13 @@ public  class EML200DataPackage extends AbstractDataPackage
       e2.printStackTrace();
     }
   }
-  
+
+
   /**
-   *  override method in AbstractDataPackage to get all authors and combine name fields
+   * override method in AbstractDataPackage to get all authors and combine name
+   * fields
+   *
+   * @return String
    */
   public String getAuthor() {
     String temp = "";
@@ -194,7 +191,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     if (authorNodes==null) return "";  // no authors
     int numAuthors = authorNodes.getLength();
-    
+
     String surName = "";
     String givenName = "";
     String salutation = "";
@@ -207,54 +204,15 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return temp;
   }
-  
+
   public AbstractDataPackage upload(String id) throws MetacatUploadException {
     Morpho morpho = Morpho.thisStaticInstance;
     load(AbstractDataPackage.LOCAL, id, morpho);
     serialize(AbstractDataPackage.METACAT);
     serializeData();
-  /*  
-    // now upload the data files
-    Vector idlist = getAssociatedDataFiles();
-    Enumeration e = idlist.elements();
-    while (e.hasMoreElements()) {
-      String curid = (String)e.nextElement();
-      File datafile = null;
-      if (!curid.equals("")) {
-        try{
-          // first try looking in the profile temp dir
-          ConfigXML profile = morpho.getProfile();
-          String separator = profile.get("separator", 0);
-          separator = separator.trim();
-          FileSystemDataStore fds = new FileSystemDataStore(morpho);
-          datafile = fds.openTempFile(curid);
-        }
-        catch (Exception q1) {
-          // oops - now try locally
-          try{
-            FileSystemDataStore fds = new FileSystemDataStore(morpho);
-            datafile = fds.openFile(curid);
-          }
-          catch (Exception q3) {
-            // give up!
-            Log.debug(5,"Exception opening datafile after trying all sources!");
-          }
-        }
-      }
-      if (datafile!=null) {
-        try{
-          MetacatDataStore mds = new MetacatDataStore(morpho);
-          mds.newDataFile(curid, datafile);
-        }
-        catch (Exception q) {
-          Log.debug(5, "Error saving datafile "+curid+"to Metacat");
-        }
-      }
-    }
-  */  
     return this;
   }
-  
+
   public AbstractDataPackage download(String id) {
     Morpho morpho = Morpho.thisStaticInstance;
     //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
@@ -277,6 +235,5 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return this;
   }
-  
 }
 

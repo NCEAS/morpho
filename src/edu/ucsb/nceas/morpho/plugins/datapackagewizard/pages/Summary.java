@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.10 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,6 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
-import java.util.Map;
-
 import javax.swing.JLabel;
 
 import javax.swing.BoxLayout;
@@ -40,18 +38,24 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 public class Summary extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String nextPageID = null;
   public final String pageNumber = "11";
-  public final String title      = "Data Package Wizard";
-  public final String subtitle   = "Summary";
+  public final String PACKAGE_WIZ_SUMMARY_TITLE = "Data Package Wizard";
+  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New DataTable Wizard";
+  public final String SUBTITLE                  = "Summary";
+
+  private JLabel desc1;
   private JLabel desc2;
+  private WizardContainerFrame mainWizFrame;
 
-  public Summary() {
+  public Summary(WizardContainerFrame mainWizFrame) {
 
+    this.mainWizFrame = mainWizFrame;
     init();
   }
 
@@ -68,9 +72,7 @@ public class Summary extends AbstractWizardPage {
     this.add(WidgetFactory.makeDefaultSpacer());
     this.add(WidgetFactory.makeDefaultSpacer());
 
-    JLabel desc1 = WidgetFactory.makeHTMLLabel(
-    "<p>This wizard has now collected all the information that is required to "
-    +"create your data package.</p>", 2);
+    desc1 = WidgetFactory.makeHTMLLabel("", 2);
     this.add(desc1);
 
     desc2 = WidgetFactory.makeHTMLLabel(
@@ -80,24 +82,37 @@ public class Summary extends AbstractWizardPage {
       this.add(desc2);
 
     JLabel desc3 = WidgetFactory.makeHTMLLabel(
-    "<p>You can press the \""+WizardSettings.FINISH_BUTTON_TEXT+"\" button to "
-    +"create your new data, or you can use the \""
-    +WizardSettings.PREV_BUTTON_TEXT+"\" button to return to previous pages "
+    "<p>You can press the \""+WizardSettings.FINISH_BUTTON_TEXT+"\" button, "
+    +"or you can use the \""+WizardSettings.PREV_BUTTON_TEXT
+    +"\" button to return to previous pages "
     +"and change the information you have added.</p>", 2);
     this.add(desc3);
   }
 
+  private String getProductName() {
+
+    String ID = mainWizFrame.getFirstPageID();
+    if (ID==null) return "";
+    if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) return "data table";
+    else return "data package";
+  }
 
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
 
+    desc1.setText(
+      WizardSettings.HTML_TABLE_LABEL_OPENING
+      +"<p>This wizard has now collected all the information that is required to "
+      +"create your new "+getProductName()+".</p>"
+       +WizardSettings.HTML_TABLE_LABEL_CLOSING);
+
     desc2.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
                   +"<p><b>"+WizardSettings.getSummaryText()
                   +this.getDataLocation()
                   +"</b></p><br></br>"
-                  +WizardSettings.HTML_TABLE_LABEL_OPENING);
+                  +WizardSettings.HTML_TABLE_LABEL_CLOSING);
   }
 
   private String getDataLocation() {
@@ -160,16 +175,33 @@ public class Summary extends AbstractWizardPage {
   /**
    *  gets the title for this wizard page
    *
+
+
+  /**
+   *  gets the title for this wizard page
+   *
    *  @return   the String title for this wizard page
    */
-  public String getTitle() { return title; }
+  public String getTitle() {
+
+    if (mainWizFrame.getFirstPageID()
+        == DataPackageWizardInterface.DATA_LOCATION) {
+      //if we started at DATA_LOCATION we must be in entity wizard
+      return ENTITY_WIZ_SUMMARY_TITLE;
+    }
+    return PACKAGE_WIZ_SUMMARY_TITLE;
+  }
+
 
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
-  public String getSubtitle() { return subtitle; }
+  public String getSubtitle() {
+
+    return SUBTITLE;
+  }
 
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"

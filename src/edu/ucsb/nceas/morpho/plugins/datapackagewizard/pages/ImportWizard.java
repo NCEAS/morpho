@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-22 23:14:38 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-
-import javax.swing.JFrame;
 
 import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 
@@ -115,7 +113,7 @@ public class ImportWizard extends     AbstractWizardPage
 
     resultsMap = om;
     cleanUp();
-    mainWizFrame.nextFinishAction();
+    mainWizFrame.nextAction();
     importCompletedOK = true;
   }
 
@@ -125,8 +123,10 @@ public class ImportWizard extends     AbstractWizardPage
   public void importCanceled() {
 
     cleanUp();
-    mainWizFrame.previousAction();
     importCompletedOK = false;
+    mainWizFrame.cancelAction();
+
+//    mainWizFrame.previousAction();
   }
 
   private void cleanUp() {

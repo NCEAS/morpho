@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-17 20:44:09 $'
- * '$Revision: 1.18 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,6 @@ public class DataPackageWizardPlugin implements PluginInterface,
                                                 ServiceProvider,
                                                 DataPackageWizardInterface {
 
-
   private static WizardContainerFrame dpWiz;
 
   /**
@@ -98,7 +97,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *                  back when the Package Wizard has finished
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
-    startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, listener);
+    startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
+                      "New Datapackage Wizard");
   }
 
 
@@ -111,17 +111,21 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startEntityWizard(DataPackageWizardListener listener) {
 
-    startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, listener);
+    startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
+                      "New Datatable Wizard");
   }
 
 
-  private void startWizardAtPage(String pageID, DataPackageWizardListener listener) {
+  private void startWizardAtPage(String pageID, boolean showPageCount,
+                        DataPackageWizardListener listener, String frameTitle) {
 
     dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
                   WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
                   WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
     dpWiz.setCurrentPage(pageID);
+    dpWiz.setShowPageCountdown(showPageCount);
+    dpWiz.setTitle(frameTitle);
     dpWiz.setVisible(true);
   }
 
@@ -143,7 +147,6 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public static void main(String[] args) {
 
   // TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
-  //      Morpho.createMorphoInstance();
     Morpho.main(null);
     ///////////////////////
 
@@ -156,7 +159,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
         public void wizardComplete(Node newDOM) {
         Log.debug(1,"Wizard complete - Will now create an AbstractDataPackage..");
           AbstractDataPackage dp = DataPackageFactory.getDataPackage(newDOM);
-//          dp.serialize();
+
          Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
          Node domnode = dp.getMetadataNode();
           DocFrame df = new DocFrame();
@@ -165,7 +168,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-//          System.exit(0);
+
         }
 
         public void wizardCanceled() {

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 00:10:05 $'
- * '$Revision: 1.41 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,8 +119,8 @@ public class WizardSettings {
 
   public static final int DIALOG_HEIGHT
   = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
-	
-	public static final int ATTR_DIALOG_HEIGHT
+
+  public static final int ATTR_DIALOG_HEIGHT
   = (WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY + 30);
 
   protected static final String PACKAGE_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
@@ -149,7 +149,7 @@ public class WizardSettings {
   = new Color(255,255,255);
 
   protected static final Font  BUTTON_FONT
-  = new Font("Sans-Serif",Font.BOLD,12);
+  = new Font("Sans-Serif",Font.PLAIN,11);
 
   protected static final Color BUTTON_TEXT_COLOR
   = new Color(51, 51, 51);
@@ -177,8 +177,8 @@ public class WizardSettings {
 
   public static final  Dimension WIZARD_REDUCED_CONTENT_LABEL_DIMS
   = new Dimension(80,20);
-  
-	// x-dimension is ignored:
+
+  // x-dimension is ignored:
   public static final  Dimension WIZARD_CONTENT_TEXTFIELD_DIMS
   = new Dimension(2000,20);
 
@@ -205,11 +205,16 @@ public class WizardSettings {
 
   public static final String HTML_NO_TABLE_CLOSING = "</html>";
 
-  public static final  Dimension LIST_BUTTON_DIMS
-  = new Dimension(100,30);
+  public static final Dimension NAV_BUTTON_DIMS
+      = new Dimension(70, 25);
 
-  public static final  Dimension LIST_BUTTON_DIMS_SMALL
-  = new Dimension(60,25);
+  public static final Dimension LIST_BUTTON_DIMS
+      = new Dimension(85, 30);
+
+  public static final Dimension LIST_BUTTON_DIMS_SMALL
+      = new Dimension(60, 25);
+
+  public    static final String IMPORT_BUTTON_TEXT  = "Import";
 
   public    static final String FINISH_BUTTON_TEXT  = "Finish";
 

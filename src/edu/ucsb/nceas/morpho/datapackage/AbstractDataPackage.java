@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-24 04:28:34 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -363,8 +363,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
   /**
-   *  convenience method to retrieve accession number from DOM
+   * convenience method to retrieve accession number from DOM
+   *
+   * @return String
    */
   public String getAccessionNumber() {
     String temp = "";
@@ -373,9 +376,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
   /**
-   *  convenience method to retrieve packageID from DOM
-   *  synonym for getAccessionNumber
+   * convenience method to retrieve packageID from DOM synonym for
+   * getAccessionNumber
+   *
+   * @return String
    */
   public String getPackageId() {
     String temp = "";
@@ -383,16 +389,22 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
   /**
-   *  convenience method to set accession number from DOM
+   * convenience method to set accession number from DOM
+   *
+   * @param id String
    */
   public void setAccessionNumber(String id) {
     setGenericValue("/xpathKeyMap/contextNode[@name='package']/accessionNumber",
                     id);
   }
 
+
   /**
-   *  convenience method for getting package keywords
+   * convenience method for getting package keywords
+   *
+   * @return String
    */
   public String getKeywords() {
     String temp = "";
@@ -461,9 +473,13 @@ public abstract class AbstractDataPackage extends MetadataObject
     return entityArray;
   }
 
+
   /**
-   *  This method retrieves entityName information, given the index of the entity
-   *  in the entityNode array
+   * This method retrieves entityName information, given the index of the entity
+   * in the entityNode array
+   *
+   * @param entNum int
+   * @return String
    */
   public String getEntityName(int entNum) {
     String temp = "";
@@ -488,9 +504,13 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
   /**
-   *  This method retrieves the number of records in thr entity,
-   *  given the index of the entity in the entityNode array
+   * This method retrieves the number of records in thr entity, given the index
+   * of the entity in the entityNode array
+   *
+   * @param entNum int
+   * @return String
    */
   public String getEntityNumRecords(int entNum) {
     String temp = "";
@@ -516,9 +536,13 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
   /**
-   *  This method sets the number of records in the entity,
-   *  given the index of the entity in the entityNode array
+   * This method sets the number of records in the entity, given the index of
+   * the entity in the entityNode array
+   *
+   * @param entNum int
+   * @param numRecS String
    */
   public void setEntityNumRecords(int entNum, String numRecS) {
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
@@ -543,9 +567,13 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
   }
 
+
   /**
-   *  This method retrieves the entity Description,
-   *  given the index of the entity in the entityNode array
+   * This method retrieves the entity Description, given the index of the entity
+   * in the entityNode array
+   *
+   * @param entNum int
+   * @return String
    */
   public String getEntityDescription(int entNum) {
     String temp = "";
@@ -571,8 +599,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
   /**
-   *  This method deletes the indexed entity from the DOM
+   * This method deletes the indexed entity from the DOM
+   *
+   * @param entNum int
    */
   public void deleteEntity(int entNum) {
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
@@ -584,9 +615,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     parent.removeChild(entity);
   }
 
+
   /**
-   *  This method automatically adds an entity in the DOM at the next
-   *  available position
+   * This method automatically adds an entity in the DOM at the next available
+   * position
+   *
+   * @param entity Entity
    */
   public void addEntity(Entity entity) {
     if (entityArray == null) {
@@ -597,8 +631,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
   }
 
+
   /**
-   *  This method inserts an entity in the DOM at the indexed position
+   * This method inserts an entity in the DOM at the indexed position
+   *
+   * @param entity Entity
+   * @param pos int
    */
   public void insertEntity(Entity entity, int pos) {
     Document thisDom = getMetadataNode().getOwnerDocument();
@@ -1504,11 +1542,13 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
         catch (Exception ex) {
           Log.debug(5, "Some problem while writing data files has occurred!");
+          ex.printStackTrace();
         }
       }
       catch (Exception q) {
         // some other problem has occured
         Log.debug(5, "Some problem with saving data files has occurred!");
+        q.printStackTrace();
       }
     }
   }

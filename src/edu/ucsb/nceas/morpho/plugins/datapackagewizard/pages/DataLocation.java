@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-22 19:37:05 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2003-12-24 08:27:12 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,8 +71,8 @@ public class DataLocation extends AbstractWizardPage {
   private String nextPageID         = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
   private final String pageNumber   = "1";
 
-  private final String title      = "Data File Information:";
-  private final String subtitle   = "Location";
+  private final String title      = "New DataTable Wizard";
+  private final String subtitle   = "Data Location";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
