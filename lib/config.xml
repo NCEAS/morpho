@@ -29,7 +29,6 @@
     </listdoctypes>
   </packageEditor>
   <customFrames>
-    
     <mainFrame>Resource</mainFrame>
     <frame>
       <frameName>Resource</frameName>
@@ -39,7 +38,6 @@
     </frame>
   </customFrames>
   <newxmlfiletypes>
-    
     <file>
       <name>Entity</name>
       <label>Table Description</label>
@@ -57,6 +55,11 @@
       <tooltip>Information about the fields (columns) in your data tables.</tooltip>
       <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
       <displaypath>//variable_name</displaypath>
+    </file>
+    <file>
+      <name>DATAFILE</name>
+      <label>DATAFILE</label>
+      <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
     </file>
   </newxmlfiletypes>
   <current_profile></current_profile>

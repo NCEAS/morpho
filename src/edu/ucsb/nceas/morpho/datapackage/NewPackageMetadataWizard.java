@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-02 22:29:25 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-07-03 20:46:16 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,8 @@ public class NewPackageMetadataWizard extends JDialog
   String relatedto = "";
   String relatedtoId = "";
   Vector relatedFileIds;
+  File addedFile = null;
+  String relateDataFileTo = "";
   
   JLabel helpLabel = new JLabel();
   JPanel screenPanel = null;
@@ -108,6 +110,9 @@ public class NewPackageMetadataWizard extends JDialog
     framework = cont;
     config = framework.getConfiguration();
     this.dataPackage = dataPackage;
+    
+    //if functionality to add an existing file is added, remove this line.
+    existingFile.setEnabled(false);
     
     numScreens = 5;
     currentScreen = 0;
@@ -163,7 +168,14 @@ public class NewPackageMetadataWizard extends JDialog
           h.put("displaypath", n2.getFirstChild().getNodeValue());
         }
       }
-      newXMLFileAtts.put((String)h.get("label"), h);
+      if(((String)h.get("name")).equals("DATAFILE"))
+      {
+        relateDataFileTo = (String)h.get("relatedto");
+      }
+      else
+      {
+        newXMLFileAtts.put((String)h.get("label"), h);
+      }
     }
     
     Enumeration keys = newXMLFileAtts.keys();
@@ -171,6 +183,10 @@ public class NewPackageMetadataWizard extends JDialog
     while(keys.hasMoreElements())
     { //create the radio buttons for the file type choices
       String key = (String)keys.nextElement();
+      if(key.equals("DATAFILE"))
+      {
+        continue;
+      }
       Hashtable h = (Hashtable)newXMLFileAtts.get(key);
       JRadioButton b = new JRadioButton((String)h.get("label"));
       b.setToolTipText((String)h.get("tooltip"));
@@ -310,9 +326,7 @@ public class NewPackageMetadataWizard extends JDialog
   private void nextButtonHandler(ActionEvent event)
   {
     prevFlag = false;
-    System.out.println("currentScreen: " + currentScreen);
     if (currentScreen == numScreens - 1) {
-      System.out.println("handling finish action");
       handleFinishAction();
       this.dispose();
     } else {
@@ -486,10 +500,9 @@ public class NewPackageMetadataWizard extends JDialog
         editor.openEditor(dummydoc, null, null, this);
         this.hide();
       }
-      else
-      { //check to made sure the file exists and try to determine what
-        //kind of file it is.
-        File addedFile = new File(fileTextField.getText());
+      /*else
+      { //the user wishes to put an existing file into the package.
+        addedFile = new File(fileTextField.getText());
         StringBuffer sb;
         try
         {
@@ -504,22 +517,69 @@ public class NewPackageMetadataWizard extends JDialog
         }
         catch(Exception e)
         {
-          ClientFramework.debug(0, "Error reading selected file.");
+          ClientFramework.debug(0, "Error reading selected file.: " +
+                                e.getMessage());
+          e.printStackTrace();
           return;
         }
         
         String fileString = sb.toString();
         if(fileString.indexOf("<?xml") != -1)
         { //this is an xml file
-          System.out.println("xml file: " + fileString);
-          ClientFramework.debug(0, "This doesn't work yet");
+          //System.out.println("xml file: " + fileString);
+          //ClientFramework.debug(0, "This doesn't work yet");
         }
         else
         { //this is a data file
-          System.out.println("data file: " + fileString);
-          ClientFramework.debug(0, "This doesn't work yet");
+          boolean metacatpublic = false;
+          int choice = JOptionPane.showConfirmDialog(null, 
+                                 "<html>The file you entered is not an XML file. " +
+                                 "Because of this, Morpho assumes that this " +
+                                 "is a data file.  Is this assumption " +
+                                 "correct?  If you are not adding a data " +
+                                 "file, click no and choose an XML " +
+                                 "description file.</html>", 
+                                 "Data File?", 
+                                 JOptionPane.YES_NO_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+          if(choice != JOptionPane.YES_OPTION)
+          {
+            return;
+          }
+          
+          relatedFileIds = (Vector)packageFiles.get(relatedto.trim());
+          if(relatedFileIds != null && relatedFileIds.size() == 1)
+          {
+            relatedtoId = (String)relatedFileIds.elementAt(0);
+          }
+          else if(relatedFileIds != null && relatedFileIds.size() > 1)
+          {
+            for(int i=0; i<relatedFileIds.size(); i++)
+            { //get the name and ids of the files related to this new one
+              File f;
+              try
+              {
+                f = PackageUtil.openFile((String)relatedFileIds.elementAt(i), 
+                                         framework);
+              }
+              catch (Exception e)
+              {
+                ClientFramework.debug(0, "Error in NewPackageMetadataWizard." +
+                                      "editingComplete(): " + e.getMessage());
+                return;
+              }
+              NodeList nl = PackageUtil.getPathContent(f, displayPath, framework);
+             
+              for(int j=0; j<nl.getLength(); j++)
+              {
+                Node n = nl.item(j);
+                String name = n.getFirstChild().getNodeValue().trim();
+                relatedFiles.put(relatedFileIds.elementAt(i), name);
+              }
+            }
+          }
         }
-      }
+      }*/
     }
     else if(3 == currentScreen)
     {
@@ -568,8 +628,7 @@ public class NewPackageMetadataWizard extends JDialog
       }
     }
     else if(4 == currentScreen)
-    { //write out the files and insert the new triples.  refresh the Package
-      //editor
+    { //check the input from the last screen...go to handleFinishAction
       if(relatedFileIds != null)
       {
         if(relatedFileIds.size() > 1)
@@ -645,12 +704,84 @@ public class NewPackageMetadataWizard extends JDialog
     screenPanel.paint(screenPanel.getGraphics());
   }
   
+  private void handleAddDataFile(boolean locLocal, boolean locMetacat, 
+                                 String newid)
+  { //add a data file here whenever metacat supports it.
+    AccessionNumber a = new AccessionNumber(framework);
+    if(locLocal)
+    {
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      Triple t = new Triple(newid, "isRelatedTo", relatedtoId);
+      TripleCollection triples = new TripleCollection();
+      triples.addTriple(t);
+      File packageFile = dataPackage.getTriplesFile();
+      //add the triple to the triple file
+      String docString = PackageUtil.addTriplesToTriplesFile(triples, 
+                                                             dataPackage, 
+                                                             framework);
+      //write out the files
+      File newDPTempFile;
+      //get a new id for the package file
+      String dataPackageId = a.incRev(dataPackage.getID());
+      try
+      { //this handles the package file
+        //save a temp file with the new id
+        newDPTempFile = fsds.saveTempFile(dataPackageId,
+                                          new StringReader(docString));
+        //inc the revision of the new Package file in the triples
+        docString = a.incRevInTriples(newDPTempFile, dataPackage.getID(), 
+                                      dataPackageId);
+        //save new temp file that has the right id and the id inced in the triples
+        newDPTempFile = fsds.saveTempFile(dataPackageId, 
+                                          new StringReader(docString));
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+      
+      File newPackageMember;
+      try
+      { //save the new package member
+        newPackageMember = fsds.newFile(newid, new FileReader(addedFile), 
+                                        false);
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        e.printStackTrace();
+        e.printStackTrace();
+        return;
+      }
+      
+      try
+      { //save the new package file
+        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile), false);
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+    }
+    
+    if(locMetacat)
+    {
+      ClientFramework.debug(0, "Metacat does not currently support uploading" +
+                            " data files.");
+      return;
+    }
+    
+  }
+  
   /**
    * handles the action when the user clicks the finish button
    */
   private void handleFinishAction()
   {
-    String triplesTag = config.get("triplesTag", 0);
     AccessionNumber a = new AccessionNumber(framework);
     String newid = a.getNextId();
     String location = dataPackage.getLocation();
@@ -667,105 +798,20 @@ public class NewPackageMetadataWizard extends JDialog
       locMetacat = true;
     }
     
-    File f = newxmlFile;
+    if(addedFile != null)
+    { //we are adding a data file
+      handleAddDataFile(locLocal, locMetacat, newid);
+      return;
+    }
+    
+    //we are adding an xml file
     Triple t = new Triple(newid, "isRelatedTo", relatedtoId);
     TripleCollection triples = new TripleCollection();
     triples.addTriple(t);
     File packageFile = dataPackage.getTriplesFile();
-    
-    //////////////////add the triple to the triple file///////////////////////
-    Document doc;
-    DOMParser parser = new DOMParser();
-    InputSource in;
-    FileInputStream fs;
-    
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    try 
-    {
-      Catalog myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
-      ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
-      cer.setCatalog(myCatalog);
-    } 
-    catch (Exception e) 
-    {
-      ClientFramework.debug(9, "Problem creating Catalog in " +
-                   "NewPackageMetadataWizard.handleFinishAction!" + 
-                   e.toString());
-    }
-    
-    parser.setEntityResolver(cer);
-    
-    try
-    { //parse the wizard created file with existing triples
-      fs = new FileInputStream(packageFile);
-      in = new InputSource(fs);
-    }
-    catch(FileNotFoundException fnf)
-    {
-      fnf.printStackTrace();
-      return;
-    }
-    try
-    {
-      parser.parse(in);
-      fs.close();
-    }
-    catch(Exception e1)
-    {
-      System.err.println("File: " + packageFile.getPath() + " : parse threw: " + 
-                         e1.toString());
-    }
-    //get the DOM rep of the document with existing triples
-    doc = parser.getDocument();
-    NodeList tripleNodeList = triples.getNodeList();
-    NodeList docTriplesNodeList = null;
-    
-    try
-    {
-      //find where the triples go in the file
-      docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
-    }
-    catch(SAXException se)
-    {
-      System.err.println("file: " + packageFile.getPath() + " : parse threw: " + 
-                         se.toString());
-    }
-    
-    Node docNode = doc.getDocumentElement();
-    for(int j=0; j<tripleNodeList.getLength(); j++)
-    { //add the triples to the appropriate position in the file
-      Node n = doc.importNode(tripleNodeList.item(j), true);
-      Node triplesNode = docTriplesNodeList.item(0);
-      Node parent = triplesNode.getParentNode();
-      if(triplesNode.getNextSibling() == null)
-      {
-        parent.appendChild(n);
-      }
-      else
-      {
-        parent.insertBefore(n, triplesNode.getNextSibling());
-      }
-      
-    }
-    
-    NodeList newtriples = null;
-    try
-    {
-      //find where the triples go in the file
-      newtriples = XPathAPI.selectNodeList(doc, triplesTag);
-    }
-    catch(SAXException se)
-    {
-      System.err.println("file: " + packageFile.getPath() + " : parse threw: " + 
-                         se.toString());
-    }
-    
-    String docString = PackageUtil.printDoctype(doc);
-    docString += PackageUtil.print(doc.getDocumentElement());
-    
+    //add the triple to the triple file
+    String docString = PackageUtil.addTriplesToTriplesFile(triples, dataPackage, 
+                                                           framework);
     StringReader sr = new StringReader(docString);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     //write out the files
@@ -782,7 +828,7 @@ public class NewPackageMetadataWizard extends JDialog
       //inc the revision of the new Package file in the triples
       docString = a.incRevInTriples(newDPTempFile, dataPackage.getID(), 
                                     dataPackageId);
-      //save a new temp file that has the right id and the id inced in the triples
+      //save new temp file that has the right id and the id inced in the triples
       newDPTempFile = fsds.saveTempFile(dataPackageId, 
                                     new StringReader(docString));
     }

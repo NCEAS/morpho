@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-02 22:29:25 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2001-07-03 20:46:16 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -669,7 +669,8 @@ public class DataPackageGUI extends javax.swing.JFrame
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          mds.saveFile(newid, new StringReader(newPackageFile), metacatpublic);
+          mds.saveFile(newid, new StringReader(newPackageFile), 
+                       metacatpublic);
           newPackageId = newid;
         }
         else

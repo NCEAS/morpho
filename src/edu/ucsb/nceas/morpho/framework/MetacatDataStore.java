@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 21:13:36 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-07-03 20:46:16 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@ package edu.ucsb.nceas.morpho.framework;
 
 import java.io.*;
 import java.util.*;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
@@ -189,7 +192,8 @@ public class MetacatDataStore extends DataStore
    * @param action: the action (update or insert) to perform
    */
   private File saveFile(String name, Reader file, boolean publicAccess, 
-                       String action) throws MetacatUploadException
+                       String action) 
+                       throws MetacatUploadException
   {//-attempt to write file to metacat
    //-if successfull, write file to cache, return pointer to that file
    //-if not successfull, throw exception, display metacat error.
@@ -211,6 +215,7 @@ public class MetacatDataStore extends DataStore
         c = file.read();
       }
       
+
       //System.out.println(fileText.toString());
       
       Properties prop = new Properties();

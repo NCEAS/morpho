@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-27 17:03:42 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-07-03 20:46:16 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -515,5 +515,93 @@ public class PackageUtil
                                "getStringFromFile(): " + e.getMessage());
       return null;
     }
+  }
+  
+  public static String addTriplesToTriplesFile(TripleCollection triples,
+                                               DataPackage dataPackage, 
+                                               ClientFramework framework)
+  {
+    String triplesTag = framework.getConfiguration().get("triplesTag", 0);
+    File packageFile = dataPackage.getTriplesFile();
+    Document doc;
+    DOMParser parser = new DOMParser();
+    InputSource in;
+    FileInputStream fs;
+    
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try 
+    {
+      Catalog myCatalog = new Catalog();
+      myCatalog.loadSystemCatalogs();
+      ConfigXML config = framework.getConfiguration();
+      String catalogPath = config.get("local_catalog_path", 0);
+      myCatalog.parseCatalog(catalogPath);
+      cer.setCatalog(myCatalog);
+    } 
+    catch (Exception e) 
+    {
+      ClientFramework.debug(9, "Problem creating Catalog in " +
+                   "PackageUtil.updateTriplesFile" + 
+                   e.toString());
+    }
+    
+    parser.setEntityResolver(cer);
+    
+    try
+    { //parse the wizard created file with existing triples
+      fs = new FileInputStream(packageFile);
+      in = new InputSource(fs);
+    }
+    catch(FileNotFoundException fnf)
+    {
+      fnf.printStackTrace();
+      return null;
+    }
+    try
+    {
+      parser.parse(in);
+      fs.close();
+    }
+    catch(Exception e1)
+    {
+      System.err.println("File: " + packageFile.getPath() + " : parse threw: " + 
+                         e1.toString());
+    }
+    //get the DOM rep of the document with existing triples
+    doc = parser.getDocument();
+    NodeList tripleNodeList = triples.getNodeList();
+    NodeList docTriplesNodeList = null;
+    
+    try
+    {
+      //find where the triples go in the file
+      docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
+    }
+    catch(SAXException se)
+    {
+      System.err.println("file: " + packageFile.getPath() + " : parse threw: " + 
+                         se.toString());
+    }
+    
+    Node docNode = doc.getDocumentElement();
+    for(int j=0; j<tripleNodeList.getLength(); j++)
+    { //add the triples to the appropriate position in the file
+      Node n = doc.importNode(tripleNodeList.item(j), true);
+      int end = docTriplesNodeList.getLength() - 1;
+      Node triplesNode = docTriplesNodeList.item(end);
+      Node parent = triplesNode.getParentNode();
+      if(triplesNode.getNextSibling() == null)
+      {
+        parent.appendChild(n);
+      }
+      else
+      {
+        parent.insertBefore(n, triplesNode.getNextSibling());
+      }
+    }
+    
+    String docString = PackageUtil.printDoctype(doc);
+    docString += PackageUtil.print(doc.getDocumentElement());
+    return docString;
   }
 }
