@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-18 18:21:06 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-09-24 17:12:40 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -627,28 +627,4 @@ public class XMLTransformer
 //        xmlReader.setErrorHandler(new CustomErrorHandler());
 //        saxSource.setXMLReader(xmlReader);
 //        return saxSource;
-//    }
-
-
-    /**
-     *  Uses the stylesheet provided, to apply XSLT to the XML document provided
-     *
-     *  @param xmlDocReader  A <code>java.io.Reader</code> to allow reading of
-     *                      the XML document to be styled.
-     *
-     *  @param directory    A <code>XSLLookupInterface</code> to allow this
-     *                      transformer to get the required XSL document, given
-     *                      the DocType in the XML doc to be styled
-     *
-     *  @return             A <code>java.io.Reader</code> to allow reading of
-     *                      the results of styling the XML document
-     *
-     *  @throws IOException if there are problems reading the Reader
-     *  @throws DocumentNotFoundException if XSLLookupInterface does not return 
-     *  a valid reference to a suitable XSL stylesheet
-     */
-//    public Reader transform(Reader xmlDocReader, XSLLookupInterface directory)
-//                                  throws IOException, DocumentNotFoundException
-//    {
-//        return new StringReader("XMLTransformer: method not implemented!");
 //    }
