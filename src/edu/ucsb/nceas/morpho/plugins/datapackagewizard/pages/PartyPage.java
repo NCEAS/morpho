@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 20:36:46 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2004-03-31 00:29:32 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,11 +68,14 @@ public class PartyPage extends AbstractUIPage {
 
   // define standard variables describing the page
 
+  private final String EMPTY_STRING = "";
+
   private final String pageID = DataPackageWizardInterface.PARTY_CREATOR;
-  private final String nextPageID = "";
+  private final String nextPageID = EMPTY_STRING;
   private final String title = "Party Page";
-  private final String subtitle = "";
-  private final String pageNumber = "";
+  private final String subtitle = EMPTY_STRING;
+  private final String pageNumber = EMPTY_STRING;
+
 
   // define variables to for party types
   public static final short CREATOR = 0;
@@ -87,14 +90,12 @@ public class PartyPage extends AbstractUIPage {
   // xpath for the this page
   private String rootXPath = "/eml:eml/dataset/creator[1]";
 
-  private final String NAME_ROLE_SEPARATOR = ", ";
-
   // variables to descrive role
   private short role;
   private String roleString;
   private final String[] roleArray
       = new String[] {
-      "",
+      EMPTY_STRING,
       "Originator",
       "Content Provider",
       "Principal Investigator",
@@ -138,7 +139,7 @@ public class PartyPage extends AbstractUIPage {
   public JPanel listPanel;
 
   private ReferencesHandler referencesHandler;
-  private ReferencesListener refsDropdownListener;
+
   private final String   PARTY_GENERIC_NAME = "parties";
   private final String[] REFSHANDLER_SURROGATE_STRING = new String[] {
       "/individualName/givenName",
@@ -148,11 +149,11 @@ public class PartyPage extends AbstractUIPage {
       "/role",
       ")"
   };
+  private boolean processingReferenceSelection = false;
   private String referenceIdString;
   private String referredIdString;
   public boolean isReference;
   public boolean referDiffDP = false;
-  private boolean editReference;
 
   //
   private final String[] checkBoxArray
@@ -240,82 +241,96 @@ public class PartyPage extends AbstractUIPage {
 
     // create itemlistener for references list
 
-
-    refsDropdownListener = new ReferencesListener() {
+    ReferencesListener refsDropdownListener = new ReferencesListener() {
 
       public void referenceSelected(ReferenceSelectionEvent event) {
 
+        processingReferenceSelection = true;
+
         String eventRefID = event.getReferenceID();
 
-        if (eventRefID==null) {
-        // If refID is null, then the user has selected blank entry (ie does not
-        // want to choose a referenced value. Therefore, set party instance
-        // to editable, clear out all values and remove the checkBoxPanel
-        isReference = false;
-        referredIdString = null;
+        if (eventRefID == null) {
+          // If refID is null, then the user has selected blank entry (ie does not
+          // want to choose a referenced value. Therefore, set party instance
+          // to editable, clear out all values and remove the checkBoxPanel
+          isReference = false;
+          referredIdString = null;
 
-        instance.setEditable(true);
-        instance.setPageData(null, null);
+          instance.setEditable(restoreFromBackupMap());
 
-        checkBoxPanel.setVisible(false);
-        Log.debug(45, "Setting referredIdString to null");
+          checkBoxPanel.setVisible(false);
+          Log.debug(45, "ReferencesListener got NULL eventRefID");
 
-      } else {
-        // If refID is not null, a previous entry has been chosen for
+        } else {
+          // If refID is not null, a previous entry has been chosen
+          Log.debug(45, "ReferencesListener got eventRefID=" + eventRefID);
 
-        // Unhilite all the components... this is because now a valid
-        // previous entered party has been selected
-        WidgetFactory.unhiliteComponent(lastNameLabel);
-        WidgetFactory.unhiliteComponent(organizationLabel);
-        WidgetFactory.unhiliteComponent(positionNameLabel);
-        warningPanel.setVisible(false);
-        WidgetFactory.unhiliteComponent(warningLabel);
+          // Unhilite all the components... this is because now a valid
+          // previous entered party has been selected
+          WidgetFactory.unhiliteComponent(lastNameLabel);
+          WidgetFactory.unhiliteComponent(organizationLabel);
+          WidgetFactory.unhiliteComponent(positionNameLabel);
+          warningPanel.setVisible(false);
+          WidgetFactory.unhiliteComponent(warningLabel);
 
+          String rxp = "/" + event.getSubtreeRootNodeName().trim() + "/";
 
-        short location = event.getLocation();
+          short location = event.getLocation();
 
-        switch (location) {
+          switch (location) {
 
-          case ReferenceSelectionEvent.CURRENT_DATA_PACKAGE:
+            case ReferenceSelectionEvent.CURRENT_DATA_PACKAGE:
 
-            // referredPage  was created in same DP - so current page would be
-             // a reference... get reference Id, set instance non-editable,
-             // set value of all fields and radio panel visible
-             isReference = true;
-             referredIdString = eventRefID;
+              Log.debug(45,
+                        "ReferencesListener - location=CURRENT_DATA_PACKAGE");
 
-             instance.setEditable(false);
-             instance.setPageData(event.getXPathValsMap(), instance.rootXPath);
+              // referredPage  was created in same DP - so current page would be
+              // a reference... get reference Id, set instance non-editable,
+              // set value of all fields and radio panel visible
+              isReference = true;
+              referredIdString = eventRefID;
 
-             checkBoxPanel.setVisible(true);
-             Log.debug(45, "The referred page is not in a different DP. "
-                       + "Setting referredIdString to " + referredIdString);
+              instance.setEditable(false);
+              instance.setPageData(event.getXPathValsMap(), rxp);
 
-            break;
+              checkBoxPanel.setVisible(true);
+              Log.debug(45,
+                        " ...setting page data to: " + event.getXPathValsMap());
 
-          case ReferenceSelectionEvent.DIFFERENT_DATA_PACKAGE:
+              break;
 
-            // referredPage was not created in same DP - so current page would
-            // not be a reference... set reference Id null, set referDiffDP
-            // true, set instance editable as it is not a reference,
-            // set value of all fields and radio panel invisible
-            isReference = false;
-            referDiffDP = true;
-            referredIdString = null;
+            case ReferenceSelectionEvent.DIFFERENT_DATA_PACKAGE:
 
-            instance.setEditable(true);
-            instance.setPageData(event.getXPathValsMap(), instance.rootXPath);
+              Log.debug(45,
+                        "ReferencesListener - location=DIFFERENT_DATA_PACKAGE");
 
-            checkBoxPanel.setVisible(false);
-            Log.debug(45, "The referred page is in a different DP. "
-                      + "Setting referredIdString to null.");
+              // referredPage was not created in same DP - so current page would
+              // not be a reference... set reference Id null, set referDiffDP
+              // true, set instance editable as it is not a reference,
+              // set value of all fields and radio panel invisible
+              isReference = false;
+              referDiffDP = true;
+              referredIdString = null;
 
-            break;
+              instance.setEditable(true);
+              instance.setPageData(event.getXPathValsMap(), rxp);
 
+              checkBoxPanel.setVisible(false);
+              Log.debug(45,
+                        " ...setting page data to: " + event.getXPathValsMap());
+
+              break;
+
+            default:
+              Log.debug(45, "ReferencesListener - location NOT RECOGNIZED!! - "
+                        + location);
+
+          }
         }
+        processingReferenceSelection = false;
+
       }
-    }
-  };
+    };
 
     // listPanel - panel for showing the drop down list combo
     listPanel = WidgetFactory.makePanel(1);
@@ -324,9 +339,9 @@ public class PartyPage extends AbstractUIPage {
         + "entries that you have made.", false);
     setPrefMinMaxSizes(listLabel, PARTY_HALF_LABEL_DIMS);
     listPanel.add(listLabel);
-    listPanel.setBorder(new javax.swing.border.EmptyBorder(0,
-        12 * WizardSettings.PADDING,
-        0, 8 * WizardSettings.PADDING));
+    listPanel.setBorder(
+      new javax.swing.border.EmptyBorder(0, 12 * WizardSettings.PADDING,
+                                         0, 8 * WizardSettings.PADDING));
 
     String listValues[] = {};
 
@@ -580,16 +595,15 @@ public class PartyPage extends AbstractUIPage {
         if (e.getStateChange() == ItemEvent.DESELECTED) {
           // If the checkbox is not selected - set it to non-editable
           instance.setEditable(false);
-        }
-        else if (e.getStateChange() == ItemEvent.SELECTED) {
+        } else if (e.getStateChange() == ItemEvent.SELECTED) {
           // If the checkbox is selected - need to ask the user if he wants to
           // edit the previous entry or make a copy of the previous entry
           // and edit that one
           Object[] optionArray
               = new String[] {
-              "Edit previous entry",
-              "Copy and edit the previous Entry",
-              "Cancel"};
+                "Edit previous entry",
+                "Copy and edit the previous Entry",
+                "Cancel"};
           JOptionPane optPane = new JOptionPane();
           optPane.setOptions(optionArray);
           optPane.setMessage(
@@ -601,23 +615,18 @@ public class PartyPage extends AbstractUIPage {
           if (selectedValue == optionArray[0]) {
             // edit the previous reference
             instance.setEditable(true);
-            editReference = true;
-          }
-          else if (selectedValue == optionArray[1]) {
+          } else if (selectedValue == optionArray[1]) {
             // create a new copy - do not edit reference, is a reference
             // and remove reference id string
             instance.setEditable(true);
-            editReference = false;
             isReference = false;
             referredIdString = null;
-          }
-          else {
+          } else {
             // Cancel - remove selection from source - instance is not editable,
             // and do edit reference
-            JCheckBox source = (JCheckBox) e.getSource();
+            JCheckBox source = (JCheckBox)e.getSource();
             source.setSelected(false);
             instance.setEditable(false);
-            editReference = false;
           }
         }
         instance.validate();
@@ -626,7 +635,8 @@ public class PartyPage extends AbstractUIPage {
     };
 
     // Check box for ediitng the instance - si not visible initially
-    checkBoxPanel = WidgetFactory.makeCheckBoxPanel(checkBoxArray, -1, ilistener1);
+    checkBoxPanel = WidgetFactory.makeCheckBoxPanel(checkBoxArray, -1,
+                                                    ilistener1);
     checkBoxPanel.setBorder(new javax.swing.border.EmptyBorder(0,
         12 * WizardSettings.PADDING,
         0, 8 * WizardSettings.PADDING));
@@ -634,12 +644,6 @@ public class PartyPage extends AbstractUIPage {
     checkBoxPanel.setVisible(false);
 
 //    getPartyList();
-  }
-
-
-  private void updateRefsDropdown() {
-
-
   }
 
 
@@ -727,58 +731,58 @@ public class PartyPage extends AbstractUIPage {
 //  }
 
 
-  /**
-   * The action sets the value of all Fields in 'this' page equal to values of
-   * corresponding fields in PartyPage passed as arguement
-   *
-   * @param Page PartyPage
-   */
-  private void setValue(PartyPage Page) {
-    if (Page == null) {
-      // if Page is null, that means clear out all the values.
-      if (rolePickList != null) {
-        rolePickList.setSelectedIndex(0);
-      }
-      salutationField.setText("");
-      firstNameField.setText("");
-      lastNameField.setText("");
-      organizationField.setText("");
-      positionNameField.setText("");
-      address1Field.setText("");
-      address2Field.setText("");
-      cityField.setText("");
-      stateField.setText("");
-      zipField.setText("");
-      countryField.setText("");
-      phoneField.setText("");
-      faxField.setText("");
-      emailField.setText("");
-      urlField.setText("");
-    }
-    else {
-      // if Page is no null - copy all the values.
-      if (rolePickList != null) {
-        rolePickList.addItem(Page.getRole());
-        rolePickList.setSelectedItem(Page.getRole());
-        rolePickList.setEditable(true);
-      }
-      salutationField.setText(Page.getsalutationFieldText());
-      firstNameField.setText(Page.getfirstNameFieldText());
-      lastNameField.setText(Page.getlastNameFieldText());
-      organizationField.setText(Page.getorganizationFieldText());
-      positionNameField.setText(Page.getpositionNameFieldText());
-      address1Field.setText(Page.getaddress1FieldText());
-      address2Field.setText(Page.getaddress2FieldText());
-      cityField.setText(Page.getcityFieldText());
-      stateField.setText(Page.getstateFieldText());
-      zipField.setText(Page.getzipFieldText());
-      countryField.setText(Page.getcountryFieldText());
-      phoneField.setText(Page.getphoneFieldText());
-      faxField.setText(Page.getfaxFieldText());
-      emailField.setText(Page.getemailFieldText());
-      urlField.setText(Page.geturlFieldText());
-    }
-  }
+//  /**
+//   * The action sets the value of all Fields in 'this' page equal to values of
+//   * corresponding fields in PartyPage passed as arguement
+//   *
+//   * @param Page PartyPage
+//   */
+//  private void setValue(PartyPage Page) {
+//    if (Page == null) {
+//      // if Page is null, that means clear out all the values.
+//      if (rolePickList != null) {
+//        rolePickList.setSelectedIndex(0);
+//      }
+//      salutationField.setText("");
+//      firstNameField.setText("");
+//      lastNameField.setText("");
+//      organizationField.setText("");
+//      positionNameField.setText("");
+//      address1Field.setText("");
+//      address2Field.setText("");
+//      cityField.setText("");
+//      stateField.setText("");
+//      zipField.setText("");
+//      countryField.setText("");
+//      phoneField.setText("");
+//      faxField.setText("");
+//      emailField.setText("");
+//      urlField.setText("");
+//    }
+//    else {
+//      // if Page is no null - copy all the values.
+//      if (rolePickList != null) {
+//        rolePickList.addItem(Page.getRole());
+//        rolePickList.setSelectedItem(Page.getRole());
+//        rolePickList.setEditable(true);
+//      }
+//      salutationField.setText(Page.getsalutationFieldText());
+//      firstNameField.setText(Page.getfirstNameFieldText());
+//      lastNameField.setText(Page.getlastNameFieldText());
+//      organizationField.setText(Page.getorganizationFieldText());
+//      positionNameField.setText(Page.getpositionNameFieldText());
+//      address1Field.setText(Page.getaddress1FieldText());
+//      address2Field.setText(Page.getaddress2FieldText());
+//      cityField.setText(Page.getcityFieldText());
+//      stateField.setText(Page.getstateFieldText());
+//      zipField.setText(Page.getzipFieldText());
+//      countryField.setText(Page.getcountryFieldText());
+//      phoneField.setText(Page.getphoneFieldText());
+//      faxField.setText(Page.getfaxFieldText());
+//      emailField.setText(Page.getemailFieldText());
+//      urlField.setText(Page.geturlFieldText());
+//    }
+//  }
 
 
   /**
@@ -806,6 +810,8 @@ public class PartyPage extends AbstractUIPage {
     faxField.setEditable(editable);
     emailField.setEditable(editable);
     urlField.setEditable(editable);
+
+    checkBoxPanel.setVisible(!editable);
   }
 
 
@@ -828,7 +834,7 @@ public class PartyPage extends AbstractUIPage {
   private String getCurrentRole() {
 
      String role = (String) rolePickList.getSelectedItem();
-     return (role!=null)? role.trim() : "";
+     return (role!=null)? role.trim() : EMPTY_STRING;
   }
 
 
@@ -969,6 +975,8 @@ public class PartyPage extends AbstractUIPage {
 
     if (!this.isReference) getRefID();
 
+    if (!processingReferenceSelection) createBackupMap(getPageData());
+
     return true;
   }
 
@@ -988,7 +996,10 @@ public class PartyPage extends AbstractUIPage {
   public void onLoadAction() {
 
     referencesHandler.updateJComboBox(
-      UIController.getInstance().getCurrentAbstractDataPackage(), refsDropdown);
+      UIController.getInstance().getCurrentAbstractDataPackage(),
+      refsDropdown, getRefID());
+
+    this.setEditable(restoreFromBackupMap() && !this.isReference);
   }
 
   /**
@@ -1005,7 +1016,7 @@ public class PartyPage extends AbstractUIPage {
 
     if (abs == null) {
       Log.debug(45, "*** ERROR - PartyPage.getRefID() can't get AbsDataPkg");
-      return "";
+      return EMPTY_STRING;
     }
     referenceIdString = abs.getNewUniqueReferenceID();
 
@@ -1371,7 +1382,7 @@ public class PartyPage extends AbstractUIPage {
   // NOTE - assumes string has already been trimmed
   // of leading & trailing whitespace
   private boolean notNullAndNotEmpty(String arg) {
-    return (arg != null && !(arg.equals("")));
+    return (arg != null && !(arg.equals(EMPTY_STRING)));
   }
 
   /**
@@ -1510,6 +1521,14 @@ public class PartyPage extends AbstractUIPage {
     if (_rootXPath!=null && _rootXPath.trim().length() > 0) this.rootXPath =
                                                                      _rootXPath;
 
+    if (!processingReferenceSelection) createBackupMap(map);
+
+    if (map==null || map.isEmpty()) {
+
+      resetAllFields();
+      return true;
+    }
+
     String xpathRootNoPredicates
         = XMLUtilities.removeAllPredicates(this.rootXPath);
 
@@ -1543,7 +1562,7 @@ public class PartyPage extends AbstractUIPage {
       }
     }
 
-    map = keepOnlyLastPredicateInKeys(map, rootXPath);
+    map = keepOnlyLastPredicateInKeys(map);
 
     Log.debug(45, "PartyPage.setPageData() - map with only last predicates: \n"
               + map);
@@ -1675,34 +1694,37 @@ public class PartyPage extends AbstractUIPage {
 
   }
 
-  private OrderedMap keepOnlyLastPredicateInKeys(OrderedMap map,
-                                                 String xpathRootWithPredicates) {
 
+  private OrderedMap keepOnlyLastPredicateInKeys(OrderedMap map) {
     OrderedMap newMap = new OrderedMap();
     Iterator it = map.keySet().iterator();
-    while(it.hasNext()) {
-      String key = (String) it.next();
+
+    while (it.hasNext()) {
+
+      String key = (String)it.next();
       String val = (String)map.get(key);
       String firstPart = null;
-      String lastPart  = null;
+      String lastPart = null;
+
+      //if its the id attribute, delete *all* the predicates...
 
       int lastOpenBracketIndex = key.lastIndexOf("[");
 
-      //if its an attribute at the subtree root, delete *all* the predicates...
-      int lastAttribIndex = key.lastIndexOf("@");
-      if (lastAttribIndex==xpathRootWithPredicates.length()) {
-        lastOpenBracketIndex = lastAttribIndex;
-      }
-      if (lastOpenBracketIndex > -1 && lastOpenBracketIndex < key.length()) {
+      if (lastOpenBracketIndex > -1
+          && lastOpenBracketIndex < key.length() && key.indexOf("@id") < 0) {
 
-        firstPart = key.substring(0, lastOpenBracketIndex);
+        firstPart = XMLUtilities.removeAllPredicates(
+            key.substring(0, lastOpenBracketIndex));
+
         //keep last predicate in xpath
-        lastPart  = key.substring(lastOpenBracketIndex);
+        lastPart = key.substring(lastOpenBracketIndex);
+
+        newMap.put(firstPart + lastPart, val);
+
+      } else {
+
+        newMap.put(XMLUtilities.removeAllPredicates(key), val);
       }
-
-      firstPart = XMLUtilities.removeAllPredicates(firstPart);
-
-      newMap.put(firstPart + lastPart, val);
     }
     return newMap;
   }
@@ -1736,6 +1758,53 @@ public class PartyPage extends AbstractUIPage {
               + mapForRefID);
 
     return mapForRefID;
+  }
+
+
+  OrderedMap backupMap = new OrderedMap();
+  String backupRootXPath = null;
+  //
+  private void createBackupMap(OrderedMap map) {
+
+    backupMap.clear();
+    Iterator mapIt = map.keySet().iterator();
+
+    while (mapIt.hasNext()) {
+
+      Object nextKey = mapIt.next();
+      backupMap.put(nextKey, map.get(nextKey));
+    }
+    backupRootXPath = this.rootXPath;
+  }
+
+  private boolean restoreFromBackupMap() {
+
+    if (backupMap.isEmpty()) return true;
+
+    processingReferenceSelection = true;
+    boolean canHandleAllData = this.setPageData(backupMap, backupRootXPath);
+    processingReferenceSelection = false;
+    return canHandleAllData;
+  }
+
+  private void resetAllFields() {
+
+    rolePickList.setSelectedItem(EMPTY_STRING);
+    salutationField.setText(EMPTY_STRING);
+    firstNameField.setText(EMPTY_STRING);
+    lastNameField.setText(EMPTY_STRING);
+    organizationField.setText(EMPTY_STRING);
+    positionNameField.setText(EMPTY_STRING);
+    address1Field.setText(EMPTY_STRING);
+    address2Field.setText(EMPTY_STRING);
+    cityField.setText(EMPTY_STRING);
+    stateField.setText(EMPTY_STRING);
+    zipField.setText(EMPTY_STRING);
+    countryField.setText(EMPTY_STRING);
+    phoneField.setText(EMPTY_STRING);
+    faxField.setText(EMPTY_STRING);
+    emailField.setText(EMPTY_STRING);
+    urlField.setText(EMPTY_STRING);
   }
 
 }

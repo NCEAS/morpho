@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 04:57:02 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-31 00:29:32 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,14 +46,17 @@ public class ReferenceSelectionEvent {
   private OrderedMap referencedData;
   private String refID;
   private short location;
+  private String subtreeRootNodeName;
 
   public ReferenceSelectionEvent() {}
 
-  public ReferenceSelectionEvent(String refID, short location, OrderedMap referencedData) {
-
+  public ReferenceSelectionEvent(String refID, short location,
+                                 OrderedMap referencedData,
+                                 String subtreeRootNodeName) {
     this.setReferenceID(refID);
     this.setLocation(location);
     this.setXPathValsMap(referencedData);
+    this.setSubtreeRootNodeName(subtreeRootNodeName);
   }
 
   /**
@@ -75,6 +78,27 @@ public class ReferenceSelectionEvent {
   public String getReferenceID() {
 
     return this.refID;
+  }
+
+  /**
+   * Set referenced id string
+   *
+   * @param refID String
+   */
+  public void setSubtreeRootNodeName(String subtreeRootNodeName) {
+
+    this.subtreeRootNodeName = subtreeRootNodeName;
+  }
+
+
+  /**
+   * get referenced id string
+   *
+   * @return refID String
+   */
+  public String getSubtreeRootNodeName() {
+
+    return this.subtreeRootNodeName;
   }
 
 

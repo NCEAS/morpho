@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 20:36:46 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-03-31 00:29:32 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -310,6 +310,7 @@ public class Project extends AbstractUIPage {
 
     WidgetFactory.unhiliteComponent(titleLabel);
     WidgetFactory.unhiliteComponent(minRequiredLabel);
+
   }
 
   /**

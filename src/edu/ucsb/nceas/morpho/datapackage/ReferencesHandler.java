@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 20:36:46 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-03-31 00:29:32 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,9 +125,10 @@ public class ReferencesHandler {
    *   ReferencesHandler, and String surrogates for those referenced subtrees.
    *   An empty List is returned if the passed dataPkg parameter is null
    */
-  private List getReferences(AbstractDataPackage dataPkg) {
+  private List getReferences(AbstractDataPackage dataPkg, String suppressRefID) {
 
     if (dataPkg==null) return new ArrayList(0);
+    if (suppressRefID==null) suppressRefID = "";
 
     List idsList = dataPkg.getIDsForNodesWithName(this.genericName);
 
@@ -138,7 +139,8 @@ public class ReferencesHandler {
     while (idIt.hasNext()) {
 
       String nextID = (String)idIt.next();
-      if (nextID == null || nextID.trim().length() < 1)continue;
+      if (nextID == null
+          || nextID.trim().length() < 1 || nextID.equals(suppressRefID)) continue;
 
       Node nextSubtree = dataPkg.getSubtreeAtReference(nextID);
 
@@ -178,7 +180,7 @@ public class ReferencesHandler {
 
     if (dataPkg==null) return dropdown;
 
-    updateJComboBox(dataPkg, dropdown);
+    updateJComboBox(dataPkg, dropdown, null);
 
     final ReferencesHandler   instance = this;
     final AbstractDataPackage finalPkg = dataPkg;
@@ -205,7 +207,7 @@ public class ReferencesHandler {
             Log.debug(45, "ReferenceHandler ItemListener - top item "
                       + "('none selected' - blank) selected ");
             event = new ReferenceSelectionEvent(
-                null, ReferenceSelectionEvent.UNDEFINED, null);
+                null, ReferenceSelectionEvent.UNDEFINED, null, null);
             break;
 
           case 1: //second item (copy from external package) selected
@@ -224,17 +226,21 @@ public class ReferencesHandler {
                         "ReferenceHandler ItemListener - no subtree found with refID: "
                         + refMap.getID());
               //list contained an incorrect entry - so refresh list...
-              updateJComboBox(finalPkg, finalDropdown);
+              updateJComboBox(finalPkg, finalDropdown, null);
               return;
             }
             OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(subtree);
 
             event = new ReferenceSelectionEvent(
-              refMap.getID(), ReferenceSelectionEvent.CURRENT_DATA_PACKAGE, map);
+              refMap.getID(),
+              ReferenceSelectionEvent.CURRENT_DATA_PACKAGE,
+              map, subtree.getNodeName());
         }
         fireReferencesSelectionEvent(event);
       }
     });
+
+    addReferencesListener(listener);
 
     return dropdown;
   }
@@ -247,19 +253,22 @@ public class ReferencesHandler {
    *   be obtained. If this is null, an empty JComboBox is returned
    * @param dropdown ReferencesListener to be called back when a selection is
    *   made.
+   * @param suppressRefID String refID whose list entry will be removed - set
+   *   this to the refID of the subtree represented by the calling dialog, so
+   *   the dialog can't reference itself
    */
-  public void updateJComboBox(AbstractDataPackage dataPkg, JComboBox dropdown) {
+  public void updateJComboBox(AbstractDataPackage dataPkg,
+                              JComboBox dropdown, String suppressRefID) {
 
-    List refMapList = this.getReferences(dataPkg);
+    List refMapList = this.getReferences(dataPkg, suppressRefID);
 
     Object[] array = refMapList.toArray();
 
     Arrays.sort(array, new Comparator() {
 
       public int compare(Object o1, Object o2) {
-        String s1 = o1.toString();
-        String s2 = o2.toString();
-        return (s1.compareTo(s2));
+
+        return (o1.toString().compareTo(o2.toString()));
       }
     });
 
@@ -270,9 +279,9 @@ public class ReferencesHandler {
                                           DEFAULT_DROPDOWN_ITEM);
     refMappings[1] = new ReferenceMapping(EXT_DIALOG_DROPDOWN_ITEM + "1",
                                           EXT_DIALOG_DROPDOWN_ITEM);
-
     for (int i=0; i < array.length; i++) {
       refMappings[i + 2] = (ReferenceMapping)array[i];
+
     }
     dropdown.setModel(new DefaultComboBoxModel(refMappings));
     dropdown.invalidate();
@@ -315,8 +324,6 @@ public class ReferencesHandler {
     //first get a list of available local datapackages
     //then set these in dialog and show it
     doQueryAndPopulateDialog();
-
-
 
     //...and get corresponding node from external datapackage
 
@@ -393,16 +400,19 @@ public class ReferencesHandler {
     surrogateBuff.delete(0, surrogateBuff.length());
     String baseXPath = "/" + subtreeRoot.getNodeName();
     Log.debug(45, "ReferencesHandler.getSurrogate() - baseXPath = "+baseXPath);
+
     Node textNode = null;
 
-    for (int i=0; i<surrogateXPaths.length; i++) {
+    for (int i=0; i < surrogateXPaths.length; i++) {
 
       String nextEntry = surrogateXPaths[i];
-      if (nextEntry.startsWith("/")) {
 
+      if (nextEntry.startsWith("/")) {
         try {
+
           textNode = XMLUtilities.getTextNodeWithXPath(subtreeRoot,
                                                       baseXPath + nextEntry);
+
         } catch (Exception ex) {
           Log.debug(15, "exception in ReferenceHandler.getSurrogate() - "+ex);
           ex.printStackTrace();
