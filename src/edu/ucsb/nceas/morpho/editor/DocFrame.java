@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-30 23:14:07 $'
- * '$Revision: 1.95.2.2 $'
+ *     '$Date: 2002-04-30 23:35:11 $'
+ * '$Revision: 1.95.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -524,12 +524,9 @@ public class DocFrame extends javax.swing.JFrame
       // and info from the result is merged into the tree
       if (dtdMergeflag) {
         if (dtdfile!=null) {
-          System.out.println("dtdfile is: " + dtdfile);
 		      dtdtree = new DTDTree(dtdfile);
-          System.out.println("rootnodeName is: " + rootnodeName);
 		      dtdtree.setRootElementName(rootnodeName);
 		      dtdtree.parseDTD();
-          System.out.println("DTD Root Node: " + dtdtree.rootNode);
 		
 	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 
@@ -771,7 +768,9 @@ class SymAction implements java.awt.event.ActionListener {
             //myCatalog.parseCatalog(xmlcatalogfile);
             cer.setCatalog(myCatalog);
         }
-        catch (Exception e) {System.out.println("Problem creating Catalog!");}
+        catch (Exception e) {
+          ClientFramework.debug(10, "Problem creating Catalog (772)!");
+        }
         try {
             StringReader sr = new StringReader(xmlText);
             String parserName = "org.apache.xerces.parsers.SAXParser";
@@ -801,14 +800,11 @@ class SymAction implements java.awt.event.ActionListener {
             if (rootnodeName == null) {
               rootnodeName = ((DefaultMutableTreeNode)tm.getRoot()).toString();
             }
-            System.out.println("rootnodeName(1) = " + rootnodeName);
-            System.out.println("doctype = " + doctype);
             String temp = myCatalog.resolvePublic(doctype,null);
             if (temp!=null) {
                 if (temp.startsWith("file:")) {
                      temp = temp.substring(5,temp.length());
                 }
-                System.out.println("cat out 1: "+temp);
                 dtdfile = temp;
                 systemIDString = temp;
             }
@@ -970,7 +966,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	
     public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
       if (node==null) {
-        System.out.println("Attempt to clone a null node!");
+        ClientFramework.debug(20, "Attempt to clone a null node!");
         return null;
       }      
         DefaultMutableTreeNode newnode = null; 
@@ -986,14 +982,14 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             newnode = (DefaultMutableTreeNode)os.readObject();
         }
         catch (Exception e) {
-            System.out.println("Exception in creating copy of node!");
+            ClientFramework.debug(20, "Exception in creating copy of node!");
         }
         return newnode;
     }
     
     public void deepNodeCopyFile(DefaultMutableTreeNode node) {
       if (node==null) {
-        System.out.println("Attempt to clone a null node!");
+        ClientFramework.debug(20, "Attempt to clone a null node!");
       }      
         DefaultMutableTreeNode newnode = null; 
         try{
@@ -1005,7 +1001,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         
         }
         catch (Exception e) {
-            System.out.println("Exception in creating copy of node!");
+            ClientFramework.debug(20, "Exception in creating copy of node!");
         }
     }
 
@@ -1522,7 +1518,7 @@ void expandTreeToLevel(JTree jt, int level) {
         DefaultMutableTreeNode qw = null;
         // first check to see if root nodes have same names
         if (!compareNodes(input, template)) {
-        System.out.println( "Root nodes do not match!!!");
+          ClientFramework.debug(20, "Root nodes do not match!!!");
         }
         else {
             // root nodes match
@@ -1779,7 +1775,7 @@ private Vector sameParent(Vector list) {
         DefaultMutableTreeNode parNode;
         // first check to see if root nodes have same names
         if (!compareNodes(input, template)) {
-            System.out.println( "Root nodes do not match!!!");
+            ClientFramework.debug(20, "Root nodes do not match!!!");
         }
         else {
             // root nodes match, so start comparing children
