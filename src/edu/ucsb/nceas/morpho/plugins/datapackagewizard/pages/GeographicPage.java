@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 23:36:37 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-03-25 05:58:53 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -675,14 +675,15 @@ public class GeographicPage extends AbstractUIPage {
   public List getSurrogate() {
 
     List surrogate = new ArrayList();
-//    surrogate.add(covDescField.getText().trim());
-    String temp = "West: "+(new Double(lmp.getWest())).toString() +
+ 		String temp1 = covDescField.getText().trim();
+    String temp2 = "West: "+(new Double(lmp.getWest())).toString() +
                   "; East: "+(new Double(lmp.getEast())).toString() +
                   "; North: "+(new Double(lmp.getNorth())).toString() +
-                  "; South: "+(new Double(lmp.getSouth())).toString()
-                  + "; -----" + covDescField.getText().trim();
-    surrogate.add(temp);
+                  "; South: "+(new Double(lmp.getSouth())).toString();
+    surrogate.add(temp1);
 
+		surrogate.add(temp2);
+		
     return surrogate;
   }
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-24 23:36:37 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-03-25 05:58:53 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ public class Geographic extends AbstractUIPage{
   private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage[";
   private final String pageNumber  = "10";
 
-  private final String[] colNames =  {"Geographic Coverages"};
+  private final String[] colNames =  {"Description", "Geographic Coverage", };
   private final Object[] editors  =   null; //makes non-directly-editable
 
   private CustomList  geographicspanList;
@@ -155,9 +155,9 @@ public class Geographic extends AbstractUIPage{
   private void showEditGeographicDialog() {
 
     List selRowList = geographicspanList.getSelectedRowList();
-    if (selRowList==null || selRowList.size() < 2) return;
+    if (selRowList==null || selRowList.size() < 3) return;
 
-    Object dialogObj = selRowList.get(1);
+    Object dialogObj = selRowList.get(2);
 
     if (dialogObj==null || !(dialogObj instanceof GeographicPage)) return;
     GeographicPage editGeographicPage = (GeographicPage)dialogObj;
@@ -240,8 +240,8 @@ public class Geographic extends AbstractUIPage{
       if (nextRowObj==null) continue;
       nextRowList = (List)nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size()<2)     continue;
-      nextUserObject = nextRowList.get(1);
+      if (nextRowList.size()<3)     continue;
+      nextUserObject = nextRowList.get(2);
       if (nextUserObject==null) continue;
 
       nextGeographicPage = (GeographicPage)nextUserObject;
