@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-10 19:28:57 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-12-16 18:38:13 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,18 +255,6 @@ public class SaveDialog extends JDialog
       AccessionNumber an = new AccessionNumber(morpho);
       String newid = an.incRev(id);
       adp.setAccessionNumber(newid);
-      if((loc.equals(AbstractDataPackage.LOCAL))||(loc.equals(AbstractDataPackage.BOTH))) {
-        //save locally
-        Log.debug(50, "inside save local"); 
-        adp.serialize(AbstractDataPackage.LOCAL);
-        adp.serializeData();
-      }
-      if((loc.equals(AbstractDataPackage.METACAT))||(loc.equals(AbstractDataPackage.BOTH))) {
-        //save to metacat
-        Log.debug(50, "inside save metacat"); 
-        adp.serialize(AbstractDataPackage.METACAT);
-      }
-    
     }
     else { 
       Log.debug(50, "inside else"); 
@@ -274,27 +262,27 @@ public class SaveDialog extends JDialog
       AccessionNumber an = new AccessionNumber(morpho);
       String nextid = an.getNextId();
       adp.setAccessionNumber(nextid);
+    }
 
-      if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
-        adp.serialize(AbstractDataPackage.BOTH);
-        adp.setLocation(AbstractDataPackage.BOTH);
-        adp.serializeData();
-     }
-      else if (localLoc.isSelected()) {
-        adp.serialize(AbstractDataPackage.LOCAL);
-        adp.setLocation(AbstractDataPackage.LOCAL);
-        adp.serializeData();
-      }
-      else if (networkLoc.isSelected()) {
-        adp.serialize(AbstractDataPackage.METACAT);
-        adp.setLocation(AbstractDataPackage.METACAT);
-        adp.serializeData();
-      }
-      else {
-        Log.debug(1, "No location for saving is selected!");
-        return;
-      }
-   }
+    if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
+      adp.serialize(AbstractDataPackage.BOTH);
+      adp.setLocation(AbstractDataPackage.BOTH);
+      adp.serializeData();
+    }
+    else if (localLoc.isSelected()) {
+      adp.serialize(AbstractDataPackage.LOCAL);
+      adp.setLocation(AbstractDataPackage.LOCAL);
+      adp.serializeData();
+    }
+    else if (networkLoc.isSelected()) {
+      adp.serialize(AbstractDataPackage.METACAT);
+      adp.setLocation(AbstractDataPackage.METACAT);
+      adp.serializeData();
+    }
+    else {
+      Log.debug(1, "No location for saving is selected!");
+      return;
+    }
 	this.setVisible(false);
 	this.dispose();
 
