@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-24 02:54:10 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,24 +255,34 @@ public class PartyDialog extends WizardPopupDialog {
     boolean lastNameOK      = false;
     boolean organizationOK  = false;
     boolean positionOK      = false;
-    boolean isOKtoAdvance   = true;
 
+    //if we have a role field, it must have a value...
     if (role==ASSOCIATED) {
     
       if (notNullAndNotEmpty(roleField.getText().trim())) {
-      
+        
         WidgetFactory.unhiliteComponent(roleLabel);
-        isOKtoAdvance = true;
         
       } else {
-        
+      
         WidgetFactory.hiliteComponent(roleLabel);
-        isOKtoAdvance = false;
+        return false;
       }
     }
     
     String lastName = lastNameField.getText().trim();
     if (notNullAndNotEmpty(lastName)) lastNameOK = true;
+
+    // if we have a salutation AND/OR a givenName, we *must* have a surName...
+    if (   notNullAndNotEmpty(salutationField.getText().trim()) 
+        || notNullAndNotEmpty(firstNameField.getText().trim()) ) {
+        
+      if (!lastNameOK) {
+      
+        WidgetFactory.hiliteComponent(lastNameLabel);
+        return false;
+      }
+    }
   
     String organization = organizationField.getText().trim();
     if (notNullAndNotEmpty(organization)) organizationOK = true;
@@ -285,7 +295,7 @@ public class PartyDialog extends WizardPopupDialog {
       WidgetFactory.unhiliteComponent(lastNameLabel);
       WidgetFactory.unhiliteComponent(organizationLabel);
       WidgetFactory.unhiliteComponent(positionNameLabel);
-      return isOKtoAdvance;
+      return true;
       
     } else {
     

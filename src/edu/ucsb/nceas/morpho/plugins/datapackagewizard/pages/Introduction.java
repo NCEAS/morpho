@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 18:42:51 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-24 02:54:10 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,9 +44,9 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 public class Introduction extends AbstractWizardPage {
 
   public final String pageID     = WizardPageLibrary.INTRODUCTION;
-  public final String nextPageID = WizardPageLibrary.DATA_LOCATION;
-  
-//  public final String nextPageID = WizardPageLibrary.GENERAL;
+//  public final String nextPageID = WizardPageLibrary.DATA_LOCATION;
+//  
+  public final String nextPageID = WizardPageLibrary.GENERAL;
 //////////////////////////////////////////////////////////
 
   public final String title      = "Welcome to the Data Package Wizard";

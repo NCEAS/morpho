@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-23 18:48:14 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-09-24 02:54:10 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -393,7 +393,8 @@ public class WizardContainerFrame extends JFrame {
       generalMap = ((WizardPage)(pagesList.get(GENERAL))).getPageData();
       final String titleXPath = "/eml:eml/dataset/title[1]";
       Object titleObj = generalMap.get(titleXPath);
-      if (titleObj!=null) wizData.put(titleXPath, (String)titleObj);
+      if (titleObj!=null) wizData.put(titleXPath, 
+                                      XMLUtilities.normalize(titleObj));
     }
 
 //CREATOR:
@@ -411,7 +412,8 @@ public class WizardContainerFrame extends JFrame {
 
       final String abstractXPath = "/eml:eml/dataset/abstract/section/para[1]";
       Object abstractObj = generalMap.get(abstractXPath);
-      if (abstractObj!=null) wizData.put(abstractXPath, (String)abstractObj);
+      if (abstractObj!=null) wizData.put( abstractXPath, 
+                                          XMLUtilities.normalize(abstractObj));
     }
     
 //KEYWORDS:
@@ -460,7 +462,7 @@ public class WizardContainerFrame extends JFrame {
                     new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
     } catch (Exception e) {
       e.printStackTrace();
-      Log.debug(5, "unexpected error trying to vreate new XML document "
+      Log.debug(5, "unexpected error trying to create new XML document "
                     +"at start of wizard\n");
       listener.wizardFinished(null);
       return;
@@ -488,7 +490,6 @@ public class WizardContainerFrame extends JFrame {
                                         OrderedMap resultsMap) {
   
     String nextKey = null;
-    String nextVal = null;
     
     OrderedMap nextPgData = nextPage.getPageData();
 
@@ -503,9 +504,9 @@ public class WizardContainerFrame extends JFrame {
       nextKey = (String)it.next();
 
       if (nextKey==null || nextKey.trim().equals("")) continue;
-
-      nextVal = (String)nextPgData.get(nextKey);
-      resultsMap.put(nextKey, nextVal);
+      
+      //now excape all characters that might cause a problem in XML:
+      resultsMap.put(nextKey, XMLUtilities.normalize(nextPgData.get(nextKey)));
   
     } // end while
   }

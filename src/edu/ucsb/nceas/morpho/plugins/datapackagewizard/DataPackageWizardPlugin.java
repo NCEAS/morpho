@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-24 02:54:10 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
         public void wizardFinished(Node newDOM) {
         
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
-          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM));
+          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, true));
         }
       }
     );

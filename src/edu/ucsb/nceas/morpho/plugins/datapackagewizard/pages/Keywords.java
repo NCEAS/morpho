@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-24 02:54:10 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,12 +308,11 @@ class KeywordsDialog extends WizardPopupDialog {
   private JComboBox  kwTypePickList;
   private JLabel kwLabel;
   private CustomList kwList;
-  private String[] kwTypeArray = new String[]{  "discipline",
-                                                "place",
+  private String[] kwTypeArray = new String[]{  "place",
                                                 "stratum", 
                                                 "taxonomic",
                                                 "temporal",
-                                                "thematic" };
+                                                "theme" };
   
   public KeywordsDialog(JFrame parent) { 
   

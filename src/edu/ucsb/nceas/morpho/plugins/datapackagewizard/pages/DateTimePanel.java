@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-23 18:48:14 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-24 02:54:10 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -279,6 +279,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     returnMap.put(  xPathRoot + "/dateTimePrecision", 
                     precisionField.getText().trim());
                 
+    returnMap.put(  xPathRoot + "/dateTimeDomain", "");
     
     xPathRoot = xPathRoot + "/dateTimeDomain/bounds[";
     

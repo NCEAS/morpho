@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-23 18:48:14 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-24 02:54:10 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,8 +298,8 @@ public class Entity extends AbstractWizardPage{
     returnMap.put(xPathRoot + "/entityDescription", 
                   entityDescField.getText().trim());
 
+    returnMap.put(xPathRoot + "/physical/objectName", "");
     returnMap.put(xPathRoot + "/physical/dataFormat", "");
-    returnMap.put(xPathRoot + "/physical/distribution", "");
                   
     int index = 1;
     Object  nextRowObj      = null;
