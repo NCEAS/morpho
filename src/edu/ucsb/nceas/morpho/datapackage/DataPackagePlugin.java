@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-03 23:23:38 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2003-12-04 22:55:10 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -766,16 +766,22 @@ public class DataPackagePlugin
    */
   public void exportToZip(String docid, String path, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
-    try
-    {
-      dp.exportToZip(path);
+    boolean local = false;
+    boolean metacat = false;
+    if (location.equals(AbstractDataPackage.LOCAL)) {
+      local = true;
     }
-    catch(Exception e)
-    {
-      System.out.println("Error in DataPackage.exportToZip(): " + e.getMessage());
-      e.printStackTrace();
+    else if (location.equals(AbstractDataPackage.METACAT)) {
+      metacat = true;
     }
+    else if (location.equals(AbstractDataPackage.BOTH)) {
+      local = true;
+      metacat = true;
+    }
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+    adp.exportToZip(path);
+
+
   }
   
    /**

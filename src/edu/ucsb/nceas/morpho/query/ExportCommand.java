@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-03 23:24:34 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-12-04 22:55:39 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,8 +209,7 @@ public class ExportCommand implements Command
           }
           else if (format.equals(ZIP))
           {
-            //exportDatasetToZip(docid);
-            Log.debug(1, "Not yet converted for eml2!");
+            exportDatasetToZip(docid);
           }
           else if (format.equals(TOEML2))
           {

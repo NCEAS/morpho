@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-03 23:23:38 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2003-12-04 22:55:10 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,8 +166,12 @@ import org.apache.xpath.objects.XObject;
 
 import edu.ucsb.nceas.utilities.*;
 
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import java.io.*;
 import java.util.Vector;
+import javax.swing.*;
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
  * e.g. eml2, beta6., etc extend this abstact class
@@ -1355,6 +1359,102 @@ public abstract class AbstractDataPackage extends MetadataObject
         Log.debug(9,"Unexpected Error Reading Styled Document: "
                                                    +w.getMessage());
     }
+    
+    JOptionPane.showMessageDialog(null,
+                    "Package export is complete ! ");
+  }
+
+    /**
+   * Exports a package to a zip file at the given path
+   * @param path the path to export the zip file to
+   */
+  public void exportToZip(String path)
+  {
+    try
+    {
+      //export the package in an uncompressed format to the temp directory
+      //then zip it up and save it to the specified path
+      String tempdir = config.getConfigDirectory() + File.separator +
+                                config.get("tempDir", 0);
+      export(tempdir + "/tmppackage");
+      File zipfile = new File(path);
+      FileOutputStream fos = new FileOutputStream(zipfile);
+      ZipOutputStream zos = new ZipOutputStream(fos);
+      String temppackdir = tempdir + "/tmppackage/" + id + ".package";
+      File packdirfile = new File(temppackdir);
+      String[] dirlist = packdirfile.list();
+      String packdir = id + ".package";
+      //zos.putNextEntry(new ZipEntry(packdir));
+      for(int i=0; i<dirlist.length; i++)
+      {
+        String entry = temppackdir + "/" + dirlist[i];
+        ZipEntry ze = new ZipEntry(packdir + "/" + dirlist[i]);
+        File entryFile = new File(entry);
+        if(!entryFile.isDirectory())
+        {
+          ze.setSize(entryFile.length());
+          zos.putNextEntry(ze);
+          FileInputStream fis = new FileInputStream(entryFile);
+          int c = fis.read();
+          while(c != -1)
+          {
+            zos.write(c);
+            c = fis.read();
+          }
+          zos.closeEntry();
+        }
+      }
+      // for data file
+      String dataPackdir = packdir +"/data";
+      String tempDatapackdir = temppackdir +"/data";
+      File dataFile = new File(tempDatapackdir);
+      String[] dataFileList = dataFile.list();
+      if (dataFileList != null)
+      {
+        for(int i=0; i<dataFileList.length; i++)
+        {
+          String entry = tempDatapackdir + "/" + dataFileList[i];
+          ZipEntry ze = new ZipEntry(dataPackdir + "/" + dataFileList[i]);
+          File entryFile = new File(entry);
+          ze.setSize(entryFile.length());
+          zos.putNextEntry(ze);
+          FileInputStream fis = new FileInputStream(entryFile);
+          int c = fis.read();
+          while(c != -1)
+          {
+            zos.write(c);
+            c = fis.read();
+          }
+          zos.closeEntry();
+        }
+      }
+      packdir += "/metadata";
+      temppackdir += "/metadata";
+      File sourcedir = new File(temppackdir);
+      File[] sourcefiles = listFiles(sourcedir);
+      for(int i=0; i<sourcefiles.length; i++)
+      {
+        File f = sourcefiles[i];
+        
+        ZipEntry ze = new ZipEntry(packdir + "/" + f.getName());
+        ze.setSize(f.length());
+        zos.putNextEntry(ze);
+        FileInputStream fis = new FileInputStream(f);
+        int c = fis.read();
+        while(c != -1)
+        {
+          zos.write(c);
+          c = fis.read();
+        }
+        zos.closeEntry();
+      }
+      zos.flush();
+      zos.close();
+    }
+    catch(Exception e)
+    {
+      Log.debug(5, "Exception in exporting to zip file (AbstractDataPackage)");
+    }
   }
 
   //save the StringBuffer to the File path specified
@@ -1364,6 +1464,15 @@ public abstract class AbstractDataPackage extends MetadataObject
     IOUtil.writeToWriter(buff, fileWriter, true);
   }
   
+  private File[] listFiles(File dir) {
+    String[] fileStrings = dir.list();
+    int len = fileStrings.length;
+    File[] list = new File[len];
+    for (int i=0; i<len; i++) {
+        list[i] = new File(dir, fileStrings[i]);    
+    }
+    return list;
+  }
   
   /**
    *  This method displays a summary of Package information by
