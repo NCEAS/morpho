@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-22 16:40:28 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-07-28 20:59:02 $'
+ * '$Revision: 1.2.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,9 +68,22 @@ public class XMLUtil
 			              break;
                 }
                 default: {
-                    if (ch<128) {
+                    if ((ch<128)&&(ch>31)) {
                       str.append(ch);
-                    } else {
+                    } 
+                    else if (ch<32) {
+                      if (ch== 10) {
+                        str.append(ch);
+                      }
+                      if (ch==13) {
+                        str.append(ch);
+                      }
+                      if (ch==9) {
+                        str.append(ch);
+                      }  
+                      // otherwise skip
+                    }
+                    else {
                         str.append("&#");
                         str.append(Integer.toString(ch));
                         str.append(';');
