@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-04 06:55:34 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-02-04 16:57:18 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,7 +197,7 @@ public class PartyPanel extends JPanel
     JPanel phoneFaxPanel = WidgetFactory.makePanel(1);
     phoneFaxPanel.add(WidgetFactory.makeLabel("Phone:", false));
     phoneField = WidgetFactory.makeOneLineTextField();
-//    phoneField.setText(getValue(nd, "phone"));
+    phoneField.setText(getValue(nd, "phone"));
     phoneField.addFocusListener(new dfhFocus());
     phoneFaxPanel.add(phoneField);
     phoneFaxPanel.add(WidgetFactory.makeDefaultSpacer());
@@ -205,10 +205,10 @@ public class PartyPanel extends JPanel
     setPrefMinMaxSizes(faxLabel, PARTY_2COL_LABEL_DIMS);
     phoneFaxPanel.add(faxLabel);
     faxField = WidgetFactory.makeOneLineTextField();
-//    faxField.setText(getValue(nd, "phone", "phonetype", "facsimile"));
+    faxField.setText(getValue(nd, "phone", "phonetype", "facsimile"));
     phoneFaxPanel.add(faxField);
     panel.add(phoneFaxPanel);
-/*
+
 
     ////
     JPanel emailUrlPanel = WidgetFactory.makePanel(1);
@@ -226,7 +226,7 @@ public class PartyPanel extends JPanel
     urlField.addFocusListener(new dfhFocus());
     emailUrlPanel.add(urlField);
     panel.add(emailUrlPanel);
-*/		
+		
   }
 
 
@@ -249,9 +249,15 @@ public class PartyPanel extends JPanel
       NodeInfo ni = (NodeInfo)nd.getUserObject();
       String nodeName = (ni.getName()).trim();
       if (nodeName.equals(name)) {
-        DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)nd.getFirstChild();
-        NodeInfo tni = (NodeInfo)tnode.getUserObject();
-        ret = tni.getPCValue();
+        Enumeration kids = nd.children();
+        while (kids.hasMoreElements()) {
+          DefaultMutableTreeNode tnode = (DefaultMutableTreeNode)kids.nextElement();
+          NodeInfo tni = (NodeInfo)tnode.getUserObject();
+          if (tni.getName().equalsIgnoreCase("#PCDATA")) {
+            ret = tni.getPCValue();
+            return ret;
+          }
+        }
         return ret;
       }
     }
