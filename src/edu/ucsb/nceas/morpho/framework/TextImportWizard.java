@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-30 18:58:23 $'
- * '$Revision: 1.8 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-31 08:24:34 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -915,6 +915,9 @@ public void startImport(String file) {
         resultsBuffer = new StringBuffer("");
         resultsBuffer.append(f+" is NOT a text file\n");
         textFlag = false;
+        JOptionPane.showMessageDialog(this, "Selected File is NOT a text file!",
+           "Message",JOptionPane.INFORMATION_MESSAGE, null);
+        
       }
     }            
     /**
