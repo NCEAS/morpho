@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-29 06:07:47 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-30 00:09:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,12 +44,13 @@ import java.util.Map;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -129,16 +130,28 @@ public class ReferencesHandler {
 
     if (dataPkg==null) return returnMap;
 
-    Map idSubtreeMap = getIDsNodesMapForNodesWithName(dataPkg, this.genericName);
+    Iterator idIt = dataPkg.getIDsForNodesWithName(this.genericName).iterator();
 
-    Iterator mapIt = idSubtreeMap.keySet().iterator();
+    while (idIt.hasNext()) {
 
-    while (mapIt.hasNext()) {
+      String nextID = (String)idIt.next();
+      if (nextID == null || nextID.trim().length() < 1) continue;
 
-      String nextID = (String)mapIt.next();
-      if (nextID == null)continue;
-      returnMap.put(nextID, getSurrogate((Node)(idSubtreeMap.get(nextID))));
+      Node nextSubtree = dataPkg.getSubtreeAtReference(nextID);
+
+      if (nextSubtree == null)continue;
+
+      returnMap.put(nextID, nextSubtree);
     }
+
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    returnMap.put("bogus.id.2", "aaaa");
+    returnMap.put("bogus.id.9", "_aaa");
+    returnMap.put("2blanks", "  ");
+    returnMap.put("4blanks", "    ");
+    returnMap.put("3blanks", "   ");
+    returnMap.put("1blank", " ");
+    returnMap.put("bogus.id.3", "!");
 
     return returnMap;
   }
@@ -166,43 +179,17 @@ public class ReferencesHandler {
    */
   public JComboBox getJComboBox(AbstractDataPackage dataPkg,
                                 ReferencesListener listener,
-                                JFrame parent) {
+                                Frame parent) {
 
-    if (dataPkg==null) return new JComboBox();
+    JComboBox dropdown = new JComboBox();
 
-    Map refsMap = this.getReferences(dataPkg);
+    if (dataPkg==null) return dropdown;
 
+    updateJComboBox(dataPkg, dropdown);
 
-    Iterator it = refsMap.keySet().iterator();
-    int index = 0;
-    int listLength = 2 + refsMap.size();
-    String[][] refMappings = new String[listLength][2];
-    String[] dropdownStrings = new String[listLength];
-
-    while (it.hasNext()) {
-
-      String nextRefID = (String)(it.next());
-      String nextSurrogate = (String)(refsMap.get(nextRefID));
-
-      refMappings[index][0] = nextRefID;
-      refMappings[index][1] = nextSurrogate;
-
-      dropdownStrings[index] = nextSurrogate;
-
-      index++;
-    }
-    dropdownStrings[listLength]     = null;
-    dropdownStrings[listLength + 1] = null;
-
-    Arrays.sort(dropdownStrings);
-
-    dropdownStrings[0] = DEFAULT_DROPDOWN_ITEM;
-    dropdownStrings[1] = EXT_DIALOG_DROPDOWN_ITEM;
-
-    JComboBox dropdown = new JComboBox(dropdownStrings);
     final ReferencesHandler   instance = this;
     final AbstractDataPackage finalPkg = dataPkg;
-    final JFrame finalParent = parent;
+    final Frame finalParent = parent;
 
     dropdown.addItemListener(new ItemListener() {
 
@@ -228,6 +215,7 @@ public class ReferencesHandler {
 
             instance.showCopyExternalRefsDialog(finalPkg, finalParent);
             event.setLocation(ReferenceSelectionEvent.DIFFERENT_DATA_PACKAGE);
+Log.debug(1, "NOT FINISHED! ReferencesHandler.getJComboBox() - switch case 1");
 //            event.setReferenceID();
 //            event.setXPathValsMap(null);
 ////////////////////////////////////////////////////////////////////////////
@@ -247,15 +235,75 @@ public class ReferencesHandler {
             break;
 
           default:
+
+Log.debug(1,
+  "NOT FINISHED! ReferencesHandler.getJComboBox() - switch default. ID = "
+  + ((ReferenceMapping)(source.getSelectedItem())).getID());
         }
       }
     });
+
     return dropdown;
   }
 
 
+  /**
+   * update the ListModel backing the passed JComboBox - @see getJComboBox()
+   *
+   * @param dataPkg the AbstractDataPackage from whence the references should
+   *   be obtained. If this is null, an empty JComboBox is returned
+   * @param dropdown ReferencesListener to be called back when a selection is
+   *   made.
+   */
+  public void updateJComboBox(AbstractDataPackage dataPkg, JComboBox dropdown) {
+
+    Map refsMap = this.getReferences(dataPkg);
+
+    Iterator it = refsMap.keySet().iterator();
+    int index = 0;
+    int listLength = 2 + refsMap.size();
+    ReferenceMapping nextRefMapping = null;
+    Object[] refMappings = new String[listLength];
+
+    while (it.hasNext()) {
+
+      String nextRefID = (String)(it.next());
+      String nextSurrogate = (String)(refsMap.get(nextRefID));
+
+      nextRefMapping = new ReferenceMapping(nextRefID, nextSurrogate);
+
+      refMappings[index] = nextRefMapping;
+
+      index++;
+    }
+    refMappings[listLength - 2] = "BBAA";
+    refMappings[listLength - 1] = "AAAA";
+
+Log.debug(1, "BEFORE SORT: array = "+dumpArray(refMappings));
+    Arrays.sort(refMappings);
+Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
+
+    refMappings[0] = DEFAULT_DROPDOWN_ITEM;
+    refMappings[1] = EXT_DIALOG_DROPDOWN_ITEM;
+
+    dropdown.setModel(new DefaultComboBoxModel(refMappings));
+    dropdown.invalidate();
+    dropdown.validate();
+  }
 
 
+  private String dumpArray(Object[] array) {
+
+    if (array==null) return "";
+    StringBuffer buff = new StringBuffer(0);
+
+    for (int i = 0; i < array.length; i++) {
+
+      buff.append(array[i]);
+      buff.append("\n");
+    }
+    return buff.toString();
+  }
 
   /**
    * Open a dialog to allow the user to browse a list of existing local
@@ -271,7 +319,7 @@ public class ReferencesHandler {
    *   datapackage
    */
   private Node showCopyExternalRefsDialog(AbstractDataPackage dataPkg,
-                                         JFrame parent) {
+                                          Frame parent) {
 
     Node returnNode = null;
 
@@ -387,44 +435,6 @@ public class ReferencesHandler {
       }
     }
     return surrogateBuff.toString();
-  }
-
-
-  /**
-   * returns a <code>java.util.Map</code> whose keys are all the IDs currently
-   * in the DataPackage that point to subtree root-nodes corresponding to the
-   * passed genericName , and whose values are clones of the subtree root-nodes
-   * including the full subtree - but note that because they are clones, they
-   * may become out-of-date
-   *
-   * @param pkg AbstractDataPackage
-   * @param genericName string identifying nodes - e.g. "parties"
-   * @return a <code>java.util.Map</code> whose keys are all the IDs currently
-   *   in the DataPackage that point to subtree root-nodes corresponding to the
-   *   passed genericName , and whose values are clones of the subtree
-   *   root-nodes including the full subtree - but note that because they are
-   *   clones, they may become out-of-date <em>NOTE - should never return
-   *   null</em>
-   */
-  private Map getIDsNodesMapForNodesWithName(AbstractDataPackage pkg,
-                                             String genericName) {
-
-    Map returnMap = new HashMap();
-
-    Iterator idIt = pkg.getIDsForNodesWithName(genericName).iterator();
-
-    while (idIt.hasNext()) {
-
-      String nextID = (String)idIt.next();
-      if (nextID == null || nextID.trim().length() < 1) continue;
-
-      Node nextSubtree = pkg.getSubtreeAtReference(nextID);
-
-      if (nextSubtree == null)continue;
-
-      returnMap.put(nextID, nextSubtree);
-    }
-    return returnMap;
   }
 
 
@@ -614,5 +624,29 @@ class ExternalRefsPage extends AbstractUIPage {
       "ExternalRefsPage -> setPageData() method not implemented!");
   }
 
+
+}
+
+class ReferenceMapping {
+
+  private String surrogate;
+  private String ID;
+
+  public ReferenceMapping(String ID, String surrogate) {
+
+    this.ID = ID;
+    this.surrogate = surrogate;
+  }
+
+  public String toString() {
+
+    return surrogate;
+  }
+
+
+  public String getID() {
+
+    return ID;
+  }
 
 }

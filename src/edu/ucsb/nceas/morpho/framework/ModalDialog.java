@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 22:56:23 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-30 00:09:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,12 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.util.UISettings;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -42,7 +42,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 
@@ -59,12 +58,12 @@ public class ModalDialog extends JDialog {
   protected AbstractUIPage wizardPage;
 
   public ModalDialog(AbstractUIPage page,
-                           JFrame parent, int width, int height) {
+                           Frame parent, int width, int height) {
 
     this(page, parent, width, height, true);
   }
 
-  public ModalDialog(AbstractUIPage page, JFrame parent,
+  public ModalDialog(AbstractUIPage page, Frame parent,
                            int width, int height, boolean showNow) {
 
     super(parent, true);
@@ -222,7 +221,7 @@ public class ModalDialog extends JDialog {
 
   private int dialogWidth;
   private int dialogHeight;
-  private JFrame parent;
+  private Frame parent;
   private Container contentPane;
   protected JPanel middlePanel;
   private JPanel bottomPanel;

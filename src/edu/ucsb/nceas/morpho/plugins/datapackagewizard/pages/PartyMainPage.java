@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-26 00:19:54 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-03-30 00:09:15 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,16 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
@@ -48,9 +50,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 public class PartyMainPage
     extends AbstractUIPage {
@@ -278,17 +277,14 @@ public class PartyMainPage
 
     List selRowList = partiesList.getSelectedRowList();
 
-    if (selRowList == null || selRowList.size() < 4) {
-      return;
-    }
+    if (selRowList == null || selRowList.size() < 4) return;
 
     Object dialogObj = selRowList.get(3);
 
-    if (dialogObj == null || ! (dialogObj instanceof PartyPage)) {
-      return;
-    }
+    if (dialogObj == null || ! (dialogObj instanceof PartyPage)) return;
+
     PartyPage editPartyPage = (PartyPage) dialogObj;
-    editPartyPage.setEditValue();
+//    editPartyPage.setEditValue();
     ModalDialog wpd = new ModalDialog(editPartyPage,
                                       WizardContainerFrame.getDialogParent(),
                                       UISettings.POPUPDIALOG_WIDTH,
@@ -375,9 +371,7 @@ public class PartyMainPage
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       nextRowObj = it.next();
-      if (nextRowObj == null) {
-        continue;
-      }
+      if (nextRowObj == null) continue;
 
       nextRowList = (List) nextRowObj;
       //column 3 is user object - check it exists and isn't null:
@@ -385,16 +379,14 @@ public class PartyMainPage
         continue;
       }
       nextUserObject = nextRowList.get(3);
-      if (nextUserObject == null) {
-        continue;
-      }
+      if (nextUserObject == null) continue;
 
       nextPartyPage = (PartyPage) nextUserObject;
 
-      if (nextPartyPage.isReference &&
-          !listContains(rowLists, nextPartyPage.referredPage)) {
-        continue;
-      }
+//      if (nextPartyPage.isReference &&
+//          !listContains(rowLists, nextPartyPage.referredPage)) {
+//        continue;
+//      }
 
       nextNVPMap = nextPartyPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
@@ -417,56 +409,56 @@ public class PartyMainPage
         "getPageData(String rootXPath) Method Not Implemented");
   }
 
-  /**
-   * Checks if the list contains a PartyPage similar to the PartyPage passed in
-   * the parameters.
-   *
-   * @param rowLists List
-   * @param page PartyPage
-   * @return boolean
-   */
-  private boolean listContains(List rowLists, PartyPage page) {
-    if (rowLists == null) {
-      return false;
-    }
-
-    Object nextRowObj;
-    List nextRowList;
-    PartyPage nextPage;
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-      nextRowObj = it.next();
-      if (nextRowObj == null) {
-        continue;
-      }
-      nextRowList = (List) nextRowObj;
-      //column 3 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 4) {
-        continue;
-      }
-      nextPage = (PartyPage) nextRowList.get(3);
-      if (nextPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
-          nextPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
-          nextPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
-          nextPage.getorganizationFieldText().equals(page.
-          getorganizationFieldText()) &&
-          nextPage.getpositionNameFieldText().equals(page.
-          getpositionNameFieldText()) &&
-          nextPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
-          nextPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
-          nextPage.getcityFieldText().equals(page.getcityFieldText()) &&
-          nextPage.getstateFieldText().equals(page.getstateFieldText()) &&
-          nextPage.getzipFieldText().equals(page.getzipFieldText()) &&
-          nextPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
-          nextPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
-          nextPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
-          nextPage.getemailFieldText().equals(page.getemailFieldText()) &&
-          nextPage.geturlFieldText().equals(page.geturlFieldText())) {
-        return true;
-      }
-    }
-
-    return false;
-  }
+//  /**
+//   * Checks if the list contains a PartyPage similar to the PartyPage passed in
+//   * the parameters.
+//   *
+//   * @param rowLists List
+//   * @param page PartyPage
+//   * @return boolean
+//   */
+//  private boolean listContains(List rowLists, PartyPage page) {
+//    if (rowLists == null) {
+//      return false;
+//    }
+//
+//    Object nextRowObj;
+//    List nextRowList;
+//    PartyPage nextPage;
+//    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+//      nextRowObj = it.next();
+//      if (nextRowObj == null) {
+//        continue;
+//      }
+//      nextRowList = (List) nextRowObj;
+//      //column 3 is user object - check it exists and isn't null:
+//      if (nextRowList.size() < 4) {
+//        continue;
+//      }
+//      nextPage = (PartyPage) nextRowList.get(3);
+//      if (nextPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
+//          nextPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
+//          nextPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
+//          nextPage.getorganizationFieldText().equals(page.
+//          getorganizationFieldText()) &&
+//          nextPage.getpositionNameFieldText().equals(page.
+//          getpositionNameFieldText()) &&
+//          nextPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
+//          nextPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
+//          nextPage.getcityFieldText().equals(page.getcityFieldText()) &&
+//          nextPage.getstateFieldText().equals(page.getstateFieldText()) &&
+//          nextPage.getzipFieldText().equals(page.getzipFieldText()) &&
+//          nextPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
+//          nextPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
+//          nextPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
+//          nextPage.getemailFieldText().equals(page.getemailFieldText()) &&
+//          nextPage.geturlFieldText().equals(page.geturlFieldText())) {
+//        return true;
+//      }
+//    }
+//
+//    return false;
+//  }
 
   /**
    *  gets the unique ID for this wizard page
@@ -515,10 +507,13 @@ public class PartyMainPage
     return pageNumber;
   }
 
+
   /**
-   *  sets the OrderMap for this wizard page
+   * sets the OrderMap for this wizard page
    *
-   *  @return
+   * @return boolean
+   * @param data OrderedMap
+   * @param xPathRoot String
    */
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
 }
