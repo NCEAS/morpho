@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 19:08:20 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-04-06 20:16:24 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -325,7 +325,6 @@ public class ReferencesHandler {
   private ReferenceSelectionEvent showCopyExternalRefsDialog(
       AbstractDataPackage dataPkg, Frame parent) {
 
-      Node returnNode = null;
     //event object will be populated by dialog...
     ReferenceSelectionEvent event = new ReferenceSelectionEvent();
 

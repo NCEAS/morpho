@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-06 16:12:29 $'
- * '$Revision: 1.32 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-06 20:16:24 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,10 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
@@ -39,6 +41,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,9 +52,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import java.util.ArrayList;
 
 public class PartyMainPage
     extends AbstractUIPage {
@@ -66,7 +66,7 @@ public class PartyMainPage
 
   private final String[] colNames = { "Party", "Role", "Address" };
   private final Object[] editors = null; //makes non-directly-editable
-  public final String title = "People Associated With This DataPackage";
+  public final String title = "People or Organizations Associated With This Data Package";
   public final String role;
 
   private JLabel minRequiredLabel;
@@ -86,11 +86,6 @@ public class PartyMainPage
     initRole();
     init();
   }
-
-
-
-
-
 
 
   /**
@@ -170,8 +165,7 @@ public class PartyMainPage
     }
   }
 
-  /**
-   * initialize method does frame-specific design - i.e. adding the widgets that
+  /**   * initialize method does frame-specific design - i.e. adding the widgets that
    * are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
@@ -323,9 +317,7 @@ public class PartyMainPage
    */
   public void onLoadAction() {
 
-    if (oneOrMoreRequired && partiesList.getRowCount() < 1) {
-      showNewPartyDialog();
-    }
+    partiesList.focusAddButton();
   }
 
   /**
@@ -405,56 +397,6 @@ public class PartyMainPage
         "getPageData(String rootXPath) Method Not Implemented");
   }
 
-//  /**
-//   * Checks if the list contains a PartyPage similar to the PartyPage passed in
-//   * the parameters.
-//   *
-//   * @param rowLists List
-//   * @param page PartyPage
-//   * @return boolean
-//   */
-//  private boolean listContains(List rowLists, PartyPage page) {
-//    if (rowLists == null) {
-//      return false;
-//    }
-//
-//    Object nextRowObj;
-//    List nextRowList;
-//    PartyPage nextPage;
-//    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-//      nextRowObj = it.next();
-//      if (nextRowObj == null) {
-//        continue;
-//      }
-//      nextRowList = (List) nextRowObj;
-//      //column 3 is user object - check it exists and isn't null:
-//      if (nextRowList.size() < 4) {
-//        continue;
-//      }
-//      nextPage = (PartyPage) nextRowList.get(3);
-//      if (nextPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
-//          nextPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
-//          nextPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
-//          nextPage.getorganizationFieldText().equals(page.
-//          getorganizationFieldText()) &&
-//          nextPage.getpositionNameFieldText().equals(page.
-//          getpositionNameFieldText()) &&
-//          nextPage.getaddress1FieldText().equals(page.getaddress1FieldText()) &&
-//          nextPage.getaddress2FieldText().equals(page.getaddress2FieldText()) &&
-//          nextPage.getcityFieldText().equals(page.getcityFieldText()) &&
-//          nextPage.getstateFieldText().equals(page.getstateFieldText()) &&
-//          nextPage.getzipFieldText().equals(page.getzipFieldText()) &&
-//          nextPage.getcountryFieldText().equals(page.getcountryFieldText()) &&
-//          nextPage.getphoneFieldText().equals(page.getphoneFieldText()) &&
-//          nextPage.getfaxFieldText().equals(page.getfaxFieldText()) &&
-//          nextPage.getemailFieldText().equals(page.getemailFieldText()) &&
-//          nextPage.geturlFieldText().equals(page.geturlFieldText())) {
-//        return true;
-//      }
-//    }
-//
-//    return false;
-//  }
 
 
   /**

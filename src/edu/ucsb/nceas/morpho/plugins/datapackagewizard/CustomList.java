@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 07:31:19 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2004-04-06 20:16:24 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -502,6 +502,16 @@ public class CustomList
     }
     resizeButtons();
   }
+
+
+  /**
+   *  Gives the "Add" button keyboard focus
+   */
+  public void focusAddButton() {
+
+    if (addButton!=null) addButton.requestFocus();
+  }
+
 
   /**
    *  Scrolls the CustomList (if necessary) to the particular row such that
