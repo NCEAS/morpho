@@ -132,13 +132,6 @@
  <south>40.617222222222225</south>
  <east>-120.72694444444444</east>
  </location>
-<location><name>v</name>
- <description>Elliot Chaparral Reserve UCNRS</description>
- <north>32.86833333333333</north>
- <west>-117.14250000000001</west>
- <south>32.86833333333333</south>
- <east>-117.14250000000001</east>
- </location>
 <location><name>Emerson Oaks Reserve UCNRS</name>
  <description>Emerson Oaks Reserve UCNRS</description>
  <north>33.46666666666667</north>
@@ -250,20 +243,6 @@
  <west>-121.58333333333333</west>
  <south>36.06666666666667</south>
  <east>-121.58333333333333</east>
- </location>
-<location><name>v</name>
- <description>Luquillo Experimental Forest LTER (LUQ)</description>
- <north>18.3</north>
- <west>-65.8</west>
- <south>18.3</south>
- <east>-65.8</east>
- </location>
-<location><name>v</name>
- <description>McLaughlin Natural Reserve UCNRS</description>
- <north>38.87388888888889</north>
- <west>-122.43166666666667</west>
- <south>38.87388888888889</south>
- <east>-122.43166666666667</east>
  </location>
 <location><name>McMurdo Dry Valleys LTER (MCM)</name>
  <description>McMurdo Dry Valleys LTER (MCM)</description>
@@ -397,6 +376,27 @@
  <west>-115.66388888888889</west>
  <south>34.80555555555555</south>
  <east>-115.66388888888889</east>
+ </location>
+<location><name>Elliot Chaparral Reserve UCNRS</name>
+ <description>Elliot Chaparral Reserve UCNRS</description>
+ <north>32.86833333333333</north>
+ <west>-117.14250000000001</west>
+ <south>32.86833333333333</south>
+ <east>-117.14250000000001</east>
+ </location>
+<location><name>Luquillo Experimental Forest LTER (LUQ)</name>
+ <description>Luquillo Experimental Forest LTER (LUQ)</description>
+ <north>18.3</north>
+ <west>-65.8</west>
+ <south>18.3</south>
+ <east>-65.8</east>
+ </location>
+<location><name>McLaughlin Natural Reserve UCNRS</name>
+ <description>McLaughlin Natural Reserve UCNRS</description>
+ <north>38.87388888888889</north>
+ <west>-122.43166666666667</west>
+ <south>38.87388888888889</south>
+ <east>-122.43166666666667</east>
  </location>
 <location><name>Valentine Eastern Sierra (SNARL) UCNRS</name>
  <description>Valentine Eastern Sierra (SNARL) UCNRS</description>
