@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-15 16:14:39 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2001-06-15 22:18:04 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ public class PackageWizard extends javax.swing.JFrame
   private XMLElement doc = new XMLElement();
   private static PackageWizardParser pwp;
   JTabbedPane mainTabbedPane;
+  JPanel mainFrame = new JPanel();
   JPanelWrapper docPanel;
   private String saxparser;
   private ClientFramework framework;
@@ -99,7 +100,9 @@ public class PackageWizard extends javax.swing.JFrame
       //create the initial tabbed pane
       mainTabbedPane = new JTabbedPane();
       mainTabbedPane.setPreferredSize(parseSize(size));
-      contentPane.add(mainTabbedPane);
+      mainFrame.setPreferredSize(parseSize(size));
+      mainFrame.setMaximumSize(parseSize(size));
+      //contentPane.add(mainTabbedPane);
       docPanel = new JPanelWrapper();
       docPanel.element = doc;
       //create the content of the initial frame
@@ -130,6 +133,7 @@ public class PackageWizard extends javax.swing.JFrame
   public void setVisible(boolean visible)
   {
     mainTabbedPane.setVisible(visible);
+    mainFrame.setVisible(visible);
   }
   
   /**
@@ -906,8 +910,10 @@ public class PackageWizard extends javax.swing.JFrame
         tempPanel.element = tempElement;
         
         if(tempElement.attributes.containsKey("type") && 
-          ((String)tempElement.attributes.get("type")).equals("panel"))
+          (((String)tempElement.attributes.get("type")).equals("panel") ||
+          ((String)tempElement.attributes.get("type")).equals("frame")))
         { //go here if we are building a new tab.
+          String type = (String)tempElement.attributes.get("type"); 
           if(tempElement.attributes.containsKey("size"))
           {
             String size = (String)tempElement.attributes.get("size");
@@ -929,8 +935,22 @@ public class PackageWizard extends javax.swing.JFrame
           tempPanel.setLayout(box);
           parentPanel.children.addElement(tempPanel);
           JScrollPane tempScrollPane = new JScrollPane(tempPanel);
-          mainTabbedPane.addTab((String)tempElement.attributes.get("label"), 
-                                tempScrollPane);
+          if(type.equals("panel"))
+          {
+            mainTabbedPane.addTab((String)tempElement.attributes.get("label"), 
+                                  tempScrollPane);
+            contentPane.removeAll();
+            contentPane.add(mainTabbedPane);
+          }
+          else if(type.equals("frame"))
+          {
+            mainFrame.setBorder(BorderFactory.createCompoundBorder(
+                                BorderFactory.createTitledBorder(
+                                (String)tempElement.attributes.get("label")),
+                                BorderFactory.createEmptyBorder(4, 4, 4, 4)));
+            mainFrame.add(tempScrollPane);
+            contentPane.add(mainFrame);
+          }
         }
         else
         { //go here if we are building a panel that is not tabbed.
@@ -1027,7 +1047,7 @@ public class PackageWizard extends javax.swing.JFrame
           }
           else
           {
-            parentPanel.add(/*new JScrollPane(*/tempPanel);
+            parentPanel.add(new JScrollPane(tempPanel));
             //add the panel in a scroll pane in case it's too big.
           }
         }
@@ -1067,6 +1087,7 @@ public class PackageWizard extends javax.swing.JFrame
                 public void actionPerformed(ActionEvent e) 
                 { //the user wants to repeat this element, make a copy of it
                   //and stick it in the tree.  then repaint.
+                  System.out.println("repeat");
                   XMLElement newtempElement = new XMLElement(tempElement);
                   JLabel newLabel = new JLabel(label.getText());
                   JTextFieldWrapper newtextfield = new JTextFieldWrapper();

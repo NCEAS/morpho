@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-15 16:14:39 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-06-15 22:18:04 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     contentPane.setLayout(box);
     initComponents();
     pack();
-    setSize(800, 450);
+    setSize(800, 600);
     this.show();
   }
   
@@ -105,9 +105,31 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
     }
     
-    JPanel basicInfoPanel = createBasicInfoPanel(dataPackage.getIdentifier(), 
+    JPanel basicInfoPanel = new JPanel();
+    basicInfoPanel = createBasicInfoPanel(dataPackage.getIdentifier(), 
                                                  title, 
                                                  altTitle, orig);
+    basicInfoPanel.setPreferredSize(new Dimension(160,300));
+    basicInfoPanel.setBackground(Color.white);
+    
+    JPanel headPanel = new JPanel();
+    JLabel headLabel = new JLabel();
+    headLabel.setText("Package Editor");
+    ImageIcon head = new ImageIcon(
+                         framework.getClass().getResource("smallheader-bg.gif"));
+    headLabel.setIcon(head);
+    headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+    headLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
+    headLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    headLabel.setForeground(Color.black);
+    headLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+    headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+    headPanel.setLayout(new FlowLayout());
+    headPanel.add(headLabel);
+    headPanel.setPreferredSize(new Dimension(300, 50));
+    headPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+    
     Hashtable relfiles = dataPackage.getRelatedFiles();
     System.out.println("relfiles: " + relfiles.toString());
     Vector otheritems = new Vector();
@@ -148,22 +170,15 @@ public class DataPackageGUI extends javax.swing.JFrame
           otheritems.addElement(s);
         }
       }
-      /*
-      Vector v = (Vector)relfiles.get(key);
-      for(int i=0; i<v.size(); i++)
-      {
-        String eleId = (String)v.elementAt(i);
-        if(!eleId.equals(this.id))
-        {
-          String s = key + " (" + eleId.trim() + ")";
-          listitems.addElement(s);
-        }
-      }
-      */
     }
     JPanel listPanel = createListPanel(dataitems, entityitems, otheritems);
-    contentPane.add(basicInfoPanel);
-    contentPane.add(listPanel);
+    JPanel layoutPanel = new JPanel();
+    layoutPanel.setLayout(new BorderLayout());
+    
+    layoutPanel.add(headPanel, BorderLayout.NORTH);
+    layoutPanel.add(listPanel, BorderLayout.CENTER);
+    layoutPanel.add(basicInfoPanel, BorderLayout.WEST);
+    contentPane.add(layoutPanel);
   }
   
   private JPanel createBasicInfoPanel(String identifier, String title, 
@@ -239,6 +254,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     ////////////////////data files///////////////////////
     
     dataFileList = new JList(datafiles);
+    dataFileList.setPreferredSize(new Dimension(80, 70));
+    dataFileList.setMaximumSize(new Dimension(80, 70));
     dataFileList.addListSelectionListener(new DataSelectionHandler());
     dataFileList.addMouseListener(new MouseAdapter()
     {
@@ -264,6 +281,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     //////////////entity files////////////////////////
     
     entityFileList = new JList(entityfiles);
+    entityFileList.setPreferredSize(new Dimension(80, 70));
+    entityFileList.setMaximumSize(new Dimension(80, 70));
     entityFileList.addListSelectionListener(new EntitySelectionHandler());
     entityFileList.addMouseListener(new MouseAdapter()
     {
@@ -288,6 +307,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     ////////////////other files//////////////////////
     
     otherFileList = new JList(otherfiles);
+    otherFileList.setPreferredSize(new Dimension(80, 70));
+    otherFileList.setMaximumSize(new Dimension(80, 70));
     otherFileList.addListSelectionListener(new OtherSelectionHandler());
     otherFileList.addMouseListener(new MouseAdapter()
     {
@@ -312,11 +333,12 @@ public class DataPackageGUI extends javax.swing.JFrame
                         /*"Package Members"*/""),
                         BorderFactory.createEmptyBorder(4, 4, 4, 4)));
     listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.X_AXIS));
-    listPanel.setPreferredSize(new Dimension(700, 270));
+    //listPanel.setPreferredSize(new Dimension(300, 100));
     
     
     outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
     listPanel.add(otherFileButtonList);
+    //outerPanel.setPreferredSize(new Dimension(500, 100));
     outerPanel.add(listPanel);
     outerPanel.add(buttonPanel);
     
