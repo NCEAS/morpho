@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 18:43:58 $'
- * '$Revision: 1.38 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-28 04:07:03 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -271,7 +271,7 @@ public class DataPackagePlugin
     createNewDataPackage.setToolTipText("Create a new data package");
     createNewDataPackage.setMenuItemPosition(1);
     createNewDataPackage.setMenu("File", 0);
-    createNewDataPackage.setToolbarPosition(5);
+    createNewDataPackage.setToolbarPosition(0);
     controller.addGuiAction(createNewDataPackage);
     
   }

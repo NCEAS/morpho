@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 23:58:21 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2002-09-28 04:07:03 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1145,10 +1145,10 @@ public class DataViewer extends javax.swing.JPanel
     header.addMouseListener(new HeaderMouseListener());
     MouseListener popupListener = new PopupListener();
     table.addMouseListener(popupListener);  
-    
-    table.setRowSelectionInterval(0,0);
-    table.setColumnSelectionInterval(0,0);
-    
+    if (table.getRowCount()>0) {
+        table.setRowSelectionInterval(0,0);
+        table.setColumnSelectionInterval(0,0);
+    }
     setUpDelimiterEditor(table, field_delimiter, TablePanel);
    
 	}
@@ -1714,7 +1714,9 @@ public class DataViewer extends javax.swing.JPanel
       int index = colModel.getColumnIndexAtX(event.getX());
       TableColumn column = colModel.getColumn(index);
       int modelIndex = column.getModelIndex();
-      table.setRowSelectionInterval(0, table.getRowCount()-1);
+      if (table.getRowCount()>0) {
+          table.setRowSelectionInterval(0, table.getRowCount()-1);
+      }
       table.setColumnSelectionInterval(modelIndex, modelIndex);
       if (event.isPopupTrigger()) 
       {
