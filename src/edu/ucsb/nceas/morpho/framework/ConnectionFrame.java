@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-16 21:42:15 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2002-12-16 22:42:21 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,7 +158,6 @@ public class ConnectionFrame  extends javax.swing.JDialog
     
     if (container!=null) {
       NameLabel.setText(container.getUserName());
-      updateButtonEnabling();
     }
 
     // Example of loading icon as resource - DFH 
@@ -172,7 +171,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
 
     pack();
     
-    PWTextField.requestFocus();
+    updateEnabeDisable();
     
     /* Center the Frame */
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -183,11 +182,13 @@ public class ConnectionFrame  extends javax.swing.JDialog
   }
 
   
-  private void updateButtonEnabling() 
+  private void updateEnabeDisable() 
   {
     DisconnectButton.setEnabled(container.isConnected());
     connectButton.setEnabled(!container.isConnected());
     CancelButton.setEnabled(!container.isConnected());
+    PWTextField.setEnabled(!container.isConnected());
+    if (PWTextField.isEnabled()) PWTextField.requestFocus();
   }
   
   /**
@@ -323,7 +324,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     container.logOut();
-    updateButtonEnabling();
+    updateEnabeDisable();
     
 //    DisconnectButton.setEnabled(false);
   }
@@ -364,7 +365,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
       Log.debug(9, "Login failed.\n" + 
             "Please check the Caps Lock key and try again.");
 //      DisconnectButton.setEnabled(false);
-      updateButtonEnabling();
+      updateEnabeDisable();
       ActivityLabel.setIcon(still);
     }
   }
