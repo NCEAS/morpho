@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 00:54:36 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-13 05:40:15 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,21 +79,20 @@ public class WizardPageLibrary {
 
     pages = new HashMap();
     
-    pages.put(INTRODUCTION,     new Introduction());
-    pages.put(GENERAL,          new General());
-    pages.put(KEYWORDS,         new Keywords());
-//    pages.put(KEYWORDS_DIALOG,  new KeywordsDialog());
-    pages.put(PARTY_INTRO,      new PartyIntro());
-    pages.put(PARTY_CREATOR,    new PartyPage(PartyDialog.CREATOR));
-    pages.put(PARTY_CONTACT,    new PartyPage(PartyDialog.CONTACT));
-    pages.put(PARTY_ASSOCIATED, new PartyPage(PartyDialog.ASSOCIATED));
+    pages.put(INTRODUCTION,       new Introduction());
+    pages.put(GENERAL,            new General());
+    pages.put(KEYWORDS,           new Keywords());
+    pages.put(PARTY_INTRO,        new PartyIntro());
+    pages.put(PARTY_CREATOR,      new PartyPage(PartyDialog.CREATOR));
+    pages.put(PARTY_CONTACT,      new PartyPage(PartyDialog.CONTACT));
+    pages.put(PARTY_ASSOCIATED,   new PartyPage(PartyDialog.ASSOCIATED));
     
-    pages.put(USAGE_RIGHTS,     new UsageRights());
-    pages.put(DATA_LOCATION,    new DataLocation());
-    pages.put(DATA_FORMAT,      new DataFormat());
-    pages.put(ENTITY,           new Entity());
-    pages.put(SUMMARY,          new Summary());
-//    pages.put(TEXT_IMPORT_WIZARD,  new TextImportWizard());
+    pages.put(USAGE_RIGHTS,       new UsageRights());
+    pages.put(DATA_LOCATION,      new DataLocation());
+    pages.put(TEXT_IMPORT_WIZARD, new ImportWizard());
+    pages.put(DATA_FORMAT,        new DataFormat());
+    pages.put(ENTITY,             new Entity());
+    pages.put(SUMMARY,            new Summary());
   }
 
   public static final String INTRODUCTION       = "INTRODUCTION";

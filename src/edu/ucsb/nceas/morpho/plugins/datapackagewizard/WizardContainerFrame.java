@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-13 05:40:15 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,10 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -53,6 +56,10 @@ import java.awt.event.ActionListener ;
 import java.util.Stack;
 import java.util.Iterator;
 
+import java.io.StringReader;
+
+import org.w3c.dom.Node;
+
 /**
  *  provides a top-level container for AbstractWizardPage objects. The top (title) panel
  *  and bottom button panel (including the navigation buttons) are all part of 
@@ -62,14 +69,17 @@ public class WizardContainerFrame extends JFrame {
 
   
   public static JFrame frame;
-
+  private DataPackageWizardListener listener;
+  
+  
   /**
    * Constructor
    */
-  public WizardContainerFrame() {
+  public WizardContainerFrame(DataPackageWizardListener listener) {
   
     super();
     frame = this;
+    this.listener = listener;
     pageStack   = new Stack();
     pageLib = new WizardPageLibrary();
     init();
@@ -322,7 +332,42 @@ public class WizardContainerFrame extends JFrame {
       
       } // end while
     }
-    Log.debug(45,wizData.toString());
+    Log.debug(45, "\n\n********** Wizard finished: NVPs:");
+    Log.debug(45, wizData.toString());
+
+    
+    Node rootNode = null;
+    
+    try {
+    
+      rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
+                    new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
+    } catch (Exception e) {
+      e.printStackTrace();
+      Log.debug(5, "unexpected error trying to vreate new XML document "
+                    +"at start of wizard\n");
+      listener.wizardFinished(null);
+      return;
+    }
+    
+    
+    try {
+    
+      XMLUtilities.getXPathMapAsDOMTree(wizData, rootNode);
+
+    } catch (Exception e) {
+    
+      e.printStackTrace();
+      Log.debug(5, "unexpected error trying to create new XML document "
+                    +"after wizard finished\n");
+      listener.wizardFinished(null);
+      return;
+    }
+    
+    listener.wizardFinished(rootNode);
+    
+    Log.debug(45, "\n\n********** Wizard finished: DOM:");
+    Log.debug(45, XMLUtilities.getDOMTreeAsString(rootNode));
   }
   
 /*******************************************************************************

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-11 23:44:22 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-09-13 05:40:53 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -638,6 +638,7 @@ public class DataFormat extends AbstractWizardPage{
           } else if (cmd.indexOf(delimiterCheckBoxesText[4])==0) {
 
             delim_other = (stateChange==ItemEvent.SELECTED);
+            otherDelimTextFieldSimple.setEnabled(delim_other);
             otherDelimTextFieldSimple.requestFocus();
             
           }
@@ -647,6 +648,7 @@ public class DataFormat extends AbstractWizardPage{
     
     otherDelimTextFieldSimple.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
     otherDelimTextFieldSimple.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);  
+    otherDelimTextFieldSimple.setEnabled(false);
     JPanel otherPanel = new JPanel();
     otherPanel.setLayout(new BoxLayout(otherPanel, BoxLayout.X_AXIS));
     otherPanel.add(otherDelimTextFieldSimple);

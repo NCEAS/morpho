@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 04:22:36 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-13 05:40:53 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,7 +509,7 @@ class KeywordsDialog extends WizardPopupDialog {
       listResultsBuff.append(xPathRoot);
       listResultsBuff.append("/keyword[");
       listResultsBuff.append(index);
-      listResultsBuff.append("]@keywordType");
+      listResultsBuff.append("]/@keywordType");
       listResultsMap.put(listResultsBuff.toString(), nextKWType);
     }
     return listResultsMap;

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-11 17:58:13 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-13 05:40:15 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,6 +134,17 @@ public class WizardSettings {
   protected static final String CANCEL_BUTTON_TEXT  = "Cancel";
 
   protected static final String OK_BUTTON_TEXT      = "OK";
+
+  protected static final String NEW_EML200_DOCUMENT_TEXT = 
+        "<eml:eml "
+       +"   packageId=\"\" system=\"knb\" "
+       +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" "
+       +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+       +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
+       +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
+       +"   <dataset/> "
+       +"</eml:eml>";
+
   
   public static final String SUMMARY_TEXT_INLINE 
     = "In addition to describing your data, you have chosen to include it "

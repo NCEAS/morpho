@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 19:44:01 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-13 05:40:15 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,50 +32,56 @@ import edu.ucsb.nceas.morpho.Morpho;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 
+import org.w3c.dom.Node;
+
 
 /**
  *  Main controller class for creating and starting a Data Package Wizard Plugin
  */
 
-public class DataPackageWizardPlugin implements DataPackageWizardInterface,
-                                                PluginInterface, 
-                                                ServiceProvider {
+public class DataPackageWizardPlugin implements PluginInterface, 
+                                                ServiceProvider,
+                                                DataPackageWizardListener,
+                                                DataPackageWizardInterface {
 
 
   private static WizardContainerFrame dpWiz;
 
   /**
-  *  Constructor
-  */
+   *  Constructor
+   */
   public DataPackageWizardPlugin() {
-    dpWiz = new WizardContainerFrame();
+  
+    dpWiz = new WizardContainerFrame(this);
     dpWiz.setVisible(false);
   }
 
 
-
   /**
-  *  Required by PluginInterface; called automatically at runtime
-  *
-  *  @param morpho    a reference to the <code>Morpho</code>
-  */
+   *  Required by PluginInterface; called automatically at runtime
+   *
+   *  @param morpho    a reference to the <code>Morpho</code>
+   */
   public void initialize(Morpho morpho) {
+  
     try {
       ServiceController services = ServiceController.getInstance();
       services.addService(DataPackageWizardInterface.class, this);
       Log.debug(20, "Service added: DataPackageWizardInterface.");
-    } 
-    catch (ServiceExistsException see) {
+    
+    } catch (ServiceExistsException see) {
       Log.debug(6, "Service registration failed: DataPackageWizardInterface");
       Log.debug(6, see.toString());
     }
   }
+  
 
   /**
    *  Required by DataPackageWizardInterface:
@@ -84,10 +90,23 @@ public class DataPackageWizardPlugin implements DataPackageWizardInterface,
   public void startWizard() {
 
     dpWiz.setBounds(
-    WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD, 
-    WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD, 
+                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
     dpWiz.setVisible(true);
   }
+  
+
+  /**
+   *  Required by WizardListener interface:
+   *  callback method when wizard has finished
+   *
+   *  @param newDOM the root Node of the newly-created DOM document
+   */
+  public void wizardFinished(Node newDOM) {
+  
+    
+  }
+  
   
   
   // for testing/development

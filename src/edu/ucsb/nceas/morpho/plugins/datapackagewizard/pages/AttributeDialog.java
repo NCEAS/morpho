@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-11 23:44:22 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-13 05:40:15 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -715,7 +715,6 @@ class AttributeDialog extends WizardPopupDialog {
         //datetime:
       
       }
-      returnMap.put("NOTE: AttributeDialog.getPageData()", "MEASUREMENTSCALE NOT YET IMPLEMENTED!!");
       
 //      returnMap.put(xPathRoot + "/"+measurementScale", measurementScale);
     }
