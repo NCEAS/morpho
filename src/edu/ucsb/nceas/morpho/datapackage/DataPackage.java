@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-23 22:13:20 $'
- * '$Revision: 1.99 $'
+ *     '$Date: 2002-12-24 15:29:43 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -687,6 +687,7 @@ public class DataPackage implements XMLFactoryInterface
           s += (char)c;
           c = fis.read();
         }
+        fis.close();
         if(s.indexOf("<?xml") != -1)
         {
           Document doc = PackageUtil.getDoc(f, catalogpath);
