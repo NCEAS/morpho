@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-15 17:57:55 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-05-21 23:46:10 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,7 +140,7 @@ public class LocalQuery extends DefaultHandler
     dom_collection = new Hashtable();
     doctype_collection = new Hashtable();
     dataPackage_collection = new Hashtable();
-    buildPackageList();
+    buildPackageList();    
   }
     
 /**
@@ -152,6 +152,9 @@ public class LocalQuery extends DefaultHandler
  */
 public LocalQuery(Reader queryspec, ClientFramework framework) {
   super();
+  
+  localIcon = new ImageIcon( getClass().getResource("Open24.gif"));
+  
   this.framework = framework;
   this.config = framework.getConfiguration();   
 
@@ -680,7 +683,7 @@ return xpath;
  */
 Vector executeXPathQuery(String xpath) {
   Vector ret = queryAll(xpath);
-  System.out.println(xpath);
+//  System.out.println(xpath);
   return ret;
 }
 

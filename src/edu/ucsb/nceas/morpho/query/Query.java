@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-18 23:17:59 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-21 23:46:10 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,27 @@ public class Query extends DefaultHandler {
   {
     return queryTitle; 
   }
-
+  
+  /**
+   * method to set the title of this query
+   */
+   public void setQueryTitle(String title) {
+      this.queryTitle = title;
+   }
+   
+   /**
+    * method to set searchMetacat
+    */
+   public void setSearchMetacat(boolean searchMetacat) {
+    this.searchMetacat = searchMetacat;
+   }
+   
+   /**
+    * method to set searchLocal
+    */
+   public void setSearchLocal(boolean searchLocal) {
+    this.searchLocal = searchLocal;
+   }
   /**
    * Set up the SAX parser for reading the XML serialized query
    */
@@ -580,14 +600,33 @@ public class Query extends DefaultHandler {
     // if appropriate, query locally
     ResultSet localResults = null;
     if (searchLocal) {
+      LocalQuery lq = new LocalQuery(queryString, framework);
+      localResults = lq.execute();
+      localResults.setQuery(this);
       //ResultSet localResults = new ResultSet(this, "local", 
                                      //queryLocal(), framework);
     }
 
     // merge the results -- currently unimplemented!
     //results = metacatResults.merge(localResults);
-    results = metacatResults;
-
+   //tempDFH results = metacatResults;
+    if (!searchLocal) {
+      results = metacatResults;
+    }
+    else if (!searchMetacat) {
+      results = localResults;
+    }
+    else {  // must merge results
+      // simplistic merge - no checking for duplicates
+      Vector metacatRows = metacatResults.getResultsVector();
+      Vector localRows = localResults.getResultsVector();
+      Enumeration ee = localRows.elements();
+      while (ee.hasMoreElements()) {
+        Vector temp = (Vector)ee.nextElement();
+        metacatRows.addElement(temp);
+      }
+      results = metacatResults;
+    }
     // return the merged results
     return results;
   }

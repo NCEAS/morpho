@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-15 17:56:56 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-05-21 23:46:10 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   /** A reference to the framework */
   private ClientFramework framework = null;
 
+  /** The configuration options object reference from the framework */
+  private ConfigXML config = null;
+
   // this group of variables are temporary vars that are used while 
   // parsing the XML stream.  Ultimately the data ends up in the
   // resultsVector above
@@ -140,8 +143,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     folder = new ImageIcon( getClass().getResource("Btflyyel.gif"));
 
-    ConfigXML config = new ConfigXML("lib/config.xml");
+    this.framework = framework;
+    this.config = framework.getConfiguration();   
     returnFields = config.get("returnfield");
+  
     int cnt;
     if (returnFields==null) {
         cnt = 0;
@@ -197,7 +202,42 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       isLocal = false;
       isMetacat = true;
     }
+
+    this.framework = framework;
+    this.config = framework.getConfiguration();   
+    returnFields = config.get("returnfield");
+  
+    int cnt;
+    if (returnFields==null) {
+        cnt = 0;
+    } else {
+        cnt = returnFields.size();
+    }
+
+    // Set up the headers
+    int numberFixedHeaders = 1;
+    headers = new String[numberFixedHeaders+cnt];  
+    headers[0] = "";  // This is for the icon
+    for (int i=0;i<cnt;i++) {
+      headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
+    }
+
     this.resultsVector = vec;
+  }
+
+
+  /**
+   *  get the resultsVector
+   */
+  public Vector getResultsVector() {
+    return resultsVector;
+  }
+  
+  /**
+   *  set the resultsVector
+   */
+  public void setResultsVector(Vector rv) {
+    this.resultsVector = rv;
   }
 
   /**
@@ -464,7 +504,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public Query getQuery() {
     return savedQuery; 
   }
-
+  
+  /**
+   * Set the query that was used to construct these results
+   * (for use by LocalQuery)
+   */
+  public void setQuery(Query query) {
+    this.savedQuery = query;
+  }
+ 
   /**
    * Open a given row of the result set using a delegated handler class
    */
