@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-12 20:48:51 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2002-08-12 23:11:44 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,44 +26,60 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.framework.XPathAPI;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import edu.ucsb.nceas.morpho.framework.DocumentNotFoundException;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 
-import java.util.*;
-import java.io.*;
+import java.util.Vector;
+import java.util.Hashtable;
+import java.util.Enumeration;
+
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import java.io.File;
+import java.io.Reader;
+import java.io.FileReader;
+import java.io.StringWriter;
+import java.io.StringReader;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import java.net.URL;
-import java.util.zip.*;
 
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.xalan.xpath.xml.FormatterToXML;
-import org.apache.xalan.xpath.xml.TreeWalker;
+
 import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
+import org.w3c.dom.NamedNodeMap;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-/*
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-*/
 import org.xml.sax.SAXException;
-import org.apache.xalan.xslt.XSLTProcessorFactory;
+
 import org.apache.xalan.xslt.XSLTInputSource;
 import org.apache.xalan.xslt.XSLTResultTarget;
 import org.apache.xalan.xslt.XSLTProcessor;
+import org.apache.xalan.xslt.XSLTProcessorFactory;
+
 import org.apache.xalan.xpath.xml.XMLParserLiaison;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
 
 import com.arbortext.catalog.*;
 
@@ -72,15 +88,14 @@ import com.arbortext.catalog.*;
  */
 public class DataPackage 
 {
-  private ConfigXML config;
-  private TripleCollection triples;
-  private File tripleFile = null;
-  private String identifier;
-  private Hashtable docAtts = new Hashtable();
-  private ClientFramework framework;
-  private String location = null;
-  private String id = null;
-  private Document tripleFileDom;
+  private ConfigXML         config;
+  private ClientFramework   framework;
+  private TripleCollection  triples;
+  private File              tripleFile;
+  private String            location;
+  private String            id;
+  private Document          tripleFileDom;
+  private Hashtable         docAtts = new Hashtable();
   
   /**
    * used to signify that this package is located on a metacat server
@@ -102,6 +117,7 @@ public class DataPackage
    * @param identifier: the id of the data package.  usually the id of the
    * file that contains the triples.
    * @param relations: a vector of all relations in this package.
+   * @param framework: reference to the main ClientFramework.
    */
   public DataPackage(String location, String identifier, Vector relations, 
                      ClientFramework framework)
@@ -110,16 +126,15 @@ public class DataPackage
     //-read the triples out of it, create a triplesCollection
     //-start caching the files referenced in the triplesCollection
     //-respond to any request from the user to open a specific file
-    this.framework = framework;
-    config = framework.getConfiguration();
-    this.location = location;
-    this.id = identifier;
+    this.framework  = framework;
+    this.location   = location;
+    this.id         = identifier;
+    config          = framework.getConfiguration();
     
     framework.debug(11, "Creating new DataPackage Object");
     framework.debug(11, "id: " + identifier);
     framework.debug(11, "location: " + location);
     
-    this.identifier = identifier;
     /*if(relations != null)
     { //if the relations are provided don't reparse the document
       triples = new TripleCollection(relations);
@@ -230,11 +245,11 @@ public class DataPackage
     File xmlFile;
     try {
       FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      xmlFile = fsds.openFile(id);
+      xmlFile = fsds.openFile(identifier);
     } catch(Exception ex1) {
       try {
         MetacatDataStore mds = new MetacatDataStore(framework);
-        xmlFile = mds.openFile(id);
+        xmlFile = mds.openFile(identifier);
       } catch(Exception ex2) {
         throw new DocumentNotFoundException("DataPackage.open(): Error opening "
                   + "selected file (CacheAccessException): "+ ex2.getMessage());
@@ -549,7 +564,7 @@ public class DataPackage
    */
   public String getIdentifier()
   {
-    return this.identifier;
+    return getID();
   }
   
   /**
@@ -1632,7 +1647,7 @@ public class DataPackage
   }
 
   public String getAccessFileIdForDataPackage() {
-    String temp = getAccessFileId(this.identifier); 
+    String temp = getAccessFileId(this.id); 
     return temp;
   }
 
