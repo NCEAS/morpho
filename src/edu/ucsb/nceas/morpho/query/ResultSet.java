@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.37 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-05-01 16:09:06 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,7 +177,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   /** Store the height fact for table row height */
   private static final int HEIGHTFACTOR = 2;
   
-
+  /** global for accumulating characters in SAX parser */
+  private String accumulatedCharacters = null;
+  
   /**
    * Construct a ResultSet instance from a vector of vectors;
    * for use with LocalQuery
@@ -449,6 +451,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     else if (localName.equals("triple")) {
       triple = new Hashtable(); 
     }
+    accumulatedCharacters = "";
   }
   
    /**
@@ -458,6 +461,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public void endElement (String uri, String localName,
                           String qName) throws SAXException 
   {
+    setRSValues(localName);
     if (localName.equals("triple")) {
       tripleList.addElement(triple);
 
@@ -518,6 +522,11 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public void characters(char ch[], int start, int length) 
   {
     String inputString = new String(ch, start, length);
+    accumulatedCharacters = accumulatedCharacters + inputString;
+    
+    /*
+    // this code is commented out to allow an accumulation of characters
+    // due to multiple calls to this method which sometimes occur - DFH 5/1/2003
     inputString = inputString.trim(); // added by higgins to remove extra white space 7/11/01
     String currentTag = (String)elementStack.peek();
     if (currentTag.equals("docid")) {
@@ -548,8 +557,41 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     } else if (currentTag.equals("objectdoctype")) {
       triple.put("objectdoctype", inputString);
     }
+    */
   }
 
+  private void setRSValues(String currentTag) {
+    String inputString = accumulatedCharacters.trim(); // added by higgins to remove extra white space 7/11/01
+    if (currentTag.equals("docid")) {
+      docid = inputString;
+    } else if (currentTag.equals("docname")) {
+      docname = inputString;
+    } else if (currentTag.equals("doctype")) {
+      doctype = inputString;
+    } else if (currentTag.equals("createdate")) {
+      createdate = inputString;
+    } else if (currentTag.equals("updatedate")) {
+      updatedate = inputString;
+    } else if (currentTag.equals("param")) {
+      String val = inputString;
+      if (params.containsKey(paramName)) {  // key already in hash table
+        String cur = (String)params.get(paramName);
+        val = cur + " " + val;
+      }
+      params.put(paramName, val);  
+    } else if (currentTag.equals("subject")) {
+      triple.put("subject", inputString);
+    } else if (currentTag.equals("subjectdoctype")) {
+      triple.put("subjectdoctype", inputString);
+    } else if (currentTag.equals("relationship")) {
+      triple.put("relationship", inputString);
+    } else if (currentTag.equals("object")) {
+      triple.put("object", inputString);
+    } else if (currentTag.equals("objectdoctype")) {
+      triple.put("objectdoctype", inputString);
+    }
+  }
+  
   /**
    * SAX handler callback that is called when an XML document 
    * is initially parsed.
