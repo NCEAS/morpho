@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-18 02:30:57 $'
- * '$Revision: 1.33 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-05 23:30:05 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import java.util.Properties;
 import java.util.Enumeration;
 
 import javax.swing.JLabel;
+
+import org.w3c.dom.Document;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -295,6 +297,53 @@ public class MetaDisplay implements MetaDisplayInterface,
         history.add(new HistoryItem(oldID, oldProps));
         Log.debug(50,history.toString());
     }
+
+    /**
+     *  method to display metadata in an existing instance of a visual component 
+     *  (metadata is provided as a DOM, and a 
+     *  required corresponding unique <code>identifier</code> parameter)
+     *
+     *  @param identifier   a unique identifier that can subsequently be used by 
+     *                      this component to get the latest instance of the 
+     *                      same "XMLDocument" from the XMLFactoryInterface
+     *
+     *  @param domDoc  a dom Document XML document
+     * 
+     */
+    public void display(String identifier, Document domDoc) 
+                                           throws  NullArgumentException
+    {
+        Log.debug(50, 
+                  "display(String identifier, Document domDoc) called; id = "
+                                                                  +identifier);
+        //keep a temp backup of current (outgoing) ID:
+        String oldID = this.identifier; //the global one, not the local one
+        Properties oldProps = clonePropertiesObject(currentTransformProps);
+        
+        //set ID
+        setIdentifier(identifier);
+        
+        if (domDoc==null) {
+            Log.debug(12,"MetaDisplay.display() received NULL XML Document - "
+                                                  +"displaying blank document");
+            ui.setHTML(BLANK_HTML_PAGE);
+        } else {
+            try {
+                doTransform(domDoc);
+            } catch (Exception dnfe) {
+                //reset ID
+                setIDBackTo(oldID);
+                currentTransformProps = oldProps;
+            }
+        }
+        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
+        
+        //If new ID wasn't valid, we wouldn't have got this far, so we're OK...
+        //add ID to hisory:
+        Log.debug(50,"in display() - adding props to History: "+oldProps);
+        history.add(new HistoryItem(oldID, oldProps));
+        Log.debug(50,history.toString());
+    }
                                           
     /**
      *  method to redisplay the previous metadata document from History, by 
@@ -493,7 +542,9 @@ public class MetaDisplay implements MetaDisplayInterface,
 	  public void setFactory(XMLFactoryInterface factory)
                                                       throws NullArgumentException
 	  {
-          if (factory!=null)  {
+
+      		this.factory = factory;  //DFH
+/*          if (factory!=null)  {
 		      this.factory = factory;
           } else  {
               NullArgumentException iae
@@ -501,6 +552,7 @@ public class MetaDisplay implements MetaDisplayInterface,
               iae.fillInStackTrace();
               throw iae;
           }
+*/          
 	  }
 
 
@@ -566,6 +618,24 @@ public class MetaDisplay implements MetaDisplayInterface,
 	          DocumentNotFoundException d = new DocumentNotFoundException(errMsg);
 	          d.fillInStackTrace();
 	          throw d;
+	      }
+	      Log.debug(50, "doTransform returning Reader: " + result
+                                                  +" for ID: " + this.identifier);
+	      return result;
+	  }    
+
+    //sends dom to morpho.util.XMLTransformer to be styled
+	  private Reader doTransform(Document doc) 
+	  {
+	      Reader result = null;
+	      try {
+	          result = transformer.transform(doc);
+	      } catch (IOException ioe) {
+	          String errMsg   = "MetaDisplay.doTransform(): \n"
+	                          + "throwing DocumentNotFoundException. \n"
+	                          + "Nested IOException is:\n"+ioe.getMessage()
+	                          + "\nXML document received was:\n"+doc;
+	          Log.debug(12, errMsg);
 	      }
 	      Log.debug(50, "doTransform returning Reader: " + result
                                                   +" for ID: " + this.identifier);
