@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.10.2.1 2001-04-23 16:16:08 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.10.2.2 2001-04-24 02:35:06 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -42,8 +42,12 @@
                 value="${libdir}/xalan.jar" />
       <property name="sym" 
                 value="${libdir}/sym.jar" />
+      <property name="dtd" 
+                value="${libdir}/dtdparser111.jar" />
+      <property name="morpho" 
+                value="${libdir}/dmanclient.jar" />
       <property name="cpath" 
-                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}"/>
+                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -108,4 +112,17 @@
        />
    </target>
 
+   <target name="morpho" depends="install">
+     <java classname="edu.ucsb.nceas.dtclient.ClientFramework"
+           classpath="${cpath}:${morpho}"
+           fork="yes" />
+   </target>
+
+   <target name="tests" depends="install">
+     <java classname="edu.ucsb.nceas.dtclient.tests.LogInOut"
+           classpath="${cpath}:${morpho}"
+           fork="yes">
+       <arg line="jones myrm3cho"/>
+     </java>
+   </target>
 </project>
