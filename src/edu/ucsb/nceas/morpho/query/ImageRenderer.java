@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-09 23:41:25 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-14 00:14:43 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,11 @@ public class ImageRenderer extends DefaultTableCellRenderer
      // Add tooltip for metacat icon
      comp.setToolTipText(METACATTOOLTIP);
    }//else
+   else if (value.equals(ResultSet.blankIcon))
+   {
+     comp.setToolTipText(null);
+   }//else
+   
    
     return comp;
   }
