@@ -46,6 +46,7 @@
       <tooltip>Information about the data tables in data set.</tooltip>
       <relatedto>DATAFILE</relatedto>
       <displaypath>//entityName</displaypath>
+      <editexisting>no</editexisting>
     </file>
     <file>
       <name>Attribute</name>
@@ -55,6 +56,7 @@
       <tooltip>Information about the fields (columns) in your data tables.</tooltip>
       <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
       <displaypath>//variable_name</displaypath>
+      <editexisting>yes</editexisting>
     </file>
     <file>
       <name>DATAFILE</name>

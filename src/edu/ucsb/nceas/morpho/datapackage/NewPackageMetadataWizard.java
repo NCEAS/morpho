@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 22:50:37 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-07-06 15:26:05 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,6 +78,8 @@ public class NewPackageMetadataWizard extends JFrame
   File addedFile = null;
   String relateDataFileTo = "";
   String dummydoc = "";
+  boolean editingExistingFile;
+  String existingFileId;
   boolean finishflag = false;
   
   JLabel helpLabel = new JLabel();
@@ -169,6 +171,10 @@ public class NewPackageMetadataWizard extends JFrame
         else if(nodename.equals("displaypath"))
         {
           h.put("displaypath", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("editexisting"))
+        {
+          h.put("editexisting", n2.getFirstChild().getNodeValue());
         }
       }
       if(((String)h.get("name")).equals("DATAFILE"))
@@ -492,12 +498,48 @@ public class NewPackageMetadataWizard extends JFrame
             { //this was the type selected.  open the editor for this type.
               String label = jrb.getLabel();
               Hashtable h = (Hashtable)newXMLFileAtts.get(label);
+              String editexisting = (String)h.get("editexisting");
               String doctype = (String)h.get("xmlfiletype");
               String rootnode = (String)h.get("rootnode");
               dummydoc += "<?xml version=\"1.0\"?>\n";
               dummydoc += "<!DOCTYPE " + rootnode + " PUBLIC \"" + doctype + 
                           "\" \"" + rootnode + ".dtd\">\n";
               dummydoc += "<" + rootnode + ">" + "</" + rootnode + ">";
+              editingExistingFile = false;
+              
+              if(editexisting.toUpperCase().equals("YES"))
+              { //if editexisting is yes, then we send the existing document
+                //of this type to the editor instead of a blank doc.
+                Hashtable existingDocs = dataPackage.getRelatedFiles();
+                if(existingDocs.containsKey(doctype))
+                { //get the id and open the file
+                  Vector ids = (Vector)existingDocs.get(doctype.trim());
+                  String id = (String)ids.elementAt(0);
+                  StringBuffer sb = new StringBuffer();
+                  try
+                  {
+                    File dummyfile = PackageUtil.openFile(id, framework);
+                    FileReader fr = new FileReader(dummyfile);
+                    int c = fr.read();
+                    while(c != -1)
+                    {
+                      sb.append((char)c);
+                      c = fr.read();
+                    }
+                    fr.close();
+                  }
+                  catch(Exception e)
+                  {
+                    ClientFramework.debug(0, "Error reading existing file in " +
+                                          "package: " + e.getMessage());
+                    e.printStackTrace();
+                  }
+                  //overwrite dummydoc with the document that needs to be edited
+                  dummydoc = sb.toString();
+                  editingExistingFile = true;
+                  existingFileId = id;
+                }
+              }
               break;
             }
           }
@@ -796,17 +838,22 @@ public class NewPackageMetadataWizard extends JFrame
   {
     finishflag = true;
     AccessionNumber a = new AccessionNumber(framework);
-    String newid = a.getNextId();
+    String newid = "";
     String location = dataPackage.getLocation();
     boolean locMetacat = false;
     boolean locLocal = false;
+    String docString;
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    File packageFile = dataPackage.getTriplesFile();
     
-    if(location.equals(DataPackage.LOCAL) || location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackage.LOCAL) || 
+       location.equals(DataPackage.BOTH))
     {
       locLocal = true;
     }
     
-    if(location.equals(DataPackage.METACAT) || location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackage.METACAT) || 
+       location.equals(DataPackage.BOTH))
     {
       locMetacat = true;
     }
@@ -816,18 +863,23 @@ public class NewPackageMetadataWizard extends JFrame
       handleAddDataFile(locLocal, locMetacat, newid);
       return;
     }
-    
-    //we are adding an xml file
-    Triple t = new Triple(newid, "isRelatedTo", relatedtoId);
-    TripleCollection triples = new TripleCollection();
-    triples.addTriple(t);
-    File packageFile = dataPackage.getTriplesFile();
-    //add the triple to the triple file
-    String docString = PackageUtil.addTriplesToTriplesFile(triples, dataPackage, 
-                                                           framework);
-    StringReader sr = new StringReader(docString);
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
-    //write out the files
+     
+    if(editingExistingFile)
+    { //if we edited an existing file we don't need to create a new id
+      //and a new triple
+      newid = a.incRev(existingFileId);
+      docString = a.incRevInTriples(packageFile, existingFileId, newid);
+    }
+    else
+    { //create a new id and a new triple for the triple file.
+      newid = a.getNextId();
+      Triple t = new Triple(newid, "isRelatedTo", relatedtoId);
+      TripleCollection triples = new TripleCollection();
+      triples.addTriple(t);
+      //add the triple to the triple file
+      docString = PackageUtil.addTriplesToTriplesFile(triples, dataPackage, 
+                                                      framework);
+    }
     
     //System.out.println(docString);
     File newDPTempFile;
@@ -857,8 +909,16 @@ public class NewPackageMetadataWizard extends JFrame
       File newPackageMember;
       try
       { //save the new package member
-        newPackageMember = fsds.newFile(newid, new FileReader(newxmlFile), 
-                                        false);
+        if(editingExistingFile)
+        {
+          newPackageMember = fsds.saveFile(newid, new FileReader(newxmlFile), 
+                                           false);
+        }
+        else
+        {
+          newPackageMember = fsds.newFile(newid, new FileReader(newxmlFile), 
+                                          false);
+        }
       }
       catch(Exception e)
       {
@@ -896,7 +956,16 @@ public class NewPackageMetadataWizard extends JFrame
         {
           metacatpublic = true;
         }
-        mds.newFile(newid, new FileReader(newxmlFile), metacatpublic);
+        
+        if(editingExistingFile)
+        {
+          mds.saveFile(newid, new FileReader(newxmlFile), metacatpublic);
+        }
+        else
+        {
+          mds.newFile(newid, new FileReader(newxmlFile), metacatpublic);
+        }
+        
       }
       catch(Exception e)
       {
