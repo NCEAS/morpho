@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-30 00:13:53 $'
- * '$Revision: 1.86 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-01-06 21:53:29 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -612,8 +612,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     return dv;
   }
-
-  public void setTopPanel(JPanel jp) {
+	
+	public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
   }
@@ -661,22 +661,27 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         String item = (String)entityItems.elementAt(lastTabSelected);
 //        String entityID = (String)listValueHash.get(item);
         String entityID = getEntityIDForThisEntityName(item);
-        if (newID.equalsIgnoreCase(entityID)) {
+				if (newID.equalsIgnoreCase(entityID)) {
           //deselect columns in table:
           resetTableSelection();
         } else {
           String selectedAttribs
               = container.getMetaDisplayInterface().getTransformerProperty(
                                       XMLTransformer.SELECTED_ATTRIBS_XSLPROP);
+					if(selectedAttribs == null) {
+						resetTableSelection();
+            return;
+					}
           int selectedColIndex = -1;
           try {
             selectedColIndex = Integer.parseInt(selectedAttribs);
+						
           } catch (NumberFormatException nfe) {
             Log.debug(12,"Can't handle multiple column selections yet!!");
-            return;
+					  return;
           }
-          dv.getDataTable().setColumnSelectionInterval( selectedColIndex,
-                                                        selectedColIndex);
+          dv.getDataTable().setColumnSelectionInterval( selectedColIndex -1,
+                                                        selectedColIndex -1);
 
           Log.debug(50,"& & & & & & & & & & selectedAttribs="+selectedAttribs
                                    +";\n selectedColIndex = "+selectedColIndex);
