@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-03 14:47:20 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2002-10-03 14:49:02 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1760,7 +1760,6 @@ public class DataViewer extends javax.swing.JPanel
           oldids.addElement(dp.getID());
           newids.addElement(newid);
           newids.addElement(newPackageId);
-          Log.debug(0, "ready to increment triples");
           
           //increment the package files id in the triples
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
