@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-08 19:39:42 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-02-20 21:31:10 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,8 @@ public interface EditorInterface
    * the editing is completed
    */
  public void openEditor(Document doc, String id, String location,
-                        EditingCompleteListener listener);
+                        EditingCompleteListener listener,
+                        String nodeName, int nodeNumber);
    
    
 }

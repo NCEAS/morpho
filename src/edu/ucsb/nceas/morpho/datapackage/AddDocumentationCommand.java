@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-18 17:46:16 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-02-20 21:31:35 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,7 +101,7 @@ public class AddDocumentationCommand implements Command
        Document thisdoc = (adp.getMetadataNode()).getOwnerDocument();
        String id = adp.getPackageId();
        String loc = adp.getLocation();
-       editor.openEditor(thisdoc, id, loc, resultPane);
+       editor.openEditor(thisdoc, id, loc, resultPane, null,0);
     }//if
   
   }//execute
