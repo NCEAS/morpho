@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryConfigDialog.java,v 1.3 2000-12-15 17:44:54 higgins Exp $'
+ *     Version: '$Id: QueryConfigDialog.java,v 1.4 2001-01-05 16:02:22 higgins Exp $'
  */
 /*
 		A basic implementation of the JDialog class.
@@ -445,14 +445,14 @@ public class QueryConfigDialog extends javax.swing.JDialog
 	void AllButton1_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    Vector allvector = new Vector();
-	    allvector.add("any");
+	    allvector.addElement("any");
 		SearchList.setListData(allvector);
 	}
 
 	void AllButton2_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    Vector allvector = new Vector();
-	    allvector.add("any");
+	    allvector.addElement("any");
 		ReturnList.setListData(allvector);
 	}
 
