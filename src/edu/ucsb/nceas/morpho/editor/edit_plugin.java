@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 18:40:39 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-06-01 17:53:06 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,10 +81,11 @@ public class edit_plugin extends javax.swing.JFrame
 		getContentPane().add(BorderLayout.CENTER, JPanel1);
 		JScrollPane1.setOpaque(true);
 		JPanel1.add(BorderLayout.CENTER, JScrollPane1);
+		JTextArea1.setText("Use the \'Open\' menu to open an XML document in this window. Then click on the \'Display\' button to edit that XML document.");
 		JTextArea1.setLineWrap(true);
 		JTextArea1.setWrapStyleWord(true);
 		JScrollPane1.getViewport().add(JTextArea1);
-		JTextArea1.setBounds(0,0,20,40);
+		JTextArea1.setBounds(0,0,485,281);
 		//$$ JMenuBar1.move(168,312);
 		fileMenu.setText("File");
 		fileMenu.setActionCommand("File");

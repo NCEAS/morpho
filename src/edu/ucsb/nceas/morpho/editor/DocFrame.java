@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-31 22:43:00 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-06-01 17:53:06 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -210,11 +210,13 @@ public class DocFrame extends javax.swing.JFrame
 		putXMLintoTree();
     tree.setSelectionRow(0);
     
-		dtdtree = new DTDTree(dtdfile);
-		dtdtree.parseDTD();
+    if (dtdfile!=null) {
+		  dtdtree = new DTDTree(dtdfile);
+		  dtdtree.parseDTD();
 		
-	  rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-		treeUnion(rootNode,dtdtree.rootNode);
+	    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+		  treeUnion(rootNode,dtdtree.rootNode);
+		}
 		treeModel.reload();
 		tree.setModel(treeModel);
     
@@ -366,12 +368,14 @@ void putXMLintoTree() {
       }
       System.out.println("doctype = " + doctype);
       String temp = myCatalog.resolvePublic(doctype,null);
-      if (temp.startsWith("file:/")) {
-        temp = temp.substring(6,temp.length());
+      if (temp!=null) {
+        if (temp.startsWith("file:/")) {
+          temp = temp.substring(6,temp.length());
+        }
+        System.out.println("cat out: "+temp);
+        dtdfile = temp;
+        systemIDString = temp;
       }
-      System.out.println("cat out: "+temp);
-      dtdfile = temp;
-      systemIDString = temp;
       } 
       catch (Exception e) { 
         System.err.println(e.toString());

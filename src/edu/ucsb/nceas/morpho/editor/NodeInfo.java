@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-31 22:43:00 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-06-01 17:53:06 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ public class NodeInfo implements Serializable
     String PCDataValue;
     
     // allowed values - ONE, ZERO to MANY, ONE to MANY, OPTIONAL
-    String cardinality = "ONE"; 
+    String cardinality = "ZERO to MANY"; 
         
     // attributes of associated XML element
     Hashtable attr;
