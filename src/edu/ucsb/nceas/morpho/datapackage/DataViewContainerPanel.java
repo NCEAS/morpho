@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-09 20:05:03 $'
- * '$Revision: 1.93 $'
+ *     '$Date: 2004-03-09 22:14:38 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -762,7 +762,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         // we just want the local id here
         int indx2 = urlinfo.indexOf("//");
         String protocol = urlinfo.substring(0,indx2);
-        if (protocol.equals("ecoinfo:")) {
+        if (protocol.equals("ecogrid:")) {
           if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
           // now start should be just past the '//'
           indx2 = urlinfo.indexOf("/");
