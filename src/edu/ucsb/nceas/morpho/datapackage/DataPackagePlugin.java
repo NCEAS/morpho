@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-03-26 21:46:50 $'
- * '$Revision: 1.89 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-27 21:42:43 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -765,6 +765,101 @@ public class DataPackagePlugin
                 "Data Package: "+adp.getAccessionNumber());
     packageWindow.setBusy(true);
     packageWindow.setVisible(true);
+
+
+    packageWindow.addWindowListener(
+                new WindowAdapter() {
+                public void windowActivated(WindowEvent e)
+                {
+                    Log.debug(50, "Processing window activated event");
+                    if (hasClipboardData(packageWindow)){
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow,
+                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+                    }
+                    else {
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow,
+                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
+                }
+                }
+            });
+
+
+    // Stop butterfly flapping for old window.
+    //packageWindow.setBusy(true);
+    if (coordinator != null)
+    {
+      coordinator.stopFlap();
+    }
+    long stoptime = System.currentTimeMillis();
+    Log.debug(20,"ViewContainer startUp time: "+(stoptime-starttime));
+
+    long starttime1 = System.currentTimeMillis();
+
+    DataViewContainerPanel dvcp = null;
+    dvcp = new DataViewContainerPanel(adp);
+    dvcp.setFramework(morpho);
+    dvcp.init();
+    long stoptime1 = System.currentTimeMillis();
+    Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));
+
+    dvcp.setSize(packageWindow.getDefaultContentAreaSize());
+    dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());
+//    dvcp.setVisible(true);
+    packageWindow.setMainContentPane(dvcp);
+
+    // Broadcast stored event int dvcp
+    dvcp.broadcastStoredStateChangeEvent();
+
+    // Create another events too
+    StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+      // open a unsynchronize pakcage
+      monitor.notifyStateChange(
+                 new StateChangeEvent(
+                 dvcp,
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
+
+    // figure out whether there may be multiple versions, based on identifier
+    String identifier = adp.getAccessionNumber();
+    int lastDot = identifier.lastIndexOf(".");
+    String verNum = identifier.substring(lastDot+1,identifier.length());
+    if (verNum.equals("1")) {
+      monitor.notifyStateChange(
+                 new StateChangeEvent(
+                 dvcp,
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
+    }
+    else {
+      monitor.notifyStateChange(
+                 new StateChangeEvent(
+                 dvcp,
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
+    }
+
+    monitor.notifyStateChange(
+                 new StateChangeEvent(
+                 dvcp,
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
+    packageWindow.setBusy(false);
+  }
+
+   /*
+   *  This method is to be used to display a newly created AbstractDataPackage
+   *  location and identifier have not yet been established
+   *
+   *  This window will have a visibility of false!
+   */
+  public void openHiddenNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
+  {
+    Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
+    boolean metacat = false;
+    boolean local = false;
+
+    long starttime = System.currentTimeMillis();
+    final MorphoFrame packageWindow = UIController.getInstance().addHiddenWindow(
+                "Data Package: "+adp.getAccessionNumber());
+    packageWindow.setBusy(true);
 
 
     packageWindow.addWindowListener(
