@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:52 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2001-10-19 17:03:30 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -540,13 +540,25 @@ public class DataPackage
       }
       
       String catalogpath = config.get("local_catalog_path",0);
-      String publicid;
+      String publicid = null;
       
       try
       {
-        Document doc = PackageUtil.getDoc(f, catalogpath);
-        DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
-        publicid = dt.getPublicId();
+        FileInputStream fis = new FileInputStream(f);
+        int c = fis.read();
+        String s = "";
+        for(int j=0; j<10; j++)
+        {
+          s += (char)c;
+          c = fis.read();
+        }
+        
+        if(s.indexOf("<?xml") != -1)
+        {
+          Document doc = PackageUtil.getDoc(f, catalogpath);
+          DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+          publicid = dt.getPublicId();
+        }
       }
       catch(Exception e)
       {
@@ -563,7 +575,8 @@ public class DataPackage
         }
       }
     }
-    return null;
+    throw new FileNotFoundException("The package did not contain an access file " +
+                                "(DataPackage.getAccessId()");
   }
   
   /**

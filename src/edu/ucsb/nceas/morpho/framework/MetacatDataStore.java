@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-10-18 22:39:53 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2001-10-19 17:03:30 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
                        DataPackage dp) 
               throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, dp, "update");
+    return saveFile(name, file, publicAccess, dp, "update", true);
+  }
+  
+  public File saveFile(String name, Reader file, boolean publicAccess, 
+                       DataPackage dp, boolean checkforaccessfile) 
+              throws MetacatUploadException
+  {
+    return saveFile(name, file, publicAccess, dp, "update", checkforaccessfile);
   }
   
   /**
@@ -194,7 +201,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param action: the action (update or insert) to perform
    */
   private File saveFile(String name, Reader file, boolean publicAccess, 
-                        DataPackage dp, String action) 
+                        DataPackage dp, String action, boolean checkforaccessfile) 
                        throws MetacatUploadException
   { //-attempt to write file to metacat
     //-if successfull, write file to cache, return pointer to that file
@@ -203,23 +210,33 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     StringBuffer fileText = new StringBuffer();
     StringBuffer messageBuf = new StringBuffer();
     String accessFileId = null;
-    try
-    {
-      accessFileId = dp.getAccessId();
-      System.out.println("===================accessFileId: " + accessFileId);
-    }
-    catch(Exception e)
-    {
-      throw new MetacatUploadException("Error finding an access control file " +
-                                       "in MetacatDataStore.saveFile()");
-    }
     
-    if(publicAccess)
+    if(checkforaccessfile)
     {
-      access = "yes";
-      if(accessFileId != null && !accessFileId.equals(""))
-      { //we need to open the access file and make sure it is giving 
-        //public read access to this package.
+      try
+      {
+        accessFileId = dp.getAccessId();
+        //System.out.println("===================accessFileId: " + accessFileId);
+      }
+      catch(Exception e)
+      {
+        throw new MetacatUploadException("Error finding an access control file " +
+                                         "in MetacatDataStore.saveFile(): " + 
+                                         e.getMessage());
+      }
+      
+      if(publicAccess)
+      {
+        access = "yes";
+        if(accessFileId != null && !accessFileId.equals(""))
+        { //we need to open the access file and make sure it is giving 
+          //public read access to this package.
+          
+        }
+      }
+      else
+      { //we need to open the access file and make sure it does not give public
+        //read access to this package.
         
       }
     }
@@ -333,7 +350,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
                       DataPackage dp)
          throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, dp, "insert");
+    return saveFile(name, file, publicAccess, dp, "insert", true);
+  }
+  
+  public File newFile(String name, Reader file, boolean publicAccess, 
+                      DataPackage dp, boolean checkforaccessfile)
+         throws MetacatUploadException
+  {
+    return saveFile(name, file, publicAccess, dp, "insert", checkforaccessfile);
   }
   
   /**
