@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-27 00:12:48 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-02 23:05:02 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,7 +193,7 @@ public class PartyPanel extends JPanel
 		{
 			Object object = event.getSource();
       if (object instanceof JRadioButton) {
-        Log.debug(10, "RadioButton");
+//        Log.debug(10, "RadioButton");
         setFocusLostForAllSubcomponents(awp2);
       }
 			saveAction();
