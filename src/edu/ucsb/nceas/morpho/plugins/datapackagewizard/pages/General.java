@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-29 19:31:25 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,8 +100,8 @@ public class General extends AbstractUIPage{
     JLabel absDesc = WidgetFactory.makeHTMLLabel(
     "<b>Enter an abstract that describes the data package.</b> This abstract is "
     +"a paragraph or more that describes the particular data that are being "
-    +"documented. Describ the objectives of the study, key aspects of the study "
-    +"design or methods, etc.", 3);
+    +"documented. Describe the objectives of the study, key aspects of the study "
+    +"design or methods.", 3);
     vbox.add(absDesc);
 
     JPanel abstractPanel = WidgetFactory.makePanel();
