@@ -1,5 +1,5 @@
 /**
- *       Name: QueryDialog.java
+ *       Name: LiveMapPanel.java
  *    Purpose: Visual display for collecting query info from user
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-18 23:41:22 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-01-12 23:05:36 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
 
-
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.applet.Applet;
 import java.awt.TextField;
@@ -109,8 +109,8 @@ public class LiveMapPanel extends JPanel
 	    init();
 	}
 
-  final static int IMAGE_SIZE_X = 450;  // 300
-  final static int IMAGE_SIZE_Y = 225;  // 150
+  final static int IMAGE_SIZE_X = 450;  // 450
+  final static int IMAGE_SIZE_Y = 225;  // 225
   final static Color MAPTOOL_COLOR1 = Color.white;
 
   // tool type constants
@@ -145,7 +145,7 @@ public class LiveMapPanel extends JPanel
 
   public void init() {     
 
-    String img = "java_0_world_20k.jpg";
+    String img = "java_0_world_234k.jpg";
     String img_x_domain = "-180 180";
     String img_y_domain = "-90 90";
     String toolType = "XY";
@@ -153,7 +153,7 @@ public class LiveMapPanel extends JPanel
     String tool_y_range = "-90 90";
 
     img_0 = img_0 = getToolkit().getImage(
-              getClass().getResource("java_0_world_20k.jpg"));
+              getClass().getResource("java_0_world_234k.jpg"));
    
     tracker = new MediaTracker(this);
     tracker.addImage(img_0, 1);
@@ -536,7 +536,17 @@ public class LiveMapPanel extends JPanel
     return super.action(ev, arg);
   }
  
-
+// added by DFH
+ public void setBoundingBox(double top, double left, double bottom, double right) {
+  try{
+    map.getTool().setUserBounds(left, right, bottom, top);
+    map.center_tool(1.0);
+  } catch (Exception w) {
+    Log.debug(9, "error in setting Bounding Box in LiveMapPanel!");
+  }
+	map.repaint();
+	set_strings();  
+}
 
 /* 1.0 ----------------------V-------------------------- */
 
