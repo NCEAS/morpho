@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-13 18:43:42 $'
- * '$Revision: 1.105 $'
+ *     '$Date: 2002-12-16 20:39:27 $'
+ * '$Revision: 1.106 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1586,6 +1586,7 @@ public class DocFrame extends javax.swing.JFrame
                 if (ni.name.equals("#PCDATA")) {
                     // is a text node
                     String pcdata = ni.getPCValue();
+                    Log.debug(1,"White space check: "+pcdata);
                     if (pcdata.trim().length() == 0) {
                         // has only white space
                         return true;
@@ -2127,10 +2128,27 @@ public class DocFrame extends javax.swing.JFrame
         treeModel = (DefaultTreeModel)tree.getModel();
         rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
         String xmlout = writeXMLString(rootNode);
+    /*
+    // the following code for checking for empty leaf nodes is
+    // commented out because of problems with eml-attribute documents
+    // eml-attribute docs have a DTD element defined as 
+    // "<!ELEMENT attributeDomain ((enumeratedDomain | textDomain)+ | numericDomain+)>"
+    // Handling a CHOICE element followed by a '+' creates problems for the XML editor
+    // which, in this case decides that 'enumeratedDomain is a required element and
+    // 'textDomain' is not required. It thus adds an 'enumeratedDomain' node even when
+    // a 'textDomain' node is present. The resulting xml is valid, but the empty 
+    // enumeratedDomain node is not really wanted.
+    // The trouble is that when a CHOICE is followed by a '+', the DTD really means tha
+    // at least one of the choices is required, but all the choices might be there.
+    // The editor allows choice of one node (using check boxes) if the '+' after the
+    // parenthesis is missing, but has no way to indicate multiple choices if a '+'
+    // is present (DFH)
         if (hasEmptyTextLeaves(rootNode)) {
           int opt = JOptionPane.showConfirmDialog(null,
-                 "Some Required Fields are Empty", 
-                 "Do you want to Continue?",
+                 "Some required fields may be empty.\n"+
+                 "If you choose to continue a 'space' \n"+
+                 "will inserted in these fields.", 
+                 "DO YOU WANT TO CONTINUE?",
                  JOptionPane.YES_NO_OPTION);
           if (opt == JOptionPane.YES_OPTION) {
             
@@ -2139,6 +2157,7 @@ public class DocFrame extends javax.swing.JFrame
             return;
           }
         }
+    */    
         String valresult = validate(xmlout);
         if (valresult.indexOf("<valid />")>-1) {
           controller.fireEditingCompleteEvent(this, xmlout);
@@ -2148,7 +2167,7 @@ public class DocFrame extends javax.swing.JFrame
           this.dispose();
         }
         else {
-          Log.debug(20,"Validation problemXXX: "+valresult);
+          Log.debug(20,"Validation problem: "+valresult);
           int opt1 = JOptionPane.showConfirmDialog(null,
                  "Validation Problem!",
                  valresult+"\n"+
@@ -2805,7 +2824,7 @@ public class DocFrame extends javax.swing.JFrame
     }
     
 //-------------------------------------------------------------------------------------
-  // specialized method for serching for <attribute> tags and then getting their 'name'
+  // specialized method for searching for <attribute> tags and then getting their 'name'
   // from a child node for display at the attribute level in the tree
   void setAttributeNames(DefaultMutableTreeNode root) {
     // first find all the attribute nodes, which are assumed to be children of root
