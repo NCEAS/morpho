@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-04 23:14:22 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-06 22:46:22 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ private void getAttribute(NodeInfo ni, DTDAttribute attr) {
   if (attr.defaultValue != null) {
     sb.append(attr.defaultValue);
   }
-  sb.append("\" ");
+//  sb.append("\" ");
   ni.attr.put(attr.name,sb.toString());  
 }
 

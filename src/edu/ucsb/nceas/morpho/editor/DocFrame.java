@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-05 22:52:30 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-06-06 22:46:18 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -562,9 +562,9 @@ void Attr_actionPerformed(java.awt.event.ActionEvent event) {
 	if (tp!=null) {
 	  Object ob = tp.getLastPathComponent();
 	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
-	  Hashtable attr = ((NodeInfo)node.getUserObject()).attr;
+//	  Hashtable attr = ((NodeInfo)node.getUserObject()).attr;
 	  String title = "Attributes of "+ ((NodeInfo)node.getUserObject()).getName();
-    AttributeEditDialog aed = new AttributeEditDialog(this,title,attr);
+    AttributeEditDialog aed = new AttributeEditDialog(this,title,node);
     aed.show();
   }
 }
@@ -715,10 +715,11 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	      // ignore (CHOICE) nodes but process their children
 	      start.append("<"+name+" ");  
 	    
-	      Enumeration keys = ni.attr.keys();
+	      Enumeration keys = (ni.attr).keys();
 	      while (keys.hasMoreElements()) {
 	        String str = (String)(keys.nextElement());
-	        String val = (String)ni.attr.get(str);
+	        String val = (String)((ni.attr).get(str));
+	        start.append(str+"=\""+val+"\" ");
 	      }
 	      start.append(">\n");
 	      if (ni.getPCValue()!=null) {   // text node info
