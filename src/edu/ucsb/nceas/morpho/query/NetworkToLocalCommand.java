@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:14:55 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-12-11 21:23:41 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ public class NetworkToLocalCommand implements Command
           }
           
           //download the current selection to the local disk
-          Log.debug(20, "Downloading package.");
+          Log.debug(30, "Downloading package. (id: "+docid);
           dataPackage.download(docid);
           refreshFlag = true;
           //refresh.execute(null);
