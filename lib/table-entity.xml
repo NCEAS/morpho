@@ -1,9 +1,7 @@
-
-<table-entity help="The table entity element is a descriptor of one entity in the dataset
+<table-entity> help="The table entity element is a descriptor of one entity in the dataset
           identified by its name. The entity element can contain information 
           about the entity's orientation, number of records,
           case sensitiveness, and temporal, geographic and taxonomic coverage." >
-
 <identifier help="The identifier field provides a unique identifier for this
               metadata documentation.  It will most likely be part of a 
               sequence of numbers or letters that are meaningful in a 
@@ -13,29 +11,23 @@
               systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel" >
 
 </identifier>
-
 <entityName help="The name identifies the entity in the dataset: file name, 
               name of database table, etc." >
 
 </entityName>
-
-<entityDescription help="A paragraph of text generally describing the entity, its type, and
-              relevant information about the data in the entity." >
+<entityDescription help="A paragraph of text genera" >
 
 </entityDescription>
-
-<orientation help="This element contains specification of the entity's
+<orientation> help="This element contains specification of the entity's
                     record orientation by element's attribute &quot;columnorrow&quot;." >
 
 </orientation>
-
-<caseSensitive help="This element contains specification of text
+<caseSensitive> help="This element contains specification of text
                     case sensitiveness of the data in the entity. It is 
                     specified from element's attribute &quot;yesorno&quot;." >
 
 </caseSensitive>
-
-<numberOfRecords help="This element contains a count of the number of records
+<numberOfRecords> help="This element contains a count of the number of records
                     in the entity.  This is typically an integer value,
                     and only includes records that represent observations.
                     It would not include any details of physical formatting
@@ -45,4 +37,3 @@
 </numberOfRecords>
 
 </table-entity>
-
