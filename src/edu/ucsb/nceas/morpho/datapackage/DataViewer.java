@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-22 21:37:24 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2002-10-22 22:17:11 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1163,6 +1163,7 @@ public class DataViewer extends javax.swing.JPanel
     pv.setFirstRow(num_header_lines);
     if (dataFile==null) {
       Log.debug(20, "Null Data File");
+      field_delimiter = ",";
       String[] row = new String[column_labels.size()];
       for (int ii=0;ii<column_labels.size();ii++) {
         row[ii] = "";  
@@ -1623,6 +1624,13 @@ public class DataViewer extends javax.swing.JPanel
         textNode = nl.item(0).getFirstChild(); // assumed to be a text node
         String sizeS = (new Long(newDataFileLength)).toString();
         textNode.setNodeValue(sizeS);  //set to new file length
+
+        doc = PackageUtil.getDoc(physicalFile, morpho);
+        nl = doc.getElementsByTagName("fieldDelimiter");
+        textNode = nl.item(0).getFirstChild(); // assumed to be a text node
+        textNode.setNodeValue(field_delimiter);  //set to delimiter
+        
+        
         PackageUtil.saveDOM(tempdir + "/" + "tempphysical", doc, physicalDocType, morpho);
       }
       catch (Exception q) {
