@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.33 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-08-24 04:37:06 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,19 +255,19 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   private void initIcons() {
 
     localIcon 
-      = new ImageIcon(getClass().getResource("localscreen.gif"));
+      = new ImageIcon(getClass().getResource("local-package-small.png"));
     localIcon.setDescription(ImageRenderer.LOCALTOOLTIP);
     metacatIcon 
-      = new ImageIcon(getClass().getResource("net.gif"));
+      = new ImageIcon(getClass().getResource("network-package-small.png"));
     metacatIcon.setDescription(ImageRenderer.METACATTOOLTIP);
     blankIcon 
       = new ImageIcon(getClass().getResource("blank.gif"));
     blankIcon.setDescription(ImageRenderer.BLANK);
     packageIcon
-      = new ImageIcon(getClass().getResource("localscreen.gif"));
+      = new ImageIcon(getClass().getResource("metadata-only-small.png"));
     packageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);   
     packageDataIcon
-      = new ImageIcon(getClass().getResource("net.gif"));
+      = new ImageIcon(getClass().getResource("metadata+data-small.png"));
     packageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
     /*bothIcon 
       = new ImageIcon(getClass().getResource("local+network-metadata.gif"));

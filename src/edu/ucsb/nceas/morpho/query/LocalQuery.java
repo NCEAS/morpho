@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-17 01:30:11 $'
- * '$Revision: 1.56 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-08-24 04:37:06 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,11 +155,11 @@ public class LocalQuery
     this.savedQuery = query;
     
     localPackageIcon
-      = new ImageIcon(getClass().getResource("localscreen.gif"));
+      = new ImageIcon(getClass().getResource("metadata-only-small.png"));
     localPackageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);
     
     localPackageDataIcon
-      = new ImageIcon(getClass().getResource("net.gif"));
+      = new ImageIcon(getClass().getResource("metadata+data-small.png"));
     localPackageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
    
   
