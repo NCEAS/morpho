@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-28 15:55:33 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-08-29 00:50:44 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,9 +31,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 
+import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -69,12 +71,12 @@ public class HeaderPanel extends JPanel
     // * * * * * *  D E F A U L T   D I M E N S I O N S  * * * * * * * * * * * * 
     
     private final int TITLEBAR_HEIGHT           = 27;
-    private final int TITLEBAR_TOP_PADDING      = 4;
-    private final int TITLEBAR_SIDES_PADDING    = 4;
+    private final int TITLEBAR_TOP_PADDING      = 0;
+    private final int TITLEBAR_SIDES_PADDING    = 0;
     private final int TITLEBAR_BOTTOM_PADDING   = 2;
 
     private final int PATHBAR_TOP_PADDING       = 2;
-    private final int PATHBAR_SIDES_PADDING     = 4;
+    private final int PATHBAR_SIDES_PADDING     = 0;
     private final int PATHBAR_BOTTOM_PADDING    = 2;
 
     private final int DUMMY_WIDTH = 100;    //ignored by BorderLayout
@@ -95,7 +97,6 @@ public class HeaderPanel extends JPanel
     private final static Color EDITBUTTON_COLOR     = TITLEBAR_COLOR;
 
     
-
     /**
     *  constructor
     *
@@ -116,6 +117,9 @@ public class HeaderPanel extends JPanel
         addBottomLine();
     }
 
+    //titlebar has a fixed height, and is the topmost component in the display 
+    //(ie is loosely analogous to a JFrame titlebar).  It also has a back button 
+    //and a close button.
     private void addTitleBar() 
     {
         //add titlebar itself:
@@ -158,6 +162,16 @@ public class HeaderPanel extends JPanel
         titleBar.add(closeButton, BorderLayout.EAST);
     }
 
+    //the pathbar contains the actual component that displays the path itself, 
+    //on the left, and the edit button to the right of the path display 
+    //component.  If the path text exceeds the path display component's maximum 
+    //width, the text will wrap onto a new line, and the path display component 
+    //will consequently expand in height to accomodate this wrapping. This would
+    //also cause the overall pathbar height to increase accordingly.
+    //NOTE that, although the pathbar needs to expand and contract in this 
+    //manner, it also needs to keep its height fixed at its current value if the 
+    //overall MetaDisplay dimensions change (e.g. due to window resizing); also,
+    //the edit button needs to have a fixed height, whatever happens.
     private void addPathBar() 
     {
         //create and add the container
@@ -168,21 +182,28 @@ public class HeaderPanel extends JPanel
                                             PATHBAR_SIDES_PADDING,
                                             PATHBAR_BOTTOM_PADDING,
                                             PATHBAR_SIDES_PADDING ));
-        pathBar.setOpaque(true);
         this.add(pathBar, BorderLayout.CENTER);
  
         //add path display
-        
+        JTextArea pathDisplayComponent = new JTextArea();
+        pathBar.add(pathDisplayComponent, BorderLayout.CENTER);
+        pathDisplayComponent.setBackground(pathBar.getBackground());
+        pathDisplayComponent.setText("You are here:\n>> dataPackage >> etc >> etc");
+        pathDisplayComponent.setEditable(false);
         
         //add edit button:
-        GUIAction editAction 
+        GUIAction editAction
                 = new GUIAction("edit", null, new EditCommand(controller));
         JButton editButton = new JButton(editAction);
         editButton.setBackground(EDITBUTTON_COLOR);
         editButton.setForeground(EDITBUTTON_TEXT_COLOR);
         editButton.setFocusPainted(false);
         editButton.setFont(BUTTON_FONT);
-        pathBar.add(editButton, BorderLayout.EAST);
+        Box buttonBox = Box.createVerticalBox();
+        buttonBox.add(Box.createVerticalGlue());
+        buttonBox.add(editButton);
+        buttonBox.add(Box.createVerticalGlue());
+        pathBar.add(buttonBox, BorderLayout.EAST);
     }
 
     private void addBottomLine() 
