@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-12 02:37:24 $'
-* '$Revision: 1.21 $'
+*     '$Date: 2004-04-12 21:18:17 $'
+* '$Revision: 1.22 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -341,12 +341,11 @@ public class Taxonomic extends AbstractUIPage {
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT);
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-
-      int rowNum = this.classList.getRowCount();
-      List row = citationPage.getSurrogate();
-      OrderedMap map = citationPage.getPageData("/classificationSystemCitation[1]");
-      row.add(map);
-      this.classList.addRow(row);
+			int rowNum = this.classList.getRowCount();
+			List row = citationPage.getSurrogate();
+			OrderedMap map = citationPage.getPageData("/classificationSystemCitation[1]");
+			row.add(map);
+			this.classList.addRow(row);
     }
 
   }
@@ -362,7 +361,7 @@ public class Taxonomic extends AbstractUIPage {
 		OrderedMap copyMap = (OrderedMap)map.clone();
 
     CitationPage citationPage = new CitationPage();
-    citationPage.setPageData(copyMap, "/classificationSystemCitation[1]");
+		citationPage.setPageData(copyMap, "/classificationSystemCitation[1]");
 
     ModalDialog wpd = new ModalDialog(citationPage,
                                 WizardContainerFrame.getDialogParent(),
@@ -605,6 +604,34 @@ public class Taxonomic extends AbstractUIPage {
   *          (e.g. if a required field hasn't been filled in)
   */
   public boolean onAdvanceAction() {
+		
+		List rows = this.classList.getListOfRowLists();
+		if(rows != null && rows.size() > 0){
+			
+			// there must be some taxon data, since citations are there.
+			
+			List data = this.taxonList.getListOfRowLists();
+			int len = data.size();
+			if(len > 0) {
+				for(int i = 0; i < len; i++) {
+					List row = (List)data.get(i);
+					if(row.size() < 7) continue;
+					TaxonHierarchy th = (TaxonHierarchy)row.get(6);
+					Vector taxonLevels = th.getAllTaxons();
+					for(int j = 0; j < taxonLevels.size(); j++) {
+						
+						TaxonLevel level = (TaxonLevel)taxonLevels.get(j);
+						String tRank = level.getRank();
+						String tName = level.getName();
+						if(tRank.trim().equals("") || tName.trim().equals("")) continue;
+						else return true;
+					}
+				}
+			}
+			
+			JOptionPane.showMessageDialog(Taxonomic.this, "You must enter the Taxonomic information along with the Citation details!", "Error", JOptionPane.ERROR_MESSAGE);
+      return false;
+		}
     return true;
   }
 
@@ -650,9 +677,10 @@ public class Taxonomic extends AbstractUIPage {
           String newKey = rootXPath + "/taxonomicSystem[1]/classificationSystem[" +(i+1)+ "]" +  k;
           result.put(newKey, (String)map.get(k));
         }
-				result.put(rootXPath + "/taxonomicSystem[1]/identifierName[1]/organizationName[1]", "Unknown");
-				result.put(rootXPath + "/taxonomicSystem[1]/taxonomicProcedures[1]", "Unknown");
-      }
+				
+			}
+			result.put(rootXPath + "/taxonomicSystem[1]/identifierName[1]/organizationName[1]", "Unknown");
+			result.put(rootXPath + "/taxonomicSystem[1]/taxonomicProcedures[1]", "Unknown");
 
     }
 
@@ -858,9 +886,12 @@ public class Taxonomic extends AbstractUIPage {
       if( idx > -1) {
 				
 				OrderedMap map = new OrderedMap();
+				OrderedMap subMap = new OrderedMap();
 				
         int idx2 = key.substring(idx).indexOf("/classificationSystemCitation");
         map.put(key.substring(idx + idx2), data.get(key));
+				subMap.put(key, data.get(key));
+				
 				cnt++;
         for(;cnt < size; cnt++) {
 
@@ -869,7 +900,7 @@ public class Taxonomic extends AbstractUIPage {
           if( newidx > -1) {
             int citidx = key.substring(newidx).indexOf("/classificationSystemCitation");
 						map.put(key.substring(citidx + newidx), data.get(key));
-						
+						subMap.put(key, data.get(key));
           } else {
             cnt--;
             break;
@@ -879,19 +910,24 @@ public class Taxonomic extends AbstractUIPage {
 				OrderedMap map1 = (OrderedMap)map.clone();
         CitationPage cpage = new CitationPage();
         boolean flag = cpage.setPageData(map, "/classificationSystemCitation[1]");
-        if(!flag) return false;
+        if(!flag) {
+					return false;
+				}
         List row = cpage.getSurrogate();
         if(row.size() == 0)
           break;
         row.add(map1);
-        data.removeAll(map);
+        data.removeAll(subMap);
         this.classList.addRow(row);
         pos++;
-      }
-
+      } else if (key.indexOf("identifierName") > -1) {
+				data.remove(key);
+			} else if (key.indexOf("taxonomicProcedures") > -1) {
+				data.remove(key);
+			}
 
     }
-
+		
     this.taxonList.editCellAt(0, 2);
 
     if(data.keySet().size() > 0) return false;

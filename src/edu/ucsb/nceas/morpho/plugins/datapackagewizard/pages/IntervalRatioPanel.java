@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-12 06:43:09 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-04-12 21:18:17 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -795,6 +795,7 @@ class UnitsPickList extends JPanel {
         ActionListener cancelAction = new ActionListener() {
           public void actionPerformed(ActionEvent ae) {
             customUnitDialog.setVisible(false);
+						customPanel = null;
           }
         };
         customPanel = new CustomUnitPanel(parentPanel);
