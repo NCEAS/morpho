@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2002-08-14 20:09:49 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -529,7 +529,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       String val = inputString;
       if (params.containsKey(paramName)) {  // key already in hash table
         String cur = (String)params.get(paramName);
-        val = cur + "; " + val;
+        val = cur + " " + val;
       }
       params.put(paramName, val);  
     } else if (currentTag.equals("subject")) {
