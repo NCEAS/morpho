@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-26 23:07:12 $'
- * '$Revision: 1.74 $'
+ *     '$Date: 2002-02-28 23:04:47 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1067,7 +1067,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     catch(Exception e)
     {
       String message = e.getMessage();
-      if(message.indexOf("Next revision number must be") != 1)
+      if(message.indexOf("Next revision number must be") != -1)
       {
         framework.debug(0,"The file you are attempting to update " +
                                  "has been changed by another user.  " +
