@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<acl help="The acl element contains a list of rules that define the level of
+          access for a given resource, be it a dataset or another metadata
+          document.  the acl element must contain the elements defined in the
+          ACL type." >
+
+<identifier help="The identifier field provides a unique identifier for this
+                metadata documentation.  It will most likely be part of a 
+                sequence of numbers or letters that are meaningful in a 
+                larger context, such as a metadata catalog. That larger
+                system can be identified in the &quot;system&quot; attribute. Multiple
+                identifiers can be listed corresponding to different catalog
+                systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel" >
+
+</identifier>
+
+<allow help="The allow element indicates that a particular user or group is
+                able to execute the defined permission." >
+<principal help="The principal element defines the user or group to which the 
+              access control list applies.  The users and groups must be 
+              defined in the authentication system described in the 
+              authSystem element." >
+
+</principal>
+
+<permission help="The permission that is being granted or denied to a particular
+              user or group for a given resource.  The list of permissions come
+              from a predetermined list, and include 'read' (allow/deny viewing 
+              of the resource), 'write' (allow/deny modification of the 
+              resource), and 'all' (allow read/write, and the ability to modify
+              access restrictions as well.)" >
+
+</permission>
+
+<duration help="Access to a resource for a particular user or group may be
+              restricted to a limited time frame.  This sets the duration of the
+              paticular permission.  The period of time is represented as the
+              number of Years, Months, Days, Hours, Minutes, and Seconds that
+              the  permission applies to the resource." >
+
+</duration>
+
+<ticketCount help="Access to a resource for a particular user or group may be
+              restricted based on the number of times the resource is accessed." >
+
+</ticketCount>
+</allow>
+
+<deny help="The deny element indicates that a particular user or group is
+                not able to execute the defined permission." >
+<principal help="The principal element defines the user or group to which the 
+              access control list applies.  The users and groups must be 
+              defined in the authentication system described in the 
+              authSystem element." >
+
+</principal>
+
+<permission help="The permission that is being granted or denied to a particular
+              user or group for a given resource.  The list of permissions come
+              from a predetermined list, and include 'read' (allow/deny viewing 
+              of the resource), 'write' (allow/deny modification of the 
+              resource), and 'all' (allow read/write, and the ability to modify
+              access restrictions as well.)" >
+
+</permission>
+
+<duration help="Access to a resource for a particular user or group may be
+              restricted to a limited time frame.  This sets the duration of the
+              paticular permission.  The period of time is represented as the
+              number of Years, Months, Days, Hours, Minutes, and Seconds that
+              the  permission applies to the resource." >
+
+</duration>
+
+<ticketCount help="Access to a resource for a particular user or group may be
+              restricted based on the number of times the resource is accessed." >
+
+</ticketCount>
+</deny>
+</acl>
