@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:45:53 $'
- * '$Revision: 1.63 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-17 17:40:36 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -493,7 +493,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           String path = (nd.getFirstChild()).getNodeValue();
           NodeList temp = XMLUtilities.getNodeListWithXPath(metadataNode, path);
           if ((temp!=null)&&(temp.getLength()>0)) {
-            Log.debug(1, "found: "+path);
+            Log.debug(40, "found: "+path);
             Node prevNode = temp.item(0);
             Document doc = prevNode.getOwnerDocument();
             Node newCov = doc.createElement("coverage");
