@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-16 20:00:06 $'
- * '$Revision: 1.97 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-17 23:24:17 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1694,6 +1694,16 @@ public class DataPackage implements XMLFactoryInterface
     return result;
   }
   
+
+  /**
+   *    returns the original text name of the datafile, which for EML beta6 is
+   *    contained in the triples relationship string, inside parentheses)
+   *
+   *    @param entityID the ID of the entity for which the datafile text name is 
+   *                    sought
+   *
+   *    @return         the original text name of the datafile (as a String)
+   */
   
   public String getDataFileName(String entityID) {
     String dataFileName = null;
@@ -1947,6 +1957,14 @@ public class DataPackage implements XMLFactoryInterface
   } 
 
 
+  /**
+   *    returns the ID (i.e. the dentifier/version number from the subject/object of
+   *    the triples) for the data file
+   *
+   *    @param entityID the ID of the entity for which the datafile ID is sought
+   *
+   *    @return         the ID (as a String)
+   */
   public String getDataFileID(String entityID) {
     String dataFileID = "";
     boolean localloc = false;
