@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <eml-project
 help="eml-project elements describe various aspects of the research project within which researchers created the associated dataset. The association of a dataset with this project metadata is established in eml-dataset">
 
@@ -901,11 +902,7 @@ help="eml-project elements describe various aspects of the research project with
       <designDescription
     help="Experimental or Sampling design: the design method, plots, samplings, descriptive paragraph of text or citation from a source.">
   
-      <identifier
-      help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a sequence of numbers or letters that are meaningful in a larger context, such as a metadata catalog. That larger system can be identified in the &quot;system&quot; attribute. Multiple identifiers can be listed corresponding to different catalog systems."
-       editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
-      </identifier>
-  
+     <protocol>
       <method
       help="The method field allows for repeated paragraphs of text that describe the methodology for a project, experiment, or particular data table. Likewise, a literature citation may be provided that describes the methodology that was employed.">
   
@@ -2711,6 +2708,7 @@ help="eml-project elements describe various aspects of the research project with
           </thesis>
         </citation>
       </qualityControl>
+     </protocol>
   
       <sampling
       help="Information necessary to understand temporal sampling regime: temporal boundaries, frequency of occurrence, descriptive paragraph of text or citation from a source.">
@@ -3437,7 +3435,8 @@ help="eml-project elements describe various aspects of the research project with
           </thesis>
         </citation>
       </sampling>
-      editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel"
+      <paragraph
+         editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel">
       </paragraph>
       <citation
       help="The literature element contains general information about a literature resource that is being documented, or a piece of literature that is being cited in support of a given resource, such as a dataset. It contains subelements that are specific to a literature resource such as a book, a journal article, a thesis, etc. It extends the generic resource elements with literature specific fields.">
