@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-16 17:46:51 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-31 23:47:42 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ItemEvent;
@@ -79,7 +80,7 @@ public class ExportDialog extends JDialog
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
-      "Please choose the type of export function desired \n" +
+      "\nPlease choose the type of export function desired" +
       " and click the Export button."; 
 
   /** A reference to morpho frame */
@@ -204,6 +205,8 @@ public class ExportDialog extends JDialog
     note.setLineWrap(true);
     note.setWrapStyleWord(true);
     note.setOpaque(false);
+    note.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        
     noteBox.add(note);
     noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     mainPanel.add(BorderLayout.NORTH, noteBox);
