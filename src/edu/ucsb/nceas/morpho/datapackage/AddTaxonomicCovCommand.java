@@ -5,9 +5,9 @@
  *    Authors: Perumal Sambasivam
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-31 04:48:11 $'
- * '$Revision: 1.8 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-01 17:12:32 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,8 @@ public class AddTaxonomicCovCommand implements Command {
 		
 		
     showTaxonomicDialog();
+    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    UIController.showNewPackage(adp);
 		
   }
 
