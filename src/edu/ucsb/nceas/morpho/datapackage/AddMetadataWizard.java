@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 22:49:42 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2002-09-25 15:27:21 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1209,7 +1209,7 @@ public class AddMetadataWizard extends JFrame
     this.dataPackage = newpackage;                                         
 
     DataPackagePlugin dataPlugin = new DataPackagePlugin(morpho);
-    dataPlugin.openDataPackage(location, newpackage.getID(), null);
+    dataPlugin.openDataPackage(location, newpackage.getID(), null, null);
  
   }
   
@@ -1379,7 +1379,7 @@ public class AddMetadataWizard extends JFrame
       packageFrame.dispose();
     }// if
     DataPackagePlugin plugin = new DataPackagePlugin(morpho);
-    plugin.openDataPackage(location, newpackage.getID(), null);
+    plugin.openDataPackage(location, newpackage.getID(), null, null);
    
   }
 
