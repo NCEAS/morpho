@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-11 18:44:54 $'
- * '$Revision: 1.110.2.2 $'
+ *     '$Date: 2003-08-11 21:45:23 $'
+ * '$Revision: 1.110.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -652,6 +652,7 @@ public class DocFrame extends javax.swing.JFrame
 //        setAllNodesAsSelected(rootNode);  //DFH
 //        setAttributeNames(rootNode);
         setChoiceNodes(rootNode);
+        trimSpecialAttributes(rootNode);
         if (xmlAttributesInTreeFlag) {
           addXMLAttributeNodes(rootNode);
         }
