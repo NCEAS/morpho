@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-03-17 22:56:23 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -51,6 +51,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 public class Methods extends AbstractUIPage{
 
@@ -198,10 +201,14 @@ public class Methods extends AbstractUIPage{
   private void showNewMethodsDialog() {
 
     MethodsPage methodsPage = (MethodsPage)WizardPageLibrary.getPage(DataPackageWizardInterface.METHODS_PAGE);
-    WizardPopupDialog wpd = new WizardPopupDialog(methodsPage, false);
+    ModalDialog wpd = new ModalDialog(methodsPage,
+                                WizardContainerFrame.getDialogParent(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT
+, false);
     wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
 
       List newRow = methodsPage.getSurrogate();
       newRow.add(methodsPage);
@@ -221,12 +228,16 @@ public class Methods extends AbstractUIPage{
     if (dialogObj==null || !(dialogObj instanceof MethodsPage)) return;
     MethodsPage editMethodsPage = (MethodsPage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editMethodsPage, false);
+    ModalDialog wpd = new ModalDialog(editMethodsPage,
+                                WizardContainerFrame.getDialogParent(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT
+, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
 
-    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
 
       List newRow = editMethodsPage.getSurrogate();
       newRow.add(editMethodsPage);

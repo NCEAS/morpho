@@ -1,5 +1,5 @@
 /**
- *  '$RCSfile: WizardPopupDialog.java,v $'
+ *  '$RCSfile: ModalDialog.java,v $'
  *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-03-17 22:56:23 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,15 +26,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
-
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.UISettings;
+package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -47,7 +46,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 
-public class WizardPopupDialog extends JDialog {
+public class ModalDialog extends JDialog {
 
   public short USER_RESPONSE;
 
@@ -55,18 +54,24 @@ public class WizardPopupDialog extends JDialog {
   public static final short CANCEL_OPTION  = 20;
   public static final short CLOSED_OPTION  = 30;
 
+  private final int PADDING = 5;
+
   protected AbstractUIPage wizardPage;
 
-  public WizardPopupDialog(AbstractUIPage page) {
+  public ModalDialog(AbstractUIPage page,
+                           JFrame parent, int width, int height) {
 
-    this(page, true);
+    this(page, parent, width, height, true);
   }
 
-  public WizardPopupDialog(AbstractUIPage page, boolean showNow) {
+  public ModalDialog(AbstractUIPage page, JFrame parent,
+                           int width, int height, boolean showNow) {
 
-    super(getDialogParent(), true);
-    this.parent = getDialogParent();
+    super(parent, true);
+    this.parent = parent;
     this.wizardPage = page;
+    this.dialogWidth = width;
+    this.dialogHeight = height;
     init();
     this.setVisible(showNow);
     validate();
@@ -111,13 +116,13 @@ public class WizardPopupDialog extends JDialog {
       xcoord = ycoord = 50;
     } else {
       xcoord = ( parent.getX() + parent.getWidth()/2 )
-                                              - WizardSettings.DIALOG_WIDTH/2;
+                                              - this.dialogWidth/2;
       ycoord = ( parent.getY() + parent.getHeight()/2 )
-                                              - WizardSettings.DIALOG_HEIGHT/2;
+                                              - this.dialogHeight/2;
     }
 
-    this.setBounds(xcoord, ycoord,  WizardSettings.DIALOG_WIDTH,
-                                    WizardSettings.DIALOG_HEIGHT);
+    this.setBounds(xcoord, ycoord,  this.dialogWidth,
+                                    this.dialogHeight);
   }
 
   private void initContentPane() {
@@ -129,7 +134,8 @@ public class WizardPopupDialog extends JDialog {
 
   private void initTopPanel() {
 
-    contentPane.add(WidgetFactory.makeDefaultSpacer(), BorderLayout.NORTH);
+    contentPane.add(Box.createRigidArea(new Dimension(15, 15)),
+                    BorderLayout.NORTH);
 
   }
 
@@ -156,18 +162,18 @@ public class WizardPopupDialog extends JDialog {
     bottomPanel.setOpaque(false);
 
     bottomPanel.setBorder(
-                  BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
+                  BorderFactory.createMatteBorder(2, 0, 0, 0, UISettings.TITLEBAR_COLOR));
     contentPane.add(bottomPanel, BorderLayout.SOUTH);
   }
 
   private void initButtons()  {
 
-    okButton  = addButton(WizardSettings.OK_BUTTON_TEXT, new ActionListener() {
+    okButton  = addButton(UISettings.OK_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         okAction();
       }
     });
-    addButton(WizardSettings.CANCEL_BUTTON_TEXT, new ActionListener() {
+    addButton(UISettings.CANCEL_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         cancelAction();
       }
@@ -187,8 +193,8 @@ public class WizardPopupDialog extends JDialog {
   private JButton addButton(String title, ActionListener actionListener) {
 
     JButton button = new JButton(title);
-    button.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
-    button.setFont(WizardSettings.BUTTON_FONT);
+    button.setForeground(UISettings.POPUPDIALOG_BUTTON_TEXT_COLOR);
+    button.setFont(UISettings.POPUPDIALOG_BUTTON_FONT);
     if (actionListener!=null) button.addActionListener(actionListener);
     bottomPanel.add(button);
     bottomPanel.add(Box.createHorizontalStrut(PADDING));
@@ -209,41 +215,16 @@ public class WizardPopupDialog extends JDialog {
   }
 
 
-  private static JFrame getDialogParent() {
 
-    if (WizardContainerFrame.frame.isShowing()) {
-
-      dialogParent = WizardContainerFrame.frame;
-
-    } else {
-
-      dialogParent = UIController.getInstance().getCurrentActiveWindow();
-    }
-
-    if (dialogParent == null
-        || dialogParent.getX() < 0 || dialogParent.getY() < 0) {
-
-      if (dummyFrame == null) {
-        dummyFrame = new JFrame();
-        dummyFrame.setBounds(UISettings.CLIENT_SCREEN_WIDTH / 2,
-                             UISettings.CLIENT_SCREEN_HEIGHT / 2, 1, 1);
-        dummyFrame.setVisible(false);
-      }
-      dialogParent = dummyFrame;
-    }
-    return dialogParent;
-  }
 
   // * * *  P R I V A T E   V A R I A B L E S  * * * * * * * * * * * * * * * * *
 
 
-  private int PADDING = WizardSettings.PADDING;
+  private int dialogWidth;
+  private int dialogHeight;
   private JFrame parent;
   private Container contentPane;
   protected JPanel middlePanel;
   private JPanel bottomPanel;
   private JButton okButton;
-  private static JFrame dummyFrame;
-  private static JFrame dialogParent;
-
 }

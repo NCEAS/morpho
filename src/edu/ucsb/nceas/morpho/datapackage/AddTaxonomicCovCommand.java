@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:37:16 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-03-17 22:56:22 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,14 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 
 /**
@@ -92,12 +93,15 @@ public class AddTaxonomicCovCommand implements Command {
 
     taxonomicPage = (Taxonomic) dpwPlugin.getPage(
         DataPackageWizardInterface.TAXONOMIC);
-    WizardPopupDialog wpd = new WizardPopupDialog(taxonomicPage, false);
+    ModalDialog wpd = new ModalDialog(taxonomicPage,
+                                UIController.getInstance().getCurrentActiveWindow(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT, false);
 
     wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.DIALOG_HEIGHT);
     wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
     }
     else {

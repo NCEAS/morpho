@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2004-03-17 22:56:23 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 /**
  *  provides a top-level container for AbstractUIPage objects. The top (title) panel
@@ -890,6 +892,42 @@ public class WizardContainerFrame extends JFrame {
     return button;
   }
 
+
+  /**
+   * gets the JFrame to be used as the owner by a popup dialog. Basically, if
+   * the wizard is showing, the wizard container frame is returned. If not, the
+   * current morpho frame is returned.
+   *
+   * @return JFrame
+   */
+  public static JFrame getDialogParent() {
+
+    if (WizardContainerFrame.frame.isShowing()) {
+
+      dialogParent = WizardContainerFrame.frame;
+
+    } else {
+
+      dialogParent = UIController.getInstance().getCurrentActiveWindow();
+    }
+
+    if (dialogParent == null
+        || dialogParent.getX() < 0 || dialogParent.getY() < 0) {
+
+      if (dummyFrame == null) {
+        dummyFrame = new JFrame();
+        dummyFrame.setBounds(UISettings.CLIENT_SCREEN_WIDTH / 2,
+                             UISettings.CLIENT_SCREEN_HEIGHT / 2, 1, 1);
+        dummyFrame.setVisible(false);
+      }
+      dialogParent = dummyFrame;
+    }
+    return dialogParent;
+  }
+
+
+
+
   public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap omap, String xPath, boolean newTable) {
 
     List t = new ArrayList();
@@ -1027,4 +1065,6 @@ public class WizardContainerFrame extends JFrame {
   private Vector lastImportedDataSet;
 
   private String firstPageID;
+  private static JFrame dummyFrame;
+  private static JFrame dialogParent;
 }

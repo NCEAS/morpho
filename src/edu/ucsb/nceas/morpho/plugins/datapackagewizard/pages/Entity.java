@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-03-17 22:56:23 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -52,6 +52,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.framework.UIController;
 
 public class Entity extends AbstractUIPage{
 
@@ -195,11 +197,14 @@ public class Entity extends AbstractUIPage{
   private void showNewAttributeDialog() {
 
     AttributePage attributePage = new AttributePage();
-    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, false);
+    ModalDialog wpd = new ModalDialog(attributePage,
+                                WizardContainerFrame.getDialogParent(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setBounds(wpd.getX(), WizardContainerFrame.frame.getY(),
           WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
     wpd.setVisible(true);
-    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
 
       List newRow = attributePage.getSurrogate();
       newRow.add(attributePage);
@@ -220,12 +225,15 @@ public class Entity extends AbstractUIPage{
     if (dialogObj==null || !(dialogObj instanceof AttributePage)) return;
     AttributePage editAttributePage = (AttributePage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editAttributePage, false);
+    ModalDialog wpd = new ModalDialog(editAttributePage,
+                                WizardContainerFrame.getDialogParent(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setBounds(wpd.getX(), WizardContainerFrame.frame.getY(),
           WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
     wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
 
       List newRow = editAttributePage.getSurrogate();
       newRow.add(editAttributePage);

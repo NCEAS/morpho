@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:54:42 $'
- * '$Revision: 1.52 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 22:56:23 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 /**
  *  WizardSettings
@@ -101,24 +102,20 @@ public class WizardSettings {
   private static final String EML_UNIT_DICTIONARY_PATH
   = "/xsl/eml-unitDictionary.xml";
 
-  protected static final int WIZARD_X_COORD = 100;
+  protected static final int WIZARD_X_COORD = UISettings.WIZARD_X_COORD;
 
-  protected static final int WIZARD_Y_COORD = 100;
+  protected static final int WIZARD_Y_COORD = UISettings.WIZARD_Y_COORD;
 
-  protected static final int WIZARD_WIDTH   = 800;
+  protected static final int WIZARD_WIDTH   = UISettings.WIZARD_WIDTH;
 
-  protected static final int WIZARD_HEIGHT  = 600;
+  protected static final int WIZARD_HEIGHT  = UISettings.WIZARD_HEIGHT;
 
-  private   static final int DIALOG_SMALLER_THAN_WIZARD_BY = 30;
 
-  public static final int DIALOG_WIDTH
-  = WIZARD_WIDTH - DIALOG_SMALLER_THAN_WIZARD_BY;
+  public static final int DIALOG_WIDTH = UISettings.POPUPDIALOG_WIDTH;
 
-  public static final int DIALOG_HEIGHT
-  = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
+  public static final int DIALOG_HEIGHT = UISettings.POPUPDIALOG_HEIGHT;
 
-  public static final int ATTR_DIALOG_HEIGHT
-  = (WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY + 30);
+  public static final int ATTR_DIALOG_HEIGHT = UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT;
 
   protected static final String PACKAGE_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
 
@@ -183,14 +180,14 @@ public class WizardSettings {
   public static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS
   = new Dimension(2000,20);
 
-	private static final String FONT_STYLE = "style=\"font-size: 9px;\"";
+  private static final String FONT_STYLE = "style=\"font-size: 9px;\"";
 
   public static final String HTML_FONT_OPENING
           = "<font " + FONT_STYLE + " face=\"Sans-Serif\">";
 
   public static final String HTML_EXAMPLE_FONT_OPENING
                                                   = "<font " + FONT_STYLE +
-																									" color=\"#666666\">";
+                                                  " color=\"#666666\">";
 
 
 
@@ -674,31 +671,31 @@ public class WizardSettings {
     }
     return !(Float.isNaN(floatNum));
   }
-	
-	// Taxonomic Information
-	
-	public static final String[] stdTaxonRanks = {"Kingdom", "Sub-Kingdom", "Phylum", "Sub-Phylum", "Class", "Sub-Class", "Order", "Sub-Order", "Family", "Sub-Family", "Genus", "Sub-Genus", "Species", "Sub-Species"};
-	
-	public static final String[] commonTaxonRanks = {"Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"};
-	
-	public static final int NUMBER_OF_TAXON_RANKS = 7;
-	
-	public static int getIndexOfTaxonRank(String rank) {
-		
-		for(int i = 0;i < commonTaxonRanks.length; i++)
-			if(commonTaxonRanks[i].equals(rank))
-				return i;
-		return -1;
-	}
-	
-	public static List getTaxonHierarchyTillIndex(int index) {
-		
-		List ret = new ArrayList();
-		for(int i =0; i <= index; i++)
-			ret.add(commonTaxonRanks[i]);
-		return ret;
-	}
-	
-	
+
+  // Taxonomic Information
+
+  public static final String[] stdTaxonRanks = {"Kingdom", "Sub-Kingdom", "Phylum", "Sub-Phylum", "Class", "Sub-Class", "Order", "Sub-Order", "Family", "Sub-Family", "Genus", "Sub-Genus", "Species", "Sub-Species"};
+
+  public static final String[] commonTaxonRanks = {"Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"};
+
+  public static final int NUMBER_OF_TAXON_RANKS = 7;
+
+  public static int getIndexOfTaxonRank(String rank) {
+
+    for(int i = 0;i < commonTaxonRanks.length; i++)
+      if(commonTaxonRanks[i].equals(rank))
+        return i;
+    return -1;
+  }
+
+  public static List getTaxonHierarchyTillIndex(int index) {
+
+    List ret = new ArrayList();
+    for(int i =0; i <= index; i++)
+      ret.add(commonTaxonRanks[i]);
+    return ret;
+  }
+
+
 }
 

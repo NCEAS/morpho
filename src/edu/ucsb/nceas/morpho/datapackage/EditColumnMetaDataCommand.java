@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-03-17 22:56:22 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
@@ -53,6 +53,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 /**
  * Class to handle edit column meta data command
@@ -153,7 +154,11 @@ public class EditColumnMetaDataCommand implements Command
     attributePage.setPageData(map);
     String firstKey = (String)map.keySet().iterator().next();
 
-    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, false);
+    ModalDialog wpd = new ModalDialog(attributePage,
+                                UIController.getInstance().getCurrentActiveWindow(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT
+, false);
     attributePage.refreshUI();
     wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
     wpd.validate();
@@ -161,7 +166,7 @@ public class EditColumnMetaDataCommand implements Command
 
 
 
-    if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       map = attributePage.getPageData(xPath);
       if(entityIndex == -1) {

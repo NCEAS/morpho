@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-03-17 22:56:23 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ package edu.ucsb.nceas.morpho.plugins;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 /**
  *  Interface for Data Package Wizard Plugin
  */

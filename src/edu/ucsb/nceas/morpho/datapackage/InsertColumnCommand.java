@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: brooke $'
-*     '$Date: 2004-03-16 20:37:16 $'
-* '$Revision: 1.14 $'
+*     '$Date: 2004-03-17 22:56:22 $'
+* '$Revision: 1.15 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
@@ -57,6 +57,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 
 /**
@@ -310,14 +311,18 @@ public class InsertColumnCommand implements Command
     if(dpwPlugin == null) return;
 
     attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
-    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, false);
+    ModalDialog wpd
+        = new ModalDialog(attributePage,
+                                UIController.getInstance().getCurrentActiveWindow(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
     wpd.setVisible(true);
 
     entityIndex = dataView.getEntityIndex();
     adp = dataView.getAbstractDataPackage();
 
-    if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       map = attributePage.getPageData(xPath);
 

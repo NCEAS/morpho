@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-17 19:12:04 $'
- * '$Revision: 1.1 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-17 22:56:22 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Geographic;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -49,6 +49,7 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 /**
  * Class to handle add temporal coverage command
@@ -121,12 +122,15 @@ public class AddGeographicCovCommand implements Command {
 
     geographicPage = (Geographic) dpwPlugin.getPage(
         DataPackageWizardInterface.GEOGRAPHIC);
-    WizardPopupDialog wpd = new WizardPopupDialog(geographicPage, false);
+    ModalDialog wpd = new ModalDialog(geographicPage,
+                                UIController.getInstance().getCurrentActiveWindow(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT, false);
 
     wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.DIALOG_HEIGHT);
     wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
       infoAddFlag = true;
     }
     else {

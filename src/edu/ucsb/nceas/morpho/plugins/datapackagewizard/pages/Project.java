@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-03-17 22:56:23 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -54,6 +54,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 public class Project extends AbstractUIPage {
 
@@ -239,9 +242,12 @@ public class Project extends AbstractUIPage {
      private void showNewPartyDialog() {
        PartyPage partyPage = (PartyPage)WizardPageLibrary.getPage(DataPackageWizardInterface.PARTY_PAGE);
        partyPage.setRole(PartyPage.PERSONNEL);
-       WizardPopupDialog wpd = new WizardPopupDialog(partyPage);
+       ModalDialog wpd = new ModalDialog(partyPage,
+                                WizardContainerFrame.getDialogParent(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT);
 
-       if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+       if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
          List newRow = partyPage.getSurrogate();
          newRow.add(partyPage);
          partiesList.addRow(newRow);
@@ -264,11 +270,14 @@ public class Project extends AbstractUIPage {
        if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
        PartyPage editPartyPage = (PartyPage)dialogObj;
 
-       WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, false);
+       ModalDialog wpd = new ModalDialog(editPartyPage,
+                                WizardContainerFrame.getDialogParent(),
+                                UISettings.POPUPDIALOG_WIDTH,
+                                UISettings.POPUPDIALOG_HEIGHT, false);
        wpd.resetBounds();
        wpd.setVisible(true);
 
-       if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+       if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
          List newRow = editPartyPage.getSurrogate();
          newRow.add(editPartyPage);
          partiesList.replaceSelectedRow(newRow);
