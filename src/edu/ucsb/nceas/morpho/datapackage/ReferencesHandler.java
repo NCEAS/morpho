@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 10:26:19 $'
- * '$Revision: 1.20 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-26 23:34:38 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -354,12 +354,16 @@ public class ReferencesHandler {
    * @param adp AbstractDataPackage the current datapkg
    * @param subtreeID String refID of the subtree to be replaced
    * @param newData OrderedMap containing new data to replace referenced subtree
+	 * @param nodesToBeIgnored List of xpaths for all the nodes that need to preserved when 
+	 *				the original subtree is replaced by this new one.(like '/associatedParty/role')
+	 *				These nodes will not be replaced by the new subtree.
    * @return Node the replacement subtree, or null if original subtree not found,
    * or if any of the input parameters are invalid
    */
   public static Node updateOriginalReferenceSubtree(AbstractDataPackage adp,
                                                     String subtreeID,
-                                                    OrderedMap newData) {
+                                                    OrderedMap newData,
+																										List nodesToBeIgnored) {
 
     Log.debug(45, "updateOriginalReferenceSubtree() Got subtreeID="+subtreeID
               +"\nnewData map:"+newData);
@@ -386,7 +390,8 @@ public class ReferencesHandler {
     String rootNodeName = referencedSubtree.getNodeName();
 
     //now need to change map so all xpaths are rooted at this new value
-    newData = replaceXPathRootWith(newData, "/" + rootNodeName);
+    newData = replaceXPathMapWith(newData, "/" + rootNodeName);
+		nodesToBeIgnored = replaceXPathListWith(nodesToBeIgnored, "/" + rootNodeName);
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
     Document doc = impl.createDocument("", rootNodeName, null);
@@ -411,7 +416,48 @@ public class ReferencesHandler {
     Log.debug(45,
               "updateOriginalReferenceSubtree() adding subtree to package...");
     Log.debug(45,"subtreeRoot=" + XMLUtilities.getDOMTreeAsString(subtreeRoot));
-
+		
+		if(nodesToBeIgnored != null) {
+			
+			for(Iterator it = nodesToBeIgnored.iterator(); it.hasNext();) {
+				
+				String xpath = (String) it.next();
+				Node oldNode = null;
+				Node newNode = null;
+				try {
+					oldNode = XMLUtilities.getTextNodeWithXPath(referencedSubtree, xpath);
+				} catch(TransformerException te) {
+					Log.debug(15, "Got Exception while trying to retreive the node to be ignored in ReferencesHandler- " + te);
+					te.printStackTrace();
+				}
+				if(oldNode == null || oldNode.getNodeType() != Node.TEXT_NODE) {
+					Log.debug(30, "oldNode is null or not text - " + oldNode + " for xpath = " + xpath + "; node name = " + referencedSubtree.getNodeName());
+					continue;
+				}
+				String oldVal = oldNode.getNodeValue();
+				try {
+					newNode = XMLUtilities.getTextNodeWithXPath(subtreeRoot, xpath);
+				} catch(TransformerException te) {
+					Log.debug(15, "Got Exception while trying to retreive the node to be ignored in ReferencesHandler- " + te);
+					te.printStackTrace();
+				}
+				if(newNode == null || newNode.getNodeType() != Node.TEXT_NODE) {
+					Log.debug(30, "newNode is null or not text - " + newNode + " for xpath = " + xpath);
+					try {
+						XMLUtilities.addTextNodeToDOMTree(subtreeRoot, xpath, oldVal);
+					} catch(TransformerException te) {
+						Log.debug(15, "Got Exception while trying to add a text node in ReferencesHandler- " + te);
+						te.printStackTrace();
+						continue;
+					}
+					
+				} else {
+					String newVal = newNode.getNodeValue();
+					newNode.setNodeValue(oldNode.getNodeValue());
+				}
+			}
+		}
+		
     check = adp.replaceSubtreeAtReference(subtreeID, subtreeRoot);
 
     if (check == null) {
@@ -586,40 +632,65 @@ public class ReferencesHandler {
   private static OrderedMap returnMap = new OrderedMap();
   //
   // newRoot MUST start with a slash, and MUST NOT end with a slash!
-  private static OrderedMap replaceXPathRootWith(OrderedMap map, String newRoot) {
+  private static OrderedMap replaceXPathMapWith(OrderedMap map, String newRoot) {
 
-    boolean firstLoop = true;
-    String xpathRoot = null;
     returnMap.clear();
 
     for (Iterator it = map.keySet().iterator(); it.hasNext();) {
 
       String xpath = (String)it.next();
       Object value = map.get(xpath);
-
-      //remove leading slash(es)
-      while (xpath.startsWith("/")) xpath = xpath.substring(1);
-
-      //find next slash
-      int firstSlashIdx = xpath.indexOf("/");
-      if (firstSlashIdx < 0) firstSlashIdx = xpath.length();
-
-      if (firstLoop) {
-        //get first element in xpath -> assume it's the root
-        xpathRoot = xpath.substring(0, firstSlashIdx);
-        Log.debug(45, "\nReferencesHandler.replaceXPathRootWith(); xpathRoot="
-                  +xpathRoot);
-        firstLoop = false;
-      }
-
-      xpath = newRoot + xpath.substring(firstSlashIdx);
-      Log.debug(45, "\nReferencesHandler.replaceXPathRootWith(); adding xpath "
+			xpath = replaceSingleXPathWith(xpath, newRoot);
+      Log.debug(45, "\nReferencesHandler.replaceXPathMapWith(); adding xpath "
                 +"to map: "+xpath);
 
       returnMap.put(xpath, value);
     }
     return returnMap;
   }
+	
+	private static List replaceXPathListWith(List xpaths, String newRoot) {
+
+    if(xpaths == null) return null;
+		String xpathRoot = null;
+    List newList = new ArrayList();
+		
+		for (Iterator it = xpaths.iterator(); it.hasNext();) {
+
+      String xpath = (String)it.next();
+      xpath = replaceSingleXPathWith(xpath, newRoot);
+      Log.debug(45, "\nReferencesHandler.replaceXPathListWith(); adding xpath "
+                +"to map: "+xpath);
+
+      newList.add(xpath);
+    }
+    return newList;
+  }
+	
+	private static String replaceSingleXPathWith(String path, String newRoot) {
+		
+		boolean firstLoop = true;
+		String xpath = path;
+		String xpathRoot = null;
+    
+		//remove leading slash(es)
+		while (xpath.startsWith("/")) xpath = xpath.substring(1);
+		
+		//find next slash
+		int firstSlashIdx = xpath.indexOf("/");
+		if (firstSlashIdx < 0) firstSlashIdx = xpath.length();
+		
+		if (firstLoop) {
+			//get first element in xpath -> assume it's the root
+			xpathRoot = xpath.substring(0, firstSlashIdx);
+			Log.debug(45, "\nReferencesHandler.replaceSingleXPathWith(); xpathRoot="
+			+xpathRoot);
+			firstLoop = false;
+		}
+		
+		xpath = newRoot + xpath.substring(firstSlashIdx);
+		return xpath;
+	}
 
 }
 

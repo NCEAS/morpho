@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-21 18:56:56 $'
- * '$Revision: 1.47 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-26 23:34:38 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -835,15 +835,20 @@ public class PartyPage extends AbstractUIPage {
       if (editingOriginalRef) {
 
         //save referencesNodeIDString and reset it to null, so
-        //getPageData() assumes we're *not* dealing with a reference...
-        String backupReferencesNodeIDString = referencesNodeIDString;
-        referencesNodeIDString = null;
-
-        //values in dialog need to be written to original (referenced) party,
-        referencesHandler.updateOriginalReferenceSubtree(
+				//getPageData() assumes we're *not* dealing with a reference...
+				String backupReferencesNodeIDString = referencesNodeIDString;
+				referencesNodeIDString = null;
+				
+				// need to ignore the "role" while updating the original reference. Hence, we 
+				// pass an ignorelist containing the xpath of the "role" node.
+				List ignoreList = new ArrayList();
+				ignoreList.add("/thisXPathRootWillGetReplaced/role");
+				
+				//values in dialog need to be written to original (referenced) party,
+				referencesHandler.updateOriginalReferenceSubtree(
             UIController.getInstance().getCurrentAbstractDataPackage(),
             backupReferencesNodeIDString,
-            this.getPageData("/thisXPathRootWillGetReplaced"));
+            this.getPageData("/thisXPathRootWillGetReplaced"), ignoreList);
 
         //now make a backup of role string
         String backupRole = getCurrentPickListRole();
