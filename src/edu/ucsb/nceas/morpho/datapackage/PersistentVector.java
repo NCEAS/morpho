@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-10-23 22:48:21 $'
- * '$Revision: 1.12 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-11 00:46:49 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,6 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
 
-
 /* 
 A vector-like class that uses persistent storage (ObjectFile) rather than RAM for
 storage. 
@@ -67,7 +66,7 @@ public class PersistentVector
    * seek time needed to access values for comparisons)
    * For other uses, it can be set to 0 which puts all values on disk.
    */
-  int inMemoryNum = 850000;
+  int inMemoryNum = 20000;
     
   /*
    * a vector that contains either the object or a long pointer
@@ -105,7 +104,7 @@ public class PersistentVector
    *
    */
   public PersistentVector() {
-    objectList = new Vector();
+    objectList = new Vector(inMemoryNum+1);
     objNum++;
     getTempDirFromConfig();
     try{
@@ -217,6 +216,7 @@ public class PersistentVector
         }
       }
       in.close();
+
       }
       catch (Exception e) {};
     }
