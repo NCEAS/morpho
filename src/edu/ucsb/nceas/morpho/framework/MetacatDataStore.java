@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-11 21:51:05 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-14 22:05:53 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,13 +37,25 @@ public class MetacatDataStore extends DataStore
 {
   private ClientFramework framework;
   
+  /**
+   * Constructor to create this object in conjunction with a ceartain framework.
+   */
   public MetacatDataStore(ClientFramework cf)
   {
     super(cf);
     framework = cf;
   }
   
-  public File openFile(String name) throws FileNotFoundException
+  /**
+   * Opens a file from Metacat and returns a File object that represents the
+   * metacat file.  If the file does not exist in the local cache, or is
+   * outdated in the local cache, this method adds the new file to the cache
+   * for later access.
+   * @param name: the docid of the metacat file in &lt;scope&gt;.&lt;number&gt;
+   * or &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
+   */
+  public File openFile(String name) throws FileNotFoundException, 
+                                           CacheAccessException
   {
     String path = parseId(name);
     String dirs = path.substring(0, path.lastIndexOf("/"));
@@ -109,16 +121,22 @@ public class MetacatDataStore extends DataStore
         }
         String responseStr = response.toString();
         //System.out.println("responseStr: " + responseStr/*.substring(22,29)*/);
-        if(responseStr.substring(22, 29).equals("<error>"))
-        {
+        if(responseStr.indexOf("<error>") != -1)
+        {//metacat reported some error
           writer.close();
           reader.close();
           metacatInputReader.close();
           metacatInput.close();
-          if(localfile.delete())
-            System.out.println("file deleted");
-          else
-            System.out.println("file not deleted");
+          if(!localfile.delete())
+          {
+            throw new CacheAccessException("A cached file could not be " + 
+                                  "deleted.  Please check your access " +
+                                  "permissions on the cache directory." +
+                                  "Failing to delete cached files can " +
+                                  "result in erroneous operation of morpho." +
+                                  "You may want to manually clear your cache " +
+                                  "now.");
+          }
           
           throw new FileNotFoundException(name + " does not exist on your " +
                                           "current Metacat system: " + 
@@ -141,24 +159,131 @@ public class MetacatDataStore extends DataStore
     }
   }
   
-  public File saveFile(String name, Reader file)
+  /**
+   * Save an xml metadata file (which already exists) to metacat using the 
+   * "update" action.  
+   * This method is for xml metadata documents only do not use this method to 
+   * upload binary data files.
+   * @param name: the docid
+   * @param file: the file to save
+   * @param publicAccess: true if the file can be read by unauthenticated
+   * users, false otherwise.
+   */
+  public File saveFile(String name, Reader file, boolean publicAccess) 
+              throws MetacatUploadException
   {
-    return new File(name);
+    return saveFile(name, file, publicAccess, "update");
   }
   
-  public File newFile(String name)
-  {
-    return new File(name);
+  /**
+   * Save an xml metadata file to metacat.  This method is for xml metadata 
+   * documents only do not use this method to upload binary data files.
+   * @param name: the docid
+   * @param file: the file to save
+   * @param publicAccess: true if the file can be read by unauthenticated
+   * users, false otherwise.
+   * @param action: the action (update or insert) to perform
+   */
+  private File saveFile(String name, Reader file, boolean publicAccess, 
+                       String action) throws MetacatUploadException
+  {//-attempt to write file to metacat
+   //-if successfull, write file to cache, return pointer to that file
+   //-if not successfull, throw exception, display metacat error.
+    String access = "no";
+    StringBuffer fileText = new StringBuffer();
+    StringBuffer messageBuf = new StringBuffer();
+    
+    if(publicAccess)
+    {
+      access = "yes";
+    }
+    
+    try
+    {
+      while(file.ready())
+      {
+        fileText.append((char)file.read());
+      }
+      
+      Properties prop = new Properties();
+      prop.put("action", action);
+      prop.put("public", access);
+      prop.put("doctext", fileText.toString());
+      prop.put("docid", name);
+      
+      InputStream metacatInput = framework.getMetacatInputStream(prop);
+      InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+      
+      while(metacatInputReader.ready())
+      {
+        messageBuf.append((char)metacatInputReader.read());
+      }
+      
+      String message = messageBuf.toString();
+      System.out.println(message);
+      
+      if(message.indexOf("<error>") != -1)
+      {//there was an error
+        throw new MetacatUploadException(message);
+      }
+      else if(message.indexOf("<success>") != -1)
+      {//the operation worked
+       //write the file to the cache and return the file object
+        String docid = parseIdFromMessage(message);
+        try
+        {
+          return openFile(docid);
+        }
+        catch(Exception ee)
+        {
+          ee.printStackTrace();
+          return null;
+        }
+      }
+      else
+      {//something weird happened.
+        throw new Exception("unexpected error in edu.ucsb.nceas.morpho." +
+                            "framework.MetacatDataStore.saveFile()");
+      } 
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+      return null;
+    }
   }
   
+  /**
+   * Create and save a new file to metacat using the "insert" action.
+   * @param name: the id of the new file
+   * @param file: the stream to the file to write to metacat
+   * @param publicAccess: flag for unauthenticated read access to the new file
+   * true if unauthenticated users should have read access, false otherwise
+   */
+  public File newFile(String name, Reader file, boolean publicAccess)
+         throws MetacatUploadException
+  {
+    return saveFile(name, file, publicAccess, "insert");
+  }
+  
+  /**
+   * Test method
+   */
   public static void main(String[] args)
   {
     String id = args[0];
-    ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
-    MetacatDataStore mds = new MetacatDataStore(cf);
     try
     {
-      File metacatfile = mds.openFile(id);
+      File f = new File(args[1]);
+      FileReader fr = new FileReader(f);
+      
+      ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
+      cf.setUserName("berkley");
+      cf.setPassword("UnSinn123");
+      cf.logIn();
+      MetacatDataStore mds = new MetacatDataStore(cf);
+    
+      File metacatfile = mds.saveFile(id, fr, true);
       System.out.println("file done");
     }
     catch(Exception e)

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-11 21:51:05 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-14 22:05:53 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,20 @@ public abstract class DataStore implements DataStoreInterface
     return path;
   }
   
-  abstract public File openFile(String name) throws FileNotFoundException;
-  abstract public File saveFile(String name, Reader file);
-  abstract public File newFile(String name);
+  protected String parseIdFromMessage(String message)
+  {
+    int docidIndex = message.indexOf("<docid>") + 1;
+    int afterDocidIndex = docidIndex + 6;
+    String docid = message.substring(afterDocidIndex, 
+                                     message.indexOf("<", afterDocidIndex));
+    debug(0, "docid: " + docid);
+    return docid;
+  }
+  
+  abstract public File openFile(String name) throws FileNotFoundException, 
+                                                    CacheAccessException;
+  abstract public File saveFile(String name, Reader file, boolean publicAccess)
+           throws Exception;
+  abstract public File newFile(String name, Reader file, boolean publicAccess)
+           throws Exception;
 }

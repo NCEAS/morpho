@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-11 21:51:05 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-14 22:05:53 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ public class FileSystemDataStore extends DataStore
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  public File saveFile(String name, Reader file)
+  public File saveFile(String name, Reader file, boolean publicAccess)
   {
     try
     {
@@ -107,7 +107,7 @@ public class FileSystemDataStore extends DataStore
       while(file.ready())
       {
         writer.write(file.read()); //write out everything in the reader
-        System.out.print("writing ");
+
       }
       writer.flush();
       writer.close();
@@ -120,11 +120,21 @@ public class FileSystemDataStore extends DataStore
     }
   }
   
-  public File newFile(String name)
+  /**
+   * returns a File object in the local repository.
+   * @param name: the id of the file
+   * @param file: the stream to the file
+   * @param publicAccess: flag for unauthenticated read access to the file.
+   * true if anauthenticated users can read the file, false otherwise.
+   */
+  public File newFile(String name, Reader file, boolean publicAccess)
   {
-    return new File(datadir + "/" + parseId(name));
+    return saveFile(name, file, publicAccess);
   }
   
+  /**
+   * Test method
+   */
   public static void main(String[] args)
   {
     String filename = args[0];
@@ -137,7 +147,7 @@ public class FileSystemDataStore extends DataStore
         ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
         FileSystemDataStore fsds = new FileSystemDataStore(cf);
         File newfile = fsds.openFile(filename);
-        fsds.saveFile(filename2, new FileReader(newfile));
+        fsds.saveFile(filename2, new FileReader(newfile), true);
       }
       catch(Exception e)
       {
@@ -151,7 +161,7 @@ public class FileSystemDataStore extends DataStore
         ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
         FileSystemDataStore fsds = new FileSystemDataStore(cf);
         File newfile = new File(filename);
-        fsds.saveFile(filename2, new FileReader(newfile));
+        fsds.saveFile(filename2, new FileReader(newfile), true);
       }
       catch(Exception e)
       {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-11 21:51:05 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-14 22:05:53 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,28 @@ import java.util.*;
  */
 public interface DataStoreInterface
 {
-  public File openFile(String name) throws FileNotFoundException;
-  public File saveFile(String name, Reader file);
-  public File newFile(String name);
+  /**
+   * open a file from a datastore with the id of name and return a File
+   * object that represents it.  Throws FileNotFoundException if a file
+   * with the id name does not exist in the datastore.  Throws IOException
+   * if a there is a communications problem with the datastore.
+   */
+  public File openFile(String name) throws FileNotFoundException, 
+                                           CacheAccessException;
+  
+  /**
+   * save a file to the datastore with the id of name.  a file object 
+   * representing the saved file is returned.  If the publicAccess boolean
+   * is true, then an unauthenticated user may read the document from the 
+   * data store.
+   */
+  public File saveFile(String name, Reader file, boolean publicAccess)
+         throws Exception;
+  
+  /**
+   * create a new file with an id of name in the datastore and return a File
+   * object that represents it.
+   */
+  public File newFile(String name, Reader file, boolean publicAccess)
+         throws Exception;
 }
