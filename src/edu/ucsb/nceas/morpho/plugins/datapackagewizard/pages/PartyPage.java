@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.24 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-24 19:36:04 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,73 +228,75 @@ public class PartyPage extends AbstractUIPage {
         // Get the source of the event....
         JComboBox source = (JComboBox) e.getSource();
 
-        if (source.getSelectedIndex() == 0) {
-          // If the selected index is 0, then the user has decided not to
-          // use any previous entries. Hence clear out all reference pointers,
-          // set instance to editable stage, clear out all values and remove
-          // the radioPanel
-          isReference = false;
-          referedIdString = null;
-
-          instance.setEditable(true);
-          instance.setValue(null);
-
-          radioPanel.setVisible(false);
-          Log.debug(45, "Setting referedIdString to null");
-        }
-        else {
-          // If selected index is not 0, a previous entry has been chosen for
-          // making reference to and copy values...
-          int index = source.getSelectedIndex();
-
-          // Unhilite all the components... this is because now a valid
-          // previous entered party has been selected
-          WidgetFactory.unhiliteComponent(lastNameLabel);
-          WidgetFactory.unhiliteComponent(organizationLabel);
-          WidgetFactory.unhiliteComponent(positionNameLabel);
-          warningPanel.setVisible(false);
-          WidgetFactory.unhiliteComponent(warningLabel);
-
-          // From the currentList get the element for the index selected
-          // from the comboBox - this element is a List object
-          List currentList = (List) WidgetFactory.responsiblePartyList.get(
-              index);
-
-          // get the 3rd element which is partyPage Object
-          referedPage = (PartyPage) currentList.get(3);
-
-          // find out if the referedPage was created in same DP or was
-          // created in a previously created DP.
-          PartyPage page = partyInSameDP(referedPage);
-          if (page != null) {
-            // referedPage  was created in same DP - so current page would be
-            // a reference... get reference Id, set instance non-editable,
-            // set value of all fields and radio panel visible
-            isReference = true;
-            referedIdString = page.getRefID();
-
-            instance.setEditable(false);
-            instance.setValue(page);
-
-            radioPanel.setVisible(true);
-            Log.debug(45, "The refered page is not in a different DP. "
-                      + "Setting referedIdString to " + referedIdString);
-          }
-          else {
-            // referedPage was not created in same DP - so current page would
-            // not be a reference... set reference Id null, set referDiffDP
-            // true, set instance editable as it is not a reference,
-            // set value of all fields and radio panel invisible
+        if(e.getStateChange() == e.SELECTED){
+          if (source.getSelectedIndex() == 0) {
+            // If the selected index is 0, then the user has decided not to
+            // use any previous entries. Hence clear out all reference pointers,
+            // set instance to editable stage, clear out all values and remove
+            // the radioPanel
             isReference = false;
-            referDiffDP = true;
             referedIdString = null;
 
             instance.setEditable(true);
-            instance.setValue(referedPage);
+            instance.setValue(null);
 
             radioPanel.setVisible(false);
-            Log.debug(45, "The refered page is in a different DP. "
-                      + "Setting referedIdString to null.");
+            Log.debug(45, "Setting referedIdString to null");
+          }
+          else {
+            // If selected index is not 0, a previous entry has been chosen for
+            // making reference to and copy values...
+            int index = source.getSelectedIndex();
+
+            // Unhilite all the components... this is because now a valid
+            // previous entered party has been selected
+            WidgetFactory.unhiliteComponent(lastNameLabel);
+            WidgetFactory.unhiliteComponent(organizationLabel);
+            WidgetFactory.unhiliteComponent(positionNameLabel);
+            warningPanel.setVisible(false);
+            WidgetFactory.unhiliteComponent(warningLabel);
+
+            // From the currentList get the element for the index selected
+            // from the comboBox - this element is a List object
+            List currentList = (List) WidgetFactory.responsiblePartyList.get(
+                index);
+
+            // get the 3rd element which is partyPage Object
+            referedPage = (PartyPage) currentList.get(3);
+
+            // find out if the referedPage was created in same DP or was
+            // created in a previously created DP.
+            PartyPage page = partyInSameDP(referedPage);
+            if (page != null) {
+              // referedPage  was created in same DP - so current page would be
+              // a reference... get reference Id, set instance non-editable,
+              // set value of all fields and radio panel visible
+              isReference = true;
+              referedIdString = page.getRefID();
+
+              instance.setEditable(false);
+              instance.setValue(page);
+
+              radioPanel.setVisible(true);
+              Log.debug(45, "The refered page is not in a different DP. "
+                        + "Setting referedIdString to " + referedIdString);
+            }
+            else {
+              // referedPage was not created in same DP - so current page would
+              // not be a reference... set reference Id null, set referDiffDP
+              // true, set instance editable as it is not a reference,
+              // set value of all fields and radio panel invisible
+              isReference = false;
+              referDiffDP = true;
+              referedIdString = null;
+
+              instance.setEditable(true);
+              instance.setValue(referedPage);
+
+              radioPanel.setVisible(false);
+              Log.debug(45, "The refered page is in a different DP. "
+                        + "Setting referedIdString to null.");
+            }
           }
         }
       }
