@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-13 21:50:43 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-11-18 22:50:08 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -187,7 +187,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected FileSystemDataStore fileSysDataStore;
   protected MetacatDataStore  metacatDataStore;
   
-  protected Node[] entityArray; 
+  protected Entity[] entityArray; 
 
   /**
    *  This abstract method turns the datapackage into a form (e.g. string) that can
@@ -334,7 +334,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  Metadata object, but this offers no obvious advantage over simply saving this node array
    *  as one of the members of AbstractDataPackage
    */
-  public Node[] getEntityArray() {
+  public Entity[] getEntityArray() {
     if (entityArray!=null) return entityArray;
     String entityXpath = "";
     try{
@@ -347,7 +347,11 @@ public abstract class AbstractDataPackage extends MetadataObject
         Log.debug(20,"entityList is null!");
         entityArray = null;
       } else {
-        entityArray = XMLUtilities.getNodeListAsNodeArray(entityNodes);
+        Node[] entityArrayNodes = XMLUtilities.getNodeListAsNodeArray(entityNodes);
+        entityArray = new Entity[entityArrayNodes.length];
+        for (int i=0;i<entityArrayNodes.length;i++) {
+          entityArray[i] = new Entity(entityArrayNodes[i], this);
+        }
       }
     }
     catch (Exception w) {
@@ -366,7 +370,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
       return "No such entity!";
     }
-    Node entity = entityArray[entNum];
+    Node entity = (entityArray[entNum]).getNode();
     String entityNameXpath = "";
     try {
       entityNameXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
@@ -391,7 +395,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
       return "No such entity!";
     }
-    Node entity = entityArray[entNum];
+    Node entity = (entityArray[entNum]).getNode();
     String entityNumRecordsXpath = "";
     try {
       entityNumRecordsXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
@@ -416,7 +420,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
       return "No such entity!";
     }
-    Node entity = entityArray[entNum];
+    Node entity = (entityArray[entNum]).getNode();
     String entityXpath = "";
     try {
       entityXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
@@ -440,7 +444,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(20, "Unable to find entity at index");
       return;
     }
-    Node entity = entityArray[entNum];
+    Node entity = (entityArray[entNum]).getNode();
     Node parent = entity.getParentNode();
     parent.removeChild(entity);	  
   }
@@ -448,35 +452,35 @@ public abstract class AbstractDataPackage extends MetadataObject
     /**
    *  This method inserts an entity in the DOM at the indexed position
    */
-  public void insertEntity(Node entity, int pos) {
+  public void insertEntity(Entity entity, int pos) {
     Document thisDom = getMetadataNode().getOwnerDocument();
-    Node newEntityNode = thisDom.importNode(entity, true); // 'true' imports children
+    Node newEntityNode = thisDom.importNode(entity.getNode(), true); // 'true' imports children
     // now have to figure out where to insert this cloned node and its children
     // First consider case where there are other entities
     if ((entityArray!=null)&&(entityArray.length>0)) {
       if (entityArray.length>pos) {
-				Node par = entityArray[pos].getParentNode();
-				par.insertBefore(newEntityNode,entityArray[pos]);
+				Node par = ((entityArray[pos]).getNode()).getParentNode();
+				par.insertBefore(newEntityNode,(entityArray[pos]).getNode());
 				// now in DOM; need to insert in EntityArray
-			  Node[] newEntArray = new Node[entityArray.length + 1];
+			  Entity[] newEntArray = new Entity[entityArray.length + 1];
 				for (int i=0; i<pos; i++) {
 					newEntArray[i] = entityArray[i];
 				}
-				newEntArray[pos] = newEntityNode;
+				newEntArray[pos] = new Entity(newEntityNode, this);
 				for (int i=pos+1; i<entityArray.length; i++) {
 					newEntArray[i] = entityArray[i];
 				}
 			  entityArray = newEntArray;
 			}
 			else {  // insert at end of other entities
-				Node par1 = entityArray[0].getParentNode();
+				Node par1 = ((entityArray[0]).getNode()).getParentNode();
 				par1.appendChild(newEntityNode);
 				// now in DOM; need to insert in EntityArray
-			  Node[] newEntArray = new Node[entityArray.length + 1];
+			  Entity[] newEntArray = new Entity[entityArray.length + 1];
 				for (int i=0; i<entityArray.length; i++) {
 					newEntArray[i] = entityArray[i];
 				}
-				newEntArray[entityArray.length] = newEntityNode;
+				newEntArray[entityArray.length] = new Entity(newEntityNode, this);
 			  entityArray = newEntArray;
 			}
     }
@@ -492,8 +496,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 			  return;
 			}
 			entityPar.appendChild(newEntityNode);
-			Node[] newEntArray = new Node[1];
-			newEntArray[0] = newEntityNode;
+			Entity[] newEntArray = new Entity[1];
+			newEntArray[0] = new Entity(newEntityNode, this);
 			entityArray = newEntArray;
 		}
   }
@@ -513,7 +517,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     try{
       attributeXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='entity']/attributes")).getNodeValue();
-      NodeList attributeNodes = XMLUtilities.getNodeListWithXPath(entityArray[entityIndex],attributeXpath);
+      NodeList attributeNodes = XMLUtilities.getNodeListWithXPath((entityArray[entityIndex]).getNode(),attributeXpath);
       if (attributeNodes==null) {
         Log.debug(1,"attributeList is null!");
         return null;
@@ -550,7 +554,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 *  This method inserts an attribute at the indexed position
 	 *  in the indexed entity
 	 */
-	public void insertAttribute(int entityIndex, Node newAttrNode, int attrIndex) {
+	public void insertAttribute(int entityIndex, Attribute newAttr, int attrIndex) {
+    Node newAttrNode = newAttr.getNode();
 	  if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
       Log.debug(20, "No such entity!");
 			return;
@@ -565,7 +570,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       String temp = "";
 			try {
         temp = getGenericValue("/xpathKeyMap/contextNode[@name='entity']/attributeParent"); 
-			  attributeParent = XMLUtilities.getNodeWithXPath(entityArray[entityIndex], temp);
+			  attributeParent = XMLUtilities.getNodeWithXPath((entityArray[entityIndex]).getNode(), temp);
 			} catch (Exception w) {
 				Log.debug(20, "Error adding new attribute!");
 			  return;
@@ -730,7 +735,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     try{
       physicalXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
           "/xpathKeyMap/contextNode[@name='entity']/physical")).getNodeValue();
-      NodeList physicalNodes = XMLUtilities.getNodeListWithXPath(entityArray[entityIndex],physicalXpath);
+      NodeList physicalNodes = XMLUtilities.getNodeListWithXPath((entityArray[entityIndex]).getNode(),physicalXpath);
       if (physicalNodes==null) {
         Log.debug(1,"physicalList is null!");
         return null;
