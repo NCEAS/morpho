@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 18:00:35 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-04-21 23:18:16 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 package edu.ucsb.nceas.morphotest.plugins.metadisplay;
 
 import edu.ucsb.nceas.morpho.exception.NullArgumentException;
-import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
