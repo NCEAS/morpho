@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-27 17:03:41 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-28 18:00:01 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,6 +171,7 @@ public class EntityGUI extends javax.swing.JFrame
     {
       String s = descList.item(0).getFirstChild().getNodeValue();
       description = new JLabel(htmlBegin + s + htmlEnd);
+      //description.setPreferredSize(new Dimension(200, 100));
     }
     if(numrecList.getLength() != 0)
     {
@@ -307,20 +308,16 @@ public class EntityGUI extends javax.swing.JFrame
     entityPanel.add(new JLabel(" "));
     entityPanel.add(caseSensitiveL);
     entityPanel.add(caseSensitive);
-    entityPanel.add(new JLabel(" "));
     entityPanel.add(orientationL);
     entityPanel.add(orientation);
-    entityPanel.add(new JLabel(" "));
     entityPanel.add(new JLabel(" "));
     entityPanel.add(editEntityButton);
     entityPanel.setPreferredSize(new Dimension(225, 280));
     entityPanel.setBackground(Color.white);
     
-    JButton edit = new JButton("Edit Attributes");
-    edit.addActionListener(this);
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    buttonPanel.add(edit);
+    buttonPanel.add(editAttributes);
     buttonPanel.setBackground(Color.white);
     listandbuttons.add(new JLabel(" "));
     listandbuttons.add(buttonPanel);
@@ -334,10 +331,10 @@ public class EntityGUI extends javax.swing.JFrame
     entattPanel.setBorder(BorderFactory.createLoweredBevelBorder());
     entattPanel.setBackground(Color.white);
     
-    
     mainPanel.add(createHeadPanel());
     mainPanel.add(entattPanel);
-    //mainPanel.add(attributePanel);
+    mainPanel.add(editEntityButton);
+    mainPanel.add(editAttributes);
     
     contentPane.add(mainPanel);
   }
