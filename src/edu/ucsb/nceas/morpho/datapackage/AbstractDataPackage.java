@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 04:15:34 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2004-03-25 20:53:38 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -737,6 +737,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
    public void removeGeographicNodes() {
      NodeList gList = getGeographicNodeList();
+     if (gList==null) return;
      for (int i=0;i<gList.getLength();i++) {
        Node node = gList.item(i);
        Node par = node.getParentNode();
@@ -768,6 +769,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
    public void removeTemporalNodes() {
      NodeList tList = getTemporalNodeList();
+     if (tList==null) return;
      for (int i=0;i<tList.getLength();i++) {
        Node node = tList.item(i);
        Node par = node.getParentNode();
