@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-11 21:21:08 $'
- * '$Revision: 1.9 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-13 05:43:59 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,6 +265,11 @@ public class MetadataObject
       } catch (Exception e) {
           Log.debug(5, "error in XPath node selection in MetadataObject"+e.toString());
       }
+  }
+  
+  public String toString() {
+  
+    return XMLUtilities.getDOMTreeAsString(metadataNode);
   }
   
 }

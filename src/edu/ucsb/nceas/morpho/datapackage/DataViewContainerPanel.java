@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-12 22:39:56 $'
- * '$Revision: 1.76 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-13 05:43:59 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -947,7 +947,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
             }
           }
         }
-        catch (Exception q) {Log.debug(5,"Exception opening file!");}
+        catch (Exception q) {
+          Log.debug(5,"Exception opening file!");
+          q.printStackTrace();
+        }
       }
       dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
       dv.setAbstractDataPackage(adp);

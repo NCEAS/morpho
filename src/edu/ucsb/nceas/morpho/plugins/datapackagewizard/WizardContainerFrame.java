@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-12 00:39:25 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2003-12-13 05:43:59 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -437,6 +437,7 @@ public class WizardContainerFrame extends JFrame {
       addPageDataToResultsMap((WizardPage)(pagesList.get(DATA_LOCATION)),wizData);
     }
 
+    // now add unique ID's to all dataTables and attributes
     addIDs(
       new String[]  {
                       "/eml:eml/dataset/dataTable",
@@ -447,12 +448,24 @@ public class WizardContainerFrame extends JFrame {
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
     Log.debug(45, wizData.toString());
 
+    ////////////////////////////////////////////////////////////////////////////
+    // this is the end of the page processing - wizData OrderedMap should now 
+    // contain all values in correct order
+    ////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // next, create a DOM from the OrderedMap...
+    ////////////////////////////////////////////////////////////////////////////
 
     Node rootNode = null;
 
     //create a new empty DOM document to be populated by the wizard values:
     try {
-
       rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
                     new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
     } catch (Exception e) {
@@ -477,6 +490,10 @@ public class WizardContainerFrame extends JFrame {
       return;
     }
 
+    
+    Log.debug(49, "\n\n********** Wizard finished: DOM:");
+    Log.debug(49, XMLUtilities.getDOMTreeAsString(rootNode));
+    
     listener.wizardComplete(rootNode);
     
     // now clean up
