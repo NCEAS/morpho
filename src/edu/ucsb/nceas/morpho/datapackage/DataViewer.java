@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 21:59:31 $'
- * '$Revision: 1.98 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-21 22:13:05 $'
+ * '$Revision: 1.99 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -612,7 +612,6 @@ public class DataViewer extends javax.swing.JPanel
      */
     public void init() {
       missing_metadata_flag = false;
-      if(adp!=null) {  // eml200 branch !
         if (entityIndex == -1) {
           Log.debug(1, "Entity index has not been set!");
           return;
@@ -677,7 +676,7 @@ public class DataViewer extends javax.swing.JPanel
           }
         }
 
-      }
+      
 
       // now examine format info and see if we want to simply display a text
       // file, create a table, or display an image
@@ -804,9 +803,16 @@ public class DataViewer extends javax.swing.JPanel
           }
         }
         else {
-          //Log.debug(9, "Unable to display data!");
           // Couldn't show data view
+          // create an empty table that cannot be edited since
+          // do not know how to display
+          Log.debug(9, "Unable to display the data when stored in this format ("
+          +format+"). \nHowever, an empty table with"
+                    +" the column header information will be shown.");
           showDataView = false;
+          dataFile = null;
+          buildTable();
+          table.setEnabled(false);
           /*StateChangeMonitor.getInstance().notifyStateChange(
                  new StateChangeEvent(
                  DataViewerPanel,

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-21 04:43:17 $'
- * '$Revision: 1.89 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-21 22:13:05 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -835,60 +835,40 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dv.init();
       lastPV = dv.getPV();
       JPanel tablePanel = null;
-      if ((dv.getShowDataView())&&(displayFile!=null))
+      
+      tablePanel = dv.DataViewerPanel;
+
+      tablePanel.setOpaque(true);
+      tablePanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+      //JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
+      //JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
+      TabbedContainer compn =
+        (TabbedContainer) tabbedEntitiesPanel.getComponentAt(index);
+      JSplitPane entireDataPane = compn.getSplitPane();
+      JPanel currentDataPanel = (JPanel)entireDataPane.getLeftComponent();
+      currentDataPanel.setLayout(new BorderLayout(0,0));
+      currentDataPanel.add(BorderLayout.CENTER,tablePanel);
+      currentDataPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+      if (GUIAction.getMorphoFrameAncestor(this) == null)
       {
-        tablePanel = dv.DataViewerPanel;
-      }
+        //Store the event create from its kid - DataViewer
+        Vector eventList = dv.getStoredStateChangeEvent();
+        if (eventList != null)
+        {
+          for (int i= 0; i<eventList.size(); i++)
+          {
+            StateChangeEvent eventInKid =
+                                  (StateChangeEvent) eventList.elementAt(i);
+            storingStateChangeEvent(eventInKid);
+          }//for
+        }//if
+
+      }//if
       else
       {
-        tablePanel = new JPanel();
-        tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
-        String text = null;
-        if ((dataId == null) || (dataId.equals("")))
-        {
-          text = "Either there is no data file, or format of data "+
-               "file was not recognized!";
-        }
-        else
-        {
-          text = "Data in data file "+ dataId+" cannot be read!";
-        }
-        JLabel warning = new JLabel(text);
-       warning.setForeground(UISettings.ALERT_TEXT_COLOR);
-        tablePanel.add(BorderLayout.CENTER, warning);
-      }
-
-    tablePanel.setOpaque(true);
-    tablePanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    //JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
-    //JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
-    TabbedContainer compn =
-        (TabbedContainer) tabbedEntitiesPanel.getComponentAt(index);
-    JSplitPane entireDataPane = compn.getSplitPane();
-    JPanel currentDataPanel = (JPanel)entireDataPane.getLeftComponent();
-    currentDataPanel.setLayout(new BorderLayout(0,0));
-    currentDataPanel.add(BorderLayout.CENTER,tablePanel);
-    currentDataPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-    if (GUIAction.getMorphoFrameAncestor(this) == null)
-    {
-      //Store the event create from its kid - DataViewer
-      Vector eventList = dv.getStoredStateChangeEvent();
-      if (eventList != null)
-      {
-        for (int i= 0; i<eventList.size(); i++)
-        {
-          StateChangeEvent eventInKid =
-                                  (StateChangeEvent) eventList.elementAt(i);
-          storingStateChangeEvent(eventInKid);
-        }//for
-      }//if
-
-    }//if
-    else
-    {
-      //frame already has, borading the event
-      dv.broadcastStoredStateChangeEvent();
-    }
+        //frame already has, borading the event
+        dv.broadcastStoredStateChangeEvent();
+     }
 
   }
 
