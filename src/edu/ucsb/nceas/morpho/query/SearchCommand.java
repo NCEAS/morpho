@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 18:15:45 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-20 21:13:54 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,8 +106,7 @@ public class SearchCommand implements Command
         public void finished() 
         {
           ResultPanel resultDisplayPanel = new ResultPanel(
-              results, true, true, 12, null, 
-              resultWindow.getDefaultContentAreaSize());
+              results, 12, null, resultWindow.getDefaultContentAreaSize());
           resultDisplayPanel.setVisible(true);
           resultWindow.setMainContentPane(resultDisplayPanel);
           resultWindow.setMessage(results.getRowCount() + " data sets found");
