@@ -1,0 +1,2773 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 10.0, SVG Export Plug-In . SVG Version: 3.0.0 Build 76)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"    "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" [
+	<!ENTITY ns_flows "http://ns.adobe.com/Flows/1.0/">
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
+	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
+]>
+<svg 
+	 xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;" i:viewOrigin="-477 1420" i:rulerOrigin="486.5 521.5" i:pageBounds="-486.5 1314.5 1097.5 -521.5"
+	 xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+	 width="1507.82" height="1889.548" viewBox="0 0 1507.82 1889.548"
+	 overflow="visible" enable-background="new 0 0 1507.82 1889.548" xml:space="preserve">
+	<style type="text/css">
+	<![CDATA[
+@font-face{font-family:'ArialMT';src:url("data:;base64,\
+T1RUTwADACAAAQAQQ0ZGILjsKycAAAA8AAAfDEdQT1O/qttuAAAf+AAABMhjbWFwQs//+wAAH0gA\
+AACwAQAEAgABAQEIQXJpYWxNVAABAQEh+BwB+BgE+3L7jvqC+i4FHQAArTMN96gP980RsBwe5xIA\
+AgEBBdhFdXJvQ29weXJpZ2h0IChjKSAxOTkxLCAxOTkzLCAxOTk2LCAxOTk3LCAxOTk4LCAxOTk5\
+IEFkb2JlIFN5c3RlbXMgSW5jb3Jwb3JhdGVkLiAgQWxsIFJpZ2h0cyBSZXNlcnZlZC5BcmlhbCBp\
+cyBhIHRyYWRlbWFyayBvZiBUaGUgTW9ub3R5cGUgQ29ycG9yYXRpb24sIHJlZ2lzdGVyZWQgaW4g\
+dGhlIFVTIFBhdGVudCBhbmQgVHJhZGVtYXJrIE9mZmljZSBhbmQgZWxzZXdoZXJlLgAAAQABOgA9\
+AAA/HABfAABiAABoAQB0AAB3AACZAAClAACqAAGHAABkAgABAAQADgA2AGoA0wF3AgMCmgK9Av4D\
+PwOgA8ID4QP2BAUEHQRmBIsE7wVpBZoF7QZYBoUHDwd2B48HuAfdB/4IJAiFCU0JkwoECmAKrQrR\
+CvELUwt5C4wLwwv1DAoMWwySDOsNOw3CDi4OrA7HDwEPPA+sEA0QRhB6EJQQwBDTEPkRfhHhEjES\
+iRLiEyAToRPlFAEUQRR1FIgU8hU5FY4V6hZFFnsW2xcUF2QXnBghGG0Y0BkOGWUaDhouGm4ajxrL\
+GxgbwBxTHOL8MQ78MYuLAfdKiwMO/DGL7/j8dxLg9wEi7xPQ5Bbv7ycGE+Ci2RXEBqT4DwX3M/sB\
++zMHDvvk+GL3kot3ErTv0+8TcBOw94H4YhXBBqH3HQX3CSf7CQf7KPsdFcEGofcdBfcJJ/sJBw6U\
+dvdk0/dG0/dmdwGW+KoDvn8V1Qa192QF9y4GYPtkBdUGtfdkBfcr0/scBq/3RgXv0zYGtfdmBUIG\
+YPtmBfstBrX3ZgVCBmD7ZgX7KEP3GgZm+0YFKkPeBvcQ944V9y4GZvtGBfstBg4k9zZWdqF2ErHj\
+QuP3Ar/3CuUTLhOO948kFb8GEy7kB/cekdH19Br3MvsWq0qbHoeMhIyJjAj3kgelhcZ/minmmBh6\
+9wk+viqUCLVXYQd1iWyHaHwIUnNWTC8acI8z41weuXOsgaaGCBOW+6wHI5V69wmHqDN7GBNWmPtR\
+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\
+//8AAQAAAAFrZXJuAAgAAAABAAAAAQAEAAIAAAABAAgAAQQyAAQAAAAtAGQAfgCUAJ4ArACyALgA\
+7gD8AQYBIAE+AVQBagGIAaoBxAHKAeQB7gIoAjYCaAKSAsQCygLYAvYDAAMaAzgDPgNEA04DWANm\
+A4ADjgPMA9oD8AQGBAwEIgQsAAYANf/OADf/zgA4/9gAOv+mAD//xABd/+IABQAB/7oACP/HAEP/\
+zgBR/84AUv/OAAIACP+cAF//nAADAAH/xAAI/5wAX/+cAAEAAf/OAAEAAf/OAA0AJP/iACj/4gAw\
+/+IAMv/iADX/iAA2/84AN/+6ADj/zgA6/5wAVP/iAFX/2ABW/9gAWP/YAAMADf/sAA//7AA2//YA\
+AgAN/+IAD//iAAYADf+6AA//ugAi/9gAN/+6ADj/2AA6/6YABwAN/2oAD/9qACL/sABA/84ARP/i\
+AE7/4gBR/9MABQAN/+IAD//iACL/7ABA/+wAVP/sAAUAMP/OAET/2ABO/9gAVP/iAFj/zgAHAAj/\
+YAA1/5IAN/+SADj/ugA6/3QAWP/iAF//dAAIAA3/2AAP/9gAIv/sADX/2AA3/84AOP/iADn/xAA6\
+/7oABgAN/0wAD/9MACL/iABA/9gARP/OAE7/zgABADb/9gAGADD/7AA1/+IANv/YADf/zgA4/+IA\
+Ov/OAAIADf/sAA//7AAOAA3/iAAO/3QAD/+IABv/7AAc/+wAIv+IADD/2ABA/4gARP+IAE7/iABR\
+/4gAVP+IAFb/iABY/4gAAwAN/9gAD//YACL/2AAMAA3/gwAO/7AAD/+DABv/2AAc/9gAIv+wACj/\
+2AAw/9gAQP+6AET/sABO/7AAVP+6AAoADf+wAA7/2AAP/7AAIv/OADD/7ABA/9gARP/iAE7/4gBU\
+/+IAWP/sAAwADf90AA7/dAAP/3QAG//EABz/xAAi/5IAMP+rAED/dABE/3QASP/sAE7/dABU/5IA\
+AQA//8cAAwBV/+wAVv/sAFj/4gAHAA3/2AAP/9gAQf/2AEv/7ABU/+wAVf/sAFj/7AACAA3/8QBK\
+/+wABgAN//EAD//xAFX/4gBW/+wAV//iAFj/7AAHAAgAMgAN/+IAD//iAED/4gBE/+IATv/iAF8A\
+PAABAFH/9gABAFj/4gACAET/7ABO/+wAAgBU//YAWP/xAAMAVP/2AFX/7ABY//EABgAN/9gAD//Y\
+AFX/8QBW//EAV//iAFj/4gADAA3/3QAP/90AWP/iAA8ADf/OAA//zgAbAB4AHAAeAED/9gBIAA8A\
+SgAPAEsADwBMABkATQAZAE8AHgBTACgAVAAPAFUAHgBYAB4AAwAN//EAD//xAFb/4gAFAA3/sAAP\
+/7AAQP/nAET/5wBO/+cABQAN/8QAD//EAED/8QBE//YATv/2AAEARP/iAAUADf+cAA//nABA/+wA\
+RP/sAE7/7AACAET/8QBO//EAAQAB/9gAAQAtAAEACAANAA8AGwAcACIAIwAkACUAJwArACwALQAw\
+ADEAMgAzADQANQA2ADcAOAA6AD8AQABBAEIARABFAEYARwBKAEwATQBOAE8AUQBSAFUAVgBXAFgA\
+WQBf")}
+@font-face{font-family:'Stencil';src:url("data:;base64,\
+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")}
+	]]>
+	</style>
+	<metadata>
+		<variableSets  xmlns="http://ns.adobe.com/Variables/1.0/">
+			<variableSet  varSetName="binding1" locked="none">
+				<variables></variables>
+				<v:sampleDataSets  xmlns="http://ns.adobe.com/GenericCustomNamespace/1.0/" xmlns:v="http://ns.adobe.com/Variables/1.0/">
+					</v:sampleDataSets>
+			</variableSet>
+		</variableSets>
+		<sfw  xmlns="&ns_sfw;">
+			<slices></slices>
+			<sliceSourceBounds  x="-477" y="-469.548" width="1507.82" height="1889.548" bottomLeftOrigin="true"></sliceSourceBounds>
+		</sfw>
+	</metadata>
+	<switch>
+		<foreignObject requiredExtensions="&ns_ai;" x="0" y="0" width="1" height="1">
+			<i:pgfRef  xlink:href="#adobe_illustrator_pgf">
+			</i:pgfRef>
+		</foreignObject>
+		<g i:extraneous="self">
+			<g id="Layer_1" i:layer="yes" i:dimmedPercent="50" i:rgbTrio="#4F008000FFFF">
+				<path i:knockout="Off" fill="#99CCFF" stroke="#FFFFFF" d="M442.5,237h-15.021v-18.844H442.5V237z"/>
+				<g>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M138.496,347.486
+						h444.395v309.08H138.496V347.486z"/>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M360.693,502.026
+						"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M146.955,405.438
+						h428.674v80.81H146.955V405.438z"/>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M361.292,445.842
+						"/>
+				</g>
+				<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M361.291,555.544"
+					/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M311.245,366.228"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_1_" />
+						</foreignObject>
+						<text id="XMLID_1_" transform="matrix(1 0 0 1 311.2451 366.228)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaDisplay</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M340.582,366.228"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_2_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_2_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M317.608,417.266"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>: Header</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_3_" />
+						</foreignObject>
+						<text id="XMLID_3_" transform="matrix(1 0 0 1 317.6084 417.2661)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">: Header</tspan></text>
+					</switch>
+				</g>
+				<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M146.954,520.864
+					h428.675v120.343H146.954V520.864z"/>
+				<g>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M294.885,171.515
+						h112.404v49.446H294.885V171.515z"/>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M351.087,196.238
+						"/>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M298.361,193.581"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="10" line-height="10.616">
+									<p><span>: MetaDisplayController</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_4_" />
+						</foreignObject>
+						<text id="XMLID_4_" transform="matrix(1 0 0 1 298.3608 193.5806)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="10">: MetaDisplayController</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M332.364,193.581"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_5_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_5_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				<g>
+					
+						<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M361.429,219.638l0.492,128.031"/>
+					<g>
+						<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M357.205,225.36
+							l4.113-5.281l4.414,5.666l-4.113,5.281L357.205,225.36z"/>
+						<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+							M361.468,225.553"/>
+					</g>
+				</g>
+				<path fill="#B7B7B7" stroke="#000000" d="M214.988,446.197h-58.4v-28h58.4V446.197z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M172.609,434.854"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>BACK</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_6_" />
+					</foreignObject>
+					<text id="XMLID_6_" transform="matrix(1 0 0 1 172.6089 434.8535)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">BACK</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M568.75,443.468h-58.398v-28h58.398V443.468z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M523.01,433.868"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>CLOSE</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_7_" />
+					</foreignObject>
+					<text id="XMLID_7_" transform="matrix(1 0 0 1 523.0103 433.8682)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">CLOSE</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M568.681,477.853h-58.4v-28h58.4V477.853z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M527.951,469.052"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>EDIT</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_8_" />
+					</foreignObject>
+					<text id="XMLID_8_" transform="matrix(1 0 0 1 527.9512 469.0518)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">EDIT</tspan></text>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M546.988,630.197"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_9_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_9_">
+						</g>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M615.389,488.162"/>
+				<path fill="#B7B7B7" stroke="#000000" d="M453.781,474.902H156.165v-14.666h297.616V474.902z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M165.89,471.546"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>Click on a </span><span  fill="#0000FF">link </span><span>in Path View</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_10_" />
+					</foreignObject>
+					<text id="XMLID_10_" transform="matrix(1 0 0 1 165.8901 471.5464)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">Click on a </tspan><tspan x="44.817" y="0" fill="#0000FF" font-family="'ArialMT'" font-size="9.6">link </tspan><tspan x="61.889" y="0" font-family="'ArialMT'" font-size="9.6">in Path View</tspan></text>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M918.98,348.698
+						h444.395v309.08H918.98V348.698z"/>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1141.178,503.238"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M927.439,406.65
+						h428.674v80.81H927.439V406.65z"/>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1141.777,447.054"/>
+				</g>
+				<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M1141.775,556.756
+					"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1093.063,390.773"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_11_" />
+						</foreignObject>
+						<text id="XMLID_11_" transform="matrix(1 0 0 1 1093.0635 390.7734)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaDisplay</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1122.4,390.773"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_12_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_12_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1098.094,418.478"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>: Header</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_13_" />
+						</foreignObject>
+						<text id="XMLID_13_" transform="matrix(1 0 0 1 1098.0938 418.478)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">: Header</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M927.439,522.076
+						h428.674v120.343H927.439V522.076z"/>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1100.05,544.727"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>:HTMLDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_14_" />
+						</foreignObject>
+						<text id="XMLID_14_" transform="matrix(1 0 0 1 1100.0498 544.7271)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">:HTMLDisplay</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M1075.37,172.727
+						h112.403v49.446H1075.37V172.727z"/>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M1131.572,197.45
+						"/>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1083.512,194.792"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaController</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_15_" />
+						</foreignObject>
+						<text id="XMLID_15_" transform="matrix(1 0 0 1 1083.5117 194.7925)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaController</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1112.849,194.792"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_16_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_16_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M1127.914,220.85l0.492,128.031"/>
+				<g>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1123.689,226.572l4.113-5.281l4.414,5.666l-4.113,5.281L1123.689,226.572z"/>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1127.953,226.765"/>
+				</g>
+				<path fill="#B7B7B7" stroke="#000000" d="M995.473,447.409h-58.399v-28h58.399V447.409z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M945.073,434.608"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>BACK</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_17_" />
+					</foreignObject>
+					<text id="XMLID_17_" transform="matrix(1 0 0 1 945.0732 434.6079)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">BACK</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M1342.672,445.409h-58.398v-28h58.398V445.409z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M1295.473,435.809"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>CLOSE</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_18_" />
+					</foreignObject>
+					<text id="XMLID_18_" transform="matrix(1 0 0 1 1295.4727 435.8091)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">CLOSE</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M1341.873,479.793h-58.4v-28h58.4V479.793z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M1301.873,470.993"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>EDIT</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_19_" />
+					</foreignObject>
+					<text id="XMLID_19_" transform="matrix(1 0 0 1 1301.873 470.9927)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">EDIT</tspan></text>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 1386.6719 301.5649">
+								<path fill="none" d="M1505.873,381.565v-80h-119.201v80H1505.873z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>zcall Jalama + pass XPATH.</span></p>
+								<p><span>edit options:</span></p>
+								<p><span>1) popup (modal or not)</span></p>
+								<p><span>2) replace html view by Jalama edit panel &amp; change edit button to OK button.</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_20_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1505.873,381.565v-80h-119.201v80H1505.873z"/>
+						<text id="XMLID_20_" transform="matrix(1 0 0 1 1386.6719 310.2651)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">zcall Jalama + pass </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">XPATH.</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">edit options:</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">1) popup (modal or not)</tspan><tspan x="0" y="46.4" font-family="'ArialMT'" font-size="9.6">2) replace html view by </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">Jalama edit panel &amp; change </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">edit button to OK button.</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M1327.473,631.409"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_21_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_21_">
+						</g>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 1210.1367 213.564">
+								<path fill="none" d="M1292.412,237.526v-23.962h-82.275v23.962H1292.412z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>save settings &amp; tell  parent to hide me</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_22_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1292.412,237.526v-23.962h-82.275v23.962H1292.412z"/>
+						<text id="XMLID_22_" transform="matrix(1 0 0 1 1210.1367 222.2642)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">save settings &amp; tell  </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">parent to hide me</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 970.5039 237.1895">
+								<path fill="none" d="M1089.704,317.189v-80h-119.2v80H1089.704z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>pop from history stack</span></p>
+								<p><span>display in HTML area</span></p>
+								<p><span>update path display</span></p>
+								<p><span>notify Morpho (in case needs to hilite corresponding attribute in dataview etc)</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_23_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1089.704,317.189v-80h-119.2v80H1089.704z"/>
+						<text id="XMLID_23_" transform="matrix(1 0 0 1 970.5039 245.8896)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">pop from history stack</tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">display in HTML area</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">update path display</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">notify Morpho (in case </tspan><tspan x="0" y="46.4" font-family="'ArialMT'" font-size="9.6">needs to hilite </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">corresponding attribute in </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">dataview etc)</tspan></text>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1075.073,193.981H969.674"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M969.674,193.981v225.921"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1376.273,183.581h-188.4"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1299.873,210.381h-112.201"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1299.873,208.137v208.527"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1376.273,183.581v279.596"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1376.273,463.719l-34.801-0.543"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M1341.473,502.393v1.073"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M1395.873,489.374"/>
+				<path fill="#B7B7B7" stroke="#000000" d="M1234.266,476.114H936.65v-14.666h297.615V476.114z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M946.375,472.758"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>Click on a </span><span  fill="#0000FF">link </span><span>in Path View</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_24_" />
+					</foreignObject>
+					<text id="XMLID_24_" transform="matrix(1 0 0 1 946.375 472.7583)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">Click on a </tspan><tspan x="44.817" y="0" fill="#0000FF" font-family="'ArialMT'" font-size="9.6">link </tspan><tspan x="61.889" y="0" font-family="'ArialMT'" font-size="9.6">in Path View</tspan></text>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M82.618,968.395
+						h444.395v309.08H82.618V968.395z"/>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M304.815,1122.936"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M91.077,1026.348
+						H519.75v80.809H91.077V1026.348z"/>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M305.414,1066.752"/>
+				</g>
+				<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M305.413,1176.453
+					"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M256.7,1010.471"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_25_" />
+						</foreignObject>
+						<text id="XMLID_25_" transform="matrix(1 0 0 1 256.7002 1010.4712)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaDisplay</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M286.037,1010.471"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_26_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_26_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M261.73,1038.176"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>: Header</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_27_" />
+						</foreignObject>
+						<text id="XMLID_27_" transform="matrix(1 0 0 1 261.73 1038.1758)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">: Header</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M91.076,1141.773
+						H519.75v120.342H91.076V1141.773z"/>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M263.687,1164.424"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>:HTMLDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_28_" />
+						</foreignObject>
+						<text id="XMLID_28_" transform="matrix(1 0 0 1 263.6865 1164.4238)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">:HTMLDisplay</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M239.007,792.424
+						h112.404v49.445H239.007V792.424z"/>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M295.208,817.147
+						"/>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M247.149,814.49"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaController</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_29_" />
+						</foreignObject>
+						<text id="XMLID_29_" transform="matrix(1 0 0 1 247.1489 814.4897)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaController</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M276.485,814.49"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_30_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_30_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M291.55,840.547l0.492,128.031"/>
+				<g>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M287.326,846.27
+						l4.113-5.281l4.414,5.666l-4.113,5.281L287.326,846.27z"/>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M291.589,846.461
+						"/>
+				</g>
+				<path fill="#B7B7B7" stroke="#000000" d="M159.11,1067.105h-58.4v-28h58.4V1067.105z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M108.71,1054.305"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>BACK</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_31_" />
+					</foreignObject>
+					<text id="XMLID_31_" transform="matrix(1 0 0 1 108.71 1054.3047)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">BACK</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M506.309,1065.105h-58.398v-28h58.398V1065.105z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M459.11,1055.506"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>CLOSE</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_32_" />
+					</foreignObject>
+					<text id="XMLID_32_" transform="matrix(1 0 0 1 459.1099 1055.5059)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">CLOSE</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M505.51,1099.49h-58.4v-28h58.4V1099.49z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M465.51,1090.689"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>EDIT</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_33_" />
+					</foreignObject>
+					<text id="XMLID_33_" transform="matrix(1 0 0 1 465.5103 1090.6895)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">EDIT</tspan></text>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 550.3091 921.2622">
+								<path fill="none" d="M669.51,1001.262v-80H550.309v80H669.51z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>zcall Jalama + pass XPATH.</span></p>
+								<p><span>edit options:</span></p>
+								<p><span>1) popup (modal or not)</span></p>
+								<p><span>2) replace html view by Jalama edit panel &amp; change edit button to OK button.</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_34_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M669.51,1001.262v-80H550.309v80H669.51z"/>
+						<text id="XMLID_34_" transform="matrix(1 0 0 1 550.3091 929.9624)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">zcall Jalama + pass </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">XPATH.</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">edit options:</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">1) popup (modal or not)</tspan><tspan x="0" y="46.4" font-family="'ArialMT'" font-size="9.6">2) replace html view by </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">Jalama edit panel &amp; change </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">edit button to OK button.</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M491.11,1251.105"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_35_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_35_">
+						</g>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 373.7739 833.2612">
+								<path fill="none" d="M456.049,857.223v-23.962h-82.275v23.962H456.049z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>save settings &amp; tell  parent to hide me</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_36_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M456.049,857.223v-23.962h-82.275v23.962H456.049z"/>
+						<text id="XMLID_36_" transform="matrix(1 0 0 1 373.7739 841.9614)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">save settings &amp; tell  </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">parent to hide me</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 134.1411 856.8872">
+								<path fill="none" d="M253.341,936.887v-80h-119.2v80H253.341z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>pop from history stack</span></p>
+								<p><span>display in HTML area</span></p>
+								<p><span>update path display</span></p>
+								<p><span>notify Morpho (in case needs to hilite corresponding attribute in dataview etc)</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_37_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M253.341,936.887v-80h-119.2v80H253.341z"/>
+						<text id="XMLID_37_" transform="matrix(1 0 0 1 134.1411 865.5874)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">pop from history stack</tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">display in HTML area</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">update path display</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">notify Morpho (in case </tspan><tspan x="0" y="46.4" font-family="'ArialMT'" font-size="9.6">needs to hilite </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">corresponding attribute in </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">dataview etc)</tspan></text>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M238.71,813.678h-105.4"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M133.31,813.678V1039.6"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M539.911,803.278h-188.4"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M463.51,830.079H351.309"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M463.51,827.834v208.527"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M539.911,803.278v279.597"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M539.911,1083.416l-34.801-0.543"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M505.11,1122.09v1.074"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M559.51,1109.07"/>
+				<path fill="#B7B7B7" stroke="#000000" d="M397.903,1095.811H100.287v-14.666h297.616V1095.811z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M110.012,1092.455"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>Click on a </span><span  fill="#0000FF">link </span><span>in Path View</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_38_" />
+					</foreignObject>
+					<text id="XMLID_38_" transform="matrix(1 0 0 1 110.0117 1092.4551)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">Click on a </tspan><tspan x="44.817" y="0" fill="#0000FF" font-family="'ArialMT'" font-size="9.6">link </tspan><tspan x="61.889" y="0" font-family="'ArialMT'" font-size="9.6">in Path View</tspan></text>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M902.314,962.333
+						h444.395v309.081H902.314V962.333z"/>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1124.512,1116.873"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M910.773,1020.286h428.674v80.81H910.773V1020.286z"/>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1125.11,1060.689"/>
+				</g>
+				<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M1125.109,1170.393"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1076.396,1004.409"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_39_" />
+						</foreignObject>
+						<text id="XMLID_39_" transform="matrix(1 0 0 1 1076.3965 1004.4087)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaDisplay</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1105.733,1004.409"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_40_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_40_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1081.427,1032.113"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>: Header</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_41_" />
+						</foreignObject>
+						<text id="XMLID_41_" transform="matrix(1 0 0 1 1081.4268 1032.1133)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">: Header</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M910.772,1135.711h428.675v120.344H910.772V1135.711z"/>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1083.383,1158.363"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>:HTMLDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_42_" />
+						</foreignObject>
+						<text id="XMLID_42_" transform="matrix(1 0 0 1 1083.3828 1158.3633)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">:HTMLDisplay</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1058.703,786.363h112.404v49.446h-112.404V786.363z"/>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1114.905,811.086"/>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1066.846,808.428"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaController</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_43_" />
+						</foreignObject>
+						<text id="XMLID_43_" transform="matrix(1 0 0 1 1066.8457 808.4282)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaController</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M1096.182,808.428"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_44_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_44_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M1111.247,834.486l0.492,128.031"/>
+				<g>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1107.023,840.208l4.112-5.281l4.414,5.666l-4.113,5.281L1107.023,840.208z"/>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M1111.286,840.401"/>
+				</g>
+				<path fill="#B7B7B7" stroke="#000000" d="M978.807,1061.045h-58.4v-28h58.4V1061.045z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M928.406,1048.244"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>BACK</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_45_" />
+					</foreignObject>
+					<text id="XMLID_45_" transform="matrix(1 0 0 1 928.4063 1048.2441)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">BACK</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M1326.006,1059.045h-58.398v-28h58.398V1059.045z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M1278.807,1049.445"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>CLOSE</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_46_" />
+					</foreignObject>
+					<text id="XMLID_46_" transform="matrix(1 0 0 1 1278.8066 1049.4453)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">CLOSE</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M1325.207,1093.43h-58.4v-28h58.4V1093.43z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M1285.207,1084.629"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>EDIT</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_47_" />
+					</foreignObject>
+					<text id="XMLID_47_" transform="matrix(1 0 0 1 1285.207 1084.6289)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">EDIT</tspan></text>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 1370.0059 915.2007">
+								<path fill="none" d="M1489.207,995.201v-80h-119.201v80H1489.207z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>zcall Jalama + pass XPATH.</span></p>
+								<p><span>edit options:</span></p>
+								<p><span>1) popup (modal or not)</span></p>
+								<p><span>2) replace html view by Jalama edit panel &amp; change edit button to OK button.</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_48_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1489.207,995.201v-80h-119.201v80H1489.207z"/>
+						<text id="XMLID_48_" transform="matrix(1 0 0 1 1370.0059 923.9009)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">zcall Jalama + pass </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">XPATH.</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">edit options:</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">1) popup (modal or not)</tspan><tspan x="0" y="46.4" font-family="'ArialMT'" font-size="9.6">2) replace html view by </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">Jalama edit panel &amp; change </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">edit button to OK button.</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M1310.807,1245.045"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_49_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_49_">
+						</g>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 1193.4707 827.1997">
+								<path fill="none" d="M1275.746,851.162V827.2h-82.275v23.962H1275.746z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>save settings &amp; tell  parent to hide me</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_50_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1275.746,851.162V827.2h-82.275v23.962H1275.746z"/>
+						<text id="XMLID_50_" transform="matrix(1 0 0 1 1193.4707 835.8999)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">save settings &amp; tell  </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">parent to hide me</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 953.8379 850.8247">
+								<path fill="none" d="M1073.037,930.825v-80H953.838v80H1073.037z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>pop from history stack</span></p>
+								<p><span>display in HTML area</span></p>
+								<p><span>update path display</span></p>
+								<p><span>notify Morpho (in case needs to hilite corresponding attribute in dataview etc)</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_51_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1073.037,930.825v-80H953.838v80H1073.037z"/>
+						<text id="XMLID_51_" transform="matrix(1 0 0 1 953.8379 859.5249)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">pop from history stack</tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">display in HTML area</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">update path display</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">notify Morpho (in case </tspan><tspan x="0" y="46.4" font-family="'ArialMT'" font-size="9.6">needs to hilite </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">corresponding attribute in </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">dataview etc)</tspan></text>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1058.406,807.617H953.007"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M953.007,807.617v225.92"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1359.607,797.217h-188.4"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1283.207,824.016h-112.201"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1283.207,821.773v208.528"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1359.607,797.217v279.595"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M1359.607,1077.355l-34.801-0.543"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M1324.807,1116.029v1.072"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M1379.207,1103.01"/>
+				<path fill="#B7B7B7" stroke="#000000" d="M1217.6,1089.75H919.983v-14.666H1217.6V1089.75z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M929.709,1086.395"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>Click on a </span><span  fill="#0000FF">link </span><span>in Path View</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_52_" />
+					</foreignObject>
+					<text id="XMLID_52_" transform="matrix(1 0 0 1 929.709 1086.3945)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">Click on a </tspan><tspan x="44.817" y="0" fill="#0000FF" font-family="'ArialMT'" font-size="9.6">link </tspan><tspan x="61.889" y="0" font-family="'ArialMT'" font-size="9.6">in Path View</tspan></text>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 6.2578 123.5908">
+								<path fill="none" d="M338.075,152.379v-28.788H6.258v28.788H338.075z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p><span>Initial Display Scenario</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_53_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M338.075,152.379v-28.788H6.258v28.788H338.075z"/>
+						<text id="XMLID_53_" transform="matrix(1 0 0 1 6.2578 145.3408)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="24">Initial Display Scenario</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 802.5605 124.9849">
+								<path fill="none" d="M1134.379,153.772v-28.788H802.561v28.788H1134.379z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p><span>Back Button Action</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_54_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1134.379,153.772v-28.788H802.561v28.788H1134.379z"/>
+						<text id="XMLID_54_" transform="matrix(1 0 0 1 802.5605 146.7349)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="24">Back Button Action</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 10.1372 737.2886">
+								<path fill="none" d="M341.955,766.076v-28.787H10.137v28.787H341.955z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p><span>Close Button Action</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_55_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M341.955,766.076v-28.787H10.137v28.787H341.955z"/>
+						<text id="XMLID_55_" transform="matrix(1 0 0 1 10.1372 759.0386)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="24">Close Button Action</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 807.6523 737.2886">
+								<path fill="none" d="M1139.47,766.076v-28.787H807.652v28.787H1139.47z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p><span>Edit Button Action</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_56_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1139.47,766.076v-28.787H807.652v28.787H1139.47z"/>
+						<text id="XMLID_56_" transform="matrix(1 0 0 1 807.6523 759.0386)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="24">Edit Button Action</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M108.556,1580.122h444.395v309.08H108.556V1580.122z"/>
+					<path i:knockout="Off" fill="#F5F8CA" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M330.753,1734.661"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M117.015,1638.073h428.674v80.811H117.015V1638.073z"/>
+					<path i:knockout="Off" fill="#CCCCCC" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M331.352,1678.478"/>
+				</g>
+				<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="M331.351,1788.181
+					"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M282.638,1622.196"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_57_" />
+						</foreignObject>
+						<text id="XMLID_57_" transform="matrix(1 0 0 1 282.6382 1622.1963)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaDisplay</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M311.975,1622.196"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_58_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_58_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M287.668,1649.901"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>: Header</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_59_" />
+						</foreignObject>
+						<text id="XMLID_59_" transform="matrix(1 0 0 1 287.6685 1649.9014)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">: Header</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#CFECEE" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M117.014,1753.499h428.675v120.344H117.014V1753.499z"/>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M289.625,1776.151"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+									<p><span>:HTMLDisplay</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_60_" />
+						</foreignObject>
+						<text id="XMLID_60_" transform="matrix(1 0 0 1 289.6245 1776.1514)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">:HTMLDisplay</tspan></text>
+					</switch>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M264.945,1404.151h112.404v49.445H264.945V1404.151z"/>
+					<path i:knockout="Off" fill="#F70F34" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M321.147,1428.874"/>
+				</g>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M273.087,1426.216"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p><span>: MetaController</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_61_" />
+						</foreignObject>
+						<text id="XMLID_61_" transform="matrix(1 0 0 1 273.0874 1426.2158)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="13.2702">: MetaController</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M302.423,1426.216"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_62_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_62_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M317.489,1452.274l0.492,128.031"/>
+				<g>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M313.265,1457.995l4.112-5.281l4.414,5.666l-4.113,5.281L313.265,1457.995z"/>
+					<path i:knockout="Off" fill="#040404" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+						M317.528,1458.188"/>
+				</g>
+				<path fill="#B7B7B7" stroke="#000000" d="M185.048,1678.833h-58.4v-28h58.4V1678.833z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M134.648,1666.032"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>BACK</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_63_" />
+					</foreignObject>
+					<text id="XMLID_63_" transform="matrix(1 0 0 1 134.6479 1666.0322)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">BACK</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M532.248,1676.833h-58.398v-28h58.398V1676.833z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M485.048,1667.233"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>CLOSE</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_64_" />
+					</foreignObject>
+					<text id="XMLID_64_" transform="matrix(1 0 0 1 485.0483 1667.2334)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">CLOSE</tspan></text>
+				</switch>
+				<path fill="#B7B7B7" stroke="#000000" d="M531.449,1711.218h-58.4v-28h58.4V1711.218z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M491.449,1702.417"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>EDIT</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_65_" />
+					</foreignObject>
+					<text id="XMLID_65_" transform="matrix(1 0 0 1 491.4487 1702.417)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">EDIT</tspan></text>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 576.2476 1532.9893">
+								<path fill="none" d="M695.449,1612.989v-80H576.248v80H695.449z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>zcall Jalama + pass XPATH.</span></p>
+								<p><span>edit options:</span></p>
+								<p><span>1) popup (modal or not)</span></p>
+								<p><span>2) replace html view by Jalama edit panel &amp; change edit button to OK button.</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_66_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M695.449,1612.989v-80H576.248v80H695.449z"/>
+						<text id="XMLID_66_" transform="matrix(1 0 0 1 576.2476 1541.6895)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">zcall Jalama + pass </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">XPATH.</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">edit options:</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">1) popup (modal or not)</tspan><tspan x="0" y="46.399" font-family="'ArialMT'" font-size="9.6">2) replace html view by </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">Jalama edit panel &amp; change </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">edit button to OK button.</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M517.048,1862.833"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_67_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_67_">
+						</g>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 399.7124 1444.9873">
+								<path fill="none" d="M481.988,1468.95v-23.963h-82.275v23.963H481.988z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>save settings &amp; tell  parent to hide me</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_68_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M481.988,1468.95v-23.963h-82.275v23.963H481.988z"/>
+						<text id="XMLID_68_" transform="matrix(1 0 0 1 399.7124 1453.6875)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">save settings &amp; tell  </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">parent to hide me</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 160.0796 1468.6123">
+								<path fill="none" d="M279.279,1548.612v-80H160.08v80H279.279z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>pop from history stack</span></p>
+								<p><span>display in HTML area</span></p>
+								<p><span>update path display</span></p>
+								<p><span>notify Morpho (in case needs to hilite corresponding attribute in dataview etc)</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_69_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M279.279,1548.612v-80H160.08v80H279.279z"/>
+						<text id="XMLID_69_" transform="matrix(1 0 0 1 160.0796 1477.3125)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">pop from history stack</tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">display in HTML area</tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">update path display</tspan><tspan x="0" y="34.8" font-family="'ArialMT'" font-size="9.6">notify Morpho (in case </tspan><tspan x="0" y="46.399" font-family="'ArialMT'" font-size="9.6">needs to hilite </tspan><tspan x="0" y="58" font-family="'ArialMT'" font-size="9.6">corresponding attribute in </tspan><tspan x="0" y="69.6" font-family="'ArialMT'" font-size="9.6">dataview etc)</tspan></text>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M264.648,1425.405H159.249"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M159.249,1425.405v225.92"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M565.849,1415.005h-188.4"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M489.449,1441.804H377.248"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M489.449,1439.562v208.527"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M565.849,1415.005v279.596"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M565.849,1695.144l-34.801-0.543"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M531.048,1733.817v1.072"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.6911" stroke-miterlimit="3.8637" d="
+					M585.449,1720.798"/>
+				<path fill="#B7B7B7" stroke="#000000" d="M423.841,1707.538H126.225v-14.666h297.616V1707.538z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M135.951,1704.183"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>Click on a </span><span  fill="#0000FF">link </span><span>in Path View</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_70_" />
+					</foreignObject>
+					<text id="XMLID_70_" transform="matrix(1 0 0 1 135.9507 1704.1826)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">Click on a </tspan><tspan x="44.817" y="0" fill="#0000FF" font-family="'ArialMT'" font-size="9.6">link </tspan><tspan x="61.889" y="0" font-family="'ArialMT'" font-size="9.6">in Path View</tspan></text>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 13.894 1355.0771">
+								<path fill="none" d="M345.711,1383.864v-28.787H13.894v28.787H345.711z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p><span>Path Link Action</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_71_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M345.711,1383.864v-28.787H13.894v28.787H345.711z"/>
+						<text id="XMLID_71_" transform="matrix(1 0 0 1 13.894 1376.8271)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="24">Path Link Action</tspan></text>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M100.833,197.383h193.744"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M40.093,197.966"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_72_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_72_">
+						</g>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 149.5815 154.7632">
+								<path fill="none" d="M266.03,181.644v-26.88H149.582v26.88H266.03z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>1.0 : display metadata for this identifier (XPATH??)</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_73_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M266.03,181.644v-26.88H149.582v26.88H266.03z"/>
+						<text id="XMLID_73_" transform="matrix(1 0 0 1 149.5815 163.4634)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">1.0 : display metadata for </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">this identifier (XPATH??)</tspan></text>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M407.759,198.383h116.818"/>
+				<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="#BFFDFF" stroke="#000000" d="M600.5,227H524v-58.5h76.5
+					V227z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 413.8735 161.4985">
+								<path fill="none" d="M510,189.5v-28.001h-96.126V189.5H510z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>2.0 : get HTML for  this XML Doc</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_74_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M510,189.5v-28.001h-96.126V189.5H510z"/>
+						<text id="XMLID_74_" transform="matrix(1 0 0 1 413.8735 170.1987)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">2.0 : get HTML for  </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">this XML Doc</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="#FFFFFF" stroke="#000000" d="M502.021,194.844h-16.042v-19.688h16.042V194.844z"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M487.545,178.012h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M487.432,187.746h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M487.504,185.351h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M487.649,182.883h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M487.649,180.488h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M487.504,192.351h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M487.464,190.262h12.918"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M732,19h51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M772.396,12.917l9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M771.896,25.583l9.707-6.166"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M423,189.5h51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M463.396,183.417l9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M462.896,196.083l9.707-6.166"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M782.5,32.5H731"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M742.104,26.417l-9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M742.604,39.083l-9.707-6.166"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M801,1v51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M794.917,41.396l6.166,9.707"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M807.583,40.896l-6.166,9.707"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M816.5,51.5V0"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M822.583,11.104l-6.166-9.707"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M809.917,11.604l6.166-9.707"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M474.5,208H423"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M434.104,201.917l-9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M434.604,214.583l-9.707-6.166"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M443.521,237.844h-16.042v-19.688h16.042V237.844z"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M429.045,221.012h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M428.932,230.746h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M429.004,228.351h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M429.149,225.883h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M429.149,223.488h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M429.004,235.351h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M428.964,233.262h12.918"/>
+				</g>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 446.3735 212.9985">
+								<path fill="none" d="M513.5,241v-28.001h-67.126V241H513.5z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>2.1 : return </span></p>
+								<p><span>HTML Doc</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_75_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M513.5,241v-28.001h-67.126V241H513.5z"/>
+						<text id="XMLID_75_" transform="matrix(1 0 0 1 446.3735 221.6987)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">2.1 : return </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">HTML Doc</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M541.527,199.581"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="11" line-height="10.616">
+									<p><span>: Styler</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_76_" />
+						</foreignObject>
+						<text id="XMLID_76_" transform="matrix(1 0 0 1 541.5273 199.5806)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="11">: Styler</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M570.864,199.581"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="11" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_77_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_77_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="#BFFDFF" stroke="#000000" d="M767.5,289.015h-98v-62.389
+					h98V289.015z"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 602.6377 214.0542">
+								<path fill="none" d="M670.264,250.556v-36.501h-67.626v36.501H670.264z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>2.0.1 : get stylesheet for this XML Doc</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_78_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M670.264,250.556v-36.501h-67.626v36.501H670.264z"/>
+						<text id="XMLID_78_" transform="matrix(1 0 0 1 602.6377 222.7544)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">2.0.1 : get </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">stylesheet for </tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">this XML Doc</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M607.236,252.903h51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M647.632,246.82l9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M647.132,259.486l9.707-6.166"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M653.819,275.112h-51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M613.423,269.029l-9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M613.923,281.695l-9.707-6.166"/>
+				</g>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 600.9292 280.4575">
+								<path fill="none" d="M662.556,307.459v-27.001h-61.626v27.001H662.556z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>2.0.2 : return stylesheet</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_79_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M662.556,307.459v-27.001h-61.626v27.001H662.556z"/>
+						<text id="XMLID_79_" transform="matrix(1 0 0 1 600.9292 289.1577)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">2.0.2 : return </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">stylesheet</tspan></text>
+					</g>
+				</switch>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M563.5,263.786h105.078"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M563.5,263.786V227.5"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M670.889,264.248"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="11" line-height="10.616">
+									<p><span>: StylesheetLookup</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_80_" />
+						</foreignObject>
+						<text id="XMLID_80_" transform="matrix(1 0 0 1 670.8887 264.2476)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="11">: StylesheetLookup</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M709.725,266.248"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_81_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_81_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M628.317,323.104h-241"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M388.817,323.104V220.796"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M627.817,609.722V323.104"/>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M627.317,608.604h-72.5"/>
+				<path i:knockout="Off" fill="#99CCFF" stroke="#FFFFFF" d="M573,638H149.979V523H573V638z"/>
+				<path i:knockout="Off" fill="#99CCFF" stroke="#FFFFFF" d="M434.415,314.819h-15.021v-18.844h15.021V314.819z"/>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M426.29,332.194h51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M466.687,326.111l9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M466.187,338.777l9.707-6.166"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M435.436,315.664h-16.042v-19.688h16.042V315.664z"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M420.96,298.831h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M420.847,308.565h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M420.919,306.17h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M421.064,303.703h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M421.064,301.308h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M420.919,313.17h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M420.879,311.082h12.918"/>
+				</g>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 438.2886 290.8179">
+								<path fill="none" d="M513.915,318.819v-28.001h-75.626v28.001H513.915z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>4.0 : display this</span></p>
+								<p><span>HTML Doc</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_82_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M513.915,318.819v-28.001h-75.626v28.001H513.915z"/>
+						<text id="XMLID_82_" transform="matrix(1 0 0 1 438.2886 299.5181)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">4.0 : display this</tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">HTML Doc</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M573,637.344H149.979V523.5H573V637.344z"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M191.271,540.011h340.655"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M188.297,596.297h340.654"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M190.202,582.448h340.655"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M194.026,568.181h340.655"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M194.026,554.332h340.655"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M190.202,622.925h340.655"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M189.134,610.849h340.654"/>
+				</g>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M322.565,535.515"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.9526" line-height="7.962">
+								<p><span>:HTMLDisplay</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_83_" />
+					</foreignObject>
+					<text id="XMLID_83_" transform="matrix(1 0 0 1 322.5649 535.5151)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.9526">:HTMLDisplay</tspan></text>
+				</switch>
+				<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="#BEFF7F" stroke="#2D3F00" d="M101.5,227.167H0.5V166.5
+					h101V227.167z"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M0.694,198.247"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9" line-height="10.616">
+									<p><span>: DisplayMetaDataAction</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_84_" />
+						</foreignObject>
+						<text id="XMLID_84_" transform="matrix(1 0 0 1 0.6943 198.2471)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9">: DisplayMetaDataAction</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M63.364,197.581"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_85_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_85_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M100.833,271.245h213.619"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M40.093,271.829"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_86_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_86_">
+						</g>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 116.457 285.25">
+								<path fill="none" d="M222.853,300.353V285.25H116.457v15.103H222.853z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>1.2 : return XML Doc</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_87_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M222.853,300.353V285.25H116.457v15.103H222.853z"/>
+						<text id="XMLID_87_" transform="matrix(1 0 0 1 116.457 293.9502)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">1.2 : return XML Doc</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="#FFFFFF" stroke="#000000" d="M235.006,293.99h-16.042v-19.688h16.042V293.99z"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M220.53,277.157h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M220.417,286.891h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M220.49,284.496h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M220.635,282.029h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M220.635,279.634h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M220.49,291.496h12.918"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" d="M220.449,289.408h12.918"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M160.5,280.196H212"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M200.896,274.113l9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M200.396,286.779l9.707-6.166"/>
+				</g>
+				<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="0.5" d="
+					M101.5,301.029H0.5v-60.667h101V301.029z"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M16.152,272.109"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9" line-height="10.616">
+									<p><span>(FRAMEWORK)</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_88_" />
+						</foreignObject>
+						<text id="XMLID_88_" transform="matrix(1 0 0 1 16.1523 272.1094)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9">(FRAMEWORK)</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M63.364,271.443"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_89_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_89_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M314.29,272.324v-50.985"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 117.2495 228.3345">
+								<path fill="none" d="M223.645,263.312v-34.978H117.25v34.978H223.645z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>1.1 : get XML Doc to display, given  this identifier</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_90_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M223.645,263.312v-34.978H117.25v34.978H223.645z"/>
+						<text id="XMLID_90_" transform="matrix(1 0 0 1 117.2495 237.0347)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">1.1 : get XML Doc to </tspan><tspan x="0" y="11.6" font-family="'ArialMT'" font-size="9.6">display, given  this </tspan><tspan x="0" y="23.2" font-family="'ArialMT'" font-size="9.6">identifier</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M208.529,258.405h-51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M168.133,252.322l-9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M168.633,264.988l-9.707-6.166"/>
+				</g>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M158.446,185.682h51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M198.842,179.599l9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M198.342,192.265l9.707-6.166"/>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M101.098,327.898h232.456"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region>
+								<path d="M40.093,341.731"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="24">
+								<p></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_91_" />
+					</foreignObject>
+					<g>
+						<g id="XMLID_91_">
+						</g>
+					</g>
+				</switch>
+				<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="#CCCCCC" stroke="#000000" stroke-width="0.5" d="
+					M101.5,370.932H0.5v-60.667h101V370.932z"/>
+				<g>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M16.152,342.012"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9" line-height="10.616">
+									<p><span>: HistoryStack</span></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_92_" />
+						</foreignObject>
+						<text id="XMLID_92_" transform="matrix(1 0 0 1 16.1523 342.0122)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9">: HistoryStack</tspan></text>
+					</switch>
+					<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="pointText">
+						<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+							<flowDef  xmlns="&ns_flows;">
+								<region>
+									<path d="M63.364,341.346"/>
+								</region>
+								<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="13.2702" line-height="10.616">
+									<p></p>
+								</flow>
+							</flowDef>
+							<x:targetRef  xlink:href="#XMLID_93_" />
+						</foreignObject>
+						<g>
+							<g id="XMLID_93_">
+							</g>
+						</g>
+					</switch>
+				</g>
+				
+					<path i:knockout="Off" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="3.8637" d="
+					M332.692,327.531v-106.22"/>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="1 0 0 1 145.2212 315.1685">
+								<path fill="none" d="M316.933,331.212v-16.044H145.221v16.044H316.933z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  font-family="'ArialMT'" font-size="9.6">
+								<p><span>3.0 : put this identifier on history stack</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_94_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M316.933,331.212v-16.044H145.221v16.044H316.933z"/>
+						<text id="XMLID_94_" transform="matrix(1 0 0 1 145.2212 323.8687)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="9.6">3.0 : put this identifier on history stack</tspan></text>
+					</g>
+				</switch>
+				<g>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M242.39,334.933h-51.5"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M201.994,328.85l-9.707,6.166"/>
+					<path i:knockout="Off" fill="none" stroke="#000000" stroke-width="3" d="M202.494,341.516l-9.707-6.166"/>
+				</g>
+			</g>
+			<g id="Layer_2" i:layer="yes" i:dimmedPercent="50" i:rgbTrio="#FFFF4F004F00">
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="0.7586 -0.6516 0.6516 0.7586 960.3027 1195.1836">
+								<path fill="none" d="M1388.375,827.487l18.322,21.331l-428.072,367.697l-18.322-21.331L1388.375,827.487z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  fill="#FF4000" font-family="'Stencil'" font-size="72" line-height="10.616" a:adobe-horizontal-scale="1">
+								<p><span>unfinished!</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_95_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1388.375,827.487l18.322,21.331l-428.072,367.697l-18.322-21.331L1388.375,827.487z"/>
+						<text id="XMLID_95_" transform="matrix(0.7586 -0.6516 0.6516 0.7586 965.4902 1201.2236)"><tspan x="0" y="0" fill="#FF4000" font-family="'Stencil'" font-size="72">unfinished!</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="0.7586 -0.6516 0.6516 0.7586 1010.3027 585.1694">
+								<path fill="none" d="M1438.375,217.472l18.322,21.331L1028.625,606.5l-18.322-21.331L1438.375,217.472z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  fill="#FF4000" font-family="'Stencil'" font-size="72" line-height="10.616" a:adobe-horizontal-scale="1">
+								<p><span>unfinished!</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_96_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M1438.375,217.472l18.322,21.331L1028.625,606.5l-18.322-21.331L1438.375,217.472z"/>
+						<text id="XMLID_96_" transform="matrix(0.7586 -0.6516 0.6516 0.7586 1015.4902 591.209)"><tspan x="0" y="0" fill="#FF4000" font-family="'Stencil'" font-size="72">unfinished!</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="0.7586 -0.6516 0.6516 0.7586 203.3027 1767.1836">
+								<path fill="none" d="M631.375,1399.486l18.322,21.331l-428.072,367.697l-18.322-21.331L631.375,1399.486z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  fill="#FF4000" font-family="'Stencil'" font-size="72" line-height="10.616" a:adobe-horizontal-scale="1">
+								<p><span>unfinished!</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_97_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M631.375,1399.486l18.322,21.331l-428.072,367.697l-18.322-21.331L631.375,1399.486z"/>
+						<text id="XMLID_97_" transform="matrix(0.7586 -0.6516 0.6516 0.7586 208.4902 1773.2236)"><tspan x="0" y="0" fill="#FF4000" font-family="'Stencil'" font-size="72">unfinished!</tspan></text>
+					</g>
+				</switch>
+				<switch i:knockout="Off" i:objectNS="&ns_flows;" i:objectType="areaText">
+					<foreignObject requiredExtensions="&ns_flows;" x="0" y="0" width="1" height="1" overflow="visible">
+						<flowDef  xmlns="&ns_flows;">
+							<region  textMatrix="0.7586 -0.6516 0.6516 0.7586 180.3027 1169.1836">
+								<path fill="none" d="M608.375,801.487l18.322,21.331l-428.072,367.697l-18.322-21.331L608.375,801.487z"/>
+							</region>
+							<flow  xmlns="&ns_flows;"  fill="#FF4000" font-family="'Stencil'" font-size="72" line-height="10.616" a:adobe-horizontal-scale="1">
+								<p><span>unfinished!</span></p>
+							</flow>
+						</flowDef>
+						<x:targetRef  xlink:href="#XMLID_98_" />
+					</foreignObject>
+					<g>
+						<path i:knockout="Off" fill="none" d="M608.375,801.487l18.322,21.331l-428.072,367.697l-18.322-21.331L608.375,801.487z"/>
+						<text id="XMLID_98_" transform="matrix(0.7586 -0.6516 0.6516 0.7586 185.4902 1175.2236)"><tspan x="0" y="0" fill="#FF4000" font-family="'Stencil'" font-size="72">unfinished!</tspan></text>
+					</g>
+				</switch>
+			</g>
+		</g>
+	</switch>
+	<i:pgf  id="adobe_illustrator_pgf">
+		<![CDATA[
+		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
+		]]>
+		<![CDATA[
+		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
+		]]>
+		<![CDATA[
+		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
+		]]>
+	</i:pgf>
+</svg>
