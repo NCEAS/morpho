@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-14 23:57:34 $'
-* '$Revision: 1.26 $'
+*     '$Date: 2004-04-21 23:17:43 $'
+* '$Revision: 1.27 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -150,10 +150,47 @@ public class Taxonomic extends AbstractUIPage {
     }
     colObjects[1].setInputVerifier(new InputVerifier() {
       public boolean verify(JComponent input) {
-        return Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)input, 1);
+				return Taxonomic.this.verifyTaxonRank(Taxonomic.this, ((JTextField)input).getText(), 1);
       }
+			public boolean shouldYieldFocus(JComponent input) {
+				return true;
+			}
     });
-    //colObjects[2].setInputVerifier(new TaxonNameVerifier(this, 2));
+		
+		colObjects[2].setInputVerifier(new InputVerifier() {
+      public boolean verify(JComponent input) {
+				return Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)input, 2);
+      }
+			public boolean shouldYieldFocus(JComponent input) {
+				return true;
+			}
+    });
+		colObjects[3].setInputVerifier(new InputVerifier() {
+      public boolean verify(JComponent input) {
+				return Taxonomic.this.verifyTaxonRank(Taxonomic.this, ((JTextField)input).getText(), 3);
+      }
+			public boolean shouldYieldFocus(JComponent input) {
+				return true;
+			}
+    });
+		colObjects[4].setInputVerifier(new InputVerifier() {
+      public boolean verify(JComponent input) {
+				return Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)input, 4);
+      }
+			public boolean shouldYieldFocus(JComponent input) {
+				return true;
+			}
+    });
+		colObjects[5].setInputVerifier(new InputVerifier() {
+      public boolean verify(JComponent input) {
+				return Taxonomic.this.verifyCommonName(Taxonomic.this, (JTextField)input);
+      }
+			public boolean shouldYieldFocus(JComponent input) {
+				return true;
+			}
+    });
+		
+		//colObjects[2].setInputVerifier(new TaxonNameVerifier(this, 2));
     //colObjects[3].setInputVerifier(new NewTaxonRankVerifier(this, 3));
     //colObjects[4].setInputVerifier(new TaxonNameVerifier(this, 4));
     //colObjects[5].setInputVerifier(new CommonNameVerifier(this));
@@ -165,16 +202,22 @@ public class Taxonomic extends AbstractUIPage {
         ((JTextField)fe.getComponent()).selectAll();
       }
       public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[1], 1);
+        boolean res = Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[1], 1);
+				if(!res) {
+					taxonList.selectAndEditCell(taxonList.getSelectedRowIndex(), 1);
+				}
       }
-    });*/
+    });
 
     ((JTextField)colObjects[3]).addFocusListener(new FocusListener() {
       public void focusGained(FocusEvent fe){
         ((JTextField)fe.getComponent()).selectAll();
       }
       public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[3], 3);
+        boolean res = Taxonomic.this.verifyTaxonRank(Taxonomic.this, (JTextField)colObjects[3], 3);
+				if(!res) {
+					taxonList.selectAndEditCell(taxonList.getSelectedRowIndex(), 3);
+				}
       }
     });
 
@@ -183,7 +226,10 @@ public class Taxonomic extends AbstractUIPage {
         ((JTextField)fe.getComponent()).selectAll();
       }
       public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[2], 2);
+        boolean res = Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[2], 2);
+				if(!res) {
+					taxonList.selectAndEditCell(taxonList.getSelectedRowIndex(), 2);
+				}
       }
     });
 
@@ -192,7 +238,10 @@ public class Taxonomic extends AbstractUIPage {
         ((JTextField)fe.getComponent()).selectAll();
       }
       public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[4], 4);
+        boolean res = Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)colObjects[4], 4);
+				if(!res) {
+					taxonList.selectAndEditCell(taxonList.getSelectedRowIndex(), 4);
+				}
       }
     });
 
@@ -201,9 +250,12 @@ public class Taxonomic extends AbstractUIPage {
         ((JTextField)fe.getComponent()).selectAll();
       }
       public void focusLost(FocusEvent fe) {
-        Taxonomic.this.verifyCommonName(Taxonomic.this, (JTextField)colObjects[5]);
+        boolean res = Taxonomic.this.verifyCommonName(Taxonomic.this, (JTextField)colObjects[5]);
+				if(!res) {
+					taxonList.selectAndEditCell(taxonList.getSelectedRowIndex(), 5);
+				}
       }
-    });
+    });*/
 
     taxonList = WidgetFactory.makeList(colNames, colObjects, 0, true, true, false,
     true, false, false);
@@ -588,7 +640,8 @@ public class Taxonomic extends AbstractUIPage {
   *          (e.g. if a required field hasn't been filled in)
   */
   public boolean onAdvanceAction() {
-
+		
+		taxonList.fireEditingStopped();
     List rows = this.classList.getListOfRowLists();
     if(rows != null && rows.size() > 0){
 
@@ -679,22 +732,54 @@ public class Taxonomic extends AbstractUIPage {
 
     List data = this.taxonList.getListOfRowLists();
     int len = data.size();
-    TaxonHierarchy[] hierarchies = new TaxonHierarchy[len];
-
+		List validHierarchies = new ArrayList();
+    
     for(int i = 0; i < len; i++) {
-
-      List row = (List)data.get(i);
-      TaxonHierarchy th = (TaxonHierarchy)row.get(6);
-      hierarchies[i] = th;
+			
+			List row = (List)data.get(i);
+			TaxonHierarchy th = (TaxonHierarchy)row.get(6);
+			
+			if(!th.isValidHierarchy()) {
+				continue;
+			}
+			String rank1 = (String)row.get(1);
+			if(rank1.trim().length() > 0) {
+				if(!this.isValidTaxonName(rank1)) continue;
+			}
+			String rank2 = (String)row.get(3);
+			if(rank2.trim().length() > 0) {
+				if(!this.isValidTaxonName(rank2)) continue;
+			}
+			
+			String name1 = (String)row.get(2);
+			if(name1.trim().length() > 0) {
+				if(!this.isValidTaxonName(name1)) continue;
+			}
+			String name2 = (String)row.get(4);
+			if(name2.trim().length() > 0) {
+				if(!this.isValidTaxonName(name2)) continue;
+			}
+			String cn = (String)row.get(5);
+			if(cn.trim().length() > 0) {
+				if(!this.validateCommonNames(cn)) continue;
+			}
+			validHierarchies.add(th);
+			
     }
-
+		len = validHierarchies.size();
+		TaxonHierarchy[] hierarchies = new TaxonHierarchy[len];
+		for(int i = 0; i < len; i++)
+			hierarchies[i] = (TaxonHierarchy)validHierarchies.get(i);
+		
+		//hierarchies = (TaxonHierarchy[])validHierarchies.toArray(hierarchies);
+		
     Arrays.sort(hierarchies);
 
     String lastAddedPrefix = "";
     String prefix = rootXPath + "/taxonomicClassification[1]";
     if(len > 0) {
       Vector taxonLevels = hierarchies[0].getAllTaxons();
-      for(int i = 0; i < taxonLevels.size(); i++) {
+			for(int i = 0; i < taxonLevels.size(); i++) {
 
         TaxonLevel level = (TaxonLevel)taxonLevels.get(i);
         String tRank = level.getRank();
@@ -997,12 +1082,19 @@ public class Taxonomic extends AbstractUIPage {
     }
 
     if ((!middleNodePresent) && endNodePresent) {
+			/*int hlen = hier.getLevelCount();
+			TaxonLevel llevel = hier.getTaxonAtLevel(hlen - 1);
+			String lrank = llevel.getRank();
+			int rankIndex = WizardSettings.getIndexOfTaxonRank(lrank);
+      if(rankIndex != WizardSettings.NUMBER_OF_TAXON_RANKS - 1) {
+				hier.addTaxon(new TaxonLevel("", "", new String[0]));
+			}*/
       ParentTaxaPanel panel = new ParentTaxaPanel();
       panel.setHierarchy(hier);
       List list = panel.getSurrogate();
       list.add(hier);
       this.taxonList.addRow(list);
-
+			
     }
     return toReturn;
 
@@ -1083,7 +1175,7 @@ public class Taxonomic extends AbstractUIPage {
   private static int commonNameCounter = 0;
   private static int taxonNameCounter = 0;
 
-  public boolean verifyTaxonRank(Taxonomic parent, JTextField textField, int pos) {
+  public boolean verifyTaxonRank(Taxonomic parent, String newText, int pos) {
 
     if(validateTaxonCounter > 0) {
       return true;
@@ -1091,14 +1183,14 @@ public class Taxonomic extends AbstractUIPage {
     validateTaxonCounter++;
     boolean error = false;
 
-    String newText = textField.getText();
+    
     int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
 
-    if(newText == null || newText.trim().equals("")) {
+    if(newText == null) {
       validateTaxonCounter--;
       return true;
     }
-    if(!isValidTaxonName(newText)) {
+		if(!isValidTaxonName(newText)) {
       JOptionPane.showMessageDialog(Taxonomic.this, "Invalid characters in the taxon rank. Only letters and spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
       validateTaxonCounter--;
       //Taxonomic.this.taxonList.editCellAt(rowIdx, pos);
@@ -1111,7 +1203,9 @@ public class Taxonomic extends AbstractUIPage {
     TaxonHierarchy hier = null;
     if(selRow.size() > 5)
       hier = (TaxonHierarchy)selRow.get(6);
-
+		
+		if(hier == null) return true;
+		
     int currcnt = hier.getLevelCount();
     if(pos == 1) {
 
@@ -1124,18 +1218,33 @@ public class Taxonomic extends AbstractUIPage {
         mypos = currcnt - 2;
       }
       currLevel = hier.getTaxonAtLevel(mypos);
-      currLevel.setRank(newText);
+			if(currLevel == null) {
+				currLevel = new TaxonLevel(newText, "", new String[0]);
+				hier.insertTaxonAtLevel(0, currLevel);
+			} else {
+				currLevel.setRank(newText);
+			}
       if(newText.trim().equals("")) {
-        hier.removeTaxon(currLevel);
+				 //hier.removeTaxon(currLevel);
       }
 
     } else if(pos == 3) {
-
+			
+			int parentLen = 0; 
+			String cn[]= parseCommonNames((String)selRow.get(0));
+			if(cn != null) parentLen = cn.length;
+			String prevRank = (String)selRow.get(1);
+			if(prevRank.trim().length() > 0) parentLen++;
+			if(currcnt == parentLen) {
+				hier.addTaxon(new TaxonLevel("", "", new String[0]));
+				currcnt = hier.getLevelCount();
+			}
       int mypos = currcnt - 1;
       TaxonLevel currLevel = hier.getTaxonAtLevel(mypos);
       currLevel.setRank(newText);
-      if(newText.trim().equals(""))
-        hier.removeTaxon(currLevel);
+      if(newText.trim().equals("")) {
+				//hier.removeTaxon(currLevel);
+			}
 
     }
 
@@ -1147,7 +1256,7 @@ public class Taxonomic extends AbstractUIPage {
       //jc.requestFocus();
       validateTaxonCounter--;
       int[] selRows = new int[]{idx};
-      Taxonomic.this.taxonList.setSelectedRows(selRows);
+      //Taxonomic.this.taxonList.setSelectedRows(selRows);
       return false;
     }
     List data = taxonList.getListOfRowLists();
@@ -1910,9 +2019,9 @@ class TaxonHierarchy implements Comparable {
     if(taxonLevels.size() < 2)
       return true;
     Vector temp = new Vector();
-    for(int i = 0; i < taxonLevels.size(); i++) {
+		for(int i = 0; i < taxonLevels.size(); i++) {
       TaxonLevel level = (TaxonLevel)taxonLevels.get(i);
-      if(temp.contains(level))
+			if(temp.contains(level))
         return false;
       temp.add(level);
     }

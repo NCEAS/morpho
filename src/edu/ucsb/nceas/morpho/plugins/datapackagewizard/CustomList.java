@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 21:26:09 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2004-04-21 23:17:43 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.EventListener;
+
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -1272,7 +1275,16 @@ public class CustomList extends JPanel {
     }
     table.editCellAt(row, col);
   }
-
+	
+	public void selectAndEditCell(int row, int col) {
+		if (row >= table.getRowCount() || row < 0) {
+      return;
+    }
+    if (col >= table.getColumnCount() || col < 0) {
+      return;
+    }
+    table.selectAndEditCell(row, col);
+	}
 	
 	/**
    * 	Sets the boolean to indicate whether the customlist should be disabled or not. If false,
@@ -1580,8 +1592,7 @@ class MoveDownAction
   }
 }
 
-class CustomJTable
-    extends JTable implements KeyListener{
+class CustomJTable extends JTable{
 
 //    EditableStringRenderer    editableStringRenderer
 //                                    = new EditableStringRenderer();
@@ -1595,6 +1606,9 @@ class CustomJTable
 	boolean[] columnsEditableFlags;
 
   int DOUBLE_CLICK = 2;
+	
+	private int currentRow = -1;
+	private int currentCol = -1;
 
   public CustomJTable(final CustomList parentList, Vector rowVect, Vector colNamesVec, Object[] editors) {
 
@@ -1609,12 +1623,13 @@ class CustomJTable
     // Added a mouse listener which looks for double clicks on
     // columns. If there is a double click on the column,
     // edit action is fired for the parentList
-    this.addMouseListener(new MouseListener() {
-      public void mouseClicked(MouseEvent e) {
-        if(e.getClickCount()==DOUBLE_CLICK){
+		this.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
+				
+				if(e.getClickCount()==DOUBLE_CLICK){
           parentList.fireEditAction();
         }
-      }
+			}
       public void mouseEntered(MouseEvent e) {}
       public void mouseExited(MouseEvent e) {}
       public void mousePressed(MouseEvent e) {}
@@ -1622,8 +1637,7 @@ class CustomJTable
     }
     );
 		
-		addKeyListener(this);
-  }
+	}
 
   //override super
   public TableCellRenderer getCellRenderer(int row, int col) {
@@ -1770,6 +1784,12 @@ class CustomJTable
               + colClass.getName());
     return colClass;
   }
+	
+	private JTextField getTextFieldEditor(int row, int col) {
+		
+		String val = (String)this.getValueAt(row, col);
+		return new JTextField(val);
+	}
 
   //override super
   public boolean getDragEnabled() {
@@ -1800,128 +1820,44 @@ class CustomJTable
     return columnsEditableFlags[col];
   }
 
-	public void keyPressed(KeyEvent ke) {
+	public void selectAndEditCell(int row, int col) {
 		
-		int col = this.getSelectedColumn();
-		int row = this.getSelectedRow();
-		this.editCellAt(row, col);
+		editCellAt(row, col);
+		changeSelection(row, col, false, false);
 	}
 	
-	public void keyReleased(KeyEvent ke) {
+	public void changeSelection(int rowIndex,
+                            int columnIndex,
+                            boolean toggle,
+														boolean extend) {
+															
 		
-	}
-	
-	public void keyTyped(KeyEvent ke) {
-		
-		int col = this.getSelectedColumn();
-		int row = this.getSelectedRow();
-		int maxCol = this.getColumnCount();
-		int maxRow = this.getRowCount();
-		boolean fireListener = false;
-		
-		if(col != -1 && row !=-1) {
+		if(rowIndex != currentRow || columnIndex != currentCol) {
 			
-			if(ke.getKeyChar() == ke.VK_TAB && ke.getModifiers() != ke.SHIFT_MASK) {
-				
-				if(col > 0) col--;
-				else col = maxCol - 1;
-				fireListener = true;
-				
-			} else if(ke.getModifiers() == ke.SHIFT_MASK && ke.getKeyChar() == ke.VK_TAB) {
-				
-				if(col < maxCol -1) col++;
-				else col = 0;
-				fireListener = true;
-				
-			}	else if(ke.getKeyCode() == ke.VK_UP || ke.getKeyCode() == ke.VK_DOWN) {
-				
-				fireListener = true;
-			}  
-			
-			if(fireListener) {
-				
-				if(editors != null && editors[col] != null) {
-					if(editors[col] instanceof JTextField) {
-						
-						JTextField jtf = (JTextField)editors[col];
-						EventListener[] list = jtf.getListeners(java.awt.event.FocusListener.class);
-						for(int i = 0; i < list.length; i++) 
-							((FocusListener)list[i]).focusLost(new FocusEvent(jtf, FocusEvent.FOCUS_LOST));
-						InputVerifier iv = jtf.getInputVerifier();
-						if(iv != null) { 
-							boolean res = iv.verify(jtf);
-							if(!res) jtf.requestFocus();
+			if(editors != null && currentCol >= 0 && currentCol < editors.length && editors[currentCol] != null) {
+				if(editors[currentCol] instanceof JTextField) {
+					
+					InputVerifier iv = ((JTextField)editors[currentCol]).getInputVerifier();
+					JTextField jtf = getTextFieldEditor(currentRow, currentCol);
+					if(iv != null) { 
+						boolean res = iv.verify(jtf);
+						if(!res) { 
+							//jtf.requestFocus();
+							currentCol);
+							this.editCellAt(currentRow, currentCol);
+							//super.changeSelection(currentRow, currentCol, false, false);
+							return;
 						}
-							
 					}
+					
 				}
-			} else {
-				
-				/*Iterator it = keyListeners.iterator();
-				while(it.hasNext()) {
-					KeyListener kl = (KeyListener)it.next();
-					kl.keyTyped(ke);
-				}*/
 			}
-			
 		}
+		currentRow = rowIndex;
+		currentCol = columnIndex;
+		super.changeSelection(rowIndex, columnIndex, toggle, extend);
+		
 	}
 	
-	/*public void processKeyEvent(KeyEvent ke) {
-		
-		System.out.println("in prcossKeyEvent");
-		if(ke.getKeyCode() == ke.KEY_TYPED) {
-			
-			System.out.println("in keytyped ion proceskeyevent");
-			int col = this.getSelectedColumn();
-			int row = this.getSelectedRow();
-			int maxCol = this.getColumnCount();
-			int maxRow = this.getRowCount();
-			boolean fireListener = false;
-			
-			if(col != -1 && row !=-1) {
-				
-				if(ke.getKeyChar() == ke.VK_TAB && ke.getModifiers() != ke.SHIFT_MASK) {
-					
-					if(col > 0) col--;
-					else col = maxCol - 1;
-					fireListener = true;
-					
-				} else if(ke.getModifiers() == ke.SHIFT_MASK && ke.getKeyChar() == ke.VK_TAB) {
-					
-					if(col < maxCol -1) col++;
-					else col = 0;
-					fireListener = true;
-					
-				}	else if(ke.getKeyCode() == ke.VK_UP || ke.getKeyCode() == ke.VK_DOWN) {
-					
-					fireListener = true;
-				}  
-				
-				if(fireListener) {
-					
-					if(editors[col] != null) {
-						if(editors[col] instanceof JTextField) {
-							
-							JTextField jtf = (JTextField)editors[col];
-							EventListener[] list = jtf.getListeners(java.awt.event.FocusListener.class);
-							for(int i = 0; i < list.length; i++) 
-								((FocusListener)list[i]).focusLost(new FocusEvent(jtf, FocusEvent.FOCUS_LOST));
-							InputVerifier iv = jtf.getInputVerifier();
-							if(iv != null) { 
-								System.out.print("Firing input verifier in processkeyevent- ");
-								boolean res = iv.verify(jtf);
-								System.out.println("got result as "+ res);
-								if(!res) jtf.requestFocus();
-							}
-							
-						}
-					}
-				} else super.processKeyEvent(ke);
-			}  else super.processKeyEvent(ke);
-			
-		}  else super.processKeyEvent(ke);
-		return;
-	}*/
-
+	
 }
