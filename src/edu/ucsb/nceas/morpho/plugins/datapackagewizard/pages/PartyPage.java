@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-23 01:08:58 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-01-23 01:10:26 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ public class PartyPage extends AbstractWizardPage {
                                               "Distributor",
                                               "User"};
 
-  private String     refereceIdString;
+  private String     referenceIdString;
   private String     referedIdString;
   public boolean isReference;
 
@@ -403,7 +403,6 @@ public class PartyPage extends AbstractWizardPage {
         if(source.getSelectedIndex() == 0){
           isReference = false;
           referedIdString = null;
-
           instance.setEditable(true);
           instance.setValue(null);
         } else {
@@ -412,10 +411,7 @@ public class PartyPage extends AbstractWizardPage {
           List currentList = (List)WidgetFactory.responsiblePartyList.get(index);
 
           PartyPage referedPage = (PartyPage)currentList.get(3);
-          referedPage.setRefID("rp." +  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT++);
-
-          referedIdString = "rp." +  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT;
-
+          referedIdString = referedPage.getRefID();
           instance.setValue(referedPage);
         }
       }
@@ -593,12 +589,17 @@ public class PartyPage extends AbstractWizardPage {
 
 
   /**
-   *  sets the referenceID for this wizard page
+   *  gets the referenceID for this wizard page
    *
-   *  @param String refID
+   *  @return String refID
    */
-  public void setRefID(String refID){
-    refereceIdString = refID;
+  public String getRefID(){
+    if (!notNullAndNotEmpty(referenceIdString)){
+    } else {
+      referenceIdString = "rp." +  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT++;
+    }
+
+    return referenceIdString;
   }
 
   /**
@@ -879,8 +880,8 @@ public class PartyPage extends AbstractWizardPage {
     returnMap.clear();
     String nextText = null;
 
-    if (notNullAndNotEmpty(refereceIdString)){
-      returnMap.put(xPathRoot + "@id", refereceIdString);
+    if (notNullAndNotEmpty(referenceIdString)){
+      returnMap.put(xPathRoot + "@id", referenceIdString);
     }
 
     nextText = salutationField.getText().trim();
