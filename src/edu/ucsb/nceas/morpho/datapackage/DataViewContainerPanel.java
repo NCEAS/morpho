@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-11 03:47:53 $'
- * '$Revision: 1.75 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-12 22:39:56 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -916,15 +916,35 @@ public class DataViewContainerPanel extends javax.swing.JPanel
             displayFile = mds.openFile(urlinfo);
           }
           else if (loc.equals("")) {  // just created the package; not yet saved!!!
-            // the datafile should be stored in the profile temp dir
-            ConfigXML profile = morpho.getProfile();
-            String separator = profile.get("separator", 0);
-            separator = separator.trim();
-            FileSystemDataStore fds = new FileSystemDataStore(morpho);
-            String temp = new String();
-            temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-            temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-            displayFile = fds.openTempFile(temp);
+            try{
+              // first try looking in the profile temp dir
+              ConfigXML profile = morpho.getProfile();
+              String separator = profile.get("separator", 0);
+              separator = separator.trim();
+              FileSystemDataStore fds = new FileSystemDataStore(morpho);
+              String temp = new String();
+              temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+              temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+              displayFile = fds.openTempFile(temp);
+            }
+            catch (Exception q1) {
+              // oops - now try locally
+              try{
+                FileSystemDataStore fds = new FileSystemDataStore(morpho);
+                displayFile = fds.openFile(urlinfo);
+              }
+              catch (Exception q2) {
+                // now try metacat
+                try{
+                  MetacatDataStore mds = new MetacatDataStore(morpho);
+                  displayFile = mds.openFile(urlinfo);                  
+                }
+                catch (Exception q3) {
+                  // give up!
+                  Log.debug(5,"Exception opening datafile after trying all sources!");
+                }
+              }
+            }
           }
         }
         catch (Exception q) {Log.debug(5,"Exception opening file!");}
