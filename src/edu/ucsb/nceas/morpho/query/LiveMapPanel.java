@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-12 23:05:36 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-01-15 20:30:39 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -537,17 +537,44 @@ public class LiveMapPanel extends JPanel
   }
  
 // added by DFH
- public void setBoundingBox(double top, double left, double bottom, double right) {
-  try{
-    map.getTool().setUserBounds(left, right, bottom, top);
-    map.center_tool(1.0);
-  } catch (Exception w) {
-    Log.debug(9, "error in setting Bounding Box in LiveMapPanel!");
+  public void setBoundingBox(double top, double left, double bottom, double right) {
+    try{
+      map.getTool().setUserBounds(left, right, bottom, top);
+      map.center_tool(1.0);
+    } catch (Exception w) {
+      Log.debug(9, "error in setting Bounding Box in LiveMapPanel!");
+    }
+	  map.repaint();
+	  set_strings();  
   }
-	map.repaint();
-	set_strings();  
-}
-
+ 
+ public double getNorth() {
+   double ret = 0.0;
+   ret = YConvert.toDouble(North.getText());
+   return ret;
+ }
+ 
+ public double getWest() {
+   double ret = 0.0;
+   ret = XConvert.toDouble(West.getText());
+   return ret;
+ }
+ 
+ public double getSouth() {
+   double ret = 0.0;
+   ret = YConvert.toDouble(South.getText());
+   return ret;
+ }
+ 
+ public double getEast() {
+   double ret = 0.0;
+   ret = XConvert.toDouble(East.getText());
+   return ret;
+ }
+ 
+ 
+ 
+ 
 /* 1.0 ----------------------V-------------------------- */
 
   public boolean handleEvent(Event evt) {
