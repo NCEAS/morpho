@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-07 18:01:24 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-03-07 23:12:17 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,6 @@ public class DataViewer extends javax.swing.JFrame
 		TablePanel.setBounds(2,24,750,421);
 		TablePanel.setVisible(false);
 		TablePanel.add(BorderLayout.CENTER,DataScrollPanel);
-		TabbedViewPanel.setSelectedIndex(0);
 		TabbedViewPanel.setSelectedComponent(TextPanel);
 		TabbedViewPanel.setTitleAt(0,"Text View");
 		TabbedViewPanel.setTitleAt(1,"Table View");
@@ -142,7 +141,11 @@ public class DataViewer extends javax.swing.JFrame
 		SymAction lSymAction = new SymAction();
 		CancelButton.addActionListener(lSymAction);
 		UpdateButton.addActionListener(lSymAction);
+		SymChange lSymChange = new SymChange();
+		TabbedViewPanel.addChangeListener(lSymChange);
 		//}}
+		TabbedViewPanel.setSelectedIndex(1);
+		
 	}
 
 	public DataViewer(ClientFramework framework, String sTitle)
@@ -697,4 +700,27 @@ public class DataViewer extends javax.swing.JFrame
         
 	  }		 
 	}
+
+	class SymChange implements javax.swing.event.ChangeListener
+	{
+		public void stateChanged(javax.swing.event.ChangeEvent event)
+		{
+			Object object = event.getSource();
+			if (object == TabbedViewPanel)
+				TabbedViewPanel_stateChanged(event);
+		}
+	}
+
+	void TabbedViewPanel_stateChanged(javax.swing.event.ChangeEvent event)
+	{
+		if (TabbedViewPanel.getSelectedIndex()==0) { // text display
+		  vecToString();
+      JTextArea ta = new JTextArea(dataString);
+      ta.setEditable(false);
+      JScrollPane1.getViewport().removeAll();
+      JScrollPane1.getViewport().add(ta);
+      ta.setCaretPosition(0);
+		}
+	}
+	
 }
