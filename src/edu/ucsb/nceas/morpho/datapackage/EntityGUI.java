@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-21 23:18:52 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2002-03-25 20:20:45 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -818,7 +818,8 @@ public class EntityGUI extends javax.swing.JFrame
       File fattribute = dataPackage.getAttributeFile(entityId);
 //      System.out.println("eml-attribute: "+fattribute.getName());
       File f = dataPackage.getDataFile(entityId);
-      if(dataPackage.isDataFileText(entityId)) {
+ //     if(dataPackage.isDataFileText(entityId)) {
+      if (true) {
         String dataString = "";
         DataViewer dv = new DataViewer(framework, "DataFile: "+fn, f);
         dv.setDataID(dataPackage.getDataFileID(entityId));
