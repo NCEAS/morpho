@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 18:32:29 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2002-08-15 23:45:46 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   /** Store our menus and toolbars */
   private Action[] menuActions = null;
   private Action[] toolbarActions = null;
+  private Action[] fileMenuActions = null;
 
   /** Query used to find data owned by the user */
   private Query ownerQuery = null;
@@ -79,9 +80,14 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     this.framework = cf;
     this.config = framework.getConfiguration();
     loadConfigurationParameters();
+    // Create the tabbed pane for the owner queries
+    ownerQuery = new Query(getOwnerQuery(), framework);
     // Create the menus and toolbar actions, will register later
     initializeActions(); 
     // Add the menus and toolbars
+    // Add open action in file menu
+    framework.addMenu("File", new Integer(1),fileMenuActions);
+    // Add search menu
     framework.addMenu("Search", new Integer(3), menuActions);
     framework.addToolbarActions(toolbarActions);
 
@@ -107,7 +113,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    * Set up the actions for menus and toolbars
    */
   private void initializeActions() {
-    // Set up the menus for the application
+    // Set up the search menus for the application
     menuActions = new Action[1];
   
     GUIAction searchItemAction = new GUIAction("Search...", null,
@@ -126,16 +132,22 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                              ClientFramework.SEPARATOR_FOLLOWING);*/
     menuActions[0] = searchItemAction;
     
+    // Create a onwer query
     GUIAction openDialogBoxAction = new GUIAction("Open", null, 
-                new OpenDialogBoxCommand(framework));
+                new OpenDialogBoxCommand(framework, ownerQuery));
     openDialogBoxAction.setSmallIcon( new ImageIcon(getClass().
                                       getResource("openButton.gif")));
+    openDialogBoxAction.setMenuItemPosition(0);
     openDialogBoxAction.setToolTipText("Open...");
     
      // Set up the toolbar for the application
     toolbarActions = new Action[2];
-    toolbarActions[0] = searchItemAction;
-    toolbarActions[1] = openDialogBoxAction;
+    toolbarActions[0] = openDialogBoxAction;
+    toolbarActions[1] = searchItemAction;
+    
+    //Set up action for file menu
+    fileMenuActions = new Action[1];
+    fileMenuActions[0]=openDialogBoxAction;
    
   }
 
@@ -208,8 +220,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   private void createOwnerPanel()
   {
-    // Create the tabbed pane for the owner queries
-    ownerQuery = new Query(getOwnerQuery(), framework);
+   
     ResultSet results = ownerQuery.execute();
     ownerPanel = new ResultPanel(results, true, false, null);
 
@@ -237,7 +248,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   /** 
    * This method is called to refresh a query when a change is made that should
    * be propogated to the query result screens.
-   */
+   */ 
   public void refresh()
   {
       refreshOwnerPanel();
