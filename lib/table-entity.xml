@@ -1,4 +1,4 @@
-<table-entity> help="The table entity element is a descriptor of one entity in the dataset
+<table-entity help="The table entity element is a descriptor of one entity in the dataset
           identified by its name. The entity element can contain information 
           about the entity's orientation, number of records,
           case sensitiveness, and temporal, geographic and taxonomic coverage." >
@@ -797,16 +797,16 @@ alternative to the standard calendar dates provided by ISO 8601.">
 
 </taxonomicCov>
 
-<orientation> help="This element contains specification of the entity's
+<orientation help="This element contains specification of the entity's
                     record orientation by element's attribute &quot;columnorrow&quot;." >
 
 </orientation>
-<caseSensitive> help="This element contains specification of text
+<caseSensitive help="This element contains specification of text
                     case sensitiveness of the data in the entity. It is 
                     specified from element's attribute &quot;yesorno&quot;." >
 
 </caseSensitive>
-<numberOfRecords> help="This element contains a count of the number of records
+<numberOfRecords help="This element contains a count of the number of records
                     in the entity.  This is typically an integer value,
                     and only includes records that represent observations.
                     It would not include any details of physical formatting
