@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-25 23:31:29 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-08-26 21:09:43 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,8 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.*;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
 import javax.swing.JDialog;
 
 /**
