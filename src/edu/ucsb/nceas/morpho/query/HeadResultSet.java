@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-12 22:52:10 $'
- * '$Revision: 1.10.2.2 $'
+ *     '$Date: 2004-04-13 04:42:42 $'
+ * '$Revision: 1.10.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,6 +178,16 @@ public class HeadResultSet extends ResultSet
     super.merge(r2);
     consolidateResults();
   }
+
+  /**
+  * Merge a ResultSet onto this one using the docid as the join column
+  */
+  public void merge(Vector vector2)
+  {
+    super.merge(vector2);
+    consolidateResults();
+  }
+
 
   /**
    * Consolidate the results Vector to produce a new Vector with only the

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 01:31:50 $'
- * '$Revision: 1.20.2.3 $'
+ *     '$Date: 2004-04-13 04:42:42 $'
+ * '$Revision: 1.20.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -840,41 +840,68 @@ public class Query extends DefaultHandler {
  * a given panel
  * @param frame MorphoFrame   the frame which the rsult pane will be display
  */
- public void displaySearchResult(MorphoFrame frame, ResultPanel resultPanle)
+ public void displaySearchResult(final MorphoFrame resultWindow,
+                                 final ResultPanel resultDisplayPanel)
  {
 
-   if (!searchLocal)
+   final SwingWorker worker = new SwingWorker()
    {
-     Log.debug(30, "(3) Executing metacat query...");
-     doMetacatSearchDisplay(frame, resultPanle, morpho);
+        public Object construct()
+       {
+         resultWindow.setBusy(true);
+         if (!searchLocal)
+         {
+            Log.debug(30, "(3) Executing metacat query...");
+            // since it is network search, so the local result is null
+            HeadResultSet localResult = null;
+            doMetacatSearchDisplay(resultDisplayPanel, morpho, localResult);
 
-   }
-   else if (!searchMetacat)
-   {
-     Log.debug(30, "(2) Executing local query...");
-     doLocalSearchDisplay(frame, resultPanle, morpho);
+         }
+         else if (!searchMetacat)
+         {
+           Log.debug(30, "(2) Executing local query...");
+           doLocalSearchDisplay(resultDisplayPanel, morpho);
 
-   }//else if
-   else
-  {
-    Log.debug(30, "(2) Executing both local and metacat query...");
+         }//else if
+         else
+         {
+           Log.debug(30, "(2) Executing both local and metacat query...");
+           // search local first
+            HeadResultSet localResult = doLocalSearchDisplay(
+                                                   resultDisplayPanel, morpho);
+            doMetacatSearchDisplay(resultDisplayPanel, morpho, localResult);
 
-   }//else
+         }//else
+         resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
+         StateChangeMonitor.getInstance().notifyStateChange(
+                         new StateChangeEvent(
+                                 resultDisplayPanel,
+                                 StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
+         return null;
+       }
+
+       //Runs on the event-dispatching thread.
+       public void finished()
+       {
+         resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
+                                 + " data sets found");
+         resultWindow.setBusy(false);
+
+       }
+   };
+   worker.start();  //required for SwingWorker 3
 
  }//excute
 
  /*
   * Method to display the metacat search result
  */
- private void doMetacatSearchDisplay(final MorphoFrame resultWindow,
-                                     final ResultPanel resultDisplayPanel,
-                                     final Morpho morpho)
+ private void doMetacatSearchDisplay(final ResultPanel resultDisplayPanel,
+                                     final Morpho morpho,
+                                     final HeadResultSet localResult)
  {
-   final SwingWorker worker = new SwingWorker()
-   {
-        public Object construct()
-       {
-         resultWindow.setBusy(true);
+
+
          SynchronizeVector dataVector = new SynchronizeVector();
          String source = "metacat";
          // parsing result set
@@ -891,7 +918,6 @@ public class Query extends DefaultHandler {
          while (!handler.isDone())
          {
            Vector partResult = dataVector.getVector();
-           System.out.println("The part result size is: " + partResult.size());
            // add partReulst inot all Result
            for ( int i=0; i < partResult.size(); i++)
            {
@@ -902,63 +928,31 @@ public class Query extends DefaultHandler {
              resultDisplayPanel.resetResultsVector(allResults);
              length = allResults.size();
            }
+         }//while
 
-         }
-         resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
-         StateChangeMonitor.getInstance().notifyStateChange(
-                         new StateChangeEvent(
-                                 resultDisplayPanel,
-                                 StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
-         return null;
-       }
+         // merge the allResult into local result if it is not null
+          if ( localResult != null )
+          {
+            localResult.merge(allResults);
+            // transfer the mergered vector to reslult panel
+            resultDisplayPanel.resetResultsVector(
+                                                localResult.getResultsVector());
+          }
 
-       //Runs on the event-dispatching thread.
-       public void finished()
-       {
-         resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
-                                 + " data sets found");
-         resultWindow.setBusy(false);
-
-       }
-   };
-   worker.start();  //required for SwingWorker 3
 
  }
 
  /*
   * Method to display local search result
   */
- private void doLocalSearchDisplay(final MorphoFrame resultWindow,
-                                   final ResultPanel resultDisplayPanel,
+ private HeadResultSet doLocalSearchDisplay(final ResultPanel resultDisplayPanel,
                                    final Morpho morpho)
  {
-   final Query query = this;
-   final SwingWorker worker = new SwingWorker()
-   {
-        public Object construct()
-       {
-         resultWindow.setBusy(true);
-         LocalQuery lq = new LocalQuery(query, morpho);
-         HeadResultSet localResults = (HeadResultSet)lq.execute();
-         resultDisplayPanel.setResultSet(localResults);
-         resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
-         StateChangeMonitor.getInstance().notifyStateChange(
-                         new StateChangeEvent(
-                                 resultDisplayPanel,
-                                 StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
-         return null;
-       }
-
-       //Runs on the event-dispatching thread.
-       public void finished()
-       {
-         resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
-                                 + " data sets found");
-         resultWindow.setBusy(false);
-
-       }
-   };
-   worker.start();  //required for SwingWorker 3
+    final Query query = this;
+    LocalQuery lq = new LocalQuery(query, morpho);
+    HeadResultSet localResults = (HeadResultSet)lq.execute();
+    resultDisplayPanel.setResultSet(localResults);
+    return localResults;
  }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-12 22:52:10 $'
- * '$Revision: 1.46.2.2 $'
+ *     '$Date: 2004-04-13 04:42:42 $'
+ * '$Revision: 1.46.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -552,8 +552,22 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    */
   public void merge(ResultSet r2)
   {
-    if (r2 != null) {
-      // Create a hash of our docids for easy comparison
+    if (r2 != null)
+    {
+      // Step through all of the rows of the results in r2 and
+      // see if there is a docid match
+      Vector r2Rows = r2.getResultsVector();
+      merge(r2Rows);
+
+    }
+  }
+
+  /**
+  * Merge a vector onto this one using the docid as the join column
+  */
+  public void merge(Vector r2Rows)
+  {
+    // Create a hash of our docids for easy comparison
       Hashtable docidList = new Hashtable();
       int numColumns = getColumnCount();
       for (int i=0; i < getRowCount(); i++) {
@@ -562,9 +576,6 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
         docidList.put(currentDocid, new Integer(i));
       }
 
-      // Step through all of the rows of the results in r2 and
-      // see if there is a docid match
-      Vector r2Rows = r2.getResultsVector();
       Enumeration ee = r2Rows.elements();
       while (ee.hasMoreElements()) {
         Vector row = (Vector)ee.nextElement();
@@ -596,8 +607,9 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
           resultsVector.addElement(row);
         }
       }
-    }
+
   }
+
 
   /**
    * Get a reference to the Morpho application framework
