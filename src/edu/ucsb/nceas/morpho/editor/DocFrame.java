@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-19 17:09:32 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2001-06-19 19:53:51 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1028,9 +1028,10 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                                         // choice_hits now contains a list of nodes to be moved
                                         // under the CHOICE node; only those with the same parent
                                         // should be moved to a single CHOICE
-                                        choice_hits = sameParent(choice_hits);
+                                        
                                         
                                         if (choice_hits.size()>0){
+                                          choice_hits = sameParent(choice_hits);
                                           Enumeration qq = choice_hits.elements();
                                           while (qq.hasMoreElements()) {
                                             nd2 = (DefaultMutableTreeNode)qq.nextElement();
@@ -1212,6 +1213,12 @@ private Vector sameParent(Vector list) {
         if (help!=null) {
             ni.setHelp(help);
             ht.remove("help");
+        }
+        //now trim children
+        Enumeration childnodes = nd.children();
+        while (childnodes.hasMoreElements()) {
+          DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)childnodes.nextElement();
+          trimSpecialAttributes(nd1);
         }
     }
 
