@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.9 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-22 03:21:12 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ public class CodeImportSummary extends AbstractUIPage {
   public final String SUBTITLE                  = "Summary";
 
   private JLabel desc1;
+	private JLabel desc3;
   private JLabel desc4;
   private WizardContainerFrame mainWizFrame;
   private AbstractDataPackage adp = null;
@@ -92,7 +93,7 @@ public class CodeImportSummary extends AbstractUIPage {
     desc1 = WidgetFactory.makeHTMLLabel("", 2);
     this.add(desc1);
 
-    JLabel desc3 = WidgetFactory.makeHTMLLabel(
+    desc3 = WidgetFactory.makeHTMLLabel(
         "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
         + "\" button, "
         + "or you can use the \"" + WizardSettings.PREV_BUTTON_TEXT
@@ -118,8 +119,9 @@ public class CodeImportSummary extends AbstractUIPage {
     if (ID==null) return "";
     int remaining = mainWizFrame.getAttributeImportCount();
     if(remaining > 0) {
+			desc3.setText("");
       return "<p>Proceed to define or import data tables for the other attributes</p>";
-    } else {
+		} else {
       return "<p>All necessary imports have been completed</p>";
     }
   }
@@ -290,9 +292,10 @@ public class CodeImportSummary extends AbstractUIPage {
     }*/
 
     Attribute attr = new Attribute(map);
-
-    adp.deleteAttribute(entityIndex, attrIndex);
-    adp.insertAttribute(entityIndex, attr, attrIndex);
+		
+		adp.insertAttribute(entityIndex, attr, attrIndex);
+    adp.deleteAttribute(entityIndex, attrIndex + 1);
+    
 
   }
 

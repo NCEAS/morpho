@@ -228,7 +228,9 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
       return panel;
     }
 
-    Morpho morpho = resultPane.getFramework();
+    Morpho morpho = null;
+		if(resultPane != null)
+			morpho = resultPane.getFramework();
 
     entityNames = getEntityNames();
     tableNames = new Vector();
@@ -291,15 +293,11 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
   private void getADP() {
 
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null) {
       resultPane = morphoFrame.getDataViewContainerPanel();
-    }//if
-    // make sure resulPanel is not null
-    if ( resultPane != null) {
-      adp = resultPane.getAbstractDataPackage();
     }
-
   }
 
   private String[] getEntityNames() {
@@ -410,6 +408,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     if(adp == null){
       return -1;
     }
+		if(table == null) return -1;
     return adp.getEntityIndex(table);
   }
 
@@ -653,15 +652,16 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   public OrderedMap getPanelData(String xPath) {
 
     OrderedMap map = new OrderedMap();
-
+		
+		int eIdx = getSelectedEntityIndex();
     if(adp!=null && currentEntityID.equals("")) {
-      currentEntityID = adp.getEntityID(getSelectedEntityIndex());
+			if(eIdx >= 0) currentEntityID = adp.getEntityID(eIdx);
     }
     if(adp!=null && codeAttributeID.equals("")) {
-      codeAttributeID = adp.getAttributeID(getSelectedEntityIndex(), getCodeColumnIndex());
+      if(eIdx >= 0) codeAttributeID = adp.getAttributeID(eIdx, getCodeColumnIndex());
     }
     if(adp!=null && defnAttributeID.equals("")) {
-      defnAttributeID = adp.getAttributeID(getSelectedEntityIndex(), getDefnColumnIndex());
+      if(eIdx >= 0) defnAttributeID = adp.getAttributeID(eIdx, getDefnColumnIndex());
     }
 
     map.put(xPath + "/entityReference", this.currentEntityID);
@@ -836,7 +836,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 
   public static File getEntityFile(Morpho morpho, AbstractDataPackage adp, int entityIndex) {
-
+		
+		if(morpho == null) return null;
     File entityFile = null;
     String inline = adp.getDistributionInlineData(entityIndex, 0,0);
 
