@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-07 01:27:09 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-03-06 00:15:03 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -488,6 +488,7 @@ public class TextImportWizardEml2 extends JFrame {
     SpaceCheckBox.addItemListener(lSymItem);
     SemicolonCheckBox.addItemListener(lSymItem);
     OtherCheckBox.addItemListener(lSymItem);
+	ConsecutiveCheckBox.addItemListener(lSymItem);
   }
 
   private void setDistribution(short distribution) {
@@ -640,11 +641,11 @@ public class TextImportWizardEml2 extends JFrame {
               nlines++;
               temp+="\n";
               linesList.add(temp);
-            } else {
+            } /*else {
 							// we can stop reading the remaining lines. we dont need the actual number of
 							// lines present
 							break;
-						}
+						}*/
           }
         }
       } catch (IOException e) {
@@ -720,17 +721,6 @@ public class TextImportWizardEml2 extends JFrame {
 				columnAttributes = new Vector();
 				needToSetPageData = new boolean[numcols];
 				Arrays.fill(needToSetPageData, true);
-				ServiceController sc;
-				AttributePage ad;
-				for (int k = 0; k < numcols; k++) {
-					
-					ad = (AttributePage)WizardPageLibrary.getPage(
-					DataPackageWizardInterface.ATTRIBUTE_PAGE);
-					ad.setBorder(BorderFactory.createLineBorder(Color.black));
-					
-					columnAttributes.add(ad);
-				}
-					
 				
 			}
 		}
@@ -839,7 +829,7 @@ public class TextImportWizardEml2 extends JFrame {
 
   void NextButton_actionPerformed(java.awt.event.ActionEvent event) {
     if (stepNumber >= 3) {
-      AttributePage attrd = (AttributePage)columnAttributes.elementAt(
+			AttributePage attrd = (AttributePage)columnAttributes.elementAt(
           stepNumber - 3);
       if (!attrd.onAdvanceAction())
         return;
@@ -881,6 +871,12 @@ public class TextImportWizardEml2 extends JFrame {
                               + (fullColumnModel.getColumnCount() + 2));
 			
 			int attrNum = stepNumber - 3;
+			if(attrNum >= columnAttributes.size()) {
+				AttributePage ad = (AttributePage)WizardPageLibrary.getPage(
+					DataPackageWizardInterface.ATTRIBUTE_PAGE);
+				ad.setBorder(BorderFactory.createLineBorder(Color.black));
+				columnAttributes.add(ad);
+			}
       if(needToSetPageData[attrNum]) {
 				fillAttributePageData(attrNum);
 				needToSetPageData[attrNum] = false;
@@ -1527,6 +1523,8 @@ public class TextImportWizardEml2 extends JFrame {
         SemicolonCheckBox_itemStateChanged(event);
       else if (object == OtherCheckBox)
         OtherCheckBox_itemStateChanged(event);
+      else if (object == ConsecutiveCheckBox)
+        ConsecutiveCheckBox_itemStateChanged(event);
     }
   }
 
@@ -1570,6 +1568,12 @@ public class TextImportWizardEml2 extends JFrame {
     }
   }
 
+  void ConsecutiveCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
+    if (parseOn) {
+      parseDelimited();
+
+    }
+  }
 
   /**
    * Create a set (OrderedMap) of Name/Value pairs for eml2 corresponding to the
