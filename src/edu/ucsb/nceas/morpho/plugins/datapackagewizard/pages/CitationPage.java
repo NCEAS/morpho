@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-27 00:33:56 $'
- * '$Revision: 1.21 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-12-14 22:29:15 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ public class CitationPage extends AbstractUIPage {
 
     // Pub Date
     JPanel pubDatePanel = WidgetFactory.makePanel(1);
-    pubDateLabel = WidgetFactory.makeLabel("Pubication Date:", false);
+    pubDateLabel = WidgetFactory.makeLabel("Publication Date:", false);
     pubDatePanel.add(pubDateLabel);
     pubDateField = WidgetFactory.makeOneLineTextField();
     pubDatePanel.add(pubDateField);
@@ -583,12 +583,12 @@ public class CitationPage extends AbstractUIPage {
     //updateListFromDOM();
 		refreshAuthorList();
   }
-	
+
 	private void refreshAuthorList() {
-		
+
 		List rows = this.authorList.getListOfRowLists();
 		for(int i = 0; i < rows.size(); i++) {
-			
+
 			List row = (List) rows.get(i);
 			if(row.size() < 4) continue;
 			Object dialogObj = row.get(3);
@@ -599,10 +599,10 @@ public class CitationPage extends AbstractUIPage {
 			List newRow = editPartyPage.getSurrogate();
       newRow.add(editPartyPage);
       authorList.replaceRow(i, newRow);
-			
+
 		}
 	}
-	
+
   /**
    *  gets the unique ID for this wizard page
    *
@@ -825,7 +825,7 @@ public class CitationPage extends AbstractUIPage {
     if(o1 != null) return "Report";
 		o1 = map.get(xPath + "/report[1]/totalPages[1]");
     if(o1 != null) return "Report";
-		
+
 
     return "";
   }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-10 02:21:49 $'
- * '$Revision: 1.21 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-12-14 22:29:50 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -504,7 +504,7 @@ public class UISettings
     public static final String INIT_SCR_LOGGED_IN_MESSAGE
                     = "You are logged into the network, and may "
                         +"work with all files for which you have "
-                        +"access priviliges ";
+                        +"access privileges ";
 
     public static final String INIT_SCR_LOGIN_BUTTON_TEXT
                     = "<html><p style=\"color: #000000; "

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-16 15:42:45 $'
- * '$Revision: 1.24 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-12-14 22:29:15 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ public class Introduction extends AbstractUIPage {
     +"<li><b>Coverage Details</b><br></br></li>"
     +"<li><b>Methods</b><br></br></li>"
     +"<li><b>Access Control</b></li></ul>"
-    +"<p><b>Note:</b> Required information includes the title and personell "
+    +"<p><b>Note:</b> Required information includes the title and personnel "
     +"information for your dataset.  The rest of the information collected here "
     +"is optional, however it is highly recommended that you fill in as much as "
     +"possible.</p>", 19);
