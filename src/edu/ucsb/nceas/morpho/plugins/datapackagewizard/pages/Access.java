@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-02 02:04:12 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2004-04-06 03:16:15 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,6 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
 
 import java.awt.Component;
 import java.awt.Cursor;
@@ -47,10 +45,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -91,15 +85,13 @@ public class Access
   private final String ORDER_REL_XPATH = "@order";
 
   private final String[] colNames = {
-      "User", "Permissions"};
+      "Name", "Organization", "Email/Description", "Permissions"};
   private final Object[] editors = null;
   private CustomList accessList;
 
   private String AUTHSYSTEM_VALUE = "knb";
   private String ORDER_VALUE = "denyFirst";
 
-  private InputStream queryResult;
-  private Document doc;
   public static DefaultMutableTreeNode accessTreeNode = null;
 
   public Access() {
@@ -153,10 +145,10 @@ public class Access
     vBox.add(desc1);
 
     accessList = WidgetFactory.makeList(colNames, editors, 4,
-                                        true, true, false, true, true, true);
+        true, true, false, true, true, true);
     accessList.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
-                                         WizardSettings.PADDING,
-                                         2 * WizardSettings.PADDING));
+        WizardSettings.PADDING,
+        2 * WizardSettings.PADDING));
 
     vBox.add(accessList);
     vBox.add(WidgetFactory.makeDefaultSpacer());
@@ -180,82 +172,27 @@ public class Access
       public void actionPerformed(ActionEvent e) {
 
         Log.debug(45, "\nAccess: CustomAddAction called");
-        if (accessTreeNode == null) {
-          accessList.setEnabled(false);
-          Component parent = SwingUtilities.getRoot( (Component) accessList);
-          if (parent != null && parent.isShowing()) {
-            parent.setCursor(
-                Cursor.getPredefinedCursor(
-                Cursor.WAIT_CURSOR));
-          }
-          try {
-            ContactMetacat contactMetacat = new ContactMetacat(access);
-            contactMetacat.setMethodCall(contactMetacat.ADD);
-            contactMetacat.start();
-          }
-          catch (Exception e1) {
-            Log.debug(10, "Could not connect to Metacat server...");
-            Log.debug(45, e1.toString());
-          }
-        }
-        else {
-          showNewAccessDialog();
-        }
+        showNewAccessDialog();
       }
     });
 
     accessList.setCustomEditAction(
         new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
-        if (accessTreeNode == null) {
-          Component parent = SwingUtilities.getRoot( (Component) accessList);
-          if (parent != null && parent.isShowing()) {
-            parent.setCursor(
-                Cursor.getPredefinedCursor(
-                Cursor.WAIT_CURSOR));
-          }
-          try {
-            ContactMetacat contactMetacat = new ContactMetacat(access);
-            contactMetacat.setMethodCall(contactMetacat.EDIT);
-            contactMetacat.start();
-          }
-          catch (Exception e1) {
-            Log.debug(10, "Could not connect to Metacat server...");
-            Log.debug(45, e1.toString());
-          }
-        }
-        else {
-          Log.debug(45, "\nAccess: CustomEditAction called");
-          showEditAccessDialog();
-        }
+        Log.debug(45, "\nAccess: CustomEditAction called");
+        showEditAccessDialog();
       }
     });
   }
 
-  protected void showRefreshTree(AccessPage aPage) {
-    accessTreeNode = createTree();
-    aPage.refreshTree();
-  }
-
   protected void showNewAccessDialog() {
-
-    if (accessTreeNode == null) {
-      accessList.setEnabled(true);
-      Component parent = SwingUtilities.getRoot( (Component) accessList);
-      if (parent != null) {
-        parent.setCursor(
-            Cursor.getPredefinedCursor(
-            Cursor.DEFAULT_CURSOR));
-      }
-      accessTreeNode = createTree();
-    }
 
     AccessPage accessPage = (AccessPage) WizardPageLibrary.getPage(
         DataPackageWizardInterface.ACCESS_PAGE);
     ModalDialog wpd = new ModalDialog(accessPage,
-                                      WizardContainerFrame.getDialogParent(),
-                                      UISettings.POPUPDIALOG_WIDTH,
-                                      UISettings.POPUPDIALOG_HEIGHT, false);
+        WizardContainerFrame.getDialogParent(),
+        UISettings.POPUPDIALOG_WIDTH,
+        UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
@@ -268,25 +205,13 @@ public class Access
 
   protected void showEditAccessDialog() {
 
-    if (accessTreeNode == null) {
-      accessList.setEnabled(true);
-
-      Component parent = SwingUtilities.getRoot( (Component) accessList);
-      if (parent != null) {
-        parent.setCursor(
-            Cursor.getPredefinedCursor(
-            Cursor.DEFAULT_CURSOR));
-      }
-      accessTreeNode = createTree();
-    }
-
     List selRowList = accessList.getSelectedRowList();
 
-    if (selRowList == null || selRowList.size() < 3) {
+    if (selRowList == null || selRowList.size() < 5) {
       return;
     }
 
-    Object dialogObj = selRowList.get(2);
+    Object dialogObj = selRowList.get(4);
 
     if (dialogObj == null || ! (dialogObj instanceof AccessPage)) {
       return;
@@ -294,9 +219,9 @@ public class Access
     AccessPage editAccessPage = (AccessPage) dialogObj;
 
     ModalDialog wpd = new ModalDialog(editAccessPage,
-                                      WizardContainerFrame.getDialogParent(),
-                                      UISettings.POPUPDIALOG_WIDTH,
-                                      UISettings.POPUPDIALOG_HEIGHT, false);
+        WizardContainerFrame.getDialogParent(),
+        UISettings.POPUPDIALOG_WIDTH,
+        UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
@@ -308,46 +233,8 @@ public class Access
     }
   }
 
-  private DefaultMutableTreeNode createTree() {
-
-    DefaultMutableTreeNode top =
-        new DefaultMutableTreeNode("Access Tree                        ");
-
-    NodeList nl = null;
-
-    if (queryResult != null) {
-      DocumentBuilder parser = Morpho.createDomParser();
-
-      try {
-        doc = parser.parse(queryResult);
-        nl = doc.getElementsByTagName("authSystem");
-      }
-      catch (Exception e) {
-        Log.debug(10, "Exception in parsing result set from Metacat...");
-        Log.debug(45, e.toString());
-        return null;
-      }
-
-      if (nl != null) {
-        //makeTree(nl, top);
-      }
-
-      return top;
-    }
-
-    return null;
-  }
-
-  protected void setQueryResult(InputStream queryResult) {
-    this.queryResult = queryResult;
-  }
-
   public static void refreshTree(AccessPage accessPage) {
     Access access = new Access();
-
-    ContactMetacat contactMetacat = new ContactMetacat(access, accessPage);
-    contactMetacat.setMethodCall(contactMetacat.REFRESH);
-    contactMetacat.start();
 
   }
 
@@ -401,9 +288,9 @@ public class Access
       returnMap.put(xPathRoot + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
       returnMap.put(xPathRoot + ORDER_REL_XPATH, ORDER_VALUE);
       returnMap.put(xPathRoot + "allow[" + (allowIndex) + "]/principal",
-                    "public");
+          "public");
       returnMap.put(xPathRoot + "allow[" + (allowIndex++) + "]/permission",
-                    "read");
+          "read");
     }
 
     List rowLists = accessList.getListOfRowLists();
@@ -421,10 +308,10 @@ public class Access
 
       nextRowList = (List) nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 3) {
+      if (nextRowList.size() < 5) {
         continue;
       }
-      nextUserObject = nextRowList.get(2);
+      nextUserObject = nextRowList.get(4);
       if (nextUserObject == null) {
         continue;
       }
@@ -433,11 +320,10 @@ public class Access
 
       if (nextAccessPage.accessIsAllow) {
         nextNVPMap = nextAccessPage.getPageData(xPathRoot + "allow[" +
-                                                (allowIndex++) + "]");
-      }
-      else {
+            (allowIndex++) + "]");
+      } else {
         nextNVPMap = nextAccessPage.getPageData(xPathRoot + "deny[" +
-                                                (denyIndex++) + "]");
+            (denyIndex++) + "]");
       }
       returnMap.putAll(nextNVPMap);
     }
@@ -545,35 +431,32 @@ public class Access
       nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
 
       Log.debug(45, "Access:  nextXPath = " + nextXPath
-                + "\n nextVal   = " + nextVal);
+          + "\n nextVal   = " + nextVal);
 
       // remove everything up to and including the last occurrence of
       // this.xPathRoot to get relative xpaths, in case we're handling a
       // project elsewhere in the tree...
       nextXPath = nextXPath.substring(nextXPath.lastIndexOf(this.xPathRoot)
-                                      + this.xPathRoot.length());
+          + this.xPathRoot.length());
 
       Log.debug(45, "Access: TRIMMED nextXPath   = " + nextXPath);
 
       if (nextXPath.startsWith(AUTHSYSTEM_REL_XPATH)) {
         AUTHSYSTEM_VALUE = nextVal;
         toDeleteList.add(nextXPathObj);
-      }
-      else if (nextXPath.startsWith(ORDER_REL_XPATH)) {
+      } else if (nextXPath.startsWith(ORDER_REL_XPATH)) {
         ORDER_VALUE = nextVal;
         toDeleteList.add(nextXPathObj);
-      }
-      else if (nextXPath.startsWith(ALLOW_REL_XPATH)) {
+      } else if (nextXPath.startsWith(ALLOW_REL_XPATH)) {
 
         Log.debug(45, ">>>>>>>>>> adding to accessAllowList: nextXPathObj="
-                  + nextXPathObj + "; nextValObj=" + nextValObj);
+            + nextXPathObj + "; nextValObj=" + nextValObj);
         addToAccess(nextXPathObj, nextValObj, accessAllowList, ALLOW_REL_XPATH);
         toDeleteList.add(nextXPathObj);
-      }
-      else if (nextXPath.startsWith(DENY_REL_XPATH)) {
+      } else if (nextXPath.startsWith(DENY_REL_XPATH)) {
 
         Log.debug(45, ">>>>>>>>>> adding to accessDenystepList: nextXPathObj="
-                  + nextXPathObj + "; nextValObj=" + nextValObj);
+            + nextXPathObj + "; nextValObj=" + nextValObj);
         addToAccess(nextXPathObj, nextValObj, accessDenyList, DENY_REL_XPATH);
         toDeleteList.add(nextXPathObj);
       }
@@ -604,8 +487,8 @@ public class Access
           DataPackageWizardInterface.ACCESS_PAGE);
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
-                                                 this.xPathRoot
-                                                 + (accessPredicate++) + "]/");
+          this.xPathRoot
+          + (accessPredicate++) + "]/");
 
       if (!checkAccess) {
         accessAllowRetVal = false;
@@ -631,8 +514,8 @@ public class Access
           DataPackageWizardInterface.ACCESS_PAGE);
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
-                                                 this.xPathRoot
-                                                 + (accessPredicate++) + "]/");
+          this.xPathRoot
+          + (accessPredicate++) + "]/");
 
       if (!checkAccess) {
         accessDenyRetVal = false;
@@ -660,14 +543,14 @@ public class Access
     if (!returnVal) {
 
       Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
-                + map);
+          + map);
     }
     return (returnVal && accessAllowRetVal && accessDenyRetVal);
   }
 
   private void addToAccess(Object nextPersonnelXPathObj,
-                           Object nextPersonnelVal, List accessstepList,
-                           String xPath) {
+      Object nextPersonnelVal, List accessstepList,
+      String xPath) {
 
     if (nextPersonnelXPathObj == null) {
       return;
@@ -687,10 +570,9 @@ public class Access
       Object nextMapObj = accessstepList.get(predicate);
       OrderedMap nextMap = (OrderedMap) nextMapObj;
       nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
-    }
-    else {
+    } else {
       Log.debug(15,
-                "**** ERROR - Access.addToAccess() - predicate > accessstepList.size()");
+          "**** ERROR - Access.addToAccess() - predicate > accessstepList.size()");
     }
   }
 
@@ -701,66 +583,5 @@ public class Access
 
     return Integer.parseInt(
         tempXPath.substring(0, tempXPath.indexOf("]")));
-  }
-}
-
-class ContactMetacat
-    extends Thread {
-
-  Runnable runnable;
-  Access access;
-  AccessPage accessPage;
-  InputStream queryResult;
-  public int ADD = 1;
-  public int EDIT = 2;
-  public int REFRESH = 4;
-
-  int methodCallID;
-
-  public ContactMetacat(Access access) {
-    this.access = access;
-    this.accessPage = null;
-  }
-
-  public ContactMetacat(Access access, AccessPage accessPage) {
-    this.access = access;
-    this.accessPage = accessPage;
-  }
-
-  public void run() {
-    Properties prop = new Properties();
-    prop.put("action", "getprincipals");
-
-    Morpho morpho = Morpho.thisStaticInstance;
-    try {
-      queryResult = null;
-//      if (morpho.isConnected()) {
-    //  queryResult = morpho.getMetacatInputStream(prop);
-      //    }
-      access.setQueryResult(queryResult);
-
-      if (methodCallID == ADD) {
-        access.showNewAccessDialog();
-      }
-      else if (methodCallID == EDIT) {
-        access.showEditAccessDialog();
-      }
-      else if (methodCallID == REFRESH) {
-        access.showRefreshTree(accessPage);
-      }
-    }
-    catch (Exception w) {
-      Log.debug(10, "Error in retrieving User list from Metacat server.");
-      Log.debug(45, w.getMessage());
-    }
-  }
-
-  /**
-   * setMethodCall
-   *
-   * @param i int
-   */
-  public void setMethodCall(int methodCallID) {
-    this.methodCallID = methodCallID;
   }
 }

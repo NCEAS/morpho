@@ -1,15 +1,15 @@
 /**
- *       Name: XMLTreeCellRenderer.java
+ *       Name: AccessTreeCellRenderer.java
  *    Purpose: Uses the ImageIcon stored in a UserObject
  *             as the icon of TreeCellNode
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
- *    Authors: Dan Higgins
+ *    Authors: Saurabh Garg
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-17 04:16:28 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-04-06 03:16:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,73 +46,75 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
  *
  * @author higgins
  */
-public class AccessTreeCellRenderer extends javax.swing.tree.DefaultTreeCellRenderer
-{
+public class AccessTreeCellRenderer
+    extends javax.swing.tree.DefaultTreeCellRenderer {
 
-        /**
-         * Constructor
-         */
-        public AccessTreeCellRenderer()
-        {
+  /**
+   * Constructor
+   */
+  public AccessTreeCellRenderer() {
+  }
+
+  /**
+   * required method for a TreeCellRenderer
+   * uses icon in userobject for each nodeinstead of
+   * an icon which is based on whether node is leaf or branch.
+   *
+   * @param tree
+   * @param value
+   * @param sel
+   * @param expanded
+   * @param leaf
+   * @param row
+   * @param hasFocus
+   */
+  public Component getTreeCellRendererComponent(
+      JTree tree,
+      Object value,
+      boolean sel,
+      boolean expanded,
+      boolean leaf,
+      int row,
+      boolean hasFocus) {
+
+    super.getTreeCellRendererComponent(
+        tree, value, sel,
+        expanded, leaf, row,
+        hasFocus);
+    if ( ( (DefaultMutableTreeNode) (value)).getUserObject() == null) {
+      return this;
+    }
+    AccessTreeNodeObject ni = null;
+    try {
+      ni = (AccessTreeNodeObject) ( (DefaultMutableTreeNode) (value)).
+          getUserObject();
+    }
+    catch (Exception w) {
+      return this;
+    }
+    if (ni != null) {
+      if (ni.nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS) {
+        ImageIcon curicon = new ImageIcon(getClass()
+            .getResource("authsys.gif"));
+        if (curicon != null) {
+          setIcon(curicon);
+        }
+      } else if (ni.nodeType == WizardSettings.ACCESS_PAGE_GROUP) {
+        ImageIcon curicon = new ImageIcon(getClass()
+            .getResource("group.gif"));
+        if (curicon != null) {
+          setIcon(curicon);
+        }
+      } else if (ni.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+        ImageIcon curicon = new ImageIcon(getClass()
+            .getResource("user.gif"));
+        if (curicon != null) {
+          setIcon(curicon);
+        }
+      }
     }
 
-    /**
-     * required method for a TreeCellRenderer
-     * uses icon in userobject for each nodeinstead of
-     * an icon which is based on whether node is leaf or branch.
-     *
-     * @param tree
-     * @param value
-     * @param sel
-     * @param expanded
-     * @param leaf
-     * @param row
-     * @param hasFocus
-     */
-    public Component getTreeCellRendererComponent(
-                            JTree tree,
-                            Object value,
-                            boolean sel,
-                            boolean expanded,
-                            boolean leaf,
-                            int row,
-                            boolean hasFocus) {
-
-            super.getTreeCellRendererComponent(
-                            tree, value, sel,
-                            expanded, leaf, row,
-                            hasFocus);
-            if (((DefaultMutableTreeNode)(value)).getUserObject()==null) return this;
-            AccessTreeNodeObject ni= null;
-            try {
-              ni = (AccessTreeNodeObject)((DefaultMutableTreeNode)(value)).getUserObject();
-            } catch (Exception w) {
-              return this;
-            }
-            if (ni!=null) {
-              if(ni.nodeType ==  WizardSettings.ACCESS_PAGE_AUTHSYS){
-                ImageIcon curicon = new ImageIcon(getClass()
-                                                  .getResource("authsys.gif"));
-                if (curicon != null) {
-                  setIcon(curicon);
-                }
-              } else if(ni.nodeType ==  WizardSettings.ACCESS_PAGE_GROUP){
-                ImageIcon curicon = new ImageIcon(getClass()
-                                                  .getResource("group.gif"));
-                if (curicon != null) {
-                  setIcon(curicon);
-                }
-              } else if(ni.nodeType ==  WizardSettings.ACCESS_PAGE_USER){
-                ImageIcon curicon = new ImageIcon(getClass()
-                                                  .getResource("user.gif"));
-                if (curicon != null) {
-                  setIcon(curicon);
-                }
-              }
-            }
-
-                    return this;
-        }
-
+    return this;
+  }
 
 }

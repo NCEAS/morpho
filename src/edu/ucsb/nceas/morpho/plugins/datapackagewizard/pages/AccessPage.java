@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-02 02:04:12 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-04-06 03:16:15 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import java.util.Collections;
 import java.util.Iterator;
+import javax.swing.JComponent;
 
 public class AccessPage
     extends AbstractUIPage {
@@ -89,16 +90,16 @@ public class AccessPage
   private final String EMPTY_STRING = "";
 
   protected JTree accessTree;
-  private JPanel middlePanel;
+  private JPanel bottomPanel;
   private JPanel topPanel;
-  protected JPanel selectionInfoPanel;
+  protected JPanel accessControlPanel;
   protected JPanel currentPanel;
-  private JPanel leftPanel;
+  private JPanel middlePanel;
   private JPanel dnPanel;
   protected JTextField dnField;
   private JButton refreshButton;
   private JLabel dnLabel;
-  private JLabel descLabel, accessDesc1, accessDesc2;
+  private JLabel accessDesc1, accessDesc2;
   private String userAccessType = new String("  Allow");
   private String userAccess = new String("Read");
   protected JComboBox typeComboBox;
@@ -106,8 +107,9 @@ public class AccessPage
   protected JScrollPane accessTreePane;
   private JTextField nameField;
   private JTextField orgField;
+  private JTextField descField;
   private boolean readFile = true;
-  protected ProgressBarThread pbt = null;
+  protected AccessProgressThread pbt = null;
 
   private final String[] accessTypeText = new String[] {
       "  Allow",
@@ -155,57 +157,34 @@ public class AccessPage
 
 
     // Define the left panel which has the  accessTree ....
-    leftPanel = new JPanel();
-    leftPanel.setLayout(new BorderLayout());
+    middlePanel = new JPanel();
+    middlePanel.setLayout(new BorderLayout());
+
+    accessControlPanel = refreshButtonPanel();
 
     if ( (accessTreePane = getAccessTreePane(Access.accessTreeNode)) != null) {
-      leftPanel.add(accessTreePane, BorderLayout.CENTER);
+      middlePanel.add(accessTreePane, BorderLayout.CENTER);
 
-      // Define action listener for refresh button.....
-      final AccessPage accessP = this;
-      ActionListener actionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Log.debug(45, "got action performed command from Referesh button");
-
-          if (accessTreePane != null) {
-            leftPanel.remove(accessTreePane);
-            leftPanel.revalidate();
-            leftPanel.repaint();
-          }
-          refreshButton.setEnabled(false);
-          typeComboBox.setEnabled(false);
-          accessComboBox.setEnabled(false);
-
-          Access.refreshTree(accessP);
-
-        }
-      };
-
-      /// define and add refresh tree....
-      refreshButton = WidgetFactory.makeJButton("Refresh",
-          actionListener);
-      JPanel buttonPanel = new JPanel();
-      buttonPanel.add(refreshButton);
-      leftPanel.add(buttonPanel, BorderLayout.SOUTH);
+      middlePanel.add(accessControlPanel, BorderLayout.SOUTH);
     } else {
       /// Please wait..... the code is retrieving the JTree....
-      //leftPanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
+      //middlePanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
       //                                      + " from server", true,
       //                                      new java.awt.Dimension(220, 100)));
       //introLabel.setText("  Enter a full distinguished name below");
     }
 
-    leftPanel.setBorder(new javax.swing.border.EmptyBorder(5 *
+    middlePanel.setBorder(new javax.swing.border.EmptyBorder(5 *
         WizardSettings.PADDING,
-        4 * WizardSettings.PADDING, 4 * WizardSettings.PADDING,
-        4 * WizardSettings.PADDING));
-    this.add(leftPanel, BorderLayout.WEST);
+        6 * WizardSettings.PADDING, 4 * WizardSettings.PADDING,
+        5 * WizardSettings.PADDING));
+    this.add(middlePanel, BorderLayout.CENTER);
 
     /// Define middle panel
-    middlePanel = new JPanel();
-    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+    bottomPanel = new JPanel();
+    bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
 
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    bottomPanel.add(WidgetFactory.makeDefaultSpacer());
 
     // Define the panel for entering distinguished name and
     // make it invisible by default
@@ -219,13 +198,40 @@ public class AccessPage
     dnPanel.setBorder(new javax.swing.border.EmptyBorder(0,
         WizardSettings.PADDING, 0,
         0));
-    middlePanel.add(dnPanel);
+    bottomPanel.add(dnPanel);
 
-    selectionInfoPanel = new JPanel();
-    selectionInfoPanel.setLayout(new BorderLayout());
-    currentPanel = WidgetFactory.makeVerticalPanel(2);
-    selectionInfoPanel.add(currentPanel);
-    middlePanel.add(selectionInfoPanel);
+    JPanel accessDefinitionPanel = new JPanel();
+    accessDefinitionPanel.setLayout(new BorderLayout());
+
+    JLabel accessDefinitionLabel = WidgetFactory.makeHTMLLabel(
+        "<b>&nbsp;Description of access levels:</b>"
+        + "<ul><li>Read: Able to view data package.</li>"
+        + "<li>Read & Write: Able to view and modify data package.</li>"
+        + "<li>Read, Write & Change Permissions: Able to view and modify "
+        + "datapackage, and modify access permissions.</li>"
+        + "<li>All: Able to do everything.</li></ul>", 5);
+
+    accessDefinitionPanel.add(accessDefinitionLabel, BorderLayout.CENTER);
+    bottomPanel.add(accessDefinitionPanel);
+    bottomPanel.setBorder(new javax.swing.border.EmptyBorder(0,
+        4 * WizardSettings.PADDING,
+        3 * WizardSettings.PADDING, 8 * WizardSettings.PADDING));
+
+    this.add(bottomPanel, BorderLayout.SOUTH);
+
+    if (accessTreePane == null) {
+      /**
+       * accessTreePane is null... so we have to generate Access.accessTreeNode
+       */
+      pbt = new AccessProgressThread(this);
+      pbt.start();
+    }
+  }
+
+  private JPanel getAccessControlPanel() {
+
+    accessDesc1 = WidgetFactory.makeLabel("   the user(users)", false);
+    accessDesc2 = WidgetFactory.makeLabel("   access", false);
 
     // define item listener for allow-deny list....
     ItemListener accessTypeListener = new ItemListener() {
@@ -242,18 +248,9 @@ public class AccessPage
       }
     };
 
-    descLabel = WidgetFactory.makeHTMLLabel(
-        "<b>&nbsp;Define access control for this user/group:</b>", 1);
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(descLabel);
-    middlePanel.add(WidgetFactory.makeHalfSpacer());
-
     typeComboBox = WidgetFactory.makePickList(accessTypeText, false,
         0, accessTypeListener);
-
-    accessDesc1 = WidgetFactory.makeLabel("      this user", false);
-    accessDesc2 = WidgetFactory.makeLabel("   access", false);
+    typeComboBox.setEnabled(false);
 
     ItemListener accessListener = new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
@@ -273,55 +270,65 @@ public class AccessPage
 
     accessComboBox = WidgetFactory.makePickList(accessText, false, 0,
         accessListener);
+    accessComboBox.setEnabled(false);
 
-    if (accessTreePane != null) {
-      typeComboBox.setEnabled(false);
-      accessComboBox.setEnabled(false);
-    } else {
-      typeComboBox.setEnabled(true);
-      accessComboBox.setEnabled(true);
-    }
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+    panel.setBorder(new javax.swing.border.EmptyBorder(5 *
+        WizardSettings.PADDING,0, 0, 0));
 
-    JPanel typePanel = new JPanel();
+    panel.add(typeComboBox);
+    panel.add(accessDesc1);
+    panel.add(accessComboBox);
+    panel.add(accessDesc2);
 
-    typePanel.setLayout(new BoxLayout(typePanel, BoxLayout.X_AXIS));
-    typePanel.setBorder(new javax.swing.border.EmptyBorder(0,
-        2 * WizardSettings.PADDING,
-        0, 0));
+    return panel;
+  }
 
-    typePanel.add(typeComboBox);
-    typePanel.add(accessDesc1);
-    typePanel.add(accessComboBox);
-    typePanel.add(accessDesc2);
+  private JPanel refreshButtonPanel() {
+    // Define action listener for refresh button.....
 
-    middlePanel.add(typePanel);
+    JPanel panel = new JPanel();
 
-    JPanel accessDefinitionPanel = new JPanel();
-    accessDefinitionPanel.setLayout(new BorderLayout());
+    final AccessPage accessP = this;
+    ActionListener actionListener = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "got action performed command from Referesh button");
 
-    JLabel accessDefinitionLabel = WidgetFactory.makeHTMLLabel(
-        "<b>&nbsp;Description of access levels:</b>"
-        + "<ul><li>Read: Able to view data package.</li>"
-        + "<li>Read & Write: Able to view and modify data package.</li>"
-        + "<li>Read, Write & Change Permissions: Able to view and modify "
-        + "datapackage, and modify access permissions.</li>"
-        + "<li>All: Able to do everything.</li></ul>", 4);
+        if (accessTreePane != null) {
+          middlePanel.remove(accessTreePane);
+          middlePanel.revalidate();
+          middlePanel.repaint();
+        }
+        refreshButton.setEnabled(false);
+        typeComboBox.setEnabled(false);
+        accessComboBox.setEnabled(false);
 
-    accessDefinitionPanel.add(accessDefinitionLabel, BorderLayout.CENTER);
-    middlePanel.add(accessDefinitionPanel);
-    middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,
-        4 * WizardSettings.PADDING,
-        3 * WizardSettings.PADDING, 8 * WizardSettings.PADDING));
+        Access.refreshTree(accessP);
 
-    this.add(middlePanel, BorderLayout.CENTER);
+      }
+    };
 
-    if (accessTreePane == null) {
-      /**
-       * accessTreePane is null... so we have to generate Access.accessTreeNode
-       */
-      pbt = new ProgressBarThread(this);
-      pbt.start();
-    }
+    /// define and add refresh tree....
+    refreshButton = WidgetFactory.makeJButton("Refresh the Access List",
+        actionListener);
+    setPrefMinMaxSizes(refreshButton, new Dimension(170,30));
+    panel.setLayout(new BorderLayout());
+    panel.add(WidgetFactory.makeHalfSpacer(), BorderLayout.NORTH);
+    panel.add(refreshButton, BorderLayout.EAST);
+    panel.add(getAccessControlPanel(), BorderLayout.SOUTH);
+    return panel;
+  }
+
+
+  /**
+   *  The action sets prefered Min and Max Sizes for the Components
+   *
+   *  @return
+   */
+  private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
+    WidgetFactory.setPrefMaxSizes(component, dims);
+    component.setMinimumSize(dims);
   }
 
   /**
@@ -334,7 +341,7 @@ public class AccessPage
    * 2. if there is an entry generate the dom for the <result></result> and
    *    send it domToTreeNode() funtion.
    * 3. If not, contact metacat server with action=getprincipals...
-   * 4. If metacat server is not available, set appropriate text in leftPanel,
+   * 4. If metacat server is not available, set appropriate text in middlePanel,
    *    show dnPanel, make other required changes in panel and
    *    close the progressbar
    * 5. If metacat server is available, get the result... store it in file..
@@ -343,25 +350,22 @@ public class AccessPage
    *
    *  @return
    */
-  private JProgressBar jp = null;
   protected void generateAccessTreeNode() {
     Log.debug(10, "Inside generate");
-    if (pbt != null) {
-      jp = pbt.getProgressBar();
-    }
 
-    jp.setString("Trying to retieve access tree from harddisk");
+    pbt.setProgressBarString("Trying to retieve access tree from harddisk");
 
-    jp.setString("Contacting Metacat Server for Access information....");
+    pbt.setProgressBarString(
+        "Contacting Metacat Server for Access information....");
 
     QueryMetacatThread cm = new QueryMetacatThread(this);
     cm.start();
   }
 
+  protected void setTree(InputStream queryResult) {
 
-  protected void setTree(InputStream queryResult){
-
-    jp.setString("Creating Access tree from information received....");
+    pbt.setProgressBarString(
+        "Creating Access tree from information received....");
 
     DefaultMutableTreeNode treeNode = createTree(queryResult);
 
@@ -370,166 +374,164 @@ public class AccessPage
     accessTreePane = getAccessTreePane(treeNode);
 
     if (accessTreePane != null) {
-      if (dnField.getText().trim().compareTo("") != 0) {
-        typeComboBox.setEnabled(true);
-        accessComboBox.setEnabled(true);
-      }
+      typeComboBox.setEnabled(true);
+      accessComboBox.setEnabled(true);
 
-      leftPanel.add(accessTreePane, BorderLayout.CENTER);
-      leftPanel.revalidate();
-      leftPanel.repaint();
+      middlePanel.add(accessTreePane, BorderLayout.CENTER);
+      middlePanel.add(accessControlPanel, BorderLayout.SOUTH);
+
+      middlePanel.revalidate();
+      middlePanel.repaint();
     } else {
-      leftPanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
+      middlePanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
           + " from server", true,
           new java.awt.Dimension(220, 100)));
       dnPanel.setVisible(true);
-      selectionInfoPanel.remove(currentPanel);
 
       typeComboBox.setEnabled(true);
       accessComboBox.setEnabled(true);
     }
 
-    pbt.closeDialog();
+    pbt.exitProgressBarThread();
   }
 
-
   private DefaultMutableTreeNode createTree(InputStream queryResult) {
-     Document doc;
+    Document doc;
 
-     DefaultMutableTreeNode top =
-         new DefaultMutableTreeNode("Access Tree                        ");
+    DefaultMutableTreeNode top =
+        new DefaultMutableTreeNode("Access Tree                        ");
 
-     NodeList nl = null;
+    NodeList nl = null;
 
-     if (queryResult != null) {
-       DocumentBuilder parser = Morpho.createDomParser();
+    if (queryResult != null) {
+      DocumentBuilder parser = Morpho.createDomParser();
 
-       try {
-         doc = parser.parse(queryResult);
-         nl = doc.getElementsByTagName("authSystem");
-       }
-       catch (Exception e) {
-         Log.debug(10, "Exception in parsing result set from Metacat...");
-         Log.debug(45, e.toString());
-         return null;
-       }
+      try {
+        doc = parser.parse(queryResult);
+        nl = doc.getElementsByTagName("authSystem");
+      }
+      catch (Exception e) {
+        Log.debug(10, "Exception in parsing result set from Metacat...");
+        Log.debug(45, e.toString());
+        return null;
+      }
 
-       if (nl != null) {
-         makeTree(nl, top);
-       }
-       return top;
-     }
-     return null;
-   }
+      if (nl != null) {
+        makeTree(nl, top);
+      }
+      return top;
+    }
+    return null;
+  }
 
-   DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top) {
-     Node tempNode;
-     AccessTreeNodeObject nodeObject = null;
-     DefaultMutableTreeNode tempTreeNode = null;
-     ArrayList userList = new ArrayList();
+  DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top) {
+    Node tempNode;
+    AccessTreeNodeObject nodeObject = null;
+    DefaultMutableTreeNode tempTreeNode = null;
+    ArrayList userList = new ArrayList();
 
-     for (int count = 0; count < nl.getLength(); count++) {
-       tempNode = nl.item(count);
-       boolean done = false;
+    for (int count = 0; count < nl.getLength(); count++) {
+      tempNode = nl.item(count);
+      boolean done = false;
 
-       while (!done) {
-         if (tempNode.getNodeName().compareTo("authSystem") == 0) {
-           nodeObject = new AccessTreeNodeObject(
-               tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
-               WizardSettings.ACCESS_PAGE_AUTHSYS);
+      while (!done) {
+        if (tempNode.getNodeName().compareTo("authSystem") == 0) {
+          nodeObject = new AccessTreeNodeObject(
+              tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
+              WizardSettings.ACCESS_PAGE_AUTHSYS);
 
-           tempTreeNode = new DefaultMutableTreeNode();
-           tempTreeNode.setUserObject(nodeObject);
+          tempTreeNode = new DefaultMutableTreeNode();
+          tempTreeNode.setUserObject(nodeObject);
 
-           tempTreeNode = makeTree(tempNode.getChildNodes(), tempTreeNode);
+          tempTreeNode = makeTree(tempNode.getChildNodes(), tempTreeNode);
 
-           top.add(tempTreeNode);
-           done = true;
-         } else if (tempNode.getNodeName().compareTo("group") == 0) {
-           DefaultMutableTreeNode tempUserNode = null;
+          top.add(tempTreeNode);
+          done = true;
+        } else if (tempNode.getNodeName().compareTo("group") == 0) {
+          DefaultMutableTreeNode tempUserNode = null;
 
-           NodeList nl2 = tempNode.getChildNodes();
-           nodeObject = null;
-           AccessTreeNodeObject groupNodeObject = new AccessTreeNodeObject(
-               WizardSettings.ACCESS_PAGE_GROUP);
-           tempTreeNode = new DefaultMutableTreeNode();
-           ArrayList userInGroupList = new ArrayList();
-           for (int i = 0; i < nl2.getLength(); i++) {
-             Node node = nl2.item(i);
-             if (node.getNodeName().compareTo("groupname") == 0) {
-               groupNodeObject.setDN(node.getFirstChild().getNodeValue());
-             } else if (node.getNodeName().compareTo("description") == 0) {
-               groupNodeObject.setDescription(node.getFirstChild().getNodeValue());
-             } else if (node.getNodeName().compareTo("user") == 0) {
-               NodeList nl3 = node.getChildNodes();
-               nodeObject = new AccessTreeNodeObject(
-                   WizardSettings.ACCESS_PAGE_USER);
+          NodeList nl2 = tempNode.getChildNodes();
+          nodeObject = null;
+          AccessTreeNodeObject groupNodeObject = new AccessTreeNodeObject(
+              WizardSettings.ACCESS_PAGE_GROUP);
+          tempTreeNode = new DefaultMutableTreeNode();
+          ArrayList userInGroupList = new ArrayList();
+          for (int i = 0; i < nl2.getLength(); i++) {
+            Node node = nl2.item(i);
+            if (node.getNodeName().compareTo("groupname") == 0) {
+              groupNodeObject.setDN(node.getFirstChild().getNodeValue());
+            } else if (node.getNodeName().compareTo("description") == 0) {
+              groupNodeObject.setDescription(node.getFirstChild().getNodeValue());
+            } else if (node.getNodeName().compareTo("user") == 0) {
+              NodeList nl3 = node.getChildNodes();
+              nodeObject = new AccessTreeNodeObject(
+                  WizardSettings.ACCESS_PAGE_USER);
 
-               for (int j = 0; j < nl3.getLength(); j++) {
-                 Node node1 = nl3.item(j);
-                 if (node1.getNodeName().compareTo("username") == 0) {
-                   nodeObject.setDN(node1.getFirstChild().getNodeValue());
-                 } else if (node1.getNodeName().compareTo("name") == 0) {
-                   nodeObject.setName(node1.getFirstChild().getNodeValue());
-                 } else if (node1.getNodeName().compareTo("email") == 0) {
-                   nodeObject.setEmail(node1.getFirstChild().getNodeValue());
-                 }
-               }
-               userInGroupList.add(nodeObject);
-             }
-             tempTreeNode.setUserObject(groupNodeObject);
-           }
+              for (int j = 0; j < nl3.getLength(); j++) {
+                Node node1 = nl3.item(j);
+                if (node1.getNodeName().compareTo("username") == 0) {
+                  nodeObject.setDN(node1.getFirstChild().getNodeValue());
+                } else if (node1.getNodeName().compareTo("name") == 0) {
+                  nodeObject.setName(node1.getFirstChild().getNodeValue());
+                } else if (node1.getNodeName().compareTo("email") == 0) {
+                  nodeObject.setEmail(node1.getFirstChild().getNodeValue());
+                }
+              }
+              userInGroupList.add(nodeObject);
+            }
+            tempTreeNode.setUserObject(groupNodeObject);
+          }
 
-           Collections.sort(userInGroupList);
-           Iterator it = userInGroupList.iterator();
+          Collections.sort(userInGroupList);
+          Iterator it = userInGroupList.iterator();
 
-           while(it.hasNext()){
-             nodeObject = (AccessTreeNodeObject)it.next();
-             tempUserNode = new DefaultMutableTreeNode();
-             tempUserNode.setUserObject(nodeObject);
-             tempTreeNode.add(tempUserNode);
-           }
-           top.add(tempTreeNode);
-           done = true;
-         } else if (tempNode.getNodeName().compareTo("user") == 0) {
-           NodeList nl2 = tempNode.getChildNodes();
-           nodeObject = null;
+          while (it.hasNext()) {
+            nodeObject = (AccessTreeNodeObject) it.next();
+            tempUserNode = new DefaultMutableTreeNode();
+            tempUserNode.setUserObject(nodeObject);
+            tempTreeNode.add(tempUserNode);
+          }
+          top.add(tempTreeNode);
+          done = true;
+        } else if (tempNode.getNodeName().compareTo("user") == 0) {
+          NodeList nl2 = tempNode.getChildNodes();
+          nodeObject = null;
 
-           nodeObject = new AccessTreeNodeObject(
-               WizardSettings.ACCESS_PAGE_USER);
+          nodeObject = new AccessTreeNodeObject(
+              WizardSettings.ACCESS_PAGE_USER);
 
-           for (int j = 0; j < nl2.getLength(); j++) {
-             Node node1 = nl2.item(j);
-             if (node1.getNodeName().compareTo("username") == 0) {
-               nodeObject.setDN(node1.getFirstChild().getNodeValue());
-             } else if (node1.getNodeName().compareTo("name") == 0) {
-               nodeObject.setName(node1.getFirstChild().getNodeValue());
-             } else if (node1.getNodeName().compareTo("email") == 0) {
-               nodeObject.setEmail(node1.getFirstChild().getNodeValue());
-             }
-           }
+          for (int j = 0; j < nl2.getLength(); j++) {
+            Node node1 = nl2.item(j);
+            if (node1.getNodeName().compareTo("username") == 0) {
+              nodeObject.setDN(node1.getFirstChild().getNodeValue());
+            } else if (node1.getNodeName().compareTo("name") == 0) {
+              nodeObject.setName(node1.getFirstChild().getNodeValue());
+            } else if (node1.getNodeName().compareTo("email") == 0) {
+              nodeObject.setEmail(node1.getFirstChild().getNodeValue());
+            }
+          }
 
-           userList.add(nodeObject);
-           done = true;
-         } else if (tempNode.hasChildNodes()) {
-           tempNode = tempNode.getFirstChild();
-         } else {
-           done = true;
-         }
-       }
-     }
+          userList.add(nodeObject);
+          done = true;
+        } else if (tempNode.hasChildNodes()) {
+          tempNode = tempNode.getFirstChild();
+        } else {
+          done = true;
+        }
+      }
+    }
 
-     Collections.sort(userList);
-     Iterator it = userList.iterator();
-     while(it.hasNext()){
-       nodeObject = (AccessTreeNodeObject)it.next();
-       tempTreeNode = new DefaultMutableTreeNode();
-       tempTreeNode.setUserObject(nodeObject);
-       top.add(tempTreeNode);
-     }
+    Collections.sort(userList);
+    Iterator it = userList.iterator();
+    while (it.hasNext()) {
+      nodeObject = (AccessTreeNodeObject) it.next();
+      tempTreeNode = new DefaultMutableTreeNode();
+      tempTreeNode.setUserObject(nodeObject);
+      top.add(tempTreeNode);
+    }
 
-     return top;
-   }
+    return top;
+  }
 
   public void refreshTree() {
     accessTreePane = getAccessTreePane(Access.accessTreeNode);
@@ -541,15 +543,15 @@ public class AccessPage
         accessComboBox.setEnabled(true);
       }
 
-      leftPanel.add(accessTreePane, BorderLayout.CENTER);
-      leftPanel.revalidate();
-      leftPanel.repaint();
+      middlePanel.add(accessTreePane, BorderLayout.CENTER);
+      middlePanel.add(accessControlPanel, BorderLayout.SOUTH);
+      middlePanel.revalidate();
+      middlePanel.repaint();
     } else {
-      leftPanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
+      middlePanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
           + " from server", true,
           new java.awt.Dimension(220, 100)));
       dnPanel.setVisible(true);
-      selectionInfoPanel.remove(currentPanel);
 
       typeComboBox.setEnabled(true);
       accessComboBox.setEnabled(true);
@@ -566,155 +568,23 @@ public class AccessPage
     if (treeNode != null) {
       // create JTree and set selection model, cell rendered
       // and treeselection listener....
-      accessTree = new JTree(treeNode);
-      accessTree.getSelectionModel().setSelectionMode(
-          TreeSelectionModel.SINGLE_TREE_SELECTION);
-      accessTree.setCellRenderer(new AccessTreeCellRenderer());
-      accessTree.addTreeSelectionListener(new TreeSelectionAction(this));
+      //accessTree = new JTree(treeNode);
+      //accessTree.getSelectionModel().setSelectionMode(
+      //    TreeSelectionModel.SINGLE_TREE_SELECTION);
+      //accessTree.setCellRenderer(new AccessTreeCellRenderer());
+      //accessTree.addTreeSelectionListener(new TreeSelectionAction(this));
 
       // create JScrollPane and return it
-      JScrollPane accessTreePane = new JScrollPane(accessTree);
-      accessTreePane.setPreferredSize(new java.awt.Dimension(200, 200));
+      JTreeTable treeTable = new JTreeTable(new AccessTreeModel(treeNode));
+
+      JScrollPane accessTreePane = new JScrollPane(treeTable);
+      accessTreePane.setPreferredSize(new java.awt.Dimension(500, 500));
+
       return accessTreePane;
     }
 
     // no accessTreenNode found....
     return null;
-  }
-
-  protected JPanel getGroupInfoPanel(AccessTreeNodeObject nodeObject) {
-
-    JPanel panel = WidgetFactory.makeVerticalPanel(2);
-
-    panel.add(WidgetFactory.makeDefaultSpacer());
-
-    JPanel desc = WidgetFactory.makePanel(1);
-    JLabel descLabel = WidgetFactory.makeHTMLLabel("<b>Group Information:</b>",
-        1);
-    desc.add(descLabel);
-    panel.add(desc);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    JPanel username = WidgetFactory.makePanel(1);
-    JLabel nameLabel = WidgetFactory.makeLabel(" Name:", false);
-    username.add(nameLabel);
-
-    nameField = WidgetFactory.makeOneLineTextField();
-    nameField.setEditable(false);
-    nameField.setBackground(java.awt.Color.white);
-    nameField.setText(" " + nodeObject.toString());
-    username.add(nameField);
-
-    panel.add(username);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    JPanel organization = WidgetFactory.makePanel(1);
-    JLabel orgLabel = WidgetFactory.makeLabel(" Organization:", false);
-    organization.add(orgLabel);
-
-    orgField = WidgetFactory.makeOneLineTextField();
-    orgField.setEditable(false);
-    orgField.setBackground(java.awt.Color.white);
-    String value = nodeObject.getDN();
-    if (value != null && value.indexOf("o=") > 0) {
-      value = value.substring(value.indexOf("o=") + 2);
-      value = value.substring(0, value.indexOf(","));
-    } else {
-      value = "";
-    }
-    orgField.setText(" " + value);
-    organization.add(orgField);
-
-    panel.add(organization);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    JPanel groupDesc = WidgetFactory.makePanel(1);
-
-    JLabel groupDescLabel = WidgetFactory.makeLabel(" Group Description:", false);
-    groupDesc.add(groupDescLabel);
-
-    JTextField descField = WidgetFactory.makeOneLineTextField();
-    descField.setEditable(false);
-    if (nodeObject.getDescription() != null) {
-      descField.setText(" " + nodeObject.getDescription());
-    }
-    descField.setBackground(java.awt.Color.white);
-    groupDesc.add(descField);
-
-    panel.add(groupDesc);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    panel.setBorder(new javax.swing.border.EmptyBorder(0,
-        WizardSettings.PADDING,
-        0, WizardSettings.PADDING));
-
-    return panel;
-  }
-
-  protected JPanel getUserInfoPanel(AccessTreeNodeObject nodeObject) {
-    JPanel panel = WidgetFactory.makeVerticalPanel(2);
-
-    panel.add(WidgetFactory.makeDefaultSpacer());
-
-    JPanel desc = WidgetFactory.makePanel(1);
-    JLabel descLabel = WidgetFactory.makeHTMLLabel("<b>User Information:</b>",
-        1);
-    desc.add(descLabel);
-    panel.add(desc);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    JPanel username = WidgetFactory.makePanel(1);
-    JLabel nameLabel = WidgetFactory.makeLabel(" Name:", false);
-    username.add(nameLabel);
-
-    nameField = WidgetFactory.makeOneLineTextField();
-    nameField.setEditable(false);
-    nameField.setBackground(java.awt.Color.white);
-    nameField.setText(" " + nodeObject.toString());
-    username.add(nameField);
-
-    panel.add(username);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    JPanel organization = WidgetFactory.makePanel(1);
-    JLabel orgLabel = WidgetFactory.makeLabel(" Organization:", false);
-    organization.add(orgLabel);
-
-    orgField = WidgetFactory.makeOneLineTextField();
-    orgField.setEditable(false);
-    orgField.setBackground(java.awt.Color.white);
-    String value = nodeObject.getDN();
-    if (value != null && value.indexOf("o=") > 0) {
-      value = value.substring(value.indexOf("o=") + 2);
-      value = value.substring(0, value.indexOf(","));
-    } else {
-      value = "";
-    }
-    orgField.setText(" " + value);
-    organization.add(orgField);
-
-    panel.add(organization);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    JPanel email = WidgetFactory.makePanel(1);
-    JLabel emailLabel = WidgetFactory.makeLabel(" Email:", false);
-    email.add(emailLabel);
-
-    JTextField emailField = WidgetFactory.makeOneLineTextField();
-    emailField.setEditable(false);
-    if (nodeObject.getEmail() != null) {
-      emailField.setText(" " + nodeObject.getEmail());
-    }
-    emailField.setBackground(java.awt.Color.white);
-    email.add(emailField);
-
-    panel.add(email);
-    panel.add(WidgetFactory.makeHalfSpacer());
-
-    panel.setBorder(new javax.swing.border.EmptyBorder(0,
-        WizardSettings.PADDING,
-        0, WizardSettings.PADDING));
-    return panel;
   }
 
   /**
@@ -744,10 +614,25 @@ public class AccessPage
 
     // Get the value of the DN
     if (accessTreePane != null) {
-      surrogate.add(" " + nameField.getText().trim() + ", " +
-          orgField.getText().trim());
+      if (nameField.getText() != null) {
+        surrogate.add(" " + nameField.getText().trim());
+      } else {
+        surrogate.add(" ");
+      }
+      if (orgField.getText() != null) {
+        surrogate.add(" " + orgField.getText().trim());
+      } else {
+        surrogate.add(" ");
+      }
+      if (descField.getText() != null) {
+        surrogate.add(" " + descField.getText().trim());
+      } else {
+        surrogate.add(" ");
+      }
     } else {
       surrogate.add(" " + dnField.getText().trim());
+      surrogate.add(" ");
+      surrogate.add(" ");
     }
 
     // Get access given to the user
@@ -889,42 +774,27 @@ class TreeSelectionAction
 
     if (node != null &&
         node.getUserObject() instanceof AccessTreeNodeObject) {
-      accessPage.selectionInfoPanel.remove(accessPage.currentPanel);
 
       if ( ( (AccessTreeNodeObject) node.getUserObject()).nodeType ==
           WizardSettings.ACCESS_PAGE_GROUP) {
 
         accessPage.dnField.setText( ( (AccessTreeNodeObject) node.getUserObject()).
             getDN());
-        accessPage.currentPanel = accessPage.getGroupInfoPanel( (
-            AccessTreeNodeObject) node.getUserObject());
 
         accessPage.typeComboBox.setEnabled(true);
         accessPage.accessComboBox.setEnabled(true);
-
-        accessPage.selectionInfoPanel.add(accessPage.currentPanel,
-            BorderLayout.CENTER);
       } else if ( ( (AccessTreeNodeObject) node.getUserObject()).nodeType ==
           WizardSettings.ACCESS_PAGE_USER) {
 
         accessPage.dnField.setText( ( (AccessTreeNodeObject) node.getUserObject()).
             getDN());
-        accessPage.currentPanel = accessPage.getUserInfoPanel( (
-            AccessTreeNodeObject)
-            node.getUserObject());
         accessPage.typeComboBox.setEnabled(true);
         accessPage.accessComboBox.setEnabled(true);
-
-        accessPage.selectionInfoPanel.add(accessPage.currentPanel,
-            BorderLayout.CENTER);
       } else {
         accessPage.dnField.setText("");
         accessPage.typeComboBox.setEnabled(false);
         accessPage.accessComboBox.setEnabled(false);
       }
-
-      accessPage.selectionInfoPanel.revalidate();
-      accessPage.selectionInfoPanel.repaint();
 
     } else {
       accessPage.dnField.setText("");
@@ -935,23 +805,19 @@ class TreeSelectionAction
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-//                     ProgressBarThread  Class
+//                     AccessProgressThread Class
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-class ProgressBarThread
-    extends Thread {
+class AccessProgressThread
+    extends ProgressBarThread {
 
   private AccessPage accessPage = null;
 
-  private JDialog dialog = null;
-  private JProgressBar jp = null;
-  private Timer timer = null;
-  private boolean increaseValue = true;
-  private JButton cancelButton;
   // Constructor accessPage
-  public ProgressBarThread(AccessPage accessPage) {
+  public AccessProgressThread(AccessPage accessPage) {
+    super();
     this.accessPage = accessPage;
   }
 
@@ -968,80 +834,14 @@ class ProgressBarThread
     while (! (parentDialog instanceof ModalDialog)) {
       parentDialog = parentDialog.getParent();
     }
-
-    // create the JDialog
-    dialog = new JDialog( (java.awt.Dialog) parentDialog, //owner
-        "Generating Access Tree", // title
-        true); // modal
-
-    // create the ProgressBar
-    jp = new JProgressBar();
-    jp.setMaximum(100);
-    jp.setStringPainted(true);
-    jp.setString("");
-    jp.setPreferredSize(new Dimension(400, 30));
-
-    // create cancel button and its action listener
-    ActionListener actionListener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        timer.stop();
-        dialog.dispose();
-      }
-    };
-    cancelButton = WidgetFactory.makeJButton("Cancel",
-        actionListener);
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.add(cancelButton);
-
-    // get dialog's content pane and put progress bar and cancel button in it
-    Container dialogContentPane = dialog.getContentPane();
-    dialogContentPane.add(jp, BorderLayout.CENTER);
-    dialogContentPane.add(buttonPanel, BorderLayout.SOUTH);
-
-    // create actionlistener for the timer... the action is performed every
-    // 30 miliseconds and it sets the value of progress bar....
-    int delay = 30; //milliseconds
-    ActionListener taskPerformer = new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        //...Perform a task...
-        int value = jp.getValue();
-        if (value == 100) {
-          increaseValue = false;
-        }
-        if (value == 0) {
-          increaseValue = true;
-        }
-
-        if (increaseValue) {
-          value += 2;
-        } else {
-          value -= 2;
-        }
-        jp.setValue(value);
-      }
-    };
-    timer = new Timer(delay, taskPerformer);
-    timer.setRepeats(true);
-    timer.start();
+    this.setParentDialog( (JDialog) parentDialog);
 
     // progress bar will be showing soon ... the access tree node can
     // now be contacted
     accessPage.generateAccessTreeNode();
 
-    // dialog is ready to go ... display the dialog
-    dialog.setLocationRelativeTo(accessPage);
-    dialog.pack();
-    dialog.show();
+    super.run();
 
-  }
-
-  protected void closeDialog(){
-    timer.stop();
-    dialog.dispose();
-  }
-
-  protected JProgressBar getProgressBar() {
-    return jp;
   }
 }
 
@@ -1053,7 +853,8 @@ class ProgressBarThread
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-class QueryMetacatThread extends Thread {
+class QueryMetacatThread
+    extends Thread {
 
   AccessPage accessPage;
   InputStream queryResult;
@@ -1070,15 +871,15 @@ class QueryMetacatThread extends Thread {
     try {
       queryResult = null;
       //if (morpho.isConnected()) {
-        queryResult = morpho.getMetacatInputStream(prop);
-        accessPage.setTree(queryResult);
-     // }
+      queryResult = morpho.getMetacatInputStream(prop);
+      accessPage.setTree(queryResult);
+      // }
     }
     catch (Exception w) {
       Log.debug(10, "Error in retrieving User list from Metacat server.");
       Log.debug(45, w.getMessage());
+      w.printStackTrace();
     }
   }
-
 
 }
