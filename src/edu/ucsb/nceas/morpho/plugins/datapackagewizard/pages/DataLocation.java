@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:53:08 $'
- * '$Revision: 1.29 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-15 18:27:12 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1121,6 +1121,8 @@ class FileChooserWidget extends JPanel {
   private JTextField fileNameField;
   private JButton    fileNameButton;
   private String     importFileURL;
+  
+  static private File lastDataDir = null; 
 
   public FileChooserWidget(String label, String descText, String initialText) {
 
@@ -1165,7 +1167,19 @@ class FileChooserWidget extends JPanel {
                 final JFileChooser fc = new JFileChooser();
                 fc.setDialogTitle("Select a data file to import...");
                 String userdir = System.getProperty("user.dir");
-                fc.setCurrentDirectory(new File(userdir));
+                String homedir = System.getProperty("user.home");
+                String osname = System.getProperty("os.name");
+                if (lastDataDir==null) {
+                  fc.setCurrentDirectory(new File(userdir));
+                  if (osname.indexOf("Window")>-1) {  // a windows os
+                    File mydocs = new File(homedir+File.separator+"My Documents");
+                    if (mydocs.exists()) {
+                      fc.setCurrentDirectory(mydocs);
+                    }
+                  }
+                } else {  // use previous dataDirectory
+                  fc.setCurrentDirectory(lastDataDir);
+                }
                 int returnVal = fc.showOpenDialog(WizardContainerFrame.frame);
                 File file = null;
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1173,7 +1187,7 @@ class FileChooserWidget extends JPanel {
                   file = fc.getSelectedFile();
 
                   if (file!=null) {
-
+                    lastDataDir = new File(file.getParent());
                     setImportFileURL(file.getAbsolutePath());
                     fileNameField.setText(getImportFileURL());
                   }
