@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-11 06:41:05 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-12-12 00:39:25 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@ public class WizardContainerFrame extends JFrame {
     frame = this;
     this.listener = listener;
     pageStack   = new Stack();
-    pageLib = new WizardPageLibrary();
+    pageLib = new WizardPageLibrary(this);
     init();
   }
 
@@ -200,7 +200,6 @@ public class WizardContainerFrame extends JFrame {
 
   private void init() {
 
-    initPageLibrary();
     initContentPane();
     initTopPanel();
     initMiddlePanel();
@@ -208,37 +207,6 @@ public class WizardContainerFrame extends JFrame {
     initButtons();
   }
 
-  private void initPageLibrary() {
-
-
-    ImportWizard importPage
-        = (ImportWizard)(pageLib.getPage(DataPackageWizardInterface.TEXT_IMPORT_WIZARD));
-
-    importPage.setTextImportListener(
-
-      new TextImportListener() {
-
-        /** TextImportListener interface
-         * This method is called when editing is complete
-         *
-         * @param xmlString is the edited XML in String format
-         */
-        public void importComplete(OrderedMap om) {
-
-          Log.debug(45, "WizardContainerFrame.importComplete() called");
-          nextFinishAction();
-        }
-
-        /** TextImportListener interface
-         * this method handles canceled editing
-         */
-        public void importCanceled() {
-
-          Log.debug(45, "WizardContainerFrame.importCanceled() called");
-          previousAction();
-        }
-      });
-  }
 
   private void initContentPane() {
 
@@ -330,7 +298,7 @@ public class WizardContainerFrame extends JFrame {
    *  or "Finish" button(last page) is pressed. It's up to the content to know
    *  whether it's the last page or not
    */
-  private void nextFinishAction() {
+  public void nextFinishAction() {
 
     Log.debug(45,"nextFinishAction called");
 
@@ -634,7 +602,7 @@ public class WizardContainerFrame extends JFrame {
   /**
    *  The action to be executed when the "Prev" button is pressed
    */
-  private void previousAction() {
+  public void previousAction() {
 
     if (pageStack.isEmpty()) return;
 

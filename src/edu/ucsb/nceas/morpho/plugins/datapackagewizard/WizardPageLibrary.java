@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-11 06:41:05 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-12-12 00:39:25 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
  *  the getPage() method
  */
 public class WizardPageLibrary {
+
+  private static WizardContainerFrame container;
 
   private static final Map pages = new HashMap();
 
@@ -79,8 +81,9 @@ public class WizardPageLibrary {
   }
 
 
-  public WizardPageLibrary() {
-    
+  public WizardPageLibrary(WizardContainerFrame container) { 
+  
+    this.container = container;
     reInitialize();
   }
   
@@ -103,7 +106,7 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.PARTY_ASSOCIATED,   new PartyMainPage(PartyPage.ASSOCIATED));
     pages.put(DataPackageWizardInterface.USAGE_RIGHTS,       new UsageRights());
     pages.put(DataPackageWizardInterface.DATA_LOCATION,      new DataLocation());
-    pages.put(DataPackageWizardInterface.TEXT_IMPORT_WIZARD, new ImportWizard());
+    pages.put(DataPackageWizardInterface.TEXT_IMPORT_WIZARD, new ImportWizard(container));
     pages.put(DataPackageWizardInterface.DATA_FORMAT,        new DataFormat());
     pages.put(DataPackageWizardInterface.ENTITY,             new Entity());
     pages.put(DataPackageWizardInterface.ACCESS,             new Access());

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.7 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-12 00:39:25 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ public class Summary extends AbstractWizardPage {
     this.add(WidgetFactory.makeDefaultSpacer());
     this.add(WidgetFactory.makeDefaultSpacer());
     this.add(desc1);
-    this.add(desc2);
+    if (desc2!=null) this.add(desc2);
     this.add(desc3);
   }
 

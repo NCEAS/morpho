@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-12 00:39:25 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ public class UsageRights extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
-  private final String nextPageID = DataPackageWizardInterface.DATA_LOCATION;
+  private final String nextPageID = DataPackageWizardInterface.SUMMARY;
   private final String pageNumber = "12";
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Usage Rights";

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.11 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-12 00:39:25 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,9 @@ import javax.swing.JFrame;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Frame;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.TextImportWizard;
 import edu.ucsb.nceas.morpho.framework.TextImportWizardEml2;
 import edu.ucsb.nceas.morpho.framework.TextImportListener;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -67,18 +67,18 @@ public class ImportWizard extends     AbstractWizardPage
 
   private final String IMPORT_WIZ_TITLE = "Text Import Wizard";
 
+  private WizardContainerFrame mainWizFrame;
   private OrderedMap resultsMap;
 
-  // TextImportWizardEml2 is the new Text Import Wizard for EML2.0.0 standard.
-  // The old TextImportWizard is however still retained in the module
-  private TextImportWizardEml2 importWiz;
-
-  private TextImportListener listener;
   private boolean importCompletedOK = false;
 
-  private JDialog importWizDialog;
+  private JFrame importWizFrame;
 
-  public ImportWizard() { init(); }
+  public ImportWizard(WizardContainerFrame mainWizFrame) { 
+  
+    this.mainWizFrame = mainWizFrame;
+    init(); 
+  }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
@@ -90,33 +90,21 @@ public class ImportWizard extends     AbstractWizardPage
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
+    
     // if import hasn't completed OK (i.e. first visit, or returning after
     // a "cancel"), start up the import wizard.
     if (!importCompletedOK) {
 
-      AbstractWizardPage locationPage = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
-
+      AbstractWizardPage locationPage 
+          = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
 
-      importWiz = new TextImportWizardEml2(fileTextName, this);
+      importWizFrame = new TextImportWizardEml2(fileTextName, this);
 
-      importWiz.setVisible(false);
-
-      final JFrame parent = WizardContainerFrame.frame;
-      final int xcoord = ( parent.getX() + parent.getWidth()/2 )
-                                                - WizardSettings.DIALOG_WIDTH/2;
-      final int ycoord = ( parent.getY() + parent.getHeight()/2 )
-                                                - WizardSettings.DIALOG_HEIGHT/2;
-
-      importWizDialog = new JDialog(parent, IMPORT_WIZ_TITLE, true);
-
-      importWizDialog.getContentPane().add(importWiz.getContentPane());
-
-      importWizDialog.setBounds(xcoord, ycoord, WizardSettings.DIALOG_WIDTH,
-                                                WizardSettings.DIALOG_HEIGHT);
-
-      importWizDialog.setVisible(true);
+      importWizFrame.setBounds(mainWizFrame.getX(),     mainWizFrame.getY(), 
+                               mainWizFrame.getWidth(), mainWizFrame.getHeight());
+      importWizFrame.setVisible(true);
+      mainWizFrame.setVisible(false);
 
     } else {
       // if import has completed OK, we don't need to be on this
@@ -132,16 +120,10 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void importComplete(OrderedMap om) {
 
-    if (importWiz!=null) importWiz.setVisible(false);
     resultsMap = om;
-    listener.importComplete(om);
+    cleanUp();
+    mainWizFrame.nextFinishAction();
     importCompletedOK = true;
-    if (importWizDialog!=null) {
-      importWizDialog.setVisible(false);
-      importWizDialog.dispose();
-    }
-    importWizDialog = null;
-    importWiz = null;
   }
 
   /** TextImportListener interface
@@ -149,34 +131,32 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void importCanceled() {
 
-    if (importWiz!=null) importWiz.setVisible(false);
-    if (importWizDialog!=null) {
-      importWizDialog.setVisible(false);
-      importWizDialog.dispose();
-    }
-    listener.importCanceled();
+    cleanUp();
+    mainWizFrame.previousAction();
     importCompletedOK = false;
-    importWizDialog = null;
-    importWiz = null;
   }
+  
+  private void cleanUp() {
 
-  /**
-   *  sets TextImportListener to be called when this class gets a callback from
-   *  the Text Import Wizard (i.e. the call gets passed on)
-   *
-   *  @param listener TextImportListener to be called when this class gets a
-   *                  callback from the Text Import Wizard (i.e. the call gets
-   *                  passed on)
-   */
-  public void setTextImportListener(TextImportListener listener) {
-
-    this.listener = listener;
+    mainWizFrame.setBounds(importWizFrame.getX(),     importWizFrame.getY(), 
+                        importWizFrame.getWidth(), importWizFrame.getHeight());
+                        
+    mainWizFrame.setVisible(true);
+    
+    if (importWizFrame!=null) {
+      importWizFrame.setVisible(false);
+      importWizFrame.dispose();
+      importWizFrame = null;
+    }
   }
 
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    */
-  public void onRewindAction() {}
+  public void onRewindAction() {
+  
+    //never used
+  }
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
@@ -186,7 +166,11 @@ public class ImportWizard extends     AbstractWizardPage
    *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() { return true; }
+  public boolean onAdvanceAction() { 
+  
+    //never used
+    return true; 
+  }
 
   /**
    *  gets the Map object that contains all the key/value paired

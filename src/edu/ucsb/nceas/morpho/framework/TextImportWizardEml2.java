@@ -4,9 +4,9 @@
 *              National Center for Ecological Analysis and Synthesis
 *    Release: @release@
 *
-*   '$Author: higgins $'
-*     '$Date: 2003-12-09 19:06:35 $'
-* '$Revision: 1.5 $'
+*   '$Author: brooke $'
+*     '$Date: 2003-12-12 00:39:25 $'
+* '$Revision: 1.6 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -45,16 +45,12 @@ import javax.swing.DefaultListSelectionModel;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.Base64;
-import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
-import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
+
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.IntervalRatioPanel;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -181,22 +177,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	* vector of vectors with table data
 	*/
 	Vector vec;
-	
-	/**
-	* entity wizard
-	*/
-	PackageWizard entityWizard = null;
-	
-	/**
-	* attribute wizard
-	*/
-	PackageWizard attributeWizard = null;
-	
-	/**
-	* physical wizard
-	*/
-	PackageWizard physicalWizard = null;
-	
+
 	public boolean save_flag = false;
 	
 	private TextImportListener listener = null;
@@ -470,34 +451,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 					FinishButton.setEnabled(false);
 					NextButton.setEnabled(true);
 				}
-	}
-	
-	
-	/**
-	* reference to a packagewizard
-	* used to pass a fixed XML string to a PackageWizard
-	*/
-	public void setEntityWizard(PackageWizard entity) {
-		this.entityWizard = entity;
-	}
-	
-	/**
-	* reference to a packagewizard
-	* used to pass a fixed XML string to a PackageWizard
-	*/
-	public void setAttributeWizard(PackageWizard attribute) {
-		this.attributeWizard = attribute;
-	}
-	
-	/**
-	* reference to a packagewizard
-	* used to pass a fixed XML string to a PackageWizard
-	*/
-	public void setPhysicalWizard(PackageWizard physical) {
-		this.physicalWizard = physical;
-	}
-	
-			
+	}	
 	
 	//{{DECLARE_CONTROLS
 			java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
@@ -598,17 +552,10 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		}
 	}
 	
-	void TextImportWizard_windowClosing(java.awt.event.WindowEvent event)
-	{
-		TextImportWizard_windowClosing_Interaction1(event);
-	}
-	
-	void TextImportWizard_windowClosing_Interaction1(java.awt.event.WindowEvent event) {
+	void TextImportWizard_windowClosing(java.awt.event.WindowEvent event) {
 		try {
 			CancelButton_actionPerformed(null);
-			this.exitApplication();
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 	}
 	
 	public void resetColumnHeader(String newColHeader) {
@@ -1198,31 +1145,31 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			}*/
 		}
 		
-		if (entityWizard!=null) {
-			//System.out.println("===============creating xml string: " + createXMLEntityString());
-			entityWizard.setXMLString(createXMLEntityString());
-		}
-		if (attributeWizard!=null) {
-			attributeWizard.setXMLString(createXMLAttributeString());
-			//System.out.println("===============creating xml string: " + createXMLAttributeString());
-		}
-		if (physicalWizard!=null) {
-			physicalWizard.setXMLString(createXMLPhysicalString());
-		}
-		
-		for (int i=0;i<colTitles.size();i++) {
-			checkColumnInfo(i);
-		}
-		
-		
-		String tempS = "Click on 'Show Results' button to see results, including XML files.";
-		if (entityWizard!=null) {
-			tempS = tempS + " Information will automatically be added to the Data Package under construction.";
-		}
-		else {
-			tempS = tempS + " Also, see File Menu to Save Files.";
-		}
-		finishFlag = true;
+//		if (entityWizard!=null) {
+// //			System.out.println("===============creating xml string: " + createXMLEntityString());
+//			entityWizard.setXMLString(createXMLEntityString());
+//		}
+//		if (attributeWizard!=null) {
+//			attributeWizard.setXMLString(createXMLAttributeString());
+// //			System.out.println("===============creating xml string: " + createXMLAttributeString());
+//		}
+//		if (physicalWizard!=null) {
+//			physicalWizard.setXMLString(createXMLPhysicalString());
+//		}
+//		
+//		for (int i=0;i<colTitles.size();i++) {
+//			checkColumnInfo(i);
+//		}
+//		
+//		
+//		String tempS = "Click on 'Show Results' button to see results, including XML files.";
+//		if (entityWizard!=null) {
+//			tempS = tempS + " Information will automatically be added to the Data Package under construction.";
+//		}
+//		else {
+//			tempS = tempS + " Also, see File Menu to Save Files.";
+//		}
+//		finishFlag = true;
 		if(listener != null)
 		{
 			listener.importComplete(createEml2NVPairs());
@@ -1791,119 +1738,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			parseDelimited();
 		}
 	}
-	
-	/**
-	* Hardcoded routine to create an XML Attribute metadata string based on
-	* data
-	* ---BAD PRACTICE--- should use config to get info
-	*/
-	public String createXMLAttributeString() {
-		StringBuffer XMLBuffer = new StringBuffer();
-		XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-		XMLBuffer.append("<!DOCTYPE eml-attribute PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" \"eml-attribute.dtd\">\n");
-		XMLBuffer.append("<eml-attribute>\n");
-		XMLBuffer.append("    <identifier> </identifier>\n");
-		// Is this necessary ???
-		
-		/*
-		for (int i=0;i<colTitles.size();i++) {
-			ColumnData cd = (ColumnData)colDataInfo.elementAt(i);
-			XMLBuffer.append("    <attribute>\n");
-			XMLBuffer.append("        <attributeName> "+XMLUtil.normalize(cd.colName)+"</attributeName>\n");
-			XMLBuffer.append("        <attributeLabel> "+XMLUtil.normalize(cd.colTitle)+"</attributeLabel>\n");
-			XMLBuffer.append("        <attributeDefinition>"+XMLUtil.normalize(cd.colDefinition)+"</attributeDefinition>\n");
-			XMLBuffer.append("        <unit> "+XMLUtil.normalize(cd.colUnits)+"</unit>\n");
-			XMLBuffer.append("        <dataType> "+XMLUtil.normalize(cd.colType)+"</dataType>\n");
-			XMLBuffer.append("        <attributeDomain>\n");
-			if (cd.numChoice) {
-				XMLBuffer.append("             <numericDomain>\n");
-				XMLBuffer.append("                <minimum>"+cd.colMin +"</minimum>\n");
-				XMLBuffer.append("                <maximum>"+cd.colMax +"</maximum>\n");
-				XMLBuffer.append("             </numericDomain>\n");
-			}
-			else if(cd.enumChoice) {
-				for (int k=0;k<cd.enumCodeVector.size();k++) {
-					XMLBuffer.append("             <enumeratedDomain>\n");
-					XMLBuffer.append("                <code>"+(String)cd.enumCodeVector.elementAt(k)+"</code>\n");
-					XMLBuffer.append("                <definition>"+(String)cd.enumDefinitionVector.elementAt(k)+"</definition>\n");
-					XMLBuffer.append("                <source>"+(String)cd.enumSourceVector.elementAt(k)+"</source>\n");
-					XMLBuffer.append("             </enumeratedDomain>\n");
-				}
-			}
-			else {
-				XMLBuffer.append("             <textDomain>\n");
-				if (cd.colTextDefinition.length()>0) {
-					XMLBuffer.append("                <definition>"+cd.colTextDefinition+"</definition>\n");
-				}
-				else{
-					XMLBuffer.append("                <definition>any text</definition>\n");
-				}
-				if (cd.colTextPattern.length()>0) {
-					XMLBuffer.append("                <definition>"+cd.colTextPattern+"</definition>\n");
-				}
-				if (cd.colTextSource.length()>0) {
-					XMLBuffer.append("                <definition>"+cd.colTextSource+"</definition>\n");
-				}
-				XMLBuffer.append("             </textDomain>\n");
-			}
-			XMLBuffer.append("        </attributeDomain>\n");
-			XMLBuffer.append("        <missingValueCode> </missingValueCode>\n");
-			XMLBuffer.append("        <precision> </precision>\n");
-			XMLBuffer.append("    </attribute>\n");
-		}	  */
-		XMLBuffer.append("</eml-attribute>\n");
-		return XMLBuffer.toString();
-	}
-	
-	/**
-	* Hardcoded routine to create an XML Table Entity metadata string based on
-	* data
-	* ---BAD PRACTICE--- should use config to get info
-	*/
-	public String createXMLEntityString() {
-		StringBuffer XMLBuffer = new StringBuffer();
-		XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-		XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//ecoinformatics.org//eml-entity-2.0.0beta6//EN\" \"eml-entity.dtd\">\n");
-		XMLBuffer.append("<table-entity>\n");
-		XMLBuffer.append("    <identifier> </identifier>\n");
-		XMLBuffer.append("    <entityName> "+XMLUtil.normalize(TableNameTextField.getText())+"</entityName>\n");
-		XMLBuffer.append("    <entityDescription> "+XMLUtil.normalize(TableDescriptionTextField.getText())+"</entityDescription>\n");
-		XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"></orientation>\n");
-		XMLBuffer.append("    <caseSensitive yesorno=\"no\"></caseSensitive>\n");
-		int temp = 0;
-		if (labelsInStartingLine) temp = 1;
-		int numrecs = nlines_actual - startingLine +1 + temp;
-		String numRecords = (new Integer(numrecs)).toString();
-		XMLBuffer.append("    <numberOfRecords> "+XMLUtil.normalize(numRecords)+"</numberOfRecords>\n");
-		XMLBuffer.append("</table-entity>\n");
-		return XMLBuffer.toString();
-	}
-	
-	/**
-	* Hardcoded routine to create an XML eml-physical metadata string based on
-	* data
-	* ---BAD PRACTICE--- should use config to get info
-	*/
-	public String createXMLPhysicalString() {
-		long filesize = (new File(filename)).length();
-		String filesizeString = (new Long(filesize)).toString();
-		String delimit = getDelimiterStringAsText();
-		StringBuffer XMLBuffer = new StringBuffer();
-		int numHeaderLines = startingLine;
-		if (!labelsInStartingLine) numHeaderLines = numHeaderLines-1;
-		
-		XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-		XMLBuffer.append("<!DOCTYPE eml-physical PUBLIC \"-//ecoinformatics.org//eml-physical-2.0.0beta6//EN\" \"eml-physical.dtd\">\n");
-		XMLBuffer.append("<eml-physical>\n");
-		XMLBuffer.append("    <identifier> </identifier>\n");
-		XMLBuffer.append("    <format> Text</format>\n");  // text import wizard only handles text 
-		XMLBuffer.append("    <size unit=\"bytes\">"+filesizeString+"</size>\n");  
-		XMLBuffer.append("    <numHeaderLines>"+numHeaderLines+"</numHeaderLines>\n");  
-		XMLBuffer.append("    <recordDelimiter>"+"#x0A"+"</recordDelimiter>\n"); 
-		XMLBuffer.append("    <fieldDelimiter>"+delimit+"</fieldDelimiter>\n"); 
-		XMLBuffer.append("</eml-physical>\n");
-		return XMLBuffer.toString();
-	}
+
 	
 	/**
 	*  Create a set (OrderedMap) of Name/Value pairs for eml2 corresponding to 
@@ -2008,151 +1843,5 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			listener.importCanceled();
 		}
 	}
-	
-	
-	
-	private String checkForBlankInfo() {
-		String res = null;  // return null if all fields have data
-		String temp = "";
-		
-		for (int i=0;i<columnAttributes.size();i++) {
-			AttributePage ad = (AttributePage)columnAttributes.elementAt(i);
-			if (!ad.onAdvanceAction()) {
-				temp = temp + "#" + (i+1) +" ";
-			}
-		}
-		if (temp.length()>0) res = temp;
-		return res;
-	}
-	
-	
-	/** This class is the Display on top of Screen 3 ( and later screens). It displays the
-	*   attribute data values as a html text. It has a helpPanel on the left and a Edit 
-	*   button on the top right to open the AttributeDialog for editting
-	*   This class replaces the original ColumnMetadataEditPanel class that was used in
-	*   the previous TextImportWizard.
-	*/
-	
-	private class ColumnMetadataEditPanelEml2 extends javax.swing.JPanel
-	{
-		TextImportWizardEml2 tiw = null; 
-		int currentAttributeIndex = 0;
-		
-		
-		HTMLPanel htmlPanel;
-		JPanel headerPanel;
-		eJButton editButton;
-		JLabel headerLabel;
-		JPanel helpPanel;
-		JPanel displayPanel;
-		JLabel helpLabel;
-		public ColumnMetadataEditPanelEml2() {
-			init();
-		}
-		
-		private void init() {
-			this.setOpaque(true);
-			this.setLayout(new BorderLayout(0,0));
-			
-			editButton = new eJButton("edit");
-			editButton.setBackground(UISettings.EDITBUTTON_COLOR);
-			editButton.setForeground(UISettings.EDITBUTTON_TEXT_COLOR);
-			editButton.setFocusPainted(false);
-			editButton.setFont(UISettings.BUTTON_FONT);
-			headerLabel = new JLabel("Details for the Selected Column");
-			headerLabel.setForeground(UISettings.TITLE_TEXT_COLOR);
-			headerLabel.setFont(UISettings.SUBPANEL_TITLE_FONT);
-			headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			
-			try {
-				htmlPanel = new HTMLPanel(MetaDisplay.BLANK_HTML_PAGE);
-			}
-			catch(IOException e) {
-				Log.debug(12,"HTMLPanel.HTMLPanel(String): IOException " +e);
-				e.printStackTrace(System.err);
-			}
-			
-			headerPanel = new JPanel();
-			headerPanel.setLayout(new BorderLayout());
-			headerPanel.setOpaque(true);
-			headerPanel.setBackground(UISettings.TITLEBAR_COLOR);
-			setPreferredSize(UISettings.TITLEBAR_DIMS);
-			headerPanel.setBorder(new EmptyBorder( UISettings.TITLEBAR_TOP_PADDING,
-                                   	         UISettings.TITLEBAR_SIDES_PADDING,
-						 UISettings.TITLEBAR_BOTTOM_PADDING,
-						 UISettings.TITLEBAR_SIDES_PADDING ));
-			
-			headerPanel.add(headerLabel, BorderLayout.CENTER);
-			headerPanel.add(editButton, BorderLayout.EAST);
-						
-			JScrollPane htmlScroll = new JScrollPane(htmlPanel);
-			
-			displayPanel = new JPanel();
-			displayPanel.setLayout(new BorderLayout());
-        		displayPanel.add(headerPanel, BorderLayout.NORTH);
-			displayPanel.add(htmlScroll, BorderLayout.CENTER);
-			
-			helpLabel = new JLabel();
-			helpLabel.setText("<html><body> <br>In the table below, click <p>any cell to select its</p> <p>column." + 
-					" Details for the</p> <p>selected column will be</p> <p>shown on the right --></p> <br>" +
-					" <p>Use the edit button if </p><p>you need to change the </p><p>description </p></body></hmtl>"
-					);
-			helpPanel = new JPanel();
-			helpPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-			helpPanel.setBackground(java.awt.Color.white);
-			helpPanel.add(helpLabel);
-			
-			this.add(displayPanel, BorderLayout.CENTER);
-			this.add(helpPanel, BorderLayout.WEST);
-			
-			editButton.addActionListener( new ActionListener() {
-				public void actionPerformed(ActionEvent ae){
-					
-					AttributePage ad = (AttributePage) columnAttributes.elementAt(currentAttributeIndex);
-					WizardPopupDialog wpd = new WizardPopupDialog(ad, WizardContainerFrame.frame,false);
-					wpd.resetBounds();
-					wpd.setVisible(true);
-					
-					//colData.attributeDialog.show();
-					
-					if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
-						htmlPanel.setText( ad.getText());							
-					}
-					
-				}
-			});
-		}
-		
-		/** This functions sets the display to the data of given attribute 
-		*   @param  index- the index of the attribute whose data needs to be displayed
-		*
-		*/
-		
-		public void setCurrentAttributeIndex(int index) {
-
-			currentAttributeIndex = index;
-			AttributePage ad = (AttributePage) columnAttributes.elementAt(currentAttributeIndex);
-			htmlPanel.setText(ad.getText());
-		}
-		
-		public void setTextImportWizard(TextImportWizardEml2 tiw) {
-			this.tiw = tiw;
-		}
-		
-		class eJButton extends JButton 
-		{
-			eJButton(String name) {
-				super(name);
-				super.setUI(new javax.swing.plaf.metal.MetalButtonUI());
-				UIManager.put(  "Button.disabledText",
-				UISettings.BUTTON_DISABLED_TEXT_COLOR);
-				UIManager.put(  "Button.margin",
-				UISettings.METAVIEW_BUTTON_INSETS);
-				updateUI();
-			}
-		}
-	}
-	
-	
 	
 }
