@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:19:33 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2004-02-19 20:04:44 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,8 @@ public class WizardSettings {
   private static List unitsList      = new ArrayList();
   private static List unitsRemainderList  = new ArrayList();
   private static Map  unitDictionaryUnitsCacheMap = new HashMap();
+  
+  private static Map  unitPreferenceMap = new HashMap();
 
   //static initialization - happens when classoader loads this class
   static {
@@ -461,14 +463,22 @@ public class WizardSettings {
         if (attribNNMap==null || attribNNMap.getLength()<1) continue;
 
         Node unitTypeAttrNode = attribNNMap.getNamedItem("unitType");
+        Node parentSIAttrNode2 = attribNNMap.getNamedItem("parentSI");
+        
 
         // if attributes contains an attrib node called unitType {
         if (unitTypeAttrNode!=null) {
-
+          
           // if unitType value==requested unitType add name to unitsList
           if (((Attr)unitTypeAttrNode).getValue().equals(unitType)) {
 
             addAttributeNameToList(attribNNMap, unitsList);
+            
+            if (parentSIAttrNode2!=null) {
+              String parentSIVal2 = ((Attr)parentSIAttrNode2).getValue();
+              unitPreferenceMap.put(unitType.toLowerCase(), parentSIVal2);
+            }
+
           }
         } else {  //  add unit node to unitsRemainderList
 
@@ -496,6 +506,8 @@ public class WizardSettings {
             if (unitsList.contains( StringUtil.stripTabsNewLines(
             ((Attr)parentSIAttrNode).getValue()))) {
 
+              String parentSIVal = ((Attr)parentSIAttrNode).getValue();
+              unitPreferenceMap.put(unitType.toLowerCase(), parentSIVal);
               addAttributeNameToList(attribNNMap, unitsReturnList);
             }
           }
@@ -505,7 +517,12 @@ public class WizardSettings {
       //3. finally, add unitsList to unitsReturnList, make into array, sort and return
       unitsReturnList.addAll(unitsList);
 
-      returnArray = new String[unitsReturnList.size()];
+      if (unitType.equalsIgnoreCase("amount")) {  //DFH - patch so that 'moles' is not the only choice
+        returnArray = new String[unitsReturnList.size()+1]; 
+        unitsReturnList.add("dimensionless");
+      } else {
+        returnArray = new String[unitsReturnList.size()];
+      }
 
       unitsReturnList.toArray(returnArray);
 
@@ -516,7 +533,14 @@ public class WizardSettings {
     return returnArray;
   }
 
-
+  /**
+   *  returns the preferred unit for each unitType; to be used for
+   *  setting the default unit type
+   */
+  public static String getPreferredType(String unitType) {
+    String res = (String)(unitPreferenceMap.get(unitType));
+    return res;
+  }
 
   /**
    *  given an entityType, returns an <code>OrderedMap<code> whose keys contain
