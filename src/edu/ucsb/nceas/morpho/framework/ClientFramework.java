@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-09-07 00:43:28 $'
- * '$Revision: 1.70 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-09-27 20:07:22 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -578,7 +578,7 @@ public class ClientFramework extends javax.swing.JFrame
     addMenu("Window", new Integer(6));
 
     // HELP MENU ACTIONS
-    helpMenuActions = new Action[1];
+    helpMenuActions = new Action[2];
     Action aboutItemAction = new AbstractAction("About...") {
       public void actionPerformed(ActionEvent e) {
         SplashFrame sf = new SplashFrame();
@@ -590,7 +590,23 @@ public class ClientFramework extends javax.swing.JFrame
                     new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/About16.gif")));
     aboutItemAction.putValue("menuPosition", new Integer(1));
+    
+    Action helpItemAction = new AbstractAction("Help...") {
+      public void actionPerformed(ActionEvent e) {
+        HTMLBrowser hb = new HTMLBrowser();
+        hb.setVisible(true);
+ //       SplashFrame sf = new SplashFrame();
+ //       sf.setVisible(true);
+      }
+    };
+    helpItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho Help");
+    helpItemAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Help16.gif")));
+    helpItemAction.putValue("menuPosition", new Integer(2));
+ 
     helpMenuActions[0] = aboutItemAction;
+    helpMenuActions[1] = helpItemAction;
 /*
     Action testServiceAction = new AbstractAction("Test Service") {
       public void actionPerformed(ActionEvent e) {
