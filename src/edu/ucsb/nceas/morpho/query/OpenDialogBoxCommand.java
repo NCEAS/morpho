@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 18:26:40 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-15 23:44:30 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import edu.ucsb.nceas.morpho.util.*;
 import javax.swing.JDialog;
 
 /**
- * Class to handle search command
+ * Class to handle Open a dialog box command
  */
 public class OpenDialogBoxCommand implements Command 
 {
@@ -38,15 +38,19 @@ public class OpenDialogBoxCommand implements Command
   /** A reference to the clientframework*/
   private ClientFramework frame = null;
   
+  /** A reference to the owner query*/
+  private Query ownerQuery = null;
+  
   /**
    * Constructor of SearcCommand
    * @param myFrame the frame which the cancel command will apply
    */
-  public OpenDialogBoxCommand(ClientFramework myFrame)
+  public OpenDialogBoxCommand(ClientFramework myFrame, Query myQuery)
   {
     frame = myFrame;
+    ownerQuery = myQuery;
     
-   }//SearchCommand
+   }//OpenDialogBoxCommand
   
   
   /**
@@ -55,7 +59,7 @@ public class OpenDialogBoxCommand implements Command
   public void execute()
   {
     OpenDialogBox open = null;
-    open = new OpenDialogBox(frame);
+    open = new OpenDialogBox(frame, ownerQuery);
     open.setVisible(true);
    
   }//execute
