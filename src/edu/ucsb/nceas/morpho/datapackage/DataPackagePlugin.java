@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-26 18:16:31 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2002-09-26 20:18:20 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +77,7 @@ public class DataPackagePlugin
    */
   public DataPackagePlugin()
   {
-    // Create the menus and toolbar actions, will register later
-    initializeActions();
+    
   }
   
   /**
@@ -103,7 +102,8 @@ public class DataPackagePlugin
     this.morpho = morpho;
     this.config = morpho.getConfiguration();
     loadConfigurationParameters();
-
+    // Create the menus and toolbar actions, will register later
+    initializeActions();
     // Register Services
     try 
     {
@@ -247,41 +247,17 @@ public class DataPackagePlugin
     deleteColumn.setEnabled(false);
     editColumnMetadata.setEnabled(false);
     
-    
-    
-    
-    // Set up the menus for the application
-    Action newItemAction = new AbstractAction("New Data Package") 
-    {
-      public void actionPerformed(ActionEvent e) 
-      {
-        Log.debug(20, "Action fired: New Data Package");
-        final PackageWizardShell pws = new PackageWizardShell(morpho);
-        pws.setName("Package Wizard");
-        //MBJ framework.addWindow(pws);
-        pws.addWindowListener(new WindowAdapter()
-        {
-          public void windowClosed(WindowEvent e)
-          {
-            //MBJ framework.removeWindow(pws);
-          }
-          
-          public void windowClosing(WindowEvent e)
-          {
-            //MBJ framework.removeWindow(pws);
-          }
-        });
-        pws.show();
-      }
-    };
-    newItemAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().
+    // create new data package menu in file menu
+    GUIAction createNewDataPackage = new GUIAction("New Datapackage...", null, 
+                                  new CreateNewDataPackageCommand(morpho));
+    createNewDataPackage.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/New16.gif")));
-    newItemAction.putValue(Action.SHORT_DESCRIPTION, "New data package");
-    newItemAction.putValue("menuPosition", new Integer(0));
-    // MBJ remeber to add the newItemAction to the toolbar when this is
-    // converted into a GUIAction
-
+    createNewDataPackage.setToolTipText("Create a new data package");
+    createNewDataPackage.setMenuItemPosition(1);
+    createNewDataPackage.setMenu("File", 0);
+    createNewDataPackage.setToolbarPosition(5);
+    controller.addGuiAction(createNewDataPackage);
+    
   }
 
   /**
