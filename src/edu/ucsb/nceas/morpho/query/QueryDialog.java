@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:35 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2002-04-03 22:39:17 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -726,6 +726,7 @@ public class QueryDialog extends JDialog
       Vector synonymList;
       if (includeSynonyms) {
         synonymList = framework.getTaxonSynonyms(taxonTermPanel.getValue());
+        ClientFramework.debug(20,"Number of synonyms: "+synonymList.size());
         for (int i=0; i<synonymList.size(); i++) {
           ClientFramework.debug(20, "Adding synonym to query: " + synonymList.elementAt(i));
           QueryGroup synonymGroup = buildTaxonTerm(taxonTermPanel.getTaxonRank(),
@@ -753,7 +754,10 @@ public class QueryDialog extends JDialog
 
     // Create the QueryTerm for the taxon Rank
     path = taxonRankSearchPath;
-    QueryTerm rankTerm = new QueryTerm(true, "equals", taxonRank, path);
+//    QueryTerm rankTerm = new QueryTerm(true, "equals", taxonRank, path);
+// "equals" changed to "contains" to allow for variations in info typed into xml docs-DFH
+// also changed requirement for case-sensitivity
+    QueryTerm rankTerm = new QueryTerm(false, "contains", taxonRank, path);
     termGroup.addChild(rankTerm);
 
     // Create the QueryTerm for the taxon value phrase
