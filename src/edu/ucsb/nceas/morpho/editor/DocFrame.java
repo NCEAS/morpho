@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-12 04:08:33 $'
- * '$Revision: 1.110.2.4 $'
+ *     '$Date: 2003-08-15 21:47:23 $'
+ * '$Revision: 1.110.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -722,10 +722,10 @@ public class DocFrame extends javax.swing.JFrame
       ClassLoader cl = this.getClass().getClassLoader();
 // next 2 lines check for templates inside jar files; at least temporarily
 // changed to look in lib directory to make it easier for user to customize      
-//      BufferedReader in = new BufferedReader(new InputStreamReader(
-//                        cl.getResourceAsStream(rootname)));
-      BufferedReader in = new BufferedReader(new FileReader(
-                        "./lib/"+rootname));
+      BufferedReader in = new BufferedReader(new InputStreamReader(
+                       cl.getResourceAsStream(rootname)));
+//      BufferedReader in = new BufferedReader(new FileReader(
+//                        "./lib/"+rootname));
       StringWriter out = new StringWriter();
       int c;
       while ((c = in.read()) != -1) { out.write(c);}
@@ -2335,6 +2335,11 @@ public class DocFrame extends javax.swing.JFrame
       this.setVisible(false);
       // free the system resources
       this.dispose();
+      tree = null;
+      treeModel = null;
+      OutputScrollPanelContainer = null;
+      NestedPanelScrollPanel = null;
+      System.gc();
       }
       else {
       writeOutputFile(xmlout); 
@@ -2354,6 +2359,7 @@ public class DocFrame extends javax.swing.JFrame
           this.setVisible(false);
           // free the system resources
           this.dispose();
+          System.gc();
         }
         else {
           writeOutputFile(xmlout);      
@@ -2415,6 +2421,11 @@ public class DocFrame extends javax.swing.JFrame
   // hide the Frame
   this.dispose();
   // free the system resources
+      tree = null;
+      treeModel = null;
+      OutputScrollPanelContainer = null;
+      NestedPanelScrollPanel = null;
+      System.gc();
   if (controller==null) {
     System.exit(0);
   }
@@ -2440,6 +2451,12 @@ public class DocFrame extends javax.swing.JFrame
       // hide the Frame
       this.dispose();
       // free the system resources
+      tree = null;
+      treeModel = null;
+      OutputScrollPanelContainer = null;
+      NestedPanelScrollPanel = null;
+      System.gc();
+
     }
     else{
       this.setVisible(false);

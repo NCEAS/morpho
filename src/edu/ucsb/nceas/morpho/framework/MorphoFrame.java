@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-12 01:04:34 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-08-15 21:48:24 $'
+ * '$Revision: 1.15.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -457,6 +457,11 @@ public class MorphoFrame extends JFrame
         UIController controller = UIController.getInstance();
         controller.removeWindow(this);
         this.dispose();
+
+        Component comp = getContentComponent();
+        comp = null;
+        System.gc();
+
     }
 
     /**
