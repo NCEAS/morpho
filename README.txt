@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.0.6 - February 26, 2002
+Version: 1.0.6 - March 6, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -97,6 +97,8 @@ Known Bugs and Feature Requests
 See http://bugzilla.ecoinformatics.org where we maintain a comprehensive
 list of the know issues with Morpho, and a list ofthe new features that
 have been requested.  Submit reports of new bugs to this address as well.
+
+
 ---
 Version 1.0.1 of Morpho is bug-fix. Specifically, it fixes one problem with
 the editor that occurred when multiple empty nodes are displayed. Previously,
@@ -131,6 +133,39 @@ Also inceased the memory the JVM asks for to 128M from 64M.
 ---
 Version 1.0.6 fixes an error in the editor which did not allow deletion/creation
 of certain elements in eml-access documents.
+
+Notes for Windows Users
+-----------------------
+With some video cards, Java windows will sometimes not be displayed properly.
+In particular, scroll windows may appear garbled or overwritten. Turning off
+graphics acceleration corrects the problem on some machines. On others, the 
+user can simple click in the window or resize it slightly to force a display
+update.
+
+Notes for Macintosh Users
+-------------------------
+There are two versions of Morpho available for use with Macintosh computers.
+One version is for the new OS X operating system and the other is for the
+older OS 8 and OS 9 systems. This difference is due to the fact that newer
+versions of the Java Virtual Machine used to execute Morpho are not available
+for the older Macintosh operating system. For Macintosh systems older than
+OS X, only Java 1.18 is available, while Java 1.3 is included as part of the
+Mac OS X installation. 
+
+Most of Morpho works with the older versions of Java. (Exceptions include
+some key stroke equivalents for some menu commands, and the ability to save and
+re-execute queries from menus. There may also be some memory limitations when 
+working with large amounts of data/metadata.) However, Morpho is 2-3 times
+faster when run under OS X using the newer Java Virtual Machine! For that 
+reason alone, IT IS RECOMMENDED THAT THE OS X VERSION OF MORPHO SHOULD BE USED 
+WHENEVER POSSIBLE.   
+
+Also, on the Macintosh, pressing the <Control> key down while clicking is the
+equivalent of a click of the right mouse button under Windows. Thus "<Control>+
+Click" should be used to bring up popup menus when running Morpho on a 
+Macintosh.
+
+
 
 Legalese
 --------
