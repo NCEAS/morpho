@@ -8,11 +8,11 @@
   <plugin>edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin</plugin>
   <metacat_url>http://metacat.nceas.ucsb.edu/knb/servlet/metacat</metacat_url>
   <profile_directory>profiles</profile_directory>
-  <samples_directory>sampledata</samples_directory>
+  <samples_directory>./lib/sampledata</samples_directory>
   <default_profile>default-profile.xml</default_profile>
   <local_dtd_directory>catalog</local_dtd_directory>
   <local_catalog_path>catalog/catalog</local_catalog_path>
-  <debug_level>50</debug_level>
+  <debug_level>10</debug_level>
   <log_file>false</log_file>
   <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
