@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:20:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-22 01:37:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,8 +102,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,entityMetadataPanel,TableDataPanel);
     entityPanel.setOneTouchExpandable(true);
     
-    tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
-    tabbedEntitiesPanel.addChangeListener(this);
+   //ScrollTabLayout only works for Java 1.4; commented out for now so will compile unbder 1.3
+   // tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
+    tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
+   tabbedEntitiesPanel.addChangeListener(this);
     
     JSplitPane vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
     vertSplit.setOneTouchExpandable(true);
