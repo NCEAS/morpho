@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-26 21:12:01 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2002-08-27 00:14:01 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,12 +106,12 @@ public class ResultPanel extends JPanel
   private JMenuItem openMenu = null;
   private JMenuItem openPreviousVersion = new JMenuItem("Open Previous Version");
 
-  private JMenuItem uploadMenu = new JMenuItem("Upload to Metacat");
+  private JMenuItem uploadMenu = null;
   private JMenuItem downloadMenu = new JMenuItem("Download from Metacat");
   private JMenuItem deleteLocalMenu = new JMenuItem("Delete Local Copy");
   private JMenuItem deleteMetacatMenu = new JMenuItem("Delete Metacat Copy");
   private JMenuItem deleteAllMenu = new JMenuItem("Delete Both Copies");
-  private JMenuItem refreshMenu = new JMenuItem("Refresh");
+  private JMenuItem refreshMenu = null;
   private JMenuItem exportMenu = new JMenuItem("Export...");
   private JMenuItem exportToZipMenu = new JMenuItem("Export to ZIP...");
   /**a string to keep track of the selected row's id*/
@@ -254,9 +254,20 @@ public class ResultPanel extends JPanel
       openPreviousVersion.setEnabled(false);
       popup.add(openPreviousVersion);
       
+      // Create a refresh action
+      GUIAction refreshAction = new GUIAction("Refresh", null, 
+                               new RefreshCommand(dialog));
+      refreshMenu = new JMenuItem(refreshAction);
       popup.add(refreshMenu);
+      
       popup.add(new JSeparator());
+      
+      // Create a upload action
+      GUIAction uploadAction = new GUIAction("Local to network", null,
+                                new LocalToNetworkCommand(dialog));
+      uploadMenu = new JMenuItem(uploadAction);
       popup.add(uploadMenu);
+      
       popup.add(downloadMenu);
       popup.add(new JSeparator());
       popup.add(deleteLocalMenu);
@@ -880,82 +891,7 @@ public class ResultPanel extends JPanel
 
 
 private void doUpload() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          
-          
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in upload");
-            return null;
-          }
-          
-          { //upload the current selection to metacat
-            Log.debug(20, "Uploading package.");
-            try
-            {
-              dataPackage.upload(docid, false);
-              refreshQuery();
-            }
-            catch(MetacatUploadException mue)
-            {
-              //ask the user if he is sure he wants to overwrite the package
-              //if he is do it, otherwise return
-              String message = "A conflict has been found in one or more of the " +
-                "identifiers \nin your package.  It is possible that you or \n" + 
-                "someone else has made a change on the server that has not \n" +
-                "been reflected on your local copy. If you proceed, you may \n" +
-                "overwrite package information.  If you proceed the identifier \n"+
-                "for this package will be changed.  Are you sure you want to \n" +
-                "proceed with the upload?";
-              int choice = JOptionPane.YES_OPTION;
-              choice = JOptionPane.showConfirmDialog(null, message, 
-                                 "Morpho", 
-                                 JOptionPane.YES_NO_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-              if(choice == JOptionPane.YES_OPTION)
-              {
-                try
-                {
-                  dataPackage.upload(docid, true);
-                  refreshQuery();
-                }
-                catch(MetacatUploadException mue2)
-                {
-                  Log.debug(0, mue2.getMessage());
-                }
-              }
-              else
-              {
-                return null;
-              }
-            }
-          }
-          
-        return null;  
-        }
 
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
 
   
 }
