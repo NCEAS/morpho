@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-23 01:08:58 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-01-27 22:25:23 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ public class PartyMainPage extends AbstractWizardPage{
         xPathRoot = "/eml:eml/dataset/creator[";
         description =
             "<p><b>Enter information about the Owners</b>: This is information about the "
-            +"person or organizations certified for the data. The list of data "
+            +"persons or organizations certified for the data. The list of data "
             +"owners should include all people and organizations who should be cited "
             +"for the data. Select Add to add an owner"
             +"<br></br></p>";
@@ -252,7 +252,7 @@ public class PartyMainPage extends AbstractWizardPage{
 
     if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
     PartyPage editPartyPage = (PartyPage)dialogObj;
-    editPartyPage.setEditable(true);
+    editPartyPage.setEditValue();
     WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
     wpd.resetBounds();
     wpd.setVisible(true);
@@ -343,12 +343,34 @@ public class PartyMainPage extends AbstractWizardPage{
 
       nextPartyPage = (PartyPage)nextUserObject;
 
+      if(nextPartyPage.isReference && !listContains(rowLists, nextPartyPage.referedPage))
+        continue;
+
       nextNVPMap = nextPartyPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
   }
 
+
+  private boolean listContains(List rowLists, PartyPage page){
+    if (rowLists==null) return false;
+
+    Object nextRowObj;
+    List nextRowList;
+    PartyPage nextPage;
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+      nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+      nextRowList = (List)nextRowObj;
+      //column 3 is user object - check it exists and isn't null:
+      if (nextRowList.size()<4)     continue;
+      nextPage = (PartyPage)nextRowList.get(3);
+      if (nextPage == page) return true;
+    }
+
+    return false;
+  }
   /**
    *  gets the unique ID for this wizard page
    *

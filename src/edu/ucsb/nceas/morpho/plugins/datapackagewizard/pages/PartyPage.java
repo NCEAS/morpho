@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-23 19:23:48 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-01-27 22:25:23 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,12 +42,15 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JCheckBox;
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.util.Log;
 
 public class PartyPage extends AbstractWizardPage {
 
@@ -70,7 +73,7 @@ public class PartyPage extends AbstractWizardPage {
 
   private short      role;
   private String     roleString;
-  private String currentRole;
+  private String     currentRole;
 
   private JLabel     roleLabel;
   private JComboBox  rolePickList;
@@ -96,6 +99,9 @@ public class PartyPage extends AbstractWizardPage {
   private JTextField urlField;
   private JPanel     rolePanel;
   private JPanel     middlePanel;
+  private JPanel     radioPanel;
+
+  public  PartyPage  referedPage;
 
   private final String[] roleArray
                               = new String[]{ "",
@@ -111,9 +117,14 @@ public class PartyPage extends AbstractWizardPage {
                                               "Distributor",
                                               "User"};
 
+  private final String[] radioArray
+                             = new String[]{"Do you want to edit "
+                             + "the above information?"};
+
   private String     referenceIdString;
   private String     referedIdString;
-  public boolean isReference;
+  public  boolean    isReference;
+  private boolean    editReference;
 
   public PartyPage() {
   }
@@ -397,22 +408,61 @@ public class PartyPage extends AbstractWizardPage {
         0,8*WizardSettings.PADDING));
 
     final PartyPage instance = this;
+    ItemListener ilistener1 = new ItemListener(){
+      public void itemStateChanged(ItemEvent e) {
+        Log.debug(45, "got radiobutton command: "+e.getStateChange());
+        onLoadAction();
+        if (e.getStateChange() == e.DESELECTED) {
+          instance.setEditable(false);
+
+        } else if (e.getStateChange() == e.SELECTED) {
+          int reply =  JOptionPane.showConfirmDialog(instance,
+                    "The changes you make here will be reflected in the "
+                    +"entry that you made earlier. Do you want to continue?",
+                    "Do you want to continue?", JOptionPane.YES_NO_OPTION);
+
+          if(reply == JOptionPane.YES_OPTION){
+            instance.setEditable(true);
+            editReference = true;
+          } else {
+            JCheckBox source = (JCheckBox)e.getSource();
+            source.setSelected(false);
+            instance.setEditable(false);
+            editReference = false;
+          }
+        }
+        instance.validate();
+        instance.repaint();
+      }
+    };
+
+    radioPanel = WidgetFactory.makeCheckBoxPanel(radioArray, -1, ilistener1);
     ItemListener ilistener = new ItemListener(){
       public void itemStateChanged(ItemEvent e) {
         JComboBox source = (JComboBox)e.getSource();
         if(source.getSelectedIndex() == 0){
           isReference = false;
           referedIdString = null;
+
           instance.setEditable(true);
           instance.setValue(null);
+
+          radioPanel.setVisible(false);
+          Log.debug(45, "Setting referedIdString to null");
         } else {
           int index = source.getSelectedIndex();
-          instance.setEditable(false);
-          List currentList = (List)WidgetFactory.responsiblePartyList.get(index);
 
-          PartyPage referedPage = (PartyPage)currentList.get(3);
+          List currentList = (List)WidgetFactory.responsiblePartyList.get(index);
+          referedPage = (PartyPage)currentList.get(3);
+
+          isReference = true;
           referedIdString = referedPage.getRefID();
+
+          instance.setEditable(false);
           instance.setValue(referedPage);
+
+          radioPanel.setVisible(true);
+          Log.debug(45, "Setting referedIdString to " + referedIdString);
         }
       }
     };
@@ -431,6 +481,11 @@ public class PartyPage extends AbstractWizardPage {
     }
     listPanel.add(listCombo);
     middlePanel.add(listPanel);
+
+    radioPanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
+    middlePanel.add(radioPanel);
+    radioPanel.setVisible(false);
   }
 
 
@@ -560,7 +615,6 @@ public class PartyPage extends AbstractWizardPage {
       WidgetFactory.unhiliteComponent(positionNameLabel);
       warningPanel.setVisible(false);
       WidgetFactory.unhiliteComponent(warningLabel);
-      return true;
 
     } else {
 
@@ -571,6 +625,55 @@ public class PartyPage extends AbstractWizardPage {
       WidgetFactory.hiliteComponent(warningLabel);
       return false;
     }
+
+    if(editReference && referedPage != null){
+      String nextText = salutationField.getText().trim();
+      referedPage.salutationField.setText(nextText);
+
+      nextText = firstNameField.getText().trim();
+      referedPage.firstNameField.setText(nextText);
+
+      nextText = lastNameField.getText().trim();
+      referedPage.lastNameField.setText(nextText);
+
+      nextText = organizationField.getText().trim();
+      referedPage.organizationField.setText(nextText);
+
+      nextText = positionNameField.getText().trim();
+      referedPage.positionNameField.setText(nextText);
+
+      nextText = address1Field.getText().trim();
+      referedPage.address1Field.setText(nextText);
+
+      nextText = address2Field.getText().trim();
+      referedPage.address2Field.setText(nextText);
+
+      nextText = cityField.getText().trim();
+      referedPage.cityField.setText(nextText);
+
+      nextText = stateField.getText().trim();
+      referedPage.stateField.setText(nextText);
+
+      nextText = zipField.getText().trim();
+      referedPage.zipField.setText(nextText);
+
+      nextText = countryField.getText().trim();
+      referedPage.countryField.setText(nextText);
+
+      nextText = phoneField.getText().trim();
+      referedPage.phoneField.setText(nextText);
+
+      nextText = faxField.getText().trim();
+      referedPage.faxField.setText(nextText);
+
+      nextText = emailField.getText().trim();
+      referedPage.emailField.setText(nextText);
+
+      nextText = urlField.getText().trim();
+      referedPage.urlField.setText(nextText);
+    }
+
+    return true;
   }
 
   /**
@@ -597,13 +700,66 @@ public class PartyPage extends AbstractWizardPage {
    */
   public String getRefID(){
     if (!notNullAndNotEmpty(referenceIdString)){
-    } else {
-      referenceIdString = "rp." +  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT++;
+      referenceIdString = "ResponsibleParty." +  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT++;
     }
 
     return referenceIdString;
   }
 
+
+  public void setEditValue(){
+    Log.debug(10, "on Load called");
+
+    if(isReference && referedPage != null){
+
+      Log.debug(10, "on Load inside");
+
+      String nextText = referedPage.salutationField.getText().trim();
+      salutationField.setText(nextText);
+
+      nextText = referedPage.firstNameField.getText().trim();
+      firstNameField.setText(nextText);
+
+      nextText = referedPage.lastNameField.getText().trim();
+      lastNameField.setText(nextText);
+
+      nextText = referedPage.organizationField.getText().trim();
+      organizationField.setText(nextText);
+
+      nextText = referedPage.positionNameField.getText().trim();
+      positionNameField.setText(nextText);
+
+      nextText = referedPage.address1Field.getText().trim();
+      address1Field.setText(nextText);
+
+      nextText = referedPage.address2Field.getText().trim();
+      address2Field.setText(nextText);
+
+      nextText = referedPage.cityField.getText().trim();
+      cityField.setText(nextText);
+
+      nextText = referedPage.stateField.getText().trim();
+      stateField.setText(nextText);
+
+      nextText = referedPage.zipField.getText().trim();
+      zipField.setText(nextText);
+
+      nextText = referedPage.countryField.getText().trim();
+      countryField.setText(nextText);
+
+      nextText = referedPage.phoneField.getText().trim();
+      phoneField.setText(nextText);
+
+      nextText = referedPage.faxField.getText().trim();
+      faxField.setText(nextText);
+
+      nextText = referedPage.emailField.getText().trim();
+      emailField.setText(nextText);
+
+      nextText = referedPage.urlField.getText().trim();
+      urlField.setText(nextText);
+    }
+  }
   /**
    *  gets the salutationField for this wizard page
    *
@@ -882,93 +1038,102 @@ public class PartyPage extends AbstractWizardPage {
     returnMap.clear();
     String nextText = null;
 
-    if (notNullAndNotEmpty(referenceIdString)){
-      returnMap.put(xPathRoot + "@id", referenceIdString);
-    }
+    if(isReference){
+      returnMap.put(xPathRoot + "/references", referedIdString);
+      Log.debug(45, "Setting reference to " + referedIdString);
+    } else {
 
-    nextText = salutationField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/individualName/salutation", nextText);
-    }
+      if (notNullAndNotEmpty(referenceIdString)) {
+        returnMap.put(xPathRoot + "/@id", referenceIdString);
+        Log.debug(45, "Setting reference as " + referenceIdString);
+      }
 
-    nextText = firstNameField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/individualName/givenName", nextText);
-    }
-
-    nextText = lastNameField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/individualName/surName", nextText);
-    }
-
-    nextText = organizationField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/organizationName", nextText);
-    }
-
-    nextText = positionNameField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/positionName", nextText);
-    }
-
-    nextText = address1Field.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/deliveryPoint[1]", nextText);
-    }
-
-    nextText = address2Field.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/deliveryPoint[2]", nextText);
-    }
-
-    nextText = cityField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/city", nextText);
-    }
-
-    nextText = stateField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/administrativeArea", nextText);
-    }
-
-    nextText = zipField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/postalCode", nextText);
-    }
-
-    nextText = countryField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/address/country", nextText);
-    }
-
-    nextText = phoneField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/phone[1]", nextText);
-      returnMap.put(xPathRoot + "/phone[1]/@phonetype", "voice");
-    }
-
-    nextText = faxField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/phone[2]", nextText);
-      returnMap.put(xPathRoot + "/phone[2]/@phonetype", "fax");
-    }
-
-    nextText = emailField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/electronicMailAddress", nextText);
-    }
-
-    nextText = urlField.getText().trim();
-    if (notNullAndNotEmpty(nextText)) {
-      returnMap.put(xPathRoot + "/onlineUrl", nextText);
-    }
-
-    if (role==ASSOCIATED||role==PERSONNEL) {
-      nextText = currentRole.trim();
+      nextText = salutationField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
-        returnMap.put(xPathRoot + "/role", nextText);
+        returnMap.put(xPathRoot + "/individualName/salutation", nextText);
+      }
+
+      nextText = firstNameField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/individualName/givenName", nextText);
+      }
+
+      nextText = lastNameField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/individualName/surName", nextText);
+      }
+
+      nextText = organizationField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/organizationName", nextText);
+      }
+
+      nextText = positionNameField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/positionName", nextText);
+      }
+
+      nextText = address1Field.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/address/deliveryPoint[1]", nextText);
+      }
+
+      nextText = address2Field.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/address/deliveryPoint[2]", nextText);
+      }
+
+      nextText = cityField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/address/city", nextText);
+      }
+
+      nextText = stateField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/address/administrativeArea", nextText);
+      }
+
+      nextText = zipField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/address/postalCode", nextText);
+      }
+
+      nextText = countryField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/address/country", nextText);
+      }
+
+      nextText = phoneField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/phone[1]", nextText);
+        returnMap.put(xPathRoot + "/phone[1]/@phonetype", "voice");
+      }
+
+      nextText = faxField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/phone[2]", nextText);
+        returnMap.put(xPathRoot + "/phone[2]/@phonetype", "fax");
+      }
+
+      nextText = emailField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/electronicMailAddress", nextText);
+      }
+
+      nextText = urlField.getText().trim();
+      if (notNullAndNotEmpty(nextText)) {
+        returnMap.put(xPathRoot + "/onlineUrl", nextText);
       }
     }
+
+    if (role == ASSOCIATED || role == PERSONNEL) {
+  nextText = currentRole.trim();
+  if (notNullAndNotEmpty(nextText)) {
+    returnMap.put(xPathRoot + "/role", nextText);
+  }
+
+}
+
     return returnMap;
   }
 
