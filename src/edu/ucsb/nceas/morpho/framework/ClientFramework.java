@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-17 01:31:22 $'
- * '$Revision: 1.31.2.3 $'
+ *     '$Date: 2001-04-17 16:26:57 $'
+ * '$Revision: 1.31.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,7 +143,7 @@ public class ClientFramework extends javax.swing.JFrame
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
     setJMenuBar(JMenuBar1);
-    setTitle("MORPHO - Data Management for Ecologists");
+    setTitle("Morpho - Data Management for Ecologists");
     setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
     setSize(775, 550);
@@ -415,7 +415,7 @@ public class ClientFramework extends javax.swing.JFrame
     // Set the tab titles -- these should be dynamically set
     // from the client.properties rather than hardcoded
     //MBJEXCISE//JTabbedPane1.setSelectedComponent(QueryPanel);
-    JTabbedPane1.setSelectedIndex(1);
+    //MBJEXCISE//JTabbedPane1.setSelectedIndex(1);
     //MBJEXCISE//JTabbedPane1.setTitleAt(0, "Edit Document");
     //MBJEXCISE//JTabbedPane1.setTitleAt(1, "Search Document");
     // JTabbedPane1.setTitleAt(2,"Browse Data");
@@ -769,7 +769,7 @@ public class ClientFramework extends javax.swing.JFrame
       // Show a confirmation dialog
       int reply = JOptionPane.showConfirmDialog(this,
 						"Do you really want to exit?",
-						"MORPHO - Exit",
+						"Morpho - Exit",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
       // If the confirmation was affirmative, handle exiting.
