@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.23 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-27 03:58:24 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,6 +112,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * global to keep track of last tab selected
    */
   int lastTabSelected = 0;
+  
+  // Store the current data viewer
+  private DataViewer dv = null;
   
   Hashtable listValueHash = new Hashtable();
   JSplitPane entityPanel;
@@ -390,6 +393,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     return dp;
   }
   
+  /**
+   * Method to get current data viewer
+   */
+  public DataViewer getCurrentDataViewer()
+  {
+    return dv;
+  }
+  
   public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
@@ -443,7 +454,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     File fattribute = dp.getAttributeFile(id);
     File f = dp.getDataFile(id);
     String dataString = "";
-    DataViewer dv = new DataViewer(morpho, "DataFile: "+fn, f);
+    dv = new DataViewer(morpho, "DataFile: "+fn, f);
     dv.setDataID(dp.getDataFileID(id));
     dv.setPhysicalFile(fphysical);
     dv.setAttributeFile(fattribute);

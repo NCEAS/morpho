@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-26 20:18:20 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2002-09-27 03:58:24 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -170,8 +170,8 @@ public class DataPackagePlugin
     controller.addGuiAction(createNewDatatable);
     
     i= i+2; // separator will take a position so add 2
-    GUIAction sortBySelectedColumn = 
-                        new GUIAction("Sort by Selected Column", null, null);
+    GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column", 
+                                           null, new SortDataTableCommand());
     sortBySelectedColumn.setToolTipText("Sort table by selected column");
     sortBySelectedColumn.setMenuItemPosition(i);
     sortBySelectedColumn.setMenu("Data", DATAMENUPOSITION);
@@ -179,23 +179,24 @@ public class DataPackagePlugin
     controller.addGuiAction(sortBySelectedColumn);
     
     i = i+2;
-    GUIAction insertRowAfter = 
-            new GUIAction("Insert Row After Selected Row", null, null);
+    GUIAction insertRowAfter = new GUIAction("Insert Row After Selection", 
+                            null, new InsertRowCommand(InsertRowCommand.AFTER));
     insertRowAfter.setToolTipText("Insert a row after selected row");
     insertRowAfter.setMenuItemPosition(i);
     insertRowAfter.setMenu("Data", DATAMENUPOSITION);
     controller.addGuiAction(insertRowAfter);
     
     i = i+1;
-    GUIAction insertRowBefore = 
-                  new GUIAction("Insert Row Before Selected Row", null, null);
+    GUIAction insertRowBefore = new GUIAction("Insert Row Before Selection",
+                           null, new InsertRowCommand(InsertRowCommand.BEFORE));
     insertRowBefore.setToolTipText("Insert a row before selected row");
     insertRowBefore.setMenuItemPosition(i);
     insertRowBefore.setMenu("Data", DATAMENUPOSITION);
     controller.addGuiAction(insertRowBefore);
     
     i = i+1;
-    GUIAction deleteRow = new GUIAction("Delete Selected Row", null, null);
+    GUIAction deleteRow = new GUIAction("Delete Selected Row", null, 
+                              new DeleteRowCommand());
     deleteRow.setToolTipText("Delete a selected row");
     deleteRow.setMenuItemPosition(i);
     deleteRow.setMenu("Data", DATAMENUPOSITION);
@@ -203,8 +204,8 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteRow);
     
     i = i+2;
-    GUIAction insertColumnAfter = new 
-            GUIAction("Insert Column After Selected Column", null, null);
+    GUIAction insertColumnAfter = new GUIAction("Insert Column After Selection", 
+                    null, new InsertColumnCommand(InsertColumnCommand.AFTER));
     insertColumnAfter.setToolTipText("Insert a column after selected column");
     insertColumnAfter.setMenuItemPosition(i);
     insertColumnAfter.setMenu("Data", DATAMENUPOSITION);
@@ -212,15 +213,16 @@ public class DataPackagePlugin
        
     i = i+1;
     GUIAction insertColumnBefore = 
-        new GUIAction("Insert Column Before Selected Column", null, null);
+                  new GUIAction("Insert Column Before Selection", null, 
+                           new InsertColumnCommand(InsertColumnCommand.BEFORE));
     insertColumnBefore.setToolTipText("Insert a column before selected column");
     insertColumnBefore.setMenuItemPosition(i);
     insertColumnBefore.setMenu("Data", DATAMENUPOSITION);
     controller.addGuiAction(insertColumnBefore);
     
     i = i+1;
-    GUIAction deleteColumn = new 
-                          GUIAction("Delete Selected Column", null, null);
+    GUIAction deleteColumn = new GUIAction("Delete Selected Column", null, 
+                                  new DeleteColumnCommand());
     deleteColumn.setToolTipText("Delete a selected column");
     deleteColumn.setMenuItemPosition(i);
     deleteColumn.setMenu("Data", DATAMENUPOSITION);
@@ -228,15 +230,15 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteColumn);
     
     i = i+2;
-    GUIAction editColumnMetadata = 
-                          new GUIAction("Edit Column Metadata", null, null);
+    GUIAction editColumnMetadata = new GUIAction("Edit Column Metadata", null, 
+                                      new EditColumnMetaDataCommand());
     editColumnMetadata.setToolTipText("Edit selected column metadata");
     editColumnMetadata.setMenuItemPosition(i);
     editColumnMetadata.setMenu("Data", DATAMENUPOSITION);
     //editColumnMetadata.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     controller.addGuiAction(editColumnMetadata);
     
-    addDocumentation.setEnabled(false);
+    /*addDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
@@ -245,7 +247,7 @@ public class DataPackagePlugin
     insertColumnBefore.setEnabled(false);
     insertColumnAfter.setEnabled(false);
     deleteColumn.setEnabled(false);
-    editColumnMetadata.setEnabled(false);
+    editColumnMetadata.setEnabled(false);*/
     
     // create new data package menu in file menu
     GUIAction createNewDataPackage = new GUIAction("New Datapackage...", null, 

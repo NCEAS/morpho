@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.55 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-27 03:58:24 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,14 +102,23 @@ public class DataViewer extends javax.swing.JPanel
   private GUIAction addDocumentationAction = null;
   private JMenuItem createNewDatatable = null;
   private GUIAction createNewDatatableAction = null;
-  private JMenuItem sortBySelectedColumn = new JMenuItem("Sort by Selected Column");
-  private JMenuItem insertRowAfter = new JMenuItem("Insert Row After Selected Row");
-  private JMenuItem insertRowBefore = new JMenuItem("Insert Row Before Selected Row");
-  private JMenuItem deleteRow = new JMenuItem("Delete Selected Row");
-  private JMenuItem insertColumnBefore = new JMenuItem("Insert Column Before Selected Column");
-  private JMenuItem insertColumnAfter = new JMenuItem("Insert Column After Selected Column");
-  private JMenuItem deleteColumn = new JMenuItem("Delete Selected Column");
-  private JMenuItem editColumnMetadata = new JMenuItem("Edit Column Metadata");
+  private JMenuItem sortBySelectedColumn = null;
+  private GUIAction sortAction = null;
+  private JMenuItem insertRowAfter = null;
+  private GUIAction insertRowAfterAction = null;
+  private JMenuItem insertRowBefore = null;
+  private GUIAction insertRowBeforeAction = null;
+  private JMenuItem deleteRow = null;
+  private GUIAction deleteRowAction = null;
+  private JMenuItem insertColumnBefore = null;
+  private GUIAction insertColumnBeforeAction = null;
+  private JMenuItem insertColumnAfter = null;
+  private GUIAction insertColumnAfterAction = null;
+  private JMenuItem deleteColumn = null;
+  private GUIAction deleteColumnAction = null;
+  private JMenuItem editColumnMetadata = null;
+  // new JMenuItem("Edit Column Metadata");
+  private GUIAction editColumnMetadataAction = null;
 
   // The following instances of JMenu are apparently needed to make a
   // menus that appears in both the menu bar and in a popup menu
@@ -350,38 +359,46 @@ public class DataViewer extends javax.swing.JPanel
     createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
     popup.add(new JSeparator());
+    
+    sortAction = new GUIAction("Sort by Selected Column", null, 
+                                                new SortDataTableCommand());
+    sortBySelectedColumn = new JMenuItem(sortAction);
     popup.add(sortBySelectedColumn);
     popup.add(new JSeparator());
+    
+    insertRowAfterAction = new GUIAction("Insert Row After Selection", null,
+                                  new InsertRowCommand(InsertRowCommand.AFTER));
+    insertRowAfter = new JMenuItem(insertRowAfterAction);
     popup.add(insertRowAfter);
+    insertRowBeforeAction = new GUIAction("Insert Row Before Selection", null,
+                                  new InsertRowCommand(InsertRowCommand.BEFORE));
+    insertRowBefore = new JMenuItem(insertRowBeforeAction);
     popup.add(insertRowBefore);
+    deleteRowAction = new GUIAction("Delete Selected Row", null,
+                                    new DeleteRowCommand());
+    deleteRow = new JMenuItem(deleteRowAction);
     popup.add(deleteRow);
     popup.add(new JSeparator());
+    
+    insertColumnAfterAction = new GUIAction("Insert Column After Selection", 
+                      null, new InsertColumnCommand(InsertColumnCommand.AFTER));
+    insertColumnAfter = new JMenuItem(insertColumnAfterAction);
     popup.add(insertColumnAfter);
+    insertColumnBeforeAction = new GUIAction("Insert Column Before Selection", 
+                     null, new InsertColumnCommand(InsertColumnCommand.BEFORE));
+    insertColumnBefore = new JMenuItem(insertColumnBeforeAction);
     popup.add(insertColumnBefore);
+    deleteColumnAction = new GUIAction("Delete Selected Column", null,
+                                           new DeleteColumnCommand());
+    deleteColumn = new JMenuItem(deleteColumnAction);
     popup.add(deleteColumn);
     popup.add(new JSeparator());
-    popup.add(editColumnMetadata);
     
-    MenuAction menuhandler = new MenuAction();
-    //createNewDatatable.addActionListener(menuhandler);
-    sortBySelectedColumn.addActionListener(menuhandler);
-    insertRowAfter.addActionListener(menuhandler);
-    insertRowBefore.addActionListener(menuhandler);
-    deleteRow.addActionListener(menuhandler);
-    insertColumnAfter.addActionListener(menuhandler);
-    insertColumnBefore.addActionListener(menuhandler);
-    deleteColumn.addActionListener(menuhandler);
-    editColumnMetadata.addActionListener(menuhandler);
-    //createNewDatatable1.addActionListener(menuhandler);
-    sortBySelectedColumn1.addActionListener(menuhandler);
-    insertRowAfter1.addActionListener(menuhandler);
-    insertRowBefore1.addActionListener(menuhandler);
-    deleteRow1.addActionListener(menuhandler);
-    insertColumnAfter1.addActionListener(menuhandler);
-    insertColumnBefore1.addActionListener(menuhandler);
-    deleteColumn1.addActionListener(menuhandler);
-    editColumnMetadata1.addActionListener(menuhandler);
-
+    editColumnMetadataAction = new GUIAction("Edit Column Metadata", null,
+                               new EditColumnMetaDataCommand());
+    editColumnMetadata = new JMenuItem(editColumnMetadataAction);
+    popup.add(editColumnMetadata);
+  
     updateDataMenu();
 	}
 
@@ -451,7 +468,99 @@ public class DataViewer extends javax.swing.JPanel
       return showDataView;
     }//getShowDataView
     
-    /*
+    /**
+     * Method to get data table
+     */
+    public JTable getDataTable()
+    {
+      return table;
+    }
+    
+    /**
+     * Method to get column meta data edit panel
+     */
+    public ColumnMetadataEditPanel getColumnMetadataEditPanel()
+    {
+      return cmep;
+    }
+    
+    /**
+     * Method to get the attribute documentation
+     */ 
+    public Document getAttributeDoc()
+    {
+      return attributeDoc;
+    }
+    
+    /**
+     * Method to get the column_lables
+     */
+    public Vector getColumnLabels()
+    {
+      return column_labels;
+    }
+    
+    /**
+     * Method to get field_delimiter string
+     */
+    public String getFieldDelimiter()
+    {
+      return delimiter_string;
+    }
+    
+    /**
+     * Method to get table panel
+     */
+    public JPanel getTablePanel()
+    {
+      return TablePanel;
+    }
+    
+    /**
+     * Method to get persistent talbe model
+     */
+    public PersistentTableModel getPersistentTableModel()
+    {
+      return ptm;
+    }
+    
+    /**
+     * Method to get morpho
+     */
+    public Morpho getMorpho()
+    {
+      return morpho;
+    }
+    
+    /**
+     * Method to get EntityFileid
+     */ 
+    public String getEntityFileId()
+    {
+      return entityFileId;
+    }
+    
+  
+    /**
+     * Method to get sort direction
+     */
+    public int getSortDirection()
+    {
+      return sortdirection;
+    }
+    
+    /**
+     * Method to set sort direction
+     * @param direction the direction of sorting
+     */
+    public void setSortDirection(int direction)
+    {
+      sortdirection = direction;
+    }
+   
+    
+    
+    /**
      * Initialization code which collects information about the data
      * from various metadata modules associated with the entity to
      * be displayed
@@ -1036,7 +1145,7 @@ public class DataViewer extends javax.swing.JPanel
    
 	}
   
-  /*
+    /*
    * Method to set a table's interger and string column editor
    */
    private void setUpDelimiterEditor(JTable jtable, String delimiter,
@@ -1064,166 +1173,8 @@ public class DataViewer extends javax.swing.JPanel
        }
      
     }
-  /**
-   * Event handler for the right click popup menu
-   */
-  class MenuAction implements java.awt.event.ActionListener 
-  {
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
-			Object object = event.getSource();
-			if ((object == sortBySelectedColumn)||(object == sortBySelectedColumn1)) {
-        int sel = table.getSelectedColumn();
-        if (sel>-1) {
-          ptm.sort(sel, sortdirection);
-          pv = ptm.getPersistentVector();
-          sortdirection = -1 * sortdirection;
-        }
-      }
-      else if ((object == insertRowAfter)||(object == insertRowAfter1)) {
-        int sel = table.getSelectedRow();
-        if (sel>-1) {
-          Vector blanks = new Vector();
-          blanks.addElement(" \t");
-          blanks.addElement(" \t");
-          blanks.addElement(" \t");
-          ptm.insertRow(sel+1, blanks);	 
-        }
-      }
-      else if ((object == insertRowBefore)||(object == insertRowBefore1)) {
-        int sel = table.getSelectedRow();
-        if (sel>-1) {
-          Vector blanks = new Vector();
-          blanks.addElement(" \t");
-          blanks.addElement(" \t");
-          blanks.addElement(" \t");
-          ptm.insertRow(sel, blanks);	 
-        }
-      }
-      else if ((object == deleteRow)||(object == deleteRow1)) {
-        int sel = table.getSelectedRow();
-        if (sel>-1) {
-          ptm.deleteRow(sel);	 
-        }
-      }
-      else if ((object == insertColumnBefore)||(object == insertColumnBefore1)) {
-        int sel = table.getSelectedColumn();
-        if (sel>-1) {
-          showColumnMetadataEditPanel();
-          if (columnAddFlag) {
-            try {
-              cmep.setMorpho(morpho);
-              cmep.insertNewAttributeAt(sel, attributeDoc);
- //             cmep.save();
-            }
-            catch (Exception w) {
-              Log.debug(20, "Exception trying to modify attribute DOM");
-            }
-            
-            String newHeader = cmep.getColumnName();
-            if (newHeader.trim().length()==0) newHeader = "New Column";
-            String type = cmep.getDataType();
-            String unit = cmep.getUnit();
-            newHeader = "<html><font face=\"Courier\"><center><small>"+type+
-                                           "<br>"+unit +"<br></small><b>"+
-                                           newHeader+"</b></font></center></html>";
-            column_labels.insertElementAt(newHeader, sel);
-            ptm.insertColumn(sel); 
-            pv = ptm.getPersistentVector();
-            setUpDelimiterEditor(table, field_delimiter, TablePanel);
-          
-          
-          }
-        }
-      }
-      else if ((object == insertColumnAfter)||(object == insertColumnAfter1)) {
-        int sel = table.getSelectedColumn();
-        if (sel>-1) {
-          showColumnMetadataEditPanel();
-          if (columnAddFlag) {
-            try {
-              cmep.setMorpho(morpho);
-              cmep.insertNewAttributeAt((sel+1), attributeDoc);
- //             cmep.save();
-            }
-            catch (Exception w) {
-              Log.debug(20, "Exception trying to modify attribute DOM");
-            }
 
-            String newHeader = cmep.getColumnName();
-            if (newHeader.trim().length()==0) newHeader = "New Column";
-            String type = cmep.getDataType();
-            String unit = cmep.getUnit();
-            newHeader = "<html><font face=\"Courier\"><center><small>"+type+
-                                           "<br>"+unit +"<br></small><b>"+
-                                           newHeader+"</b></font></center></html>";
-            column_labels.insertElementAt(newHeader, sel+1);
-            ptm.insertColumn(sel+1); 
-            pv = ptm.getPersistentVector();
-            setUpDelimiterEditor(table, field_delimiter, TablePanel);
-          
-          }
-        }        
-      }
-      else if ((object == deleteColumn)||(object == deleteColumn1)) {
-        int sel = table.getSelectedColumn();
-        if (sel>-1) {
-          // remove the attribute node associated with the column
-          NodeList nl = attributeDoc.getElementsByTagName("attribute");
-          Node deleteNode = nl.item(sel);
-          Node root = attributeDoc.getDocumentElement();
-          root.removeChild(deleteNode);
-          
-          column_labels.removeElementAt(sel);
-          ptm.deleteColumn(sel);
-          pv = ptm.getPersistentVector();
-          // need to delete column from attributeDOM here !!!
-        }
-      }
-      else if ((object == editColumnMetadata)||(object == editColumnMetadata1)) {
-        EditorInterface editor = null;
-        String id = dp.getAttributeFileId(entityFileId);
-        try
-        {
-          ServiceController services = ServiceController.getInstance();
-          ServiceProvider provider = 
-                        services.getServiceProvider(EditorInterface.class);
-          editor = (EditorInterface)provider;
-        }
-        catch(Exception ee)
-        {
-          Log.debug(0, "Error acquiring editor plugin: " + ee.getMessage());
-          ee.printStackTrace();
-          return;
-        }
-        
-        StringBuffer sb = new StringBuffer();
-        Reader reader = null;
-        try {
-          reader = dp.openAsReader(id);
-          char[] buff = new char[4096];
-          int numCharsRead;
-      
-          while ((numCharsRead = reader.read( buff, 0, buff.length ))!=-1) {
-            sb.append(buff, 0, numCharsRead);
-          }
-        } catch (DocumentNotFoundException dnfe) {
-          Log.debug(0, "Error finding file : "+id+" "+dnfe.getMessage());
-          return;
-        } catch (IOException ioe) {
-          Log.debug(0, "Error reading file : "+id+" "+ioe.getMessage());
-        } finally {
-          try { reader.close();
-          } catch (IOException ce) {  
-            Log.debug(12, "Error closing Reader : "+id+" "+ce.getMessage());
-          }
-        }
-        
-        editor.openEditor(sb.toString(), id, dp.getLocation(), thisRef);
-      }
-
-    }
-  }
+ 
 
 	class SymAction implements java.awt.event.ActionListener
 	{
@@ -1290,26 +1241,8 @@ public class DataViewer extends javax.swing.JPanel
       Log.debug(20, "MenuBar is null!");
     }
     else {
-      JMenu menu = mb.getMenu(3); // the 'Data' menu
-      menu.removeAll();
-      addDocumentation1 = new JMenuItem(addDocumentationAction);
-      menu.add(addDocumentation1);
-      createNewDatatable1 = new JMenuItem(createNewDatatableAction);
-      menu.add(createNewDatatable1);
-      menu.add(new JSeparator());
-      menu.add(sortBySelectedColumn1);
-      menu.add(new JSeparator());
-      menu.add(insertRowAfter1);
-      menu.add(insertRowBefore1);
-      menu.add(deleteRow1);
-      menu.add(new JSeparator());
-      menu.add(insertColumnAfter1);
-      menu.add(insertColumnBefore1);
-      menu.add(deleteColumn1);
-      menu.add(new JSeparator());
-      menu.add(editColumnMetadata1);
       
-      menu = mb.getMenu(1);  // the "Edit" menu
+      JMenu menu = mb.getMenu(1);  // the "Edit" menu
       menu.removeAll();
 
       JMenuItem cutMenuItem = new JMenuItem("Cut");
@@ -1357,48 +1290,8 @@ public class DataViewer extends javax.swing.JPanel
     }    
   }
   
-  private void showColumnMetadataEditPanel() {
-    int newCompWidth = 400;
-    int newCompHeight = 650;
-    MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
-    Point curLoc = mf.getLocationOnScreen();
-    Dimension dim = mf.getSize();
-    int newx = curLoc.x +dim.width/2;
-    int newy = curLoc.y+dim.height/2;
-    columnDialog = new JDialog(mf,true);
-    columnDialog.getContentPane().setLayout(new BorderLayout(0,0));
-    columnDialog.setSize(newCompWidth,newCompHeight);
-    columnDialog.setLocation(newx-newCompWidth/2, newy-newCompHeight/2);
-    cmep = new ColumnMetadataEditPanel();
-    columnDialog.getContentPane().add(BorderLayout.CENTER, cmep);
-    controlPanel = new JPanel();
-    controlCancel = new JButton("Cancel");
-    controlOK= new JButton("OK");
-    controlPanel.add(controlCancel);
-    controlPanel.add(controlOK);
-    columnDialog.getContentPane().add(BorderLayout.SOUTH, controlPanel);
-    ColAction cAction = new ColAction();
-		controlOK.addActionListener(cAction);
-    controlCancel.addActionListener(cAction);
 
-    columnDialog.setVisible(true);
-  }
-  
-	class ColAction implements java.awt.event.ActionListener
-	{
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
-			Object object = event.getSource();
-			if (object == controlOK) {
-        columnAddFlag = true;
-				columnDialog.dispose();
-      }
-      else if (object == controlCancel) {
-        columnAddFlag = false;
-				columnDialog.dispose();
-      }
-		}
-	}
+
 
     /**
    * this is called whenever the editor exits.  the file returned is saved
