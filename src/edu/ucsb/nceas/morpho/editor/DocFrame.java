@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-28 20:41:37 $'
- * '$Revision: 1.110 $'
+ *     '$Date: 2003-06-17 22:58:23 $'
+ * '$Revision: 1.111 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -399,7 +399,7 @@ public class DocFrame extends javax.swing.JFrame
     /**
      * Constructor which adds a title string to the Frame
      *
-     * @param sTitle  Description of Parameter
+     * @param sTitle  Window title string
      */
 
     public DocFrame(String sTitle)
@@ -567,6 +567,10 @@ public class DocFrame extends javax.swing.JFrame
 
     /**
      * Sets the Controller attribute of the DocFrame object
+     * The 'controller' is the class used to call the DocFrame
+     * editor. It is set here to an EditorPlugin object.
+     * Control is passed back to the controller when the
+     * editor is finished.
      *
      * @param con  The new Controller value
      */
@@ -597,12 +601,17 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * The initialization routine for DOcFrame; this
+     * method creates a secondary thread where the input
+     * XML string is parsed and turned into an editable document.
      *
-     * @param finalMorpho  Description of Parameter
-     * @param doctext      Description of Parameter
-     * @param flag         Description of Parameter
+     *
+     * @param finalMorpho  The parent Morpho class
+     * @param doctext      xml to be edited
+     * @param flag         
      */
+     
+     // apparently the flag parameter is not used!  --- DFH 6/2003
     public void initDoc(Morpho finalMorpho, String doctext, boolean flag)
     {
         final Morpho fMorpho = finalMorpho;
@@ -642,7 +651,13 @@ public class DocFrame extends javax.swing.JFrame
         //required for SwingWorker 3
 
     }
-
+    
+    
+    /**
+     *  The method for initialization that is executed in the worker
+     *  thread. Takes the xml string in doctext and initilizes it for editing
+     *
+ */
     void initDocInner(Morpho morpho, String doctext, boolean flag)
     {
         DefaultMutableTreeNode frootNode = null;
@@ -768,10 +783,11 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * Creates a new DefaultMutableTreeNode with the special
+     * NodeInfo userObject used here
      *
-     * @param name  Description of Parameter
-     * @return      Description of the Returned Value
+     * @param name  name of the new node
+     * @return      DefaultMutableTreeNode with new NodeInfo userObject
      */
     DefaultMutableTreeNode newNode(Object name)
     {
@@ -782,10 +798,12 @@ public class DocFrame extends javax.swing.JFrame
 
 
     /**
-     * Description of the Method
+     * Uses serialization to make a complete copy of a node
+     * and all its decendents.
+     * The copy is made in memeory
      *
-     * @param node  Description of Parameter
-     * @return      Description of the Returned Value
+     * @param node  The node to clode
+     * @return      a deep copy of node
      */
     DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node)
     {
@@ -811,9 +829,11 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * Uses serialization to make a complete copy of a node
+     * and all its decendents.
+     * The copy is written to a file called "treeNodeFile.ser"
      *
-     * @param node  Description of Parameter
+     * @param node  The node to clode
      */
     void deepNodeCopyFile(DefaultMutableTreeNode node)
     {
@@ -834,10 +854,10 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * reads the serialized clone of a node
      *
-     * @param filename  Description of Parameter
-     * @return          Description of the Returned Value
+     * @param filename  file name where serialzized copy is stored
+     * @return          a node
      */
     DefaultMutableTreeNode readDeepNodeCopyFile(String filename)
     {
@@ -853,7 +873,7 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * usual Main method
      *
      * @param args  Description of Parameter
      */
@@ -954,10 +974,11 @@ public class DocFrame extends javax.swing.JFrame
 
 
     /**
-     * Description of the Method
+     * reads xml and puts it into a JTree using a 
+     * SAX parser
      *
-     * @param tm       Description of Parameter
-     * @param xmlText  Description of Parameter
+     * @param tm       treemodel where XML tree is placed
+     * @param xmlText  string where xml is located
      */
     void putXMLintoTree(DefaultTreeModel tm, String xmlText)
     {
@@ -1026,9 +1047,9 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * method to handle changes in the JTree selection
      *
-     * @param event  Description of Parameter
+     * @param event  treeSelection event
      */
     void tree_valueChanged(javax.swing.event.TreeSelectionEvent event)
     {
@@ -1290,10 +1311,11 @@ public class DocFrame extends javax.swing.JFrame
         write the tree starting at the indicated node to a File named 'fn'
       */
     /**
-     * Description of the Method
+     * write the tree starting at the indicated node to a File named 'fn'
+     * i.e. serializes the tree to xml in a file
      *
-     * @param node  Description of Parameter
-     * @param fn    Description of Parameter
+     * @param node  top level node
+     * @param fn    file name
      */
     void writeXML(DefaultMutableTreeNode node, String fn)
     {
@@ -1333,10 +1355,10 @@ public class DocFrame extends javax.swing.JFrame
         write the tree starting at the indicated node to a String
       */
     /**
-     * Description of the Method
+     * write the tree starting at the indicated node to a String
      *
-     * @param node  Description of Parameter
-     * @return      Description of the Returned Value
+     * @param node  top level node
+     * @return      xml string
      */
     String writeXMLString(DefaultMutableTreeNode node)
     {
@@ -1374,10 +1396,10 @@ public class DocFrame extends javax.swing.JFrame
         recursive routine to create xml output
       */
     /**
-     * Description of the Method
+     * recursive routine to create xml output
      *
-     * @param node    Description of Parameter
-     * @param indent  Description of Parameter
+     * @param node    starting node
+     * @param indent  indent level
      */
     void write_loop(DefaultMutableTreeNode node, int indent)
     {
@@ -1645,8 +1667,8 @@ public class DocFrame extends javax.swing.JFrame
      * input and template are root nodes of trees
      * input tree will be modified using template
      *
-     * @param input     Description of Parameter
-     * @param template  Description of Parameter
+     * @param input     instance node
+     * @param template  template node
      */
     void treeUnion(DefaultMutableTreeNode input, 
         DefaultMutableTreeNode template)
@@ -1777,6 +1799,7 @@ public class DocFrame extends javax.swing.JFrame
                                 (DefaultMutableTreeNode)tempnode.getParent();
                             currentLevelInputNodes.removeElement(mergeParent);
                         }
+                        
                         // Here we need to add nodes that are 'missing'
                         // go to parent of tnode; find matching nodes in input 
                         // at same level; add children
@@ -1962,11 +1985,12 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * uses a simpleCompareNodes to get those nodes in a vector
+     * which match the 'match' node
      *
-     * @param match  Description of Parameter
-     * @param vec    Description of Parameter
-     * @return       Description of the Returned Value
+     * @param match  the node to match
+     * @param vec    collection of nodes to test
+     * @return       vector of simple matches from vec
      */
     Vector simpleGetMatches(DefaultMutableTreeNode match, Vector vec)
     {
@@ -1983,11 +2007,13 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * Compares node by comparing the path to the node as
+     * a String. More accurate comparison than simple name
+     * matching, but more time consuming
      *
-     * @param node1  Description of Parameter
-     * @param node2  Description of Parameter
-     * @return       Description of the Returned Value
+     * @param node1  first node
+     * @param node2  second node
+     * @return       do they match?
      */
     boolean compareNodes(DefaultMutableTreeNode node1, 
         DefaultMutableTreeNode node2)
@@ -2002,11 +2028,13 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * Compares node1 and node2 on the basis of node name
+     * Note that this comparison is quite shallow; equality
+     * really depends on the entire path
      *
-     * @param node1  Description of Parameter
-     * @param node2  Description of Parameter
-     * @return       Description of the Returned Value
+     * @param node1  first node
+     * @param node2  second node
+     * @return       do they match?
      */
     boolean simpleCompareNodes(DefaultMutableTreeNode node1, 
         DefaultMutableTreeNode node2)
@@ -2021,10 +2049,13 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * create a string which is the 'path' of node names
+     * that are ancestors of the input node.
+     * Note that only the first 3 ancestors are used here
+     * in an attempt to enhance performance
      *
      * @param node  Description of Parameter
-     * @return      Description of the Returned Value
+     * @return      String path with ancestor node names separated by '/'
      */
     String pathToString(DefaultMutableTreeNode node)
     {
@@ -2046,10 +2077,13 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * Compares a node from the instance tree to a node from the
+     * template and compies information from the template to the
+     * instance. This is how cardinality, help, nodeEditor info, etc.
+     * get added to the instance
      *
-     * @param input     Description of Parameter
-     * @param template  Description of Parameter
+     * @param input     instance node (destination)
+     * @param template  template node (source)
      */
     void mergeNodes(DefaultMutableTreeNode input, 
         DefaultMutableTreeNode template)
@@ -2059,11 +2093,9 @@ public class DocFrame extends javax.swing.JFrame
             NodeInfo templateni = (NodeInfo)template.getUserObject();
             inputni.setCardinality(templateni.getCardinality());
             inputni.setChoice(templateni.isChoice());
-            //           inputni.setSelected(templateni.isSelected());
-//            if (templateni.getCardinality().equals("NOT SELECTED")) {
-//                inputni.setCardinality("SELECTED");
-//            }
             // first set all sibling of input to be not selected
+            // This whole code section is for handling CHOICES where
+            // only one of a set of nodes can be 'selected' at one time.
             if (templateni.isChoice()) {
                 DefaultMutableTreeNode parent = 
                     (DefaultMutableTreeNode)input.getParent();
@@ -2090,7 +2122,7 @@ public class DocFrame extends javax.swing.JFrame
                 // should be the selected node
                 inputni.setSelected(true);
             }
-
+            // add help info from template
             if (templateni.getHelp() != null) {
                 inputni.setHelp(templateni.getHelp());
             }
@@ -2103,7 +2135,7 @@ public class DocFrame extends javax.swing.JFrame
                     inputni.attr.put(key, templateni.attr.get(key));
                 }
             }
-
+            // add node editor information from template
             String editor = (String)(inputni.attr).get("editor");
             if (editor != null) {
                 inputni.setEditor(editor);
@@ -2114,19 +2146,26 @@ public class DocFrame extends javax.swing.JFrame
                 inputni.setRootEditor(rooteditor);
                 inputni.attr.remove("rooteditor");
             }
+            // move help info from attribute to location in nodeInfo object
             String help = (String)(inputni.attr).get("help");
             if (help != null) {
                 inputni.setHelp(help);
                 inputni.attr.remove("help");
             }
+            
         }
     }
 
 
     /**
-     * Description of the Method
+     * This is the method that is executed when editing is completed
+     * and the user wants to save the results.
+     * The JTree is converted to an XML string by the 'writeXMLString'
+     * method and then validated using the validate method.
+     * fires editingCompleteEvent
      *
-     * @param event  Description of Parameter
+     * @param event  event created when 'Save Changes' button is
+     * clicked.
      */
     void EditingExit_actionPerformed(java.awt.event.ActionEvent event)
     {
@@ -2190,9 +2229,9 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Method
+     * method for quiting editor without saving any changes
      *
-     * @param event  Description of Parameter
+     * @param event  triggered by window closing event
      */
     void DocFrame_windowClosing(java.awt.event.WindowEvent event)
     {
@@ -2219,9 +2258,10 @@ public class DocFrame extends javax.swing.JFrame
 
 
     /**
-     * Description of the Method
+     * method carried out when 'Cancel' button is clicked
+     * fires 'editingCanceledEvent'; i.e. no changes are saved
      *
-     * @param event  Description of Parameter
+     * @param event  Cancel button clicked event
      */
     void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
     {
@@ -2396,11 +2436,11 @@ public class DocFrame extends javax.swing.JFrame
 
     /**
      * get the children of a node, stripping out the 'SEQUENCE' and 'CHOICE'
-     * nodes and inserting their children 'vec' is a vector of child nodes; node
+     * nodes and inserting their children; 'vec' is a vector of child nodes; node
      * is parent
      *
-     * @param node  Description of Parameter
-     * @param vec   Description of Parameter
+     * @param node  parent
+     * @param vec   vector of child nodes
      */
     private void getRealChildren(DefaultMutableTreeNode node, Vector vec)
     {
@@ -2526,16 +2566,15 @@ public class DocFrame extends javax.swing.JFrame
 
 
     /**
-     * Description of the Class
+     * This embedded class handles all the actions for the DocFrame window
      *
-     * @author   jones
+     * @author   higgins
      */
     class SymAction implements java.awt.event.ActionListener
     {
         /**
-         * Description of the Method
+         * handles ActionListener events
          *
-         * @param event  Description of Parameter
          */
         public void actionPerformed(java.awt.event.ActionEvent event)
         {
@@ -2573,16 +2612,15 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Class
+     * handles valueChanged events for the tree
      *
-     * @author   jones
+     * @author   higgins
      */
     class SymTreeSelection implements javax.swing.event.TreeSelectionListener
     {
         /**
-         * Description of the Method
+         * handles valueChanged events
          *
-         * @param event  Description of Parameter
          */
         public void valueChanged(javax.swing.event.TreeSelectionEvent event)
         {
@@ -2595,9 +2633,9 @@ public class DocFrame extends javax.swing.JFrame
 
 
     /**
-     * Description of the Class
+     * handles tree popup actions
      *
-     * @author   jones
+     * @author   higgins
      */
     class PopupListener extends MouseAdapter
     {
@@ -2607,11 +2645,6 @@ public class DocFrame extends javax.swing.JFrame
         // mouse released event
         boolean trigger = false;
 
-        /**
-         * Description of the Method
-         *
-         * @param e  Description of Parameter
-         */
         public void mousePressed(MouseEvent e)
         {
             // maybeShowPopup(e);
@@ -2620,21 +2653,11 @@ public class DocFrame extends javax.swing.JFrame
             }
         }
 
-        /**
-         * Description of the Method
-         *
-         * @param e  Description of Parameter
-         */
         public void mouseReleased(MouseEvent e)
         {
             maybeShowPopup(e);
         }
 
-        /**
-         * Description of the Method
-         *
-         * @param e  Description of Parameter
-         */
         private void maybeShowPopup(MouseEvent e)
         {
             if ((e.isPopupTrigger()) || (trigger)) {
@@ -2711,18 +2734,13 @@ public class DocFrame extends javax.swing.JFrame
 
 
     /**
-     * Description of the Class
+     * handles window closing event
      *
-     * @author   jones
+     * @author   higgins
      */
     class SymWindow extends java.awt.event.WindowAdapter
     {
 
-        /**
-         * Description of the Method
-         *
-         * @param event  Description of Parameter
-         */
         public void windowClosing(java.awt.event.WindowEvent event)
         {
             Object object = event.getSource();
@@ -2733,30 +2751,21 @@ public class DocFrame extends javax.swing.JFrame
     }
 
     /**
-     * Description of the Class
+     * Used to handle resizing events
+     * Needed to redraw the nested panels display when the window is resized
      *
-     * @author   jones
+     * @author   higgins
      */
     class SymComponent extends java.awt.event.ComponentAdapter
     {
-        /**
-         * Description of the Method
-         *
-         * @param event  Description of Parameter
-         */
         public void componentMoved(java.awt.event.ComponentEvent event)
         {
             Object object = event.getSource();
             if (object == DocFrame.this) {
-
+              // do nothing
             }
         }
 
-        /**
-         * Description of the Method
-         *
-         * @param event  Description of Parameter
-         */
         public void componentResized(java.awt.event.ComponentEvent event)
         {
             validate();
@@ -2783,8 +2792,10 @@ public class DocFrame extends javax.swing.JFrame
     }
     
 //-------------------------------------------------------------------------------------
-  // specialized method for searching for <attribute> tags and then getting their 'name'
-  // from a child node for display at the attribute level in the tree
+  /**
+   * specialized method for searching for <attribute> tags and then getting their 'name'
+   * from a child node for display at the attribute level in the tree
+   */
   void setAttributeNames(DefaultMutableTreeNode root) {
     // first find all the attribute nodes, which are assumed to be children of root
     String attr_name = "";
@@ -2807,7 +2818,10 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
   
-  // need to trim extra text added to attribute nodes before saving
+  /**
+   * need to trim extra text added to attribute nodes before saving
+   *
+   */
   void trimAttributeNames(DefaultMutableTreeNode root) {
     Enumeration kids = root.children();
     while(kids.hasMoreElements()) {
@@ -2820,6 +2834,9 @@ public class DocFrame extends javax.swing.JFrame
   }
 //--------------------------------------------------------------------------------------    
 
+  /**
+   * used to validate the xml string from the editor before leaving
+   */
   public String validate(String xml) {
     DBValidate dbval = new DBValidate("org.apache.xerces.parsers.SAXParser", morpho);
     dbval.validateString(xml);
