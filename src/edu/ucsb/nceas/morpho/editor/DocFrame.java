@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-03 21:27:00 $'
- * '$Revision: 1.114 $'
+ *     '$Date: 2003-10-04 20:41:13 $'
+ * '$Revision: 1.115 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -809,6 +809,7 @@ public class DocFrame extends javax.swing.JFrame
     setName("Morpho Editor");
     treeModel = putDOMintoTree(docnode);
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+    setAllNodesAsSelected(rootNode);
     treeModel.reload();
     tree.setModel(treeModel);
 
