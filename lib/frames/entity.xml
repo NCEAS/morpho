@@ -5,18 +5,18 @@
       <textbox label="identifier" size="10" visible="no" field="identifier" repeatable="yes" required="yes"/>
       <textbox label="Name" field="entityName" size="10" required="yes"/>
       <textbox label="Description" field="entityDescription"  size="10" />
-      <group label="Coverages" type="panel" size="290x200">
+      <group label="Coverages" type="panel" size="290x300">
         <group label="Temporal Coverage" field="temporalCov" repeatable="yes" size="50x170">
           <textbox size="10" label="dummy" field="dummy1"/>
           <textbox size="10" label="dummy" field="dummy2"/>
           <textbox size="10" label="dummy" field="dummy3"/>
         </group>
-        <group label="Geographic Coverage" field="geographicCov" repeatable="yes" size="50x100">
+        <group label="Geographic Coverage" field="geographicCov" repeatable="yes" size="50x170">
           <textbox size="10" label="dummy" field="dummy1"/>
           <textbox size="10" label="dummy" field="dummy2"/>
           <textbox size="10" label="dummy" field="dummy3"/>
         </group>
-        <group label="Taxonomic Coverage" field="taxonomicCov" repeatable="yes" size="50x100">
+        <group label="Taxonomic Coverage" field="taxonomicCov" repeatable="yes" size="50x170">
           <textbox size="10" label="dummy" field="dummy1"/>
           <textbox size="10" label="dummy" field="dummy2"/>
           <textbox size="10" label="dummy" field="dummy3"/>
