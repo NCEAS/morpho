@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-23 21:25:56 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-12-23 21:52:17 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,7 +209,9 @@ public  class EML200DataPackage extends AbstractDataPackage
     Morpho morpho = Morpho.thisStaticInstance;
     load(AbstractDataPackage.LOCAL, id, morpho);
     serialize(AbstractDataPackage.METACAT);
-    // now upoload the data files
+    serializeData();
+  /*  
+    // now upload the data files
     Vector idlist = getAssociatedDataFiles();
     Enumeration e = idlist.elements();
     while (e.hasMoreElements()) {
@@ -246,6 +248,7 @@ public  class EML200DataPackage extends AbstractDataPackage
         }
       }
     }
+  */  
     return this;
   }
   
