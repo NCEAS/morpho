@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.6 2000-08-19 00:19:11 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.7 2000-08-19 00:25:38 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -58,44 +58,6 @@
                filtering="yes"
                excludes="**/CVS* **/.#* "/>
    </target>
-
-   <target name="catalog" depends="prepare">
-
-      <copydir src="${srcdir}" 
-               dest="${build.src}" 
-               filtering="yes"
-               includes="com/**"
-               excludes="**/CVS* **/.#* "/>
-      <javac srcdir="${build.src}" 
-             destdir="${build.dest}" 
-             includes="com/**" /> 
-   </target>
-
-   <target name="querybean" depends="catalog">
-
-      <copydir src="${srcdir}" 
-               dest="${build.src}" 
-               filtering="yes"
-               includes="edu/ucsb/nceas/querybean/**"
-               excludes="**/CVS* **/.#* "/>
-      <javac srcdir="${build.src}" 
-             destdir="${build.dest}" 
-             classpath="${cpath}"
-             includes="src/edu/ucsb/nceas/querybean/**" /> 
-   </target> 
-
-   <target name="metaedit" depends="querybean">
-
-      <copydir src="${srcdir}" 
-               dest="${build.src}" 
-               filtering="yes"
-               includes="edu/ucsb/nceas/metaedit/**"
-               excludes="**/CVS* **/.#* "/>
-      <javac srcdir="${build.src}" 
-             destdir="${build.dest}" 
-             classpath="${xml4j}:${cpath}"
-             includes="src/edu/ucsb/nceas/metaedit/**" /> 
-   </target> 
 
    <target name="compile" depends="prepare">
 
