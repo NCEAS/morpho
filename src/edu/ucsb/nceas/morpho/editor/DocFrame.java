@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-11 21:23:40 $'
- * '$Revision: 1.147 $'
+ *     '$Date: 2004-02-14 00:14:04 $'
+ * '$Revision: 1.148 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,12 @@ public class DocFrame extends javax.swing.JFrame
   public JTree tree;
 
 
+  /**
+   *  most recent instance of DocFrame
+   *  (for use by specialized editors)
+   */
+  static DocFrame lastDocFrameInstance = null; 
+   
   /**
    *   cached copy of template tree
    */
@@ -243,6 +249,7 @@ public class DocFrame extends javax.swing.JFrame
   /** This constructor builds the contents of the DocFrame Display  */
 
   public DocFrame()  {
+    lastDocFrameInstance = this;
     setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
     setSize(800, 600);
@@ -1676,7 +1683,7 @@ public class DocFrame extends javax.swing.JFrame
    * @param node  top level node
    * @return      xml string
    */
-  String writeXMLString(DefaultMutableTreeNode node)
+  public String writeXMLString(DefaultMutableTreeNode node)
   {
     // make a copy since we are modifying before saving
     DefaultMutableTreeNode clone = deepNodeCopy(node);
@@ -1713,7 +1720,7 @@ public class DocFrame extends javax.swing.JFrame
    *  This method writes a DOM Node based on the TreeNode
    *   returns the root node of the DOM
    */
-  Node writeToDOM(DefaultMutableTreeNode node) {
+  public Node writeToDOM(DefaultMutableTreeNode node) {
     String xml = writeXMLString(node);
     StringReader sr = new StringReader(xml);
     Node DOMOut = null;
