@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-05 21:55:59 $'
- * '$Revision: 1.24 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.24.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -70,6 +71,11 @@ public class AddMetadataWizard extends JFrame
                                           EditingCompleteListener, 
                                           WindowListener
 {
+  public static final String NOTSHOWMETADATA = "not show meta data";
+  public static final String NOTSHOWIMPORTDATA = "not show import data";
+  public static final String SHOWEVERYTHING = "show";
+  private String showRadioButton = SHOWEVERYTHING;
+  
   ConfigXML config;
   Morpho morpho = null;
   /** the total number of screens to be processed */
@@ -111,26 +117,35 @@ public class AddMetadataWizard extends JFrame
   JTextField fileTextField = new JTextField();
   JList relatedFileList;
   
+  private MorphoFrame packageFrame = null;
   /**
    * Construct a dialog and set the framework
    *
    * @param morpho the container framework that created this dialog
+   * @param packageFrame the parent of this dialog
    */
-  public AddMetadataWizard(Morpho morpho) {
-    this(morpho, true, null);
+  public AddMetadataWizard(Morpho morpho, MorphoFrame packageFrame) 
+  {
+    this(morpho, true, null, packageFrame, null);
   }
 
   /**
    * Construct the dialog
    */
   public AddMetadataWizard(Morpho morpho, boolean modal,
-                           DataPackage dataPackage)
+          DataPackage dataPackage, MorphoFrame packageFrame, String showImport)
   {
     //super((Frame)cont, modal);
     this.morpho = morpho;
     config = morpho.getConfiguration();
     this.dataPackage = dataPackage;
+    this.packageFrame = packageFrame;
     this.addWindowListener(this);
+    
+    if (showImport != null)
+    {
+      showRadioButton = showImport;
+    }
     
     //if functionality to add an existing file is added, remove this line.
     //existingFile.setEnabled(false);
@@ -323,6 +338,16 @@ public class AddMetadataWizard extends JFrame
   }
 
   /**
+   * Method only show the import data screen
+   */
+  public void showImportDataScreen()
+  {
+    currentScreen = 1;
+    existingFile.setSelected(true);
+    layoutScreen();
+  }
+    
+  /**
    * Perform actions associated with the Disconnect button
    */
   private void cancelButtonHandler(ActionEvent event)
@@ -399,9 +424,15 @@ public class AddMetadataWizard extends JFrame
       screenPanel.setPreferredSize(new Dimension(400, 300));
       JPanel layoutpanel = new JPanel();
       layoutpanel.setLayout(new BoxLayout(layoutpanel, BoxLayout.Y_AXIS));
-      layoutpanel.add(createNew);
-      layoutpanel.add(existingMetadata);
-      layoutpanel.add(existingFile);
+      if (!showRadioButton.equals(NOTSHOWMETADATA))
+      {
+        layoutpanel.add(createNew);
+        layoutpanel.add(existingMetadata);
+      }
+      if (!showRadioButton.equals(NOTSHOWIMPORTDATA))
+      {
+        layoutpanel.add(existingFile);
+      }
       screenPanel.add(layoutpanel);
       screenPanel.setLayout(new GridLayout(0,1));
     } 
@@ -1163,6 +1194,13 @@ public class AddMetadataWizard extends JFrame
   
   
   private void refreshPackage(String dataPackageId) {
+    
+    //Destory the old package frame
+    if (packageFrame != null)
+    {
+      packageFrame.dispose();
+      packageFrame = null;
+    }
     //refresh the package wizard view
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
@@ -1170,36 +1208,9 @@ public class AddMetadataWizard extends JFrame
     String location = dataPackage.getLocation();
     this.dataPackage = newpackage;                                         
 
-    // Show the new package
-    try 
-    {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
-                      services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newpackage.getID(), null);
-    }
-    catch (ServiceNotHandledException snhe) 
-    {
-       Log.debug(6, snhe.getMessage());
-    }
-   
-    /*
-    DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
-    dpg.show();
-    dpg.setName("Package Editor:" + newpackage.getID());
-    //MBJ framework.addWindow(dpg);
-    //MBJ framework.removeWindow(this);
-    try {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
-                      services.getServiceProvider(QueryRefreshInterface.class);
-      //QueryRefreshInterface qinterface = (QueryRefreshInterface)provider;
-      ((QueryRefreshInterface)provider).refresh();
-    } catch (ServiceNotHandledException snhe) {
-      Log.debug(6, snhe.getMessage());
-    }
- */   
+    DataPackagePlugin dataPlugin = new DataPackagePlugin(morpho);
+    dataPlugin.openDataPackage(location, newpackage.getID(), null, null);
+ 
   }
   
   /**
@@ -1287,21 +1298,7 @@ public class AddMetadataWizard extends JFrame
       return;
     }
     
-    /*
-    try
-    {
-    FileReader fr = new FileReader(newxmlFile);
-    int c = fr.read();
-    while(c != -1)
-    {
-      System.out.print((char)c);
-      c = fr.read();
-    }
-    }
-    catch(Exception e)
-    {}
-    */
-    
+     
     if(locLocal)
     { //save the real files locally.
       File newPackageMember;
@@ -1374,19 +1371,16 @@ public class AddMetadataWizard extends JFrame
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
                                              morpho);
-    DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
-    dpg.show();
-    dpg.setName("Package Editor:" + newpackage.getID());
-    //MBJ framework.addWindow(dpg);
-    //MBJ framework.removeWindow(this);
-    try {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
-                      services.getServiceProvider(QueryRefreshInterface.class);
-      ((QueryRefreshInterface)provider).refresh();
-    } catch (ServiceNotHandledException snhe) {
-      Log.debug(6, snhe.getMessage());
-    }
+    this.dataPackage = newpackage;
+    //DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
+    // Close old package and open a new one
+    if ( packageFrame != null)
+    {
+      packageFrame.dispose();
+    }// if
+    DataPackagePlugin plugin = new DataPackagePlugin(morpho);
+    plugin.openDataPackage(location, newpackage.getID(), null, null);
+   
   }
 
   public void actionPerformed(ActionEvent e) 
@@ -1563,9 +1557,11 @@ public class AddMetadataWizard extends JFrame
   {
     if(!finishflag)
     {
-      DataPackageGUI dpg = new DataPackageGUI(morpho, dataPackage);
-      dpg.show();
-      dpg.setName("Package Editor:" + dataPackage.getID());
+      //DataPackageGUI dpg = new DataPackageGUI(morpho, dataPackage);
+      //dpg.show();
+      //dpg.setName("Package Editor:" + dataPackage.getID());
+      
+      packageFrame.setVisible(true);
       //MBJ framework.addWindow(dpg);
     }
     //MBJ framework.removeWindow(this); 

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-13 23:06:37 $'
- * '$Revision: 1.15 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:07 $'
+ * '$Revision: 1.15.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import java.io.Reader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.CharArrayWriter;
 import java.io.InputStreamReader;
@@ -89,6 +90,7 @@ public class XMLTransformer
 
     private final String CONFIG_KEY_LOCAL_CATALOG_PATH  = "local_catalog_path";
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
+    private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
     private final String GENERIC_STYLESHEET;
     
     private final  Properties       transformerProperties;
@@ -103,12 +105,21 @@ public class XMLTransformer
     private XMLTransformer() 
     {
         this.config = Morpho.getConfiguration();
-        GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
-        classLoader = this.getClass().getClassLoader();
+        GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0); 
+        
+        Log.debug(30, "XMLTransformer: ClassLoader *would* have been: " 
+                            + this.getClass().getClassLoader().getClass().getName());
+        
+        classLoader = Morpho.class.getClassLoader();
+        Log.debug(30, "XMLTransformer: ...but from Morpho, setting ClassLoader to: " 
+                                                + classLoader.getClass().getName());
+        Thread t = Thread.currentThread();
+        t.setContextClassLoader(classLoader);        
+        
         transformerProperties = new Properties();
         initEntityResolver();
     }
-    
+
     /**
      *  Used to get a shared instance of the <code>XMLTransformer</code>
      *
@@ -208,7 +219,8 @@ public class XMLTransformer
         Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
         validateInputParam(domDoc,        "XML DOM Document");
         
-        return transform(domDoc, getStyleSheetReader(domDoc.getDoctype().getPublicId()));
+        return transform( domDoc, 
+                        getStyleSheetReader(domDoc.getDoctype().getPublicId()));
     }
     /**
      *  Uses the stylesheet provided, to apply XSLT to the XML DOM Document 
@@ -246,6 +258,8 @@ public class XMLTransformer
         CharArrayWriter outputWriter  = new CharArrayWriter();
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
+        tFactory.setURIResolver(new CustomURIResolver());
+        
         Transformer transformer = null;
         try {
             transformer 
@@ -260,8 +274,6 @@ public class XMLTransformer
             e.printStackTrace(new PrintWriter(outputWriter));
         }
         transformer.setErrorListener(new CustomErrorListener());
-        transformer.setURIResolver(new CustomURIResolver());
-        
         Enumeration propertyNames = getTransformerPropertyNames();
 
         while (propertyNames.hasMoreElements()) {
@@ -549,19 +561,31 @@ public class XMLTransformer
     
     class CustomURIResolver implements URIResolver 
     {
-        public Source resolve(String href, String base) 
-                                      throws TransformerException
+        private final String STYLESHEET_LOCATION;
+        private final StringBuffer resolution;
+        
+        protected CustomURIResolver() 
         {
-            Source resolution = null;
-            Log.debug(50,"\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+            STYLESHEET_LOCATION = config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0);
+            resolution = new StringBuffer();
+        }
+        
+        public Source resolve(String href, String base)
+                                                    throws TransformerException
+        {
             Log.debug(50,"CustomURIResolver.resolve() received href="+href
                                                         +" and base="+base);
-            Log.debug(50,"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n");
+            resolution.delete(0,resolution.length());
+            resolution.append(STYLESHEET_LOCATION);
+            resolution.append("/");
+            resolution.append(href);
 
-            Log.debug(50,"\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
-            Log.debug(50,"CustomURIResolver.resolve() returning "+resolution);
-            Log.debug(50,"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n");
-            return resolution;
+            InputStream stream 
+                      = classLoader.getResourceAsStream(resolution.toString());
+            Log.debug(50,"CustomURIResolver.resolve() returning StreamSource \n"
+                                        +"for InputStream = "+stream
+                                        +"\nfor path = "+resolution.toString());
+            return new StreamSource(stream);
         }
     }
 
@@ -603,28 +627,4 @@ public class XMLTransformer
 //        xmlReader.setErrorHandler(new CustomErrorHandler());
 //        saxSource.setXMLReader(xmlReader);
 //        return saxSource;
-//    }
-
-
-    /**
-     *  Uses the stylesheet provided, to apply XSLT to the XML document provided
-     *
-     *  @param xmlDocReader  A <code>java.io.Reader</code> to allow reading of
-     *                      the XML document to be styled.
-     *
-     *  @param directory    A <code>XSLLookupInterface</code> to allow this
-     *                      transformer to get the required XSL document, given
-     *                      the DocType in the XML doc to be styled
-     *
-     *  @return             A <code>java.io.Reader</code> to allow reading of
-     *                      the results of styling the XML document
-     *
-     *  @throws IOException if there are problems reading the Reader
-     *  @throws DocumentNotFoundException if XSLLookupInterface does not return 
-     *  a valid reference to a suitable XSL stylesheet
-     */
-//    public Reader transform(Reader xmlDocReader, XSLLookupInterface directory)
-//                                  throws IOException, DocumentNotFoundException
-//    {
-//        return new StringReader("XMLTransformer: method not implemented!");
 //    }

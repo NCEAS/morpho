@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-13 01:44:58 $'
- * '$Revision: 1.7 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.7.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,10 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.io.*;
 import java.util.*;
 
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.Morpho;
+
 
 /* 
 A vector-like class that uses persistent storage (ObjectFile) rather than RAM for
@@ -53,7 +57,7 @@ public class PersistentVector
   /**
    * allow for header rows
    */
-  int firstRow = 0;
+  public int firstRow = 0;
     
   /**
    * number of items to be stored in memory
@@ -89,26 +93,97 @@ public class PersistentVector
   /*
    * header line vector
    */
-  Vector headerLinesVector;
+  private Vector headerLinesVector;
 
-    
+  /*
+   * tmp directory for object file
+   */
+  private String tmpDir = null;
+  
+  /**
+   * Constructor of PersistentVector
+   *
+   */
   public PersistentVector() {
     objectList = new Vector();
     objNum++;
+    getTempDirFromConfig();
     try{
-      objName = objName + objNum;
-       obj = new ObjectFile(objName);  
+      if (tmpDir != null)
+      {
+        objName=tmpDir+objName+objNum;
+      }
+      else
+      {
+        objName = objName + objNum;
+      }
+      obj = new ObjectFile(objName);  
     }
     catch (Exception w) {}
   }
-    
+  
+  /*
+   * Method to get tmp directory for object file
+   */
+  private void getTempDirFromConfig()
+  {
+    Morpho morpho = UIController.getMorpho();
+    ConfigXML config = morpho.getConfiguration();
+    ConfigXML profile = morpho.getProfile();
+    String profileDirName = config.getConfigDirectory() + 
+                                File.separator +
+                                config.get("profile_directory", 0) + 
+                                File.separator + 
+                                config.get("current_profile", 0);
+    tmpDir = profileDirName + File.separator 
+             + profile.get("tempdir", 0)+File.separator;
+       
+  }
   /*
    * needed for skipping over comments, header info
    */
    public void setFirstRow(int frow) {
      this.firstRow = frow;
    }
+   
+  /**
+   * Method to get the value of first Row
+   */
+  public int getFirstRow()
+  {
+    return firstRow;
+  }
+  
     
+   /**
+    * Method to get headerLinesVector
+    *
+    */
+   public Vector getHeaderLinesVector()
+   {
+     return headerLinesVector;
+   }
+   
+   /**
+    * Method to set a vector as a header lines vector
+    * @param newHeaderLinesVector
+    */
+   public void setHeaderLinesVector(Vector newHeaderLinesVector)
+   {
+     headerLinesVector = newHeaderLinesVector;
+   }
+   
+   /**
+    * Method set tmp directory for Object file
+    * 
+    * @param directory  the tmp directory will be set
+    */
+   public void setTmpDir(String directory)
+   {
+     tmpDir = directory;
+   }
+    
+   
   /*
    * read a text file and store each line as an object in an ObjectFile
    */
@@ -209,6 +284,14 @@ public class PersistentVector
     
   public void setFieldDelimiter(String s) {
     this.field_delimiter = s.trim();
+  }
+  
+  /**
+   * Method to get field delimiter
+   */
+  public String getFieldDelimiter()
+  {
+    return field_delimiter;
   }
  
   /*
@@ -318,7 +401,17 @@ public class PersistentVector
   public void delete() {
     obj.delete();
     objectList = null;
-  }  
+  }
+
+  /** 
+   * Method to assign a vector to objectList
+   *
+   *  @param newObjectList the new object list vector
+   */
+  public void setObjectList(Vector newObjectList)
+  {
+    objectList = newObjectList;
+  }
     
   private String[] getColumnValues(String str) {
 	  String sDelim = getDelimiterString();

@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: brooke $'
-  *     '$Date: 2002-09-06 21:03:48 $'
-  * '$Revision: 1.2 $'
+  *   '$Author: cjones $'
+  *     '$Date: 2002-09-26 01:30:05 $'
+  * '$Revision: 1.2.2.1 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -30,22 +30,32 @@
   * suitable for rendering with modern web browsers.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:import href="eml-settings-2.0.0beta6.xsl" />
 
   <xsl:output method="html" encoding="iso-8859-1"/>
   
   <xsl:template match="/">
     <html>
       <head>
+        <link rel="stylesheet" type="text/css" 
+              href="{$stylePath}/{$qformat}.css" />
       </head>
       <body>
         <center>
           <h1>Ecological Metadata Language</h1>
         </center>
-           <table width="90%" border="1" cellpadding="5" align="center">
-             <tr><td><b>Element Name</b></td><td><b>Value</b></td></tr> 
+        <table class="tabledefault" width="100%">
+             <tr><td class="{$subHeaderStyle}">Element Name</td><td class="{$subHeaderStyle}">Value</td></tr> 
                 <xsl:for-each select="./*">
-                    <tr><td><xsl:value-of select="local-name()"/></td>
-                        <td><xsl:value-of select="."/></td></tr>
+            <xsl:variable name="stripes">
+              <xsl:choose>
+                <xsl:when test="position() mod 2 = 1">rowodd</xsl:when>
+                <xsl:when test="position() mod 2 = 0">roweven</xsl:when>
+              </xsl:choose>
+            </xsl:variable>                    
+            <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
+                <xsl:value-of select="local-name()"/></td>
+                        <td class="{$stripes}"><xsl:value-of select="."/></td></tr>
                 </xsl:for-each>
           </table>
       </body>

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-15 19:34:00 $'
- * '$Revision: 1.6.4.1 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.6.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -41,7 +42,7 @@ import javax.swing.JDialog;
 /**
  * Class to handle open package command
  */
-public class OpenPackageCommand implements Command 
+public class OpenPackageCommand implements Command, ButterflyFlapCoordinator 
 {
     
   /** A reference to the resultPanel */
@@ -110,7 +111,7 @@ public class OpenPackageCommand implements Command
         open = null;
       }
       // Open the pakcage
-      doOpenPackage(selectDocId, location, frame);
+      doOpenPackage(selectDocId, location, frame, this);
      
     }
     
@@ -121,7 +122,7 @@ public class OpenPackageCommand implements Command
    *
    */
   private void doOpenPackage(final String docid, final String location,  
-                                                final MorphoFrame morphoFrame)
+           final MorphoFrame morphoFrame, final OpenPackageCommand command)
   {
     final SwingWorker worker = new SwingWorker()
     {
@@ -134,7 +135,7 @@ public class OpenPackageCommand implements Command
           ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
           DataPackageInterface dataPackage = (DataPackageInterface)provider;
-          dataPackage.openDataPackage(location, docid, null);
+          dataPackage.openDataPackage(location, docid, null, command);
         }
         catch (ServiceNotHandledException snhe) 
         {
@@ -152,8 +153,21 @@ public class OpenPackageCommand implements Command
     
   }//doOpenPakcage
   
+  /**
+   * Method implements from ButterflyFlapCoordinator
+   */
+  public void startFlap()
+  {
+    frame.setBusy(true);
+  }
   
-    
+  /**
+   * Method implements from ButterflyFlapCoordinator
+   */
+  public void stopFlap()
+  {
+    frame.setBusy(false);
+  }  
    /**
     * could also have undo functionality; disabled for now
    */ 

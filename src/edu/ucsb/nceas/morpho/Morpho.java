@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-15 19:34:00 $'
- * '$Revision: 1.10.2.1 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:05 $'
+ * '$Revision: 1.10.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,8 @@ public class Morpho
     public static String SEPARATOR_PRECEDING = "separator_preceding";
     /** Constant to indicate a separator should follow an action */
     public static String SEPARATOR_FOLLOWING = "separator_following";
+    /** Constant of initial morpho frame name */
+    public static final String INITIALFRAMENAME = "Morpho";
 
     // redirects standard out and err streams
     static boolean log_file = false;
@@ -831,7 +833,8 @@ public class Morpho
 
                 // Create a blank frame as a placeholder until a plugin
                 // takes over
-                MorphoFrame initialFrame = controller.addWindow("Morpho");
+                MorphoFrame initialFrame = 
+                                        controller.addWindow(INITIALFRAMENAME);
                 initialFrame.setVisible(true);
             }
         } catch (Throwable t) {

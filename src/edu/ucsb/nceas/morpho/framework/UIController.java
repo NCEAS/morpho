@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-15 19:34:00 $'
- * '$Revision: 1.11.4.1 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.11.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ public class UIController
     // A hashtable to store the pair: submenu-path, 
     // such as synchronize - file/synchroize
     private static Hashtable subMenuAndPath;
+    private static int count = 0; // count create how many frames
 
     // Constants
     public static final String SEPARATOR_PRECEDING = "separator_preceding";
@@ -149,6 +150,22 @@ public class UIController
         if (getCurrentActiveWindow()==null) {
             setCurrentActiveWindow(window);
         }
+        // If initial  window morpho in the window list, remove it
+        if ( count == 1)// create the second frame
+        {
+          Enumeration frameList = windowList.elements();
+          while (frameList.hasMoreElements())
+          {
+            MorphoFrame frame = (MorphoFrame)frameList.nextElement();
+            if ((frame.getTitle()).equals(Morpho.INITIALFRAMENAME))
+            {
+              removeWindow(frame);
+              frame.dispose();
+              frame = null;
+            }
+          }
+        }
+        count++;
         return window;
     }
     
@@ -437,7 +454,14 @@ public class UIController
     {
         return currentActiveWindow;
     }
-
+    
+    /**
+     * get Morpho
+     */
+    public static Morpho getMorpho()
+    {
+      return morpho;
+    }
     /**
      * Register a window by creating an action and adding it to the
      * list of windows for the application. All existing windows are

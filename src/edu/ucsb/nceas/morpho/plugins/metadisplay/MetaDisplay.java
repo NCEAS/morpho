@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-13 23:04:57 $'
- * '$Revision: 1.19 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.19.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.IOException;
 
@@ -38,20 +39,24 @@ import java.util.Enumeration;
 
 import javax.swing.JLabel;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
-import edu.ucsb.nceas.morpho.util.IOUtil;
-
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+
 import edu.ucsb.nceas.morpho.exception.NullArgumentException;
 
-import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  *  Top-level controller/Mediator class for an instance of a metadata display 
@@ -64,15 +69,18 @@ public class MetaDisplay implements MetaDisplayInterface,
 
     public static final String BLANK_HTML_PAGE =
           "<html><head></head><body bgcolor=\"#eeeeee\">&nbsp;</body></html>";
-                            
+    private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
+    private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
+    
     private final   MetaDisplayUI           ui;
     private final   XMLTransformer          transformer;
     private final   History                 history;
     private final   Vector                  editingCompletelistenerList;
     private final   Vector                  listenerList;
+    private final   ConfigXML               config;
     private         XMLFactoryInterface     factory;
     private         String                  identifier;
-
+    private         StringBuffer            pathBuff;
     
     /**
      *  constructor
@@ -81,17 +89,16 @@ public class MetaDisplay implements MetaDisplayInterface,
     {
         listenerList                = new Vector();
         editingCompletelistenerList = new Vector();
-        ui                          = new MetaDisplayUI(this);
-        transformer                 = XMLTransformer.getInstance();
-        
-        //maybe we can detect the base path automatically??:
-        //definitely need to put in config file
-        transformer.addTransformerProperty("stylePath", 
-        "jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/morpho-config.jar!/style");
-        
         history                     = new History();
+        pathBuff                    = new StringBuffer();
+        ui                          = new MetaDisplayUI(this);
+        config                      = Morpho.getConfiguration();
+        transformer                 = XMLTransformer.getInstance();
+        transformer.addTransformerProperty("stylePath", getFullStylePath());
     }
 
+    
+    
     /**
      *  method used to obtain a visual component (a descendent of 
      *  <code>java.awt.Component</code>, which will display the XML resource 
@@ -563,6 +570,24 @@ public class MetaDisplay implements MetaDisplayInterface,
         } else {
             ui.getHeader().setBackButtonEnabled(true);
         }
+    }
+    
+    //returns string representation of full path to style directory in 
+    //Morpho-Config.jar.  All names are in config.xml file
+    private String getFullStylePath() 
+    {
+        pathBuff.delete(0,pathBuff.length());
+        pathBuff.append("jar:file:");
+        File current = new File(""); 
+        String root = current.getAbsolutePath();
+        pathBuff.append(root);
+        pathBuff.append("/");
+        pathBuff.append(config.get(CONFIG_KEY_MCONFJAR_LOC, 0));
+        pathBuff.append("!/");
+        pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+        Log.debug(50,"MetaDisplay.getFullStylePath() returning: "
+                                                          +pathBuff.toString());
+        return pathBuff.toString();
     }
 }
 

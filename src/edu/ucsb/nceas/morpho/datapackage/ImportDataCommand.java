@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-24 22:47:19 $'
- * '$Revision: 1.1 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.1.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
 /**
@@ -54,7 +55,7 @@ public class ImportDataCommand implements Command
   /**
    * execute refresh command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {   
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();

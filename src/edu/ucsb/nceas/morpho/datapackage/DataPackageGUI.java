@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.88 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.88.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -364,6 +364,26 @@ public class DataPackageGUI extends javax.swing.JFrame
     return foundMatch;
   }
   
+  /**
+   * Method to get entityitems. In this method, the empty element will remove
+   */
+  public Vector getEntityitems()
+  {
+    if (entityitems!= null && entityitems.size() == 1)
+    {
+      Object obj = entityitems.elementAt(0);
+      if (obj instanceof String)
+      {
+        String str =(String)obj;
+        str.trim();
+        if ( str.equals("") || str.equals(" ")) 
+        {
+          return null;
+        }//if
+      }//if
+    }//if
+    return entityitems;
+  }
   /**
    * creates the basicinfopanel
    */
@@ -808,12 +828,12 @@ public class DataPackageGUI extends javax.swing.JFrame
       
     } else if(command.equals("Add")) {
     
-      AddMetadataWizard npmw 
-                        = new AddMetadataWizard(morpho, false, dataPackage);
+      //AddMetadataWizard npmw 
+                        //= new AddMetadataWizard(morpho, false, dataPackage);
       this.dispose();                                                          
-      npmw.show();
-      npmw.setName("New Description Wizard:" + dataPackage.getID());
-      //MBJ framework.addWindow(npmw);
+      //npmw.show();
+      //npmw.setName("New Description Wizard:" + dataPackage.getID());
+    
     }
     else if(command.equals("Remove"))
     {

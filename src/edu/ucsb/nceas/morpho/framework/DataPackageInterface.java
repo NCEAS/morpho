@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-06 17:58:33 $'
- * '$Revision: 1.10 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.10.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,9 +60,10 @@ public interface DataPackageInterface
    *
    * @param location indicates the location from which to open the data
    * @param identifier the unique identifier to use to open the data
+   * @param coordinator the coordinator for butterfly flapping
    */
   public void openDataPackage(String location, String identifier, 
-                              Vector relations);
+                    Vector relations, ButterflyFlapCoordinator coordinator);
   /**
    * This method is called to upload a datapackage that is currently stored
    * locally to metacat

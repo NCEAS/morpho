@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-13 23:04:58 $'
- * '$Revision: 1.2 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:30:06 $'
+ * '$Revision: 1.2.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,16 @@
 
 package edu.ucsb.nceas.morpho.plugins.xsltresolver;
 
-import edu.ucsb.nceas.morpho.Morpho;
+import java.io.Reader;
+import java.io.InputStreamReader;
 
+import java.util.Vector;
+import java.util.Hashtable;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 import edu.ucsb.nceas.morpho.plugins.XSLTResolverInterface;
@@ -39,8 +47,6 @@ import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
-import java.io.Reader;
-import java.io.InputStreamReader;
 
 
 /**
@@ -52,16 +58,25 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
 {
 
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
-    private final String GENERIC_STYLESHEET;
+    private final String CONFIG_KEY_DOCTYPE_TO_XSLT = "doctype_xslt_mappings";
+    private final String CONFIG_KEY_DOCTYPE         = "doctype";
+    private final String CONFIG_KEY_XSLT            = "xslt";
+                                            
+    private final String    GENERIC_STYLESHEET;
+    private final ConfigXML config;
+    private       Hashtable mappings;
 
     private final ClassLoader classLoader;
 
-    private ConfigXML config = Morpho.getConfiguration();
-        
     public XSLTResolverPlugin()
     {
-        classLoader = this.getClass().getClassLoader();
+        classLoader = Morpho.class.getClassLoader();
+        Thread t = Thread.currentThread();
+        t.setContextClassLoader(classLoader);        
+
+        this.config = Morpho.getConfiguration();
         GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
+        initDoctypeToXSLTMappings();
     }
     
     /**
@@ -103,25 +118,58 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
      *
      *  @throws DocumentNotFoundException if no suitable stylesheet is available
      */
-    public Reader getXSLTStylesheetReader(String docType) 
+    public Reader getXSLTStylesheetReader(String docType)
                                               throws DocumentNotFoundException
     {
+        Log.debug(50, "\nXSLTResolver got: "+docType);
+        Reader rdr = null;
+        String xslPathString = getFromMappings(docType);
+        if (xslPathString==null || xslPathString.trim().equals("")) {
         
-        //H A C K ! ! ! ! !
-        //needs to be implemented properly. 
+            rdr =  new InputStreamReader(
+                            classLoader.getResourceAsStream(GENERIC_STYLESHEET));
+            Log.debug(50, "getXSLTStylesheetReader() failed to find valid "
+                            +"stylesheet for docType: "+docType
+                            +"\n returning default: "+GENERIC_STYLESHEET);
+        } else {
+            rdr =  new InputStreamReader(
+                            classLoader.getResourceAsStream(xslPathString));
+            Log.debug(50, "getXSLTStylesheetReader() found a value for the "
+                            +"stylesheet for docType: "+docType
+                            +"\n returning: "+xslPathString);
+        }
+        Log.debug(50, "\nXSLTResolver returning Reader: "+rdr);
+        return rdr;
+    }
+
+    // gets the doctype-to-xslt mappings from the config file and adds them to
+    //the mappings hashtable
+    private void initDoctypeToXSLTMappings()
+    {
+        mappings = config.getHashtable( CONFIG_KEY_DOCTYPE_TO_XSLT, 
+                                        CONFIG_KEY_DOCTYPE, 
+                                        CONFIG_KEY_XSLT );
+    }
+    
+    //trims whitespace, checks for null and empty strings, checks to see if 
+    //already in HashTable, and if so, returns value for this key
+    private String getFromMappings(String key)
+    {
+        Log.debug(50,"XSLTResolverPlugin.getFromMappings() got key="+key);
+                                                            
+        if ( key==null || key.equals("")) {
         
-//        if (docType.indexOf("entity")>0) {
-//          return new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
-//        } else if (docType.indexOf("dataset")>0) {
-//          return new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-dataset-2.0.0beta6.xsl"));
-//        } else if (docType.indexOf("attribute")>0) {
-//          return new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-attribute-2.0.0beta6.xsl"));
-//        } else {
-          return new InputStreamReader(
-          classLoader.getResourceAsStream(GENERIC_STYLESHEET));
-//        }
+            Log.debug(12,"ALERT: XSLTResolverPlugin.getFromMappings(): got key="
+                                                                          +key);
+        } else if (!mappings.containsKey(key)) {
+        
+            Log.debug(12,"ALERT: XSLTResolverPlugin.getFromMappings():"
+                                                   +" could not find key="+key);
+        } else { 
+            String xslt = (String)mappings.get(key);
+            Log.debug(50,"XSLTResolverPlugin.getFromMappings() value = "+xslt);
+            return xslt;
+        }
+        return null;
     }
 }
