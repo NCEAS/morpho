@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-01-08 22:48:54 $'
- * '$Revision: 1.24 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-10 18:12:44 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,6 +152,8 @@ public class UIController
         updateStatusBar(window.getStatusBar());
         
         // If initial  window morpho in the window list, remove it
+        
+/*  leave the startup screen - request from reviewers!  Feb 2004     
         if ( count == 1)// create the second frame
         {
           Enumeration frameList = windowList.elements();
@@ -164,9 +166,10 @@ public class UIController
               frame.dispose();
               frame = null;
             }
+
           }
         }
-        
+*/        
         setCurrentActiveWindow(window);
         setWindowLocation(window);
 				window.toFront();
