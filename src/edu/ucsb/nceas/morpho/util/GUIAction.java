@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-28 21:42:06 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-12-11 06:19:58 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,11 +63,17 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      */
      public static final int EVENT_GLOBAL = 200;
      
+     
+     private static final String ROLLOVER_SMALL_ICON = "rolloverSmallIcon";
+     private static final String ROLLOVER_TEXT_LABEL = "rolloverTextLabel";
+     
+     
     /** 
      *  Constructor
      *
      *  @param name the display name of this action, as used in menus
-     *  @param icon the default icon associated with this action
+     *  @param icon the default icon associated with this action (equivalent to
+     *              the icon set by the setSmallIcon() method)
      *  @param cmd the Command object that will have its execute() method
      *  called by this object's actionPerformed() method
      */
@@ -102,6 +108,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
 
         // Need to set the other relevant properties here as well
         // MBJ Not completed yet
+        clone.setTextLabel(getTextLabel());
         clone.setCommand(getCommand());
         clone.setDefaultIcon(getDefaultIcon());
         clone.setSmallIcon(getSmallIcon());
@@ -109,6 +116,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         clone.setSeparatorPosition(getSeparatorPosition());
         clone.setMenu(getMenuName(), getMenuPosition());
         clone.setAcceleratorKey(getAcceleratorKey());
+        clone.setRolloverSmallIcon(getRolloverSmallIcon());
+        clone.setRolloverTextLabel(getRolloverTextLabel());
         // Clone the enabled list
         Enumeration enabledKeys = enabledList.keys();
         while (enabledKeys.hasMoreElements()) {
@@ -132,12 +141,22 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         return clone;
     }
 
+   /** 
+    *  sets the text for the display label
+    *
+    * @param icon the icon to be used by default
+    */
+   public void setTextLabel(String name)
+   {
+       super.putValue(AbstractAction.NAME, name);
+   }
+
     /** 
-     *  gets the text for the Name
+     *  gets the text for the display label
      *
      *  @return String representing the name of the action
      */
-    public String getName(){
+    public String getTextLabel(){
         return (String)super.getValue(AbstractAction.NAME);
     }
     
@@ -178,6 +197,60 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         super.putValue(AbstractAction.SHORT_DESCRIPTION, toolTipText);
     }
     
+    
+    /** 
+     *  sets the *rollover* small Icon to be displayed on toolbar buttons
+     *
+     *  @param rolloverSmallIcon the Icon to be displayed on menus etc
+     */
+    public void setRolloverSmallIcon(Icon rolloverSmallIcon) {
+        super.putValue(ROLLOVER_SMALL_ICON, rolloverSmallIcon);
+    }
+    
+    
+    /** 
+     *  gets the *rollover* small Icon to be displayed on toolbar buttons
+     *
+     *  @return rolloverSmallIcon the rollover Icon to be displayed on menus etc
+     */
+    public Icon getRolloverSmallIcon() {
+        return (Icon)super.getValue(ROLLOVER_SMALL_ICON);
+    }
+    
+    
+    /** 
+     *  sets the *rollover* text label to be displayed on toolbar buttons 
+     *  (mainly used for HTML text, where only the color or font face changes)
+     *
+     *  @param rolloverTextLabel the label to be displayed on rollover
+     */
+    public void setRolloverTextLabel(String rolloverTextLabel) {
+        super.putValue(ROLLOVER_TEXT_LABEL, rolloverTextLabel);
+    }
+    
+    
+    /** 
+     *  gets the *rollover* text label to be displayed on toolbar buttons 
+     *  (mainly used for HTML text, where only the color or font face changes)
+     *
+     *  @return rolloverTextLabel the label to be displayed on rollover
+     */
+    public String getRolloverTextLabel() {
+        return (String)super.getValue(ROLLOVER_TEXT_LABEL);
+    }
+    
+   
+    /** 
+     *  sets the small Icon to be displayed on toolbar buttons & menus. *NOTE*
+     *  that this icon is typiucally set by passing it to the *constructor*
+     *
+     *  @param smallIcon the Icon to be displayed on menus etc
+     */
+    public void setSmallIcon(Icon smallIcon) {
+        super.putValue(AbstractAction.SMALL_ICON, smallIcon);
+    }
+    
+    
     /** 
      *  Get the small Icon to be displayed on menus
      *
@@ -185,15 +258,6 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      */
     public Icon getSmallIcon() {
         return (Icon)super.getValue(AbstractAction.SMALL_ICON);
-    }
-   
-    /** 
-     *  sets the small Icon to be displayed on menus
-     *
-     *  @param smallIcon the Icon to be displayed on menus etc
-     */
-    public void setSmallIcon(Icon smallIcon) {
-        super.putValue(AbstractAction.SMALL_ICON, smallIcon);
     }
     
     /**
@@ -517,7 +581,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         MorphoFrame thisAncestor
                         = UIController.getMorphoFrameContainingGUIAction(this);
         Log.debug(52,"\n# # GUIAction.isLocalEvent: "+
-                "GUIAction name:: "+this.getName()+
+                "GUIAction name:: "+this.getTextLabel()+
                  " thisAncestor="+thisAncestor +
                  " And!!!! event name: "+event.getChangedState()+
                  " comparing eventAncestor=" +eventAncestor);
