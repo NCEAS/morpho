@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-13 19:50:45 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2002-08-13 20:31:09 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,12 +102,7 @@ public class DataPackage
   private final FileSystemDataStore fileSysDataStore;
   private final MetacatDataStore    metacatDataStore;
 
-  
-//  private static final FileSystemDataStore fileSysDataStore 
-//                                          = new FileSystemDataStore(framework);
-//  private static final MetacatDataStore metacatDataStore 
-//                                          = new MetacatDataStore(framework);
-  /**
+    /**
    * used to signify that this package is located on a metacat server
    */
   public static final String METACAT  = "metacat";
@@ -149,7 +144,13 @@ public class DataPackage
     metacatDataStore  = new MetacatDataStore(framework);
     
     //read the file containing the triples - usually the datapackage file:
-    tripleFile = getDataPkgFile();
+    try {
+      tripleFile = getFileWithID(this.id);
+    } catch (Throwable t) {
+      //already handled in getFileWithID() method, 
+      //so just abandon this instance:
+      return;
+    }
     //initialize global "triples" variable to hold collection of triples:
     initTriplesCollection();
     //parse triples file and get basic information (title, Originators etc)
@@ -158,44 +159,41 @@ public class DataPackage
 
 
   // util to read the file from either FileSystemDataStore or MetacatDataStore
-  private File getDataPkgFile() {
+  private File getFileWithID(String ID) throws Throwable {
     
-    //check if datapackage file has been read already
-    if (dataPkgFile==null)  {
-      File returnFile = null;
-      if(location.equals(METACAT)) {
-        try {
-          framework.debug(11, "opening metacat file");
-          dataPkgFile = metacatDataStore.openFile(this.id);
-          framework.debug(11, "metacat file opened");
-        
-        } catch(FileNotFoundException fnfe) {
-
-          framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
-                                  +"metacat file not found: "+fnfe.getMessage());
-          fnfe.printStackTrace();
-          return null;
-
-        } catch(CacheAccessException cae) {
+    File returnFile = null;
+    if(location.equals(METACAT)) {
+      try {
+        framework.debug(11, "opening metacat file");
+        dataPkgFile = metacatDataStore.openFile(ID);
+        framework.debug(11, "metacat file opened");
       
-          framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
-                                  +"metacat cache problem: "+cae.getMessage());
-          cae.printStackTrace();
-          return null;
-        }
-      } else {  //not metacat
-        try {
-          framework.debug(11, "opening local file");
-          dataPkgFile = fileSysDataStore.openFile(this.id);
-          framework.debug(11, "local file opened");
-        
-        } catch(FileNotFoundException fnfe) {
+      } catch(FileNotFoundException fnfe) {
+
+        framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                +"metacat file not found: "+fnfe.getMessage());
+        fnfe.printStackTrace();
+        throw fnfe.fillInStackTrace();
+
+      } catch(CacheAccessException cae) {
+    
+        framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                +"metacat cache problem: "+cae.getMessage());
+        cae.printStackTrace();
+        throw cae.fillInStackTrace();
+      }
+    } else {  //not metacat
+      try {
+        framework.debug(11, "opening local file");
+        dataPkgFile = fileSysDataStore.openFile(ID);
+        framework.debug(11, "local file opened");
       
-          framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
-                                  +"local file not found: "+fnfe.getMessage());
-          fnfe.printStackTrace();
-          return null;
-        }
+      } catch(FileNotFoundException fnfe) {
+    
+        framework.debug(0,"Error in DataPackage.getFileFromDataStore(): "
+                                +"local file not found: "+fnfe.getMessage());
+        fnfe.printStackTrace();
+        throw fnfe.fillInStackTrace();
       }
     }
     return dataPkgFile;  
@@ -204,6 +202,15 @@ public class DataPackage
   //initialize the global "triples" variable to hold the collection of triples
   private void initTriplesCollection()  {
     triples = new TripleCollection(tripleFile, framework);
+  }
+  
+  
+  // * * * stub - need to replace * * * 
+  //check if identifier actually points to a valid 
+  //sub-element (module, subtree etc)
+  private boolean idExists(String identifier) {
+    // * * * stub - need to replace * * * 
+    return true;;
   }
   
   /**
@@ -222,21 +229,32 @@ public class DataPackage
     
     //first check if this identifier points to a 
     //valid sub-element (module or subtree)
-    
-    //if so, now get the sub-element and return it
-    File subElement;
-    try {
-      subElement = fileSysDataStore.openFile(identifier);
-    } catch(Exception ex1) {
-      try {
-        subElement = metacatDataStore.openFile(identifier);
-      } catch(Exception ex2) {
-        throw new DocumentNotFoundException("DataPackage.open(): Error opening "
-                  + "selected file (CacheAccessException): "+ ex2.getMessage());
-      }
+    if (idExists(identifier)==false)  {
+      throw new DocumentNotFoundException("DataPackage.open(): "
+                            +"Element with ID: "+identifier+" does not exist");
     }
-    return new FileReader(subElement);
+    //if so, now get the sub-element and return it
+    File elementSrcFile = null;
+    try {
+      elementSrcFile = getFileWithID(this.id);
+    } catch (Throwable t) {
+      throw new DocumentNotFoundException("DataPackage.open(): "
+                            +"Error opening element with ID: "+identifier);
+    }
+    return new FileReader(elementSrcFile);
   }
+//    try {
+//      subElement = fileSysDataStore.openFile(identifier);
+//    } catch(Exception ex1) {
+//      try {
+//        subElement = metacatDataStore.openFile(identifier);
+//      } catch(Exception ex2) {
+//        throw new DocumentNotFoundException("DataPackage.open(): Error opening "
+//                  + "selected file (CacheAccessException): "+ ex2.getMessage());
+//      }
+//    }
+
+
 
   /**
    * returns the dom representation of the triple file.
