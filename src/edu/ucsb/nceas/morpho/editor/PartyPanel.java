@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-22 02:40:17 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-10-27 19:45:05 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,7 @@ public class PartyPanel extends JPanel
     salutationPanel.add(salutationLabel);
     salutationField = WidgetFactory.makeOneLineTextField();
     salutationField.setText(getValue(nd, "salutation"));
+    salutationField.addFocusListener(new dfhFocus());
     salutationPanel.add(salutationField);
     panel.add(salutationPanel);
     
@@ -100,6 +101,7 @@ public class PartyPanel extends JPanel
     firstNamePanel.add(WidgetFactory.makeLabel("First Name:", false));
     firstNameField = WidgetFactory.makeOneLineTextField();
     firstNameField.setText(getValue(nd, "givenName"));
+    firstNameField.addFocusListener(new dfhFocus());
     firstNamePanel.add(firstNameField);
     panel.add(firstNamePanel);
     
@@ -119,6 +121,7 @@ public class PartyPanel extends JPanel
     organizationPanel.add(organizationLabel);
     organizationField = WidgetFactory.makeOneLineTextField();
     organizationField.setText(getValue(nd, "organizationName"));
+    organizationField.addFocusListener(new dfhFocus());
     organizationPanel.add(organizationField);
     panel.add(organizationPanel);
     
@@ -128,6 +131,7 @@ public class PartyPanel extends JPanel
     positionNamePanel.add(positionNameLabel);
     positionNameField = WidgetFactory.makeOneLineTextField();
     positionNameField.setText(getValue(nd, "positionName"));
+    positionNameField.addFocusListener(new dfhFocus());
     positionNamePanel.add(positionNameField);
     panel.add(positionNamePanel);
     
@@ -136,6 +140,7 @@ public class PartyPanel extends JPanel
     address1Panel.add(WidgetFactory.makeLabel("Address 1:", false));
     address1Field = WidgetFactory.makeOneLineTextField();
     address1Field.setText(getValue(nd, "deliveryPoint"));
+    address1Field.addFocusListener(new dfhFocus());
     address1Panel.add(address1Field);
     panel.add(address1Panel);
   
@@ -143,6 +148,7 @@ public class PartyPanel extends JPanel
     JPanel address2Panel = WidgetFactory.makePanel(1);
     address2Panel.add(WidgetFactory.makeLabel("Address 2:", false));
     address2Field = WidgetFactory.makeOneLineTextField();
+    // need to figure out how to handle multiple addresses
     address2Panel.add(address2Field);
     panel.add(address2Panel);
     
@@ -150,12 +156,16 @@ public class PartyPanel extends JPanel
     JPanel cityStatePanel = WidgetFactory.makePanel(1);
     cityStatePanel.add(WidgetFactory.makeLabel("City:", false));
     cityField = WidgetFactory.makeOneLineTextField();
+    cityField.setText(getValue(nd, "city"));
+    cityField.addFocusListener(new dfhFocus());
     cityStatePanel.add(cityField);
     cityStatePanel.add(WidgetFactory.makeDefaultSpacer());
     JLabel stateLabel = WidgetFactory.makeLabel("State:", false);
     setPrefMinMaxSizes(stateLabel, PARTY_2COL_LABEL_DIMS);
     cityStatePanel.add(stateLabel);
     stateField = WidgetFactory.makeOneLineTextField();
+    stateField.setText(getValue(nd, "administrativeArea"));
+    stateField.addFocusListener(new dfhFocus());
     cityStatePanel.add(stateField);
     panel.add(cityStatePanel);
     
@@ -163,12 +173,16 @@ public class PartyPanel extends JPanel
     JPanel zipCountryPanel = WidgetFactory.makePanel(1);
     zipCountryPanel.add(WidgetFactory.makeLabel("Postal Code:", false));
     zipField = WidgetFactory.makeOneLineTextField();
+    zipField.setText(getValue(nd, "postalCode"));
+    zipField.addFocusListener(new dfhFocus());
     zipCountryPanel.add(zipField);
     zipCountryPanel.add(WidgetFactory.makeDefaultSpacer());
     JLabel countryLabel = WidgetFactory.makeLabel("Country:", false);
     setPrefMinMaxSizes(countryLabel, PARTY_2COL_LABEL_DIMS);
     zipCountryPanel.add(countryLabel);
     countryField = WidgetFactory.makeOneLineTextField();
+    countryField.setText(getValue(nd, "country"));
+    countryField.addFocusListener(new dfhFocus());
     zipCountryPanel.add(countryField);
     panel.add(zipCountryPanel);
   
@@ -177,6 +191,8 @@ public class PartyPanel extends JPanel
     JPanel phoneFaxPanel = WidgetFactory.makePanel(1);
     phoneFaxPanel.add(WidgetFactory.makeLabel("Phone:", false));
     phoneField = WidgetFactory.makeOneLineTextField();
+    phoneField.setText(getValue(nd, "phone"));
+    phoneField.addFocusListener(new dfhFocus());
     phoneFaxPanel.add(phoneField);
     phoneFaxPanel.add(WidgetFactory.makeDefaultSpacer());
     JLabel faxLabel = WidgetFactory.makeLabel("Fax:", false);
@@ -191,12 +207,16 @@ public class PartyPanel extends JPanel
     JPanel emailUrlPanel = WidgetFactory.makePanel(1);
     emailUrlPanel.add(WidgetFactory.makeLabel("Email:", false));
     emailField = WidgetFactory.makeOneLineTextField();
+    emailField.setText(getValue(nd, "electronicMailAddress"));
+    emailField.addFocusListener(new dfhFocus());
     emailUrlPanel.add(emailField);
     emailUrlPanel.add(WidgetFactory.makeDefaultSpacer());
     JLabel urlLabel = WidgetFactory.makeLabel("Online URL:", false);
     setPrefMinMaxSizes(urlLabel, PARTY_2COL_LABEL_DIMS);
     emailUrlPanel.add(urlLabel);
     urlField = WidgetFactory.makeOneLineTextField();
+    urlField.setText(getValue(nd, "onlineUrl"));
+    urlField.addFocusListener(new dfhFocus());
     emailUrlPanel.add(urlField);
     panel.add(emailUrlPanel);
   }
@@ -266,9 +286,61 @@ class dfhFocus extends java.awt.event.FocusAdapter {
   public void focusLost(java.awt.event.FocusEvent event)
     {
       Object object = event.getSource();
+      if (object == salutationField) {
+        String val = salutationField.getText();
+        setValue(nd, "salutation", val);	      
+      }
+      if (object == firstNameField) {
+        String val = firstNameField.getText();
+        setValue(nd, "givenName", val);	      
+      }
       if (object == lastNameField) {
         String val = lastNameField.getText();
         setValue(nd, "surName", val);	      
+      }
+      if (object == organizationField) {
+        String val = organizationField.getText();
+        setValue(nd, "organizationName", val);	      
+      }
+      if (object == positionNameField) {
+        String val = positionNameField.getText();
+        setValue(nd, "positionName", val);	      
+      }
+      if (object == address1Field) {
+        String val = address1Field.getText();
+        setValue(nd, "deliveryPoint", val);	      
+      }
+      if (object == cityField) {
+        String val = cityField.getText();
+        setValue(nd, "city", val);	      
+      }
+      if (object == stateField) {
+        String val = stateField.getText();
+        setValue(nd, "administrativeArea", val);	      
+      }
+      if (object == zipField) {
+        String val = zipField.getText();
+        setValue(nd, "postalCode", val);	      
+      }
+      if (object == countryField) {
+        String val = countryField.getText();
+        setValue(nd, "country", val);	      
+      }
+      if (object == phoneField) {
+        String val = phoneField.getText();
+        setValue(nd, "phone", val);	      
+      }
+      if (object == faxField) {
+        String val = faxField.getText();
+        setValue(nd, "phone", val);	      //NEED to handle attribute to determine voice or fax
+      }
+      if (object == emailField) {
+        String val = emailField.getText();
+        setValue(nd, "electronicMailAddress", val);	      
+      }
+      if (object == urlField) {
+        String val = urlField.getText();
+        setValue(nd, "onlineUrl", val);	      
       }
     }
 		
