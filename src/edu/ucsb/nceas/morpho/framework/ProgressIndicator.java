@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 06:14:11 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-03 18:05:07 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ import javax.swing.JPanel;
  *
  * @author   jones
  */
-public class ProgressIndicator extends JPanel
+public class ProgressIndicator extends JPanel implements Runnable
 {
     private static final int BORDER_WIDTH = 4;
     private static final int RIGHT_ALIGN_OFFSET = 2;
@@ -90,6 +90,10 @@ public class ProgressIndicator extends JPanel
         } else {
             imageLabel.setIcon(notBusyIcon);
         }
+    }
+    
+    public void run() {
+      imageLabel.setIcon(busyIcon);
     }
 }
 

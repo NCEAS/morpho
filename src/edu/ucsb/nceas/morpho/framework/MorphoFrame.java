@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-01 21:50:20 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-03 18:05:07 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 /**
  * The MorphoFrame is a Window in the Morpho application containing the standard
@@ -351,7 +352,12 @@ public class MorphoFrame extends JFrame
       // Only isBusy is different to current status(busyFlag, it change status
       if(busyFlag ^ isBusy)
       {
-        indicator.setBusy(isBusy);
+        if (isBusy) {
+          SwingUtilities.invokeLater(indicator);
+        }
+        else {
+          indicator.setBusy(isBusy);
+        }
         busyFlag = isBusy;
       }
     }
