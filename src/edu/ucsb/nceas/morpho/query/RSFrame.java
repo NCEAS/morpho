@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.8 2000-12-19 23:46:23 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.9 2000-12-27 20:23:31 higgins Exp $'
  */
 
 
@@ -14,6 +14,7 @@ package edu.ucsb.nceas.querybean;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.table.*;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
@@ -40,7 +41,7 @@ public class RSFrame extends javax.swing.JFrame
     String MetaCatServletURL = null;
     
     Hashtable relations;
-    
+    int docidcol = 0;   // column which contains docid
 	public RSFrame()
 	{
 	    
@@ -56,17 +57,17 @@ public class RSFrame extends javax.swing.JFrame
 		RS_Panel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,RS_Panel);
 		RS_Panel.setBackground(java.awt.Color.white);
-		RS_Panel.setBounds(0,0,720,164);
+		RS_Panel.setBounds(0,0,745,351);
 		JPanel1.setLayout(new BorderLayout(0,0));
 		RS_Panel.add(BorderLayout.NORTH, JPanel1);
-		JPanel1.setBounds(0,0,720,46);
+		JPanel1.setBounds(0,0,745,46);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel1.add(BorderLayout.CENTER, JPanel2);
-		JPanel2.setBounds(233,0,260,46);
-		JLabel11.setText("Results of Search");
-		JPanel2.add(JLabel11);
-		JLabel11.setForeground(java.awt.Color.black);
-		JLabel11.setBounds(79,5,101,15);
+		JPanel2.setBounds(233,0,285,46);
+		TitleLabel.setText("Results of Search");
+		JPanel2.add(TitleLabel);
+		TitleLabel.setForeground(java.awt.Color.black);
+		TitleLabel.setBounds(92,5,101,15);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		JPanel1.add(BorderLayout.WEST, JPanel3);
 		JPanel3.setBounds(0,0,233,46);
@@ -81,16 +82,18 @@ public class RSFrame extends javax.swing.JFrame
 		QueryStringTextArea.setBounds(0,0,220,30);
 		JPanel4.setLayout(new GridLayout(2,1,0,0));
 		JPanel1.add(BorderLayout.EAST, JPanel4);
-		JPanel4.setBounds(493,0,227,46);
+		JPanel4.setBounds(518,0,227,46);
 		JCheckBox4.setText("Refine Search (Using these Results)");
 		JCheckBox4.setActionCommand("Refine Search (Using these Results)");
 		JPanel4.add(JCheckBox4);
 		JCheckBox4.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JCheckBox4.setBounds(0,0,227,23);
+		JCheckBox4.setVisible(false);
+		RSScrollPane.setOpaque(true);
 		RS_Panel.add(BorderLayout.CENTER, RSScrollPane);
-		RSScrollPane.setBounds(0,46,720,118);
+		RSScrollPane.setBounds(0,46,745,305);
 		RSScrollPane.getViewport().add(JTable1);
-		JTable1.setBounds(0,0,20,40);
+		JTable1.setBounds(0,0,742,0);
 		//}}
 
 		//{{INIT_MENUS
@@ -238,7 +241,7 @@ public class RSFrame extends javax.swing.JFrame
 	javax.swing.JPanel RS_Panel = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
-	javax.swing.JLabel JLabel11 = new javax.swing.JLabel();
+	javax.swing.JLabel TitleLabel = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
 	javax.swing.JScrollPane JScrollPane3 = new javax.swing.JScrollPane();
 	javax.swing.JTextArea QueryStringTextArea = new javax.swing.JTextArea();
@@ -278,14 +281,38 @@ public class RSFrame extends javax.swing.JFrame
 	   else {
             String qtext1 = (String)JTable1.getModel().getValueAt(selectedRow, 0);
                     // assumes that docid is in first column of table
-            if (relations.size()>0) {        
+            if ((relations!=null)&&(relations.size()>0)) {        
 	            Vector relationsVector = (Vector)relations.get(qtext1);
+	            
+	            String[] relationheaders = new String[3];
+	            relationheaders[0] = "Relationship";
+	            relationheaders[1] = "Related Document";
+	            relationheaders[2] = "Related Doucment Type";
+                DefaultTableModel dtm = new DefaultTableModel(relationheaders,0);
+	            
+	            
 	            for (Enumeration e = relationsVector.elements();e.hasMoreElements();) {
 	                String[] rels = (String[])e.nextElement();
-	                System.out.println("relationtype = "+rels[0]);
-	                System.out.println("relationdoc = "+rels[1]);
-	                System.out.println("relationdoctype = "+rels[2]);
+	        //        System.out.println("relationtype = "+rels[0]);
+	        //        System.out.println("relationdoc = "+rels[1]);
+	        //        System.out.println("relationdoctype = "+rels[2]);
+	                dtm.addRow(rels);
 	            }
+                JTable relationTable = new JTable(dtm);
+                RSFrame rs = new RSFrame("Related Documents");
+                rs.setSize(800,240);
+                rs.setEditor(mde);
+                rs.docidcol = 1;
+                rs.TitleLabel.setText("Related Documents");
+           //     rs.setTabbedPane(tabbedPane);
+                 rs.setVisible(true);
+                 rs.local=false;
+                 JTable ttt = relationTable;
+                 TableModel tm = ttt.getModel();
+                 rs.JTable1.setModel(tm);
+                 rs.JTable1.setColumnModel(ttt.getColumnModel());
+             //   rs.pack();
+	            
 	        }
 	   }
 	 
@@ -296,7 +323,7 @@ public class RSFrame extends javax.swing.JFrame
 	   int selectedRow = JTable1.getSelectedRow();
 	   if (local) {
 	    if (selectedRow>-1) {
-            String filename = (String)JTable1.getModel().getValueAt(selectedRow, 0);
+            String filename = (String)JTable1.getModel().getValueAt(selectedRow, docidcol);
             File file = new File(filename);
             DocFrame df = new DocFrame(file);
             df.setVisible(true);
@@ -306,8 +333,9 @@ public class RSFrame extends javax.swing.JFrame
 	    }
 	   }
 	   else {
-            String qtext1 = (String)JTable1.getModel().getValueAt(selectedRow, 0);
-                    // assumes that docid is in first column of table
+            String qtext2 = (String)JTable1.getModel().getValueAt(selectedRow, docidcol);
+                    // assumes that docid is in docidcol column of table
+            String qtext1 = docidFilter(qtext2);
 	        String respType = "xml";
 	        try {
 		        URL url = new URL(MetaCatServletURL);
@@ -352,12 +380,29 @@ public class RSFrame extends javax.swing.JFrame
 		        }                        
 	   }
 	}
+	
+	String docidFilter(String in) {
+	    String res = in;
+	    if (docidcol!=0) {   // for special cases where docid must be filtered
+	        // currently a docidcol of 1 indicates a related docs table
+	        if (docidcol==1) {
+	            if (in.indexOf("docid=")>0) {
+	                int start = in.indexOf("docid=")+6;
+	                int end = in.length();
+	                res = in.substring(start,end);
+	                System.out.println("res id is "+res);
+	            }
+	        }
+	    }
+	    return res;
+	}
+	
 	void EditMenuItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	   int selectedRow = JTable1.getSelectedRow();
 	   if (local) {
 	    if (selectedRow>-1) {
-            String filename = (String)JTable1.getModel().getValueAt(selectedRow, 0);
+            String filename = (String)JTable1.getModel().getValueAt(selectedRow, docidcol);
             File temp = new File(filename);
 		            if (mde!=null) {
 		                mde.openDocument(temp);
@@ -367,8 +412,9 @@ public class RSFrame extends javax.swing.JFrame
 	    }
 	   }
 	   else {
-            String qtext1 = (String)JTable1.getModel().getValueAt(selectedRow, 0);
-                    // assumes that docid is in first column of table
+            String qtext2 = (String)JTable1.getModel().getValueAt(selectedRow, docidcol);
+                    // assumes that docid is in docidcol column of table
+            String qtext1 = docidFilter(qtext2);
 	        String respType = "xml";
 	        try {
 		        URL url = new URL(MetaCatServletURL);
