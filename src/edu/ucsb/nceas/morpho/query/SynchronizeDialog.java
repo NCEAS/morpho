@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-04 00:17:44 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-05 18:34:22 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public class SynchronizeDialog extends JDialog
   
   private static String SYNCHRONIZE =
       "\"Synchronize\" will keep the Data Packages on your local computer "
-      + "identical    with those on the network.\n"
+      + "identical with those on the network.\n"
       + "In order to do this, Morpho will copy the Data Package as shown below:";
  
   private static String WARNING =
@@ -126,9 +126,16 @@ public class SynchronizeDialog extends JDialog
     JTextArea note = new JTextArea(SYNCHRONIZE);
     note.setEditable(false);
     note.setLineWrap(true);
+    note.setWrapStyleWord(true);
     note.setOpaque(false);
     noteBox.add(note);
-    getContentPane().add(BorderLayout.NORTH, noteBox);
+    // Add left and right padding for notebox and add them to the north of
+    // of content panel
+    Box notePadding = Box.createHorizontalBox();
+    notePadding.add(Box.createHorizontalStrut(PADDINGWIDTH));
+    notePadding.add(noteBox);
+    notePadding.add(Box.createHorizontalStrut(PADDINGWIDTH));
+    getContentPane().add(BorderLayout.NORTH, notePadding);
     
     // Add padding for left and right
     getContentPane().add(BorderLayout.EAST, 
@@ -144,7 +151,7 @@ public class SynchronizeDialog extends JDialog
      
       arrowIcon = new ImageIcon(getClass().getResource("rightarrow.gif"));
       executeAction = new GUIAction("Execute", null, 
-                                  new LocalToNetworkCommand(this)); 
+            new LocalToNetworkCommand(this, parent, docid, inLocal, inNetwork)); 
       warningMessage = WARNING;
     }
     // down load 
@@ -153,7 +160,7 @@ public class SynchronizeDialog extends JDialog
       
       arrowIcon = new ImageIcon(getClass().getResource("leftarrow.gif"));
       executeAction = new GUIAction("Execute", null, 
-                                  new NetworkToLocalCommand(this));
+            new NetworkToLocalCommand(this, parent, docid, inLocal, inNetwork));
       warningMessage = "";
     }
     
@@ -180,12 +187,12 @@ public class SynchronizeDialog extends JDialog
     
     // Create bottom box
     Box bottomBox = Box.createVerticalBox();
-    getContentPane().add(BorderLayout.SOUTH, bottomBox);
     //Create padding between result panel and Contorl button box
     bottomBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     JTextArea warning = new JTextArea(warningMessage);
     warning.setEditable(false);
     warning.setLineWrap(true);
+    warning.setWrapStyleWord(true);
     warning.setOpaque(false);
     bottomBox.add(warning);
     bottomBox.add(Box.createVerticalStrut(PADDINGWIDTH));
@@ -206,13 +213,20 @@ public class SynchronizeDialog extends JDialog
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);
-    controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
+    //controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
     // Add controlButtonsBox to bottomBox
     bottomBox.add(controlButtonsBox);
     // Add the margin between controlButtonPanel to the bottom line
     bottomBox.add(Box.createVerticalStrut(10));
    
+    // Add left and right padding for bottomBox and add it to south of content
+    // panel
+    Box bottomPadding = Box.createHorizontalBox();
+    bottomPadding.add(Box.createHorizontalStrut(PADDINGWIDTH));
+    bottomPadding.add(bottomBox);
+    bottomPadding.add(Box.createHorizontalStrut(PADDINGWIDTH));
+    getContentPane().add(BorderLayout.SOUTH, bottomPadding);
     
     setVisible(false);
    
