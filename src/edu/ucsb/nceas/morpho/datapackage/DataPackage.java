@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-28 17:49:03 $'
- * '$Revision: 1.115 $'
+ *     '$Date: 2003-12-06 19:35:57 $'
+ * '$Revision: 1.116 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -304,7 +304,15 @@ public class DataPackage implements XMLFactoryInterface
 
     return reader;
   }
-  
+
+  /**
+   *   This method is needed by the XMLFactoryInterface
+	 *   In this case, null is always returned.
+	 */
+	public Document openAsDom(String id) {
+		return null;
+	}
+	
     /**
    * Open a sub-element of this datapackage (for example, a Module, or a 
    * sub-tree), given its String identifier.

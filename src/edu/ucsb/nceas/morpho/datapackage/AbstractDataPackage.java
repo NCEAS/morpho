@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-05 23:25:25 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2003-12-06 19:35:57 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,6 +168,9 @@ import org.apache.xpath.objects.XObject;
 
 import edu.ucsb.nceas.utilities.*;
 
+import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -188,6 +191,7 @@ import javax.swing.*;
  * require one to create a new map from generic nodes to the new specific ones. 
  */
 public abstract class AbstractDataPackage extends MetadataObject
+                                          implements XMLFactoryInterface
 {
   protected String location = "";
   protected String id;
@@ -1530,5 +1534,14 @@ public abstract class AbstractDataPackage extends MetadataObject
     Log.debug(1,sb.toString());
   }  
   
+	// methods to implement the XMLFactoryInterface
+	public Reader openAsReader(String id) throws DocumentNotFoundException {
+		return null;
+	}
+	
+	public Document openAsDom(String id) {
+		// ignore the id and just return the dom for this instance
+		return this.doc;
+	}
 }
 

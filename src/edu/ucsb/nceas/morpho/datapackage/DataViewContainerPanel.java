@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-25 23:16:10 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2003-12-06 19:35:57 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -505,7 +505,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                           StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
       }
       moreLabel.setVisible(false);
-//      initDPMetaView(false);
+      initDPMetaView(false);
       return;
     }
     entityFile = new File[entityItems.size()];
@@ -597,12 +597,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         stateMonitor.notifyStateChange( new StateChangeEvent( this, 
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
       }//else
-      if (dp!=null) {
-//        initDPMetaView(true);
-      }
+//      if (dp!=null) {
+        initDPMetaView(true);
+//      }
     } else {
       moreLabel.setEnabled(false);
-//      initDPMetaView(false);
+      initDPMetaView(false);
     }
   }
 
@@ -628,13 +628,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         while (it.hasNext()) {
             nextObj = it.next();
             if (nextObj==null || !(nextObj instanceof String)) continue;
-            if (dp!=null) {
-              nextEntityID        = getEntityIDForThisEntityName((String)nextObj);
-              nextDataFileID      = dp.getDataFileID(nextEntityID);
-              nextAttributeFileID = dp.getAttributeFileId(nextEntityID);
-            }
+//            if (dp!=null) {
+//              nextEntityID        = getEntityIDForThisEntityName((String)nextObj);
+//              nextDataFileID      = dp.getDataFileID(nextEntityID);
+//              nextAttributeFileID = dp.getAttributeFileId(nextEntityID);
+//            }
             
-            if (nextDataFileID!=null && !nextDataFileID.equals("")) {
+/*            if (nextDataFileID!=null && !nextDataFileID.equals("")) {
                 suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
                 suppressBuff.append(nextDataFileID);
                 Log.debug(44,"adding datafile: "+nextDataFileID
@@ -647,6 +647,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                 Log.debug(44,"adding attribute: "+nextAttributeFileID
                                                      +" to XSL suppress list");
             }
+*/						
         }
         md.useTransformerProperty(  
                               XMLTransformer.SUPPRESS_TRIPLES_SUBJECTS_XSLPROP, 
@@ -656,16 +657,19 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                               suppressBuff.toString());
       }
       try{
-        mdcomponent = md.getDisplayComponent( dp.getID(), dp,  
+//        mdcomponent = md.getDisplayComponent( dp.getID(), dp,  
+//                                              new MetaViewListener(vertSplit));
+        mdcomponent = md.getDisplayComponent( adp.getPackageId(), adp,  
                                               new MetaViewListener(vertSplit));
       }
       catch (Exception m) {
         Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
         // can't display requested ID, so just display empty viewer:
         try{
-          if (dp!=null) {
-            mdcomponent = md.getDisplayComponent(dp, null);
-          }
+//          if (dp!=null) {
+//            mdcomponent = md.getDisplayComponent(dp, null);
+            mdcomponent = md.getDisplayComponent(adp, null);
+//          }
         }
         catch (Exception e) {
           Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
