@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.12 2001-01-09 00:32:56 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.13 2001-01-09 23:55:12 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -263,6 +263,15 @@ public class ConnectionFrame extends javax.swing.JFrame
         else {
                     ConnectionResultsTextArea.setText(res);
 		            ActivityLabel.setIcon(still);
+		            // a failure to login should result in username being set to 'public'
+                    if (container!=null) {
+                    container.userName = "public";
+                    container.queryBean1.setUserName(container.userName);
+                    container.passWord = "none";
+                    container.queryBean1.setPassWord(container.userName);
+            
+        }
+		            
 		        }
         }
 		        });
