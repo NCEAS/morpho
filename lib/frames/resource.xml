@@ -6,7 +6,7 @@
       <textbox label="Resource Identifier" field="resourceIdentifier" size="10" allowNull="false" defaulttext="knb.1"/>
       <textbox label="Title" field="title" size="10" allowNull="false" defaulttext="Enter Title Here"/>
       <textbox label="Alternate Title" field="alternateTitle" size="10" />
-      <combobox label="Dataset Representation Form" field="geoForm" size="10" defaulttext="Dataset">
+      <combobox label="Dataset Representation Form" field="geoForm" size="10" defaulttext="dataset">
         <item name="Atlas" value="atlas" />
         <item name="Audio" value="audio" />
         <item name="Diagram" value="diagram" />
@@ -29,7 +29,7 @@
     
     <group label="Originator Information" type="panel">
       <group repeatable="yes" size="480x850" field="originator">
-        <combobox label="Originators Role" field="roleCode" size="10" allowNull="false" repeatable="yes">
+        <combobox label="Originators Role" field="roleCode" size="10" allowNull="false" repeatable="yes" defaulttext="originator">
           <item name="Content Provider" value="contentProvider"/>
           <item name="Custodian Steward" value="custodianSteward"/>
           <item name="Owner" value="owner"/>
@@ -58,7 +58,7 @@
           <textbox label="State" field="address/administrativeArea" size="10" />
           <textbox label="ZIP" field="address/postalCode" size="10" />
           <textbox label="Email address" field="address/electronicMailAddress" size="10" />
-          <textbox label="Web Site" field="onlineResource/linkage/URL" size="10" allowNull="false" repeatable="yes"/>
+          <textbox label="Web Site" field="onlineResource/linkage/URL" size="10" allowNull="false" repeatable="yes" defaulttext="knb.ecoinformatics.org"/>
           <textbox label="Contact Instructions" field="contactInstructions" size="30" />
         </group>
       </group>
