@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-18 19:13:22 $'
- * '$Revision: 1.159 $'
+ *     '$Date: 2004-03-29 00:29:35 $'
+ * '$Revision: 1.160 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -244,6 +244,13 @@ public class DocFrame extends javax.swing.JFrame
 
   /** A reference to the container framework */
   private Morpho morpho = null;
+  
+  /**
+   *  flag to indicate whether 'references' should be shown
+   *  determines whether the 'removeAllReferences' method does
+   *  remove references
+   */
+  private boolean removeReferencesFlag = true; 
 
   /** This constructor builds the contents of the DocFrame Display  */
 
@@ -2977,6 +2984,7 @@ Log.debug(20, xmlout);
    */
   void TrimTreeButton_actionPerformed(java.awt.event.ActionEvent event)
   {
+    removeReferencesFlag = true;
     logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
     headLabel.setText("Working...");
     // the changes to headLabel and logo label DO NOT appear
@@ -3007,6 +3015,7 @@ Log.debug(20, xmlout);
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     String xmlout = writeXMLString(rootNode);
     mergeMissingFlag = true;
+    removeReferencesFlag = false;
     initDoc(null, xmlout);
     TrimTreeButton.setEnabled(true);
     UntrimTreeButton.setEnabled(false);
@@ -3843,6 +3852,7 @@ Log.debug(20, xmlout);
 	 *   to simplify (apply this to the eml2 template tree
 	 */
 	void removeAllReferences(DefaultMutableTreeNode node) {
+    if (!removeReferencesFlag) return;
 		Vector refsnodes = new Vector();
 		// first, list all 'references' nodes
 		Enumeration enum = node.depthFirstEnumeration();
