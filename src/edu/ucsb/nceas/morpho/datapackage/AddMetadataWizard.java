@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-05 19:37:22 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2002-03-18 18:32:23 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,7 @@ public class AddMetadataWizard extends JFrame
   Hashtable relatedFiles = new Hashtable();
   boolean prevFlag = false;
   String relatedto = "";
+  String rootnode ="";
   String relatedtoId = "";
   Vector relatedFileIds;
   File addedFile = null;
@@ -978,9 +979,11 @@ public class AddMetadataWizard extends JFrame
     else if (i==1) {
       newid = a.getNextId();
       if (hasData) {
+        relationship = "provides table-entity information for DATAFILE"; 
         t = new Triple(newid, relationship, dataFileID);
       }
       else {
+        relationship = "provides table-entity information for package"; 
         t = new Triple(newid, relationship, dataPackage.getID());
       }
       entityFileID = newid;
@@ -988,6 +991,12 @@ public class AddMetadataWizard extends JFrame
     }
     else {
       newid = a.getNextId();
+      if (i==2) {
+        relationship = "provides eml-attribute information for Table";
+      }
+      else {
+        relationship = "provides eml-physical information for Table";
+      }
       t = new Triple(newid, relationship, entityFileID);      
     }
     
@@ -1359,6 +1368,7 @@ public class AddMetadataWizard extends JFrame
         String label = jrb.getLabel();
         Hashtable h = (Hashtable)newXMLFileAtts.get(label);
         relatedto = (String)h.get("relatedto");
+        rootnode = (String)h.get("rootnode");
       }
     }
     
