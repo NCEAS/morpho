@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-05-14 18:15:27 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2002-10-07 22:48:59 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -242,6 +242,13 @@ public class XMLPanels extends Component
         }
         String helpString = name.toString();
         if (helpString.length()>0) {
+          int helplen = helpString.length();
+          int vertsize = (1+helplen/50)*16;
+          if (vertsize>70) {
+            jp1.setMaximumSize(new Dimension(panelWidth,vertsize));
+            jp1.setPreferredSize(new Dimension(panelWidth,vertsize));
+           }
+          
           JLabel jl = new JLabel();
           jl.setForeground(Color.black);
           jl.setText("<html><font size='-1'>"+helpString+"</html>");
