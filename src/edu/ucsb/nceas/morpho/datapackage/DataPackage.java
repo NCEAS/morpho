@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-13 20:30:25 $'
- * '$Revision: 1.96 $'
+ *     '$Date: 2002-12-16 20:00:06 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2105,11 +2105,15 @@ public class DataPackage implements XMLFactoryInterface
     }
     if (missingIds.size()>0) {
       int choice = JOptionPane.showConfirmDialog(null, 
-                   "Some modules in this package do not have an associated access "+
-                   "control module. This means that only the owner has access to these modules.\n\n"+
-                   "Would you like to associate the package access "+
-                   "control module with all other modules?\n\n"+
-                   "(Changes will appear the next time the package is opened.)",
+                   "This package is missing some access\n"+
+                   "control information, possibly\n"+
+                   "because it was created using an\n"+
+                   "earlier version of Morpho.\n"+
+                   "Would you like to update the\n"+
+                   "package with the missing\n"+
+                   "information (recommended)?\n\n"+
+                   "(Changes will appear the next\n"+
+                   "time the package is opened.)",
                    "Access Information Missing ",
                    JOptionPane.YES_NO_OPTION,
                    JOptionPane.WARNING_MESSAGE);
