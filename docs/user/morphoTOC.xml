@@ -13,7 +13,7 @@
     <tocitem text="Creating a New Data Package" target="Creating_a_data_package"/>
     <tocitem text="Adding Data to a Data Package" target="Adding_Data_to_a_Data_Package" />
     <tocitem text="Editing a Data Package" target="Editing_a_data_package" />
-    <tocitem text="Placing a Data Package on a Network" target="saving_to_network" />
+    <tocitem text="Uploading and Downloading Data Packages" target="saving_to_network" />
     <tocitem text="Frequently Asked Questions" target="faq" />
     <tocitem text="Ecological Metadata Language" target="eml_index"/>
   </tocitem>
