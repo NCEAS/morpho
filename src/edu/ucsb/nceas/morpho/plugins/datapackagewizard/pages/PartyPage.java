@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 06:35:21 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2004-04-06 19:08:21 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ public class PartyPage extends AbstractUIPage {
 
   private String backupXPath;
 
-  private String roleString;
+  private String roleString = EMPTY_STRING;
 
   private final String[] ROLE_ARRAY
       = new String[] {
@@ -202,6 +202,8 @@ public class PartyPage extends AbstractUIPage {
   public PartyPage(String role) {
 
     pageID = role;
+    referencesHandler = new ReferencesHandler(PARTY_GENERIC_NAME,
+                                              REFSHANDLER_SURROGATE_STRING);
     initRolePanel();
     setRole(role);
     init();
@@ -213,9 +215,6 @@ public class PartyPage extends AbstractUIPage {
    are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
-
-    referencesHandler = new ReferencesHandler(PARTY_GENERIC_NAME,
-                                              REFSHANDLER_SURROGATE_STRING);
 
     pageDescriptionLabel
         = WidgetFactory.makeHTMLLabel("<font size=\"4\"><b>&nbsp;&nbsp;"
@@ -646,30 +645,29 @@ public class PartyPage extends AbstractUIPage {
 
     if (role.equals(DataPackageWizardInterface.PARTY_CREATOR)) {
 
-        roleString = "Owner";
-        backupXPath = "/creator";
-        return;
+      roleString = "Owner";
+      backupXPath = "/creator";
+      return;
 
-      } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
+    } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
 
-        roleString = "Contact";
-        backupXPath = "/contact";
-        return;
+      roleString = "Contact";
+      backupXPath = "/contact";
+      return;
 
-      } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
+    } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
 
-        roleString = "Associated Party";
-        backupXPath = "/associatedParty";
+      roleString = "Associated Party";
+      backupXPath = "/associatedParty";
 
-      } else if (role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) {
+    } else if (role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) {
 
-        roleString = "Personnel";
-        backupXPath = "/personnel";
-
-      } else {
-
-        roleString = "";
+      roleString = "Personnel";
+      backupXPath = "/personnel";
     }
+    //set display name for external refs dialog...
+    referencesHandler.setDisplayName(roleString);
+
     ////////////////////////////////////////////////////////////////////
     // gets here only if role is *not* PARTY_CREATOR or PARTY_CONTACT...
     ////////////////////////////////////////////////////////////////////

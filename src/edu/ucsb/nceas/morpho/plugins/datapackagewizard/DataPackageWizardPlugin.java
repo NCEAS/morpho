@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-05 07:06:52 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2004-04-06 19:08:21 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -203,16 +203,19 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
 
   /**
-   * deletes all existing subtrees of name subtreeGenericName, then inserts data
-   * for each AbstractUIPage in pages array into the AbstractDataPackage
+   * deletes <em>all</em> existing subtrees of name subtreeGenericName, then
+   * inserts data for each AbstractUIPage in pageList into the passed
+   * AbstractDataPackage
    *
    * @param adp the AbstractDataPackage where the data will be inserted
-   * @param pageList AbstractUIPage that is the source of the data
+   * @param pageList List of AbstractUIPages that are the source of the data, in
+   * the order that they should be added to the DOM
    * @param rootXPath the String that represents the "root" of the XPath to the
-   *   content of the AbstractUIPage, INCLUDING PREDICATES. example - if this
-   *   is a "Party" widget, being used for the second "Creator" entry in a
-   *   list, then xPathRoot = "/eml:eml/dataset[1]/creator[2]
-   * @param subtreeGenericName String (@see lib/eml200KeymapConfig.xml)
+   * content of each AbstractUIPage, NOT INCLUDING PREDICATES. example - if the
+   * list contains "Party" widgets, being used for "creator" entries, then
+   *   xPathRoot = "/creator/"
+   * @param subtreeGenericName String - eg "contact", "project" etc
+   * (@see lib/eml200KeymapConfig.xml)
    * @return boolean true if this page data successfully added to the datapkg,
    *   false if not.
    */
@@ -306,10 +309,10 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
       if (check == null) {
 
-        Log.debug(5, "** ERROR: Unable to add new details to package **\n");
         Log.debug(15, "deleteExistingAndAddPageDataToDOM(): "
                   + "ADP.insertSubtree() returned NULL");
         errorOccurred = true;
+        Log.debug(5, "** ERROR: Unable to add new details to package **\n");
       }
       index++;
     }
@@ -328,7 +331,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     }
     Log.debug(45, ((errorOccurred)?
            "\n** ERROR - data NOT added - datapackage reset to original values"
-           : "\n>> data added successfully ") );
+         : "\n>> data added successfully ") );
     return true;
   }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 18:29:59 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-06 19:08:20 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,6 +233,7 @@ public class ReferencesHandler {
             Log.debug(45, "ReferenceHandler ItemListener - second item "
                       + "(copy from external package) selected");
             event = instance.showCopyExternalRefsDialog(finalPkg, finalParent);
+            finalDropdown.setSelectedIndex(0);
             break;
 
           default: //third or subsequent item selected (ref from current pkg)
@@ -340,6 +341,7 @@ public class ReferencesHandler {
     externalRefsPage.setReferenceSelectionEvent(event);
     //externalRefsPage.setCurrentDataPackageID(dataPkg.getPackageId());
     externalRefsDialog.setVisible(true);
+
 
 
     //...and get corresponding node from external datapackage
