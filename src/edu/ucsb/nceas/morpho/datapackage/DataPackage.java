@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-09 04:57:00 $'
- * '$Revision: 1.104 $'
+ *     '$Date: 2003-01-09 20:22:55 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -1184,6 +1185,7 @@ public class DataPackage implements XMLFactoryInterface
             //the package will still be found in a query
             String acc = delfile.substring(0, delfile.lastIndexOf("."));
             fileSysDataStore.deleteFile(acc + "." + j);
+            LocalQuery.removeFromCache(acc + "." + j);
           }
         }
       
