@@ -7,7 +7,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: HttpMessage.java,v 1.3 2000-07-28 18:14:10 higgins Exp $'
+ *     Version: '$Id: HttpMessage.java,v 1.4 2000-08-09 00:08:11 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -20,7 +20,7 @@ public class HttpMessage {
     public String contype;
     URL servlet = null;
     String argString = null;
-    
+    static String cookie = null;
     public HttpMessage(URL servlet) {
         this.servlet = servlet;
     }
@@ -62,7 +62,12 @@ public class HttpMessage {
             argString = toEncodedString(args); 
         }
         URLConnection con = servlet.openConnection();
-        
+        if (cookie!=null) {
+  //          int k = cookie.indexOf(";");
+  //          cookie = cookie.substring(0, k);
+  //          System.out.println("Cookie = " + cookie);
+            con.setRequestProperty("Cookie", cookie);   
+        }
         //prepare for both input and output
         con.setDoInput(true);
         con.setDoOutput(true);
@@ -76,6 +81,16 @@ public class HttpMessage {
         out.writeBytes(argString);
         out.flush();
         contype = con.getContentType();
+        String temp = con.getHeaderField("Set-Cookie");
+        if (temp!=null) {
+            cookie = temp;
+        }
+        System.out.println(cookie);
+//        String str;
+//        for (int i=1;i<10;i++) {
+//            str = con.getHeaderFieldKey(i);
+//            System.out.println(str);
+//        }
         out.close();
         
         return con.getInputStream();
