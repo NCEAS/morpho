@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <root>
-<MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/metacat/servlet/metacat</MetaCatServletURL>
+<MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
 <searchlocal>true</searchlocal>
