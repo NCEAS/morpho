@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2001-06-13 07:17:12 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ public class ClientFramework extends javax.swing.JFrame
 
   /** Constant to indicate a spearator should precede an action */
   public static String SEPARATOR_PRECEDING = "separator_preceding";
+  public static String SEPARATOR_FOLLOWING = "separator_following";
 
   private String userName = "public";
   private String passWord = "none";
@@ -272,6 +273,11 @@ public class ClientFramework extends javax.swing.JFrame
             currentMenu.insertSeparator(menuPos++);
           }
           currentMenu.insert(currentAction, menuPos);
+          if (hasDefaultSep != null &&
+            hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
+            menuPos++;
+            currentMenu.insertSeparator(menuPos);
+          }
         } else {
           // Append everything else at the bottom of the menu
           if (hasDefaultSep != null &&
@@ -279,6 +285,10 @@ public class ClientFramework extends javax.swing.JFrame
             currentMenu.addSeparator();
           }
           currentMenu.add(currentAction);
+          if (hasDefaultSep != null &&
+            hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
+            currentMenu.addSeparator();
+          }
         }
       }
     }
@@ -294,7 +304,12 @@ public class ClientFramework extends javax.swing.JFrame
     if (toolbarActions != null) {
       for (int j=0; j < toolbarActions.length; j++) {
         Action currentAction = toolbarActions[j];
-        morphoToolbar.add(currentAction);
+        JButton toolButton = morphoToolbar.add(currentAction);
+        String toolTip  = 
+               (String)currentAction.getValue(Action.SHORT_DESCRIPTION);
+        if (toolTip != null) {
+          toolButton.setToolTipText(toolTip);
+        }
       }
     }
   }
@@ -984,7 +999,7 @@ public class ClientFramework extends javax.swing.JFrame
    * returns the next local id from the config file
    * returns null if configXML was unable to increment the id number
    */
-  public String getNextId()
+  public synchronized String getNextId()
   {
     String scope = profile.get("scope", 0);
     String lastidS = profile.get("lastId", 0);
@@ -1000,13 +1015,14 @@ public class ClientFramework extends javax.swing.JFrame
     String identifier = scope + separator + lastid;
     lastid++;
     String s = "" + lastid;
-    if(!config.set("lastId", 0, s))
+    if(!profile.set("lastId", 0, s))
     {
       debug(1, "Error incrementing the accession number id");
       return null;
     }
     else
     {
+      profile.save();
       return identifier + ".1"; 
     }
   }
@@ -1014,6 +1030,10 @@ public class ClientFramework extends javax.swing.JFrame
   /**
    * Print debugging messages based on severity level, where severity level 1
    * are the most critical and higher numbers are more trivial messages.
+   * Messages with severity 1 to 4 will result in an error dialog box for the
+   * user to inspect.  Those with severity 5-9 result in a warning dialog
+   * box for the user to inspect.  Those with severity greater than 9 are
+   * printed only to standard error.
    * Setting the debug_level to 0 in the configuration file turns all messages
    * off.
    *
@@ -1024,6 +1044,16 @@ public class ClientFramework extends javax.swing.JFrame
   {
     if (debug) {
       if (debug_level > 0 && severity <= debug_level) {
+        // Show a dialog for severe errors
+        if (severity < 5) {
+          JOptionPane.showMessageDialog(null, message, "Error!",
+                                        JOptionPane.ERROR_MESSAGE);
+        } else if (severity < 10) {
+          JOptionPane.showMessageDialog(null, message, "Warning!",
+                                        JOptionPane.WARNING_MESSAGE);
+        }
+
+        // Everything gets printed to standard error
         System.err.println(message);
       }
     }
