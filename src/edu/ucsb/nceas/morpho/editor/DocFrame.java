@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 22:13:16 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2001-06-28 22:37:04 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1500,37 +1500,13 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	    // if hit is true at this point, then there is a match
 	    // otherwise, there was no match
 	    if (hit) {
-		    TreePath tp = new TreePath(nd.getPath());
+	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)nd.getParent();
+	      setTreeValueFlag(false);
+		    TreePath tp = new TreePath(parent.getPath());
 		    tree.setSelectionPath(tp);
 		    tree.scrollPathToVisible(tp);        
-	    	if (tp!=null) {
-	        Object ob = tp.getLastPathComponent();
-	        DefaultMutableTreeNode node = null;
-	        if (ob!=null) {node =(DefaultMutableTreeNode)ob;}
-          selectedNode = node;
-         
-          NodeInfo ni = (NodeInfo)node.getUserObject();
-         
-          if ((ni.getCardinality().equals("NOT SELECTED"))
-                  ||(ni.getCardinality().equals("SELECTED"))) {
-            for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
-                DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
-                NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
-                ni1.setCardinality("NOT SELECTED");
-            }
-            ni.setCardinality("SELECTED");
-            tree.invalidate();
-            OutputScrollPanel.repaint();
-         }
-         
-         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
-         XMLPanels xp = new XMLPanels(node, width);
-         xp.setTreeModel(treeModel);
-         xp.setContainer(this);
-         xp.setTree(tree);
-         NestedPanelScrollPanel.getViewport().add(xp.topPanel);
-        }
       }
+     
 	 }
 	 
 	/** 
@@ -1565,38 +1541,11 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	    // if hit is true at this point, then there is a match
 	    // otherwise, there was no match
 	    if (hit) {
-	        setTreeValueFlag(false);
-		    TreePath tp = new TreePath(nd.getPath());
+	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)nd.getParent();
+		    TreePath tp = new TreePath(parent.getPath());
 		    tree.setSelectionPath(tp);
 		    tree.scrollPathToVisible(tp);        
 	    
-	    	if (tp!=null) {
-	        Object ob = tp.getLastPathComponent();
-	        DefaultMutableTreeNode node = null;
-	        if (ob!=null) {node =(DefaultMutableTreeNode)ob;}
-          selectedNode = node;
-         
-          NodeInfo ni = (NodeInfo)node.getUserObject();
-         
-          if ((ni.getCardinality().equals("NOT SELECTED"))
-                  ||(ni.getCardinality().equals("SELECTED"))) {
-            for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
-                DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
-                NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
-                ni1.setCardinality("NOT SELECTED");
-            }
-            ni.setCardinality("SELECTED");
-            tree.invalidate();
-            OutputScrollPanel.repaint();
-         }
-         
-         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
-         XMLPanels xp = new XMLPanels(node, width);
-         xp.setTreeModel(treeModel);
-         xp.setContainer(this);
-         xp.setTree(tree);
-         NestedPanelScrollPanel.getViewport().add(xp.topPanel);
-        }
       }
 	    
 	 }
