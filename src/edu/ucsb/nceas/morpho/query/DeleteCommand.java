@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-11 22:53:59 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-12 00:57:47 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ public class DeleteCommand implements Command
   private boolean comeFromOpenDialog = false;
   /**
    * Constructor of DeleteCommand
-   * @param myOpenDialog the open dialog which 
+   * @param myOpenDialog the open dialog which will be applied delete action 
    * @param myDeleteDialog a delete dialog need to be destroied
    * @param myFrame the parent frame of delete dialog or parent of open dialog
    * @param selectId the id of data package need to be deleted
