@@ -1,95 +1,50 @@
-<eml-attribute  rooteditor="edu.ucsb.nceas.morpho.editor.VariablePanel"
-help="Eml-attribute element represents a list of all attributes in a dataset.">
-  <identifier
-  help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a sequence of numbers or letters that are meaningful in a larger context, such as a metadata catalog. That larger system can be identified in the &quot;system&quot; attribute. Multiple identifiers can be listed corresponding to different catalog systems."
-   editor="edu.ucsb.nceas.morpho.editor.LockedPanel">
+<?xml version="1.0"?>
+
+<eml-attribute minOccurs="" maxOccurs="" help="">
+  <identifier system="" minOccurs="1" maxOccurs="unbounded" help="The identifier field provides a unique identifier for this metadata documentation. It will most likely be part of a  sequence of numbers or letters that are meaningful in a  larger context, such as a metadata catalog. That larger system can be identified in the 'system' attribute. Multiple identifiers can be listed corresponding to different catalog systems.">
   </identifier>
-
-  <attribute
-  help="Attribute element is a descriptor of an attribute in the data file identified by its name. The attribute element can contain information about the attribute's definition, format, storage type and data range, or missing value.">
-
-    <attributeName
-    help="This element specifies name of the attribute (field) in the dataset. This information is typically used as a column header for the field/variable in a spreadsheet. It is usually terse, without spaces, and can be used to &quot;name&quot; a column in a table definition statement.">
-
+  <attribute minOccurs="1" maxOccurs="unbounded" help="Attribute element is a descriptor of an attribute in the  data file identified by its name. The attribute element  can contain information about the attribute's definition,  format, storage type and data range, or missing value.">
+    <attributeName minOccurs="1" maxOccurs="1" help="This element specifies name of the attribute (field)  in the dataset. This information is typically used as a column header for the field/variable in a spreadsheet. It is usually terse, without spaces, and can be used to 'name' a column in a table definition statement.">
     </attributeName>
-
-    <attributeLabel
-    help="A brief label used to describe the attribute. This is often needed because attribute names are usually very terse- often shortened to 8 characters or less to deal with analysis systems. A label is provided as a concise but more descriptive representation of the attribute.">
-
+    <attributeLabel minOccurs="0" maxOccurs="unbounded" help="A brief label used to describe the attribute. This is often needed because attribute names are usually  very terse- often shortened to 8 characters or less to deal with analysis systems. A label is provided as a concise but more descriptive representation of the attribute.">
     </attributeLabel>
-
-    <attributeDefinition
-    help="This element gives a precise definition of attribute in the dataset. It explains the contents of the attribute fully and possibly provides pointers to the methods used to generate the attribute data.">
-
+    <attributeDefinition minOccurs="1" maxOccurs="1" help="This element gives a precise definition of attribute  in the dataset. It explains the contents of the attribute fully and possibly provides pointers to the methods  used to generate the attribute data.">
     </attributeDefinition>
-
-    <unit
-    help="This element specifies unit of measurement for data in the field.">
+    <unit minOccurs="0" maxOccurs="1" help="This element specifies unit of measurement for data  in the field.">
     </unit>
-
-    <dataType
-    help="This element describes the data type for data in the field like: integer, floating point, character, string.">
-
+    <dataType minOccurs="0" maxOccurs="1" help="This element describes the data type for data in the  field like: integer, floating point, character, string.">
     </dataType>
-
-    <attributeDomain>
-      <enumeratedDomain
-      help="This element describes any code associated with the attribute.">
-        <code
-        help="This element specifies a code associated with the attribute.">
-        </code>
-
-        <definition
-        help="This element describes the code associated with the attribute.">
-        </definition>
-
-        <source
-        help="The name of the source from which this code and its associated definition are drawn. This is commonly used for identifying standard coding systems, like the FIPS standard for postal abbreviations for standard for postal abbreviations for states in the US. In other cases, the coding may be the researcher's customized way of recording and classifying their data, and no external source would exist.">
-
-        </source>
-      </enumeratedDomain>
-
-      <textDomain
-      help="This element describes a free text domain for the attribute. By default, if pattern is missing or empty, then any text is allowed. If pattern is present, then it is interpreted as a regular expression constraining the allowable character sequences for the attribute.">
-
-        <definition
-        help="The element definition provides the text domain definition, that is, what kinds of text expressions are allowed for this attribute. If there is a pattern supplied, the definition element expresses the meaning of the pattern, For example, a particular pattern may be meant to represent phone numbers in the US phone system format. ">
-        </definition>
-
-        <pattern
-        help="The &quot;pattern&quot; element specifies a regular expression pattern that constrains the set of allowable values for the attribute. This is commonly used to define template patterns for data such as phone numbers where the attribute is text but the values are not drawn from an enumeration. If the pattern field is empty or missing, it defaults to '.*', which matches any string, including the empty string. Repeated pattern elements are combined using logical OR. The regular expression syntax is the same as that used in the XML Schema Datatypes Recommendation from the W3C.">
-
-        </pattern>
-
-        <source
-        help="The name of the source from which this text domain and its associated definition are drawn. This is commonly used for identifying standard coding systems, like the FIPS standard for postal abbreviations for states in the US. In other cases, the coding may be the researcher's customized way of recording and classifying their data, and no external &quot;source&quot; would exist.">
-
-        </source>
-      </textDomain>
-
-      <numericDomain
-      help="This element specifies the minimum and maximum values of a numeric attribute. These are theoretical or expected values, and not necessarily the actual minimum and maximum occurring in a given data set.">
-
-        <minimum
-        help="This element specifies the minimum value range of numeric attribute.">
-
-        </minimum>
-
-        <maximum
-        help="This element specifies the maximum value range of numeric attribute.">
-
-        </maximum>
-      </numericDomain>
+    <attributeDomain minOccurs="1" maxOccurs="1" help="">
+      <CHOICE0 minOccurs="1" maxOccurs="1" help="">
+        <CHOICE1 minOccurs="1" maxOccurs="unbounded" help="">
+          <enumeratedDomain minOccurs="1" maxOccurs="1" help="This element describes any code associated with the  attribute.">
+            <code minOccurs="1" maxOccurs="1" help="This element specifies a code associated with  the attribute.">
+            </code>
+            <definition minOccurs="1" maxOccurs="1" help="This element describes the code associated  with the attribute.">
+            </definition>
+            <source minOccurs="0" maxOccurs="1" help="The name of the source from which this code and its associated definition are drawn. This is commonly used for identifying standard coding systems, like the FIPS standard for postal abbreviations for states in the US. In other cases, the coding may be the researcher's customized way of recording and classifying their data, and no external 'source' would exist.">
+            </source>
+          </enumeratedDomain>
+          <textDomain minOccurs="1" maxOccurs="1" help="This element describes a free text domain for the attribute. By default, if pattern is missing or empty, then any text is allowed. If pattern is present, then it is interpreted as a regular expression constraining the allowable character sequences for the attribute.">
+            <definition minOccurs="1" maxOccurs="1" help="This element describes the code associated  with the attribute.">
+            </definition>
+            <pattern minOccurs="0" maxOccurs="unbounded" help="The 'pattern' element specifies a regular expression pattern that constrains the set of allowable values for the attribute. This is commonly used to  define template patterns for data such as phone  numbers where the attribute is text but the values are not drawn from an enumeration.  If the pattern field is empty or missing, it  defaults to '.*', which matches any string, including the empty string. Repeated pattern elements are combined using logical OR. The regular expression syntax is the same as that used in the XML Schema Datatypes Recommendation from the W3C.">
+            </pattern>
+            <source minOccurs="0" maxOccurs="1" help="The name of the source from which this text domain and its associated definition are drawn. This is commonly used for identifying standard coding systems, like the FIPS standard for postal abbreviations for states in the US. In other cases, the coding may be the researcher's customized way of recording and classifying their data, and no external 'source' would exist.">
+            </source>
+          </textDomain>
+        </CHOICE1>
+        <numericDomain minOccurs="1" maxOccurs="unbounded" help="This element specifies the minimum and maximum values of a numeric attribute. These are theoretical or expected values, and not necessarily the actual minimum and maximum occurring in a given data set.">
+          <minimum minOccurs="0" maxOccurs="1" help="This element specifies the minimum value range of numeric attribute.">
+          </minimum>
+          <maximum minOccurs="0" maxOccurs="1" help="This element specifies the maximum value range of numeric attribute.">
+          </maximum>
+        </numericDomain>
+      </CHOICE0>
     </attributeDomain>
-
-    <missingValueCode
-    help="This element is to specify missing value in the data of the field.">
+    <missingValueCode minOccurs="0" maxOccurs="unbounded" help="This element is to specify missing value in the data of the field.">
     </missingValueCode>
-
-    <precision
-    help="If data of that field are of floating point storage type this element specifies the number of significat digits after the floating point.">
-
+    <precision minOccurs="0" maxOccurs="1" help="If data of that field are of floating point storage type this element specifies the number of significat digits after the floating point.">
     </precision>
   </attribute>
 </eml-attribute>
-
