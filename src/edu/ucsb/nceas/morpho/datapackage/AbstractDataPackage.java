@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-01 19:26:24 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-10-04 20:58:08 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,7 +193,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       if (keywordsNodes==null) return "";
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting keyword");
+      Log.debug(50,"exception in getting keyword");
     }
     int numKeywords = keywordsNodes.getLength();
     String kw = "";
@@ -227,7 +227,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting entityArray");
+      Log.debug(50,"exception in getting entityArray");
     }
   }
 
@@ -251,7 +251,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting entity name"+w.toString());
+      Log.debug(50,"exception in getting entity name"+w.toString());
     }
     return temp;
   }
@@ -276,7 +276,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting entity numRecords"+w.toString());
+      Log.debug(50,"exception in getting entity numRecords"+w.toString());
     }
     return temp;
   }
@@ -301,7 +301,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting entity description"+w.toString());
+      Log.debug(50,"exception in getting entity description"+w.toString());
     }
     return temp;
   }
@@ -330,7 +330,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       return XMLUtilities.getNodeListAsNodeArray(attributeNodes);      
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting attributeArray");
+      Log.debug(50,"exception in getting attributeArray");
     }
     return null;
   }
@@ -358,7 +358,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting entity description"+w.toString());
+      Log.debug(50,"exception in getting entity description"+w.toString());
     }
     return temp;
   }
@@ -415,7 +415,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting attribute dataType"+w.toString());
+      Log.debug(50,"exception in getting attribute dataType"+w.toString());
     }
     return temp;
   }
@@ -444,7 +444,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue().trim();
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting attribute unit -- "+w.toString());
+      Log.debug(50,"exception in getting attribute unit -- "+w.toString());
     }
     return temp;
   }
@@ -472,7 +472,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       return XMLUtilities.getNodeListAsNodeArray(physicalNodes);      
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting physicalArray");
+      Log.debug(50,"exception in getting physicalArray");
     }
     return null;
   }
@@ -500,7 +500,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(4,"exception in getting physical objectName description"+w.toString());
+      Log.debug(50,"exception in getting physical objectName description"+w.toString());
     }
     return temp;
   }
@@ -543,7 +543,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting physical format description --- "+w.toString());
+      Log.debug(50,"exception in getting physical format description --- "+w.toString());
     }
     return temp;
   }
@@ -572,7 +572,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting physical field delimiter"+w.toString());
+      Log.debug(50,"exception in getting physical field delimiter"+w.toString());
     }
     return temp;
   }
@@ -601,7 +601,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue();
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting physical number HeaderLines"+w.toString());
+      Log.debug(50,"exception in getting physical number HeaderLines"+w.toString());
     }
     return temp;
   }
@@ -633,7 +633,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       return XMLUtilities.getNodeListAsNodeArray(distributionlNodes);      
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting distributionArray");
+      Log.debug(50,"exception in getting distributionArray");
     }
     return null;
   }
@@ -658,7 +658,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue().trim();
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting distribution inline data: "+w.toString());
+      Log.debug(50,"exception in getting distribution inline data: "+w.toString());
     }
     return temp;
   }
@@ -683,7 +683,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       temp = child.getNodeValue().trim();
     }
     catch (Exception w) {
-      Log.debug(20,"exception in getting distribution url: "+w.toString());
+      Log.debug(50,"exception in getting distribution url: "+w.toString());
     }
     return temp;
   }
