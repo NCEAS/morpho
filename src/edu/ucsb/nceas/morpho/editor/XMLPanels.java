@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-24 23:41:55 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-12-14 00:06:46 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -216,7 +216,8 @@ public class XMLPanels extends Component
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BoxLayout(jp2,BoxLayout.Y_AXIS));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(panelWidth,50));
+        jp1.setMaximumSize(new Dimension(panelWidth,70));
+        jp1.setPreferredSize(new Dimension(panelWidth,70));
         jp2.setMaximumSize(new Dimension(panelWidth,25));
         jp.add(jp1);
         jp.add(jp2);
