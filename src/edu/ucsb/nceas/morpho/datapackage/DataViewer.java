@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-24 22:55:07 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2002-09-25 15:30:35 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1554,7 +1554,7 @@ public class DataViewer extends javax.swing.JPanel
       ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newPackage.getID(), null);
+      dataPackage.openDataPackage(location, newPackage.getID(), null, null);
     }
     catch (ServiceNotHandledException snhe) 
     {
@@ -1785,7 +1785,7 @@ public class DataViewer extends javax.swing.JPanel
       ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newPackage.getID(), null);
+      dataPackage.openDataPackage(location, newPackage.getID(), null, null);
     }
     catch (ServiceNotHandledException snhe) 
     {
