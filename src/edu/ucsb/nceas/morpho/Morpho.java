@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:38 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-26 17:07:12 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1060,8 +1060,8 @@ public class Morpho
         switchItemAction.setToolTipText("Switch Profile");
         switchItemAction.putValue("menuPosition", new Integer(2));
         switchItemAction.setMenu("File", 0);
-        switchItemAction.setEnabledOnStateChange("DISABLE", false);
-        switchItemAction.setEnabledOnStateChange("ENABLE", true);
+        switchItemAction.setEnabledOnStateChange("DISABLE", false, false);
+        switchItemAction.setEnabledOnStateChange("ENABLE", true, false);
         controller.addGuiAction(switchItemAction);
 
         Command enableCommand = new Command() {

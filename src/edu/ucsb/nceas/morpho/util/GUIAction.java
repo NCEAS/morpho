@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:39 $'
- * '$Revision: 1.11 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-26 17:07:12 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             String key = (String)enabledKeys.nextElement();
             String changedState = new String(key);
             boolean enabled = ((Boolean)enabledList.get(key)).booleanValue();
-            clone.setEnabledOnStateChange(changedState, enabled);
+            clone.setEnabledOnStateChange(changedState, enabled, false);
         }
         // Clone the command list
         Enumeration commandKeys = commandList.keys();
@@ -105,7 +105,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             String key = (String)commandKeys.nextElement();
             String changedState = new String(key);
             Command command = (Command)commandList.get(key);
-            clone.setCommandOnStateChange(changedState, command);
+            clone.setCommandOnStateChange(changedState, command, false);
         }
 
         return clone;
@@ -298,11 +298,20 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      * Set the state of this action to the enabled value if a state change
      * matching changedState occurs.
      *
-     * @param changedState the name of the state change
-     * @param enabled boolean value indicating whether the action should 
-     *                be enabled
+     * @param changedState    the name of the state change
+     * @param enabled         boolean value indicating whether the action should 
+     *                        be enabled
+     * @param localEventsOnly boolean value indicating whether the change should 
+     *                        occur in response only to events originating 
+     *                        within the same frame as this GUIAction's 
+     *                        container
+     * @param localEventsOnly boolean value indicating whether the change should 
+     *                        occur in response only to events originating 
+     *                        within the same frame as this GUIAction's 
+     *                        container
      */
-    public void setEnabledOnStateChange(String changedState, boolean enabled)
+    public void setEnabledOnStateChange(String changedState, boolean enabled, 
+                                                        boolean localEventsOnly)
     {
         enabledList.put(changedState, new Boolean(enabled));
         StateChangeMonitor.getInstance().addStateChangeListener(changedState,
@@ -316,7 +325,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      * @param changedState the name of the state change
      * @param command Command that should be set upon a state change
      */
-    public void setCommandOnStateChange(String changedState, Command command)
+    public void setCommandOnStateChange(String changedState, Command command,
+                                                        boolean localEventsOnly)
     {
         commandList.put(changedState, command);
         StateChangeMonitor.getInstance().addStateChangeListener(changedState,
