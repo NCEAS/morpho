@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 22:21:03 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2001-05-07 21:14:08 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,41 +94,6 @@ public class QueryPlugin implements PluginInterface
     framework.setMainContentPane(ownerPanel);
     framework.addMenu("Search", new Integer(3), menuActions);
     framework.addToolbarActions(toolbarActions);
-  }
-
-  /**
-   * This method is called by the framework when the plugin should 
-   * register any services that it handles.  The plugin should then
-   * call the framework's 'addService' method for each service it can
-   * handle.
-   */
-  public void registerServices()
-  {
-  }
-    
-  /**
-   * This is the general dispatch method that is called by the framework
-   * whenever a plugin is expected to handle a service request.  The
-   * details of the request and data for the request are contained in
-   * the ServiceRequest object.
-   *
-   * @param request request details and data
-   */
-  public void handleServiceRequest(ServiceRequest request)
-              throws ServiceNotHandledException
-  {
-  } 
-  
-  /**
-   * This method is called by a service provider that is handling 
-   *  a service request that originated with the plugin.  Data
-   * from the ServiceRequest is handed back to the source plugin in
-   * the ServiceResponse object.
-   *
-   * @param response response details and data
-   */
-  public void handleServiceResponse(ServiceResponse response)
-  {
   }
 
   /**

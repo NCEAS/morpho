@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-07 17:26:10 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-07 21:14:08 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -560,13 +560,15 @@ public class Query extends DefaultHandler {
     // if appropriate, query metacat
     ResultSet metacatResults = null;
     if (searchMetacat) {
-      metacatResults = new ResultSet(this, "metacat", queryMetacat());
+      metacatResults = new ResultSet(this, "metacat", 
+                                     queryMetacat(), framework);
     }
 
     // if appropriate, query locally
     ResultSet localResults = null;
     if (searchLocal) {
-      //ResultSet localResults = new ResultSet(this, "local", queryLocal());
+      //ResultSet localResults = new ResultSet(this, "local", 
+                                     //queryLocal(), framework);
     }
 
     // merge the results -- currently unimplemented!

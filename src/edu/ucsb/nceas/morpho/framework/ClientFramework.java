@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 22:18:14 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2001-05-07 21:14:07 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,6 +149,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     // Set up the framework's menus and toolbars, and services
     initializeActions();
+    registerServices();
 
     // Load all of the plugins, their menus, and toolbars
     loadPlugins();
@@ -358,24 +359,21 @@ public class ClientFramework extends javax.swing.JFrame
 
   /**
    * This method is called by plugins to register a particular service that
-   * the plugin can perform.  The service is identified by a serviceName
-   * which must be globally unique within the runtime environment of the
-   * Morpho appliaction.  If a plugin tries to register a service under
-   * a name that is already used, the addService method will generate an 
-   * exception.
+   * the plugin can perform.  The service is identified by the class name
+   * of an interface that the service implements.
    *
-   * @param serviceName the application unique identifier for the service
-   * @param serviceProvider a reference to the object providing the service
+   * @param serviceInterface the interface representing this service
+   * @param provider a reference to the object providing the service
    * @throws ServiceExistsException
    */
-  public void addService(String serviceName, PluginInterface serviceProvider)
+  public void addService(Class serviceInterface, ServiceProvider provider)
               throws ServiceExistsException
   {
-    if (servicesRegistry.containsKey(serviceName)) {
-      throw (new ServiceExistsException(serviceName));
+    if (servicesRegistry.containsKey(serviceInterface)) {
+      throw (new ServiceExistsException(serviceInterface.getName()));
     } else {
-      debug(7, "Adding service: " + serviceName);
-      servicesRegistry.put(serviceName, serviceProvider);
+      debug(7, "Adding service: " + serviceInterface.getName());
+      servicesRegistry.put(serviceInterface, provider);
     }
   }
 
@@ -388,10 +386,10 @@ public class ClientFramework extends javax.swing.JFrame
    * @param request the service request and associated data
    * @throws ServiceNotHandledException
    */
+/*
   public void requestService(ServiceRequest request)
               throws ServiceNotHandledException
   {
-/*
     String serviceName = request.getServiceName();
     if (servicesRegistry.containsKey(serviceName)) {
       PluginInterface serviceHandler = 
@@ -401,22 +399,39 @@ public class ClientFramework extends javax.swing.JFrame
       throw (new ServiceNotHandledException("Service does not exist: " +
                                             serviceName));
     }
-*/
   }
+*/
 
   /**
-   * This method is called by plugins to determine if a  particular 
-   * named service has been registered and is available.
+   * This method is called by plugins to determine if a particular 
+   * service has been registered and is available.
    *
-   * @param request the service request and associated data
+   * @param serviceInterface the service interface desired
    * @returns boolean true if the service exists, false otherwise
    */
-  public boolean checkForService(String serviceName)
+  public boolean checkForService(Class serviceInterface)
   {
-    if (servicesRegistry.containsKey(serviceName)) {
+    if (servicesRegistry.containsKey(serviceInterface)) {
       return true;
     } else {
       return false;
+    }
+  }
+
+  /**
+   * This method is called by plugins to get a reference to an
+   * object that implements a particular interface
+   *
+   * @param serviceInterface the service interface desired
+   * @returns ServiceProvider a reference to the objecy providing the service
+   */
+  public ServiceProvider getServiceProvider(Class serviceInterface)
+         throws ServiceNotHandledException
+  {
+    if (servicesRegistry.containsKey(serviceInterface)) {
+      return (ServiceProvider)servicesRegistry.get(serviceInterface);
+    } else {
+      throw (new ServiceNotHandledException("No such service registered."));
     }
   }
 
@@ -426,14 +441,14 @@ public class ClientFramework extends javax.swing.JFrame
    * call the framework's 'addService' method for each service it can
    * handle.
    */
-  public void registerServices()
+  private void registerServices()
   {
 /*
     debug(9, "Entered ClientFramework::registerServices");
     try {
-      this.addService("LogService", this);
+      this.addService(DataPackageInterface.class, this);
     } catch (ServiceExistsException see) {
-      debug(6, "Service registration failed for LogService.");
+      debug(6, "Service registration failed for DataPackageInterface.");
       debug(6, see.toString());
     }
 */
@@ -447,6 +462,7 @@ public class ClientFramework extends javax.swing.JFrame
    *
    * @param request request details and data
    */
+/*
   public void handleServiceRequest(ServiceRequest request) 
               throws ServiceNotHandledException
   {
@@ -458,6 +474,7 @@ public class ClientFramework extends javax.swing.JFrame
       throw (new ServiceNotHandledException(serviceName));
     }
   }
+*/
 
   /**
    * This method is called by a service provider that is handling 
@@ -467,9 +484,11 @@ public class ClientFramework extends javax.swing.JFrame
    *
    * @param response response details and data
    */
+/*
   public void handleServiceResponse(ServiceResponse response)
   {
   }
+*/
 
   /**
    * Set up the actions for menus and toolbars
@@ -555,7 +574,7 @@ public class ClientFramework extends javax.swing.JFrame
     addMenu("Window", new Integer(6));
 
     // HELP MENU ACTIONS
-    helpMenuActions = new Action[1];
+    helpMenuActions = new Action[2];
     Action aboutItemAction = new AbstractAction("About...") {
       public void actionPerformed(ActionEvent e) {
         SplashFrame sf = new SplashFrame();
@@ -567,19 +586,19 @@ public class ClientFramework extends javax.swing.JFrame
                     new ImageIcon(getClass().getResource("about.gif")));
     aboutItemAction.putValue("menuPosition", new Integer(1));
     helpMenuActions[0] = aboutItemAction;
-/*
-    Action testServiceAction = new AbstractAction("Test Log Service") {
+
+    Action testServiceAction = new AbstractAction("Test Service") {
       public void actionPerformed(ActionEvent e) {
-        testLogService();
+        testService();
       }
     };
-    testServiceAction.putValue(Action.SHORT_DESCRIPTION, "Test Logging");
+    testServiceAction.putValue(Action.SHORT_DESCRIPTION, "Test");
     testServiceAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("about.gif")));
     testServiceAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     testServiceAction.putValue("menuPosition", new Integer(2));
     helpMenuActions[1] = testServiceAction;
-*/
+
     addMenu("Help", new Integer(9), helpMenuActions);
 
     // Set up the toolbar for the application
@@ -654,19 +673,16 @@ public class ClientFramework extends javax.swing.JFrame
     }
   }
 
-/*
-  private void testLogService()
+  private void testService()
   {
-    ServiceRequest req = new ServiceRequest((PluginInterface)this,
-                                            "LogService");
-    req.addDataObject("Message", "Holy cow, batman!");
     try {
-      this.requestService(req);
+      ServiceProvider provider = getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dai = (DataPackageInterface)provider;
+      dai.openDataPackage("a", "b");
     } catch (ServiceNotHandledException snhe) {
-      debug(1, snhe.toString());
+      debug(6, snhe.getMessage());
     }
   }
-*/
 
   private void establishConnection()
   {
@@ -1029,5 +1045,10 @@ public class ClientFramework extends javax.swing.JFrame
       //Ensure the application exits with an error condition.
       System.exit(1);
     }
+  }
+
+  public void openDataPackage(String location, String identifier)
+  {
+    debug(9, "Test service implementation succeeded.");
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-07 17:26:10 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-07 21:14:08 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   /** Flag indicating whether the results are from a metacat query */
   private boolean isMetacat = false;
 
+  /** A reference to the framework */
+  private ClientFramework framework = null;
+
   // this group of variables are temporary vars that are used while 
   // parsing the XML stream.  Ultimately the data ends up in the
   // resultsVector above
@@ -114,9 +117,11 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    * Construct a ResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public ResultSet(Query query, String source, InputStream resultsXMLStream)
+  public ResultSet(Query query, String source, InputStream resultsXMLStream,
+                   ClientFramework cf)
   {
     this.savedQuery = query;
+    this.framework = cf;
 
     if (source.equals("local")) {
       isLocal = true;
@@ -164,7 +169,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       parser.setContentHandler(this);
       parser.parse(new InputSource(resultsXMLStream));
     } catch (Exception e) {
-      System.err.println(e.toString());
+      framework.debug(9, e.toString());
     }
   }
 
@@ -212,12 +217,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       String emptyString = "";
       value = null;
-      //System.err.println("No such row or column: row: " + row +
+      //framework.debug(9, "No such row or column: row: " + row +
                          //" col: " + col);
     } catch (NullPointerException npe) {
       String emptyString = "";
       value = emptyString;
-      //System.err.println("Error getting value at: row: " + row +
+      //framework.debug(9, "Error getting value at: row: " + row +
                          //" col: " + col);
     }
     return value;
@@ -237,7 +242,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
         currentClass = Class.forName("java.lang.String");
       } catch (ClassNotFoundException cnfe) {
       }
-      //System.err.println("Error getting class for col: " + c);
+      //framework.debug(9, "Error getting class for col: " + c);
     }
     return currentClass;
   }
@@ -438,7 +443,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public void openResultRecord(int row)
   {
-    System.err.println("Opening row: " + row);
+    framework.debug(9, "Opening row: " + row);
     int numHeaders = headers.length;
     String docid = null;
     boolean openLocal = false;
@@ -453,13 +458,23 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     } catch (NullPointerException npe) {
       docid = null;
     }
+
+    String location = null;
     if (openLocal) {
-      System.err.println("Opening local copy of " + docid);
+      location = "local";
+      //framework.debug(9, "Opening local copy of " + docid);
     } else if (openMetacat) {
-      System.err.println("Opening metacat copy of " + docid);
-    } else {
-      System.err.println("ERROR: Neither local nor metacat copy " +
-                         "available for " + docid);
+      location = "metacat";
+      //framework.debug(9, "Opening metacat copy of " + docid);
+    }
+
+    try {
+      ServiceProvider provider = 
+                      framework.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataStore = (DataPackageInterface)provider;
+      dataStore.openDataPackage(location, docid);
+    } catch (ServiceNotHandledException snhe) {
+      framework.debug(6, snhe.getMessage());
     }
   }
 
@@ -468,6 +483,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public void merge(ResultSet r2)
   {
-    System.err.println("Merge is not yet implemented!");
+    framework.debug(9, "Merge is not yet implemented!");
   }
 }
