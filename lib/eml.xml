@@ -8,7 +8,7 @@
           </shortName>
           <title minOccurs="1" maxOccurs="unbounded" help="The 'title' field provides a description of the resource that is being documented that is long enough to differentiate it from other similar resources. Multiple titles may be provided, particularly when trying to express the title in more than one language (use the 'xml:lang' attribute to indicate the language if not English/en).">
           </title>
-          <creator editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
+          <creator scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
             <CHOICE3 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE4 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE5 minOccurs="1" maxOccurs="unbounded" help="">
@@ -56,7 +56,7 @@
                 </references>
             </CHOICE3>
           </creator>
-          <metadataProvider editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
+          <metadataProvider scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
             <CHOICE10 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE11 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE12 minOccurs="1" maxOccurs="unbounded" help="">
@@ -104,7 +104,7 @@
                 </references>
             </CHOICE10>
           </metadataProvider>
-          <associatedParty editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The 'associatedParty' element provides the full name of other people, organizations, or positions who should be associated with the resource. These parties might play various roles in the creation or maintenance of the resource, and these roles should be indicated in the 'role' element.">
+          <associatedParty scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The 'associatedParty' element provides the full name of other people, organizations, or positions who should be associated with the resource. These parties might play various roles in the creation or maintenance of the resource, and these roles should be indicated in the 'role' element.">
             <CHOICE17 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE18 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE19 minOccurs="1" maxOccurs="unbounded" help="">
@@ -237,7 +237,7 @@
           <coverage scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="This field is a container for the spatial, temporal and taxonomic coverages that apply to various resources, often dataset resources. Please see the individual descriptions of the sub fields for more detail.">
             <CHOICE85 minOccurs="1" maxOccurs="1" help="">
               <CHOICE86 minOccurs="1" maxOccurs="unbounded" help="">
-                <geographicCoverage editor="edu.ucsb.nceas.morpho.editor.GeographicPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="Geographic Coverage is a container for spatial information about a a project, a resource, or an entity within a resource.">
+                <geographicCoverage scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="Geographic Coverage is a container for spatial information about a a project, a resource, or an entity within a resource.">
                   <CHOICE87 minOccurs="1" maxOccurs="1" help="">
                     <SEQUENCE88 minOccurs="1" maxOccurs="1" help="">
                       <geographicDescription minOccurs="1" maxOccurs="1" help="A geographic extent description is especially important when the extent of the data set is not well described by the 'Bounding_Rectangle_Coordinates', or in the case of data which are not specifically geospatial, to provide a geographic setting for the item being documented. Assuming the 'Bounding_Rectangle_Coordinates' do not adequately describe the extent of the data set, the discrepancy can be identified and described in this data element. If the item being documented is not specifically geospatial, the 'Bounding_Rectangle_Coordinates' can define a general polygon, such as a rectangle around a country, with this 'Description_of_Geographic_Extent' element containing a disclaimer concerning the 'Bounding_Rectangle_Coordinates' and/or further detail concerning the geographic area of concern for the item being documented. For example, a study of the diseases of salmon may not have a specific geographic extent associated with it, but the salmon involved in the study were collected in Washington and Oregon states, thus the 'Bounding_Rectangle_Coordinates' might form a general rectangle around the states of Washington and Oregon, but the 'Description_of_Geographic_Extent' might describe the fact that the extent within Washington and Oregon included only certain rivers within those states. This data element differs from the standard data element 'Place_Keyword' in that it allows a free text description of the geographic extent, rather than just a list of words or phrases useful as an index of location names associated with the data set.">
@@ -268,7 +268,7 @@
                 <temporalCoverage scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="This field specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates. Dates can be expressed in tems of both calander dates and geologic dating systems.">
                   <CHOICE90 minOccurs="1" maxOccurs="1" help="">
                     <CHOICE91 minOccurs="1" maxOccurs="1" help="">
-                      <singleDateTime editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" minOccurs="1" maxOccurs="unbounded" help="The SingleDateTimeType field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
+                      <singleDateTime minOccurs="1" maxOccurs="unbounded" help="The SingleDateTimeType field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
                         <CHOICE92 minOccurs="1" maxOccurs="1" help="">
                           <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
                             <calendarDate minOccurs="1" maxOccurs="1" help="The calendar date field is used to express a date, giving the year, month, and day. The format should be one that complies with the International Standards Organization's standard 8601. The recommended format for EML is YYYY-MM-DD, where Y is the four digit year, M is the two digit month code (01 - 12, where January = 01), and D is the two digit day of the month (01 - 31).">
@@ -280,7 +280,7 @@
                           </alternativeTimeScale>
                         </CHOICE92>
                       </singleDateTime>
-                      <rangeOfDates editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" minOccurs="1" maxOccurs="1" help="The 'RangeOfDatesType' field is intended to be used for describing a range of dates and/or times. It may be used multiple times to document multiple date ranges. It allows for two 'singleDateTime' fields, the first to be used as the beginning dateTime, and the second to be used as the ending dateTime of the range.">
+                      <rangeOfDates minOccurs="1" maxOccurs="1" help="The 'RangeOfDatesType' field is intended to be used for describing a range of dates and/or times. It may be used multiple times to document multiple date ranges. It allows for two 'singleDateTime' fields, the first to be used as the beginning dateTime, and the second to be used as the ending dateTime of the range.">
                         <beginDate minOccurs="1" maxOccurs="1" help="A single time stamp signifying the beginning of some time period. There is a choice between two options: a calendar date with a time, or a geologic age.">
      <CHOICE0 minOccurs="1" maxOccurs="1" help="">
     <SEQUENCE1 minOccurs="1" maxOccurs="1" help="">
@@ -404,7 +404,7 @@
               </comment>
             </changeHistory>
           </maintenance>
-          <contact editor="edu.ucsb.nceas.morpho.editor.PartyPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
+          <contact scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
             <CHOICE125 minOccurs="1" maxOccurs="1" help="">
               <SEQUENCE126 minOccurs="1" maxOccurs="1" help="">
                 <CHOICE127 minOccurs="1" maxOccurs="unbounded" help="">
@@ -1550,7 +1550,7 @@
           <coverage scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="This field is a container for the spatial, temporal and taxonomic coverages that apply to various resources, often dataset resources. Please see the individual descriptions of the sub fields for more detail.">
             <CHOICE85 minOccurs="1" maxOccurs="1" help="">
               <CHOICE86 minOccurs="1" maxOccurs="unbounded" help="">
-                <geographicCoverage editor="edu.ucsb.nceas.morpho.editor.GeographicPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="Geographic Coverage is a container for spatial information about a a project, a resource, or an entity within a resource.">
+                <geographicCoverage scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="Geographic Coverage is a container for spatial information about a a project, a resource, or an entity within a resource.">
                   <CHOICE87 minOccurs="1" maxOccurs="1" help="">
                     <SEQUENCE88 minOccurs="1" maxOccurs="1" help="">
                       <geographicDescription minOccurs="1" maxOccurs="1" help="A geographic extent description is especially important when the extent of the data set is not well described by the 'Bounding_Rectangle_Coordinates', or in the case of data which are not specifically geospatial, to provide a geographic setting for the item being documented. Assuming the 'Bounding_Rectangle_Coordinates' do not adequately describe the extent of the data set, the discrepancy can be identified and described in this data element. If the item being documented is not specifically geospatial, the 'Bounding_Rectangle_Coordinates' can define a general polygon, such as a rectangle around a country, with this 'Description_of_Geographic_Extent' element containing a disclaimer concerning the 'Bounding_Rectangle_Coordinates' and/or further detail concerning the geographic area of concern for the item being documented. For example, a study of the diseases of salmon may not have a specific geographic extent associated with it, but the salmon involved in the study were collected in Washington and Oregon states, thus the 'Bounding_Rectangle_Coordinates' might form a general rectangle around the states of Washington and Oregon, but the 'Description_of_Geographic_Extent' might describe the fact that the extent within Washington and Oregon included only certain rivers within those states. This data element differs from the standard data element 'Place_Keyword' in that it allows a free text description of the geographic extent, rather than just a list of words or phrases useful as an index of location names associated with the data set.">
@@ -1581,7 +1581,7 @@
                 <temporalCoverage scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="This field specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates. Dates can be expressed in tems of both calander dates and geologic dating systems.">
                   <CHOICE90 minOccurs="1" maxOccurs="1" help="">
                     <CHOICE91 minOccurs="1" maxOccurs="1" help="">
-                      <singleDateTime editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" minOccurs="1" maxOccurs="unbounded" help="The SingleDateTimeType field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
+                      <singleDateTime minOccurs="1" maxOccurs="unbounded" help="The SingleDateTimeType field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
                         <CHOICE92 minOccurs="1" maxOccurs="1" help="">
                           <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
                             <calendarDate minOccurs="1" maxOccurs="1" help="The calendar date field is used to express a date, giving the year, month, and day. The format should be one that complies with the International Standards Organization's standard 8601. The recommended format for EML is YYYY-MM-DD, where Y is the four digit year, M is the two digit month code (01 - 12, where January = 01), and D is the two digit day of the month (01 - 31).">
@@ -1593,7 +1593,7 @@
                           </alternativeTimeScale>
                         </CHOICE92>
                       </singleDateTime>
-                      <rangeOfDates editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" minOccurs="1" maxOccurs="1" help="The 'RangeOfDatesType' field is intended to be used for describing a range of dates and/or times. It may be used multiple times to document multiple date ranges. It allows for two 'singleDateTime' fields, the first to be used as the beginning dateTime, and the second to be used as the ending dateTime of the range.">
+                      <rangeOfDates minOccurs="1" maxOccurs="1" help="The 'RangeOfDatesType' field is intended to be used for describing a range of dates and/or times. It may be used multiple times to document multiple date ranges. It allows for two 'singleDateTime' fields, the first to be used as the beginning dateTime, and the second to be used as the ending dateTime of the range.">
                         <beginDate minOccurs="1" maxOccurs="1" help="A single time stamp signifying the beginning of some time period. There is a choice between two options: a calendar date with a time, or a geologic age.">
      <CHOICE0 minOccurs="1" maxOccurs="1" help="">
     <SEQUENCE1 minOccurs="1" maxOccurs="1" help="">
@@ -2694,6 +2694,12 @@
                     <SEQUENCE378 minOccurs="1" maxOccurs="1" help="">
                       <CHOICE379 minOccurs="1" maxOccurs="unbounded" help="">
                         <individualName minOccurs="1" maxOccurs="1" help="The responsible party field contains the full name of the person that is associated with the resource. This field contains subfields that break the persons name down into first and last name, and the values are entered into those field containers. Note that this field, used in conjunction with 'organizationName' and 'positionName' make up a single logical originator. Because of this, an originator with only the individualName of 'Joe Smith' is NOT the same as an originator with the name of 'Joe Smith' and the organizationName of 'NSF'. Also, the positionName should not be used in conjunction with individualName unless only that individual at that position would be considered an originator for the data package. If a positionName is used in conjunction with an organizationName, then that implies that any person who currently occupies said positionName at organizationName is the originator of the data package.">
+                          <salutation minOccurs="0" maxOccurs="unbounded" help="The salutation field is used in addressing an individual with a particular title, such as Dr., Ms., Mrs., Mr., etc.">
+                          </salutation>
+                          <givenName minOccurs="0" maxOccurs="unbounded" help="The given name field is used for the first name of the individual associated with the resource.">
+                          </givenName>
+                          <surName minOccurs="1" maxOccurs="1" help="The surname field is used for the last name of the individual associated with the resource.">
+                          </surName>
                         </individualName>
                         <organizationName minOccurs="1" maxOccurs="1" help="The responsible party field contains the full name of the organization that is associated with the resource. This field is intended to describe which institution or overall organization is associated with the resource being described. Note that this field, used in conjunction with 'individualName' and 'positionName' make up a single logical originator. Because of this, an originator with only the individualName of 'Joe Smith' is NOT the same as an originator with the name of 'Joe Smith' and the organizationName of 'NSF'. Also, the positionName should not be used in conjunction with individualName unless only that individual at that position would be considered an originator for the data package. If a positionName is used in conjunction with an organizationName, then that implies that any person who currently occupies said positionName at organizationName is the originator of the data package.">
                         </organizationName>
