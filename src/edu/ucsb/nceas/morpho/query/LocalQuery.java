@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.15 2000-12-15 17:44:54 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.16 2000-12-28 21:56:27 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -577,8 +577,8 @@ void queryAll()
 	    rss[1] = getLastPathElement(filename);     //docname
 	    rss[2] = currentDoctype;                   // doctype
 	    
-	    rss[3] =  getValueForPath("title",filename);  // title
-	   
+	    rss[3] =  getValueForPath("//*/title",filename);  // title
+	    if (rss[3].equals("")) { rss[3] = filename; }
 	    for (int i=0;i<returnFields.size();i++) {
 	        rss[4+i] = getValueForPath((String)returnFields.elementAt(i),filename);   
 	    }
