@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.31 2000-12-19 23:46:23 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.32 2000-12-22 00:12:55 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -681,6 +681,13 @@ public class QueryBean extends AbstractQueryBean
 		config1.addActionListener(lSymAction);
 		//}}
 
+
+		QueryChoiceTabs.add(Extra);
+		TestSearch = new JButton("SpecialSearch");
+		TestSearch.setActionCommand("SpecialSearch");
+		TestSearch.addActionListener(lSymAction);
+		Extra.add(TestSearch);
+
 		popupListener = new PopupListener();
 		ShowmenuItem = new JMenuItem("Display Document");
 		ShowmenuItem.addActionListener(lSymAction);
@@ -775,6 +782,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JPanel RefineQueryPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel QueryControls1 = new javax.swing.JPanel();
 	javax.swing.JButton SearchButton1 = new javax.swing.JButton();
+	javax.swing.JButton TestSearch = new javax.swing.JButton();
 	javax.swing.JLabel Bfly1 = new javax.swing.JLabel();
 	javax.swing.JPanel QueryChoicesPanel11 = new javax.swing.JPanel();
 	javax.swing.JScrollPane ChoicesScrollPane1 = new javax.swing.JScrollPane();
@@ -836,6 +844,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
 	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel12 = new javax.swing.JPanel();
+	javax.swing.JPanel Extra = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
 	javax.swing.JLabel UnderConstruction1 = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.models.StringListModel DocTypeListModel = new com.symantec.itools.javax.swing.models.StringListModel();
@@ -967,9 +976,25 @@ public class QueryBean extends AbstractQueryBean
 				config_actionPerformed(event);
 			else if (object == config1)
 				config_actionPerformed(event);
+			else if (object == TestSearch) {
+			    TestSearch_actionPerformed(event);
+			}
 			
 		}
 	}
+
+    void TestSearch_actionPerformed(java.awt.event.ActionEvent event)
+    {
+        String searchtext = "<?xml version=\"1.0\"?>\n";
+        searchtext = searchtext + "<pathquery version=\"1.0\">\n";
+        searchtext = searchtext + "<owner>higgins</owner>\n";
+        searchtext = searchtext + "<querygroup operator=\"UNION\">\n";
+        searchtext = searchtext + "<queryterm casesensitive=\"true\" searchmode=\"contains\">\n";
+        searchtext = searchtext + "<value>%</value>\n";
+        searchtext = searchtext + "</queryterm></querygroup></pathquery>";
+	    squery_submitToDatabase(searchtext);
+        
+    }
 
 	void ShowMenuItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
