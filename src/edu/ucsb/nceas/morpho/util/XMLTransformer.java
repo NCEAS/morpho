@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-11 03:47:54 $'
- * '$Revision: 1.28 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-18 16:48:40 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -364,8 +364,10 @@ public class XMLTransformer
                                                ATTRIB_NAME_FOR_SCHEMA_LOCATION);
           // since schema location string may contain multiple substrings
           // separated by spaces, we take only the first of these substrings:
-          identifier = identifier.trim().substring(0, identifier.indexOf(" "));
-          Log.debug(50,"getAttributeNS schemaLocation is: "+identifier);
+          if ((identifier!=null) && ( !identifier.trim().equals(""))) {
+            identifier = identifier.trim().substring(0, identifier.indexOf(" "));
+            Log.debug(50,"getAttributeNS schemaLocation is: "+identifier);
+          }
         }
 
         //if this is null, then try to get namespace of root node:
