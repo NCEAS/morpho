@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:39 $'
- * '$Revision: 1.8 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-26 18:13:55 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ public class SaveQueryCommand implements Command
       // Create a GUIAction to run saved query
       GUIAction savedSearchItemAction = 
                 new GUIAction(query.getQueryTitle(), null,command);
-      savedSearchItemAction.setMenu("Search", 3);  
+      savedSearchItemAction.setMenu("Search", 2);  
       savedSearchItemAction.setMenuItemPosition(-1);  
       savedSearchItemAction.setToolTipText("Execute saved search");
       UIController.getInstance().addGuiAction(savedSearchItemAction);
