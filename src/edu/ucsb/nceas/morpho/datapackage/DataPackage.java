@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-09 20:28:39 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-10 03:59:12 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import java.util.Vector;
 
 public class DataPackage 
 {
+  TripleCollection triples = new TripleCollection();
   /**
    * Create a new data package object with an id, location and associated
    * relations.
@@ -45,6 +46,24 @@ public class DataPackage
                      ClientFramework framework)
   {
     framework.debug(9, "Creating new DataPackage Object");
-    framework.debug(9, "relations are: " + relations.toString());
+    framework.debug(9, "id: " + identifier);
+    framework.debug(9, "location: " + location);
+    /*for(int i=0; i<relations.size(); i++)
+    {
+      
+      System.out.print(((String[])relations.elementAt(i))[0] + " ");
+      System.out.print(((String[])relations.elementAt(i))[1] + " ");
+      System.out.print(((String[])relations.elementAt(i))[2] + " ");
+      System.out.println();
+    }*/
+    getTriples(identifier, location);
+  }
+  
+  /**
+   * get the file with the given id and parse any triples out of it.
+   */
+  private void getTriples(String id, String location)
+  {
+    
   }
 }
