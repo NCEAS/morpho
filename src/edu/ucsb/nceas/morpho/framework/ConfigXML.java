@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-18 00:45:41 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2001-04-25 17:52:39 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,16 +197,16 @@ public class ConfigXML
    * @param key 'key' is element name.
    * @param i index in set of elements with 'key' name
    * @param value new value to be inserted in ith key
+   * @return boolean true if the operation succeeded
    */
-  /*
-   * set the text node corresponding to key with indicated value
-   */
-  public void set(String key, int i, String value)
+  public boolean set(String key, int i, String value)
   {
+    boolean result = false;
     NodeList nl = doc.getElementsByTagName(key);
     if (nl.getLength() <= i)
     {
-      System.out.println("Error setting XMLConfig value: index too large");
+      result = false;
+      //System.out.println("Error setting XMLConfig value: index too large");
     }
     else
     {
@@ -215,32 +215,49 @@ public class ConfigXML
       {
         cn.setNodeValue(value);
       }
+      result = true;
     }
+    return result;
   }
 
   /**
    * Inserts another node before the first element with
-   * the name contained in 'key'
+   * the name contained in 'key', otherwise appends it
+   * to the end of the config file (last element in root node)
    * 
    * @param key element name which will be duplicated
    * @param value value for new element
+   * @return boolean true if the operation succeeded
    */
-  public void insert(String key, String value)
+  public boolean insert(String key, String value)
   {
+    boolean result = false;
+
+    // Create the new element, with its text value child
+    Node newElem = doc.createElement(key);
+    Node newText = doc.createTextNode(value);
+    newElem.appendChild(newText);
+
+    // Determine if there are existing elements of the same name
     NodeList nl = doc.getElementsByTagName(key);
+
+    // If so, insert new element before existing
     if (nl.getLength() > 0)
     {
       Node nnn = nl.item(0);
       Node parent = nnn.getParentNode();
-      Node newElem = doc.createElement(key);
-      Node newText = doc.createTextNode(value);
-      //add text to element
-        newElem.appendChild(newText);
       //insert newElem before nnn
-        parent.insertBefore(newElem, nnn);
+      parent.insertBefore(newElem, nnn);
+      result = true;
+    } 
+    // Otherwise, append new element to end of root
+    else 
+    {
+      root.appendChild(newElem);
+      result = true;
     }
+    return result;
   }
-
 
   /**
    * Add a child node to the specified parent
@@ -378,6 +395,14 @@ public class ConfigXML
       }
     }
     return ht;
+  }
+
+  /**
+   * Save the configuration file
+   */
+  public void save()
+  {
+    saveDOM(root);
   }
 
   /**
