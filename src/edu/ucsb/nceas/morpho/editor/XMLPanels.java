@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-26 23:11:02 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2004-03-28 22:49:44 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,10 +153,24 @@ public class XMLPanels extends Component
             System.out.println(e);
           }
         }
-
+          refLock = false;
           doPanels(doc,topPanel);
     }
     
+    /**
+     *  refLock is used to 'lock' all the subpanels of any 'referenced' node
+     *  displayed on the right side of the editor. i.e. the referenced data is
+     *  displayed but can only be edited in the original location of the node
+     */
+    boolean refLock = false;
+    
+    /**
+     *  this method recursively displays a node and its children in a Panel
+     *  that appears on the right side of the display
+     *  It looks for 'special editors' in the nodes data to determine how
+     *  to display the subtree; if no special editor, a set of nested panels
+     *  with simple text boxes is displayed.
+     */
     void doPanels(DefaultMutableTreeNode node, JPanel panel) {
       boolean locked = false;
     // panel is the surrounding panel for this node
@@ -164,6 +178,7 @@ public class XMLPanels extends Component
       NodeInfo inf = (NodeInfo)(node.getUserObject());
       DefaultMutableTreeNode refsNode = getRefsNode(node);
       if (refsNode!=null) {
+        refLock = true;
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)refsNode.getRoot();
         DefaultMutableTreeNode kid = (DefaultMutableTreeNode)refsNode.getFirstChild();
         NodeInfo kidni = (NodeInfo)(kid.getUserObject());
@@ -201,7 +216,7 @@ public class XMLPanels extends Component
         }
       }
       else {
-        panel.add(getDataPanel(node, locked));
+        panel.add(getDataPanel(node, locked||refLock));
         // iterate over children of this node
         Enumeration nodes = node.children();
         // loop over child node
@@ -215,8 +230,10 @@ public class XMLPanels extends Component
                 ((info.name).indexOf("SEQUENCE")<0) )  
             {
               JPanel new_panel = new JPanel();
+              String borderTitle = info.toString();
+              if (refLock) borderTitle = borderTitle + ":     (REFERENCE)";
               new_panel.setBorder(BorderFactory.createCompoundBorder(
-                 BorderFactory.createTitledBorder(info.toString()),
+                 BorderFactory.createTitledBorder(borderTitle),
                  BorderFactory.createEmptyBorder(4, 4, 4, 4)
                  ));
               numPanels++;
@@ -283,17 +300,6 @@ public class XMLPanels extends Component
           jta.setEnabled(false); // adding this line makes the help text gray & skips focus on help
           jta.setBackground(jp1.getBackground());
           jsp.getViewport().add(jta);
-//          int helplen = helpString.length();
-//         int vertsize = (1+helplen/50)*16;
-//          if (vertsize>70) {
-//            jp1.setMaximumSize(new Dimension(panelWidth,vertsize));
-//            jp1.setPreferredSize(new Dimension(panelWidth,vertsize));
-//           }
-          
-//          JLabel jl = new JLabel();
- //         jl.setForeground(Color.black);
- //         jl.setText("<html><font size='-1'>"+helpString+"</html>");
- //         jp1.add(jl);
             jp1.add(jsp);
             jta.setText(helpString);
             jta.setCaretPosition(0);
