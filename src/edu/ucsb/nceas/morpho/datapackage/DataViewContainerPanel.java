@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-09 21:56:24 $'
- * '$Revision: 1.74 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-11 03:47:53 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,10 +74,10 @@ import edu.ucsb.nceas.morpho.framework.*;
  * space is alloted to the data display, but the dividers can be dragged by the user to
  * customize the display
  */
-public class DataViewContainerPanel extends javax.swing.JPanel 
+public class DataViewContainerPanel extends javax.swing.JPanel
              implements MouseListener,
-                        ChangeListener, 
-                        StateChangeListener, 
+                        ChangeListener,
+                        StateChangeListener,
                         StoreStateChangeEvent,
                         EditingCompleteListener
 {
@@ -85,12 +85,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * top-panel metaviewer default title at startup
    */
   private static final String TOP_METAVIEW_TITLE = "Data Package Documentation";
-    
+
   /**
    * top-panel metaviewer default title at startup
    */
   private static final String RIGHT_METAVIEW_TITLE = "Entity/Attribute";
-    
+
   /**
    * The DataPackage that contains the data
    */
@@ -100,25 +100,25 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * The AbstractDataPackage that contains the data
    */
   AbstractDataPackage adp;
-  
+
   /**
    * toppanel is added to packageMetadataPanel by init
    */
   JPanel toppanel;
-  
+
   private JPanel packagePanel;
-  
+
   /**
    * tabbedEntitiesPanel is the tabbed panel which contains
    * the entity list (as tabs) + dataView + entityMetadata
    */
    JTabbedPane tabbedEntitiesPanel;
-  
+
   /**
    * dataViewPanel is the base panel for the data display
    */
   JPanel dataViewPanel;
- 
+
   /**
    * Panel where package level metadata is displayed
    */
@@ -128,42 +128,42 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * reference to the top level Morpho class
    */
   Morpho morpho;
-  
+
   /**
    * the configuration class (of course)
    */
   ConfigXML config;
-  
+
   /**
    * Array of Entity File objects corresponding to each of the tabs
    */
   File[] entityFile;
-  
+
   /**
    * global to keep track of last tab selected
    */
   int lastTabSelected = 0;
-  
+
   // Store the current data viewer
   private DataViewer dv = null;
-  
+
   Hashtable listValueHash = new Hashtable();
   JSplitPane entityPanel;
   JPanel entityMetadataPanel;
   JPanel currentDataPanel;
   JSplitPane vertSplit;
-  
+
   Vector entityItems = null;
   PersistentVector lastPV = null;
   JLabel moreLabel;
-  
+
 
   private static MetaDisplayFactoryInterface metaDisplayFactory = null;
-  
+
   private ActionListener mdHideListener;
-  
+
   private static final int METADATA_PANEL_DEFAULT_WIDTH = 675;
-  
+
   // Store the event
   private Vector storedStateChangeEventlist = new Vector();
   /*
@@ -182,8 +182,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     dataViewPanel = new JPanel();
     dataViewPanel.setLayout(new BorderLayout(0,0));
     JPanel AttributeMetadataPanel = new JPanel();
-		
-  
+
+
 //ScrollTabLayout only works for Java 1.4; commented out for now so will compile unbder 1.3
 // tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
 
@@ -192,22 +192,26 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
     tabbedEntitiesPanel.addMouseListener(
       new MouseAdapter() {
-        
+
         String id = null;
         String item = null;
         MetaDisplayInterface mdi = null;
         TabbedContainer container = null;
-        
-        public void mouseReleased(MouseEvent me) { 
+
+        public void mouseReleased(MouseEvent me) {
           container = (TabbedContainer)
                             tabbedEntitiesPanel.getComponentAt(lastTabSelected);
           mdi = container.getMetaDisplayInterface();
           item = (String)entityItems.elementAt(lastTabSelected);
 //          id = (String)listValueHash.get(item);
-          id = getEntityIDForThisEntityName(item);
-          if (id==mdi.getIdentifier()) return;
+          id = mdi.getIdentifier();
+
           //update metaview to show entity:
           try {
+            mdi.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
+                            XMLTransformer.XSLVALU_DISPLAY_ENTITY);
+            mdi.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
+                String.valueOf(lastTabSelected + 1));
             mdi.display(id);
           } catch (DocumentNotFoundException m) {
             Log.debug(5, "Unable to display Entity:\n"+m.getMessage());
@@ -216,7 +220,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           resetTableSelection();
         }
       });
-    
+
     // this panel added just so splitter colors can be set
     JPanel entitiesContainerPanel = new JPanel();
 //    entitiesContainerPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
@@ -235,9 +239,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     this.add(BorderLayout.CENTER,vertSplit);
     vertSplit.setDividerLocation(UISettings.VERT_SPLIT_INIT_LOCATION);
     this.setVisible(true);
- 
+
   }
-  
+
   /*
    * this constructor uses DataPackage and DataPackageGUI objects
    * to build the interior object in the Panel
@@ -290,7 +294,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     refPanel.add(refPanelLine2);
     refPanel.add(moreLabel);
     refPanelTop.add(BorderLayout.CENTER, refPanel);
-    
+
  //   refPanel.add(BorderLayout.CENTER, refLabel);
  //   refLabel.setFont(UISettings.TITLE_CITATION_FONT);
 
@@ -303,11 +307,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     locationPanel.setBorder(margin0);
     locationPanel.setBackground(UISettings.CUSTOM_GRAY);
     locationPanel.setOpaque(true);
-    ImageIcon localIcon 
+    ImageIcon localIcon
       = new ImageIcon(getClass().getResource("local-package-small.png"));
-    ImageIcon metacatIcon 
+    ImageIcon metacatIcon
       = new ImageIcon(getClass().getResource("network-package-small.png"));
-    ImageIcon blankIcon 
+    ImageIcon blankIcon
       = new ImageIcon(getClass().getResource("blank.gif"));
     JLabel localLabel = new JLabel("local");
     localLabel.setBackground(UISettings.CUSTOM_GRAY);
@@ -331,15 +335,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       netLabel.setIcon(blankIcon);
     }
     else {   // both
-      
+
     }
     locationPanel.add(BorderLayout.NORTH,localLabel);
     locationPanel.add(BorderLayout.SOUTH, netLabel);
-    
+
     refPanelTop.add(BorderLayout.EAST, locationPanel);
-    
-// refpanel is created in this class and added to the top of the 
-// panel in the next statement  
+
+// refpanel is created in this class and added to the top of the
+// panel in the next statement
     packagePanel.add(BorderLayout.NORTH,refPanelTop);
     this.morpho = dpgui.morpho;
     this.toppanel = packagePanel;
@@ -350,7 +354,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //  vertSplit.setDividerLocation(refPanel.getHeight());
 
   }
- 
+
   /*
    * this constructor uses an 'AbstractDataPackage' object
    * to build the interior object in the Panel
@@ -361,7 +365,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     this.adp = adp;
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(5,5));
-    
+
     entityItems = new Vector();
     int numEnts = 0;
     if (adp.getEntityArray()==null) {
@@ -411,7 +415,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     refPanel.add(refPanelLine2);
     refPanel.add(moreLabel);
     refPanelTop.add(BorderLayout.CENTER, refPanel);
-    
+
  //   refPanel.add(BorderLayout.CENTER, refLabel);
  //   refLabel.setFont(UISettings.TITLE_CITATION_FONT);
 
@@ -424,11 +428,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     locationPanel.setBorder(margin0);
     locationPanel.setBackground(UISettings.CUSTOM_GRAY);
     locationPanel.setOpaque(true);
-    ImageIcon localIcon 
+    ImageIcon localIcon
       = new ImageIcon(getClass().getResource("local-package-small.png"));
-    ImageIcon metacatIcon 
+    ImageIcon metacatIcon
       = new ImageIcon(getClass().getResource("network-package-small.png"));
-    ImageIcon blankIcon 
+    ImageIcon blankIcon
       = new ImageIcon(getClass().getResource("blank.gif"));
     JLabel localLabel = new JLabel("local");
     localLabel.setBackground(UISettings.CUSTOM_GRAY);
@@ -452,14 +456,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       netLabel.setIcon(blankIcon);
     }
     else {   // both
-      
+
     }
     locationPanel.add(BorderLayout.NORTH,localLabel);
     locationPanel.add(BorderLayout.SOUTH, netLabel);
-    
+
     refPanelTop.add(BorderLayout.EAST, locationPanel);
-// refpanel is created in this class and added to the top of the 
-// panel in the next statement  
+// refpanel is created in this class and added to the top of the
+// panel in the next statement
     packagePanel.add(BorderLayout.NORTH,refPanelTop);
 //    this.morpho = dpgui.morpho;
     this.toppanel = packagePanel;
@@ -495,13 +499,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       if (GUIAction.getMorphoFrameAncestor(this) == null)
       {
         //Store the event
-        storingStateChangeEvent(new StateChangeEvent(this, 
+        storingStateChangeEvent(new StateChangeEvent(this,
                           StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
       }
       else
       {
         StateChangeMonitor.getInstance().notifyStateChange(
-                      new StateChangeEvent(this, 
+                      new StateChangeEvent(this,
                           StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
       }
       moreLabel.setVisible(false);
@@ -511,7 +515,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     entityFile = new File[entityItems.size()];
     for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
-      
+
       String item = (String)entityItems.elementAt(i);
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
@@ -521,38 +525,45 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         if ((id==null)||(id.equals(""))) id = "tempid";
 
 //      String location = dp.getLocation();
-       
+
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
-    
+
     MetaDisplayInterface md = null;
 //DFH    if (dp!=null) {  // old datapackage
       // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
       // add Component to 'currentEntityMetadataPanel' which has a borderlayout
-      
+
 // --------- E N T I T Y / A T T R I B U T E   M e t a D i s p l a y -----------
       md = getMetaDisplayInstance();
       md.addEditingCompleteListener(this);
       md.setTitle(RIGHT_METAVIEW_TITLE);
+
+      md.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
+                  XMLTransformer.XSLVALU_DISPLAY_ENTITY);
+      md.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
+                                "1");
+
+
       Component mdcomponent = null;
       try{
-        mdcomponent = md.getDisplayComponent(id, adp, 
+        mdcomponent = md.getDisplayComponent(id, adp,
                                       new MetaViewListener(currentEntityPanel));
       }
       catch (Exception m) {
-        Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
+        Log.debug(5, "Unable to display MetaData:\n"+m.getMessage());
         // can't display requested ID, so just display empty viewer:
         try{
           mdcomponent = md.getDisplayComponent(adp, null);
         }
         catch (Exception e) {
-          Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
+          Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage());
           e.printStackTrace();
         }
       }
       currentEntityMetadataPanel.add(BorderLayout.CENTER, mdcomponent);
 //DFH    }
       currentEntityPanel.setDividerLocation(METADATA_PANEL_DEFAULT_WIDTH);
-      
+
       // create a tabbed component instance
       TabbedContainer component = new TabbedContainer();
       component.setSplitPane(currentEntityPanel);
@@ -565,21 +576,21 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //DFH      if (dp!=null) {
 //DFH        this.entityFile[i] = dp.getFileFromId(id);
 //DFH      }
-    
+
       // create the data display panel (usually a table) using DataViewer class
-//      String fn = dp.getDataFileName(id);    
+//      String fn = dp.getDataFileName(id);
 //      File fphysical = dp.getPhysicalFile(id);
 //      File fattribute = dp.getAttributeFile(id);
 //      File f = dp.getDataFile(id);
 //      String dataString = "";
     }
     tabbedEntitiesPanel.addChangeListener(this);
-    
-    if (entityItems.size()>0) 
+
+    if (entityItems.size()>0)
     {
       setDataViewer(0);
-      
-      // Register the instance of this class as an listener in state change 
+
+      // Register the instance of this class as an listener in state change
       // monitor
       StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
       stateMonitor.addStateChangeListener
@@ -590,13 +601,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       if (GUIAction.getMorphoFrameAncestor(this) == null)
       {
         //Store the event
-        storingStateChangeEvent(new StateChangeEvent( this, 
+        storingStateChangeEvent(new StateChangeEvent( this,
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
-        
+
       }//
       else
-      {                         
-        stateMonitor.notifyStateChange( new StateChangeEvent( this, 
+      {
+        stateMonitor.notifyStateChange( new StateChangeEvent( this,
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
       }//else
 //      if (dp!=null) {
@@ -612,14 +623,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     // Simply add Component to the packagePanel container, which has a Border
     // layout. leave the 'NORTH' region empty, since the
     // refpanel is added there later
-    private void initDPMetaView(boolean hasData) 
+    private void initDPMetaView(boolean hasData)
     {
 // -------------- D A T A P A C K A G E   M e t a D i s p l a y ----------------
       MetaDisplayInterface md = getMetaDisplayInstance();
       md.addEditingCompleteListener(this);
       md.setTitle(TOP_METAVIEW_TITLE);
       Component mdcomponent = null;
-  
+
       if (hasData) {
         StringBuffer suppressBuff = new StringBuffer();
         String nextAttributeFileID = null;
@@ -635,27 +646,27 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //              nextDataFileID      = dp.getDataFileID(nextEntityID);
 //              nextAttributeFileID = dp.getAttributeFileId(nextEntityID);
 //            }
-            
+
 /*            if (nextDataFileID!=null && !nextDataFileID.equals("")) {
                 suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
                 suppressBuff.append(nextDataFileID);
                 Log.debug(44,"adding datafile: "+nextDataFileID
                                                      +" to XSL suppress list");
             }
-            
+
             if (nextAttributeFileID!=null && !nextAttributeFileID.equals("")) {
                 suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
                 suppressBuff.append(nextAttributeFileID);
                 Log.debug(44,"adding attribute: "+nextAttributeFileID
                                                      +" to XSL suppress list");
             }
-*/						
+*/
         }
-        md.useTransformerProperty(  
-                              XMLTransformer.SUPPRESS_TRIPLES_SUBJECTS_XSLPROP, 
+        md.useTransformerProperty(
+                              XMLTransformer.SUPPRESS_TRIPLES_SUBJECTS_XSLPROP,
                               suppressBuff.toString());
-        md.useTransformerProperty( 
-                              XMLTransformer.SUPPRESS_TRIPLES_OBJECTS_XSLPROP, 
+        md.useTransformerProperty(
+                              XMLTransformer.SUPPRESS_TRIPLES_OBJECTS_XSLPROP,
                               suppressBuff.toString());
       }
       else {  // there is no data to display!
@@ -663,15 +674,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         vertSplit.setDividerLocation(1.0);
       }
       try{
-//        mdcomponent = md.getDisplayComponent( dp.getID(), dp,  
+//        mdcomponent = md.getDisplayComponent( dp.getID(), dp,
 //                                              new MetaViewListener(vertSplit));
         String tempid = adp.getPackageId();
         if ((tempid==null)||(tempid.equals(""))) tempid = "tempid";
-        mdcomponent = md.getDisplayComponent( tempid, adp,  
+        mdcomponent = md.getDisplayComponent( tempid, adp,
                                               new MetaViewListener(vertSplit));
       }
       catch (Exception m) {
-        Log.debug(5, "Unable to display Datapackage MetaData:\n"+m.getMessage()); 
+        Log.debug(5, "Unable to display Datapackage MetaData:\n"+m.getMessage());
         // can't display requested ID, so just display empty viewer:
         try{
 //          if (dp!=null) {
@@ -680,21 +691,21 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //          }
         }
         catch (Exception e) {
-          Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
+          Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage());
           e.printStackTrace();
         }
       }
       toppanel.add(BorderLayout.CENTER, mdcomponent);
 // ---------------------- End DataPackage MetaDisplay --------------------------
-    }  
-  
-  
-  
-// public setters for various members  
+    }
+
+
+
+// public setters for various members
   public void setFramework(Morpho cf) {
     this.morpho = cf;
   }
-  
+
   /**
    * Method to get frame work
    */
@@ -702,7 +713,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     return morpho;
   }
-  
+
   /**
    * Method to get data package
    */
@@ -710,7 +721,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     return dp;
   }
-  
+
   /**
    * Method to get current data viewer
    */
@@ -718,7 +729,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     return dv;
   }
-  
+
   public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
@@ -732,7 +743,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   public void removePVObject() {
     if (lastPV!=null) {
-      lastPV.delete();  
+      lastPV.delete();
     }
   }
 
@@ -757,12 +768,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
             && dv!=null && tabbedEntitiesPanel!=null && dv.getDataTable()!=null)
     {
         // Get new ID displayed in metaviewer
-        TabbedContainer container = 
+        TabbedContainer container =
            (TabbedContainer)tabbedEntitiesPanel.getComponentAt(lastTabSelected);
         String newID = container.getMetaDisplayInterface().getIdentifier();
         Log.debug(50,"newID="+newID);
 
-        //check if it's an entity (if so, deselect all)  
+        //check if it's an entity (if so, deselect all)
         //or an attribute (if so, select that attribute)
         String item = (String)entityItems.elementAt(lastTabSelected);
 //        String entityID = (String)listValueHash.get(item);
@@ -783,32 +794,32 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           }
           dv.getDataTable().setColumnSelectionInterval( selectedColIndex,
                                                         selectedColIndex);
-          
+
           Log.debug(50,"& & & & & & & & & & selectedAttribs="+selectedAttribs
                                    +";\n selectedColIndex = "+selectedColIndex);
         }
     }
   }
-  
+
   private void resetTableSelection()
   {
     if (dv!=null && dv.getDataTable()!=null) {
       JTable table = dv.getDataTable();
-    
+
       if (table.getRowCount()>0 && table.getColumnCount()>0) {
         table.setRowSelectionInterval(0,0);
         table.setColumnSelectionInterval(0,0);
       }
     }
   }
-  
-  //convenience method to get the entity identifier for a given entity 
+
+  //convenience method to get the entity identifier for a given entity
   //title/name
   private String getEntityIDForThisEntityName(String entityName) {
-  
+
       return (String)listValueHash.get(entityName);
   }
-  
+
   /**
    * creates the data display and puts it into the center of the window
    * This needs to be dynamically done as tabs are selected due to potentially
@@ -816,7 +827,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    */
   private void setDataViewer(int index) {
     File displayFile = null;
-    TabbedContainer comp = 
+    TabbedContainer comp =
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
     JSplitPane entireDataPanel = comp.getSplitPane();
     JPanel currentDataPanelOld = (JPanel)entireDataPanel.getLeftComponent();
@@ -828,7 +839,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       String item = (String)entityItems.elementAt(index);
       String id = getEntityIDForThisEntityName(item);
       dataId = dp.getDataFileID(id);
-      String fn = dp.getDataFileName(id);    
+      String fn = dp.getDataFileName(id);
       File fphysical = dp.getPhysicalFile(id);
       File fattribute = dp.getAttributeFile(id);
       File f = dp.getDataFile(id);
@@ -848,24 +859,24 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       String inline = adp.getDistributionInlineData(index, 0,0);
          // assume the first set of physical and distribution data
       if (inline.length()>0) {  // there is inline data
-        // there may be a problem here with putting inline data in a string 
+        // there may be a problem here with putting inline data in a string
         // if the amount of inline data is vary large; assume for now that very large sets
         // of inline data has been removed before reaching here (needs to be done so that
         // DOM can be created!!!)
         // ********************
-        // now check to see if the inline data is in base64 format; if not, assumed to be in 
+        // now check to see if the inline data is in base64 format; if not, assumed to be in
         // a text format
         String encMethod = adp.getEncodingMethod(index, 0);
         if ((encMethod.indexOf("Base64")>-1)||(encMethod.indexOf("base64")>-1)||
             (encMethod.indexOf("Base 64")>-1)||(encMethod.indexOf("base 64")>-1)) {
           // is Base64
-          
+
           // test --- first encode
           // byte[] decodedData1 = inline.getBytes();
           // String temp = Base64.encode(decodedData1);
-          // Log.debug(1, "temp: "+temp);      
+          // Log.debug(1, "temp: "+temp);
           // byte[] decodedData = Base64.decode(temp);
-          
+
           byte[] decodedData = Base64.decode(inline);
           ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
           InputStreamReader isr = new InputStreamReader(bais);
@@ -894,15 +905,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         // should have trimmed 'other'
         if (urlinfo.length()==0) return;
         // if we reach here, urlinfo should be the id in a string
-        try{ 
+        try{
           String loc = adp.location;
           if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
             FileSystemDataStore fds = new FileSystemDataStore(morpho);
-            displayFile = fds.openFile(urlinfo);            
+            displayFile = fds.openFile(urlinfo);
           }
           else if (loc.equals(adp.METACAT)) {
             MetacatDataStore mds = new MetacatDataStore(morpho);
-            displayFile = mds.openFile(urlinfo);            
+            displayFile = mds.openFile(urlinfo);
           }
           else if (loc.equals("")) {  // just created the package; not yet saved!!!
             // the datafile should be stored in the profile temp dir
@@ -913,7 +924,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
             String temp = new String();
             temp = urlinfo.substring(0, urlinfo.indexOf(separator));
             temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-            displayFile = fds.openTempFile(temp);            
+            displayFile = fds.openTempFile(temp);
           }
         }
         catch (Exception q) {Log.debug(5,"Exception opening file!");}
@@ -950,12 +961,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       warning.setForeground(UISettings.ALERT_TEXT_COLOR);
       tablePanel.add(BorderLayout.CENTER, warning);
     }
-    
+
     tablePanel.setOpaque(true);
     tablePanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
     //JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
     //JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
-    TabbedContainer compn = 
+    TabbedContainer compn =
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(index);
     JSplitPane entireDataPane = compn.getSplitPane();
     JPanel currentDataPanel = (JPanel)entireDataPane.getLeftComponent();
@@ -970,59 +981,64 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       {
         for (int i= 0; i<eventList.size(); i++)
         {
-          StateChangeEvent eventInKid = 
+          StateChangeEvent eventInKid =
                                   (StateChangeEvent) eventList.elementAt(i);
           storingStateChangeEvent(eventInKid);
         }//for
       }//if
-        
+
     }//if
     else
     {
       //frame already has, borading the event
       dv.broadcastStoredStateChangeEvent();
     }
-   
+
   }
-  
+
   private JSplitPane createEntityPanel() {
     JPanel entityMetadataPanel = new JPanel();
     entityMetadataPanel.setLayout(new BorderLayout(0,0));
     dataViewPanel = new JPanel();
     dataViewPanel.setLayout(new BorderLayout(0,0));
-    
+
     entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, entityMetadataPanel);
     if (UIManager.getSystemLookAndFeelClassName().indexOf("WindowsLookAndFeel")>-1) {
       entityPanel.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
     }
     entityPanel.setOneTouchExpandable(true);
     entityPanel.setDividerLocation(700);
-    
+
     return entityPanel;
   }
-  
+
   /*  Method to create a attribute panel to replace entity */
-  private void showDataViewAndAttributePanel(int selectedColIndex) 
+  private void showDataViewAndAttributePanel(int selectedColIndex)
   {
-    TabbedContainer container = 
+    TabbedContainer container =
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
     MetaDisplayInterface meta = container.getMetaDisplayInterface();
     // Get Uattribute file identifier
     String item = (String)entityItems.elementAt(lastTabSelected);
 //    String id = (String)listValueHash.get(item);
     String id = getEntityIDForThisEntityName(item);
-    String identifier = dp.getAttributeFileId(id);
+    String identifier = meta.getIdentifier();
+    Log.debug(10, ""+lastTabSelected + " " + selectedColIndex);
     try
     {
+      meta.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
+                XMLTransformer.XSLVALU_DISPLAY_ATTRB);
+      meta.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
+                String.valueOf(lastTabSelected + 1));
       meta.useTransformerProperty(XMLTransformer.SELECTED_ATTRIBS_XSLPROP,
-                                  String.valueOf(selectedColIndex));
+                                  String.valueOf(selectedColIndex + 1));
       meta.display(identifier);
-                        
+
     } catch (DocumentNotFoundException m) {
       Log.debug(5, "Unable to display Attribute:\n"+m.getMessage());
     }
   }
-  
+
   public void stateChanged(javax.swing.event.ChangeEvent event) {
     Object object = event.getSource();
     if (object == tabbedEntitiesPanel) {
@@ -1030,8 +1046,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       setDataViewer(k);
     }
   }
-  
-  
+
+
   private MetaDisplayInterface getMetaDisplayInstance()
   {
     if (metaDisplayFactory==null) {
@@ -1062,8 +1078,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       storedStateChangeEventlist.add(event);
     }
   }
-  
-    
+
+
   /**
    * Get the  stored state change event.
    */
@@ -1071,7 +1087,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     return storedStateChangeEventlist;
   }
-  
+
   /**
    * Broadcast the stored StateChangeEvent
    */
@@ -1081,20 +1097,20 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       for ( int i = 0; i< storedStateChangeEventlist.size(); i++)
       {
-        StateChangeEvent event = 
+        StateChangeEvent event =
                 (StateChangeEvent) storedStateChangeEventlist.elementAt(i);
         (StateChangeMonitor.getInstance()).notifyStateChange(event);
       }//for
     }//if
   }
-  
+
  /**
   *  returns the AbstractDataPackage for this Panel
   */
  public AbstractDataPackage getAbstractDataPackage() {
     return adp;
   }
-  
+
   /*
    * A class to keep the information for every tabbed panel
    */
@@ -1104,7 +1120,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     JSplitPane splitPane = null;
     // MetaDispaly in the splitPane
     MetaDisplayInterface metaDisplay = null;
-    
+
     /*
      * Constructor of this class
      */
@@ -1120,7 +1136,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       return splitPane;
     }
-    
+
     /*
      * Method to set up SplitPane
      */
@@ -1129,7 +1145,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       splitPane = pane;
       this.add(splitPane, BorderLayout.CENTER);
     }
-    
+
     /*
      * Method to get meta display interface
      */
@@ -1137,7 +1153,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       return metaDisplay;
     }
-    
+
     /*
      * Method to set meta display interface
      */
@@ -1145,18 +1161,18 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       metaDisplay = display;
     }
-    
+
   }//TabbedComponent
 
-  class MetaViewListener implements ActionListener 
+  class MetaViewListener implements ActionListener
   {
-  
+
     private JSplitPane entitySplitPane;
-    
+
     MetaViewListener(JSplitPane splitPane){
       this.entitySplitPane = splitPane;
     }
-  
+
     public void actionPerformed(ActionEvent e)
     {
       int closedPosition = 0;
@@ -1177,7 +1193,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   public void editingCompleted(String xmlString, String id, String location) {
 
     Log.debug(11, "editing complete: id: " + id + " location: " + location);
-    
+
     /* metadisplay class does not 'know' the location of a package
      * so it is set to null when the editor is called.
      * We thus get it here by checking the dataPackage instance.
@@ -1206,9 +1222,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       localloc = true;
     }
-  
+
     try
-    { 
+    {
       if(localloc)
       { //save the file locally
         if(id.trim().equals(dp.getID().trim()))
@@ -1216,14 +1232,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           String oldid = id;
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          
+
           // remove old version from cache
           if (LocalQuery.dom_collection.containsKey(oldid)) {
               LocalQuery.dom_collection.remove(oldid);
           }
 
      if (f==null) {
-        Log.debug(1,"file is null!");  
+        Log.debug(1,"file is null!");
      }
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
           fsds.saveFile(newid, new StringReader(newPackageFile));
@@ -1242,11 +1258,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           newids.addElement(newid);
           newids.addElement(newPackageId);
           //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
-                                                    oldids, 
+          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
+                                                    oldids,
                                                     newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);          
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
+          System.out.println("oldid: " + oldid + " newid: " + newid);
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile));
         }
       }
     }
@@ -1257,13 +1273,13 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       Log.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
-    
+
     try
     {
       if(metacatloc)
       { //save it to metacat
         MetacatDataStore mds = new MetacatDataStore(morpho);
-        
+
         if(id.trim().equals(dp.getID().trim()))
         { //edit the package file
           Vector oldids = new Vector();
@@ -1274,7 +1290,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           oldids.addElement(oldid);
           newids.addElement(newid);
           String newPackageFile = a.incRevInTriples(f, oldids, newids);
-          mds.saveFile(newid, new StringReader(newPackageFile), 
+          mds.saveFile(newid, new StringReader(newPackageFile),
                        dp);
           newPackageId = newid;
         }
@@ -1298,7 +1314,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
                                                     oldids,
                                                     newids);
-//          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
+//          mds.saveFile(newPackageId, new StringReader(newPackageFile),
 //                       dp);
           names.addElement(newPackageId);
           readers.addElement(new StringReader(newPackageFile));
@@ -1314,7 +1330,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       {
         Log.debug(0,"The file you are attempting to update " +
                                  "has been changed by another user.  " +
-                                 "Please refresh your query screen, " + 
+                                 "Please refresh your query screen, " +
                                  "open the package again and " +
                                  "re-enter your changes.");
         return;
@@ -1325,32 +1341,32 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       e.printStackTrace();
     }
     MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
-    
+
     // Show the new package
-    try 
+    try
     {
       ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
+      ServiceProvider provider =
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
       dataPackage.openDataPackage(location, newPackageId, null, null, null);
     }
-    catch (ServiceNotHandledException snhe) 
+    catch (ServiceNotHandledException snhe)
     {
        Log.debug(6, snhe.getMessage());
     }
-    
+
     thisFrame.setVisible(false);
     UIController controller = UIController.getInstance();
     controller.removeWindow(thisFrame);
     thisFrame.dispose();
 
   }
-  
+
   public void editingCanceled(String xmlString, String id, String location) {
-    
+
   }
-  
+
    public void mousePressed(MouseEvent e) {
    }
 
@@ -1387,7 +1403,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           moreLabel.setText("<html><a href=\".\"><b>less</b></a></html>");
         }
         else {
-          moreLabel.setText("<html><a href=\".\"><b>more</b></a></html>");          
+          moreLabel.setText("<html><a href=\".\"><b>more</b></a></html>");
         }
       }
 		}
