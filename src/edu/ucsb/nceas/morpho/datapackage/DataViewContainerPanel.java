@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-09 23:12:09 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2002-12-10 00:26:25 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -208,6 +208,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, packageMetadataPanel,
                                                           entitiesContainerPanel);
     vertSplit.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
+    SymComponent aSymComponent = new SymComponent();
+		packageMetadataPanel.addComponentListener(aSymComponent);
+
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
     vertSplit.setDividerLocation(UISettings.VERT_SPLIT_INIT_LOCATION);
@@ -1087,6 +1090,23 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
  }
 
+	class SymComponent extends java.awt.event.ComponentAdapter
+	{
+		public void componentResized(java.awt.event.ComponentEvent event)
+		{
+			Object object = event.getSource();
+			if (object == packageMetadataPanel) {
+				int cursize = vertSplit.getDividerLocation();
+        int maxsize = vertSplit.getMaximumDividerLocation();
+        if ((maxsize-cursize)<1) {
+          moreLabel.setText("<html><a href=\".\"><b>less</b></a></html>");
+        }
+        else {
+          moreLabel.setText("<html><a href=\".\"><b>more</b></a></html>");          
+        }
+      }
+		}
+	}
 
 }
 
