@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 01:51:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-22 18:00:08 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,19 +76,39 @@ public class QueryTerm
     return casesensitive;
   }
 
+  /** set if the QueryTerm is case sensitive */
+  public void setCaseSensitive(boolean isCaseSensitive) {
+    casesensitive = isCaseSensitive;
+  }
+
   /** get the searchmode parameter */
   public String getSearchMode() {
     return searchmode;
   }
  
+  /** set the searchmode parameter */
+  public void setSearchMode(String mode) {
+    searchmode = mode;
+  }
+
   /** get the Value parameter */
   public String getValue() {
     return value;
   }
 
+  /** set the value parameter */
+  public void setValue(String val) {
+    value = val;
+  }
+
   /** get the path expression parameter */
   public String getPathExpression() {
     return pathexpr;
+  }
+
+  /** set the path expression parameter */
+  public void setPathExpression(String val) {
+    pathexpr = val;
   }
 
   /**

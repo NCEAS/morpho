@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-21 23:46:10 $'
- * '$Revision: 1.9 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-22 18:00:08 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,16 +65,26 @@ public class Query extends DefaultHandler {
   /** The string representation of the pathquery (XML format) */
   private String queryString;
 
-  // Query data structures used temporarily during XML parsing
+  /** flag determining whether extended query terms are present */
   private boolean containsExtendedSQL=false;
+  /** Identifier for this query document */
   private String meta_file_id;
+  /** Title of this query */
   private String queryTitle;
-  private Vector doctypeList;
+  /** List of document types to be returned using package back tracing */
+  private Vector returnDocList;
+  /** List of document types to be searched */
+  private Vector filterDocList;
+  /** List of fields to be returned in result set */
   private Vector returnFieldList;
+  /** List of users owning documents to be searched */
   private Vector ownerList;
+  /** List of sites/scopes used to constrain search */
   private Vector siteList;
+  /** The root query group that contains the recursive query constraints */
   private QueryGroup query = null;
 
+  // Query data structures used temporarily during XML parsing
   private Stack elementStack;
   private Stack queryStack;
   private String currentValue;
@@ -95,29 +105,19 @@ public class Query extends DefaultHandler {
   private boolean searchLocal = true;
 
   /**
-   * construct an instance of the Query class 
+   * construct an instance of the Query class from an XML Stream
    *
    * @param queryspec the XML representation of the query (should conform
    *                  to pathquery.dtd) as a Reader
-   * @param parserName the fully qualified name of a Java Class implementing
-   *                  the org.xml.sax.XMLReader interface
+   * @param framework the client framework in which this Query is run
    */
   public Query(Reader queryspec, ClientFramework framework)
-         //throws IOException 
   {
-    super();
+    this(framework);
     
-    // Initialize the members
-    doctypeList = new Vector();
+    // Initialize temporary variables
     elementStack = new Stack();
     queryStack   = new Stack();
-    returnFieldList = new Vector();
-    ownerList = new Vector();
-    siteList = new Vector();
-    this.framework = framework;
-    this.config = framework.getConfiguration();
-
-    loadConfigurationParameters();
 
     // Store the text of the initial query
     StringBuffer qtext = new StringBuffer();
@@ -150,17 +150,35 @@ public class Query extends DefaultHandler {
   }
 
   /**
-   * construct an instance of the Query class 
+   * construct an instance of the Query class from an XML String
    *
    * @param queryspec the XML representation of the query (should conform
    *                  to pathquery.dtd) as a String
-   * @param parserName the fully qualified name of a Java Class implementing
-   *                  the org.xml.sax.Parser interface
+   * @param framework the client framework in which this Query is run
    */
   public Query( String queryspec, ClientFramework framework)
-         //throws IOException 
   {
     this(new StringReader(queryspec), framework);
+  }
+
+  /**
+   * construct an instance of the Query class, manually setting the Query
+   * constraints rather that readin from an XML stream
+   *
+   * @param framework the client framework in which this Query is run
+   */
+  public Query(ClientFramework framework)
+  {
+    // Initialize the members
+    returnDocList = new Vector();
+    filterDocList = new Vector();
+    returnFieldList = new Vector();
+    ownerList = new Vector();
+    siteList = new Vector();
+    this.framework = framework;
+    this.config = framework.getConfiguration();
+
+    loadConfigurationParameters();
   }
 
   /**
@@ -180,14 +198,20 @@ public class Query extends DefaultHandler {
   }
   
   /**
-   * Accessor method to return a vector of the extended return fields as
-   * defined in the &lt;returnfield&gt; tag in the pathquery dtd.
+   * Accessor method to return the identifier of this Query
    */
-  public Vector getReturnFieldList()
+  public String getIdentifier()
   {
-    return this.returnFieldList; 
+    return meta_file_id; 
   }
-
+  
+  /**
+   * method to set the identifier of this query
+   */
+  public void setIdentifier(String id) {
+    this.meta_file_id = id;
+  }
+   
   /**
    * Accessor method to return the title of this Query
    */
@@ -199,23 +223,143 @@ public class Query extends DefaultHandler {
   /**
    * method to set the title of this query
    */
-   public void setQueryTitle(String title) {
-      this.queryTitle = title;
-   }
+  public void setQueryTitle(String title) 
+  {
+    this.queryTitle = title;
+  }
    
-   /**
-    * method to set searchMetacat
-    */
-   public void setSearchMetacat(boolean searchMetacat) {
+  /**
+   * Accessor method to return a vector of the return document types as
+   * defined in the &lt;returndoctype&gt; tag in the pathquery dtd.
+   */
+  public Vector getReturnDocList()
+  {
+    return this.returnDocList; 
+  }
+
+  /**
+   * method to set the list of return docs of this query
+   */
+  public void setReturnDocList(Vector returnDocList) 
+  {
+    this.returnDocList = returnDocList;
+  }
+   
+  /**
+   * Accessor method to return a vector of the filter doc types as
+   * defined in the &lt;filterdoctype&gt; tag in the pathquery dtd.
+   */
+  public Vector getFilterDocList()
+  {
+    return this.filterDocList; 
+  }
+
+  /**
+   * method to set the list of filter docs of this query
+   */
+  public void setFilterDocList(Vector filterDocList) 
+  {
+    this.filterDocList = filterDocList;
+  }
+   
+  /**
+   * Accessor method to return a vector of the extended return fields as
+   * defined in the &lt;returnfield&gt; tag in the pathquery dtd.
+   */
+  public Vector getReturnFieldList()
+  {
+    return this.returnFieldList; 
+  }
+
+  /**
+   * method to set the list of fields to be returned by this query
+   */
+  public void setReturnFieldList(Vector returnFieldList) 
+  {
+    this.returnFieldList = returnFieldList;
+  }
+   
+  /**
+   * Accessor method to return a vector of the owner fields as
+   * defined in the &lt;owner&gt; tag in the pathquery dtd.
+   */
+  public Vector getOwnerList()
+  {
+    return this.ownerList; 
+  }
+
+  /**
+   * method to set the list of owners used to constrain this query
+   */
+  public void setOwnerList(Vector ownerList) 
+  {
+    this.ownerList = ownerList;
+  }
+   
+  /**
+   * Accessor method to return a vector of the site fields as
+   * defined in the &lt;site&gt; tag in the pathquery dtd.
+   */
+  public Vector getSiteList()
+  {
+    return this.siteList; 
+  }
+
+  /**
+   * method to set the list of sites used to constrain this query
+   */
+  public void setSiteList(Vector siteList) 
+  {
+    this.siteList = siteList;
+  }
+   
+  /**
+   * determine if we should search metacat
+   */
+  public boolean getSearchMetacat()
+  {
+    return searchMetacat;
+  }
+   
+  /**
+   * method to set searchMetacat
+   */
+  public void setSearchMetacat(boolean searchMetacat) 
+  {
     this.searchMetacat = searchMetacat;
-   }
+  }
+
+  /**
+   * determine if we should search locally
+   */
+  public boolean getSearchLocal()
+  {
+    return searchLocal;
+  }
    
-   /**
-    * method to set searchLocal
-    */
-   public void setSearchLocal(boolean searchLocal) {
+  /**
+   * method to set searchLocal
+   */
+  public void setSearchLocal(boolean searchLocal) {
     this.searchLocal = searchLocal;
-   }
+  }
+
+  /**
+   * get the QueryGroup used to express query constraints
+   */
+  public QueryGroup getQueryGroup()
+  {
+    return query;
+  }
+   
+  /**
+   * set the QueryGroup used to express query constraints
+   */
+  public void setQueryGroup(QueryGroup qg) 
+  {
+    this.query = qg;
+  }
+
   /**
    * Set up the SAX parser for reading the XML serialized query
    */
@@ -320,7 +464,9 @@ public class Query extends DefaultHandler {
     } else if (currentTag.equals("pathexpr")) {
       currentPathexpr = inputString;
     } else if (currentTag.equals("returndoctype")) {
-      doctypeList.add(inputString);
+      returnDocList.add(inputString);
+    } else if (currentTag.equals("filterdoctype")) {
+      filterDocList.add(inputString);
     } else if (currentTag.equals("returnfield")) {
       returnFieldList.add(inputString);
       containsExtendedSQL = true;
@@ -349,10 +495,10 @@ public class Query extends DefaultHandler {
  
     // Add SQL to filter for doctypes requested in the query
     // This is an implicit OR for the list of doctypes
-    if (!doctypeList.isEmpty()) {
+    if (!filterDocList.isEmpty()) {
       boolean firstdoctype = true;
       self.append(" AND ("); 
-      Enumeration en = doctypeList.elements();
+      Enumeration en = filterDocList.elements();
       while (en.hasMoreElements()) {
         String currentDoctype = (String)en.nextElement();
         if (firstdoctype) {
@@ -600,31 +746,18 @@ public class Query extends DefaultHandler {
     // if appropriate, query locally
     ResultSet localResults = null;
     if (searchLocal) {
-      LocalQuery lq = new LocalQuery(queryString, framework);
+      LocalQuery lq = new LocalQuery(this, framework);
       localResults = lq.execute();
-      localResults.setQuery(this);
-      //ResultSet localResults = new ResultSet(this, "local", 
-                                     //queryLocal(), framework);
     }
 
-    // merge the results -- currently unimplemented!
-    //results = metacatResults.merge(localResults);
-   //tempDFH results = metacatResults;
+    // merge the results if needed, and return the right result set
     if (!searchLocal) {
       results = metacatResults;
-    }
-    else if (!searchMetacat) {
+    } else if (!searchMetacat) {
       results = localResults;
-    }
-    else {  // must merge results
-      // simplistic merge - no checking for duplicates
-      Vector metacatRows = metacatResults.getResultsVector();
-      Vector localRows = localResults.getResultsVector();
-      Enumeration ee = localRows.elements();
-      while (ee.hasMoreElements()) {
-        Vector temp = (Vector)ee.nextElement();
-        metacatRows.addElement(temp);
-      }
+    } else {  
+      // must merge results
+      metacatResults.merge(localResults);
       results = metacatResults;
     }
     // return the merged results

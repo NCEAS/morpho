@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-07 22:53:06 $'
- * '$Revision: 1.2 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-22 18:00:08 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,13 @@ public class QueryGroup
    */
   public String getOperator() {
     return operator;
+  }
+ 
+  /**
+   * Set the operator for this QueryGroup
+   */
+  public void setOperator(String op) {
+    operator = op;
   }
  
   /**
