@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-17 23:39:48 $'
- * '$Revision: 1.93 $'
+ *     '$Date: 2003-12-18 19:09:34 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1452,11 +1452,6 @@ public class DataViewer extends javax.swing.JPanel
 	{ 
     TripleCollection triples = null;
     MorphoFrame thisFrame = null;
-    DataPackage newPackage = null;
-    File tempfile = null;
-    File tempfileAttr = null;
-    File tempfilePhy = null;
-    File tempfileEnt = null;
     if (adp!=null) {  // new eml2.0.0 handling
       String id = "";
       AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
@@ -1480,12 +1475,36 @@ public class DataViewer extends javax.swing.JPanel
       adp.setPhysicalSize(entityIndex, 0, sizeS);
       
       adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
-      
- Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
- Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
- Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
+      adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
+      adp.setLocation("");
+// Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
+// Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
+// Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    AccessionNumber a = new AccessionNumber(morpho);
+    String curid = adp.getAccessionNumber();
+    String newid = null;
+    if (!curid.equals("")) {
+      newid = a.incRev(curid);
+    } else {
+      newid = a.getNextId();
     }
+    adp.setAccessionNumber(newid);
+    morphoFrame.setVisible(false);
+    UIController uicontroller = UIController.getInstance();
+    try{
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+      dataPackageInt.openNewDataPackage(adp, null);
+      uicontroller.removeWindow(morphoFrame);
+      morphoFrame.dispose();
+      
+    } catch (Exception e) {
+        Log.debug(5, "Exception in converting edited XML to DOM!");
+    }    
     
+    }    
 	}
 
   /** 

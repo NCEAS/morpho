@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-17 23:39:48 $'
- * '$Revision: 1.81 $'
+ *     '$Date: 2003-12-18 19:09:34 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,8 +342,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       netLabel.setText("");
       netLabel.setIcon(blankIcon);
     }
-    else {   // both
+    else if (location.equals(DataPackageInterface.BOTH)){ 
 
+    }
+    else {  // not yet saved anywhere
+      localLabel.setText("");
+      localLabel.setIcon(blankIcon);
+      netLabel.setText("");
+      netLabel.setIcon(blankIcon);
     }
     locationPanel.add(BorderLayout.NORTH,localLabel);
     locationPanel.add(BorderLayout.SOUTH, netLabel);
