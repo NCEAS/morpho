@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 03:44:09 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-12-03 20:21:48 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,23 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.datapackage.wizard.*;
+
 import java.awt.*;
-import java.io.File;
+import java.io.*;
 import javax.swing.*;
 
 public class NewDataFile extends javax.swing.JDialog
 {
+    private DataPackage dataPackage = null;
+    ConfigXML config;
+    ClientFramework framework = null;
+    File addedFile = null;
+    String entityId;
+    
+    
 	public NewDataFile(Frame parent)
 	{
 		super(parent);
@@ -99,6 +110,14 @@ public class NewDataFile extends javax.swing.JDialog
 	{
 		this();
 		setTitle(sTitle);
+	}
+	
+	public NewDataFile(Frame parent, DataPackage dp, ClientFramework framework, String entityId) {
+	    this(parent);
+	    this.dataPackage = dp;
+	    this.framework = framework;
+	    this.config = framework.getConfiguration();
+	    this.entityId = entityId;
 	}
 
 	static public void main(String args[])
@@ -177,9 +196,187 @@ public class NewDataFile extends javax.swing.JDialog
 	void AddFileButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    // first add the file
-	    
+	    String fileName = FileNameTextField.getText();
+	    if (fileName.length()>0) {
+	        addedFile = new File(fileName);
+	        if (!addedFile.exists()) {
+	            addedFile = null;
+                JOptionPane.showConfirmDialog(this,
+                                   "The file you selected was not found.",
+                                   "File Not Found", 
+                                   JOptionPane.OK_CANCEL_OPTION,
+                                   JOptionPane.WARNING_MESSAGE);
+	            return;
+	        }
+	    }
+        AccessionNumber a = new AccessionNumber(framework);
+        String newid = "";
+        String location = dataPackage.getLocation();
+        boolean locMetacat = false;
+        boolean locLocal = false;
+        String docString;
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        File packageFile = dataPackage.getTriplesFile();
+    
+        if(location.equals(DataPackage.LOCAL) || 
+        location.equals(DataPackage.BOTH))
+        {
+            locLocal = true;
+        }
+    
+        if(location.equals(DataPackage.METACAT) || 
+            location.equals(DataPackage.BOTH))
+        {
+            locMetacat = true;
+        }
+    
+        if(addedFile != null) { 
+            newid = a.getNextId();
+            handleAddDataFile(locLocal, locMetacat, newid);
+        }
+	     
 	    // now remove this window
 		this.hide();
 		this.dispose();
 	}
+
+  private void handleAddDataFile(boolean locLocal, boolean locMetacat, 
+                                 String newid)
+  { //add a data file here
+    String relationship = "isRelatedTo";
+    AccessionNumber a = new AccessionNumber(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    //relate the new data file to the package itself
+    if (addedFile!=null) {
+      relationship = FileNameTextField.getText();
+      if(relationship.indexOf("/") != -1 || 
+        relationship.indexOf("\\") != -1)
+      { //strip out the path info
+        int slashindex = relationship.lastIndexOf("/") + 1;
+        if(slashindex == -1)
+        {
+          slashindex = relationship.lastIndexOf("\\") + 1;
+        }
+      
+        relationship = relationship.substring(slashindex, 
+                                            relationship.length());
+        relationship = "isDataFileFor(" + relationship + ")";
+      }
+    }
+    Triple t = new Triple(newid, relationship, dataPackage.getID());
+    TripleCollection triples = new TripleCollection();
+    triples.addTriple(t);
+    
+    // connect this entity to the new datafile
+    Triple t1 = new Triple(entityId, "isRelatedTo", newid);
+    triples.addTriple(t1);
+    
+    File packageFile = dataPackage.getTriplesFile();
+    //add the triple to the triple file
+    String docString = PackageUtil.addTriplesToTriplesFile(triples, 
+                                                           dataPackage, 
+                                                           framework);
+    //write out the files
+    File newDPTempFile;
+    //get a new id for the package file
+    String dataPackageId = a.incRev(dataPackage.getID());
+    System.out.println("datapackageid: " + dataPackage.getID() + " newid: " + dataPackageId);
+    try
+    { //this handles the package file
+      //save a temp file with the new id
+      newDPTempFile = fsds.saveTempFile(dataPackageId,
+                                        new StringReader(docString));
+      //inc the revision of the new Package file in the triples
+      docString = a.incRevInTriples(newDPTempFile, dataPackage.getID(), 
+                                    dataPackageId);
+      //save new temp file that has the right id and the id inced in the triples
+      newDPTempFile = fsds.saveTempFile(dataPackageId, 
+                                        new StringReader(docString));
+    }
+    catch(Exception e)
+    {
+      ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+      e.printStackTrace();
+      return;
+    }
+    
+    if(locLocal)
+    {
+      File newPackageMember;
+      try
+      { //save the new package member
+        if (addedFile!=null) 
+        {
+          newPackageMember = fsds.newFile(newid, new FileReader(addedFile));
+        }
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        e.printStackTrace();
+        e.printStackTrace();
+        return;
+      }
+      
+      try
+      { //save the new package file
+        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile));
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+    }
+    
+    if(locMetacat)
+    { //send the package file and the data file to metacat
+      ClientFramework.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      try
+      { //send the new data file to the server
+	 	FileReader fr = new FileReader(addedFile);
+        mds.newFile(newid, fr, dataPackage);
+      }
+      catch(Exception mue)
+      {
+        ClientFramework.debug(0, "Error saving data file to metacat: " + 
+                              mue.getMessage());
+        mue.printStackTrace();
+        return;
+      }
+      
+      try
+      { //save the new package file
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), 
+                     dataPackage);
+      }
+      catch(MetacatUploadException mue)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat: " + 
+                              mue.getMessage());
+        mue.printStackTrace();
+        return;
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat(2): " + 
+                              fnfe.getMessage());
+        fnfe.printStackTrace();
+        return;
+      }
+      catch(Exception e)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat(3): " + 
+                              e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+    }
+//    refreshPackage(dataPackageId); 
+    
+  }
+
+
 }

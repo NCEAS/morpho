@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 03:44:09 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2001-12-03 20:21:48 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ public class EntityGUI extends javax.swing.JFrame
   private String location;
   private Hashtable attributeHash = new Hashtable();
   private boolean editAttribute = false;
+  
   
   //visual components
   private JLabel name = new JLabel();
@@ -841,10 +842,10 @@ public class EntityGUI extends javax.swing.JFrame
     }
     else if (command.equals("Associate Data")) {
        // a new data file to be associated with this existing metadata is to be entered here 
-      (new NewDataFile(this)).setVisible(true);     
+      (new NewDataFile(this, dataPackage, framework, entityId)).setVisible(true); 
     }
   }
   
   
-  
+
 }
