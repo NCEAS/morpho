@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 06:17:17 $'
- * '$Revision: 1.14.6.1 $'
+ *     '$Date: 2004-04-15 16:44:15 $'
+ * '$Revision: 1.14.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,6 +110,7 @@ public class RefreshCommand implements Command
     {
       // for a specify morpho frame
       resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+      morphoFrame.setMessage("");
     }//else if
     else
     {
@@ -119,6 +120,7 @@ public class RefreshCommand implements Command
       if (morphoFrame != null)
       {
          resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+         morphoFrame.setMessage("");
       }//if
     }//else
 

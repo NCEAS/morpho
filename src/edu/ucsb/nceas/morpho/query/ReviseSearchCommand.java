@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 19:29:06 $'
- * '$Revision: 1.6.6.1 $'
+ *     '$Date: 2004-04-15 16:44:15 $'
+ * '$Revision: 1.6.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,6 +122,7 @@ public class ReviseSearchCommand implements Command
          }
 
         // false means don't send statechange event
+        morphoFrame.setMessage("");
         SearchCommand.doQuery(morphoFrame, query, sorted, index, order,
                               false);
 
