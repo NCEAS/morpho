@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-28 23:07:13 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-08-29 23:12:34 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -793,5 +793,15 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     Node nextNode = nl.item(cnt);
     root.insertBefore(newAttrRoot, nextNode);
   }
-    
+ 
+  public String getColumnName() {
+    return nameTextField.getText();
+  } 
+  public String getUnit() {
+    return unitTextField.getText();
+  }   
+  public String getDataType() {
+    return typeComboBox.getSelectedItem().toString();
+  }   
+  
 }

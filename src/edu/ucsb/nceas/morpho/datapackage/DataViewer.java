@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-29 21:21:15 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2002-08-29 23:12:34 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ public class DataViewer extends javax.swing.JPanel
 	  JLabel DataIDLabel = new javax.swing.JLabel();
 	  JButton CancelButton = new javax.swing.JButton();
 	  JButton UpdateButton = new javax.swing.JButton();
+    ColumnMetadataEditPanel cmep;
     
     JPanel controlPanel;
     JButton controlOK;
@@ -80,6 +81,7 @@ public class DataViewer extends javax.swing.JPanel
     JTable table;
     
     int sortdirection = 1;
+    boolean columnAddFlag = true;
   
     Morpho framework;
     ConfigXML config;
@@ -945,18 +947,37 @@ public class DataViewer extends javax.swing.JPanel
       else if ((object == insertColumnBefore)||(object == insertColumnBefore1)) {
         int sel = table.getSelectedColumn();
         if (sel>-1) {
-          column_labels.insertElementAt("New Column", sel);
-          ptm.insertColumn(sel); 
-          pv = ptm.getPersistentVector();
+          showColumnMetadataEditPanel();
+          if (columnAddFlag) {
+            String newHeader = cmep.getColumnName();
+            if (newHeader.trim().length()==0) newHeader = "New Column";
+            String type = cmep.getDataType();
+            String unit = cmep.getUnit();
+            newHeader = "<html><font face=\"Courier\"><center><small>"+type+
+                                           "<br>"+unit +"<br></small><b>"+
+                                           newHeader+"</b></font></center></html>";
+            column_labels.insertElementAt(newHeader, sel);
+            ptm.insertColumn(sel); 
+            pv = ptm.getPersistentVector();
+          }
         }
       }
       else if ((object == insertColumnAfter)||(object == insertColumnAfter1)) {
         int sel = table.getSelectedColumn();
         if (sel>-1) {
           showColumnMetadataEditPanel();
-          column_labels.insertElementAt("New Column", sel+1);
-          ptm.insertColumn(sel+1); 
-          pv = ptm.getPersistentVector();
+          if (columnAddFlag) {
+            String newHeader = cmep.getColumnName();
+            if (newHeader.trim().length()==0) newHeader = "New Column";
+            String type = cmep.getDataType();
+            String unit = cmep.getUnit();
+            newHeader = "<html><font face=\"Courier\"><center><small>"+type+
+                                           "<br>"+unit +"<br></small><b>"+
+                                           newHeader+"</b></font></center></html>";
+            column_labels.insertElementAt(newHeader, sel+1);
+            ptm.insertColumn(sel+1); 
+            pv = ptm.getPersistentVector();
+          }
         }        
       }
       else if ((object == deleteColumn)||(object == deleteColumn1)) {
@@ -1049,7 +1070,7 @@ public class DataViewer extends javax.swing.JPanel
     columnDialog = new JDialog(mf,true);
     columnDialog.getContentPane().setLayout(new BorderLayout(0,0));
     columnDialog.setSize(400,650);
-    ColumnMetadataEditPanel cmep = new ColumnMetadataEditPanel();
+    cmep = new ColumnMetadataEditPanel();
     columnDialog.getContentPane().add(BorderLayout.CENTER, cmep);
     controlPanel = new JPanel();
     controlCancel = new JButton("Cancel");
@@ -1070,9 +1091,11 @@ public class DataViewer extends javax.swing.JPanel
 		{
 			Object object = event.getSource();
 			if (object == controlOK) {
+        columnAddFlag = true;
 				columnDialog.dispose();
       }
       else if (object == controlCancel) {
+        columnAddFlag = false;
 				columnDialog.dispose();
       }
 		}

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-29 21:21:15 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-08-29 23:12:34 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,7 +221,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
       currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
       currentEntityMetadataPanel.setMaximumSize(new Dimension(200,4000));
 
-      currentEntityPanel.setDividerLocation(600);
+      currentEntityPanel.setDividerLocation(700);
       this.entityFile[i] = entityEdit.entityFile;
     
       // create the data display panel (usually a table) using DataViewer class
@@ -299,7 +299,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     
     entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, entityMetadataPanel);
     entityPanel.setOneTouchExpandable(true);
-    entityPanel.setDividerLocation(600);
+    entityPanel.setDividerLocation(700);
     
     return entityPanel;
   }
