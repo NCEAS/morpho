@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-20 20:32:09 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-10-22 16:04:07 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1626,7 +1626,7 @@ public void startImport(String file) {
 	public String createXMLAttributeString() {
 	  StringBuffer XMLBuffer = new StringBuffer();
 	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-	  XMLBuffer.append("<!DOCTYPE eml-attribute PUBLIC \"-//ecoinformatics.org//eml-attribute//2.0.0beta4//EN\" \"eml-attribute.dtd\">\n");
+	  XMLBuffer.append("<!DOCTYPE eml-attribute PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN\" \"eml-attribute.dtd\">\n");
 	  XMLBuffer.append("<eml-attribute>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
 	  for (int i=0;i<colTitles.size();i++) {
@@ -1658,7 +1658,7 @@ public void startImport(String file) {
 	public String createXMLEntityString() {
 	  StringBuffer XMLBuffer = new StringBuffer();
 	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-	  XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//ecoinformatics.org//eml-entity//2.0.0beta4//EN\" \"eml-entity.dtd\">\n");
+	  XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//ecoinformatics.org//eml-entity-2.0.0beta4//EN\" \"eml-entity.dtd\">\n");
 	  XMLBuffer.append("<table-entity>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
 	  XMLBuffer.append("    <entityName> "+TableNameTextField.getText()+"</entityName>\n");
