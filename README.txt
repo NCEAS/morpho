@@ -40,7 +40,7 @@ Morpho's main features include:
   5. Easy-to-use collaboration features via the KNB system      
 
 **************************************************
-ATTENTION ! --  ATTENTION !  -- ATTENTION !  (April 15, 2003)
+ATTENTION ! --  ATTENTION !  -- ATTENTION !  (April 15, 2004)
 
 
 Many sections of Morpho Version 1.5 has been completely rewritten to work with
@@ -53,7 +53,7 @@ in the need for considerable changes in the Morpho code.
 A significant effort has also been spent in creating a new Data Package Wizard to
 make it easier for a user to create a package without learning all the details of
 EML 2.0.0. The user can also edit many of the features of a document using forms
-the Data Package Wizard called up from the Documentation menu.
+from the Data Package Wizard called up from the Documentation menu.
 
 
 
