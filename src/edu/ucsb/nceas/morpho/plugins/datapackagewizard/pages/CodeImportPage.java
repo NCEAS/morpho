@@ -65,7 +65,7 @@ public class CodeImportPage extends AbstractWizardPage {
 
   private boolean importCompletedOK = false;
 	
-	private CodeImportPanel importPanel = null;
+	private CodeDefnPanel importPanel = null;
 	private JPanel radioPanel;
 	
 	private JTextField attrField;
@@ -132,7 +132,7 @@ public class CodeImportPage extends AbstractWizardPage {
 				
 				if (e.getActionCommand().equals(importChoiceText[0])) {
 					if(importPanel == null) {
-						importPanel = new CodeImportPanel(true);
+						importPanel = new CodeDefnPanel(true);
 						CodeImportPage.this.add(importPanel, BorderLayout.CENTER);
 						CodeImportPage.this.validate();
 						CodeImportPage.this.repaint();
@@ -159,7 +159,6 @@ public class CodeImportPage extends AbstractWizardPage {
 
 	public void addAttributeForImport(String entityName, String attributeName, String scale, OrderedMap map, String xPath, boolean newTable) {
 		
-		System.out.println("To Import, attribute '"+attributeName+"' in Entity '"+ entityName +"'");
 		mainWizFrame.addAttributeForImport(entityName, attributeName, scale, map, xPath, newTable);
 	}
 	
@@ -172,6 +171,7 @@ public class CodeImportPage extends AbstractWizardPage {
 		
 		attrField.setText(attr);
 		entityField.setText(entity);
+		
 	}
 
   
@@ -198,25 +198,28 @@ public class CodeImportPage extends AbstractWizardPage {
 		WidgetFactory.unhiliteComponent(choiceLabel);
 		
 		if(importChoice == IMPORT_DONE) {
-			if(importPanel.onAdvanceAction()) {
+			if(importPanel.validateUserInput()) {
 				OrderedMap map = mainWizFrame.getCurrentImportMap();
 				String relativeXPath = mainWizFrame.getCurrentImportXPath();
 				String scale = mainWizFrame.getCurrentImportScale().toLowerCase();
 				String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
 				if(!map.containsKey(path + "/entityReference")) {
-					System.out.println("ERROR !! map doesnt have the key - "+path);
+					Log.debug(15, "Error in CodeImportPage!! map doesnt have the key - "+path);
 				} else {
 					map.remove(path + "/entityReference");
 					map.remove(path + "/valueAttributeReference");
 					map.remove(path + "/definitionAttributeReference");
-					OrderedMap importMap = importPanel.getPageData(path);
+					OrderedMap importMap = importPanel.getPanelData(path);
 					map.putAll(importMap);
 					
 				}
-				if(mainWizFrame.getAttributeImportCount() > 0)
+				
+				if(mainWizFrame.getAttributeImportCount() > 1) {
 					nextPageID = pageID;
+				}
 				else
 					nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+				mainWizFrame.removeAttributeForImport();
 				return true;
 			} else
 				return false;

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:28:49 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-02-06 19:46:02 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -269,7 +269,6 @@ public class CodeImportSummary extends AbstractWizardPage {
 		String firstKey = (String)map.keySet().iterator().next();
 		
 		if(!firstKey.startsWith("/attribute")) {
-			System.out.println("Converting all key prefixes");
 			OrderedMap newMap = new OrderedMap();
 			Iterator it1 = map.keySet().iterator();
 			while(it1.hasNext()) {
@@ -292,21 +291,18 @@ public class CodeImportSummary extends AbstractWizardPage {
 		String oldID = adp.getAttributeID(entityIndex, attrIndex);
 		map.put(xPath + "/@id", oldID);
 		
-		System.out.println("xPath = " + xPath + ", entityIdx = " + entityIndex + ", attr= "+attrIndex + " , id = "+ oldID);
-		
-		System.out.println("New Keys in CIS page are - ");
+		/*System.out.println("New Keys in CIS page are - ");
 		Iterator it = map.keySet().iterator();
 		while(it.hasNext()) {
 			String kk = (String) it.next();
 			System.out.println(kk + " - " + (String)map.get(kk));
-		}
+		}*/
 		
 		Attribute attr = new Attribute(map);
-		System.out.println("Attr created");
 		
 		adp.deleteAttribute(entityIndex, attrIndex);
 		adp.insertAttribute(entityIndex, attr, attrIndex);
-		System.out.println("Attribute " + attrIndex + " updated in Entity " + entityIndex);
+		
 	}
 	
 	
@@ -314,9 +310,9 @@ public class CodeImportSummary extends AbstractWizardPage {
 		
 		if(mainWizFrame.getAttributeImportCount() > 0) {
 			mainWizFrame.setButtonsStatus(true, true, false);
-		} else
-		mainWizFrame.setButtonsStatus(true, false, true);
-		
+		} else {
+			mainWizFrame.setButtonsStatus(true, false, true);
+		}
 	}
 	
 	

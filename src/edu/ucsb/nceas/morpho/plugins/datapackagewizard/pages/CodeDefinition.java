@@ -75,7 +75,7 @@ public class CodeDefinition extends AbstractWizardPage {
   private WizardContainerFrame mainWizFrame;
   private OrderedMap resultsMap;
 	
-	private CodeImportPanel importPanel = null;
+	private CodeDefnPanel importPanel = null;
 	
 	
 	private JTextField attrField;
@@ -128,7 +128,7 @@ public class CodeDefinition extends AbstractWizardPage {
 		
 		add(infoPanel, BorderLayout.NORTH);
 		
-		importPanel = new CodeImportPanel(true);	
+		importPanel = new CodeDefnPanel(true);	
 		add(importPanel, BorderLayout.CENTER);
 		
 	}
@@ -213,7 +213,7 @@ public class CodeDefinition extends AbstractWizardPage {
    */
   public boolean onAdvanceAction() {
 		
-		if(importPanel.onAdvanceAction()) {
+		if(importPanel.validateUserInput()) {
 			OrderedMap map = mainWizFrame.getCurrentImportMap();
 			String relativeXPath = mainWizFrame.getCurrentImportXPath();
 			String scale = mainWizFrame.getCurrentImportScale().toLowerCase();
@@ -232,15 +232,13 @@ public class CodeDefinition extends AbstractWizardPage {
 			}
 				
 			if(pos == -1) {
-				System.out.println("ERROR in CodeDefintion!! map doesnt have the entityReference key");
+				Log.debug(15, "Error in CodeDefintion!! map doesnt have the entityReference key");
 			} else {
 				map.remove(prefix + "/entityReference");
 				map.remove(prefix + "/valueAttributeReference");
 				map.remove(prefix + "/definitionAttributeReference");
-				OrderedMap importMap = importPanel.getPageData(prefix);
+				OrderedMap importMap = importPanel.getPanelData(prefix);
 				map.putAll(importMap);
-				System.out.println("References put in at CodeDefinition.. size = " + importMap.size());
-				
 				
 			}
 			return true;

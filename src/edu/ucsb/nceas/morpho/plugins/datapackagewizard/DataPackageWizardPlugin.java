@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-02-06 19:46:02 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,9 +125,9 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
 	 
 	 
-	public void startWizardAtPage(String pageID, DataPackageWizardListener listener) {
+	public void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
 		
-		startWizardAtPage(pageID, false, listener, "Import Code Definitions");
+		startWizardAtPage(pageID, false, listener, title);
 	}
 	
   private void startWizardAtPage(String pageID, boolean showPageCount,

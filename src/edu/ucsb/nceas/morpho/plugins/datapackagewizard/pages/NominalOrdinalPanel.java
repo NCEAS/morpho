@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-02-04 02:25:51 $'
-* '$Revision: 1.17 $'
+*     '$Date: 2004-02-06 19:46:02 $'
+* '$Revision: 1.18 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -34,21 +34,9 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AddDocumentationCommand;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.Morpho;
 
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -74,26 +62,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JRadioButton;
 import javax.swing.JDialog;
 import javax.swing.border.EmptyBorder;
 import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.StringReader;
-import java.io.InputStreamReader;
-import java.io.ByteArrayInputStream;
-import java.io.BufferedReader;
-import java.util.StringTokenizer;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.util.Base64;
+
+
 
 
 class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
@@ -129,7 +105,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 	private JTextField tableNameTextField;
 	private JButton tableNameButton;
 	private LocateAction locateAction;
-	private CodeImportPanel codeImportPanel = null;
+	private CodeDefnPanel codeImportPanel = null;
 	
 	private JCheckBox enumDefinitionFreeTextCheckBox;
 	
@@ -643,24 +619,25 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		
 		if (currentSubPanel==enumSubPanel) {  //ENUMERATED
 			
-			if(codeLocationValue == CODES_DEFINED_HERE)
+			if(codeLocationValue == CODES_DEFINED_HERE){
 				getEnumListData(xPathRoot + "enumeratedDomain[1]", returnMap);
-				else {
-					
-					OrderedMap importMap = codeImportPanel.getPageData(xPathRoot +
-					"enumeratedDomain[1]/entityCodeList");
-					returnMap.putAll(importMap);
-				}
+			}
+			else {
 				
+				OrderedMap importMap = codeImportPanel.getPanelData(xPathRoot +
+				"enumeratedDomain[1]/entityCodeList");
+				returnMap.putAll(importMap);
+			}
+			
+			
+			if (enumDefinitionFreeTextCheckBox.isSelected()) {
 				
-				if (enumDefinitionFreeTextCheckBox.isSelected()) {
-					
-					returnMap.put(  xPathRoot + "textDomain[1]/definition",
-					"Free text (unrestricted)");
-					returnMap.put(xPathRoot + "textDomain[1]/pattern[1]", ".*");
-				}
-				
-				
+				returnMap.put(  xPathRoot + "textDomain[1]/definition",
+				"Free text (unrestricted)");
+				returnMap.put(xPathRoot + "textDomain[1]/pattern[1]", ".*");
+			}
+			
+			
 		} else {                              //TEXT
 			
 			returnMap.put(  xPathRoot + "textDomain[1]/definition",
@@ -801,6 +778,18 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		if(!b1)
 			b1 = map.containsKey(xPathRoot + "/enumeratedDomain/entityCodeList/entityReference");
 		
+		// first set the free text checkbox if needed
+		
+		String freeText = (String)map.get(xPathRoot + "/textDomain[1]/definition");
+		if(freeText == null)
+			freeText = (String)map.get(xPathRoot + "/textDomain/definition");
+		if(freeText != null && freeText.equals("Free text (unrestricted)"))
+			enumDefinitionFreeTextCheckBox.setSelected(true);
+		else
+			enumDefinitionFreeTextCheckBox.setSelected(false);
+		
+		// check for code imports
+		
 		if(b1) { // codes are imported from another table
 			
 			locateAction.setPageData(xPathRoot +  "/enumeratedDomain/entityCodeList", map);
@@ -812,44 +801,43 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 			}
 			codeLocationPickList.setSelectedItem(codeLocationPicklistVals[1]);
 			codeLocationValue = CODES_IMPORTED;
+			domainPickList.setSelectedItem(this.textEnumPicklistVals[0]);
+			return;
 			
 		} else { // codes are defined here
 			
-			setEnumListData(xPathRoot + "/enumeratedDomain[1]", map);
-			setEnumListData(xPathRoot + "/enumeratedDomain", map);
-			tablePanel.setVisible(false);
-			if(codeLocationValue == CODES_IMPORTED) {
-				enumPanel.remove(importedDefinitionList);
-				enumPanel.add(enumDefinitionList);
-				enumPanel.invalidate();
+			boolean found = setEnumListData(xPathRoot + "/enumeratedDomain[1]", map);
+			if(!found)
+				found = setEnumListData(xPathRoot + "/enumeratedDomain", map);
+			if(found) {
+				tablePanel.setVisible(false);
+				if(codeLocationValue == CODES_IMPORTED) {
+					enumPanel.remove(importedDefinitionList);
+					enumPanel.add(enumDefinitionList);
+					enumPanel.invalidate();
+				}
+				codeLocationValue = CODES_DEFINED_HERE;
+				codeLocationPickList.setSelectedItem(codeLocationPicklistVals[0]);
+				domainPickList.setSelectedItem(this.textEnumPicklistVals[0]);
+				return;
 			}
-			codeLocationValue = CODES_DEFINED_HERE;
-			codeLocationPickList.setSelectedItem(codeLocationPicklistVals[0]);
 		}
-		
-		String freeText = (String)map.get(xPathRoot + "/textDomain[1]/definition");
-		if(freeText == null)
-			freeText = (String)map.get(xPathRoot + "/textDomain/definition");
-		if(freeText != null && freeText.equals("Free text (unrestricted)"))
-			enumDefinitionFreeTextCheckBox.setSelected(true);
-		else
-			enumDefinitionFreeTextCheckBox.setSelected(false);
 		
 		String defn = (String)map.get(xPathRoot + "/textDomain[1]/definition");
 		if(defn == null)
 			defn = (String)map.get(xPathRoot + "/textDomain/definition");
-			if(defn != null) {
-				textDefinitionField.setText(defn);
-				domainPickList.setSelectedItem(this.textEnumPicklistVals[1]);
-			}
-			setTextListData(xPathRoot + "/textDomain[1]", map);
-			setTextListData(xPathRoot + "/textDomain", map);
-			String source = (String)map.get(xPathRoot + "/textDomain[1]/source");
-			if(source == null)
-				source = (String)map.get(xPathRoot + "/textDomain/source");
-			if(source != null)
-				textSourceField.setText(source);
-			return;
+		if(defn != null) {
+			textDefinitionField.setText(defn);
+			domainPickList.setSelectedItem(this.textEnumPicklistVals[1]);
+		}
+		setTextListData(xPathRoot + "/textDomain[1]", map);
+		setTextListData(xPathRoot + "/textDomain", map);
+		String source = (String)map.get(xPathRoot + "/textDomain[1]/source");
+		if(source == null)
+			source = (String)map.get(xPathRoot + "/textDomain/source");
+		if(source != null)
+			textSourceField.setText(source);
+		return;
 	}
 	
 	/**
@@ -861,8 +849,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 	*		    are absolute xPath and not the relative xPaths
 	*/
 	
-	private void setEnumListData(String xPathRoot, OrderedMap map) {
+	private boolean setEnumListData(String xPathRoot, OrderedMap map) {
 		int index = 1;
+		boolean codePresent = false;
 		while(true) {
 			List row = new ArrayList();
 			String code = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/code");
@@ -872,6 +861,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 			
 			if(code == null)
 				break;
+			codePresent = true;
 			row.add(code);
 			String defn = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/definition");
 			if(index == 1 && defn == null)
@@ -880,7 +870,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 			enumDefinitionList.addRow(row);
 			index++;
 		}
-		return;
+		return codePresent;
 	}
 	
 	private void setTextListData(String xPathRoot, OrderedMap map) {
@@ -935,7 +925,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		public void actionPerformed(ActionEvent ae) {
 			
 			if(codeImportPanel == null)
-				codeImportPanel = new CodeImportPanel();
+				codeImportPanel = new CodeDefnPanel();
 			if(importDialog == null) {
 				ActionListener okAction = new ActionListener() {
 					public void actionPerformed(ActionEvent ae) {
@@ -956,7 +946,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 			
 		private void okAction() {
 			
-			if(codeImportPanel.onAdvanceAction())
+			if(codeImportPanel.validateUserInput())
 				importDialog.setVisible(false);
 			else
 				return;
@@ -1058,8 +1048,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		public void setPageData(String xPath, OrderedMap map) {
 			
 			if(codeImportPanel == null)
-				codeImportPanel = new CodeImportPanel();
-			codeImportPanel.setPageData(xPath, map);
+				codeImportPanel = new CodeDefnPanel();
+			codeImportPanel.setPanelData(xPath, map);
 			String name = codeImportPanel.getTableName();
 			if( name == null) { // to be imported later
 				tableNameTextField.setText(TO_BE_IMPORTED);
@@ -1073,953 +1063,4 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 	}
 }
 
-
-/* 
-This a page used for importing codes from another table. It gives the user
-the option of importing it later or identifing the table and columns of an
-already present table.
-If the user chooses to import it later, the returned OrdereMap contains
-null values for the entityCodeList/entityReference. The presence of this
-key in the OrderedMap with a null value indicates that we need to import the 
-data table at the end of the current operation. Thus, whenever an
-AttributePage is used anywhere in Morpho, we need to check if some data
-table has to be imported after that.
-*/
-
-class CodeImportPanel extends JPanel {
-	
-	/*private final String pageID     = DataPackageWizardInterface.CODE_IMPORT_PAGE;
-	private final String nextPageID = "";
-	private final String pageNumber = ""; */
-	private final String title      = "Import Codes and Definitions";
-	private final String subtitle   = "";
-	
-	public short USER_RESPONSE;
-	public static final short OK_OPTION      = 10;
-	public static final short CANCEL_OPTION  = 20;
-	
-	
-	private String[] importChoiceText = {"Import the definitions table into Morpho later",
-	"The definitions table has already been included in this package"};
-	
-	private JLabel choiceLabel;
-	private JPanel radioPanel;
-	private JPanel definitionsPanel;
-	
-	
-	private JPanel tableNamePanel;
-	private JPanel namePanel;
-	private JLabel nameLabel;
-	private JComboBox namePickList;
-	
-	private JPanel tableCodePanel;
-	private JPanel codePanel;
-	private JLabel codeLabel;
-	private JComboBox codePickList;
-	
-	private JPanel tableDefnPanel;
-	private JPanel defnPanel;
-	private JLabel defnLabel;
-	private JComboBox defnPickList;
-	
-	private JPanel buttonsPanel;
-	private JButton okButton;
-	private JButton cancelButton;
-	
-	private String[] entityNames = null;
-	private String[] attrNames = null;
-	
-	private short selectedImportChoice = 0;
-	
-	private static final int IMPORT_LATER = 1;
-	private static final int IMPORT_DONE  = 2;
-	private static final String ID_XPATH = "attribute/@id";
-	private static final int MAX_IMPORTED_ROWS_DISPLAYED = 10;
-	private static final String TRUNCATE_STRING = "--other codes not displayed--";
-	
-	private int currentEntityIndexSelected = -1;
-	
-	private int entityIdx = -1;
-	private String currentEntityID = null;
-	private String codeAttributeID = null;
-	private String defnAttributeID = null;
-	
-	private static Node[] attributeArray = null;
-	
-	// AbstractDataPackage of the current package
-	private AbstractDataPackage adp = null;
-	// DataViewContainerPanel of current package 
-	private DataViewContainerPanel resultPane = null;
-	
-	private ItemListener namePickListListener;
-	
-	// flag to indicate if the panel is to only allow the user to define codes,
-	// without giving the option of importing it later.
-	
-	private boolean onlyDefnPanel = false;
-	
-	CodeImportPanel(){
-		
-		onlyDefnPanel = false;
-		init();
-	}
-	
-	CodeImportPanel(boolean onlyDefinitionsPanel) {
-		
-		onlyDefnPanel = onlyDefinitionsPanel;
-		if(onlyDefnPanel)
-			selectedImportChoice = IMPORT_DONE;
-		init();
-	}
-	
-	private void init() {
-		
-		// gets the Abstract Data Package and sets it to the member variable 'adp'
-		getADP();
-		
-		setLayout(new BorderLayout());
-		
-		add(WidgetFactory.makeDefaultSpacer());
-		
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-		
-		choiceLabel = WidgetFactory.makeHTMLLabel("Select one of the following",1,true);
-		topPanel.add(choiceLabel);
-		add(WidgetFactory.makeDefaultSpacer());
-		
-		ActionListener listener = new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				
-				Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-				
-				if (e.getActionCommand().equals(importChoiceText[0])) {
-					selectedImportChoice = IMPORT_LATER;
-					definitionsPanel.setVisible(false);
-				} else if (e.getActionCommand().equals(importChoiceText[1])) {
-					selectedImportChoice = IMPORT_DONE;
-					definitionsPanel.setVisible(true);
-				}
-			}
-		};
-		
-		radioPanel = WidgetFactory.makeRadioPanel(importChoiceText, -1, listener);
-		
-		topPanel.add(radioPanel);
-		
-		if(onlyDefnPanel == false)
-			add(topPanel, BorderLayout.NORTH);
-		
-		
-		definitionsPanel = getDefinitionsPanel();
-		add(definitionsPanel, BorderLayout.CENTER);
-		if(onlyDefnPanel == false)
-			definitionsPanel.setVisible(false);
-		
-	}
-	
-	
-	
-	private JPanel getDefinitionsPanel() {
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(3,1,0, 5));
-		
-		entityNames = getEntityNames();
-		attrNames = new String[] {};
-		
-		JPanel tableNamePanel = new JPanel(new GridLayout(1,2, 3, 0));
-		
-		namePickListListener = new ItemListener() {
-			
-			public void itemStateChanged(ItemEvent e) {
-				
-				int index = ((JComboBox)e.getSource()).getSelectedIndex();
-				String name = (String)((JComboBox)e.getSource()).getSelectedItem();
-				System.out.println("PickList state changed: " + name);
-				if(index == currentEntityIndexSelected)
-					return;
-				currentEntityIndexSelected = index;
-				Log.debug(45, "PickList state changed: " +
-				(String)((JComboBox)e.getSource()).getItemAt(index));
-				
-				
-				if (index == 0) { 
-					codePickList.setEnabled(false);
-					defnPickList.setEnabled(false);
-				} else {
-					if(adp == null)
-						getADP();
-					if(adp == null) {
-						
-						Log.debug(15, "Unable to obtain the AbstractDataPackage in the CodeImportPanel");
-						return;
-					}
-					entityIdx = adp.getEntityIndex(name);
-					attrNames = getAttributeNames(entityIdx);
-					currentEntityID = getEntityID(entityIdx);
-					if(currentEntityID == null || currentEntityID.trim().length() ==0) {
-						String newId = WizardSettings.getUniqueID();
-						adp.setEntityID(entityIdx, newId);
-						currentEntityID = newId;
-						Log.debug(15, "Entity does not have an ID ! Assigning it a new ID of " + newId);
-					}
-					codePickList.setEnabled(true);
-					defnPickList.setEnabled(true);
-					codePickList.setModel(new DefaultComboBoxModel(attrNames));
-					defnPickList.setModel(new DefaultComboBoxModel(attrNames));
-					
-				}
-			}
-		};
-		
-		namePanel = WidgetFactory.makePanel();
-		nameLabel = WidgetFactory.makeLabel("Data table:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		namePanel.add(nameLabel);
-		namePickList = WidgetFactory.makePickList( entityNames, false, 0, namePickListListener);
-		namePanel.add(namePickList);
-		
-		tableNamePanel.add(namePanel);
-		tableNamePanel.add(getLabel(
-		WizardSettings.HTML_NO_TABLE_OPENING
-		+"Choose the data table that contains the codes and their definition"
-		+WizardSettings.HTML_NO_TABLE_CLOSING));
-		panel.add(tableNamePanel);
-		
-		JPanel tableCodePanel = new JPanel(new GridLayout(1,2, 3, 0));
-		
-		codePanel = WidgetFactory.makePanel();
-		codeLabel = WidgetFactory.makeLabel("Codes:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		codePanel.add(codeLabel);
-		codePickList = WidgetFactory.makePickList( attrNames, false, 0, null);
-		codePanel.add(codePickList);
-		
-		tableCodePanel.add(codePanel);
-		tableCodePanel.add(getLabel(
-		WizardSettings.HTML_NO_TABLE_OPENING
-		+"Choose the column in the data table that contains the codes"
-		+WizardSettings.HTML_NO_TABLE_CLOSING));
-		panel.add(tableCodePanel);
-		
-		JPanel tableDefnPanel = new JPanel(new GridLayout(1,2, 3, 0));
-		
-		defnPanel = WidgetFactory.makePanel();
-		defnLabel = WidgetFactory.makeLabel("Definitions:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		defnPanel.add(defnLabel);
-		defnPickList = WidgetFactory.makePickList( attrNames, false, 0, null);
-		defnPanel.add(defnPickList);
-		
-		tableDefnPanel.add(defnPanel);
-		tableDefnPanel.add(getLabel(
-		WizardSettings.HTML_NO_TABLE_OPENING
-		+"Choose the column in the data table that contains the definitions for the codes"
-		+WizardSettings.HTML_NO_TABLE_CLOSING));
-		panel.add(tableDefnPanel);
-		
-		codePickList.setEnabled(false);
-		defnPickList.setEnabled(false);
-		
-		return panel;
-	}
-	
-	private void getADP() {
-		
-		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-		if (morphoFrame != null) {
-			resultPane = AddDocumentationCommand.
-			getDataViewContainerPanelFromMorphoFrame(morphoFrame);
-		}//if
-		// make sure resulPanel is not null
-		if ( resultPane != null) {
-			adp = resultPane.getAbstractDataPackage();
-		}
-	}
-	
-	private String[] getEntityNames() {
-		
-		if(entityNames != null)
-			return entityNames;
-		
-		ArrayList names = new ArrayList();
-		
-		if(adp == null)
-			getADP();
-		
-		if(adp != null) {
-			for(int i = 0; i < adp.getEntityCount(); i++) {
-				names.add(adp.getEntityName(i));
-			}
-		} else {
-			Log.debug(15, "Error - Unable to get the AbstractDataPackage in CodeImportPanel. ");
-		}
-		
-		int cnt = names.size();
-		String[] entNames = new String[cnt + 1];
-		entNames[0] = "--Select data table--";
-		int i = 1;
-		for(Iterator it = names.iterator(); it.hasNext();)
-			entNames[i++] = (String)it.next(); 
-		
-		return entNames;
-	}
-	
-	/** 
-	*	Function to retrieve the selected table name from where the enumerated 
-	*	codes are imported. If the user chooses the option of importing the data
-	*	table later, this function returns null.   
-	*/
-	
-	public String getTableName() {
-		if(selectedImportChoice == IMPORT_LATER || entityNames == null)
-			return null;
-		if(namePickList.getSelectedIndex() == 0)
-			return null;
-		return (String)namePickList.getSelectedItem();
-	}
-	
-	public void setTableName(String name) {
-		entityNames = new String[2];
-		entityNames[0] = "--Select data table--";
-		entityNames[1] = name;
-		namePickList.setModel(new DefaultComboBoxModel(entityNames));
-		//if(namePickListListener != null)
-			//namePickList.removeItemListener(namePickListListener);
-		
-		/*if(adp != null) {
-			int idx = adp.getEntityIndex(name);
-			if(idx == -1) {
-				Log.debug(10, "Could not get Entity index for the new table in the CodeImportPanel. Error setting the reference IDs");
-				return;
-			}
-			this.currentEntityID = adp.getEntityID(idx);
-		} else {
-			Log.debug(10, "Abstract Data Package is null in the CodeImportPanel. Error setting the reference IDs");
-		}*/
-	}
-	
-	public void setAttributes(List attr) {
-		
-		int cnt = attr.size();
-		attrNames = new String[cnt + 1];
-		attrNames[0] = "--Select A Column--";
-		int i = 1;
-		for(Iterator it = attr.iterator(); it.hasNext() && i < (cnt+1) ; )
-			attrNames[i++] =  (String) it.next();
-		
-		codePickList.setModel(new DefaultComboBoxModel(attrNames));
-		defnPickList.setModel(new DefaultComboBoxModel(attrNames));
-		
-		//codePickList.setEnabled(true);
-		//defnPickList.setEnabled(true);
-	}
-	
-	/*
-	*	Function to retrieve the ID of the selected table from where the enumerated 
-	*	codes are imported.    
-	*/
-	
-	private String getEntityID(int entityIndex) {
-		String id = "";
-		id = adp.getEntityID(entityIndex);
-		Log.debug(45, "Entity ID for entityIndex = " + entityIndex + " is " + id);
-		return id;
-	}
-	
-	/** 
-	*	Function to retrieve the selected entity Index   
-	*/
-	
-	public int getSelectedEntityIndex() {
-		return entityIdx;
-	}
-	
-	
-	private String[] getAttributeNames(int entityIndex) {
-		ArrayList names = new ArrayList();
-		if(adp != null) {
-			int num = adp.getAttributeCountForAnEntity(entityIndex);
-			for(int i = 0; i < num; i++) {
-				names.add(adp.getAttributeName(entityIndex, i));
-			}
-		}
-		int cnt = names.size();
-		String[] attrs = new String[cnt+1];
-		attrs[0] = "--Select A Column--";
-		int i = 1;
-		for(Iterator it = names.iterator(); it.hasNext();)
-			attrs[i++] = (String)it.next(); 
-		
-		return attrs;
-	}
-	
-	
-	
-	/**
-	*  gets the unique ID for this wizard page
-	*
-	*  @return   the unique ID String for this wizard page
-	*/
-	/*
-	public String getPageID() {
-		return "";//this.pageID;
-	}*/
-	
-	/**
-	*  gets the title for this wizard page
-	*
-	*  @return   the String title for this wizard page
-	*/
-	public String getTitle() {
-		return this.title;
-	}
-	
-	
-	/**
-	*  gets the subtitle for this wizard page
-	*
-	*  @return   the String subtitle for this wizard page
-	*/
-	public String getSubtitle() {
-		return this.subtitle;
-	}
-	
-	/**
-	*  Returns the ID of the page that the user will see next, after the "Next"
-	*  button is pressed. If this is the last page, return value must be null
-	*
-	*  @return the String ID of the page that the user will see next, or null if
-	*  this is te last page
-	*/
-	/* 
-	public String getNextPageID() {
-		return this.nextPageID;
-	}*/
-	
-	/**
-	*  Returns the serial number of the page
-	*
-	*  @return the serial number of the page
-	*/
-	/*
-	public String getPageNumber() {
-		return this.pageNumber;
-	} */
-	
-	
-	/**
-	*  The action to be executed when the page is displayed. May be empty
-	*/
-	/*
-	public void onLoadAction() {
-	} */
-	
-	
-	/**
-	*  The action to be executed when the "Prev" button is pressed. May be empty
-	*
-	*/
-	/*
-	public void onRewindAction() {
-	} */
-	
-	/**
-	*  The action to be executed when the "Next" button (pages 1 to last-but-one)
-	*  or "Finish" button(last page) is pressed. May be empty
-	*
-	*  @return boolean true if wizard should advance, false if not
-	*          (e.g. if a required field hasn't been filled in)
-	*/
-	public boolean onAdvanceAction() {
-		
-		if(selectedImportChoice != IMPORT_LATER && selectedImportChoice != IMPORT_DONE) {
-			WidgetFactory.hiliteComponent(choiceLabel);
-			return false;
-		}
-		WidgetFactory.unhiliteComponent(choiceLabel);
-		
-		if(selectedImportChoice == IMPORT_LATER)
-			return true;
-		
-		if(namePickList.getSelectedIndex() < 1) {
-			WidgetFactory.hiliteComponent(nameLabel);
-			return false;
-		}
-		WidgetFactory.unhiliteComponent(nameLabel);
-		
-		if(codePickList.getSelectedIndex() < 1) {
-			WidgetFactory.hiliteComponent(codeLabel);
-			return false;
-		}
-		WidgetFactory.unhiliteComponent(codeLabel);
-		
-		if(defnPickList.getSelectedIndex() < 1) {
-			WidgetFactory.hiliteComponent(defnLabel);
-			return false;
-		}
-		WidgetFactory.unhiliteComponent(defnLabel);
-		
-		int codeIndex = codePickList.getSelectedIndex() - 1;
-		int defnIndex = defnPickList.getSelectedIndex() - 1;
-		
-		if(adp != null) {
-			
-			codeAttributeID = adp.getAttributeID(entityIdx, codeIndex);
-			
-			// the attribute has no ID !! This should never happen for data tables
-			// created using the new DPW. But if we encounter such a situation, a
-			// new ID is assigned and added to the attribute.
-			
-			if(codeAttributeID.trim() == "") {  
-				Log.debug(15, "Attribute " + 
-				adp.getAttributeName(entityIdx,	codeIndex) + "has no ID; assigning one now");
-				
-				codeAttributeID = WizardSettings.getUniqueID();
-				assignIDToAttribute(codeIndex, codeAttributeID);
-			}
-			Log.debug(45, "Code AttributeID = " + codeAttributeID);
-			
-			defnAttributeID = adp.getAttributeID(entityIdx,	defnPickList.getSelectedIndex() - 1);
-			
-			// the attribute has no ID !! This should never happen for data tables
-			// created using the new DPW. But if we encounter such a situation, a
-			// new ID is assigned and added to the attribute.
-			if(defnAttributeID.trim() == "") {  
-				Log.debug(15, "Attribute " + 
-				adp.getAttributeName(entityIdx,	defnIndex) + " has no ID; assigning one now");
-				defnAttributeID = WizardSettings.getUniqueID();
-				assignIDToAttribute(defnIndex, defnAttributeID);
-			}
-			Log.debug(45, "Defn AttributeID = " + defnAttributeID);
-			
-		} else {
-			Log.debug(15, "No AbstractDataPackage found! Hence IDs could not be retrieved!");
-		}
-		return true;
-	}
-	
-	
-	private void assignIDToAttribute(int attrIndex, String value) {
-		
-		if(adp == null)
-			Log.debug(15, "Abstract Data Package is null ! Cant assign ID to attribute");
-		if(attributeArray == null)
-			attributeArray = adp.getAttributeArray(entityIdx);
-		
-		if(attributeArray[attrIndex] == null) {
-			Log.debug(15, " attribute node itself is null; Cant assign ID to it");
-			return;
-		} else {
-			Log.debug(45, "attribute node =" + attributeArray[attrIndex].getNodeName() + ";"
-			+ attributeArray[attrIndex].getNodeValue());
-		}
-		
-		NamedNodeMap map = attributeArray[attrIndex].getAttributes();
-		Node oldIdNode = map.getNamedItem("id");
-		
-		if(oldIdNode != null) {
-			attributeArray[attrIndex].removeChild(oldIdNode);
-			oldIdNode.setNodeValue(value);
-			attributeArray[attrIndex].appendChild(oldIdNode);
-		} else {
-			Log.debug(45, "Attribute element has no 'id' attribute. Adding it.");
-			((Element)attributeArray[attrIndex]).setAttribute("id", value);
-		}
-		adp.setLocation("");
-		return;
-	}
-	
-	
-	/**
-	*  gets the Map object that contains all the key/value paired
-	*  settings for this particular wizard page
-	*
-	*  @return   data the Map object that contains all the
-	*            key/value paired settings for this particular wizard page
-	*/
-	public OrderedMap getPageData() {
-		
-		return getPageData("");
-	}
-	
-	/**
-	*  gets the Map object that contains all the key/value paired
-	*  settings for this particular wizard page, given a prefix xPath 
-	*
-	*	@param xPath the xPath that needs to be prepended to all keys that are
-	*								inserted in the map
-	*  @return   data the Map object that contains all the
-	*            key/value paired settings for this particular wizard page
-	*/
-	
-	public OrderedMap getPageData(String xPath) {
-		
-		OrderedMap map = new OrderedMap();
-		System.out.println("In CIP, values = "+this.currentEntityID + ", "+ this.codeAttributeID + ", " + this.defnAttributeID);
-		map.put(xPath + "/entityReference", this.currentEntityID);
-		map.put(xPath + "/valueAttributeReference", this.codeAttributeID);
-		map.put(xPath + "/definitionAttributeReference", this.defnAttributeID);
-		return map;
-	}
-	
-	
-	/**
-	*  sets the fields in the wizard page using the Map object
-	*  that contains all the key/value paired
-	*
-	*  @param   data the Map object that contains all the
-	*            key/value paired settings for this particular wizard page
-	*/
-	public void setPageData(OrderedMap data) {
-		boolean b1 = data.containsKey(AttributeSettings.Nominal_xPath + "/enumeratedDomain/entityCodeList/entityReference");
-		
-		if(b1) { // check if its Nominal
-			
-			setPageData(AttributeSettings.Nominal_xPath + "/enumeratedDomain/entityCodeList", data);
-			
-		} else { // check for Ordinal
-			
-			b1 = data.containsKey(AttributeSettings.Ordinal_xPath + "/enumeratedDomain/entityCodeList/entityReference");
-			
-			if(b1) {
-				setPageData(AttributeSettings.Ordinal_xPath + "/enumeratedDomain/entityCodeList", data);
-			}
-			
-		}
-		return;
-	}
-	
-	/**
-	*  sets the fields in the wizard page using the Map object
-	*  that contains all the key/value paired and the relative xPath to be used
-	*
-	*	@param 	xPath	the relative xPath of the keys
-	*  @param   data the Map object that contains all the
-	*            key/value paired settings for this particular wizard page
-	*/
-	
-	public void setPageData(String xPath, OrderedMap data) {
-		
-		Object o1 = data.get(xPath + "/entityReference");
-		Container c = (Container)(radioPanel.getComponent(1));
-		
-		if( o1 == null) {
-			JRadioButton jrb = (JRadioButton)c.getComponent(0);
-			jrb.setSelected(true);
-			selectedImportChoice = IMPORT_LATER;
-			definitionsPanel.setVisible(false);
-			return;
-			
-		} else {
-			
-			JRadioButton jrb = (JRadioButton)c.getComponent(1);
-			jrb.setSelected(true);
-			selectedImportChoice = IMPORT_DONE;
-			definitionsPanel.setVisible(true);
-		}
-		
-		currentEntityID = (String)o1;
-		
-		entityNames = getEntityNames();
-		for(int i = 0; i < entityNames.length; i++) {
-			String ID = getEntityID(i);
-			if(ID.equals(currentEntityID)) {
-				namePickList.setSelectedIndex(i + 1);
-				
-				break;
-			}
-		}
-		
-		codeAttributeID = (String)data.get(xPath + "/valueAttributeReference");
-		defnAttributeID = (String)data.get(xPath + "/definitionAttributeReference");
-		
-		boolean codeSelected = false;
-		boolean defnSelected = false;
-		
-		for(int j = 1; j < codePickList.getItemCount(); j++) {
-			String attrID = adp.getAttributeID(entityIdx, j -1);
-			if(attrID.equals(codeAttributeID)) {
-				codePickList.setSelectedIndex(j);
-				codeSelected = true;
-			}
-			if(attrID.equals(defnAttributeID)) {
-				defnPickList.setSelectedIndex(j);
-				defnSelected = true;
-			}
-			if(codeSelected  && defnSelected) 
-				break;
-		}
-		return;
-	}
-	
-	
-	
-	private JLabel getLabel(String text) {
-		
-		if (text==null) text="";
-		JLabel label = new JLabel(text);
-		
-		label.setAlignmentX(1.0f);
-		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
-		
-		return label;
-	}
-	
-	/**
-	*	Function to retrieve the imported data from the columns selected by the 
-	*	user. The selected table is read and the necessary two columns are 
-	*	extracted and returned as a List of rows. Each row is a list of two elements
-	*
-	* @return list the list of rows containing only the selected two columns
-	*/
-	
-	public List getColumnData() {
-		
-		File entityFile = null;
-		
-		if(adp == null) {
-			Log.debug(15, "Abstract Data Package is null. Cannot fill customlist with the imported codes");
-			return null;
-		}
-		
-		int entityIndex = entityIdx;
-		String inline = adp.getDistributionInlineData(entityIndex, 0,0);
-		Morpho morpho = resultPane.getFramework();
-		
-		if (inline.length()>0) {  // there is inline data
-			
-			String encMethod = adp.getEncodingMethod(entityIndex, 0);
-			if ((encMethod.indexOf("Base64")>-1)||(encMethod.indexOf("base64")>-1)||
-			(encMethod.indexOf("Base 64")>-1)||(encMethod.indexOf("base 64")>-1)) {
-				// is Base64
-				byte[] decodedData = Base64.decode(inline);
-				ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-				InputStreamReader isr = new InputStreamReader(bais);
-				FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
-				entityFile = fds3.saveTempDataFile(adp.getAccessionNumber(), isr);
-			}
-			else {
-				// is assumed to be text
-				FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
-				StringReader sr2 = new StringReader(inline);
-				entityFile = fds2.saveTempDataFile(adp.getAccessionNumber(), sr2);
-			}
-		} else if (adp.getDistributionUrl(entityIndex, 0,0).length()>0) {
-			
-			String urlinfo = adp.getDistributionUrl(entityIndex, 0,0);
-			// assumed that urlinfo is of the form 'protocol://systemname/localid/other'
-			// protocol is probably 'ecogrid'; system name is 'knb'
-			// we just want the local id here
-			int indx2 = urlinfo.lastIndexOf("/");
-			if(indx2 == -1) {
-				Log.debug(15, "Distribution URL is not in the right format! So data couldnt be retrieved");
-				return null;
-			}
-			urlinfo = urlinfo.substring(indx2 +1);
-			if (urlinfo.length()==0) {
-				Log.debug(15, "Distribution URL is not in the right format! So data couldnt be retrieved");
-				return null;
-			}
-			// we now have the id
-			try{
-				String loc = adp.getLocation();
-				if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
-					FileSystemDataStore fds = new FileSystemDataStore(morpho);
-					entityFile = fds.openFile(urlinfo);
-				}
-				else if (loc.equals(adp.METACAT)) {
-					MetacatDataStore mds = new MetacatDataStore(morpho);
-					entityFile = mds.openFile(urlinfo);
-				}
-				else if (loc.equals("")) {  // just created the package; not yet saved!!!
-					try{
-						// first try looking in the profile temp dir
-						ConfigXML profile = morpho.getProfile();
-						String separator = profile.get("separator", 0);
-						separator = separator.trim();
-						FileSystemDataStore fds = new FileSystemDataStore(morpho);
-						String temp = new String();
-						temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-						temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-						entityFile = fds.openTempFile(temp);
-					}
-					catch (Exception q1) {
-						// oops - now try locally
-						try{
-							FileSystemDataStore fds = new FileSystemDataStore(morpho);
-							entityFile = fds.openFile(urlinfo);
-						}
-						catch (Exception q2) {
-							// now try metacat
-							try{
-								MetacatDataStore mds = new MetacatDataStore(morpho);
-								entityFile = mds.openFile(urlinfo);
-							}
-							catch (Exception q3) {
-								// give up!
-								Log.debug(15,"Exception opening datafile after trying all sources!");
-								return null;
-							}
-						}
-					}
-				}
-			}
-			catch (Exception q) {
-				Log.debug(15,"Exception opening file!");
-				q.printStackTrace();
-			}
-		}
-		else if (adp.getDistributionArray(entityIndex, 0)==null) {
-			// case where there is no distribution data in the package
-			
-			Log.debug(5, "The selected entity has NO distribution information!");
-			return null;
-		}
-		
-		if(entityFile == null) {
-			Log.debug(15, "Unable to get the selected entity's data file!");
-			return null;
-		}
-		
-		int codeIndex = codePickList.getSelectedIndex() - 1;
-		int defnIndex = defnPickList.getSelectedIndex() - 1;
-		String numHeaders = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
-		int numHeaderLines = 0;
-		try {
-			if(numHeaders != null)
-				numHeaderLines = Integer.parseInt(numHeaders);
-		} catch(Exception e) {
-		}
-		
-		List data = readTwoColumnsFromFile(entityFile, codeIndex, defnIndex, numHeaderLines);
-		
-		return data;
-		
-	} // end of getColumns
-	
-	private List readTwoColumnsFromFile(File file, int firstCol, int secondCol, int numHeaderLines) {
-		
-		List result = new ArrayList();
-		String line;
-		int entityIndex = entityIdx;
-		String field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
-		String delimiter = getDelimiterString(field_delimiter);
-		boolean ignoreConsequtiveDelimiters = false;
-		boolean orderReversed = false;
-		if(firstCol > secondCol)
-			orderReversed = true;
-		String token, oldToken = "";
-		try
-		{
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			int linecnt = 0;
-			while( (line = br.readLine()) != null) {
-				linecnt++;
-				if(linecnt <= numHeaderLines) 
-					continue;
-				if(line.trim().equals(""))
-					continue;
-				List row = new ArrayList();
-				
-				if(result.size() >= MAX_IMPORTED_ROWS_DISPLAYED) {
-					int space = TRUNCATE_STRING.indexOf(" ");
-					row.add(TRUNCATE_STRING.substring(0, space));
-					row.add(TRUNCATE_STRING.substring(space + 1));
-					result.add(row);
-					break;
-				}
-				
-				if (ignoreConsequtiveDelimiters) {
-					StringTokenizer st = new StringTokenizer(line, delimiter, false);
-					int cnt = -1;
-					while( st.hasMoreTokens() ) {
-						token = st.nextToken().trim();
-						cnt++;
-						if(cnt == firstCol) {
-							if(orderReversed) {
-								row.add(0, token);
-								break;
-							} else {
-								row.add(token);
-							}
-						} 
-						if (cnt == secondCol) {
-							row.add(token);
-							if(!orderReversed) break;
-						}
-					} // end of while
-					result.add(row);
-					continue;
-				}
-				else { // not consecutive delimiters
-					int cnt = -1;
-					StringTokenizer st = new StringTokenizer(line, delimiter, true);
-					while( st.hasMoreTokens() ) {
-						token = st.nextToken().trim();
-						if (! (delimiter.indexOf(token) > -1) ) {
-							cnt++;
-							if(cnt == firstCol) {
-								if(orderReversed) {
-									row.add(0, token);
-									break;
-								} else {
-									row.add(token);
-								}
-							} 
-							if (cnt == secondCol) {
-								row.add(token);
-								if(!orderReversed) break;
-							}
-							
-						}
-						else {
-							if ((delimiter.indexOf(oldToken) > -1) && (delimiter.indexOf(token) > -1)) {
-								cnt++;
-								if(cnt == firstCol) {
-									if(orderReversed) {
-										row.add(0, "");
-										break;
-									} else {
-										row.add("");
-									}
-								} 
-								if (cnt == secondCol) {
-									row.add("");
-									if(!orderReversed) break;
-								}
-							}
-						}
-						oldToken = token;
-					}
-				} // end of else
-				
-				result.add(row);
-			} // end of while
-			
-		} // end of try bolck
-		catch(Exception e) {
-			Log.debug(15, "Exception in reading the data File: " + e);
-			
-		}
-		return result;
-		
-	}// end of function readTwoColumnsFromFile
-	
-	private String getDelimiterString(String field_delimiter) {
-		String str = "";
-		String temp = field_delimiter.trim();
-		if (temp.startsWith("#x")) {
-			temp = temp.substring(2);
-			if (temp.equals("0A")) str = "\n";
-			if (temp.equals("09")) str = "\t";
-			if (temp.equals("20")) str = " ";
-		}
-		else {
-			str = temp;
-		}
-		return str;
-	}
-	
-}
 

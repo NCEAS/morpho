@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-12-24 00:10:05 $'
-* '$Revision: 1.10 $'
+*     '$Date: 2004-02-06 19:46:02 $'
+* '$Revision: 1.11 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -30,15 +30,18 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -83,9 +86,9 @@ public class InsertColumnCommand implements Command
 	
 	/* Flag if need to add a column*/
 	private boolean columnAddFlag = false;
-	/* Reference to ColumnMetadataEditPanel*/
-//	ColumnMetadataEditPanel cmep = null;
-	/* Control in column meta data edit panel*/
+	
+	private boolean openNewWindow = false;
+	
 	private JPanel controlPanel;
 	private JButton controlOK;
 	private JButton controlCancel;
@@ -93,8 +96,23 @@ public class InsertColumnCommand implements Command
 	
 	private DataViewContainerPanel resultPane;
 	
-	AttributePage attributePage;
-	DataViewer dataView;
+	private AttributePage attributePage;
+	private DataViewer dataView;
+	private OrderedMap map = null;
+	private String mScale;
+	private String columnName;
+	private AbstractDataPackage adp = null;
+	private int entityIndex = -1;
+	private int selectedCol = -1;
+	private String xPath = "/attribute";
+	
+	private JTable table;
+	private PersistentTableModel ptm; 
+	private PersistentVector pv;
+  private Vector columnLabels;
+	private String fieldDelimiter;
+	private JPanel tablePanel;
+	private Document attributeDoc;
 	
 	/**
 	* Constructor of Import data command
@@ -127,17 +145,19 @@ public class InsertColumnCommand implements Command
 			if (dataView != null)
 			{
 				// Get parameters and run it
-				JTable jtable=dataView.getDataTable();
-				PersistentTableModel ptmodel=(PersistentTableModel)jtable.getModel();
-				PersistentVector vector=dataView.getPV();
+				table=dataView.getDataTable();
+				ptm = (PersistentTableModel)table.getModel();
+				pv = dataView.getPV();
 				Morpho morph=dataView.getMorpho();
-				Document attributeDocoumnet=dataView.getAttributeDoc();
-				Vector columnLabels=dataView.getColumnLabels();
+				attributeDoc = dataView.getAttributeDoc();
+				columnLabels=dataView.getColumnLabels();
 				//         String fieldDelimiter=dataView.getFieldDelimiter();
-				String fieldDelimiter= vector.getFieldDelimiter();
-				JPanel tablePanel=dataView.getTablePanel();
-				insertEml2Column(jtable, ptmodel, vector, morph, attributeDocoumnet,
-				columnLabels, fieldDelimiter, tablePanel);
+				fieldDelimiter= pv.getFieldDelimiter();
+				tablePanel=dataView.getTablePanel();
+				selectedCol = table.getSelectedColumn();
+				if (selectedCol > -1) {
+					showAttributeDialog();
+				}
 			}
 			
 		}//if
@@ -146,115 +166,138 @@ public class InsertColumnCommand implements Command
 	
 	
 	
-	private void insertEml2Column(JTable table,           PersistentTableModel ptm, 
-	                              PersistentVector pv,    Morpho morpho,
-	                              Document attributeDoc,  Vector column_labels,
-	                              String field_delimiter, JPanel TablePanel) {  
+	private void insertEml2Column() {  
 		
-		int sel = table.getSelectedColumn();
-		if (sel>-1) 
+		if(selectedCol < 0) {
+			Log.debug(10, "Error inserting Column. selected Column is " + selectedCol);
+			return;
+		}
+		
+		try 
 		{
-			showAttributeDialog();
-			if (columnAddFlag) 
+			if (beforeFlag)
 			{
-				try 
-				{
-					
-					if (beforeFlag)
-					{
-						insertNewAttributeAt(sel, attributeDoc);
-					}
-					else
-					{
-						insertNewAttributeAt((sel+1), attributeDoc);
-					}
-					
-				}//try
-				catch (Exception w) 
-				{
-					Log.debug(20, "Exception trying to modify attribute DOM");
-				}//catch
-				
-				if(attributePage == null) return;
-				OrderedMap map = attributePage.getPageData();
-				
-				String newHeader = getColumnName(map);
-				if (newHeader.trim().length()==0) newHeader = "New Column";
-				String type = getMeasurementScale(map);
-				String unit = getUnit(map);
-				newHeader = "<html><font face=\"Courier\"><center><small>"+type+
-				"<br>"+unit +"</small><br><b>"+
-				newHeader+"</b></center></font></html>";
-				if (beforeFlag)
-				{
-					column_labels.insertElementAt(newHeader, sel);
-					DataViewer dataView = resultPane.getCurrentDataViewer();
-					dataView.setColumnLabels(column_labels);
-					ptm.insertColumn (sel);
-				}
-				else
-				{
-					column_labels.insertElementAt(newHeader, sel+1);
-					DataViewer dataView = resultPane.getCurrentDataViewer();
-					dataView.setColumnLabels(column_labels);
-					ptm.insertColumn(sel+1);
-				}
-				pv = ptm.getPersistentVector();
-				setUpDelimiterEditor(table, field_delimiter, TablePanel);
-				
-				
-			}//if
-		}//if
-	}//insetColumn
-	
-	private String getColumnName(OrderedMap map) {
+				insertNewAttributeAt(selectedCol, attributeDoc);
+			}
+			else
+			{
+				insertNewAttributeAt((selectedCol+1), attributeDoc);
+			}
+			
+		}//try
+		catch (Exception w) 
+		{
+			Log.debug(20, "Exception trying to modify attribute DOM");
+		}//catch
 		
-		Object o1 = map.get(AttributeSettings.AttributeName_xPath);
+		if(attributePage == null) return;
+		
+		
+		String newHeader = columnName;
+		if (newHeader.trim().length()==0) newHeader = "New Column";
+		String unit = getUnit(map, xPath);
+		newHeader = "<html><font face=\"Courier\"><center><small>"+ mScale+
+		"<br>"+unit +"</small><br><b>"+
+		newHeader+"</b></center></font></html>";
+		if (beforeFlag)
+		{
+			columnLabels.insertElementAt(newHeader, selectedCol);
+			//dataView = resultPane.getCurrentDataViewer();
+			//dataView.setColumnLabels(columnLabels);
+			ptm.insertColumn(selectedCol);
+		}
+		else
+		{
+			columnLabels.insertElementAt(newHeader, selectedCol+1);
+			//dataView = resultPane.getCurrentDataViewer();
+			
+			ptm.insertColumn(selectedCol+1);
+		}
+		pv = ptm.getPersistentVector();
+		dataView.setPV(pv);
+		dataView.setColumnLabels(columnLabels);
+		table.setModel(ptm);
+		setUpDelimiterEditor();
+		dataView.saveCurrentTable();
+		
+		if(openNewWindow) {
+			
+			try {
+				ServiceController services = ServiceController.getInstance();
+				ServiceProvider provider =
+				services.getServiceProvider(DataPackageInterface.class);
+				DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+				dataPackageInt.openNewDataPackage(adp, null);
+			} catch (ServiceNotHandledException snhe) {
+				Log.debug(6, snhe.getMessage());
+			}
+			UIController controller = UIController.getInstance();
+			morphoFrame.setVisible(false);
+			controller.removeWindow(morphoFrame);
+			morphoFrame.dispose();
+		} // if
+		
+		return;
+		
+	}//insertEml2Column
+	
+	private String getColumnName(OrderedMap map, String xPath) {
+		
+		Object o1 = map.get(xPath + "/attributeName");
 		if(o1 == null) return "";
 		else return (String) o1;                       
 	}
 	
-	private String getMeasurementScale(OrderedMap map) {
+	private String getMeasurementScale(OrderedMap map, String xPath) {
 		
-		Object o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
 		if(o1 != null) return "Nominal";
-		o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
+		boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Nominal";
+		o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
 		if(o1 != null) return "Nominal";
 		
-		o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
 		if(o1 != null) return "Ordinal";
-		o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
+		b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		if(b1) return "Ordinal";
+		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
 		if(o1 != null) return "Ordinal";
 		
-		o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
+		o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
 		if(o1 != null) return "Interval";
-		o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
 		if(o1 != null) return "Ratio";
 		
-		o1 = map.get(AttributeSettings.DateTime_xPath+"/formatString");
+		o1 = map.get(xPath + "/measurementScale/datetime/formatString");
 		if(o1 != null) return "Datetime";
 		
 		return "";
 	}
 	
-	private String getUnit(OrderedMap map) {
+	private String getUnit(OrderedMap map, String xPath) {
 		
-		Object o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
+		Object o1 = map.get(xPath + "/measurementScale/interval" + "/unit/standardUnit");
 		if(o1 != null) return (String)o1;
-		o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
+		o1 = map.get(xPath + "/measurementScale/ratio" + "/unit/standardUnit");
 		if(o1 != null) return (String)o1;
 		return "";
 	}
 	
 	void insertNewAttributeAt(int index, Document doc) 
 	{
-		OrderedMap map = attributePage.getPageData("/attribute");
-		
+		if(map == null) {
+			Log.debug(15,"Error retrieving OrderedMap while Inserting Column");
+			return;
+		}
+		map.put("/attribute/@id", WizardSettings.getUniqueID());
 		Attribute attrObject = new Attribute(map);
-		AbstractDataPackage adp = dataView.getAbstractDataPackage();
-		int entityIndex = dataView.getEntityIndex();
+		if(adp == null)
+			adp = dataView.getAbstractDataPackage();
+		if(entityIndex == -1)
+			entityIndex = dataView.getEntityIndex();
 		adp.insertAttribute(entityIndex, attrObject, index);
-		//adp.showPackageSummary();
+		
 		return;
 	}
 	
@@ -282,22 +325,53 @@ public class InsertColumnCommand implements Command
 		wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
 		wpd.setVisible(true);
 		
+		entityIndex = dataView.getEntityIndex();
+		adp = dataView.getAbstractDataPackage();
+		
 		if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
-			columnAddFlag = true;                                                   
-		} else {
-			columnAddFlag = false;
-		}
+			
+			map = attributePage.getPageData(xPath);
+			
+			if(entityIndex == -1) {
+				Log.debug(10, "Unable to get the Index of the current Entity, in EditColumnMetaData.");
+				return;
+			}
+			
+			columnName = getColumnName(map, xPath );
+			mScale = getMeasurementScale(map, xPath);
+			
+			if(attributePage.isImportNeeded()) {
+				CodeImportPage codeImportPage = (CodeImportPage)dpwPlugin.getPage(DataPackageWizardInterface.CODE_IMPORT_PAGE);
+				String entityName = adp.getEntityName(entityIndex);
+				
+				codeImportPage.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
+				DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
+					public void wizardComplete(Node newDOM) {
+						openNewWindow = true;
+						insertEml2Column();
+						
+					}
+					public void wizardCanceled() {
+						return;
+					}
+				};
+				dpwPlugin.startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, dpwListener, "Import Code Definitions");
+				
+			} else { // if import is not needed
+				insertEml2Column();
+			}
+			                                           
+		} 
 		return;
 	}
 	
 	
-	private void setUpDelimiterEditor(JTable jtable, String delimiter,
-	JPanel pane) 
+	private void setUpDelimiterEditor() 
 	{
 		//Set up the editor for the integer and string cells.
-		int columns = jtable.getColumnCount();
+		int columns = table.getColumnCount();
 		final DelimiterField delimiterField = 
-		new DelimiterField(pane, delimiter, "", columns);
+		new DelimiterField(tablePanel, fieldDelimiter, "", columns);
 		delimiterField.setHorizontalAlignment(DelimiterField.RIGHT);
 		
 		DefaultCellEditor delimiterEditor =
@@ -309,7 +383,7 @@ public class InsertColumnCommand implements Command
 				return new String(delimiterField.getValue());
 			}
 		};
-		TableColumnModel columnModel = jtable.getColumnModel();
+		TableColumnModel columnModel = table.getColumnModel();
 		for (int j = 0; j< columns; j++)
 		{
 			columnModel.getColumn(j).setCellEditor(delimiterEditor);
@@ -318,108 +392,4 @@ public class InsertColumnCommand implements Command
 		
 	}
 
-	/* Method to insert a new column into table 
-	private void insertColumn(JTable table, PersistentTableModel ptm, 
-	PersistentVector pv, Morpho morpho,
-	Document attributeDoc, Vector column_labels,
-	String field_delimiter, JPanel TablePanel)
-	{  
-		
-		int sel = table.getSelectedColumn();
-		if (sel>-1) 
-		{
-			showColumnMetadataEditPanel();
-			if (columnAddFlag) 
-			{
-				try 
-				{
-					cmep.setMorpho(morpho);
-					if (beforeFlag)
-					{
-						cmep.insertNewAttributeAt(sel, attributeDoc);
-					}
-					else
-					{
-						cmep.insertNewAttributeAt((sel+1), attributeDoc);
-					}
-					
-				}//try
-				catch (Exception w) 
-				{
-					Log.debug(20, "Exception trying to modify attribute DOM");
-				}//catch
-				
-				String newHeader = cmep.getColumnName();
-				if (newHeader.trim().length()==0) newHeader = "New Column";
-				String type = cmep.getDataType();
-				String unit = cmep.getUnit();
-				newHeader = "<html><font face=\"Courier\"><center><small>"+type+
-				"<br>"+unit +"<br></small><b>"+
-				newHeader+"</b></font></center></html>";
-				if (beforeFlag)
-				{
-					column_labels.insertElementAt(newHeader, sel);
-					DataViewer dataView = resultPane.getCurrentDataViewer();
-					dataView.setColumnLabels(column_labels);
-					ptm.insertColumn(sel);
-				}
-				else
-				{
-					column_labels.insertElementAt(newHeader, sel+1);
-					DataViewer dataView = resultPane.getCurrentDataViewer();
-					dataView.setColumnLabels(column_labels);
-					ptm.insertColumn(sel+1);
-				}
-				pv = ptm.getPersistentVector();
-				setUpDelimiterEditor(table, field_delimiter, TablePanel);
-				
-				
-			}//if
-		}//if
-	}//insetColumn
-	
-	private void showColumnMetadataEditPanel() 
-	{
-		int newCompWidth = 400;
-		int newCompHeight = 650;
-		MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
-		Point curLoc = mf.getLocationOnScreen();
-		Dimension dim = mf.getSize();
-		int newx = curLoc.x +dim.width/2;
-		int newy = curLoc.y+dim.height/2;
-		columnDialog = new JDialog(mf,true);
-		columnDialog.getContentPane().setLayout(new BorderLayout(0,0));
-		columnDialog.setSize(newCompWidth,newCompHeight);
-		columnDialog.setLocation(newx-newCompWidth/2, newy-newCompHeight/2);
-		cmep = new ColumnMetadataEditPanel();
-		columnDialog.getContentPane().add(BorderLayout.CENTER, cmep);
-		controlPanel = new JPanel();
-		controlCancel = new JButton("Cancel");
-		controlOK= new JButton("OK");
-		controlPanel.add(controlCancel);
-		controlPanel.add(controlOK);
-		columnDialog.getContentPane().add(BorderLayout.SOUTH, controlPanel);
-		ColAction cAction = new ColAction();
-		controlOK.addActionListener(cAction);
-		controlCancel.addActionListener(cAction);
-		
-		columnDialog.setVisible(true);
-	}
-	
-	class ColAction implements java.awt.event.ActionListener
-	{
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
-			Object object = event.getSource();
-			if (object == controlOK) {
-				columnAddFlag = true;
-				columnDialog.dispose();
-			}
-			else if (object == controlCancel) {
-				columnAddFlag = false;
-				columnDialog.dispose();
-			}
-		}
-	}
-**/	
-}//class CancelCommand
+}//class InsertColumnCommand

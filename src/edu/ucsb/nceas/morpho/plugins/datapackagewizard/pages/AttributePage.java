@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:51 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-02-06 19:46:02 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -689,7 +689,7 @@ public class AttributePage extends AbstractWizardPage {
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPath+"/measurementScale/"+measurementScale) );
     }
-
+		returnMap.put(xPath + "/storageType", measurementScale);
     return returnMap;
   }
 

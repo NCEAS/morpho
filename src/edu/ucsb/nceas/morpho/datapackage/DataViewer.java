@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-30 01:07:25 $'
- * '$Revision: 1.100 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-06 19:46:02 $'
+ * '$Revision: 1.101 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -489,7 +489,11 @@ public class DataViewer extends javax.swing.JPanel
     public PersistentVector getPV() {
       return pv;
     }
-
+		
+		public void setPV(PersistentVector vector) {
+			pv = vector;
+			return;
+		}
     /**
      * Method to get the show data view
      */
@@ -668,9 +672,9 @@ public class DataViewer extends javax.swing.JPanel
               dataTypeString = adp.getAttributeDataType(entityIndex, i);
               unitString = adp.getAttributeUnit(entityIndex, i);
 
-              temp = "<html><font face=\"Courier\"><center><small>"+dataTypeString+"<br>"+unitString
+              temp = "<html><font face=\"Courier\"> <center><small>"+dataTypeString+"<br>"+unitString
                                                   +"<br></small><b>"
-                                                  +temp+"</b></font></center></html>";
+                                                  +temp+"</b></center></font></html>";
               column_labels.addElement(temp);
             }
           }
@@ -1465,64 +1469,82 @@ public class DataViewer extends javax.swing.JPanel
       }//for
     }//if
   }
-
+	
+	/**
+	*
+	*	Method to save the current data table after a change has been made. This is
+	*	equivalent to the user pressing the 'Update' button, except that a new window is
+	*	not opened
+	*/
+	
+	public void saveCurrentTable() {
+		
+		
+		if (adp!=null) {  // new eml2.0.0 handling
+			String id = "";
+			AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+			if (dataFileId==null) {
+				id = an.getNextId();
+			} else {
+				id = an.incRev(dataFileId);
+			}
+			dataFileId = id;  // update to new value
+			String tempfilename = parseId(id);
+			ptm.getPersistentVector().writeObjects(tempdir + "/" + tempfilename);
+			
+			File newDataFile = new File(tempdir + "/" + tempfilename);
+			long newDataFileLength = newDataFile.length();
+			
+			int rowcnt = ptm.getRowCount();
+			String rowcntS = (new Integer(rowcnt)).toString();
+			adp.setEntityNumRecords(entityIndex, rowcntS);
+			
+			String sizeS = (new Long(newDataFileLength)).toString();
+			adp.setPhysicalSize(entityIndex, 0, sizeS);
+			
+			adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
+			adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
+			adp.setLocation("");
+			
+			AccessionNumber a = new AccessionNumber(morpho);
+			String curid = adp.getAccessionNumber();
+			String newid = null;
+			if (!curid.equals("")) {
+				newid = a.incRev(curid);
+			} else {
+				newid = a.getNextId();
+			}
+			adp.setAccessionNumber(newid);
+		}
+		
+	}
+	
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-    TripleCollection triples = null;
-    MorphoFrame thisFrame = null;
-    if (adp!=null) {  // new eml2.0.0 handling
-      String id = "";
-      AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-      if (dataFileId==null) {
-        id = an.getNextId();
-      } else {
-        id = an.incRev(dataFileId);
-      }
-      dataFileId = id;  // update to new value
-      String tempfilename = parseId(id);
-      ptm.getPersistentVector().writeObjects(tempdir + "/" + tempfilename);
-
-      File newDataFile = new File(tempdir + "/" + tempfilename);
-      long newDataFileLength = newDataFile.length();
-
-      int rowcnt = ptm.getRowCount();
-      String rowcntS = (new Integer(rowcnt)).toString();
-      adp.setEntityNumRecords(entityIndex, rowcntS);
-
-      String sizeS = (new Long(newDataFileLength)).toString();
-      adp.setPhysicalSize(entityIndex, 0, sizeS);
-
-      adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
-      adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
-      adp.setLocation("");
-// Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
-// Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
-// Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    AccessionNumber a = new AccessionNumber(morpho);
-    String curid = adp.getAccessionNumber();
-    String newid = null;
-    if (!curid.equals("")) {
-      newid = a.incRev(curid);
-    } else {
-      newid = a.getNextId();
-    }
-    adp.setAccessionNumber(newid);
-    morphoFrame.setVisible(false);
-    UIController uicontroller = UIController.getInstance();
-    try{
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-      dataPackageInt.openNewDataPackage(adp, null);
-      uicontroller.removeWindow(morphoFrame);
-      morphoFrame.dispose();
-
-    } catch (Exception e) {
-        Log.debug(5, "Exception in converting edited XML to DOM!");
-    }
-
-    }
+    
+		MorphoFrame thisFrame = null;
+		saveCurrentTable();
+		// Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
+		// Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
+		// Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
+		
+		if(adp != null) {
+			MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+			morphoFrame.setVisible(false);
+			UIController uicontroller = UIController.getInstance();
+			try{
+				ServiceController services = ServiceController.getInstance();
+				ServiceProvider provider = services.getServiceProvider(DataPackageInterface.class);
+				DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+				dataPackageInt.openNewDataPackage(adp, null);
+				uicontroller.removeWindow(morphoFrame);
+				morphoFrame.dispose();
+				
+			} catch (Exception e) {
+				Log.debug(5, "Exception in converting edited XML to DOM!");
+			}
+			
+		}
 	}
 
   /**

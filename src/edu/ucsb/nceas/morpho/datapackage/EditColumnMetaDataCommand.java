@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-02-06 19:46:02 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,7 +173,7 @@ public class EditColumnMetaDataCommand implements Command
 			
 			columnName = getColumnName(map, xPath );
 			mScale = getMeasurementScale(map, xPath);
-			System.out.println("In EditCol, got mScale as " + mScale);
+			
 			if(attributePage.isImportNeeded()) {
 				CodeImportPage codeImportPage = (CodeImportPage)dpwPlugin.getPage(DataPackageWizardInterface.CODE_IMPORT_PAGE);
 				String entityName = adp.getEntityName(entityIndex);
@@ -181,7 +181,7 @@ public class EditColumnMetaDataCommand implements Command
 				codeImportPage.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
 				DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
 					public void wizardComplete(Node newDOM) {
-						System.out.println("wizardComplete");
+						
 						modifyAttribute();
 						try
 						{
@@ -201,11 +201,11 @@ public class EditColumnMetaDataCommand implements Command
 						morphoFrame.dispose();
 					}
 					public void wizardCanceled() {
-						System.out.println("wizardCancelled");
+						
 						return;
 					}
 				};
-				dpwPlugin.startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, dpwListener);
+				dpwPlugin.startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, dpwListener, "Import Code Definitions");
 				
 			} else { // if import is not needed
 				
@@ -226,7 +226,7 @@ public class EditColumnMetaDataCommand implements Command
 		adp.deleteAttribute(entityIndex, attrIndex);
 		adp.insertAttribute(entityIndex, attr, attrIndex);
 		
-		String unit = getUnit(map);
+		String unit = getUnit(map, xPath);
 		
 		// modify the 
 		String newHeader = "<html><font face=\"Courier\"><center><small>"+ mScale +
@@ -286,11 +286,11 @@ public class EditColumnMetaDataCommand implements Command
 		return "";
 	}
 	
-	private String getUnit(OrderedMap map) {
+	private String getUnit(OrderedMap map, String xPath) {
 		
-		Object o1 = map.get("/attribute/measurementScale/interval/unit/standardUnit");
+		Object o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
 		if(o1 != null) return (String)o1;
-		o1 = map.get("/attribute/measurementScale/ratio/unit/standardUnit");
+		o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
 		if(o1 != null) return (String)o1;
 		return "";
 	}
