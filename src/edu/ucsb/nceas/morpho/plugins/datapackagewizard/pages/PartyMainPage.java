@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-05 17:25:58 $'
- * '$Revision: 1.30 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-06 00:17:39 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,12 +109,12 @@ public class PartyMainPage
       xPathRoot = "/eml:eml/dataset/creator[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "creator";
       description =
-          "<p><b>Enter information about the Owners</b>: This is information about the "
-          +
-          "persons or organizations certified for the data. The list of data "
-          +
-          "owners should include all people and organizations who should be cited "
-          + "for the data. Select Add to add an owner"
+          "<p><b>Enter information about the Owners</b>: This is information "
+          + "about the persons or organizations certified as data owners "
+          + "(e.g. the principal investigator(s) of the project). "
+          + "The list of data owners should include all people and "
+          + "organizations who should be cited "
+          + "for the data. Select Add to add an owner."
           + "<br></br></p>";
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
