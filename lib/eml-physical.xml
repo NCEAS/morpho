@@ -49,7 +49,7 @@ help="Physical structure of an entity or entities. This generally is a detailed 
   help="The maximum record length allowed by the physical format.">
   </maxRecordLength>
 
-  <quoteCharacter help="This element specifi">
+  <quoteCharacter help="This element specifies a character to be used in the entity for quoting values so that field delimeters can be used within the value.  This basically allows delimeter &quot;escaping&quot;.  The quoteChacter is typically a &quot; or &quot;.&quot;">
   </quoteCharacter>
 
   <literalCharacter
