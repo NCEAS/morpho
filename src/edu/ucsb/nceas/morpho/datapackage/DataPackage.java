@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-26 22:45:13 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2001-11-26 23:16:22 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1085,9 +1085,29 @@ public class DataPackage
         }
         else
         { //this is a data file so we should link to it in the html
+          Vector triplesV = triples.getCollection();
           htmldoc.append("<a href=\"");
-          String fileid = getIdFromPath(((File)fileV.elementAt(i)).toString());
-          htmldoc.append("./metadata/").append(fileid).append("\">Data File</a>");
+          String dataFileName = null;
+          String datafileid = getIdFromPath(((File)fileV.elementAt(i)).toString());
+          
+          for(int j=0; j<triplesV.size(); j++)
+          {
+            Triple triple = (Triple)triplesV.elementAt(j);
+            String relationship = triple.getRelationship();
+            String subject = triple.getSubject();
+            if(subject.trim().equals(datafileid.trim()))
+            {
+              if(relationship.indexOf("isDataFileFor") != -1)
+              { //get the name of the data file.
+                int lparenindex = relationship.indexOf("(");
+                dataFileName = relationship.substring(lparenindex + 1, 
+                                                      relationship.length() - 1);
+                htmldoc.append("./metadata/").append(datafileid).append("\">");
+                htmldoc.append("Data File: ");
+                htmldoc.append(dataFileName).append("</a><br>");
+              }
+            }
+          }
           htmldoc.append("<br><hr><br>");
         }
       }
