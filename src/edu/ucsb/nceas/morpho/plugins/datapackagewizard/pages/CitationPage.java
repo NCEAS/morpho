@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-13 19:25:27 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-04-13 21:41:39 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,8 +231,13 @@ public class CitationPage extends AbstractUIPage {
        // 12 * WizardSettings.PADDING,
         //0, 8 * WizardSettings.PADDING));
     topMiddlePanel.add(pubDatePanel);
+    JPanel dataHelpPanel = WidgetFactory.makePanel(1);
+    JLabel spacer = WidgetFactory.makeLabel("", false);
     JLabel datehelp = WidgetFactory.makeHTMLLabel("Use the YYYY-MM-DD format - (e.g. 1989-02-24)", 1);
-    topMiddlePanel.add(datehelp);
+    dataHelpPanel.add(spacer);
+    dataHelpPanel.add(datehelp);
+    topMiddlePanel.add(dataHelpPanel);
+    
     topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
 
     ////////////////////////////////////////////
