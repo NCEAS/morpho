@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.3 2000-09-28 00:03:13 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.4 2000-09-28 23:45:00 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -439,6 +439,16 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 		    int x;
 		    CurrentCheckBox.setSelected(false);
 		    DocumentTextBox.setText(file);
+		    String idstring = getIDFromFile(file,idtagTextField.getText());
+		    if (idstring!=null) {
+		        if (idstring.indexOf(":")>0) {  // no colon -->invalid id
+                    String global = idstring.substring(0,idstring.indexOf(":"));
+                    String local =  idstring.substring(idstring.indexOf(":")+1,idstring.length());
+                    globalidTextBox.setText(global);
+                    localidTextBox.setText(local);
+                    idExistsFlag = true;
+		        }
+		    }
 		}
     }
 
@@ -598,7 +608,7 @@ public String getXMLID(InputStream is, String tagname) {
                     line = line + in.readLine();
                     kkk = line.indexOf("</",jjj+1);
                 }
-                String outputString = line.substring(jjj+1,kkk-1);
+                String outputString = line.substring(jjj+1,kkk);
                 outputString.trim();
                 in.close();
                 return outputString;
@@ -614,9 +624,7 @@ public String getXMLID(InputStream is, String tagname) {
 }
 
 public String getIDFromFile(String file_in, String tag) {
-    System.out.println("file in = " + file_in);
-/*    File infile = new File(file_in);
-        if (infile==null) System.out.println("infile is null!!");
+    File infile = new File(file_in);
     try{
         FileInputStream instream = new FileInputStream(infile);
         if (instream==null) System.out.println("instream is null!!");
@@ -624,11 +632,9 @@ public String getIDFromFile(String file_in, String tag) {
         return ID;
     }
     catch (Exception e) {
-        System.out.println("Returning null");
         return null;
         }
- */
-     return "xxx:yyy";
+ 
 }
 
 void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
@@ -668,7 +674,6 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		    }
 		    else{
 		        String file = DocumentTextBox.getText();
-		    
 		        FileReader fr = new FileReader(file);
 		        int x;
 		        while((x=fr.read())!=-1) {
@@ -676,7 +681,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		         }
 		        fr.close();
 		    }
-		    int result = JOptionPane.NO_OPTION;
+		    int result = JOptionPane.YES_OPTION;
 		    if (idExistsFlag) {
 		       result = JOptionPane.showConfirmDialog(null, "ID already in document. Do you want to insert a new copy?", "choose one", JOptionPane.YES_NO_OPTION); 
 		    }
@@ -765,9 +770,6 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	    if (!ServerRadioButton.isSelected()) {
 	       if ((globalidTextBox.getText().length()>0)&&(localidTextBox.getText().length()>0)) {
 	            result =  globalidTextBox.getText()+":"+localidTextBox.getText();
-	       }
-	       else {
-	            JOptionPane.showMessageDialog(null, "Both the global and local ID fields must have values!", "Alert", JOptionPane.INFORMATION_MESSAGE);
 	       }
 	    }
 	    return result;

@@ -32,7 +32,7 @@ public class SplashFrame extends javax.swing.JFrame
 		JLabel3.setText("MORPHO");
 		JPanel1.add(BorderLayout.CENTER,JLabel3);
 		JLabel3.setForeground(java.awt.Color.blue);
-		JLabel3.setFont(new Font("Dialog", Font.BOLD, 36));
+		JLabel3.setFont(new Font("Dialog", Font.BOLD|Font.ITALIC, 36));
 		JLabel3.setBounds(0,0,427,44);
 		JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		JLabel1.setText("Data Managment for Ecologists");
@@ -65,7 +65,7 @@ public class SplashFrame extends javax.swing.JFrame
 		temp = temp + "\n\nThis software is named after the Morpho butterfly which is common in ";
 		temp = temp + "South America. The apparent color of this butterfly is highly dependent on the angle of ";
 		temp = temp + "viewing, with the most common color being blue.";
-		JTextArea1.setText(temp);
+		JTextArea1.setText("This material is based upon work supported by the National Science Foundation under Grant No. DEB99-80154 and Grant No. DBI99-04777. Also supported by the National Center for Ecological Analysis and Synthesis, a Center funded by NSF (Grant #DEB-94-21535),the University of California - Santa Barbara, and the State of California. Any opinions, findings and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation (NSF).\n\n Participating organizations include the National Center for Ecological Analysis and Synthesis (NCEAS), the Long Term Ecological Research Network (LTER), Texas Tech University, and the San Diego Supercomputer Center\n\n Participating individuals include Matt Jones, Dan Higgins, Jivka Bojilova, Chad Berkley, Ruldolf Nottrott, and others\n\nThis software is named after the Morpho butterfly which is common in South America. The apparent color of this butterfly is highly dependent on the angle of viewing, with the most common color being blue.");
 		JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		JLabel8.setText("Version 0.75 - Sept 2000");
 		JPanel3.add(BorderLayout.SOUTH,JLabel8);

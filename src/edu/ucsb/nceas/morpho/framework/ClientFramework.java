@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.17 2000-09-27 15:47:30 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.18 2000-09-28 23:45:00 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -340,6 +340,7 @@ public class ClientFramework extends javax.swing.JFrame
 		CatalogSearchCheckBox.addItemListener(lSymItem);
 		ExpertCheckBox.addItemListener(lSymItem);
 		ConnectMenuItem.addActionListener(lSymAction);
+		newButton.addActionListener(lSymAction);
 		//}}
 		// Get the configuration file information
     try {
@@ -588,6 +589,8 @@ public class ClientFramework extends javax.swing.JFrame
 				OptionsMenuItem_actionPerformed(event);
 			else if (object == ConnectMenuItem)
 				ConnectMenuItem_actionPerformed(event);
+			else if (object == newButton)
+				newButton_actionPerformed(event);
 			
 			
 		}
@@ -614,13 +617,6 @@ public class ClientFramework extends javax.swing.JFrame
 		mdeBean1.saveDocument();
 	}
 
-	void saveItem_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// saveFileDialog Show the FileDialog
-			saveFileDialog.setVisible(true);
-		} catch (Exception e) {
-		}
-	}
 
 	void exitItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
@@ -651,99 +647,25 @@ public class ClientFramework extends javax.swing.JFrame
 	}
 
 	void openButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// openFileDialog Show the FileDialog
-			openFileDialog.setVisible(true);
-		} catch (Exception e) {
-		}
+		mdeBean1.openDocument();
 	}
 
 	void saveserverButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		// to do: code goes here.
-			 
 		saveserverButton_actionPerformed_Interaction1(event);
 	}
 
 	void saveserverButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-   //         LoadServerFrame lsf = new LoadServerFrame(this);
-   //         lsf.setVisible(true);
             SubmitDialog sd = new SubmitDialog(this);
             sd.setVisible(true);
     }
     
-/*	void saveserverButton_actionPerformed_Interaction1xx(java.awt.event.ActionEvent event) {
-		StringBuffer txt = new StringBuffer();
-		try {
-			// saveFileDialog Show the FileDialog
-			openFileDialog.setVisible(true);
-		} catch (Exception e) {}
-		String file = openFileDialog.getFile();
-		file = container.openFileDialog.getDirectory() + file;
-		if (file!=null) {
-		    int x;
-		try {
-		    file = openFileDialog.getDirectory() + file;
-		    FileReader fr = new FileReader(file);
-		    while((x=fr.read())!=-1) {
-		        txt.append((char)x);
-		    }
-		    fr.close();
-		    }
-		    catch (Exception e) {}
-		}
-//		LogIn();
-	    try {
-            System.err.println("Trying: " + MetaCatServletURL);
-//            System.out.println("User = " + userName);
-//            System.out.println("Pasword = " + passWord);
-		    URL url = new URL(MetaCatServletURL);
-		    HttpMessage msg = new HttpMessage(url);
-		    Properties prop = new Properties();
-		    prop.put("action","insert");
-		    prop.put("doctext",txt.toString());
-		    
-		    
-		    InputStream in = msg.sendPostMessage(prop);
-		    
-//		    OutputTextArea.setText(msg.contype+"\n");
-		    txt = new StringBuffer();
-		    int x;
-		    try {
-		    while((x=in.read())!=-1) {
-		        txt.append((char)x);
-		    }
-		    }
-		    catch (Exception e) {}
-		    String txt1 = txt.toString();
-		    System.out.println(txt1);
-		    
-//   What do I need to do to acknowlede that XML text was sent??? Does servlet respond?
-            LoadServerFrame lsf = new LoadServerFrame();
-            lsf.ResultTextArea.setText(txt1);
-            lsf.setVisible(true);
-//        LogOut();
-		}
-		catch (Exception e) {
-		    e.printStackTrace();
-		}
-	}
-*/
 
 	void saveButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		// to do: code goes here.
-			 
-		saveButton_actionPerformed_Interaction1(event);
+		mdeBean1.saveDocument();
 	}
 
-	void saveButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// saveFileDialog Show the FileDialog
-			saveFileDialog.setVisible(true);
-		} catch (Exception e) {
-		}
-	}
 
 	void aboutButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
@@ -963,5 +885,10 @@ public void LogOut() {
 	{
 			ConnectionFrame cf = new ConnectionFrame(this);
 			cf.setVisible(true);
+	}
+
+	void newButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		mdeBean1.newDocument();
 	}
 }
