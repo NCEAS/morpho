@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-16 22:41:51 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2002-12-18 02:09:16 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -790,6 +790,23 @@ public class Morpho
                     "versions of the JVM,\n" +
                     "Version 1.3 or greater is required for all " +
                     "functions to work properly!");
+        } else {
+            if (System.getProperty("os.name").equalsIgnoreCase("Linux") 
+                        && ver.compareTo("1.4") < 0)
+            {
+                JOptionPane.showMessageDialog(null,
+                    "You are currently using version " + ver + " of the Java "
+                    +"Virtual Machine(JVM) on a Linux system\n"
+                    +"Unfortunately, Morpho's initial \"Welcome\" screen may "
+                    +"not display correctly with this configuration. \n"
+                    +"Please note that all other parts of Morpho will still "
+                    +"operate correctly, and you can access all of the welcome "
+                    +"screen functions (change profile, login, new/open/search "
+                    +"packages) from Morpho's menus.\n"
+                    +"If you wish to fix this problem, you can do so by "
+                    +"installing JVM version 1.4 or later (which is available "
+                    +"as part of the Morpho distribution)" );
+            }
         }
     }
 
