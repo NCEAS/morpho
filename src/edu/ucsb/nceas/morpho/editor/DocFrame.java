@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-13 17:01:49 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2001-12-13 23:51:50 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,7 +435,8 @@ public class DocFrame extends javax.swing.JFrame
       }
       }
 	}
-		
+	
+	
 	if (!templateFlag) {	
 		treeModel.reload();
 		tree.setModel(treeModel);
@@ -825,6 +826,24 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         }
         return newnode;
     }
+    
+    public void deepNodeCopyFile(DefaultMutableTreeNode node) {
+      if (node==null) {
+        System.out.println("Attempt to clone a null node!");
+      }      
+        DefaultMutableTreeNode newnode = null; 
+        try{
+            File fl = new File("treeNodeFile.ser");
+            FileOutputStream out = new FileOutputStream(fl);
+            ObjectOutputStream s = new ObjectOutputStream(out);
+            s.writeObject(node);
+            s.flush();
+        
+        }
+        catch (Exception e) {
+            System.out.println("Exception in creating copy of node!");
+        }
+    }
 
     void Copy_actionPerformed(java.awt.event.ActionEvent event) {
       TreePath tp = tree.getSelectionPath();
@@ -1156,14 +1175,13 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             tempNode = parentNode;
             parentNode = (DefaultMutableTreeNode)parentNode.getParent();
             if (parentNode!=null) {
-	            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL")) ) {
+	            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL"))||(card.equals("NOT SELECTED")) ) {
 	              NodeInfo nip = (NodeInfo)parentNode.getUserObject();
-	              if ((!(nip.getName().startsWith("(CHOICE)")))&&(!(nip.getName().startsWith("(CHOICE)")))) {
 	                parentNode.remove(tempNode);
-	              }
+	                parentNode = null;
 	            }
-	          }
 	        }
+	      }  // end while
         }
       }
     }
