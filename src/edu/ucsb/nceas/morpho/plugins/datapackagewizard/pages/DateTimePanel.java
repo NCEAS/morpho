@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-19 01:44:01 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-12-19 22:39:02 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JButton;
 
 import java.util.Iterator;
 import java.util.List;
@@ -59,10 +60,14 @@ import java.util.Enumeration;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.Component;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 
 
@@ -85,6 +90,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 												"<",
 												"<="
 										};
+
+	private JButton addButton, delButton;
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -128,12 +135,12 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
     JPanel formatStringGrid = new JPanel(new GridLayout(1,2));
     formatStringGrid.add(formatStringPanel);
-    formatStringGrid.add(WidgetFactory.makeLabel(
+    formatStringGrid.add(this.getLabel(
         WizardSettings.HTML_NO_TABLE_OPENING
         +WizardSettings.HTML_EXAMPLE_FONT_OPENING
         +"e.g: YYYY-MM-DDThh:mm:ss ,&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss"
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,30)) );
+        +WizardSettings.HTML_NO_TABLE_CLOSING));
 
 //    this.add(WidgetFactory.makeHalfSpacer());
     this.add(formatStringGrid);
@@ -149,14 +156,14 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
     JPanel precisionGrid = new JPanel(new GridLayout(1,2));
     precisionGrid.add(precisionPanel);
-    precisionGrid.add(WidgetFactory.makeLabel(
+    precisionGrid.add(this.getLabel	(
         WizardSettings.HTML_NO_TABLE_OPENING
         +"Precision of a date or time measurement, interpreted in the "
         +"smallest units represented by the datetime format."
         +"&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
         +WizardSettings.HTML_EXAMPLE_FONT_OPENING+"e.g: 0.1 "
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,40)) );
+        +WizardSettings.HTML_NO_TABLE_CLOSING));
 
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(precisionGrid);
@@ -187,7 +194,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
     
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
-                                        true, false, false, true, false, false);
+                                        false, false, false, false, false, false);
     boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		boundsList.setBorderForButtonPanel(0, WizardSettings.PADDING, 0, 0);
 		boundsPanel.add(boundsList);
@@ -196,16 +203,65 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 		
     JPanel boundsGrid = new JPanel(new GridLayout(1,2));
     boundsGrid.add(boundsPanel);
-    boundsGrid.add(WidgetFactory.makeLabel(
+
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
+		
+		addButton = new JButton("Add");
+		addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		
+		delButton = new JButton("Delete");
+		delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		delButton.setEnabled(false);
+		
+		addButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				boundsList.fireAddAction();
+				if(boundsList.getRowCount() > 0)
+					delButton.setEnabled(true);
+			}
+		});
+		
+		delButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				boundsList.fireDeleteAction();
+				if(boundsList.getRowCount() == 0)
+					delButton.setEnabled(false);
+			}
+		});
+		
+		buttonPanel.add(addButton);
+		buttonPanel.add(delButton);
+		buttonPanel.add(Box.createVerticalGlue());
+		JPanel outerButtonPanel = new JPanel();
+		outerButtonPanel.setLayout(new BoxLayout(outerButtonPanel, BoxLayout.X_AXIS));
+		outerButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+		outerButtonPanel.add(buttonPanel);
+	
+	 	outerButtonPanel.add(Box.createHorizontalStrut(10));
+		JPanel boundsHelpPanel = new JPanel();
+		boundsHelpPanel.setLayout(new BorderLayout());
+		//new BoxLayout(boundsHelpPanel, BoxLayout.Y_AXIS));
+		JLabel helpLabel = new JLabel(
     WizardSettings.HTML_NO_TABLE_OPENING
     +"Range of permitted values, in same date-time format as used in the format "
     +"description above.&nbsp;&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
     +"e.g: if format is \"YYYY-MM-DD\", a valid minimum would be \"2001-05-29\""
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING+"<br></br>"
-    +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,35)));
+    +WizardSettings.HTML_NO_TABLE_CLOSING);
+		
+		helpLabel.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		
+    boundsHelpPanel.add( helpLabel, BorderLayout.CENTER);
+		//boundsHelpPanel.add(Box.createGlue());
+		outerButtonPanel.add(boundsHelpPanel);
     
-
+		boundsGrid.add(outerButtonPanel);
     this.add(boundsGrid);
   
     ////////////////////////
@@ -220,6 +276,17 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
                     WizardSettings.DEFAULT_SPACER_DIMS.height/2));
   }
   
+	private JLabel getLabel(String text) {
+			
+		if (text==null) text= "";
+		JLabel label = new JLabel(text);
+							
+		label.setAlignmentX(1.0f);
+		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
+			
+		return label;
+	}
 
   
 

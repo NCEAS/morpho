@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-19 03:12:00 $'
- * '$Revision: 1.6 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-19 22:39:02 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ public class AttributePage extends AbstractWizardPage {
     +"Define the contents of the attribute (or column) precisely, "
     +"so that a data user could interpret the attribute accurately.<br></br>"
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"&nbsp;&nbsp;e.g:&nbsp;&nbsp;&nbsp;"
+    +"e.g:&nbsp;&nbsp;&nbsp;"
     +"\"spden\" is the number of individuals of all macro "
     +"invertebrate species found in the plot"
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
@@ -777,11 +777,12 @@ public class AttributePage extends AbstractWizardPage {
        setMeasurementScale(measScaleElemNames[4]);
        componentNum = 4;;
      }
-
      //selects the appropriate radio button
 
      if(componentNum != -1) {
-       JRadioButton jrb = (JRadioButton)(radioPanel.getComponent(componentNum));
+	
+       Container c = (Container)(radioPanel.getComponent(1));
+       JRadioButton jrb = (JRadioButton)c.getComponent(componentNum);
        jrb.setSelected(true);
      }
      ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
