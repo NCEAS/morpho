@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-13 06:01:08 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-12-13 19:37:12 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -551,7 +551,7 @@ public class InitialScreen extends JPanel
         public void clearRow1() 
         { 
             topBox.removeAll();
-            topBox.revalidate();
+            topBox.validate();
         }
         
         /**
@@ -570,7 +570,7 @@ public class InitialScreen extends JPanel
         public void clearRow2() 
         { 
             middleBox.removeAll();
-            middleBox.revalidate();
+            middleBox.validate();
         }
         
         
@@ -590,7 +590,7 @@ public class InitialScreen extends JPanel
         public void clearRow3() 
         { 
             bottomBox.removeAll();
-            bottomBox.revalidate();
+            bottomBox.validate();
         }
     
     
