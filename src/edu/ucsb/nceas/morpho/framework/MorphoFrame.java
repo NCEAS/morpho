@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-21 23:57:46 $'
- * '$Revision: 1.5 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-23 23:43:44 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ public class MorphoFrame extends JFrame
     private Dimension windowSize;
     private Dimension contentAreaSize;
     private final MorphoFrame instance;
+    private static int menuBarHeight = 0;
 
     // Constants (probably should be set in a property file, but what the hell)
     private static final int MAX_WINDOW_WIDTH = 1024;
@@ -92,16 +93,13 @@ public class MorphoFrame extends JFrame
 
         // Set up the toolbar
         int indicatorHeight = (int)indicator.getSize().getHeight();
-        // For some reason the menubar returns 0 as its height.  This needs
-        // to be fixed so that the toolbar is the right height on all platforms
-        //int menuHeight = (int)morphoMenuBar.getSize().getHeight();
-        int menuHeight = 24;
+        int menuHeight = getMenuHeight();
         int toolbarHeight = indicatorHeight - menuHeight;
         Log.debug(50, "(indicator, menu, tool) = (" + indicatorHeight + "," + 
                 menuHeight + "," + toolbarHeight + ")");
         morphoToolbar = new JToolBar();
         morphoToolbar.setFloatable(false);
-        morphoToolbar.add(Box.createRigidArea(new Dimension(1,toolbarHeight)));
+        morphoToolbar.setPreferredSize(new Dimension(1,toolbarHeight));
         getContentPane().add(BorderLayout.NORTH, morphoToolbar);
 
         // Set up and add a StatusBar
@@ -140,7 +138,15 @@ public class MorphoFrame extends JFrame
         instance = this;
     }
     
- 
+    private int getMenuHeight() {
+        if (menuBarHeight <= 0) {
+            menuBarHeight 
+             = (int)UIController.createMenuBar().getPreferredSize().getHeight();
+        }
+        return menuBarHeight;
+    }    
+    
+    
     /**
      * Create a new instance and set its default size
      */
@@ -199,7 +205,7 @@ public class MorphoFrame extends JFrame
     public void addToolbarActions(Vector toolbarList)
     {
         int toolbarActionCount = toolbarList.size();
-        int componentCount = morphoToolbar.getComponentCount() - 1;
+        int componentCount = morphoToolbar.getComponentCount();
         if ((toolbarActionCount > 0) && (toolbarActionCount > componentCount)) {
             for (int i=componentCount; i < toolbarActionCount; i++) {
                 Action currentAction = (Action)toolbarList.elementAt(i);

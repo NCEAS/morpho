@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-23 17:57:39 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-23 23:43:44 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -441,7 +441,7 @@ public class UIController
     /**
      * Create a new menubar for use in a window
      */
-    private JMenuBar createMenuBar()
+    protected static JMenuBar createMenuBar()
     {
         Log.debug(50, "Creating menu bar for window...");
         JMenuBar newMenuBar = new JMenuBar();
@@ -459,7 +459,7 @@ public class UIController
     /**
      * Create new menu items for a particular menu
      */
-    private void createMenuItems(String menuName, JMenu currentMenu)
+    private static void createMenuItems(String menuName, JMenu currentMenu)
     {
         Vector currentActions = (Vector)orderedMenuActions.get(menuName);
         Log.debug(50, "Creating menu items for: " + menuName + " (" +
