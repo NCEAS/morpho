@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 19:34:08 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-12-05 19:45:47 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,10 +157,17 @@ public class XMLPanels extends Component
     }
     
     void doPanels(DefaultMutableTreeNode node, JPanel panel) {
+      boolean locked = false;
     // panel is the surrounding panel for this node
     // check to see if there is a special editor for this node
       NodeInfo inf = (NodeInfo)(node.getUserObject());
       String temp = inf.getEditor();
+      if (temp!=null) {
+        if (temp.indexOf("LockedPanel")>-1) {
+          locked = true; 
+          temp = null;
+        }
+      }
       if (temp!=null) {
         try {
           Object[] Args = new Object[] {node};
@@ -183,7 +190,7 @@ public class XMLPanels extends Component
         }
       }
       else {
-        panel.add(getDataPanel(node));
+        panel.add(getDataPanel(node, locked));
         // iterate over children of this node
         Enumeration nodes = node.children();
         // loop over child node
@@ -216,7 +223,7 @@ public class XMLPanels extends Component
     }
     
     
-    JPanel getDataPanel(DefaultMutableTreeNode node) {
+    JPanel getDataPanel(DefaultMutableTreeNode node, boolean locked) {
         int panelWidth = topPanel.getWidth() - 40;
     
         JPanel jp = new JPanel();
@@ -290,6 +297,7 @@ public class XMLPanels extends Component
             jtf1.addFocusListener(new dfhFocus());
      //       if (txt.equals("text")) { txt = " "; }
             jtf1.setText(txt);
+            jtf1.setEnabled(!locked);
           }
         
         return jp;
