@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-02 21:55:41 $'
-* '$Revision: 1.17 $'
+*     '$Date: 2004-04-05 22:03:22 $'
+* '$Revision: 1.18 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -815,8 +815,8 @@ public class Taxonomic extends AbstractUIPage {
     Node covRoot;
     boolean result = true;
 		
-		data.remove("/taxonomicCoverage/@scope");
-		data.remove("/taxonomicCoverage/@id");
+		data.remove(_xPathRoot + "/taxonomicCoverage/@scope");
+		data.remove(_xPathRoot + "/taxonomicCoverage/@id");
 		
 		//System.out.println("In setPageData of TaxonomicPage - " + data.toString());
 		
@@ -826,10 +826,10 @@ public class Taxonomic extends AbstractUIPage {
 
       covRoot = doc.getDocumentElement();
       XMLUtilities.getXPathMapAsDOMTree(data, covRoot);
-      result = traverseTree(covRoot, new TaxonHierarchy(new Vector()));
+			result = traverseTree(covRoot, new TaxonHierarchy(new Vector()));
 			if(!result) return false;
 			else {
-				removeAllKeysStartingWith("/taxonomicCoverage/taxonomicClassification", data);
+				removeAllKeysStartingWith(_xPathRoot + "/taxonomicCoverage/taxonomicClassification", data);
 			}
     } catch(Exception e) {
 

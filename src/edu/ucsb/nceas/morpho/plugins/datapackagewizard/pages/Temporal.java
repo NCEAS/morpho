@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-05 18:32:03 $'
- * '$Revision: 1.25 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-05 22:02:44 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -337,9 +337,9 @@ public class Temporal extends AbstractUIPage{
     }
     boolean res = true;
     TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
-		data.remove("/temporalCoverage/@scope");
-		data.remove("/temporalCoverage/@id");
-    boolean flag = temporalPage.setPageData(data, "/temporalCoverage");
+		data.remove(xPathRoot + "/temporalCoverage/@scope");
+		data.remove(xPathRoot + "/temporalCoverage/@id");
+    boolean flag = temporalPage.setPageData(data, xPathRoot + "/temporalCoverage");
     if(!flag) res = false;
     List newRow = temporalPage.getSurrogate();
     newRow.add(temporalPage);
