@@ -4,7 +4,7 @@
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
-  <metacat_url>http://dev.nceas.ucsb.edu/berkley/servlet/metacat</metacat_url>
+  <metacat_url>http://dev.nceas.ucsb.edu/jones/servlet/metacat</metacat_url>
   <profile_directory>./profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
   <default_profile>./lib/default-profile.xml</default_profile>
