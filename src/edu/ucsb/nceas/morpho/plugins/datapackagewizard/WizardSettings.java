@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-29 16:56:07 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-07-30 01:09:26 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,10 +83,12 @@ public class WizardSettings {
   public static final  Color WIZARD_CONTENT_REQD_TEXT_COLOR  
                                       = new Color(221, 0, 0);
   public static final  Dimension WIZARD_CONTENT_LABEL_DIMS  
-                                      = new Dimension(100,25);
+                                      = new Dimension(100,20);
   public static final  Dimension WIZARD_CONTENT_TEXTFIELD_DIMS  
-                                      = new Dimension(300,25);
+                                      = new Dimension(2000,20);
 
+    public static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS  
+                                      = new Dimension(2000,20);
   protected static final  Color WIZARD_CONTENT_BG_COLOR    
                                       = new Color(221, 221, 221);
 
@@ -98,24 +100,5 @@ public class WizardSettings {
   
   protected static final String CANCEL_BUTTON_TEXT  = "Cancel";
 
-
-
-  public static void setLabelSizes(JLabel label) {
-  
-    setSizes(label, WIZARD_CONTENT_LABEL_DIMS);
-  }
-
-  public static void setTextFieldSizes(JTextField textField) {
-  
-    setSizes(textField, WIZARD_CONTENT_TEXTFIELD_DIMS);
-  }
-
-
-  private static void setSizes(JComponent  component, Dimension dims) {
-  
-    component.setMinimumSize(dims);
-    component.setPreferredSize(dims);
-    component.setMaximumSize(dims);
-  }
 }
 
