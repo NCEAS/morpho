@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 18:24:51 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2002-11-27 21:46:25 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.text.DateFormat;
 
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
 
@@ -330,7 +331,7 @@ public class TextImportWizard extends javax.swing.JFrame
     ColDataSummaryPanel.add(TopColSummaryPanel);
     ColDataSummaryPanel.add(BottomColSummaryPanel);    
 		TopColSummaryPanel.setLayout(new BoxLayout(TopColSummaryPanel,BoxLayout.Y_AXIS));
-    ColDataSummaryPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    ColDataSummaryPanel.setBorder(BorderFactory.createEmptyBorder(10,5,5,5));
     TopColSummaryPanel.add(ColDataSummaryLabel);
     BottomColSummaryPanel.setLayout(new BorderLayout(0,0));
     BottomColSummaryPanel.add(BorderLayout.NORTH, new JLabel("Unique Items List"));
@@ -358,7 +359,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		JPanelLeft.add(ShowResultsButton);
 		JPanelCenter.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 		ButtonsPanel.add(BorderLayout.CENTER,JPanelCenter);
-		StepNumberLabel.setText("Step #1 of 3");
+		StepNumberLabel.setText("Step #1");
 		JPanelCenter.add(StepNumberLabel);
 		StepNumberLabel.setForeground(java.awt.Color.black);
 		CancelButton.setText("Cancel");
@@ -413,7 +414,7 @@ public class TextImportWizard extends javax.swing.JFrame
       resultsBuffer = new StringBuffer();
       stepNumber = 1;
       hasReturnedFromScreen2 = false;
-      StepNumberLabel.setText("Step #"+stepNumber+" of 3");
+      StepNumberLabel.setText("Step #"+stepNumber);
       CardLayout cl = (CardLayout)ControlsPanel.getLayout();
       cl.show(ControlsPanel, "card"+stepNumber);
       BackButton.setEnabled(false);
@@ -672,7 +673,7 @@ public void startImport(String file) {
         createLinesTable();
 		    resultsBuffer = new StringBuffer();
 		    stepNumber = 1;
-		    StepNumberLabel.setText("Step #"+stepNumber+" of 3");
+		    StepNumberLabel.setText("Step #"+stepNumber);
 		    CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		    cl.show(ControlsPanel, "card"+stepNumber);
 		    BackButton.setEnabled(false);
@@ -878,7 +879,7 @@ public void startImport(String file) {
 	private void buildTable(Vector cTitles, Vector data) {
  //     final JTable table = new JTable(vec, colTitles);
       UneditableTableModel myTM = new UneditableTableModel(vec, colTitles);
-      JTable table = new JTable(myTM);
+      table = new JTable(myTM);
       
       table.setColumnSelectionAllowed(true);
       table.setRowSelectionAllowed(false);
@@ -1060,14 +1061,17 @@ public void startImport(String file) {
 		  BackButton.setEnabled(true);
 		}
 		else {
-		  NextButton.setEnabled(false);
+		  //NextButton.setEnabled(false);
+      
 		}
-		StepNumberLabel.setText("Step #"+stepNumber+" of 3");
+		StepNumberLabel.setText("Step #"+stepNumber);
 		CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		cl.show(ControlsPanel, "card"+stepNumber);
 		if (stepNumber == 2) parseDelimited();
-		if (stepNumber == 3) {
-		    ColumnDataPanel.setVisible(true);
+		if (stepNumber >= 3) {
+		  StepNumberLabel.setText("Step #"+stepNumber+" of " + (table.getColumnCount()+2));
+		  ColumnDataPanel.setVisible(true);
+      table.setColumnSelectionInterval(stepNumber-3,stepNumber-3);
 		}
 		else {
 		    ColumnDataPanel.setVisible(false);
@@ -1082,8 +1086,9 @@ public void startImport(String file) {
             saveScreen1Settings();
             hasReturnedFromScreen2=true;
         }
-		if (stepNumber == 3) {
+		if (stepNumber >= 3) {
 		    ColumnDataPanel.setVisible(true);
+        table.setColumnSelectionInterval(stepNumber-3,stepNumber-3);
 		}
 		else {
 		    ColumnDataPanel.setVisible(false);
@@ -1096,7 +1101,7 @@ public void startImport(String file) {
 		else {
 		  BackButton.setEnabled(false); 
 		}
-		StepNumberLabel.setText("Step #"+stepNumber+" of 3");
+		StepNumberLabel.setText("Step #"+stepNumber+" of " + (table.getColumnCount()+2));
 		CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		cl.show(ControlsPanel, "card"+stepNumber);
 		if (stepNumber==1) {
