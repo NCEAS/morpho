@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 21:59:31 $'
- * '$Revision: 1.37 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-21 20:19:33 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -406,6 +406,8 @@ public class WizardContainerFrame extends JFrame {
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
     int USAGE_RIGHTS
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.USAGE_RIGHTS));
+    int GEOGRAPHIC
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GEOGRAPHIC));
     int TEMPORAL
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEMPORAL));
     int ACCESS
@@ -454,6 +456,11 @@ public class WizardContainerFrame extends JFrame {
       addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
     }
 
+//GEOGRAPHIC:
+    if (GEOGRAPHIC>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(GEOGRAPHIC)),wizData);
+    }
+    
 //TEMPORAL:
     if (TEMPORAL>=0)        {
       addPageDataToResultsMap((WizardPage)(pagesList.get(TEMPORAL)),wizData);

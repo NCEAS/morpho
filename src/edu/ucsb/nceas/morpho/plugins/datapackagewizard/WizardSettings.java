@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-01-08 22:52:33 $'
- * '$Revision: 1.45 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-21 20:19:33 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ public class WizardSettings {
 
   protected static final String OK_BUTTON_TEXT      = "OK";
 
-  public static String NUMBER_OF_STEPS              = "11";
+  public static String NUMBER_OF_STEPS              = "13";
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "
