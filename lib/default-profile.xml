@@ -17,9 +17,7 @@
   <returnfield>dataset/title</returnfield>
   <returnfield>originator/responsibleParty/individualName/surName</returnfield>
   <returnfield>keyword</returnfield>
-  <accessionNumber>
-    <scope>jones</scope>
-    <lastId>1</lastId>
-    <separator>.</separator>
-  </accessionNumber>
+  <scope>jones</scope>
+  <lastId>2</lastId>
+  <separator>.</separator>
 </profile>

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-11 17:01:12 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-06-11 23:32:26 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -414,7 +414,7 @@ public class ProfileDialog extends JDialog
         JOptionPane.showMessageDialog(this, messageText);      
       } else {
         try {
-          // Copy default options to that directory
+          // Copy default profile to the new directory
           String defaultProfile = config.get("default_profile", 0);
           String profileName = profilePath + File.separator + username + ".xml";
           FileUtils.copy(defaultProfile, profileName);
@@ -430,6 +430,9 @@ public class ProfileDialog extends JDialog
           }
           if (! profile.set("lastname", 0, lastNameField.getText())) {
             success = profile.insert("lastname", lastNameField.getText());
+          }
+          if (! profile.set("scope", 0, username)) {
+            success = profile.insert("scope", username);
           }
 
           profile.save();
@@ -450,7 +453,20 @@ public class ProfileDialog extends JDialog
           File tempDir = new File(tempPath);
           success = tempDir.mkdir();
 
-          // Create a metacat user 
+          // Copy sample data to the data directory
+          Hashtable tokens = new Hashtable();
+          tokens.put("SCOPE", username);
+          String samplePath = config.get("samples_directory", 0);
+          File sampleDir = new File(samplePath);
+          File[] samplesList = sampleDir.listFiles();
+          for (int n=0; n < samplesList.length; n++) {
+            File srcFile = samplesList[n];
+            String destName = dataPath + File.separator + 
+                              username + "." + srcFile.getName();
+            FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
+          }
+           
+          // Create a metacat user
   
           // Log into metacat
           framework.setProfile(profile);
