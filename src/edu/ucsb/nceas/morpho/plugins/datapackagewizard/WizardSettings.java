@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 18:55:17 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2003-09-26 20:50:11 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -332,9 +332,6 @@ public class WizardSettings {
   //////// 
   public static String[] getUnitDictionaryUnitsOfType(String UnitType) { 
   
-
-System.err.println("getUnitDictionaryUnitsOfType() called with: "+UnitType);
-  
     // ensure xml DOM has already been created...
     if (udRootNode==null) getUnitDictionaryUnitTypes();
     
@@ -353,19 +350,14 @@ System.err.println("getUnitDictionaryUnitsOfType() called with: "+UnitType);
       }    
     }
 
-//System.err.println("getUnitDictionaryUnitsOfType() - unitsNodeArray = "+unitsNodeArray);  
-System.err.println("**** DOING FIRST LOOP ***********************************");  
-    
     // for each unit element node, get list of attribute nodes;
     for (int i=0; i<unitsNodeArray.length; i++) {
     
       NamedNodeMap attribNNMap = unitsNodeArray[i].getAttributes();
-//System.err.println("unitsNodeArray["+i+"] - attribNNMap = "+attribNNMap);  
                           
       if (attribNNMap==null || attribNNMap.getLength()<1) continue;
 
       Node unitTypeAttrNode = attribNNMap.getNamedItem("unitType");
-//System.err.println("unitsNodeArray["+i+"] - unitTypeAttrNode = "+unitTypeAttrNode);  
 
       // if attributes contains an attrib node called unitType {
       if (unitTypeAttrNode!=null) {
@@ -376,16 +368,11 @@ System.err.println("**** DOING FIRST LOOP ***********************************");
           addAttributeNameToList(attribNNMap, unitsList);
         }
       } else {  //  add unit node to remainderList
-//System.err.println("unitsNodeArray["+i+"] - adding node to remainderList");  
         
         remainderList.add(unitsNodeArray[i]);
       }
     }
         
-System.err.println("\n\ngetUnitDictionaryUnitsOfType() - unitsList = "+unitsList);  
-//System.err.println("\n\ngetUnitDictionaryUnitsOfType() - remainderList = "+remainderList);  
-        
-System.err.println("**** DOING SECOND LOOP **********************************");int i=0;
     //2. for each unit element in remainderList, 
     for (Iterator it = remainderList.iterator(); it.hasNext(); ) {
 
@@ -394,12 +381,10 @@ System.err.println("**** DOING SECOND LOOP **********************************");
       if (nextObj!=null) {
 
         NamedNodeMap attribNNMap = ((Node)nextObj).getAttributes();
-System.err.println("remainderList["+(i++)+"] - attribNNMap = "+attribNNMap);  
                           
         if (attribNNMap==null || attribNNMap.getLength()<1) continue;
 
         Node parentSIAttrNode = attribNNMap.getNamedItem("parentSI");
-System.err.println("remainderList["+(i++)+"] - parentSIAttrNode = "+parentSIAttrNode);  
         
         // if attributes contains an attrib node called parentSI
         if (parentSIAttrNode!=null) {
@@ -408,24 +393,20 @@ System.err.println("remainderList["+(i++)+"] - parentSIAttrNode = "+parentSIAttr
           if (unitsList.contains( StringUtil.stripTabsNewLines(
                                         ((Attr)parentSIAttrNode).getValue()))) {
           
-System.err.println("remainderList["+(i++)+"] - unitsList contains parentSIAttrNode - adding to returnList");  
             addAttributeNameToList(attribNNMap, returnList);
           }
         }
       }
     }
     
-System.err.println("\n\ngetUnitDictionaryUnitsOfType() - BEFORE ADDALL: returnList = "+returnList);  
-    
     //3. finally, add unitsList to returnList, make into array, sort and return
     returnList.addAll(unitsList);
-System.err.println("\n\ngetUnitDictionaryUnitsOfType() -  AFTER ADDALL: returnList = "+returnList);  
-  
-System.err.println("\n\ngetUnitDictionaryUnitsOfType() -  returnList.size() = "+returnList.size()); 
  
     String[] returnArray = new String[returnList.size()];
 
-    //if (returnArray.length > 1) Arrays.sort(returnArray);
+    returnList.toArray(returnArray);
+    
+    if (returnArray.length > 1) Arrays.sort(returnArray);
     return returnArray;
   }
   
@@ -433,10 +414,8 @@ System.err.println("\n\ngetUnitDictionaryUnitsOfType() -  returnList.size() = "+
   private static void addAttributeNameToList(NamedNodeMap map, List list) {
 
     Node nameAttrNode = map.getNamedItem("name");
-System.err.println("addAttributeNameToList - nameAttrNode = "+nameAttrNode);  
     if (nameAttrNode!=null) {
       list.add(StringUtil.stripTabsNewLines(((Attr)nameAttrNode).getValue()));
-System.err.println("addAttributeNameToList - added "+((Attr)nameAttrNode).getValue());  
     }
   }
 

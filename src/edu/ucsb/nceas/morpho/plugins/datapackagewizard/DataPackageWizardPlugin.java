@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-09-26 17:08:43 $'
- * '$Revision: 1.7 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-09-26 20:50:11 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,10 +104,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
   // for testing/development
   public static void main(String[] args) {
   
-// HACK - TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
-//DFH    Morpho.main(null);
+// TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
       Morpho.createMorphoInstance();
-
 ///////////////////////    
     
     Log.setDebugLevel(55);
@@ -115,10 +113,17 @@ public class DataPackageWizardPlugin implements PluginInterface,
     plugin.startWizard(
       new DataPackageWizardListener() {
       
-        public void wizardFinished(Node newDOM) {
+        public void wizardComplete(Node newDOM) {
         
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, true));
+          System.exit(0);
+        }
+
+        public void wizardCanceled() {
+      
+          Log.debug(45, "\n\n********** Wizard canceled!");
+          System.exit(0);
         }
       }
     );

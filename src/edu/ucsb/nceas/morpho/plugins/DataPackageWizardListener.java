@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 05:40:53 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-26 20:50:11 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,16 @@ public interface DataPackageWizardListener {
 
 
   /**
-   *  callback method when wizard has finished
+   *  callback method when wizard has finished, upon completion
    *
    *  @param newDOM the root Node of the newly-created DOM document
    */
-  public void wizardFinished(Node newDOM);
+  public void wizardComplete(Node newDOM);
+
+  /**
+   *  callback method when wizard has been canceled before completion
+   *
+   *  @param newDOM the root Node of the newly-created DOM document
+   */
+  public void wizardCanceled();
 }

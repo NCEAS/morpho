@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 02:54:10 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-09-26 20:50:11 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -455,7 +455,7 @@ public class WizardContainerFrame extends JFrame {
     
     Node rootNode = null;
     
-    //create a new empty DOM document to be poopulated by the wizard values:
+    //create a new empty DOM document to be populated by the wizard values:
     try {
     
       rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
@@ -464,7 +464,7 @@ public class WizardContainerFrame extends JFrame {
       e.printStackTrace();
       Log.debug(5, "unexpected error trying to create new XML document "
                     +"at start of wizard\n");
-      listener.wizardFinished(null);
+      listener.wizardCanceled();
       return;
     }
     
@@ -478,11 +478,11 @@ public class WizardContainerFrame extends JFrame {
       e.printStackTrace();
       Log.debug(5, "unexpected error trying to create new XML document "
                     +"after wizard finished\n");
-      listener.wizardFinished(null);
+      listener.wizardCanceled();
       return;
     }
     
-    listener.wizardFinished(rootNode);
+    listener.wizardComplete(rootNode);
   }
   
 
