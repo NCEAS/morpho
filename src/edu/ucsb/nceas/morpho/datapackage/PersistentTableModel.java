@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-09 20:47:39 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-13 01:43:36 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -331,7 +331,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     }
     pv.delete();
     pv = newpv;  
-    pv.setFieldDelimiter("#x09");
+    //pv.setFieldDelimiter("#x09");
     pushLogValues(-1, getColumnCount(), "N/A", "N/A", "added column at end","");
     fireTableStructureChanged();
   }
@@ -352,7 +352,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     }
     pv.delete();
     pv = newpv;  
-    pv.setFieldDelimiter("#x09");
+    //pv.setFieldDelimiter("#x09");
     fireTableStructureChanged();
     pushLogValues(-1, colnum, "N/A", "N/A", "added column at "+colnum,"");
   }
@@ -372,7 +372,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     }
     pv.delete();
     pv = newpv;  
-    pv.setFieldDelimiter("#x09");
+    //pv.setFieldDelimiter("#x09");
     pushLogValues(-1, col, "N/A", "N/A", "deleted column","");
     fireTableStructureChanged();   
    }
