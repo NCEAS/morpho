@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-01 00:38:45 $'
- * '$Revision: 1.13 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-04-06 03:19:20 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -487,7 +487,7 @@ public class Methods
       nextValObj = map.get(nextXPathObj);
       nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
 
-      Log.debug(10, "Methods:  nextXPath = " + nextXPath
+      Log.debug(45, "Methods:  nextXPath = " + nextXPath
                 + "\n nextVal   = " + nextVal);
 
       // remove everything up to and including the last occurrence of
@@ -496,7 +496,7 @@ public class Methods
       nextXPath = nextXPath.substring(nextXPath.lastIndexOf(this.xPathRoot)
                                       + this.xPathRoot.length());
 
-      Log.debug(10, "Methods: TRIMMED nextXPath   = " + nextXPath);
+      Log.debug(45, "Methods: TRIMMED nextXPath   = " + nextXPath);
 
       if (nextXPath.startsWith(SAMPLING_REL_XPATH)) {
 
@@ -525,7 +525,7 @@ public class Methods
     int methodPredicate = 1;
 
     methodsList.removeAllRows();
-    boolean partyRetVal = true;
+    boolean methodRetVal = true;
 
     while (persIt.hasNext()) {
 
@@ -541,23 +541,23 @@ public class Methods
       MethodsPage nextStep = (MethodsPage) WizardPageLibrary.getPage(
           DataPackageWizardInterface.METHODS_PAGE);
 
-      boolean checkParty = nextStep.setPageData(nextStepMap,
+      boolean checkMethod = nextStep.setPageData(nextStepMap,
                                                  this.xPathRoot
                                                  + METHODSTEP_REL_XPATH
                                                  + (methodPredicate++) + "]/");
 
-      if (!checkParty) {
-        partyRetVal = false;
+      if (!checkMethod) {
+        methodRetVal = false;
       }
       List newRow = nextStep.getSurrogate();
       newRow.add(nextStep);
 
       methodsList.addRow(newRow);
     }
-    //check party return valuse...
-    if (!partyRetVal) {
+    //check method return valuse...
+    if (!methodRetVal) {
 
-      Log.debug(20, "Project.setPageData - Party sub-class returned FALSE");
+      Log.debug(20, "Methods.setPageData - Method sub-class returned FALSE");
     }
 
     //remove entries we have used from map:
@@ -574,7 +574,7 @@ public class Methods
       Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
                 + map);
     }
-    return (returnVal && partyRetVal);
+    return (returnVal && methodRetVal);
 
   }
 
@@ -600,7 +600,7 @@ public class Methods
       }
       else {
         Log.debug(15,
-            "**** ERROR - Project.addToPersonnel() - predicate > methodstepList.size()");
+            "**** ERROR - Methods.addToMethodStep() - predicate > methodstepList.size()");
       }
     }
 
