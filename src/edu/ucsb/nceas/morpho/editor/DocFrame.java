@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-22 22:48:18 $'
- * '$Revision: 1.135 $'
+ *     '$Date: 2004-01-27 23:01:42 $'
+ * '$Revision: 1.136 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1707,7 +1707,8 @@ public class DocFrame extends javax.swing.JFrame
             && (!str.equals("")) 
 //            &&(!(str.indexOf("schemaLocation")>-1))
           ) {
-            if (!((str.equals("id"))&&(val.equals("")))) {
+//            if (!((str.equals("id"))&&(val.equals("")))) {
+            if (!(val.equals(""))) {
               start1.append(" " + str + "=\"" + val + "\"");
             }
 //DFH            start1.append(str + "=\"" + val + "\"");
