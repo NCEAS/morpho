@@ -414,11 +414,8 @@ public class WidgetFactory {
 
     JComboBox comboBox = new JComboBox(listValues);
 
-    int totalBoxes = listValues.length;
-
     comboBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     comboBox.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
-    //boxes[i].setActionCommand(listValues[i]);
     comboBox.addItemListener(listener);
     comboBox.setEditable(isEditable);
     if (selectedIndex > -1 && selectedIndex < comboBox.getItemCount()) {
