@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-15 05:49:22 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-04-15 06:38:27 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class Introduction extends AbstractUIPage {
    */
   private void init() {
 
-    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeHalfSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
     "<p>This wizard creates a"
@@ -77,14 +77,14 @@ public class Introduction extends AbstractUIPage {
     +"data itself. <br></br></p>"
 
     +"If you wish to improve your understanding of data documentation "
-    +"(metadata) and related concepts, you should start by reading the: ", 2);
+    +"(metadata) and related concepts, you should start by reading the: ", 3);
 
     JLabel desc2 = WidgetFactory.makeHTMLLabel(
     "which provides background information and examples of data documentation. "
-
-    +"<p><br></br>The wizard uses a subset of EML to describe your data. If "
+    +"The wizard uses a subset of EML to describe your data. If "
     +"additional documentation is needed to adequately document your data, use "
-    +"<i>Morpho's EML Editor</i>.<br></br></p>"
+    +"<i>Morpho's EML Editor</i> (after you finish this wizard, choose \"Add/"
+    +"Edit Documentation\" from the Documentation menu in the main Morpho screen).<br></br></p>"
 
     +"<p>Before beginning you should have your data "
     +"(electronic or hardcopy format) available. You can provide the following "
@@ -97,11 +97,11 @@ public class Introduction extends AbstractUIPage {
     +"<li><b>Project Information</b><br></br></li>"
     +"<li><b>Coverage Details</b><br></br></li>"
     +"<li><b>Methods</b><br></br></li>"
-    +"<li><b>Access Control</b><br></br></li></ul>"
+    +"<li><b>Access Control</b></li></ul>"
     +"<p><b>Note:</b> Required information includes the title and personell "
     +"information for your dataset.  The rest of the information collected here "
     +"is optional, however it is highly recommended that you fill in as much as "
-    +"possible.</p>", 16);
+    +"possible.</p>", 19);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     this.add(desc1);
