@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 23:11:08 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-09-12 02:48:27 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +29,17 @@ package edu.ucsb.nceas.morpho.util;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
+import edu.ucsb.nceas.morpho.plugins.XSLTResolverInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+
 import java.io.Reader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.io.CharArrayWriter;
-//import java.io.PipedWriter;
 import java.io.InputStreamReader;
 
 import java.net.URL;
@@ -50,25 +54,22 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;     
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.arbortext.catalog.Catalog;
 import com.arbortext.catalog.CatalogEntityResolver;
@@ -77,7 +78,7 @@ import com.arbortext.catalog.CatalogEntityResolver;
 /**
  *  XMLTransformer to style XML documents using XSLT
  */
-public class XMLTransformer extends DefaultHandler
+public class XMLTransformer
 {
 
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
@@ -109,9 +110,8 @@ public class XMLTransformer extends DefaultHandler
      */    
     public static XMLTransformer getInstance()
     {
-        if (instance==null) {
-            instance=new XMLTransformer();
-        }
+        if (instance==null) instance=new XMLTransformer();
+        
         return instance;
     }
     
@@ -133,7 +133,19 @@ public class XMLTransformer extends DefaultHandler
         Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
         validateInputParam(xmlDocReader,  "XML document reader");
         
-        return transform(xmlDocReader, getDefaultStyleSheetReader());
+        Document doc = null;
+        try {
+            doc = getAsDOMDocument(xmlDocReader);
+        } catch (IOException e) {
+            throwIOException(e, "IOException");
+        } catch (SAXException e) {
+            throwIOException(e, "SAXException");
+        } catch (FactoryConfigurationError e) {
+            throwIOException(e, "FactoryConfigurationError");
+        } catch (ParserConfigurationException e) {
+            throwIOException(e, "ParserConfigurationException");
+        }
+        return transform(doc);
     }
     
     /**
@@ -160,13 +172,13 @@ public class XMLTransformer extends DefaultHandler
         try {
             doc = getAsDOMDocument(xmlDocReader);
         } catch (IOException e) {
-            lazyThrow(e, "IOException");
+            throwIOException(e, "IOException");
         } catch (SAXException e) {
-            lazyThrow(e, "SAXException");
+            throwIOException(e, "SAXException");
         } catch (FactoryConfigurationError e) {
-            lazyThrow(e, "FactoryConfigurationError");
+            throwIOException(e, "FactoryConfigurationError");
         } catch (ParserConfigurationException e) {
-            lazyThrow(e, "ParserConfigurationException");
+            throwIOException(e, "ParserConfigurationException");
         }
         return transform(doc, xslStyleSheet);
     }
@@ -189,8 +201,8 @@ public class XMLTransformer extends DefaultHandler
     {
         Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
         validateInputParam(domDoc,        "XML DOM Document");
-
-        return transform(domDoc, getDefaultStyleSheetReader());
+        
+        return transform(domDoc, getStyleSheetReader(domDoc.getDoctype().getPublicId()));
     }
     /**
      *  Uses the stylesheet provided, to apply XSLT to the XML DOM Document 
@@ -214,13 +226,9 @@ public class XMLTransformer extends DefaultHandler
         validateInputParam(domDoc,        "XML DOM Document");
         validateInputParam(xslStyleSheet, "XSL stylesheet reader");
         
-        DOMSource domSource 
-                    = new DOMSource(domDoc, domDoc.getDoctype().getSystemId());
-        
-        return doTransform(domSource, xslStyleSheet);
+        return doTransform( getAsDOMSource(domDoc), xslStyleSheet );
     }
 
-   
     //common method used to do transforms
     private synchronized Reader doTransform(Source source, 
                                         Reader xslStyleSheet) throws IOException
@@ -228,13 +236,8 @@ public class XMLTransformer extends DefaultHandler
         Log.debug(50,"--> XMLTransformer.doTransform(Source, Reader) called;"
                         +"\n    Source = "       +source            
                         +"\n    xslStyleSheet = "+xslStyleSheet); 
-        
-//        PipedReader returnReader = new PipedReader();
-//        PipedWriter outputWriter  = new PipedWriter();
-//        returnReader.connect(outputWriter);
 
         CharArrayWriter outputWriter  = new CharArrayWriter();
-
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = null;
@@ -250,7 +253,6 @@ public class XMLTransformer extends DefaultHandler
             outputWriter.write(msg.toCharArray(),0,msg.length());
             e.printStackTrace(new PrintWriter(outputWriter));
         }
-        
         transformer.setErrorListener(new CustomErrorListener());
 
         try {
@@ -280,8 +282,6 @@ public class XMLTransformer extends DefaultHandler
             outputWriter.close();
         }
         return new StringReader(outputWriter.toString());
-        
-//        return returnReader;
     }
 
 
@@ -321,6 +321,13 @@ public class XMLTransformer extends DefaultHandler
     }
 
     
+    //returns a new DOMSource based on the passed DOM Document
+    private DOMSource getAsDOMSource(Document domDoc)
+    {
+        return new DOMSource(domDoc, domDoc.getDoctype().getSystemId());
+    }
+    
+
     //  Create a DOM Document to enable the transformer to access the Reader
     //  - Necessary because we need to set the entity resolver for this source, 
     //  which isn't possible if we just use a StreamSource to read the Reader
@@ -440,26 +447,54 @@ public class XMLTransformer extends DefaultHandler
         }
     }
     
-    private void lazyThrow(Throwable e, String type) throws IOException 
+    private void throwIOException(Throwable e, String type) throws IOException 
     {
         String msg 
             = "\nXMLTransformer.doTransform(): getting DOM document. "
                 +"Nested "+type+" = "+e.getMessage()+"\n";
-        e.fillInStackTrace();
         e.printStackTrace();
         Log.debug(12, msg);
-        throw new IOException(msg);
+        IOException ioe = new IOException(msg);
+        ioe.fillInStackTrace();
+        throw ioe;
     }
-    
 
     //returns a new Reader to access the generic default stylesheet
-    private Reader getDefaultStyleSheetReader() 
+    private Reader getStyleSheetReader(String docType) throws IOException
     {
-        return new InputStreamReader(
+        XSLTResolverInterface resolver = null;
+        try
+        {
+          ServiceController services = ServiceController.getInstance();
+          ServiceProvider provider = 
+                        services.getServiceProvider(XSLTResolverInterface.class);
+          resolver = (XSLTResolverInterface)provider;
+        }
+        catch(ServiceNotHandledException ee)
+        {
+          Log.debug(0, "Error acquiring XSLT Resolver plugin: " + ee);
+          ee.printStackTrace();
+          return new InputStreamReader(
                           classLoader.getResourceAsStream(GENERIC_STYLESHEET));
-    }
-
+        }
+        Reader xsltReader = null;
+        try {
+            xsltReader = resolver.getXSLTStylesheetReader(docType);
+        } catch (DocumentNotFoundException d) {
+            String msg 
+                = "XMLTransformer.getStyleSheetReader(): "
+                    +"Nested DocumentNotFoundException = "+d.getMessage()+"\n";
+            d.printStackTrace();
+            Log.debug(12, msg);
+            IOException ioe = new IOException(msg);
+            ioe.fillInStackTrace();
+            throw ioe;
+        }
+        return xsltReader;
+    }  
 }
+
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 //////////////             S P A R E    P A R T S            ///////////////////
