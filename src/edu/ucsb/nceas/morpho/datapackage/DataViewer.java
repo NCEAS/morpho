@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 04:07:03 $'
- * '$Revision: 1.60 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-29 01:30:13 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -787,13 +787,20 @@ public class DataViewer extends javax.swing.JPanel
           JLabel imagelabel = new JLabel(icon);
           DataScrollPanel.getViewport().removeAll();
           DataScrollPanel.getViewport().add(imagelabel);
-          
+          StateChangeMonitor.getInstance().notifyStateChange(
+                 new StateChangeEvent( 
+                 this, 
+                 StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
         }
         else if (text_flag) {
           // try building a table
           if ((column_labels!=null)&&(column_labels.size()>0)) {
             if ((field_delimiter.trim().length()>0)) {
               buildTable();
+              StateChangeMonitor.getInstance().notifyStateChange(
+                   new StateChangeEvent( 
+                   this, 
+                   StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
               /*tcuta.setSource(table);
               tca.setSource(table);
               tpa.setTarget(table);*/
@@ -804,11 +811,19 @@ public class DataViewer extends javax.swing.JPanel
               numHeaderLines = "0";
               field_delimiter = ",";
               buildTable();
+              StateChangeMonitor.getInstance().notifyStateChange(
+                  new StateChangeEvent( 
+                  this, 
+                  StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
               //MouseListener popupListener = new PopupListener();
               //table.addMouseListener(popupListener);              
             }
             else {
               buildTextDisplay();
+              StateChangeMonitor.getInstance().notifyStateChange(
+                 new StateChangeEvent( 
+                 this, 
+                 StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
             }
           }
         }
@@ -816,6 +831,10 @@ public class DataViewer extends javax.swing.JPanel
           //Log.debug(9, "Unable to display data!");
           // Couldn't show data view
           showDataView = false;
+          StateChangeMonitor.getInstance().notifyStateChange(
+                 new StateChangeEvent( 
+                 this, 
+                 StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
         }
       }
       

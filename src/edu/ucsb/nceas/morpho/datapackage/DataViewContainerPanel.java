@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 18:38:50 $'
- * '$Revision: 1.29 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-29 01:30:13 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -386,8 +386,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       stateMonitor.addStateChangeListener
                                 (StateChangeEvent.SELECT_DATATABLE_COLUMN,this);
                                 
-//      stateMonitor.notifyStateChange( new StateChangeEvent( vertSplit, 
-//                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
+      stateMonitor.notifyStateChange( new StateChangeEvent( vertSplit, 
+                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
     }
   }
 

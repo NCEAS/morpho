@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 04:07:03 $'
- * '$Revision: 1.39 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-29 01:30:13 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
@@ -140,6 +142,18 @@ public class DataPackagePlugin
     copy.setAcceleratorKeyString(COPYKEY);
     copy.setMenuItemPosition(0);
     copy.setMenu("Edit", EDITMENUPOSITION);
+    copy.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    copy.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    copy.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    copy.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(copy);
     
     GUIAction cut = new GUIAction("Cut", null, new TableCutCommand());
@@ -149,6 +163,18 @@ public class DataPackagePlugin
     cut.setAcceleratorKeyString(CUTKEY);
     cut.setMenuItemPosition(1);
     cut.setMenu("Edit", EDITMENUPOSITION);
+    cut.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    cut.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    cut.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    cut.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(cut);
     
     GUIAction paste = new GUIAction("Paste", null, new TablePasteCommand());
@@ -158,11 +184,23 @@ public class DataPackagePlugin
     paste.setAcceleratorKeyString(PASTEKEY);
     paste.setMenuItemPosition(2);
     paste.setMenu("Edit", EDITMENUPOSITION);
+    paste.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    paste.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    paste.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    paste.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(paste);
     
-    /*copy.setEnabled(false);
+    copy.setEnabled(false);
     cut.setEnabled(false);
-    paste.setEnabled(false);*/
+    paste.setEnabled(false);
     
     // For data menu
     int i = 0; // postition for menu item in data menu
@@ -172,6 +210,12 @@ public class DataPackagePlugin
     addDocumentation.setToolTipText("Add a XML documentation");
     addDocumentation.setMenuItemPosition(i);
     addDocumentation.setMenu("Data", DATAMENUPOSITION);
+    addDocumentation.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+    addDocumentation.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addDocumentation);
     
     i = i+1;
@@ -181,6 +225,12 @@ public class DataPackagePlugin
     createNewDatatable.setMenuItemPosition(i);
     createNewDatatable.setMenu("Data", DATAMENUPOSITION);
     createNewDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    createNewDatatable.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+    createNewDatatable.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(createNewDatatable);
     
     i= i+2; // separator will take a position so add 2
@@ -190,6 +240,18 @@ public class DataPackagePlugin
     sortBySelectedColumn.setMenuItemPosition(i);
     sortBySelectedColumn.setMenu("Data", DATAMENUPOSITION);
     sortBySelectedColumn.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    sortBySelectedColumn.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    sortBySelectedColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    sortBySelectedColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    sortBySelectedColumn.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(sortBySelectedColumn);
     
     i = i+2;
@@ -198,6 +260,18 @@ public class DataPackagePlugin
     insertRowAfter.setToolTipText("Insert a row after selected row");
     insertRowAfter.setMenuItemPosition(i);
     insertRowAfter.setMenu("Data", DATAMENUPOSITION);
+    insertRowAfter.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    insertRowAfter.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertRowAfter.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertRowAfter.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(insertRowAfter);
     
     i = i+1;
@@ -206,6 +280,18 @@ public class DataPackagePlugin
     insertRowBefore.setToolTipText("Insert a row before selected row");
     insertRowBefore.setMenuItemPosition(i);
     insertRowBefore.setMenu("Data", DATAMENUPOSITION);
+    insertRowBefore.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    insertRowBefore.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertRowBefore.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertRowBefore.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(insertRowBefore);
     
     i = i+1;
@@ -215,6 +301,18 @@ public class DataPackagePlugin
     deleteRow.setMenuItemPosition(i);
     deleteRow.setMenu("Data", DATAMENUPOSITION);
     deleteRow.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    deleteRow.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    deleteRow.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    deleteRow.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    deleteRow.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(deleteRow);
     
     i = i+2;
@@ -223,6 +321,18 @@ public class DataPackagePlugin
     insertColumnAfter.setToolTipText("Insert a column after selected column");
     insertColumnAfter.setMenuItemPosition(i);
     insertColumnAfter.setMenu("Data", DATAMENUPOSITION);
+    insertColumnAfter.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    insertColumnAfter.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertColumnAfter.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertColumnAfter.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(insertColumnAfter);
        
     i = i+1;
@@ -232,6 +342,18 @@ public class DataPackagePlugin
     insertColumnBefore.setToolTipText("Insert a column before selected column");
     insertColumnBefore.setMenuItemPosition(i);
     insertColumnBefore.setMenu("Data", DATAMENUPOSITION);
+    insertColumnBefore.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    insertColumnBefore.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertColumnBefore.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    insertColumnBefore.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(insertColumnBefore);
     
     i = i+1;
@@ -241,6 +363,18 @@ public class DataPackagePlugin
     deleteColumn.setMenuItemPosition(i);
     deleteColumn.setMenu("Data", DATAMENUPOSITION);
     deleteColumn.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    deleteColumn.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                      true, GUIAction.EVENT_GLOBAL);
+    deleteColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    deleteColumn.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
+    deleteColumn.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
+                   false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(deleteColumn);
     
     i = i+2;
@@ -250,9 +384,18 @@ public class DataPackagePlugin
     editColumnMetadata.setMenuItemPosition(i);
     editColumnMetadata.setMenu("Data", DATAMENUPOSITION);
     //editColumnMetadata.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    editColumnMetadata.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_GLOBAL);
+    editColumnMetadata.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
+    editColumnMetadata.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_GLOBAL);
     controller.addGuiAction(editColumnMetadata);
     
-    /*addDocumentation.setEnabled(false);
+    addDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
@@ -261,7 +404,7 @@ public class DataPackagePlugin
     insertColumnBefore.setEnabled(false);
     insertColumnAfter.setEnabled(false);
     deleteColumn.setEnabled(false);
-    editColumnMetadata.setEnabled(false);*/
+    editColumnMetadata.setEnabled(false);
     
     // create new data package menu in file menu
     GUIAction createNewDataPackage = new GUIAction("New Datapackage...", null, 
@@ -318,6 +461,10 @@ public class DataPackagePlugin
     dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());
 //    dvcp.setVisible(true);
     packageWindow.setMainContentPane(dvcp);
+    StateChangeMonitor.getInstance().notifyStateChange(
+                 new StateChangeEvent( 
+                 dvcp, 
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     packageWindow.setBusy(false);
   }
   
