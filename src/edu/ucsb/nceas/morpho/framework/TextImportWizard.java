@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 21:46:25 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2002-11-27 23:00:00 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,6 +175,7 @@ public class TextImportWizard extends javax.swing.JFrame
 	{
     this.listener = listener;
     cmePanel = new ColumnMetadataEditPanel();
+    cmePanel.setTextImportWizard(this);
     cmePanel.setPreferredSize(new Dimension(300, 4000));
 
 		//{{INIT_CONTROLS
@@ -648,6 +649,18 @@ public class TextImportWizard extends javax.swing.JFrame
 		} catch (Exception e) {
 		}
 	}
+  
+  public void resetColumnHeader(String newColHeader) {
+    int selectedCol = table.getSelectedColumn();
+    if ((selectedCol>-1)&&(colTitles.size()>0)) {
+      colTitles.removeElementAt(selectedCol);
+      colTitles.insertElementAt(newColHeader,selectedCol);
+      buildTable(colTitles, vec);
+      ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+      cd. colTitle = newColHeader;
+      table.setColumnSelectionInterval(selectedCol,selectedCol);
+    }
+  }
 
 	class SymAction implements java.awt.event.ActionListener
 	{

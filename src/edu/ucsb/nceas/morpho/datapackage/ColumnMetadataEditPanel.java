@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 21:45:24 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-11-27 23:00:37 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,11 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
    */ 
    ColumnData colData = null;
    
+   /**
+    * an instance of the TextImportWizard for use in sharing data
+    */
+   TextImportWizard tiw = null; 
+    
   /**
    * root node of the in-memory DOM structure
    */
@@ -304,8 +309,12 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 			  Object object = event.getSource();
 			  if (object == nameTextField)
 				  colData.colName = getColumnName();
-			  else if (object == labelTextField)
-				  colData.colTitle = getColumnName();
+			  else if (object == labelTextField) {
+				  colData.colTitle = getColumnLabel();
+          if (tiw!=null) {
+            tiw.resetColumnHeader(colData.colTitle);  
+          }
+        }
         else if (object == definitionTextArea)
           colData.colDefinition = getColumnDefinition();
 			  else if (object == unitTextField)
@@ -336,8 +345,12 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 			  Object object = event.getSource();
 			  if (object == nameTextField)
 				  colData.colName = getColumnName();
-			  else if (object == labelTextField)
-				  colData.colTitle = getColumnName();
+			  else if (object == labelTextField){
+				  colData.colTitle = getColumnLabel();
+          if (tiw!=null) {
+            tiw.resetColumnHeader(colData.colTitle);  
+          }
+        }
         else if (object == definitionTextArea)
           colData.colDefinition = getColumnDefinition();
 			  else if (object == unitTextField)
@@ -929,6 +942,10 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     if (cnt > nl.getLength()) cnt=nl.getLength();
     Node nextNode = nl.item(cnt);
     root.insertBefore(newAttrRoot, nextNode);
+  }
+  
+  public void setTextImportWizard(TextImportWizard tiw) {
+    this.tiw = tiw;
   }
  
  // get Column Info values
