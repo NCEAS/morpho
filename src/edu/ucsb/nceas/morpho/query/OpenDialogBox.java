@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-05 17:17:48 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-08 00:13:34 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.util.*;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -59,6 +60,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  * A dialog box for user to open a datapakcage
@@ -113,23 +115,26 @@ public class OpenDialogBox extends JDialog
     setSize(800, 600);
     setTitle("Open");
     getContentPane().setLayout(new BorderLayout(0, 0));
-
+    getContentPane().setBackground(Color.white);
+    
     JPanel resultPanel = new JPanel();
-   
     resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+    
     getContentPane().add(BorderLayout.CENTER, resultPanel);
     resultPanel.add(Box.createVerticalStrut(8));
     // Get owner resultset and onwer panel
     createOwnerPanel();
+    
     // Add owner panel to the resulPanel
     resultPanel.add(ownerPanel);
-   
+    
     // Create a margin panel
     JPanel marginPanel = new JPanel();
     marginPanel.setLayout(new BoxLayout(marginPanel, BoxLayout.Y_AXIS));
     getContentPane().add(BorderLayout.SOUTH, marginPanel);
     // Add the margin between controlButtonsPanel and resultPanel
     marginPanel.add(Box.createVerticalStrut(8));
+  
     
     // Create a controlbuttionPanel
     JPanel controlButtonsPanel = new JPanel();
@@ -143,7 +148,10 @@ public class OpenDialogBox extends JDialog
        new SearchCommand(this, framework));
     searchAction.setToolTipText("Switch to search system to open packages from" 
                                 + " the whole network");
+  
     searchButton = new JButton(searchAction);
+    // Set text on the left of icon        
+    searchButton.setHorizontalTextPosition(SwingConstants.LEFT);
     controlButtonsPanel.add(searchButton);
     
     controlButtonsPanel.add(Box.createHorizontalGlue());
@@ -214,7 +222,8 @@ public class OpenDialogBox extends JDialog
     Query ownerQuery = new Query(getOwnerQuery(), framework);
     results = ownerQuery.execute();
     ownerPanel = new ResultPanel(results, false, false, mediator);
-  }// createOwnerPanel
+    
+   }// createOwnerPanel
   
    /**
    * Construct a query suitable for getting the owner documents
