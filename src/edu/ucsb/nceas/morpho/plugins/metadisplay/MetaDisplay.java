@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-06 19:34:36 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2003-12-08 17:40:29 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -569,7 +569,6 @@ public class MetaDisplay implements MetaDisplayInterface,
 	  {
         transformer.addTransformerProperty( XMLTransformer.CSS_PATH_XSLPROP, 
                                             getFullStylePath());
-
 	      Reader xmlReader = null;
 	      try  {
 	          setIdentifier(ID);
